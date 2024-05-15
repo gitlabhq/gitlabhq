@@ -10,7 +10,7 @@ class TestSuiteEntity < Grape::Entity
   expose :skipped_count, documentation: { type: 'integer', example: 12 }
   expose :error_count, documentation: { type: 'integer', example: 0 }
 
-  with_options if: -> (_, opts) { opts[:details] } do |test_suite|
+  with_options if: ->(_, opts) { opts[:details] } do |test_suite|
     expose :suite_error,
       documentation: { type: 'string', example: 'JUnit XML parsing failed: 1:1: FATAL: Document is empty' }
     expose :test_cases, using: TestCaseEntity, documentation: { is_array: true } do |test_suite|

@@ -592,7 +592,7 @@ Citations:
 ## Links
 
 - [Cells 1.0](iterations/cells-1.0.md)
-- [Routing Service](routing-service.md)
+- [Routing Service](http_routing_service.md)
 
 ### Topology Service discussions
 

@@ -32,6 +32,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
         modelId: 1,
         modelVersionId: 2,
         projectPath: 'path/to/project',
+        canWriteModelRegistry: true,
       },
       apolloProvider,
       stubs: {

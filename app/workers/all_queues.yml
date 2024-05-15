@@ -264,6 +264,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_partitioning
+  :worker_name: Ci::PartitioningWorker
+  :feature_category: :ci_scaling
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_pipeline_artifacts_expire_artifacts
   :worker_name: Ci::PipelineArtifacts::ExpireArtifactsWorker
   :feature_category: :build_artifacts

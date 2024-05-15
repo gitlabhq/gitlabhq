@@ -152,10 +152,10 @@ export default {
           @keydown.meta.enter="updateUrl(link, $event.target.value)"
         />
         <template #invalid-feedback>
-          <span v-if="hasEmptyUrl(link)" class="invalid-feedback d-inline">
+          <span v-if="hasEmptyUrl(link)" class="invalid-feedback gl-inline">
             {{ __('URL is required') }}
           </span>
-          <span v-else-if="hasBadFormat(link)" class="invalid-feedback d-inline">
+          <span v-else-if="hasBadFormat(link)" class="invalid-feedback gl-inline">
             <gl-sprintf
               :message="
                 __(
@@ -168,7 +168,7 @@ export default {
               </template>
             </gl-sprintf>
           </span>
-          <span v-else-if="hasDuplicateUrl(link)" class="invalid-feedback d-inline">
+          <span v-else-if="hasDuplicateUrl(link)" class="invalid-feedback gl-inline">
             {{ __('This URL already exists.') }}
           </span>
         </template>
@@ -192,10 +192,10 @@ export default {
           @keydown.meta.enter="updateName(link, $event.target.value)"
         />
         <template #invalid-feedback>
-          <span v-if="hasEmptyName(link)" class="invalid-feedback d-inline">
+          <span v-if="hasEmptyName(link)" class="invalid-feedback gl-inline">
             {{ __('Link title is required') }}
           </span>
-          <span v-else-if="hasDuplicateName(link)" class="invalid-feedback d-inline">
+          <span v-else-if="hasDuplicateName(link)" class="invalid-feedback gl-inline">
             {{ __('This title already exists.') }}
           </span>
         </template>

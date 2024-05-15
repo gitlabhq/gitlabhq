@@ -103,6 +103,13 @@ InitializerConnections.raise_if_new_database_connection do
       get '/sandbox/mermaid' => 'sandbox#mermaid'
       get '/sandbox/swagger' => 'sandbox#swagger'
 
+      get '/:model/:model_id/uploads/:secret/:filename',
+        to: 'banzai/uploads#show',
+        constraints: {
+          model: /project|group/,
+          filename: %r{[^/]+}
+        }
+
       get '/whats_new' => 'whats_new#index'
 
       get 'offline' => "pwa#offline"

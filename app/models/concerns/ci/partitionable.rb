@@ -82,7 +82,7 @@ module Ci
           strategy: :ci_sliding_list,
           next_partition_if: ->(latest_partition) do
             latest_partition.blank? ||
-              ::Ci::Partitionable::Organizer.new_partition_required?(latest_partition.values.max)
+              ::Ci::Partitionable::Organizer.create_database_partition?(latest_partition)
           end,
           detach_partition_if: proc { false },
           # Most of the db tasks are run in a weekly basis, e.g. execute_batched_migrations.

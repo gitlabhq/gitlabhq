@@ -10,7 +10,7 @@ export default {
       import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
     CandidateDetail,
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'canWriteModelRegistry'],
   props: {
     modelVersion: {
       type: Object,
@@ -46,6 +46,8 @@ export default {
     <template v-if="modelVersion.packageId">
       <package-files
         :package-id="packageId"
+        :can-delete="canWriteModelRegistry"
+        :delete-all-files="true"
         :project-path="projectPath"
         :package-type="packageType"
       />

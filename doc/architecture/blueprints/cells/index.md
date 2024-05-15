@@ -186,7 +186,7 @@ flowchart TD
 
 ### 3. Routing layer
 
-See [Cells: Routing Service](routing-service.md) for HTTP Routing.
+See [Cells: Routing Service](http_routing_service.md) for HTTP Routing.
 
 See [Cells: SSH Routing Service](ssh_routing_service.md) for SSH Routing.
 
@@ -254,11 +254,12 @@ Expectations:
 The Cells architecture has long lasting implications to data processing, location, scalability and the GitLab architecture.
 This section links all different technical proposals that are being evaluated.
 
-- [HTTP Routing Service](routing-service.md)
-- [Topology Service](topology_service.md)
+- Cells Services:
+  - [HTTP Routing Service](http_routing_service.md)
+  - [SSH Routing Service](ssh_routing_service.md)
+  - [Topology Service](topology_service.md)
+  - Planned: Indexing Service
 - [Feature Flags](feature_flags.md)
-- Planned: SSH Routing Service
-- Planned: Indexing Service
 
 ## Impacted features
 

@@ -75,6 +75,11 @@ export default {
       required: false,
       default: false,
     },
+    deleteAllFiles: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     packageId: {
       type: String,
       required: true,
@@ -265,7 +270,7 @@ export default {
     },
     handleFileDelete(files) {
       this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
-      if (files.length === this.packageFiles.length && this.isLastPage) {
+      if (!this.deleteAllFiles && files.length === this.packageFiles.length && this.isLastPage) {
         this.$emit(
           'delete-all-files',
           this.hasOneItem(files)

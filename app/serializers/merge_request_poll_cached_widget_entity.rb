@@ -49,7 +49,7 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
     end
   end
 
-  expose :actual_head_pipeline, as: :pipeline, if: -> (mr, _) { presenter(mr).can_read_pipeline? } do |merge_request, options|
+  expose :actual_head_pipeline, as: :pipeline, if: ->(mr, _) { presenter(mr).can_read_pipeline? } do |merge_request, options|
     MergeRequests::PipelineEntity.represent(merge_request.diff_head_pipeline, options)
   end
 
@@ -144,11 +144,11 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   end
 
   expose :blob_path do
-    expose :head_path, if: -> (mr, _) { mr.source_branch_sha } do |merge_request|
+    expose :head_path, if: ->(mr, _) { mr.source_branch_sha } do |merge_request|
       project_blob_path(merge_request.project, merge_request.source_branch_sha)
     end
 
-    expose :base_path, if: -> (mr, _) { mr.diff_base_sha } do |merge_request|
+    expose :base_path, if: ->(mr, _) { mr.diff_base_sha } do |merge_request|
       project_blob_path(merge_request.project, merge_request.diff_base_sha)
     end
   end

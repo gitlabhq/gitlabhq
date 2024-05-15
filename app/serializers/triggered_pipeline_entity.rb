@@ -29,16 +29,16 @@ class TriggeredPipelineEntity < Grape::Entity
 
     expose :stages,
       using: StageEntity,
-      if: -> (_, opts) { can_read_details? && expand?(opts) }
+      if: ->(_, opts) { can_read_details? && expand?(opts) }
   end
 
   expose :triggered_by_pipeline,
     as: :triggered_by, with: TriggeredPipelineEntity,
-    if: -> (_, opts) { can_read_details? && expand_for_path?(opts) }
+    if: ->(_, opts) { can_read_details? && expand_for_path?(opts) }
 
   expose :triggered_pipelines_with_preloads,
     as: :triggered, using: TriggeredPipelineEntity,
-    if: -> (_, opts) { can_read_details? && expand_for_path?(opts) }
+    if: ->(_, opts) { can_read_details? && expand_for_path?(opts) }
 
   expose :project, using: ProjectEntity
 

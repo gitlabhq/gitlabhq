@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService,
-  :yaml_processor_feature_flag_corectness, feature_category: :pipeline_composition do
+  :ci_config_feature_flag_correctness, feature_category: :pipeline_composition do
   include RepoHelpers
 
   context 'include:' do

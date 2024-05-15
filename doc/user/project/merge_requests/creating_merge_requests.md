@@ -210,7 +210,9 @@ Prerequisites:
 
 - The merge request must target the current project, not an upstream project.
 - A GitLab administrator must configure [incoming email](../../../administration/incoming_email.md).
+  This setting is enabled on GitLab.com.
 - A GitLab administrator must configure [Reply by email](../../../administration/reply_by_email.md).
+  This setting is enabled on GitLab.com.
 - You must have at least the Developer role, or be allowed to create merge requests in the project.
 
 To create a merge request by sending an email:

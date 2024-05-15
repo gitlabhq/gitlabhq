@@ -2,10 +2,10 @@
 
 module Gitlab
   module Ci
-    class YamlProcessor
+    class Config
       module FeatureFlags
-        ACTOR_KEY = 'ci_yaml_processor_feature_flag_actor'
-        CORRECT_USAGE_KEY = 'ci_yaml_processor_feature_flag_correct_usage'
+        ACTOR_KEY = 'ci_config_feature_flag_actor'
+        CORRECT_USAGE_KEY = 'ci_config_feature_flag_correct_usage'
         NO_ACTOR_VALUE = :no_actor
         NO_ACTOR_MESSAGE = "Actor not set. Ensure to call `enabled?` inside `with_actor` block"
         NoActorError = Class.new(StandardError)

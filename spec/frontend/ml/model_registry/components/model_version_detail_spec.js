@@ -22,6 +22,7 @@ const createWrapper = (modelVersion = modelVersionWithCandidate) => {
     propsData: { modelVersion },
     provide: {
       projectPath: 'path/to/project',
+      canWriteModelRegistry: true,
     },
   });
 };
@@ -56,7 +57,8 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
         packageId: 'gid://gitlab/Packages::Package/12',
         projectPath: 'path/to/project',
         packageType: 'ml_model',
-        canDelete: false,
+        canDelete: true,
+        deleteAllFiles: true,
       });
     });
   });

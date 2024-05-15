@@ -172,7 +172,7 @@ OCI support means that you can host OCI-based image formats in the registry, suc
 
 ## Container image signatures
 
-> - Container image signature display [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7856) in GitLab 17.0.
+> - Container image signature display [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7856) in GitLab 17.1.
 
 In the GitLab container registry, you can use the [OCI 1.1 manifest `subject` field](https://github.com/opencontainers/image-spec/blob/v1.1.0/manifest.md)
 to associate container images with [Cosign signatures](../../../ci/yaml/signing_examples.md).

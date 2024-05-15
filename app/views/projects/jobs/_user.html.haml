@@ -4,4 +4,4 @@ by
     = render Pajamas::AvatarComponent.new(@build.user, size: 24, alt: "")
     %strong{ data: { toggle: 'tooltip', placement: 'top', title: @build.user.to_reference } }
       = @build.user.name
-  %strong.d-inline.d-sm-none= @build.user.to_reference
+  %strong.gl-inline.sm:gl-hidden= @build.user.to_reference

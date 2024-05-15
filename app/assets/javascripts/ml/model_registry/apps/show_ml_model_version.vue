@@ -17,6 +17,7 @@ export default {
   provide() {
     return {
       projectPath: this.projectPath,
+      canWriteModelRegistry: this.canWriteModelRegistry,
     };
   },
   props: {
@@ -38,6 +39,10 @@ export default {
     },
     projectPath: {
       type: String,
+      required: true,
+    },
+    canWriteModelRegistry: {
+      type: Boolean,
       required: true,
     },
   },

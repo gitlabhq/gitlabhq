@@ -66,6 +66,7 @@ export default {
     return {
       mlflowTrackingUrl: this.mlflowTrackingUrl,
       projectPath: this.projectPath,
+      canWriteModelRegistry: this.canWriteModelRegistry,
     };
   },
   props: {

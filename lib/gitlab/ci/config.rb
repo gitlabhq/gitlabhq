@@ -42,7 +42,7 @@ module Gitlab
 
         @source = source
 
-        Gitlab::Ci::YamlProcessor::FeatureFlags.with_actor(project) do
+        Gitlab::Ci::Config::FeatureFlags.with_actor(project) do
           @config = self.logger.instrument(:config_expand, once: true) do
             expand_config(config)
           end

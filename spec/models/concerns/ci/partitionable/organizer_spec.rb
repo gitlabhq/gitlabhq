@@ -3,49 +3,30 @@
 require 'spec_helper'
 
 RSpec.describe Ci::Partitionable::Organizer, feature_category: :continuous_integration do
-  describe '.new_partition_required?' do
-    subject(:new_partition_required) { described_class.new_partition_required?(partition_id) }
+  describe '.create_database_partition?' do
+    subject(:create_database_partition) { described_class.create_database_partition?(database_partition) }
 
-    let(:partition_id) { Ci::Pipeline::INITIAL_PARTITION_VALUE }
-
-    context 'with ci_partitioning_first_records disabled' do
-      before do
-        stub_feature_flags(ci_partitioning_first_records: false)
-      end
-
-      it 'does not create Ci::Partition record' do
-        expect { new_partition_required }.not_to change { Ci::Partition.count }
-      end
-    end
-
-    context 'when first record does not exist' do
-      before do
-        described_class.clear_memoization(:insert_first_partitions)
-      end
-
-      it 'creates Ci::Partition records' do
-        expect { new_partition_required }.to change { Ci::Partition.count }.by(3)
-      end
-    end
-
-    context 'when first records exist' do
-      before do
-        create_list(:ci_partition, 3)
-      end
-
-      it 'does not create Ci::Partition record' do
-        expect { new_partition_required }.not_to change { Ci::Partition.count }
-      end
+    let(:parent_table_name) { 'p_ci_pipeline_variables' }
+    let(:partition_name) { 'ci_pipeline_variables_102' }
+    let(:schema) { 'gitlab_partitions_dynamic' }
+    let(:database_partition) do
+      Gitlab::Database::Partitioning::MultipleNumericListPartition.new(
+        parent_table_name,
+        [Ci::Pipeline::NEXT_PARTITION_VALUE],
+        partition_name: partition_name,
+        schema: schema
+      )
     end
 
     context 'when partition size is greater than the current partition size' do
-      let(:partition_id) { Ci::Pipeline::SECOND_PARTITION_VALUE.next }
-
       it { is_expected.to eq(false) }
     end
 
     context 'when partition size is less than the current partition size' do
-      let(:partition_id) { Ci::Pipeline::INITIAL_PARTITION_VALUE - 1 }
+      before do
+        allow(database_partition).to receive_message_chain(:values,
+          :max).and_return(Ci::Pipeline::INITIAL_PARTITION_VALUE)
+      end
 
       it { is_expected.to eq(true) }
     end

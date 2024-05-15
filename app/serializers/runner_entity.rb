@@ -5,11 +5,11 @@ class RunnerEntity < Grape::Entity
 
   expose :id, :description, :short_sha
 
-  expose :edit_path, if: -> (*) { can_edit_runner? } do |runner|
+  expose :edit_path, if: ->(*) { can_edit_runner? } do |runner|
     edit_project_runner_path(project, runner)
   end
 
-  expose :admin_path, if: -> (*) { can_admin_runner? } do |runner|
+  expose :admin_path, if: ->(*) { can_admin_runner? } do |runner|
     Gitlab::Routing.url_helpers.admin_runner_url(runner)
   end
 

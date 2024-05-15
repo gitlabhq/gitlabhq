@@ -454,14 +454,6 @@ CI you want enforced. Scan execution policies then merge this file with the
 project's `.gitlab-ci.yml` to execute the compliance jobs for each project
 enforced by the policy.
 
-#### `ci_configuration_path` object
-
-| Field     | Type                | Required | Description |
-|-----------|---------------------|----------|-------------|
-| `project` | `string`            | true     | A project namespace path. |
-| `file`    | `string`            | true     | The filename of the CI/CD YAML file. |
-| `ref`     | `string`            | false    | The branch name, tag name, or commit SHA. If not specified, uses the default branch. |
-
 #### `scan` action type
 
 This action executes the selected `scan` with additional parameters when
@@ -472,6 +464,14 @@ conditions for at least one rule in the defined policy are met.
 | `scan`                  | `string` | `custom`        | The action's type. |
 | `ci_configuration`      | `string` |                 | GitLab CI YAML as formatted as string. |
 | `ci_configuration_path` | object   |                 | Object with project path and filename pointing to a CI configuration. |
+
+#### `ci_configuration_path` object
+
+| Field     | Type                | Required | Description |
+|-----------|---------------------|----------|-------------|
+| `project` | `string`            | true     | A project namespace path. |
+| `file`    | `string`            | true     | The filename of the CI/CD YAML file. |
+| `ref`     | `string`            | false    | The branch name, tag name, or commit SHA. If not specified, uses the default branch. |
 
 Note the following:
 

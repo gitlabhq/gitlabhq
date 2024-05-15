@@ -26,6 +26,32 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   The legacy workflow that uses registration tokens is now disabled by default in GitLab 17.0 and will be removed in GitLab 18.0.
   If registration tokens are still being used, upgrading to GitLab 17.0 will cause runner registration to fail.
 
+- Gitaly storages can no longer share the same path as in this example:
+
+  ```ruby
+  gitaly['configuration'] = {
+    storage: [
+      {
+         name: 'default',
+         path: '/var/opt/gitlab/git-data/repositories',
+      },
+      {
+         name: 'duplicate-path',
+         path: '/var/opt/gitlab/git-data/repositories',
+      },
+    ],
+  }
+  ```
+
+  In this example, the `duplicate-path` storage must be removed or relocated to a new path. If the storage is removed,
+  then any projects associated with it must have their storage updated in the GitLab database. You can update their
+  storage using the Rails console. For example:
+
+  ```shell
+  $ sudo gitlab-rails console
+  Project.where(repository_storage: 'duplicate-path').update_all(repository_storage: 'default')
+  ```
+
 ### Linux package installations
 
 Specific information applies to Linux package installations:

@@ -82,6 +82,7 @@ describe('Package Files', () => {
     packageType = 'NPM',
     projectPath = 'gitlab-test',
     canDelete = true,
+    deleteAllFiles = false,
     stubs,
     resolver = jest.fn().mockResolvedValue(packageFilesQuery({ files: [file] })),
     filesDeleteMutationResolver = jest.fn().mockResolvedValue(packageDestroyFilesMutation()),
@@ -97,6 +98,7 @@ describe('Package Files', () => {
       apolloProvider,
       propsData: {
         canDelete,
+        deleteAllFiles,
         packageId,
         packageType,
         projectPath,
@@ -390,57 +392,121 @@ describe('Package Files', () => {
         );
       });
 
-      describe('emits delete-all-files event', () => {
-        it('with right content for last file in package', async () => {
-          createComponent({
-            resolver: jest.fn().mockResolvedValue(
-              packageFilesQuery({
-                files: [file],
-                extendPagination: {
-                  hasPreviousPage: false,
-                  hasNextPage: false,
-                },
-              }),
-            ),
+      describe('When deleteAllFiles is disabled', () => {
+        const deleteAllFiles = false;
+
+        describe('emits delete-all-files event', () => {
+          it('with right content for last file in package', async () => {
+            createComponent({
+              deleteAllFiles,
+              resolver: jest.fn().mockResolvedValue(
+                packageFilesQuery({
+                  files: [file],
+                  extendPagination: {
+                    hasPreviousPage: false,
+                    hasNextPage: false,
+                  },
+                }),
+              ),
+            });
+            await waitForPromises();
+            const first = findAllRowCheckboxes().at(0);
+
+            await first.setChecked(true);
+
+            await findDeleteSelectedButton().trigger('click');
+
+            expect(showMock).toHaveBeenCalledTimes(0);
+
+            expect(wrapper.emitted('delete-all-files')).toHaveLength(1);
+            expect(wrapper.emitted('delete-all-files')[0]).toEqual([
+              DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT,
+            ]);
           });
-          await waitForPromises();
-          const first = findAllRowCheckboxes().at(0);
 
-          await first.setChecked(true);
+          it('with right content for all files in package', async () => {
+            createComponent({
+              deleteAllFiles,
+              resolver: jest.fn().mockResolvedValue(
+                packageFilesQuery({
+                  extendPagination: {
+                    hasPreviousPage: false,
+                    hasNextPage: false,
+                  },
+                }),
+              ),
+            });
+            await waitForPromises();
 
-          await findDeleteSelectedButton().trigger('click');
+            await findCheckAllCheckbox().setChecked(true);
 
-          expect(showMock).toHaveBeenCalledTimes(0);
+            await findDeleteSelectedButton().trigger('click');
 
-          expect(wrapper.emitted('delete-all-files')).toHaveLength(1);
-          expect(wrapper.emitted('delete-all-files')[0]).toEqual([
-            DELETE_LAST_PACKAGE_FILE_MODAL_CONTENT,
-          ]);
+            expect(showMock).toHaveBeenCalledTimes(0);
+
+            expect(wrapper.emitted('delete-all-files')).toHaveLength(1);
+            expect(wrapper.emitted('delete-all-files')[0]).toEqual([
+              DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
+            ]);
+          });
         });
+      });
 
-        it('with right content for all files in package', async () => {
-          createComponent({
-            resolver: jest.fn().mockResolvedValue(
-              packageFilesQuery({
-                extendPagination: {
-                  hasPreviousPage: false,
-                  hasNextPage: false,
-                },
-              }),
-            ),
+      describe('When deleteAllFiles is enabled', () => {
+        const deleteAllFiles = true;
+
+        describe('deletes and does not emit delete-all-files event', () => {
+          it('with right content for last file in package', async () => {
+            createComponent({
+              deleteAllFiles,
+              resolver: jest.fn().mockResolvedValue(
+                packageFilesQuery({
+                  files: [file],
+                  extendPagination: {
+                    hasPreviousPage: false,
+                    hasNextPage: false,
+                  },
+                }),
+              ),
+            });
+            await waitForPromises();
+            const first = findAllRowCheckboxes().at(0);
+
+            await first.setChecked(true);
+
+            await findDeleteSelectedButton().trigger('click');
+
+            expect(showMock).toHaveBeenCalledTimes(1);
+            expect(findDeleteFilesModal().text()).toMatchInterpolatedText(
+              'You are about to delete foo-1.0.1.tgz. This is a destructive action that may render your package unusable. Are you sure?',
+            );
+            expect(wrapper.emitted('delete-all-files')).toBeUndefined();
           });
-          await waitForPromises();
 
-          await findCheckAllCheckbox().setChecked(true);
+          it('with right content for all files in package', async () => {
+            createComponent({
+              deleteAllFiles,
+              resolver: jest.fn().mockResolvedValue(
+                packageFilesQuery({
+                  extendPagination: {
+                    hasPreviousPage: false,
+                    hasNextPage: false,
+                  },
+                }),
+              ),
+            });
+            await waitForPromises();
 
-          await findDeleteSelectedButton().trigger('click');
+            await findCheckAllCheckbox().setChecked(true);
 
-          expect(showMock).toHaveBeenCalledTimes(0);
+            await findDeleteSelectedButton().trigger('click');
 
-          expect(wrapper.emitted('delete-all-files')).toHaveLength(1);
-          expect(wrapper.emitted('delete-all-files')[0]).toEqual([
-            DELETE_ALL_PACKAGE_FILES_MODAL_CONTENT,
-          ]);
+            expect(showMock).toHaveBeenCalledTimes(1);
+            expect(findDeleteFilesModal().text()).toMatchInterpolatedText(
+              'You are about to delete 2 assets. This operation is irreversible.',
+            );
+            expect(wrapper.emitted('delete-all-files')).toBeUndefined();
+          });
         });
       });
     });

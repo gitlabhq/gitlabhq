@@ -110,4 +110,22 @@ RSpec.describe Gitlab::Database::Partitioning::MultipleNumericListPartition, fea
       expect(partition.to_detach_sql).to eq(sql)
     end
   end
+
+  describe '#before?' do
+    let(:database_partition) { described_class.new('table', 10) }
+
+    subject(:before) { database_partition.before?(partition_id) }
+
+    context 'when partition_id is before the max partition value' do
+      let(:partition_id)  { 9 }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when partition_id is after the max partition value' do
+      let(:partition_id) { 11 }
+
+      it { is_expected.to be_truthy }
+    end
+  end
 end

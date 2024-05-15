@@ -124,9 +124,9 @@ These groups are known today as `api`, `git`, `internal-api`, `web` and `websock
 **What will GitLab.com Cells do:**
 
 GitLab Cells introduces a new layer where requests need to be routed.
-It is slated that the [routing-service](../routing-service.md) will intercept all requests to direct clients to the appropriate cluster.
+It is slated that the [routing-service](../http_routing_service.md) will intercept all requests to direct clients to the appropriate cluster.
 This layer is above that of our current HAProxy setup.
-Behind the [routing-service](../routing-service.md) we plan to leverage existing Ingress methods deployed as part of the GitLab Helm Chart.
+Behind the [routing-service](../http_routing_service.md) we plan to leverage existing Ingress methods deployed as part of the GitLab Helm Chart.
 Requests will then go directly to the Ingress configurations of our frontend.
 We'll need to evaluate the various traffic rules which are configured in HAProxy to determine if they can be set inside of CloudFlare as firewall rules where necessary and able.
 Ideally, HAProxy goes away in Cells Architecture.
@@ -162,8 +162,8 @@ CloudFlare is our first line of defense to provide us native and custom Firewall
 
 **What will GitLab.com Cells do:**
 
-Our use of CloudFlare will technically expand with the use of the [routing-service](../routing-service.md).
-The .com entrypoint does not change, there should be no change to this service outside of the addition of the [routing-service](../routing-service.md).
+Our use of CloudFlare will technically expand with the use of the [routing-service](../http_routing_service.md).
+The .com entrypoint does not change, there should be no change to this service outside of the addition of the [routing-service](../http_routing_service.md).
 
 ### Container Registry
 

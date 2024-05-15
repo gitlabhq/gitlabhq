@@ -32,13 +32,6 @@ Prerequisites:
 1. Expand **Secret Detection**.
 1. Select the **Enable pre-receive secret detection** checkbox.
 
-## Limitations
-
-- This feature only scans non-binary blobs under 1 MiB in size. Binary blobs and blobs larger than 1 MiB are not scanned.
-- The scan does not analyze the content of a commit if it is identical to the content of another file already present in the source code.
-- The scan skips analyzing files that are renamed, deleted, or moved, unless their content is modified in the same commit.
-- The feature does not analyze files that are introduced during a repository creation.
-
 ## Resolve a blocked push
 
 If the blocked secret was added with the most recent commit on your branch:
@@ -85,3 +78,17 @@ git push -o secret_detection.skip_all
 
 NOTE:
 [Pipeline secret detection](../index.md) still scans the bypassed secrets when pre-receive secret detection is skipped.
+
+## Troubleshooting
+
+When working with pre-receive secret detection, you might encounter the following issues.
+
+### My file was not analyzed
+
+If your file was not scanned, it could be because:
+
+- The blob was binary.
+- The blob was larger than 1 MiB.
+- The file was renamed, deleted, or moved.
+- The content of the commit was identical to the content of another file already present in the source code.
+- The file was introduced when the repository was created.

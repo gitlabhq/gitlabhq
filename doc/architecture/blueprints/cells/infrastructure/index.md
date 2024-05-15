@@ -402,7 +402,7 @@ When we have a blueprint merged ideally the confidence should move to 👍 becau
 
 | Domain                           | Owner                             | Blueprint                                                                 | Confidence |
 |----------------------------------|-----------------------------------|---------------------------------------------------------------------------|------------|
-| Routing                          | group::tenant scale               | [Blueprint](../routing-service.md)                                        | 👍         |
+| Routing                          | group::tenant scale               | [Blueprint](../http_routing_service.md)                                        | 👍         |
 | Cell Control Plane               | group::Delivery/team::Foundations | To-Do                                                                     | 👎         |
 | Cell Sizing                      | team::Scalability-Observability   | [To-Do](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2838) | 👎         |
 | CI Runners                       | team::Scalability-Practices       | To-Do                                                                     | 👎         |
