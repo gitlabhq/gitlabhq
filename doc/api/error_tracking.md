@@ -49,7 +49,7 @@ The API allows you to create Error Tracking settings for a project. Only for use
 the project.
 
 NOTE:
-This API is only available when used with [integrated error tracking](../operations/error_tracking.md#integrated-error-tracking).
+This API is only available when used with [integrated error tracking](../operations/integrated_error_tracking.md).
 
 ```plaintext
 PUT /projects/:id/error_tracking/settings

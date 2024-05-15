@@ -342,7 +342,7 @@ module ProjectsHelper
     setting = @project.error_tracking_setting
 
     return if setting.blank? || setting.project_slug.blank? ||
-        setting.organization_slug.blank?
+      setting.organization_slug.blank?
 
     {
       sentry_project_id: setting.sentry_project_id,

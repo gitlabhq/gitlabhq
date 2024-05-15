@@ -115,6 +115,7 @@ When the design is ready, _before_ starting its implementation:
   or [GitLab Designs feature](../../user/project/issues/design_management.md).
   See [when you should use each tool](https://handbook.gitlab.com/handbook/product/ux/product-designer/#deliver).
 - Document user flow and states (for example, using [Mermaid flowcharts in Markdown](../../user/markdown.md#mermaid)).
+- Document [design tokens](https://design.gitlab.com/product-foundations/design-tokens) (for example using the [design token annotation](https://www.figma.com/file/dWP1ldkBU4jeUqx5rO3jrn/Annotations-and-utilities?type=design&node-id=2002-34) in Figma).
 - Document animations and transitions.
 - Document responsive behaviors.
 - Document non-evident behaviors (for example, field is auto-focused).

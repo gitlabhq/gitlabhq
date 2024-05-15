@@ -16,7 +16,7 @@ module Pajamas
       def label_entry
         if help_text_content
           content_tag(:span, label_content) +
-          content_tag(:p, help_text_content, class: 'help-text', data: { testid: 'pajamas-component-help-text' })
+            content_tag(:p, help_text_content, class: 'help-text', data: { testid: 'pajamas-component-help-text' })
         else
           content_tag(:span, label_content)
         end

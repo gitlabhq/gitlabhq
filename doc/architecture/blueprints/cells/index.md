@@ -260,6 +260,7 @@ This section links all different technical proposals that are being evaluated.
   - [Topology Service](topology_service.md)
   - Planned: Indexing Service
 - [Feature Flags](feature_flags.md)
+- [Cluster wide unique sequences](unique_sequences.md)
 
 ## Impacted features
 
@@ -272,7 +273,6 @@ Below is a list of known affected features with preliminary proposed solutions.
 - [Cells: CI Runners](impacted_features/ci-runners.md)
 - [Cells: Container Registry](impacted_features/container-registry.md)
 - [Cells: Contributions: Forks](impacted_features/contributions-forks.md)
-- [Cells: Database Sequences](impacted_features/database-sequences.md)
 - [Cells: Data Migration](impacted_features/data-migration.md)
 - [Cells: Explore](impacted_features/explore.md)
 - [Cells: Git Access](impacted_features/git-access.md)
@@ -390,6 +390,7 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 - [ADR-005: Cells use Flexible Reference Architectures](decisions/005_flexible_reference_architectures.md)
 - [ADR-006: Use Geo for Disaster Recovery](decisions/006_disaster_recovery_geo.md)
 - [ADR-007: Cells 1.0 for internal customers only](decisions/007_internal_customers.md)
+- [ADR-008: Cluster wide unique database sequences](decisions/008_database_sequences.md)
 
 ## Links
 

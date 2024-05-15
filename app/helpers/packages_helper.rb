@@ -49,35 +49,35 @@ module PackagesHelper
 
   def show_cleanup_policy_link(project)
     Gitlab.com? &&
-    Gitlab.config.registry.enabled &&
-    project.feature_available?(:container_registry, current_user) &&
-    project.container_expiration_policy.nil? &&
-    project.container_repositories.exists?
+      Gitlab.config.registry.enabled &&
+      project.feature_available?(:container_registry, current_user) &&
+      project.container_expiration_policy.nil? &&
+      project.container_repositories.exists?
   end
 
   def show_container_registry_settings(project)
     Gitlab.config.registry.enabled &&
-    Ability.allowed?(current_user, :admin_container_image, project)
+      Ability.allowed?(current_user, :admin_container_image, project)
   end
 
   def show_package_registry_settings(project)
     Gitlab.config.packages.enabled &&
-    Ability.allowed?(current_user, :admin_package, project)
+      Ability.allowed?(current_user, :admin_package, project)
   end
 
   def show_group_package_registry_settings(group)
     group.packages_feature_enabled? &&
-    Ability.allowed?(current_user, :admin_group, group)
+      Ability.allowed?(current_user, :admin_group, group)
   end
 
   def can_delete_packages?(project)
     Gitlab.config.packages.enabled &&
-    Ability.allowed?(current_user, :destroy_package, project)
+      Ability.allowed?(current_user, :destroy_package, project)
   end
 
   def can_delete_group_packages?(group)
     group.packages_feature_enabled? &&
-    Ability.allowed?(current_user, :destroy_package, group)
+      Ability.allowed?(current_user, :destroy_package, group)
   end
 
   def cleanup_settings_data(project)

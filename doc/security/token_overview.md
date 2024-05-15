@@ -319,3 +319,52 @@ To replace the token:
    depending on how you use the token, for example if configured as a secret or
    embedded within an application. Requests made from this token should no longer
    return `401` responses.
+
+## Troubleshooting
+
+### Identify Project and Group Access Tokens expiring on a certain date using the rails console
+
+These scripts can be executed in a [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session) or [using the Rails Runner](../administration/operations/rails_console.md#using-the-rails-runner) for identifying tokens affected by [incident 18003](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18003) in self-managed GitLab instances.
+
+The first script looks for tokens that expire on one specific day – you'd want to adjust `expires_at_date` to the day one year after your instance was upgraded to GitLab 16.0. If you're not sure about the exact timing you can use the second script which allows specifying a date range to search in.
+
+To run either of the scripts, start a Rails console session with `sudo gitlab-rails console`, paste the entire script and hit `Enter`.
+
+Alternatively execute it with the Rails Runner: `sudo gitlab-rails runner /path/to/expired_tokens.rb` – it _has_ to be the full path, and the file needs to be accessible to `git:git`. See details in the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
+
+#### expired_tokens.rb
+
+```ruby
+expires_at_date = "2024-05-22"
+
+PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find_each do |token|
+  token.user.members.each do |member|
+    type = if member.is_a?(GroupMember)
+      'Group'
+    elsif member.is_a?(ProjectMember)
+      'Project'
+    end
+
+    puts "Expired #{type} Access Token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+  end
+end
+```
+
+#### expired_tokens_date_range.rb
+
+```ruby
+# This is an alternative version of the above script that allows
+# searching for tokens that expire within a certain date range,
+# e.g. `1.month` (from when the script is executed). Useful if
+# you're unsure when exactly your GitLab 16.0 upgrade completed.
+
+date_range = 1.month
+
+PersonalAccessToken.project_access_token.where(expires_at: Date.today .. Date.today + date_range).find_each do |token|
+  token.user.members.each do |member|
+    type = member.is_a?(GroupMember) ? 'Group' : 'Project'
+
+    puts "Expired #{type} Access Token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+  end
+end
+```

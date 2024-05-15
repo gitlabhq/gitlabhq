@@ -132,7 +132,7 @@ service SequenceService {
 }
 ```
 
-The purpose of this service is to global allocator of the [Database Sequences](impacted_features/database-sequences.md).
+The purpose of this service is to be the global allocator of [Database Sequences](decisions/008_database_sequences.md).
 
 #### Sequence Allocation workflow
 
@@ -269,7 +269,7 @@ sequenceDiagram
     Note over Cell 1: User not found
     Cell 1->>+TS / Classify Service: Classify(Login) "john"
     TS / Classify Service-->>- Cell 1: "john": Cell 2
-    Cell 1 ->>- HTTP Router: "Cell 2". <br /> 307 Temporary Redirect 
+    Cell 1 ->>- HTTP Router: "Cell 2". <br /> 307 Temporary Redirect
     HTTP Router ->> User: Set Header Cell "Cell 2". <br /> 307 Temporary Redirect
     User->>HTTP Router: Headers: Cell: Cell 2 <br /> Sign in with Username: john, password: test123.
     HTTP Router->>+Cell 2: Sign in with Username: john, password: test123.

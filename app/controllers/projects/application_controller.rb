@@ -57,7 +57,7 @@ class Projects::ApplicationController < ApplicationController
 
   def check_issuables_available!
     render_404 unless project.feature_available?(:issues, current_user) ||
-        project.feature_available?(:merge_requests, current_user)
+      project.feature_available?(:merge_requests, current_user)
   end
 
   def method_missing(method_sym, *arguments, &block)

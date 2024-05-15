@@ -72,7 +72,7 @@ module VisibilityLevelHelper
   def available_visibility_levels(form_model)
     Gitlab::VisibilityLevel.values.reject do |level|
       disallowed_visibility_level?(form_model, level) ||
-      restricted_visibility_levels.include?(level)
+        restricted_visibility_levels.include?(level)
     end
   end
 

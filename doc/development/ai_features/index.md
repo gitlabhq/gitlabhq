@@ -20,7 +20,7 @@ In order to obtain a GCP service key for local development, follow the steps bel
 - If you are using an individual GCP project, you may also need to enable the Vertex AI API:
   1. Visit [welcome page](https://console.cloud.google.com/welcome), choose your project (e.g. jdoe-5d23dpe).
   1. Go to **APIs & Services > Enabled APIs & services**.
-  1. Select **+ Enable APIs and Services**.
+  1. Select **Enable APIs and Services**.
   1. Search for `Vertex AI API`.
   1. Select **Vertex AI API**, then select **Enable**.
 - Install the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install)
@@ -30,7 +30,7 @@ In order to obtain a GCP service key for local development, follow the steps bel
 ```ruby
 # PROJECT_ID = "your-gcp-project-name"
 
-Gitlab::CurrentSettings.update(vertex_ai_project: PROJECT_ID)
+Gitlab::CurrentSettings.update(vertex_ai_project: "PROJECT_ID")
 ```
 
 #### Anthropic
@@ -38,7 +38,7 @@ Gitlab::CurrentSettings.update(vertex_ai_project: PROJECT_ID)
 [After filling out an access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=AI_Access_Request), you can sign up for an Anthropic account and create an API key. You will then configure it:
 
 ```ruby
-Gitlab::CurrentSettings.update!(anthropic_api_key: <insert API key>)
+Gitlab::CurrentSettings.update!(anthropic_api_key: "<insert API key>")
 ```
 
 ### Local setup
@@ -67,9 +67,9 @@ the feature must request to the [AI Gateway](../../architecture/blueprints/ai_ga
       Alternatively, you can create an `env.runit` file in the root of your GDK with the above snippet.
    1. Enable all AI feature flags:
 
-     ```shell
-     rake gitlab:duo:enable_feature_flags
-     ```
+      ```shell
+      rake gitlab:duo:enable_feature_flags
+      ```
 
 1. Set up AI Gateway: [internal video tutorial](https://youtu.be/ePoHqvw78oQ)
     1. [Install it](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/README.md#how-to-run-the-server-locally).
@@ -525,16 +525,16 @@ embeddings to be used in specs.
 1. Enable [`pgvector`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
 1. Enable the embedding database in GDK
 
-   ```shell
-     gdk config set gitlab.rails.databases.embedding.enabled true
-   ```
+    ```shell
+    gdk config set gitlab.rails.databases.embedding.enabled true
+    ```
 
 1. Run `gdk reconfigure`
 1. Run database migrations to create the embedding database in the `gitlab` folder of the GDK
 
-   ```shell
-     RAILS_ENV=development bin/rails db:migrate
-   ```
+    ```shell
+    RAILS_ENV=development bin/rails db:migrate
+    ```
 
 ### Populate
 

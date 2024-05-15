@@ -11,6 +11,7 @@ module Ci
       include PgFullTextSearchable
       include Gitlab::VisibilityLevel
       include Sortable
+      include EachBatch
 
       self.table_name = 'catalog_resources'
 
