@@ -29,8 +29,8 @@ GitLab supports two authentication methods:
 
 ### Authentication against a local database with X.509 certificates
 
-WARNING:
-Smart card authentication against local databases is an experimental feature and may change or be removed completely in future releases.
+DETAILS:
+**Status:** Experiment
 
 Smart cards with X.509 certificates can be used to authenticate with GitLab.
 
@@ -53,11 +53,11 @@ Certificate:
 
 ### Authentication against a local database with X.509 certificates and SAN extension
 
+DETAILS:
+**Status:** Experiment
+
 Smart cards with X.509 certificates using SAN extensions can be used to authenticate
 with GitLab.
-
-NOTE:
-Smart card authentication against local databases is an experimental feature and may change or be removed completely in future releases.
 
 To use a smart card with an X.509 certificate to authenticate against a local
 database with GitLab:
@@ -92,8 +92,8 @@ Certificate:
 
 ### Authentication against an LDAP server
 
-NOTE:
-Smart card authentication against an LDAP server is an experimental feature and may change or be removed completely in future releases.
+DETAILS:
+**Status:** Experiment
 
 GitLab implements a standard way of certificate matching following
 [RFC4523](https://www.rfc-editor.org/rfc/rfc4523). It uses the

@@ -80,7 +80,7 @@ module Gitlab
       def headers
         {
           'Content-Type': 'application/json',
-          'Token': integration.api_token
+          Token: integration.api_token
         }
       end
 

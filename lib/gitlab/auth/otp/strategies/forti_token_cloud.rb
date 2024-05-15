@@ -43,7 +43,7 @@ module Gitlab
             # Uses the access token created via `access_token_create_response` as the auth token.
             post(
               url: url('/auth'),
-              headers: { 'Authorization': "Bearer #{access_token}" },
+              headers: { Authorization: "Bearer #{access_token}" },
               body: {
                       username: user.username,
                       token: otp_code

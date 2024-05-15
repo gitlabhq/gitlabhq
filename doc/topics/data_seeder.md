@@ -112,6 +112,41 @@ Seeding data for Administrator
 
 Where `:file` is the file path. (This path reflects relative `.rb`, `.yml`, or `.json` files located in `ee/db/seeds/data_seeder`, or absolute paths to seed files.)
 
+## Linux package Setup
+
+WARNING:
+While it is possible to use the Data Seeder with an Linux package installation, **use caution** if you do this when the instance is being used in a production setting.
+
+1. Change the working directory to the GitLab installation:
+
+    ```shell
+    cd /opt/gitlab/embedded/service/gitlab-rails
+    ```
+
+1. Install test resources:
+
+    ```shell
+    . scripts/data_seeder/test_resources.sh
+    ```
+
+1. Globalize gems:
+
+    ```shell
+    /opt/gitlab/embedded/bin/chpst -e /opt/gitlab/etc/gitlab-rails/env /opt/gitlab/embedded/bin/bundle exec ruby scripts/data_seeder/globalize_gems.rb
+    ```
+
+1. Install bundle:
+
+    ```shell
+    /opt/gitlab/embedded/bin/chpst -e /opt/gitlab/etc/gitlab-rails/env /opt/gitlab/embedded/bin/bundle
+    ```
+
+1. Seed the data:
+
+    ```shell
+    gitlab-rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"
+    ```
+
 ## Develop
 
 The Data Seeder uses FactoryBot definitions from `spec/factories` which ...
@@ -121,7 +156,7 @@ The Data Seeder uses FactoryBot definitions from `spec/factories` which ...
 1. Are easy to maintain
 1. Do not rely on an API that may change in the future
 1. Are always up-to-date
-1. Execute on the lowest-level (`ActiveRecord`) possible to create data as quickly as possible
+1. Executes on the lowest-level possible ([ORM](https://guides.rubyonrails.org/active_record_basics.html#active-record-as-an-orm-framework)) to create data as quickly as possible
 
 > From the [FactoryBot README](https://github.com/thoughtbot/factory_bot#readme_) : `factory_bot` is a fixtures replacement with a straightforward definition syntax, support for multiple build
 > strategies (saved instances, unsaved instances, attribute hashes, and stubbed objects), and support for multiple factories for the same class, including factory

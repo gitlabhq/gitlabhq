@@ -69,7 +69,7 @@ If something unexpected happens during the migration, it is safe to start over.
 
 1. Plan for downtime. The downtime is dependent on the size of the `gitlabhq_production` database.
 
-    - We dump `gitlabhq_production` and restore it into a new `gitlabhq_production_ci` database. Database sizes below 100 GB should be done within 30 minutes.
+    - We dump `gitlabhq_production` and restore it into a new `gitlabhq_production_ci` database. Database sizes below 50 GB should be done within 30 minutes. Larger databases need more time. For example, a 100 GB database needs 1-2 hours to be copied to the new database.
     - We advise to also plan some time for smaller tasks like modifying the configuration.
 
 1. Create the new `gitlabhq_production_ci` database:

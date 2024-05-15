@@ -159,7 +159,7 @@ export default {
   <form class="feature-flags-form">
     <fieldset>
       <div class="gl-display-flex gl-flex-wrap gl-mx-n5">
-        <div class="gl-mb-5 gl-px-5 gl-w-full col-md-4">
+        <div class="gl-mb-5 gl-px-5 gl-w-full md:gl-basis-1/3">
           <label for="feature-flag-name" class="gl-font-weight-bold"
             >{{ s__('FeatureFlags|Name') }} *</label
           >
@@ -168,7 +168,7 @@ export default {
       </div>
 
       <div class="gl-display-flex gl-flex-wrap gl-mx-n5">
-        <div class="gl-mb-5 gl-px-5 gl-w-full col-md-4">
+        <div class="gl-mb-5 gl-px-5 gl-w-full md:gl-basis-1/3">
           <label for="feature-flag-description" class="gl-font-weight-bold">
             {{ s__('FeatureFlags|Description') }}
           </label>

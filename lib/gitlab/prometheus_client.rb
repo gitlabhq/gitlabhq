@@ -100,7 +100,7 @@ module Gitlab
     end
 
     def series(*matches, start_time: 8.hours.ago, end_time: Time.now)
-      json_api_get('series', 'match': matches, start: start_time.to_f, end: end_time.to_f)
+      json_api_get('series', match: matches, start: start_time.to_f, end: end_time.to_f)
     end
 
     def self.compute_step(start_time, end_time)

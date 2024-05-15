@@ -57,7 +57,7 @@ module Gitlab
         def annotate(payload)
           headers = {
             "Content-Type": "application/json",
-            "Authorization": "Bearer #{@api_key}"
+            Authorization: "Bearer #{@api_key}"
           }
 
           success = Gitlab::HTTP.post(

@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def check_project_availability
-        options = { headers: headers.merge!('Accept': 'application/json') }
+        options = { headers: headers.merge!(Accept: 'application/json') }
         response = Gitlab::HTTP.head(url("projects?project_name=#{integration.project_name}"), options)
 
         { success: response.success? }
@@ -65,7 +65,7 @@ module Gitlab
         auth = Base64.strict_encode64("#{integration.username}:#{integration.password}")
         {
           'Content-Type': 'application/json',
-          'Authorization': "Basic #{auth}"
+          Authorization: "Basic #{auth}"
         }
       end
     end

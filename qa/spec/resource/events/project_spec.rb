@@ -16,21 +16,21 @@ RSpec.describe QA::Resource::Events::Project do
   let(:all_events) do
     [
       {
-        "action_name": "pushed",
-        "push_data": {
-          "commit_title": "foo commit"
+        action_name: "pushed",
+        push_data: {
+          commit_title: "foo commit"
         }
       },
       {
-        "action_name": "pushed",
-        "push_data": {
-          "ref": "master"
+        action_name: "pushed",
+        push_data: {
+          ref: "master"
         }
       },
       {
-        "action_name": "pushed",
-        "push_data": {
-          "ref": "another-branch"
+        action_name: "pushed",
+        push_data: {
+          ref: "another-branch"
         }
       }
     ]
