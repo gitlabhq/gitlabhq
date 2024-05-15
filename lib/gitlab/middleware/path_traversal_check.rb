@@ -36,11 +36,8 @@ module Gitlab
 
         log_params = {}
 
-        execution_time = measure_execution_time do
-          request = ::Rack::Request.new(env.dup)
-          check(request, log_params) unless excluded?(request)
-        end
-        log_params[:duration_ms] = execution_time.round(5) if execution_time
+        request = ::Rack::Request.new(env.dup)
+        check(request, log_params) unless excluded?(request)
 
         result = @app.call(env)
 
@@ -53,16 +50,6 @@ module Gitlab
       end
 
       private
-
-      def measure_execution_time(&blk)
-        if Feature.enabled?(:log_execution_time_path_traversal_middleware, Feature.current_request)
-          Benchmark.ms(&blk)
-        else
-          yield
-
-          nil
-        end
-      end
 
       def check(request, log_params)
         decoded_fullpath = CGI.unescape(request.fullpath)

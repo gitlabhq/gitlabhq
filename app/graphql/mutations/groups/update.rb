@@ -10,21 +10,21 @@ module Mutations
       authorize :admin_group
 
       field :group, Types::GroupType,
-            null: true,
-            description: 'Group after update.'
+        null: true,
+        description: 'Group after update.'
 
       argument :full_path, GraphQL::Types::ID,
-               required: true,
-               description: 'Full path of the group that will be updated.'
+        required: true,
+        description: 'Full path of the group that will be updated.'
       argument :lock_math_rendering_limits_enabled, GraphQL::Types::Boolean,
-                required: false,
-                description: copy_field_description(Types::GroupType, :lock_math_rendering_limits_enabled)
+        required: false,
+        description: copy_field_description(Types::GroupType, :lock_math_rendering_limits_enabled)
       argument :math_rendering_limits_enabled, GraphQL::Types::Boolean,
-                 required: false,
-                 description: copy_field_description(Types::GroupType, :math_rendering_limits_enabled)
+        required: false,
+        description: copy_field_description(Types::GroupType, :math_rendering_limits_enabled)
       argument :shared_runners_setting, Types::Namespace::SharedRunnersSettingEnum,
-               required: false,
-               description: copy_field_description(Types::GroupType, :shared_runners_setting)
+        required: false,
+        description: copy_field_description(Types::GroupType, :shared_runners_setting)
 
       def resolve(full_path:, **args)
         group = authorized_find!(full_path: full_path)

@@ -8,8 +8,8 @@ module Resolvers
       type Types::WorkItems::TypeType.connection_type, null: true
 
       argument :name, Types::IssueTypeEnum,
-               description: 'Filter work item types by the given name.',
-               required: false
+        description: 'Filter work item types by the given name.',
+        required: false
 
       def resolve_with_lookahead(name: nil)
         context.scoped_set!(:resource_parent, object)

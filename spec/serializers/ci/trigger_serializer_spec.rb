@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::TriggerSerializer do
+RSpec.describe Ci::TriggerSerializer, feature_category: :continuous_integration do
   describe '#represent' do
     let(:represent) { described_class.new.represent(trigger) }
 

@@ -45,6 +45,10 @@ const duoProTrialStatusWidgetStubTestId = 'duo-pro-trial-status-widget';
 const DuoProTrialStatusWidgetStub = {
   template: `<div data-testid="${duoProTrialStatusWidgetStubTestId}" />`,
 };
+const duoProTrialStatusPopoverStubTestId = 'duo-pro-trial-status-popover';
+const DuoProTrialStatusPopoverStub = {
+  template: `<div data-testid="${duoProTrialStatusPopoverStubTestId}" />`,
+};
 const UserBarStub = {
   template: `<div><a href="#">link</a></div>`,
 };
@@ -67,6 +71,8 @@ describe('SuperSidebar component', () => {
   const findTrialStatusWidget = () => wrapper.findByTestId(trialStatusWidgetStubTestId);
   const findTrialStatusPopover = () => wrapper.findByTestId(trialStatusPopoverStubTestId);
   const findDuoProTrialStatusWidget = () => wrapper.findByTestId(duoProTrialStatusWidgetStubTestId);
+  const findDuoProTrialStatusPopover = () =>
+    wrapper.findByTestId(duoProTrialStatusPopoverStubTestId);
   const findSidebarMenu = () => wrapper.findComponent(SidebarMenu);
   const findAdminLink = () => wrapper.findByTestId('sidebar-admin-link');
   const findContextHeader = () => wrapper.findComponent('#super-sidebar-context-header');
@@ -92,6 +98,7 @@ describe('SuperSidebar component', () => {
         TrialStatusWidget: TrialStatusWidgetStub,
         TrialStatusPopover: TrialStatusPopoverStub,
         DuoProTrialStatusWidget: DuoProTrialStatusWidgetStub,
+        DuoProTrialStatusPopover: DuoProTrialStatusPopoverStub,
         UserBar: stubComponent(UserBar, UserBarStub),
       },
       attachTo: document.body,
@@ -221,6 +228,7 @@ describe('SuperSidebar component', () => {
       createWrapper();
 
       expect(findDuoProTrialStatusWidget().exists()).toBe(false);
+      expect(findDuoProTrialStatusPopover().exists()).toBe(false);
     });
 
     it('does not have peek behaviors', () => {
@@ -357,6 +365,7 @@ describe('SuperSidebar component', () => {
 
     it('renders duo pro trial status widget', () => {
       expect(findDuoProTrialStatusWidget().exists()).toBe(true);
+      expect(findDuoProTrialStatusPopover().exists()).toBe(true);
     });
   });
 
@@ -371,6 +380,7 @@ describe('SuperSidebar component', () => {
       expect(findTrialStatusWidget().exists()).toBe(true);
       expect(findTrialStatusPopover().exists()).toBe(true);
       expect(findDuoProTrialStatusWidget().exists()).toBe(false);
+      expect(findDuoProTrialStatusPopover().exists()).toBe(false);
     });
   });
 

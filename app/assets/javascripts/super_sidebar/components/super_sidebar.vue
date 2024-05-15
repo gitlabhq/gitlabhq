@@ -41,6 +41,8 @@ export default {
       import('ee_component/contextual_sidebar/components/trial_status_popover.vue'),
     DuoProTrialStatusWidget: () =>
       import('ee_component/contextual_sidebar/components/duo_pro_trial_status_widget.vue'),
+    DuoProTrialStatusPopover: () =>
+      import('ee_component/contextual_sidebar/components/duo_pro_trial_status_popover.vue'),
   },
   mixins: [Tracking.mixin()],
   i18n: {
@@ -237,6 +239,7 @@ export default {
         <duo-pro-trial-status-widget
           class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-text-decoration-none! gl-py-3"
         />
+        <duo-pro-trial-status-popover />
       </div>
       <div
         class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"

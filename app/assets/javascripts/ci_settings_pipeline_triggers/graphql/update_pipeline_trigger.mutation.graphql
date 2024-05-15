@@ -1,0 +1,9 @@
+mutation updatePipelineTrigger($id: CiTriggerID!, $description: String!) {
+  pipelineTriggerUpdate(input: { id: $id, description: $description }) {
+    pipelineTrigger {
+      id
+      description
+    }
+    errors
+  }
+}

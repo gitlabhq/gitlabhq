@@ -5,6 +5,7 @@ module Ci
     include Gitlab::Routing
     include Gitlab::Allowable
 
+    expose :id
     expose :description
     expose :owner, using: UserEntity
     expose :last_used
@@ -23,10 +24,6 @@ module Ci
 
     expose :project_trigger_path, if: -> (trigger) { can_manage_trigger?(trigger) } do |trigger|
       project_trigger_path(options[:project], trigger)
-    end
-
-    expose :edit_project_trigger_path, if: -> (trigger) { can_admin_trigger?(trigger) } do |trigger|
-      edit_project_trigger_path(options[:project], trigger)
     end
 
     private

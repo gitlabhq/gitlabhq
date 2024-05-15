@@ -254,7 +254,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resource :mattermost, only: [:new, :create]
         resource :variables, only: [:show, :update]
-        resources :triggers, only: [:index, :create, :edit, :update, :destroy]
+        resources :triggers, only: [:index, :create, :update, :destroy]
 
         resource :mirror, only: [:show, :update] do
           member do

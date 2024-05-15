@@ -19179,7 +19179,13 @@ msgstr ""
 msgid "DuoProTrial|GitLab Duo Pro is only available for purchase for Premium and Ultimate users."
 msgstr ""
 
+msgid "DuoProTrial|Learn about features"
+msgstr ""
+
 msgid "DuoProTrial|Organizational controls"
+msgstr ""
+
+msgid "DuoProTrial|Purchase now"
 msgstr ""
 
 msgid "DuoProTrial|Start your free Duo Pro trial"
@@ -19195,6 +19201,14 @@ msgid "DuoProTrial|We just need some additional information to activate your tri
 msgstr ""
 
 msgid "DuoProTrial|You have successfully created a trial subscription for GitLab Duo Pro. It will expire on %{exp_date}.%{new_line}To get started, enable the GitLab Duo Pro add-on for team members on this page by turning on the toggle for each team member. The subscription may take a minute to sync, so refresh the page if it's not visible yet."
+msgstr ""
+
+msgid "DuoProTrial|You've got %{daysRemaining} day remaining on your GitLab Duo Pro trial!"
+msgid_plural "DuoProTrial|You've got %{daysRemaining} days remaining on your GitLab Duo Pro trial!"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "DuoProTrial|Your trial ends on %{strongStart}%{trialEndDate}%{strongEnd}. We hope you’re enjoying the features of GitLab Duo Pro. To continue using your AI-powered assistant after you trial ends, you'll need to buy an add-on subscription."
 msgstr ""
 
 msgid "Duplicate page: A page with that title already exists in the file %{file}"
@@ -19408,6 +19422,9 @@ msgid "Edit title and description"
 msgstr ""
 
 msgid "Edit topic: %{topic_name}"
+msgstr ""
+
+msgid "Edit trigger token"
 msgstr ""
 
 msgid "Edit user: %{user_name}"
@@ -37931,6 +37948,9 @@ msgstr ""
 msgid "Pipelines|Active train"
 msgstr ""
 
+msgid "Pipelines|An error occurred while updating the trigger token. Please try again."
+msgstr ""
+
 msgid "Pipelines|Are you sure you want to run this pipeline?"
 msgstr ""
 
@@ -37940,7 +37960,7 @@ msgstr ""
 msgid "Pipelines|Build with confidence"
 msgstr ""
 
-msgid "Pipelines|By revoking a trigger you will break any processes making use of it. Are you sure?"
+msgid "Pipelines|By revoking a trigger token you will break any processes making use of it. Are you sure?"
 msgstr ""
 
 msgid "Pipelines|CI lint"
@@ -38030,7 +38050,7 @@ msgstr ""
 msgid "Pipelines|More Information"
 msgstr ""
 
-msgid "Pipelines|No triggers have been created yet. Add one using the form above."
+msgid "Pipelines|No trigger tokens have been created yet. Add one using the form above."
 msgstr ""
 
 msgid "Pipelines|Owner"
@@ -38148,6 +38168,9 @@ msgid "Pipelines|Unable to create pipeline"
 msgstr ""
 
 msgid "Pipelines|Unable to validate CI/CD configuration. See the %{linkStart}GitLab CI/CD troubleshooting guide%{linkEnd} for more details."
+msgstr ""
+
+msgid "Pipelines|Update Trigger"
 msgstr ""
 
 msgid "Pipelines|Use a sample %{codeStart}.gitlab-ci.yml%{codeEnd} template file to explore how CI/CD works."

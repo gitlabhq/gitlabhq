@@ -1,5 +1,6 @@
 export const triggers = [
   {
+    id: 1,
     hasTokenExposed: true,
     token: '0000',
     description: 'My trigger',
@@ -10,13 +11,13 @@ export const triggers = [
     },
     lastUsed: null,
     canAccessProject: true,
-    editProjectTriggerPath: '/triggers/1/edit',
     projectTriggerPath: '/trigger/1',
   },
   {
+    id: 2,
     hasTokenExposed: false,
     token: '1111',
-    description: "Anothe user's trigger",
+    description: "Another user's trigger",
     owner: {
       name: 'Someone else',
       username: 'user2',
@@ -24,7 +25,21 @@ export const triggers = [
     },
     lastUsed: '2020-09-10T08:26:47.410Z',
     canAccessProject: false,
-    editProjectTriggerPath: '/triggers/1/edit',
-    projectTriggerPath: '/trigger/1',
+    projectTriggerPath: '/trigger/2',
   },
 ];
+
+export const mockPipelineTriggerMutationResponse = ({
+  errors = [],
+  description = 'My trigger',
+} = {}) => ({
+  data: {
+    pipelineTriggerUpdate: {
+      pipelineTrigger: {
+        id: 'gid://gitlab/Ci::Trigger/1',
+        description,
+      },
+      errors,
+    },
+  },
+});

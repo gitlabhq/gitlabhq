@@ -55,7 +55,12 @@ module API
 
           builds = user_project.builds.order(id: :desc)
           builds = filter_builds(builds, params[:scope])
-          builds = builds.preload(:user, :job_artifacts_archive, :job_artifacts, :runner, :tags, pipeline: :project)
+
+          builds = builds.preload(
+            :job_artifacts_archive, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
+            pipeline: :project,
+            user: [:user_preference, :user_detail, :followees]
+          )
 
           present paginate_with_strategies(builds, user_project, paginator_params: { without_count: true }), with: Entities::Ci::Job
         end

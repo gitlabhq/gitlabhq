@@ -4,8 +4,8 @@ class Projects::TriggersController < Projects::ApplicationController
   before_action :authorize_manage_trigger_on_project!
   before_action :authorize_manage_trigger!, except: [:index, :create]
 
-  before_action :authorize_admin_trigger!, only: [:edit, :update]
-  before_action :trigger, only: [:edit, :update, :destroy]
+  before_action :authorize_admin_trigger!, only: [:update]
+  before_action :trigger, only: [:update, :destroy]
 
   layout 'project_settings'
 
@@ -32,9 +32,6 @@ class Projects::TriggersController < Projects::ApplicationController
     end
 
     redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')
-  end
-
-  def edit
   end
 
   def update

@@ -11,34 +11,34 @@ module Types
       present_using AwardEmojiPresenter
 
       field :name,
-            GraphQL::Types::String,
-            null: false,
-            description: 'Emoji name.'
+        GraphQL::Types::String,
+        null: false,
+        description: 'Emoji name.'
 
       field :description,
-            GraphQL::Types::String,
-            null: false,
-            description: 'Emoji description.'
+        GraphQL::Types::String,
+        null: false,
+        description: 'Emoji description.'
 
       field :unicode,
-            GraphQL::Types::String,
-            null: false,
-            description: 'Emoji in Unicode.'
+        GraphQL::Types::String,
+        null: false,
+        description: 'Emoji in Unicode.'
 
       field :emoji,
-            GraphQL::Types::String,
-            null: false,
-            description: 'Emoji as an icon.'
+        GraphQL::Types::String,
+        null: false,
+        description: 'Emoji as an icon.'
 
       field :unicode_version,
-            GraphQL::Types::String,
-            null: false,
-            description: 'Unicode version for this emoji.'
+        GraphQL::Types::String,
+        null: false,
+        description: 'Unicode version for this emoji.'
 
       field :user,
-            Types::UserType,
-            null: false,
-            description: 'User who awarded the emoji.'
+        Types::UserType,
+        null: false,
+        description: 'User who awarded the emoji.'
 
       def user
         Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.user_id).find

@@ -56,7 +56,10 @@ const getTrialStatusWidgetData = (sidebarData) => {
 };
 
 const getDuoProdTrialStatusWidgetData = (sidebarData) => {
-  if (sidebarData.duo_pro_trial_status_widget_data_attrs) {
+  if (
+    sidebarData.duo_pro_trial_status_widget_data_attrs &&
+    sidebarData.duo_pro_trial_status_popover_data_attrs
+  ) {
     const {
       containerId,
       trialDaysUsed,
@@ -65,6 +68,10 @@ const getDuoProdTrialStatusWidgetData = (sidebarData) => {
       widgetUrl,
     } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
 
+    const { daysRemaining, trialEndDate, purchaseNowUrl } = convertObjectPropsToCamelCase(
+      sidebarData.duo_pro_trial_status_popover_data_attrs,
+    );
+
     return {
       showDuoProTrialStatusWidget: true,
       containerId,
@@ -72,6 +79,10 @@ const getDuoProdTrialStatusWidgetData = (sidebarData) => {
       trialDuration: Number(trialDuration),
       percentageComplete: Number(percentageComplete),
       widgetUrl,
+      daysRemaining,
+      targetId: containerId,
+      trialEndDate: new Date(trialEndDate),
+      purchaseNowUrl,
     };
   }
   return { showDuoProTrialStatusWidget: false };

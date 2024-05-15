@@ -10,34 +10,34 @@ module Types
     present_using BoardPresenter
 
     field :id, type: GraphQL::Types::ID, null: false,
-               description: 'ID (global ID) of the board.'
+      description: 'ID (global ID) of the board.'
     field :name, type: GraphQL::Types::String, null: true,
-                 description: 'Name of the board.'
+      description: 'Name of the board.'
 
     field :hide_backlog_list, type: GraphQL::Types::Boolean, null: true,
-                              description: 'Whether or not backlog list is hidden.'
+      description: 'Whether or not backlog list is hidden.'
 
     field :hide_closed_list, type: GraphQL::Types::Boolean, null: true,
-                             description: 'Whether or not closed list is hidden.'
+      description: 'Whether or not closed list is hidden.'
 
     field :created_at, Types::TimeType, null: false,
-                                        description: 'Timestamp of when the board was created.'
+      description: 'Timestamp of when the board was created.'
 
     field :updated_at, Types::TimeType, null: false,
-                                        description: 'Timestamp of when the board was last updated.'
+      description: 'Timestamp of when the board was last updated.'
 
     field :lists,
-          Types::BoardListType.connection_type,
-          null: true,
-          description: 'Lists of the board.',
-          resolver: Resolvers::BoardListsResolver,
-          extras: [:lookahead]
+      Types::BoardListType.connection_type,
+      null: true,
+      description: 'Lists of the board.',
+      resolver: Resolvers::BoardListsResolver,
+      extras: [:lookahead]
 
     field :web_path, GraphQL::Types::String, null: false,
-                                             description: 'Web path of the board.'
+      description: 'Web path of the board.'
 
     field :web_url, GraphQL::Types::String, null: false,
-                                            description: 'Web URL of the board.'
+      description: 'Web URL of the board.'
   end
 end
 

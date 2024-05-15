@@ -57,8 +57,6 @@ DETAILS:
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw)
 - [View documentation](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers).
 
-## Beta features
-
 ### Test generation
 
 DETAILS:
@@ -69,6 +67,8 @@ DETAILS:
 - LLM: Anthropic [`Claude-2.1`](https://docs.anthropic.com/claude/docs/models-overview#model-comparison)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=g6MS1JsRWgs)
 - [View documentation](gitlab_duo_chat_examples.md#write-tests-in-the-ide).
+
+## Beta features
 
 ### Merge request summary
 

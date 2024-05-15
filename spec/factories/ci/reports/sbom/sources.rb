@@ -48,6 +48,31 @@ FactoryBot.define do
       end
     end
 
+    trait :container_scanning_for_registry do
+      type { :container_scanning_for_registry }
+
+      transient do
+        image_name { 'photon' }
+        sequence(:image_tag) { |n| "5.#{n}-12345678" }
+        operating_system_name { 'Photon OS' }
+        sequence(:operating_system_version) { |n| "5.#{n}" }
+      end
+
+      data do
+        {
+          'category' => 'development',
+          'image' => {
+            'name' => image_name,
+            'tag' => image_tag
+          },
+          'operating_system' => {
+            'name' => operating_system_name,
+            'version' => operating_system_version
+          }
+        }
+      end
+    end
+
     skip_create
 
     initialize_with do

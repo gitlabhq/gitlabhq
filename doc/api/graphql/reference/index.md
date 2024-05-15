@@ -29669,6 +29669,7 @@ Represents summary of a security report.
 | <a id="securityreportsummaryapifuzzing"></a>`apiFuzzing` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `api_fuzzing` scan. |
 | <a id="securityreportsummaryclusterimagescanning"></a>`clusterImageScanning` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `cluster_image_scanning` scan. |
 | <a id="securityreportsummarycontainerscanning"></a>`containerScanning` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `container_scanning` scan. |
+| <a id="securityreportsummarycontainerscanningforregistry"></a>`containerScanningForRegistry` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `container_scanning_for_registry` scan. |
 | <a id="securityreportsummarycoveragefuzzing"></a>`coverageFuzzing` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `coverage_fuzzing` scan. |
 | <a id="securityreportsummarydast"></a>`dast` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `dast` scan. |
 | <a id="securityreportsummarydependencyscanning"></a>`dependencyScanning` | [`SecurityReportSummarySection`](#securityreportsummarysection) | Aggregated counts for the `dependency_scanning` scan. |
@@ -31066,7 +31067,7 @@ Represents a vulnerability.
 | <a id="vulnerabilitypresentondefaultbranch"></a>`presentOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is present on the default branch or not. |
 | <a id="vulnerabilityprimaryidentifier"></a>`primaryIdentifier` | [`VulnerabilityIdentifier`](#vulnerabilityidentifier) | Primary identifier of the vulnerability. |
 | <a id="vulnerabilityproject"></a>`project` | [`Project`](#project) | Project on which the vulnerability was found. |
-| <a id="vulnerabilityreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, GENERIC). `Scan Type` in the UI. |
+| <a id="vulnerabilityreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability (SAST, DEPENDENCY_SCANNING, CONTAINER_SCANNING, DAST, SECRET_DETECTION, COVERAGE_FUZZING, API_FUZZING, CLUSTER_IMAGE_SCANNING, CONTAINER_SCANNING_FOR_REGISTRY, GENERIC). `Scan Type` in the UI. |
 | <a id="vulnerabilityresolvedat"></a>`resolvedAt` | [`Time`](#time) | Timestamp of when the vulnerability state was changed to resolved. |
 | <a id="vulnerabilityresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User that resolved the vulnerability. |
 | <a id="vulnerabilityresolvedondefaultbranch"></a>`resolvedOnDefaultBranch` | [`Boolean!`](#boolean) | Indicates whether the vulnerability is fixed on the default branch or not. |
@@ -35089,6 +35090,7 @@ The type of the security scan that found the vulnerability.
 | <a id="vulnerabilityreporttypeapi_fuzzing"></a>`API_FUZZING` | API Fuzzing report. |
 | <a id="vulnerabilityreporttypecluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster Image Scanning report. |
 | <a id="vulnerabilityreporttypecontainer_scanning"></a>`CONTAINER_SCANNING` | Container Scanning report. |
+| <a id="vulnerabilityreporttypecontainer_scanning_for_registry"></a>`CONTAINER_SCANNING_FOR_REGISTRY` | Container Scanning For Registry report. |
 | <a id="vulnerabilityreporttypecoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage Fuzzing report. |
 | <a id="vulnerabilityreporttypedast"></a>`DAST` | DAST report. |
 | <a id="vulnerabilityreporttypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning report. |

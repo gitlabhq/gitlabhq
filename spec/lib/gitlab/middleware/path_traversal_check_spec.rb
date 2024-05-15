@@ -34,69 +34,27 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
     subject { middleware.call(env) }
 
     shared_examples 'no issue' do
-      it 'measures and logs the execution time' do
+      it 'does not log anything' do
         expect(::Gitlab::PathTraversal)
           .to receive(:path_traversal?)
                 .with(decoded_fullpath, match_new_line: false)
                 .and_call_original
-        expect(::Gitlab::AppLogger)
-          .to receive(:warn)
-                .with({
-                  class_name: described_class.name,
-                  duration_ms: instance_of(Float),
-                  status: fake_response_status
-                }).and_call_original
-
+        expect(::Gitlab::AppLogger).not_to receive(:warn)
         expect(subject).to eq(fake_response)
-      end
-
-      context 'with log_execution_time_path_traversal_middleware disabled' do
-        before do
-          stub_feature_flags(log_execution_time_path_traversal_middleware: false)
-        end
-
-        it 'does nothing' do
-          expect(::Gitlab::PathTraversal)
-            .to receive(:path_traversal?)
-                  .with(decoded_fullpath, match_new_line: false)
-                  .and_call_original
-          expect(::Gitlab::AppLogger).not_to receive(:warn)
-
-          expect(subject).to eq(fake_response)
-        end
       end
     end
 
     shared_examples 'excluded path' do
-      it 'measures and logs the execution time' do
+      it 'does not log anything' do
         expect(::Gitlab::PathTraversal).not_to receive(:path_traversal?)
-        expect(::Gitlab::AppLogger)
-          .to receive(:warn)
-                .with({
-                  class_name: described_class.name,
-                  duration_ms: instance_of(Float),
-                  status: fake_response_status
-                }).and_call_original
+        expect(::Gitlab::AppLogger).not_to receive(:warn)
 
         expect(subject).to eq(fake_response)
-      end
-
-      context 'with log_execution_time_path_traversal_middleware disabled' do
-        before do
-          stub_feature_flags(log_execution_time_path_traversal_middleware: false)
-        end
-
-        it 'does nothing' do
-          expect(::Gitlab::PathTraversal).not_to receive(:path_traversal?)
-          expect(::Gitlab::AppLogger).not_to receive(:warn)
-
-          expect(subject).to eq(fake_response)
-        end
       end
     end
 
     shared_examples 'path traversal' do
-      it 'logs the problem and measures the execution time' do
+      it 'logs the problem' do
         expect(::Gitlab::PathTraversal)
           .to receive(:path_traversal?)
                 .with(decoded_fullpath, match_new_line: false)
@@ -105,7 +63,6 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
           .to receive(:warn)
                 .with({
                   class_name: described_class.name,
-                  duration_ms: instance_of(Float),
                   message: described_class::PATH_TRAVERSAL_MESSAGE,
                   fullpath: fullpath,
                   method: method.upcase,
@@ -113,30 +70,6 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
                 }).and_call_original
 
         expect(subject).to eq(fake_response)
-      end
-
-      context 'with log_execution_time_path_traversal_middleware disabled' do
-        before do
-          stub_feature_flags(log_execution_time_path_traversal_middleware: false)
-        end
-
-        it 'logs the problem without the execution time' do
-          expect(::Gitlab::PathTraversal)
-            .to receive(:path_traversal?)
-                  .with(decoded_fullpath, match_new_line: false)
-                  .and_call_original
-          expect(::Gitlab::AppLogger)
-            .to receive(:warn)
-                  .with({
-                    class_name: described_class.name,
-                    message: described_class::PATH_TRAVERSAL_MESSAGE,
-                    fullpath: fullpath,
-                    method: method.upcase,
-                    status: fake_response_status
-                  }).and_call_original
-
-          expect(subject).to eq(fake_response)
-        end
       end
     end
 
