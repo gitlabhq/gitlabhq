@@ -13,35 +13,35 @@ DETAILS:
 
 You can revert individual commits or an entire merge request in GitLab.
 When you revert a commit in Git, you create a new commit that reverses all actions
-taken in the original commit:
+taken in the original commit. The new commit:
 
-- Lines added in the original commit are removed.
-- Lines removed in the original commit are added back.
-- Lines modified in the original commit are restored to their previous state.
+- Removes the lines added in the original commit.
+- Restores the lines removed in the original commit.
+- Restores the lines modified in the original commit to their previous state.
 
 Your **revert commit** is still subject to your project's access controls and processes.
 
 ## Revert a merge request
 
-After a merge request is merged, you can revert all changes in the merge request.
+After a merge request merges, you can revert all changes in the merge request.
 
 Prerequisites:
 
 - You must have a role in the project that allows you to edit merge requests, and add
   code to the repository.
 - Your project must use the [merge method](methods/index.md#fast-forward-merge) **Merge Commit**,
-  which is set in the project's **Settings > Merge requests**.
+  set in your project's **Settings > Merge requests**.
 
   [In GitLab 16.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/142152), you can revert
-  fast-forwarded commits from the GitLab UI only when they are squashed or when the
+  fast-forwarded commits from the GitLab UI only when they are squashed, or when the
   merge request contains a single commit.
 
 To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and identify your merge request.
-1. Scroll to the merge request reports area, and find the report showing when the
-   merge request was merged.
+1. Scroll to the merge request reports area, and find the report showing the
+   merge date of the merge request.
 1. Select **Revert**.
 1. In **Revert in branch**, select the branch to revert your changes into.
 1. Optional. Select **Start a new merge request** to start a new merge request with the new revert commit.
@@ -89,7 +89,7 @@ you must revert the commit from the command line:
 
 1. Identify the SHA of the parent commit you want to revert to.
 1. Identify the parent number of the commit you want to revert to. (Defaults to 1, for the first parent.)
-1. Modify this command, replacing `2` with the parent number, and `7a39eb0` with the commit SHA:
+1. Run this command, replacing `2` with the parent number, and `7a39eb0` with the commit SHA:
 
    ```shell
    git revert -m 2 7a39eb0

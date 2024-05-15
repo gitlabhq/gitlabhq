@@ -283,3 +283,22 @@ The following table shows the prefixes for each type of token.
    - Trigger tokens.
    - Runner registration tokens.
    - Any other sensitive secrets etc.
+
+## Expired access tokens
+
+If an existing access token is in use and reaches the `expires_at` value, the token will become expired and can no longer be used for authentication.
+Requests made using this token will return a `401 Unauthorized` response. Too many unauthorized requests in a short period of time from the same IP address can also result
+in `403 Forbidden` responses from GitLab.com. See [Git and container registry failed authentication ban](../user/gitlab_com/index.md#git-and-container-registry-failed-authentication-ban)
+for more information on current limits.
+
+To replace the token:
+
+1. Check where this token may have been used previously, and remove it from any automation that could be continuing to use the token.
+    1. For **Personal Access Tokens**, you can use the [API](../api/personal_access_tokens.md#list-personal-access-tokens) to list tokens that have expired recently. For
+   example, navigating to `https://gitlab.com/api/v4/personal_access_tokens`, and locating tokens with a specific `expires_at` value of a certain date.
+    1. For **Group and Project tokens**, you can use the API for the [Group](../api/group_access_tokens.md#list-group-access-tokens) or [Project](../api/project_access_tokens.md#list-project-access-tokens) access tokens to list recently expired tokens.
+1. Create a new access token.
+    1. For a **Personal Access Token**, create a new token [via the UI](../user/profile/personal_access_tokens.md#create-a-personal-access-token) or [Users API](../api/users.md#create-a-personal-access-token).
+    1. For a **Project Access Token**, create a new token [via the UI](../user/project/settings/project_access_tokens.md#create-a-project-access-token) or [API](../api/project_access_tokens.md#create-a-project-access-token).
+    1. For a **Group Access Token**, create a new token [via the UI](../user/group/settings/group_access_tokens.md#create-a-group-access-token-using-ui) or [API](../api/group_access_tokens.md#create-a-group-access-token).
+1. Replace the old access token with the new access token. This process will vary depending on your use, such as if configured as a secret or embedded within an application. Requests made from this token should no longer return `401` responses.

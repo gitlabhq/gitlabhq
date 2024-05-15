@@ -318,7 +318,8 @@ GitLab uses the issue number to import data into the merge request:
   [default closing pattern](../../issues/managing_issues.md#default-closing-pattern),
   merging the merge request [also closes](../../issues/managing_issues.md#closing-issues-automatically)
   the related issue.
-- Issue milestone and labels are copied to the merge request.
+- If the merge request is in the same project, and not a fork, the issue milestone
+  and labels are copied to the merge request.
 
 ## Compare branches
 

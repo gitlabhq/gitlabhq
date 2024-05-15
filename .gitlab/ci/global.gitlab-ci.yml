@@ -309,8 +309,8 @@
 .ai-gateway-variables:
   variables:
     AIGW_AUTH__BYPASS_EXTERNAL: true
-    AIGW_VERTEX_TEXT_MODEL__PROJECT: $VERTEX_AI_PROJECT
-    AIGW_VERTEX_TEXT_MODEL__JSON_KEY: $VERTEX_AI_CREDENTIALS
+    AIGW_GOOGLE_CLOUD_PLATFORM__PROJECT: $VERTEX_AI_PROJECT
+    AIGW_GOOGLE_CLOUD_PLATFORM__SERVICE_ACCOUNT_JSON_KEY: $VERTEX_AI_CREDENTIALS
     AIGW_FASTAPI__DOCS_URL: "/docs"
     AIGW_FASTAPI__OPENAPI_URL: "/openapi.json"
     AIGW_FASTAPI__API_PORT: 5052
@@ -319,7 +319,7 @@
 
 .ai-gateway-services:
   services:
-    - name: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest
+    - name: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:84ed0661
       alias: ai-gateway
 
 .use-pg13:

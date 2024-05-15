@@ -85,9 +85,7 @@ module Ci
               ::Ci::Partitionable::Organizer.create_database_partition?(latest_partition)
           end,
           detach_partition_if: proc { false },
-          # Most of the db tasks are run in a weekly basis, e.g. execute_batched_migrations.
-          # Therefore, let's start with 1.week and see how it'd go.
-          analyze_interval: 1.week
+          analyze_interval: 3.days
       end
     end
   end

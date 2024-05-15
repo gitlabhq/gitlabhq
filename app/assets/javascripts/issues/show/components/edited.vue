@@ -65,7 +65,7 @@ export default {
 </script>
 
 <template>
-  <small class="edited-text js-issue-widgets">
+  <small class="gl-text-secondary gl-inline-block gl-text-sm js-issue-widgets">
     <template v-if="taskStatus">
       <template v-if="showCheck">&check;</template>
       {{ taskStatus }}
@@ -83,7 +83,7 @@ export default {
           <time-ago-tooltip :time="updatedAt" tooltip-placement="bottom" />
         </template>
         <template #author>
-          <gl-link :href="updatedByPath" class="gl-font-sm gl-hover-text-gray-900 gl-text-gray-700">
+          <gl-link :href="updatedByPath" class="gl-hover-text-gray-900 gl-text-gray-700">
             {{ updatedByName }}
           </gl-link>
         </template>
