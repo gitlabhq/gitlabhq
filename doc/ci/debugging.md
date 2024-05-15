@@ -378,8 +378,8 @@ This issue is [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/229352) i
 
 ### `Checking pipeline status` message
 
-This message displays when the merge request does not yet have a pipeline associated with the
-latest commit. This might be because:
+This message displays with a spinning status icon (**{spinner}**) when the merge request
+does not yet have a pipeline associated with the latest commit. This might be because:
 
 - GitLab hasn't finished creating the pipeline yet.
 - You are using an external CI service and GitLab hasn't heard back from the service yet.
@@ -389,6 +389,11 @@ latest commit. This might be because:
 - The source branch of the merge request is on a private fork.
 
 After the pipeline is created, the message updates with the pipeline status.
+
+In some of these cases, the message might get stuck with the icon spinning endlessly
+if the [**Pipelines must succeed**](../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
+setting is enabled. See [issue 334281](https://gitlab.com/gitlab-org/gitlab/-/issues/334281)
+for more details.
 
 ### `Project <group/project> not found or access denied` message
 

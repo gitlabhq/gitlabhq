@@ -41206,6 +41206,9 @@ msgid_plural "ProjectsNew|%d groups or namespaces found"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ProjectsNew|(optional)"
+msgstr ""
+
 msgid "ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository."
 msgstr ""
 
@@ -41248,6 +41251,9 @@ msgstr ""
 msgid "ProjectsNew|Experimental settings"
 msgstr ""
 
+msgid "ProjectsNew|Get started with one of our popular project templates."
+msgstr ""
+
 msgid "ProjectsNew|Group name"
 msgstr ""
 
@@ -41267,6 +41273,9 @@ msgid "ProjectsNew|Might break existing functionality with other repositories or
 msgstr ""
 
 msgid "ProjectsNew|Migrate your data from an external source like GitHub, Bitbucket, or another instance of GitLab."
+msgstr ""
+
+msgid "ProjectsNew|More templates are available after sign-up."
 msgstr ""
 
 msgid "ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces."
@@ -41303,6 +41312,12 @@ msgid "ProjectsNew|Recommended if you're new to GitLab"
 msgstr ""
 
 msgid "ProjectsNew|Run CI/CD for external repository"
+msgstr ""
+
+msgid "ProjectsNew|Select"
+msgstr ""
+
+msgid "ProjectsNew|Select a template"
 msgstr ""
 
 msgid "ProjectsNew|Unable to suggest a path. Please refresh and try again."

@@ -1176,7 +1176,7 @@ is a `HashMap` where the keys are textual descriptions, and the values are URLs.
 ### Subscription tier badges
 
 If a field or argument is available to higher subscription tiers than the other fields,
-add the [tier details](documentation/styleguide/index.md#inline-tier-details) inline.
+add the [availability details inline](documentation/styleguide/availability_details.md#inline-availability-details).
 
 For example:
 

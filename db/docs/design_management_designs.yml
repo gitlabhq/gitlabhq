@@ -15,5 +15,12 @@ allow_cross_transactions:
 - gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-sharding_key:
-  project_id: projects
+desired_sharding_key:
+  namespace_id:
+    references: namespaces
+    backfill_via:
+      parent:
+        foreign_key: project_id
+        table: projects
+        sharding_key: namespace_id
+        belongs_to: project

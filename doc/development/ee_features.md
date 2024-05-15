@@ -11,7 +11,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 - **Write tests**: As with any code, EE features must have good test coverage to prevent
   regressions. All `ee/` code must have corresponding tests in `ee/`.
 - **Write documentation.**: Add documentation to the `doc/` directory. Describe
-  the feature and include screenshots, if applicable. Indicate [what editions](documentation/styleguide/index.md#product-tier-details)
+  the feature and include screenshots, if applicable. Indicate [what editions](documentation/styleguide/availability_details.md)
   the feature applies to.
 <!-- markdownlint-disable MD044 -->
 - **Submit a MR to the [`www-gitlab-com`](https://gitlab.com/gitlab-com/www-gitlab-com) project.**: Add the new feature to the

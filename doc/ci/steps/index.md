@@ -15,6 +15,8 @@ Steps are reusable and composable pieces of a job.
 Each step defines structured inputs and outputs that can be consumed by other steps.
 Steps can come from local files, GitLab.com repositories, or any other Git source.
 
+To get started, see the [Step up steps tutorial](../../tutorials/setup_steps/index.md).
+
 Support for a CI Catalog that publishes steps is proposed in [issue 425891](https://gitlab.com/gitlab-org/gitlab/-/issues/425891).
 
 ## Define steps
@@ -193,7 +195,7 @@ steps:
   - name: greet_user
     step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step@v1
     inputs:
-      echo: hello ${{ env.USER }}    
+      echo: hello ${{ env.USER }}
 ```
 
 The order of precedence for environment variables is:

@@ -99,7 +99,7 @@ export default {
         class="gl-mb-8"
         data-testid="component-section"
       >
-        <h3 class="gl-font-size-h2" data-testid="component-name">{{ component.name }}</h3>
+        <h3 class="gl-font-size-h2 gl-mt-0" data-testid="component-name">{{ component.name }}</h3>
         <pre
           data-testid="copy-to-clipboard"
           class="code highlight js-syntax-highlight language-yaml"

@@ -45,6 +45,7 @@ To create necessary user and database objects:
     CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE';
     CREATE ROLE gitlab_app;
     GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app;
+    GRANT SELECT ON information_schema.* TO gitlab_app;
     GRANT gitlab_app TO gitlab;
     ```
 

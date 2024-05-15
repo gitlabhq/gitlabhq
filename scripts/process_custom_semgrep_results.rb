@@ -10,8 +10,16 @@ ALLOWED_PROJECT_DIRS = %w[/builds/gitlab-org/gitlab].freeze
 ALLOWED_API_URLS = %w[https://gitlab.com/api/v4].freeze
 
 # Remove this when the feature is fully working
-MESSAGE_FOOTER = "\n\nThis AppSec automation is currently under testing. " \
-                 "Please leave any feedback [here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38)."
+MESSAGE_FOOTER = <<-FOOTER
+
+<small>
+This AppSec automation is currently under testing.
+Use ~"appsec-sast::helpful" or ~"appsec-sast::unhelpful" for quick feedback.
+For any detailed feedback, [add a comment here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38).
+</small>
+
+/label ~"appsec-sast::commented"
+FOOTER
 
 def perform_allowlist_check
   # Validate CI_PROJECT_DIR and CI_API_V4_URL against the

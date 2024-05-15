@@ -10,6 +10,7 @@ module API
                                using: ::API::Entities::Ci::JobArtifact,
                                documentation: { is_array: true }
         expose :runner, with: ::API::Entities::Ci::Runner
+        expose :runner_manager, with: ::API::Entities::Ci::RunnerManager, if: ->(job) { job.is_a?(::Ci::Build) }
         expose :artifacts_expire_at,
           documentation: { type: 'dateTime', example: '2016-01-19T09:05:50.355Z' }
         expose :archived?, as: :archived, documentation: { type: 'boolean', example: false }

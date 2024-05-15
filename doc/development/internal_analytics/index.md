@@ -57,23 +57,6 @@ such as the value of a setting or the count of rows in a database table.
 - To instrument an event-based metric, see the [internal event tracking quick start guide](internal_event_instrumentation/quick_start.md).
 - To instrument a metric that observes the GitLab instances state, see [the metrics instrumentation](metrics/metrics_instrumentation.md).
 
-## Data availability
-
-For GitLab there is an essential difference in analytics setup between SaaS and self-managed or GitLab Dedicated instances.
-On our SaaS instance both individual events and pre-computed metrics are available for analysis.
-Additionally for SaaS page views are automatically instrumented.
-For self-managed only the metrics instrumented on the version installed on the instance are available.
-
-### Events
-
-Events are collected in real-time but processed in an asynchronous manner.
-In general events are available in the data warehouse at the latest 48 hours after being fired but can already be available earlier.
-
-### Metrics
-
-Metrics are being computed and sent once per week for every instance. On GitLab.com this happens on Sunday and newest values become available throughout Monday.
-On self-managed this depends on the particular instance. In general, only the metrics instrumented for the installed GitLab version will be sent.
-
 ## Data discovery
 
 Event and metrics data is ultimately stored in our [Snowflake data warehouse](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/snowflake/).
@@ -137,6 +120,32 @@ ORDER BY ping_created_at DESC
 ```
 
 For a list of other metrics tables refer to the [Data Models Cheat Sheet](https://handbook.gitlab.com/handbook/product/product-analysis/data-model-cheat-sheet/#commonly-used-data-models).
+
+### Product Analytics
+
+Internal Analytics is dogfooding the GitLab [Product Analytics](https://www.youtube.com/watch?v=i8Mze9lRZiY?) functionality, which allows you to visualize events as well.
+The [Analytics Dashboards documentation](../../user/analytics/analytics_dashboards.md#define-a-dashboard) explains how to build custom visualizations and dashboards.
+The custom dashboards accessible [within the GitLab project](https://gitlab.com/gitlab-org/gitlab/-/analytics/dashboards) are defined in a [separate repository](https://gitlab.com/gitlab-org/analytics-section/gitlab-com-dashboards).
+It is possible to build dashboards based on events instrumented via the Internal events system. Only events emitted by the .com installation will be counted in those visualizations.
+
+The [Product Analytics group's dashboard](https://gitlab.com/gitlab-org/analytics-section/gitlab-com-dashboards/-/blob/main/.gitlab/analytics/dashboards/product_analytics/product_analytics.yaml) can serve as inspiration on how to build charts based on individual events.
+
+## Data availability
+
+For GitLab there is an essential difference in analytics setup between GitLab.com and self-managed or GitLab Dedicated instances.
+On our SaaS instance both individual events and pre-computed metrics are available for analysis.
+Additionally for SaaS, page views are automatically instrumented.
+On self-managed, only the metrics that were instrumented until the version the instance is running are available. For example, if a metric is instrumented during the development of version 16.9, it will be available on instances running versions equal to or bigger than 16.9 but not on instances running previous versions such as 16.8.
+
+### Events
+
+Events are collected in real-time. In Product Analytics they are available within minutes after being fired.
+In Tableau and the underlying Snowflake data warehouse, events are processed in an asynchronous manner. These events may take up to 48 hours to become available after being fired.
+
+### Metrics
+
+Metrics are being computed and sent once per week for every instance. On GitLab.com this happens on Sunday and newest values become available throughout Monday.
+On self-managed this depends on the particular instance. In general, only the metrics instrumented for the installed GitLab version will be sent.
 
 ## Data flow
 

@@ -177,7 +177,7 @@ export default {
       v-if="isLoadingData"
       class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-my-3 gl-max-w-20!"
     ></div>
-    <markdown v-else class="gl-mt-2" :markdown="resource.description" />
+    <markdown v-else class="gl-mb-5" :markdown="resource.description" />
     <abuse-category-selector
       v-if="hasLatestVersion && isReportAbuseDrawerOpen && reportAbusePath"
       :reported-user-id="authorId"

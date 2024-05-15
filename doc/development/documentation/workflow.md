@@ -12,7 +12,7 @@ Documentation at GitLab follows a workflow.
 
 Ensure your documentation includes:
 
-- [Product tier details](styleguide/index.md#product-tier-details).
+- [Product availability details](styleguide/availability_details.md).
 - The GitLab [version](versions.md) that introduced the feature.
 - Accurate [links](styleguide/index.md#links).
 - Accurate [user permissions](../../user/permissions.md).

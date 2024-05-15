@@ -95,7 +95,7 @@ export default {
         <rect width="250" height="15" rx="4" />
       </gl-skeleton-loader>
       <div v-else-if="showDetails" class="d-flex gl-align-items-center justify-content-between">
-        <div class="d-inline-flex gl-align-items-center">
+        <div class="gl-inline-flex gl-align-items-center">
           <gl-badge class="gl-mr-2" :variant="badgeVariant">
             {{ stateHumanName }}
           </gl-badge>

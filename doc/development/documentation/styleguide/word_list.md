@@ -1359,7 +1359,7 @@ The current product offerings are:
 - [GitLab self-managed](#gitlab-self-managed)
 - [GitLab Dedicated](#gitlab-dedicated)
 
-The [tier details](index.md#available-product-tiers) reflect these offerings.
+The [availability details](availability_details.md) reflect these offerings.
 
 ## older
 

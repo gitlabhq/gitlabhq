@@ -1604,7 +1604,7 @@ For more information, see [Legal disclaimer for future features](../versions.md#
 
 ### Details
 
-`DETAILS:` alert boxes are used for [product tier details](#product-tier-details).
+`DETAILS:` alert boxes are used for [product availability details](#product-availability-details).
 
 ## Blockquotes
 
@@ -1704,147 +1704,11 @@ in the GitLab product documentation.
 If a feature or product name contains spaces, don't split the name with a line break.
 When names change, it is more complicated to search or grep text that has line breaks.
 
-### Product tier details
+### Product availability details
 
-Product tier details provide information about a feature and are displayed under the topic title.
+Product availability details provide information about a feature and are displayed under the topic title.
 
-#### When to add tier details
-
-Assign tier details under:
-
-- Most H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
-- Topic titles that don't apply to the same tier as the H1.
-
-The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
-
-#### When not to add tier details
-
-Do not assign tier details:
-
-- When a feature does not have one obvious subscription tier or offering.
-  For example, if a feature applies to one tier for SaaS and a different tier for self-managed.
-
-In this case, do any or all of the following:
-
-- Use a `NOTE` in an alert box to describe the tiers.
-- Add tier details under other topic titles where this information makes more sense.
-- Do not add tier details under the H1.
-
-##### Pages that don't need tier details
-
-Some pages won't have a tier badge, because no obvious tier badge applies. For example:
-
-- Tutorials.
-- Pages that compare features from different tiers.
-- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
-- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
-
-#### Available product tiers
-
-Tier details are how we refer to the information that's displayed under a topic title.
-
-Tier details include the tier, offering, status, and history.
-
-The Markdown for tier details should look like the following:
-
-```markdown
-# Topic title
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Experiment
-
-> - [Introduced](<link-to-issue>) in GitLab 16.3.
-> - Updated in GitLab 16.4.
-```
-
-For offering, use any combination of these words, in this order, separated by commas:
-
-- GitLab.com
-- Self-managed
-- GitLab Dedicated
-
-For example:
-
-- GitLab.com
-- GitLab.com, Self-managed
-- Self-managed
-- Self-managed, GitLab Dedicated
-
-For tier, choose one:
-
-- Free, Premium, Ultimate
-- Premium, Ultimate
-- Ultimate
-
-For status, choose one:
-
-- Beta
-- Experiment
-
-Generally available features should not have a status.
-
-##### GitLab Duo Pro add-on
-
-The add-on belongs with other subscription tiers. Document it by using the phrase `with GitLab Duo Pro`.
-For example:
-
-```markdown
-**Tier:** Premium or Ultimate with GitLab Duo Pro
-```
-
-##### Duplicating tier, offering, or status on subheadings
-
-If a subheading has the same tier, offering, or status as its parent
-topic, you don't need to repeat the information in the subheading's
-badge.
-
-For example, if the heading 1 is:
-
-```markdown
-# My title
-
-DETAILS:
-**Offering:** GitLab.com
-**Tier:** Premium, Ultimate
-```
-
-Any lower-level heading that applies to a different tier but same offering would be:
-
-```markdown
-## My title
-
-DETAILS:
-**Tier:** Ultimate
-```
-
-##### Inline tier details
-
-Generally, you should not add tier details inline with other text.
-The single source of truth for a feature should be the topic where the
-functionality is described.
-
-If you do need to mention a tier inline, write it in plain text. For example,
-for an API topic:
-
-```markdown
-IDs of the users to assign the issue to. Ultimate only.
-```
-
-For more examples, see the [REST API style guide](../restful_api_styleguide.md).
-
-##### Administrator documentation tier details
-
-Topics that are only for instance administrators should have the `Self-managed` tier.
-Instance administrator documentation often includes sections that mention:
-
-- Changing the `gitlab.rb` or `gitlab.yml` files.
-- Accessing the rails console or running Rake tasks.
-- Doing things in the Admin Area.
-
-These pages should also mention if the tasks can only be accomplished by an
-instance administrator.
+Read more about [product availability details](availability_details.md).
 
 ## Specific sections
 

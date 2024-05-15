@@ -15,11 +15,12 @@ allow_cross_transactions:
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 desired_sharding_key:
-  project_id:
-    references: projects
+  namespace_id:
+    references: namespaces
     backfill_via:
       parent:
         foreign_key: design_management_repository_id
         table: design_management_repositories
-        sharding_key: project_id
+        sharding_key: namespace_id
         belongs_to: design_management_repository
+    awaiting_backfill_on_parent: true
