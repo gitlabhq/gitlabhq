@@ -44134,6 +44134,9 @@ msgstr ""
 msgid "Runners|%{linkStart}View available zones%{linkEnd}. Must have the format %{format}. Example: %{example}."
 msgstr ""
 
+msgid "Runners|%{linkStart}Where's my project ID?%{linkEnd} Can be 6 to 30 lowercase letters, digits, or hyphens. Must start with a letter and end with a letter or number. Example: %{example}."
+msgstr ""
+
 msgid "Runners|%{link_start}These runners%{link_end} are available to all groups and projects."
 msgstr ""
 
@@ -44149,6 +44152,18 @@ msgid "Runners|%{strongStart}%{count}%{strongEnd} runner will be permanently del
 msgid_plural "Runners|%{strongStart}%{count}%{strongEnd} runners will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Runners|1. Configure your Google Cloud project"
+msgstr ""
+
+msgid "Runners|1. Environment"
+msgstr ""
+
+msgid "Runners|2. Install and register GitLab Runner"
+msgstr ""
+
+msgid "Runners|2. Set up GitLab Runner"
+msgstr ""
 
 msgid "Runners|75th percentile"
 msgstr ""
@@ -44186,10 +44201,7 @@ msgstr ""
 msgid "Runners|Administrator"
 msgstr ""
 
-msgid "Runners|After GitLab Runner is installed and registered, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud."
-msgstr ""
-
-msgid "Runners|After you complete the steps below, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud. Based on demand, a runner manager automatically creates temporary runners."
+msgid "Runners|After GitLab Runner is installed and registered, an autoscaling fleet of runners can execute your CI/CD jobs in Google Cloud. Based on demand, a runner manager creates temporary runners."
 msgstr ""
 
 msgid "Runners|All"
@@ -44306,6 +44318,9 @@ msgstr ""
 msgid "Runners|Copy registration token"
 msgstr ""
 
+msgid "Runners|Create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration."
+msgstr ""
+
 msgid "Runners|Create a group runner"
 msgstr ""
 
@@ -44389,7 +44404,7 @@ msgstr ""
 msgid "Runners|Enable stale runner cleanup?"
 msgstr ""
 
-msgid "Runners|Ensure that %{linkStart}billing is enabled for your Google Cloud project%{linkEnd}."
+msgid "Runners|Ensure that %{linkStart}billing is enabled%{linkEnd} for your Google Cloud project."
 msgstr ""
 
 msgid "Runners|Ensure you have the %{linkStart}Owner%{linkEnd} IAM role on your Google Cloud project."
@@ -44398,7 +44413,7 @@ msgstr ""
 msgid "Runners|Enter the job timeout in seconds. Must be a minimum of 600 seconds."
 msgstr ""
 
-msgid "Runners|Environment in Google Cloud where runners execute CI/CD jobs. Runners are created in temporary virtual machines based on demand."
+msgid "Runners|Environment in Google Cloud where runners execute CI/CD jobs. Runners are created in temporary virtual machines based on demand. To improve security, use a Google Cloud project for CI/CD only."
 msgstr ""
 
 msgid "Runners|Executor"
@@ -44461,19 +44476,19 @@ msgstr ""
 msgid "Runners|Idle"
 msgstr ""
 
-msgid "Runners|If you haven't already configured your Google Cloud project, this step enables the required services and creates a service account with the required permissions. "
-msgstr ""
-
 msgid "Runners|In GitLab Runner 15.6, the use of registration tokens and runner parameters in the 'register' command was deprecated. They have been replaced by authentication tokens. %{linkStart}How does this impact my current registration workflow?%{linkEnd}"
 msgstr ""
 
-msgid "Runners|In the directory with that Terraform configuration file, run the following on your command line."
+msgid "Runners|In the directory with that Terraform configuration file, run the following command to apply the configuration."
 msgstr ""
 
 msgid "Runners|Install GitLab Runner"
 msgstr ""
 
 msgid "Runners|Install a runner"
+msgstr ""
+
+msgid "Runners|Install the %{gcloudLinkStart}Google Cloud CLI%{gcloudLinkEnd} and %{terraformLinkStart}Terraform%{terraformLinkEnd}."
 msgstr ""
 
 msgid "Runners|Instance"
@@ -44735,7 +44750,7 @@ msgstr ""
 msgid "Runners|Revision"
 msgstr ""
 
-msgid "Runners|Run the following on your command line. You might be prompted to sign in to Google."
+msgid "Runners|Run the following command to enable the required services and create a service account with the required permissions. Only do this once for each Google Cloud project. You might be prompted to sign in to Google."
 msgstr ""
 
 msgid "Runners|Runner"
@@ -44897,19 +44912,7 @@ msgstr ""
 msgid "Runners|Step 1"
 msgstr ""
 
-msgid "Runners|Step 1: Configure your Google Cloud project"
-msgstr ""
-
-msgid "Runners|Step 1: Specify environment"
-msgstr ""
-
 msgid "Runners|Step 2"
-msgstr ""
-
-msgid "Runners|Step 2: Install and register GitLab Runner"
-msgstr ""
-
-msgid "Runners|Step 2: Set up GitLab Runner"
 msgstr ""
 
 msgid "Runners|Step 3 (optional)"
@@ -45003,15 +45006,6 @@ msgstr ""
 msgid "Runners|This runner is outdated, an upgrade is recommended"
 msgstr ""
 
-msgid "Runners|This step creates the required infrastructure in Google Cloud, installs GitLab Runner, and registers it to this GitLab project. "
-msgstr ""
-
-msgid "Runners|To follow the setup instructions, %{gcloudLinkStart}install the Google Cloud CLI%{gcloudLinkEnd} and %{terraformLinkStart}install Terraform%{terraformLinkEnd}."
-msgstr ""
-
-msgid "Runners|To improve security, use a project just for CI/CD. %{linkStart}Where's my project ID?%{linkEnd} Can be 6 to 30 lowercase letters, digits, or hyphens. Must start with a letter and end with a letter or number. Example: %{example}."
-msgstr ""
-
 msgid "Runners|To install Runner in Kubernetes follow the instructions described in the GitLab documentation."
 msgstr ""
 
@@ -45022,6 +45016,9 @@ msgid "Runners|To register new runners, contact your administrator."
 msgstr ""
 
 msgid "Runners|To register them, go to the %{link_start}group's Runners page%{link_end}."
+msgstr ""
+
+msgid "Runners|To set up an autoscaling fleet of runners on Google Cloud, you can use the following recommended setup or %{linkStart}customize the Terraform configuration%{linkEnd}."
 msgstr ""
 
 msgid "Runners|To view the runner, go to %{runnerListName}."
@@ -45069,7 +45066,7 @@ msgstr ""
 msgid "Runners|Use Group runners when you want all projects in a group to have access to a set of runners."
 msgstr ""
 
-msgid "Runners|Use a text editor to create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration."
+msgid "Runners|Use Terraform to create the required infrastructure in Google Cloud, install GitLab Runner, and register it to this GitLab project."
 msgstr ""
 
 msgid "Runners|Use the dashboard to view performance statistics of your runner fleet."

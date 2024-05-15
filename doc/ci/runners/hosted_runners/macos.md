@@ -22,9 +22,10 @@ Hosted runners on macOS are in [Beta](../../../policy/experiment-beta-support.md
 
 GitLab offers the following machine type for hosted runners on macOS. To build for an x86-64 target, you can use Rosetta 2 to emulate an Intel x86-64 environment.
 
-| Runner Tag             | vCPUS | Memory | Storage |
-| ---------------------- | ----- | ------ | ------- |
-| `saas-macos-medium-m1` | 4     | 8 GB   | 25 GB   |
+| Runner Tag               | vCPUS | Memory | Storage |
+| ------------------------ | ----- | ------ | ------- |
+| `saas-macos-medium-m1`   | 4     | 8 GB   | 25 GB   |
+| `saas-macos-large-m2pro` | 6     | 16 GB  | 50 GB   |
 
 ## Supported macOS images
 
@@ -36,7 +37,6 @@ in your `.gitlab-ci.yml` file. Each image runs a specific version of macOS and X
 
 | VM image                   | Status |              |
 |----------------------------|--------|--------------|
-| `macos-12-xcode-14`        | `Deprecated` | (Removal in GitLab 16.10) |
 | `macos-13-xcode-14`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/36d443841732f2d4f7e3de1bce63f530edef1676/toolchain/macos-13.yml) |
 | `macos-14-xcode-15`        | `GA`   | [Preinstalled Software](https://gitlab.com/gitlab-org/ci-cd/shared-runners/images/job-images/-/blob/36d443841732f2d4f7e3de1bce63f530edef1676/toolchain/macos-14.yml) |
 

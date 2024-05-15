@@ -44,7 +44,8 @@ RSpec.describe ObjectStorage::DeleteStaleDirectUploadsService, :direct_uploads, 
         )
     end
 
-    it 'only deletes stale entries', :aggregate_failures do
+    it 'only deletes stale entries', :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/461534' do
       prepare_pending_direct_upload(stale_path_1, 5.hours.ago)
       prepare_pending_direct_upload(stale_path_2, 4.hours.ago)
       prepare_pending_direct_upload(non_stale_path, 3.minutes.ago)

@@ -328,13 +328,13 @@ describe('packages_list_row', () => {
 
   describe('badge "protected"', () => {
     const mountComponentForBadgeProtected = ({
-      packageEntityPackageProtectionRuleExists = true,
+      packageEntityProtectionRuleExists = true,
       glFeaturesPackagesProtectedPackages = true,
     } = {}) =>
       mountComponent({
         packageEntity: {
           ...packageWithoutTags,
-          packageProtectionRuleExists: packageEntityPackageProtectionRuleExists,
+          protectionRuleExists: packageEntityProtectionRuleExists,
         },
         provide: {
           ...defaultProvide,
@@ -363,7 +363,7 @@ describe('packages_list_row', () => {
 
     describe('when package is not protected', () => {
       it('does not show badge', () => {
-        mountComponentForBadgeProtected({ packageEntityPackageProtectionRuleExists: false });
+        mountComponentForBadgeProtected({ packageEntityProtectionRuleExists: false });
 
         expect(findBadgeProtected().exists()).toBe(false);
       });

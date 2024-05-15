@@ -26,23 +26,23 @@ export default {
   i18n: {
     heading: s__('Runners|Register runner'),
     headingDescription: s__(
-      'Runners|After you complete the steps below, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud. Based on demand, a runner manager automatically creates temporary runners.',
+      'Runners|To set up an autoscaling fleet of runners on Google Cloud, you can use the following recommended setup or %{linkStart}customize the Terraform configuration%{linkEnd}.',
     ),
     beforeHeading: s__('Runners|Before you begin'),
     permissionsText: s__(
       'Runners|Ensure you have the %{linkStart}Owner%{linkEnd} IAM role on your Google Cloud project.',
     ),
     billingLinkText: s__(
-      'Runners|Ensure that %{linkStart}billing is enabled for your Google Cloud project%{linkEnd}.',
+      'Runners|Ensure that %{linkStart}billing is enabled%{linkEnd} for your Google Cloud project.',
     ),
     preInstallText: s__(
-      'Runners|To follow the setup instructions, %{gcloudLinkStart}install the Google Cloud CLI%{gcloudLinkEnd} and %{terraformLinkStart}install Terraform%{terraformLinkEnd}.',
+      'Runners|Install the %{gcloudLinkStart}Google Cloud CLI%{gcloudLinkEnd} and %{terraformLinkStart}Terraform%{terraformLinkEnd}.',
     ),
-    stepOneHeading: s__('Runners|Step 1: Specify environment'),
+    stepOneHeading: s__('Runners|1. Environment'),
     stepOneDescription: s__(
-      'Runners|Environment in Google Cloud where runners execute CI/CD jobs. Runners are created in temporary virtual machines based on demand.',
+      'Runners|Environment in Google Cloud where runners execute CI/CD jobs. Runners are created in temporary virtual machines based on demand. To improve security, use a Google Cloud project for CI/CD only.',
     ),
-    stepTwoHeading: s__('Runners|Step 2: Set up GitLab Runner'),
+    stepTwoHeading: s__('Runners|2. Set up GitLab Runner'),
     stepTwoDescription: s__(
       'Runners|To view the setup instructions, complete the previous form. The instructions help you set up an autoscaling fleet of runners to execute your CI/CD jobs in Google Cloud.',
     ),
@@ -58,6 +58,8 @@ export default {
     externalLink: __('(external link)'),
   },
   links: {
+    terraformConfigLink:
+      'https://gitlab.com/gitlab-org/ci-cd/runner-tools/grit/-/blob/main/docs/scenarios/google/linux/docker-autoscaler-default/index.md',
     permissionsLink: 'https://cloud.google.com/iam/docs/understanding-roles#owner',
     billingLink:
       'https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project',
@@ -264,7 +266,16 @@ export default {
           </template>
         </gl-sprintf>
       </p>
-      <p>{{ $options.i18n.headingDescription }}</p>
+      <p>
+        <gl-sprintf :message="$options.i18n.headingDescription">
+          <template #link="{ content }">
+            <gl-link :href="$options.links.terraformConfigLink" target="_blank">
+              {{ content }}
+              <gl-icon name="external-link" :aria-label="$options.i18n.externalLink" />
+            </gl-link>
+          </template>
+        </gl-sprintf>
+      </p>
     </div>
     <hr />
 
@@ -331,7 +342,7 @@ export default {
         <gl-sprintf
           :message="
             s__(
-              'Runners|To improve security, use a project just for CI/CD. %{linkStart}Where\'s my project ID?%{linkEnd} Can be 6 to 30 lowercase letters, digits, or hyphens. Must start with a letter and end with a letter or number. Example: %{example}.',
+              'Runners|%{linkStart}Where\'s my project ID?%{linkEnd} Can be 6 to 30 lowercase letters, digits, or hyphens. Must start with a letter and end with a letter or number. Example: %{example}.',
             )
           "
         >

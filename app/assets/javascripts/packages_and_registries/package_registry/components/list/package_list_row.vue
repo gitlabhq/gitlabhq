@@ -109,7 +109,7 @@ export default {
     showBadgeProtected() {
       return (
         Boolean(this.glFeatures.packagesProtectedPackages) &&
-        Boolean(this.packageEntity.packageProtectionRuleExists)
+        Boolean(this.packageEntity.protectionRuleExists)
       );
     },
     nonDefaultRow() {
