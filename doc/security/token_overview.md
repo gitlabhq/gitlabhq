@@ -383,11 +383,7 @@ expires_at_date = "2024-05-22"
 
 PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find_each do |token|
   token.user.members.each do |member|
-    type = if member.is_a?(GroupMember)
-      'Group'
-    elsif member.is_a?(ProjectMember)
-      'Project'
-    end
+    type = member.is_a?(GroupMember) ? 'Group' : 'Project'
 
     puts "Expired #{type} access token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
   end
@@ -411,14 +407,14 @@ the exact date your instance was upgraded to GitLab 16.0. To use it:
 
 1. In your terminal window, connect to your instance.
 1. Copy this entire script, and save it as a file on your instance:
-   - Name it `expired_tokens.rb`.
+   - Name it `expired_tokens_date_range.rb`.
    - If desired, change the `date_range` to a different range.
    - The file must be accessible to `git:git`.
-1. Run this command, changing `/path/to/expired_tokens.rb`
-   to the _full_ path to your `expired_tokens.rb` file:
+1. Run this command, changing `/path/to/expired_tokens_date_range.rb`
+   to the _full_ path to your `expired_tokens_date_range.rb` file:
 
    ```shell
-   sudo gitlab-rails runner /path/to/expired_tokens.rb
+   sudo gitlab-rails runner /path/to/expired_tokens_date_range.rb
    ```
 
 For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).

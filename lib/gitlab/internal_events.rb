@@ -30,8 +30,7 @@ module Gitlab
         project = kwargs[:project]
         kwargs[:namespace] ||= project.namespace if project
 
-        increase_total_counter(event_name)
-        increase_weekly_total_counter(event_name)
+        update_redis_values(event_name, additional_properties)
         update_unique_counters(event_name, kwargs)
 
         trigger_snowplow_event(event_name, category, additional_properties, kwargs) if send_snowplow_event
@@ -52,6 +51,19 @@ module Gitlab
           kwargs: extra
         )
         nil
+      end
+
+      def convert_event_selection_rule_to_path_part(event_selection_rule)
+        path = event_selection_rule[:name]
+
+        if event_selection_rule[:filter].present?
+          filter = event_selection_rule[:filter]
+          sorted_filter_keys = filter.keys.sort
+          serialized_filter = sorted_filter_keys.map { |key| "#{key}:#{filter[key]}" }.join(',')
+          path = "#{path}-filter:[#{serialized_filter}]"
+        end
+
+        path
       end
 
       private
@@ -87,16 +99,30 @@ module Gitlab
         end
       end
 
-      def increase_total_counter(event_name)
-        redis_counter_key = Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name)
+      def update_redis_values(event_name, additional_properties)
+        event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
 
-        increment(redis_counter_key)
-      end
+        return unless event_definition
 
-      def increase_weekly_total_counter(event_name)
-        redis_counter_key = Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_name, Date.today)
+        event_definition.event_selection_rules.each do |event_selection_rule|
+          matches_filter = event_selection_rule[:filter].all? do |property_name, value|
+            additional_properties[property_name] == value
+          end
 
-        increment(redis_counter_key, expiry: 6.weeks)
+          next unless matches_filter
+
+          event_specific_part_of_path = convert_event_selection_rule_to_path_part(event_selection_rule)
+
+          if event_selection_rule[:time_framed?]
+            redis_key = Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(
+              event_specific_part_of_path,
+              Date.today
+            )
+            increment(redis_key, expiry: 6.weeks)
+          else
+            increment(Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_specific_part_of_path))
+          end
+        end
       end
 
       def update_unique_counters(event_name, kwargs)

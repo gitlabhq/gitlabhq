@@ -15,9 +15,11 @@ import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { __ } from '~/locale';
 import { setUrlFragment } from '~/lib/utils/url_utility';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import EmojiPicker from '~/emoji/components/picker.vue';
+import { TYPE_COMMENT } from '~/import/constants';
 import getDesignQuery from '../../graphql/queries/get_design.query.graphql';
 import updateNoteMutation from '../../graphql/mutations/update_note.mutation.graphql';
 import designNoteAwardEmojiToggleMutation from '../../graphql/mutations/design_note_award_emoji_toggle.mutation.graphql';
@@ -42,6 +44,7 @@ export default {
     GlButton,
     GlDisclosureDropdown,
     GlLink,
+    ImportedBadge,
     TimeAgoTooltip,
     TimelineEntryItem,
   },
@@ -123,6 +126,9 @@ export default {
     },
     isEditingAndHasPermissions() {
       return !this.isEditing && this.adminPermissions;
+    },
+    isImported() {
+      return this.note.imported;
     },
     adminPermissions() {
       return this.note.userPermissions.adminNote;
@@ -261,6 +267,7 @@ export default {
     },
   },
   updateNoteMutation,
+  TYPE_COMMENT,
 };
 </script>
 
@@ -294,11 +301,12 @@ export default {
         <span class="note-headline-light note-headline-meta">
           <span class="system-note-message"> <slot></slot> </span>
           <gl-link
-            class="note-timestamp system-note-separator gl-display-block gl-mb-2 gl-font-sm link-inherit-color"
+            class="note-timestamp system-note-separator gl-display-inline-block gl-mb-2 gl-font-sm link-inherit-color"
             :href="`#note_${noteAnchorId}`"
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
           </gl-link>
+          <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" size="sm" />
         </span>
       </div>
       <div class="gl-display-flex gl-align-items-flex-start gl-mt-n2 gl-mr-n2">

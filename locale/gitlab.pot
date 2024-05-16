@@ -21562,9 +21562,6 @@ msgstr ""
 msgid "Failed to delete custom emoji. Please try again."
 msgstr ""
 
-msgid "Failed to delete model"
-msgstr ""
-
 msgid "Failed to deploy to"
 msgstr ""
 
@@ -33120,9 +33117,6 @@ msgstr ""
 msgid "Modal|Close"
 msgstr ""
 
-msgid "Model deleted but failed to remove associated packages"
-msgstr ""
-
 msgid "Model experiments"
 msgstr ""
 
@@ -33130,9 +33124,6 @@ msgid "Model registry"
 msgstr ""
 
 msgid "Model version not found"
-msgstr ""
-
-msgid "Model was successfully deleted"
 msgstr ""
 
 msgid "ModelRegistry|Model registry"
@@ -45437,7 +45428,10 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{labelStart}File path:%{labelEnd} %{filePath}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{overrideSelector}into the %{boldStart}.gitlab-ci.yml%{boldEnd} with the following %{boldStart}pipeline execution file%{boldEnd} from %{projectSelector} And run with reference (Optional) %{refSelector}"
+msgid "ScanExecutionPolicy|%{overrideSelector}into the %{boldStart}.gitlab-ci.yml%{boldEnd} with the following %{boldStart}pipeline execution file%{boldEnd} from %{projectSelector}"
+msgstr ""
+
+msgid "ScanExecutionPolicy|%{overrideSelector}the %{boldStart}.gitlab-ci.yml%{boldEnd} with the following %{boldStart}pipeline execution file%{boldEnd} from %{projectSelector}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{period} %{days} around %{time} %{timezoneLabel} %{timezone}"
@@ -45480,6 +45474,9 @@ msgid "ScanExecutionPolicy|DAST scan profiles"
 msgstr ""
 
 msgid "ScanExecutionPolicy|DAST site profiles"
+msgstr ""
+
+msgid "ScanExecutionPolicy|File reference (Optional) %{refSelector}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|If there are any conflicting variables with the local pipeline configuration (Ex, gitlab-ci.yml) then variables defined here will take precedence. %{linkStart}Learn more%{linkEnd}."
@@ -45560,7 +45557,10 @@ msgstr ""
 msgid "ScanExecutionPolicy|Select timezone"
 msgstr ""
 
-msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file is included in the .gitlab-ci.yml file of the target project. All GitLab CI/CD features are supported."
+msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file is injected into the .gitlab-ci.yml file of the target project. All GitLab CI/CD features are supported."
+msgstr ""
+
+msgid "ScanExecutionPolicy|The content of this pipeline execution YAML file overrides the .gitlab-ci.yml file of the target project. All GitLab CI/CD features are supported."
 msgstr ""
 
 msgid "ScanExecutionPolicy|The file at that project, ref, and path doesn't exist"

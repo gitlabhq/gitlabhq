@@ -110,11 +110,17 @@ The following models have been approved for use:
 
 ### Vector stores
 
+NOTE:
+There is a proposal to change vector stores for improving the quality of search results. See [RAG for GitLab Duo](../architecture/blueprints/gitlab_duo_rag/index.md) for more information.
+
 The following vector stores have been approved for use:
 
 - [`pgvector`](https://github.com/pgvector/pgvector) is a Postgres extension adding support for storing vector embeddings and calculating ANN (approximate nearest neighbor).
 
 ### Indexing Update
+
+NOTE:
+There is a proposal to change indexing update for improving the quality of search results. See [RAG for GitLab Duo](../architecture/blueprints/gitlab_duo_rag/index.md) for more information.
 
 We are currently using sequential scan, which provides perfect recall. We are considering adding an index if we can ensure that it still produces accurate results, as noted in the `pgvector` indexing [documentation](https://github.com/pgvector/pgvector#indexing).
 

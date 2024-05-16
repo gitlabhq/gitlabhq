@@ -364,6 +364,17 @@ tests = [
       ee/spec/graphql/types/remote_development/workspace_type_spec.rb
       ee/spec/requests/api/graphql/remote_development/workspace/with_id_arg_spec.rb
     ]
+  },
+  {
+    explanation: 'Run database dictionary related specs on db/docs changes.',
+    changed_file: 'db/docs/design_management_repositories.yml',
+    expected: %w[
+      ee/spec/lib/gitlab/database/desired_sharding_key_spec.rb
+      spec/db/docs_spec.rb
+      spec/lib/gitlab/database/dictionary_spec.rb
+      spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
+      spec/lib/gitlab/database/sharding_key_spec.rb
+    ]
   }
 ]
 

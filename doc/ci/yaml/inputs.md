@@ -295,6 +295,31 @@ spec:
   script: ./lint --$[[ inputs.linter ]] --path=$[[ inputs.lint-path ]]
 ```
 
+### Reuse configuration in `inputs`
+
+To reuse configuration with `inputs`, you can use [YAML anchors](yaml_optimization.md#anchors).
+
+For example, to reuse the same `rules` configuration with multiple components that support
+`rules` arrays in the inputs:
+
+```yaml
+.my-job-rules: &my-job-rules
+  - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+include:
+  - component: gitlab.com/project/path/component1@main
+    inputs:
+      job-rules: *my-job-rules
+  - component: gitlab.com/project/path/component2@main
+    inputs:
+      job-rules: *my-job-rules
+```
+
+You cannot use [`!reference` tags](yaml_optimization.md#reference-tags) in inputs,
+but [issue 424481](https://gitlab.com/gitlab-org/gitlab/-/issues/424481) proposes adding
+this functionality.
+
 ## Specify functions to manipulate input values
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.

@@ -54,6 +54,7 @@ such as the value of a setting or the count of rows in a database table.
 
 ## Instrumentation
 
+- To create an instrumentation plan, use this [template](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Usage+Data+Instrumentation).
 - To instrument an event-based metric, see the [internal event tracking quick start guide](internal_event_instrumentation/quick_start.md).
 - To instrument a metric that observes the GitLab instances state, see [the metrics instrumentation](metrics/metrics_instrumentation.md).
 

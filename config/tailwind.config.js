@@ -127,6 +127,7 @@ module.exports = {
 
         // TODO: backport these inset box shadows to GitLab UI
         'inner-1-gray-100': 'inset 0 0 0 1px var(--gray-100, #dcdcde)',
+        'inner-b-1-gray-100': 'inset 0 -1px 0 0 var(--gray-100, #dcdcde)',
         'inner-1-gray-200': 'inset 0 0 0 1px var(--gray-200, #bfbfc3)',
         'inner-l-4-gray-100': 'inset 4px 0 0 0 var(--gray-100, #dcdcde)',
         'inner-1-red-400': 'inset 0 0 0 1px var(--red-400, #ec5941)',

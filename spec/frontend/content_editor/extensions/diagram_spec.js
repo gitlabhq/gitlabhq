@@ -49,7 +49,7 @@ describe('content_editor/extensions/diagram', () => {
         doc(
           diagram(
             { language: 'mermaid' },
-            'pie title NETFLIX\n  "Time spent looking for movie" : 90\n  "Time spent watching it" : 10',
+            'pie title NETFLIX  "Time spent looking for movie" : 90  "Time spent watching it" : 10',
           ),
         ).toJSON(),
       );

@@ -143,6 +143,13 @@ module Ci
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_tags, -> { includes(:tags) }
     scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state) }
+    scope :eager_load_for_api, -> do
+      preload(
+        :job_artifacts_archive, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
+        pipeline: :project,
+        user: [:user_preference, :user_detail, :followees]
+      )
+    end
 
     scope :eager_load_everything, -> do
       includes(

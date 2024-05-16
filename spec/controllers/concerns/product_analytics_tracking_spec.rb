@@ -59,6 +59,14 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
 
     before do
       allow(Gitlab::InternalEvents::EventDefinitions).to receive(:known_event?).with('an_event').and_return(true)
+      event_definition = instance_double(
+        Gitlab::Tracking::EventDefinition,
+        event_selection_rules: [
+          { name: event_name, time_framed?: false, filter: {} },
+          { name: event_name, time_framed?: true, filter: {} }
+        ]
+      )
+      allow(Gitlab::Tracking::EventDefinition).to receive(:find).with(event_name).and_return(event_definition)
     end
 
     context 'when user is logged in' do

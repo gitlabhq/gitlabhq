@@ -135,6 +135,17 @@ Prerequisites:
 
 Use the groups API to [rotate the personal access token](../../api/groups.md#rotate-a-personal-access-token-for-service-account-user) for a service account user.
 
+### Revoke a personal access token
+
+Prerequisites:
+
+- You must be signed in as the service account user.
+
+To revoke a personal access token, use the [personal access tokens API](../../api/personal_access_tokens.md#revoke-a-personal-access-token). You can use either of the following methods:
+
+- Use a [personal access token ID](../../api/personal_access_tokens.md#using-a-personal-access-token-id-1). The token used to perform the revocation must have the [`admin_mode`](personal_access_tokens.md#personal-access-token-scopes) scope.
+- Use a [request header](../../api/personal_access_tokens.md#using-a-request-header-1). The token used to perform the request is revoked.
+
 ### Delete a service account
 
 Prerequisites:
@@ -158,8 +169,6 @@ If you are not an administrator for the instance or group a service account is a
    ```
 
    For more information, see the [API documentation on removing a member from a group or project](../../api/members.md#remove-a-member-from-a-group-or-project).
-
-1. Revoke the personal access token by using the [API](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
 
 ## Related topics
 

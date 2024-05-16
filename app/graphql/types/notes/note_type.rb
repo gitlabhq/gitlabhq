@@ -49,6 +49,10 @@ module Types
         null: true,
         description: 'List of emoji reactions associated with the note.'
 
+      field :imported, GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates whether the note was imported.',
+        method: :imported?
       field :internal, GraphQL::Types::Boolean,
         null: true,
         description: 'Indicates if the note is internal.',

@@ -146,6 +146,17 @@ mapping:
       - 'spec/db/docs_spec.rb'
       - 'ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb'
 
+  # Run database dictionary related specs on db/docs changes.
+  # https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/6276
+  - source: 'db/docs/.+\.yml'
+    test:
+      # Found via `git grep Database::Dictionary -l spec ee/spec`
+      - 'ee/spec/lib/gitlab/database/desired_sharding_key_spec.rb'
+      - 'spec/db/docs_spec.rb'
+      - 'spec/lib/gitlab/database/dictionary_spec.rb'
+      - 'spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb'
+      - 'spec/lib/gitlab/database/sharding_key_spec.rb'
+
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360
   - source: 'vendor/project_templates/.*'
     test: 'spec/lib/gitlab/project_template_spec.rb'

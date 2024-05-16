@@ -581,6 +581,8 @@
   - 3
 - - product_analytics_initialize_snowplow_product_analytics
   - 1
+- - product_analytics_move_funnels
+  - 1
 - - product_analytics_post_push
   - 1
 - - product_analytics_sync_funnels

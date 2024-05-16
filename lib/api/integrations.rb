@@ -9,7 +9,7 @@ module API
     integration_classes = Helpers::IntegrationsHelpers.integration_classes
 
     if Gitlab.dev_or_test_env?
-      integrations['mock-ci'] = ::Integrations::MockCi.api_fields
+      integrations['mock-ci'] = ::Integrations::MockCi.api_arguments
       integrations['mock-monitoring'] = []
 
       integration_classes += Helpers::IntegrationsHelpers.development_integration_classes
@@ -30,8 +30,8 @@ module API
     end
 
     SLASH_COMMAND_INTEGRATIONS = {
-      'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_fields,
-      'slack-slash-commands' => ::Integrations::SlackSlashCommands.api_fields
+      'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_arguments,
+      'slack-slash-commands' => ::Integrations::SlackSlashCommands.api_arguments
     }.freeze
 
     helpers do

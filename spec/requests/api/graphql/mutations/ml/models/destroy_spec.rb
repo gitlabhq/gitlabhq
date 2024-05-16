@@ -106,11 +106,13 @@ RSpec.describe 'Destroying a model', feature_category: :mlops do
         it 'returns the errors in the response' do
           allow_next_found_instance_of(::Ml::Model) do |model|
             allow(model).to receive(:destroy).and_return(nil)
+            errors = ActiveModel::Errors.new(model).tap { |e| e.add(:id, 'some error') }
+            allow(model).to receive(:errors).and_return(errors)
           end
 
           mutation_request
 
-          expect(mutation_response['errors']).to match_array(['Failed to delete model'])
+          expect(mutation_response['errors']).to match_array(['Id some error'])
         end
       end
     end

@@ -227,14 +227,22 @@ the rate limiting in the settings. The settings in the Admin Area
 take effect immediately, while setting the environment variable
 requires a restart of all the Puma processes.
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Disable throttling after accidentally locking administrators out
 
-Each scenario can be a third-level heading, for example `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If many users connect to GitLab through the same proxy or network gateway,
+it is possible that, if a rate limit is too low, that limit will also lock administrators out,
+because GitLab sees them using the same IP as the requests that triggered the throttling.
+
+Administrators can use [the Rails console](../operations/rails_console.md) to disable the same limits as listed for
+[the `GITLAB_THROTTLE_DRY_RUN` variable](#try-out-throttling-settings-before-enforcing-them).
+For example:
+
+```ruby
+Gitlab::CurrentSettings.update!(throttle_authenticated_web_enabled: false)
+```
+
+In this example, the `throttle_authenticated_web` parameter has the `_enabled` name suffix.
+
+To set numeric values for the limits, replace the `_enabled` name suffix with the `_period_in_seconds` and `_requests_per_period` suffixes.

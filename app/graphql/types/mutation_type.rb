@@ -210,6 +210,7 @@ module Types
     mount_mutation Mutations::Admin::AbuseReportLabels::Create, alpha: { milestone: '16.4' }
     mount_mutation Mutations::Ml::Models::Create, alpha: { milestone: '16.8' }
     mount_mutation Mutations::Ml::Models::Destroy, alpha: { milestone: '16.10' }
+    mount_mutation Mutations::Ml::Models::Delete, alpha: { milestone: '17.0' }
     mount_mutation Mutations::Ml::ModelVersions::Delete, alpha: { milestone: '17.0' }
     mount_mutation Mutations::BranchRules::Delete, alpha: { milestone: '16.9' }
   end

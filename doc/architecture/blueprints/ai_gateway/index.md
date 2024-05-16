@@ -489,6 +489,9 @@ prompt is built by AI Gateway).
 
 ## Embeddings
 
+NOTE:
+For the embedding database, see [RAG for GitLab Duo](../gitlab_duo_rag/index.md).
+
 Embeddings can be requested for all features in a single endpoint, for
 example through a request like this:
 

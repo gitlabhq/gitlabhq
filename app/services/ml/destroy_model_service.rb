@@ -8,14 +8,14 @@ module Ml
     end
 
     def execute
-      return error unless @model.destroy
-
       package_deletion_result = ::Packages::MarkPackagesForDestructionService.new(
         packages: @model.all_packages,
         current_user: @user
       ).execute
 
-      return packages_not_deleted if package_deletion_result.error?
+      return packages_not_deleted(package_deletion_result.message) if package_deletion_result.error?
+
+      return error unless @model.destroy
 
       success
     end
@@ -23,15 +23,19 @@ module Ml
     private
 
     def success
-      ServiceResponse.success(message: _('Model was successfully deleted'))
+      ServiceResponse.success(payload: payload)
     end
 
     def error
-      ServiceResponse.error(message: _('Failed to delete model'))
+      ServiceResponse.error(message: @model.errors.full_messages, payload: payload)
     end
 
-    def packages_not_deleted
-      ServiceResponse.success(message: _('Model deleted but failed to remove associated packages'))
+    def packages_not_deleted(error_message)
+      ServiceResponse.error(message: error_message, payload: payload)
+    end
+
+    def payload
+      { model: @model }
     end
   end
 end

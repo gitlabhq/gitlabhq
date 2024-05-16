@@ -479,6 +479,32 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
+  describe 'scopes for preloading' do
+    let_it_be(:runner) { create(:ci_runner) }
+    let_it_be(:user) { create(:user).tap { |user| create(:user_detail, user: user) } }
+
+    before_all do
+      build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
+      build.runner = runner
+      build.user = user
+      build.save!
+    end
+
+    describe '.eager_load_for_api' do
+      subject(:eager_load_for_api) { described_class.eager_load_for_api }
+
+      it { expect(eager_load_for_api.last.association(:user)).to be_loaded }
+      it { expect(eager_load_for_api.last.user.association(:user_detail)).to be_loaded }
+      it { expect(eager_load_for_api.last.association(:metadata)).to be_loaded }
+      it { expect(eager_load_for_api.last.association(:job_artifacts_archive)).to be_loaded }
+      it { expect(eager_load_for_api.last.association(:job_artifacts)).to be_loaded }
+      it { expect(eager_load_for_api.last.association(:runner)).to be_loaded }
+      it { expect(eager_load_for_api.last.association(:tags)).to be_loaded }
+      it { expect(eager_load_for_api.last.association(:pipeline)).to be_loaded }
+      it { expect(eager_load_for_api.last.pipeline.association(:project)).to be_loaded }
+    end
+  end
+
   describe '#stick_build_if_status_changed' do
     it 'sticks the build if the status changed' do
       job = create(:ci_build, :pending, pipeline: pipeline)

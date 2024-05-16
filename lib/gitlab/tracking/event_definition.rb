@@ -12,8 +12,16 @@ module Gitlab
       attr_reader :attributes
 
       class << self
+        include Gitlab::Utils::StrongMemoize
+
         def definitions
           @definitions ||= paths.flat_map { |glob_path| load_all_from_path(glob_path) }
+        end
+
+        def find(event_name)
+          strong_memoize_with(:find, event_name) do
+            definitions.find { |definition| definition.attributes[:action] == event_name }
+          end
         end
 
         private
@@ -61,6 +69,31 @@ module Gitlab
             Path: #{error['data_pointer']}
           ERROR_MSG
         end
+      end
+
+      def event_selection_rules
+        @event_selection_rules ||= find_event_selection_rules
+      end
+
+      private
+
+      def find_event_selection_rules
+        result = [
+          { name: attributes[:action], time_framed?: false, filter: {} },
+          { name: attributes[:action], time_framed?: true, filter: {} }
+        ]
+        Gitlab::Usage::MetricDefinition.definitions.each_value do |metric_definition|
+          metric_definition.attributes[:events]&.each do |event_selection_rule|
+            if event_selection_rule[:name] == attributes[:action]
+              result << {
+                name: attributes[:action],
+                time_framed?: %w[7d 28d].include?(metric_definition.attributes[:time_frame]),
+                filter: event_selection_rule[:filter] || {}
+              }
+            end
+          end
+        end
+        result.uniq
       end
     end
   end

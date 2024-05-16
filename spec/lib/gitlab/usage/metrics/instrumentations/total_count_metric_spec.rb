@@ -6,6 +6,24 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric, :clea
   feature_category: :product_analytics_data_management do
   before do
     allow(Gitlab::InternalEvents::EventDefinitions).to receive(:known_event?).and_return(true)
+
+    event_definition = instance_double(
+      Gitlab::Tracking::EventDefinition,
+      event_selection_rules: [{ name: 'my_event', time_framed?: false, filter: {} }]
+    )
+    allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event').and_return(event_definition)
+
+    event_definition1 = instance_double(
+      Gitlab::Tracking::EventDefinition,
+      event_selection_rules: [{ name: 'my_event1', time_framed?: false, filter: {} }]
+    )
+    allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event1').and_return(event_definition1)
+
+    event_definition2 = instance_double(
+      Gitlab::Tracking::EventDefinition,
+      event_selection_rules: [{ name: 'my_event2', time_framed?: false, filter: {} }]
+    )
+    allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event2').and_return(event_definition2)
   end
 
   context 'with multiple similar events' do

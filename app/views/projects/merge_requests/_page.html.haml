@@ -45,7 +45,7 @@
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { size: :sm, class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
-        .d-flex.gl-flex-wrap.gl-align-items-center.justify-content-lg-end
+        .gl-flex.gl-flex-wrap.gl-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
           - if !!@issuable_sidebar.dig(:current_user, :id)
             .gl-display-flex.gl-gap-3
@@ -53,7 +53,7 @@
               - if notifications_todos_buttons_enabled?
                 .js-sidebar-subscriptions-widget-root{ data: { full_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid] } }
 
-          .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.gl-ml-3.js-expand-sidebar.gl-absolute.gl-right-5{ class: "gl-lg-display-none!" }
+          .gl-ml-auto.gl-items-center.gl-hidden.sm:gl-flex.lg:gl-hidden.gl-ml-3.js-expand-sidebar.gl-absolute.gl-right-5
             = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left',
               button_options: { class: 'js-sidebar-toggle' }) do
               = _('Expand')

@@ -16,7 +16,7 @@ module Ci
       end
     end
 
-    condition(:unprotected_ref) do
+    condition(:unprotected_ref, scope: :subject) do
       if @subject.tag?
         !ProtectedTag.protected?(@subject.project, @subject.ref)
       else
@@ -56,11 +56,11 @@ module Ci
       @subject.debug_mode?
     end
 
-    condition(:can_read_project_build, scope: :subject) do
+    condition(:can_read_project_build) do
       can?(:read_build, @subject.project)
     end
 
-    condition(:project_update_build, scope: :subject) do
+    condition(:project_update_build) do
       can?(:update_build, @subject.project)
     end
 

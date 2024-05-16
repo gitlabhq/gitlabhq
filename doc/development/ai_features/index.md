@@ -41,7 +41,91 @@ Gitlab::CurrentSettings.update(vertex_ai_project: "PROJECT_ID")
 Gitlab::CurrentSettings.update!(anthropic_api_key: "<insert API key>")
 ```
 
-### Local setup
+### Embeddings database
+
+NOTE:
+There is a proposal to change embeddings database for improving the quality of search results. See [RAG for GitLab Duo](../../architecture/blueprints/gitlab_duo_rag/index.md) for more information.
+
+Embeddings are generated through the [VertexAI text embeddings API](https://cloud.google.com/vertex-ai/docs/generative-ai/embeddings/get-text-embeddings). The sections
+below explain how to populate embeddings in the DB or extract embeddings to be
+used in specs.
+
+#### Set up
+
+1. Enable [`pgvector`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
+1. Enable the embedding database in GDK
+
+   ```shell
+     gdk config set gitlab.rails.databases.embedding.enabled true
+   ```
+
+1. Run `gdk reconfigure`
+1. Run database migrations to create the embedding database
+
+   ```shell
+     RAILS_ENV=development bin/rails db:migrate
+   ```
+
+#### Populate
+
+Seed your development database with the embeddings for GitLab Documentation
+using this Rake task:
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:seed
+```
+
+This Rake Task populates the embeddings database with a vectorized
+representation of all GitLab Documentation. The file the Rake Task uses as a
+source is a snapshot of GitLab Documentation at some point in the past and is
+not updated regularly. As a result, it is helpful to know that this seed task
+creates embeddings based on GitLab Documentation that is out of date. Slightly
+outdated documentation embeddings are sufficient for the development
+environment, which is the use-case for the seed task.
+
+When writing or updating tests related to embeddings, you may want to update the
+embeddings fixture file:
+
+```shell
+RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:extract_embeddings
+```
+
+#### Use embeddings in specs
+
+The `seed` Rake Task populates the development database with embeddings for all GitLab
+Documentation. The `extract_embeddings` Rake Task populates a fixture file with a subset
+of embeddings.
+
+The set of questions listed in the Rake Task itself determines
+which embeddings are pulled into the fixture file. For example, one of the
+questions is "How can I reset my password?" The `extract_embeddings` Task
+pulls the most relevant embeddings for this question from the development
+database (which has data from the `seed` Rake Task) and saves those embeddings
+in `ee/spec/fixtures/vertex_embeddings`. This fixture is used in tests related
+to embeddings.
+
+If you would like to change any of the questions supported in embeddings specs,
+update and re-run the `extract_embeddings` Rake Task.
+
+In the specs where you need to use the embeddings,
+use the RSpec `:ai_embedding_fixtures` metadata.
+
+```ruby
+context 'when asking about how to use GitLab', :ai_embedding_fixtures do
+  # ...examples
+end
+```
+
+### Tips for local development
+
+1. When responses are taking too long to appear in the user interface, consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`.
+1. Alternatively, bypass Sidekiq entirely and run the chat service synchronously. This can help with debugging errors as GraphQL errors are now available in the network inspector instead of the Sidekiq logs. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline`
+
+### Working with GitLab Duo Chat
+
+View [guidelines](duo_chat.md) for working with GitLab Duo Chat.
+
+## Test AI features with AI Gateway locally
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) in GitLab 16.8.
 
@@ -79,15 +163,7 @@ the feature must request to the [AI Gateway](../../architecture/blueprints/ai_ga
 Gitlab::Llm::AiGateway::Client.new(User.first).stream(prompt: "\n\nHuman: Hi, how are you?\n\nAssistant:")
 ```
 
-**Additional setup for testing subscriptions** (***not required for DuoChat setup***)
-
-1. Setup CustomersDot:
-   1. Install CustomersDot: [internal video tutorial](https://youtu.be/_8wOMa_yGSw) (replace inactive subscription plan ID URL provided in the video caption with an active one from the link containing plan ids below)
-      - This video loosely follows [official installation steps](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/installation_steps.md)
-      - It also offers guidance on how to create a self-managed subscription. You will receive a *cloud activation code* in return.
-        - A list of subscription plan ids are available [here](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/flows/buy_subscription.md) for creating a Self-Managed Subscription locally.
-
-#### Verify the setup with GraphQL
+### Verify the setup with GraphQL
 
 1. Visit [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
 1. Execute the `aiAction` mutation. Here is an example:
@@ -142,7 +218,7 @@ it will print useful error messages with links to the docs on how to resolve the
 GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'
 ```
 
-[AI Gateway](#local-setup) still needs to be setup when using the automated setup.
+[AI Gateway](#set-up) still needs to be setup when using the automated setup.
 
 **Manual way**
 
@@ -165,7 +241,7 @@ GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[
    1. Enable **Experiment & Beta features**.
 1. Enable the specific feature flag for the feature you want to test.
 1. You can use Rake task `rake gitlab:duo:enable_feature_flags` to enable all feature flags that are assigned to group AI Framework.
-1. Setup [AI Gateway](#local-setup).
+1. Setup [AI Gateway](#set-up).
 
 ### Help
 

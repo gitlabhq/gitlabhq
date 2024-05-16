@@ -80,10 +80,6 @@ four standard [pagination arguments](#pagination-arguments):
 
 Retrieve the active add-on purchase. This query can be used in GitLab SaaS and self-managed environments.
 
-DETAILS:
-**Introduced** in GitLab 16.7.
-**Status**: Experiment.
-
 Returns [`AddOnPurchase`](#addonpurchase).
 
 #### Arguments
@@ -6593,6 +6589,30 @@ Input type: `MlModelCreateInput`
 | <a id="mutationmlmodelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmlmodelcreatemodel"></a>`model` | [`MlModel`](#mlmodel) | Model after mutation. |
 
+### `Mutation.mlModelDelete`
+
+DETAILS:
+**Introduced** in GitLab 17.0.
+**Status**: Experiment.
+
+Input type: `MlModelDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodeldeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodeldeleteid"></a>`id` | [`MlModelID!`](#mlmodelid) | Global ID of the model to be deleted. |
+| <a id="mutationmlmodeldeleteprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the model to mutate is in. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodeldeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodeldeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmlmodeldeletemodel"></a>`model` | [`MlModel`](#mlmodel) | Model after mutation. |
+
 ### `Mutation.mlModelDestroy`
 
 DETAILS:
@@ -9127,10 +9147,6 @@ Input type: `UserAchievementsDeleteInput`
 
 ### `Mutation.userAddOnAssignmentBulkCreate`
 
-DETAILS:
-**Introduced** in GitLab 16.11.
-**Status**: Experiment.
-
 Input type: `UserAddOnAssignmentBulkCreateInput`
 
 #### Arguments
@@ -9150,10 +9166,6 @@ Input type: `UserAddOnAssignmentBulkCreateInput`
 | <a id="mutationuseraddonassignmentbulkcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.userAddOnAssignmentBulkRemove`
-
-DETAILS:
-**Introduced** in GitLab 16.11.
-**Status**: Experiment.
 
 Input type: `UserAddOnAssignmentBulkRemoveInput`
 
@@ -9175,10 +9187,6 @@ Input type: `UserAddOnAssignmentBulkRemoveInput`
 
 ### `Mutation.userAddOnAssignmentCreate`
 
-DETAILS:
-**Introduced** in GitLab 16.3.
-**Status**: Experiment.
-
 Input type: `UserAddOnAssignmentCreateInput`
 
 #### Arguments
@@ -9199,10 +9207,6 @@ Input type: `UserAddOnAssignmentCreateInput`
 | <a id="mutationuseraddonassignmentcreateuser"></a>`user` | [`AddOnUser`](#addonuser) | User who the add-on purchase was assigned to. |
 
 ### `Mutation.userAddOnAssignmentRemove`
-
-DETAILS:
-**Introduced** in GitLab 16.3.
-**Status**: Experiment.
 
 Input type: `UserAddOnAssignmentRemoveInput`
 
@@ -25716,6 +25720,7 @@ Describes where code is deployed for a project organized by folder.
 | <a id="notecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the note creation. |
 | <a id="notediscussion"></a>`discussion` | [`Discussion`](#discussion) | Discussion the note is a part of. |
 | <a id="noteid"></a>`id` | [`NoteID!`](#noteid) | ID of the note. |
+| <a id="noteimported"></a>`imported` | [`Boolean`](#boolean) | Indicates whether the note was imported. |
 | <a id="noteinternal"></a>`internal` | [`Boolean`](#boolean) | Indicates if the note is internal. |
 | <a id="notelasteditedat"></a>`lastEditedAt` | [`Time`](#time) | Timestamp when note was last edited. |
 | <a id="notelasteditedby"></a>`lastEditedBy` | [`UserCore`](#usercore) | User who last edited the note. |

@@ -56,6 +56,7 @@ Refer to [CustomersDot](#customersdot) to see how custom claims are handled for 
    - `X-Gitlab-Instance-Id`: A globally unique instance ID string.
    - `X-Gitlab-Global-User-Id`: A globally unique anonymous user ID string.
    - `X-Gitlab-Realm`: One of `saas`, `self-managed`.
+   - `X-Gitlab-Version`: Version of the GitLab instance.
    - `Authorization`: Contains the Base64-encoded JWT as a `Bearer` token obtained from the `access_token` method in step 1.
 
    Some of these headers can be injected by merging the result of the `API::Helpers::CloudConnector#cloud_connector_headers`
@@ -280,4 +281,4 @@ and assign it to the Cloud Connector group.
 
 ## Testing
 
-An example for how to set up an end-to-end integration with the AI gateway as the backend service can be found [here](../ai_features/index.md#local-setup).
+An example for how to set up an end-to-end integration with the AI gateway as the backend service can be found [here](../ai_features/index.md#set-up).

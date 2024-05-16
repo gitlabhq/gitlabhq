@@ -36,9 +36,9 @@ RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations do
     end
   end
 
-  describe '.api_fields' do
-    it 'returns api fields' do
-      expect(described_class.api_fields).to eq([{
+  describe '.api_arguments' do
+    it 'returns api arguments' do
+      expect(described_class.api_arguments).to eq([{
         required: true,
         name: :token,
         type: String,
