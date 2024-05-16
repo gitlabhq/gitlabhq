@@ -326,14 +326,11 @@
 }
 
 @include media-breakpoint-down(sm) {
-  .filtered-search-block .boards-switcher {
-    margin-right: 0;
-    margin-bottom: $gl-input-padding;
-
-    .boards-selector-wrapper,
-    .dropdown {
-      display: block;
-    }
+  .issues-details-filters,
+  .epics-details-filters {
+    padding-top: $gl-padding-8;
+    padding-bottom: $gl-padding-8;
+    background-color: $white;
   }
 
   .filter-dropdown-container {

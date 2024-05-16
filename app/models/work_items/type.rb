@@ -82,7 +82,7 @@ module WorkItems
 
     def self.default_by_type(type)
       found_type = find_by(namespace_id: nil, base_type: type)
-      return found_type if found_type
+      return found_type if found_type || !WorkItems::Type.base_types.key?(type.to_s)
 
       if Feature.enabled?(:rely_on_work_item_type_seeder, type: :beta) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Default types exist instance wide
         error_message = <<~STRING

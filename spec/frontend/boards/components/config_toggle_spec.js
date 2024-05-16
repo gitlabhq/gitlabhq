@@ -19,12 +19,12 @@ describe('ConfigToggle', () => {
 
   it('renders a button with label `View scope` when `canAdminList` is `false`', () => {
     wrapper = createComponent({ canAdminList: false });
-    expect(findButton().text()).toBe('View scope');
+    expect(findButton().attributes('title')).toBe('View scope');
   });
 
   it('renders a button with label `Edit board` when `canAdminList` is `true`', () => {
     wrapper = createComponent();
-    expect(findButton().text()).toBe('Edit board');
+    expect(findButton().element.title).toBe('Edit board');
   });
 
   it('emits `showBoardModal` when button is clicked', () => {

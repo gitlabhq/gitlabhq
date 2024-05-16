@@ -9,7 +9,7 @@ extra_properties:
 identifiers:
 product_section: dev
 product_stage: manage
-product_group: manage
+product_group: tenant_scale
 milestone: "15.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108108
 distributions:

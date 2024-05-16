@@ -113,8 +113,9 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
   describe '.default_by_type' do
     let(:default_issue_type) { described_class.find_by(namespace_id: nil, base_type: :issue) }
+    let(:base_type) { :issue }
 
-    subject { described_class.default_by_type(:issue) }
+    subject { described_class.default_by_type(base_type) }
 
     it 'returns default work item type by base type without calling importer' do
       expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_types).and_call_original
@@ -145,6 +146,18 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
             https://gitlab.com/gitlab-org/gitlab/-/issues/423483
           STRING
         )
+      end
+
+      context 'when an invalid issue_type is passed' do
+        let(:base_type) { :invalid_type }
+
+        it { is_expected.to be_nil }
+
+        it 'does not raise an error' do
+          expect do
+            subject
+          end.not_to raise_error
+        end
       end
 
       context 'when rely_on_work_item_type_seeder feature flag is disabled' do

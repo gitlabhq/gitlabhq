@@ -11,6 +11,7 @@ import { extractDesign, getPageLayoutElement } from '../utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '../constants';
 import { DESIGN_NOT_FOUND_ERROR, DESIGN_VERSION_NOT_EXIST_ERROR } from '../error_messages';
 import DesignPresentation from './design_presentation.vue';
+import DesignToolbar from './design_toolbar.vue';
 
 const DEFAULT_SCALE = 1;
 const DEFAULT_MAX_SCALE = 2;
@@ -19,6 +20,7 @@ export default {
   WORK_ITEM_ROUTE_NAME,
   components: {
     DesignPresentation,
+    DesignToolbar,
     GlAlert,
   },
   inject: ['fullPath'],
@@ -152,6 +154,7 @@ export default {
     class="design-detail js-design-detail fixed-top gl-w-full gl-flex gl-justify-content-center gl-flex-col gl-lg-flex-direction-row gl-bg-gray-10"
   >
     <div class="gl-flex gl-overflow-hidden gl-grow gl-flex-col gl-relative">
+      <design-toolbar :work-item-title="workItemTitle" :design="design" :is-loading="isLoading" />
       <div
         class="gl-flex gl-overflow-hidden gl-flex-col gl-lg-flex-direction-row gl-grow gl-relative"
       >

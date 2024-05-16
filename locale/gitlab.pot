@@ -3629,6 +3629,9 @@ msgstr ""
 msgid "AdminSettings|Allow runner registration token"
 msgstr ""
 
+msgid "AdminSettings|Allow users to make their profiles private"
+msgstr ""
+
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
@@ -3800,6 +3803,9 @@ msgstr ""
 msgid "AdminSettings|Limit the amount of namespace and project data to index"
 msgstr ""
 
+msgid "AdminSettings|Make new users' profiles private by default"
+msgstr ""
+
 msgid "AdminSettings|Maximum downstream pipeline trigger rate"
 msgstr ""
 
@@ -3932,6 +3938,9 @@ msgstr ""
 msgid "AdminSettings|Set visibility of project contents and configure Git access protocols."
 msgstr ""
 
+msgid "AdminSettings|Setting locked"
+msgstr ""
+
 msgid "AdminSettings|Setting must be greater than 0."
 msgstr ""
 
@@ -3960,6 +3969,9 @@ msgid "AdminSettings|The maximum number of downstream pipelines that can be trig
 msgstr ""
 
 msgid "AdminSettings|The maximum number of included files per pipeline."
+msgstr ""
+
+msgid "AdminSettings|The option to make profiles private has been disabled. Profiles are required to be public in this instance, and cannot be set to private by default. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "AdminSettings|The selected level must be different from the selected default group and project visibility."
@@ -20417,6 +20429,9 @@ msgstr ""
 msgid "Epic summary"
 msgstr ""
 
+msgid "Epic swimlanes"
+msgstr ""
+
 msgid "Epic title"
 msgstr ""
 
@@ -31004,9 +31019,6 @@ msgid "Make and review changes in the browser with the Web IDE"
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
-msgstr ""
-
-msgid "Make new users' profiles private by default"
 msgstr ""
 
 msgid "Make sure you choose a strong, unique password."
@@ -57161,6 +57173,9 @@ msgid "View on %{url}"
 msgstr ""
 
 msgid "View open merge request"
+msgstr ""
+
+msgid "View options"
 msgstr ""
 
 msgid "View page @ "

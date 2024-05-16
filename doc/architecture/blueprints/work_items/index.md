@@ -72,6 +72,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetAwardEmoji](../../../api/graphql/reference/index.md#workitemwidgetawardemoji) | Emoji reactions added to work item, including support for upvote/downvote counts | |Anyone who can view|No|
 | [WorkItemWidgetCurrentUserTodos](../../../api/graphql/reference/index.md#workitemwidgetcurrentusertodos) | User todo state of work item | |Anyone who can view|No|
 | [WorkItemWidgetDescription](../../../api/graphql/reference/index.md#workitemwidgetdescription) | Description of work item, including support for edited state, timestamp, and author | |`Reporter`|No|
+| [WorkItemWidgetDesigns](../../../api/graphql/reference/index.md#workitemwidgetdesigns) | Uploaded images and designs | |`Reporter`|No|
 | [WorkItemWidgetHealthStatus](../../../api/graphql/reference/index.md#workitemwidgethealthstatus) | Health status assignment support for work item | |`Reporter`|No|
 | [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | Hierarchy of work items, including support for boolean representing presence of children. **Note:** Hierarchy is currently available only for OKRs. | `okrs_mvc` |`Guest`|No|
 | [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | Iteration assignment support for work item | |`Reporter`|No|
@@ -96,6 +97,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetAwardEmoji](../../../api/graphql/reference/index.md#workitemwidgetawardemoji) | ✅ | ✔️ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetCurrentUserTodos](../../../api/graphql/reference/index.md#workitemwidgetcurrentusertodos) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetDescription](../../../api/graphql/reference/index.md#workitemwidgetdescription) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetDesigns](../../../api/graphql/reference/index.md#workitemwidgetdesigns) | ❌ | ✅ | ❌ | ❌ | ❌ |
 | [WorkItemWidgetHealthStatus](../../../api/graphql/reference/index.md#workitemwidgethealthstatus) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | ✔ | ✔️ | ❌ | ✅ | ❌ |
 | [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | ❌ | ✅ | ✅ | ❌ | ❌ |

@@ -253,6 +253,14 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       it 'sets the correct work_item_type' do
         expect(created_object.work_item_type).to eq(WorkItems::Type.default_by_type(:task))
       end
+
+      context 'when the provided issue_type is invalid' do
+        let(:additional_relation_attributes) { { 'issue_type' => 'invalid_type' } }
+
+        it 'does not set a work item type, lets the model default to issue' do
+          expect(created_object.work_item_type).to be_nil
+        end
+      end
     end
 
     context 'when work_item_type is provided in the hash' do

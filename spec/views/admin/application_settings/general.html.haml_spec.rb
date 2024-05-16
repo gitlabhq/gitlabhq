@@ -140,4 +140,12 @@ RSpec.describe 'admin/application_settings/general.html.haml' do
       it_behaves_like 'does not render the form'
     end
   end
+
+  describe 'private profile restrictions', feature_category: :user_management do
+    it 'renders correct ce partial' do
+      render
+
+      expect(rendered).to render_template('admin/application_settings/_private_profile_restrictions')
+    end
+  end
 end

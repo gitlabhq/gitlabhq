@@ -257,7 +257,7 @@ export default {
 </script>
 
 <template>
-  <div class="boards-switcher gl-mr-3" data-testid="boards-selector">
+  <div class="boards-switcher" data-testid="boards-selector">
     <span class="boards-selector-wrapper">
       <gl-collapsible-listbox
         v-if="showDropdown"
