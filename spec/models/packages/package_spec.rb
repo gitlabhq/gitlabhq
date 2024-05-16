@@ -17,7 +17,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_many(:tags).inverse_of(:package) }
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
     it { is_expected.to have_many(:installable_nuget_package_files).inverse_of(:package) }
-    it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:debian_publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
     it { is_expected.to have_one(:debian_distribution).through(:debian_publication).source(:distribution).inverse_of(:packages).class_name('Packages::Debian::ProjectDistribution') }
@@ -157,20 +156,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to allow_value("my.app-11.07.2018").for(:name) }
       it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
 
-      context 'conan package' do
-        subject { build_stubbed(:conan_package) }
-
-        let(:fifty_one_characters) { 'f_b' * 17 }
-
-        it { is_expected.to allow_value('foo+bar').for(:name) }
-        it { is_expected.to allow_value('foo_bar').for(:name) }
-        it { is_expected.to allow_value('foo.bar').for(:name) }
-        it { is_expected.not_to allow_value(fifty_one_characters).for(:name) }
-        it { is_expected.not_to allow_value('+foobar').for(:name) }
-        it { is_expected.not_to allow_value('.foobar').for(:name) }
-        it { is_expected.not_to allow_value('%foo%bar').for(:name) }
-      end
-
       context 'debian package' do
         subject { build(:debian_package) }
 
@@ -267,22 +252,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
           it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
           it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
         end
-      end
-
-      context 'conan package' do
-        subject { build_stubbed(:conan_package) }
-
-        let(:fifty_one_characters) { '1.2' * 17 }
-
-        it { is_expected.to allow_value('1.2').for(:version) }
-        it { is_expected.to allow_value('1.2.3-beta').for(:version) }
-        it { is_expected.to allow_value('1.2.3-pre1+build2').for(:version) }
-        it { is_expected.not_to allow_value('1').for(:version) }
-        it { is_expected.not_to allow_value(fifty_one_characters).for(:version) }
-        it { is_expected.not_to allow_value('1./2.3').for(:version) }
-        it { is_expected.not_to allow_value('.1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('+1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
       end
 
       context 'composer package' do
@@ -639,31 +608,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
     end
 
-    context "recipe uniqueness for conan packages" do
-      let_it_be(:package) { create(:conan_package) }
-
-      it "will allow a conan package with same project, name, version and package_type" do
-        new_package = build(:conan_package, project: package.project, name: package.name, version: package.version)
-        new_package.conan_metadatum.package_channel = 'beta'
-        expect(new_package).to be_valid
-      end
-
-      it "will not allow a conan package with same recipe (name, version, metadatum.package_channel, metadatum.package_username, and package_type)" do
-        new_package = build(:conan_package, project: package.project, name: package.name, version: package.version)
-        expect(new_package).not_to be_valid
-        expect(new_package.errors.to_a).to include("Package recipe already exists")
-      end
-
-      context 'with pending destruction package' do
-        let_it_be(:package) { create(:conan_package, :pending_destruction) }
-
-        it 'will allow a conan package with same recipe (name, version, metadatum.package_channel, metadatum.package_username, and package_type)' do
-          new_package = build(:conan_package, project: package.project, name: package.name, version: package.version)
-          expect(new_package).to be_valid
-        end
-      end
-    end
-
     describe '#valid_composer_global_name' do
       let_it_be(:package) { create(:composer_package) }
 
@@ -836,38 +780,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
       it 'includes packages without the version pattern' do
         is_expected.to match_array([package2, package3])
-      end
-    end
-  end
-
-  context 'conan scopes' do
-    let!(:package) { create(:conan_package) }
-
-    describe '.with_conan_channel' do
-      subject { described_class.with_conan_channel('stable') }
-
-      it 'includes only packages with specified version' do
-        is_expected.to include(package)
-      end
-    end
-
-    describe '.with_conan_username' do
-      subject do
-        described_class.with_conan_username(
-          Packages::Conan::Metadatum.package_username_from(full_path: package.project.full_path)
-        )
-      end
-
-      it 'includes only packages with specified version' do
-        is_expected.to match_array([package])
-      end
-    end
-
-    describe '.preload_conan_metadatum' do
-      subject { described_class.preload_conan_metadatum }
-
-      it 'loads conan metadatum' do
-        expect(subject.first.association(:conan_metadatum)).to be_loaded
       end
     end
   end

@@ -45,7 +45,6 @@ class Packages::Package < ApplicationRecord
   has_many :installable_nuget_package_files, -> { installable.with_nuget_format }, class_name: 'Packages::PackageFile', inverse_of: :package
   has_many :dependency_links, inverse_of: :package, class_name: 'Packages::DependencyLink'
   has_many :tags, inverse_of: :package, class_name: 'Packages::Tag'
-  has_one :conan_metadatum, inverse_of: :package, class_name: 'Packages::Conan::Metadatum'
   has_one :pypi_metadatum, inverse_of: :package, class_name: 'Packages::Pypi::Metadatum'
   has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
@@ -60,11 +59,9 @@ class Packages::Package < ApplicationRecord
   has_one :debian_distribution, through: :debian_publication, source: :distribution, inverse_of: :packages, class_name: 'Packages::Debian::ProjectDistribution'
   has_many :matching_package_protection_rules, -> (package) { where(package_type: package.package_type).for_package_name(package.name) }, through: :project, source: :package_protection_rules
 
-  accepts_nested_attributes_for :conan_metadatum
   accepts_nested_attributes_for :debian_publication
   accepts_nested_attributes_for :maven_metadatum
 
-  delegate :recipe, :recipe_path, to: :conan_metadatum, prefix: :conan
   delegate :codename, :suite, to: :debian_distribution, prefix: :debian_distribution
   delegate :target_sha, to: :composer_metadatum, prefix: :composer
 
@@ -80,11 +77,9 @@ class Packages::Package < ApplicationRecord
     },
     unless: -> { pending_destruction? || conan? }
 
-  validate :valid_conan_package_recipe, if: :conan?
   validate :valid_composer_global_name, if: :composer?
   validate :npm_package_already_taken, if: :npm?
 
-  validates :name, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
   validates :name, format: { with: Gitlab::Regex.helm_package_regex }, if: :helm?
   validates :name, format: { with: Gitlab::Regex.npm_package_name_regex, message: Gitlab::Regex.npm_package_name_regex_message }, if: :npm?
@@ -93,7 +88,6 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
   validates :name, inclusion: { in: [Packages::Debian::INCOMING_PACKAGE_NAME] }, if: :debian_incoming?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
-  validates :version, format: { with: Gitlab::Regex.conan_recipe_component_regex }, if: :conan?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
   validates :version, format: { with: Gitlab::Regex.helm_version_regex }, if: :helm?
@@ -154,13 +148,6 @@ class Packages::Package < ApplicationRecord
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
   scope :including_dependency_links_with_nuget_metadatum, -> { includes(dependency_links: [:dependency, :nuget_metadatum]) }
 
-  scope :with_conan_channel, ->(package_channel) do
-    joins(:conan_metadatum).where(packages_conan_metadata: { package_channel: package_channel })
-  end
-  scope :with_conan_username, ->(package_username) do
-    joins(:conan_metadatum).where(packages_conan_metadata: { package_username: package_username })
-  end
-
   scope :with_debian_codename, ->(codename) do
     joins(:debian_distribution).where(Packages::Debian::ProjectDistribution.table_name => { codename: codename })
   end
@@ -178,7 +165,6 @@ class Packages::Package < ApplicationRecord
   scope :preload_npm_metadatum, -> { preload(:npm_metadatum) }
   scope :preload_nuget_metadatum, -> { preload(:nuget_metadatum) }
   scope :preload_pypi_metadatum, -> { preload(:pypi_metadatum) }
-  scope :preload_conan_metadatum, -> { preload(:conan_metadatum) }
 
   scope :with_npm_scope, ->(scope) do
     npm.where("position('/' in packages_packages.name) > 0 AND split_part(packages_packages.name, '/', 1) = :package_scope", package_scope: "@#{sanitize_sql_like(scope)}")
@@ -232,7 +218,8 @@ class Packages::Package < ApplicationRecord
   def self.inheritance_column_to_class_map = {
     ml_model: 'Packages::MlModel::Package',
     golang: 'Packages::Go::Package',
-    rubygems: 'Packages::Rubygems::Package'
+    rubygems: 'Packages::Rubygems::Package',
+    conan: 'Packages::Conan::Package'
   }.freeze
 
   def self.only_maven_packages_with_path(path, use_cte: false)
@@ -399,21 +386,6 @@ class Packages::Package < ApplicationRecord
 
   def composer_tag_version?
     composer? && !Gitlab::Regex.composer_dev_version_regex.match(version.to_s)
-  end
-
-  def valid_conan_package_recipe
-    recipe_exists = project.packages
-                           .conan
-                           .includes(:conan_metadatum)
-                           .not_pending_destruction
-                           .with_name(name)
-                           .with_version(version)
-                           .with_conan_channel(conan_metadatum.package_channel)
-                           .with_conan_username(conan_metadatum.package_username)
-                           .id_not_in(id)
-                           .exists?
-
-    errors.add(:base, _('Package recipe already exists')) if recipe_exists
   end
 
   def valid_composer_global_name

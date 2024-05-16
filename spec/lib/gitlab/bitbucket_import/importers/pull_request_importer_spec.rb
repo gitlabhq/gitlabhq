@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include AfterNextHelpers
 
   let_it_be(:project) { create(:project, :repository) }

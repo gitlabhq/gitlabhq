@@ -156,7 +156,7 @@ export function getFormData(params) {
     width: params.width,
     height: params.height,
     line_range: lineRange,
-    ignore_whitespace_change: !showWhitespace,
+    ignore_whitespace_change: diffFile.whitespaceOnlyChange ? false : !showWhitespace,
   });
 
   const postData = {
@@ -390,6 +390,7 @@ function finalizeDiffFile(file) {
     isLoadingFullFile: false,
     discussions: [],
     renderingLines: false,
+    whitespaceOnlyChange: file.viewer?.whitespace_only,
   });
 
   return file;

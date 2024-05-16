@@ -19,7 +19,7 @@ module Ci
     include FastDestroyAll::Helpers
 
     include IgnorableColumns
-    ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
+    ignore_column :id_convert_to_bigint, remove_with: '17.2', remove_after: '2024-06-15'
 
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 

@@ -13690,6 +13690,9 @@ msgstr ""
 msgid "Configure settings for Advanced Search with Elasticsearch."
 msgstr ""
 
+msgid "Configure settings for exact code search."
+msgstr ""
+
 msgid "Configure specific limits for Files API requests that supersede the general user and IP rate limits."
 msgstr ""
 
@@ -13979,6 +13982,9 @@ msgstr ""
 msgid "ContainerRegistry|Copy push command"
 msgstr ""
 
+msgid "ContainerRegistry|Could not load signature details."
+msgstr ""
+
 msgid "ContainerRegistry|Created %{time}"
 msgstr ""
 
@@ -14135,6 +14141,9 @@ msgid "ContainerRegistry|Set up cleanup"
 msgstr ""
 
 msgid "ContainerRegistry|Show full path"
+msgstr ""
+
+msgid "ContainerRegistry|Signature details"
 msgstr ""
 
 msgid "ContainerRegistry|Signature digest: %{digest}"
@@ -21124,6 +21133,9 @@ msgstr ""
 msgid "Evidence collection"
 msgstr ""
 
+msgid "Exact code search"
+msgstr ""
+
 msgid "Exactly one of %{attributes} is required"
 msgstr ""
 
@@ -21610,7 +21622,7 @@ msgstr ""
 msgid "Failed to load branches. Please try again."
 msgstr ""
 
-msgid "Failed to load deploy keys."
+msgid "Failed to load data."
 msgstr ""
 
 msgid "Failed to load error details from Sentry."
@@ -21620,9 +21632,6 @@ msgid "Failed to load errors from Sentry."
 msgstr ""
 
 msgid "Failed to load group activity metrics. Please try again."
-msgstr ""
-
-msgid "Failed to load groups, users and deploy keys."
 msgstr ""
 
 msgid "Failed to load groups."
@@ -39169,7 +39178,7 @@ msgstr ""
 msgid "ProductAnalytics|3. Initiate the tracking"
 msgstr ""
 
-msgid "ProductAnalytics|A deployed instance of the analytics-stack project."
+msgid "ProductAnalytics|A deployed instance of the %{linkStart}helm-charts%{linkEnd} project."
 msgstr ""
 
 msgid "ProductAnalytics|Add another dimension"
@@ -55551,9 +55560,6 @@ msgid "Update Scheduled…"
 msgstr ""
 
 msgid "Update appearance settings"
-msgstr ""
-
-msgid "Update approval rule"
 msgstr ""
 
 msgid "Update approvers"

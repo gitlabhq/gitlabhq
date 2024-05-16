@@ -252,38 +252,6 @@ FactoryBot.define do
       end
     end
 
-    factory :conan_package do
-      conan_metadatum
-
-      transient do
-        without_package_files { false }
-      end
-
-      after :build do |package|
-        package.conan_metadatum.package_username = Packages::Conan::Metadatum.package_username_from(
-          full_path: package.project.full_path
-        )
-      end
-
-      sequence(:name) { |n| "package-#{n}" }
-      version { '1.0.0' }
-      package_type { :conan }
-
-      after :create do |package, evaluator|
-        unless evaluator.without_package_files
-          create :conan_package_file, :conan_recipe_file, package: package
-          create :conan_package_file, :conan_recipe_manifest, package: package
-          create :conan_package_file, :conan_package_info, package: package
-          create :conan_package_file, :conan_package_manifest, package: package
-          create :conan_package_file, :conan_package, package: package
-        end
-      end
-
-      trait(:without_loaded_metadatum) do
-        conan_metadatum { build(:conan_metadatum, package: nil) } # rubocop:disable RSpec/FactoryBot/InlineAssociation
-      end
-    end
-
     factory :generic_package do
       sequence(:name) { |n| "generic-package-#{n}" }
       version { '1.0.0' }

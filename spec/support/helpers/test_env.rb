@@ -112,6 +112,7 @@ module TestEnv
     'Ääh-test-utf-8' => '7975be0',
     'ssh-signed-commit' => '7b5160f',
     'changes-with-whitespace' => 'f2d141fadb33ceaafc95667c1a0a308ad5edc5f9',
+    'changes-with-only-whitespace' => '80cffbb2ad86202171dd3c05b38b5b4523b447d3',
     'lock-detection' => '1ada92f78a19f27cb442a0a205f1c451a3a15432'
   }.freeze
 

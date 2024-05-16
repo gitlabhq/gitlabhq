@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::UserFinder, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketImport::UserFinder, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:identity) { create(:identity, user: user, extern_uid: 'uid', provider: :bitbucket) }
   let(:created_id) { 1 }

@@ -356,13 +356,24 @@ You can disable following and being followed by other users.
 NOTE:
 When this feature is being disabled, all current followed/following connections are deleted.
 
-## Advanced code search with zoekt
+## Exact code search
 
-### Disable searching code with Zoekt
+### Enable exact code search
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) as a beta feature [with a flag](../feature_flags.md) named `search_code_with_zoekt`. Enabled by default.
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** GitLab.com, Self-managed
+**Status:** Beta
 
-You can disable searching with Zoekt and use Elasticsearch instead.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105049) as a [Beta](../../policy/experiment-beta-support.md#beta) in GitLab 15.9 [with flags](../../administration/feature_flags.md) named `index_code_with_zoekt` and `search_code_with_zoekt`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) in GitLab 16.6.
+> - Feature flags `index_code_with_zoekt` and `search_code_with_zoekt` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148378) in GitLab 17.1.
+
+WARNING:
+This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
+
+To enable exact code search in GitLab:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.

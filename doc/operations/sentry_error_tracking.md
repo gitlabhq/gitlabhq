@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 [Sentry](https://sentry.io/) is an open source error tracking system. GitLab enables
 administrators to connect Sentry to GitLab, so users can view a list of Sentry errors in GitLab.

@@ -1,0 +1,6 @@
+query getManifestDetails($id: ContainerRepositoryID!, $reference: String!) {
+  containerRepository(id: $id) {
+    id
+    manifest(reference: $reference)
+  }
+}

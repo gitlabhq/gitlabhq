@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:project) do
     create(:project, :import_started,
       import_data_attributes: {
@@ -14,7 +14,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsImporter, feature
 
   subject(:importer) { described_class.new(project) }
 
-  describe '#execute', :clean_gitlab_redis_cache do
+  describe '#execute' do
     before do
       allow_next_instance_of(Bitbucket::Client) do |client|
         allow(client).to receive(:pull_requests).and_return(

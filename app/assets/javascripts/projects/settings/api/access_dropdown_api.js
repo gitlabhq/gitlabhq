@@ -35,6 +35,10 @@ export const getGroups = ({ withProjectAccess = false }) => {
 };
 
 export const getDeployKeys = (query) => {
+  if (gon.limit_repository_settings) {
+    return { data: [] };
+  }
+
   return axios.get(buildUrl(gon.relative_url_root || '', DEPLOY_KEYS_PATH), {
     params: {
       search: query,

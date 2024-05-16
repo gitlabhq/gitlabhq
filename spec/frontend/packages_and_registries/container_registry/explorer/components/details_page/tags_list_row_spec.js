@@ -5,11 +5,13 @@ import {
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlBadge,
+  GlLink,
 } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
+import SignatureDetailsModal from '~/packages_and_registries/container_registry/explorer/components/details_page/signature_details_modal.vue';
 import {
   REMOVE_TAG_BUTTON_TITLE,
   MISSING_MANIFEST_WARNING_TOOLTIP,
@@ -45,6 +47,7 @@ describe('tags list row', () => {
   const findAdditionalActionsMenu = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findSignedBadge = () => wrapper.findComponent(GlBadge);
+  const findSignatureDetailsModal = () => wrapper.findComponent(SignatureDetailsModal);
 
   const mountComponent = (propsData = defaultProps) => {
     wrapper = shallowMountExtended(TagsListRow, {
@@ -437,6 +440,10 @@ describe('tags list row', () => {
       it('does not show the signature details row', () => {
         expect(findSignaturesDetails().exists()).toBe(false);
       });
+
+      it('does not show the signatures modal', () => {
+        expect(findSignatureDetailsModal().exists()).toBe(false);
+      });
     });
 
     describe('with signatures', () => {
@@ -484,6 +491,38 @@ describe('tags list row', () => {
             expect(findSignaturesDetails().at(index).text()).toContain(
               `Signature digest: sha256:${index}`,
             );
+          });
+
+          it('shows the view details link', () => {
+            expect(findSignaturesDetails().at(index).findComponent(GlLink).text()).toBe(
+              'View details',
+            );
+          });
+        });
+      });
+
+      describe('signature details modal', () => {
+        it('does not show modal by default', () => {
+          expect(findSignatureDetailsModal().props('visible')).toBe(false);
+          expect(findSignatureDetailsModal().props('digest')).toBe(null);
+        });
+
+        describe(`when a row's view details link is clicked`, () => {
+          beforeEach(() => {
+            findSignaturesDetails().at(0).findComponent(GlLink).vm.$emit('click');
+          });
+
+          it('shows modal', () => {
+            expect(findSignatureDetailsModal().props('visible')).toBe(true);
+            expect(findSignatureDetailsModal().props('digest')).toBe('sha256:0');
+          });
+
+          it('hides modal when the modal is closed', async () => {
+            findSignatureDetailsModal().vm.$emit('close');
+            await nextTick();
+
+            expect(findSignatureDetailsModal().props('visible')).toBe(false);
+            expect(findSignatureDetailsModal().props('digest')).toBe(null);
           });
         });
       });

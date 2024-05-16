@@ -59,7 +59,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, fea
     end
   end
 
-  describe '#run', :clean_gitlab_redis_cache do
+  describe '#run', :clean_gitlab_redis_shared_state do
     let(:validation_response) { double(Hash, 'error?': false) }
 
     before do

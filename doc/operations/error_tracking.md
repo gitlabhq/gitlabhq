@@ -23,7 +23,7 @@ For error tracking to work, you need:
   - To use the GitLab backend, see [GitLab Integrated error tracking](integrated_error_tracking.md).
     Integrated error tracking is available only on GitLab.com.
   - To use Sentry as the backend, see [Sentry based](sentry_error_tracking.md).
-    Sentry based error tracking is available only for self-managed instances.
+    Sentry based error tracking is available for GitLab.com, GitLab Dedicated and Self-managed instances.
 
 Here is a summary of the capabilities for each version:
 

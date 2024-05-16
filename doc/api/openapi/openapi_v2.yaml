@@ -27712,6 +27712,7 @@ paths:
         enum:
         - text
         - image
+        - file
         required: true
       - in: formData
         name: position[new_path]
@@ -27906,6 +27907,7 @@ paths:
         enum:
         - text
         - image
+        - file
         required: true
       - in: formData
         name: position[new_path]

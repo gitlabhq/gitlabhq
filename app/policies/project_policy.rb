@@ -607,6 +607,8 @@ class ProjectPolicy < BasePolicy
     enable :admin_push_rules
     enable :manage_deploy_tokens
     enable :manage_merge_request_settings
+    enable :create_protected_branch
+    enable :admin_protected_branch
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger

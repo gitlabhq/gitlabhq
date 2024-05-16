@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::DiscussionId, :clean_gitlab_redis_cache,
+RSpec.describe Gitlab::GithubImport::Representation::DiffNotes::DiscussionId, :clean_gitlab_redis_shared_state,
   feature_category: :importers do
   describe '#discussion_id' do
     let(:hunk) do

@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::MergeRequestsImporte
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
-  describe '#sequential_import', :clean_gitlab_redis_cache do
+  describe '#sequential_import', :clean_gitlab_redis_shared_state do
     let_it_be(:mr) { create(:merge_request, source_project: project, target_branch: 'feature1') }
 
     let_it_be(:mr_with_attachment) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JiraImport::IssuesImporter do
+RSpec.describe Gitlab::JiraImport::IssuesImporter, :clean_gitlab_redis_shared_state do
   include JiraIntegrationHelpers
 
   let_it_be(:user) { create(:user) }
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::JiraImport::IssuesImporter do
     it { expect(subject.imported_items_cache_key).to eq("jira-importer/already-imported/#{project.id}/issues") }
   end
 
-  describe '#execute', :clean_gitlab_redis_cache do
+  describe '#execute' do
     context 'when no returned issues' do
       it 'does not schedule any import jobs' do
         expect(subject).to receive(:fetch_issues).with(0).and_return([])

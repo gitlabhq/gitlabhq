@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::NotesImporter, featu
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
-  describe '#sequential_import', :clean_gitlab_redis_cache do
+  describe '#sequential_import', :clean_gitlab_redis_shared_state do
     let_it_be(:note) { create(:note, project: project) }
 
     let_it_be(:note_with_attachment) do

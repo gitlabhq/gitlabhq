@@ -6,6 +6,7 @@ import {
   GlIcon,
   GlDisclosureDropdown,
   GlBadge,
+  GlLink,
 } from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -27,6 +28,7 @@ import {
   MORE_ACTIONS_TEXT,
   COPY_IMAGE_PATH_TITLE,
 } from '../../constants/index';
+import SignatureDetailsModal from './signature_details_modal.vue';
 
 export default {
   components: {
@@ -35,10 +37,12 @@ export default {
     GlIcon,
     GlDisclosureDropdown,
     GlBadge,
+    GlLink,
     ListItem,
     ClipboardButton,
     TimeAgoTooltip,
     DetailsRow,
+    SignatureDetailsModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -283,7 +287,7 @@ export default {
 
     <template v-if="signatures.length" #details-signatures>
       <details-row
-        v-for="(signature, index) in signatures"
+        v-for="({ digest }, index) in signatures"
         :key="index"
         icon="pencil"
         data-testid="signatures-detail"
@@ -291,11 +295,21 @@ export default {
         <div class="gl-display-flex">
           <span class="gl-text-truncate gl-mr-3 gl-flex-basis-0 gl-flex-grow-1">
             <gl-sprintf :message="s__('ContainerRegistry|Signature digest: %{digest}')">
-              <template #digest>{{ signature.digest }}</template>
+              <template #digest>{{ digest }}</template>
             </gl-sprintf>
           </span>
+
+          <gl-link @click="selectedDigest = digest">
+            {{ __('View details') }}
+          </gl-link>
         </div>
       </details-row>
+
+      <signature-details-modal
+        :visible="Boolean(selectedDigest)"
+        :digest="selectedDigest"
+        @close="selectedDigest = null"
+      />
     </template>
   </list-item>
 </template>

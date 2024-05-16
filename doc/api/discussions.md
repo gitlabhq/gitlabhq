@@ -894,7 +894,7 @@ Parameters for all comments:
 | `position[start_sha]`                    | string         | yes (if `position*` is supplied)     | SHA referencing commit in target branch. |
 | `position[new_path]`                     | string         | yes (if the position type is `text`) | File path after change. |
 | `position[old_path]`                     | string         | yes (if the position type is `text`) | File path before change. |
-| `position[position_type]`                | string         | yes (if position* is supplied)       | Type of the position reference. Allowed values: `text` or `image`. |
+| `position[position_type]`                | string         | yes (if position* is supplied)       | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
 | `commit_id`                              | string         | no                                   | SHA referencing commit to start this thread on. |
 | `created_at`                             | string         | no                                   | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 | `position`                               | hash           | no                                   | Position when creating a diff note. |
@@ -1303,7 +1303,7 @@ Parameters:
 | `position[base_sha]`      | string         | yes (if `position*` is supplied) | SHA of the parent commit. |
 | `position[head_sha]`      | string         | yes (if `position*` is supplied) | The SHA of this commit. Same as `commit_id`. |
 | `position[start_sha]`     | string         | yes (if `position*` is supplied) | SHA of the parent commit. |
-| `position[position_type]` | string         | yes (if `position*` is supplied) | Type of the position reference. Allowed values: `text` or `image`. |
+| `position[position_type]` | string         | yes (if `position*` is supplied) | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
 | `created_at`              | string         | no                               | Date time string, ISO 8601 formatted, such as `2016-03-11T03:45:40Z`. Requires administrator or project/group owner rights. |
 | `position`                | hash           | no                               | Position when creating a diff note. |
 

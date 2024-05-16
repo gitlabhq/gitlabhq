@@ -45,7 +45,23 @@ RSpec.describe Packages::Conan::CreatePackageService, feature_category: :package
       end
 
       it 'fails' do
-        expect { package }.to raise_exception(ActiveRecord::RecordInvalid)
+        expect { package }.to raise_error(ActiveRecord::RecordInvalid, /Conan metadatum package username is invalid/)
+      end
+    end
+
+    context 'with existing recipe' do
+      let_it_be(:existing_package) { create(:conan_package, project: project) }
+      let(:params) do
+        {
+          package_name: existing_package.name,
+          package_version: existing_package.version,
+          package_username: existing_package.conan_metadatum.package_username,
+          package_channel: existing_package.conan_metadatum.package_channel
+        }
+      end
+
+      it 'does not create a conan package with same recipe' do
+        expect { package }.to raise_error(ActiveRecord::RecordInvalid, /Package recipe already exists/)
       end
     end
   end

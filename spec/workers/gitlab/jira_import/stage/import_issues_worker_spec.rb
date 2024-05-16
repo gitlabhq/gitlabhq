@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker, feature_category: :importers do
+RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker, :clean_gitlab_redis_cache, feature_category: :importers do
   include JiraIntegrationHelpers
 
   let_it_be(:user) { create(:user) }
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::JiraImport::Stage::ImportIssuesWorker, feature_category: 
       it_behaves_like 'does not advance to next stage'
     end
 
-    context 'when import started', :clean_gitlab_redis_cache do
+    context 'when import started' do
       let(:job_waiter) { Gitlab::JobWaiter.new(2, 'some-job-key') }
 
       before_all do

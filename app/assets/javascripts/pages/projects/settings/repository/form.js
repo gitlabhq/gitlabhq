@@ -10,12 +10,18 @@ import ProtectedTagEditList from '~/protected_tags/protected_tag_edit_list';
 import initSettingsPanels from '~/settings_panels';
 
 export default () => {
-  new ProtectedTagCreate({ hasLicense: false });
-  new ProtectedTagEditList({ hasLicense: false });
-  initDeployKeys();
-  initSettingsPanels();
-  new ProtectedBranchCreate({ hasLicense: false });
-  new ProtectedBranchEditList();
-  initDatePicker(); // Used for deploy token "expires at" field
-  fileUpload('.js-choose-file', '.js-object-map-input');
+  if (gon.limit_repository_settings?.includes('protected_branches')) {
+    new ProtectedBranchCreate({ hasLicense: false });
+    new ProtectedBranchEditList();
+  } else {
+    new ProtectedTagCreate({ hasLicense: false });
+    new ProtectedTagEditList({ hasLicense: false });
+    initDeployKeys();
+    initSettingsPanels();
+    new ProtectedBranchCreate({ hasLicense: false });
+    new ProtectedBranchEditList();
+    initDatePicker(); // Used for deploy token "expires at" field
+    fileUpload('.js-choose-file', '.js-object-map-input');
+    new ProtectedBranchEditList();
+  }
 };

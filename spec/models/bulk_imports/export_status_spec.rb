@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state, feature_category: :importers do
+RSpec.describe BulkImports::ExportStatus, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:relation) { 'labels' }
   let_it_be(:import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: import) }

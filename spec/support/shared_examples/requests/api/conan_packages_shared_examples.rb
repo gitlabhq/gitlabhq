@@ -217,7 +217,7 @@ end
 RSpec.shared_examples 'handling validation error for package' do
   context 'with validation error' do
     before do
-      allow_next_instance_of(Packages::Package) do |instance|
+      allow_next_instance_of(::Packages::Conan::Package) do |instance|
         instance.errors.add(:base, 'validation error')
 
         allow(instance).to receive(:valid?).and_return(false)

@@ -24,6 +24,12 @@ DETAILS:
 FLAG:
 The availability of this feature is controlled by feature flags. For more information, see the history.
 
+The product analytics feature empowers you to track user behavior and gain insights into how your
+applications are used and how users interact with your product.
+By using the data collected with product analytics in GitLab, you can better understand your users,
+identify friction points in funnels, make data-driven product decisions, and ultimately build better
+products that drive user engagement and business growth.
+
 For more information about the vision and development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
 To leave feedback about product analytics bugs or functionality:
 

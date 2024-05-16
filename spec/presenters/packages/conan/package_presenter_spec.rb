@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Conan::PackagePresenter do
+RSpec.describe ::Packages::Conan::PackagePresenter, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:package) { create(:conan_package) }
   let_it_be(:project) { package.project }

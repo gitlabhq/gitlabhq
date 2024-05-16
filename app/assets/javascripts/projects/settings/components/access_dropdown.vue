@@ -230,37 +230,42 @@ export default {
       this.initialLoading = initial;
       this.loading = true;
 
+      let asyncKeysUsersAndGroups;
+
       if (this.hasLicense) {
-        Promise.all([
-          getDeployKeys(this.query),
-          getUsers(this.query),
-          this.groups.length
-            ? Promise.resolve({ data: this.groups })
-            : getGroups({ withProjectAccess: this.groupsWithProjectAccess }),
-        ])
-          .then(([deployKeysResponse, usersResponse, groupsResponse]) => {
-            this.consolidateData(deployKeysResponse.data, usersResponse.data, groupsResponse.data);
-            this.setSelected({ initial });
-          })
-          .catch(() =>
-            createAlert({ message: __('Failed to load groups, users and deploy keys.') }),
-          )
-          .finally(() => {
-            this.initialLoading = false;
-            this.loading = false;
-          });
+        if (gon.limit_repository_settings?.includes('protected_branches')) {
+          asyncKeysUsersAndGroups = Promise.all([
+            null,
+            getUsers(this.query),
+            this.groups.length
+              ? this.groups
+              : getGroups({ withProjectAccess: this.groupsWithProjectAccess }),
+          ]);
+        } else {
+          asyncKeysUsersAndGroups = Promise.all([
+            getDeployKeys(this.query),
+            getUsers(this.query),
+            this.groups.length
+              ? this.groups
+              : getGroups({ withProjectAccess: this.groupsWithProjectAccess }),
+          ]);
+        }
       } else {
-        getDeployKeys(this.query)
-          .then((deployKeysResponse) => {
-            this.consolidateData(deployKeysResponse.data);
-            this.setSelected({ initial });
-          })
-          .catch(() => createAlert({ message: __('Failed to load deploy keys.') }))
-          .finally(() => {
-            this.initialLoading = false;
-            this.loading = false;
-          });
+        asyncKeysUsersAndGroups = Promise.all([getDeployKeys(this.query), null, null]);
       }
+
+      asyncKeysUsersAndGroups
+        .then((data) => {
+          this.consolidateData(...data);
+          this.setSelected({ initial });
+        })
+        .catch(() => {
+          createAlert({ message: __('Failed to load data.') });
+        })
+        .finally(() => {
+          this.initialLoading = false;
+          this.loading = false;
+        });
     },
     consolidateData(deployKeysResponse, usersResponse = [], groupsResponse = []) {
       // This re-assignment is intentional as level.type property is being used for comparision,
@@ -269,42 +274,48 @@ export default {
       this.roles = this.accessLevelsData.map((role) => ({ ...role, type: LEVEL_TYPES.ROLE }));
 
       if (this.hasLicense) {
-        this.groups = groupsResponse.map((group) => ({ ...group, type: LEVEL_TYPES.GROUP }));
+        this.groups = groupsResponse
+          ? groupsResponse.data.map((group) => ({ ...group, type: LEVEL_TYPES.GROUP }))
+          : [];
 
         // Has to be checked against server response
         // because the selected item can be in filter results
         if (this.showUsers) {
-          this.users = usersResponse.map(({ id, name, username, avatar_url }) => ({
-            id,
-            name,
-            username,
-            avatar_url,
-            type: LEVEL_TYPES.USER,
-          }));
+          this.users = usersResponse
+            ? usersResponse.data.map(({ id, name, username, avatar_url }) => ({
+                id,
+                name,
+                username,
+                avatar_url,
+                type: LEVEL_TYPES.USER,
+              }))
+            : [];
         }
       }
 
-      this.deployKeys = deployKeysResponse.map((response) => {
-        const {
-          id,
-          fingerprint,
-          fingerprint_sha256: fingerprintSha256,
-          title,
-          owner: { avatar_url, name, username },
-        } = response;
+      this.deployKeys = deployKeysResponse
+        ? deployKeysResponse.data.map((response) => {
+            const {
+              id,
+              fingerprint,
+              fingerprint_sha256: fingerprintSha256,
+              title,
+              owner: { avatar_url, name, username },
+            } = response;
 
-        const availableFingerprint = fingerprintSha256 || fingerprint;
-        const shortFingerprint = `(${availableFingerprint.substring(0, 14)}...)`;
+            const availableFingerprint = fingerprintSha256 || fingerprint;
+            const shortFingerprint = `(${availableFingerprint.substring(0, 14)}...)`;
 
-        return {
-          id,
-          title: title.concat(' ', shortFingerprint),
-          avatar_url,
-          fullname: name,
-          username,
-          type: LEVEL_TYPES.DEPLOY_KEY,
-        };
-      });
+            return {
+              id,
+              title: title.concat(' ', shortFingerprint),
+              avatar_url,
+              fullname: name,
+              username,
+              type: LEVEL_TYPES.DEPLOY_KEY,
+            };
+          })
+        : [];
     },
     setSelected({ initial } = {}) {
       if (initial) {

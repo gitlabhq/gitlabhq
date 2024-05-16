@@ -147,6 +147,11 @@ export default class ProtectedBranchCreate {
     if (!this.hasProtectedBranchSuccessAlert()) {
       return;
     }
+
+    if (!document.getElementById('branch-rules')) {
+      return;
+    }
+
     this.expandAndScroll(PROTECTED_BRANCHES_ANCHOR);
 
     this.createSuccessAlert();
