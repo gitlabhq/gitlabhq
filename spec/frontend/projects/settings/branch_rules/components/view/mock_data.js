@@ -45,17 +45,6 @@ const approvalsRequired = 3;
 
 const groupsMock = [{ name: 'test_group_1' }, { name: 'test_group_2' }];
 
-export const approvalRulesMock = [
-  {
-    __typename: 'ApprovalProjectRule',
-    id: '123',
-    name: 'test',
-    type: 'REGULAR',
-    eligibleApprovers: { nodes: usersMock },
-    approvalsRequired,
-  },
-];
-
 export const statusChecksRulesMock = [
   { __typename: 'StatusCheckRule', id: '123', name: 'test', externalUrl: 'https://test.test' },
   { __typename: 'StatusCheckRule', id: '456', name: 'test 2', externalUrl: 'https://test2.test2' },
@@ -68,7 +57,6 @@ export const protectionPropsMock = {
   roles: accessLevelsMock,
   users: usersMock,
   groups: groupsMock,
-  approvals: approvalRulesMock,
   statusChecks: statusChecksRulesMock,
 };
 

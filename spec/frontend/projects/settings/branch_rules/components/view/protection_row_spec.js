@@ -23,8 +23,6 @@ describe('Branch rule protection row', () => {
   const findAvatarLinks = () => wrapper.findAllComponents(GlAvatarLink);
   const findAvatars = () => wrapper.findAllComponents(GlAvatar);
   const findAccessLevels = () => wrapper.findAllByTestId('access-level');
-  const findApprovalsRequired = () =>
-    wrapper.findByText(`${protectionRowPropsMock.approvalsRequired} approvals required`);
   const findStatusChecksUrl = () => wrapper.findByText(protectionRowPropsMock.statusCheckUrl);
 
   it('renders a title', () => {
@@ -61,10 +59,6 @@ describe('Branch rule protection row', () => {
     expect(findAccessLevels().at(1).text()).toContain(
       protectionRowPropsMock.accessLevels[1].accessLevelDescription,
     );
-  });
-
-  it('renders the number of approvals required', () => {
-    expect(findApprovalsRequired().exists()).toBe(true);
   });
 
   it('renders status checks URL', () => {

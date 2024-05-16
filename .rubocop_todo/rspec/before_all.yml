@@ -1,0 +1,5 @@
+---
+# Cop supports --autocorrect.
+RSpec/BeforeAll:
+  Exclude:
+    - 'ee/spec/support/shared_examples/finders/security/findings_finder_shared_examples.rb'

@@ -43,11 +43,6 @@ export default {
       required: false,
       default: () => [],
     },
-    approvals: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     statusChecks: {
       type: Array,
       required: false,
@@ -75,14 +70,17 @@ export default {
     hasUsers() {
       return Boolean(this.users.length);
     },
+    hasGroups() {
+      return Boolean(this.groups.length);
+    },
     hasStatusChecks() {
       return Boolean(this.statusChecks.length);
     },
-    showGroupsDivider() {
+    showDivider() {
       return this.hasRoles || this.hasUsers;
     },
     showEmptyState() {
-      return !this.hasRoles && !this.hasUsers && !this.hasStatusChecks;
+      return !this.hasRoles && !this.hasUsers && !this.hasGroups && !this.hasStatusChecks;
     },
     showHelpText() {
       return Boolean(this.helpText.length);
@@ -123,26 +121,16 @@ export default {
     <protection-row
       v-if="users.length"
       :show-divider="hasRoles"
-      :users="users"
       :title="$options.i18n.usersTitle"
+      :users="users"
     />
 
     <!-- Groups -->
     <protection-row
       v-if="groups.length"
-      :show-divider="showGroupsDivider"
+      :show-divider="showDivider"
       :title="$options.i18n.groupsTitle"
       :access-levels="groups"
-    />
-
-    <!-- Approvals -->
-    <protection-row
-      v-for="(approval, index) in approvals"
-      :key="approval.name"
-      :show-divider="index !== 0"
-      :title="approval.name"
-      :users="approval.eligibleApprovers.nodes"
-      :approvals-required="approval.approvalsRequired"
     />
 
     <!-- Status checks -->

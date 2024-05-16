@@ -152,11 +152,6 @@ msgid_plural "%d additional users"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d approval required"
-msgid_plural "%d approvals required"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d approver"
 msgid_plural "%d approvers"
 msgstr[0] ""

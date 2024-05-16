@@ -4,7 +4,7 @@ import { n__ } from '~/locale';
 
 const AVATAR_TOOLTIP_MAX_CHARS = 100;
 export const MAX_VISIBLE_AVATARS = 4;
-export const AVATAR_SIZE = 32;
+export const AVATAR_SIZE = 24;
 
 export default {
   name: 'ProtectionRow',
@@ -36,11 +36,6 @@ export default {
       required: false,
       default: () => [],
     },
-    approvalsRequired: {
-      type: Number,
-      required: false,
-      default: 0,
-    },
     statusCheckUrl: {
       type: String,
       required: false,
@@ -55,22 +50,19 @@ export default {
         this.users.length - this.$options.MAX_VISIBLE_AVATARS,
       );
     },
-    approvalsRequiredTitle() {
-      return this.approvalsRequired
-        ? n__('%d approval required', '%d approvals required', this.approvalsRequired)
-        : null;
-    },
   },
 };
 </script>
 
 <template>
   <div
-    class="gl-display-flex gl-align-items-center gl-border-gray-100 gl-mb-4 gl-border-t-1"
-    :class="{ 'gl-border-t-solid': showDivider }"
+    class="gl-display-flex gl-align-items-center gl-gap-7 gl-border-gray-100 gl-mb-4 gl-border-t-1"
+    :class="{ 'gl-border-t-solid gl-pt-4': showDivider }"
   >
-    <div class="gl-display-flex gl-w-full gl-justify-content-space-between gl-align-items-center">
-      <div class="gl-mr-7 gl-w-1/4">{{ title }}</div>
+    <div class="gl-display-flex gl-w-full gl-align-items-center">
+      <div class="gl-flex-basis-quarter">{{ title }}</div>
+
+      <div v-if="statusCheckUrl" class="gl-flex-grow-1">{{ statusCheckUrl }}</div>
 
       <gl-avatars-inline
         v-if="users.length"
@@ -101,8 +93,6 @@ export default {
         </template>
       </gl-avatars-inline>
 
-      <div v-if="statusCheckUrl" class="gl-ml-7 gl-flex-grow-1">{{ statusCheckUrl }}</div>
-
       <gl-badge
         v-for="(item, index) in accessLevels"
         :key="index"
@@ -112,8 +102,6 @@ export default {
       >
         {{ item.accessLevelDescription }}
       </gl-badge>
-
-      <div class="gl-ml-7 gl-flex-grow-1">{{ approvalsRequiredTitle }}</div>
     </div>
   </div>
 </template>

@@ -13,6 +13,7 @@ describe('Branch rule protection', () => {
         header: 'Allowed to merge',
         headerLinkHref: '/foo/bar',
         headerLinkTitle: 'Manage here',
+        emptyStateCopy: 'Nothing to show',
         ...props,
       },
       stubs: { GlCard },
@@ -73,24 +74,15 @@ describe('Branch rule protection', () => {
     });
   });
 
-  it('renders a protection row for approvals', () => {
-    const approval = protectionPropsMock.approvals[0];
-    expect(findProtectionRows().at(3).props()).toMatchObject({
-      title: approval.name,
-      users: approval.eligibleApprovers.nodes,
-      approvalsRequired: approval.approvalsRequired,
-    });
-  });
-
   it('renders a protection row for status checks', () => {
     const statusCheck = protectionPropsMock.statusChecks[0];
-    expect(findProtectionRows().at(4).props()).toMatchObject({
+    expect(findProtectionRows().at(3).props()).toMatchObject({
       title: statusCheck.name,
       showDivider: false,
       statusCheckUrl: statusCheck.externalUrl,
     });
 
-    expect(findProtectionRows().at(5).props('showDivider')).toBe(true);
+    expect(findProtectionRows().at(4).props('showDivider')).toBe(true);
   });
 
   describe('When `isEditAvailable` prop is set to true', () => {
