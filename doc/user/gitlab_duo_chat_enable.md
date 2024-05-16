@@ -37,7 +37,7 @@ You do not need to do anything to enable GitLab Duo Chat if you have GitLab 16.1
 
 ### In earlier GitLab versions
 
-In GitLab 16.8, 16.9, and 16.10, GitLab Duo Chat is available in Beta. To enable GitLab Duo Chat for your self-managed GitLab instance, an administrator must enable Experiment and Beta features:
+In GitLab 16.8, 16.9, and 16.10, GitLab Duo Chat is available in beta. To enable GitLab Duo Chat for your self-managed GitLab instance, an administrator must enable experiment and beta features:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
@@ -47,7 +47,7 @@ In GitLab 16.8, 16.9, and 16.10, GitLab Duo Chat is available in Beta. To enable
    [manually synchronize your subscription](#manually-synchronize-your-subscription).
 
 NOTE:
-Usage of GitLab Duo Chat Beta is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+Usage of GitLab Duo Chat beta is governed by the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 Learn about [data usage when using GitLab Duo Chat](ai_data_usage.md).
 
 ### Manually synchronize your subscription
@@ -64,7 +64,7 @@ Without the manual synchronization, it might take up to 24 hours to activate Git
 In GitLab 16.11 and later, on GitLab Dedicated, GitLab Duo Chat is generally available and
 automatically enabled.
 
-In GitLab 16.8, 16.9, and 16.10, on GitLab Dedicated, GitLab Duo Chat is available in Beta.
+In GitLab 16.8, 16.9, and 16.10, on GitLab Dedicated, GitLab Duo Chat is available in beta.
 
 ## Disable GitLab Duo Chat
 

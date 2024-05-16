@@ -5,6 +5,7 @@ import {
   GlSprintf,
   GlIcon,
   GlDisclosureDropdown,
+  GlBadge,
 } from '@gitlab/ui';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
@@ -33,6 +34,7 @@ export default {
     GlFormCheckbox,
     GlIcon,
     GlDisclosureDropdown,
+    GlBadge,
     ListItem,
     ClipboardButton,
     TimeAgoTooltip,
@@ -73,6 +75,11 @@ export default {
     MORE_ACTIONS_TEXT,
     COPY_IMAGE_PATH_TITLE,
   },
+  data() {
+    return {
+      selectedDigest: null,
+    };
+  },
   computed: {
     items() {
       return [
@@ -88,7 +95,6 @@ export default {
         },
       ];
     },
-
     formattedSize() {
       return this.tag.totalSize
         ? numberToHumanSize(Number(this.tag.totalSize))
@@ -131,6 +137,13 @@ export default {
     showConfigDigest() {
       return !this.isInvalidTag && !this.isEmptyRevision;
     },
+    signatures() {
+      const referrers = this.tag.referrers || [];
+      // All referrers should be signatures, but we'll filter by signature artifact types as a sanity check.
+      return referrers.filter(
+        ({ artifactType }) => artifactType === 'application/vnd.dev.cosign.artifact.sig.v1+json',
+      );
+    },
   },
 };
 </script>
@@ -149,7 +162,7 @@ export default {
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center">
         <div
-          v-gl-tooltip="{ title: tag.name }"
+          v-gl-tooltip="tag.name"
           data-testid="name"
           class="gl-text-overflow-ellipsis gl-overflow-hidden gl-whitespace-nowrap"
           :class="mobileClasses"
@@ -167,11 +180,17 @@ export default {
 
         <gl-icon
           v-if="isInvalidTag"
-          v-gl-tooltip="{ title: $options.i18n.MISSING_MANIFEST_WARNING_TOOLTIP }"
+          v-gl-tooltip.d0="$options.i18n.MISSING_MANIFEST_WARNING_TOOLTIP"
           name="warning"
-          class="gl-text-orange-500 gl-mb-2 gl-ml-2"
+          class="gl-text-orange-500 gl-mr-2"
         />
       </div>
+    </template>
+
+    <template v-if="signatures.length" #left-after-toggle>
+      <gl-badge icon="check-circle" variant="success" class="gl-ml-4">
+        {{ s__('ContainerRegistry|Signed') }}
+      </gl-badge>
     </template>
 
     <template #left-secondary>
@@ -259,6 +278,23 @@ export default {
           size="small"
           :disabled="disabled"
         />
+      </details-row>
+    </template>
+
+    <template v-if="signatures.length" #details-signatures>
+      <details-row
+        v-for="(signature, index) in signatures"
+        :key="index"
+        icon="pencil"
+        data-testid="signatures-detail"
+      >
+        <div class="gl-display-flex">
+          <span class="gl-text-truncate gl-mr-3 gl-flex-basis-0 gl-flex-grow-1">
+            <gl-sprintf :message="s__('ContainerRegistry|Signature digest: %{digest}')">
+              <template #digest>{{ signature.digest }}</template>
+            </gl-sprintf>
+          </span>
+        </div>
       </details-row>
     </template>
   </list-item>

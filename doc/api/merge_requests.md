@@ -11,18 +11,18 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - `reference` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7.
-> - `merged_by` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7.
-> - `merge_status` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
+> - `reference` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7.
+> - `merged_by` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7.
+> - `merge_status` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in favor of `detailed_merge_status` in GitLab 15.6.
 > - `with_merge_status_recheck` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115948) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `restrict_merge_status_recheck` to be ignored for requests from users insufficient permissions. Disabled by default.
-> - `approvals_before_merge` was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
-> - `prepared_at` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001) in GitLab 16.1.
+> - `approvals_before_merge` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119503) in GitLab 16.0.
+> - `prepared_at` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122001) in GitLab 16.1.
 
 All API calls to non-public information require authentication.
 
 ## Removals in API v5
 
-The `approvals_before_merge` attribute is deprecated, and is scheduled to be removed
+The `approvals_before_merge` attribute is deprecated, and is scheduled for removal
 in API v5 in favor of the [Merge request approvals API](merge_request_approvals.md).
 
 ## List merge requests
@@ -439,8 +439,8 @@ Supported attributes:
 | `created_after`                 | datetime       | No       | Returns merge requests created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `created_before`                | datetime       | No       | Returns merge requests created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `labels`                        | string         | No       | Returns merge requests matching a comma-separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. Predefined names are case-insensitive. |
-| `merge_user_id`                 | integer        | No       | Returns merge requests which have been merged by the user with the given user `id`. Mutually exclusive with `merge_user_username`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0. |
-| `merge_user_username`           | string         | No       | Returns merge requests which have been merged by the user with the given `username`. Mutually exclusive with `merge_user_id`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0. |
+| `merge_user_id`                 | integer        | No       | Returns merge requests merged by the user with the given user `id`. Mutually exclusive with `merge_user_username`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0. |
+| `merge_user_username`           | string         | No       | Returns merge requests merged by the user with the given `username`. Mutually exclusive with `merge_user_id`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0. |
 | `milestone`                     | string         | No       | Returns merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
 | `my_reaction_emoji`             | string         | No       | Returns merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
 | `non_archived`                  | boolean        | No       | Returns merge requests from non archived projects only. Default is `true`. |
@@ -460,7 +460,7 @@ Supported attributes:
 | `with_labels_details`           | boolean        | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
 | `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) the asynchronous recalculation of the `merge_status` field. Default is `false`. In GitLab 15.11 and later, enable the `restrict_merge_status_recheck` feature [flag](../administration/feature_flags.md) to ignore this attribute when requested by users without at least the Developer role. |
 
-The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
+To restrict the list of merge requests, use the pagination parameters `page` and `per_page`.
 
 In the response, `group_id` represents the ID of the group containing the project where the merge request resides.
 
@@ -827,8 +827,8 @@ to get the updated status. This affects the `has_conflicts` property, as it depe
 
 ### Merge status
 
-> - The `merge_status` field was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6.
-> - The `detailed_merge_status` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724) in GitLab 15.6.
+> - `merge_status` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6.
+> - `detailed_merge_status` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101724) in GitLab 15.6.
 
 Use `detailed_merge_status` instead of `merge_status` to account for all potential statuses.
 
@@ -1127,7 +1127,7 @@ Example response:
 
 ## List merge request diffs
 
-> - `generated_file` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
+> - `generated_file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141576) in GitLab 16.9 [with a flag](../administration/feature_flags.md) named `collapse_generated_diff_files`. Disabled by default.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/432670) in GitLab 16.10.
 > - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 
@@ -2048,7 +2048,7 @@ This API returns specific HTTP status codes:
 | `403`       | `Source branch is protected from force push` | You don't have permission to push to the merge request's source branch. |
 | `409`       | `Failed to enqueue the rebase operation` | A long-lived transaction might have blocked your request. |
 
-If the request is enqueued successfully, the response contains:
+If the request enqueues successfully, the response contains:
 
 ```json
 {

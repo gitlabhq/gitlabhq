@@ -5,10 +5,10 @@ description: AI-powered features and functionality.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Duo Experiments
+# GitLab Duo experiments
 
-The following GitLab Duo features are in the
-[Experiment](../policy/experiment-beta-support.md#experiment) phase.
+The following GitLab Duo features are
+[experiments](../policy/experiment-beta-support.md#experiment).
 
 ## Explain code in the Web UI with Code explanation
 
@@ -17,7 +17,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - Introduced in GitLab 15.11 as an [Experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - Introduced in GitLab 15.11 as an [experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
 To use this feature:
 
@@ -69,7 +69,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../policy/experiment-beta-support.md#experiment).
 
 To use this feature:
 
@@ -99,7 +99,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [experiment](../policy/experiment-beta-support.md#experiment).
 
 To use this feature:
 
@@ -131,7 +131,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../policy/experiment-beta-support.md#experiment).
 
 To use this feature:
 
@@ -152,7 +152,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../policy/experiment-beta-support.md#experiment).
 
 To use this feature:
 

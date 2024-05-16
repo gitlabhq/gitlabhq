@@ -26,7 +26,7 @@ To change the color theme:
 
 ### Dark mode
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [Experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252) in GitLab 13.1 as an [experiment](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28252).
 
 Dark mode makes elements on the GitLab UI stand out on a dark background.
 

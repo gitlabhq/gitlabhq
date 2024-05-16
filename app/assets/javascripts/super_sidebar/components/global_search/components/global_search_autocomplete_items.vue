@@ -2,6 +2,7 @@
 import { GlAvatar, GlAlert, GlLoadingIcon, GlDisclosureDropdownGroup } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
+import { InternalEvents } from '~/tracking';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlight from '~/lib/utils/highlight';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
@@ -16,11 +17,13 @@ import {
   OVERLAY_FILE,
   USERS_GROUP_TITLE,
   PROJECTS_GROUP_TITLE,
-  ISSUE_GROUP_TITLE,
   PAGES_GROUP_TITLE,
+  ISSUES_GROUP_TITLE,
 } from '../command_palette/constants';
 import SearchResultHoverLayover from './global_search_hover_overlay.vue';
 import GlobalSearchNoResults from './global_search_no_results.vue';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'GlobalSearchAutocompleteItems',
@@ -33,8 +36,8 @@ export default {
     OVERLAY_FILE,
     USERS_GROUP_TITLE,
     PROJECTS_GROUP_TITLE,
-    ISSUE_GROUP_TITLE,
     PAGES_GROUP_TITLE,
+    ISSUES_GROUP_TITLE,
   },
   components: {
     GlAvatar,
@@ -47,6 +50,7 @@ export default {
   directives: {
     SafeHtml,
   },
+  mixins: [trackingMixin],
   computed: {
     ...mapState(['search', 'loading', 'autocompleteError']),
     ...mapGetters(['autocompleteGroupedSearchOptions', 'scopedSearchOptions']),
@@ -87,7 +91,7 @@ export default {
         case this.$options.i18n.PROJECTS_GROUP_TITLE:
           text = this.$options.i18n.OVERLAY_PROJECT;
           break;
-        case this.$options.i18n.ISSUE_GROUP_TITLE:
+        case this.$options.i18n.ISSUES_GROUP_TITLE:
           text = this.$options.i18n.OVERLAY_GOTO;
           break;
         case this.$options.i18n.PAGES_GROUP_TITLE:
@@ -96,6 +100,18 @@ export default {
         default:
       }
       return text;
+    },
+    trackingTypes({ category }) {
+      switch (category) {
+        case this.$options.i18n.PROJECTS_GROUP_TITLE: {
+          this.trackEvent('click_project_result_in_command_palette');
+          break;
+        }
+
+        default: {
+          this.trackEvent('click_user_result_in_command_palette');
+        }
+      }
     },
   },
   AVATAR_SHAPE_OPTION_RECT,
@@ -120,6 +136,7 @@ export default {
         :class="{ 'gl-mt-0!': index === 0 }"
         :group="group"
         bordered
+        @action="trackingTypes"
       >
         <template #list-item="{ item }">
           <search-result-hover-layover :text-message="overlayText(group.name)">

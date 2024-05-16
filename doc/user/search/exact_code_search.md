@@ -19,7 +19,7 @@ For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
 WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
 With exact code search, you can use regular expression and exact match modes

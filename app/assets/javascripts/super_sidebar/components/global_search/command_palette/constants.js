@@ -49,13 +49,44 @@ export const GLOBAL_COMMANDS_GROUP_TITLE = s__('CommandPalette|Global Commands')
 export const USERS_GROUP_TITLE = s__('GlobalSearch|Users');
 export const PAGES_GROUP_TITLE = s__('CommandPalette|Pages');
 export const PROJECTS_GROUP_TITLE = s__('GlobalSearch|Projects');
-export const ISSUE_GROUP_TITLE = s__('GlobalSearch|Recent issues');
+export const ISSUES_GROUP_TITLE = s__('GlobalSearch|Issues');
 export const PATH_GROUP_TITLE = s__('CommandPalette|Project files');
+export const GROUPS_GROUP_TITLE = s__('GlobalSearch|Groups');
+export const MERGE_REQUESTS_GROUP_TITLE = s__('GlobalSearch|Merge Requests');
+export const RECENT_ISSUES_GROUP_TITLE = s__('GlobalSearch|Recent issues');
+export const RECENT_EPICS_GROUP_TITLE = s__('GlobalSearch|Recent epics');
+export const RECENT_MERGE_REQUESTS_GROUP_TITLE = s__('GlobalSearch|Recent merge requests');
+
+export const FREQUENTLY_VISITED_PROJECTS_HANDLE = 'FREQUENTLY_VISITED_PROJECTS_HANDLE';
+export const FREQUENTLY_VISITED_GROUPS_HANDLE = 'FREQUENTLY_VISITED_GROUPS_HANDLE';
+
+export const ISSUES_ASSIGNED_TO_ME_TITLE = s__('GlobalSearch|Issues assigned to me');
+export const ISSUES_I_HAVE_CREATED_TITLE = s__("GlobalSearch|Issues I've created");
+export const MERGE_REQUESTS_ASSIGNED_TO_ME_TITLE = s__(
+  'GlobalSearch|Merge requests assigned to me',
+);
+export const MERGE_REQUESTS_THAT_I_AM_A_REVIEWER = s__(
+  "GlobalSearch|Merge requests that I'm a reviewer",
+);
+export const MERGE_REQUESTS_I_HAVE_CREATED_TITLE = s__("GlobalSearch|Merge requests I've created");
+
+export const SCOPE_SEARCH_ALL = 'scoped-in-all';
+export const SCOPE_SEARCH_GROUP = 'scoped-in-group';
+export const SCOPE_SEARCH_PROJECT = 'scoped-in-project';
+
+export const MODAL_CLOSE_ESC = 'esc';
+export const MODAL_CLOSE_BACKGROUND = 'backdrop';
+export const MODAL_CLOSE_HEADERCLOSE = 'headerclose';
+
+export const YOUR_WORK_TITLE = s__('GlobalSearch|Your work');
+export const EXPLORE_TITLE = s__('GlobalSearch|Explore');
+export const PROFILE_TITLE = s__('GlobalSearch|Profile');
+export const PREFERENCES_TITLE = s__('GlobalSearch|Preferences');
 
 export const GROUP_TITLES = {
   [USER_HANDLE]: USERS_GROUP_TITLE,
   [PROJECT_HANDLE]: PROJECTS_GROUP_TITLE,
-  [ISSUE_HANDLE]: ISSUE_GROUP_TITLE,
+  [ISSUE_HANDLE]: ISSUES_GROUP_TITLE,
   [PATH_HANDLE]: PATH_GROUP_TITLE,
 };
 

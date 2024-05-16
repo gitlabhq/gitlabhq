@@ -11,14 +11,14 @@ DETAILS:
 **Offering:** GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [Experiment](../../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [experiment](../../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
 
 NOTE:
-This feature is an [Experiment](../../../../policy/experiment-beta-support.md), available only on GitLab Dedicated, and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+This feature is an [experiment](../../../../policy/experiment-beta-support.md), available only on GitLab Dedicated, and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 Block secrets such as keys and API tokens from being pushed to your GitLab instance. Pre-receive secret detection is triggered when commits are pushed to any repository. If any secrets are detected, the push is blocked.
 
-Pre-receive secret detection is an Experiment, and only available on GitLab Dedicated. To use secret detection in your instance, use [pipeline secret detection](../index.md) instead.
+Pre-receive secret detection is an experiment, and only available on GitLab Dedicated. To use secret detection in your instance, use [pipeline secret detection](../index.md) instead.
 
 ## Enable pre-receive secret detection
 

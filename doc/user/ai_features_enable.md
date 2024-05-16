@@ -22,7 +22,7 @@ In addition:
   [you must assign seats](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats)
   to the users you want to have access.
 
-GitLab Duo features that are Experiment or Beta are turned off by default
+GitLab Duo features that are experimental or beta are turned off by default
 and [must be turned on](#turn-on-beta-and-experimental-features).
 
 ## Configure GitLab Duo on a self-managed instance
@@ -132,9 +132,9 @@ NOTE:
 An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/441532) to allow administrators
 to override the setting for specific groups or projects.
 
-## Turn on Beta and Experimental features
+## Turn on beta and experimental features
 
-GitLab Duo features that are Experiment and Beta are turned off by default.
+GitLab Duo features that are experimental and beta are turned off by default.
 These features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 ### On GitLab.com
@@ -146,13 +146,13 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118222) in GitLab 16.0.
 > - [Added to GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147833) in GitLab 16.11.
 
-You can turn on GitLab Duo Experiment and Beta features for your group on GitLab.com.
+You can turn on GitLab Duo experiment and beta features for your group on GitLab.com.
 
 Prerequisites:
 
 - You must have the Owner role in the top-level group.
 
-To turn on GitLab Duo Experiment and Beta features for a top-level group:
+To turn on GitLab Duo experiment and beta features for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
@@ -165,6 +165,6 @@ that belong to the group.
 
 ### On self-managed
 
-To enable GitLab Duo Beta and Experimental features for GitLab versions
+To enable GitLab Duo beta and experimental features for GitLab versions
 where GitLab Duo Chat is not yet generally available, see the
 [GitLab Duo Chat documentation](gitlab_duo_chat_enable.md#for-self-managed).

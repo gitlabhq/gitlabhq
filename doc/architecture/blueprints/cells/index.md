@@ -85,7 +85,7 @@ The current approach is to define workflows from top to bottom.
 The order defines the presumed priority of the items.
 This list is not exhaustive as we would be expecting other teams to help and fix their workflows after the initial phase, in which we fix the fundamental ones.
 
-To consider a project ready for the Beta phase, it is expected that all features defined below are supported by Cells.
+To consider a project ready for the beta phase, it is expected that all features defined below are supported by Cells.
 In the cases listed below, the workflows define a set of tables to be properly attributed to the feature.
 In some cases, a table with an ambiguous usage has to be broken down.
 For example: `uploads` are used to store user avatars, as well as uploaded attachments for comments.
@@ -214,7 +214,7 @@ When we reach production and are able to store new Organizations on new Cells, w
 
 ## Availability of the feature
 
-We are following the [Support for Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
+We are following the [Support for experiment, beta, and generally available features](../../../policy/experiment-beta-support.md).
 
 ### 1. Experiment
 

@@ -28,7 +28,7 @@ An achievement consists of a name, a description, and an avatar.
 
 Achievements are considered to be owned by the user. They are visible regardless of the visibility setting of the namespace that created the Achievement.
 
-This feature is an Experiment.
+This feature is an experiment.
 For more information about planned work, see [epic 9429](https://gitlab.com/groups/gitlab-org/-/epics/9429).
 Tell us about your use cases by leaving comments in the epic.
 

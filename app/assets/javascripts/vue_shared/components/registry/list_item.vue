@@ -94,6 +94,7 @@ export default {
               :aria-expanded="isDetailsShown"
               @click="toggleDetails"
             />
+            <slot name="left-after-toggle"></slot>
           </div>
           <div
             v-if="

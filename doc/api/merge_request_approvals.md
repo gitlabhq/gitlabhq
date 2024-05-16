@@ -15,21 +15,21 @@ DETAILS:
 
 Configuration for
 [approvals on all merge requests](../user/project/merge_requests/approvals/index.md)
-in the project. Must be authenticated for all endpoints.
+in the project. All endpoints require authentication.
 
 ## Group-level MR approvals
 
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `approval_group_rules`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428051) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `approval_group_rules`. Disabled by default. This feature is an [experiment](../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `approval_group_rules`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
-Group approval rules apply to all protected branches of projects belonging to the group. This feature is an [Experiment](../policy/experiment-beta-support.md).
+Group approval rules apply to all protected branches of projects belonging to the group. This feature is an [experiment](../policy/experiment-beta-support.md).
 
 ### Get group-level approval rules
 
@@ -105,7 +105,7 @@ Supported attributes:
 | `approvals_required` | integer           | Yes      | The number of required approvals for this rule. |
 | `name`               | string            | Yes      | The name of the approval rule. |
 | `group_ids`          | array             | No       | The IDs of groups as approvers. |
-| `rule_type`          | string            | No       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. `report_approver` is used automatically when an approval rule is created from configured and enabled [merge request approval policies](../user/application_security/policies/scan-result-policies.md) and should not be used to create approval rule with this API. |
+| `rule_type`          | string            | No       | The rule type. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. Don't use this field to build approval rules from the API. The `report_approver` field is used when GitLab creates an approval rule from configured and enabled [merge request approval policies](../user/application_security/policies/scan-result-policies.md). |
 | `user_ids`           | array             | No       | The IDs of users as approvers. |
 
 Example request:
@@ -180,7 +180,7 @@ Supported attributes:
 | `approvals_required` | string            | No       | The number of required approvals for this rule. |
 | `group_ids`          | integer           | No       | The IDs of users as approvers. |
 | `name`               | string            | No       | The name of the approval rule. |
-| `rule_type`          | array             | No       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. `report_approver` is used automatically when an approval rule is created from configured and enabled [merge request approval policies](../user/application_security/policies/scan-result-policies.md) and should not be used to create approval rule with this API. |
+| `rule_type`          | array             | No       | The rule type. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. Don't use this field to build approval rules from the API. The `report_approver` field is used when GitLab creates an approval rule from configured and enabled [merge request approval policies](../user/application_security/policies/scan-result-policies.md). |
 | `user_ids`           | array             | No       | The IDs of groups as approvers. |
 
 Example request:
@@ -269,8 +269,7 @@ Supported attributes:
 
 ### Change configuration
 
-If you are allowed to, you can change approval configuration using the following
-endpoint:
+Users with the appropriate role can change approval configuration using this endpoint:
 
 ```plaintext
 POST /projects/:id/approvals
@@ -281,13 +280,13 @@ Supported attributes:
 | Attribute                                        | Type              | Required | Description |
 |--------------------------------------------------|-------------------|----------|-------------|
 | `id`                                             | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
-| `approvals_before_merge` (deprecated)            | integer           | No       | How many approvals are required before a merge request can be merged. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. Use [Approval Rules](#create-project-level-rule) instead. |
+| `approvals_before_merge` (deprecated)            | integer           | No       | Number of required approvals before a merge request can merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/11132) in GitLab 12.3. Use [Approval Rules](#create-project-level-rule) instead. |
 | `disable_overriding_approvers_per_merge_request` | boolean           | No       | Allow or prevent overriding approvers per merge request. |
 | `merge_requests_author_approval`                 | boolean           | No       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve. |
 | `merge_requests_disable_committers_approval`     | boolean           | No       | Allow or prevent committers from self approving merge requests. |
 | `require_password_to_approve`                    | boolean           | No       | Require approver to enter a password to authenticate before adding the approval. |
 | `reset_approvals_on_push`                        | boolean           | No       | Reset approvals on a new push. |
-| `selective_code_owner_removals`                  | boolean           | No       | Reset approvals from Code Owners if their files changed. Can be enabled only if `reset_approvals_on_push` is disabled. |
+| `selective_code_owner_removals`                  | boolean           | No       | Reset approvals from Code Owners if their files changed. You must disable the `reset_approvals_on_push` field to use this field. |
 
 ```json
 {
@@ -304,9 +303,9 @@ Supported attributes:
 ### Get project-level rules
 
 > - Pagination support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31011) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default.
-> - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
+> - `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
 > - Pagination support [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366823) in GitLab 15.7. Feature flag `approval_rules_pagination` removed.
-> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
+> - `usernames` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
 
 You can request information about a project's approval rules using the following endpoint:
 
@@ -408,8 +407,8 @@ Supported attributes:
 
 ### Get a single project-level rule
 
-> - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
+> - `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
+> - `usernames` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
 
 You can request information about a single project approval rules using the following endpoint:
 
@@ -509,8 +508,8 @@ Supported attributes:
 ### Create project-level rule
 
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
-> - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
+> - `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
+> - `usernames` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
 
 You can create project approval rules using the following endpoint:
 
@@ -525,13 +524,13 @@ Supported attributes:
 | `id`                                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
 | `approvals_required`                | integer           | Yes      | The number of required approvals for this rule. |
 | `name`                              | string            | Yes      | The name of the approval rule. |
-| `applies_to_all_protected_branches` | boolean           | No       | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
+| `applies_to_all_protected_branches` | boolean           | No       | Whether to apply the rule to all protected branches. If set to `true`, ignores the value of `protected_branch_ids`. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 | `group_ids`                         | Array             | No       | The IDs of groups as approvers. |
 | `protected_branch_ids`              | Array             | No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
 | `report_type`                       | string            | No       | The report type required when the rule type is `report_approver`. The supported report types are `license_scanning` [(Deprecated in GitLab 15.9)](../update/deprecations.md#license-check-and-the-policies-tab-on-the-license-compliance-page) and `code_coverage`. |
-| `rule_type`                         | string            | No       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. `report_approver` is used automatically when an approval rule is created from configured and enabled [merge request approval policies](../user/application_security/policies/scan-result-policies.md) and should not be used to create approval rule with this API. |
-| `user_ids`                          | Array             | No       | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
-| `usernames`                         | string array      | No       | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
+| `rule_type`                         | string            | No       | The rule type. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular` (used for regular [merge request approval rules](../user/project/merge_requests/approvals/rules.md)) and `report_approver`. Don't use this field to build approval rules from the API. The `report_approver` field is used when GitLab creates an approval rule from configured and enabled [merge request approval policies](../user/application_security/policies/scan-result-policies.md). |
+| `user_ids`                          | Array             | No       | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, it adds both lists of users. |
+| `usernames`                         | string array      | No       | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, it adds both lists of users. |
 
 ```json
 {
@@ -624,7 +623,7 @@ curl --request POST \
   --data '{"name": "Any name", "rule_type": "any_approver", "approvals_required": 2}'
 ```
 
-Another example is creating an additional, user-specific rule:
+Another example is creating a user-specific rule:
 
 ```shell
 curl --request POST \
@@ -637,8 +636,8 @@ curl --request POST \
 ### Update project-level rule
 
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
-> - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
-> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
+> - `applies_to_all_protected_branches` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
+> - `usernames` property [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102446) in GitLab 15.8.
 
 You can update project approval rules using the following endpoint:
 
@@ -661,12 +660,12 @@ Supported attributes:
 | `approvals_required`                | integer           | Yes      | The number of required approvals for this rule. |
 | `approval_rule_id`                  | integer           | Yes      | The ID of a approval rule. |
 | `name`                              | string            | Yes      | The name of the approval rule. |
-| `applies_to_all_protected_branches` | boolean           | No       | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
+| `applies_to_all_protected_branches` | boolean           | No       | Whether to apply the rule to all protected branches. If set to `true`, it ignores the value of `protected_branch_ids`. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 | `group_ids`                         | Array             | No       | The IDs of groups as approvers. |
 | `protected_branch_ids`              | Array             | No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
-| `remove_hidden_groups`              | boolean           | No       | Whether hidden groups should be removed from approval rule. |
-| `user_ids`                          | Array             | No       | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
-| `usernames`                         | string array      | No       | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
+| `remove_hidden_groups`              | boolean           | No       | Whether to remove hidden groups from the approval rule. |
+| `user_ids`                          | Array             | No       | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, it adds both lists of users. |
+| `usernames`                         | string array      | No       | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, it adds both lists of users. |
 
 ```json
 {
@@ -767,7 +766,7 @@ Supported attributes:
 
 ## Merge request-level MR approvals
 
-Configuration for approvals on a specific merge request. Must be authenticated for all endpoints.
+Configuration for approvals on a specific merge request. All endpoints require authentication.
 
 You can request information about a merge request's approval status using the
 following endpoint:
@@ -822,7 +821,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approval_state
 The `approval_rules_overwritten` are `true` if the merge request level rules
 are created for the merge request. If there are none, it is `false`.
 
-This includes additional information about the users who have already approved
+This includes more information about the users who have already approved
 (`approved_by`) and whether a rule is already approved (`approved`).
 
 Supported attributes:
@@ -1053,13 +1052,12 @@ Supported attributes:
 | `name`                     | string            | Yes | The name of the approval rule.                                               |
 | `approval_project_rule_id` | integer           | No | The ID of a project-level approval rule.                                     |
 | `group_ids`                | Array             | No | The IDs of groups as approvers.                                              |
-| `user_ids`                 | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
-| `usernames`                | string array      | No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
+| `user_ids`                 | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, it adds both lists of users. |
+| `usernames`                | string array      | No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, it adds both lists of users. |
 
 NOTE:
-When `approval_project_rule_id` is set, the `name`, `users` and
-`groups` of project-level rule are copied. The `approvals_required` specified
-is used.
+Setting `approval_project_rule_id` copies the `name`, `users` and
+`groups` of the project-level rule. It uses the `approvals_required` you specify.
 
 ```json
 {
@@ -1121,29 +1119,29 @@ is used.
 
 ### Update merge request level rule
 
-You can update merge request approval rules using the following endpoint:
+To update merge request approval rules, use this endpoint:
 
 ```plaintext
 PUT /projects/:id/merge_requests/:merge_request_iid/approval_rules/:approval_rule_id
 ```
 
-Approvers and groups not in the `users` or `groups` parameters are **removed**.
+This endpoint **removes** any approvers and groups not in the `users` or `groups` parameters.
 
 You can't update `report_approver` or `code_owner` rules, as these rules are system-generated.
 
 Supported attributes:
 
-| Attribute              | Type              | Required               | Description                                                                   |
-|------------------------|-------------------|------------------------|-------------------------------------------------------------------------------|
-| `id`                   | integer or string | Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
-| `approval_rule_id`     | integer           | Yes | The ID of an approval rule.                                                   |
-| `merge_request_iid`    | integer           | Yes | The IID of a merge request.                                                   |
-| `approvals_required`   | integer           |  No | The number of required approvals for this rule.                               |
-| `group_ids`            | Array             | No | The IDs of groups as approvers.                                               |
-| `name`                 | string            |  No | The name of the approval rule.                                                |
-| `remove_hidden_groups` | boolean           | No | Whether hidden groups should be removed.                                      |
-| `user_ids`             | Array             | No | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, both lists of users are added. |
-| `usernames`            | string array      | No | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, both lists of users are added. |
+| Attribute              | Type              | Required | Description |
+|------------------------|-------------------|----------|-------------|
+| `id`                   | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
+| `approval_rule_id`     | integer           | Yes      | The ID of an approval rule. |
+| `merge_request_iid`    | integer           | Yes      | The IID of a merge request. |
+| `approvals_required`   | integer           | No       | The number of required approvals for this rule. |
+| `group_ids`            | Array             | No       | The IDs of groups as approvers. |
+| `name`                 | string            | No       | The name of the approval rule. |
+| `remove_hidden_groups` | boolean           | No       | Whether to remove hidden groups. |
+| `user_ids`             | Array             | No       | The IDs of users as approvers. If you provide both `user_ids` and `usernames`, it adds both lists of users. |
+| `usernames`            | string array      | No       | The usernames of approvers for this rule (same as `user_ids` but requires a list of usernames). If you provide both `user_ids` and `usernames`, it adds both lists of users. |
 
 ```json
 {
@@ -1215,16 +1213,15 @@ You can't update `report_approver` or `code_owner` rules, as these rules are sys
 
 Supported attributes:
 
-| Attribute           | Type              | Required               | Description                                                                   |
-|---------------------|-------------------|------------------------|-------------------------------------------------------------------------------|
-| `id`                | integer or string | Yes | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
-| `approval_rule_id`  | integer           | Yes | The ID of an approval rule.                                                   |
-| `merge_request_iid` | integer           | Yes | The IID of the merge request.                                                 |
+| Attribute           | Type              | Required | Description |
+|---------------------|-------------------|----------|-------------|
+| `id`                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
+| `approval_rule_id`  | integer           | Yes      | The ID of an approval rule. |
+| `merge_request_iid` | integer           | Yes      | The IID of the merge request. |
 
 ## Approve merge request
 
-If you are allowed to, you can approve a merge request using the following
-endpoint:
+Users with the appropriate role can approve a merge request using this endpoint:
 
 ```plaintext
 POST /projects/:id/merge_requests/:merge_request_iid/approve
@@ -1240,8 +1237,8 @@ Supported attributes:
 | `sha`               | string            | No       | The `HEAD` of the merge request. |
 
 The `sha` parameter works in the same way as
-when [accepting a merge request](merge_requests.md#merge-a-merge-request): if it is passed, then it must
-match the current HEAD of the merge request for the approval to be added. If it
+when [accepting a merge request](merge_requests.md#merge-a-merge-request): if passed, then it must
+match the current HEAD of the merge request to add the approval. If it
 does not match, the response code is `409`.
 
 ```json

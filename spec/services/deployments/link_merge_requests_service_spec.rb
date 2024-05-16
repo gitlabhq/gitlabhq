@@ -212,7 +212,7 @@ RSpec.describe Deployments::LinkMergeRequestsService, feature_category: :continu
       end
     end
 
-    context "when merge request is fast-forward merged" do
+    context "when merge request is fast-forward merged and commits are not squashed" do
       def create_fast_forward_merge_request(reference_commit_sha)
         create(
           :merge_request,
@@ -239,6 +239,38 @@ RSpec.describe Deployments::LinkMergeRequestsService, feature_category: :continu
       end
 
       it "links merge requests by the HEAD commit sha of the MR's diff" do
+        link_merge_requests_for_range
+
+        expect(deploy.merge_requests).to match_array([merge_request_1, merge_request_2])
+      end
+    end
+
+    context "when merge request is fast-forward merged and commits are squashed" do
+      def create_fast_forward_merge_request(reference_commit_sha)
+        create(
+          :merge_request,
+          :merged,
+          source_project: project,
+          target_project: project,
+          merge_commit_sha: nil,
+          squash_commit_sha: reference_commit_sha
+        )
+      end
+
+      let!(:merge_request_1) { create_fast_forward_merge_request(mr1_merge_commit_sha) }
+      let!(:merge_request_2) { create_fast_forward_merge_request(mr2_merge_commit_sha) }
+
+      let!(:environment) { create(:environment, project: project) }
+      let!(:deploy) { create(:deployment, :success, project: project, environment: environment) }
+
+      subject(:link_merge_requests_for_range) do
+        described_class.new(deploy).link_merge_requests_for_range(
+          first_deployment_sha,
+          mr2_merge_commit_sha
+        )
+      end
+
+      it "links merge requests by the squash commit of the MR" do
         link_merge_requests_for_range
 
         expect(deploy.merge_requests).to match_array([merge_request_1, merge_request_2])

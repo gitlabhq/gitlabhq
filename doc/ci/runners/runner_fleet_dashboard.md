@@ -68,7 +68,7 @@ DETAILS:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/424866) in GitLab 16.8. Feature flag `clickhouse_ci_analytics` removed.
 > - [Feature flags removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145665/diffs) in GitLab 16.10.
 
-This feature is an [Experiment](../../policy/experiment-beta-support.md).
+This feature is an [experiment](../../policy/experiment-beta-support.md).
 To test it, we have launched an early adopters program.
 To join the list of users testing this feature, see
 [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).

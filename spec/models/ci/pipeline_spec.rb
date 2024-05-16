@@ -2986,6 +2986,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       before do
         allow(build).to receive(:with_resource_group?) { true }
         allow(Ci::ResourceGroups::AssignResourceFromResourceGroupWorker).to receive(:perform_async)
+        allow(Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2).to receive(:perform_async)
 
         build.enqueue
       end

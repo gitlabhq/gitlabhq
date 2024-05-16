@@ -1,5 +1,6 @@
 <script>
 import { GlButton } from '@gitlab/ui';
+import ToggleLabels from '~/vue_shared/components/toggle_labels.vue';
 import MergeRequestsQuery from './merge_requests_query.vue';
 import CollapsibleSection from './collapsible_section.vue';
 import MergeRequest from './merge_request.vue';
@@ -7,6 +8,7 @@ import MergeRequest from './merge_request.vue';
 export default {
   components: {
     GlButton,
+    ToggleLabels,
     MergeRequestsQuery,
     CollapsibleSection,
     MergeRequest,
@@ -22,8 +24,11 @@ export default {
 
 <template>
   <div>
-    <div class="page-title-holder">
+    <div class="page-title-holder gl-flex">
       <h1 class="page-title gl-font-size-h-display">{{ __('Merge Requests') }}</h1>
+      <div class="gl-ml-auto gl-align-self-center">
+        <toggle-labels storage-key="gl-show-merge-request-labels" />
+      </div>
     </div>
     <merge-requests-query
       v-for="(list, i) in lists"

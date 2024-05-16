@@ -102,8 +102,8 @@ IPv6 address. If you don't have IPv6, you can omit the `AAAA` record.
 DETAILS:
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [Experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [Beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -200,8 +200,8 @@ Watch the [video tutorial](https://youtu.be/dD8c7WNcc6s) for this configuration.
 DETAILS:
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [Experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [Beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -290,8 +290,8 @@ then run `gitlab-ctl reconfigure`. For more information, read
 DETAILS:
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [Experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [Beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.

@@ -1309,7 +1309,7 @@ You can run garbage collection in the background without the need to schedule it
 if you migrate to the [metadata database](container_registry_metadata_database.md).
 
 NOTE:
-If you would like to try this [Beta feature](../../policy/experiment-beta-support.md#beta),
+If you would like to try this [beta feature](../../policy/experiment-beta-support.md#beta),
 you should review the [known limitations](container_registry_metadata_database.md#known-limitations). If you have any feedback,
 you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 

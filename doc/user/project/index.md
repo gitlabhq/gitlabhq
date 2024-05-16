@@ -189,7 +189,7 @@ Your project's visibility is set to **Private** by default. To change project vi
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/794) in GitLab 16.9. This feature is an [Experiment](../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/794) in GitLab 16.9. This feature is an [experiment](../../policy/experiment-beta-support.md#experiment).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.

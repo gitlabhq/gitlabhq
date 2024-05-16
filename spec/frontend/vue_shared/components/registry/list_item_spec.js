@@ -10,6 +10,7 @@ describe('list item', () => {
   const findLeftActionSlot = () => wrapper.find('[data-testid="left-action"]');
   const findLeftPrimarySlot = () => wrapper.find('[data-testid="left-primary"]');
   const findLeftSecondarySlot = () => wrapper.find('[data-testid="left-secondary"]');
+  const findLeftAfterToggleSlot = () => wrapper.find('[data-testid="left-after-toggle"]');
   const findRightPrimarySlot = () => wrapper.find('[data-testid="right-primary"]');
   const findRightSecondarySlot = () => wrapper.find('[data-testid="right-secondary"]');
   const findRightActionSlot = () => wrapper.find('[data-testid="right-action"]');
@@ -23,6 +24,7 @@ describe('list item', () => {
         'left-action': '<div data-testid="left-action" />',
         'left-primary': '<div data-testid="left-primary" />',
         'left-secondary': '<div data-testid="left-secondary" />',
+        'left-after-toggle': '<div data-testid="left-after-toggle" />',
         'right-primary': '<div data-testid="right-primary" />',
         'right-secondary': '<div data-testid="right-secondary" />',
         'right-action': '<div data-testid="right-action" />',
@@ -35,13 +37,14 @@ describe('list item', () => {
   };
 
   describe.each`
-    slotName             | finderFunction
-    ${'left-primary'}    | ${findLeftPrimarySlot}
-    ${'left-secondary'}  | ${findLeftSecondarySlot}
-    ${'right-primary'}   | ${findRightPrimarySlot}
-    ${'right-secondary'} | ${findRightSecondarySlot}
-    ${'left-action'}     | ${findLeftActionSlot}
-    ${'right-action'}    | ${findRightActionSlot}
+    slotName               | finderFunction
+    ${'left-primary'}      | ${findLeftPrimarySlot}
+    ${'left-secondary'}    | ${findLeftSecondarySlot}
+    ${'left-after-toggle'} | ${findLeftAfterToggleSlot}
+    ${'right-primary'}     | ${findRightPrimarySlot}
+    ${'right-secondary'}   | ${findRightSecondarySlot}
+    ${'left-action'}       | ${findLeftActionSlot}
+    ${'right-action'}      | ${findRightActionSlot}
   `('$slotName slot', ({ finderFunction, slotName }) => {
     it('exist when the slot is filled', () => {
       mountComponent();

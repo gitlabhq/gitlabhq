@@ -13,12 +13,12 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438316) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [Beta](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438316) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/experiment-beta-support.md).
 
 FLAG:
 On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
 
-This feature is in [Beta](../../policy/experiment-beta-support.md).
+This feature is in [beta](../../policy/experiment-beta-support.md).
 
 ## Creating a runner provisioned in Google Cloud
 

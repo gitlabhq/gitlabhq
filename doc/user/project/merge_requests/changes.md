@@ -11,10 +11,10 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-A [merge request](index.md) proposes a set of changes to files in a branch in your repository. These
-changes are shown as a _diff_ (difference) between the current state and the proposed
+A [merge request](index.md) proposes a set of changes to files in a branch in your repository. GitLab
+shows these changes as a _diff_ (difference) between the current state and the proposed
 changes. By default, the diff compares your proposed changes (the source branch) with
-the target branch. By default, only the changed portions of the files are shown.
+the target branch. By default, GitLab shows only the changed portions of the files.
 
 This example shows changes to a text file. In the default syntax highlighting theme:
 
@@ -30,7 +30,7 @@ The header for each file in the diff contains:
   **Copy file path** (**{copy-to-clipboard}**).
 - **Lines changed**: The number of lines added and deleted in this file, in the format `+2 -2`.
 - **Viewed**: Select this checkbox to [mark the file as viewed](#mark-files-as-viewed)
-  until more changes are added to it.
+  until it changes again.
 - **Comment on this file** (**{comment}**) to leave a general comment on the file, without
   pinning the comment to a specific line.
 - **Options**: Select (**{ellipsis_v}**) to display more file viewing options.
@@ -71,7 +71,7 @@ To view the diff of changes included in a merge request:
    1. Select the file you want to view.
    1. To hide the file browser, select **Show file browser** or press <kbd>F</kbd> again.
 
-Files with many changes are collapsed to improve performance. GitLab displays the message:
+GitLab collapses files with many changes to improve performance, and displays the message:
 **Some changes are not shown**. To view the changes for that file, select **Expand file**.
 
 ### Collapse generated files
@@ -85,8 +85,8 @@ DETAILS:
 > - `generated_file` [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148478) in GitLab 16.11. Feature flag `collapse_generated_diff_files` removed.
 
 To help reviewers focus on the files needed to perform a code review, GitLab collapses
-several common types of generated files. These files are collapsed by default, because
-they are unlikely to require code reviews:
+several common types of generated files. GitLab collapses these files by default, because
+they rarely require code reviews:
 
 1. Files with `.nib`, `.xcworkspacedata`, or `.xcurserstate` extensions.
 1. Package lock files such as `package-lock.json` or `Gopkg.lock`.
@@ -130,7 +130,7 @@ To change the default collapse behavior for a file type:
 After the changes merge into your [default branch](../repository/branches/default.md),
 all files of this type in your project use this behavior in merge requests.
 
-For technical details about how generated files are detected, see the
+For technical details about how GitLab detects generated files, see the
 [`go-enry`](https://github.com/go-enry/go-enry/blob/master/data/generated.go) repository.
 
 ## Show one file at a time
@@ -154,7 +154,7 @@ clear your browser's cookies or change this behavior again.
 
 ### For all merge requests
 
-To view one file at a time for all of your merge requests:
+To view one file at a time for all merge requests:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
@@ -183,7 +183,7 @@ To change how a merge request shows changed lines:
 1. Select **Code > Merge requests** and find your merge request.
 1. Below the title, select **Changes**.
 1. Select **Preferences** (**{preferences}**). Select either **Side-by-side** or **Inline**.
-   This example shows how the same change is rendered in both inline and side-by-side mode:
+   This example shows how GitLab renders the same change in both inline and side-by-side mode:
 
    ::Tabs
 
@@ -242,7 +242,7 @@ you've already reviewed. To hide files that haven't changed since your last revi
 
 Files marked as viewed are not shown to you again unless either:
 
-- New changes are made to its content.
+- The contents of the file change.
 - You clear the **Viewed** checkbox.
 
 ## Show merge request conflicts in diff
@@ -250,10 +250,10 @@ Files marked as viewed are not shown to you again unless either:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.7.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.8. Feature flag `display_merge_conflicts_in_diff` removed.
 
-To avoid displaying the changes that are already on target branch in the diff,
-we compare the merge request's source branch with HEAD of the target branch.
+To avoid displaying changes already on target branch, we compare the merge request's
+source branch with the `HEAD` of the target branch.
 
-When there are conflicts between the source and target branch, we show an alert
+When the source and target branch conflict, we show an alert
 per conflicted file on the merge request diff:
 
 ![Example of a conflict alert shown in a merge request diff](img/conflict_ui_v15_6.png)
@@ -292,7 +292,7 @@ This comment can also be a thread.
 1. Hover your mouse over the image.
 1. Select the location where you want to comment.
 
-An icon is displayed on the image and a comment field is displayed.
+GitLab shows an icon and a comment field on the image.
 
 ## Resources
 

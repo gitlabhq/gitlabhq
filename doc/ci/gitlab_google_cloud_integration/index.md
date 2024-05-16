@@ -15,7 +15,7 @@ FLAG:
 On GitLab.com, this feature is available for a subset of users.
 On GitLab Dedicated, this feature is not available.
 
-This feature is in [Beta](../../policy/experiment-beta-support.md).
+This feature is in [beta](../../policy/experiment-beta-support.md).
 
 Use the Google Cloud integration to use Google Cloud resources in GitLab projects.
 

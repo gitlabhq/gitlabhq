@@ -39,8 +39,8 @@ for the features on the page. For example:
   the H1 **Tier:** should be `Premium, Ultimate`.
 - If some sections apply to all instances, and others apply to only `Self-managed`,
   the **Offering:** should be `GitLab.com, Self-managed, GitLab Dedicated`
-- If some sections are Beta, and others are Experiment, the H1 **Status:** should be `Beta`.
-  If some sections are Beta, and others are generally available, then there should
+- If some sections are beta, and others are experiment, the H1 **Status:** should be `Beta`.
+  If some sections are beta, and others are generally available, then there should
   be no **Status:** at the H1 level.
 
 ## When not to add availability details

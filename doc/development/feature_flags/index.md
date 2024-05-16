@@ -173,7 +173,7 @@ Providing a flag in this case allows engineers and customers to disable the new 
 
 #### Constraints
 
-- `default_enabled`: Can be set to `true` so that a feature can be "released" to everyone in Beta with the
+- `default_enabled`: Can be set to `true` so that a feature can be "released" to everyone in beta with the
   possibility to disable it in the case of scalability issues (ideally it should only be disabled for this
   reason on specific on-premise installations)
 - Maximum Lifespan: 6 months after it's merged into the default branch
@@ -234,7 +234,7 @@ push_frontend_feature_flag(:my_ops_flag, project)
 
 An `experiment` feature flag should conform to the same standards as a `beta` feature flag,
 although the interface has some differences. An experiment feature flag should have a rollout issue,
-created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Experiment%20Rollout.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
+created using the [Experiment tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Experiment%20Rollout.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
 
 #### Constraints
 

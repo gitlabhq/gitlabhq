@@ -109,7 +109,7 @@ To filter the list of merge requests:
    - `!=`: Is not
 1. Enter the text to filter the attribute by.
    You can filter some attributes by **None** or **Any**.
-1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
+1. Repeat this process to filter by more attributes, joined by a logical
    `AND`.
 1. Select a **Sort direction**, either **{sort-lowest}** for descending order,
    or **{sort-highest}** for ascending order.
@@ -135,14 +135,14 @@ When filtering by `Deployed-before` or `Deployed-after`:
 - The date refers to when the deployment to an environment (triggered by the
   merge commit) completed successfully.
 - You must enter the deploy date manually.
-- Deploy dates use the format `YYYY-MM-DD`, and must be wrapped in double quotes (`"`)
+- Deploy dates use the format `YYYY-MM-DD`. Wrap them in double quotes (`"`)
   if you want to specify both a date and time (`"YYYY-MM-DD HH:MM"`).
 
 ## Add changes to a merge request
 
 If you have permission to add changes to a merge request, you can add your changes
-to an existing merge request in several ways, depending on the complexity of your
-change and whether you need access to a development environment:
+to an existing merge request in several ways. These ways depend on the complexity of your
+change, and whether you need access to a development environment:
 
 - [Edit changes in the Web IDE](../web_ide/index.md) in your browser with the
   <kbd>.</kbd> [keyboard shortcut](../../shortcuts.md). Use this
@@ -167,7 +167,7 @@ a merge request, or:
 1. Select **Edit**.
 1. Search for the user you want to assign, and select the user.
 
-The merge request is added to the user's assigned merge request list.
+GitLab adds the merge request to the user's assigned merge request list.
 
 ### Assign multiple users
 
@@ -175,12 +175,11 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-GitLab enables multiple assignees for merge requests, if multiple people are
-accountable for it:
+If more than one person is accountable for a merge request, use multiple assignees:
 
-![multiple assignees for merge requests sidebar](img/merge_request_assignees_v16_0.png)
+![Two assignees for merge requests sidebar](img/merge_request_assignees_v16_0.png)
 
-To assign multiple assignees to a merge request, use the `/assign @user`
+To add more assignees to a merge request, use the `/assign @user`
 [quick action](../quick_actions.md#issues-merge-requests-and-epics) in a text area, or:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -193,9 +192,8 @@ To remove an assignee, clear the user from the same dropdown list.
 
 ## Close a merge request
 
-If you decide to permanently stop work on a merge request,
-GitLab recommends you close the merge request rather than
-[delete it](manage.md#delete-a-merge-request).
+If you decide to permanently stop work on a merge request, close it rather than
+[deleting it](manage.md#delete-a-merge-request).
 
 Prerequisites:
 
@@ -249,10 +247,10 @@ to `main`.
 
 Merge requests with interconnected content updates are usually handled in one of these ways:
 
-- Merge request 1 is merged into `main` first. Merge request 2 is then
+- Merge request 1 merges into `main` first. Merge request 2 is then
   retargeted to `main`.
-- Merge request 2 is merged into `feature-alpha`. The updated merge request 1, which
-  now contains the contents of `feature-alpha` and `feature-beta`, is merged into `main`.
+- Merge request 2 merges into `feature-alpha`. The updated merge request 1, which
+  now contains the contents of `feature-alpha` and `feature-beta`, merges into `main`.
 
 This feature works only when a merge request is merged. Selecting **Remove source branch**
 after merging does not retarget open merge requests. This improvement is
@@ -282,7 +280,10 @@ For a web developer writing a webpage for your company's website:
 1. You preview your changes with [review apps](../../../ci/review_apps/index.md).
 1. You request your web designers for their implementation.
 1. You request the [approval](approvals/index.md) from your manager.
-1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
+1. After approval, GitLab:
+   - [Squashes](squash_and_merge.md) the commits.
+   - Merges the commit.
+   - [Deployed the changes to staging with GitLab Pages](https://about.gitlab.com/blog/2021/02/05/ci-deployment-and-environments/).
 1. Your production team [cherry-picks](cherry_pick_changes.md) the merge commit into production.
 
 ## Filter activity in a merge request
@@ -301,7 +302,7 @@ only the items that are relevant to you.
 1. Select a merge request.
 1. Scroll to **Activity**.
 1. On the right side of the page, select **Activity filter** to show the filter options.
-   If you've selected filter options previously, this field shows a summary of your
+   If you've already selected filter options, this field shows a summary of your
    choices, like **Activity + 5 more**.
 1. Select the types of activity you want to see. Options include:
 
@@ -327,7 +328,7 @@ sort order by clicking the sort button on the right.
 When you want to finish a conversation in a merge request,
 [resolve a thread](../../discussions/index.md#resolve-a-thread).
 
-The number of unresolved threads is shown in the top right corner of a
+GitLab shows the number of unresolved threads in the top right corner of a
 merge request, like this: **7 unresolved threads**.
 
 ### Move all unresolved threads in a merge request to an issue
@@ -342,7 +343,7 @@ create an issue to resolve them separately:
 1. Select **Resolve all with new issue**.
 1. Fill out the fields in the new issue, and select **Create issue**.
 
-All threads are marked as resolved, and a link is added from the merge request to
+GitLab marks all threads as resolved, and adds a link from the merge request to
 the newly created issue.
 
 ### Move one unresolved thread in a merge request to an issue
@@ -357,14 +358,14 @@ create an issue to resolve it separately:
    **Create issue to resolve thread** (**{issue-new}**).
 1. Fill out the fields in the new issue, and select **Create issue**.
 
-The thread is marked as resolved, and a link is added from the merge request to
+GitLab marks the thread as resolved, and adds a link from the merge request to
 the newly created issue.
 
 ### Prevent merge unless all threads are resolved
 
-You can prevent merge requests from being merged until all threads are
-resolved. When this setting is enabled, the **Unresolved threads** counter in a merge request
-is shown in orange when at least one thread remains unresolved.
+You can prevent merge requests from merging while threads remain unresolved.
+When you enable this setting, the **Unresolved threads** counter in a merge request
+is shown in orange while at least one thread remains unresolved.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
@@ -373,8 +374,8 @@ is shown in orange when at least one thread remains unresolved.
 
 ### Automatically resolve threads in a merge request when they become outdated
 
-You can set merge requests to automatically resolve threads when lines are modified
-with a new push.
+You can set merge requests to automatically resolve threads when a new push
+changes the lines they describe.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
@@ -398,10 +399,10 @@ FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
-When this feature flag is enabled, the notifications and to-do item buttons are moved to the upper right corner of the page.
+Enabling this feature flag moves the notifications and to-do item buttons to the upper right corner of the page.
 
-- On merge requests, these buttons are located to the far right of the tabs.
-- On issues, incidents, and epics, these buttons are located at the top of the right sidebar.
+- On merge requests, these buttons are shown to the far right of the tabs.
+- On issues, incidents, and epics, these buttons are shown at the top of the right sidebar.
 
 ## Related topics
 

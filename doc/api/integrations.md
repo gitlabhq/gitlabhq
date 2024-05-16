@@ -898,7 +898,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
 
 FLAG:
 On GitLab.com, this feature is not available. This feature is not ready for production use.
@@ -937,7 +937,7 @@ GET /projects/:id/integrations/google-cloud-platform-artifact-registry
 
 ## Google Cloud Identity and Access Management (IAM)
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439200) in GitLab 16.10 as a [Beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439200) in GitLab 16.10 as a [beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
 
 FLAG:
 On GitLab.com, this feature is not available.

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11908) in GitLab 17.0. This feature is an [Experiment](../../policy/experiment-beta-support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11908) in GitLab 17.0. This feature is an [experiment](../../policy/experiment-beta-support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 This tool is under development and is ultimately meant to replace [the Rake tasks used for backing up and restoring GitLab](backup_gitlab.md). You can follow the development of this tool in the epic: [Next Gen Scalable Backup and Restore](https://gitlab.com/groups/gitlab-org/-/epics/11577).
 

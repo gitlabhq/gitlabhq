@@ -14125,6 +14125,12 @@ msgstr ""
 msgid "ContainerRegistry|Show full path"
 msgstr ""
 
+msgid "ContainerRegistry|Signature digest: %{digest}"
+msgstr ""
+
+msgid "ContainerRegistry|Signed"
+msgstr ""
+
 msgid "ContainerRegistry|Some tags were not deleted"
 msgstr ""
 
@@ -23777,6 +23783,9 @@ msgstr ""
 msgid "GlobalSearch|Create in %{namespace} %{kbdStart}↵%{kbdEnd}"
 msgstr ""
 
+msgid "GlobalSearch|Explore"
+msgstr ""
+
 msgid "GlobalSearch|Fetching aggregations error."
 msgstr ""
 
@@ -23822,6 +23831,9 @@ msgstr ""
 msgid "GlobalSearch|Initial indexing queue length"
 msgstr ""
 
+msgid "GlobalSearch|Issues"
+msgstr ""
+
 msgid "GlobalSearch|Issues I've created"
 msgstr ""
 
@@ -23838,6 +23850,9 @@ msgid "GlobalSearch|Language"
 msgstr ""
 
 msgid "GlobalSearch|List of filtered labels."
+msgstr ""
+
+msgid "GlobalSearch|Merge Requests"
 msgstr ""
 
 msgid "GlobalSearch|Merge requests I've created"
@@ -23865,6 +23880,12 @@ msgid "GlobalSearch|Pages or actions"
 msgstr ""
 
 msgid "GlobalSearch|Places"
+msgstr ""
+
+msgid "GlobalSearch|Preferences"
+msgstr ""
+
+msgid "GlobalSearch|Profile"
 msgstr ""
 
 msgid "GlobalSearch|Project"
@@ -23964,6 +23985,9 @@ msgid "GlobalSearch|View syntax options."
 msgstr ""
 
 msgid "GlobalSearch|What are you searching for?"
+msgstr ""
+
+msgid "GlobalSearch|Your work"
 msgstr ""
 
 msgid "GlobalSearch|all GitLab"
@@ -50354,6 +50378,9 @@ msgid "Step 3."
 msgstr ""
 
 msgid "Step 4."
+msgstr ""
+
+msgid "Still loading..."
 msgstr ""
 
 msgid "Stop Terminal"

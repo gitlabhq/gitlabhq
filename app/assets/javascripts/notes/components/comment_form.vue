@@ -301,7 +301,9 @@ export default {
       toggleState()
         .then(() => {
           fetchUserCounts();
-          return badgeState?.updateStatus();
+          // badgeState is only initialized for MR type
+          // To avoid undefined error added an optional chaining to function
+          return badgeState?.updateStatus?.();
         })
         .catch(() =>
           createAlert({

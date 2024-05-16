@@ -307,7 +307,7 @@ These policies are both created and edited in the [security policy editor](../..
 DETAILS:
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439397) in GitLab 16.11 [with a flag](../../../../administration/feature_flags.md) named `approval_rules_drawer`. Enabled by default. This feature is in [Beta](../../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439397) in GitLab 16.11 [with a flag](../../../../administration/feature_flags.md) named `approval_rules_drawer`. Enabled by default. This feature is in [beta](../../../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is available.

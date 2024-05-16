@@ -95,7 +95,7 @@ module Clusters
                .joins(:namespace)
                .where(agent_project_authorizations: { agent_id: id })
                .where(project_authorizations: { user_id: user.id, access_level: Gitlab::Access::DEVELOPER.. })
-               .where('namespaces.traversal_ids @> ARRAY[?]', root_namespace.id)
+               .where("namespaces.traversal_ids @> '{?}'", root_namespace.id)
     end
 
     def all_ci_access_authorized_namespaces_for(user)
@@ -112,9 +112,9 @@ module Clusters
     def all_ci_access_authorized_namespaces
       Namespace.select("traversal_ids[array_length(traversal_ids, 1)] AS id")
                .joins("INNER JOIN agent_group_authorizations ON " \
-                      "namespaces.traversal_ids @> ARRAY[agent_group_authorizations.group_id::integer]")
+                      "agent_group_authorizations.group_id = ANY(namespaces.traversal_ids)")
                .where(agent_group_authorizations: { agent_id: id })
-               .where('namespaces.traversal_ids @> ARRAY[?]', root_namespace.id)
+               .where("namespaces.traversal_ids @> '{?}'", root_namespace.id)
     end
 
     def root_namespace

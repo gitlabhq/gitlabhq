@@ -13,7 +13,7 @@ DETAILS:
 
 Reviewers can suggest code changes with a Markdown syntax in merge request diff threads.
 The merge request author (or other users with the appropriate role) can apply any or
-all of the suggestions from the GitLab UI. Applying suggestions adds a commit to the
+all suggestions from the GitLab UI. Applying suggestions adds a commit to the
 merge request, authored by the user who suggested the changes.
 
 ## Create suggestions
@@ -27,7 +27,7 @@ merge request, authored by the user who suggested the changes.
    - To select multiple lines:
      1. Hover over the line number, and select **Add a comment to this line** (**{comment}**):
         ![Comment on any diff file line](img/comment_on_any_diff_line_v16_6.png)
-     1. Select and drag your selection until all desired lines are included. To
+     1. Select and drag your selection to include all desired lines. To
         learn more, see [Multi-line suggestions](#multi-line-suggestions).
 1. In the comment toolbar, select **Insert suggestion** (**{doc-code}**). GitLab
    inserts a pre-populated code block into your comment, like this:
@@ -108,16 +108,17 @@ To apply suggested changes directly from the merge request:
 1. Find the comment containing the suggestion you want to apply.
    - To apply suggestions individually, select **Apply suggestion**.
    - To apply multiple suggestions in a single commit, select **Add suggestion to batch**.
-1. Optional. Provide a custom commit message to describe your change. If you don't provide a custom message, the default commit message is used.
+1. Optional. Provide a custom commit message to describe your change. If you
+   don't provide a custom message, it uses the default commit message.
 1. Select **Apply**.
 
-After a suggestion is applied:
+After you apply a suggestion, GitLab:
 
-- The suggestion is marked as **Applied**.
-- The comment thread is resolved.
-- GitLab creates a new commit with the changes.
-- If the user has the Developer role, GitLab pushes
-  the suggested change directly into the codebase in the merge request's branch.
+- Marks the suggestion as **Applied**.
+- Resolves the comment thread.
+- Creates a new commit with the changes.
+- (If the user has the Developer role) Pushes the suggested change directly into
+  the codebase in the merge request's branch.
 
 ## Nest code blocks in suggestions
 
@@ -137,8 +138,8 @@ git config --global receive.advertisepushoptions true
 
 ## Configure the commit message for applied suggestions
 
-GitLab uses a default commit message when applying suggestions. This message
-supports placeholders, and can be changed. For example, the default message
+GitLab uses a default commit message when applying suggestions, but you can change
+it. This message supports placeholders. For example, the default message
 `Apply %{suggestions_count} suggestion(s) to %{files_count} file(s)` renders
 like this if you apply three suggestions to two different files:
 
@@ -199,13 +200,13 @@ suggestions in a single commit.
 
    WARNING:
    If you apply a batch of suggestions containing changes from multiple authors,
-   you are credited as the resulting commit's author. If your project is configured
+   the resulting commit credits you as the author. If you configure your project
    to [prevent approvals from users who add commits](../approvals/settings.md#prevent-approvals-by-users-who-add-commits), you are no longer an eligible
    approver for this merge request.
 
 1. Optional. Provide a custom commit message for [batch suggestions](#batch-suggestions)
-   to describe your change. If you don't specify one,
-   the default commit message is used.
+   to describe your change. If you don't specify one, it uses
+   the default commit message.
 
 ## Related topics
 

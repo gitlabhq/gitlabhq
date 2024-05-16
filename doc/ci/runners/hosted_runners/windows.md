@@ -15,7 +15,7 @@ Hosted runners on Windows autoscale by launching virtual machines on
 the Google Cloud Platform. This solution uses an
 [autoscaling driver](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/blob/main/docs/README.md)
 developed by GitLab for the [custom executor](https://docs.gitlab.com/runner/executors/custom.html).
-Hosted runners on Windows are in [Beta](../../../policy/experiment-beta-support.md#beta).
+Hosted runners on Windows are in [beta](../../../policy/experiment-beta-support.md#beta).
 
 We want to keep iterating to get Windows runners in a stable state and
 [generally available](../../../policy/experiment-beta-support.md#generally-available-ga).
@@ -79,10 +79,10 @@ test:
 
 ## Known issues
 
-- For more information about support for Beta features, see [Beta](../../../policy/experiment-beta-support.md#beta).
+- For more information about support for beta features, see [beta](../../../policy/experiment-beta-support.md#beta).
 - The average provisioning time for a new Windows virtual machine (VM) is five minutes, so
   you might notice slower start times for builds on the Windows runner
-  fleet during the Beta. Updating the autoscaler to enable the pre-provisioning
+  fleet during the beta. Updating the autoscaler to enable the pre-provisioning
   of virtual machines is proposed in a future release. This update is intended to
   significantly reduce the time it takes to provision a VM on the Windows fleet.
   For more information, see [issue 32](https://gitlab.com/gitlab-org/ci-cd/custom-executor-drivers/autoscaler/-/issues/32).

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416395) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default. This feature is an [Experiment](../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416395) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

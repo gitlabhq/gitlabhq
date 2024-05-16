@@ -225,7 +225,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
 
           def perform
             each_sub_batch(
-              batching_scope: -> (relation) { relation.where(status: matching_status) }
+              batching_scope: ->(relation) { relation.where(status: matching_status) }
             ) do |sub_batch|
               sub_batch.update_all(some_column: 0)
             end

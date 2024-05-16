@@ -306,7 +306,7 @@ Resources:
 
 ### Answer questions about GitLab
 
-In this example, the challenge is exploring the GitLab Duo Chat Beta to solve problems.
+In this example, the challenge is exploring the GitLab Duo Chat beta to solve problems.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch the recording here: [GitLab Duo Coffee Chat: Solve problems with GitLab Duo Chat Beta Challenge](https://www.youtube.com/watch?v=Ypwx4lFnHP0)

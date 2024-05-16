@@ -170,6 +170,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Ci::RefDeleteUnlockArtifactsWorker' => 3,
         'Ci::Refs::UnlockPreviousPipelinesWorker' => 3,
         'Ci::ResourceGroups::AssignResourceFromResourceGroupWorker' => 3,
+        'Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2' => 3,
         'Ci::TestFailureHistoryWorker' => 3,
         'Ci::TriggerDownstreamSubscriptionsWorker' => 3,
         'Ci::UnlockPipelinesInQueueWorker' => 0,

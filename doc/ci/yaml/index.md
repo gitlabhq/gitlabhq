@@ -390,7 +390,7 @@ include:
 
 #### `include:inputs`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
 
 Use `include:inputs` to set the values for input parameters when the included configuration
 uses [`spec:inputs`](#specinputs) and is added to the pipeline.
@@ -802,7 +802,7 @@ with `---`.
 
 ### `spec`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
 
 Add a `spec` section to the header of a YAML file to configure the behavior of a pipeline
 when a configuration is added to the pipeline with the `include` keyword.
@@ -852,7 +852,7 @@ scan-website:
 
 ##### `spec:inputs:default`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
 
 Inputs are mandatory when included, unless you set a default value with `spec:inputs:default`.
 
@@ -2507,12 +2507,12 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [Beta](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/experiment-beta-support.md).
 
 FLAG:
 On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
 
-This feature is in [Beta](../../policy/experiment-beta-support.md).
+This feature is in [beta](../../policy/experiment-beta-support.md).
 
 Use `identity` to authenticate with third party services using identity federation.
 
@@ -3419,7 +3419,7 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,

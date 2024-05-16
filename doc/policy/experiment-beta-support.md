@@ -5,9 +5,9 @@ description: Support details.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Support for Experiment, Beta, and Generally Available features
+# Support for experiment, beta, and generally available features
 
-GitLab sometimes releases features as Experiments or Beta features, and users can opt in and test the new experience.
+GitLab sometimes releases features as experimental or beta, and users can opt in and test the new experience.
 Some reasons for these kinds of feature releases include:
 
 - Validating the edge-cases of scale, support, and maintenance burden of features in their current form for every designed use case.
@@ -56,12 +56,12 @@ Generally Available features:
 
 ## All features are in production
 
-All Experiment, Beta, and Generally Available features are available on GitLab.com,
+All experimental, beta, and generally available features are available on GitLab.com,
 so they are all considered to be "in production".
 
-## GitLab Experiment and Beta development guidelines
+## GitLab experiment and beta development guidelines
 
-Teams should release features as GA from the start unless there are strong reasons to release them as Experiment or Beta versions first.
+Teams should release features as GA from the start unless there are strong reasons to release them as experimental or beta versions first.
 
 Product development teams should refrain from making changes that they reasonably believe
 could create significant risks or friction for GitLab users or the platform, such as:
@@ -72,36 +72,36 @@ could create significant risks or friction for GitLab users or the platform, suc
 
 ### Experiment features
 
-In addition to the [Experiment details](#experiment) for users, Experiments should:
+In addition to the [experiment details](#experiment) for users, experiments should:
 
 - Offer a way to opt in with minimal friction. For example, needing to flip a feature flag is too much friction,
   but a group or project-level setting in the UI is not.
 - Link out to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/) in the opt-in.
 - Have documentation that reflects that the feature is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-- Have [UI that reflects the Experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
+- Have [UI that reflects the experiment status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
 - Have a feedback issue to engage with internal and external users.
 - Not be announced in a release post.
 - Be promoted in the user interface through [discovery moments](https://design.gitlab.com/usability/feature-management#discovery-moments),
   if needed.
 
-All Experimental features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)
+All experimental features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)
 must [initiate Production Readiness Review](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#process)
 and complete the [experiment section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#experiment).
 
 ### Beta features
 
-In addition to the [Beta details](#beta) for users, Beta features should:
+In addition to the [beta details](#beta) for users, beta features should:
 
 - Not be required or necessary for most features.
-- Have documentation that reflects the Beta status.
-- Have [UI that reflects the Beta status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
+- Have documentation that reflects the beta status.
+- Have [UI that reflects the beta status](https://design.gitlab.com/usability/feature-management#highlighting-feature-versions).
 - Be behind a feature flag that is on by default.
 - Be behind a toggle that is off by default.
-- Be announced in a release post that reflects the Beta status, if desired.
+- Be announced in a release post that reflects the beta status, if desired.
 - Be promoted in the user interface through [discovery moments](https://design.gitlab.com/usability/feature-management#discovery-moments),
   if needed.
 
-All Beta features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)
+All beta features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)
 must complete all sections up to and including the [beta section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#beta)
 by following the [Production Readiness Review process](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#process).
 
@@ -115,31 +115,31 @@ and complete all sections up to and including the [GA section in the readiness t
 
 Our [mission is "everyone can contribute"](https://handbook.gitlab.com/handbook/company/mission/),
 and that is only possible if people outside the company can try a feature. We get higher quality (more diverse) feedback
-if people from different organizations try something, so give users the ability to opt in to Experimental
+if people from different organizations try something, so give users the ability to opt in to experimental
 features when there is enough value.
 
-Where possible, release an Experimental feature externally instead of only testing internally
-or waiting for the feature to be in a Beta state. We've learned that keeping features internal-only
+Where possible, release an experimental feature externally instead of only testing internally
+or waiting for the feature to be in a beta state. We've learned that keeping features internal-only
 for extended periods of time slows us down unnecessarily.
 
-Experimental features are only shown when people/organizations opt in to Experiments,
+Experimental features are only shown when people/organizations opt in to experiments,
 so we are allowed to make mistakes here and literally experiment.
 
-### Experiment and Beta Exit Criteria
+### Experiment and beta exit criteria
 
-To ensure the phases before General Availability are as short as possible each phase of Experiment,
-Beta, and Limited Availability should include exit criteria. This encourages rapid iteration and
+To ensure the phases before General Availability are as short as possible each phase of experiment,
+beta, and limited availability should include exit criteria. This encourages rapid iteration and
 reduces [cycle time](https://handbook.gitlab.com/handbook/values/#reduce-cycle-time).
 
 GitLab Product Managers must take the following into account when deciding what exit criteria
-to apply to their Experimental and Beta features:
+to apply to their experimental and beta features:
 
-- **Time**: Define an end date at which point the feature will be General Availability.
+- **Time**: Define an end date at which point the feature will be generally availabile.
   - Consider setting a time-bound target metric that will define readiness for exit into GA.
-    For example, X number of customers retained MoM over 6 months after launch of Experiment,
-    X% growth of free and paid users in three months since launch Beta, or similar.
+    For example, X number of customers retained MoM over 6 months after launch of experiment,
+    X% growth of free and paid users in three months since launch beta, or similar.
   - Be mindful of balancing time to market, user experience, and richness of experience.
-    Some Beta programs have lasted one milestone while others have lasted a couple of years.
+    Some beta programs have lasted one milestone while others have lasted a couple of years.
 - **Feedback**: Define the minimum number of customers that have been onboarded and interviewed.
   - Consider also setting a time bound when using user feedback as an exit criteria for leaving a phase.
     If a given time period elapses and we can not solicit feedback from enough users,

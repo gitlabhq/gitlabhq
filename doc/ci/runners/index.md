@@ -120,16 +120,16 @@ Supported images have the following lifecycle:
 
 ### Beta
 
-New images are released as Beta. This allows us to gather feedback and address potential issues before General Availablility (GA).
-Any jobs running on Beta images are not covered by the service-level agreement.
-If you use Beta images, you can provide feedback by creating an issue.
+New images are released as beta. This allows us to gather feedback and address potential issues before General Availablility (GA).
+Any jobs running on beta images are not covered by the service-level agreement.
+If you use beta images, you can provide feedback by creating an issue.
 
 ### General Availablility (GA)
 
-A image becomes generally available after the image completes the Beta phase and is considered stable.
+A image becomes generally available after the image completes the beta phase and is considered stable.
 To become GA, the image must fulfill the following requirements:
 
-- Successful completion of a Beta phase by resolving all reported significant bugs
+- Successful completion of a beta phase by resolving all reported significant bugs
 - Compatibility of installed software with the underlying OS
 
 Jobs that run on GA images are covered by the defined service-level agreement.

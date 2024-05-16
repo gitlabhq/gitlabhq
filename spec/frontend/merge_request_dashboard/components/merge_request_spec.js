@@ -1,12 +1,29 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import { GlLabel } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import MergeRequest from '~/merge_request_dashboard/components/merge_request.vue';
+import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
+
+Vue.use(VueApollo);
 
 describe('Merge request dashboard merge request component', () => {
   let wrapper;
 
-  function createComponent(mergeRequest = {}) {
+  function createComponent(mergeRequest = {}, isShowingLabels = true) {
+    const mockApollo = createMockApollo();
+
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: isShowingLabelsQuery,
+      data: {
+        isShowingLabels,
+      },
+    });
+
     wrapper = shallowMountExtended(MergeRequest, {
+      apolloProvider: mockApollo,
       propsData: {
         mergeRequest: {
           reference: '!123456',
@@ -95,5 +112,15 @@ describe('Merge request dashboard merge request component', () => {
       text: 'Passed',
       detailsPath: '/',
     });
+  });
+
+  it.each`
+    isShowingLabels | exists   | text
+    ${false}        | ${false} | ${'hides'}
+    ${true}         | ${true}  | ${'shows'}
+  `('$text labels when isShowingLabels is $isShowingLabels', ({ isShowingLabels, exists }) => {
+    createComponent({}, isShowingLabels);
+
+    expect(wrapper.findComponent(GlLabel).exists()).toBe(exists);
   });
 });

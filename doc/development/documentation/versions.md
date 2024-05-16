@@ -89,11 +89,11 @@ If a feature is moved to another subscription tier, use `moved`:
 
 #### Changing the feature status
 
-If the feature status changes to Experiment or Beta, use `changed`:
+If the feature status changes to experiment or beta, use `changed`:
 
 ```markdown
-> - [Introduced](<link-to-issue>) as an [Experiment](../../policy/experiment-beta-support.md) in GitLab 15.7.
-> - [Changed](<link-to-issue>) to Beta in GitLab 16.0.
+> - [Introduced](<link-to-issue>) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 15.7.
+> - [Changed](<link-to-issue>) to beta in GitLab 16.0.
 ```
 
 For a change to Generally Available, use:

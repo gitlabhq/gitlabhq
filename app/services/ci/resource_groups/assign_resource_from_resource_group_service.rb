@@ -29,7 +29,15 @@ module Ci
       def respawn_assign_resource_worker(resource_group)
         return if Feature.disabled?(:respawn_assign_resource_worker, project, type: :gitlab_com_derisk)
 
-        Ci::ResourceGroups::AssignResourceFromResourceGroupWorker.perform_in(RESPAWN_WAIT_TIME, resource_group.id)
+        assign_resource_from_resource_group(resource_group)
+      end
+
+      def assign_resource_from_resource_group(resource_group)
+        if Feature.enabled?(:assign_resource_worker_deduplicate_until_executing, project)
+          Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2.perform_in(RESPAWN_WAIT_TIME, resource_group.id)
+        else
+          Ci::ResourceGroups::AssignResourceFromResourceGroupWorker.perform_in(RESPAWN_WAIT_TIME, resource_group.id)
+        end
       end
 
       # rubocop: disable CodeReuse/ActiveRecord

@@ -226,7 +226,7 @@ In the case of a push detection, the commit is rejected inline and error returne
 
 #### Configuration
 
-This phase will be considered "Experimental" with limited availability for customer opt-in, through instance level application settings.
+This phase will be considered "experimental" with limited availability for customer opt-in, through instance level application settings.
 
 #### High-Level Architecture
 

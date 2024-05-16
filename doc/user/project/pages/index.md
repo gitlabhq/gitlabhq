@@ -182,7 +182,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md) [with a flag](../../feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,

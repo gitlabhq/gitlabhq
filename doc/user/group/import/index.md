@@ -43,7 +43,7 @@ Migrating groups by direct transfer copies the groups from one place to another.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
 - In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
-- Copy groups with projects (in [Beta](../../../policy/experiment-beta-support.md#beta) and not ready for production
+- Copy groups with projects (in [beta](../../../policy/experiment-beta-support.md#beta) and not ready for production
   use) or without projects. Copying projects with groups is available:
   - On GitLab.com by default.
 
@@ -53,7 +53,7 @@ Not all group and project resources are copied. See list of copied resources bel
 - [Migrated project items](#migrated-project-items).
 
 WARNING:
-Importing groups with projects is in [Beta](../../../policy/experiment-beta-support.md#beta). This feature is not
+Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not
 ready for production use.
 
 We invite you to leave your feedback about migrating by direct transfer in
@@ -276,7 +276,7 @@ role.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
 WARNING:
-Importing groups with projects is in [Beta](../../../policy/experiment-beta-support.md#beta). This feature is not
+Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not
 ready for production use.
 
 ## Group import history
@@ -430,7 +430,7 @@ If you choose not to migrate projects along with groups or if you want to retry 
 initiate project-only migrations using the [API](../../../api/bulk_imports.md).
 
 WARNING:
-Migrating projects when migrating groups by direct transfer is in [Beta](../../../policy/experiment-beta-support.md#beta)
+Migrating projects when migrating groups by direct transfer is in [beta](../../../policy/experiment-beta-support.md#beta)
 and is not ready for production use.
 
 Project items that are migrated to the destination GitLab instance include:

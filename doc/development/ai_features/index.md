@@ -158,7 +158,7 @@ GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[
    1. Select **Edit** for your chosen group.
    1. Go to **Permissions and group features**.
    1. Choose *Ultimate* from the **Plan** list.
-1. Enable `Experiment & Beta features` for your group.
+1. Enable experiment & beta features for your group.
    1. Go to the group with the Ultimate license.
    1. Select **Settings > General**.
    1. Expand the **Permissions and group features** section.

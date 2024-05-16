@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [Beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
 
 WARNING:
 The metadata database is a [beta feature](../../policy/experiment-beta-support.md#beta).

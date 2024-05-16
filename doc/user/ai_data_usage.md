@@ -19,7 +19,7 @@ GitLab Duo AI-powered features are designed as a progressive enhancement to exis
 
 ## Stability and performance
 
-GitLab Duo AI-powered features are in a variety of [feature support levels](../policy/experiment-beta-support.md#beta). Due to the nature of these features, there may be high demand for usage which may cause degraded performance or unexpected downtime of the feature. We have built these features to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable Beta and Experiment features for any or all customers at any time at our discretion.
+GitLab Duo AI-powered features are in a variety of [feature support levels](../policy/experiment-beta-support.md#beta). Due to the nature of these features, there may be high demand for usage which may cause degraded performance or unexpected downtime of the feature. We have built these features to gracefully degrade and have controls in place to allow us to mitigate abuse or misuse. GitLab may disable beta and experimental features for any or all customers at any time at our discretion.
 
 ## Data privacy
 

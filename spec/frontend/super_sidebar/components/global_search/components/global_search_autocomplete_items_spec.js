@@ -13,6 +13,8 @@ import GlobalSearchAutocompleteItems from '~/super_sidebar/components/global_sea
 import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
 import GlobalSearchNoResults from '~/super_sidebar/components/global_search/components/global_search_no_results.vue';
 
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { PROJECTS_GROUP_TITLE } from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
@@ -49,6 +51,7 @@ describe('GlobalSearchAutocompleteItems', () => {
     });
   };
 
+  const findGlDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findItemTitles = () =>
     findItems().wrappers.map((w) => w.find('[data-testid="autocomplete-item-name"]').text());
@@ -65,6 +68,7 @@ describe('GlobalSearchAutocompleteItems', () => {
   const findNoResults = () => wrapper.findComponent(GlobalSearchNoResults);
 
   describe('template', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
     describe('when loading is true', () => {
       beforeEach(() => {
         createComponent({ loading: true });
@@ -101,7 +105,7 @@ describe('GlobalSearchAutocompleteItems', () => {
 
     describe('when loading is false', () => {
       beforeEach(() => {
-        createComponent({ loading: false });
+        createComponent();
       });
 
       it('does not render GlLoadingIcon', () => {
@@ -111,6 +115,20 @@ describe('GlobalSearchAutocompleteItems', () => {
       describe('Search results items', () => {
         it('renders item for each option in autocomplete option', () => {
           expect(findItems()).toHaveLength(MOCK_SORTED_AUTOCOMPLETE_OPTIONS.length);
+        });
+
+        it('tracks click on project results', async () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          await findGlDisclosureDropdownGroup().vm.$emit('action', {
+            category: PROJECTS_GROUP_TITLE,
+          });
+
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_project_result_in_command_palette',
+            {},
+            undefined,
+          );
         });
 
         it('renders titles correctly', () => {

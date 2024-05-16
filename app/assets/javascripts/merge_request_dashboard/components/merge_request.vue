@@ -1,6 +1,7 @@
 <script>
 import { GlLink, GlSprintf, GlIcon, GlLabel, GlTooltipDirective } from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
+import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -8,6 +9,12 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
+  apollo: {
+    isShowingLabels: {
+      query: isShowingLabelsQuery,
+      update: (data) => data.isShowingLabels,
+    },
+  },
   components: {
     GlLink,
     GlSprintf,
@@ -27,6 +34,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isShowingLabels: true,
+    };
+  },
   methods: {
     showScopedLabel(label) {
       return isScopedLabel(label);
@@ -43,7 +55,10 @@ export default {
 
 <template>
   <div class="gl-bg-white gl-p-5 gl-rounded-base">
-    <div class="gl-display-flex" :class="{ 'gl-mb-2': mergeRequest.labels.length }">
+    <div
+      class="gl-display-flex"
+      :class="{ 'gl-mb-2': mergeRequest.labels.length && isShowingLabels }"
+    >
       <div class="gl-display-flex gl-flex-direction-column">
         <h4 class="gl-mb-0 gl-mt-0 gl-font-base">
           <gl-link
@@ -119,7 +134,7 @@ export default {
         </div>
       </div>
     </div>
-    <div>
+    <div v-if="isShowingLabels">
       <gl-label
         v-for="label in mergeRequest.labels.nodes"
         :key="label.id"

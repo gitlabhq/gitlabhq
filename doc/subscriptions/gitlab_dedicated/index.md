@@ -144,7 +144,7 @@ GitLab Pages for GitLab Dedicated is enabled by default for all customers.
 DETAILS:
 **Status:** Beta
 
-On 2024-01-31, GitLab released Hosted runners in closed [Beta](../../policy/experiment-beta-support.md#beta).
+On 2024-01-31, GitLab released Hosted runners in closed [beta](../../policy/experiment-beta-support.md#beta).
 
 Hosted runners for GitLab Dedicated allow you to scale CI/CD workloads with no maintenance overhead.
 
@@ -157,16 +157,16 @@ The beta release of Hosted Runners provides the following features:
 
 Additional features will be included based on customer demand leading up to limited and general availability.
 
-Hosted Runners for Dedicated are available upon invitation for existing GitLab Dedicated customers. To participate in the closed Beta of Hosted Runners for Dedicated, please reach out to your Customer Success Manager or Account representative.
+Hosted Runners for Dedicated are available upon invitation for existing GitLab Dedicated customers. To participate in the closed beta of Hosted Runners for Dedicated, please reach out to your Customer Success Manager or Account representative.
 
 ##### Request runner IP ranges
 
-IP ranges for runners hosted by GitLab are available upon request. IP ranges are maintained on a best-effort basis and may change at any time during the Beta due to changes in the infrastructure.
+IP ranges for runners hosted by GitLab are available upon request. IP ranges are maintained on a best-effort basis and may change at any time during the beta due to changes in the infrastructure.
 Please reach out to your Customer Success Manager or Account representative.
 
 ##### Machine types available for Linux (x86-64)
 
-Instance runners available during the Beta are using EC2 `M7i` general-purpose machines.
+Instance runners available during the beta are using EC2 `M7i` general-purpose machines.
 
 ##### Bring Your Own
 

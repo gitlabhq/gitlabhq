@@ -173,7 +173,7 @@ Following are the constraints for each feature flag type:
   - `default_enabled` **must not** be set to `true`. If needed, this type can be changed to `beta` once the feature is complete.
   - Maximum Lifespan: 4 months.
 - `beta`
-  - `default_enabled` can be set to `true` so that a feature can be "released" to everyone in Beta with the possibility to disable
+  - `default_enabled` can be set to `true` so that a feature can be "released" to everyone in beta with the possibility to disable
     it in the case of scalability issues (ideally it should only be disabled for this reason on specific on-premise installations).
   - Maximum Lifespan: 6 months.
 - `ops`

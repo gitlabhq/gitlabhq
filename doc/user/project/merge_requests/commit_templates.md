@@ -16,7 +16,7 @@ commits. These templates encourage commit messages to follow a particular format
 or contain specific information. Users can override these templates when merging
 a merge request.
 
-Commit templates use syntax similar to the syntax for
+The commit template syntax is like the syntax for
 [review suggestions](reviews/suggestions.md#configure-the-commit-message-for-applied-suggestions).
 
 ## Configure commit templates
@@ -32,12 +32,12 @@ To do this:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
-1. Depending on the type of template you want to create, scroll to either
+1. Depending on the template type you want to create, scroll to either
    [**Merge commit message template**](#default-template-for-merge-commits) or
    [**Squash commit message template**](#default-template-for-squash-commits).
 1. For your desired commit type, enter your default message. You can use both static
    text and [variables](#supported-variables-in-commit-templates). Each template
-   is limited to a maximum of 500 characters, though after replacing the templates
+   is limited to 500 characters, though after replacing the templates
    with data, the final message might be longer.
 1. Select **Save changes**.
 
@@ -74,8 +74,8 @@ Commit message templates support these variables:
 
 | Variable | Description | Output example |
 |----------|-------------|----------------|
-| `%{source_branch}` | The name of the branch being merged. | `my-feature-branch` |
-| `%{target_branch}` | The name of the branch that the changes are applied to. | `main` |
+| `%{source_branch}` | The name of the branch to merge. | `my-feature-branch` |
+| `%{target_branch}` | The name of the branch to apply the changes to. | `main` |
 | `%{title}`         | Title of the merge request. | `Fix tests and translations` |
 | `%{issues}`        | String with phrase `Closes <issue numbers>`. Contains all issues mentioned in the merge request description that match [issue closing patterns](../issues/managing_issues.md#closing-issues-automatically). Empty if no issues are mentioned. | `Closes #465, #190 and #400` |
 | `%{description}`   | Description of the merge request. | `Merge request description.`<br>`Can be multiline.` |
@@ -91,7 +91,7 @@ Commit message templates support these variables:
 | `%{co_authored_by}` | Names and emails of commit authors in a `Co-authored-by` Git commit trailer format. Limited to authors of 100 most recent commits in merge request. | `Co-authored-by: Zane Doe <zdoe@example.com>` <br> `Co-authored-by: Blake Smith <bsmith@example.com>` |
 | `%{all_commits}`   | Messages from all commits in the merge request. Limited to 100 most recent commits. Skips commit bodies exceeding 100 KiB and merge commit messages. | `* Feature introduced` <br><br> `This commit implements feature` <br> `Changelog:added` <br><br> `* Bug fixed` <br><br> `* Documentation improved` <br><br>`This commit introduced better docs.`|
 
-Any line containing only an empty variable is removed. If the line to be removed is both
+Any line containing only an empty variable is removed. If the removed line is both
 preceded and followed by an empty line, the preceding empty line is also removed.
 
 After you edit a commit message on an open merge request, GitLab

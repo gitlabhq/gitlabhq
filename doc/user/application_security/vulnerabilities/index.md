@@ -35,8 +35,8 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
-> - Promoted to [Beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - Promoted to [beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
 
 GitLab can help you with a vulnerability by using a large language model to:
 
@@ -93,7 +93,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability.

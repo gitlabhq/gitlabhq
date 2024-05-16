@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Status:** Experiment
 
-This feature is an [Experiment](../policy/experiment-beta-support.md).
+This feature is an [experiment](../policy/experiment-beta-support.md).
 
 Instructions about how to set up integration between GitLab and ClickHouse database.
 

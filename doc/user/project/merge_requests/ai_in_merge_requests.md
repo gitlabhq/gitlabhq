@@ -18,9 +18,9 @@ Additional information on enabling these features and maturity can be found in o
 
 ## Summarize merge request changes
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10401) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is in [Beta](../../../policy/experiment-beta-support.md) on GitLab.com.
+This feature is in [beta](../../../policy/experiment-beta-support.md) on GitLab.com.
 
 GitLab Duo Merge request summaries can be added to your merge request description when creating or editing a merge request. To add a summary, select **Summarize code changes**. The generated summary is added to the merge request description where your cursor is.
 
@@ -32,9 +32,9 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 
 ## Summarize my merge request review
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10466) in GitLab 16.0 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
+This feature is an [experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
 When you've completed your review of a merge request and are ready to [submit your review](reviews/index.md#submit-a-review), generate a GitLab Duo Code review summary:
 
@@ -53,10 +53,10 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 ## Fill in merge request templates
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/429882) to Beta in GitLab 16.10
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/429882) to beta in GitLab 16.10.
 
-This feature is in [Beta](../../../policy/experiment-beta-support.md) on GitLab.com.
+This feature is in [beta](../../../policy/experiment-beta-support.md) on GitLab.com.
 
 Merge requests in projects often have [templates](../description_templates.md#create-a-merge-request-template) defined that need to be filled out. This helps reviewers and other users understand the purpose and changes a merge request might propose.
 
@@ -80,9 +80,9 @@ Provide feedback on this experimental feature in [issue 416537](https://gitlab.c
 
 ## Generate messages for merge or squash commits
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [Experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
+This feature is an [experiment](../../../policy/experiment-beta-support.md) on GitLab.com.
 
 When preparing to merge your merge request you might wish to edit the proposed squash or merge commit message.
 

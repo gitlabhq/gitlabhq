@@ -11,7 +11,12 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Draft notes are pending, unpublished comments on merge requests. They can be either start a discussion, or be associated with an existing discussion as a reply. They are viewable only by the author until they are published.
+Draft notes are pending, unpublished comments on merge requests. They can either:
+
+- Start a discussion.
+- Continue an existing discussion as a reply.
+
+Before publishing, draft notes are visible only to the author.
 
 ## List all merge request draft notes
 

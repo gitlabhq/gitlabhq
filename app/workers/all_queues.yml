@@ -2199,6 +2199,15 @@
   :weight: 5
   :idempotent: true
   :tags: []
+- :name: pipeline_processing:ci_resource_groups_assign_resource_from_resource_group_worker_v2
+  :worker_name: Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 5
+  :idempotent: true
+  :tags: []
 - :name: pipeline_processing:pipeline_process
   :worker_name: PipelineProcessWorker
   :feature_category: :continuous_integration

@@ -43,7 +43,7 @@ test:
 
 ### iOS build environments
 
-[GitLab hosted runners on macOS](../ci/runners/hosted_runners/macos.md) are in Beta.
+[GitLab hosted runners on macOS](../ci/runners/hosted_runners/macos.md) are in beta.
 
 [Choose an image](../ci/runners/hosted_runners/macos.md#supported-macos-images) to run a job on a macOS GitLab-hosted runner and add it to your `.gitlab-ci.yml` file.
 

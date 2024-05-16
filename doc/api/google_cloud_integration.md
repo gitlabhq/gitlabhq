@@ -18,7 +18,7 @@ DETAILS:
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141870) in GitLab 16.10. This feature is an [Experiment](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141870) in GitLab 16.10. This feature is an [experiment](../policy/experiment-beta-support.md).
 
 ### Workload identity federation creation script
 

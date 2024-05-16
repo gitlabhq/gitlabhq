@@ -4,10 +4,10 @@ stage: none
 group: unassigned
 ---
 
-# Documenting Experiment and Beta features
+# Documenting experimental and beta features
 
 Some features are not generally available and are instead considered
-[Experiment or Beta](../../policy/experiment-beta-support.md).
+[experimental or beta](../../policy/experiment-beta-support.md).
 
 When you document a feature in one of these three statuses:
 
@@ -28,7 +28,7 @@ For example:
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](link) in GitLab 15.10. This feature is an [Experiment](<link_to>/policy/experiment-beta-support.md).
+> - [Introduced](link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
@@ -37,7 +37,7 @@ On GitLab.com and GitLab Dedicated, this feature is not available. This feature 
 
 Use this new feature when you need to do this new thing.
 
-This feature is an [Experiment](<link_to>/policy/experiment-beta-support.md). To join
+This feature is an [experiment](<link_to>/policy/experiment-beta-support.md). To join
 the list of users testing this feature, do this thing. If you find a bug,
 [open an issue](link).
 ```

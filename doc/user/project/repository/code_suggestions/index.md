@@ -134,7 +134,7 @@ To disable Code Suggestions, disable the feature in your IDE editor extension.
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10. This feature is an [Experiment](../../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10. This feature is an [experiment](../../../../policy/experiment-beta-support.md).
 
 Prerequisites:
 

@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `observability_metrics`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.7 [with a flag](../administration/feature_flags.md) named `observability_metrics`. Disabled by default. This feature is an [experiment](../policy/experiment-beta-support.md#experiment).
 
 FLAG:
 This feature is only available on GitLab.com. On self-managed GitLab and GitLab Dedicated, by default this feature is not available.

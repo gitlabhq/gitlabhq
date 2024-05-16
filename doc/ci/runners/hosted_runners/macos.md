@@ -15,7 +15,7 @@ Hosted runners on macOS provide an on-demand macOS environment, fully integrated
 You can use these runners to build, test, and deploy apps for the Apple ecosystem (macOS, iOS, watchOS, tvOS).
 Our [Mobile DevOps section](../../../ci/mobile_devops.md#ios-build-environments) provides features, documentation, and guidance on building and deploying mobile applications for iOS.
 
-Hosted runners on macOS are in [Beta](../../../policy/experiment-beta-support.md#beta) and available for open source programs and customers in Premium and Ultimate plans.
+Hosted runners on macOS are in [beta](../../../policy/experiment-beta-support.md#beta) and available for open source programs and customers in Premium and Ultimate plans.
 [General availability](../../../policy/experiment-beta-support.md#generally-available-ga) of Hosted runners on macOS is proposed in [epic 8267](https://gitlab.com/groups/gitlab-org/-/epics/8267).
 
 ## Machine types available for macOS
@@ -47,7 +47,7 @@ The images and installed components are updated with each GitLab release, to kee
 
 Major and minor releases of macOS and Xcode, are made available within two weeks of Apple's release.
 
-A new major release image is initially made available as Beta, and becomes Generally Available (GA) with the release of the first minor release.
+A new major release image is initially made available as beta, and becomes generally available (GA) with the release of the first minor release.
 Because only two GA images are supported at a time, the oldest image becomes deprecated and will be removed after three months according to the [supported image lifecycle](../index.md#supported-image-lifecycle).
 
 ## Example `.gitlab-ci.yml` file
