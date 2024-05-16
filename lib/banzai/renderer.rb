@@ -3,6 +3,7 @@
 module Banzai
   module Renderer
     USER_CONTENT_ID_PREFIX = 'user-content-'
+    HTML_PIPELINE_SUBSCRIPTION = 'call_filter.html_pipeline'
 
     # Convert a Markdown String into an HTML-safe String of HTML
     #
@@ -125,9 +126,10 @@ module Banzai
     end
 
     def self.render_result(text, context = {})
-      text = Pipeline[:pre_process].to_html(text, context) if text
-
-      Pipeline[context[:pipeline]].call(text, context)
+      instrument_filters(context) do
+        text = Pipeline[:pre_process].to_html(text, context) if text
+        Pipeline[context[:pipeline]].call(text, context)
+      end
     end
 
     # Perform post-processing on an HTML String
@@ -183,6 +185,44 @@ module Banzai
       return unless cache_key
 
       Rails.cache.__send__(:expanded_key, full_cache_key(cache_key, pipeline_name)) # rubocop:disable GitlabSecurity/PublicSend
+    end
+
+    # this is built specifically for outputting debug timing/information for the Banzai pipeline.
+    # Example usage:
+    #   Banzai.render(markdown, project: nil, debug_timing: true)
+    #   Banzai.render(markdown, project: Project.first, debug: true)
+    def self.instrument_filters(context)
+      if context[:debug] || context[:debug_timing]
+        service = ActiveSupport::Notifications
+        HTML::Pipeline.default_instrumentation_service = service
+
+        service.monotonic_subscribe(HTML_PIPELINE_SUBSCRIPTION) do |_event, start, ending, _transaction_id, payload|
+          duration = ending - start
+
+          duration_color = if duration < 1
+                             :green
+                           elsif duration > 1 && duration < 2
+                             :orange
+                           else
+                             :red
+                           end
+
+          duration_str = Rainbow.new.wrap(format('%10f_s', duration)).color(duration_color)
+          filter_name = payload[:filter].delete_prefix('Banzai::Filter::')
+          pipeline_name = payload[:pipeline].delete_prefix('Banzai::Pipeline::')
+          logger = Logger.new($stdout)
+
+          logger.debug "#{duration_str} : #{filter_name} [#{pipeline_name}]"
+
+          if payload[:context][:debug]
+            logger.debug(payload)
+          end
+        end
+      end
+
+      yield
+    ensure
+      service.unsubscribe(HTML_PIPELINE_SUBSCRIPTION) if service
     end
   end
 end

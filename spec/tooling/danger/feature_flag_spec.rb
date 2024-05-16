@@ -27,7 +27,8 @@ RSpec.describe Tooling::Danger::FeatureFlag, feature_category: :tooling do
     let(:other_files) do
       [
         'app/models/model.rb',
-        'app/assets/javascripts/file.js'
+        'app/assets/javascripts/file.js',
+        'ee/config/feature_flags/ops/entry.patch'
       ]
     end
 

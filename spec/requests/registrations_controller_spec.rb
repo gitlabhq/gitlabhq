@@ -22,5 +22,21 @@ RSpec.describe RegistrationsController, type: :request, feature_category: :syste
         expect(response).to redirect_to(users_almost_there_path(email: user_attrs[:email]))
       end
     end
+
+    context 'with user_detail built' do
+      it 'creates the user_detail record' do
+        expect { request }.to change { UserDetail.count }.by(1)
+      end
+
+      context 'when create_user_details_with_user_creation feature flag is disabled' do
+        before do
+          stub_feature_flags(create_user_details_with_user_creation: false)
+        end
+
+        it 'does not create the user_detail record' do
+          expect { request }.not_to change { UserDetail.count }
+        end
+      end
+    end
   end
 end

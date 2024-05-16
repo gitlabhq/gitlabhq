@@ -13,7 +13,7 @@ RSpec.describe GitlabSchema.types['CiRunner'], feature_category: :runner do
       short_sha locked run_untagged runner_type tag_list
       project_count job_count admin_url edit_admin_url register_admin_url user_permissions
       maintenance_note maintenance_note_html groups projects jobs token_expires_at
-      owner_project job_execution_status ephemeral_authentication_token ephemeral_register_url
+      owner_project job_execution_status ephemeral_authentication_token ephemeral_register_url creation_method
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

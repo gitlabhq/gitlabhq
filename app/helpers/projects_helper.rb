@@ -242,10 +242,11 @@ module ProjectsHelper
       current_user.require_ssh_key?
   end
 
-  def show_invalid_gpg_key_message?
-    return false unless Integrations::BeyondIdentity.activated_for_instance?
+  def show_invalid_gpg_key_message?(project)
+    return false unless project.beyond_identity_integration&.active?
+    return false if current_user.gpg_keys.externally_valid.exists?
 
-    current_user.gpg_keys.externally_invalid.exists?
+    true
   end
 
   def show_no_password_message?

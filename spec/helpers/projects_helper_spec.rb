@@ -1823,28 +1823,52 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#show_invalid_gpg_key_message?' do
-    subject { helper.show_invalid_gpg_key_message? }
+    subject { helper.show_invalid_gpg_key_message?(project) }
 
     it { is_expected.to be_falsey }
 
-    context 'when external verification is required for gpg keys' do
-      let!(:integration) { create(:beyond_identity_integration) }
+    context 'when beyond identity is disabled for a project' do
+      let_it_be(:integration) { create(:beyond_identity_integration, active: false) }
 
-      context 'and user has a gpg key' do
-        let!(:gpg_key) { create :gpg_key, externally_verified: externally_verified, user: user }
-
-        context 'and the gpg key is not verified' do
-          let(:externally_verified) { false }
-
-          it { is_expected.to be_truthy }
-        end
-
-        context 'and the gpg key is verified' do
-          let(:externally_verified) { true }
-
-          it { is_expected.to be_falsy }
-        end
+      before do
+        allow(project).to receive(:beyond_identity_integration).and_return(integration)
       end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when a GPG key failed external validation and one GPC key is externally validated' do
+      let_it_be(:integration) { create(:beyond_identity_integration) }
+
+      before do
+        allow(project).to receive(:beyond_identity_integration).and_return(integration)
+        create(:gpg_key, externally_verified: true, user: user)
+        create(:another_gpg_key, externally_verified: false, user: user)
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when there are no GPG keys externally validated' do
+      let_it_be(:integration) { create(:beyond_identity_integration) }
+
+      before do
+        allow(project).to receive(:beyond_identity_integration).and_return(integration)
+        create(:gpg_key, externally_verified: false, user: user)
+        create(:another_gpg_key, externally_verified: false, user: user)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when GPG keys are missing' do
+      let_it_be(:integration) { create(:beyond_identity_integration) }
+
+      before do
+        allow(project).to receive(:beyond_identity_integration).and_return(integration)
+      end
+
+      it { is_expected.to be_truthy }
     end
   end
 

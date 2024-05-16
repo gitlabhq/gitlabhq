@@ -31,6 +31,10 @@ module Types
       field :created_by, Types::UserType, null: true,
         description: 'User that created this runner.',
         method: :creator
+      field :creation_method, Types::Ci::RunnerCreationMethodEnum, null: true,
+        method: :registration_type,
+        description: 'Type of runner registration.',
+        alpha: { milestone: '17.0' }
       field :description, GraphQL::Types::String, null: true,
         description: 'Description of the runner.'
       field :edit_admin_url, GraphQL::Types::String, null: true,

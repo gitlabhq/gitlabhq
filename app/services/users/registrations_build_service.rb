@@ -6,6 +6,13 @@ module Users
 
     private
 
+    override :build_user_detail
+    def build_user_detail
+      return unless Feature.enabled?(:create_user_details_with_user_creation, Feature.current_request)
+
+      user.user_detail
+    end
+
     def signup_params
       super + [:skip_confirmation]
     end

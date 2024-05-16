@@ -150,4 +150,27 @@ RSpec.describe Banzai::Renderer, feature_category: :team_planning do
       end
     end
   end
+
+  describe 'debug instrumentation in render_result' do
+    it 'enables debug instrumentation' do
+      expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
+      expect(ActiveSupport::Notifications).to receive(:unsubscribe)
+
+      renderer.render_result('test', project: nil, debug: true)
+    end
+
+    it 'enables debug_timing instrumentation' do
+      expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
+      expect(ActiveSupport::Notifications).to receive(:unsubscribe)
+
+      renderer.render_result('test', project: nil, debug_timing: true)
+    end
+
+    it 'does not enable debug_timing instrumentation by default' do
+      expect(ActiveSupport::Notifications).not_to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
+      expect(ActiveSupport::Notifications).not_to receive(:unsubscribe)
+
+      renderer.render_result('test', project: nil)
+    end
+  end
 end

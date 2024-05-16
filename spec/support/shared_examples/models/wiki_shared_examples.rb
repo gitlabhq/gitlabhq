@@ -938,7 +938,7 @@ RSpec.shared_examples 'wiki model' do
 
       it 'returns false and sets error message', :aggregate_failures do
         expect(subject.repository)
-          .to receive(:update_file)
+          .to receive(:commit_files)
           .and_raise(Gitlab::Git::Index::IndexError.new)
 
         expect(subject.update_page(page.page, content: 'new content', format: :markdown))
@@ -956,7 +956,7 @@ RSpec.shared_examples 'wiki model' do
           path = 'test-page.markdown'
           page.page.instance_variable_set(:@path, path)
 
-          expect(subject.repository).to receive(:update_file).with(user, path, anything, anything)
+          expect(subject.repository).to receive(:update_file_actions).with(path, anything, anything).and_return([])
 
           subject.update_page(page.page, content: 'new content', format: :markdown)
         end

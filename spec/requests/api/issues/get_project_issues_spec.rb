@@ -721,11 +721,15 @@ RSpec.describe API::Issues, feature_category: :team_planning do
     end
 
     it 'returns 404 if the issue ID is used' do
-      # Make sure other issues don't exist with a matching iid
-      Issue.where.not(id: issue.id).delete_all
+      # Make sure other issues don't exist with a matching id or iid to avoid flakyness
+      max_id = [Issue.maximum(:iid), Issue.maximum(:id)].max + 10
+      new_issue = create(:issue, project: project, id: max_id)
 
-      get api("/projects/#{project.id}/issues/#{issue.id}", user)
+      # make sure it does work with iid
+      get api("/projects/#{project.id}/issues/#{new_issue.iid}", user)
+      expect(response).to have_gitlab_http_status(:ok)
 
+      get api("/projects/#{project.id}/issues/#{new_issue.id}", user)
       expect(response).to have_gitlab_http_status(:not_found)
     end
 

@@ -13,6 +13,9 @@ module Banzai
 
       def self.html_pipeline
         @html_pipeline ||= HTML::Pipeline.new(filters)
+        @html_pipeline.setup_instrumentation(name)
+
+        @html_pipeline
       end
 
       class << self

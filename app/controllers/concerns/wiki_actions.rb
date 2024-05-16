@@ -126,8 +126,40 @@ module WikiActions
     elsif file_blob
       # This is needed by [GitLab JH](https://gitlab.com/gitlab-jh/gitlab/-/issues/247)
       send_wiki_file_blob(wiki, file_blob)
+    else
+      handle_redirection
+    end
+  end
+
+  def handle_redirection
+    redir = find_redirection(params[:id]) unless params[:redirect_limit_reached]
+    if redir.is_a?(Hash) && redir[:error]
+      redirect_to(
+        "#{wiki_page_path(wiki, params[:id])}?redirect_limit_reached=true",
+        status: :found,
+        notice: format(_('The page at "%{redirected_from}" redirected too many times. You are now editing the page at "%{redirected_from}".'), {
+          redirected_from: params[:id]
+        })
+      )
+    elsif redir
+      notice = format(_('The page at "%{redirected_from}" has been moved to "%{redirected_to}".'), {
+        redirected_from: params[:id],
+        redirected_to: redir
+      })
+
+      redirect_to(
+        "#{wiki_page_path(wiki, redir)}?redirected_from=#{params[:id]}",
+        status: :found,
+        notice: notice
+      )
     elsif show_create_form?
       title = params[:id]
+      if params[:redirected_from] # override the notice if redirected
+        flash[:notice] = format(_('The page at "%{redirected_from}" tried to redirect to "%{redirected_to}", but it does not exist. You are now editing the page at "%{redirected_to}".'), {
+          redirected_from: params[:redirected_from],
+          redirected_to: params[:id]
+        })
+      end
 
       @page = build_page(title: title)
       @templates = templates_list
@@ -373,6 +405,31 @@ module WikiActions
       container.namespace
     when Group
       container
+    end
+  end
+
+  def find_redirection(path, redirect_limit = 50)
+    return unless Feature.enabled?(:wiki_redirection, container)
+
+    seen = Set[]
+    current = path
+
+    redirect_limit.times do
+      current = redirections[current]
+
+      return { error: true, reason: :loop } if seen.include?(current)
+      return current unless redirections[current].present?
+
+      seen << current
+    end
+
+    { error: true, reason: :limit }
+  end
+
+  def redirections
+    strong_memoize(:redirections) do
+      redirects_file = wiki.repository.blob_at(wiki.default_branch, Wiki::REDIRECTS_YML, limit: 0.5.megabytes)
+      redirects_file ? YAML.safe_load(redirects_file.data).to_h : {}
     end
   end
 end

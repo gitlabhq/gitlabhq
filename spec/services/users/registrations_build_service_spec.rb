@@ -14,6 +14,26 @@ RSpec.describe Users::RegistrationsBuildService, feature_category: :system_acces
       stub_application_setting(signup_enabled?: true)
     end
 
+    context 'with user_detail built' do
+      it 'creates the user_detail record' do
+        user = service.execute
+
+        expect { user.save! }.to change { UserDetail.count }.by(1)
+      end
+
+      context 'when create_user_details_with_user_creation feature flag is disabled' do
+        before do
+          stub_feature_flags(create_user_details_with_user_creation: false)
+        end
+
+        it 'does not create the user_detail record' do
+          user = service.execute
+
+          expect { user.save! }.not_to change { UserDetail.count }
+        end
+      end
+    end
+
     context 'when automatic user confirmation is not enabled' do
       before do
         stub_application_setting_enum('email_confirmation_setting', 'hard')

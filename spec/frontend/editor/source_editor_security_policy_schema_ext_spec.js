@@ -151,16 +151,6 @@ describe('getSinglePolicySchema', () => {
       }),
     ).resolves.toStrictEqual({});
   });
-
-  it('returns an empty schema on non-existing policy type', async () => {
-    await expect(
-      getSinglePolicySchema({
-        namespacePath: mockNamespacePath,
-        namespaceType: 'project',
-        policyType: 'non_existent_policy',
-      }),
-    ).resolves.toStrictEqual({});
-  });
 });
 
 describe('SecurityPolicySchemaExtension', () => {

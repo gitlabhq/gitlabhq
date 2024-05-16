@@ -88,6 +88,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         access_level: runner.access_level.to_s.upcase,
         run_untagged: runner.run_untagged,
         runner_type: runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
+        creation_method: runner.authenticated_user_registration_type? ? 'AUTHENTICATED_USER' : 'REGISTRATION_TOKEN',
         ephemeral_authentication_token: nil,
         maintenance_note: runner.maintenance_note,
         maintenance_note_html:
@@ -542,8 +543,8 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     it_behaves_like 'runner details fetch'
   end
 
-  describe 'for registration type' do
-    context 'when registered with registration token' do
+  describe 'for creation method' do
+    context 'when created with registration token' do
       let(:runner) do
         create(:ci_runner, registration_type: :registration_token)
       end
@@ -551,7 +552,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       it_behaves_like 'runner details fetch'
     end
 
-    context 'when registered with authenticated user' do
+    context 'when created by authenticated user' do
       let(:runner) do
         create(:ci_runner, registration_type: :authenticated_user)
       end

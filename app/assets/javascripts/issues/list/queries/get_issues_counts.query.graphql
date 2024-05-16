@@ -3,6 +3,7 @@ query getIssuesCount(
   $fullPath: ID!
   $iid: String
   $search: String
+  $in: [IssuableSearchableField!]
   $assigneeId: String
   $assigneeUsernames: [String!]
   $authorUsername: String
@@ -30,6 +31,7 @@ query getIssuesCount(
       state: opened
       iid: $iid
       search: $search
+      in: $in
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
@@ -55,6 +57,7 @@ query getIssuesCount(
       state: closed
       iid: $iid
       search: $search
+      in: $in
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
@@ -80,6 +83,7 @@ query getIssuesCount(
       state: all
       iid: $iid
       search: $search
+      in: $in
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
@@ -107,6 +111,7 @@ query getIssuesCount(
       state: opened
       iid: $iid
       search: $search
+      in: $in
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
@@ -133,6 +138,7 @@ query getIssuesCount(
       state: closed
       iid: $iid
       search: $search
+      in: $in
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername
@@ -159,6 +165,7 @@ query getIssuesCount(
       state: all
       iid: $iid
       search: $search
+      in: $in
       assigneeId: $assigneeId
       assigneeUsernames: $assigneeUsernames
       authorUsername: $authorUsername

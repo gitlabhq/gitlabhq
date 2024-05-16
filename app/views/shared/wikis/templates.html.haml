@@ -8,7 +8,7 @@
     = s_("Wiki|Wiki Templates")
 
   .nav-controls.pb-md-3.pb-lg-0
-    = link_button_to wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true), icon: 'plus' do
+    = link_button_to wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true), variant: :confirm do
       = s_("Wiki|New template")
 
     .dropdown.inline.wiki-sort-dropdown

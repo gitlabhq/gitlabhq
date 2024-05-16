@@ -24499,7 +24499,7 @@ msgstr ""
 msgid "GpgKeys|Manage GPG keys"
 msgstr ""
 
-msgid "GpgKeys|There is an unverified GPG key associated with your profile. Please review your GPG keys."
+msgid "GpgKeys|There is no valid GPG key issued by Beyond Identity associated with your profile. Please add a valid key to your profile."
 msgstr ""
 
 msgid "Grafana URL"
@@ -52209,6 +52209,15 @@ msgid "The number of merge requests merged by month."
 msgstr ""
 
 msgid "The number of times an upload record could not find its file"
+msgstr ""
+
+msgid "The page at \"%{redirected_from}\" has been moved to \"%{redirected_to}\"."
+msgstr ""
+
+msgid "The page at \"%{redirected_from}\" redirected too many times. You are now editing the page at \"%{redirected_from}\"."
+msgstr ""
+
+msgid "The page at \"%{redirected_from}\" tried to redirect to \"%{redirected_to}\", but it does not exist. You are now editing the page at \"%{redirected_to}\"."
 msgstr ""
 
 msgid "The page could not be displayed because it timed out."

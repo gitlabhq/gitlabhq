@@ -75,6 +75,7 @@ For more information about our plans for language support in SAST, see the [cate
 | React                        | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 13.10                                                                                   |
 | Ruby                         | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                               | 16.11                                                                                    |
 | Ruby on Rails                | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                               | 16.11                                                                                    |
+| Rust <sup>2</sup>            | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with user-provided [Custom rules](customize_rulesets.md)                     | 17.1 |
 | Scala (any build system)     | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)       | 16.0                                                                                    |
 | Scala <sup>1</sup>           | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                       |
 | Swift (iOS)                  | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with [GitLab-managed rules](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/#sast-rules)                              | 16.11                                                                                    |
@@ -84,7 +85,7 @@ For more information about our plans for language support in SAST, see the [cate
   Footnotes:
   <ol>
     <li>The SpotBugs-based analyzer supports <a href="https://gradle.org/">Gradle</a>, <a href="https://maven.apache.org/">Maven</a>, and <a href="https://www.scala-sbt.org/">SBT</a>. It can also be used with variants like the <a href="https://docs.gradle.org/current/userguide/gradle_wrapper.html">Gradle wrapper</a>, <a href="https://grails.org/">Grails</a>, and the <a href="https://github.com/takari/maven-wrapper">Maven wrapper</a>. However, SpotBugs has <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/350801">limitations</a> when used against <a href="https://ant.apache.org/">Ant</a>-based projects. You should use the Semgrep-based analyzer for Ant-based Java or Scala projects.</li>
-    <li> These analyzers were <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/431123">deprecated in GitLab 16.9</a> and are planned for removal in 17.0. The <a href="https://gitlab.com/gitlab-org/security-products/analyzers/semgrep">Semgrep analyzer</a> is proposed as their replacement.</li>
+    <li>Requires a custom ruleset and an override to the semgrep-sast CI job. See <a href="https://docs.gitlab.com/ee/user/application_security/sast/index.html#scanning-rust-applications">Scanning Rust applications</a> for an example.</li>
   </ol>
 </html>
 
@@ -477,6 +478,40 @@ include:
 variables:
   SCAN_KUBERNETES_MANIFESTS: "true"
 ```
+
+### Scanning Rust applications
+
+To scan Rust applications, you must:
+
+1. Provide a custom ruleset for Rust. Create a file named `sast-ruleset.toml` in a `.gitlab/` directory at the root of your repository. Add the following contents:
+
+   ```toml
+   [semgrep]
+     description = "Rust ruleset for Semgrep"
+     targetdir = "/sgrules"
+     timeout = 60
+   
+     [[semgrep.passthrough]]
+       type  = "url"
+       value = "https://semgrep.dev/c/p/rust"
+       target = "rust.yml"
+   ```
+
+   This configuration uses the open-source Semgrep ruleset. Read more on [customizing rulesets](customize_rulesets.md).
+
+1. Override the `semgrep-sast` job to add a rule that detects Rust (`.rs`) files. Define the following in the `.gitlab-ci.yml` file:
+
+   ```yaml
+   include:
+     - template: Jobs/SAST.gitlab-ci.yml
+    
+   semgrep-sast:
+     rules:
+       - if: $CI_COMMIT_BRANCH
+         exists:
+           - '**/*.rs'
+           # include any other file extensions you need to scan from the semgrep-sast template: Jobs/SAST.gitlab-ci.yml 
+   ```
 
 ### Pre-compilation
 

@@ -322,19 +322,63 @@ To replace the token:
 
 ## Troubleshooting
 
-### Identify Project and Group Access Tokens expiring on a certain date using the rails console
+### Identify project and group access tokens expiring on a certain date using the Rails console
 
-These scripts can be executed in a [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session) or [using the Rails Runner](../administration/operations/rails_console.md#using-the-rails-runner) for identifying tokens affected by [incident 18003](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18003) in self-managed GitLab instances.
+Use either of these scripts in self-managed instances to identify tokens affected by
+[incident 18003](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18003).
+Run the script from your terminal window in either:
 
-The first script looks for tokens that expire on one specific day – you'd want to adjust `expires_at_date` to the day one year after your instance was upgraded to GitLab 16.0. If you're not sure about the exact timing you can use the second script which allows specifying a date range to search in.
+- A [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
+- Using the [Rails Runner](../administration/operations/rails_console.md#using-the-rails-runner).
 
-To run either of the scripts, start a Rails console session with `sudo gitlab-rails console`, paste the entire script and hit `Enter`.
+Both scripts return results in this format:
 
-Alternatively execute it with the Rails Runner: `sudo gitlab-rails runner /path/to/expired_tokens.rb` – it _has_ to be the full path, and the file needs to be accessible to `git:git`. See details in the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
+```plaintext
+Expired Group Access Token in Group ID 25, Token ID: 8, Name: Example Token, Scopes: ["read_api", "create_runner"], Last used:
+Expired Project Access Token in Project ID 2, Token ID: 9, Name: Test Token, Scopes: ["api", "read_registry", "write_registry"], Last used: 2022-02-11 13:22:14 UTC
+```
 
 #### expired_tokens.rb
 
+This script finds tokens that expire on a specific date.
+
+Prerequisites:
+
+- You must know the exact date your instance was upgraded to GitLab 16.0.
+
+To use it:
+
+::Tabs
+
+:::TabTitle Rails console session
+
+1. In your terminal window, connect to your instance.
+1. Start a Rails console session with `sudo gitlab-rails console`.
+1. Paste in the entire script. Change the `expires_at_date` to the date one year after your instance was upgraded to GitLab 16.0.
+1. Press <kbd>Enter</kbd>.
+
+:::TabTitle Rails Runner
+
+1. In your terminal window, connect to your instance.
+1. Copy this entire script, and save it as a file on your instance:
+   - Name it `expired_tokens.rb`.
+   - Change the `expires_at_date` to the date one year after your instance was upgraded to GitLab 16.0.
+   - The file must be accessible to `git:git`.
+1. Run this command, changing the path to the _full_ path to your `expired_tokens.rb` file:
+
+   ```shell
+   sudo gitlab-rails runner /path/to/expired_tokens.rb
+   ```
+
+For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
+
+::EndTabs
+
 ```ruby
+# This script requires you to know the exact date your GitLab instance
+# was upgraded to GitLab 16.0. Change this value to the date one year after
+# your GitLab instance was upgraded.
+
 expires_at_date = "2024-05-22"
 
 PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find_each do |token|
@@ -345,17 +389,45 @@ PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find
       'Project'
     end
 
-    puts "Expired #{type} Access Token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+    puts "Expired #{type} access token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
   end
 end
 ```
 
 #### expired_tokens_date_range.rb
 
+This script finds tokens that expire in a particular month. You don't need to know
+the exact date your instance was upgraded to GitLab 16.0. To use it:
+
+::Tabs
+
+:::TabTitle Rails console session
+
+1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
+1. Paste in the entire script. If desired, change the `date_range` to a different range.
+1. Press <kbd>Enter</kbd>.
+
+:::TabTitle Rails Runner
+
+1. In your terminal window, connect to your instance.
+1. Copy this entire script, and save it as a file on your instance:
+   - Name it `expired_tokens.rb`.
+   - If desired, change the `date_range` to a different range.
+   - The file must be accessible to `git:git`.
+1. Run this command, changing `/path/to/expired_tokens.rb`
+   to the _full_ path to your `expired_tokens.rb` file:
+
+   ```shell
+   sudo gitlab-rails runner /path/to/expired_tokens.rb
+   ```
+
+For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
+
+::EndTabs
+
 ```ruby
-# This is an alternative version of the above script that allows
-# searching for tokens that expire within a certain date range,
-# e.g. `1.month` (from when the script is executed). Useful if
+# This script enables you to search for tokens that expire within a
+# certain date range (like 1.month) from the current date. Use it if
 # you're unsure when exactly your GitLab 16.0 upgrade completed.
 
 date_range = 1.month
@@ -364,7 +436,7 @@ PersonalAccessToken.project_access_token.where(expires_at: Date.today .. Date.to
   token.user.members.each do |member|
     type = member.is_a?(GroupMember) ? 'Group' : 'Project'
 
-    puts "Expired #{type} Access Token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+    puts "Expired #{type} access token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
   end
 end
 ```

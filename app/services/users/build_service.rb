@@ -18,6 +18,7 @@ module Users
     def execute
       build_user
       build_identity
+      build_user_detail
       update_canonical_email
 
       user
@@ -139,6 +140,12 @@ module Users
       return if identity_params.empty?
 
       user.identities.build(identity_params)
+    end
+
+    def build_user_detail
+      # no-op overridden by inheriting classes
+      # TODO: This will eventually be populated based on success of
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/461656
     end
 
     def update_canonical_email

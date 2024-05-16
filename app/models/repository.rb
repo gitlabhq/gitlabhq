@@ -811,38 +811,34 @@ class Repository
     commit_files(user, **options)
   end
 
+  def create_file_actions(path, content, execute_filemode: nil)
+    actions = [{ action: :create, file_path: path, content: content }]
+    actions << { action: :chmod, file_path: path, execute_filemode: execute_filemode } unless execute_filemode.nil?
+    actions
+  end
+
   def create_file(user, path, content, **options)
-    options[:actions] = [{ action: :create, file_path: path, content: content }]
+    actions = create_file_actions(path, content, execute_filemode: options.delete(:execute_filemode))
+    commit_files(user, **options.merge(actions: actions))
+  end
 
-    execute_filemode = options.delete(:execute_filemode)
-
-    unless execute_filemode.nil?
-      options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
-    end
-
-    commit_files(user, **options)
+  def update_file_actions(path, content, previous_path: nil, execute_filemode: nil)
+    action = previous_path && previous_path != path ? :move : :update
+    actions = [{ action: action, file_path: path, content: content, previous_path: previous_path }]
+    actions << { action: :chmod, file_path: path, execute_filemode: execute_filemode } unless execute_filemode.nil?
+    actions
   end
 
   def update_file(user, path, content, **options)
-    previous_path = options.delete(:previous_path)
-    action = previous_path && previous_path != path ? :move : :update
-
-    options[:actions] = [{ action: action, file_path: path, previous_path: previous_path, content: content }]
-
-    execute_filemode = options.delete(:execute_filemode)
-
-    unless execute_filemode.nil?
-      options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
-    end
-
-    commit_files(user, **options)
+    actions = update_file_actions(path, content, previous_path: options.delete(:previous_path), execute_filemode: options.delete(:execute_filemode))
+    commit_files(user, **options.merge(actions: actions))
   end
 
-  def move_dir_files(user, path, previous_path, **options)
+  def move_dir_files_actions(path, previous_path, branch_name: nil)
     regex = Regexp.new("^#{Regexp.escape(previous_path + '/')}", 'i')
-    files = ls_files(options[:branch_name])
+    files = ls_files(branch_name)
 
-    options[:actions] = files.each_with_object([]) do |item, list|
+    files.each_with_object([]) do |item, list|
       next unless regex.match?(item)
 
       list.push(
@@ -852,10 +848,13 @@ class Repository
         infer_content: true
       )
     end
+  end
 
-    return if options[:actions].blank?
+  def move_dir_files(user, path, previous_path, **options)
+    actions = move_dir_files_actions(path, previous_path, branch_name: options[:branch_name])
+    return if actions.blank?
 
-    commit_files(user, **options)
+    commit_files(user, **options.merge(actions: actions))
   end
 
   def delete_file(user, path, **options)
