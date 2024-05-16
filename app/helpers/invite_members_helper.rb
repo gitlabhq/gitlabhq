@@ -10,14 +10,12 @@ module InviteMembersHelper
   end
 
   def invite_accepted_notice(member)
-    case member.source
-    when Project
-      _("You have been granted %{member_human_access} access to project %{name}.") %
-        { member_human_access: member.human_access, name: member.source.name }
-    when Group
-      _("You have been granted %{member_human_access} access to group %{name}.") %
-        { member_human_access: member.human_access, name: member.source.name }
-    end
+    format(
+      _('You have been granted access to the %{source_name} %{source_type} with the following role: %{role_name}.'),
+      source_name: member.source.name,
+      source_type: member.source.model_name.singular,
+      role_name: member.present.human_access
+    )
   end
 
   # Overridden in EE

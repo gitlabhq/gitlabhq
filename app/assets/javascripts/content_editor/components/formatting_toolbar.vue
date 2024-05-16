@@ -75,7 +75,7 @@ export default {
 </script>
 <template>
   <div
-    class="gl-w-full gl-py-3 gl-row-gap-2 gl-display-flex gl-align-items-center gl-flex-wrap gl-border-b gl-border-gray-100 gl-px-3 gl-rounded-top-base"
+    class="gl-w-full gl-py-3 gl-gap-y-2 gl-display-flex gl-align-items-center gl-flex-wrap gl-border-b gl-border-gray-100 gl-px-3 gl-rounded-top-base"
     data-testid="formatting-toolbar"
   >
     <div class="gl-display-flex">

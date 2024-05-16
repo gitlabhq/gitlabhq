@@ -265,9 +265,9 @@ export default {
     <div class="gl-display-flex gl-align-items-center gl-flex-wrap">
       <div
         data-testid="md-header-toolbar"
-        class="md-header-toolbar gl-display-flex gl-py-3 gl-row-gap-2 gl-flex-grow-1 gl-align-items-flex-start"
+        class="md-header-toolbar gl-display-flex gl-py-3 gl-gap-y-2 gl-flex-grow-1 gl-align-items-flex-start"
       >
-        <div class="gl-display-flex gl-flex-wrap gl-row-gap-2">
+        <div class="gl-display-flex gl-flex-wrap gl-gap-y-2">
           <gl-button
             v-if="enablePreview"
             data-testid="preview-toggle"
@@ -280,7 +280,7 @@ export default {
             >{{ previewMarkdown ? $options.i18n.hidePreview : $options.i18n.preview }}</gl-button
           >
           <template v-if="!previewMarkdown && canSuggest">
-            <div class="gl-display-flex gl-row-gap-2">
+            <div class="gl-display-flex gl-gap-y-2">
               <header-divider v-if="!previewMarkdown" />
               <toolbar-button
                 ref="suggestButton"
@@ -323,10 +323,10 @@ export default {
               </gl-popover>
             </div>
           </template>
-          <div class="gl-display-flex gl-row-gap-2">
+          <div class="gl-display-flex gl-gap-y-2">
             <div
               v-if="!previewMarkdown && editorAiActions.length"
-              class="gl-display-flex gl-row-gap-2"
+              class="gl-display-flex gl-gap-y-2"
             >
               <header-divider v-if="!previewMarkdown" />
               <ai-actions-dropdown
@@ -363,7 +363,7 @@ export default {
             icon="italic"
             tracking-property="italic"
           />
-          <div class="gl-display-flex gl-row-gap-2">
+          <div class="gl-display-flex gl-gap-y-2">
             <toolbar-button
               v-if="!restrictedToolBarItems.includes('strikethrough')"
               v-show="!previewMarkdown"
@@ -471,7 +471,7 @@ export default {
             icon="list-outdent"
             tracking-property="outdent"
           />
-          <div class="gl-display-flex gl-row-gap-2">
+          <div class="gl-display-flex gl-gap-y-2">
             <toolbar-button
               v-if="!restrictedToolBarItems.includes('collapsible-section')"
               v-show="!previewMarkdown"

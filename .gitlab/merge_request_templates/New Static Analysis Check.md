@@ -18,7 +18,7 @@ Please describe the proposal and add a link to the source (for example, http://w
   - CHOICE_A: :a:
   - CHOICE_B: :b:
   - Vote for both choices, so they are visible to others.
-- [ ] The MR doesn't have significant objections, and is getting a majority of :+1: vs :-1: (remember that [we don't need to reach a consensus](https://about.gitlab.com/handbook/values/#collaboration-is-not-consensus)).
+- [ ] The MR doesn't have significant objections, and is getting a majority of :+1: vs :-1: (remember that [we don't need to reach a consensus](https://handbook.gitlab.com/handbook/values/#collaboration-is-not-consensus)).
 - [ ] (If applicable) One style is getting a majority of vote (compared to the other choice).
 - [ ] (If applicable) Update the MR with the chosen style.
 - [ ] Create a follow-up issue to fix the current offenses as a separate iteration: ISSUE_LINK

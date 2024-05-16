@@ -21,7 +21,7 @@ Consider the effect of the changes in this merge request on the following:
   - [ ] `security`
   - [ ] `dev`
   - [ ] personal forks
-- [ ] [Pipeline performance](https://about.gitlab.com/handbook/engineering/quality/performance-indicators/#average-merge-request-pipeline-duration-for-gitlab)
+- [ ] [Pipeline performance](https://docs.gitlab.com/ee/ci/pipelines/pipeline_efficiency.html)
 
 **If new jobs are added:**
 
@@ -29,10 +29,10 @@ Consider the effect of the changes in this merge request on the following:
 - [ ] Frequency they are running (MRs, main branch, nightly, bi-hourly): _____
 - [ ] Add a duration chart to https://app.periscopedata.com/app/gitlab/652085/Engineering-Productivity---Pipeline-Build-Durations if there are new jobs added to merge request pipelines
 
-This will help keep track of expected cost increases to the [GitLab project average pipeline cost per merge request](https://about.gitlab.com/handbook/engineering/quality/performance-indicators/#gitlab-project-average-pipeline-cost-per-merge-request) RPI
+This will help keep track of expected pipeline time and cost increases.
 
 ### Post-merge
 
-- [ ] Consider communicating these changes to the broader team following the [communication guideline for pipeline changes](https://about.gitlab.com/handbook/engineering/quality/engineering-productivity/#pipeline-changes)
+- [ ] Consider communicating these changes to the broader team following the [communication guideline for pipeline changes](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/#pipeline-changes)
 
 /label ~"maintenance::pipelines" ~"Engineering Productivity"

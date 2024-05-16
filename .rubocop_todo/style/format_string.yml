@@ -39,7 +39,6 @@ Style/FormatString:
     - 'app/helpers/groups/group_members_helper.rb'
     - 'app/helpers/groups_helper.rb'
     - 'app/helpers/import_helper.rb'
-    - 'app/helpers/invite_members_helper.rb'
     - 'app/helpers/issuables_helper.rb'
     - 'app/helpers/issues_helper.rb'
     - 'app/helpers/members_helper.rb'

@@ -45,19 +45,39 @@ Settings and configurations applied at the group level cascade down to child pro
 standardize labels, boards, and iterations across multiple projects:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
+    accTitle: GitLab inheritance model diagram
+    accDescr: Shows how groups, projects, issues, labels, milestones, iterations, tasks, and epics relate to one another in GitLab
     Group -->|Contains| Project
     Group -->|Contains| Epics
     Group -->|Contains| Labels
     Group -->|Contains| Boards
     Group -->|Contains| Iterations
+    Group -->|Contains| Milestones
+    Group -->|Contains| Roadmaps
     Project -->|Contains| Issues
+    Project -->|Contains| Templates
+    Project -->|Contains| Tasks
+    Project -->|Contains| Milestones
+    Project -->|Contains| Labels
     Labels .->|Cascades To| Project
-    Issues .->|Rolls Up To| Group
-    Iterations .->|Cascades To| Project
-    Issues .->|Assigned To| Epics
-    Issues .->|Visible In| Boards
-    Issues .->|Assigned To| Iterations
+    Issues .->|Rolls up to| Group
+    Iterations .->|Cascades to| Project
+    Milestones .->|Cascades to| Project
+    Templates .->|Cascades to| Project
+    Templates .->|Configured in| Group
+    Issues .->|Child of| Epics
+    Issues .->|Visible in| Boards
+    Issues .->|Visible in| Lists
+    Issues .->|Assigned to| Iterations
+    Issues .->|Assigned to| Milestones
+    Tasks  .->|Child of| Issues
+    Tasks .->|Assigned to| Iterations
+    Tasks .->|Assigned to| Milestones
+    Epics .->|Visible in| Boards
+    Epics .->|Visible in| Roadmaps
+    Epics .->|Visible in| Lists
 ```
 
 - Groups contain one or more projects, epics, boards, labels, and iterations.

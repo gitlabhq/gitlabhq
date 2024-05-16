@@ -27985,10 +27985,10 @@ msgstr ""
 msgid "Invite members"
 msgstr ""
 
-msgid "InviteEmail|%{inviter} invited you to join the %{project_or_group_name} %{project_or_group} as a %{role}"
+msgid "InviteEmail|%{inviter} invited you to join the %{project_or_group_name} %{project_or_group} with the following role: %{role}."
 msgstr ""
 
-msgid "InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}"
+msgid "InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} with the following role: %{role}.%{br_tag}This is a %{role_type} role."
 msgstr ""
 
 msgid "InviteEmail|%{project_or_group} details"
@@ -28012,10 +28012,10 @@ msgstr ""
 msgid "InviteEmail|What's it about?"
 msgstr ""
 
-msgid "InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}"
+msgid "InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} with the following role: %{role}.%{br_tag}This is a %{role_type} role."
 msgstr ""
 
-msgid "InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} as a %{role}"
+msgid "InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} with the following role: %{role}."
 msgstr ""
 
 msgid "InviteMembersBanner|Collaborate with your team"
@@ -53141,6 +53141,12 @@ msgstr ""
 msgid "This is a \"Ghost User\", created to hold all issues authored by users that have since been deleted. This user cannot be removed."
 msgstr ""
 
+msgid "This is a %{role_type} role."
+msgstr ""
+
+msgid "This is a %{role_type}."
+msgstr ""
+
 msgid "This is a Jira user."
 msgstr ""
 
@@ -59819,16 +59825,7 @@ msgstr ""
 msgid "You have been added to ticket #%{issue_iid}."
 msgstr ""
 
-msgid "You have been granted %{access_level} access to the %{source_link} %{source_type}."
-msgstr ""
-
-msgid "You have been granted %{access_level} access to the %{source_name} %{source_type}."
-msgstr ""
-
-msgid "You have been granted %{member_human_access} access to group %{name}."
-msgstr ""
-
-msgid "You have been granted %{member_human_access} access to project %{name}."
+msgid "You have been granted access to the %{source_name} %{source_type} with the following role: %{role_name}."
 msgstr ""
 
 msgid "You have been invited by %{link_to_inviter} to join %{source_name} %{strong_open}%{link_to_source}%{strong_close} as %{role}"

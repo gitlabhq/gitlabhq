@@ -10,7 +10,7 @@
 
 ## Author's checklist
 
-- [ ] Optional. Consider taking [the GitLab Technical Writing Fundamentals course](https://about.gitlab.com/handbook/product/ux/technical-writing/fundamentals/).
+- [ ] Optional. Consider taking [the GitLab Technical Writing Fundamentals course](https://handbook.gitlab.com/handbook/product/ux/technical-writing/fundamentals/).
 - [ ] Follow the:
   - [Documentation process](https://docs.gitlab.com/ee/development/documentation/workflow.html).
   - [Documentation guidelines](https://docs.gitlab.com/ee/development/documentation/).

@@ -109,7 +109,7 @@ You can create a merge request when you create a branch.
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Branches**.
 1. Type a branch name and select **New branch**.
-1. Above the file list, on the right side, select **Create merge request**.
+1. Above the file list, select **Create merge request**.
    A merge request is created. The default branch is the target.
 1. Fill out the fields and select **Create merge request**.
 

@@ -87,7 +87,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
             end
 
             it 'accepts invite' do
-              expect(page).to have_content('You have been granted Developer access to group Owned.')
+              expect(page)
+                .to have_content('You have been granted access to the Owned group with the following role: Developer.')
             end
           end
         end
@@ -167,7 +168,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
             fill_in_sign_up_form(new_user, invite: true)
 
             expect(page).to have_current_path(group_path(group), ignore_query: true)
-            expect(page).to have_content('You have been granted Owner access to group Owned.')
+            expect(page)
+              .to have_content('You have been granted access to the Owned group with the following role: Owner.')
           end
         end
       end
@@ -230,7 +232,8 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
         fill_in_sign_up_form(new_user, 'Register', invite: true)
 
         expect(page).to have_current_path(group_path(group))
-        expect(page).to have_content('You have been granted Owner access to group Owned.')
+        expect(page)
+          .to have_content('You have been granted access to the Owned group with the following role: Owner.')
       end
     end
 

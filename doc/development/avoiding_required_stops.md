@@ -31,14 +31,6 @@ across greater than 1-3 minor releases.
 Wherever possible, a required stop should be avoided. If it can't be avoided,
 the required stop should be aligned to a _scheduled_ required stop.
 
-In cases where we are considering retroactively declaring an unplanned required stop,
-contact the [Distribution team product manager](https://handbook.gitlab.com/handbook/product/categories/#distributionbuild-group) to advise on next steps. If there
-is uncertainty about whether we should declare a required stop, the Distribution product
-manager may escalate to GitLab product leadership (VP or Chief Product Officer) to make
-a final determination. This may happen, for example, if a change might require a stop for
-a small subset of very large self-managed installations and there are well-defined workarounds
-if customers run into issues.
-
 Scheduled required stops are often implemented for the previous `major`.`minor`
 release just prior to a `major` version release in order to accommodate multiple
 [planned deprecations](../update/terminology.md#deprecation) and known
@@ -55,6 +47,16 @@ upgrade stop. The first planned required upgrade stop is scheduled for GitLab
 16.3. If nothing is introduced requiring an upgrade stop, GitLab 16.3 will be
 treated as a regular upgrade.
 >>>
+
+## Retroactively adding required stops
+
+In cases where we are considering retroactively declaring an unplanned required stop,
+contact the [Distribution team product manager](https://handbook.gitlab.com/handbook/product/categories/#distributionbuild-group) to advise on next steps. If there
+is uncertainty about whether we should declare a required stop, the Distribution product
+manager may escalate to GitLab product leadership (VP or Chief Product Officer) to make
+a final determination. This may happen, for example, if a change might require a stop for
+a small subset of very large self-managed installations and there are well-defined workarounds
+if customers run into issues.
 
 ## Causes of required stops
 

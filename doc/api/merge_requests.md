@@ -257,6 +257,8 @@ Supported attributes:
 | `my_reaction_emoji`             | string         | No       | Returns merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
 | `not`                           | Hash           | No       | Returns merge requests that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `reviewer_id`, `reviewer_username`, `my_reaction_emoji`. |
 | `order_by`                      | string         | No       | Returns requests ordered by `created_at`, `title` or `updated_at` fields. Default is `created_at`. |
+| `page`                          | integer        | No       | The page of results to return. Defaults to 1. |
+| `per_page`                      | integer        | No       | The number of results per page. Defaults to 20. |
 | `reviewer_id`                   | integer        | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.  |
 | `reviewer_username`             | string         | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given `username`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`. |
 | `scope`                         | string         | No       | Returns merge requests for the given scope: `created_by_me`, `assigned_to_me`, or `all`. |
@@ -272,15 +274,66 @@ Supported attributes:
 | `with_labels_details`           | boolean        | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
 | `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) the asynchronous recalculation of the `merge_status` field. Default is `false`. In GitLab 15.11 and later, enable the `restrict_merge_status_recheck` feature [flag](../administration/feature_flags.md) to ignore this attribute when requested by users without at least the Developer role. |
 
-In the response:
+If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+response attributes:
 
-- `project_id` represents the ID of the project where the merge request resides.
-  `project_id` always equals `target_project_id`.
-- Use the pagination parameters `page` and `per_page` to restrict the list of merge requests.
-- Project IDs vary depending on whether the merge request originates from the project, or a fork.
-  In merge requests originating from
-  - The same project: `target_project_id`, `project_id`, and `source_project_id` are the same.
-  - A fork: `target_project_id` and `project_id` are the same, but `source_project_id` is the fork project's ID.
+| Attribute                          | Type     | Description |
+| ---------------------------------- | -------- | ----------- |
+| `[].id`                            | integer  | ID of the merge request. |
+| `[].iid`                           | integer  | Internal ID of the merge request. |
+| `[].approvals_before_merge`        | integer  | Number of approvals required before this merge request can merge. To configure approval rules, see [Merge request approvals API](merge_request_approvals.md). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/353097) in GitLab 16.0. Premium and Ultimate only. |
+| `[].assignee`                      | object   | First assignee of the merge request. |
+| `[].assignees`                     | array    | Assignees of the merge request. |
+| `[].author`                        | object   | User who created this merge request. |
+| `[].blocking_discussions_resolved` | boolean  | Indicates if all discussions are resolved only if all are required before merge request can be merged. |
+| `[].closed_at`                     | datetime | Timestamp of when the merge request was closed. |
+| `[].closed_by`                     | object   | User who closed this merge request. |
+| `[].created_at`                    | datetime | Timestamp of when the merge request was created. |
+| `[].description`                   | string   | Description of the merge request. |
+| `[].detailed_merge_status`         | string   | Detailed merge status of the merge request. See [merge status](#merge-status) for a list of potential values. |
+| `[].discussion_locked`             | boolean  | Indicates if comments on the merge request are locked to members only. |
+| `[].downvotes`                     | integer  | Number of downvotes for the merge request. |
+| `[].draft`                         | boolean  | Indicates if the merge request is a draft. |
+| `[].force_remove_source_branch`    | boolean  | Indicates if the project settings lead to source branch deletion after merge. |
+| `[].has_conflicts`                 | boolean  | Indicates if merge request has conflicts and cannot merge. Dependent on the `merge_status` property. Returns `false` unless `merge_status` is `cannot_be_merged`. |
+| `[].labels`                        | array    | Labels of the merge request. |
+| `[].merge_commit_sha`              | string   | SHA of the merge request commit. Returns `null` until merged. |
+| `[].merge_status`                  | string   | Status of the merge request. Can be `unchecked`, `checking`, `can_be_merged`, `cannot_be_merged`, or `cannot_be_merged_recheck`. Affects the `has_conflicts` property. For important notes on response data, see [Single merge request response notes](#single-merge-request-response-notes). [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/3169#note_1162532204) in GitLab 15.6. Use `detailed_merge_status` instead. |
+| `[].merge_user`                    | object   | User who merged this merge request, the user who set it to auto-merge, or `null`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/349031) in GitLab 14.7. |
+| `[].merge_when_pipeline_succeeds`  | boolean  | Indicates if the merge has been set to merge when its pipeline succeeds. |
+| `[].merged_at`                     | datetime | Timestamp of when the merge request was merged. |
+| `[].merged_by`                     | object   | User who merged this merge request or set it to auto-merge. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/350534) in GitLab 14.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `merge_user` instead. |
+| `[].milestone`                     | object   | Milestone of the merge request. |
+| `[].prepared_at`                   | datetime | Timestamp of when the merge request was prepared. This field is populated one time, only after all the [preparation steps](#preparation-steps) are completed, and is not updated if more changes are added. |
+| `[].project_id`                    | integer  | ID of the project where the merge request resides. Always equal to `target_project_id`. |
+| `[].reference`                     | string   | Internal reference of the merge request. Returned in shortened format by default. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20354) in GitLab 12.7, and scheduled for removal in [API version 5](https://gitlab.com/groups/gitlab-org/-/epics/8115). Use `references` instead. |
+| `[].references`                    | object   | Internal references of the merge request. Includes `short`, `relative`, and `full` references. `references.relative` is relative to the merge request's group or project. When fetched from the merge request's project, `relative` and `short` formats are identical. When requested across groups or projects, `relative` and `full` formats are identical.|
+| `[].reviewers`                     | array    | Reviewers of the merge request. |
+| `[].sha`                           | string   | Diff head SHA of the merge request. |
+| `[].should_remove_source_branch`   | boolean  | Indicates if the source branch of the merge request should be deleted after merge. |
+| `[].source_branch`                 | string   | Source branch of the merge request. |
+| `[].source_project_id`             | integer  | ID of the merge request source project. Equal to `target_project_id`, unless the merge request originates from a fork. |
+| `[].squash`                        | boolean  | If `true`, squash all commits into a single commit on merge. [Project settings](../user/project/merge_requests/squash_and_merge.md#configure-squash-options-for-a-project) might override this value. Use `squash_on_merge` instead to take project squash options into account. |
+| `[].squash_commit_sha`             | string   | SHA of the squash commit. Empty until merged. |
+| `[].squash_on_merge`               | boolean  | Indicates if the merge request will be squashed when merged. |
+| `[].state`                         | string   | State of the merge request. Can be `opened`, `closed`, `merged`, `locked`. |
+| `[].target_branch`                 | string   | Target branch of the merge request. |
+| `[].target_project_id`             | integer  | ID of the merge request target project. |
+| `[].task_completion_status`        | object   | Completion status of tasks. Includes `count` and `completed_count`. |
+| `[].time_stats`                    | object   | Time tracking stats of the merge request. Includes `time_estimate`, `total_time_spent`, `human_time_estimate`, and `human_total_time_spent`. |
+| `[].title`                         | string   | Title of the merge request. |
+| `[].updated_at`                    | datetime | Timestamp of when the merge request was updated. |
+| `[].upvotes`                       | integer  | Number of upvotes for the merge request. |
+| `[].user_notes_count`              | integer  | User notes count of the merge request. |
+| `[].web_url`                       | string   | Web URL of the merge request. |
+| `[].work_in_progress`              | boolean  | Deprecated: Use `draft` instead. Indicates if the merge request is a draft. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests"
+```
 
 Example response:
 
@@ -300,6 +353,7 @@ Example response:
       "name": "Douwe Maan",
       "username": "DouweM",
       "state": "active",
+      "locked": false,
       "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
       "web_url": "https://gitlab.com/DouweM"
     },
@@ -308,6 +362,7 @@ Example response:
       "name": "Douwe Maan",
       "username": "DouweM",
       "state": "active",
+      "locked": false,
       "avatar_url": "https://gitlab.example.com/uploads/-/system/user/avatar/87854/avatar.png",
       "web_url": "https://gitlab.com/DouweM"
     },
@@ -326,6 +381,7 @@ Example response:
       "name": "Administrator",
       "username": "admin",
       "state": "active",
+      "locked": false,
       "avatar_url": null,
       "web_url" : "https://gitlab.example.com/admin"
     },
@@ -334,6 +390,7 @@ Example response:
       "name": "Administrator",
       "username": "admin",
       "state": "active",
+      "locked": false,
       "avatar_url": null,
       "web_url" : "https://gitlab.example.com/admin"
     },
@@ -342,6 +399,7 @@ Example response:
       "username": "axel.block",
       "id": 12,
       "state": "active",
+      "locked": false,
       "avatar_url": "http://www.gravatar.com/avatar/46f6f7dc858ada7be1853f7fb96e81da?s=80&d=identicon",
       "web_url": "https://gitlab.example.com/axel.block"
     }],
@@ -384,9 +442,8 @@ Example response:
     "discussion_locked": null,
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
-    "allow_collaboration": false,
-    "allow_maintainer_to_push": false,
     "web_url": "http://gitlab.example.com/my-group/my-project/merge_requests/1",
+    "reference": "!1",
     "references": {
       "short": "!1",
       "relative": "!1",
@@ -399,12 +456,14 @@ Example response:
       "human_total_time_spent": null
     },
     "squash": false,
+    "squash_on_merge": false,
     "task_completion_status":{
       "count":0,
       "completed_count":0
     },
     "has_conflicts": false,
-    "blocking_discussions_resolved": true
+    "blocking_discussions_resolved": true,
+    "approvals_before_merge": 2
   }
 ]
 ```

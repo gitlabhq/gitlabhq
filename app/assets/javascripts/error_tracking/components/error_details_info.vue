@@ -57,7 +57,7 @@ export default {
   <div>
     <div
       v-if="error"
-      class="gl-display-flex gl-flex-wrap gl-justify-content-center gl-my-7 gl-row-gap-6"
+      class="gl-display-flex gl-flex-wrap gl-justify-content-center gl-my-7 gl-gap-y-6"
     >
       <gl-card
         :class="$options.CARD_CLASS"

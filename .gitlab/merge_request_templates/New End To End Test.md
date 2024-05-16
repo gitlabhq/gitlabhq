@@ -34,7 +34,7 @@ to run locally against GDK.
   - [ ] New resources have `api_get_path` and `api_delete_path` implemented if possible.
   - [ ] If any resource cannot be deleted in the general delete task, make sure it is [ignored](https://gitlab.com/gitlab-org/gitlab/-/blob/44345381e89d6bbd440f7b4c680d03e8b75b86de/qa/qa/tools/test_resources_handler.rb#L29).
   - [ ] If any resource cannot be deleted in the general delete task, remove it in the test (e.g., in an `after` block).
-- [ ] Ensure that no [transient bugs](https://about.gitlab.com/handbook/engineering/quality/issue-triage/#transient-bugs) are hidden accidentally due to the usage of `waits` and `reloads`.
+- [ ] Ensure that no [transient bugs](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/issue-triage/#transient-bugs) are hidden accidentally due to the usage of `waits` and `reloads`.
 - [ ] Verify the tags to ensure it runs on the desired test environments.
 - [ ] If this MR has a dependency on another MR, such as a GitLab QA MR, specify the order in which the MRs should be merged.
 - [ ] (If applicable) Create a follow-up issue to document [the special setup](https://docs.gitlab.com/ee/development/testing_guide/end_to_end/running_tests_that_require_special_setup.html) necessary to run the test: ISSUE_LINK

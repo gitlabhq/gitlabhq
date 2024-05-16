@@ -1085,6 +1085,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         is_expected.to have_body_text project.full_name
         is_expected.to have_body_text project.web_url
         is_expected.to have_body_text project_member.human_access
+        is_expected.to have_body_text 'default role'
         is_expected.to have_body_text 'leave the project'
         is_expected.to have_body_text project_url(project, leave: 1)
       end
@@ -1122,7 +1123,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         it 'contains all the useful information' do
           is_expected.to have_subject "#{inviter.name} invited you to join GitLab"
           is_expected.to have_body_text project.full_name
-          is_expected.to have_body_text project_member.human_access.downcase
+          is_expected.to have_body_text project_member.human_access
+          is_expected.to have_body_text 'default role'
           is_expected.to have_body_text project_member.invite_token
           is_expected.to have_link(
             'Join now',
@@ -1140,7 +1142,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         it 'contains all the useful information' do
           is_expected.to have_subject "Invitation to join the #{project.full_name} project"
           is_expected.to have_body_text project.full_name
-          is_expected.to have_body_text project_member.human_access.downcase
+          is_expected.to have_body_text project_member.human_access
+          is_expected.to have_body_text 'default role'
           is_expected.to have_body_text project_member.invite_token
           is_expected.to have_link(
             'Join now',
@@ -1796,7 +1799,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         it 'contains all the useful information' do
           is_expected.to have_subject "#{group_member.created_by.name} invited you to join GitLab"
           is_expected.to have_body_text group.name
-          is_expected.to have_body_text group_member.human_access.downcase
+          is_expected.to have_body_text group_member.human_access
           is_expected.to have_body_text group_member.invite_token
         end
       end
@@ -1807,7 +1810,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         it 'contains all the useful information' do
           is_expected.to have_subject "Invitation to join the #{group.name} group"
           is_expected.to have_body_text group.name
-          is_expected.to have_body_text group_member.human_access.downcase
+          is_expected.to have_body_text group_member.human_access
           is_expected.to have_body_text group_member.invite_token
         end
       end

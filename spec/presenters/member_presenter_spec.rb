@@ -21,6 +21,12 @@ RSpec.describe MemberPresenter, feature_category: :groups_and_projects do
     end
   end
 
+  describe '#role_type' do
+    it "returns 'default'" do
+      expect(presenter.role_type).to eq('default')
+    end
+  end
+
   describe '#valid_level_roles' do
     it 'does not return levels lower than user highest membership in the hierarchy' do
       expect(described_class.new(subgroup_member).valid_level_roles).to eq(

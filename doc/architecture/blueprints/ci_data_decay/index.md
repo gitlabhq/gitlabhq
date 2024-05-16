@@ -14,23 +14,27 @@ participating-stages: []
 
 ## Summary
 
-GitLab CI/CD is one of the most data and compute intensive components of GitLab.
-Since its initial release in 2012,
-the CI/CD subsystem has evolved significantly. It was [integrated into GitLab in September 2015](https://about.gitlab.com/releases/2015/09/22/gitlab-8-0-released/)
-and has become [one of the most beloved CI/CD solutions](https://about.gitlab.com/blog/2017/09/27/gitlab-leader-continuous-integration-forrester-wave/).
+GitLab CI/CD, [integrated into GitLab in 2015](https://about.gitlab.com/releases/2015/09/22/gitlab-8-0-released/),
+is a [crucial]((https://about.gitlab.com/blog/2017/09/27/gitlab-leader-continuous-integration-forrester-wave/))
+yet resource-intensive component that has experienced exponential growth, surpassing 1 billion builds by 2021.
 
-On February 1st, 2021, GitLab.com surpassed 1 billion CI/CD builds, and the number of
-builds [continues to grow exponentially](../ci_scale/index.md).
+Despite its evolution, the CI/CD data storage architecture remains largely unchanged since 2012,
+posing scalability challenges due to the vast volume of data stored in PostgreSQL.
 
-GitLab CI/CD has come a long way since the initial release, but the design of
-the data storage for pipeline builds remains almost the same since 2012. In
-2021 we started working on database decomposition and extracting CI/CD data to
-a separate database. Now we want to improve the architecture of GitLab CI/CD
-product to enable further scaling.
+The proposed strategies involves:
+
+1. Partitioning CI/CD data tables.
+1. Reducing the growth rate of metadata.
+1. Moving less accessed data to other storage solutions like object storage.
+1. Introducing configurable data retention policies.
+
+This architectural overhaul aims to enhance reliability, scalability, and performance while maintaining
+data accessibility and compliance.
 
 ## Goals
 
-**Implement a new architecture of CI/CD data storage to enable scaling.**
+This architectural overhaul aims to enhance reliability, scalability, and performance while maintaining
+data accessibility and compliance.
 
 ## Challenges
 

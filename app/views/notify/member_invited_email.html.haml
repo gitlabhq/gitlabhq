@@ -3,7 +3,8 @@
   project_or_group_name: member_source.human_name,
   project_or_group: member_source.model_name.singular,
   br_tag: '<br/>'.html_safe,
-  role: member.human_access.downcase }
+  role: member.present.human_access,
+  role_type: member.present.role_type }
 - join_text =  s_('InviteEmail|Join now')
 - inviter_name = member.created_by.name if member.created_by
 - join_url = invite_url(@token, invite_type: Emails::Members::INITIAL_INVITE)
@@ -21,9 +22,9 @@
     %img.mail-avatar{ height: "60", src: avatar_icon_for_user(member.created_by, 60, only_path: false), width: "60", alt: "" }
     %p
       - if member.created_by
-        = html_escape(s_("InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders.merge({ inviter: (link_to inviter_name, user_url(member.created_by)).html_safe })
+        = html_escape(s_("InviteEmail|%{inviter} invited you to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} with the following role: %{role}.%{br_tag}This is a %{role_type} role.")) % placeholders.merge({ inviter: (link_to inviter_name, user_url(member.created_by)).html_safe })
       - else
-        = html_escape(s_("InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} as a %{role}")) % placeholders
+        = html_escape(s_("InviteEmail|You are invited to join the %{strong_start}%{project_or_group_name}%{strong_end}%{br_tag}%{project_or_group} with the following role: %{role}.%{br_tag}This is a %{role_type} role.")) % placeholders
     %p.invite-actions
       = link_to join_text, join_url, class: 'invite-btn-join'
 %tr.border-top
