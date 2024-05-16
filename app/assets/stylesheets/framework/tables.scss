@@ -99,12 +99,12 @@ table {
       tr.responsive-table-border-start,
       tr.responsive-table-border-end {
         display: block;
-        border: solid $gl-text-color-quaternary;
+        border: solid $gray-100;
         padding-left: 0;
         padding-right: 0;
 
         > td {
-          border-color: $gl-text-color-quaternary;
+          border-color: $gray-100;
 
           &,
           &:last-child {
@@ -125,7 +125,7 @@ table {
         }
 
         > td:last-child {
-          border-bottom: 1px solid $gl-text-color-quaternary;
+          border-bottom: 1px solid $gray-100;
         }
       }
 

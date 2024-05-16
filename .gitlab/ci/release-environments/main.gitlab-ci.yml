@@ -18,10 +18,6 @@ stages:
       - GIT_DEPTH
       - GIT_STRATEGY
 
-workflow:
-  auto_cancel:
-    on_new_commit: none
-
 variables:
   GIT_DEPTH: 20
   GIT_STRATEGY: fetch
@@ -66,16 +62,11 @@ release-environments-deploy:
   variables:
     VERSIONS: "${VERSIONS}"
     ENVIRONMENT: "${ENVIRONMENT}"
-  before_script:
-    # Make sure pipelines run in order
-    # See https://docs.gitlab.com/ee/ci/resource_groups/index.html#change-the-process-mode
-    - curl --request PUT --data "process_mode=oldest_first" --header "PRIVATE-TOKEN:${ENVIRONMENT_API_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/resource_groups/release-environment-${CI_COMMIT_REF_SLUG}"
   trigger:
     project: gitlab-com/gl-infra/release-environments
     branch: main
     strategy: depend
   needs: ["release-environments-deploy-env"]
-  resource_group: release-environment-${CI_COMMIT_REF_SLUG}
 
 release-environments-qa:
   stage: qa
@@ -89,7 +80,6 @@ release-environments-qa:
     GITLAB_INITIAL_ROOT_PASSWORD: "${RELEASE_ENVIRONMENTS_ROOT_PASSWORD}"
     QA_PRAEFECT_REPOSITORY_STORAGE: "default"
     SIGNUP_DISABLED: "true"
-  resource_group: release-environment-${CI_COMMIT_REF_SLUG}
 
 release-environments-notification-failure:
   stage: finish

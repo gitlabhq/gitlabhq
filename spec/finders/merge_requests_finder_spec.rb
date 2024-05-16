@@ -55,16 +55,6 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           it 'returns merge requests created by any of the given users' do
             expect(merge_requests).to contain_exactly(merge_request1, merge_request2)
           end
-
-          context 'when feature flag is disabled' do
-            before do
-              stub_feature_flags(or_issuable_queries: false)
-            end
-
-            it 'does not add any filter' do
-              expect(merge_requests).to contain_exactly(merge_request1, merge_request2, merge_request3, merge_request4, merge_request5)
-            end
-          end
         end
 
         context 'with nonexistent author ID and MR term using CTE for search' do

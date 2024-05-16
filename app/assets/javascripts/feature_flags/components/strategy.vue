@@ -2,7 +2,6 @@
 <script>
 import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlIcon, GlLink, GlToken } from '@gitlab/ui';
 import { isNumber } from 'lodash';
-import Vue from 'vue';
 import { s__, __ } from '~/locale';
 import {
   EMPTY_PARAMETERS,
@@ -114,7 +113,8 @@ export default {
     },
     removeScope(environment) {
       if (isNumber(environment.id)) {
-        Vue.set(environment, 'shouldBeDestroyed', true);
+        // eslint-disable-next-line no-param-reassign
+        environment.shouldBeDestroyed = true;
       } else {
         this.environments = this.environments.filter((e) => e !== environment);
       }

@@ -39,7 +39,6 @@ import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import {
   OPERATORS_IS,
-  OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
   OPERATORS_AFTER_BEFORE,
   TOKEN_TITLE_ASSIGNEE,
@@ -309,9 +308,6 @@ export default {
     typeTokenOptions() {
       return [...defaultTypeTokenOptions, ...this.eeTypeTokenOptions];
     },
-    hasOrFeature() {
-      return this.glFeatures.orIssuableQueries;
-    },
     hasSearch() {
       return Boolean(
         this.searchQuery ||
@@ -383,7 +379,7 @@ export default {
           token: UserToken,
           dataType: 'user',
           defaultUsers: [],
-          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           fullPath: this.fullPath,
           isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
@@ -396,7 +392,7 @@ export default {
           icon: 'user',
           token: UserToken,
           dataType: 'user',
-          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           fullPath: this.fullPath,
           isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
@@ -418,7 +414,7 @@ export default {
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
-          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
@@ -956,12 +952,12 @@ export default {
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :show-pagination-controls="showPaginationControls"
       :default-page-size="pageSize"
+      show-filtered-search-friendly-text
       sync-filter-and-sort
       use-keyset-pagination
       :show-page-size-change-controls="showPageSizeControls"
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
-      :show-filtered-search-friendly-text="hasOrFeature"
       :is-grid-view="isGridView"
       :active-issuable="activeIssuable"
       show-work-item-type-icon

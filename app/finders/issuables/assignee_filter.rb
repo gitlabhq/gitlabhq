@@ -27,7 +27,7 @@ module Issuables
     end
 
     def by_assignee_union(issuables)
-      return issuables unless or_filters_enabled? && has_assignee_param?(or_params)
+      return issuables unless has_assignee_param?(or_params)
 
       issuables.assigned_to(assignee_ids(or_params))
     end

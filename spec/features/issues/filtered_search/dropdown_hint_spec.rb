@@ -10,7 +10,6 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
   let_it_be(:issue) { create(:issue, project: project) }
 
   before do
-    stub_feature_flags(or_issuable_queries: false)
     project.add_maintainer(user)
   end
 
@@ -68,11 +67,11 @@ RSpec.describe 'Dropdown hint', :js, feature_category: :team_planning do
         expect_visible_suggestions_list
         expect_suggestion '='
 
-        click_link '= is'
+        click_link 'is ='
 
         expect_visible_suggestions_list
         expect_token_segment 'Author'
-        expect_token_segment '='
+        expect_token_segment 'is'
         expect_empty_search_term
       end
     end

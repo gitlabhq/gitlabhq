@@ -40,7 +40,7 @@ module Issuables
 
     # rubocop: disable CodeReuse/ActiveRecord
     def by_label_union(issuables)
-      return issuables unless or_filters_enabled? && label_names_from_or_params.present?
+      return issuables unless label_names_from_or_params.present?
 
       if root_namespace
         all_label_ids = find_label_ids(label_names_from_or_params).flatten

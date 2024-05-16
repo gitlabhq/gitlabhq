@@ -122,16 +122,6 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
 
           expect(issue_id).to contain_exactly(issue1.to_gid.to_s, issue2.to_gid.to_s)
         end
-
-        context 'when feature flag is disabled' do
-          it 'returns an error' do
-            stub_feature_flags(or_issuable_queries: false)
-
-            subject
-
-            expect_graphql_errors_to_include("'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled.")
-          end
-        end
       end
     end
   end

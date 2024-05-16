@@ -4,6 +4,10 @@ RSpec.shared_examples 'multiple issue boards' do
   include ListboxHelpers
 
   context 'authorized user' do
+    before_all do
+      create(:callout, feature_name: :board_add_new_column_trigger_popover, user: user)
+    end
+
     before do
       parent.add_maintainer(user)
 

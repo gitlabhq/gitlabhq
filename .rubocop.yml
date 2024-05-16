@@ -934,6 +934,7 @@ Gitlab/NamespacedClass:
     - 'ee/db/**/*.rb'
     - 'ee/elastic/**/*.rb'
     - 'scripts/**/*'
+    - 'spec/fixtures/migrations/**/*.rb'
     - 'spec/migrations/**/*.rb'
     - 'app/experiments/**/*_experiment.rb'
     - 'ee/app/experiments/**/*_experiment.rb'

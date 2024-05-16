@@ -40,6 +40,7 @@ describe('Feature flags strategy', () => {
 
   const findStrategyParameters = () => wrapper.findComponent(StrategyParameters);
   const findDocsLinks = () => wrapper.findAllComponents(GlLink);
+  const findToken = () => wrapper.findComponent(GlToken);
 
   const factory = (
     opts = {
@@ -140,7 +141,7 @@ describe('Feature flags strategy', () => {
       });
 
       it('should revert to all-environments scope when last scope is removed', async () => {
-        const token = wrapper.findComponent(GlToken);
+        const token = findToken();
         token.vm.$emit('close');
         await nextTick();
         expect(wrapper.findAllComponents(GlToken)).toHaveLength(0);
@@ -150,6 +151,34 @@ describe('Feature flags strategy', () => {
             parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
             scopes: [{ environmentScope: '*' }],
           },
+        ]);
+      });
+    });
+
+    describe('with a single environment scope defined and existing feature flag', () => {
+      let strategy;
+      beforeEach(() => {
+        strategy = {
+          name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+          parameters: { percentage: '50', groupId: 'default' },
+          scopes: [{ environmentScope: 'production', id: 1 }],
+        };
+        const propsData = { strategy, index: 0 };
+        factory({ propsData, provide });
+      });
+
+      it('should revert single environment scope when last scope is removed', async () => {
+        findToken().vm.$emit('close');
+        await nextTick();
+
+        expect(wrapper.emitted('change')).toEqual([
+          [
+            {
+              name: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+              parameters: { percentage: '50', groupId: PERCENT_ROLLOUT_GROUP_ID },
+              scopes: [{ environmentScope: 'production', id: 1, shouldBeDestroyed: true }],
+            },
+          ],
         ]);
       });
     });
@@ -169,7 +198,8 @@ describe('Feature flags strategy', () => {
 
       it('should change the parameters if a different strategy is chosen', async () => {
         const select = wrapper.findComponent(GlFormSelect);
-        select.setValue(ROLLOUT_STRATEGY_ALL_USERS);
+        select.element.value = ROLLOUT_STRATEGY_ALL_USERS;
+        select.trigger('change');
         await nextTick();
         expect(last(wrapper.emitted('change'))).toEqual([
           {
@@ -185,7 +215,7 @@ describe('Feature flags strategy', () => {
         dropdown.vm.$emit('add', 'production');
         await nextTick();
         expect(wrapper.findAllComponents(GlToken)).toHaveLength(1);
-        expect(wrapper.findComponent(GlToken).text()).toBe('production');
+        expect(findToken().text()).toBe('production');
       });
 
       it('should display all selected scopes', async () => {
@@ -237,7 +267,7 @@ describe('Feature flags strategy', () => {
         dropdown.vm.$emit('add', 'production');
         await nextTick();
         expect(wrapper.findAllComponents(GlToken)).toHaveLength(1);
-        expect(wrapper.findComponent(GlToken).text()).toBe('production');
+        expect(findToken().text()).toBe('production');
       });
 
       it('should display all selected scopes', async () => {

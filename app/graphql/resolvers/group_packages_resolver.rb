@@ -13,9 +13,9 @@ module Resolvers
       default_value: :created_desc
 
     GROUP_SORT_TO_PARAMS_MAP = SORT_TO_PARAMS_MAP.merge({
-                                                          project_path_desc: { order_by: 'project_path', sort: 'desc' },
-                                                          project_path_asc: { order_by: 'project_path', sort: 'asc' }
-                                                        }).freeze
+      project_path_desc: { order_by: 'project_path', sort: 'desc' },
+      project_path_asc: { order_by: 'project_path', sort: 'asc' }
+    }).freeze
 
     def resolve(sort:, **filters)
       return unless packages_available?

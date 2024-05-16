@@ -152,20 +152,6 @@ RSpec.shared_examples 'graphql issue list request spec' do
           expect_graphql_errors_to_be_empty
         end
       end
-
-      context 'when feature flag is disabled' do
-        let(:issue_filter_params) { { or: { assignee_usernames: [current_user.username] } } }
-
-        it 'returns an error' do
-          stub_feature_flags(or_issuable_queries: false)
-
-          post_query
-
-          expect_graphql_errors_to_include(
-            "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
-          )
-        end
-      end
     end
 
     context 'when filtering by a blank negated argument' do

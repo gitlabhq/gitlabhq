@@ -13,7 +13,7 @@ module Resolvers
     alias_method :list, :object
 
     def resolve(**args)
-      filters = item_filters(args[:filters], list.board.resource_parent)
+      filters = item_filters(args[:filters])
       mutually_exclusive_milestone_args!(filters)
 
       filter_params = filters.merge(board_id: list.board.id, id: list.id)

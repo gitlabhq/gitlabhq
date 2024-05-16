@@ -22,7 +22,7 @@ module Issuables
     end
 
     def by_author_union(issuables)
-      return issuables unless or_filters_enabled? && or_params&.fetch(:author_username, false).present?
+      return issuables unless or_params&.fetch(:author_username, false).present?
 
       issuables.authored(User.by_username(or_params[:author_username]))
         .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/419221")
