@@ -3993,6 +3993,53 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#has_ci_enabled?' do
+    subject { build(:merge_request, source_project: project) }
+
+    let(:project) { build(:project, :auto_devops, only_allow_merge_if_pipeline_succeeds: false) }
+    let(:mr_ci) { true }
+    let(:project_ci) { true }
+
+    before do
+      allow(subject).to receive(:has_ci?).and_return(mr_ci)
+      allow(project).to receive(:has_ci?).and_return(project_ci)
+    end
+
+    context 'when MR has_ci? is true' do
+      context 'when project has_ci? is true' do
+        it 'returns true' do
+          expect(subject.has_ci_enabled?).to eq(true)
+        end
+      end
+
+      context 'when project has_ci? is false' do
+        let(:project_ci) { false }
+
+        it 'returns false' do
+          expect(subject.has_ci_enabled?).to eq(true)
+        end
+      end
+    end
+
+    context 'when MR has_ci? is false' do
+      let(:mr_ci) { false }
+
+      context 'when project has_ci? is true' do
+        it 'returns true' do
+          expect(subject.has_ci_enabled?).to eq(true)
+        end
+      end
+
+      context 'when project has_ci? is false' do
+        let(:project_ci) { false }
+
+        it 'returns false' do
+          expect(subject.has_ci_enabled?).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '#mergeable_ci_state?' do
     let(:pipeline) { build(:ci_empty_pipeline) }
 
@@ -4004,6 +4051,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject { build(:merge_request, source_project: project, auto_merge_strategy: ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS, auto_merge_enabled: true) }
 
       let(:project) { build(:project, :auto_devops, only_allow_merge_if_pipeline_succeeds: false) }
+
+      before do
+        allow(subject).to receive(:has_ci_enabled?).and_return(true)
+      end
 
       context 'and a failed pipeline is associated' do
         before do

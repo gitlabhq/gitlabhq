@@ -1375,7 +1375,6 @@ lib/gitlab/checks/**
 /app/views/projects/pipelines/
 /app/views/projects/triggers/
 /app/workers/build_queue_worker.rb
-/app/workers/build_success_worker.rb
 /app/workers/ci_platform_metrics_update_cron_worker.rb
 /app/workers/create_pipeline_worker.rb
 /app/workers/expire_build_artifacts_worker.rb

@@ -135,7 +135,6 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'BackgroundMigrationWorker' => 3,
         'BackgroundMigration::CiDatabaseWorker' => 3,
         'BuildQueueWorker' => 3,
-        'BuildSuccessWorker' => 3,
         'BulkImportWorker' => 3,
         'BulkImports::ExportRequestWorker' => 5,
         'BulkImports::EntityWorker' => 3,

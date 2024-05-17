@@ -123,6 +123,34 @@ The Organization MVC for Cells 1.0 will contain the following functionality:
 - User Profile. Each [User Profile will be scoped to the Organization](../cells/impacted_features/user-profile.md).
 - Isolation. Organizations themselves are not fully isolated, isolation is a result of being on a Secondary Cell. We aim to complete [phase 1 of Organization isolation](https://gitlab.com/groups/gitlab-org/-/epics/11837), with the goal to `define sharding_key` and `desired_sharding_key` rules.
 
+##### Dependencies on other services
+
+- Organizations rely on the Topology Service
+  - to guarantee the uniqueness of global claims (like usernames, emails, namespaces, SSH public keys, and more) across the cluster.
+  - provides IDs that are unique across the cluster.
+- Organizations rely on the router to route requests to the correct Cell based on eg. path, token prefix, users, or SSH public keys.
+- All Cells have their own application secrets
+- Application settings are synchronized across Cells
+
+##### Some affected features
+
+- All forms of authentication. As the Topology Service cannot classify the request with an unauthenticated user, the process is as follows:
+  1. Cell #1 displays the login form.
+  1. Cell #1 identifies the user based on the request data.
+  1. Cell #1 looks up the user's associated Cell from the Topology Service.
+  1. Cell #1 sets a cookie indicating the associated Cell and redirects the user.
+  1. The router routes the request to the correct Cell based on the cookie.
+  1. Cell X authenticates the user
+- Audit events are not available as there is an ongoing discussion related to a ClickHouse migration.
+- Billing stays at top-level Group.
+- Enterprise Users or verified domains are not required to be used with Organizations.
+- Public visibility of Groups and Projects, or unauthenticated requests are not allowed apart from Cell #1.
+
+##### Open questions
+
+- To minimize the number of cluster-wide resources, consider refactoring [Standalone resources](../../../api/api_resources.md#standalone-resources) to scope them to an Organization, Group, or Project.
+- Consider refactoring global endpoints (e.g. `/jwt/auth`) to be scoped to an Organization, Group, or Project, unless they are supporting cluster-wide resources.
+
 #### Organizations on Cells 1.5 (FY25Q3-FY25Q3)
 
 Organizations in the context of Cells 1.5 will contain the following functionality:

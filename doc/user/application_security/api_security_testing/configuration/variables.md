@@ -46,6 +46,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 |[`DAST_API_HTTP_PASSWORD_BASE64`](customizing_analyzer_settings.md#http-basic-authentication) | Password for HTTP authentication, base64-encoded. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing-src/-/merge_requests/702) in GitLab 15.4. |
 |`DAST_API_SERVICE_START_TIMEOUT`                       | How long to wait for target API to become available in seconds. Default is 300 seconds. |
 |`DAST_API_TIMEOUT`                                     | How long to wait for API responses in seconds. Default is 30 seconds. |
+|`DAST_API_SUCCESS_STATUS_CODES`                        | Specify a comma-separated (`,`) list of HTTP success status codes that determine whether an API security testing scanning job has passed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442219) in GitLab 17.1. Example: `'200, 201, 204'` |
 
 ## Configuration files
 

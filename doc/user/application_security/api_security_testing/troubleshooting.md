@@ -300,3 +300,9 @@ The following example uses the [statically defined credentials](../../../ci/dock
    app@sha256:2b69fc7c3627dbd0ebaa17674c264fcd2f2ba21ed9552a472acf8b065d39039c ...
    Waiting for services to be up and running (timeout 30 seconds)...
    ```
+
+## Differing vulnerability results between consecutive scans
+
+It is possible that consecutive scans may return differing vulnerability findings in the absence of code or configuration changes. This is primarily due to the unpredictability associated with the target environment and its state, and the parallelization of requests sent by the scanner. Multiple requests are sent in parallel by the scanner to optimize scan time, which in turn means that the exact order the target server responds to the requests is not predetermined.
+
+Timing attack vulnerabilities that are detected by the length of time between request and response such as OS Command or SQL Injections may be detected if the server is under load and unable to service responses to the tests within their given thresholds. The same scan executions when the server is not under load may not return positive findings for these vulnerabilities, leading to differing results. Profiling the target server, [Performance tuning and testing speed](performance.md#performance-tuning-and-testing-speed), and establishing baselines for optimal server performance during testing may be helpful in identifying where false positives may appear due to the aforementioned factors.

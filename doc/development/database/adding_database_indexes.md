@@ -96,6 +96,15 @@ INSERT/UPDATE/DELETE timings by 10 milliseconds. In this case, the new index may
 it. A new index is more valuable when SELECT timings are reduced and INSERT/UPDATE/DELETE
 timings are unaffected.
 
+### Some tables should not have any more indexes
+
+We have RuboCop checks (`PreventIndexCreation`) against further new indexes on selected tables
+that are frequently accessed.
+This is due to [LockManager LWLock contention](https://gitlab.com/groups/gitlab-org/-/epics/11543).
+
+For the same reason, there are also RuboCop checks (`AddColumnsToWideTables`) against adding
+new columns to these tables.
+
 ### Add index and make application code change together if possible
 
 To minimize the risk of creating unnecessary indexes, do these in the same merge request if possible:

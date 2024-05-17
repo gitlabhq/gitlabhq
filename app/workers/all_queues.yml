@@ -2145,15 +2145,6 @@
   :weight: 5
   :idempotent: false
   :tags: []
-- :name: pipeline_processing:build_success
-  :worker_name: BuildSuccessWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 5
-  :idempotent: false
-  :tags: []
 - :name: pipeline_processing:ci_build_finished
   :worker_name: Ci::BuildFinishedWorker
   :feature_category: :continuous_integration

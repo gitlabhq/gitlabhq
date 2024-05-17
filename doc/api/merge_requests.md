@@ -22,7 +22,7 @@ All API calls to non-public information require authentication.
 
 ## Removals in API v5
 
-The `approvals_before_merge` attribute is deprecated, and is scheduled for removal
+The `approvals_before_merge` attribute is deprecated, and [is scheduled for removal](rest/deprecations.md)
 in API v5 in favor of the [Merge request approvals API](merge_request_approvals.md).
 
 ## List merge requests
@@ -1050,7 +1050,8 @@ Example response:
 
 WARNING:
 This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/322117) in GitLab 15.7
-and is scheduled for removal in API v5. Use the [List merge request diffs](#list-merge-request-diffs) endpoint instead.
+and [is scheduled for removal](rest/deprecations.md) in API v5. Use the
+[List merge request diffs](#list-merge-request-diffs) endpoint instead.
 
 Shows information about the merge request including its files and changes.
 
@@ -2107,7 +2108,7 @@ This API returns specific HTTP status codes:
 | `403`       | `Source branch is protected from force push` | You don't have permission to push to the merge request's source branch. |
 | `409`       | `Failed to enqueue the rebase operation` | A long-lived transaction might have blocked your request. |
 
-If the request enqueues successfully, the response contains:
+If the request is added to the queue successfully, the response contains:
 
 ```json
 {

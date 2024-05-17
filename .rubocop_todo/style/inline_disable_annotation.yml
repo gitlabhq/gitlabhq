@@ -789,7 +789,6 @@ Style/InlineDisableAnnotation:
     - 'app/workers/background_migration_worker.rb'
     - 'app/workers/batched_git_ref_updates/cleanup_scheduler_worker.rb'
     - 'app/workers/build_queue_worker.rb'
-    - 'app/workers/build_success_worker.rb'
     - 'app/workers/bulk_imports/finish_batched_pipeline_worker.rb'
     - 'app/workers/bulk_imports/pipeline_batch_worker.rb'
     - 'app/workers/bulk_imports/pipeline_worker.rb'

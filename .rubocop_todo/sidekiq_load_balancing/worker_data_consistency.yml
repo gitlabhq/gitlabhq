@@ -12,7 +12,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'app/workers/authorized_projects_worker.rb'
     - 'app/workers/auto_devops/disable_worker.rb'
     - 'app/workers/auto_merge_process_worker.rb'
-    - 'app/workers/build_success_worker.rb'
     - 'app/workers/bulk_import_worker.rb'
     - 'app/workers/bulk_imports/entity_worker.rb'
     - 'app/workers/bulk_imports/export_request_worker.rb'
