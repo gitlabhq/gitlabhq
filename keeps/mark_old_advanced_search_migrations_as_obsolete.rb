@@ -108,9 +108,9 @@ module Keeps
       change.description = <<~MARKDOWN
         This migration marks the #{version} #{migration_name} Advanced search migration as obsolete.
 
-        This MR will still need changes to remove references to the migration in the code.
-        At the moment the `gitlab-housekeeper` is not always capable of removing all references so you must check the
-        diff and pipeline failures to confirm if there are any issues.
+        This MR will still need changes to remove [references to the migration](https://gitlab.com/search?project_id=278964&scope=blobs&search=#{migration_name.underscore}&regex=false)
+        in the code. At the moment, the `gitlab-housekeeper` is not always capable of removing all references so
+        you must check the diff and pipeline failures to confirm if there are any issues.
         It is the responsibility of the assignee (picked from ~"group::global search") to push those changes to this branch.
 
         You can read more about the process for marking Advanced search migrations as obsolete in
@@ -126,10 +126,16 @@ module Keeps
       change.changed_files = []
       add_obsolete_to_yaml(migration_data[:yaml_filename], migration_data[:yaml_content])
       change.changed_files << migration_data[:yaml_filename]
+
       add_obsolete_to_migration(migration_data[:file])
       change.changed_files << migration_data[:file]
-      add_obsolete_to_migration_spec(version, migration_data[:spec_file])
-      change.changed_files << migration_data[:spec_file]
+
+      if File.exist?(migration_data[:spec_file])
+        add_obsolete_to_migration_spec(version, migration_data[:spec_file])
+        change.changed_files << migration_data[:spec_file]
+      end
+
+      change.push_options.ci_skip = true
 
       change
     end

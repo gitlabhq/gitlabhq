@@ -113,7 +113,7 @@ module SeedRepo
   module RubyBlob
     ID = "7e3e39ebb9b2bf433b4ad17313770fbe4051649c"
     NAME = "popen.rb"
-    CONTENT = <<-eos
+    CONTENT = <<-EOS
 require 'fileutils'
 require 'open3'
 
@@ -151,6 +151,6 @@ module Popen
     return @cmd_output, @cmd_status
   end
 end
-    eos
+    EOS
   end
 end

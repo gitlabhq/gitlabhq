@@ -967,8 +967,9 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#accept_request' do
+  describe '#accept_request', :freeze_time do
     let(:member) { create(:project_member, requested_at: Time.current.utc) }
+    let(:current_time) { Time.current.utc }
 
     it { expect(member.accept_request(@owner_user)).to be_truthy }
     it { expect(member.accept_request(nil)).to be_truthy }
@@ -983,6 +984,12 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       member.accept_request(@owner_user)
 
       expect(member.created_by).to eq(@owner_user)
+    end
+
+    it 'sets the request accepted timestamp' do
+      member.accept_request(@owner_user)
+
+      expect(member.request_accepted_at).to eq(current_time)
     end
 
     it 'calls #after_accept_request' do

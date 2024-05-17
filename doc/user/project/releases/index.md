@@ -79,6 +79,18 @@ Refer [permanent links to latest release assets](release_fields.md#permanent-lin
 
 By default, GitLab fetches the release using `released_at` time. The use of the query parameter `?order_by=released_at` is optional, and support for `?order_by=semver` is tracked [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/352945).
 
+### Track releases with an RSS feed
+
+GitLab provides an RSS feed of a project's releases, in Atom format. To view the feed:
+
+1. For projects you are a member of:
+   1. On the left sidebar, select **Search or go to** and find your project.
+   1. Select **Deploy > Releases**.
+1. For all projects:
+   1. Go to the **Project overview** page.
+   1. On the right sidebar, select **Releases** (**{rocket-launch}**).
+1. In the upper-right corner, select the feed symbol (**{rss}**).
+
 ## Create a release
 
 You can create a release:

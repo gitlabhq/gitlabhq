@@ -38,7 +38,7 @@ export const mockError = {
 };
 
 export const mockCreditCardValidationRequiredError = {
-  errors: ['Credit card required to be on file in order to create a pipeline'],
+  errors: ['Credit card required to be on file in order to run CI jobs'],
   warnings: [],
   total_warnings: 0,
 };

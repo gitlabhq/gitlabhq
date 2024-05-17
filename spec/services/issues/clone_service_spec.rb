@@ -16,7 +16,7 @@ RSpec.describe Issues::CloneService, feature_category: :team_planning do
   let_it_be(:new_project) { create(:project, namespace: sub_group_2) }
 
   let_it_be(:old_issue, reload: true) do
-    create(:issue, title: title, description: description, project: old_project, author: author)
+    create(:issue, title: title, description: description, project: old_project, author: author, imported_from: :gitlab_migration)
   end
 
   let(:with_notes) { false }
@@ -66,6 +66,11 @@ RSpec.describe Issues::CloneService, feature_category: :team_planning do
 
         it 'copies issue description' do
           expect(new_issue.description).to eq description
+        end
+
+        it 'restores imported_from to none' do
+          expect(old_issue.reload.imported_from).to eq 'gitlab_migration'
+          expect(new_issue.imported_from).to eq 'none'
         end
 
         it 'adds system note to old issue at the end' do

@@ -58,7 +58,7 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
 
         context 'when design collection has designs' do
           let_it_be(:designs) do
-            create_list(:design, 3, :with_lfs_file, :with_relative_position, issue: issue, project: project)
+            create_list(:design, 3, :with_lfs_file, :with_relative_position, issue: issue, project: project, imported_from: :github)
           end
 
           context 'when target issue already has designs' do
@@ -91,6 +91,14 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
               design_iids = target_issue.project.designs.map(&:id)
 
               expect(design_iids).to match_array(design_iids.uniq)
+            end
+
+            it 'sets imported_from for new designs to :none' do
+              subject
+
+              expect(designs.map(&:reload)).to all(have_attributes(imported_from: 'github'))
+
+              expect(new_designs).to all(have_attributes(imported_from: 'none'))
             end
           end
 

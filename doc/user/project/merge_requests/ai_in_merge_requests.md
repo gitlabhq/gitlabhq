@@ -91,7 +91,7 @@ To generate a commit message with GitLab Duo:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
 1. Select the **Edit commit message** checkbox on the merge widget.
-1. Select **Create AI-generated commit message**.
+1. Select **Generate commit message**.
 1. Review the commit message provide and choose **Insert** to add it to the commit.
 
 Provide feedback on this experimental feature in [issue 408994](https://gitlab.com/gitlab-org/gitlab/-/issues/408994).

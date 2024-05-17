@@ -17,17 +17,17 @@ module Gitlab
               secret_detection: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1]
             }.freeze
 
-            VERSIONS_TO_REMOVE_IN_17_0 = %w[].freeze
+            VERSIONS_TO_REMOVE_IN_18_0 = %w[].freeze
 
             DEPRECATED_VERSIONS = {
-              cluster_image_scanning: VERSIONS_TO_REMOVE_IN_17_0,
-              container_scanning: VERSIONS_TO_REMOVE_IN_17_0,
-              coverage_fuzzing: VERSIONS_TO_REMOVE_IN_17_0,
-              dast: VERSIONS_TO_REMOVE_IN_17_0,
-              api_fuzzing: VERSIONS_TO_REMOVE_IN_17_0,
-              dependency_scanning: VERSIONS_TO_REMOVE_IN_17_0,
-              sast: VERSIONS_TO_REMOVE_IN_17_0,
-              secret_detection: VERSIONS_TO_REMOVE_IN_17_0
+              cluster_image_scanning: VERSIONS_TO_REMOVE_IN_18_0,
+              container_scanning: VERSIONS_TO_REMOVE_IN_18_0,
+              coverage_fuzzing: VERSIONS_TO_REMOVE_IN_18_0,
+              dast: VERSIONS_TO_REMOVE_IN_18_0,
+              api_fuzzing: VERSIONS_TO_REMOVE_IN_18_0,
+              dependency_scanning: VERSIONS_TO_REMOVE_IN_18_0,
+              sast: VERSIONS_TO_REMOVE_IN_18_0,
+              secret_detection: VERSIONS_TO_REMOVE_IN_18_0
             }.freeze
 
             CURRENT_VERSIONS = SUPPORTED_VERSIONS.to_h { |k, v| [k, v - DEPRECATED_VERSIONS[k]] }

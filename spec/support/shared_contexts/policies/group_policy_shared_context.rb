@@ -72,6 +72,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let(:owner_permissions) do
     %i[
       owner_access
+      admin_cicd_variables
       admin_group
       admin_namespace
       admin_group_member

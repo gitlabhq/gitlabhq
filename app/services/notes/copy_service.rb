@@ -40,13 +40,13 @@ module Notes
       new_discussion_ids[note.discussion_id] ||= Discussion.discussion_id(new_note)
 
       new_params = sanitized_note_params(note)
-
       new_params.merge!(
         project: to_noteable.project,
         noteable: to_noteable,
         discussion_id: new_discussion_ids[note.discussion_id],
         created_at: note.created_at,
-        updated_at: note.updated_at
+        updated_at: note.updated_at,
+        imported_from: :none
       )
 
       if note.system_note_metadata

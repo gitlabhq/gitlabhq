@@ -15065,9 +15065,6 @@ msgstr ""
 msgid "Create %{workspace} label"
 msgstr ""
 
-msgid "Create AI-generated commit message"
-msgstr ""
-
 msgid "Create New Directory"
 msgstr ""
 
@@ -15593,7 +15590,7 @@ msgstr ""
 msgid "CredentialsInventory|SSH Keys"
 msgstr ""
 
-msgid "Credit card required to be on file in order to create a pipeline"
+msgid "Credit card required to be on file in order to run CI jobs"
 msgstr ""
 
 msgid "Credit card validation record saved"
@@ -22659,6 +22656,9 @@ msgid "Generate API key at %{site}"
 msgstr ""
 
 msgid "Generate a default set of labels"
+msgstr ""
+
+msgid "Generate commit message"
 msgstr ""
 
 msgid "Generate group access tokens scoped to this group for your applications that need access to the GitLab API."

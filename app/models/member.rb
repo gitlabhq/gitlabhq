@@ -461,7 +461,7 @@ class Member < ApplicationRecord
   def accept_request(current_user)
     return false unless request?
 
-    updated = self.update(requested_at: nil, created_by: current_user)
+    updated = self.update(requested_at: nil, created_by: current_user, request_accepted_at: Time.current.utc)
     after_accept_request if updated
 
     updated

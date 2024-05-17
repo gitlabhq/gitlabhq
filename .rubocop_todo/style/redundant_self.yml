@@ -361,7 +361,6 @@ Style/RedundantSelf:
     - 'lib/system_check/base_check.rb'
     - 'lib/system_check/rake_task/rake_task_helpers.rb'
     - 'lib/uploaded_file.rb'
-    - 'qa/lib/gitlab/page/main/sign_up.rb'
     - 'qa/qa/page/validatable.rb'
     - 'qa/qa/resource/base.rb'
     - 'qa/qa/resource/events/project.rb'

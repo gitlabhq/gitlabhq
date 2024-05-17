@@ -118,7 +118,7 @@ export default {
         class="gl-w-full gl-text-left gl-border-none"
         data-testid="job-log"
       >
-        <code v-safe-html="failureSummary(item.trace)" class="gl-reset-bg gl-p-0" data-testid="job-trace-summary">
+        <code v-safe-html="failureSummary(item.trace)" class="gl-bg-inherit gl-p-0" data-testid="job-trace-summary">
         </code>
       </pre>
     </template>

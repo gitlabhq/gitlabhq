@@ -88,11 +88,9 @@ export default {
     },
     lineNumbers() {
       // rawTextBlob is used for source code files and content for snippets
-      return (
-        (this?.blob?.rawTextBlob?.split('\n')?.length || 1) - 1 ||
-        this?.content?.split('\n')?.length ||
-        0
-      );
+      const content = this.blob?.rawTextBlob || this.content;
+
+      return content?.split('\n')?.length || 0;
     },
     isContentLoaded() {
       return this.activeViewer.type === RICH_BLOB_VIEWER

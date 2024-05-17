@@ -109,6 +109,10 @@ module.exports = {
     },
     // These extends probably should be moved to GitLab UI:
     extend: {
+      // TODO: Backport to GitLab UI.
+      colors: {
+        inherit: 'inherit',
+      },
       borderWidth: {
         // We have a border-1 class, while tailwind was missing it
         1: '1px',

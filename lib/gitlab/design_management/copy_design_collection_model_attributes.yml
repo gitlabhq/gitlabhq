@@ -18,7 +18,6 @@ design_attributes:
   - relative_position
   - description
   - imported
-  - imported_from
 
 version_attributes:
   - author_id
@@ -35,6 +34,7 @@ ignore_design_attributes:
   - iid
   - description_html
   - cached_markdown_version
+  - imported_from
 
 ignore_version_attributes:
   - id

@@ -1,9 +1,0 @@
----
-# Cop supports --autocorrect.
-Naming/HeredocDelimiterCase:
-  Exclude:
-    - 'spec/lib/gitlab/diff/parser_spec.rb'
-    - 'spec/lib/json_web_token/rsa_token_spec.rb'
-    - 'spec/models/commit_spec.rb'
-    - 'spec/support/helpers/repo_helpers.rb'
-    - 'spec/support/helpers/seed_repo.rb'

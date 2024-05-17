@@ -181,8 +181,6 @@ module DesignManagement
             )
           end
 
-          Gitlab::ImportSources.map_import_source_names_to_ints_for_rows(new_rows)
-
           # TODO Replace `ApplicationRecord.legacy_bulk_insert` with `BulkInsertSafe`
           # once https://gitlab.com/gitlab-org/gitlab/-/issues/247718 is fixed.
           # When this is fixed, we can remove the call to

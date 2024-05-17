@@ -78,7 +78,7 @@ export default {
         :is-empty="isEmpty"
         :environment="environment"
         graphql
-        class="gl-reset-bg!"
+        class="!gl-bg-inherit"
         @changeCanaryWeight="changeCanaryWeight"
       />
     </gl-collapse>

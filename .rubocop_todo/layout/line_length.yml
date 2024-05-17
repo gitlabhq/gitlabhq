@@ -2181,7 +2181,6 @@ Layout/LineLength:
     - 'ee/spec/support/shared_examples/requests/api/project_approval_rules_api_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/boards/base_service_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/build_execute_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/services/ci/play_job_service_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/dast_on_demand_scans_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/geo/geo_request_service_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/group_saml/saml_provider/base_service_shared_examples.rb'

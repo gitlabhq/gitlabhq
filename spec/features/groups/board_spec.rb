@@ -21,7 +21,7 @@ RSpec.describe 'Group Boards', feature_category: :team_planning do
       visit group_boards_path(group)
     end
 
-    it 'adds an issue to the backlog' do
+    it 'adds an issue to the backlog', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/458723' do
       page.within(find('.board', match: :first)) do
         issue_title = 'Create new issue'
         click_button issue_title

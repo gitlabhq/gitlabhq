@@ -22,6 +22,7 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
       description: description,
       project: old_project,
       author: author,
+      imported_from: :gitlab_migration,
       created_at: 1.day.ago,
       updated_at: 1.day.ago
     )
@@ -81,6 +82,11 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
 
         it 'copies issue description' do
           expect(new_issue.description).to eq description
+        end
+
+        it 'restores imported_from to none' do
+          expect(new_issue.imported_from).to eq 'none'
+          expect(old_issue.reload.imported_from).to eq 'gitlab_migration'
         end
 
         it 'adds system note to old issue at the end' do
@@ -316,8 +322,8 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
       context 'issue with notes' do
         let!(:notes) do
           [
-            create(:note, noteable: old_issue, project: old_project, created_at: 2.weeks.ago, updated_at: 1.week.ago),
-            create(:note, noteable: old_issue, project: old_project)
+            create(:note, noteable: old_issue, project: old_project, created_at: 2.weeks.ago, updated_at: 1.week.ago, imported_from: :gitlab_migration),
+            create(:note, noteable: old_issue, project: old_project, imported_from: :gitlab_migration)
           ]
         end
 
@@ -327,6 +333,12 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
 
         it 'copies existing notes in order' do
           expect(copied_notes.order('id ASC').pluck(:note)).to eq(notes.map(&:note))
+        end
+
+        it 'resets the imported_from value to none' do
+          expect(notes.map(&:reload)).to all(have_attributes(imported_from: 'gitlab_migration'))
+
+          expect(copied_notes.pluck(:imported_from)).to all(eq('none'))
         end
       end
 

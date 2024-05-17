@@ -1735,6 +1735,14 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
     end
 
+    it 'includes container_registry_access_level' do
+      get api("/users/#{user4.id}/projects/", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response).to be_an Array
+      expect(json_response.first.keys).to include('container_registry_access_level')
+    end
+
     context 'filter by updated_at' do
       it 'returns only projects updated on the given timeframe' do
         get api("/users/#{user.id}/projects", user),

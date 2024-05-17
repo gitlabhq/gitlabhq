@@ -65,6 +65,7 @@ module Issues
 
       new_params = original_entity.serializable_hash.symbolize_keys.merge(new_params)
       new_params = new_params.merge(rewritten_old_entity_attributes)
+      new_params.delete(:imported_from)
       new_params.delete(:created_at)
       new_params.delete(:updated_at)
 

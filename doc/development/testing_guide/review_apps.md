@@ -28,7 +28,7 @@ On every pipeline in the `qa` stage (which comes after the `review` stage), the 
 `qa` stage consists of following jobs:
 
 - `review-qa-smoke`: small and fast subset of tests to validate core functionality of GitLab.
-- `review-qa-blocking`: subset of tests identified as [reliable](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/reliable-tests/). These tests are
+- `review-qa-blocking`: subset of tests that block the merge request. These tests are
   considered stable and are not allowed to fail.
 - `review-qa-non-blocking`: rest of the e2e tests that can be triggered manually.
 
@@ -207,7 +207,7 @@ subgraph "CNG-mirror pipeline"
   issue with a link to your merge request. The deployment failure can
   reveal an actual problem introduced in your merge request (that is, this isn't
   necessarily a transient failure)!
-- If the `review-qa-smoke` or `review-qa-reliable` job keeps failing (we already retry them once),
+- If the `review-qa-smoke` job keeps failing (we already retry them once),
   check the job's logs: you could discover an actual problem introduced in
   your merge request. You can also download the artifacts to see screenshots of
   the page at the time the failures occurred. If you don't find the cause of the

@@ -317,3 +317,10 @@ with the value of `endCursor`:
  }
 }
 ```
+
+### New subgroups do not inherit default branch name from a higher-level subgroup
+
+When you configured a default branch in a subgroup that contains another subgroup that contains a project,
+the default branch is not inherited.
+
+We are tracking this problem in [issue 462425](https://gitlab.com/gitlab-org/gitlab/-/issues/462425).

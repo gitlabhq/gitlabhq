@@ -70,6 +70,20 @@ describe('Blob Content component', () => {
       createComponent({ content }, mock);
       expect(wrapper.findComponent(viewer).html()).toContain(content);
     });
+
+    it.each`
+      content                  | lineNumbers
+      ${null}                  | ${0}
+      ${'line 1'}              | ${1}
+      ${'line 1 \n line 2'}    | ${2}
+      ${'line 1 \n line 2 \n'} | ${3}
+    `(
+      'renders correct amount of line numbers for the simple viewer',
+      ({ content, lineNumbers }) => {
+        createComponent({ blob: { ...Blob, rawTextBlob: content }, content });
+        expect(wrapper.findComponent(SimpleViewer).props('lineNumbers')).toBe(lineNumbers);
+      },
+    );
   });
 
   describe('functionality', () => {

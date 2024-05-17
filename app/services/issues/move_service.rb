@@ -111,7 +111,8 @@ module Issues
         project: target_project,
         author: original_entity.author,
         assignee_ids: original_entity.assignee_ids,
-        moved_issue: true
+        moved_issue: true,
+        imported_from: :none
       }
 
       new_params = original_entity.serializable_hash.symbolize_keys.merge(new_params)

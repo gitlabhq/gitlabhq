@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Diff::Parser do
 
   describe '#parse' do
     let(:diff) do
-      <<eos
+      <<EOS
 --- a/files/ruby/popen.rb
 +++ b/files/ruby/popen.rb
 @@ -6,12 +6,18 @@ module Popen
@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Diff::Parser do
      Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
        @cmd_output << stdout.read
        @cmd_output << stderr.read
-eos
+EOS
     end
 
     before do
