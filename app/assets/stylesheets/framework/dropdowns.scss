@@ -66,7 +66,7 @@
 
   .dropdown-toggle,
   .dropdown-menu-toggle {
-    border-color: $gray-darkest;
+    border-color: $gray-200;
   }
 
   [data-toggle='dropdown'] {
@@ -130,7 +130,7 @@
   }
 
   &:hover {
-    border-color: $gray-darkest;
+    border-color: $gray-200;
   }
 
   &:focus:active {

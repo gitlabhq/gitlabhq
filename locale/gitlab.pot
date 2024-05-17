@@ -2214,6 +2214,9 @@ msgstr ""
 msgid "API key"
 msgstr ""
 
+msgid "API token (if needed)"
+msgstr ""
+
 msgid "API?"
 msgstr ""
 
@@ -3591,6 +3594,12 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Define your set of self-hosted models"
+msgstr ""
+
+msgid "AdminSelfHostedModels|They point to the self-hosted AI models that can be used for backing up GitLab AI features."
+msgstr ""
+
 msgid "AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload."
 msgstr ""
 
@@ -4464,6 +4473,9 @@ msgstr ""
 msgid "Administrators are not permitted to connect applications with these scopes: %{code_open}api%{code_close}, %{code_open}read_api%{code_close}, %{code_open}read_repository%{code_close}, %{code_open}write_repository%{code_close}, %{code_open}write_registry%{code_close}, %{code_open}read_registry%{code_close}, and %{code_open}sudo%{code_close}. To permit this, change the %{code_open}disable_admin_oauth_scopes%{code_close} setting using the API."
 msgstr ""
 
+msgid "Admin|AI-Powered Features"
+msgstr ""
+
 msgid "Admin|Abuse Reports"
 msgstr ""
 
@@ -5242,6 +5254,9 @@ msgid "AmbiguousRef|Which reference would you like to view?"
 msgstr ""
 
 msgid "An %{link_start}alert%{link_end} with the same fingerprint is already open. To change the status of this alert, resolve the linked alert."
+msgstr ""
+
+msgid "An API key is set"
 msgstr ""
 
 msgid "An Administrator has set the maximum expiration date to %{maxDate}. %{helpLinkStart}Learn more%{helpLinkEnd}."
@@ -15059,6 +15074,9 @@ msgstr ""
 msgid "Create New Domain"
 msgstr ""
 
+msgid "Create Self-Hosted Model"
+msgstr ""
+
 msgid "Create a GitLab account first, and then connect it to your %{label} account."
 msgstr ""
 
@@ -19311,6 +19329,9 @@ msgstr ""
 msgid "Edit Deploy Key"
 msgstr ""
 
+msgid "Edit Edit Self-Hosted Model"
+msgstr ""
+
 msgid "Edit Geo Site"
 msgstr ""
 
@@ -19333,6 +19354,9 @@ msgid "Edit Pipeline Schedule"
 msgstr ""
 
 msgid "Edit Release"
+msgstr ""
+
+msgid "Edit Self-Hosted Model"
 msgstr ""
 
 msgid "Edit Slack integration"
@@ -33139,6 +33163,9 @@ msgstr ""
 msgid "ModelRegistry|New model"
 msgstr ""
 
+msgid "Models"
+msgstr ""
+
 msgid "Modified"
 msgstr ""
 
@@ -33353,6 +33380,9 @@ msgid "Name must start with a letter, digit, emoji, or underscore."
 msgstr ""
 
 msgid "Name new label"
+msgstr ""
+
+msgid "Name the deployment (must be unique)"
 msgstr ""
 
 msgid "Name to be used as the sender for emails from Service Desk."
@@ -33850,6 +33880,9 @@ msgid "New Requirement"
 msgstr ""
 
 msgid "New Security findings"
+msgstr ""
+
+msgid "New Self-Hosted Model"
 msgstr ""
 
 msgid "New Snippet"
@@ -48071,6 +48104,21 @@ msgid "Selected tag is already in use. Choose another option."
 msgstr ""
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By %{link_open}@johnsmith%{link_close}\"). It will also associate and/or assign these issues and comments with the selected user."
+msgstr ""
+
+msgid "Self-Hosted Model was created"
+msgstr ""
+
+msgid "Self-Hosted Model was deleted"
+msgstr ""
+
+msgid "Self-Hosted Model was updated"
+msgstr ""
+
+msgid "Self-Hosted Models"
+msgstr ""
+
+msgid "Self-hosted models dropdown"
 msgstr ""
 
 msgid "Send"

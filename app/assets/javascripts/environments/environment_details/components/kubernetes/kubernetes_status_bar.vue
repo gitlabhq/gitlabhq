@@ -235,11 +235,8 @@ export default {
       }
       return SYNC_STATUS_BADGES.unknown;
     },
-    isReconnectButtonShown() {
-      return this.glFeatures.k8sWatchApi;
-    },
     isFluxConnectionStatus() {
-      return this.isReconnectButtonShown && Boolean(this.fluxConnectionParams.resourceType);
+      return Boolean(this.fluxConnectionParams.resourceType);
     },
   },
   methods: {
@@ -289,7 +286,7 @@ export default {
         :connection-status="connectionProps.connectionStatus"
         @reconnect="connectionProps.reconnect"
       />
-      <template v-else-if="syncStatusBadge">
+      <template v-else>
         <gl-badge
           :id="fluxBadgeId"
           :icon="syncStatusBadge.icon"
@@ -310,7 +307,6 @@ export default {
       </template>
     </kubernetes-connection-status>
     <kubernetes-connection-status
-      v-if="isReconnectButtonShown"
       #default="{ connectionProps }"
       data-testid="dashboard-status-badge"
       :configuration="configuration"

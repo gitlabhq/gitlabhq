@@ -20,8 +20,8 @@ Your jobs can run on:
 
 - [Hosted runners on Linux](hosted_runners/linux.md)
 - [GPU-enabled hosted runners](hosted_runners/gpu_enabled.md)
-- [Hosted runners on Windows](hosted_runners/windows.md) ([Beta](../../policy/experiment-beta-support.md#beta))
-- [Hosted runners on macOS](hosted_runners/macos.md) ([Beta](../../policy/experiment-beta-support.md#beta))
+- [Hosted runners on Windows](hosted_runners/windows.md) ([beta](../../policy/experiment-beta-support.md#beta))
+- [Hosted runners on macOS](hosted_runners/macos.md) ([beta](../../policy/experiment-beta-support.md#beta))
 
 ### How hosted runners for GitLab.com work
 
@@ -111,7 +111,7 @@ As we want to encourage people to contribute, these runners are free of charge.
 These runners are created on-demand for GitLab Dedicated customers and are fully integrated with your GitLab Dedicated instance.
 Your jobs can run on:
 
-- [Hosted runners on Linux](hosted_runners/linux.md) ([Beta](../../policy/experiment-beta-support.md#beta))
+- [Hosted runners on Linux](hosted_runners/linux.md) ([beta](../../policy/experiment-beta-support.md#beta))
 
 ## Supported image lifecycle
 

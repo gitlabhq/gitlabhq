@@ -87,7 +87,7 @@ module Types
         description: 'Pipeline user.'
 
       field :retryable, GraphQL::Types::Boolean,
-        description: 'Specifies if a pipeline can be retried.',
+        description: 'Specifies if a pipeline\'s jobs can be retried.',
         method: :retryable?,
         null: false
 

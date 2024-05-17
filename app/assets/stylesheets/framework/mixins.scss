@@ -224,7 +224,7 @@
 */
 @mixin build-log($background: $black) {
   background: $background;
-  color: $gray-darkest;
+  color: $gray-200;
   white-space: pre;
   overflow-x: auto;
   font-size: 12px;

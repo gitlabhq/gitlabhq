@@ -59,8 +59,7 @@ export const kubernetesMutations = {
 export const kubernetesQueries = {
   k8sPods(_, { configuration, namespace }, { client }) {
     const query = k8sPodsQuery;
-    const enableWatch = gon.features?.k8sWatchApi;
-    return getK8sPods({ client, query, configuration, namespace, enableWatch });
+    return getK8sPods({ client, query, configuration, namespace });
   },
   k8sServices(_, { configuration, namespace }, { client }) {
     const coreV1Api = new CoreV1Api(new Configuration(configuration));
@@ -72,9 +71,7 @@ export const kubernetesQueries = {
       .then((res) => {
         const items = res?.items || [];
 
-        if (gon.features?.k8sWatchApi) {
-          watchServices({ configuration, namespace, client });
-        }
+        watchServices({ configuration, namespace, client });
 
         return items.map(mapWorkloadItem);
       })

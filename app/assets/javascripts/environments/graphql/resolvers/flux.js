@@ -98,7 +98,7 @@ const getFluxResourceStatus = ({ query, variables, field, resourceType, client }
       const namespace = fluxData?.metadata?.namespace;
       const apiVersion = fluxData?.apiVersion;
 
-      if (gon.features?.k8sWatchApi && resourceName) {
+      if (resourceName) {
         const watchPath = buildFluxResourceWatchPath({ namespace, apiVersion, resourceType });
 
         watchFluxResource({

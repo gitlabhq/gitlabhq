@@ -9,80 +9,81 @@ description: Data Seeder test data harness created by the Test Data Working Grou
 
 GitLab Data Seeder (GDS) is a test data seeding harness, that can seed test data into a user or group namespace.
 
-The Data Seeder uses FactoryBot in the backend which makes maintenance straightforward. When a Model changes,
+The Data Seeder uses FactoryBot in the backend which makes maintenance straightforward and future-proof. When a Model changes,
 FactoryBot already reflects the change.
 
 ## Docker Setup
 
-### Prerequisites
+### With GDK
 
-- Docker installation
+1. Start a containerized GitLab instance using local files
 
-### Steps
+    ```shell
+    docker run \
+      -d \
+      -p 8080:80 \
+      --name gitlab \
+      -v ./scripts/data_seeder:/opt/gitlab/embedded/service/gitlab-rails/scripts/data_seeder \
+      -v ./ee/db/seeds/data_seeder:/opt/gitlab/embedded/service/gitlab-rails/ee/db/seeds/data_seeder \
+      -v ./ee/lib/tasks/gitlab/seed:/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/gitlab/seed \
+      -v ./spec:/opt/gitlab/embedded/service/gitlab-rails/spec \
+      -v ./ee/spec:/opt/gitlab/embedded/service/gitlab-rails/ee/spec \
+      gitlab/gitlab-ee:16.9.8-ee.0
+    ```
 
-#### Run a GitLab container
+1. Globalize test gems
 
-Run and wait for the container to start. The container has started completely when you see the login page at `http://localhost:8080`.
+    ```shell
+    docker exec gitlab bash -c "cd /opt/gitlab/embedded/service/gitlab-rails; ruby scripts/data_seeder/globalize_gems.rb; bundle install"
+    ```
 
-##### With GDK
+1. Seed the data
 
-```shell
-$ docker run \
-    -d \
-    -v ./scripts/data_seeder:/opt/gitlab/embedded/service/gitlab-rails/scripts/data_seeder \
-    -v ./ee/db/seeds/data_seeder:/opt/gitlab/embedded/service/gitlab-rails/ee/db/seeds/data_seeder \
-    -v ./ee/lib/tasks/gitlab/seed:/opt/gitlab/embedded/service/gitlab-rails/ee/lib/tasks/gitlab/seed \
-    --name gitlab \
-    gitlab/gitlab-ee:16.7.0-ee.0
-```
+    ```shell
+    docker exec -it gitlab gitlab-rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"
+    ```
 
-##### Without GDK
+### Without GDK
 
-```shell
-$ docker run \
-    --name gitlab \
-    -d \
-    gitlab/gitlab-ee:16.7.0-ee.0
-```
+1. Start a containerized GitLab instance
+
+    ```shell
+    docker run \
+      -p 8080:80 \
+      --name gitlab \
+      -d \
+      gitlab/gitlab-ee:16.9.8-ee.0
+    ```
+
+1. Import the test resources
+
+    ```ruby
+    docker exec gitlab bash -c "wget -O - https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/data_seeder/test_resources.sh | bash"
+    ```
+
+    ```ruby
+    # OR check out a specific branch, commit, or tag
+    docker exec gitlab bash -c "wget -O - https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/data_seeder/test_resources.sh | REF=v16.7.0-ee bash"
+    ```
 
 ### Get the root password
 
-If you need to fetch the password for the GitLab instance that was spun up, execute the following command and use the password given by the output:
+To fetch the password for the GitLab instance that was created, execute the following command and use the password given by the output:
 
 ```shell
-$ docker exec gitlab cat /etc/gitlab/initial_root_password
-5iveL!fe
+docker exec gitlab cat /etc/gitlab/initial_root_password
 ```
 
 _If you receive `cat: /etc/gitlab/initialize_root_password: No such file or directory`, please wait for a bit for GitLab to boot and try again._
 
 You can then sign in to `http://localhost:8080/users/sign_in` using the credentials: `root / <Password taken from initial_root_password>`
 
-### Import the test resources
-
-Because Seeding uses GitLab test resources and given that the GitLab Docker container is meant to be slim, the container does not ship with test resources by default.
-
-By default, the default GitLab branch `master` is checked out. This means that whatever is "latest" will be checked out. To change this, you can override this ref using the `REF` environment variable.
-
-Execute the following command to provide test resources (namely, FactoryBot Factories) for the Seeder to use.
-
-```ruby
-$ docker exec gitlab bash -c "wget -O - https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/data_seeder/test_resources.sh | bash"
-# OR check out a specific ref
-$ docker exec gitlab bash -c "wget -O - https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/data_seeder/test_resources.sh | REF=v16.7.0-ee bash"
-```
-
 ### Seed the data
 
 **IMPORTANT**: This step should not be executed until the container has started completely and you are able to see the login page at `http://localhost:8080`.
 
 ```shell
-$ docker exec -it gitlab bash -c "cd /opt/gitlab/embedded/service/gitlab-rails; wget -O - https://gitlab.com/gitlab-org/gitlab/-/raw/master/scripts/data_seeder/globalize_gems.rb | ruby; bundle install"
-Fetching gems...
-
-$ docker exec -it gitlab gitlab-rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"
-Seeding data for Administrator
-..........................
+docker exec -it gitlab gitlab-rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"
 ```
 
 ## GDK Setup
@@ -100,7 +101,7 @@ ci: migrated
 
 ### Run
 
-The `ee:gitlab:seed:data_seeder` Rake task takes one argument. `:file`.
+The [`ee:gitlab:seed:data_seeder` Rake task](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/tasks/gitlab/seed/data_seeder.rake) takes one argument. `:file`.
 
 ```shell
 $ bundle exec rake "ee:gitlab:seed:data_seeder[beautiful_data.rb]"

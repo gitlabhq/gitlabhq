@@ -839,7 +839,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
 .discussion-actions {
   float: right;
-  color: $gray-darkest;
+  color: $gray-200;
 
   @include media-breakpoint-down(xs) {
     width: 100%;

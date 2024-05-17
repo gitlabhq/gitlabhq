@@ -61,7 +61,7 @@
       &,
       .badge.badge-pill {
         color: var(--ide-text-color, $black);
-        border-color: var(--ide-input-border, $gray-darkest);
+        border-color: var(--ide-input-border, $gray-200);
       }
     }
   }
@@ -254,13 +254,13 @@
   }
 
   .dropdown-menu-toggle {
-    border-color: var(--ide-btn-default-border, $gray-darkest);
+    border-color: var(--ide-btn-default-border, $gray-200);
     background-color: var(--ide-input-background, transparent);
 
     &:hover,
     &:focus {
       background-color: var(--ide-dropdown-btn-hover-background, $gray-darker) !important;
-      border-color: var(--ide-dropdown-btn-hover-border, $gray-darkest) !important;
+      border-color: var(--ide-dropdown-btn-hover-border, $gray-200) !important;
     }
   }
 

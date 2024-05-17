@@ -107,13 +107,18 @@ class Todo < ApplicationRecord
     #
     # Returns an `ActiveRecord::Relation`.
     def for_group_ids_and_descendants(group_ids)
-      groups = Group.where(id: group_ids).self_and_descendants
+      groups_and_descendants_cte = Gitlab::SQL::CTE.new(
+        :groups_and_descendants_ids,
+        Group.where(id: group_ids).self_and_descendant_ids
+      )
 
-      from_union(
-        [
-          for_project(Project.for_group(groups)),
-          for_group(groups)
-        ])
+      groups_and_descendants = Namespace.from(groups_and_descendants_cte.table)
+
+      with(groups_and_descendants_cte.to_arel)
+        .from_union([
+          for_project(Project.for_group(groups_and_descendants)),
+          for_group(groups_and_descendants)
+        ], remove_duplicates: false)
     end
 
     # Returns `true` if the current user has any todos for the given target with the optional given state.

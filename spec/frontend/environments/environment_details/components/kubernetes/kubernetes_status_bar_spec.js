@@ -3,6 +3,7 @@ import VueApollo from 'vue-apollo';
 import { GlLoadingIcon, GlPopover, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
+import KubernetesConnectionStatus from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status.vue';
 import {
   CLUSTER_HEALTH_SUCCESS,
   CLUSTER_HEALTH_ERROR,
@@ -10,9 +11,13 @@ import {
   CLUSTER_STATUS_UNHEALTHY_TEXT,
   SYNC_STATUS_BADGES,
 } from '~/environments/constants';
+import {
+  connectionStatus,
+  k8sResourceType,
+} from '~/environments/graphql/resolvers/kubernetes/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
+import { stubComponent } from 'helpers/stub_component';
 import { mockKasTunnelUrl } from '../../../mock_data';
 import { kubernetesNamespace } from '../../../graphql/mock_data';
 
@@ -60,14 +65,9 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
     fluxResourcePath = '',
     namespace = kubernetesNamespace,
     resourceType = k8sResourceType.k8sPods,
-    k8sWatchApi = false,
+    connectionStatusValue = connectionStatus.connected,
   } = {}) => {
     wrapper = shallowMountExtended(KubernetesStatusBar, {
-      provide: {
-        glFeatures: {
-          k8sWatchApi,
-        },
-      },
       propsData: {
         clusterHealthStatus,
         configuration,
@@ -77,63 +77,78 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
         resourceType,
       },
       apolloProvider,
-      stubs: { GlSprintf },
+      stubs: {
+        GlSprintf,
+        KubernetesConnectionStatus: stubComponent(KubernetesConnectionStatus, {
+          template: `<div><slot  :connection-props="{ connectionStatus: '${connectionStatusValue}', reconnect: '' }"></slot></div>`,
+        }),
+      },
     });
   };
 
   describe('connection status', () => {
-    describe('when the k8sWatchApi feature flag is disabled', () => {
-      it("doesn't render connection status component", () => {
-        createWrapper({ k8sWatchApi: false });
-        expect(findDashboardConnectionStatus().exists()).toBe(false);
+    describe('when fluxResourcePath is not provided', () => {
+      beforeEach(() => {
+        createWrapper();
+      });
+
+      it("doesn't render flux status component", () => {
         expect(findFluxConnectionStatusBadge().exists()).toBe(false);
       });
     });
-    describe('when the k8sWatchApi feature flag is enabled', () => {
-      describe('and fluxResourcePath is not provided', () => {
-        beforeEach(() => {
-          createWrapper({ k8sWatchApi: true });
-        });
 
-        it("doesn't render flux status component", () => {
-          expect(findFluxConnectionStatusBadge().exists()).toBe(false);
+    describe('when fluxResourcePath is provided', () => {
+      it('passes correct props to connection status component', () => {
+        createWrapper({ fluxResourcePath: kustomizationResourcePath });
+
+        const dashboardConnectionStatus = findDashboardConnectionStatus();
+        expect(dashboardConnectionStatus.props('configuration')).toBe(configuration);
+        expect(dashboardConnectionStatus.props('namespace')).toBe(kubernetesNamespace);
+        expect(dashboardConnectionStatus.props('resourceTypeParam')).toEqual({
+          resourceType: k8sResourceType.k8sPods,
+          connectionParams: null,
         });
       });
 
-      describe('and fluxResourcePath is provided', () => {
-        beforeEach(() => {
-          createWrapper({ k8sWatchApi: true, fluxResourcePath: kustomizationResourcePath });
-        });
-        it('passes correct props to connection status component', () => {
-          const connectionStatus = findDashboardConnectionStatus();
-          expect(connectionStatus.props('configuration')).toBe(configuration);
-          expect(connectionStatus.props('namespace')).toBe(kubernetesNamespace);
-          expect(connectionStatus.props('resourceTypeParam')).toEqual({
-            resourceType: k8sResourceType.k8sPods,
-            connectionParams: null,
-          });
-        });
+      it('passes correct props to flux connection status component', () => {
+        createWrapper({ fluxResourcePath: kustomizationResourcePath });
 
-        it('passes correct props to flux connection status component', () => {
-          const connectionStatus = findFluxConnectionStatus();
-          expect(connectionStatus.props('configuration')).toBe(configuration);
-          expect(connectionStatus.props('namespace')).toBe(kubernetesNamespace);
-          expect(connectionStatus.props('resourceTypeParam')).toEqual({
-            resourceType: k8sResourceType.fluxKustomizations,
-            connectionParams: {
-              fluxResourcePath: kustomizationResourcePath,
-            },
-          });
-        });
-
-        it('handles errors from connection status component', () => {
-          const connectionStatus = findDashboardConnectionStatus();
-          const connectionStatusError = new Error('connection status error');
-          connectionStatus.vm.$emit('error', connectionStatusError);
-
-          expect(wrapper.emitted('error')).toEqual([[connectionStatusError]]);
+        const fluxConnectionStatus = findFluxConnectionStatus();
+        expect(fluxConnectionStatus.props('configuration')).toBe(configuration);
+        expect(fluxConnectionStatus.props('namespace')).toBe(kubernetesNamespace);
+        expect(fluxConnectionStatus.props('resourceTypeParam')).toEqual({
+          resourceType: k8sResourceType.fluxKustomizations,
+          connectionParams: {
+            fluxResourcePath: kustomizationResourcePath,
+          },
         });
       });
+
+      it('handles errors from connection status component', () => {
+        createWrapper({ fluxResourcePath: kustomizationResourcePath });
+
+        const dashboardConnectionStatus = findDashboardConnectionStatus();
+        const connectionStatusError = new Error('connection status error');
+        dashboardConnectionStatus.vm.$emit('error', connectionStatusError);
+
+        expect(wrapper.emitted('error')).toEqual([[connectionStatusError]]);
+      });
+
+      it.each([
+        [connectionStatus.connected, 'not shown', false],
+        [connectionStatus.connecting, 'shown', true],
+        [connectionStatus.disconnected, 'shown', true],
+      ])(
+        'when connectionStatus is %s flux connection status badge is %s',
+        (status, condition, exists) => {
+          createWrapper({
+            fluxResourcePath: kustomizationResourcePath,
+            connectionStatusValue: status,
+          });
+
+          expect(findFluxConnectionStatusBadge().exists()).toBe(exists);
+        },
+      );
     });
   });
 

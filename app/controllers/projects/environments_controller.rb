@@ -10,10 +10,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   layout 'project'
 
-  before_action only: [:show] do
-    push_frontend_feature_flag(:k8s_watch_api, project)
-  end
-
   before_action only: [:folder] do
     push_frontend_feature_flag(:environments_folder_new_look, project)
   end

@@ -36,7 +36,7 @@ To let your team members organize their own workflows, use
 [multiple issue boards](#use-cases-for-multiple-issue-boards). This allows creating multiple issue
 boards in the same project.
 
-![GitLab issue board - Core](img/issue_boards_core_v14_1.png)
+![GitLab issue board - Core](img/issue_boards_core_v17_1.png)
 
 Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/):
 
@@ -48,7 +48,7 @@ Different issue board features are available in different [GitLab tiers](https:/
 
 Read more about [GitLab Enterprise features for issue boards](#gitlab-enterprise-features-for-issue-boards).
 
-![GitLab issue board - Premium](img/issue_boards_premium_v14_1.png)
+![GitLab issue board - Premium](img/issue_boards_premium_v17_1.png)
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/vjccjHI7aGI) (April 2020) of
@@ -68,7 +68,7 @@ Using the search box at the top of the menu, you can filter the listed boards.
 When you have ten or more boards available, a **Recent** section is also shown in the menu, with
 shortcuts to your last four visited boards.
 
-![Multiple issue boards](img/issue_boards_multiple_v13_6.png)
+![Multiple issue boards](img/issue_boards_multiple_v17_1.png)
 
 When you're revisiting an issue board in a project or group with multiple boards,
 GitLab automatically loads the last board you visited.
@@ -132,7 +132,7 @@ If you have the labels **Backend**, **Frontend**, **Staging**, and
 - Move issues between lists to organize them according to the labels you've set.
 - Add multiple issues to lists in the board by selecting one or more existing issues.
 
-![issue card moving](img/issue_board_move_issue_card_list_v13_6.png)
+![issue card moving](img/issue_board_move_issue_card_list_v17_1.png)
 
 ### Use cases for multiple issue boards
 
@@ -301,7 +301,7 @@ The top of each list indicates the sum of issue weights for the issues that
 belong to that list. This is useful when using boards for capacity allocation,
 especially in combination with [assignee lists](#assignee-lists).
 
-![issue board summed weights](img/issue_board_summed_weights_v13_6.png)
+![issue board summed weights](img/issue_board_summed_weights_v17_1.png)
 
 ### Assignee lists
 
@@ -328,7 +328,7 @@ Now that the assignee list is added, you can assign or unassign issues to that u
 by [moving issues](#move-issues-and-lists) to and from an assignee list.
 To remove an assignee list, just as with a label list, select the trash icon.
 
-![Assignee lists](img/issue_board_assignee_lists_v14_1.png)
+![Assignee lists](img/issue_board_assignee_lists_v17_1.png)
 
 ### Milestone lists
 
@@ -354,7 +354,7 @@ Like the assignee lists, you're able to [drag issues](#move-issues-and-lists)
 to and from a milestone list to manipulate the milestone of the dragged issues.
 As in other list types, select the trash icon to remove a list.
 
-![Milestone lists](img/issue_board_milestone_lists_v14_1.png)
+![Milestone lists](img/issue_board_milestone_lists_v17_1.png)
 
 ### Iteration lists
 
@@ -378,7 +378,7 @@ To add an iteration list:
 Like the milestone lists, you're able to [drag issues](#move-issues-and-lists)
 to and from a iteration list to manipulate the iteration of the dragged issues.
 
-![Iteration lists](img/issue_board_iteration_lists_v13_10.png)
+![Iteration lists](img/issue_board_iteration_lists_v17_1.png)
 
 ### Group issues in swimlanes
 
@@ -399,10 +399,10 @@ Prerequisites:
 
 To group issues by epic in an issue board:
 
-1. Select **Group by**.
-1. Select **Epic**.
+1. Select **View options** (**{preferences}**).
+1. Select **Epic swimlanes**.
 
-![Epics Swimlanes](img/epics_swimlanes_v14_1.png)
+![Epics Swimlanes](img/epics_swimlanes_v17_1.png)
 
 To edit an issue without leaving this view, select the issue card (not its title), and a sidebar
 appears on the right. There you can see and edit the issue's:
@@ -466,7 +466,7 @@ status.
 
 When you hover over the blocked icon (**{issue-block}**), a detailed information popover is displayed.
 
-![Blocked issues](img/issue_boards_blocked_icon_v13_10.png)
+![Blocked issues](img/issue_boards_blocked_icon_v17_1.png)
 
 ## Actions you can take on an issue board
 
@@ -508,12 +508,18 @@ Additionally, you can also see the time tracking value.
 
 ### Create a new list
 
-To create a new list, in the upper-right corner of the issue board, select **Create**.
+To create a new list:
 
-![creating a new list in an issue board](img/issue_board_add_list_v14_1.png)
+1. Scroll to the right of the board, and then select **New list**.
+   The new list panel opens.
 
-Then, choose the label, user or milestone to base the new list on. The new list is inserted
-at the end of the lists, before **Closed**. To move and reorder lists, drag them around.
+   ![creating a new list in an issue board](img/issue_board_add_list_v17_1.png)
+
+1. Choose the label, user, milestone or iteration to base the new list on.
+1. Select **Add to board**.
+
+The new list is inserted at the right end of the lists, before **Closed**.
+To move and reorder lists, drag them around.
 
 ### Remove a list
 
