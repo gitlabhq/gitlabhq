@@ -251,15 +251,15 @@ Note the following:
   SAST_EXCLUDED_PATHS: spec, test, tests, tmp
   SECRET_DETECTION_EXCLUDED_PATHS: ''
   SECRET_DETECTION_HISTORIC_SCAN: false
-  SAST_DISABLED_ANALYZERS: ''
-  DS_DISABLED_ANALYZERS: ''
+  SAST_EXCLUDED_ANALYZERS: ''
+  DS_EXCLUDED_ANALYZERS: ''
   ```
 
   In GitLab 16.9 and earlier:
 
   - If the CI/CD variables suffixed `_EXCLUDED_PATHS` were declared in a policy, their values _could_
     be overridden by group or project CI/CD variables.
-  - If the CI/CD variables suffixed `_DISABLED_ANALYZERS` were declared in a policy, their values were
+  - If the CI/CD variables suffixed `_EXCLUDED_ANALYZERS` were declared in a policy, their values were
     ignored, regardless of where they were defined: policy, group, or project.
 
 ## Security policy scopes
