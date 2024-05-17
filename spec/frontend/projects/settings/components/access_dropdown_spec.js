@@ -119,19 +119,6 @@ describe('Access Level Dropdown', () => {
         expect(getGroups).toHaveBeenCalledWith({ withProjectAccess: true });
         expect(getDeployKeys).toHaveBeenCalled();
       });
-
-      describe('with limit_repository_settings = protected_branches', () => {
-        it('should not make an api call for depoloyKeys', () => {
-          window.gon = {
-            limit_repository_settings: ['protected_branches'],
-          };
-
-          createComponent({ groupsWithProjectAccess: true });
-          expect(getUsers).toHaveBeenCalled();
-          expect(getGroups).toHaveBeenCalledWith({ withProjectAccess: true });
-          expect(getDeployKeys).not.toHaveBeenCalled();
-        });
-      });
     });
 
     it('should make an api call for deployKeys but not for users or groups when user does not have a license', () => {

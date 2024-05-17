@@ -17,7 +17,6 @@
   -# The shared parts of the views can be found in the `shared` directory.
   -# Those are used throughout the actual views. These `shared` views are then
   -# reused in EE.
-- if can?(current_user, :admin_protected_branch, @project)
   = render "projects/settings/repository/protected_branches", protected_branch_entity: @project
 
 - if current_user.can?(:manage_deploy_tokens, @project)

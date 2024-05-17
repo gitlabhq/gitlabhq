@@ -71,8 +71,6 @@ RSpec.shared_context 'ProjectPolicy context' do
       admin_wiki create_deploy_token destroy_deploy_token manage_deploy_tokens
       push_to_delete_protected_branch read_deploy_token update_snippet
       destroy_upload admin_member_access_request rename_project manage_merge_request_settings
-      destroy_upload admin_member_access_request rename_project
-      create_protected_branch admin_protected_branch
     ]
   end
 

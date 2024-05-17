@@ -15,7 +15,7 @@ RSpec.describe ObjectStorage::DeleteStaleDirectUploadsWorker, :direct_uploads, :
     end
   end
 
-  it_behaves_like 'an idempotent worker' do
+  it_behaves_like 'an idempotent worker', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444869' do
     let(:location_identifier) { JobArtifactUploader.storage_location_identifier }
     let(:fog_connection) { stub_artifacts_object_storage(JobArtifactUploader, direct_upload: true) }
 

@@ -19,8 +19,11 @@ you must configure the GitLab agent for remote development.
 The remote development settings are available in the agent
 configuration file under `remote_development`.
 
-You can use any agent defined under the root group of your project,
-provided that the agent is properly configured for remote development.
+You can use any agent in the top-level group of your workspace project
+and in the subgroups of the top-level group, provided that the agent
+is properly configured for remote development.
+For example, if the path to your workspace project is `top-group/subgroup-1/subgroup-2/workspace-project`,
+you can use any configured agent in `top-group` and in any of its subgroups.
 
 ## Remote development settings
 

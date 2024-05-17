@@ -106,6 +106,9 @@ export default defineConfig({
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
   },
   server: {
+    warmup: {
+      clientFiles: ['javascripts/entrypoints/main.js', 'javascripts/entrypoints/super_sidebar.js'],
+    },
     hmr: viteGDKConfig.hmr,
     https: false,
     watch:

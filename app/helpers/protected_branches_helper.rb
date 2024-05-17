@@ -5,7 +5,7 @@ module ProtectedBranchesHelper
     if protected_branch_entity.is_a?(Group)
       can?(current_user, :admin_group, protected_branch_entity)
     else
-      can?(current_user, :admin_protected_branch, protected_branch_entity)
+      can?(current_user, :admin_project, protected_branch_entity)
     end
   end
 
