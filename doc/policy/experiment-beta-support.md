@@ -17,7 +17,7 @@ Some reasons for these kinds of feature releases include:
 Please note that some features may not be aligned to these recommendations if they were developed before the recommendations were in place,
 or if a team determined an alternative implementation approach was needed.
 
-All other features are considered to be Generally Available (GA).
+All other features are considered to be generally available (GA).
 
 ## Experiment
 
@@ -42,13 +42,13 @@ Beta features:
 - Might be unstable.
 - Have configuration and dependencies that are unlikely to change.
 - Have features and functions that are unlikely to change. However, breaking changes can occur outside of major releases
-  or with less notice than for Generally Available features.
+  or with less notice than for generally available features.
 - Have a low risk of data loss.
 - Have a user experience that is complete or near completion.
 
-## Generally Available (GA)
+## Generally available (GA)
 
-Generally Available features:
+Generally available features:
 
 - Are ready for production use at any scale.
 - Are [fully supported](https://about.gitlab.com/support/statement-of-support/) and documented.
@@ -107,7 +107,7 @@ by following the [Production Readiness Review process](https://handbook.gitlab.c
 
 ### GA features
 
-Generally Available features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)
+Generally available features that [meet the review criteria](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/#criteria-for-starting-a-production-readiness-review)
 must complete the [Production Readiness Review](https://handbook.gitlab.com/handbook/engineering/infrastructure/production/readiness/)
 and complete all sections up to and including the [GA section in the readiness template](https://gitlab.com/gitlab-com/gl-infra/readiness/-/blob/master/.gitlab/issue_templates/production_readiness.md#general-availability).
 
@@ -127,7 +127,7 @@ so we are allowed to make mistakes here and literally experiment.
 
 ### Experiment and beta exit criteria
 
-To ensure the phases before General Availability are as short as possible each phase of experiment,
+To ensure the phases before general availability are as short as possible each phase of experiment,
 beta, and limited availability should include exit criteria. This encourages rapid iteration and
 reduces [cycle time](https://handbook.gitlab.com/handbook/values/#reduce-cycle-time).
 
@@ -144,10 +144,10 @@ to apply to their experimental and beta features:
   - Consider also setting a time bound when using user feedback as an exit criteria for leaving a phase.
     If a given time period elapses and we can not solicit feedback from enough users,
     it is better to ship what we have and iterate on it as a GA at that point rather than maintain a pre-GA state.
-- **Limited Feature Completion**: Determine if there is functionality that should be completed before moving to General Availability.
+- **Limited Feature Completion**: Determine if there is functionality that should be completed before moving to general availability.
   - Be wary of including "just one more" feature. Iteration is easier and more effective with more feedback from more users,
-    so getting to General Availability is preferred.
-- **System Performance metrics**: Determine the criteria that the platform has shown before being ready for General Availability.
+    so getting to general availability is preferred.
+- **System Performance metrics**: Determine the criteria that the platform has shown before being ready for general availability.
   Examples include response times and successfully handling a specific number of requests per second.
 - **Success criteria**: Not all features may reach GA. It is OK to pivot if early feedback indicates that
   a different direction would provide more value or a better user experience. If open questions must be answered

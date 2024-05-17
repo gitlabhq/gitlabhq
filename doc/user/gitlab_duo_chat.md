@@ -14,7 +14,7 @@ DETAILS:
 > - Changed to [beta](../policy/experiment-beta-support.md#beta) for SaaS in GitLab 16.6.
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11251) as a [beta](../policy/experiment-beta-support.md#beta) for self-managed in GitLab 16.8.
 > - Changed from Ultimate to [Premium](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142808) tier in GitLab 16.9 while in [beta](../policy/experiment-beta-support.md#beta).
-> - Changed to [Generally Available](../policy/experiment-beta-support.md#generally-available-ga) in GitLab 16.11.
+> - Changed to [generally available](../policy/experiment-beta-support.md#generally-available-ga) in GitLab 16.11.
 > - Freely available for Ultimate and Premium users for a limited time.
 
 GitLab Duo Chat is your personal AI-powered assistant for boosting productivity.
@@ -58,7 +58,7 @@ Only the last 50 messages are retained in the chat history. The chat history exp
 ## Use GitLab Duo Chat in the Web IDE
 
 > - Introduced in GitLab 16.6 as an [experiment](../policy/experiment-beta-support.md#experiment).
-> - Changed to Generally Available in GitLab 16.11.
+> - Changed to generally available in GitLab 16.11.
 
 To use GitLab Duo Chat in the Web IDE on GitLab:
 
@@ -81,7 +81,7 @@ GitLab Duo Chat is not available in the Web IDE on self-managed.
 ## Use GitLab Duo Chat in VS Code
 
 > - Introduced in GitLab 16.6 as an [experiment](../policy/experiment-beta-support.md#experiment).
-> - Changed to Generally Available in GitLab 16.11.
+> - Changed to generally available in GitLab 16.11.
 
 To use GitLab Duo Chat in GitLab Workflow extension for VS Code:
 
@@ -101,7 +101,7 @@ If you have selected code in the editor, this selection is sent along with your 
 
 ## Use GitLab Duo Chat in JetBrains IDEs
 
-> - Introduced as Generally Available in GitLab 16.11.
+> - Introduced as generally available in GitLab 16.11.
 
 To use GitLab Duo Chat in the GitLab Duo plugin for JetBrains IDEs:
 

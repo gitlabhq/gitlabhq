@@ -320,7 +320,7 @@ In the case of a push detection, the commit is rejected inline and error returne
 
 #### Configuration
 
-This phase will be considered "Generally Available" and on-by-default, with disablement configuration through organization-level settings.
+This phase will be considered "generally available" and on-by-default, with disablement configuration through organization-level settings.
 
 #### High-Level Architecture
 
@@ -443,7 +443,7 @@ existing Vulnerability Management UI.
 
 #### Configuration
 
-This phase will be considered "Generally Available" and on-by-default, with disablement configuration through organization-level settings.
+This phase will be considered "generally available" and on-by-default, with disablement configuration through organization-level settings.
 
 #### High-Level Architecture
 

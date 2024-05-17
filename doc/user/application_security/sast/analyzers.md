@@ -30,33 +30,28 @@ For each scanner, an analyzer:
 
 SAST supports the following official analyzers:
 
-- [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman)
-- [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder)
 - [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) (Kubesec)
-- [`mobsf`](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (MobSF) (**Status:** Beta)
-- [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan)
-- [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit)
 - [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex) (PMD (Apex only))
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) (Semgrep)
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
 
-NOTE:
-`brakeman`, `flawfinder`, `nodejs-scan`, and `phpcs-security-audit` were
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/431123) in GitLab 16.9
-and are planned for removal in 17.0.
-The [Semgrep analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) is proposed as their replacement.
+The following analyzers reached End of Support status and do not receive updates. They were replaced
+by the `semgrep` analyzer with GitLab-managed rules.
 
-SAST has used other analyzers in previous versions. These analyzers reached End of Support status and do not receive updates:
-
-- [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Bandit); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. Replaced by the `semgrep` analyzer with GitLab-managed rules.
-- [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (ESLint (JavaScript and React)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. Replaced by the `semgrep` analyzer with GitLab-managed rules.
-- [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Gosec); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. Replaced by the `semgrep` analyzer with GitLab-managed rules.
-- [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) (Security Code Scan (.NET)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/390416) in GitLab 16.0. Replaced by the `semgrep` analyzer with GitLab-managed rules.
+- [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Bandit); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4.
+- [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/412060) in GitLab 17.0.
+- [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (ESLint (JavaScript and React)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4.
+- [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/412060) in GitLab 17.0.
+- [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Gosec); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4.
+- [`mobsf`](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (MobSF); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/450925) in GitLab 17.0.
+- [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan);  [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/412060) in GitLab 17.0.
+- [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit)
+- [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) (Security Code Scan (.NET)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/390416) in GitLab 16.0.
 
 ## SAST analyzer features
 
-For an analyzer to be considered Generally Available, it is expected to minimally
+For an analyzer to be considered generally available, it is expected to minimally
 support the following features:
 
 - [Customizable configuration](index.md#available-cicd-variables)

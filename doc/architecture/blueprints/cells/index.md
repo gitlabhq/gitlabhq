@@ -38,7 +38,7 @@ We can't ship the entire Cells architecture in one go - it is too large.
 Instead, we are defining key workstreams required by the project.
 For each workstream, we need to define the effort necessary to make features compliant with Cell 1.0, Cell 1.5, and Cell 2.0, respectively.
 
-It is expected that some objectives will not be completed for General Availability (GA), but will be enough to run Cells in production.
+It is expected that some objectives will not be completed for general availability (GA), but will be enough to run Cells in production.
 
 ### 1. Data access layer
 

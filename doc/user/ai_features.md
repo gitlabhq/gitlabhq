@@ -21,7 +21,7 @@ GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparenc
 As GitLab Duo features mature, the documentation will be updated to clearly state
 how and where you can access these features.
 
-## Generally Available features
+## Generally available features
 
 ### Code Suggestions
 

@@ -4250,6 +4250,8 @@ job:
   globs always match. In other words, the `exists` rule always assumes a match in
   projects with more than 10,000 files, or if there are fewer than 10,000 files but
   the `exists` rules are checked more than 10,000 times.
+  - If there are multiple patterned globs, the limit is 10,000 divided by the number
+    of globs. For example, a rule with 4 patterned globs has file limit of 2500.
 - A maximum of 50 patterns or file paths can be defined per `rules:exists` section.
 - `exists` resolves to `true` if any of the listed files are found (an `OR` operation).
 

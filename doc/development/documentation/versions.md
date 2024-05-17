@@ -96,7 +96,7 @@ If the feature status changes to experiment or beta, use `changed`:
 > - [Changed](<link-to-issue>) to beta in GitLab 16.0.
 ```
 
-For a change to Generally Available, use:
+For a change to generally available, use:
 
 ```markdown
 > - [Generally available](issue-link) in GitLab 16.10.

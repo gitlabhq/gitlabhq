@@ -880,6 +880,7 @@ lib/gitlab/checks/**
 /doc/integration/datadog.md @fneill
 /doc/integration/diffblue_cover.md @marcel.amirault @lyspin
 /doc/integration/external-issue-tracker.md @eread @ashrafkhamis
+/doc/integration/github.md @marcel.amirault @lyspin
 /doc/integration/gitpod.md @ashrafkhamis
 /doc/integration/gmail_action_buttons_for_gitlab.md @eread @ashrafkhamis
 /doc/integration/index.md @eread @ashrafkhamis

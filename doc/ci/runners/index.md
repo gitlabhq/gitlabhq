@@ -120,11 +120,11 @@ Supported images have the following lifecycle:
 
 ### Beta
 
-New images are released as beta. This allows us to gather feedback and address potential issues before General Availablility (GA).
+New images are released as beta. This allows us to gather feedback and address potential issues before general availablility (GA).
 Any jobs running on beta images are not covered by the service-level agreement.
 If you use beta images, you can provide feedback by creating an issue.
 
-### General Availablility (GA)
+### General availability (GA)
 
 A image becomes generally available after the image completes the beta phase and is considered stable.
 To become GA, the image must fulfill the following requirements:
@@ -136,6 +136,6 @@ Jobs that run on GA images are covered by the defined service-level agreement.
 
 ### Deprecated
 
-A maximum of two Generally Available (GA) images are supported at a time. After a new GA image is released,
+A maximum of two generally available (GA) images are supported at a time. After a new GA image is released,
 the oldest GA image becomes deprecated. A deprecated image is no longer updated and is deleted after 3 months
 in accordance with the [deprecation guidelines](../../development/deprecation_guidelines/index.md).

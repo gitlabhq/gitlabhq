@@ -13,12 +13,12 @@ DETAILS:
 > - [Settings to turn off AI features introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
 > - [Settings to turn off AI features added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
 
-GitLab Duo features that are Generally Available are automatically turned on for all users that have access.
+GitLab Duo features that are generally available are automatically turned on for all users that have access.
 In addition:
 
 - If you have self-managed GitLab, you must
   [allow connectivity](#configure-gitlab-duo-on-a-self-managed-instance).
-- For some Generally Available features, like [Code Suggestions](project/repository/code_suggestions/index.md),
+- For some generally available features, like [Code Suggestions](project/repository/code_suggestions/index.md),
   [you must assign seats](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats)
   to the users you want to have access.
 
