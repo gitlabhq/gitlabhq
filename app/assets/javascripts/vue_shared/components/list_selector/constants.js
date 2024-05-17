@@ -9,13 +9,13 @@ export const CONFIG = {
     title: __('Users'),
     icon: 'user',
     filterKey: 'username',
-    showNamespaceDropdown: true,
     component: UserItem,
   },
   groups: {
     title: __('Groups'),
     icon: 'group',
     filterKey: 'name',
+    showNamespaceDropdown: true,
     component: GroupItem,
   },
   deployKeys: {

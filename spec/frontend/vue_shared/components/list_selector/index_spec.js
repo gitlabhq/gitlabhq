@@ -4,6 +4,7 @@ import { GlCard, GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab
 import Api from '~/api';
 import RestApi from '~/rest_api';
 import { createAlert } from '~/alert';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ListSelector from '~/vue_shared/components/list_selector/index.vue';
 import UserItem from '~/vue_shared/components/list_selector/user_item.vue';
@@ -13,6 +14,7 @@ import DeployKeyItem from '~/vue_shared/components/list_selector/deploy_key_item
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { ACCESS_LEVEL_DEVELOPER_INTEGER } from '~/access_level/constants';
 import { USERS_RESPONSE_MOCK, GROUPS_RESPONSE_MOCK } from './mock_data';
 
 jest.mock('~/alert');
@@ -79,7 +81,7 @@ describe('List Selector spec', () => {
 
   beforeEach(() => {
     jest.spyOn(Api, 'projectUsers').mockResolvedValue(USERS_RESPONSE_MOCK);
-    jest.spyOn(Api, 'groupMembers').mockResolvedValue({ data: USERS_RESPONSE_MOCK });
+    jest.spyOn(Api, 'projectGroups').mockResolvedValue(GROUPS_RESPONSE_MOCK.data.groups.nodes);
   });
 
   describe('empty state', () => {
@@ -91,8 +93,6 @@ describe('List Selector spec', () => {
   });
 
   describe('Users type', () => {
-    const search = 'foo';
-
     beforeEach(() => createComponent(USERS_MOCK_PROPS));
 
     it('renders a Card component', () => {
@@ -112,66 +112,10 @@ describe('List Selector spec', () => {
       expect(findSearchBox().exists()).toBe(true);
     });
 
-    it('renders two namespace dropdown items', () => {
-      expect(findNamespaceDropdown().props('items').length).toBe(2);
-    });
-
     it('does not call query when search box has not received an input', () => {
       expect(Api.projectUsers).not.toHaveBeenCalled();
-      expect(Api.groupMembers).not.toHaveBeenCalled();
       expect(findAllUserComponents().length).toBe(0);
     });
-
-    describe.each`
-      dropdownItemValue | apiMethod         | apiParams                                          | searchResponse
-      ${'false'}        | ${'groupMembers'} | ${[USERS_MOCK_PROPS.groupPath, { query: search }]} | ${USERS_RESPONSE_MOCK}
-      ${'true'}         | ${'projectUsers'} | ${[USERS_MOCK_PROPS.projectPath, search]}          | ${USERS_RESPONSE_MOCK}
-    `(
-      'searching based on namespace dropdown selection',
-      ({ dropdownItemValue, apiMethod, apiParams, searchResponse }) => {
-        const emitSearchInput = async () => {
-          findSearchBox().vm.$emit('input', search);
-          await waitForPromises();
-        };
-
-        beforeEach(async () => {
-          findNamespaceDropdown().vm.$emit('select', dropdownItemValue);
-          await emitSearchInput();
-        });
-
-        it('shows error alert when API fails', async () => {
-          jest.spyOn(Api, apiMethod).mockRejectedValueOnce();
-          await emitSearchInput();
-
-          expect(createAlert).toHaveBeenCalledWith({
-            message: 'An error occurred while fetching. Please try again.',
-          });
-        });
-
-        it('calls query with correct variables when Search box receives an input', () => {
-          expect(Api[apiMethod]).toHaveBeenCalledWith(...apiParams);
-        });
-
-        it('renders a List box component with the correct props', () => {
-          expect(findSearchResultsDropdown().props()).toMatchObject({
-            items: searchResponse,
-          });
-        });
-
-        it('renders a user component for each search result', () => {
-          expect(findAllUserComponents().length).toBe(searchResponse.length);
-        });
-
-        it('emits an event when a search result is selected', () => {
-          const firstSearchResult = searchResponse[0];
-          findSearchResultsDropdown().vm.$emit('select', firstSearchResult.username);
-
-          expect(wrapper.emitted('select')).toEqual([
-            [{ ...firstSearchResult, text: 'Administrator', value: 'root' }],
-          ]);
-        });
-      },
-    );
 
     describe('selected items', () => {
       const selectedUser = { username: 'root' };
@@ -202,6 +146,7 @@ describe('List Selector spec', () => {
 
   describe('Groups type', () => {
     beforeEach(() => createComponent(GROUPS_MOCK_PROPS));
+    const search = 'foo';
 
     it('renders a correct title', () => {
       expect(findTitle().exists()).toBe(true);
@@ -217,16 +162,25 @@ describe('List Selector spec', () => {
       expect(findAllGroupComponents().length).toBe(0);
     });
 
+    it('renders two namespace dropdown items', () => {
+      expect(findNamespaceDropdown().props('items').length).toBe(2);
+    });
+
     describe('searching', () => {
-      const searchResponse = GROUPS_RESPONSE_MOCK.data.groups.nodes;
-      const search = 'foo';
+      const searchResponse = GROUPS_RESPONSE_MOCK.data.groups.nodes.map((group) => ({
+        ...group,
+        id: getIdFromGraphQLId(group.id),
+      }));
 
       const emitSearchInput = async () => {
         findSearchBox().vm.$emit('input', search);
         await waitForPromises();
       };
 
-      beforeEach(() => emitSearchInput());
+      beforeEach(async () => {
+        findNamespaceDropdown().vm.$emit('select', 'false');
+        await emitSearchInput();
+      });
 
       it('calls query with correct variables when Search box receives an input', () => {
         expect(groupsAutocompleteQuerySuccess).toHaveBeenCalledWith({
@@ -249,7 +203,65 @@ describe('List Selector spec', () => {
         findSearchResultsDropdown().vm.$emit('select', firstSearchResult.name);
 
         expect(wrapper.emitted('select')).toEqual([
-          [{ ...firstSearchResult, text: 'Flightjs', value: 'Flightjs', type: 'group' }],
+          [
+            {
+              __typename: 'Group',
+              avatarUrl: null,
+              fullName: 'Flightjs',
+              id: 33,
+              name: 'Flightjs',
+              text: 'Flightjs',
+              value: 'Flightjs',
+            },
+          ],
+        ]);
+      });
+    });
+
+    describe('searching based on namespace dropdown selection', () => {
+      const searchResponse = GROUPS_RESPONSE_MOCK.data.groups.nodes;
+
+      const emitSearchInput = async () => {
+        findSearchBox().vm.$emit('input', search);
+        await waitForPromises();
+      };
+
+      beforeEach(async () => {
+        findNamespaceDropdown().vm.$emit('select', 'true');
+        await emitSearchInput();
+      });
+
+      it('shows error alert when API fails', async () => {
+        jest.spyOn(Api, 'projectGroups').mockRejectedValueOnce();
+        await emitSearchInput();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'An error occurred while fetching. Please try again.',
+        });
+      });
+
+      it('calls query with correct variables when Search box receives an input', () => {
+        expect(Api.projectGroups).toHaveBeenCalledWith(USERS_MOCK_PROPS.projectPath, {
+          search,
+          shared_min_access_level: ACCESS_LEVEL_DEVELOPER_INTEGER,
+          with_shared: true,
+        });
+      });
+
+      it('renders a List box component with the correct props', () => {
+        expect(findSearchResultsDropdown().props('items')).toMatchObject(searchResponse);
+      });
+
+      it('renders a group component for each search result', () => {
+        expect(findAllGroupComponents().length).toBe(searchResponse.length);
+      });
+
+      it('emits an event when a search result is selected', () => {
+        const firstSearchResult = searchResponse[0];
+        findSearchResultsDropdown().vm.$emit('select', firstSearchResult.name);
+
+        expect(wrapper.emitted('select')).toMatchObject([
+          [{ ...firstSearchResult, value: 'Flightjs' }],
         ]);
       });
     });

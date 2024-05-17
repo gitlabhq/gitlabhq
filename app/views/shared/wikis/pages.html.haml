@@ -8,12 +8,16 @@
     = s_("Wiki|Wiki Pages")
 
   .nav-controls.pb-md-3.pb-lg-0
-    = link_button_to wiki_path(@wiki, action: :git_access), icon: 'download' do
-      = _("Clone repository")
-
     .dropdown.inline.wiki-sort-dropdown
       .btn-group{ role: 'group' }
         = wiki_sort_controls(@wiki, params[:direction])
+
+    = render Pajamas::ButtonComponent.new(href: wiki_path(@wiki, action: :git_access), icon: 'download') do
+      = _("Clone repository")
+
+    - if can?(current_user, :create_wiki, @project)
+      = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, SecureRandom.uuid, random_title: true), variant: :confirm) do
+        = s_("Wiki|New page")
 
 %ul.wiki-pages-list.content-list
   - @wiki_entries.each do |entry|

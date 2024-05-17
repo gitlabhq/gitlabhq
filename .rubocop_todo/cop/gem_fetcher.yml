@@ -1,0 +1,5 @@
+---
+Cop/GemFetcher:
+  Details: grace period
+  Exclude:
+    - 'Gemfile'

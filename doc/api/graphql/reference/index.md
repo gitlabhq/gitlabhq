@@ -368,6 +368,22 @@ Returns [`ExplainVulnerabilityPrompt`](#explainvulnerabilityprompt).
 | ---- | ---- | ----------- |
 | <a id="queryexplainvulnerabilitypromptvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | Vulnerability to generate a prompt for. |
 
+### `Query.featureFlagEnabled`
+
+Check if a feature flag is enabled.
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Returns [`Boolean!`](#boolean).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryfeatureflagenabledname"></a>`name` | [`String!`](#string) | Name of the feature flag. |
+
 ### `Query.frecentGroups`
 
 A user's frecently visited groups.

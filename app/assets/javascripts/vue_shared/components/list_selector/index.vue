@@ -1,8 +1,10 @@
 <script>
 import { GlCard, GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
+import { ACCESS_LEVEL_DEVELOPER_INTEGER } from '~/access_level/constants';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import Api from '~/api';
 import { getProjects } from '~/rest_api';
@@ -34,11 +36,6 @@ export default {
       default: () => [],
     },
     projectPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    groupPath: {
       type: String,
       required: false,
       default: null,
@@ -108,17 +105,38 @@ export default {
       }
     },
     async fetchUsersBySearchTerm(search) {
-      let users = [];
+      const users = await Api.projectUsers(this.projectPath, search);
+
+      return users?.map((user) => ({
+        text: user.name,
+        value: user.username,
+        ...this.convertToCamelCase(user),
+      }));
+    },
+    async fetchGroupsBySearchTerm(search) {
+      let groups = [];
       if (parseBoolean(this.isProjectNamespace)) {
-        users = await Api.projectUsers(this.projectPath, search);
+        groups = await this.fetchProjectGroups(search);
       } else {
-        const groupMembers = await Api.groupMembers(this.groupPath, { query: search });
-        users = groupMembers?.data || [];
+        groups = await this.fetchAllGroups(search);
       }
 
-      return users?.map((user) => ({ text: user.name, value: user.username, ...user }));
+      return groups;
     },
-    fetchGroupsBySearchTerm(search) {
+    fetchProjectGroups(search) {
+      return Api.projectGroups(this.projectPath, {
+        search,
+        with_shared: true,
+        shared_min_access_level: ACCESS_LEVEL_DEVELOPER_INTEGER,
+      }).then((data) =>
+        data?.map((group) => ({
+          text: group.full_name,
+          value: group.name,
+          ...this.convertToCamelCase(group),
+        })),
+      );
+    },
+    fetchAllGroups(search) {
       return this.$apollo
         .query({
           query: groupsAutocompleteQuery,
@@ -128,8 +146,8 @@ export default {
           data?.groups.nodes.map((group) => ({
             text: group.fullName,
             value: group.name,
-            type: 'group',
             ...group,
+            id: getIdFromGraphQLId(group.id),
           })),
         );
     },

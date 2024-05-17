@@ -101,74 +101,19 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
         it_behaves_like params[:shared_example_name]
       end
 
-      context 'for global search excluded paths' do
-        excluded_paths = %w[
-          /search
-          /search/count
-          /api/v4/search
-          /api/v4/search.json
-          /api/v4/projects/4/search
-          /api/v4/projects/4/search.json
-          /api/v4/projects/4/-/search
-          /api/v4/projects/4/-/search.json
-          /api/v4/projects/my%2Fproject/search
-          /api/v4/projects/my%2Fproject/search.json
-          /api/v4/projects/my%2Fproject/-/search
-          /api/v4/projects/my%2Fproject/-/search.json
-          /api/v4/groups/4/search
-          /api/v4/groups/4/search.json
-          /api/v4/groups/4/-/search
-          /api/v4/groups/4/-/search.json
-          /api/v4/groups/my%2Fgroup/search
-          /api/v4/groups/my%2Fgroup/search.json
-          /api/v4/groups/my%2Fgroup/-/search
-          /api/v4/groups/my%2Fgroup/-/search.json
-        ]
-        query_params_with_no_path_traversal = [
-          {},
-          { x: 'foo' },
-          { x: 'foo%2F..%2Fbar' },
-          { x: 'foo%2F..%2Fbar' },
-          { x: 'foo%252F..%252Fbar' }
-        ]
-        query_params_with_path_traversal = [
-          { x: 'foo/../bar' }
-        ]
+      described_class::EXCLUDED_QUERY_PARAM_NAMES.each do |param_name|
+        context "with the excluded query parameter #{param_name}" do
+          let(:path) { '/foo/bar' }
+          let(:query_params) { { param_name => 'an%2F..%2Fattempt', :x => 'test' } }
+          let(:decoded_fullpath) { '/foo/bar?x=test' }
 
-        excluded_paths.each do |excluded_path|
-          [query_params_with_no_path_traversal + query_params_with_path_traversal].flatten.each do |qp|
-            context "for excluded path #{excluded_path} with query params #{qp}" do
-              let(:query_params) { qp }
-              let(:path) { excluded_path }
-
-              it_behaves_like 'excluded path'
-            end
-          end
-
-          non_excluded_path = excluded_path.gsub('search', 'searchtest')
-
-          query_params_with_no_path_traversal.each do |qp|
-            context "for non excluded path #{non_excluded_path} with query params #{qp}" do
-              let(:query_params) { qp }
-              let(:path) { non_excluded_path }
-
-              it_behaves_like 'no issue'
-            end
-          end
-
-          query_params_with_path_traversal.each do |qp|
-            context "for non excluded path #{non_excluded_path} with query params #{qp}" do
-              let(:query_params) { qp }
-              let(:path) { non_excluded_path }
-
-              it_behaves_like 'path traversal'
-            end
-          end
+          it_behaves_like 'no issue'
         end
       end
 
       context 'with a issues search path' do
         let(:query_params) { {} }
+        let(:decoded_fullpath) { '/project/-/issues/?sort=updated_desc&milestone_title=16.0&first_page_size=20' }
         let(:path) do
           'project/-/issues/?sort=updated_desc&milestone_title=16.0&search=Release%20%252525&first_page_size=20'
         end
@@ -198,59 +143,6 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
 
         with_them do
           it_behaves_like params[:shared_example_name]
-        end
-
-        context 'for global search excluded paths' do
-          excluded_paths = %w[
-            /search
-            /search/count
-            /api/v4/search
-            /api/v4/search.json
-            /api/v4/projects/4/search
-            /api/v4/projects/4/search.json
-            /api/v4/projects/4/-/search
-            /api/v4/projects/4/-/search.json
-            /api/v4/projects/my%2Fproject/search
-            /api/v4/projects/my%2Fproject/search.json
-            /api/v4/projects/my%2Fproject/-/search
-            /api/v4/projects/my%2Fproject/-/search.json
-            /api/v4/groups/4/search
-            /api/v4/groups/4/search.json
-            /api/v4/groups/4/-/search
-            /api/v4/groups/4/-/search.json
-            /api/v4/groups/my%2Fgroup/search
-            /api/v4/groups/my%2Fgroup/search.json
-            /api/v4/groups/my%2Fgroup/-/search
-            /api/v4/groups/my%2Fgroup/-/search.json
-          ]
-          all_query_params = [
-            {},
-            { x: 'foo' },
-            { x: 'foo%2F..%2Fbar' },
-            { x: 'foo%2F..%2Fbar' },
-            { x: 'foo%252F..%252Fbar' },
-            { x: 'foo/../bar' }
-          ]
-
-          excluded_paths.each do |excluded_path|
-            all_query_params.each do |qp|
-              context "for excluded path #{excluded_path} with query params #{qp}" do
-                let(:query_params) { qp }
-                let(:path) { excluded_path }
-
-                it_behaves_like 'excluded path'
-              end
-
-              non_excluded_path = excluded_path.gsub('search', 'searchtest')
-
-              context "for non excluded path #{non_excluded_path} with query params #{qp}" do
-                let(:query_params) { qp }
-                let(:path) { excluded_path.gsub('search', 'searchtest') }
-
-                it_behaves_like 'no issue'
-              end
-            end
-          end
         end
       end
     end

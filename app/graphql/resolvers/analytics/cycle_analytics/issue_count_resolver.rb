@@ -22,7 +22,8 @@ module Resolvers
         private
 
         def process_params(params)
-          params[:assignee_username] = params.delete(:assignee_usernames) if params[:assignee_usernames].present?
+          assignees_value = params.delete(:assignee_usernames)
+          params[:assignee_username] = assignees_value if assignees_value.present?
           params[:label_name] = params.delete(:label_names) if params[:label_names]
           params[:created_after] = params.delete(:from)
           params[:created_before] = params.delete(:to)

@@ -4,6 +4,8 @@ module Ci
   module Components
     module Usages
       class CreateService
+        ValidationError = Class.new(StandardError)
+
         def initialize(component, used_by_project:)
           @component = component
           @used_by_project = used_by_project
@@ -17,18 +19,19 @@ module Ci
             used_by_project_id: used_by_project.id
           )
 
-          if component_usage.valid?
-            component_usage.save
-
-            return ServiceResponse.success(message: 'Usage recorded')
-          end
-
-          errors = component_usage.errors
-
-          if errors.size == 1 && errors.first.type == :taken # Only unique validation failed
-            ServiceResponse.success(message: 'Usage already recorded for today')
+          if component_usage.save
+            ServiceResponse.success(message: 'Usage recorded')
           else
-            ServiceResponse.error(message: errors.full_messages.join(', '))
+            errors = component_usage.errors
+
+            if errors.size == 1 && errors.first.type == :taken # Only unique validation failed
+              ServiceResponse.success(message: 'Usage already recorded for today')
+            else
+              exception = ValidationError.new(errors.full_messages.join(', '))
+
+              Gitlab::ErrorTracking.track_exception(exception)
+              ServiceResponse.error(message: exception.message)
+            end
           end
         end
 

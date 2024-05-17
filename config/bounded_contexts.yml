@@ -319,7 +319,9 @@ domains:
 # This is where all shared concepts live, from Base classes to utilities.
 # Modules from the platform layer could potentially be extracted as gems.
 platform:
-  Gitlab::Database:
-    description: Utilities for GitLab Rails persistence layer built for Postgres database
+  Gitlab:
+    description: Platform layer containing infrastructure and technical concerns.
+      For example observability tools, generic base classes, utilities, database helpers, etc.
+      Each functionality in this layer should be isolated and extracted into gems.
   Banzai:
     description: Parsing and rendering for GitLab Flavored Markdown

@@ -101,10 +101,10 @@ RSpec.describe 'Environments Folder page', :js, feature_category: :environment_m
     end
 
     describe 'pagination' do
-      # rubocop:disable RSpec/FactoryBot/ExcessiveCreateList -- need >20 items to test pagination
+      # rubocop:disable FactoryBot/ExcessiveCreateList -- need >20 items to test pagination
       let!(:envs) { create_list(:environment, 25, :with_folders, project: project, folder: folder_name) }
 
-      # rubocop:enable RSpec/FactoryBot/ExcessiveCreateList
+      # rubocop:enable FactoryBot/ExcessiveCreateList
       it 'shows pagination' do
         pagination = find('.pagination')
 

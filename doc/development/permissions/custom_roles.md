@@ -296,3 +296,7 @@ A base role typically has permissions that allow creation or management of artif
 ### Consuming seats
 
 If a new user with a role `Guest` is added to a member role that includes enablement of an ability that is **not** in the `CUSTOMIZABLE_PERMISSIONS_EXEMPT_FROM_CONSUMING_SEAT` array, a seat is consumed. We simply want to make sure we are charging Ultimate customers for guest users, who have "elevated" abilities. This only applies to billable users on SaaS (billable users that are counted towards namespace subscription). More details about this topic can be found in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390269).
+
+### Modular Policies
+
+In an effort to support the [GitLab Modular Monolith blueprint](../../architecture/blueprints/modular_monolith/index.md) the [Authorization group](https://handbook.gitlab.com/handbook/engineering/development/sec/govern/authorization/) is [collaborating](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153348) with the [Create:IDE group](https://handbook.gitlab.com/handbook/engineering/development/dev/create/ide/). Once a POC is implemented, the findings will be [discussed](https://gitlab.com/gitlab-org/gitlab/-/issues/454934) and the Authorization group will make a decision of what the modular design of policies will be going forward.

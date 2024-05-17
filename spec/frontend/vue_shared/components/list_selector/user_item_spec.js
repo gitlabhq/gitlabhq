@@ -49,7 +49,7 @@ describe('UserItem spec', () => {
     it('emits a delete event if the delete button is clicked', () => {
       findDeleteButton().trigger('click');
 
-      expect(wrapper.emitted('delete')).toEqual([[MOCK_USER.username]]);
+      expect(wrapper.emitted('delete')).toEqual([[MOCK_USER.id]]);
     });
   });
 });

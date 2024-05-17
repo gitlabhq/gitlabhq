@@ -45,12 +45,12 @@ module QA
         def search_item(item_text)
           QA::Runtime::Logger.info "Searching in dropdown: \"#{item_text}\""
 
-          find('div.gl-listbox-search input[type="Search"]').set(item_text, rapid: false)
+          find('input[type="Search"]').set(item_text, rapid: false)
           wait_for_search_to_complete
         end
 
         def send_keys_to_search(item_text)
-          find('div.gl-listbox-search input[type="Search"]').send_keys(item_text)
+          find('input[type="Search"]').send_keys(item_text)
           wait_for_search_to_complete
         end
 

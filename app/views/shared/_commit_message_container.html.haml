@@ -11,7 +11,7 @@
       placeholder: local_assigns[:placeholder],
       data: descriptions,
       'data-testid': 'commit-message-field',
-      required: true, rows: (local_assigns[:rows] || 3),
+      required: true, rows: local_assigns[:rows] || 3,
       id: "commit_message-#{nonce}"
     - if local_assigns[:hint]
       %p.hint

@@ -539,6 +539,26 @@ Gitlab/RSpec/AvoidSetup:
 RSpec/DuplicateSpecLocation:
   Enabled: true
 
+# https://docs.gitlab.com/ee/development/software_design.html#bounded-contexts
+Gitlab/BoundedContexts:
+  Enabled: true
+  Exclude:
+    - '**/lib/api/**/*'
+    - 'ee/lib/ee/api/**/*'
+    - '**/app/assets/**/*'
+    - '**/app/channels/**/*'
+    - '**/app/components/**/*'
+    - '**/app/controllers/**/*'
+    - '**/app/presenters/**/*'
+    - '**/app/serializers/**/*'
+    - '**/lib/tasks/**/*'
+    - '**/app/views/**/*'
+  Include:
+    - 'app/**/*'
+    - 'ee/app/**/*'
+    - 'lib/**/*'
+    - 'ee/lib/**/*'
+
 Gitlab/PolicyRuleBoolean:
   Enabled: true
   Include:

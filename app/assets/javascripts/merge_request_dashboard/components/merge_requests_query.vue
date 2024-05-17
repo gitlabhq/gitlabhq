@@ -31,37 +31,35 @@ export default {
   },
   data() {
     return {
-      mergeRequests: {},
-      loadingMore: false,
+      mergeRequests: null,
     };
   },
   computed: {
+    isLoading() {
+      return this.$apollo.queries.mergeRequests.loading;
+    },
     hasNextPage() {
-      return this.mergeRequests.pageInfo?.hasNextPage;
+      return this.mergeRequests?.pageInfo?.hasNextPage;
     },
   },
   methods: {
     async loadMore() {
-      this.loadingMore = true;
-
       await this.$apollo.queries.mergeRequests.fetchMore({
         variables: {
           ...this.variables,
           perPage: 10,
-          afterCursor: this.mergeRequests.pageInfo?.endCursor,
+          afterCursor: this.mergeRequests?.pageInfo?.endCursor,
         },
       });
-
-      this.loadingMore = false;
     },
   },
   render() {
     return this.$scopedSlots.default({
-      mergeRequests: this.mergeRequests.nodes || [],
-      count: this.mergeRequests.count || 0,
+      mergeRequests: this.mergeRequests?.nodes || [],
+      count: this.mergeRequests ? this.mergeRequests.count : null,
       hasNextPage: this.hasNextPage,
       loadMore: this.loadMore,
-      loadingMore: this.loadingMore,
+      loading: this.isLoading,
     });
   },
 };

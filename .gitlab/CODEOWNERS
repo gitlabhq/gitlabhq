@@ -1073,6 +1073,8 @@ lib/gitlab/checks/**
 /config/initializers/declarative_policy_cached_attributes.rb
 /app/policies/
 /ee/app/policies/
+/ee/app/policies/remote_development/ @gitlab-org/maintainers/remote-development/backend
+/ee/app/policies/clusters/ @gitlab-org/maintainers/remote-development/backend
 /ee/app/models/members/member_role.rb
 /ee/app/models/auth/member_role_ability_loader.rb
 /ee/app/models/preloaders/user_member_roles_in_groups_preloader.rb
