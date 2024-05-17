@@ -435,11 +435,11 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) { go }
 
         5.times do
-          second_pipeline = create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
-          second_build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: second_pipeline)
-          second_build.runner = create(:ci_runner)
-          second_build.user = create(:user)
-          second_build.save!
+          another_pipeline = create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
+          another_build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: another_pipeline)
+          another_build.runner = create(:ci_runner)
+          another_build.user = create(:user)
+          another_build.save!
         end
 
         expect { go }.not_to exceed_query_limit(control)

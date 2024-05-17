@@ -173,8 +173,6 @@ module TestEnv
       end
     end
 
-    FileUtils.mkdir_p(GitalySetup.storage_path)
-    FileUtils.mkdir_p(GitalySetup.second_storage_path)
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)
     FileUtils.mkdir_p(artifacts_path)
@@ -399,16 +397,18 @@ module TestEnv
 
   # These are directories that should be preserved at cleanup time
   def test_dirs
-    @test_dirs ||= %w[
-      frontend
-      gitaly
-      gitlab-shell
-      gitlab-test
-      gitlab-test.bundle
-      gitlab-test-fork
-      gitlab-test-fork.bundle
-      gitlab-workhorse
-      gitlab_workhorse_secret
+    @test_dirs ||= [
+      'frontend',
+      'gitaly',
+      'gitlab-shell',
+      'gitlab-test',
+      'gitlab-test.bundle',
+      'gitlab-test-fork',
+      'gitlab-test-fork.bundle',
+      'gitlab-workhorse',
+      'gitlab_workhorse_secret',
+      File.basename(GitalySetup.storage_path),
+      File.basename(GitalySetup.second_storage_path)
     ]
   end
 

@@ -24,8 +24,8 @@ class GitalyTestBuild
     ensure_gitlab_shell_secret!
 
     # Starting gitaly further validates its configuration
-    gitaly_pid = start_gitaly
-    gitaly2_pid = start_gitaly2
+    gitaly_pid = start_gitaly(:gitaly)
+    gitaly2_pid = start_gitaly(:gitaly2)
     praefect_pid = start_praefect
     Process.kill('TERM', gitaly_pid)
     Process.kill('TERM', gitaly2_pid)

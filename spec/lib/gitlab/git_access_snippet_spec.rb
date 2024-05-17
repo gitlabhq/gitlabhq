@@ -311,7 +311,7 @@ RSpec.describe Gitlab::GitAccessSnippet do
   end
 
   describe 'repository size restrictions' do
-    let_it_be(:snippet) { create(:personal_snippet, :public, :repository) }
+    let_it_be_with_refind(:snippet) { create(:personal_snippet, :public, :repository) }
 
     let(:actor) { snippet.author }
     let(:oldrev) { TestEnv::BRANCH_SHA["snippet/single-file"] }

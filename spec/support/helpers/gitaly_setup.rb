@@ -70,15 +70,19 @@ module GitalySetup
     }
   end
 
-  def config_path(service)
+  def config_name(service)
     case service
     when :gitaly
-      File.join(tmp_tests_gitaly_dir, 'config.toml')
+      'config.toml'
     when :gitaly2
-      File.join(tmp_tests_gitaly_dir, 'gitaly2.config.toml')
+      'gitaly2.config.toml'
     when :praefect
-      File.join(tmp_tests_gitaly_dir, 'praefect.config.toml')
+      'praefect.config.toml'
     end
+  end
+
+  def config_path(service)
+    File.join(tmp_tests_gitaly_dir, config_name(service))
   end
 
   def service_cmd(service, toml = nil)
@@ -100,12 +104,22 @@ module GitalySetup
     run_command(%w[make all WITH_BUNDLED_GIT=YesPlease], env: env.merge('GIT_VERSION' => nil))
   end
 
-  def start_gitaly(toml = nil)
-    start(:gitaly, toml)
-  end
+  def start_gitaly(service, toml = nil)
+    case service
+    when :gitaly
+      FileUtils.mkdir_p(GitalySetup.storage_path)
+    when :gitaly2
+      FileUtils.mkdir_p(GitalySetup.second_storage_path)
+    end
 
-  def start_gitaly2
-    start(:gitaly2)
+    if ENV['CI'] && gitaly_with_transactions?
+      # The configuration file with transactions is pre-generated in the CI. Here we check
+      # whether this job should actually run with transactions and choose the pre-generated
+      # configuration with transactions enabled if so.
+      toml = "#{config_path(service)}.transactions"
+    end
+
+    start(service, toml)
   end
 
   def start_praefect
@@ -226,25 +240,54 @@ module GitalySetup
       build_gitaly
     end
 
-    Gitlab::SetupHelper::Gitaly.create_configuration(
-      gitaly_dir,
-      { 'default' => storage_path },
-      force: true,
-      options: {
-        runtime_dir: runtime_dir,
-        prometheus_listen_addr: 'localhost:9236'
+    [
+      {
+        storages: { 'default' => storage_path },
+        options: {
+          runtime_dir: runtime_dir,
+          prometheus_listen_addr: 'localhost:9236',
+          config_filename: config_name(:gitaly),
+          transactions_enabled: gitaly_with_transactions?
+        }
+      },
+      {
+        storages: { 'test_second_storage' => second_storage_path },
+        options: {
+          runtime_dir: runtime_dir,
+          gitaly_socket: "gitaly2.socket",
+          config_filename: config_name(:gitaly2),
+          transactions_enabled: gitaly_with_transactions?
+        }
       }
-    )
-    Gitlab::SetupHelper::Gitaly.create_configuration(
-      gitaly_dir,
-      { 'test_second_storage' => second_storage_path },
-      force: true,
-      options: {
-        runtime_dir: runtime_dir,
-        gitaly_socket: "gitaly2.socket",
-        config_filename: "gitaly2.config.toml"
-      }
-    )
+    ].each do |params|
+      Gitlab::SetupHelper::Gitaly.create_configuration(
+        gitaly_dir,
+        params[:storages],
+        force: true,
+        options: params[:options]
+      )
+
+      # CI generates all of the configuration files in the setup-test-env job. When we eventually get
+      # to run the rspec jobs with transactions enabled, the configuration has already been created
+      # without transactions enabled.
+      #
+      # Similarly to the Praefect configuration, generate variant of the configuration file with
+      # transactions enabled in CI. Later when the rspec job runs, we decide whether to run Gitaly
+      # using the configuration with transactions enabled or not.
+      #
+      # These configuration files are only used in the CI.
+      next unless ENV['CI']
+
+      params[:options][:config_filename] = "#{params[:options][:config_filename]}.transactions"
+      params[:options][:transactions_enabled] = true
+
+      Gitlab::SetupHelper::Gitaly.create_configuration(
+        gitaly_dir,
+        params[:storages],
+        force: true,
+        options: params[:options]
+      )
+    end
 
     # In CI we need to pre-generate both config files.
     # For local testing we'll create the correct file on-demand.
@@ -301,10 +344,10 @@ module GitalySetup
     pids = []
 
     if toml
-      pids << start_gitaly(toml)
+      pids << start_gitaly(:gitaly, toml)
     else
-      pids << start_gitaly
-      pids << start_gitaly2
+      pids << start_gitaly(:gitaly)
+      pids << start_gitaly(:gitaly2)
       pids << start_praefect
     end
 
@@ -319,6 +362,8 @@ module GitalySetup
       next if ENV['GITALY_PID_FILE']
 
       pids.each { |pid| stop(pid) }
+
+      [storage_path, second_storage_path].each { |storage_dir| FileUtils.rm_rf(storage_dir) }
     end
   rescue StandardError
     raise gitaly_failure_message
@@ -355,5 +400,9 @@ module GitalySetup
 
   def praefect_with_db?
     Gitlab::Utils.to_boolean(ENV['GITALY_PRAEFECT_WITH_DB'], default: false)
+  end
+
+  def gitaly_with_transactions?
+    Gitlab::Utils.to_boolean(ENV['GITALY_TRANSACTIONS_ENABLED'], default: false)
   end
 end

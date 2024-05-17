@@ -24,4 +24,10 @@ RSpec.shared_context 'with GLFM example snapshot fixtures' do
     stub_licensed_features(group_wikis: true)
     sign_in(user)
   end
+
+  after(:all) do
+    # We need to clean up the repository explicitly as we're using a static project ID. If two tests
+    # use this fixture, they'd attempt to create repositories with the same disk path and conflict.
+    ::Gitlab::GitalyClient::RepositoryService.new(project.repository).remove
+  end
 end
