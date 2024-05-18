@@ -15035,6 +15035,9 @@ msgstr ""
 msgid "Couldn't link issues. You must have at least the Guest role in both projects."
 msgstr ""
 
+msgid "Couldn't re-order due to an internal error."
+msgstr ""
+
 msgid "Couldn't reorder child due to an internal error."
 msgstr ""
 
