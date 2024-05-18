@@ -19,7 +19,7 @@ module Packages
         'x-goog-custom-audit-gitlab-size-bytes' => model.try(:size) || size
       }.compact.transform_values(&:to_s)
 
-      super(*args, **kwargs.merge(query: metadata_params))
+      super(*args, **kwargs.deep_merge(query: metadata_params))
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(
         e,

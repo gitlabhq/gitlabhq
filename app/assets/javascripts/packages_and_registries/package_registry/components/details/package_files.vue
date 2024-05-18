@@ -328,6 +328,9 @@ export default {
         focusable.focus();
       }
     },
+    refetchPackageFiles() {
+      this.$apollo.getClient().refetchQueries({ include: [getPackageFilesQuery] });
+    },
   },
   i18n: {
     deleteFile: s__('PackageRegistry|Delete asset'),
@@ -496,6 +499,7 @@ export default {
           @next="fetchNextFilesPage"
         />
       </div>
+      <slot name="upload" :refetch="refetchPackageFiles"></slot>
     </template>
 
     <gl-modal

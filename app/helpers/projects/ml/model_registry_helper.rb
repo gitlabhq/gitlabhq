@@ -40,13 +40,22 @@ module Projects
           model_version_id: model_version.id,
           model_name: model_version.name,
           version_name: model_version.version,
-          can_write_model_registry: can_write_model_registry?(user, project)
+          can_write_model_registry: can_write_model_registry?(user, project),
+          import_path: model_version_artifact_import_path(project.id, model_version.id)
         }
 
         to_json(data)
       end
 
       private
+
+      def model_version_artifact_import_path(project_id, model_version_id)
+        path = api_v4_projects_packages_ml_models_files___path___path(
+          id: project_id, model_version_id: model_version_id, path: '', file_name: ''
+        )
+
+        path.delete_suffix('(/path/)')
+      end
 
       def can_write_model_registry?(user, project)
         user&.can?(:write_model_registry, project)

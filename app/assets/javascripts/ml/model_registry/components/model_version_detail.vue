@@ -9,12 +9,18 @@ export default {
     PackageFiles: () =>
       import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
     CandidateDetail,
+    ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
-  inject: ['projectPath', 'canWriteModelRegistry'],
+  inject: ['projectPath', 'canWriteModelRegistry', 'importPath'],
   props: {
     modelVersion: {
       type: Object,
       required: true,
+    },
+    allowArtifactImport: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   computed: {
@@ -26,6 +32,9 @@ export default {
     },
     packageId() {
       return this.modelVersion.packageId;
+    },
+    showImportArtifactZone() {
+      return this.canWriteModelRegistry && this.importPath && this.allowArtifactImport;
     },
   },
   i18n,
@@ -50,7 +59,11 @@ export default {
         :delete-all-files="true"
         :project-path="projectPath"
         :package-type="packageType"
-      />
+      >
+        <template v-if="showImportArtifactZone" #upload="{ refetch }">
+          <import-artifact-zone :path="importPath" @change="refetch" />
+        </template>
+      </package-files>
     </template>
 
     <div class="gl-mt-5">

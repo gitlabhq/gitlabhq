@@ -22,7 +22,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_one(:debian_distribution).through(:debian_publication).source(:distribution).inverse_of(:packages).class_name('Packages::Debian::ProjectDistribution') }
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
-    it { is_expected.to have_one(:rpm_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:terraform_module_metadatum).inverse_of(:package) }
     it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
     it { is_expected.to have_many(:matching_package_protection_rules).through(:project).source(:package_protection_rules) }

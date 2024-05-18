@@ -5,6 +5,7 @@ classes:
 - Packages::Go::Package
 - Packages::MlModel::Package
 - Packages::Package
+- Packages::Rpm::Package
 - Packages::Rubygems::Package
 feature_categories:
 - package_registry

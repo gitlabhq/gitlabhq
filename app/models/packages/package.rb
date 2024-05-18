@@ -50,7 +50,6 @@ class Packages::Package < ApplicationRecord
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
   has_many :nuget_symbols, inverse_of: :package, class_name: 'Packages::Nuget::Symbol'
   has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
-  has_one :rpm_metadatum, inverse_of: :package, class_name: 'Packages::Rpm::Metadatum'
   has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
   has_one :terraform_module_metadatum, inverse_of: :package, class_name: 'Packages::TerraformModule::Metadatum'
   has_many :build_infos, inverse_of: :package
@@ -219,7 +218,8 @@ class Packages::Package < ApplicationRecord
     ml_model: 'Packages::MlModel::Package',
     golang: 'Packages::Go::Package',
     rubygems: 'Packages::Rubygems::Package',
-    conan: 'Packages::Conan::Package'
+    conan: 'Packages::Conan::Package',
+    rpm: 'Packages::Rpm::Package'
   }.freeze
 
   def self.only_maven_packages_with_path(path, use_cte: false)

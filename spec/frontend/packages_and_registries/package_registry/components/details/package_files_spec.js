@@ -784,7 +784,6 @@ describe('Package Files', () => {
       });
     });
   });
-
   describe('additional details', () => {
     describe('details toggle button', () => {
       it('exists', async () => {
@@ -863,6 +862,33 @@ describe('Package Files', () => {
 
         expect(findFirstRowShaComponent('md5').exists()).toBe(false);
       });
+    });
+  });
+  describe('upload slot', () => {
+    const resolver = jest.fn().mockResolvedValue(packageFilesQuery({ files: [file] }));
+    const uploadSlotSpy = jest.fn();
+
+    const callFetchSlotProp = () => uploadSlotSpy.mock.calls[0][0].refetch();
+
+    beforeEach(async () => {
+      createComponent({
+        resolver,
+        options: {
+          scopedSlots: {
+            upload: uploadSlotSpy,
+          },
+        },
+      });
+      await waitForPromises();
+    });
+
+    it('should render slot content', () => {
+      expect(uploadSlotSpy).toHaveBeenLastCalledWith({ refetch: expect.anything() });
+    });
+
+    it('should refetch on change', () => {
+      callFetchSlotProp();
+      expect(resolver).toHaveBeenCalledTimes(2);
     });
   });
 });

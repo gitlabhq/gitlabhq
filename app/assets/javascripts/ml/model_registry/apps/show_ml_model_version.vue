@@ -18,6 +18,7 @@ export default {
     return {
       projectPath: this.projectPath,
       canWriteModelRegistry: this.canWriteModelRegistry,
+      importPath: this.importPath,
     };
   },
   props: {
@@ -43,6 +44,10 @@ export default {
     },
     canWriteModelRegistry: {
       type: Boolean,
+      required: true,
+    },
+    importPath: {
+      type: String,
       required: true,
     },
   },
@@ -100,7 +105,7 @@ export default {
   <div>
     <title-area :title="title" />
     <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
-      <model-version-detail :model-version="modelVersion" />
+      <model-version-detail :model-version="modelVersion" allow-artifact-import />
     </load-or-error-or-show>
   </div>
 </template>

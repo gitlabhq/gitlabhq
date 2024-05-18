@@ -30995,6 +30995,15 @@ msgstr ""
 msgid "MLExperimentTracking|Delete experiment?"
 msgstr ""
 
+msgid "MLOps|Drop or %{linkStart}select%{linkEnd} artifact to attach"
+msgstr ""
+
+msgid "MLOps|Drop to start upload"
+msgstr ""
+
+msgid "MLOps|Error importing artifact. Please try again."
+msgstr ""
+
 msgid "MRApprovals|Approvals"
 msgstr ""
 
@@ -36451,9 +36460,6 @@ msgid "Package type must be NuGet"
 msgstr ""
 
 msgid "Package type must be PyPi"
-msgstr ""
-
-msgid "Package type must be RPM"
 msgstr ""
 
 msgid "Package type must be Terraform Module"
