@@ -42,7 +42,6 @@ export default {
     return {
       accessLevelOptions,
       busy: false,
-      customPermissions: this.member.customPermissions ?? [],
       isDesktop: false,
       memberRoleId: this.member.accessLevel.memberRoleId ?? null,
       selectedRole: initialSelectedRole(accessLevelOptions.flatten, this.member),

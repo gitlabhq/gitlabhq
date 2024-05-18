@@ -86,6 +86,10 @@ describe('WikiForm', () => {
             ...(persisted ? pageInfoPersisted : pageInfoNew),
             ...pageInfo,
           },
+          deleteWikiUrl: '',
+          pageTitle: '',
+          csrfToken: '',
+          pagePersisted: false,
           ...provide,
         },
         stubs: {

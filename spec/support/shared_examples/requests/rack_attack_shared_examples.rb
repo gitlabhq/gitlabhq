@@ -96,6 +96,10 @@ RSpec.shared_examples 'rate-limited token requests' do
     end
 
     it 'allows requests after throttling and then waiting for the next period' do
+      # ensure we don't tick over to the next second while hitting this period's rate limit
+      # before calculating the time for the next period
+      next_period = period.from_now
+
       requests_per_period.times do
         make_request(request_args)
         expect(response).not_to have_gitlab_http_status(:too_many_requests)
@@ -103,7 +107,7 @@ RSpec.shared_examples 'rate-limited token requests' do
 
       expect_rejection { make_request(request_args) }
 
-      travel_to(period.from_now) do
+      travel_to(next_period) do
         requests_per_period.times do
           make_request(request_args)
           expect(response).not_to have_gitlab_http_status(:too_many_requests)

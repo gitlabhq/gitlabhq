@@ -128,13 +128,16 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList, :orp
           run
         end
 
-        it 'does not fail but does not log the non-existent path to the deleted list' do
-          expect_no_deleted_object_log_message(orphan_final_object_1)
+        # NOTE: This behavior doesn't apply to GCP but we can't add a test here because
+        # fog doesn't have a mock implementation for it. We can only test AWS behavior.
+        it 'does not fail and still logs the non-existent path to the deleted list' do
+          expect_deleted_object_log_message(orphan_final_object_1)
           expect_deleted_object_log_message(orphan_final_object_2)
           expect_deleted_object_log_message(orphan_final_object_3)
           expect_deleted_object_log_message(orphan_final_object_4)
 
           expect_deleted_list_to_contain_exactly(deleted_list_filename, [
+            orphan_final_object_1,
             orphan_final_object_2,
             orphan_final_object_3,
             orphan_final_object_4
@@ -208,9 +211,6 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList, :orp
               orphan_final_object_2
             ])
 
-            expect_deleted_object_log_message(orphan_final_object_1)
-            expect_deleted_object_log_message(orphan_final_object_2)
-
             new_processor = described_class.new(
               force_restart: true,
               filename: orphan_list_filename
@@ -219,11 +219,16 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList, :orp
             new_processor.run!
 
             expect_no_resuming_from_marker_log_message
+            expect_deleted_object_log_message(orphan_final_object_1, times: 2)
+            expect_deleted_object_log_message(orphan_final_object_2, times: 2)
             expect_deleted_object_log_message(orphan_final_object_3)
             expect_deleted_object_log_message(orphan_final_object_4)
 
-            # The previous objects that were deleted in the 1st run shouldn't appear here anymore
+            # The previous objects that were deleted in the 1st run will still appear here
+            # because this is AWS behavior. But for GCP provider, they shouldn't anymore.
             expect_deleted_list_to_contain_exactly(deleted_list_filename, [
+              orphan_final_object_1,
+              orphan_final_object_2,
               orphan_final_object_3,
               orphan_final_object_4
             ])

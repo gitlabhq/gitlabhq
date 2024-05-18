@@ -19,11 +19,6 @@
     - else
       = @page.template? ? s_("Wiki|New Template") : s_("Wiki|New Page")
 
-  .nav-controls.pb-md-3.pb-lg-0
-    - if @page.persisted?
-      - if can?(current_user, :create_wiki, @wiki.container)
-        #delete-wiki-modal-wrapper{ data: { delete_wiki_url: wiki_page_path(@wiki, @page), page_title: @page.human_title } }
-
 = render 'shared/wikis/form', uploads_path: wiki_attachment_upload_url
 
 = render 'shared/wikis/sidebar', editing: true

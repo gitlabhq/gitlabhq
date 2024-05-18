@@ -37,8 +37,6 @@ class MemberEntity < Grape::Entity
     expose :member_role_description, as: :description
   end
 
-  expose :custom_permissions
-
   expose :source, if: ->(member) { member.is_source_accessible_to_current_user } do |member|
     GroupEntity.represent(member.source, only: [:id, :full_name, :web_url])
   end

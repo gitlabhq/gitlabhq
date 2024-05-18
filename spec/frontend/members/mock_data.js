@@ -52,7 +52,6 @@ export const member = {
     'Minimal access': 5,
   },
   customRoles: [],
-  customPermissions: [],
 };
 
 export const group = {

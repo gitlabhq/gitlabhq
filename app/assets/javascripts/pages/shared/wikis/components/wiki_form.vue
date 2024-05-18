@@ -24,6 +24,7 @@ import {
 } from '../constants';
 import { isTemplate } from '../utils';
 import WikiTemplate from './wiki_template.vue';
+import DeleteWikiModal from './delete_wiki_modal.vue';
 
 const trackingMixin = Tracking.mixin({
   label: WIKI_CONTENT_EDITOR_TRACKING_LABEL,
@@ -112,6 +113,7 @@ export default {
     GlButton,
     MarkdownEditor,
     WikiTemplate,
+    DeleteWikiModal,
   },
   mixins: [trackingMixin],
   inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates'],
@@ -443,22 +445,25 @@ export default {
       </div>
     </div>
 
-    <div class="gl-display-flex gl-gap-3" data-testid="wiki-form-actions">
-      <gl-button
-        category="primary"
-        variant="confirm"
-        type="submit"
-        data-testid="wiki-submit-button"
-        :disabled="disableSubmitButton"
-        >{{ submitButtonText }}</gl-button
-      >
-      <gl-button
-        data-testid="wiki-cancel-button"
-        :href="cancelFormPath"
-        @click="isFormDirty = false"
-      >
-        {{ $options.i18n.cancel }}</gl-button
-      >
+    <div class="gl-flex gl-justify-between gl-gap-3" data-testid="wiki-form-actions">
+      <div class="gl-flex gl-gap-3">
+        <gl-button
+          category="primary"
+          variant="confirm"
+          type="submit"
+          data-testid="wiki-submit-button"
+          :disabled="disableSubmitButton"
+          >{{ submitButtonText }}</gl-button
+        >
+        <gl-button
+          data-testid="wiki-cancel-button"
+          :href="cancelFormPath"
+          @click="isFormDirty = false"
+        >
+          {{ $options.i18n.cancel }}</gl-button
+        >
+      </div>
+      <delete-wiki-modal />
     </div>
   </gl-form>
 </template>

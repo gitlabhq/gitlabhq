@@ -12,20 +12,7 @@ export default {
   directives: {
     'gl-modal': GlModalDirective,
   },
-  props: {
-    deleteWikiUrl: {
-      type: String,
-      required: true,
-    },
-    pageTitle: {
-      type: String,
-      required: true,
-    },
-    csrfToken: {
-      type: String,
-      required: true,
-    },
-  },
+  inject: ['deleteWikiUrl', 'pageTitle', 'csrfToken', 'pagePersisted'],
   computed: {
     isTemplate,
     title() {
@@ -86,7 +73,7 @@ export default {
 </script>
 
 <template>
-  <div class="d-inline-block">
+  <div v-if="pagePersisted" class="gl-inline-block">
     <gl-button
       v-gl-modal="$options.modal.modalId"
       category="secondary"
