@@ -4795,14 +4795,14 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#authorized_groups' do
-    let!(:user) { create(:user) }
-    let!(:private_group) { create(:group) }
-    let!(:child_group) { create(:group, parent: private_group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:private_group) { create(:group) }
+    let_it_be(:child_group) { create(:group, parent: private_group) }
 
-    let!(:project_group) { create(:group) }
-    let!(:project) { create(:project, group: project_group) }
+    let_it_be(:project_group) { create(:group) }
+    let_it_be(:project) { create(:project, group: project_group) }
 
-    before do
+    before_all do
       private_group.add_member(user, Gitlab::Access::MAINTAINER)
       project.add_maintainer(user)
     end
@@ -4812,16 +4812,18 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to contain_exactly private_group, project_group }
 
     context 'with shared memberships' do
-      let!(:shared_group) { create(:group) }
-      let!(:other_group) { create(:group) }
+      let_it_be(:shared_group) { create(:group) }
+      let_it_be(:other_group) { create(:group) }
+      let_it_be(:shared_with_project_group) { create(:group) }
 
-      before do
+      before_all do
         create(:group_group_link, shared_group: shared_group, shared_with_group: private_group)
         create(:group_group_link, shared_group: private_group, shared_with_group: other_group)
+        create(:group_group_link, shared_group: shared_with_project_group, shared_with_group: project_group)
       end
 
       it { is_expected.to include shared_group }
-      it { is_expected.not_to include other_group }
+      it { is_expected.not_to include other_group, shared_with_project_group }
     end
 
     context 'when a new column is added to namespaces table' do

@@ -1243,7 +1243,17 @@ class User < MainClusterwide::ApplicationRecord
   # Returns the groups a user has access to, either through a membership or a project authorization
   def authorized_groups
     Group.unscoped do
-      authorized_groups_with_shared_membership
+      direct_groups_cte = Gitlab::SQL::CTE.new(:direct_groups, groups)
+      direct_groups_cte_alias = direct_groups_cte.table.alias(Group.table_name)
+
+      Group
+        .with(direct_groups_cte.to_arel)
+        .from_union([
+          Group.from(direct_groups_cte_alias),
+          Group.id_in(authorized_projects.select(:namespace_id)),
+          Group.joins(:shared_with_group_links)
+            .where(group_group_links: { shared_with_group_id: Group.from(direct_groups_cte_alias) })
+        ])
     end
   end
 
@@ -2524,28 +2534,6 @@ class User < MainClusterwide::ApplicationRecord
 
   def group_callouts_by_feature_name
     @group_callouts_by_feature_name ||= group_callouts.index_by(&:source_feature_name)
-  end
-
-  def authorized_groups_without_shared_membership
-    Group.from_union(
-      [
-        groups,
-        Group.id_in(authorized_projects.select(:namespace_id))
-      ]
-    )
-  end
-
-  def authorized_groups_with_shared_membership
-    cte = Gitlab::SQL::CTE.new(:direct_groups, authorized_groups_without_shared_membership)
-    cte_alias = cte.table.alias(Group.table_name)
-
-    Group
-      .with(cte.to_arel)
-      .from_union([
-                    Group.from(cte_alias),
-                    Group.joins(:shared_with_group_links)
-                         .where(group_group_links: { shared_with_group_id: Group.from(cte_alias) })
-                  ])
   end
 
   def has_current_license?
