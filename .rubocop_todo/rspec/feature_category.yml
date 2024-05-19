@@ -4754,7 +4754,6 @@ RSpec/FeatureCategory:
     - 'spec/requests/api/graphql/mutations/merge_requests/set_labels_spec.rb'
     - 'spec/requests/api/resource_state_events_spec.rb'
     - 'spec/requests/api/task_completion_status_spec.rb'
-    - 'spec/requests/groups/clusters/integrations_controller_spec.rb'
     - 'spec/routing/admin_routing_spec.rb'
     - 'spec/routing/environments_spec.rb'
     - 'spec/routing/git_http_routing_spec.rb'
