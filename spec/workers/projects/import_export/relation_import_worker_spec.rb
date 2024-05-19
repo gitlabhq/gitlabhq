@@ -29,6 +29,12 @@ RSpec.describe Projects::ImportExport::RelationImportWorker, feature_category: :
     it 'marks the tracker as finished' do
       expect { perform }.to change { tracker.reload.finished? }.from(false).to(true)
     end
+
+    it 'refreshes the project stats' do
+      expect(worker).to receive(:perform_post_import_tasks)
+
+      perform
+    end
   end
 
   context 'when the import fails' do

@@ -5991,10 +5991,9 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(project.repository).to receive(:remove_prohibited_branches).ordered
       expect(project.wiki.repository).to receive(:expire_content_cache)
       expect(import_state).to receive(:finish)
-      expect(project).to receive(:update_project_counter_caches)
+      expect(project).to receive(:reset_counters_and_iids)
       expect(project).to receive(:after_create_default_branch)
       expect(project).to receive(:refresh_markdown_cache!)
-      expect(InternalId).to receive(:flush_records!).with(project: project)
       expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:repository_size, :wiki_size])
       expect(DetectRepositoryLanguagesWorker).to receive(:perform_async).with(project.id)
       expect(AuthorizedProjectUpdate::ProjectRecalculateWorker).to receive(:perform_async).with(project.id)
@@ -6073,6 +6072,17 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
         project.after_import
       end
+    end
+  end
+
+  describe '#reset_counters_and_iids' do
+    let(:project) { build(:project) }
+
+    it 'runs the correct hooks' do
+      expect(project).to receive(:update_project_counter_caches)
+      expect(InternalId).to receive(:flush_records!).with(project: project)
+
+      project.reset_counters_and_iids
     end
   end
 

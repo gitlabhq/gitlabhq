@@ -2304,17 +2304,21 @@ class Project < ApplicationRecord
 
     enqueue_record_project_target_platforms
 
+    reset_counters_and_iids
+
+    import_state&.finish
+    after_create_default_branch
+    join_pool_repository
+    refresh_markdown_cache!
+  end
+
+  def reset_counters_and_iids
     # The import assigns iid values on its own, e.g. by re-using GitHub ids.
     # Flush existing InternalId records for this project for consistency reasons.
     # Those records are going to be recreated with the next normal creation
     # of a model instance (e.g. an Issue).
     InternalId.flush_records!(project: self)
-
-    import_state&.finish
     update_project_counter_caches
-    after_create_default_branch
-    join_pool_repository
-    refresh_markdown_cache!
   end
 
   def update_project_counter_caches
