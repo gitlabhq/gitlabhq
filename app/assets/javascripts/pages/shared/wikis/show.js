@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import csrf from '~/lib/utils/csrf';
 import Wikis from './wikis';
 import WikiContent from './components/wiki_content.vue';
 import WikiMoreDropdown from './components/wiki_more_dropdown.vue';
@@ -21,17 +23,21 @@ const mountWikiContentApp = () => {
   }
 };
 
-const mountWikiExportApp = () => {
-  const el = document.querySelector('#js-export-actions');
+const mountWikiMoreDropdownApp = () => {
+  const el = document.querySelector('#js-wiki-more-actions');
 
   if (!el) return false;
-  const { history, print } = JSON.parse(el.dataset.options);
+  const { history, print, deleteWikiUrl, pageTitle, pagePersisted } = el.dataset;
 
   return new Vue({
     el,
     provide: {
       history,
-      print,
+      print: JSON.parse(print),
+      pageTitle,
+      deleteWikiUrl,
+      csrfToken: csrf.token,
+      pagePersisted: parseBoolean(pagePersisted),
     },
     render(createElement) {
       return createElement(WikiMoreDropdown);
@@ -43,5 +49,5 @@ export const mountApplications = () => {
   // eslint-disable-next-line no-new
   new Wikis();
   mountWikiContentApp();
-  mountWikiExportApp();
+  mountWikiMoreDropdownApp();
 };

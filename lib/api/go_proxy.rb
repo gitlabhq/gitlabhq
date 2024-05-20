@@ -68,7 +68,7 @@ module API
       requires :module_name, type: String, desc: 'The name of the Go module', coerce_with: ->(val) { CGI.unescape(val) }
     end
     route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true,
-                                   authenticate_non_public: true
+      authenticate_non_public: true
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
         authorize_read_package!(project)

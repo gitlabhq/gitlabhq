@@ -205,8 +205,8 @@ module API
       end
       params do
         requires :before,
-                 type: DateTime,
-                 desc: 'Stop all environments that were last modified or deployed to before this date.'
+          type: DateTime,
+          desc: 'Stop all environments that were last modified or deployed to before this date.'
       end
       route_setting :authentication, job_token_allowed: true
       post ':id/environments/stop_stale' do
@@ -242,8 +242,8 @@ module API
 
         environment = user_project.environments.find(params[:environment_id])
         present environment, with: Entities::Environment, current_user: current_user,
-                             except: [:project, { last_deployment: [:environment] }],
-                             last_deployment: true
+          except: [:project, { last_deployment: [:environment] }],
+          last_deployment: true
       end
     end
   end

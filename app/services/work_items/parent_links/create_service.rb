@@ -31,6 +31,13 @@ module WorkItems
           system_note_metadata_id: relate_child_note&.system_note_metadata&.id
         )
       end
+
+      override :after_create_for
+      def after_create_for(link)
+        super
+
+        GraphqlTriggers.work_item_updated(link.work_item_parent)
+      end
     end
   end
 end

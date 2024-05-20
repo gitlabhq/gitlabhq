@@ -144,9 +144,16 @@ RSpec.shared_examples 'User updates wiki page' do
       expect(page).to have_field('wiki[message]', with: 'Update Wiki title')
     end
 
-    it "disables the submit button", :js do
+    it "does not disable the submit button", :js do
       page.within(".wiki-form") do
         fill_in(:wiki_content, with: "")
+        expect(page).to have_button('Save changes', disabled: false)
+      end
+    end
+
+    it "disables the submit button", :js do
+      page.within(".wiki-form") do
+        fill_in(:wiki_title, with: "")
         expect(page).to have_button('Save changes', disabled: true)
       end
     end

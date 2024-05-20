@@ -149,9 +149,6 @@ export default {
     autocompleteDataSources() {
       return gl.GfmAutoComplete?.dataSources;
     },
-    noContent() {
-      return !this.content.trim();
-    },
     csrfToken() {
       return csrf.token;
     },
@@ -202,7 +199,7 @@ export default {
       return !this.isContentEditorActive;
     },
     disableSubmitButton() {
-      return this.noContent || !this.title;
+      return !this.title;
     },
     drawioEnabled() {
       return typeof this.drawioUrl === 'string' && this.drawioUrl.length > 0;

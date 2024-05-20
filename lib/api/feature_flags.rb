@@ -33,9 +33,9 @@ module API
         end
         params do
           optional :scope,
-                   type: String,
-                   desc: 'The scope of feature flags, one of: `enabled`, `disabled`',
-                   values: %w[enabled disabled]
+            type: String,
+            desc: 'The scope of feature flags, one of: `enabled`, `disabled`',
+            values: %w[enabled disabled]
           use :pagination
         end
         get do

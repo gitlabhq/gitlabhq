@@ -2,6 +2,7 @@ import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import WikiMoreDropdown from '~/pages/shared/wikis/components/wiki_more_dropdown.vue';
+import DeleteWikiModal from '~/pages/shared/wikis/components/delete_wiki_modal.vue';
 import printMarkdownDom from '~/lib/print_markdown_dom';
 import { mockLocation, restoreLocation } from '../test_utils';
 
@@ -22,11 +23,16 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
           title: 'test title',
           stylesheet: [],
         },
+        pagePersisted: true,
+        pageTitle: 'Wiki title',
+        csrfToken: '',
+        deleteWikiUrl: 'https://delete.url/path',
         ...provide,
       },
       stubs: {
         GlDisclosureDropdown,
         GlDisclosureDropdownItem,
+        DeleteWikiModal,
       },
     });
   };
@@ -35,6 +41,7 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
   const findMoreDropdownTooltip = () => getBinding(findMoreDropdown().element, 'gl-tooltip');
   const findHistoryItem = () => wrapper.findByTestId('page-history-button');
   const findPrintItem = () => wrapper.findByTestId('page-print-button');
+  const findDeleteItem = () => wrapper.findByTestId('page-delete-button');
 
   describe('history', () => {
     it('shows label "Page history"', () => {
@@ -101,6 +108,24 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
         title: 'test title',
         stylesheet: [],
       });
+    });
+  });
+
+  describe('delete', () => {
+    it('shows label "Delete page"', () => {
+      createComponent();
+
+      expect(findDeleteItem().text()).toBe('Delete page');
+    });
+
+    it('renders only if `pagePersisted` is set', () => {
+      createComponent({ pagePersisted: false });
+
+      expect(findDeleteItem().exists()).toBe(false);
+
+      createComponent();
+
+      expect(findDeleteItem().exists()).toBe(true);
     });
   });
 

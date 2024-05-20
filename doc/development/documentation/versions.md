@@ -44,7 +44,7 @@ This feature does something.
 
 The item text must include these words in order. Capitalization doesn't matter.
 
-- `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended`, `removed`, or `renamed`
+- `introduced`, `added`, `enabled`, `deprecated`, `changed`, `moved`, `recommended`, `removed`, or `renamed`
 - `in` or `to`
 - `GitLab` (or, for external projects, the name of the project)
 
@@ -76,6 +76,15 @@ Or on email notifications page:
 ```markdown
 > - [Introduced](<link-to-issue>) in GitLab 13.1.
 > - Notifications for expiring tokens [introduced](<link-to-issue>) in GitLab 14.3.
+```
+
+#### Making features available as part of a program
+
+When a feature is made available to users as a part of a program, add a new list item.
+
+```markdown
+> - [Introduced](<link-to-issue>) in GitLab 15.1.
+> - Merged results pipelines [added](<link-to-issue>) to the [Registration Features Program](<link-to-page>) in GitLab 16.7.
 ```
 
 #### Moving subscription tiers

@@ -175,6 +175,8 @@ runUntagged: true
 protected: true
 ```
 
+The replacement field for the invalid `runnerRegistrationToken` field is the `runnerToken` field. In the context of the GitLab Runner on Kubernetes, Helm deploy passes the runner `authentication token` to the runner worker pod and the runner configuration is created. If you continue to use the `runnerRegistrationToken` token field on Kubernetes hosted runners attached to GitLab.com, then the runner worker pod tries, on creation, to use the Registration API method that is no longer supported as of GitLab 17.0.
+
 If you store the runner authentication token in `secrets`, you must also modify them.
 
 In the legacy runner registration workflow, fields were specified with:

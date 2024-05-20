@@ -22,6 +22,10 @@ module QA
 
         it(
           'shows results for the original request and AJAX requests', :blocking,
+          quarantine: {
+            issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/460351',
+            type: :investigating
+          },
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348030'
         ) do
           # Issue pages always make AJAX requests

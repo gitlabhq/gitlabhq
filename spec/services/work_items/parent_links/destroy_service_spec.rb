@@ -23,6 +23,10 @@ RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_p
     context 'when user has permissions to update work items' do
       let(:user) { reporter }
 
+      it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        subject(:execute_service) { described_class.new(parent_link, user).execute }
+      end
+
       it 'removes relation and creates notes', :aggregate_failures do
         expect { subject }
           .to change(parent_link_class, :count).by(-1)

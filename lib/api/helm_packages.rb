@@ -57,7 +57,7 @@ module API
 
           env['api.format'] = :yaml
           present ::Packages::Helm::IndexPresenter.new(params[:id], params[:channel], packages),
-                      with: ::API::Entities::Helm::Index
+            with: ::API::Entities::Helm::Index
         end
 
         desc 'Download a chart' do
@@ -140,7 +140,7 @@ module API
           ).execute
 
           track_package_event('push_package', :helm, project: authorized_user_project, namespace: authorized_user_project.namespace,
-                                                     property: 'i_package_helm_user')
+            property: 'i_package_helm_user')
 
           ::Packages::Helm::ExtractionWorker.perform_async(params[:channel], chart_package_file.id) # rubocop:disable CodeReuse/Worker
 

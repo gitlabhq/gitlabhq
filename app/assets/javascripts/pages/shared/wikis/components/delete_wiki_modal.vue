@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
 import { isTemplate } from '../utils';
@@ -8,11 +8,19 @@ export default {
   components: {
     GlModal,
     GlButton,
+    GlDisclosureDropdownItem,
   },
   directives: {
     'gl-modal': GlModalDirective,
   },
   inject: ['deleteWikiUrl', 'pageTitle', 'csrfToken', 'pagePersisted'],
+  props: {
+    showAsDropdownItem: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
     isTemplate,
     title() {
@@ -48,6 +56,19 @@ export default {
     cancelProps() {
       return {
         text: this.$options.i18n.cancelButtonText,
+        href: this.deleteWikiUrl,
+        extraAttrs: {
+          class: 'gl-text-red-500!',
+        },
+      };
+    },
+    listItem() {
+      return {
+        text: this.deleteTemplateText,
+        extraAttrs: {
+          class: 'gl-text-red-500!',
+          'data-testid': 'page-delete-button',
+        },
       };
     },
   },
@@ -73,8 +94,14 @@ export default {
 </script>
 
 <template>
-  <div v-if="pagePersisted" class="gl-inline-block">
+  <div v-if="pagePersisted">
+    <gl-disclosure-dropdown-item
+      v-if="showAsDropdownItem"
+      v-gl-modal="$options.modal.modalId"
+      :item="listItem"
+    />
     <gl-button
+      v-else
       v-gl-modal="$options.modal.modalId"
       category="secondary"
       variant="danger"

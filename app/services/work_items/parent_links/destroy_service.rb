@@ -3,6 +3,8 @@
 module WorkItems
   module ParentLinks
     class DestroyService < IssuableLinks::DestroyService
+      extend ::Gitlab::Utils::Override
+
       attr_reader :link, :current_user, :parent, :child
 
       def initialize(link, user, params = {})
@@ -33,6 +35,13 @@ module WorkItems
 
       def permission_to_remove_relation?
         can?(current_user, :admin_parent_link, child) && can?(current_user, :admin_parent_link, parent)
+      end
+
+      override :after_destroy
+      def after_destroy
+        super
+
+        GraphqlTriggers.work_item_updated(@link.work_item_parent)
       end
     end
   end

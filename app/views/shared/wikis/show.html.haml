@@ -20,7 +20,13 @@
         = _('Edit')
     = render 'shared/wikis/main_links'
 
-    #js-export-actions{ data: { options: { is_template: @page.template?, history: page_history, print: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [universal_path_to_stylesheet('application')] } }.to_json } }
+    #js-wiki-more-actions{ data: {
+      delete_wiki_url: wiki_page_path(@wiki, @page),
+      page_title: @page.human_title,
+      page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
+      history: page_history,
+      print: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [universal_path_to_stylesheet('application')] }.to_json,
+    } }
 
 - if @page.historical?
   = render Pajamas::AlertComponent.new(variant: :warning,

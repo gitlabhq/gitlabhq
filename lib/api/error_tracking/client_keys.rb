@@ -11,7 +11,7 @@ module API
 
     params do
       requires :id, types: [String, Integer],
-                    desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+        desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do

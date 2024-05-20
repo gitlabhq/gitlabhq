@@ -21,7 +21,7 @@ module API
         optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
-                              desc: 'Limit by visibility'
+          desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Search for a specific group'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Order by name, path, id or similarity if searching'
@@ -333,14 +333,14 @@ module API
       params do
         optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
-                              desc: 'Limit by visibility'
+          desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
         optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at similarity star_count],
-                            default: 'created_at', desc: 'Return projects ordered by field'
+          default: 'created_at', desc: 'Return projects ordered by field'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return projects sorted in ascending and descending order'
+          desc: 'Return projects sorted in ascending and descending order'
         optional :simple, type: Boolean, default: false,
-                          desc: 'Return only the ID, URL, name, and path of each project'
+          desc: 'Return only the ID, URL, name, and path of each project'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
@@ -375,14 +375,14 @@ module API
       params do
         optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
-                              desc: 'Limit by visibility'
+          desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of authorized projects matching the search criteria'
         optional :order_by, type: String, values: %w[id name path created_at updated_at last_activity_at star_count],
-                            default: 'created_at', desc: 'Return projects ordered by field'
+          default: 'created_at', desc: 'Return projects ordered by field'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return projects sorted in ascending and descending order'
+          desc: 'Return projects sorted in ascending and descending order'
         optional :simple, type: Boolean, default: false,
-                          desc: 'Return only the ID, URL, name, and path of each project'
+          desc: 'Return only the ID, URL, name, and path of each project'
         optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
@@ -471,9 +471,9 @@ module API
       end
       params do
         optional :group_id,
-                 type: Integer,
-                 desc: 'The ID of the target group to which the group needs to be transferred to.'\
-                       'If not provided, the source group will be promoted to a root group.'
+          type: Integer,
+          desc: 'The ID of the target group to which the group needs to be transferred to.'\
+                'If not provided, the source group will be promoted to a root group.'
       end
       post ':id/transfer', feature_category: :groups_and_projects do
         group = find_group!(params[:id])

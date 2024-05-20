@@ -1,17 +1,26 @@
 <script>
-import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import printMarkdownDom from '~/lib/print_markdown_dom';
 import { isTemplate } from '../utils';
+import DeleteWikiModal from './delete_wiki_modal.vue';
 
 export default {
   components: {
     GlDisclosureDropdown,
+    GlDisclosureDropdownGroup,
+    GlDisclosureDropdownItem,
+    DeleteWikiModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['print', 'history'],
+  inject: ['print', 'history', 'pagePersisted'],
   i18n: {
     wikiActions: s__('Wiki|Wiki actions'),
   },
@@ -22,30 +31,23 @@ export default {
   },
   computed: {
     isTemplate,
-    dropdownItems() {
-      const items = [];
-
-      if (this.history) {
-        items.push({
-          text: this.isTemplate ? s__('Wiki|Template history') : s__('Wiki|Page history'),
-          href: this.history,
-          extraAttrs: {
-            'data-testid': 'page-history-button',
-          },
-        });
-      }
-
-      if (this.print && !this.isTemplate) {
-        items.push({
-          text: __('Print as PDF'),
-          action: this.printPage,
-          extraAttrs: {
-            'data-testid': 'page-print-button',
-          },
-        });
-      }
-
-      return items;
+    historyItem() {
+      return {
+        text: this.isTemplate ? s__('Wiki|Template history') : s__('Wiki|Page history'),
+        href: this.history,
+        extraAttrs: {
+          'data-testid': 'page-history-button',
+        },
+      };
+    },
+    printItem() {
+      return {
+        text: __('Print as PDF'),
+        action: this.printPage,
+        extraAttrs: {
+          'data-testid': 'page-print-button',
+        },
+      };
     },
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.wikiActions : '';
@@ -71,7 +73,6 @@ export default {
 <template>
   <gl-disclosure-dropdown
     v-gl-tooltip="showDropdownTooltip"
-    :items="dropdownItems"
     icon="ellipsis_v"
     category="tertiary"
     placement="right"
@@ -79,5 +80,11 @@ export default {
     data-testid="wiki-more-dropdown"
     @shown="showDropdown"
     @hidden="hideDropdown"
-  />
+  >
+    <gl-disclosure-dropdown-item v-if="history" :item="historyItem" />
+    <gl-disclosure-dropdown-item v-if="print && !isTemplate" :item="printItem" />
+    <gl-disclosure-dropdown-group v-if="pagePersisted" bordered>
+      <delete-wiki-modal show-as-dropdown-item />
+    </gl-disclosure-dropdown-group>
+  </gl-disclosure-dropdown>
 </template>

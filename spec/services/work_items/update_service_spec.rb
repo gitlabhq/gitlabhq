@@ -428,6 +428,8 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         end
 
         it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          let(:trigger_call_counter) { 2 }
+
           subject(:execute_service) { update_work_item }
         end
 
