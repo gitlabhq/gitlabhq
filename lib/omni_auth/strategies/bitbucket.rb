@@ -32,12 +32,12 @@ module OmniAuth
 
       def primary_email
         primary = emails.find { |i| i['is_primary'] && i['is_confirmed'] }
-        primary && primary['email'] || nil
+        (primary && primary['email']) || nil
       end
 
       def emails
         email_response = access_token.get('api/2.0/user/emails').parsed
-        @emails ||= email_response && email_response['values'] || []
+        @emails ||= (email_response && email_response['values']) || []
       end
 
       def callback_url
