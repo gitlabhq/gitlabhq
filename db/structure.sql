@@ -27637,6 +27637,10 @@ CREATE INDEX index_topics_total_projects_count ON topics USING btree (total_proj
 
 CREATE UNIQUE INDEX index_trending_projects_on_project_id ON trending_projects USING btree (project_id);
 
+CREATE INDEX index_unarchived_occurrences_on_version_id_and_traversal_ids ON sbom_occurrences USING btree (component_version_id, traversal_ids) WHERE (archived = false);
+
+CREATE INDEX index_unarchived_sbom_occurrences_for_aggregations ON sbom_occurrences USING btree (traversal_ids, component_id, component_version_id) WHERE (archived = false);
+
 CREATE UNIQUE INDEX index_uniq_ci_runners_on_token ON ci_runners USING btree (token);
 
 CREATE UNIQUE INDEX index_uniq_ci_runners_on_token_encrypted ON ci_runners USING btree (token_encrypted);

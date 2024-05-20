@@ -93,7 +93,7 @@ describe('CreateMergeRequestDropdown', () => {
     `('toggle loading spinner when loading is $loading', ({ loading, hasClass }) => {
       dropdown.setLoading(loading);
 
-      expect(document.querySelector('.js-spinner').classList.contains('gl-display-none')).toEqual(
+      expect(document.querySelector('.js-spinner').classList.contains('gl-hidden')).toEqual(
         hasClass,
       );
     });

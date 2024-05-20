@@ -113,7 +113,11 @@ and displays it to users, providing information about ongoing incidents without
 extra effort from your team:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+    accTitle: Understand your status page
+    accDescr: How GitLab fetches, formats, and displays incident data
+
     subgraph GitLab Instance
     issues(issue updates) -- trigger --> middleware(Background job: JSON generation)
     end

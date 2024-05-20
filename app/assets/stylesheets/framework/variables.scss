@@ -93,7 +93,6 @@ $gray-light: $gray-10 !default;
 $gray-lighter: lighten($gray-50, 4) !default;
 $gray-normal: lighten($gray-50, 2) !default;
 $gray-dark: darken($gray-light, $darken-dark-factor) !default;
-$gray-darker: $gray-50 !default;
 
 $t-white-a-02: rgba(255, 255, 255, 0.02) !default;
 $t-white-a-04: rgba(255, 255, 255, 0.04) !default;

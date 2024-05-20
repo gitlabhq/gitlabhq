@@ -259,7 +259,7 @@
 
     &:hover,
     &:focus {
-      background-color: var(--ide-dropdown-btn-hover-background, $gray-darker) !important;
+      background-color: var(--ide-dropdown-btn-hover-background, $gray-50) !important;
       border-color: var(--ide-dropdown-btn-hover-border, $gray-200) !important;
     }
   }
@@ -327,7 +327,7 @@
     li button:not(.disable-hover):hover,
     li button:not(.disable-hover):focus,
     li button.is-focused {
-      background-color: var(--ide-dropdown-hover-background, $gray-darker);
+      background-color: var(--ide-dropdown-hover-background, $gray-50);
       color: var(--ide-text-color, $gl-text-color);
     }
   }

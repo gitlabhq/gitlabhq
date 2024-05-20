@@ -50,7 +50,11 @@ disable the automated scheduling to
 Similar to membership, iterations cascade down your group, subgroup, and project hierarchy. If your team has multiple groups and projects, create the iteration cadence in the top-most shared group:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+    accTitle: Iteration cadence
+    accDescr: Identify the group you should create an iteration cadence in
+
     Group --> SubgroupA --> Project1
     Group --> SubgroupB --> Project2
     Group --> IterationCadence
@@ -88,7 +92,7 @@ the "Open" list into iteration lists to schedule them for upcoming iterations.
 To visualize the workflow for issues in the current iteration, create another issue board called
 "Current Iteration." When you're creating the board:
 
-1. Select **Edit board**.
+1. Select **Configure board** (**{settings}**).
 1. Next to **Iteration**, select **Edit**.
 1. From the dropdown list, select **Current iteration**.
 1. Select **Save changes**.

@@ -15,7 +15,7 @@ participating-stages: []
 ## Summary
 
 GitLab CI/CD, [integrated into GitLab in 2015](https://about.gitlab.com/releases/2015/09/22/gitlab-8-0-released/),
-is a [crucial]((https://about.gitlab.com/blog/2017/09/27/gitlab-leader-continuous-integration-forrester-wave/))
+is a [crucial](https://about.gitlab.com/blog/2017/09/27/gitlab-leader-continuous-integration-forrester-wave/)
 yet resource-intensive component that has experienced exponential growth, surpassing 1 billion builds by 2021.
 
 Despite its evolution, the CI/CD data storage architecture remains largely unchanged since 2012,

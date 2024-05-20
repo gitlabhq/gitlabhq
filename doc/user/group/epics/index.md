@@ -41,7 +41,10 @@ The possible relationships between epics and issues are:
 - An epic is the parent of one or more [child epics](manage_epics.md#multi-level-child-epics). Ultimate only.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+accTitle: Epics and issues
+accDescr: How issues and child epics relate to parent epics
     Parent_epic --> Issue1
     Parent_epic --> Child_epic
     Child_epic --> Issue2

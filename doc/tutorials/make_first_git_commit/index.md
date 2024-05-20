@@ -35,7 +35,11 @@ Each time you push a change, Git records it as a unique *commit*. These commits 
 the history of when and how a file changed, and who changed it.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
+    accTitle: Repository commit history
+    accDescr: Flowchart showing linear changes to a repository history
+
     subgraph Repository commit history
     direction LR
     A(Author: Alex<br>Date: 3 Jan at 1PM<br>Commit message: Added sales figures<br> Commit ID: 123abc12) --->  B
@@ -53,7 +57,11 @@ of a repository are in a default branch. To make changes, you:
 1. When you're ready, *merge* your branch into the default branch.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
+    accTitle: Use branches in Git
+    accDescr: The flow of creating, then using, a branch in Git
+
     subgraph Default branch
     A[Commit] --> B[Commit] --> C[Commit] --> D[Commit]
     end

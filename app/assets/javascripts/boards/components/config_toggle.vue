@@ -16,7 +16,7 @@ export default {
   inject: ['canAdminList'],
   computed: {
     buttonText() {
-      return this.canAdminList ? s__('Boards|Edit board') : s__('Boards|View scope');
+      return this.canAdminList ? s__('Board|Configure board') : s__('Board|Board configuration');
     },
   },
   methods: {

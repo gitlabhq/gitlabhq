@@ -416,7 +416,7 @@ export default {
       :title="editTooltip"
       :aria-label="$options.i18n.editTitleAndDescription"
       :aria-keyshortcuts="editShortcutKey"
-      class="js-issuable-edit gl-display-none! gl-md-display-block!"
+      class="js-issuable-edit !gl-hidden gl-md-display-block!"
       data-testid="edit-button"
       @click="edit"
     >
@@ -428,7 +428,7 @@ export default {
       id="new-actions-header-dropdown"
       ref="issuableActionsDropdownDesktop"
       v-gl-tooltip="showDropdownTooltip"
-      class="gl-display-none gl-md-display-inline-flex!"
+      class="gl-hidden gl-md-display-inline-flex!"
       icon="ellipsis_v"
       category="tertiary"
       placement="left"

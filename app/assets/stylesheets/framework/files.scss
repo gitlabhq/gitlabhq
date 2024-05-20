@@ -102,7 +102,7 @@
     &.image_file,
     &.audio,
     &.video {
-      background: $gray-darker;
+      background: $gray-50;
       text-align: center;
       padding: 30px;
 
@@ -122,13 +122,13 @@
     }
 
     &.blob-no-preview {
-      background: $gray-darker;
+      background: $gray-50;
       text-shadow: 0 1px 2px $white;
       padding: 100px 0;
     }
 
     &.logs {
-      background: $gray-darker;
+      background: $gray-50;
       max-height: 700px;
       overflow-y: auto;
 
@@ -299,7 +299,7 @@ span.idiff {
   overflow: auto;
 
   .file-container {
-    background-color: $gray-darker;
+    background-color: $gray-50;
     display: flex;
     height: 100%;
     align-items: center;
@@ -510,7 +510,7 @@ span.idiff {
 
   .tr {
     display: flex;
-    border-bottom: 1px solid $gray-darker;
+    border-bottom: 1px solid $gray-50;
 
     &.last-row {
       border-bottom: 0;

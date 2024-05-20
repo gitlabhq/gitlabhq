@@ -29,8 +29,8 @@ export default {
   i18n: {
     [formType.new]: { title: s__('Board|Create new board'), btnText: s__('Board|Create board') },
     [formType.delete]: { title: s__('Board|Delete board'), btnText: __('Delete') },
-    [formType.edit]: { title: s__('Board|Edit board'), btnText: __('Save changes') },
-    scopeModalTitle: s__('Board|Board scope'),
+    [formType.edit]: { title: s__('Board|Configure board'), btnText: __('Save changes') },
+    scopeModalTitle: s__('Board|Board configuration'),
     cancelButtonText: __('Cancel'),
     deleteErrorMessage: s__('Board|Failed to delete board. Please try again.'),
     saveErrorMessage: __('Unable to save your changes. Please try again.'),

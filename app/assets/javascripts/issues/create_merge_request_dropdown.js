@@ -294,7 +294,7 @@ export default class CreateMergeRequestDropdown {
   }
 
   setLoading(loading) {
-    this.createMergeRequestLoading.classList.toggle('gl-display-none', !loading);
+    this.createMergeRequestLoading.classList.toggle('gl-hidden', !loading);
   }
 
   disableCreateAction() {
@@ -588,10 +588,10 @@ export default class CreateMergeRequestDropdown {
 
   setUnavailableButtonState(isLoading = true) {
     if (isLoading) {
-      this.unavailableButtonSpinner.classList.remove('gl-display-none');
+      this.unavailableButtonSpinner.classList.remove('gl-hidden');
       this.unavailableButtonText.textContent = __('Checking branch availability...');
     } else {
-      this.unavailableButtonSpinner.classList.add('gl-display-none');
+      this.unavailableButtonSpinner.classList.add('gl-hidden');
       this.unavailableButtonText.textContent = __('New branch unavailable');
     }
   }

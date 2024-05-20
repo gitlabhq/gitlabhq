@@ -277,15 +277,15 @@ An issue board can be associated with a [milestone](milestones/index.md),
 which automatically filter the board issues accordingly.
 This allows you to create unique boards according to your team's need.
 
-![Create scoped board](img/issue_board_creation_v13_6.png)
+![Create scoped board](img/issue_board_creation_v17_1.png)
 
-You can define the scope of your board when creating it or by selecting the **Edit board** button.
+You can define the scope of your board when creating it or by selecting the **Configure board** (**{settings}**) button.
 After a milestone, iteration, assignee, or weight is assigned to an issue board, you can no longer
 filter through these in the search bar. To do that, you need to remove the desired scope
 (for example, milestone, assignee, or weight) from the issue board.
 
 If you don't have editing permission in a board, you're still able to see the configuration by
-selecting **View scope**.
+selecting **Board configuration** (**{settings}**).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch a [video presentation](https://youtu.be/m5UTNCSqaDk) of

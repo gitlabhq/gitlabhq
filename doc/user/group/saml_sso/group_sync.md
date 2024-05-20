@@ -142,7 +142,7 @@ group overage claim attribute in the SAML response. Then group memberships must 
 The [Graph API endpoint](https://learn.microsoft.com/en-us/graph/api/user-list-transitivememberof?view=graph-rest-1.0&tabs=http#http-request) supports only a
 [user object ID](https://learn.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-user-object-id) or
 [userPrincipalName](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-userprincipalname#what-is-userprincipalname)
-as the [configured](../../../user/group/saml_sso/index.md#azure) Unique User Identifier (Name identifier) attribute. 
+as the [configured](../../../user/group/saml_sso/index.md#azure) Unique User Identifier (Name identifier) attribute.
 
 When the integration processes Group Sync, only Group Links configured with
 group unique identifiers (like `12345678-9abc-def0-1234-56789abcde`) are supported.
@@ -249,6 +249,7 @@ For example, in the following diagram:
   not yet signed in.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
    subgraph SAML users
       SAMLUserA[Sidney Jones]
@@ -274,6 +275,7 @@ graph TB
 ```
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
     subgraph GitLab users
       GitLabUserA[Sidney Jones]
@@ -283,9 +285,9 @@ graph TB
     end
 
    subgraph GitLab groups
-      GitLabGroupA["Group A (SAML configured)"] --> GitLabGroupB["Group B (SAML Group Link not configured)"]
-      GitLabGroupA --> GitLabGroupC["Group C (SAML Group Link configured)"]
-      GitLabGroupA --> GitLabGroupD["Group D (SAML Group Link configured)"]
+      GitLabGroupA["Group A<br> (SAML configured)"] --> GitLabGroupB["Group B<br> (SAML Group Link not configured)"]
+      GitLabGroupA --> GitLabGroupC["Group C<br> (SAML Group Link configured)"]
+      GitLabGroupA --> GitLabGroupD["Group D<br> (SAML Group Link configured)"]
    end
 
    GitLabGroupB --> |Member|GitLabUserA
@@ -308,9 +310,9 @@ graph TB
 
    subgraph GitLab groups after Alex Garcia signs in
       GitLabGroupA[Group A]
-      GitLabGroupA["Group A (SAML configured)"] --> GitLabGroupB["Group B (SAML Group Link not configured)"]
-      GitLabGroupA --> GitLabGroupC["Group C (SAML Group Link configured)"]
-      GitLabGroupA --> GitLabGroupD["Group D (SAML Group Link configured)"]
+      GitLabGroupA["Group A<br> (SAML configured)"] --> GitLabGroupB["Group B<br> (SAML Group Link not configured)"]
+      GitLabGroupA --> GitLabGroupC["Group C<br> (SAML Group Link configured)"]
+      GitLabGroupA --> GitLabGroupD["Group D<br> (SAML Group Link configured)"]
    end
 
    GitLabGroupB --> |Member|GitLabUserA

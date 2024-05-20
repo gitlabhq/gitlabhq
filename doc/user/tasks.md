@@ -348,6 +348,12 @@ To add a task to an iteration:
 1. Next to **Iteration**, select **Add to iteration**.
 1. From the dropdown list, select the iteration to be associated with the task.
 
+## Set time tracking
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438577) in GitLab 17.0.
+
+To set time tracking, refer to the [time tracking page](project/time_tracking.md)
+
 ## View task system notes
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378949) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.

@@ -117,7 +117,7 @@ describe('BoardForm', () => {
     });
 
     it('displays board scope title', () => {
-      expect(findModal().attributes('title')).toBe('Board scope');
+      expect(findModal().attributes('title')).toBe('Board configuration');
     });
 
     it('does not display a form', () => {
@@ -246,7 +246,7 @@ describe('BoardForm', () => {
       });
 
       it('shows a correct title about creating a board', () => {
-        expect(findModal().attributes('title')).toBe('Edit board');
+        expect(findModal().attributes('title')).toBe('Configure board');
       });
 
       it('passes correct primary action text and variant', () => {

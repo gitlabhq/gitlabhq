@@ -130,7 +130,7 @@ export default {
         lineSeparator.classList.toggle('gl-border-b-0', !isSummaryTab);
 
         itemsToHide.forEach(function hide(item) {
-          item.classList.toggle('gl-display-none', !isSummaryTab);
+          item.classList.toggle('gl-hidden', !isSummaryTab);
         });
 
         editButton?.classList.toggle('gl-md-display-block!', isSummaryTab);

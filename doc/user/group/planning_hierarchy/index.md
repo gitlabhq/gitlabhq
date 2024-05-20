@@ -28,7 +28,10 @@ portfolio management, see
 With epics, you can achieve the following hierarchy:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+accTitle: Hierarchies with epics
+accDescr: Use epics to link projects, issues, and groups
     Group_epic --> Project1_Issue1
     Group_epic --> Project1_Issue2
     Group_epic --> Project2_Issue1
@@ -48,6 +51,7 @@ Image below was generated with the following Mermaid code.
 Attached as an image because a rendered diagram doesn't look clear on the docs page.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 classDiagram
   direction TD
   class Epic

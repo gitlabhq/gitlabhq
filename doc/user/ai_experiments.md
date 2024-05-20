@@ -141,8 +141,7 @@ To use this feature:
   - Belong to at least one group with the [experiment and beta features setting](ai_features_enable.md#turn-on-beta-and-experimental-features) enabled.
   - Have sufficient permissions to view the CI/CD job.
 
-When the feature is available, the "Root cause analysis" button will appears on
-a failed CI/CD job. Selecting this button generates an analysis regarding the
+When the feature is available, the "Troubleshoot" button displays on failed CI/CD jobs. Selecting this option generates an analysis regarding the
 reason for the failure.
 
 ## Summarize an issue with Issue description generation

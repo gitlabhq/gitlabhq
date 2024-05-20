@@ -15,7 +15,7 @@
   .create-mr-dropdown-wrap.d-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: default_create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
     .btn-group.unavailable
       = render Pajamas::ButtonComponent.new(button_options: { disabled: 'disabled' }) do
-        = gl_loading_icon(inline: true, css_class: 'js-create-mr-spinner gl-button-icon gl-display-none')
+        = gl_loading_icon(inline: true, css_class: 'js-create-mr-spinner gl-button-icon gl-hidden')
         %span.text
           = _('Checking branch availability…')
 
@@ -23,7 +23,7 @@
     .btn-group.available.hidden
       = render Pajamas::ButtonComponent.new(variant: :confirm,
         button_options: { class: 'js-create-merge-request', data: { action: data_action, **tracking_data } }) do
-        = gl_loading_icon(inline: true , css_class: 'js-create-mr-spinner js-spinner gl-display-none')
+        = gl_loading_icon(inline: true , css_class: 'js-create-mr-spinner js-spinner gl-hidden')
         = value
 
       = render Pajamas::ButtonComponent.new(variant: :confirm, icon: 'chevron-down', button_options: { class: 'js-dropdown-toggle dropdown-toggle create-merge-request-dropdown-toggle', data: { 'dropdown-trigger': '#create-merge-request-dropdown', display: 'static' } })
@@ -72,5 +72,5 @@
               = create_mr_text
 
             - if can_create_confidential_merge_request?
-              %p.gl-text-orange-500.gl-font-sm.js-exposed-info-warning.gl-display-none
+              %p.gl-text-orange-500.gl-font-sm.js-exposed-info-warning.gl-hidden
                 = _('This may expose confidential information as the selected fork is in another namespace that can have other members.')

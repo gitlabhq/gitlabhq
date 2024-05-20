@@ -184,7 +184,7 @@ pre {
 
 hr {
   margin: 1.5rem 0;
-  border-top: 1px solid $gray-darker;
+  border-top: 1px solid $gray-50;
 }
 
 .str-truncated {
@@ -332,7 +332,7 @@ li.note {
   margin-bottom: $gl-padding;
 
   hr {
-    border-color: $gray-darker;
+    border-color: $gray-50;
   }
 }
 
