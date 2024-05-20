@@ -329,7 +329,6 @@
 - spec/features/calendar_spec.rb
 - spec/features/canonical_link_spec.rb
 - spec/features/commits_spec.rb
-- spec/features/contextual_sidebar_spec.rb
 - spec/features/dashboard/datetime_on_tooltips_spec.rb
 - spec/features/dashboard/issuables_counter_spec.rb
 - spec/features/dashboard/issues_filter_spec.rb

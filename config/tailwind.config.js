@@ -109,8 +109,9 @@ module.exports = {
     },
     // These extends probably should be moved to GitLab UI:
     extend: {
-      // TODO: Backport to GitLab UI.
+      // TODO: Backport to GitLab UI. This should be part of the default colors config.
       colors: {
+        current: 'currentColor',
         inherit: 'inherit',
       },
       borderWidth: {

@@ -1,0 +1,15 @@
+<%= @title %>
+
+<% if @has_errors %>
+<%= safe_format(s_('BulkImport|Items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_open: '', strong_close: '', group: @group.name) %>
+<% else %>
+<%= safe_format(s_('BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_open: '', strong_close: '', group: @group.name) %>
+<% end %>
+
+- <%= safe_format(s_('BulkImport|%{count} placeholder users matched to users.'), count: @success_count) %>
+<% if @has_errors %>
+- <%= safe_format(s_('BulkImport|%{count} placeholder users not matched to users.'), count: @failed_count) %>
+<% end %>
+
+<% extra_params = @has_errors ? { status: 'failed' } : {} %>
+<%= s_('BulkImport|Review results') %>: <%= group_group_members_url(@group, tab: 'placeholders', **extra_params) %>

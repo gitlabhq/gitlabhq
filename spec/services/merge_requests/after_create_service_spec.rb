@@ -241,8 +241,8 @@ RSpec.describe MergeRequests::AfterCreateService, feature_category: :code_review
         end.to change { MergeRequestsClosingIssues.count }.by(2)
 
         expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
-          have_attributes(issue_id: first_issue.id, closes_work_item: true),
-          have_attributes(issue_id: second_issue.id, closes_work_item: true)
+          have_attributes(issue_id: first_issue.id, from_mr_description: true),
+          have_attributes(issue_id: second_issue.id, from_mr_description: true)
         )
       end
     end

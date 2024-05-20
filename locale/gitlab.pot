@@ -9513,7 +9513,16 @@ msgstr ""
 msgid "BulkImport| %{host} is running outdated GitLab version (v%{version})"
 msgstr ""
 
+msgid "BulkImport|%{count} placeholder users matched to users."
+msgstr ""
+
+msgid "BulkImport|%{count} placeholder users not matched to users."
+msgstr ""
+
 msgid "BulkImport|%{feature} (require v%{version})"
+msgstr ""
+
+msgid "BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file."
 msgstr ""
 
 msgid "BulkImport|Be aware of %{linkStart}visibility rules%{linkEnd} when importing groups."
@@ -9582,6 +9591,9 @@ msgstr ""
 msgid "BulkImport|Invalid source URL. Enter only the base URL of the source GitLab instance."
 msgstr ""
 
+msgid "BulkImport|Items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file."
+msgstr ""
+
 msgid "BulkImport|Items that failed to be imported for %{id}"
 msgstr ""
 
@@ -9618,6 +9630,12 @@ msgstr ""
 msgid "BulkImport|Path of the new group."
 msgstr ""
 
+msgid "BulkImport|Placeholder reassignments completed successfully"
+msgstr ""
+
+msgid "BulkImport|Placeholder reassignments completed with errors"
+msgstr ""
+
 msgid "BulkImport|Please select a parent group."
 msgstr ""
 
@@ -9625,6 +9643,9 @@ msgid "BulkImport|Project import history"
 msgstr ""
 
 msgid "BulkImport|Re-import creates a new group. It does not sync with the existing group."
+msgstr ""
+
+msgid "BulkImport|Review results"
 msgstr ""
 
 msgid "BulkImport|Select parent group"

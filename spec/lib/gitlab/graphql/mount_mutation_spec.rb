@@ -52,7 +52,7 @@ RSpec.describe Gitlab::Graphql::MountMutation do
   end
 
   def mutation_type_factory
-    Class.new(GraphQL::Schema::Object) do
+    Class.new(::Types::BaseObject) do
       include Gitlab::Graphql::MountMutation
 
       graphql_name 'MutationType'

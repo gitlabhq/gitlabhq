@@ -1212,21 +1212,42 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#cache_merge_request_closes_issues!' do
+    let(:issue) { create(:issue, project: subject.project) }
+
     before do
       subject.project.add_developer(subject.author)
       subject.target_branch = subject.project.default_branch
     end
 
     it 'caches closed issues' do
-      issue  = create :issue, project: subject.project
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
 
       expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change(subject.merge_requests_closing_issues, :count).by(1)
+      expect(subject.merge_requests_closing_issues.last).to have_attributes(
+        issue: issue,
+        merge_request_id: subject.id,
+        from_mr_description: true
+      )
+    end
+
+    it 'updates existing records if they were not created from MR description' do
+      existing_association = create(
+        :merge_requests_closing_issues,
+        issue: issue,
+        merge_request: subject,
+        from_mr_description: false
+      )
+
+      expect do
+        subject.update_columns(description: "Fixes #{issue.to_reference}")
+        subject.cache_merge_request_closes_issues!(subject.author)
+      end.to not_change { subject.merge_requests_closing_issues.count }.from(1).and(
+        change { existing_association.reload.from_mr_description }.from(false).to(true)
+      )
     end
 
     it 'does not cache closed issues when merge request is closed' do
-      issue  = create :issue, project: subject.project
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
 
       allow(subject).to receive(:commits).and_return([commit])
@@ -1236,7 +1257,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     it 'does not cache closed issues when merge request is merged' do
-      issue  = create :issue, project: subject.project
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
       allow(subject).to receive(:state_id).and_return(described_class.available_states[:merged])
@@ -1260,7 +1280,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it 'caches an internal issue' do
-        issue  = create(:issue, project: subject.project)
         commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
         allow(subject).to receive(:commits).and_return([commit])
 
@@ -1289,7 +1308,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it 'does not cache an internal issue' do
-        issue  = create(:issue, project: subject.project)
         commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
         allow(subject).to receive(:commits).and_return([commit])
 

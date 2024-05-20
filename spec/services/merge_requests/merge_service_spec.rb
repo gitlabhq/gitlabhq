@@ -246,14 +246,21 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
     end
 
     context 'closes related issues' do
-      let(:issue) { create(:issue, project: project) }
+      let(:issue1) { create(:issue, project: project) }
+      let(:issue2) { create(:issue, project: project) }
       let(:commit) do
-        double('commit', safe_message: "Fixes #{issue.to_reference}", date: Time.current, authored_date: Time.current)
+        double('commit', safe_message: "Fixes #{issue1.to_reference}", date: Time.current, authored_date: Time.current)
       end
 
       before do
         allow(project).to receive(:default_branch).and_return(merge_request.target_branch)
         allow(merge_request).to receive(:commits).and_return([commit])
+        create(
+          :merge_requests_closing_issues,
+          issue: issue2,
+          merge_request: merge_request,
+          from_mr_description: false
+        )
       end
 
       it 'closes GitLab issue tracker issues', :sidekiq_inline do
@@ -261,24 +268,8 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
 
         expect do
           service.execute(merge_request)
-        end.to change { issue.reload.closed? }.from(false).to(true)
-      end
-
-      it 'does not close issues when merge_requests_closing_issues.closes_work_item = false', :sidekiq_inline do
-        not_closing_issue = create(:issue, project: project)
-        create(
-          :merge_requests_closing_issues,
-          issue: not_closing_issue,
-          merge_request: merge_request,
-          closes_work_item: false
-        )
-
-        merge_request.cache_merge_request_closes_issues!
-
-        expect do
-          service.execute(merge_request)
-        end.to change { issue.reload.closed? }.from(false).to(true).and(
-          not_change { not_closing_issue.reload.opened? }.from(true)
+        end.to change { issue1.reload.closed? }.from(false).to(true).and(
+          change { issue2.reload.closed? }.from(false).to(true)
         )
       end
 

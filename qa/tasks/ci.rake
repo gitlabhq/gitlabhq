@@ -27,6 +27,17 @@ namespace :ci do
     end
 
     run_all_label_present = mr_labels.include?("pipeline:run-all-e2e")
+    run_no_tests_label_present = mr_labels.include?("pipeline:skip-e2e")
+
+    if run_all_label_present && run_no_tests_label_present
+      raise 'cannot have both pipeline:run-all-e2e and pipeline:skip-e2e labels. Please remove one of these labels'
+    end
+
+    if run_no_tests_label_present
+      logger.info(" merge request has pipeline:skip-e2e label, e2e test execution will be skipped.")
+      append_to_file(env_file, "QA_SKIP_ALL_TESTS=true")
+    end
+
     # on run-all label of framework changes do not infer specific tests
     tests = run_all_label_present || qa_changes.framework_changes? ? nil : qa_changes.qa_tests
 

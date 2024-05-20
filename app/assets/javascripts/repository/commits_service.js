@@ -31,11 +31,13 @@ const fetchData = (projectPath, path, ref, offset, refType) => {
 
   fetchedBatches.push(offset);
 
+  // using encodeURIComponent() for ref to allow # as a part of branch name
+  // using encodeURI() for path to correctly display subdirectories
   const url = joinPaths(
     gon.relative_url_root || '/',
     projectPath,
     '/-/refs/',
-    encodeURI(ref),
+    encodeURIComponent(ref),
     '/logs_tree/',
     encodeURI(removeLeadingSlash(path)),
   );

@@ -212,14 +212,6 @@ input[type=color].form-control {
   height: $input-height;
 }
 
-.toggle-sidebar-button {
-  .collapse-text,
-  .icon-chevron-double-lg-left,
-  .icon-chevron-double-lg-right {
-    color: $gl-text-color-secondary;
-  }
-}
-
 .project-templates-buttons {
   .btn {
     vertical-align: unset;

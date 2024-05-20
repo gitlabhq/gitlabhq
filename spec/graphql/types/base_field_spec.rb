@@ -242,13 +242,14 @@ RSpec.describe Types::BaseField, feature_category: :api do
     let(:user) { :user }
     let(:context) { { current_user: user, scope_validator: scope_validator } }
 
-    it 'delegates to authorization' do
+    it 'delegates to authorization providing the scopes' do
       expect_next_instance_of(::Gitlab::Graphql::Authorize::ObjectAuthorization) do |authorization|
         expect(authorization).to receive(:ok?)
           .with(object, user, scope_validator: scope_validator)
+        expect(authorization.permitted_scopes).to eq([:api, :foobar_scope])
       end
 
-      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true)
+      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true, scopes: [:api, :foobar_scope])
       field.authorized?(object, nil, context)
     end
   end

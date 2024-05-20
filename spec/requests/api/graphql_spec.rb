@@ -515,6 +515,30 @@ RSpec.describe 'GraphQL', feature_category: :shared do
           expect_graphql_errors_to_include('Invalid token')
         end
       end
+
+      context 'when the personal access token has read_api scope' do
+        it 'they can perform a query' do
+          token.update!(scopes: [:read_api])
+
+          post_graphql(query, headers: { 'PRIVATE-TOKEN' => token.token })
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
+        end
+
+        it 'they cannot perform a mutation' do
+          token.update!(scopes: [:read_api])
+
+          post_graphql(mutation, headers: { 'PRIVATE-TOKEN' => token.token })
+
+          # The response status is OK but they get no data back and they get errors.
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(graphql_data['echoCreate']).to be_nil
+
+          expect_graphql_errors_to_include("does not exist or you don't have permission")
+        end
+      end
     end
   end
 

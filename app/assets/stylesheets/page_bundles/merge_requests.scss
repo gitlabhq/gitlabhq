@@ -1090,7 +1090,7 @@ $tabs-holder-z-index: 250;
   align-items: center;
   width: 100%;
   height: var(--mr-review-bar-height);
-  padding-left: $contextual-sidebar-width;
+  padding-left: $super-sidebar-width;
   padding-right: $right-sidebar-collapsed-width;
   background: var(--white, $white);
   border-top: 1px solid var(--border-color, $border-color);

@@ -128,11 +128,16 @@ class GraphqlController < ApplicationController
   # so only token types allowed for GraphQL can authenticate users
   # CI_JOB_TOKENs are not allowed for now, since their access is too broad
   def authenticate_graphql
-    user = request_authenticator.find_user_from_web_access_token(:api, scopes: [:api, :read_api])
+    user = request_authenticator.find_user_from_web_access_token(:api, scopes: authorization_scopes)
     user ||= request_authenticator.find_user_from_personal_access_token_for_api_or_git
     sessionless_sign_in(user) if user
   rescue Gitlab::Auth::AuthenticationError
     nil
+  end
+
+  # Overridden in EE
+  def authorization_scopes
+    [:api, :read_api]
   end
 
   def permitted_multiplex_params
@@ -346,3 +351,5 @@ class GraphqlController < ApplicationController
       variables: build_variables(params[:variables]))
   end
 end
+
+GraphqlController.prepend_mod_with('GraphqlController')

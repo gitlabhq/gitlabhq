@@ -357,6 +357,14 @@ class NotifyPreview < ActionMailer::Preview
     Notify.github_gists_import_errors_email(user.id, { '12345' => 'Snippet maximum file count exceeded', '67890' => 'error message 2' }).message
   end
 
+  def bulk_import_csv_user_mapping_success
+    Notify.bulk_import_csv_user_mapping(user.id, group.id, 94125, 0)
+  end
+
+  def bulk_import_csv_user_mapping_failed
+    Notify.bulk_import_csv_user_mapping(user.id, group.id, 71249, 824)
+  end
+
   private
 
   def project

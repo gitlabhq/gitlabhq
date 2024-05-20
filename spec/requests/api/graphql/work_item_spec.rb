@@ -1087,7 +1087,6 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
               ... on WorkItemWidgetDevelopment {
                 relatedMergeRequests {
                   nodes {
-                    closesWorkItem
                     mergeRequest { id }
                   }
                 }
@@ -1101,8 +1100,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             create(
               :merge_requests_closing_issues,
               merge_request: merge_request,
-              issue: work_item,
-              closes_work_item: false
+              issue: work_item
             )
           end
         end
@@ -1123,12 +1121,10 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   'relatedMergeRequests' => {
                     'nodes' => containing_exactly(
                       {
-                        'mergeRequest' => { 'id' => merge_request1.to_global_id.to_s },
-                        'closesWorkItem' => false
+                        'mergeRequest' => { 'id' => merge_request1.to_global_id.to_s }
                       },
                       {
-                        'mergeRequest' => { 'id' => merge_request2.to_global_id.to_s },
-                        'closesWorkItem' => false
+                        'mergeRequest' => { 'id' => merge_request2.to_global_id.to_s }
                       }
                     )
                   }
@@ -1144,15 +1140,11 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             end
             expect(graphql_errors).to be_blank
 
-            merge_request3 = create(:merge_request, source_project: project, target_branch: 'feature3')
-            [merge_request1, merge_request2, merge_request3].each do |merge_request|
-              create(
-                :merge_requests_closing_issues,
-                merge_request: merge_request,
-                issue: work_item,
-                closes_work_item: true
-              )
-            end
+            create(
+              :merge_requests_closing_issues,
+              merge_request: create(:merge_request, source_project: project, target_branch: 'feature3'),
+              issue: work_item
+            )
 
             expect do
               post_graphql(query, current_user: current_user)

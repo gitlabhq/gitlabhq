@@ -3314,7 +3314,6 @@
 - './spec/features/commits_spec.rb'
 - './spec/features/commits/user_uses_quick_actions_spec.rb'
 - './spec/features/commits/user_view_commits_spec.rb'
-- './spec/features/contextual_sidebar_spec.rb'
 - './spec/features/cycle_analytics_spec.rb'
 - './spec/features/dashboard/activity_spec.rb'
 - './spec/features/dashboard/archived_projects_spec.rb'

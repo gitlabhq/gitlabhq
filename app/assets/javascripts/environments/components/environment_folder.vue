@@ -97,14 +97,14 @@ export default {
   >
     <div class="gl-w-full gl-display-flex gl-align-items-center gl-px-3">
       <gl-button
-        class="gl-mr-4 gl-fill-current-color gl-text-gray-500"
+        class="gl-mr-4 gl-fill-current gl-text-gray-500"
         :aria-label="label"
         :icon="icons.caret"
         size="small"
         category="tertiary"
         @click="toggleCollapse"
       />
-      <gl-icon class="gl-mr-2 gl-fill-current-color gl-text-gray-500" :name="icons.folder" />
+      <gl-icon class="gl-mr-2 gl-fill-current gl-text-gray-500" :name="icons.folder" />
       <div class="gl-mr-2 gl-text-gray-500" :class="folderClass">
         {{ nestedEnvironment.name }}
       </div>

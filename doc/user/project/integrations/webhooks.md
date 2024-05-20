@@ -450,7 +450,7 @@ Image URLs are not rewritten if:
 ## Configure webhooks to support mutual TLS
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27450) in GitLab 16.9.
 

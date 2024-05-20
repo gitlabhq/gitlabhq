@@ -98,12 +98,8 @@ class MergeRequest < ApplicationRecord
     class_name: 'MergeRequestsClosingIssues',
     inverse_of: :merge_request,
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
-  has_many :merge_requests_closing_issues_closes_work_item,
-    -> { closes_work_item },
-    class_name: 'MergeRequestsClosingIssues',
-    inverse_of: :merge_request
 
-  has_many :cached_closes_issues, through: :merge_requests_closing_issues_closes_work_item, source: :issue
+  has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
   has_many :pipelines_for_merge_request, foreign_key: 'merge_request_id', class_name: 'Ci::Pipeline', inverse_of: :merge_request
   has_many :suggestions, through: :notes
   has_many :unresolved_notes, -> { unresolved }, as: :noteable, class_name: 'Note', inverse_of: :noteable
@@ -1431,13 +1427,36 @@ class MergeRequest < ApplicationRecord
     return if closed? || merged?
 
     transaction do
-      self.merge_requests_closing_issues.closes_work_item.delete_all
+      merge_requests_closing_issues.from_mr_description.delete_all
+      issues_to_close_ids = closes_issues(current_user).reject { |issue| issue.is_a?(ExternalIssue) }.map(&:id)
 
-      closes_issues(current_user).each do |issue|
-        next if issue.is_a?(ExternalIssue)
+      # These might have been created manually from the work item interface
+      issue_ids_to_update = merge_requests_closing_issues
+        .where(from_mr_description: false, issue_id: issues_to_close_ids)
+        .pluck(:issue_id)
 
-        self.merge_requests_closing_issues.create!(issue: issue, closes_work_item: true)
+      if issue_ids_to_update.any?
+        merge_requests_closing_issues.where(issue_id: issue_ids_to_update).update_all(from_mr_description: true)
       end
+
+      issue_ids_to_create = issues_to_close_ids - issue_ids_to_update
+      next if issue_ids_to_create.empty?
+
+      now = Time.zone.now
+      new_associations = issue_ids_to_create.map do |issue_id|
+        MergeRequestsClosingIssues.new(
+          issue_id: issue_id,
+          merge_request_id: id,
+          from_mr_description: true,
+          created_at: now,
+          updated_at: now
+        )
+      end
+
+      # We can't skip validations here in bulk insert as we don't have a unique constraint on the DB.
+      # We can skip validations once we have validated the unique constraint
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/456965
+      MergeRequestsClosingIssues.bulk_insert!(new_associations, batch_size: 100)
     end
   end
 

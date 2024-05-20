@@ -173,6 +173,23 @@ on changed files and merge request labels. Following criteria determine which te
 
 To override selective test execution and trigger the full suite, label `pipeline:run-all-e2e` should be added to particular merge request.
 
+#### Skipping end-to-end tests
+
+In some cases, it may not be necessary to run the end-to-end test suite.
+
+Examples could include:
+
+- ~"Stuff that should Just Work"
+- Small refactors
+- A small requested change during review, that doesn't warrant running the entire suite a second time
+
+Skip running end-to-end tests by applying the `pipeline:skip-e2e` label to the merge request.
+
+WARNING:
+There is a risk in skipping end-to-end tests. Use caution and discretion when applying this label.
+The end-to-end test suite is the last line of defense before changes are merged into the default branch.
+Skipping these tests increases the risk of introducing regressions into the codebase.
+
 ### Run tests in parallel
 
 To run tests in parallel on CI, the [Knapsack](https://github.com/KnapsackPro/knapsack)

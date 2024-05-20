@@ -9,8 +9,6 @@ $right-sidebar-width: 290px;
 $right-sidebar-inner-width: 250px;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: 0.15s;
-$contextual-sidebar-width: 256px;
-$contextual-sidebar-collapsed-width: 56px;
 $toggle-sidebar-height: 48px;
 $super-sidebar-width: 16rem;
 $super-sidebar-z-index: 600;
@@ -91,7 +89,6 @@ $darken-dark-factor: 10% !default;
 $purple: #6d49cb !default;
 $purple-light: #ede8fb !default;
 
-$gray-lightest: lighten($gray-10, 1) !default;
 $gray-light: $gray-10 !default;
 $gray-lighter: lighten($gray-50, 4) !default;
 $gray-normal: lighten($gray-50, 2) !default;
@@ -116,12 +113,9 @@ $t-gray-a-24: rgba(31, 30, 36, 0.24) !default;
 /*
  * UI elements
  */
-$contextual-sidebar-bg-color: $gray-10;
-$contextual-sidebar-border-color: #e9e9e9;
 $border-color: $gray-100;
 $shadow-color: $t-gray-a-08;
 $well-expand-item: #e8f2f7 !default;
-$nav-active-bg: $t-gray-a-08;
 
 /*
  * Text

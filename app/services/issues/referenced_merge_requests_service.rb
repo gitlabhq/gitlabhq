@@ -40,7 +40,7 @@ module Issues
 
       return [] if merge_requests.empty?
 
-      ids = MergeRequestsClosingIssues.closes_work_item.where(
+      ids = MergeRequestsClosingIssues.where(
         merge_request_id: merge_requests.map(&:id),
         issue_id: issue.id
       ).pluck(:merge_request_id)

@@ -457,9 +457,7 @@ module API
       get ':id/issues/:issue_iid/closed_by' do
         issue = find_project_issue(params[:issue_iid])
 
-        merge_request_ids = MergeRequestsClosingIssues.where(issue_id: issue)
-          .closes_work_item
-          .select(:merge_request_id)
+        merge_request_ids = MergeRequestsClosingIssues.where(issue_id: issue).select(:merge_request_id)
         merge_requests = MergeRequestsFinder.new(current_user, project_id: user_project.id).execute.where(id: merge_request_ids)
 
         present paginate(merge_requests), with: Entities::MergeRequestBasic, current_user: current_user, project: user_project

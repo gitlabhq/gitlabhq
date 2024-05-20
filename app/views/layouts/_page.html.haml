@@ -10,7 +10,6 @@
   = render_if_exists "layouts/tanuki_bot_chat"
 
   .content-wrapper{ class: "#{@content_wrapper_class}" }
-    .mobile-overlay
     = dispensable_render_if_exists 'layouts/header/verification_reminder'
     .alert-wrapper.gl-force-block-formatting-context
       = dispensable_render 'shared/new_nav_for_everyone_announcement'
