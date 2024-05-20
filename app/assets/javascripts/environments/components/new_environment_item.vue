@@ -195,7 +195,7 @@ export default {
         class="gl-min-w-0 gl-mr-4 gl-display-flex gl-align-items-center"
       >
         <gl-button
-          class="gl-mr-4 gl-min-w-fit-content"
+          class="gl-mr-4 gl-min-w-fit"
           :icon="icon"
           :aria-label="label"
           size="small"

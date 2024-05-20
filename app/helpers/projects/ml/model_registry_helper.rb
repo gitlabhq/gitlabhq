@@ -41,7 +41,8 @@ module Projects
           model_name: model_version.name,
           version_name: model_version.version,
           can_write_model_registry: can_write_model_registry?(user, project),
-          import_path: model_version_artifact_import_path(project.id, model_version.id)
+          import_path: model_version_artifact_import_path(project.id, model_version.id),
+          model_path: project_ml_model_path(project, model_version.model)
         }
 
         to_json(data)

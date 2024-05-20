@@ -126,15 +126,13 @@ export const fetchMetricsData = (requests = [], requestPath, params) => {
  * and project paths passed into the method.
  *
  * @param {String} groupPath - Path of the specified group
- * @param {Array} projectPaths - Array of project paths to include in the `query` parameter
  * @returns a URL or blank string if there is no groupPath set
  */
-export const generateValueStreamsDashboardLink = (namespacePath, projectPaths = []) => {
+export const generateValueStreamsDashboardLink = (namespacePath) => {
   if (namespacePath.length) {
-    const query = projectPaths.length ? `?query=${projectPaths.join(',')}` : '';
     const dashboardsSlug = '/-/analytics/dashboards/value_streams_dashboard';
     const segments = [gon.relative_url_root || '', '/', namespacePath, dashboardsSlug];
-    return joinPaths(...segments).concat(query);
+    return joinPaths(...segments);
   }
   return '';
 };

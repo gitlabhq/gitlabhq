@@ -727,11 +727,8 @@ export function visitUrl(destination, external = false) {
   }
 
   if (external) {
-    // Simulate `target="_blank" rel="noopener noreferrer"`
-    // See https://mathiasbynens.github.io/rel-noopener/
-    const otherWindow = window.open();
-    otherWindow.opener = null;
-    otherWindow.location.assign(url);
+    // Opens URL in another browsing context, sets window.opener to null and don't leak referrer information.
+    window.open(url, '_blank', 'noreferrer');
   } else {
     window.location.assign(url);
   }

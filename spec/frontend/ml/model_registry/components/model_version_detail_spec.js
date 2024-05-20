@@ -26,7 +26,11 @@ const createWrapper = (modelVersion = modelVersionWithCandidate, props = {}, pro
   const apolloProvider = createMockApollo(requestHandlers);
   wrapper = shallowMount(ModelVersionDetail, {
     apolloProvider,
-    propsData: { modelVersion, ...props },
+    propsData: {
+      allowArtifactImport: true,
+      modelVersion,
+      ...props,
+    },
     provide: {
       projectPath: 'path/to/project',
       canWriteModelRegistry: true,
@@ -103,7 +107,7 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
     });
   });
 
-  describe('if artifact import is allowed', () => {
+  describe('if artifact import is not allowed', () => {
     beforeEach(() => createWrapper(undefined, { allowArtifactImport: false }));
 
     it('does not render import artifact zone', () => {

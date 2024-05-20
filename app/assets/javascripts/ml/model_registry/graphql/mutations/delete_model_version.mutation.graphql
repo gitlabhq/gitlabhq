@@ -1,0 +1,5 @@
+mutation deleteModelVersion($id: MlModelVersionID!) {
+  mlModelVersionDelete(input: { id: $id }) {
+    errors
+  }
+}

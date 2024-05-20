@@ -1,17 +1,23 @@
 <script>
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { createAlert, VARIANT_DANGER } from '~/alert';
+import { s__, sprintf } from '~/locale';
+import { setUrlFragment, visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import getModelVersionQuery from '~/ml/model_registry/graphql/queries/get_model_version.query.graphql';
+import deleteModelVersionMutation from '~/ml/model_registry/graphql/mutations/delete_model_version.mutation.graphql';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { makeLoadVersionsErrorMessage } from '~/ml/model_registry/translations';
 import ModelVersionDetail from '../components/model_version_detail.vue';
 import LoadOrErrorOrShow from '../components/load_or_error_or_show.vue';
+import ModelVersionActionsDropdown from '../components/model_version_actions_dropdown.vue';
 
 export default {
   name: 'ShowMlModelVersionApp',
   components: {
     LoadOrErrorOrShow,
     ModelVersionDetail,
+    ModelVersionActionsDropdown,
     TitleArea,
   },
   provide() {
@@ -19,6 +25,7 @@ export default {
       projectPath: this.projectPath,
       canWriteModelRegistry: this.canWriteModelRegistry,
       importPath: this.importPath,
+      versionName: this.versionName,
     };
   },
   props: {
@@ -50,6 +57,10 @@ export default {
       type: String,
       required: true,
     },
+    modelPath: {
+      type: String,
+      required: true,
+    },
   },
   apollo: {
     modelWithModelVersion: {
@@ -72,6 +83,9 @@ export default {
     };
   },
   computed: {
+    modelVersionsPath() {
+      return setUrlFragment(this.modelPath, '#versions');
+    },
     modelVersion() {
       return this.modelWithModelVersion?.version;
     },
@@ -87,6 +101,15 @@ export default {
         modelVersionId: convertToGraphQLId('Ml::ModelVersion', this.modelVersionId),
       };
     },
+    deletionSuccessfulAlert() {
+      return {
+        id: 'ml-model-version_deleted-successfully',
+        message: sprintf(s__('MLOps|Model version %{versionName} deleted successfully'), {
+          versionName: this.versionName,
+        }),
+        variant: 'success',
+      };
+    },
   },
   methods: {
     handleError(error) {
@@ -97,13 +120,55 @@ export default {
         },
       });
     },
+    handleDeleteError(error) {
+      Sentry.captureException(error, {
+        tags: {
+          vue_component: 'show_ml_model_version',
+        },
+      });
+      createAlert({
+        message: s__(
+          'MLOps|Something went wrong while trying to delete the model version. Please try again later.',
+        ),
+        variant: VARIANT_DANGER,
+      });
+    },
+    async deleteModelVersion() {
+      try {
+        const TYPENAME_MODEL_VERSION = 'Ml::ModelVersion';
+        const { data } = await this.$apollo.mutate({
+          mutation: deleteModelVersionMutation,
+          variables: {
+            id: convertToGraphQLId(TYPENAME_MODEL_VERSION, this.modelVersionId),
+          },
+        });
+
+        if (data.mlModelVersionDelete?.errors?.length > 0) {
+          throw data.mlModelVersionDelete.errors.join(', ');
+        }
+
+        visitUrlWithAlerts(this.modelVersionsPath, [this.deletionSuccessfulAlert]);
+      } catch (error) {
+        this.handleDeleteError(error);
+      }
+    },
   },
 };
 </script>
 
 <template>
   <div>
-    <title-area :title="title" />
+    <div
+      class="gl-display-flex gl-flex-wrap gl-sm-flex-nowrap gl-justify-content-space-between gl-py-3"
+    >
+      <div class="gl-flex-direction-column gl-flex-grow-1 gl-min-w-0">
+        <title-area :title="title" />
+      </div>
+      <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-mt-3">
+        <model-version-actions-dropdown @delete-model-version="deleteModelVersion" />
+      </div>
+    </div>
+
     <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
       <model-version-detail :model-version="modelVersion" allow-artifact-import />
     </load-or-error-or-show>

@@ -4,7 +4,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { trackClickErrorLinkToSentryOptions } from '../events_tracking';
 
-const CARD_CLASS = 'gl-mr-7 gl-w-3/20 gl-min-w-fit-content';
+const CARD_CLASS = 'gl-mr-7 gl-w-3/20 gl-min-w-fit';
 const HEADER_CLASS =
   'gl-p-2 gl-font-weight-bold gl-display-flex gl-justify-content-center gl-align-items-center';
 const BODY_CLASS =

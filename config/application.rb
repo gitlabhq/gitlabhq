@@ -379,6 +379,7 @@ module Gitlab
     config.assets.precompile << "emoji_sprites.css"
     config.assets.precompile << "errors.css"
     config.assets.precompile << "jira_connect.js"
+    config.assets.precompile << "xterm.css"
 
     config.assets.precompile << "themes/*.css"
 
@@ -401,10 +402,6 @@ module Gitlab
     config.assets.precompile << "file_icons/file_icons.json"
     config.assets.precompile << "illustrations/*.svg"
     config.assets.precompile << "illustrations/*.png"
-
-    # Import css for xterm
-    config.assets.paths << "#{config.root}/node_modules/xterm/src/"
-    config.assets.precompile << "xterm.css"
 
     # Import path for EE specific SCSS entry point
     # In CE it will import a noop file, in EE a functioning file

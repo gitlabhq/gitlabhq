@@ -476,21 +476,14 @@ describe('URL utility', () => {
     });
 
     it('navigates to a new page', () => {
-      const otherWindow = {
-        location: {
-          assign: jest.fn(),
-        },
-      };
-
       Object.defineProperty(window, 'open', {
         writable: true,
-        value: jest.fn().mockReturnValue(otherWindow),
+        value: jest.fn(),
       });
 
       urlUtils.visitUrl(mockUrl, true);
 
-      expect(otherWindow.opener).toBe(null);
-      expect(otherWindow.location.assign).toHaveBeenCalledWith(mockUrl);
+      expect(window.open).toHaveBeenCalledWith(mockUrl, '_blank', 'noreferrer');
     });
   });
 

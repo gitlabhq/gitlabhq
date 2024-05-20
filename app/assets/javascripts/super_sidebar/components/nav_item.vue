@@ -261,7 +261,7 @@ export default {
           />
         </slot>
       </div>
-      <div class="gl-flex-grow-1 gl-text-gray-900" :class="{ 'gl-w-max-content': isFlyout }">
+      <div class="gl-flex-grow-1 gl-text-gray-900" :class="{ 'gl-w-max': isFlyout }">
         {{ item.title }}
         <div v-if="item.subtitle" class="gl-font-sm gl-text-gray-500 gl-truncate-end">
           {{ item.subtitle }}

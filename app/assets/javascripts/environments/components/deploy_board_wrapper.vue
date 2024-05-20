@@ -62,7 +62,7 @@ export default {
   <div>
     <div>
       <gl-button
-        class="gl-mr-4 gl-min-w-fit-content"
+        class="gl-mr-4 gl-min-w-fit"
         :icon="icon"
         :aria-label="label"
         size="small"

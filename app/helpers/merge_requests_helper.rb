@@ -380,7 +380,7 @@ module MergeRequestsHelper
           title: _('Waiting for reviewers'),
           query: 'assignedMergeRequests',
           variables: {
-            reviewState: 'UNREVIEWED'
+            reviewStates: %w[UNREVIEWED UNAPPROVED]
           }
         },
         {

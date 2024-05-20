@@ -86,7 +86,8 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         "modelName" => model_version.name,
         "versionName" => model_version.version,
         "canWriteModelRegistry" => true,
-        "importPath" => "/api/v4/projects/#{project.id}/packages/ml_models/#{model_version.id}/files/"
+        "importPath" => "/api/v4/projects/#{project.id}/packages/ml_models/#{model_version.id}/files/",
+        "modelPath" => "/#{project.full_path}/-/ml/models/1"
       })
     end
 

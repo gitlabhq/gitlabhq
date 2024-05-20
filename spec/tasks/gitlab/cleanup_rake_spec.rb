@@ -286,7 +286,7 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
           stub_env('LIMIT_TO_DELETE', 1)
         end
 
-        it 'deletes only one branch' do
+        it 'deletes only one branch', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448376' do
           expect(project.repository.raw.find_branch(delete_branch_name)).not_to be_nil
           expect(project.repository.raw.find_branch(keep_branch_name)).not_to be_nil
           expect(project.repository.raw.find_branch(delete_me_not)).not_to be_nil

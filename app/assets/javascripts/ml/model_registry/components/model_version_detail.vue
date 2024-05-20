@@ -20,7 +20,7 @@ export default {
     allowArtifactImport: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
     },
   },
   computed: {

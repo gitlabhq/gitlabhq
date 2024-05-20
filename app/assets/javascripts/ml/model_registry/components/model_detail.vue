@@ -11,6 +11,11 @@ export default {
     ModelVersionDetail,
     GlLink,
   },
+  provide() {
+    return {
+      importPath: '',
+    };
+  },
   props: {
     model: {
       type: Object,

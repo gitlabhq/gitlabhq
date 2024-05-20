@@ -159,6 +159,11 @@ module.exports = {
           }, {}),
         };
       }, {}),
+      maxWidth: {
+        screen: '100vw',
+        limited: '1006px',
+        '1/2': '50%',
+      },
       zIndex: {
         1: '1',
         2: '2',

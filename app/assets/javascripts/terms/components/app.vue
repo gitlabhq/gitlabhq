@@ -73,7 +73,7 @@ export default {
       <div
         ref="scrollableViewport"
         data-testid="scrollable-viewport"
-        class="gl-h-100vh gl-overflow-y-auto gl-pb-11 gl-px-5"
+        class="gl-h-screen gl-overflow-y-auto gl-pb-11 gl-px-5"
       >
         <div ref="gfmContainer" v-safe-html="terms"></div>
         <gl-intersection-observer @appear="handleBottomReached">

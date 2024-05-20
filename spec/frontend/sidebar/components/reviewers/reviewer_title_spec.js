@@ -1,9 +1,16 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import Component from '~/sidebar/components/reviewers/reviewer_title.vue';
+import getMergeRequestReviewers from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
+import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
+
+Vue.use(VueApollo);
 
 describe('ReviewerTitle component', () => {
   let wrapper;
@@ -11,7 +18,13 @@ describe('ReviewerTitle component', () => {
   const findEditButton = () => wrapper.findByTestId('reviewers-edit-button');
 
   const createComponent = (props, { reviewerAssignDrawer = false } = {}) => {
+    const apolloProvider = createMockApollo([
+      [getMergeRequestReviewers, jest.fn().mockResolvedValue({ data: { workspace: null } })],
+      [userPermissionsQuery, jest.fn().mockResolvedValue({ data: { project: null } })],
+    ]);
+
     return mountExtended(Component, {
+      apolloProvider,
       propsData: {
         numberOfReviewers: 0,
         editable: false,
@@ -26,6 +39,7 @@ describe('ReviewerTitle component', () => {
           reviewerAssignDrawer,
         },
       },
+      stubs: ['approval-summary'],
     });
   };
 
@@ -121,13 +135,15 @@ describe('ReviewerTitle component', () => {
       resetHTMLFixture();
     });
 
-    it('sets title for dropdown toggle as `Quick assign`', () => {
+    it('sets title for dropdown toggle as `Quick assign`', async () => {
       wrapper = createComponent(
         {
           editable: true,
         },
         { reviewerAssignDrawer: true },
       );
+
+      await waitForPromises();
 
       expect(findEditButton().attributes('title')).toBe('Quick assign');
     });

@@ -188,7 +188,7 @@ export default {
 };
 </script>
 <template>
-  <div data-testid="vsa-stage-table" :class="{ 'gl-min-h-100vh': isLoading || !isEmptyStage }">
+  <div data-testid="vsa-stage-table" :class="{ 'gl-min-h-screen': isLoading || !isEmptyStage }">
     <gl-loading-icon v-if="isLoading" class="gl-mt-4" size="lg" />
     <gl-empty-state
       v-else-if="isEmptyStage"

@@ -313,3 +313,20 @@ export const modelVersionQuery = {
     },
   },
 };
+
+export const deleteModelVersionResponses = {
+  success: {
+    data: {
+      mlModelVersionDelete: {
+        errors: [],
+      },
+    },
+  },
+  failure: {
+    data: {
+      mlModelVersionDelete: {
+        errors: ['Model version not found', 'Project not found'],
+      },
+    },
+  },
+};
