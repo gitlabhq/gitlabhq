@@ -108,7 +108,7 @@ RSpec.describe 'User creates branch', :js, feature_category: :source_code_manage
             click_button("Create branch")
 
             expect(page).to have_content('Branch name is invalid')
-            expect(page).to have_content("can't contain spaces")
+            expect(page).to have_content("Branch name cannot contain spaces")
             expect(page).to have_selector('.js-branch-name.gl-border-red-500')
           end
         end

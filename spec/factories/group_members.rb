@@ -15,7 +15,7 @@ FactoryBot.define do
     trait(:access_request) { requested_at { Time.now } }
 
     trait(:invited) do
-      user_id { nil }
+      user { nil }
       invite_token { 'xxx' }
       sequence :invite_email do |n|
         "email#{n}@email.com"

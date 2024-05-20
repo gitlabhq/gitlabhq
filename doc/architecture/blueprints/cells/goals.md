@@ -288,6 +288,11 @@ The Cells architecture is meant to provide trusted intra-cluster communication
 with some set of data being shared. Federation is meant to solve the problem
 of data flow between two completely distinct and external instances.
 
+### Merging Dedicated instance(s) to GitLab.com
+
+It is not intended for any existing Dedicated instances to join the GitLab.com
+cluster.
+
 ### Usage of cloud managed services
 
 Cells should not interfere with other efforts to move towards using more managed services in the cloud.
@@ -325,7 +330,7 @@ A Cell is a set of infrastructure components that contains multiple top-level Gr
 - Noisy neighbor effects are limited to within a Cell
 - Cells are not visible to Organizations - they are an implementation detail
 - Cells may be located in different geographical regions (for example: EU, US, JP, UK)
-- A GitLab Dedicated instance can join the cluster, and become a Cell
+- On initial provisioning, a GitLab instance provisioned by GitLab Dedicated tooling can be configured to join the cluster, and become a Cell
 
 Discouraged synonyms: GitLab instance, cluster, shard, Pod
 

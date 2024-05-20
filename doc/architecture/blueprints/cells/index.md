@@ -327,9 +327,9 @@ Not directly, our goal is to keep them isolated and only communicate using globa
 
 ### How are Cells provisioned?
 
-The GitLab.com cluster of Cells will use GitLab Dedicated instances.
-Once a GitLab Dedicated instance gets provisioned it could join the GitLab.com cluster and become a Cell.
-One requirement will be that the GitLab Dedicated instance does not contain any prior data.
+The GitLab.com cluster of Cells will use GitLab Dedicated tooling to create instances.
+Once this instance gets provisioned it could join the GitLab.com cluster and become a Cell.
+One requirement will be that the instance does not contain any prior data.
 
 To reach shared resources, Cells will use [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect).
 
