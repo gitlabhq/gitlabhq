@@ -48,6 +48,7 @@ Prerequisites:
 - The [storage name](gitaly/configure_gitaly.md#gitlab-requires-a-default-repository-storage), path to the Gitaly configuration file
   (default is `/var/opt/gitlab/gitaly/config.toml` on Linux package instances), and the
   [repository relative path](repository_storage_paths.md#from-project-name-to-hashed-path) for the repository.
+- Any language runtimes and utilities that are required by the hooks must be installed on each of the servers that run Gitaly.
 
 To set server hooks for a repository:
 

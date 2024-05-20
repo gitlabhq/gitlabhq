@@ -59,7 +59,7 @@ You can use the [project access tokens API](../api/project_access_tokens.md) to
 programmatically take action, such as
 [rotating a project access token](../api/project_access_tokens.md#rotate-a-project-access-token).
 
-Project maintainers receive an email when project access tokens are 7 days or less from expiration.
+Project maintainers with a direct membership receive an email when project access tokens are 7 days or less from expiration. Inherited members do not receive an email.
 
 ## Group access tokens
 
@@ -78,7 +78,7 @@ You can use the [group access tokens API](../api/group_access_tokens.md) to
 programmatically take action, such as
 [rotating a group access token](../api/group_access_tokens.md#rotate-a-group-access-token).
 
-All group owners receive an email when group access tokens are 7 days or less from expiration.
+All group owners with a direct membership receive an email when group access tokens are 7 days or less from expiration. Inherited members do not receive an email.
 
 ## Deploy tokens
 
@@ -287,7 +287,10 @@ The following table shows the prefixes for each type of token.
 ## Expired access tokens
 
 If an existing access token is in use and reaches the `expires_at` value, the token
-expires and can no longer be used for authentication.
+expires and:
+
+- Can no longer be used for authentication.
+- Is not visible in the UI.
 
 Requests made using this token return a `401 Unauthorized` response. Too many
 unauthorized requests in a short period of time from the same IP address

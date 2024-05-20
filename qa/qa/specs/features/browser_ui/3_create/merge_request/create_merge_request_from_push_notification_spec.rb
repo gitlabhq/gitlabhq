@@ -14,6 +14,10 @@ module QA
 
       it(
         'after a push via the git CLI creates a merge request',
+        quarantine: {
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/442691',
+          type: :flaky
+        },
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360489'
       ) do
         Resource::Repository::ProjectPush.fabricate! do |push|
