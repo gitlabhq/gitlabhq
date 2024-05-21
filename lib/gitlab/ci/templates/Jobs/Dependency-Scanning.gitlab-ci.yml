@@ -23,6 +23,7 @@ dependency_scanning:
     - echo "$CI_JOB_NAME is used for configuration only, and its script should not be executed"
     - exit 1
   artifacts:
+    access: 'developer'
     reports:
       dependency_scanning: gl-dependency-scanning-report.json
   dependencies: []
@@ -49,6 +50,7 @@ dependency_scanning:
 
 .cyclonedx-reports:
   artifacts:
+    access: 'developer'
     paths:
       - "**/gl-sbom-*.cdx.json"
     reports:

@@ -224,6 +224,8 @@ module Ci
     scope :with_creator, -> { preload(:creator) }
 
     validate :tag_constraints
+    validates :name, length: { maximum: 256 }, if: :name_changed?
+    validates :description, length: { maximum: 1024 }, if: :description_changed?
     validates :access_level, presence: true
     validates :runner_type, presence: true
     validates :registration_type, presence: true

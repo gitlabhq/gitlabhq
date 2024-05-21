@@ -28,6 +28,7 @@ dast:
   script:
     - /analyze
   artifacts:
+    access: 'developer'
     reports:
       dast: gl-dast-report.json
   rules:
