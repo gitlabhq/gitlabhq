@@ -5,11 +5,10 @@ module Gitlab
     class JwtV2 < Jwt
       include Gitlab::Utils::StrongMemoize
 
-      DEFAULT_AUD = Settings.gitlab.base_url
       GITLAB_HOSTED_RUNNER = 'gitlab-hosted'
       SELF_HOSTED_RUNNER = 'self-hosted'
 
-      def self.for_build(build, aud: DEFAULT_AUD, target_audience: nil)
+      def self.for_build(build, aud:, target_audience: nil)
         new(build, ttl: build.metadata_timeout, aud: aud, target_audience: target_audience).encoded
       end
 

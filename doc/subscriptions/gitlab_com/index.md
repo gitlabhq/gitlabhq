@@ -372,11 +372,10 @@ If you have difficulty during the renewal process, contact the
 
 #### Renew for fewer seats
 
-There are several options to renew a subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal:
+There are two options to renew a subscription for fewer seats, as long as the seat total is equal to or greater than the billable user quantity at the time of renewal:
 
-1. [Turn off auto-renewal](#enable-or-disable-automatic-subscription-renewal) to avoid renewing at a higher seat quantity.
-1. [Manually renew](#renew-or-change-a-gitlabcom-subscription) within 15 days of subscription renewal date, and specify the desired seat quantity.
-1. Work with the Sales team to renew your subscription.
+- [Manually renew](#renew-or-change-a-gitlabcom-subscription) within 15 days of subscription renewal date, and **specify the desired seat quantity** on the renewal page. To reduce billable user quantity, [remove users from your group](#remove-users-from-your-subscription).
+- Work with the Sales team to renew your subscription. To avoid auto-renewing at a higher seat quantity while you work with Sales, [cancel your subscription](#enable-or-disable-automatic-subscription-renewal).
 
 ## Add or change the contacts for your subscription
 

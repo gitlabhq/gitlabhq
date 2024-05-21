@@ -33,6 +33,29 @@ GitLab Dedicated leverages modified versions of the GitLab [Cloud Native Hybrid 
 NOTE:
 The published [reference architectures](../../administration/reference_architectures/index.md) act as a starting point in defining the cloud resources deployed inside GitLab Dedicated environments, but they are not comprehensive. GitLab Dedicated leverages additional Cloud Provider services beyond what's included in the standard reference architectures for enhanced security and stability of the environment. Therefore, GitLab Dedicated costs differ from standard reference architecture costs.
 
+#### Zero-downtime upgrades
+
+Deployments for GitLab Dedicated follow the process for [zero-downtime upgrades](../../update/zero_downtime.md) to ensure [backward compatibility](../../development/multi_version_compatibility.md) of the application during an upgrade. When no infrastructure changes or maintenance tasks require downtime, using the instance during an upgrade is possible and safe.
+
+During a GitLab version update, static assets may change and are only available in one of the two versions. To mitigate this situation, GitLab Dedicated adopts three techniques:
+
+1. Each static asset has a unique name that changes when its content changes.
+1. The browser caches each static asset.
+1. Each request from the same browser is routed to the same server temporarily.
+
+These techniques together give a strong assurance about asset availability:
+
+- During an upgrade, a user routed to a server running the new version will receive assets from the same server, completely removing the risk of receiving a broken page.
+- If routed to the old version, a regular user will have assets cached in their browser.
+- If not cached, they will receive the requested page and assets from the same server.
+- If the specific server is upgraded during the requests, they may still be routed to another server running the same version.
+- If the new server is running the upgraded version, and the requested asset changed, then the page may show some user interface glitches.
+
+To notice the effect of an upgrade, a new user of the system should connect for the first time during a version upgrade and get routed to an old version of the application immediately before its upgrade. The subsequent asset requests should end up in a server running the new version of GitLab, and the requested assets must have changed during this specific version upgrade. If all of this happens, a page refresh is enough to restore it.
+
+NOTE:
+Adopting a caching proxy in the customer network will further reduce this risk.
+
 #### Disaster Recovery
 
 When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance) to GitLab Dedicated, you can provide a Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.

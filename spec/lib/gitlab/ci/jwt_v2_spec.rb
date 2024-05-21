@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
 
   let(:pipeline) { build_stubbed(:ci_pipeline, ref: 'auto-deploy-2020-03-19') }
   let(:runner) { build_stubbed(:ci_runner) }
-  let(:aud) { described_class::DEFAULT_AUD }
+  let(:aud) { nil }
   let(:target_audience) { nil }
 
   let(:build) do
@@ -49,7 +49,6 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
     it 'has correct values for the standard JWT attributes' do
       aggregate_failures do
         expect(payload[:iss]).to eq(Gitlab.config.gitlab.url)
-        expect(payload[:aud]).to eq(Settings.gitlab.base_url)
         expect(payload[:sub]).to eq("project_path:#{project.full_path}:ref_type:branch:ref:#{pipeline.source_ref}")
       end
     end

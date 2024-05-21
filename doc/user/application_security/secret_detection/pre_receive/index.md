@@ -4,7 +4,7 @@ group: Secret Detection
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Pre-receive secret detection
+# Secret push protection
 
 DETAILS:
 **Tier:** Ultimate
@@ -16,11 +16,11 @@ DETAILS:
 NOTE:
 This feature is an [experiment](../../../../policy/experiment-beta-support.md), available only on GitLab Dedicated, and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
-Block secrets such as keys and API tokens from being pushed to your GitLab instance. Pre-receive secret detection is triggered when commits are pushed to any repository. If any secrets are detected, the push is blocked.
+Block secrets such as keys and API tokens from being pushed to your GitLab instance. Secret push protection is triggered when commits are pushed to any repository. If any secrets are detected, the push is blocked.
 
-Pre-receive secret detection is an experiment, and only available on GitLab Dedicated. To use secret detection in your instance, use [pipeline secret detection](../index.md) instead.
+Push protection is an experiment, and only available on GitLab Dedicated. To use secret detection in your instance, use [pipeline secret detection](../index.md) instead.
 
-## Enable pre-receive secret detection
+## Enable secret push protection
 
 Prerequisites:
 
@@ -54,7 +54,7 @@ If the blocked secret appears earlier in your Git history:
 
 ## Skip secret detection
 
-In some cases, it may be necessary to skip pre-receive secret detection. For example, a developer may need to commit a placeholder secret for testing, or a user may want to bypass secret detection due to a Git operation timeout.
+In some cases, it may be necessary to skip push protection. For example, a developer may need to commit a placeholder secret for testing, or a user may want to bypass secret detection due to a Git operation timeout.
 
 There are two ways to skip secret detection for all commits in a push:
 
@@ -66,7 +66,7 @@ Add real secret by accident
 Add placeholder token to test file [skip secret detection]
 ```
 
-- Use a [push option](../../../project/push_options.md#push-options-for-secret-detection). For example:
+- Use a [push option](../../../project/push_options.md). For example:
 
 ```shell
 # These commits are in the same push. Both will not be scanned.
@@ -79,11 +79,11 @@ git push -o secret_detection.skip_all
 Skipping secret detection will generate [Project audit event](../../../compliance/audit_events.md#project-audit-events).
 
 NOTE:
-[Pipeline secret detection](../index.md) still scans the bypassed secrets when pre-receive secret detection is skipped.
+[Pipeline secret detection](../index.md) still scans the bypassed secrets when push protection is skipped.
 
 ## Troubleshooting
 
-When working with pre-receive secret detection, you might encounter the following issues.
+When working with secret push protection, you might encounter the following issues.
 
 ### My file was not analyzed
 
