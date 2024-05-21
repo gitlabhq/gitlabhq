@@ -133,7 +133,9 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../policy/experiment-beta-support.md#experiment).
 
-To use this feature:
+You can learn more about failed CI/CD jobs by using GitLab Duo Root cause analysis.
+
+Prerequisites:
 
 - The parent group of the project must:
   - Enable the [experiment and beta features setting](ai_features_enable.md#turn-on-beta-and-experimental-features).
@@ -141,8 +143,13 @@ To use this feature:
   - Belong to at least one group with the [experiment and beta features setting](ai_features_enable.md#turn-on-beta-and-experimental-features) enabled.
   - Have sufficient permissions to view the CI/CD job.
 
-When the feature is available, the "Troubleshoot" button displays on failed CI/CD jobs. Selecting this option generates an analysis regarding the
-reason for the failure.
+To view root cause analysis:
+
+1. Open a merge request.
+1. On the **Pipelines** tab, select the failed CI/CD job.
+1. Above the job output, select **Troubleshoot**.
+
+An analysis of the reasons for the failure is displayed.
 
 ## Summarize an issue with Issue description generation
 

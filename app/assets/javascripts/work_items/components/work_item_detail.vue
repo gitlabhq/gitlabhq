@@ -456,11 +456,7 @@ export default {
           class="gl-display-block gl-sm-display-flex! gl-align-items-flex-start gl-flex-direction-row gl-gap-3 gl-pt-3"
         >
           <work-item-ancestors v-if="parentWorkItem" :work-item="workItem" class="gl-mb-1" />
-          <div
-            v-if="!error && !workItemLoading"
-            :class="titleClassHeader"
-            data-testid="work-item-type"
-          >
+          <div v-if="!error" :class="titleClassHeader" data-testid="work-item-type">
             <work-item-title
               v-if="workItem.title"
               ref="title"
@@ -591,10 +587,7 @@ export default {
               @error="updateError = $event"
               @emoji-updated="$emit('work-item-emoji-updated', $event)"
             />
-            <design-widget
-              v-if="!workItemLoading && !isDrawer && hasDesignWidget"
-              :work-item-id="workItem.id"
-            />
+            <design-widget v-if="!isDrawer && hasDesignWidget" :work-item-id="workItem.id" />
           </section>
           <aside
             data-testid="work-item-overview-right-sidebar"

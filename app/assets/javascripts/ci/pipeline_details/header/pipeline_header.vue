@@ -37,6 +37,8 @@ export default {
     HeaderActions,
     HeaderBadges,
     TimeAgoTooltip,
+    PipelineAccountVerificationAlert: () =>
+      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -299,6 +301,7 @@ export default {
       :title="failure.text"
       :variant="failure.variant"
       :dismissible="false"
+      data-testid="error-alert"
     >
       <div v-for="(failureMessage, index) in failureMessages" :key="`failure-message-${index}`">
         {{ failureMessage }}
@@ -412,5 +415,7 @@ export default {
         @deletePipeline="deletePipeline($event)"
       />
     </div>
+
+    <pipeline-account-verification-alert class="gl-mt-4" />
   </div>
 </template>

@@ -116,7 +116,7 @@ namespace_object.descendant_ids
 
 ### Ancestor namespaces
 
-The ancestors of a namespace are its children, their children, and so on.
+The ancestors of a namespace are its parent, its parent's parent, and so on.
 
 ```mermaid
 graph TD

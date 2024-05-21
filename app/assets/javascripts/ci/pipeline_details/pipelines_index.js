@@ -45,6 +45,8 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
     fullPath,
     visibilityPipelineIdType,
     showJenkinsCiPrompt,
+    identityVerificationPath,
+    identityVerificationRequired,
   } = el.dataset;
 
   return new Vue({
@@ -57,6 +59,8 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
       manualActionsLimit: 50,
       pipelineEditorPath,
       pipelineSchedulesPath,
+      identityVerificationPath,
+      identityVerificationRequired: parseBoolean(identityVerificationRequired),
       suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
       showJenkinsCiPrompt: parseBoolean(showJenkinsCiPrompt),
     },

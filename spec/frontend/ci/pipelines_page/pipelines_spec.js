@@ -111,6 +111,8 @@ describe('Pipelines', () => {
           ciRunnerSettingsPath: defaultProps.ciRunnerSettingsPath,
           anyRunnersAvailable: true,
           showJenkinsCiPrompt: false,
+          identityVerificationRequired: false,
+          identityVerificationPath: '#',
         },
         propsData: {
           ...defaultProps,

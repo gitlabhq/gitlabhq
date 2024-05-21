@@ -41,6 +41,8 @@ export default {
     PipelinesFilteredSearch,
     PipelinesTable,
     TablePagination,
+    PipelineAccountVerificationAlert: () =>
+      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
   mixins: [PipelinesMixin, Tracking.mixin()],
   props: {
@@ -351,6 +353,7 @@ export default {
 </script>
 <template>
   <div class="pipelines-container gl-mt-2">
+    <pipeline-account-verification-alert class="gl-mt-5" />
     <div
       v-if="shouldRenderTabs || shouldRenderButtons"
       class="top-area scrolling-tabs-container inner-page-scroll-tabs gl-border-none"

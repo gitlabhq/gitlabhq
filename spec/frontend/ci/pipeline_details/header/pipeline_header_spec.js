@@ -81,6 +81,8 @@ describe('Pipeline header', () => {
   const defaultHandlers = [[getPipelineDetailsQuery, successHandler]];
 
   const defaultProvideOptions = {
+    identityVerificationRequired: false,
+    identityVerificationPath: '#',
     pipelineIid: 1,
     paths: {
       pipelinesPath: '/namespace/my-project/-/pipelines',
@@ -94,12 +96,12 @@ describe('Pipeline header', () => {
 
   const createComponent = (handlers = defaultHandlers) => {
     wrapper = shallowMountExtended(PipelineHeader, {
-      provide: {
-        ...defaultProvideOptions,
-      },
+      provide: defaultProvideOptions,
       stubs: { GlSprintf },
       apolloProvider: createMockApolloProvider(handlers),
     });
+
+    return waitForPromises();
   };
 
   describe('loading state', () => {
@@ -111,10 +113,8 @@ describe('Pipeline header', () => {
   });
 
   describe('defaults', () => {
-    beforeEach(async () => {
-      createComponent();
-
-      await waitForPromises();
+    beforeEach(() => {
+      return createComponent();
     });
 
     it('does not display loading icon', () => {
@@ -186,9 +186,7 @@ describe('Pipeline header', () => {
 
   describe('without pipeline name', () => {
     it('displays commit title', async () => {
-      createComponent([[getPipelineDetailsQuery, runningHandler]]);
-
-      await waitForPromises();
+      await createComponent([[getPipelineDetailsQuery, runningHandler]]);
 
       const expectedTitle = pipelineHeaderSuccess.data.project.pipeline.commit.title;
 
@@ -199,18 +197,14 @@ describe('Pipeline header', () => {
 
   describe('finished pipeline', () => {
     it('displays finished time and created time', async () => {
-      createComponent();
-
-      await waitForPromises();
+      await createComponent();
 
       expect(findFinishedTimeAgo().exists()).toBe(true);
       expect(findFinishedCreatedTimeAgo().exists()).toBe(true);
     });
 
     it('displays pipeline duartion text', async () => {
-      createComponent();
-
-      await waitForPromises();
+      await createComponent();
 
       expect(findPipelineDuration().text()).toBe(
         '120 minutes 10 seconds, queued for 3,600 seconds',
@@ -219,10 +213,8 @@ describe('Pipeline header', () => {
   });
 
   describe('running pipeline', () => {
-    beforeEach(async () => {
-      createComponent([[getPipelineDetailsQuery, runningHandler]]);
-
-      await waitForPromises();
+    beforeEach(() => {
+      return createComponent([[getPipelineDetailsQuery, runningHandler]]);
     });
 
     it('does not display finished time ago', () => {
@@ -244,10 +236,8 @@ describe('Pipeline header', () => {
   });
 
   describe('running pipeline with duration', () => {
-    beforeEach(async () => {
-      createComponent([[getPipelineDetailsQuery, runningHandlerWithDuration]]);
-
-      await waitForPromises();
+    beforeEach(() => {
+      return createComponent([[getPipelineDetailsQuery, runningHandlerWithDuration]]);
     });
 
     it('does not display pipeline duration text', () => {
@@ -257,12 +247,10 @@ describe('Pipeline header', () => {
 
   describe('actions', () => {
     it('passes correct props to the header actions component', async () => {
-      createComponent([
+      await createComponent([
         [getPipelineDetailsQuery, failedHandler],
         [retryPipelineMutation, retryMutationHandlerSuccess],
       ]);
-
-      await waitForPromises();
 
       expect(findHeaderActions().props()).toEqual({
         isCanceling: false,
@@ -273,13 +261,11 @@ describe('Pipeline header', () => {
     });
 
     describe('retry action', () => {
-      beforeEach(async () => {
-        createComponent([
+      beforeEach(() => {
+        return createComponent([
           [getPipelineDetailsQuery, failedHandler],
           [retryPipelineMutation, retryMutationHandlerSuccess],
         ]);
-
-        await waitForPromises();
       });
 
       it('should call retryPipeline Mutation with pipeline id', () => {
@@ -293,13 +279,11 @@ describe('Pipeline header', () => {
     });
 
     describe('retry action failed', () => {
-      beforeEach(async () => {
-        createComponent([
+      beforeEach(() => {
+        return createComponent([
           [getPipelineDetailsQuery, failedHandler],
           [retryPipelineMutation, retryMutationHandlerFailed],
         ]);
-
-        await waitForPromises();
       });
 
       it('should display error message on failure', async () => {
@@ -326,12 +310,10 @@ describe('Pipeline header', () => {
     describe('cancel action', () => {
       describe('with permissions', () => {
         it('should call cancelPipeline Mutation with pipeline id', async () => {
-          createComponent([
+          await createComponent([
             [getPipelineDetailsQuery, runningHandler],
             [cancelPipelineMutation, cancelMutationHandlerSuccess],
           ]);
-
-          await waitForPromises();
 
           clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
 
@@ -342,12 +324,10 @@ describe('Pipeline header', () => {
         });
 
         it('should display error message on failure', async () => {
-          createComponent([
+          await createComponent([
             [getPipelineDetailsQuery, runningHandler],
             [cancelPipelineMutation, cancelMutationHandlerFailed],
           ]);
-
-          await waitForPromises();
 
           clickActionButton('cancelPipeline', pipelineHeaderRunning.data.project.pipeline.id);
 
@@ -360,12 +340,10 @@ describe('Pipeline header', () => {
 
     describe('delete action', () => {
       it('should call deletePipeline Mutation with pipeline id when modal is submitted', async () => {
-        createComponent([
+        await createComponent([
           [getPipelineDetailsQuery, successHandler],
           [deletePipelineMutation, deleteMutationHandlerSuccess],
         ]);
-
-        await waitForPromises();
 
         clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
 
@@ -375,12 +353,10 @@ describe('Pipeline header', () => {
       });
 
       it('should display error message on failure', async () => {
-        createComponent([
+        await createComponent([
           [getPipelineDetailsQuery, successHandler],
           [deletePipelineMutation, deleteMutationHandlerFailed],
         ]);
-
-        await waitForPromises();
 
         clickActionButton('deletePipeline', pipelineHeaderSuccess.data.project.pipeline.id);
 
