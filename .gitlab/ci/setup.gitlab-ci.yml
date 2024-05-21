@@ -152,7 +152,8 @@ detect-tests:
     - retrieve_tests_mapping
     - retrieve_frontend_fixtures_mapping
     - |
-      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+      # $FIND_CHANGES_MERGE_REQUEST_IID is defined in as-if-foss.gitlab-ci.yml
+      if [ -n "$CI_MERGE_REQUEST_IID" ] || [ -n "$FIND_CHANGES_MERGE_REQUEST_IID" ]; then
         mkdir -p $(dirname "$RSPEC_CHANGED_FILES_PATH")
 
         tooling/bin/predictive_tests

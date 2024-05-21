@@ -14,7 +14,10 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
   subject(:generate) { described_class.new }
 
   before do
-    stub_env(RUBY_VERSION: '3.1')
+    stub_env(
+      'RUBY_VERSION' => '3.1',
+      'CI_MERGE_REQUEST_PROJECT_PATH' => 'fake-mr-project-path',
+      'CI_MERGE_REQUEST_IID' => 'fake-mr-iid')
   end
 
   shared_context 'when there are all jobs' do
@@ -68,8 +71,8 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
       expect(generate.variables).to eq({
         START_AS_IF_FOSS: 'true',
         RUBY_VERSION: ENV['RUBY_VERSION'],
-        CI_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
-        CI_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
+        FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
+        FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
         ENABLE_RSPEC: 'true',
         ENABLE_RSPEC_FAST_SPEC_HELPER: 'true',
         ENABLE_RSPEC_UNIT: 'true',
@@ -109,8 +112,8 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
       expect { generate.display }.to output(<<~ENV).to_stdout
         START_AS_IF_FOSS=true
         RUBY_VERSION=#{ENV['RUBY_VERSION']}
-        CI_MERGE_REQUEST_PROJECT_PATH=#{ENV['CI_MERGE_REQUEST_PROJECT_PATH']}
-        CI_MERGE_REQUEST_IID=#{ENV['CI_MERGE_REQUEST_IID']}
+        FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH=#{ENV['CI_MERGE_REQUEST_PROJECT_PATH']}
+        FIND_CHANGES_MERGE_REQUEST_IID=#{ENV['CI_MERGE_REQUEST_IID']}
         ENABLE_RSPEC=true
         ENABLE_RSPEC_FAST_SPEC_HELPER=true
         ENABLE_RSPEC_UNIT=true
