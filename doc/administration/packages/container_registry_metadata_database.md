@@ -134,7 +134,6 @@ Choose the one or three step method according to your registry installation.
 #### One-step migration
 
 WARNING:
-WARNING:
 The registry must be shut down or remain in `read-only` mode during the migration.
 Only choose this method if you do not need to write to the registry during the migration
 and your registry contains a relatively small amount of data.

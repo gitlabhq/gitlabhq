@@ -65,6 +65,12 @@ module Organizations
       }.to_json
     end
 
+    def organization_groups_edit_app_data(group)
+      {
+        group: group.slice(:full_name)
+      }.to_json
+    end
+
     def admin_organizations_index_app_data
       shared_organization_index_app_data.to_json
     end

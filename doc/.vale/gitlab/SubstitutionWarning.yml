@@ -15,7 +15,7 @@ swap:
   active users: "billable users"
   air(?:-| )?gapped: "offline environment"
   bullet: "list item"
-  click: "select"
+  (?<!right-)click(?!-through): "select"
   code base: "codebase"
   config: "configuration"
   confirmation box: "confirmation dialog"

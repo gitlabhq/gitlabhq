@@ -9488,9 +9488,6 @@ msgstr ""
 msgid "Browse files"
 msgstr ""
 
-msgid "Browse templates"
-msgstr ""
-
 msgid "Build cannot be erased"
 msgstr ""
 

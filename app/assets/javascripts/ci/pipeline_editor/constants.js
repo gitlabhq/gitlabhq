@@ -88,8 +88,6 @@ export const pipelineEditorTrackingOptions = {
   },
 };
 
-export const TEMPLATE_REPOSITORY_URL =
-  'https://gitlab.com/gitlab-org/gitlab-foss/tree/master/lib/gitlab/ci/templates';
 export const VALIDATE_TAB_FEEDBACK_URL = 'https://gitlab.com/gitlab-org/gitlab/-/issues/346687';
 
 export const COMMIT_SHA_POLL_INTERVAL = 1000;

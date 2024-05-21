@@ -4524,6 +4524,15 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
     end
 
+    context 'with repository_object_format' do
+      it 'ignores repositotory object format field' do
+        put api(path, user), params: { name: 'new', repository_object_format: 'sha256' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['repository_object_format']).to eq 'sha1'
+      end
+    end
+
     context 'when authenticated as project developer' do
       it 'does not update other attributes' do
         project_param = { path: 'bar',

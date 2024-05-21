@@ -4,6 +4,7 @@ class DraftNote < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include Sortable
   include ShaAttribute
+  include BulkInsertSafe
 
   PUBLISH_ATTRS = %i[noteable type note internal].freeze
   DIFF_ATTRS = %i[position original_position change_position commit_id].freeze

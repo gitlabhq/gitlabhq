@@ -2,9 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe RemoteMirror, :mailer do
+RSpec.describe RemoteMirror, :mailer, feature_category: :source_code_management do
   before do
     stub_feature_flags(remote_mirror_no_delay: false)
+  end
+
+  describe 'validations' do
+    it { is_expected.to allow_value(true, false).for(:only_protected_branches) }
+    it { is_expected.not_to allow_value(nil).for(:only_protected_branches) }
   end
 
   describe 'URL validation' do

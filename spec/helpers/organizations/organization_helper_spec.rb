@@ -310,6 +310,20 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     end
   end
 
+  describe '#organization_groups_edit_app_data' do
+    let_it_be(:group) { build_stubbed(:group, organization: organization) }
+
+    it 'returns expected json' do
+      expect(Gitlab::Json.parse(helper.organization_groups_edit_app_data(group))).to eq(
+        {
+          'group' => {
+            'full_name' => group.full_name
+          }
+        }
+      )
+    end
+  end
+
   describe '#admin_organizations_index_app_data' do
     it 'returns expected json' do
       expect(Gitlab::Json.parse(helper.admin_organizations_index_app_data)).to eq(

@@ -82,7 +82,6 @@ module API
         optional :squash_option, type: String, values: %w[never always default_on default_off], desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about potentially unwanted characters'
-        optional :repository_object_format, type: String, values: %w[sha1 sha256], desc: 'The object format of the project repository'
       end
 
       params :optional_project_params_ee do
@@ -93,11 +92,16 @@ module API
         use :optional_project_params_ee
       end
 
+      params :optional_create_project_params_ce do
+        optional :repository_object_format, type: String, values: %w[sha1 sha256], desc: 'The object format of the project repository'
+      end
+
       params :optional_create_project_params_ee do
       end
 
       params :optional_create_project_params do
         use :optional_project_params
+        use :optional_create_project_params_ce
         use :optional_create_project_params_ee
       end
 

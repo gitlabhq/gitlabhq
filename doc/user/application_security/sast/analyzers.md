@@ -26,7 +26,7 @@ For each scanner, an analyzer:
 - Handles its execution.
 - Converts its output to a [standard format](../terminology/index.md#secure-report-format).
 
-## SAST analyzers
+## Official analyzers
 
 SAST supports the following official analyzers:
 
@@ -36,8 +36,9 @@ SAST supports the following official analyzers:
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
 
-The following analyzers reached End of Support status and do not receive updates. They were replaced
-by the `semgrep` analyzer with GitLab-managed rules.
+The following GitLab analyzers have reached [End of Support](../../../update/terminology.md#end-of-support)
+status and do not receive updates. They were replaced by the Semgrep-based analyzer with
+GitLab-managed rules.
 
 - [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Bandit); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4.
 - [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/412060) in GitLab 17.0.

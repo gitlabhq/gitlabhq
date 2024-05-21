@@ -91,7 +91,9 @@ For more information about our plans for language support in SAST, see the [cate
 
 ## End of supported analyzers
 
-GitLab has reached End of Support for the below analyzers. These analyzers have been replaced by the Semgrep-based analyzer.
+The following GitLab analyzers have reached [End of Support](../../../update/terminology.md#end-of-support)
+status and do not receive updates. They were replaced by the Semgrep-based analyzer with
+GitLab-managed rules.
 
 | Language / framework         | [Analyzer](analyzers.md) used for scanning                                                                   | Minimum supported GitLab version         | End Of Support GitLab version                                 |
 |------------------------------|--------------------------------------------------------------------------------------------------------------| ---------------------------------        | ------------------------------------------------------------- |

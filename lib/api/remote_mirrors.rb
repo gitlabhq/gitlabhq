@@ -11,6 +11,12 @@ module API
       unauthorized! unless can?(current_user, :admin_remote_mirror, user_project)
     end
 
+    helpers do
+      def find_remote_mirror
+        user_project.remote_mirrors.find(params[:mirror_id])
+      end
+    end
+
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
@@ -44,7 +50,7 @@ module API
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
       end
       get ':id/remote_mirrors/:mirror_id' do
-        mirror = user_project.remote_mirrors.find(params[:mirror_id])
+        mirror = find_remote_mirror
 
         present mirror, with: Entities::RemoteMirror
       end
@@ -62,7 +68,7 @@ module API
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
       end
       post ':id/remote_mirrors/:mirror_id/sync' do
-        mirror = user_project.remote_mirrors.find(params[:mirror_id])
+        mirror = find_remote_mirror
 
         result = ::RemoteMirrors::SyncService.new(user_project, current_user).execute(mirror)
 
@@ -137,7 +143,7 @@ module API
         use :mirror_branches_setting
       end
       put ':id/remote_mirrors/:mirror_id' do
-        mirror = user_project.remote_mirrors.find(params[:mirror_id])
+        mirror = find_remote_mirror
 
         mirror_params = declared_params(include_missing: false)
         mirror_params[:id] = mirror_params.delete(:mirror_id)
@@ -152,7 +158,7 @@ module API
         if result[:status] == :success
           present mirror.reset, with: Entities::RemoteMirror
         else
-          render_api_error!(result[:message], result[:http_status])
+          render_api_error!(result[:message], 400)
         end
       end
 
@@ -170,7 +176,7 @@ module API
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
       end
       delete ':id/remote_mirrors/:mirror_id' do
-        mirror = user_project.remote_mirrors.find(params[:mirror_id])
+        mirror = find_remote_mirror
 
         destroy_conditionally!(mirror) do
           mirror_params = declared_params(include_missing: false).merge(_destroy: 1)

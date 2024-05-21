@@ -4,7 +4,6 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import CiEditorHeader from '~/ci/pipeline_editor/components/editor/ci_editor_header.vue';
 import {
   pipelineEditorTrackingOptions,
-  TEMPLATE_REPOSITORY_URL,
   EDITOR_APP_DRAWER_HELP,
   EDITOR_APP_DRAWER_NONE,
 } from '~/ci/pipeline_editor/constants';
@@ -37,7 +36,6 @@ describe('CI Editor Header', () => {
     );
   };
 
-  const findLinkBtn = () => wrapper.findByTestId('template-repo-link');
   const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
   const findCatalogRepoLinkButton = () => wrapper.findByTestId('catalog-repo-link');
 
@@ -70,39 +68,10 @@ describe('CI Editor Header', () => {
       expect(findCatalogRepoLinkButton().exists()).toBe(true);
     });
 
-    it('has the external-link icon', () => {
-      expect(findCatalogRepoLinkButton().props('icon')).toBe('external-link');
-    });
-
     it('tracks the click on the Catalog button', () => {
       const { browseCatalog } = pipelineEditorTrackingOptions.actions;
 
       testTracker(findCatalogRepoLinkButton(), browseCatalog);
-    });
-  });
-
-  describe('link button', () => {
-    beforeEach(() => {
-      createComponent();
-      trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-    });
-
-    it('finds the browse template button', () => {
-      expect(findLinkBtn().exists()).toBe(true);
-    });
-
-    it('contains the link to the template repo', () => {
-      expect(findLinkBtn().attributes('href')).toBe(TEMPLATE_REPOSITORY_URL);
-    });
-
-    it('has the external-link icon', () => {
-      expect(findLinkBtn().props('icon')).toBe('external-link');
-    });
-
-    it('tracks the click on the browse button', () => {
-      const { browseTemplates } = pipelineEditorTrackingOptions.actions;
-
-      testTracker(findLinkBtn(), browseTemplates);
     });
   });
 

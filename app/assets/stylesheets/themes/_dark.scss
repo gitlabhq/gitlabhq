@@ -3,11 +3,6 @@
 $gray-light: lighten($gray-10, 2);
 $gray-lighter: darken($gray-50, 4);
 $gray-normal: $gray-50;
-$gray-dark: darken($gray-100, 2);
-
-// Used for border and background in a couple instances where inverting between modes is desirable
-// once migrated to suitable color values this can be removed
-$t-gray-a-08: rgba($gray-950, 0.08);
 
 $black-normal: $gray-900;
 
