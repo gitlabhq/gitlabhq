@@ -51,7 +51,9 @@ module Banzai
       # See https://github.com/gollum/gollum/wiki
       #
       # Rubular: http://rubular.com/r/7dQnE5CUCH
-      TAGS_PATTERN = /\[\[(.+?)\]\]/
+      TAGS_PATTERN_UNTRUSTED = '\[\[(.+?)\]\]'
+      TAGS_PATTERN_UNTRUSTED_REGEX =
+        Gitlab::UntrustedRegexp.new(TAGS_PATTERN_UNTRUSTED, multiline: false).freeze
 
       # Pattern to match allowed image extensions
       ALLOWED_IMAGE_EXTENSIONS = /.+(jpg|png|gif|svg|bmp)\z/i
@@ -62,9 +64,9 @@ module Banzai
       def call
         doc.xpath('descendant-or-self::text()').each do |node|
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
-          next unless node.content =~ TAGS_PATTERN
+          next unless match = TAGS_PATTERN_UNTRUSTED_REGEX.match(node.content)
 
-          html = process_tag(Regexp.last_match(1))
+          html = process_tag(match[1])&.to_s || match[0]
 
           next unless html && html != node.content
 
