@@ -35,7 +35,7 @@ You might receive notifications for one of the following reasons:
 - You're subscribed to group or project pipeline notifications via the pipeline emails [integration](../project/integrations/index.md).
 
 1. GitLab doesn't send a notification when
-   [a comment is edited to include a user mention](../discussions/index.md#editing-a-comment-to-add-a-mention).
+   [a comment is edited to include a user mention](../discussions/index.md#edit-a-comment-to-add-a-mention).
 
 NOTE:
 Administrators can block notifications, preventing them from being sent.

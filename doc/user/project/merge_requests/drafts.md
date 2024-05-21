@@ -13,9 +13,9 @@ DETAILS:
 
 If a merge request isn't ready to merge, you can block it from merging until you
 [mark it as ready](#mark-merge-requests-as-ready). Merge requests marked as **Draft**
-cannot merge until the **Draft** flag is removed, even if all other merge criteria are met:
+cannot merge until you remove the **Draft** flag, even if they meet all other merge criteria:
 
-![merge is blocked](img/merge_request_draft_blocked_v16_0.png)
+![merge blocked](img/merge_request_draft_blocked_v16_0.png)
 
 ## Mark merge requests as drafts
 
@@ -51,9 +51,8 @@ When a merge request is ready to merge, you can remove the `Draft` flag in sever
   [quick action](../quick_actions.md#issues-merge-requests-and-epics)
   in a comment in the merge request.
 
-When you mark a merge request as ready,
-[merge request participants and watchers](../../profile/notifications.md#notifications-on-issues-merge-requests-and-epics)
-are notified.
+When you mark a merge request as ready, GitLab notifies
+[merge request participants and watchers](../../profile/notifications.md#notifications-on-issues-merge-requests-and-epics).
 
 ## Include or exclude drafts when searching
 

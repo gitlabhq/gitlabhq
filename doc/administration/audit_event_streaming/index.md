@@ -187,7 +187,7 @@ might want to set the `content-type` header to something else. For example ,`app
 To override the `content-type` header default value for an instance streaming destination, use either:
 
 - The [GitLab UI](#update-an-http-destination).
-- The [GraphQL API](graphql_api.md#update-streaming-destinations).
+- The [GraphQL API](../../api/graphql/audit_event_streaming_instances.md#update-streaming-destinations).
 
 ## Google Cloud Logging destinations
 

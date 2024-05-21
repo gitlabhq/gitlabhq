@@ -202,7 +202,7 @@ might want to set the `content-type` header to something else. For example ,`app
 To override the `content-type` header default value for a top-level group streaming destination, use either:
 
 - The [GitLab UI](#update-an-http-destination).
-- The [GraphQL API](../../administration/audit_event_streaming/graphql_api.md#update-streaming-destinations).
+- The [GraphQL API](../../api/graphql/audit_event_streaming_groups.md#update-streaming-destinations).
 
 ## Google Cloud Logging destinations
 

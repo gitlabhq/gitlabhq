@@ -70,7 +70,7 @@ export default {
   data() {
     return {
       models: [],
-      errorMessage: undefined,
+      errorMessage: '',
       skipQueries: true,
       queryVariables: {},
     };
@@ -99,7 +99,7 @@ export default {
         sort: variables.sort?.toUpperCase() || 'DESC',
       };
 
-      this.errorMessage = null;
+      this.errorMessage = '';
       this.skipQueries = false;
 
       this.$apollo.queries.models.fetchMore({});

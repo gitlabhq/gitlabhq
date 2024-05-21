@@ -15,10 +15,10 @@ export default {
     },
   },
   i18n: {
-    actionPrimaryText: s__('MLOps|Delete model version'),
-    modalTitle: s__('MLOps|Delete model version?'),
+    actionPrimaryText: s__('MlModelRegistry|Delete model version'),
+    modalTitle: s__('MlModelRegistry|Delete model version?'),
     deleteConfirmationText: s__(
-      'MLOps|Deleting this model version will delete the associated artifacts.',
+      'MlModelRegistry|Deleting this model version will delete the associated artifacts.',
     ),
   },
 };

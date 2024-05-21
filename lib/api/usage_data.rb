@@ -104,8 +104,16 @@ module API
         event_name = params[:event]
         namespace_id = params[:namespace_id]
         project_id = params[:project_id]
-        default_additional_properties = Gitlab::InternalEvents::DEFAULT_ADDITIONAL_PROPERTIES
-        additional_properties = params.fetch(:additional_properties, default_additional_properties)
+        additional_properties = params
+          .fetch(:additional_properties, Gitlab::InternalEvents::DEFAULT_ADDITIONAL_PROPERTIES)
+          .symbolize_keys
+
+        unless Gitlab::Tracking::AiTracking.track_via_code_suggestions?(event_name, current_user)
+          Gitlab::Tracking::AiTracking.track_event(event_name, additional_properties.merge(user: current_user))
+        end
+
+        internal_event_additional_props = additional_properties
+          .slice(*Gitlab::InternalEvents::ALLOWED_ADDITIONAL_PROPERTIES.keys)
 
         track_event(
           event_name,
@@ -113,7 +121,7 @@ module API
           user: current_user,
           namespace_id: namespace_id,
           project_id: project_id,
-          additional_properties: additional_properties.symbolize_keys
+          additional_properties: internal_event_additional_props
         )
 
         status :ok

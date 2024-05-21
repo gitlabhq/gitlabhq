@@ -430,7 +430,7 @@ Namespace filter is removed if:
 
 Manage Google Cloud Logging destinations for top-level groups.
 
-Before setting up Google Cloud Logging streaming audit events, you must satisfy [the prerequisites](audit_event_streaming.md#prerequisites).
+Before setting up Google Cloud Logging streaming audit events, you must satisfy [the prerequisites](../../user/compliance/audit_event_streaming.md#prerequisites).
 
 ### Add a new Google Cloud Logging destination
 

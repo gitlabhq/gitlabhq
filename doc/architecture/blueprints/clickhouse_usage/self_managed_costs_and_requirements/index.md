@@ -36,7 +36,7 @@ and collaborating with ClickHouse team, we identified the following minimal conf
     - ClickHouse - 1 machine with >=16-cores, >=64 GB RAM, SSD, 10 GB Internet.
 
 The following [cost table](https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/14384#note_1324085466) was compiled using the machine CPU and memory requirements for ClickHouse, and comparing them to the
-GitLab Reference Architecture sizes and [costs](../../../../administration/reference_architectures/index.md#cost-to-run) from the GCP calculator.
+GitLab Reference Architecture sizes and [costs](../../../../administration/reference_architectures/index.md#cost-calculator-templates) from the GCP calculator.
 
 | Reference Architecture  | ClickHouse type | ClickHouse cost / (GitLab cost + ClickHouse cost) |
 |-------------|-----------------|-----------------------------------|

@@ -3597,6 +3597,24 @@ CREATE SEQUENCE ai_agents_id_seq
 
 ALTER SEQUENCE ai_agents_id_seq OWNED BY ai_agents.id;
 
+CREATE TABLE ai_feature_settings (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    ai_self_hosted_model_id bigint,
+    feature smallint NOT NULL,
+    provider smallint NOT NULL
+);
+
+CREATE SEQUENCE ai_feature_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_feature_settings_id_seq OWNED BY ai_feature_settings.id;
+
 CREATE TABLE ai_self_hosted_models (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -19000,6 +19018,8 @@ ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent
 
 ALTER TABLE ONLY ai_agents ALTER COLUMN id SET DEFAULT nextval('ai_agents_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_feature_settings ALTER COLUMN id SET DEFAULT nextval('ai_feature_settings_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_self_hosted_models ALTER COLUMN id SET DEFAULT nextval('ai_self_hosted_models_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_vectorizable_files ALTER COLUMN id SET DEFAULT nextval('ai_vectorizable_files_id_seq'::regclass);
@@ -20737,6 +20757,9 @@ ALTER TABLE ONLY ai_agent_versions
 
 ALTER TABLE ONLY ai_agents
     ADD CONSTRAINT ai_agents_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_feature_settings
+    ADD CONSTRAINT ai_feature_settings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_self_hosted_models
     ADD CONSTRAINT ai_self_hosted_models_pkey PRIMARY KEY (id);
@@ -24476,6 +24499,10 @@ CREATE INDEX index_ai_agent_versions_on_agent_id ON ai_agent_versions USING btre
 CREATE INDEX index_ai_agent_versions_on_project_id ON ai_agent_versions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ai_agents_on_project_id_and_name ON ai_agents USING btree (project_id, name);
+
+CREATE INDEX index_ai_feature_settings_on_ai_self_hosted_model_id ON ai_feature_settings USING btree (ai_self_hosted_model_id);
+
+CREATE UNIQUE INDEX index_ai_feature_settings_on_feature ON ai_feature_settings USING btree (feature);
 
 CREATE UNIQUE INDEX index_ai_self_hosted_models_on_name ON ai_self_hosted_models USING btree (name);
 
@@ -32209,6 +32236,9 @@ ALTER TABLE ONLY software_license_policies
 
 ALTER TABLE ONLY achievements
     ADD CONSTRAINT fk_rails_87e990f752 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_feature_settings
+    ADD CONSTRAINT fk_rails_8907fb7bbb FOREIGN KEY (ai_self_hosted_model_id) REFERENCES ai_self_hosted_models(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_rails_898a13b650 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;

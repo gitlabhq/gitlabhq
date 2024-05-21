@@ -104,7 +104,7 @@ export default {
     deletionSuccessfulAlert() {
       return {
         id: 'ml-model-version_deleted-successfully',
-        message: sprintf(s__('MLOps|Model version %{versionName} deleted successfully'), {
+        message: sprintf(s__('MlModelRegistry|Model version %{versionName} deleted successfully'), {
           versionName: this.versionName,
         }),
         variant: 'success',

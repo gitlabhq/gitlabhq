@@ -2,7 +2,7 @@
 status: wip
 creation-date: "2024-02-06"
 authors: [ "@alexander-sosna" ]
-coach: [ "@andrewn" ] 
+coach: [ "@andrewn" ]
 approvers: [  ]
 owning-stage: "~devops::data_stores"
 participating-stages: []
@@ -155,14 +155,15 @@ We observed the following load peaks and can use them as an indication:
 
 #### Decomposition
 
-We are also evaluating if we can further decompose the `Main` database with [decomposing `Secure and Govern` related tables to a separate Postgres DB](https://gitlab.com/gitlab-org/gitlab/-/issues/427973),.
+The application data for [GitLab.com](https://gitlab.com/) is currently decomposed into two separate database clusters, `Main` and `CI`.
+We are evaluating if we can further decompose the `Main` database with [decomposing `Secure and Govern` related tables to a separate Postgres DB](https://gitlab.com/gitlab-org/gitlab/-/issues/427973) to gain more headroom and scalability for the current platform.
 
-Depending on the actual Cell size and amount of data it makes sense to keep individual clusters for each of the databases, or to use a single cluster per Cell to host multiple databases.
-To not prematurely limit the maximal size a Cell can have, we should implement the option to uses dedicated clusters for each database.
+For Cells it is a design choice to scale horizontally by adding more Cells and to rebalance by moving organizations to less saturated cells.
+Cells should not be scaled vertically to a point where decomposition is reasonable.
+Therefore decomposition within Cells will not be needed and is also **not** supported by the current Dedicated / GET / Cells tooling.
+Adding support for Decomposition in GET and Dedicated in the future would be possible as a medium-complexity task.
 
-Currently, Dedicated / GET / Cells tooling does **not** support decomposition. Adding supporting for Decomposition in GET and Dedicated would be possible as a medium-complexity task.
-If the given estimates on Cell size are not changed, decomposition with in Cells might not be needed.
-So for the first iteration only a single database cluster is needed per Cell, only a single one will be supported.
+In line with this, only a single database cluster is provisioned per Cell, capable of hosting all needed databases.
 
 ## Overview - Possible Solutions
 

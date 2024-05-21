@@ -65,9 +65,11 @@ export default {
     },
   },
   i18n: {
-    dropToStartMessage: s__('MLOps|Drop to start upload'),
-    uploadSingleMessage: s__('MLOps|Drop or %{linkStart}select%{linkEnd} artifact to attach'),
-    errorMessage: s__('MLOps|Error importing artifact. Please try again.'),
+    dropToStartMessage: s__('MlModelRegistry|Drop to start upload'),
+    uploadSingleMessage: s__(
+      'MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifact to attach',
+    ),
+    errorMessage: s__('MlModelRegistry|Error importing artifact. Please try again.'),
   },
   validFileMimetypes: [],
 };

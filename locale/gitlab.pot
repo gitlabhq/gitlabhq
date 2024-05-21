@@ -3395,6 +3395,33 @@ msgstr ""
 msgid "Admin notes"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|AI-Powered Features"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|AI-Powered Features that can be enabled, disabled or linked to a cloud-based or self-hosted model."
+msgstr ""
+
+msgid "AdminAiPoweredFeatures|AI-Powered Features"
+msgstr ""
+
+msgid "AdminAiPoweredFeatures|Choose the AI model for %{feature_name} feature"
+msgstr ""
+
+msgid "AdminAiPoweredFeatures|Disables %{feature_name} for the instance."
+msgstr ""
+
+msgid "AdminAiPoweredFeatures|Edit %{feature_name}"
+msgstr ""
+
+msgid "AdminAiPoweredFeatures|Enables %{feature_name} empowered by a GitLab AI Vendor. The model must be configured for the instance."
+msgstr ""
+
+msgid "AdminAiPoweredFeatures|Enables %{feature_name} empowered by a Self-Hosted model"
+msgstr ""
+
+msgid "AdminAiPoweredFeatures|Model Provider"
+msgstr ""
+
 msgid "AdminArea|%{billable_users_link_start}Learn more%{billable_users_link_end} about what defines a billable user"
 msgstr ""
 
@@ -4511,6 +4538,9 @@ msgstr ""
 msgid "Admin|Deploy Keys"
 msgstr ""
 
+msgid "Admin|Features"
+msgstr ""
+
 msgid "Admin|Geo"
 msgstr ""
 
@@ -4527,6 +4557,9 @@ msgid "Admin|Learn more about quarterly reconciliation"
 msgstr ""
 
 msgid "Admin|Messages"
+msgstr ""
+
+msgid "Admin|Models"
 msgstr ""
 
 msgid "Admin|Monitoring"
@@ -21799,6 +21832,9 @@ msgstr ""
 msgid "Feature flag was successfully removed."
 msgstr ""
 
+msgid "Feature settings updated successfully"
+msgstr ""
+
 msgid "FeatureFlags|%d user"
 msgid_plural "FeatureFlags|%d users"
 msgstr[0] ""
@@ -30979,30 +31015,6 @@ msgstr ""
 msgid "MLExperimentTracking|Delete experiment?"
 msgstr ""
 
-msgid "MLOps|Are you sure you want to delete model version %{versionName}?"
-msgstr ""
-
-msgid "MLOps|Delete model version"
-msgstr ""
-
-msgid "MLOps|Delete model version?"
-msgstr ""
-
-msgid "MLOps|Deleting this model version will delete the associated artifacts."
-msgstr ""
-
-msgid "MLOps|Drop or %{linkStart}select%{linkEnd} artifact to attach"
-msgstr ""
-
-msgid "MLOps|Drop to start upload"
-msgstr ""
-
-msgid "MLOps|Error importing artifact. Please try again."
-msgstr ""
-
-msgid "MLOps|Model version %{versionName} deleted successfully"
-msgstr ""
-
 msgid "MLOps|Something went wrong while trying to delete the model version. Please try again later."
 msgstr ""
 
@@ -33025,6 +33037,9 @@ msgstr ""
 msgid "MlModelRegistry|An error has occurred when saving the model."
 msgstr ""
 
+msgid "MlModelRegistry|Are you sure you want to delete model version %{versionName}?"
+msgstr ""
+
 msgid "MlModelRegistry|Artifacts"
 msgstr ""
 
@@ -33052,10 +33067,28 @@ msgstr ""
 msgid "MlModelRegistry|Delete model"
 msgstr ""
 
+msgid "MlModelRegistry|Delete model version"
+msgstr ""
+
+msgid "MlModelRegistry|Delete model version?"
+msgstr ""
+
 msgid "MlModelRegistry|Delete model?"
 msgstr ""
 
+msgid "MlModelRegistry|Deleting this model version will delete the associated artifacts."
+msgstr ""
+
 msgid "MlModelRegistry|Details"
+msgstr ""
+
+msgid "MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifact to attach"
+msgstr ""
+
+msgid "MlModelRegistry|Drop to start upload"
+msgstr ""
+
+msgid "MlModelRegistry|Error importing artifact. Please try again."
 msgstr ""
 
 msgid "MlModelRegistry|Experiment"
@@ -33098,6 +33131,9 @@ msgid "MlModelRegistry|Model performance"
 msgstr ""
 
 msgid "MlModelRegistry|Model registry"
+msgstr ""
+
+msgid "MlModelRegistry|Model version %{versionName} deleted successfully"
 msgstr ""
 
 msgid "MlModelRegistry|New model"
@@ -33172,9 +33208,6 @@ msgid "ModelRegistry|Model registry"
 msgstr ""
 
 msgid "ModelRegistry|New model"
-msgstr ""
-
-msgid "Models"
 msgstr ""
 
 msgid "Modified"

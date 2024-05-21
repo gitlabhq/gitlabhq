@@ -20,7 +20,7 @@ DETAILS:
 **LLMs:** Anthopic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai), Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for GitLab.com in GitLab 16.0.
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) on self-managed in GitLab 17.0.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) ability to ask doc-related questions on self-managed in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `ai_gateway_docs_search`. Disabled by default.
 
 You can ask questions about how GitLab works. Things like:
 

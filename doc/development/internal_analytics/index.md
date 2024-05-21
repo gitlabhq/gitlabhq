@@ -83,6 +83,11 @@ You can scroll down to the "Structured Events Firing in Production Last 30 Days"
 You can visit the [Metrics exploration dashboard](https://10az.online.tableau.com/#/site/gitlab/views/PDServicePingExplorationDashboard/MetricsExploration).
 On the side there is a filter for metric path which is the `key_path` of your metric and a filter for the installation ID including guidance on how to filter for GitLab.com.
 
+#### Custom charts and dashboards
+
+Within Tableau, more advanced charts, such as this [funnel analysis](https://10az.online.tableau.com/#/site/gitlab/views/SaaSRegistrationFunnel/RegistrationFunnelAnalyses) can be accomplished as well.
+Custom charts and dashboards can be requested from the Product Data Insights team by creating an [issue in their project](https://gitlab.com/gitlab-data/product-analytics/-/issues/new?issuable_template=Ad%20Hoc%20Request).
+
 ### Snowflake
 
 Snowflake allows direct querying of relevant tables in the warehouse within their UI with the [Snowflake SQL dialect](https://docs.snowflake.com/en/sql-reference-commands).

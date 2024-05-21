@@ -765,7 +765,7 @@ export default {
             </template>
             <div
               v-else
-              class="gl-w-full gl-order-n1 mr-widget-merge-details"
+              class="gl-w-full -gl-order-1 mr-widget-merge-details"
               data-testid="merged-status-content"
             >
               <p v-if="showMergeDetailsHeader" class="gl-mb-2 gl-text-gray-900">

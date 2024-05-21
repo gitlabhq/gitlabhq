@@ -50,5 +50,6 @@ Migration/EnsureFactoryForTable:
     - 'db/migrate/20240304184128_create_ci_build_names_table.rb'
     - 'db/migrate/20240306121653_create_relation_import_tracker.rb'
     - 'db/migrate/20240404192955_create_early_access_program_tracking_events.rb'
-    - 'db/migrate/20240423064716_create_ci_build_execution_config.rb'
     - 'db/migrate/20240419082037_create_ai_self_hosted_models.rb'
+    - 'db/migrate/20240423064716_create_ci_build_execution_config.rb'
+    - 'db/migrate/20240430110033_create_ai_feature_settings.rb'

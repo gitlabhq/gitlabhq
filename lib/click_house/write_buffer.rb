@@ -5,6 +5,7 @@ module ClickHouse
     BUFFER_KEY = 'clickhouse_write_buffer'
 
     class << self
+      # Currently scoped to code suggestion events only
       def write_event(event_hash)
         Gitlab::Redis::SharedState.with do |redis|
           redis.rpush(BUFFER_KEY, event_hash.to_json)
