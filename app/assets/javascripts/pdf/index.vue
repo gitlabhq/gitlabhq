@@ -41,6 +41,7 @@ export default {
         url: this.document,
         cMapUrl: '/assets/webpack/pdfjs/cmaps/',
         cMapPacked: true,
+        isEvalSupported: false,
       })
         .promise.then(this.renderPages)
         .then((pages) => {
