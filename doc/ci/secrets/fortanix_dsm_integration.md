@@ -99,8 +99,9 @@ To generate a new secret in Fortanix DSM and use it with GitLab:
      }
      ```
 
-1. In GitLab, go to your project.
-1. Go to **Settings > CI/CD > Variables**, and add these variables:
+1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`
    - `FORTANIX_API_KEY`
    - `FORTANIX_PLUGIN_ID`
@@ -130,7 +131,7 @@ To generate a new secret in Fortanix DSM and use it with GitLab:
    If not, select **Build > Pipelines > Run pipeline**.
 1. Go to **Build > Jobs** and check the `build` job's log:
 
-   - ![gitlab_build_result_1](img/gitlab_build_result_1.png)
+   ![gitlab_build_result_1](img/gitlab_build_result_1.png)
 
 ![dsm_secrets](img/dsm_secrets.png)
 
@@ -142,8 +143,9 @@ To use a secret that already exists in Fortanix DSM with GitLab:
 
    ![dsm_secret_import_1](img/dsm_secret_import_1.png)
 
-1. In GitLab, go to your project.
-1. Go to **Settings > CI/CD > Variables**, and add these variables:
+1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`
    - `FORTANIX_API_KEY`
    - `FORTANIX_PLUGIN_ID`
@@ -181,8 +183,9 @@ To set up code signing securely in your GitLab environment:
 
    ![dsm_secret_import_2](img/dsm_secret_import_2.png)
 
-1. In GitLab, go to your project.
-1. Go to **Settings > CI/CD > Variables**, and add these variables:
+1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Variables** and add these variables:
    - `FORTANIX_API_ENDPOINT`
    - `FORTANIX_API_KEY`
    - `FORTANIX_SECRET_NAME_1` (for `keystore_password`)

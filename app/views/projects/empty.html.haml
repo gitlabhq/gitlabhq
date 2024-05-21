@@ -5,7 +5,6 @@
 - escaped_default_branch_name = default_branch_name.shellescape
 - @skip_current_level_breadcrumb = true
 
-= render_if_exists 'projects/duo_chat_ga_alert', project: @project
 = render partial: 'flash_messages', locals: { project: @project }
 = render 'clusters_deprecation_alert'
 

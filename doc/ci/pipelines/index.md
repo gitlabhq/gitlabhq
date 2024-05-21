@@ -350,7 +350,7 @@ running time is:
 To view all the pipelines that ran for your project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. **Build > Pipelines** page.
+1. Select **Build > Pipelines**.
 
 You can filter the pipeline list by:
 

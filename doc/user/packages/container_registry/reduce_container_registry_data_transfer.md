@@ -32,7 +32,7 @@ Use these tools and techniques to determine your image's size:
 - Docker in CI: examine and record the image size when using GitLab CI prior to pushing an image
   with Docker. For example:
 
-  ```yaml
+  ```shell
   docker inspect "$CI_REGISTRY_IMAGE:$IMAGE_TAG" \
         | awk '/"Size": ([0-9]+)[,]?/{ printf "Final Image Size: %d\n", $2 }'
   ```

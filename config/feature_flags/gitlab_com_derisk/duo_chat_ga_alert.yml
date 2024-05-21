@@ -1,9 +1,0 @@
----
-name: duo_chat_ga_alert
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442655
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149329
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/455857
-milestone: '17.0'
-type: gitlab_com_derisk
-group: group::acquisition
-default_enabled: false

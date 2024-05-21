@@ -115,11 +115,11 @@ The job status displayed in the UI will be `canceling` while the `after_script` 
 **Additional details:**
 
 - To avoid `after_script` commands being executed after canceling a job, you can check the `$CI_JOB_STATUS` predefined variable at the beginning of your `after_script` and end execution early depending on the value, for example:
-  
+
   ```shell
   - if [ "$CI_JOB_STATUS" == "canceled" ]; then exit 0; fi
   ```
-  
+
 - GitLab Runner 16.11.1 and above are recommended to support this feature:
   - In the GitLab Runner 16.11.1 patch release, [`canceled` is supported for `$CI_JOB_STATUS`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/37485). Before the patch release, the status will be `failed` while `canceling`.
   - Prior to the GitLab Runner 16.11.1 patch release, a bug caused the `after_script` work to close pre-maturely.

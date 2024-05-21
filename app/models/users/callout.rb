@@ -87,7 +87,7 @@ module Users
       summarize_code_changes: 85, # EE-only
       # 86 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152619
       deployment_details_feedback: 87,
-      duo_chat_ga_alert: 88, # EE-only
+      # 88 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152999
       board_add_new_column_trigger_popover: 89,
       deployment_approvals_empty_state: 90,
       period_in_terraform_state_name_alert: 91

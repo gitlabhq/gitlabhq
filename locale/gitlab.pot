@@ -19149,21 +19149,6 @@ msgstr ""
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
 msgstr ""
 
-msgid "DuoChatGAAlert|Access Chat in the IDE"
-msgstr ""
-
-msgid "DuoChatGAAlert|Access a broad range of GitLab Duo features with your personal chat assistant in the UI of GitLab.com. You can also use Chat to access Code explanation, Code refactoring, and Test generation in your preferred IDE. Later this year, a paid add-on subscription will be required to access GitLab Duo Chat."
-msgstr ""
-
-msgid "DuoChatGAAlert|Dismiss Duo Chat GA banner"
-msgstr ""
-
-msgid "DuoChatGAAlert|GitLab Duo Chat is generally available today"
-msgstr ""
-
-msgid "DuoChatGAAlert|Use GitLab Duo Chat"
-msgstr ""
-
 msgid "DuoChat|Ask a question about GitLab"
 msgstr ""
 

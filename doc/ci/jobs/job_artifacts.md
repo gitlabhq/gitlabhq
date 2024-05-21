@@ -288,13 +288,13 @@ some artifacts file extensions directly in your browser. If the project is inter
 
 The following extensions are supported:
 
-| File extension | GitLab.com | Linux package with built-in NGINX |
-|----------|---------------------|--------------|
-|  `.html`   | **{check-circle}** Yes | **{check-circle}** Yes |
-|  `.json`   | **{check-circle}** Yes | **{check-circle}** Yes |
-|  `.xml`   | **{check-circle}** Yes | **{check-circle}** Yes |
-|  `.txt` | **{dotted-circle}** No | **{check-circle}** Yes |
-| `.log` | **{dotted-circle}** No | **{check-circle}** Yes |
+| File extension | GitLab.com             | Linux package with built-in NGINX |
+|----------------|------------------------|-----------------------------------|
+| `.html`        | **{check-circle}** Yes | **{check-circle}** Yes            |
+| `.json`        | **{check-circle}** Yes | **{check-circle}** Yes            |
+| `.xml`         | **{check-circle}** Yes | **{check-circle}** Yes            |
+| `.txt`         | **{dotted-circle}** No | **{check-circle}** Yes            |
+| `.log`         | **{dotted-circle}** No | **{check-circle}** Yes            |
 
 ### From a URL
 

@@ -36,7 +36,7 @@ Prerequisites:
 
 **Limitations**
 
-- The `id_tokens` portion of the CI/CD config file must be located in the project that is being built and signed. AutoDevOps, CI files included from another repository, and child pipelines are not supported. Work to remove this limitation is being tracked in [issue 411317](https://gitlab.com/gitlab-org/gitlab/-/issues/411317).
+- The `id_tokens` portion of the CI/CD configuration file must be located in the project that is being built and signed. AutoDevOps, CI files included from another repository, and child pipelines are not supported. Work to remove this limitation is being tracked in [issue 411317](https://gitlab.com/gitlab-org/gitlab/-/issues/411317).
 
 **Best practices**:
 
@@ -158,7 +158,7 @@ needed to make it safer to distribute and use open source software.
 **Related topics**:
 
 - [SLSA Provenance definition](https://slsa.dev/provenance/v1)
-- [npm Docs](https://docs.npmjs.com/generating-provenance-statements/)
+- [npm documentation](https://docs.npmjs.com/generating-provenance-statements/)
 - [npm Provenance RFC](https://github.com/npm/rfcs/blob/main/accepted/0049-link-packages-to-source-and-build.md#detailed-steps-to-publish)
 
 ### Generating provenance in GitLab CI/CD

@@ -507,8 +507,10 @@ Karma
 KCachegrind
 Kerberos
 Keycloak
+keyless
 keyset
 keyspace
+keystore
 keytab
 keytabs
 Kibana
