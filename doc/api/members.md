@@ -586,10 +586,11 @@ POST /projects/:id/members
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `user_id` | integer/string | yes | The user ID of the new member or multiple IDs separated by commas |
-| `access_level` | integer | yes | [A valid access level](access_requests.md#valid-access-levels) |
-| `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `user_id` | integer/string | yes, if `username` is not provided | The user ID of the new member or multiple IDs separated by commas. |
+| `username` | string | yes, if `user_id` is not provided | The username of the new member or multiple usernames separated by commas. |
+| `access_level` | integer | yes | [A valid access level](access_requests.md#valid-access-levels). |
+| `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY`. |
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/327120>`. |
 | `member_role_id` | integer | no | The ID of a member role. Ultimate only. |
 

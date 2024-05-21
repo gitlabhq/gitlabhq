@@ -88,7 +88,6 @@ $purple-light: #ede8fb !default;
 
 $gray-light: $gray-10 !default;
 $gray-lighter: lighten($gray-50, 4) !default;
-$gray-normal: lighten($gray-50, 2) !default;
 
 /*
  * UI elements
@@ -255,7 +254,7 @@ $dark-diff-match-color: rgba($white, 0.1);
 $diff-image-info-color: #808080;
 $diff-view-modes-color: #808080;
 $diff-view-modes-border: #c1c1c1;
-$diff-jagged-border-gradient-color: darken($gray-50, 8%);
+$diff-jagged-border-gradient-color: $gray-100;
 
 /*
  * Fonts

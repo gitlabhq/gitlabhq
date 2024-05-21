@@ -44,7 +44,7 @@ RSpec.describe InitializerConnections do
       expect { block_with_database_call }.to raise_error(/Database connection should not be called during initializer/)
     end
 
-    it 'restores original connection handler' do
+    it 'restores original connection handler', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444963' do
       original_handler = ActiveRecord::Base.connection_handler
 
       expect { block_with_database_call }.to raise_error(/Database connection should not be called during initializer/)

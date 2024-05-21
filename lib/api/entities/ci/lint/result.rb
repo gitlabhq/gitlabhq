@@ -15,7 +15,7 @@ module API
           expose :includes, documentation: { is_array: true, type: 'object',
                                              example: '{ "blob": "https://gitlab.com/root/example-project/-/blob/...' }
           expose :jobs, if: ->(result, options) { options[:include_jobs] },
-                        documentation: { is_array: true, type: 'object', example: '{ "name": "test: .... }' }
+            documentation: { is_array: true, type: 'object', example: '{ "name": "test: .... }' }
         end
       end
     end

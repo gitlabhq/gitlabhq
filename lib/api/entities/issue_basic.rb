@@ -21,9 +21,9 @@ module API
       expose :milestone, using: Entities::Milestone
       expose :assignees, :author, using: Entities::UserBasic
       expose :issue_type,
-             as: :type,
-             format_with: :upcase,
-             documentation: { type: 'String', example: 'ISSUE', desc: "One of #{::WorkItems::Type.allowed_types_for_issues.map(&:upcase)}" }
+        as: :type,
+        format_with: :upcase,
+        documentation: { type: 'String', example: 'ISSUE', desc: "One of #{::WorkItems::Type.allowed_types_for_issues.map(&:upcase)}" }
 
       expose :assignee, using: ::API::Entities::UserBasic do |issue|
         issue.assignees.first

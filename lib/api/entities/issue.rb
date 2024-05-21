@@ -44,8 +44,8 @@ module API
       end
 
       expose :severity,
-             format_with: :upcase,
-             documentation: { type: "String", desc: "One of #{::IssuableSeverity.severities.keys.map(&:upcase)}" }
+        format_with: :upcase,
+        documentation: { type: "String", desc: "One of #{::IssuableSeverity.severities.keys.map(&:upcase)}" }
 
       # Calculating the value of subscribed field triggers Markdown
       # processing. We can't do that for multiple issues / merge

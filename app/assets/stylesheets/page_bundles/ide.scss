@@ -93,7 +93,7 @@ $ide-commit-header-height: 48px;
     display: flex;
     align-items: center;
     padding: $grid-size $gl-padding;
-    background-color: var(--ide-background-hover, $gray-normal);
+    background-color: var(--ide-background-hover, $gray-50);
     border-right: 1px solid var(--ide-border-color, $border-color);
     border-bottom: 1px solid var(--ide-border-color, $border-color);
 
@@ -135,7 +135,7 @@ $ide-commit-header-height: 48px;
         box-shadow: none !important;
         font-weight: normal !important;
 
-        background-color: var(--ide-background-hover, $gray-normal);
+        background-color: var(--ide-background-hover, $gray-50);
         border-right: 1px solid var(--ide-border-color, $border-color);
         border-bottom: 1px solid var(--ide-border-color, $border-color);
 

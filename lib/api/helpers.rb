@@ -12,8 +12,6 @@ module API
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
-    GITLAB_SHELL_API_HEADER = "Gitlab-Shell-Api-Request"
-    GITLAB_SHELL_JWT_ISSUER = "gitlab-shell"
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'
     API_TOKEN_ENV = 'gitlab.api.token'
@@ -341,15 +339,11 @@ module API
     end
 
     def authenticate_by_gitlab_shell_token!
-      payload, _ = JSONWebToken::HMACToken.decode(headers[GITLAB_SHELL_API_HEADER], secret_token)
-      unauthorized! unless payload['iss'] == GITLAB_SHELL_JWT_ISSUER
-    rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature => ex
-      Gitlab::ErrorTracking.track_exception(ex)
-      unauthorized!
+      unauthorized! unless Gitlab::Shell.verify_api_request(headers)
     end
 
     def authenticate_by_gitlab_shell_or_workhorse_token!
-      return require_gitlab_workhorse! unless headers[GITLAB_SHELL_API_HEADER].present?
+      return require_gitlab_workhorse! unless Gitlab::Shell.header_set?(headers)
 
       authenticate_by_gitlab_shell_token!
     end

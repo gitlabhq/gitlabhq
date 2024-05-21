@@ -637,6 +637,34 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
             expect(json_response['message']).to eq(error_message)
           end
         end
+
+        context 'when executing the Members::CreateService for multiple usernames' do
+          let(:usernames) { [stranger.username, access_requester.username].join(',') }
+
+          it 'returns success when it successfully create all members' do
+            expect do
+              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                params: { username: usernames, access_level: Member::DEVELOPER }
+
+              expect(response).to have_gitlab_http_status(:created)
+            end.to change { source.members.count }.by(2)
+            expect(json_response['status']).to eq('success')
+          end
+
+          it 'returns the error message if there was an error adding members to group' do
+            error_message = 'Unable to find Username'
+            allow_next_instance_of(::Members::CreateService) do |service|
+              expect(service).to receive(:execute).and_return({ status: :error, message: error_message })
+            end
+
+            expect do
+              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                params: { username: usernames, access_level: Member::DEVELOPER }
+            end.not_to change { source.members.count }
+            expect(json_response['status']).to eq('error')
+            expect(json_response['message']).to eq(error_message)
+          end
+        end
       end
 
       context 'access levels' do
@@ -1044,6 +1072,32 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
           post api("/projects/#{project.id}/members", maintainer),
             params: { user_id: access_requester.id, access_level: Member::OWNER }
         end
+      end
+    end
+
+    context 'add member to project' do
+      it 'allows adding by username' do
+        post api("/projects/#{project.id}/members", maintainer),
+          params: { username: access_requester.username, access_level: Member::DEVELOPER }
+
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response['username']).to eq(access_requester.username)
+      end
+
+      it 'returns a 400 if user_id is also provided' do
+        post api("/projects/#{project.id}/members", maintainer),
+          params: { username: access_requester.username, user_id: access_requester.id, access_level: Member::DEVELOPER }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to eq('user_id, username are mutually exclusive')
+      end
+
+      it 'returns a 400 if user_id and username is missing' do
+        post api("/projects/#{project.id}/members", maintainer),
+          params: { access_level: Member::DEVELOPER }
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response['error']).to match('at least one parameter must be provided')
       end
     end
 

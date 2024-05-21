@@ -101,21 +101,6 @@ To view a list of dashboards (both built-in and custom) for a project:
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
-### View the value streams dashboard
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
-
-Prerequisites:
-
-- You must have at least the Reporter role for the project.
-- Overview background aggregation for Value Streams Dashboards must be enabled.
-
-To view the Value Streams Dashboard as an analytics dashboard for a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
-1. From the list of available dashboards, select **Value Streams Dashboard**.
-
 ## View group dashboards
 
 DETAILS:

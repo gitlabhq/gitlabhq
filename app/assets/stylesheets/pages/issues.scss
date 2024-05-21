@@ -17,14 +17,14 @@
 
   .issue-token:hover &,
   .issue-token-link:focus > & {
-    background-color: $gray-normal;
+    background-color: $gray-50;
     color: $blue-800;
     text-decoration: none;
   }
 }
 
 .issue-token-title {
-  background-color: $gray-normal;
+  background-color: $gray-50;
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
   .issue-token:hover &,
@@ -34,7 +34,7 @@
 }
 
 .issue-token-remove-button {
-  background-color: $gray-normal;
+  background-color: $gray-50;
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
   &:hover,

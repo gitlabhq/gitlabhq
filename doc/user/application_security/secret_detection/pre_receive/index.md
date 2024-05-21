@@ -76,6 +76,8 @@ Add placeholder token to test file
 git push -o secret_detection.skip_all
 ```
 
+Skipping secret detection will generate [Project audit event](../../../compliance/audit_events.md#project-audit-events).
+
 NOTE:
 [Pipeline secret detection](../index.md) still scans the bypassed secrets when pre-receive secret detection is skipped.
 
