@@ -55,6 +55,7 @@ code_quality:
         --volume "$DOCKER_SOCKET_PATH":/var/run/docker.sock \
         "$CODE_QUALITY_IMAGE" /code
   artifacts:
+    access: 'developer'
     reports:
       codequality: gl-code-quality-report.json
     expire_in: 1 week

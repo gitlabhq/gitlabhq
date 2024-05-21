@@ -20777,6 +20777,12 @@ ALTER TABLE workspaces
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
+ALTER TABLE ci_runners
+    ADD CONSTRAINT check_46c685e76f CHECK ((char_length((description)::text) <= 1024)) NOT VALID;
+
+ALTER TABLE ci_runners
+    ADD CONSTRAINT check_91230910ec CHECK ((char_length((name)::text) <= 256)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 
