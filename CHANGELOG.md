@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.10.6 (2024-05-21)
+
+### Fixed (1 change)
+
+- [Ensure BLPOP/BRPOP returns nil instead of raising ReadTimeoutError](gitlab-org/security/gitlab@78c11d44cf01757221da8bb01f6fbdefb352f619)
+
+### Security (6 changes)
+
+- [Prevent PDF.js from evaluating scripts](gitlab-org/security/gitlab@db5b63e4a26889f09f72b582b7777909efd4cd4d) ([merge request](gitlab-org/security/gitlab!4071))
+- [Caching test_report api response to reduce calculations](gitlab-org/security/gitlab@8b67dde95712b74c3ff0ae9d8bc73d7cd0a350cf) ([merge request](gitlab-org/security/gitlab!4030))
+- [Fail create commit status on pipeline_id / sha mismatch](gitlab-org/security/gitlab@36c5070a2ad812f52747241321aaae81345aaee0) ([merge request](gitlab-org/security/gitlab!4033))
+- [Use UntrustedRegexp for gollum pattern](gitlab-org/security/gitlab@3fee24aca41a5db9135e8f3003335d1754beb636) ([merge request](gitlab-org/security/gitlab!4041))
+- [Patch @gitlab/web-ide to fix XSS webWorkerExtensionHostIframe.html](gitlab-org/security/gitlab@29cc8769daee74938155dd7e3b5a2f3a3bda5b71) ([merge request](gitlab-org/security/gitlab!4057))
+- [Add text limit to ci_runners text fields](gitlab-org/security/gitlab@5af28a81f6c11d9627f1a359a7c3a7d85e7fb4d9) ([merge request](gitlab-org/security/gitlab!4037))
+
 ## 16.10.5 (2024-05-07)
 
 ### Fixed (1 change)
