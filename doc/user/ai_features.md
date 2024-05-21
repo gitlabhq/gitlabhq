@@ -78,7 +78,7 @@ DETAILS:
 
 - Efficiently communicates the impact of your merge request changes.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
-- [View documentation](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes).
+- [View documentation](project/merge_requests/ai_in_merge_requests.md#generate-a-description-by-summarizing-code-changes).
 
 ### Merge request template population
 
@@ -88,7 +88,7 @@ DETAILS:
 
 - Generates a description for the merge request based on the contents of the template.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
-- [View documentation](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates).
+- [View documentation](project/merge_requests/ai_in_merge_requests.md#generate-a-description-from-a-template).
 
 ### Vulnerability explanation
 
@@ -142,7 +142,7 @@ DETAILS:
 
 - Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
-- [View documentation](project/merge_requests/ai_in_merge_requests.md#summarize-my-merge-request-review).
+- [View documentation](project/merge_requests/ai_in_merge_requests.md#summarize-a-code-review).
 
 ### Vulnerability resolution
 
@@ -203,7 +203,7 @@ DETAILS:
 
 - Helps users generate meaningful commit messages for merge and squash commits.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text).
-- [View documentation](project/merge_requests/ai_in_merge_requests.md#generate-messages-for-merge-or-squash-commits).
+- [View documentation](project/merge_requests/ai_in_merge_requests.md#generate-a-merge-or-squash-commit-message).
 
 ## Disable GitLab Duo features for specific groups or projects or an entire instance
 

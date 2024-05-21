@@ -834,9 +834,7 @@ The requirements for a Redis setup are the following:
    change the default ones).
 1. The server that hosts the GitLab application must be able to access the
    Redis nodes.
-1. Protect the nodes from access from external networks
-   ([Internet](https://gitlab.com/gitlab-org/gitlab-foss/uploads/c4cc8cd353604bd80315f9384035ff9e/The_Internet_IT_Crowd.png)),
-   using a firewall.
+1. Protect the nodes from access from external networks (Internet), using options such as a firewall.
 
 In this section, you'll be guided through configuring two external Redis clusters
 to be used with GitLab. The following IPs will be used as an example:
