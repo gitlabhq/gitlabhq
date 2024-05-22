@@ -17,7 +17,7 @@ DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro or Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, and JetBrains IDEs
-**LLMs:** Anthopic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai), Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
+**LLMs:** Anthopic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai), [Vertex AI Search](https://cloud.google.com/enterprise-search)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for GitLab.com in GitLab 16.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) ability to ask doc-related questions on self-managed in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `ai_gateway_docs_search`. Disabled by default.

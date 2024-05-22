@@ -115,7 +115,6 @@ Lint/SymbolConversion:
     - 'lib/gitlab/metrics/transaction.rb'
     - 'lib/gitlab/usage_data/topology.rb'
     - 'lib/gitlab/usage_data_counters/base_counter.rb'
-    - 'lib/gitlab/usage_data_counters/note_counter.rb'
     - 'lib/peek/views/detailed_view.rb'
     - 'qa/qa/ee/page/workspace/action.rb'
     - 'qa/qa/ee/page/workspace/list.rb'

@@ -43,8 +43,17 @@ DETAILS:
 
 - Processes and generates text and code in a conversational manner.
   Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation.
-- LLM: Anthropic [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai) and Vertex AI Codey [`textembedding-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings)
+- LLM: Anthropic [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai),
+  Anthropic [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai),
+  [`claude-2.1`](https://docs.anthropic.com/en/docs/legacy-model-guide#anthropics-legacy-models),
+  and [Vertex AI Search](https://cloud.google.com/enterprise-search).
 - [View documentation](gitlab_duo_chat.md).
+
+NOTE:
+The LLM for GitLab Duo Chat depends on the question asked. For more information, see
+the [Duo Chat examples](gitlab_duo_chat_examples.md).
+For self-managed, the models also depend on your GitLab version.
+For the most benefit, use the latest GitLab version whenever possible.
 
 ### Suggested Reviewers
 

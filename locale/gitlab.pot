@@ -5944,6 +5944,9 @@ msgstr ""
 msgid "Analytics|Host"
 msgstr ""
 
+msgid "Analytics|Invalid dashboard configuration"
+msgstr ""
+
 msgid "Analytics|Invalid visualization configuration"
 msgstr ""
 
@@ -14354,6 +14357,9 @@ msgid "ContainerRegistry|You can add an image to this registry with the followin
 msgstr ""
 
 msgid "Containers"
+msgstr ""
+
+msgid "Contains errors"
 msgstr ""
 
 msgid "Contains only whitespace changes."

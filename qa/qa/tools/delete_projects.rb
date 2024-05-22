@@ -88,7 +88,7 @@ module QA
       def resource_exists?(project)
         response = get(resource_request(project))
 
-        if response.code == 404
+        if response.code == HTTP_STATUS_NOT_FOUND
           logger.info("Project #{project[:path_with_namespace]} is no longer available\n")
           false
         else

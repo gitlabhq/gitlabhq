@@ -111,6 +111,7 @@ module QA
 
       def fetch_qa_username(user_id)
         response = get Runtime::API::Request.new(@api_client, "/users/#{user_id}").url
+        exit 1 if response.code == HTTP_STATUS_UNAUTHORIZED
         parsed_response = parse_body(response)
         parsed_response[:username]
       end
@@ -118,7 +119,7 @@ module QA
       def resource_exists?(project)
         response = get(resource_request(project))
 
-        if response.code == 404
+        if response.code == HTTP_STATUS_NOT_FOUND
           logger.info("Project #{project[:path_with_namespace]} is no longer available\n")
           false
         else

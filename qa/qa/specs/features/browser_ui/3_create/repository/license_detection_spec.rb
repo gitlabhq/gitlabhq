@@ -35,7 +35,7 @@ module QA
         end
       end
 
-      context 'on a project with an unrecognized LICENSE',
+      context 'on a project with an unrecognized LICENSE', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366843' do
         it_behaves_like 'project license detection' do
           let(:license_file_name) { 'other' }

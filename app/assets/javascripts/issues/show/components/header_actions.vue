@@ -207,6 +207,14 @@ export default {
     showDropdownTooltip() {
       return !this.isDesktopDropdownVisible ? this.dropdownText : '';
     },
+    promoteToEpicItem() {
+      return {
+        text: __('Promote to epic'),
+        extraAttrs: {
+          disabled: this.isToggleStateButtonLoading,
+        },
+      };
+    },
   },
   created() {
     eventHub.$on('toggle.issuable.state', this.toggleIssueState);
@@ -361,9 +369,11 @@ export default {
           <template #list-item>{{ buttonText }}</template>
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item v-if="canCreateIssue" :item="newIssueItem" />
-        <gl-disclosure-dropdown-item v-if="canPromoteToEpic" @action="promoteToEpic">
-          <template #list-item>{{ __('Promote to epic') }}</template>
-        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
+          v-if="canPromoteToEpic"
+          :item="promoteToEpicItem"
+          @action="promoteToEpic"
+        />
         <template v-if="showLockIssueOption">
           <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
         </template>
@@ -461,12 +471,10 @@ export default {
       <gl-disclosure-dropdown-item v-if="canCreateIssue && isUserSignedIn" :item="newIssueItem" />
       <gl-disclosure-dropdown-item
         v-if="canPromoteToEpic"
-        :disabled="isToggleStateButtonLoading"
+        :item="promoteToEpicItem"
         data-testid="promote-button"
         @action="promoteToEpic"
-      >
-        <template #list-item>{{ __('Promote to epic') }}</template>
-      </gl-disclosure-dropdown-item>
+      />
       <template v-if="showLockIssueOption">
         <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
       </template>

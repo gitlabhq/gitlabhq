@@ -12,7 +12,7 @@
 
 .issue-token-reference {
   margin-right: 1px;
-  background-color: $gray-lighter;
+  background-color: $gray-10;
   transition: background $general-hover-transition-duration $general-hover-transition-curve, color $general-hover-transition-duration $general-hover-transition-curve;
 
   .issue-token:hover &,

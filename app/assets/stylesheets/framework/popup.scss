@@ -1,13 +1,13 @@
 .popup {
   @include triangle(
-    $gray-lighter,
+    $gray-10,
     $gray-50,
     $popup-triangle-size,
     $popup-triangle-border-size
   );
 
   padding: $gl-padding;
-  background-color: $gray-lighter;
+  background-color: $gray-10;
   border: 1px solid $gray-50;
   border-radius: $gl-border-radius-base;
   box-shadow: 0 5px 8px $popup-box-shadow-color;

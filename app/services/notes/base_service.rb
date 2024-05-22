@@ -13,12 +13,13 @@ module Notes
     end
 
     def increment_usage_counter(note)
-      if note.noteable_type == 'Commit'
+      case note.noteable_type
+      when 'Commit'
         track_internal_event('create_commit_note', project: project, user: current_user)
-      elsif note.noteable_type == 'Snippet'
+      when 'Snippet'
         track_internal_event('create_snippet_note', project: project, user: current_user)
-      else
-        Gitlab::UsageDataCounters::NoteCounter.count(:create, note.noteable_type)
+      when 'MergeRequest'
+        track_internal_event('create_merge_request_note', project: project, user: current_user)
       end
     end
   end

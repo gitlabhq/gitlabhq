@@ -89,7 +89,7 @@ module QA
       def resource_exists?(subgroup)
         response = get(resource_request(subgroup))
 
-        if response.code == 404
+        if response.code == HTTP_STATUS_NOT_FOUND
           logger.info("Subgroup #{subgroup[:full_path]} is no longer available\n")
           false
         else
