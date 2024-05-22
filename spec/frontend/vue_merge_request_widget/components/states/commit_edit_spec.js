@@ -50,10 +50,11 @@ describe('Commits edit component', () => {
     it('emits an input event and receives changed value', async () => {
       const changedCommitMessage = 'Changed commit message';
 
+      wrapper.setProps({ value: changedCommitMessage });
       findTextarea().vm.$emit('input', changedCommitMessage);
 
       await nextTick();
-      expect(wrapper.emitted().input[0]).toEqual([changedCommitMessage]);
+      expect(wrapper.emitted('input')).toEqual([[changedCommitMessage]]);
       expect(findTextarea().props('value')).toBe(changedCommitMessage);
     });
   });

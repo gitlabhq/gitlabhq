@@ -188,17 +188,19 @@ export default {
         </template>
 
         <template v-else-if="hasVersions">
-          <package-list-row
-            v-for="v in packageEntity.versions"
-            :key="v.id"
-            :package-entity="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-              name: packageEntity.name,
-              ...v,
-            } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
-            :package-link="v.id.toString()"
-            :disable-delete="true"
-            :show-package-type="false"
-          />
+          <ul class="gl-pl-0">
+            <package-list-row
+              v-for="v in packageEntity.versions"
+              :key="v.id"
+              :package-entity="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
+                name: packageEntity.name,
+                ...v,
+              } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+              :package-link="v.id.toString()"
+              :disable-delete="true"
+              :show-package-type="false"
+            />
+          </ul>
         </template>
 
         <p v-else class="gl-mt-3" data-testid="no-versions-message">

@@ -1,4 +1,4 @@
-const usersMock = [
+export const usersMock = [
   {
     id: '123',
     username: 'usr1',
@@ -37,8 +37,8 @@ const usersMock = [
 ];
 
 const accessLevelsMock = [
-  { accessLevelDescription: 'Administrator' },
-  { accessLevelDescription: 'Maintainer' },
+  { accessLevelDescription: 'Maintainers' },
+  { accessLevelDescription: 'Maintainers + Developers' },
 ];
 
 const approvalsRequired = 3;
@@ -92,6 +92,12 @@ export const accessLevelsMockResponse = [
     },
   },
 ];
+
+export const mergeAccessLevelsMockResponse = {
+  __typename: 'MergeAccessLevel',
+  accessLevel: 30,
+  accessLevelDescription: 'Maintainers',
+};
 
 export const matchingBranchesCount = 3;
 
@@ -188,9 +194,28 @@ export const deleteBranchRuleMockResponse = {
 
 export const editBranchRuleMockResponse = {
   data: {
-    branchRule: {
+    branchRuleUpdate: {
       errors: [],
       __typename: 'BranchRuleEditPayload',
+      branchRule: {
+        __typename: 'BranchRule',
+        name: 'newname',
+        isDefault: true,
+        id: 'gid://gitlab/Projects/BranchRule/1',
+        matchingBranchesCount,
+        branchProtection: {
+          __typename: 'BranchProtection',
+          allowForcePush: true,
+          mergeAccessLevels: {
+            __typename: 'MergeAccessLevelConnection',
+            nodes: [mergeAccessLevelsMockResponse],
+          },
+          pushAccessLevels: {
+            __typename: 'PushAccessLevelConnection',
+            nodes: [],
+          },
+        },
+      },
     },
   },
 };
@@ -205,4 +230,11 @@ export const protectableBranchesMockResponse = {
       __typename: 'Project',
     },
   },
+};
+
+export const allowedToMergeDrawerProps = {
+  isLoading: false,
+  isOpen: false,
+  title: 'Edit allowed to merge',
+  roles: accessLevelsMock,
 };

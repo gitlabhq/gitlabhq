@@ -178,7 +178,7 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
       context 'with unknown event' do
         it 'returns status ok' do
-          expect(Gitlab::Redis::HLL).not_to receive(:add).with(hash_including(key: unknown_event))
+          expect(Gitlab::Redis::HLL).not_to receive(:add)
 
           post api(endpoint, user), params: { event: unknown_event }
 

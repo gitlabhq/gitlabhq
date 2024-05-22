@@ -55,7 +55,7 @@ RSpec.shared_examples 'every metric definition' do
   let(:metric_files_with_schema) do
     Gitlab::Usage::MetricDefinition
       .definitions
-      .select { |_, v| v.respond_to?(:value_json_schema) }
+      .select { |_, v| v.value_json_schema }
   end
 
   let(:expected_metric_files_key_paths) { metric_files_key_paths }

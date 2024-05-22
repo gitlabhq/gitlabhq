@@ -167,7 +167,7 @@ On GitLab Dedicated this feature is not available.
 
 AI Impact analytics displays SDLC metrics for a group or project in the month-to-date and the past six months. You can use this table to observe how changes in the AI usage metric correlate with changes in other metrics.
 
-The metric **Monthly Code Suggestions Usage rate** is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). GitLab considers the total monthly unique code contributors, meaning only users with `pushed` events are included in the calculation.
+The metric **Monthly Code Suggestions Usage rate** represents users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
 
 The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.
 

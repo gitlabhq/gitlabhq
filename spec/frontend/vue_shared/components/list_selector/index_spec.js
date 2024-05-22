@@ -35,6 +35,7 @@ describe('List Selector spec', () => {
   const USERS_MOCK_PROPS = {
     projectPath: 'some/project/path',
     groupPath: 'some/group/path',
+    usersQueryOptions: { active: true },
     type: 'users',
   };
 
@@ -72,7 +73,7 @@ describe('List Selector spec', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findAllListBoxComponents = () => wrapper.findAllComponents(GlCollapsibleListbox);
   const findSearchResultsDropdown = () => findAllListBoxComponents().at(0);
-  const findNamespaceDropdown = () => findAllListBoxComponents().at(1);
+  const findNamespaceDropdown = () => wrapper.findByTestId('namespace-dropdown');
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
   const findAllUserComponents = () => wrapper.findAllComponents(UserItem);
   const findAllGroupComponents = () => wrapper.findAllComponents(GroupItem);
@@ -115,6 +116,14 @@ describe('List Selector spec', () => {
     it('does not call query when search box has not received an input', () => {
       expect(Api.projectUsers).not.toHaveBeenCalled();
       expect(findAllUserComponents().length).toBe(0);
+    });
+
+    describe('namespace dropdown rendering', () => {
+      beforeEach(() => createComponent({ ...USERS_MOCK_PROPS, isProjectOnlyNamespace: true }));
+
+      it('does not render namespace dropdown with isProjectOnlyNamespace prop', () => {
+        expect(findNamespaceDropdown().exists()).toBe(false);
+      });
     });
 
     describe('selected items', () => {

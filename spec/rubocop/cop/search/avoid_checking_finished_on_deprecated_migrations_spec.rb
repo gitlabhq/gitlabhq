@@ -7,8 +7,8 @@ RSpec.describe RuboCop::Cop::Search::AvoidCheckingFinishedOnDeprecatedMigrations
   context 'when a deprecated class is used with migration_has_finished?' do
     it 'flags it as an offense' do
       expect_offense <<~SOURCE
-        return if Elastic::DataMigrationService.migration_has_finished?(:backfill_project_permissions_in_blobs_using_permutations)
-                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Migration is deprecated and can not be used with `migration_has_finished?`.
+        return if Elastic::DataMigrationService.migration_has_finished?(:backfill_archived_on_issues)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Migration is deprecated and can not be used with `migration_has_finished?`.
       SOURCE
     end
   end
@@ -24,7 +24,7 @@ RSpec.describe RuboCop::Cop::Search::AvoidCheckingFinishedOnDeprecatedMigrations
   context 'when migration_has_finished? method is called on another class' do
     it 'does not flag it as an offense' do
       expect_no_offenses <<~SOURCE
-        return if Klass.migration_has_finished?(:backfill_project_permissions_in_blobs_using_permutations)
+        return if Klass.migration_has_finished?(:backfill_archived_on_issues)
       SOURCE
     end
   end

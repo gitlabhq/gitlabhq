@@ -19,8 +19,9 @@ module Gitlab
       end
 
       def key
-        key_path
+        attributes[:key_path]
       end
+      alias_method :key_path, :key
 
       def events
         events_from_new_structure || events_from_old_structure || {}
@@ -32,6 +33,14 @@ module Gitlab
         else
           attributes[:instrumentation_class]
         end
+      end
+
+      def status
+        attributes[:status]
+      end
+
+      def value_json_schema
+        attributes[:value_json_schema]
       end
 
       def to_context
@@ -82,6 +91,10 @@ module Gitlab
 
       def valid_service_ping_status?
         VALID_SERVICE_PING_STATUSES.include?(attributes[:status])
+      end
+
+      def data_source
+        attributes[:data_source]
       end
 
       def internal_events?
@@ -153,14 +166,6 @@ module Gitlab
       end
 
       private
-
-      def method_missing(method, *args)
-        attributes[method] || super
-      end
-
-      def respond_to_missing?(method, *args)
-        attributes[method].present? || super
-      end
 
       def events_from_new_structure
         events = attributes[:events]

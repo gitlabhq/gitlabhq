@@ -37,7 +37,8 @@ RSpec.describe StorageHelper, feature_category: :consumables_cost_management do
           pipeline_artifacts_size: 11.megabytes,
           snippets_size: 40.megabytes,
           packages_size: 12.megabytes,
-          uploads_size: 15.megabytes
+          uploads_size: 15.megabytes,
+          container_registry_size: 3.gigabytes
         )
       )
     end

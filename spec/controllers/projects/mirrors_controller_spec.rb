@@ -199,67 +199,6 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
       end
     end
 
-    context 'when feature flag "use_remote_mirror_create_service" is disabled' do
-      before do
-        stub_feature_flags(use_remote_mirror_create_service: false)
-      end
-
-      context 'With valid URL for a push' do
-        let(:remote_mirror_attributes) do
-          { "0" => { "enabled" => "0", url: 'https://updated.example.com' } }
-        end
-
-        it 'processes a successful update' do
-          do_put(project, remote_mirrors_attributes: remote_mirror_attributes)
-
-          expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
-          expect(flash[:notice]).to match(/successfully updated/)
-        end
-
-        it 'creates a RemoteMirror object' do
-          expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.to change(RemoteMirror, :count).by(1)
-        end
-
-        context 'with json format' do
-          it 'processes a successful update' do
-            do_put(project, { remote_mirrors_attributes: remote_mirror_attributes }, { format: :json })
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(json_response).to include(
-              'id' => project.id,
-              'remote_mirrors_attributes' => a_kind_of(Array)
-            )
-          end
-        end
-      end
-
-      context 'With invalid URL for a push' do
-        let(:remote_mirror_attributes) do
-          { "0" => { "enabled" => "0", url: 'ftp://invalid.invalid' } }
-        end
-
-        it 'processes an unsuccessful update' do
-          do_put(project, remote_mirrors_attributes: remote_mirror_attributes)
-
-          expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
-          expect(flash[:alert]).to match(/Only allowed schemes are/)
-        end
-
-        it 'does not create a RemoteMirror object' do
-          expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.not_to change(RemoteMirror, :count)
-        end
-
-        context 'with json format' do
-          it 'processes an unsuccessful update' do
-            do_put(project, { remote_mirrors_attributes: remote_mirror_attributes }, { format: :json })
-
-            expect(response).to have_gitlab_http_status(:unprocessable_entity)
-            expect(json_response['remote_mirrors.url']).to include(/Only allowed schemes are/)
-          end
-        end
-      end
-    end
-
     context 'when user deletes the remote mirror' do
       let(:remote_mirror_attributes) do
         { id: project.remote_mirrors.first.id, _destroy: 1 }

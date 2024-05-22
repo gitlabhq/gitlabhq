@@ -98,30 +98,18 @@ module API
         use :mirror_branches_setting
       end
       post ':id/remote_mirrors' do
-        if Feature.enabled?(:use_remote_mirror_create_service, user_project)
-          service = ::RemoteMirrors::CreateService.new(
-            user_project,
-            current_user,
-            declared_params(include_missing: false)
-          )
+        service = ::RemoteMirrors::CreateService.new(
+          user_project,
+          current_user,
+          declared_params(include_missing: false)
+        )
 
-          result = service.execute
+        result = service.execute
 
-          if result.success?
-            present result.payload[:remote_mirror], with: Entities::RemoteMirror
-          else
-            render_api_error!(result.message, 400)
-          end
+        if result.success?
+          present result.payload[:remote_mirror], with: Entities::RemoteMirror
         else
-          create_params = declared_params(include_missing: false)
-          verify_mirror_branches_setting(create_params)
-          new_mirror = user_project.remote_mirrors.create(create_params)
-
-          if new_mirror.persisted?
-            present new_mirror, with: Entities::RemoteMirror
-          else
-            render_validation_error!(new_mirror)
-          end
+          render_api_error!(result.message, 400)
         end
       end
 

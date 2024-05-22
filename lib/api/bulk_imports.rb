@@ -231,6 +231,31 @@ module API
       get ':import_id/entities/:entity_id/failures' do
         present paginate(bulk_import_entity.failures), with: Entities::BulkImports::EntityFailure
       end
+
+      desc 'Cancel GitLab Migration' do
+        detail 'This feature was introduced in GitLab 17.1'
+        success code: 200, model: Entities::BulkImport
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
+      end
+
+      params do
+        requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
+      end
+      post ':import_id/cancel' do
+        authenticated_as_admin!
+
+        bulk_import = BulkImport.find(params[:import_id])
+
+        bulk_import.cancel!
+
+        status :ok
+        present bulk_import, with: Entities::BulkImport
+      end
     end
   end
 end

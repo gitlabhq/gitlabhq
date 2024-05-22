@@ -1608,10 +1608,6 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     end
 
     context 'updating password' do
-      # user should have `last_on_activity` set to today,
-      # so that `Users::ActivityService` does not register any more updates.
-      let_it_be(:admin) { create(:admin, :with_last_activity_on_today) }
-
       def update_password(user, admin, password = User.random_password)
         put api("/users/#{user.id}", admin, admin_mode: true), params: { password: password }
       end

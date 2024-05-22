@@ -48,7 +48,8 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
   describe '.all_human_statuses' do
     it 'returns all human readable entity statuses' do
-      expect(described_class.all_human_statuses).to contain_exactly('created', 'started', 'finished', 'failed', 'timeout')
+      expect(described_class.all_human_statuses)
+        .to contain_exactly('created', 'started', 'finished', 'failed', 'timeout', 'canceled')
     end
   end
 
@@ -58,6 +59,7 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
   end
 
   describe '#completed?' do
+    it { expect(described_class.new(status: -2)).to be_completed }
     it { expect(described_class.new(status: -1)).to be_completed }
     it { expect(described_class.new(status: 0)).not_to be_completed }
     it { expect(described_class.new(status: 1)).not_to be_completed }
@@ -115,6 +117,30 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
         bulk_import = build(:bulk_import, source_version: '15.5.0')
 
         expect(bulk_import.supports_batched_export?).to eq(false)
+      end
+    end
+  end
+
+  describe 'import canceling' do
+    let(:import) { create(:bulk_import, :started) }
+
+    it 'marks import as canceled' do
+      expect(import.canceled?).to eq(false)
+
+      import.cancel!
+
+      expect(import.canceled?).to eq(true)
+    end
+
+    context 'when import has entities' do
+      it 'marks entities as canceled' do
+        entity = create(:bulk_import_entity, bulk_import: import)
+
+        expect(entity.canceled?).to eq(false)
+
+        import.cancel!
+
+        expect(entity.reload.canceled?).to eq(true)
       end
     end
   end

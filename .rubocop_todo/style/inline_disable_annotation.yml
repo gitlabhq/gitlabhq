@@ -1861,7 +1861,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/controllers/concerns/gitlab_subscriptions/seat_count_alert_spec.rb'
     - 'ee/spec/controllers/concerns/routable_actions_spec.rb'
     - 'ee/spec/controllers/projects/settings/merge_requests_controller_spec.rb'
-    - 'ee/spec/elastic/migrate/20230503064300_backfill_project_permissions_in_blobs_using_permutations_spec.rb'
     - 'ee/spec/factories/package_metadata/pm_licenses.rb'
     - 'ee/spec/factories/security_scans.rb'
     - 'ee/spec/features/dashboards/todos_spec.rb'

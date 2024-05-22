@@ -25017,6 +25017,8 @@ CREATE INDEX index_ci_namespace_mirrors_on_traversal_ids_unnest ON ci_namespace_
 
 CREATE UNIQUE INDEX index_ci_namespace_monthly_usages_on_namespace_id_and_date ON ci_namespace_monthly_usages USING btree (namespace_id, date);
 
+CREATE UNIQUE INDEX index_ci_partitions_on_current_status ON ci_partitions USING btree (status) WHERE (status = 2);
+
 CREATE INDEX index_ci_pending_builds_id_on_protected_partial ON ci_pending_builds USING btree (id) WHERE (protected = true);
 
 CREATE UNIQUE INDEX index_ci_pending_builds_on_build_id ON ci_pending_builds USING btree (build_id);

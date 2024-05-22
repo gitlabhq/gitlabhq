@@ -18,6 +18,8 @@
 # The tree structure of the entities results in the same structure for imported
 # Groups and Projects.
 class BulkImports::Entity < ApplicationRecord
+  include AfterCommitQueue
+
   self.table_name = 'bulk_import_entities'
 
   FailedError = Class.new(StandardError)
@@ -71,6 +73,7 @@ class BulkImports::Entity < ApplicationRecord
     state :finished, value: 2
     state :timeout, value: 3
     state :failed, value: -1
+    state :canceled, value: -2
 
     event :start do
       transition created: :started
@@ -90,11 +93,21 @@ class BulkImports::Entity < ApplicationRecord
       transition started: :timeout
     end
 
+    event :cancel do
+      transition any => :canceled
+    end
+
     # rubocop:disable Style/SymbolProc
     after_transition any => [:finished, :failed, :timeout] do |entity|
       entity.update_has_failures
     end
     # rubocop:enable Style/SymbolProc
+
+    after_transition any => [:canceled] do |entity|
+      entity.run_after_commit do
+        entity.propagate_cancel
+      end
+    end
   end
 
   def self.all_human_statuses
@@ -219,6 +232,10 @@ class BulkImports::Entity < ApplicationRecord
 
       checksums.merge!(tracker.checksums)
     end
+  end
+
+  def propagate_cancel
+    trackers.each(&:cancel)
   end
 
   private

@@ -100,7 +100,7 @@ export default {
       <gl-button
         v-if="glFeatures.editBranchRules && isEditAvailable"
         size="small"
-        data-testid="edit-button"
+        data-testid="edit-rule-button"
         @click="$emit('edit')"
         >{{ __('Edit') }}</gl-button
       >

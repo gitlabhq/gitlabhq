@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-flex-direction-column">
+  <ul class="gl-pl-0">
     <image-list-row
       v-for="(listItem, index) in images"
       :key="index"
@@ -35,5 +35,5 @@ export default {
       :expiration-policy="expirationPolicy"
       @delete="$emit('delete', $event)"
     />
-  </div>
+  </ul>
 </template>

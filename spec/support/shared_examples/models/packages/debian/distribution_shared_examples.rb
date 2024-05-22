@@ -207,7 +207,7 @@ RSpec.shared_examples 'Debian Distribution with project container' do
           .with_foreign_key(:distribution_id)
       end
 
-      it { is_expected.to have_many(:packages).class_name('Packages::Package').through(:publications) }
+      it { is_expected.to have_many(:packages).class_name('Packages::Debian::Package').through(:publications) }
     end
   end
 end

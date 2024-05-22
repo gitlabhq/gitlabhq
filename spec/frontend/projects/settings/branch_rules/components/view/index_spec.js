@@ -10,6 +10,7 @@ import { createAlert } from '~/alert';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import RuleView from '~/projects/settings/branch_rules/components/view/index.vue';
+import RuleDrawer from '~/projects/settings/branch_rules/components/view/rule_drawer.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import Protection from '~/projects/settings/branch_rules/components/view/protection.vue';
 import BranchRuleModal from '~/projects/settings/components/branch_rule_modal.vue';
@@ -27,7 +28,7 @@ import {
 } from '~/projects/settings/branch_rules/components/view/constants';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import deleteBranchRuleMutation from '~/projects/settings/branch_rules/mutations/branch_rule_delete.mutation.graphql';
-import editBranchRuleMutation from '~/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
+import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
 import {
   editBranchRuleMockResponse,
   deleteBranchRuleMockResponse,
@@ -35,6 +36,7 @@ import {
   predefinedBranchRulesMockResponse,
   matchingBranchesCount,
   protectableBranchesMockResponse,
+  allowedToMergeDrawerProps,
 } from 'ee_else_ce_jest/projects/settings/branch_rules/components/view/mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -77,6 +79,7 @@ describe('View branch rules', () => {
     .fn()
     .mockResolvedValue(protectableBranchesMockResponse);
   const errorHandler = jest.fn().mockRejectedValue('error');
+  const toastMock = { show: jest.fn() };
 
   const createComponent = async (
     glFeatures = { editBranchRules: true },
@@ -97,8 +100,12 @@ describe('View branch rules', () => {
       stubs: {
         Protection,
         BranchRuleModal,
+        RuleDrawer,
         GlCard: stubComponent(GlCard, { template: RENDER_ALL_SLOTS_TEMPLATE }),
         GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
+      },
+      mocks: {
+        $toast: toastMock,
       },
       directives: { GlModal: createMockDirective('gl-modal') },
     });
@@ -119,11 +126,13 @@ describe('View branch rules', () => {
   const findpageTitle = () => wrapper.findByText(I18N.pageTitle);
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
   const findDeleteRuleButton = () => wrapper.findByTestId('delete-rule-button');
+  const findEditRuleNameButton = () => wrapper.findByTestId('edit-rule-name-button');
   const findEditRuleButton = () => wrapper.findByTestId('edit-rule-button');
   const findDeleteRuleModal = () => wrapper.findComponent(GlModal);
   const findBranchRuleModal = () => wrapper.findComponent(BranchRuleModal);
   const findBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findNoDataTitle = () => wrapper.findByText(I18N.noData);
+  const findRuleDrawer = () => wrapper.findComponent(RuleDrawer);
 
   const findMatchingBranchesLink = () =>
     wrapper.findByText(
@@ -230,7 +239,7 @@ describe('View branch rules', () => {
 
   describe('Editing branch rule', () => {
     it('renders edit branch rule button', () => {
-      expect(findEditRuleButton().text()).toBe('Edit');
+      expect(findEditRuleNameButton().text()).toBe('Edit');
     });
 
     it('passes correct props to the edit rule modal', () => {
@@ -242,7 +251,7 @@ describe('View branch rules', () => {
     });
 
     it('renders correct modal id for the edit button', () => {
-      const binding = getBinding(findEditRuleButton().element, 'gl-modal');
+      const binding = getBinding(findEditRuleNameButton().element, 'gl-modal');
 
       expect(binding.value).toBe(EDIT_RULE_MODAL_ID);
     });
@@ -255,9 +264,12 @@ describe('View branch rules', () => {
     it('when edit button in the modal is clicked it makes a call to edit rule and redirects to new branch rule page', async () => {
       findBranchRuleModal().vm.$emit('primary', 'main');
       await nextTick();
+      await waitForPromises();
       expect(editBranchRuleSuccessHandler).toHaveBeenCalledWith({
-        id: 'gid://gitlab/Projects/BranchRule/1',
-        name: 'main',
+        input: {
+          id: 'gid://gitlab/Projects/BranchRule/1',
+          name: 'main',
+        },
       });
       await waitForPromises();
       expect(util.setUrlParams).toHaveBeenCalledWith({ branch: 'main' });
@@ -328,11 +340,41 @@ describe('View branch rules', () => {
     });
 
     it('does not render edit button', () => {
-      expect(findEditRuleButton().exists()).toBe(false);
+      expect(findEditRuleNameButton().exists()).toBe(false);
     });
 
     it('does not render Protect Branch section', () => {
       expect(findBranchProtectionTitle().exists()).toBe(false);
+    });
+  });
+
+  describe('Allowed to merge editing', () => {
+    it('renders the edit button', () => {
+      expect(findEditRuleButton().text()).toBe('Edit');
+    });
+    it('passes expected props to rule drawer', () => {
+      expect(findRuleDrawer().props()).toMatchObject(allowedToMergeDrawerProps);
+    });
+    it('when edit button is clicked it opens rule drawer', async () => {
+      findEditRuleButton().vm.$emit('click');
+      await nextTick();
+      expect(findRuleDrawer().props('isOpen')).toBe(true);
+    });
+    it('when save button is clicked it calls edit rule mutation', async () => {
+      findRuleDrawer().vm.$emit('editRule', { accessLevel: 30 });
+      await nextTick();
+      await waitForPromises();
+      expect(editBranchRuleSuccessHandler).toHaveBeenCalledWith({
+        input: {
+          branchProtection: {
+            mergeAccessLevels: {
+              accessLevel: 30,
+            },
+          },
+          id: 'gid://gitlab/Projects/BranchRule/1',
+          name: 'main',
+        },
+      });
     });
   });
 
@@ -355,7 +397,7 @@ describe('View branch rules', () => {
     });
 
     it('does not render edit rule button and modal', () => {
-      expect(findEditRuleButton().exists()).toBe(false);
+      expect(findEditRuleNameButton().exists()).toBe(false);
       expect(findBranchRuleModal().exists()).toBe(false);
     });
   });

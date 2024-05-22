@@ -131,13 +131,39 @@ Installation instructions will be added to the Developer documentation. [issue](
 
 _This list will expand in the near future, but the overall architecture will be the same_
 
+### Self Hosted models fitting into the current architecture
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant GitLab
+    participant AIGateway as AI Gateway
+    participant SelfHostedModel as Self Hosted Model
+    participant GitLabAIVendor as GitLab AI Vendor
+
+    User ->> GitLab: Send request
+    GitLab ->> GitLab: Check if self-hosted model is configured
+    alt Self-hosted model configured
+        GitLab ->> AIGateway: Create prompt and send request
+        AIGateway ->> SelfHostedModel: Perform API request to AI model
+        SelfHostedModel -->> AIGateway: Respond to the prompt
+        AIGateway -->> GitLab: Forward AI response
+    else
+        GitLab ->> AIGateway: Create prompt and send request
+        AIGateway ->> GitLabAIVendor: Perform API request to AI model
+        GitLabAIVendor -->> AIGateway: Respond to the prompt
+        AIGateway -->> GitLab: Forward AI response
+    end
+    GitLab -->> User: Forward AI response
+```
+
 ### GitLab Duo Feature Support
 
 | Feature             | Default Model    | [Mistral AI 7B v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) | [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1) |
 |---------------------|------------------|----------------------------------------------------------------|---------------------|
 | GitLab Duo Chat     | Anthropic Claude-2 <br/> Vertex AI Codey textembedding-gecko | Not planned        | Not planned         |
 | Code Completion     | Vertex AI Codey code-gecko                                   | ✅                 | ✅ |
-| Code Generation     | Anthropic Claude-2                                           | ✅                 | ✅ |
+| Code Generation     | Anthropic Claude-3                                           | ✅                 | ✅ |
 | Git Suggestions     | Vertex AI Codey codechat-bison                               | Not planned        | Not planned        |
 | Discussion Summary  | Vertex AI Codey text-bison                                   | Not planned        | Not planned        |
 | Issue Description Generation | Anthropic Claude-2                                  | Not planned        | Not planned        |

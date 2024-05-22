@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`packages_list_row renders 1`] = `
-<div
+<li
   class="gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-border-t-1 gl-border-t-solid gl-border-t-transparent gl-display-flex gl-flex-direction-column"
   data-testid="package-row"
 >
@@ -87,5 +87,5 @@ exports[`packages_list_row renders 1`] = `
       />
     </div>
   </div>
-</div>
+</li>
 `;

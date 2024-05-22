@@ -18,41 +18,11 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
     it { is_expected.to have_many(:installable_nuget_package_files).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
-    it { is_expected.to have_one(:debian_publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
-    it { is_expected.to have_one(:debian_distribution).through(:debian_publication).source(:distribution).inverse_of(:packages).class_name('Packages::Debian::ProjectDistribution') }
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:terraform_module_metadatum).inverse_of(:package) }
     it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
     it { is_expected.to have_many(:matching_package_protection_rules).through(:project).source(:package_protection_rules) }
-  end
-
-  describe '.with_debian_codename' do
-    let_it_be(:publication) { create(:debian_publication) }
-
-    subject { described_class.with_debian_codename(publication.distribution.codename).to_a }
-
-    it { is_expected.to contain_exactly(publication.package) }
-  end
-
-  describe '.with_debian_codename_or_suite' do
-    let_it_be(:distribution1) { create(:debian_project_distribution, :with_suite) }
-    let_it_be(:distribution2) { create(:debian_project_distribution, :with_suite) }
-
-    let_it_be(:package1) { create(:debian_package, published_in: distribution1) }
-    let_it_be(:package2) { create(:debian_package, published_in: distribution2) }
-
-    context 'with a codename' do
-      subject { described_class.with_debian_codename_or_suite(distribution1.codename).to_a }
-
-      it { is_expected.to contain_exactly(package1) }
-    end
-
-    context 'with a suite' do
-      subject { described_class.with_debian_codename_or_suite(distribution2.suite).to_a }
-
-      it { is_expected.to contain_exactly(package2) }
-    end
   end
 
   describe '.with_composer_target' do
@@ -155,24 +125,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to allow_value("my.app-11.07.2018").for(:name) }
       it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
 
-      context 'debian package' do
-        subject { build(:debian_package) }
-
-        it { is_expected.to allow_value('0ad').for(:name) }
-        it { is_expected.to allow_value('g++').for(:name) }
-        it { is_expected.not_to allow_value('a_b').for(:name) }
-      end
-
-      context 'debian incoming' do
-        subject { create(:debian_incoming) }
-
-        # Only 'incoming' is accepted
-        it { is_expected.to allow_value('incoming').for(:name) }
-        it { is_expected.not_to allow_value('0ad').for(:name) }
-        it { is_expected.not_to allow_value('g++').for(:name) }
-        it { is_expected.not_to allow_value('a_b').for(:name) }
-      end
-
       context 'generic package' do
         subject { build_stubbed(:generic_package) }
 
@@ -258,21 +210,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
         it { is_expected.to allow_value('dev-master').for(:version) }
         it { is_expected.to allow_value('2.x-dev').for(:version) }
-      end
-
-      context 'debian package' do
-        subject { build(:debian_package) }
-
-        it { is_expected.to allow_value('2:4.9.5+dfsg-5+deb10u1').for(:version) }
-        it { is_expected.not_to allow_value('1_0').for(:version) }
-      end
-
-      context 'debian incoming' do
-        subject { create(:debian_incoming) }
-
-        it { is_expected.to allow_value(nil).for(:version) }
-        it { is_expected.not_to allow_value('2:4.9.5+dfsg-5+deb10u1').for(:version) }
-        it { is_expected.not_to allow_value('1_0').for(:version) }
       end
 
       context 'maven package' do
@@ -632,33 +569,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
     end
 
-    describe "uniqueness for package type debian" do
-      let!(:package) { create(:debian_package) }
-
-      it "will not allow a Debian package with same project, name, version and distribution" do
-        new_package = build(:debian_package, project: package.project, name: package.name, version: package.version)
-        new_package.debian_publication.distribution = package.debian_publication.distribution
-        expect(new_package).not_to be_valid
-        expect(new_package.errors.to_a).to include('Name has already been taken')
-      end
-
-      it "will not allow a Debian package with same project, name, version, but no distribution" do
-        new_package = build(:debian_package, project: package.project, name: package.name, version: package.version, published_in: nil)
-        expect(new_package).not_to be_valid
-        expect(new_package.errors.to_a).to include('Name has already been taken')
-      end
-
-      context 'with pending_destruction package' do
-        let!(:package) { create(:debian_package, :pending_destruction) }
-
-        it "will allow a Debian package with same project, name, version and distribution" do
-          new_package = build(:debian_package, project: package.project, name: package.name, version: package.version)
-          new_package.debian_publication.distribution = package.debian_publication.distribution
-          expect(new_package).to be_valid
-        end
-      end
-    end
-
     Packages::Package.package_types.keys.without('conan').each do |pt|
       context "project id, name, version and package type uniqueness for package type #{pt}" do
         let(:package) { create("#{pt}_package") }
@@ -707,23 +617,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
     it 'will raise error if not found' do
       expect { subject.by_name_and_file_name('foo', 'foo-5.5.5.tgz') }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-  end
-
-  describe '.debian_incoming_package!' do
-    let!(:debian_package) { create(:debian_package) }
-    let!(:debian_processing_incoming) { create(:debian_incoming, :processing) }
-
-    subject { described_class.debian_incoming_package! }
-
-    context 'when incoming exists' do
-      let!(:debian_incoming) { create(:debian_incoming) }
-
-      it { is_expected.to eq(debian_incoming) }
-    end
-
-    context 'when incoming not found' do
-      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
     end
   end
 
@@ -1118,46 +1011,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
 
       it { is_expected.to contain_exactly(*tags) }
-    end
-  end
-
-  describe '#debian_incoming?' do
-    let(:package) { build(:package) }
-
-    subject { package.debian_incoming? }
-
-    it { is_expected.to eq(false) }
-
-    context 'with debian_incoming' do
-      let(:package) { create(:debian_incoming) }
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'with debian_package' do
-      let(:package) { create(:debian_package) }
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
-  describe '#debian_package?' do
-    let(:package) { build(:package) }
-
-    subject { package.debian_package? }
-
-    it { is_expected.to eq(false) }
-
-    context 'with debian_incoming' do
-      let(:package) { create(:debian_incoming) }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with debian_package' do
-      let(:package) { create(:debian_package) }
-
-      it { is_expected.to eq(true) }
     end
   end
 

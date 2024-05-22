@@ -27,8 +27,8 @@ describe('Branch rule protection', () => {
   const findHeader = () => wrapper.findByText(protectionPropsMock.header);
   const findLink = () => wrapper.findComponent(GlLink);
   const findProtectionRows = () => wrapper.findAllComponents(ProtectionRow);
-  const findEditButton = () => wrapper.findByTestId('edit-button');
   const findEmptyState = () => wrapper.findByTestId('protection-empty-state');
+  const findEditButton = () => wrapper.findByTestId('edit-rule-button');
 
   it('renders a card component', () => {
     expect(findCard().exists()).toBe(true);

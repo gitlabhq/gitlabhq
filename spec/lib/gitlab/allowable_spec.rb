@@ -26,4 +26,21 @@ RSpec.describe Gitlab::Allowable do
       end
     end
   end
+
+  describe '#can_any?' do
+    let(:user) { create(:user) }
+    let(:permissions) { [:admin_project, :read_project] }
+
+    context 'when the user is allowed one of the abilities' do
+      let_it_be(:project) { create(:project, :public) }
+
+      it { expect(subject.can_any?(user, permissions, project)).to be(true) }
+    end
+
+    context 'when the user is allowed none of the abilities' do
+      let_it_be(:project) { create(:project, :private) }
+
+      it { expect(subject.can_any?(user, permissions, project)).to be(false) }
+    end
+  end
 end

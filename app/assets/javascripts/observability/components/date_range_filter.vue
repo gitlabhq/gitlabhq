@@ -16,6 +16,16 @@ export default {
       required: false,
       default: null,
     },
+    maxDateRange: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    dateOptions: {
+      type: Array,
+      required: false,
+      default: () => TIME_RANGE_OPTIONS,
+    },
   },
   data() {
     return {
@@ -28,7 +38,7 @@ export default {
   },
   computed: {
     dateRangeOptions() {
-      return TIME_RANGE_OPTIONS.map((option) => {
+      return this.dateOptions.map((option) => {
         const dateRange = periodToDate(option.value);
         return {
           value: option.value,
@@ -95,6 +105,7 @@ export default {
       :default-start-date="dateRange.startDate"
       :default-end-date="dateRange.endDate"
       :default-max-date="defaultMaxDate"
+      :max-date-range="maxDateRange"
       @input="onCustomRangeSelected"
     />
   </div>

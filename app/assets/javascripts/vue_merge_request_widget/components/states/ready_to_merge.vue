@@ -605,7 +605,7 @@ export default {
                 <ul class="border-top commits-list flex-list gl-list-none gl-p-0 gl-pt-4">
                   <commit-edit
                     v-if="shouldShowSquashEdit"
-                    :value="squashCommitMessage"
+                    v-model="squashCommitMessage"
                     :label="__('Squash commit message')"
                     input-id="squash-message-edit"
                     class="gl-m-0! gl-p-0!"
@@ -617,7 +617,7 @@ export default {
                   </commit-edit>
                   <commit-edit
                     v-if="shouldShowMergeEdit"
-                    :value="commitMessage"
+                    v-model="commitMessage"
                     :label="__('Merge commit message')"
                     input-id="merge-message-edit"
                     class="gl-m-0! gl-p-0!"

@@ -306,3 +306,37 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
   "source_title": "Issue title"
 }
 ```
+
+## Cancel a migration
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438281) in GitLab 17.1.
+
+Cancel a direct transfer migration. Requires administrator access.
+
+```plaintext
+POST /bulk_imports/:id/cancel
+```
+
+```shell
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports/1/cancel"
+```
+
+```json
+{
+  "id": 1,
+  "status": "canceled",
+  "source_type": "gitlab",
+  "created_at": "2021-06-18T09:45:55.358Z",
+  "updated_at": "2021-06-18T09:46:27.003Z"
+}
+```
+
+Possible response status codes:
+
+| Status | Description                     |
+|--------|---------------------------------|
+| 200    | Migration successfully canceled |
+| 401    | Unauthorized                    |
+| 403    | Forbidden                       |
+| 404    | Migration not found             |
+| 503    | Service unavailable             |

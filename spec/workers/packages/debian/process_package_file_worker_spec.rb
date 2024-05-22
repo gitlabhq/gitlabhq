@@ -222,7 +222,7 @@ RSpec.describe Packages::Debian::ProcessPackageFileWorker, type: :worker, featur
             .and change { package.reload.name }.to('sample')
             .and change { package.version }.to('1.2.3~alpha2')
             .and change { package.status }.from('processing').to('default')
-            .and change { package.debian_publication }.from(nil)
+            .and change { package.publication }.from(nil)
             .and change { debian_file_metadatum.reload.file_type }.from('unknown').to('changes')
             .and not_change { debian_file_metadatum.component }
         end
@@ -255,7 +255,7 @@ RSpec.describe Packages::Debian::ProcessPackageFileWorker, type: :worker, featur
               .and change { package.reload.name }.to('sample')
               .and change { package.version }.to('1.2.3~alpha2')
               .and change { package.status }.from('processing').to('default')
-              .and change { package.debian_publication }.from(nil)
+              .and change { package.publication }.from(nil)
               .and change { debian_file_metadatum.reload.file_type }.from('unknown').to(expected_file_type)
               .and change { debian_file_metadatum.component }.from(nil).to(component_name)
           end

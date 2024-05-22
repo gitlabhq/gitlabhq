@@ -22,11 +22,12 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
-import editBranchRuleMutation from '../../mutations/edit_branch_rule.mutation.graphql';
 import { getAccessLevels } from '../../../utils';
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
+import RuleDrawer from './rule_drawer.vue';
 import {
   I18N,
   ALL_BRANCHES_WILDCARD,
@@ -61,6 +62,7 @@ export default {
     GlModal,
     GlButton,
     BranchRuleModal,
+    RuleDrawer,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -115,6 +117,8 @@ export default {
       statusChecks: [],
       branchRule: {},
       matchingBranchesCount: null,
+      isAllowedToMergeDrawerOpen: false,
+      isRuleUpdating: false,
     };
   },
   computed: {
@@ -214,18 +218,39 @@ export default {
           });
         });
     },
-    editBranchRule({ name }) {
+    openAllowedToMergeDrawer() {
+      this.isAllowedToMergeDrawerOpen = true;
+    },
+    closeAllowedToMergeDrawer() {
+      this.isAllowedToMergeDrawerOpen = false;
+    },
+    editBranchRule({ name = this.branchRule.name, branchProtection = null, toastMessage = '' }) {
+      this.isRuleUpdating = true;
       this.$apollo
         .mutate({
           mutation: editBranchRuleMutation,
           variables: {
-            id: this.branchRule.id,
-            name,
+            input: {
+              id: this.branchRule.id,
+              name,
+              ...(branchProtection && { branchProtection }),
+            },
           },
         })
-        .then(visitUrl(setUrlParams({ branch: name })))
+        .then(() => {
+          const isRedirectNeeded = !branchProtection;
+          if (isRedirectNeeded) {
+            visitUrl(setUrlParams({ branch: name }));
+          } else {
+            this.closeAllowedToMergeDrawer();
+            this.$toast.show(toastMessage);
+          }
+        })
         .catch(() => {
           createAlert({ message: this.$options.i18n.updateBranchRuleError });
+        })
+        .finally(() => {
+          this.isRuleUpdating = false;
         });
     },
   },
@@ -260,7 +285,7 @@ export default {
           <gl-button
             v-if="glFeatures.editBranchRules && !isPredefinedRule"
             v-gl-modal="$options.editModalId"
-            data-testid="edit-rule-button"
+            data-testid="edit-rule-name-button"
             size="small"
             >{{ $options.i18n.edit }}</gl-button
           >
@@ -283,7 +308,6 @@ export default {
             </gl-link>
           </template>
         </gl-sprintf>
-
         <!-- Allowed to push -->
         <protection
           class="gl-mt-3"
@@ -309,6 +333,23 @@ export default {
           :empty-state-copy="$options.i18n.allowedToMergeEmptyState"
           is-edit-available
           data-testid="allowed-to-merge-content"
+          @edit="openAllowedToMergeDrawer"
+        />
+
+        <rule-drawer
+          :is-open="isAllowedToMergeDrawerOpen"
+          :roles="mergeAccessLevels.roles"
+          :users="mergeAccessLevels.users"
+          :groups="mergeAccessLevels.groups"
+          :is-loading="isRuleUpdating"
+          :title="s__('BranchRules|Edit allowed to merge')"
+          @editRule="
+            editBranchRule({
+              branchProtection: { mergeAccessLevels: $event },
+              toastMessage: s__('BranchRules|Allowed to merge updated'),
+            })
+          "
+          @close="closeAllowedToMergeDrawer"
         />
 
         <!-- Force push -->

@@ -45,6 +45,16 @@ export default {
       required: false,
       default: false,
     },
+    usersQueryOptions: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    isProjectOnlyNamespace: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -58,6 +68,9 @@ export default {
   computed: {
     config() {
       return CONFIG[this.type];
+    },
+    showNamespaceDropdown() {
+      return this.config.showNamespaceDropdown && !this.isProjectOnlyNamespace;
     },
     namespaceDropdownText() {
       return parseBoolean(this.isProjectNamespace)
@@ -105,7 +118,7 @@ export default {
       }
     },
     async fetchUsersBySearchTerm(search) {
-      const users = await Api.projectUsers(this.projectPath, search);
+      const users = await Api.projectUsers(this.projectPath, search, this.usersQueryOptions);
 
       return users?.map((user) => ({
         text: user.name,
@@ -228,10 +241,11 @@ export default {
       </gl-collapsible-listbox>
 
       <gl-collapsible-listbox
-        v-if="config.showNamespaceDropdown"
+        v-if="showNamespaceDropdown"
         v-model="isProjectNamespace"
         :toggle-text="namespaceDropdownText"
         :items="$options.namespaceOptions"
+        data-testid="namespace-dropdown"
         @select="handleSelectNamespace"
       />
     </div>

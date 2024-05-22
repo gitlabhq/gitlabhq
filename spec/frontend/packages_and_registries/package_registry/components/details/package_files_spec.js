@@ -864,18 +864,29 @@ describe('Package Files', () => {
       });
     });
   });
+
   describe('upload slot', () => {
     const resolver = jest.fn().mockResolvedValue(packageFilesQuery({ files: [file] }));
-    const uploadSlotSpy = jest.fn();
-
-    const callFetchSlotProp = () => uploadSlotSpy.mock.calls[0][0].refetch();
+    const findUploadSlot = () => wrapper.findByTestId('upload-slot');
 
     beforeEach(async () => {
       createComponent({
         resolver,
         options: {
           scopedSlots: {
-            upload: uploadSlotSpy,
+            upload(props) {
+              return this.$createElement('div', {
+                attrs: {
+                  'data-testid': 'upload-slot',
+                  ...props,
+                },
+                on: {
+                  click: () => {
+                    return props.refetch();
+                  },
+                },
+              });
+            },
           },
         },
       });
@@ -883,11 +894,11 @@ describe('Package Files', () => {
     });
 
     it('should render slot content', () => {
-      expect(uploadSlotSpy).toHaveBeenLastCalledWith({ refetch: expect.anything() });
+      expect(findUploadSlot().attributes()).toMatchObject({ refetch: expect.anything() });
     });
 
-    it('should refetch on change', () => {
-      callFetchSlotProp();
+    it('should refetch when clicked', async () => {
+      await findUploadSlot().trigger('click');
       expect(resolver).toHaveBeenCalledTimes(2);
     });
   });

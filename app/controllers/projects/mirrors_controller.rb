@@ -17,7 +17,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def update
-    if push_mirror_create? && Feature.enabled?(:use_remote_mirror_create_service, project)
+    if push_mirror_create?
       service = ::RemoteMirrors::CreateService.new(project, current_user, push_mirror_attributes)
       result = service.execute
 

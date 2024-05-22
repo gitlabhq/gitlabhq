@@ -160,6 +160,8 @@ export default {
       pinnedFileStatus: '',
       codequalityData: {},
       sastData: {},
+      keydownTime: undefined,
+      listenersAttached: false,
     };
   },
   apollo: {
@@ -234,6 +236,7 @@ export default {
       'showWhitespace',
       'targetBranchName',
       'branchName',
+      'showTreeList',
     ]),
     ...mapGetters('diffs', [
       'whichCollapsedTypes',
@@ -303,6 +306,9 @@ export default {
     resourceId() {
       return convertToGraphQLId('MergeRequest', this.getNoteableData.id);
     },
+    renderFileTree() {
+      return this.renderDiffFiles && this.showTreeList;
+    },
   },
   watch: {
     commit(newCommit, oldCommit) {
@@ -337,6 +343,7 @@ export default {
       this.adjustView();
       this.subscribeToVirtualScrollingEvents();
     },
+    renderFileTree: 'adjustView',
     isLoading: 'adjustView',
   },
   mounted() {
@@ -432,6 +439,7 @@ export default {
       'setFileByFile',
       'disableVirtualScroller',
       'fetchPinnedFile',
+      'toggleTreeList',
     ]),
     ...mapActions('findingsDrawer', ['setDrawer']),
     closeDrawer() {
@@ -607,6 +615,8 @@ export default {
       }
     },
     setEventListeners() {
+      if (this.listenersAttached) return;
+
       Mousetrap.bind(keysFor(MR_PREVIOUS_FILE_IN_DIFF), () => this.jumpToFile(-1));
       Mousetrap.bind(keysFor(MR_NEXT_FILE_IN_DIFF), () => this.jumpToFile(+1));
 
@@ -619,32 +629,36 @@ export default {
         );
       }
 
-      let keydownTime;
       Mousetrap.bind(['mod+f', 'mod+g'], () => {
-        keydownTime = new Date().getTime();
+        this.keydownTime = new Date().getTime();
       });
 
-      window.addEventListener('blur', () => {
-        if (keydownTime) {
-          const delta = new Date().getTime() - keydownTime;
+      window.addEventListener('blur', this.handleBrowserFindActivation);
 
-          // To make sure the user is using the find function we need to wait for blur
-          // and max 1000ms to be sure it the search box is filtered
-          if (delta >= 0 && delta < 1000) {
-            this.disableVirtualScroller();
-
-            api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
-            api.trackRedisCounterEvent('diff_searches');
-          }
-        }
-      });
+      this.listenersAttached = true;
     },
     removeEventListeners() {
       Mousetrap.unbind(keysFor(MR_PREVIOUS_FILE_IN_DIFF));
       Mousetrap.unbind(keysFor(MR_NEXT_FILE_IN_DIFF));
       Mousetrap.unbind(keysFor(MR_COMMITS_NEXT_COMMIT));
       Mousetrap.unbind(keysFor(MR_COMMITS_PREVIOUS_COMMIT));
-      Mousetrap.unbind(['ctrl+f', 'command+f']);
+      Mousetrap.unbind(['ctrl+f', 'command+f', 'mod+f', 'mod+g']);
+      window.removeEventListener('blur', this.handleBrowserFindActivation);
+      this.listenersAttached = false;
+    },
+    handleBrowserFindActivation() {
+      if (!this.keydownTime) return;
+
+      const delta = new Date().getTime() - this.keydownTime;
+
+      // To make sure the user is using the find function we need to wait for blur
+      // and max 1000ms to be sure it the search box is filtered
+      if (delta >= 0 && delta < 1000) {
+        this.disableVirtualScroller();
+
+        api.trackRedisHllUserEvent('i_code_review_user_searches_diff');
+        api.trackRedisCounterEvent('diff_searches');
+      }
     },
     jumpToFile(step) {
       const targetIndex = this.currentDiffIndex + step;
@@ -709,6 +723,10 @@ export default {
         this.trackEvent(types[event.name]);
       }
     },
+    fileTreeToggled() {
+      this.toggleTreeList();
+      this.adjustView();
+    },
   },
   howToMergeDocsPath: helpPagePath('user/project/merge_requests/merge_request_troubleshooting.md', {
     anchor: 'check-out-merge-requests-locally-through-the-head-ref',
@@ -738,7 +756,7 @@ export default {
         :data-can-create-note="getNoteableData.current_user.can_create_note"
         class="files d-flex gl-mt-2"
       >
-        <diffs-file-tree :render-diff-files="renderDiffFiles" @toggled="adjustView" />
+        <diffs-file-tree :visible="renderFileTree" @toggled="fileTreeToggled" />
         <div class="col-12 col-md-auto diff-files-holder">
           <commit-widget v-if="commit" :commit="commit" :collapsible="false" />
           <gl-alert

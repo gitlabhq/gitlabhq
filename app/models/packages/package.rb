@@ -54,14 +54,10 @@ class Packages::Package < ApplicationRecord
   has_one :terraform_module_metadatum, inverse_of: :package, class_name: 'Packages::TerraformModule::Metadatum'
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
-  has_one :debian_publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'
-  has_one :debian_distribution, through: :debian_publication, source: :distribution, inverse_of: :packages, class_name: 'Packages::Debian::ProjectDistribution'
   has_many :matching_package_protection_rules, -> (package) { where(package_type: package.package_type).for_package_name(package.name) }, through: :project, source: :package_protection_rules
 
-  accepts_nested_attributes_for :debian_publication
   accepts_nested_attributes_for :maven_metadatum
 
-  delegate :codename, :suite, to: :debian_distribution, prefix: :debian_distribution
   delegate :target_sha, to: :composer_metadatum, prefix: :composer
 
   validates :project, presence: true
@@ -84,8 +80,6 @@ class Packages::Package < ApplicationRecord
   validates :name, format: { with: Gitlab::Regex.npm_package_name_regex, message: Gitlab::Regex.npm_package_name_regex_message }, if: :npm?
   validates :name, format: { with: Gitlab::Regex.nuget_package_name_regex }, if: :nuget?
   validates :name, format: { with: Gitlab::Regex.terraform_module_package_name_regex }, if: :terraform_module?
-  validates :name, format: { with: Gitlab::Regex.debian_package_name_regex }, if: :debian_package?
-  validates :name, inclusion: { in: [Packages::Debian::INCOMING_PACKAGE_NAME] }, if: :debian_incoming?
   validates :version, format: { with: Gitlab::Regex.nuget_version_regex }, if: :nuget?
   validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? && maven? }
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
@@ -97,11 +91,6 @@ class Packages::Package < ApplicationRecord
     presence: true,
     format: { with: Gitlab::Regex.generic_package_version_regex },
     if: :generic?
-  validates :version,
-    presence: true,
-    format: { with: Gitlab::Regex.debian_version_regex },
-    if: :debian_package?
-  validate :forbidden_debian_changes, if: :debian?
 
   scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
   scope :with_name, ->(name) { where(name: name) }
@@ -147,14 +136,6 @@ class Packages::Package < ApplicationRecord
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
   scope :including_dependency_links_with_nuget_metadatum, -> { includes(dependency_links: [:dependency, :nuget_metadatum]) }
 
-  scope :with_debian_codename, ->(codename) do
-    joins(:debian_distribution).where(Packages::Debian::ProjectDistribution.table_name => { codename: codename })
-  end
-  scope :with_debian_codename_or_suite, ->(codename_or_suite) do
-    joins(:debian_distribution).where(Packages::Debian::ProjectDistribution.table_name => { codename: codename_or_suite })
-                               .or(where(Packages::Debian::ProjectDistribution.table_name => { suite: codename_or_suite }))
-  end
-  scope :preload_debian_file_metadata, -> { preload(package_files: :debian_file_metadatum) }
   scope :with_composer_target, -> (target) do
     includes(:composer_metadatum)
       .joins(:composer_metadatum)
@@ -219,7 +200,8 @@ class Packages::Package < ApplicationRecord
     golang: 'Packages::Go::Package',
     rubygems: 'Packages::Rubygems::Package',
     conan: 'Packages::Conan::Package',
-    rpm: 'Packages::Rpm::Package'
+    rpm: 'Packages::Rpm::Package',
+    debian: 'Packages::Debian::Package'
   }.freeze
 
   def self.only_maven_packages_with_path(path, use_cte: false)
@@ -250,16 +232,6 @@ class Packages::Package < ApplicationRecord
 
   def self.by_name_and_version!(name, version)
     find_by!(name: name, version: version)
-  end
-
-  def self.debian_incoming_package!
-    find_by!(name: Packages::Debian::INCOMING_PACKAGE_NAME, version: nil, package_type: :debian, status: :default)
-  end
-
-  def self.existing_debian_packages_with(name:, version:)
-    debian.with_name(name)
-          .with_version(version)
-          .not_pending_destruction
   end
 
   def self.pluck_names
@@ -317,14 +289,6 @@ class Packages::Package < ApplicationRecord
 
   def infrastructure_package?
     terraform_module?
-  end
-
-  def debian_incoming?
-    debian? && version.nil?
-  end
-
-  def debian_package?
-    debian? && !version.nil?
   end
 
   def package_settings
@@ -416,14 +380,5 @@ class Packages::Package < ApplicationRecord
     return false unless project&.root_namespace&.path
 
     project.root_namespace.path == ::Packages::Npm.scope_of(name)
-  end
-
-  def forbidden_debian_changes
-    return unless persisted?
-
-    # Debian incoming
-    if version_was.nil? || version.nil?
-      errors.add(:version, _('cannot be changed')) if version_changed?
-    end
   end
 end

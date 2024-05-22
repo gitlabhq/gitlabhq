@@ -9038,6 +9038,9 @@ msgstr ""
 msgid "BranchRules|Allowed to merge (%{total})"
 msgstr ""
 
+msgid "BranchRules|Allowed to merge updated"
+msgstr ""
+
 msgid "BranchRules|Allowed to push and merge"
 msgstr ""
 
@@ -9111,6 +9114,9 @@ msgid "BranchRules|Does not require approval from code owners"
 msgstr ""
 
 msgid "BranchRules|Edit"
+msgstr ""
+
+msgid "BranchRules|Edit allowed to merge"
 msgstr ""
 
 msgid "BranchRules|From users with push access."
@@ -27197,9 +27203,6 @@ msgid "Incidents|Add text or a link to display with your image. If you don't add
 msgstr ""
 
 msgid "Incidents|Drop or %{linkStart}upload%{linkEnd} a metric screenshot to attach it to the incident"
-msgstr ""
-
-msgid "Incidents|Must start with http or https"
 msgstr ""
 
 msgid "Incidents|Must start with http:// or https://"
@@ -62161,9 +62164,6 @@ msgstr ""
 msgid "mrWidget|Your password"
 msgstr ""
 
-msgid "must be a Debian package"
-msgstr ""
-
 msgid "must be a boolean value"
 msgstr ""
 
@@ -62764,9 +62764,6 @@ msgid "triggered"
 msgstr ""
 
 msgid "two-factor authentication settings"
-msgstr ""
-
-msgid "type must be Debian"
 msgstr ""
 
 msgid "type parameter is missing and is required"

@@ -12,6 +12,12 @@ module Ci
 
     def perform
       Ci::Partitions::SetupDefaultService.new.execute
+
+      ci_partition_current = Ci::Partition.current
+      return unless ci_partition_current
+
+      Ci::Partitions::CreateService.new(ci_partition_current).execute
+      Ci::Partitions::SyncService.new(ci_partition_current).execute
     end
   end
 end

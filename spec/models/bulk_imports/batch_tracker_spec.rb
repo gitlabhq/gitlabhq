@@ -28,4 +28,14 @@ RSpec.describe BulkImports::BatchTracker, type: :model, feature_category: :impor
       end
     end
   end
+
+  describe 'batch canceling' do
+    it 'marks batch as canceled' do
+      batch = create(:bulk_import_batch_tracker, :created)
+
+      batch.cancel!
+
+      expect(batch.reload.canceled?).to eq(true)
+    end
+  end
 end

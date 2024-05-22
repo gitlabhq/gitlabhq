@@ -75,7 +75,7 @@ export default {
     </div>
 
     <template v-else>
-      <div data-testid="packages-table">
+      <ul data-testid="packages-table" class="gl-pl-0">
         <packages-list-row
           v-for="packageEntity in list"
           :key="packageEntity.id"
@@ -84,7 +84,7 @@ export default {
           :is-group="isGroupPage"
           @packageToDelete="setItemToBeDeleted"
         />
-      </div>
+      </ul>
 
       <gl-pagination
         v-model="currentPage"

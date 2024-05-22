@@ -72,7 +72,9 @@ module BulkImports
     attr_reader :pipeline_tracker, :entity
 
     def run
+      return if pipeline_tracker.canceled?
       return skip_tracker if entity.failed?
+      return cancel_tracker if entity.canceled?
 
       raise(Pipeline::FailedError, "Export from source instance failed: #{export_status.error}") if export_failed?
       raise(Pipeline::ExpiredError, 'Empty export status on source instance') if empty_export_timeout?
@@ -181,6 +183,12 @@ module BulkImports
       logger.info(log_attributes(message: 'Skipping pipeline due to failed entity'))
 
       pipeline_tracker.update!(status_event: 'skip', jid: jid)
+    end
+
+    def cancel_tracker
+      logger.info(log_attributes(message: 'Canceling pipeline due to canceled entity'))
+
+      pipeline_tracker.update!(status_event: 'cancel', jid: jid)
     end
 
     def log_attributes(extra = {})

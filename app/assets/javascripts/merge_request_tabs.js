@@ -5,7 +5,7 @@ import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { createAlert } from '~/alert';
 import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
-import { parseUrlPathname } from '~/lib/utils/url_utility';
+import { parseUrlPathname, visitUrl } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
@@ -282,7 +282,7 @@ export default class MergeRequestTabs {
 
       if (isMetaClick(e)) {
         const targetLink = e.currentTarget.getAttribute('href');
-        window.open(targetLink, '_blank');
+        visitUrl(targetLink, true);
       } else if (action) {
         const href = e.currentTarget.getAttribute('href');
         this.tabShown(action, href);

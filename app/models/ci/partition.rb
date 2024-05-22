@@ -2,7 +2,10 @@
 
 module Ci
   class Partition < Ci::ApplicationRecord
+    MAX_PARTITION_SIZE = 100.gigabytes
+
     validates :id, :status, presence: true
+    validates :status, uniqueness: { if: ->(partition) { partition.status_changed? && partition.current? } }
 
     state_machine :status, initial: :preparing do
       state :preparing, value: 0
@@ -12,6 +15,14 @@ module Ci
 
       event :ready do
         transition preparing: :ready
+      end
+
+      event :switch_writes do
+        transition ready: :current
+      end
+
+      before_transition [:ready] => :current do
+        Ci::Partition.with_status(:current).update_all(status: Ci::Partition.statuses[:active])
       end
     end
 
@@ -28,6 +39,14 @@ module Ci
 
       def create_next!
         create!(id: last.id.next, status: statuses[:preparing])
+      end
+
+      def next_available(partition_id)
+        Ci::Partition
+          .with_status(:ready)
+          .id_after(partition_id)
+          .order(id: :asc)
+          .first
       end
     end
 

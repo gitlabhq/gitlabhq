@@ -21,8 +21,12 @@ TL;DR
 
 ## 3. Proposal
 
+There is an [investigation](https://gitlab.com/gitlab-org/gitlab/-/issues/458338) to solve this problem using [direct transfer](../../../../user/group/import/index.md).
+
 ## 4. Evaluation
 
 ## 4.1. Pros
 
 ## 4.2. Cons
+
+Direct transfer does not migrate users and users cannot exist on more than one Cell. This means in Cells 1.0, for migrations across Cells, any user contributions will be assigned to the user performing the import.

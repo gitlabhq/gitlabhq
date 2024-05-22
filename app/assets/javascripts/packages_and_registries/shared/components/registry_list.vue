@@ -117,14 +117,14 @@ export default {
       </gl-button>
     </div>
 
-    <div v-for="(item, index) in items" :key="index">
+    <ul v-for="(item, index) in items" :key="index" class="gl-pl-0">
       <slot
         :select-item="selectItem"
         :is-selected="isSelected"
         :item="item"
         :first="!hiddenDelete && index === 0"
       ></slot>
-    </div>
+    </ul>
 
     <div class="gl-display-flex gl-justify-content-center">
       <gl-keyset-pagination
