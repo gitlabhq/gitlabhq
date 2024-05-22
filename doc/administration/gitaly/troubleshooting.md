@@ -586,3 +586,54 @@ To create a rule to allow Gitaly binary execution:
    ```
 
 The new rule takes effect after the daemon restarts.
+
+## Update repositories after removing a storage with a duplicate path
+
+> - Rake task `gitlab:gitaly:update_removed_storage_projects` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153008) in GitLab 17.1.
+
+In GitLab 17.0, support for configuring storages with duplicate paths [was removed](https://gitlab.com/gitlab-org/gitaly/-/issues/5598). This can mean that you
+must remove duplicate storage configuration from `gitaly` configuration.
+
+WARNING:
+Only use this Rake task when the old and new storages share the same disk path on the same Gitaly server. Using the this Rake task in any other situation
+causes the repository to become unavailable. Use the [project repository storage moves API](../../api/project_repository_storage_moves.md) to transfer
+projects between storages in all other situations.
+
+When removing from the Gitaly configuration a storage that used the same path as another storage,
+the projects associated with the old storage must be reassigned to the new one.
+
+For example, you might have configuration similar to the following:
+
+```ruby
+gitaly['configuration'] = {
+  storage: [
+    {
+       name: 'default',
+       path: '/var/opt/gitlab/git-data/repositories',
+    },
+    {
+       name: 'duplicate-path',
+       path: '/var/opt/gitlab/git-data/repositories',
+    },
+  ],
+}
+```
+
+If you were removing `duplicate-path` from the configuration, you would run the following
+Rake task to associate any projects assigned to it to `default` instead:
+
+::Tabs
+
+:::TabTitle Linux package installations
+
+```shell
+sudo gitlab-rake "gitlab:gitaly:update_removed_storage_projects[duplicate-path, default]"
+```
+
+:::TabTitle Self-compiled installations
+
+```shell
+sudo -u git -H bundle exec rake "gitlab:gitaly:update_removed_storage_projects[duplicate-path, default]" RAILS_ENV=production
+```
+
+::EndTabs

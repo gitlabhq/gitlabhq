@@ -1249,12 +1249,10 @@ lib/gitlab/checks/**
 /ee/app/controllers/groups/scim_oauth_controller.rb
 /ee/app/controllers/oauth/
 /ee/app/controllers/omniauth_kerberos_controller.rb
-/ee/app/controllers/users/registrations_identity_verification_controller.rb
 /ee/app/finders/auth/
 /ee/app/helpers/ee/access_tokens_helper.rb
 /ee/app/helpers/ee/auth_helper.rb
 /ee/app/helpers/ee/personal_access_tokens_helper.rb
-/ee/app/models/concerns/identity_verifiable.rb
 /ee/app/models/concerns/password_complexity.rb
 /ee/app/models/ee/personal_access_token.rb
 /ee/app/models/ee/project_authorization.rb
@@ -1565,8 +1563,10 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/frontend/remote_development/
 /ee/spec/frontend/**/remote_development/
 
-^[Govern::Anti-abuse] @gitlab-org/modelops/anti-abuse
+[Govern::Anti-abuse] @gitlab-org/modelops/anti-abuse
 /ee/app/controllers/users/registrations_identity_verification_controller.rb
+/ee/app/controllers/users/base_identity_verification_controller.rb
+/ee/app/controllers/users/identity_verification_controller.rb
 /ee/app/models/concerns/identity_verifiable.rb
 /ee/config/routes/identity_verification.rb
 

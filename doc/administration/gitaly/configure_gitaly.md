@@ -1314,7 +1314,7 @@ gitaly['env'] = {
 }
 gitaly['configuration'] = {
     backup: {
-        go_cloud_url: 'azblob://gitaly-backups'
+        go_cloud_url: 'azblob://<bucket>'
     }
 }
 ```
@@ -1325,7 +1325,7 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
 ```toml
 [backup]
-go_cloud_url = "azblob://gitaly-backups"
+go_cloud_url = "azblob://<bucket>"
 ```
 
 ::EndTabs
@@ -1354,7 +1354,7 @@ gitaly['env'] = {
 }
 gitaly['configuration'] = {
     backup: {
-        go_cloud_url: 'gs://gitaly-backups'
+        go_cloud_url: 'gs://<bucket>'
     }
 }
 ```
@@ -1365,7 +1365,7 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
 ```toml
 [backup]
-go_cloud_url = "gs://gitaly-backups"
+go_cloud_url = "gs://<bucket>"
 ```
 
 ::EndTabs
@@ -1395,7 +1395,7 @@ gitaly['env'] = {
 }
 gitaly['configuration'] = {
     backup: {
-        go_cloud_url: 's3://gitaly-backups?region=us-west-1'
+        go_cloud_url: 's3://<bucket>?region=us-west-1'
     }
 }
 ```
@@ -1406,7 +1406,7 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
 ```toml
 [backup]
-go_cloud_url = "s3://gitaly-backups?region=us-west-1"
+go_cloud_url = "s3://<bucket>?region=us-west-1"
 ```
 
 ::EndTabs
@@ -1435,7 +1435,7 @@ gitaly['env'] = {
 }
 gitaly['configuration'] = {
     backup: {
-        go_cloud_url: 's3://gitaly-backups?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true'
+        go_cloud_url: 's3://<bucket>?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true'
     }
 }
 ```
@@ -1446,7 +1446,7 @@ Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
 
 ```toml
 [backup]
-go_cloud_url = "s3://gitaly-backups?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true"
+go_cloud_url = "s3://<bucket>?region=minio&endpoint=my.minio.local:8080&disableSSL=true&s3ForcePathStyle=true"
 ```
 
 ::EndTabs
