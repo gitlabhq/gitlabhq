@@ -6,36 +6,43 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitLab Duo Chat
 
-[Chat](../../user/gitlab_duo_chat.md) is a part of the [GitLab Duo](../../user/ai_features.md) offering.
+[Chat](../../user/gitlab_duo_chat.md) is a part of the [GitLab Duo](../../user/ai_features.md)
+offering.
 
-How Chat describes itself: "I am GitLab Duo Chat, an AI assistant focused on helping developers with DevSecOps,
-software development, source code, project management, CI/CD, and GitLab. Please feel free to engage me in these areas."
+How Chat describes itself: "I am GitLab Duo Chat, an AI assistant focused on
+helping developers with DevSecOps, software development, source code, project
+management, CI/CD, and GitLab. Please feel free to engage me in these areas."
 
-Chat can answer different questions and perform certain tasks. It's done with the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
+Chat can answer different questions and perform certain tasks. It's done with
+the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
 
-To answer a user's question asked in the Chat interface, GitLab sends a [GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb) to the Rails backend.
-Rails backend sends then instructions to the Large Language Model (LLM) via the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md).
+To answer a user's question asked in the Chat interface, GitLab sends a
+[GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb)
+to the Rails backend. Rails backend sends then instructions to the Large
+Language Model (LLM) through the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md).
 
 ## Set up GitLab Duo Chat
 
-There is a difference in the setup for Saas and self-managed instances.
-We recommend to start with a process described for SaaS-only AI features.
-
-1. [Setup SaaS-only AI features](index.md#saas-only-features).
-1. [Setup self-managed AI features](index.md#set-up).
+To set up Duo Chat locally, go through the
+[general setup instructions for AI features](index.md).
 
 ## Working with GitLab Duo Chat
 
-Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the LLM to perform certain tasks.
+Prompts are the most vital part of GitLab Duo Chat system. Prompts are the
+instructions sent to the LLM to perform certain tasks.
 
-The state of the prompts is the result of weeks of iteration. If you want to change any prompt in the current tool, you must put it behind a feature flag.
+The state of the prompts is the result of weeks of iteration. If you want to
+change any prompt in the current tool, you must put it behind a feature flag.
 
-If you have any new or updated prompts, ask members of AI Framework team to review, because they have significant experience with them.
+If you have any new or updated prompts, ask members of AI Framework team to
+review, because they have significant experience with them.
 
 ### Troubleshooting
 
-When working with Chat locally, you might run into an error. Most commons problems are documented in this section.
-If you find an undocumented issue, you should document it in this section after you find a solution.
+When working with Chat locally, you might run into an error. Most commons
+problems are documented in this section.
+If you find an undocumented issue, you should document it in this section after
+you find a solution.
 
 | Problem                                                               | Solution                                                                                                                                                                                                                                                                              |
 |-----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -46,22 +53,28 @@ If you find an undocumented issue, you should document it in this section after 
 
 ## Contributing to GitLab Duo Chat
 
-From the code perspective, Chat is implemented in the similar fashion as other AI features. Read more about GitLab [AI Abstraction layer](index.md#feature-development-abstraction-layer).
+From the code perspective, Chat is implemented in the similar fashion as other
+AI features. Read more about GitLab [AI Abstraction layer](index.md#feature-development-abstraction-layer).
 
-The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb) that includes a system prompt explaining how the large language model should interpret the question and provide an
-answer. The system prompt defines available tools that can be used to gather
-information to answer the user's question.
+The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb)
+that includes a system prompt explaining how the large language model should
+interpret the question and provide an answer. The system prompt defines
+available tools that can be used to gather information to answer the user's
+question.
 
-The zero-shot agent receives the user's question and decides which tools to use to gather information to answer it.
-It then makes a request to the large language model, which decides if it can answer directly or if it needs to use one
-of the defined tools.
+The zero-shot agent receives the user's question and decides which tools to use
+to gather information to answer it. It then makes a request to the large
+language model, which decides if it can answer directly or if it needs to use
+one of the defined tools.
 
-The tools each have their own prompt that provides instructions to the large language model on how to use that tool to
-gather information. The tools are designed to be self-sufficient and avoid multiple requests back and forth to
-the large language model.
+The tools each have their own prompt that provides instructions to the large
+language model on how to use that tool to gather information. The tools are
+designed to be self-sufficient and avoid multiple requests back and forth to the
+large language model.
 
-After the tools have gathered the required information, it is returned to the zero-shot agent, which asks the large language
-model if enough information has been gathered to provide the final answer to the user's question.
+After the tools have gathered the required information, it is returned to the
+zero-shot agent, which asks the large language model if enough information has
+been gathered to provide the final answer to the user's question.
 
 ### Customizing interaction with GitLab Duo Chat
 
@@ -69,8 +82,10 @@ You can customize user interaction with GitLab Duo Chat in several ways.
 
 #### Programmatically open GitLab Duo Chat
 
-To provide users with a more dynamic way to access GitLab Duo Chat, you can integrate functionality directly into their applications to open the GitLab Duo Chat interface. The
-following example shows how to open the GitLab Duo Chat drawer by using an event listener and the GitLab Duo Chat global state:
+To provide users with a more dynamic way to access GitLab Duo Chat, you can
+integrate functionality directly into their applications to open the GitLab Duo
+Chat interface. The following example shows how to open the GitLab Duo Chat
+drawer by using an event listener and the GitLab Duo Chat global state:
 
 ```javascript
 import { helpCenterState } from '~/super_sidebar/constants';
@@ -81,7 +96,8 @@ myFancyToggleToOpenChat.addEventListener('click', () => {
 
 #### Initiating GitLab Duo Chat with a pre-defined prompt
 
-In some scenarios, you may want to direct users towards a specific topic or query when they open GitLab Duo Chat. The following example method:
+In some scenarios, you may want to direct users towards a specific topic or
+query when they open GitLab Duo Chat. The following example method:
 
 1. Opens the GitLab Duo Chat drawer.
 1. Sends a pre-defined prompt to GitLab Duo Chat.
@@ -111,7 +127,8 @@ methods: {
 }
 ```
 
-This enhancement allows for a more tailored user experience by guiding the conversation in GitLab Duo Chat towards predefined areas of interest or concern.
+This enhancement allows for a more tailored user experience by guiding the
+conversation in GitLab Duo Chat towards predefined areas of interest or concern.
 
 ### Adding a new tool
 
@@ -378,9 +395,9 @@ return `true` in different contexts.
 
 | | GitLab.com | Dedicated or Self-managed | All instances |
 |----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
-| for user outside of project or group (`user.can?(:access_duo_chat)`)  | User need to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `instance_level_ai_beta_features_enabled` setting switched on |  |
-| for user in group context (`user.can?(:access_duo_chat, group)`)     | - User needs to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on<br>- Root ancestor group of the group needs to be on Premium or Ultimate tier and have `experiment_and_beta_features` setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `instance_level_ai_beta_features_enabled` setting switched on | User must have at least _read_ permissions on the group |
-| for user in project context (`user.can?(:access_duo_chat, project)`) | - User needs to belong to at least one group on the Premium or Ultimate tier with `experiment_and_beta_features` group setting enabled<br>- Project root ancestor group needs to be on Premium or Ultimate tier and have `experiment_and_beta_features` group setting switched on | - Instance need to be on Ultimate tier<br>- Instance needs to have `instance_level_ai_beta_features_enabled` setting switched on | User must to have at least _read_ permission on the project |
+| for user outside of project or group (`user.can?(:access_duo_chat)`)  | User need to belong to at least one group on Premium or Ultimate tier with `duo_features_enabled` group setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on |  |
+| for user in group context (`user.can?(:access_duo_chat, group)`)     | - User needs to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on<br>- Root ancestor group of the group needs to be on Premium or Ultimate tier and the group must have `duo_features_enabled` setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must have at least _read_ permissions on the group |
+| for user in project context (`user.can?(:access_duo_chat, project)`) | - User needs to belong to at least one group on the Premium or Ultimate tier with `experiment_and_beta_features` group setting enabled<br>- Project root ancestor group needs to be on Premium or Ultimate tier and project must have `duo_features_enabled` setting switched on | - Instance need to be on Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must to have at least _read_ permission on the project |
 
 ## Running GitLab Duo Chat prompt experiments
 

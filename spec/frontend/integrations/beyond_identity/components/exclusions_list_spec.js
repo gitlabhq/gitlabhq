@@ -69,7 +69,9 @@ describe('ExclusionsList component', () => {
 
     it('renders help text', () => {
       expect(
-        findByText('Projects in this list no longer require commits to be signed.').exists(),
+        findByText(
+          'Groups and projects in this list no longer require commits to be signed.',
+        ).exists(),
       ).toBe(true);
     });
 

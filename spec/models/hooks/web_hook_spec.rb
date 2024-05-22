@@ -414,40 +414,40 @@ RSpec.describe WebHook, feature_category: :webhooks do
   end
 
   describe '#next_backoff' do
-    context 'when there was no last backoff' do
-      before do
-        hook.backoff_count = 0
-      end
+    before do
+      hook.backoff_count = backoff_count
+    end
 
-      it 'is 10 minutes' do
+    context 'when there was no last backoff' do
+      let(:backoff_count) { 0 }
+
+      it 'is the initial value' do
         expect(hook.next_backoff).to eq(WebHooks::AutoDisabling::INITIAL_BACKOFF)
       end
     end
 
     context 'when we have backed off once' do
-      before do
-        hook.backoff_count = 1
-      end
+      let(:backoff_count) { 1 }
 
       it 'is twice the initial value' do
         expect(hook.next_backoff).to eq(2 * WebHooks::AutoDisabling::INITIAL_BACKOFF)
       end
     end
 
-    context 'when we have backed off 3 times' do
-      before do
-        hook.backoff_count = 3
+    context 'when the next backoff is just before the max backoff limit' do
+      let(:backoff_count) { WebHooks::AutoDisabling::MAX_BACKOFF_COUNT - 1 }
+
+      it 'is an exponential of the initial backoff' do
+        expect(hook.next_backoff).to eq((2**backoff_count) * WebHooks::AutoDisabling::INITIAL_BACKOFF)
       end
 
-      it 'grows exponentially' do
-        expect(hook.next_backoff).to eq(2 * 2 * 2 * WebHooks::AutoDisabling::INITIAL_BACKOFF)
+      it 'is not yet capped at the max limit' do
+        expect(hook.next_backoff).to be < WebHooks::AutoDisabling::MAX_BACKOFF
       end
     end
 
-    context 'when the previous backoff was large' do
-      before do
-        hook.backoff_count = 8 # last value before MAX_BACKOFF
-      end
+    describe 'when next_backoff has reached the MAX_BACKOFF limit' do
+      let(:backoff_count) { WebHooks::AutoDisabling::MAX_BACKOFF_COUNT }
 
       it 'does not exceed the max backoff value' do
         expect(hook.next_backoff).to eq(WebHooks::AutoDisabling::MAX_BACKOFF)

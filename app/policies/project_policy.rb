@@ -1022,10 +1022,6 @@ class ProjectPolicy < BasePolicy
 
   private
 
-  def user_is_user?
-    user.is_a?(User)
-  end
-
   def team_member?
     return false if @user.nil?
     return false unless user_is_user?

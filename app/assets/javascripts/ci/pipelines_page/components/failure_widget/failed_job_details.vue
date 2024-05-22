@@ -115,7 +115,7 @@ export default {
 };
 </script>
 <template>
-  <div class="container-fluid gl-grid-tpl-rows-auto">
+  <div class="container-fluid gl-grid-rows-auto">
     <div
       class="row gl-my-3 gl-cursor-pointer gl-display-flex gl-align-items-center"
       :aria-pressed="isJobLogVisible"

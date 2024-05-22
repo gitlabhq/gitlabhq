@@ -253,7 +253,6 @@ Each type of scheduled pipeline generates a static link for the latest test repo
 - [`master`](http://gitlab-qa-allure-reports.s3.amazonaws.com/e2e-package-and-test/master/index.html)
 - [`staging-full`](http://gitlab-qa-allure-reports.s3.amazonaws.com/staging-full/master/index.html)
 - [`staging-sanity`](http://gitlab-qa-allure-reports.s3.amazonaws.com/staging-sanity/master/index.html)
-- [`staging-sanity-no-admin`](http://gitlab-qa-allure-reports.s3.amazonaws.com/staging-sanity-no-admin/master/index.html)
 - [`canary-sanity`](http://gitlab-qa-allure-reports.s3.amazonaws.com/canary-sanity/master/index.html)
 - [`production`](http://gitlab-qa-allure-reports.s3.amazonaws.com/production-full/master/index.html)
 - [`production-sanity`](http://gitlab-qa-allure-reports.s3.amazonaws.com/production-sanity/master/index.html)

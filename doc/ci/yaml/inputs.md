@@ -20,16 +20,9 @@ Inputs can use CI/CD variables, but have the same [variable limitations as the `
 
 ## Define input parameters with `spec:inputs`
 
-Use `spec:inputs` to define input parameters for CI/CD configuration intended to be added
-to a pipeline with `include`. Use [`include:inputs`](#set-input-values-when-using-include)
-to pass input values when building the configuration for a pipeline.
-
-The specs must be declared at the top of the configuration file, in a header section.
-Separate the header from the rest of the configuration with `---`.
-
-Use the interpolation format `$[[ inputs.input-id ]]` outside the header section to replace the values.
-The inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
-configuration is merged with the contents of the `.gitlab-ci.yml` file.
+Use `spec:inputs` to define parameters that can be populated in reusable CI/CD configuration
+files when added to a pipeline. Then use [`include:inputs`](#set-input-values-when-using-include)
+to add the configuration to a project's pipeline and set the values for the parameters.
 
 For example, in a file named `custom_website_scan.yml`:
 
@@ -45,12 +38,28 @@ scan-website:
   script: ./scan-website $[[ inputs.environment ]]
 ```
 
-When using `spec:inputs`:
+In this example, the inputs are `job-stage` and `environment`. Then, in a `.gitlab-ci.yml` file,
+you can add this configuration and set the input values:
+
+```yaml
+include:
+  - local: 'custom_website_scan.yml'
+    inputs:
+      job-stage: 'my-test-stage'
+      environment: 'my-environment'
+```
+
+Specs must be declared at the top of a configuration file, in a header section separated
+from the rest of the configuration with `---`. Use the `$[[ inputs.input-id ]]` interpolation format
+outside the header section to declare where to use the inputs.
+
+With `spec:inputs`:
 
 - Inputs are mandatory by default.
-- Validation errors are returned if:
-  - A string containing an interpolation block exceeds 1 MB.
-  - The string inside an interpolation block exceeds 1 KB.
+- Inputs are evaluated and populated when the configuration is fetched during pipeline creation,
+  before the configuration is merged with the contents of the `.gitlab-ci.yml` file.
+- A string containing an input must be less than 1 MB.
+- A string inside an input must be less than 1 KB.
 
 Additionally, use:
 

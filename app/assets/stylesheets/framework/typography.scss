@@ -41,6 +41,8 @@
 
   img {
     max-width: 100%;
+    object-fit: contain;
+    object-position: top;
   }
 
   img:not(.emoji) {

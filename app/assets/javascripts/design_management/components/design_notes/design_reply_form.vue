@@ -227,7 +227,7 @@ export default {
         ref="submitButton"
         :disabled="!hasValue"
         :loading="saving"
-        class="gl-mr-3 gl-w-auto!"
+        class="gl-mr-3 !gl-w-auto"
         category="primary"
         variant="confirm"
         type="submit"
@@ -239,7 +239,7 @@ export default {
       </gl-button>
       <gl-button
         ref="cancelButton"
-        class="gl-w-auto!"
+        class="!gl-w-auto"
         variant="default"
         category="primary"
         @click="cancelComment"

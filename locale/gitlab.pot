@@ -27754,6 +27754,9 @@ msgstr ""
 msgid "Integrations|Group-level integration management"
 msgstr ""
 
+msgid "Integrations|Groups and projects in this list no longer require commits to be signed."
+msgstr ""
+
 msgid "Integrations|Includes Standard, plus the entire commit message, commit hash, and issue IDs"
 msgstr ""
 
@@ -27779,9 +27782,6 @@ msgid "Integrations|Notification settings"
 msgstr ""
 
 msgid "Integrations|Perform common tasks with slash commands."
-msgstr ""
-
-msgid "Integrations|Projects in this list no longer require commits to be signed."
 msgstr ""
 
 msgid "Integrations|Projects using custom settings"
@@ -45710,6 +45710,9 @@ msgstr ""
 msgid "ScanResultPolicy|Age is:"
 msgstr ""
 
+msgid "ScanResultPolicy|Allow the merge request to be merged"
+msgstr ""
+
 msgid "ScanResultPolicy|Attribute is:"
 msgstr ""
 
@@ -45717,6 +45720,9 @@ msgid "ScanResultPolicy|Attribute:"
 msgstr ""
 
 msgid "ScanResultPolicy|Attributes are automatically applied by the scanners"
+msgstr ""
+
+msgid "ScanResultPolicy|Block the merge request until all criteria are met"
 msgstr ""
 
 msgid "ScanResultPolicy|Choose criteria type"
@@ -45734,6 +45740,18 @@ msgstr ""
 msgid "ScanResultPolicy|Except"
 msgstr ""
 
+msgid "ScanResultPolicy|Fail closed"
+msgstr ""
+
+msgid "ScanResultPolicy|Fail open"
+msgstr ""
+
+msgid "ScanResultPolicy|Failure cases:"
+msgstr ""
+
+msgid "ScanResultPolicy|Fallback behavior in case of policy failure"
+msgstr ""
+
 msgid "ScanResultPolicy|False positive"
 msgstr ""
 
@@ -45741,6 +45759,9 @@ msgid "ScanResultPolicy|Fix available"
 msgstr ""
 
 msgid "ScanResultPolicy|Fix available is only applicable to container and dependency scanning"
+msgstr ""
+
+msgid "ScanResultPolicy|For scanners that require builds, when a project does not have a build pipeline."
 msgstr ""
 
 msgid "ScanResultPolicy|If selected, the following choices will overwrite %{linkStart}project settings%{linkEnd} but only affect the branches selected in the policy."
@@ -45821,6 +45842,12 @@ msgstr ""
 msgid "ScanResultPolicy|Require the user's password to approve"
 msgstr ""
 
+msgid "ScanResultPolicy|Required number of approvals became higher than available, valid approvers."
+msgstr ""
+
+msgid "ScanResultPolicy|Required scanners defined in the condition did not run or produce any artifacts."
+msgstr ""
+
 msgid "ScanResultPolicy|Select a scan type before adding criteria"
 msgstr ""
 
@@ -45854,6 +45881,9 @@ msgstr ""
 msgid "ScanResultPolicy|When %{scanners} find scanner specified conditions in an open merge request targeting the %{branches} %{branchExceptions} and match %{boldDescription} of the following criteria"
 msgstr ""
 
+msgid "ScanResultPolicy|When a security policy fails for an unspecified reason."
+msgstr ""
+
 msgid "ScanResultPolicy|When enabled, if an MR receives all necessary approvals to merge, but then a new commit is added, new approvals are required."
 msgstr ""
 
@@ -45870,6 +45900,9 @@ msgid "ScanResultPolicy|When enabled, there will be password confirmation on app
 msgstr ""
 
 msgid "ScanResultPolicy|When enabled, users who have contributed code to the MR are ineligible for approval."
+msgstr ""
+
+msgid "ScanResultPolicy|When this policy's criteria %{strongStart}cannot be met:%{strongEnd}"
 msgstr ""
 
 msgid "ScanResultPolicy|You have selected all protected branches in this policy's rules. To better protect your project, you should leave this setting enabled. %{linkStart}What are the risks of allowing pushing and force pushing?%{linkEnd}"

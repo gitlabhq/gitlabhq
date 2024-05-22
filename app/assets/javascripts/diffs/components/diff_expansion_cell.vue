@@ -221,7 +221,7 @@ export default {
 <template>
   <div>
     <div
-      class="diff-td diff-line-num gl-text-center! gl-p-0! gl-w-full! gl-display-flex gl-flex-direction-column"
+      class="diff-td diff-line-num gl-text-center! gl-p-0! !gl-w-full gl-display-flex gl-flex-direction-column"
     >
       <button
         v-if="showExpandDown"

@@ -323,6 +323,28 @@ Offset-based pagination for the [List registry repository tags](https://docs.git
 
 </div>
 
+<div class="deprecation breaking-change" data-milestone="18.0">
+
+### OpenTofu CI/CD template
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">17.1</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/components/opentofu/-/issues/43#note_1913822299).
+</div>
+
+We introduces the OpenTofu CI/CD template in 16.8 as CI/CD components were not available for self-managed installations yet.
+With the introduction of [GitLab CI/CD components for self-managed users](https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance)
+we are removing the redundant OpenTofu CI/CD templates in favor of the CI/CD components.
+
+We introduced the OpenTofu CI/CD template in 16.8 because CI/CD components were not yet available for self-managed instances.
+With the introduction of [GitLab CI/CD components for self-managed users](https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance),
+we are removing the redundant OpenTofu CI/CD templates in favor of the [OpenTofu CI/CD component](https://gitlab.com/components/opentofu).
+
+For information about migrating from the CI/CD template to the component, see the [OpenTofu component documentation](https://gitlab.com/components/opentofu#usage-on-self-managed).
+
+</div>
+
 <div class="deprecation " data-milestone="18.0">
 
 ### Project page in group settings is deprecated

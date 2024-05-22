@@ -292,24 +292,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       end
     end
 
-    context 'with staging sanity no admin' do
-      let(:run_type) { 'staging-sanity-no-admin' }
-
-      before do
-        stub_env('CI_PROJECT_NAME', 'staging')
-        stub_env('NO_ADMIN', 'true')
-        stub_env('SMOKE_ONLY', 'true')
-        stub_env('QA_RUN_TYPE', nil)
-      end
-
-      it 'exports data to influxdb with correct run type' do
-        run_spec
-
-        expect(influx_write_api).to have_received(:write).once
-        expect(influx_write_api).to have_received(:write).with(data: [data])
-      end
-    end
-
     context 'with additional custom metrics' do
       it 'exports data to influxdb with additional metrics' do
         run_spec do

@@ -208,7 +208,7 @@ export default {
       <gl-collapsible-listbox
         :id="inputId"
         ref="listbox"
-        class="gl-w-full!"
+        class="!gl-w-full"
         :multiple="multiSelect"
         :searchable="searchable"
         start-opened

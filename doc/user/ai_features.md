@@ -42,7 +42,8 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Processes and generates text and code in a conversational manner.
-  Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation.
+  Help you write and understand code faster, get up to speed on the status of projects,
+  and quickly learn about GitLab.
 - LLM: Anthropic [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai),
   Anthropic [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai),
   [`claude-2.1`](https://docs.anthropic.com/en/docs/legacy-model-guide#anthropics-legacy-models),
@@ -180,7 +181,7 @@ DETAILS:
 **Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Assists you in determining the root cause for a pipeline failure and failed CI/CD build.
+- Assists you in determining the root cause for a CI/CD job failure by analyzing the logs.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
 - [View documentation](ai_experiments.md#root-cause-analysis).
 

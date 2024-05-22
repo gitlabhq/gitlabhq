@@ -1,3 +1,4 @@
+import fs from 'fs';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import Attachment from '~/content_editor/extensions/attachment';
@@ -19,6 +20,9 @@ import {
   PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML,
 } from '../test_constants';
 
+const retinaImage = fs.readFileSync('spec/fixtures/retina_image.png');
+const retinaImageSize = { width: 663, height: 325 };
+
 describe('content_editor/extensions/attachment', () => {
   let tiptapEditor;
   let doc;
@@ -34,6 +38,7 @@ describe('content_editor/extensions/attachment', () => {
 
   const uploadsPath = '/uploads/';
   const imageFile = new File(['foo'], 'test-file.png', { type: 'image/png' });
+  const imageFileRetina = new File([retinaImage], 'test-file.png', { type: 'image/png' });
   const imageFileSvg = new File(['foo'], 'test-file.svg', { type: 'image/svg+xml' });
   const audioFile = new File(['foo'], 'test-file.mp3', { type: 'audio/mpeg' });
   const videoFile = new File(['foo'], 'test-file.mp4', { type: 'video/mp4' });
@@ -231,6 +236,45 @@ describe('content_editor/extensions/attachment', () => {
               expect(message).toBe('An error occurred while uploading the file. Please try again.');
               resolve();
             });
+          });
+        });
+      });
+    });
+
+    describe('when the file is a retina image', () => {
+      beforeEach(() => {
+        renderMarkdown.mockResolvedValue(PROJECT_WIKI_ATTACHMENT_IMAGE_HTML);
+      });
+
+      describe('when uploading succeeds', () => {
+        const successResponse = {
+          link: {
+            markdown: `![test-file](${imageFileRetina.name})`,
+          },
+        };
+
+        beforeEach(() => {
+          mock.onPost().reply(HTTP_STATUS_OK, successResponse);
+        });
+
+        it('updates the image with width and height if available', async () => {
+          const expectedDoc = doc(
+            p(
+              image({
+                uploading: false,
+                src: blobUrl,
+                alt: imageFileRetina.name,
+                canonicalSrc: imageFileRetina.name,
+                ...retinaImageSize,
+              }),
+            ),
+          );
+
+          await expectDocumentAfterTransaction({
+            tiptapEditor,
+            number: 3,
+            expectedDoc,
+            action: () => tiptapEditor.commands.uploadAttachment({ file: imageFileRetina }),
           });
         });
       });

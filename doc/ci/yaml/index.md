@@ -4082,13 +4082,18 @@ job:
 Use `rules:changes` to specify when to add a job to a pipeline by checking for changes
 to specific files.
 
-WARNING:
-You should use `rules: changes` only with **branch pipelines** or **merge request pipelines**.
-You can use `rules: changes` with other pipeline types, but `rules: changes` always
-evaluates to true for new branch pipelines or when there is no Git `push` event. Pipelines like tag pipelines,
-scheduled pipelines, and manual pipelines, all do **not**
-have a Git `push` event associated with them. In these cases, use [`rules: changes: compare_to`](#ruleschangescompare_to)
-to specify the branch to compare against.
+For new branch pipelines or when there is no Git `push` event, `rules: changes` always evaluates to true
+and the job always runs. Pipelines like tag pipelines, scheduled pipelines,
+and manual pipelines, all do **not** have a Git `push` event associated with them.
+To cover these cases, use [`rules: changes: compare_to`](#ruleschangescompare_to) to specify
+the branch to compare against the pipeline ref.
+
+If you do not use `compare_to`, you should use `rules: changes` only with [branch pipelines](../pipelines/pipeline_types.md#branch-pipeline)
+or [merge request pipelines](../pipelines/merge_request_pipelines.md), though
+`rules: changes` still evaluates to true when creating a new branch. With:
+
+- Merge request pipelines, `rules:changes` compares the changes with the target MR branch.
+- Branch pipelines, `rules:changes` compares the changes with the previous commit on the branch.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 

@@ -90,7 +90,7 @@ export default {
       </span>
 
       <gl-button
-        class="gl-w-auto! gl-mt-3 gl-align-self-end"
+        class="!gl-w-auto gl-mt-3 gl-align-self-end"
         category="primary"
         variant="confirm"
         data-testid="commit-with-custom-message-button"

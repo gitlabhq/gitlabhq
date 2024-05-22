@@ -179,7 +179,9 @@ export default {
     exclusionRemoved: s__('Integrations|%{type} exclusion removed'),
     emptyText: s__('Integrations|There are no exclusions'),
     addExclusions: s__('Integrations|Add exclusions'),
-    helpText: s__('Integrations|Projects in this list no longer require commits to be signed.'),
+    helpText: s__(
+      'Integrations|Groups and projects in this list no longer require commits to be signed.',
+    ),
   },
 };
 </script>

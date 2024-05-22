@@ -1169,6 +1169,13 @@ To create a diagram:
 1. Use the [Mermaid Live Editor](https://mermaid.live/) to create the diagram.
 1. Copy the content of the **Code** pane into a `mermaid` code block in the Markdown file. For more
    details, see [Mermaid](../../../user/markdown.md#mermaid).
+1. Optional. To add GitLab font styling to your diagram, add this line between the Mermaid
+   code block declaration and the type of diagram:
+
+   ```plaintext
+   %%{init: { "fontFamily": "GitLab Sans" }}%%
+   ```
+
 1. To improve accessibility of diagrams, add a title and description. Add these lines on the next
    line after declaring the type of diagram, like `flowchart` or `sequenceDiagram`:
 
@@ -1176,6 +1183,19 @@ To create a diagram:
    accTitle: your diagram title here
    accDescr: describe what your diagram does in a single sentence, with no line breaks.
    ```
+
+For example, this flowchart contains both accessibility and font information:
+
+````markdown
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart TD
+    accTitle: Example diagram title
+    accDescr: A description of your diagram
+
+    A[Start here] -->|action| B[next step]
+```
+````
 
 The Mermaid diagram syntax can be difficult to learn. To make this a little easier, see the Mermaid
 [Beginner's Guide](https://mermaid.js.org/intro/getting-started.html) and the examples on the

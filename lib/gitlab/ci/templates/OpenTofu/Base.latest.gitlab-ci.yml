@@ -34,9 +34,9 @@ opentofu:use-component-instead-of-template:
   image: alpine:3.19
   script:
     - |
-      echo "You are using the OpenTofu CI/CD template on GitLab.com, which is not recommended."
-      echo "This template is available for self-managed users only until CI/CD components are "
-      echo "available. See https://gitlab.com/gitlab-org/gitlab/-/issues/415638"
+      echo "You are using the OpenTofu CI/CD template on GitLab.com, which is deprecated."
+      echo "This template won't be updated."
+      echo "This template is deprecated because CI/CD components are usable for GitLab self-managed."
       echo " "
       echo "You should use the OpenTofu CI/CD component instead."
       echo "To include the CI/CD component with a default configuration:"
@@ -48,6 +48,11 @@ opentofu:use-component-instead-of-template:
       echo "      opentofu_version: 1.6.0"
       echo ""
       echo "stages: [validate, build, deploy, cleanup]"
+      echo " "
+      echo "For GitLab self-managed follow the documentation at:"
+      echo "    https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance"
+      echo "and:"
+      echo "    https://gitlab.com/components/opentofu#usage-on-self-managed"
       echo " "
       echo "You can read about more about the OpenTofu CI/CD component here:"
       echo "https://gitlab.com/components/opentofu"

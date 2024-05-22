@@ -53,9 +53,7 @@ module QA
                       elsif LIVE_ENVS.exclude?(ci_project_name)
                         nil
                       else
-                        test_subset = if env('NO_ADMIN') == 'true'
-                                        'sanity-no-admin'
-                                      elsif env('SMOKE_ONLY') == 'true'
+                        test_subset = if env('SMOKE_ONLY') == 'true'
                                         'sanity'
                                       else
                                         'full'

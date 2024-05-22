@@ -11,6 +11,7 @@ module WebHooks
     EXCEEDED_FAILURE_THRESHOLD = FAILURE_THRESHOLD + 1
     INITIAL_BACKOFF = 1.minute.freeze
     MAX_BACKOFF = 1.day.freeze
+    MAX_BACKOFF_COUNT = 11
     BACKOFF_GROWTH_FACTOR = 2.0
 
     class_methods do
@@ -131,7 +132,8 @@ module WebHooks
     end
 
     def next_backoff
-      return MAX_BACKOFF if backoff_count >= 8 # optimization to prevent expensive exponentiation and possible overflows
+      # Optimization to prevent expensive exponentiation and possible overflows
+      return MAX_BACKOFF if backoff_count >= MAX_BACKOFF_COUNT
 
       (INITIAL_BACKOFF * (BACKOFF_GROWTH_FACTOR**backoff_count))
         .clamp(INITIAL_BACKOFF, MAX_BACKOFF)

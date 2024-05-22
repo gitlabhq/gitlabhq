@@ -119,7 +119,7 @@ export default {
     <gl-disclosure-dropdown-item key="all" :item="viewAllItem" class="show-hover-layover">
       <template #list-item>
         <search-result-hover-layover :text-message="$options.i18n.OVERLAY_GOTO">
-          <gl-icon :name="viewAllItemsIcon" class="gl-w-6!" />
+          <gl-icon :name="viewAllItemsIcon" class="!gl-w-6" />
           {{ viewAllItemsText }}
         </search-result-hover-layover>
       </template>

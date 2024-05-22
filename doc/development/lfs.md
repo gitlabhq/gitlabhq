@@ -8,6 +8,36 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 This page contains developer-centric information for GitLab team members. For the
 user documentation, see [Git Large File Storage](../topics/git/lfs/index.md).
 
+This diagram is a high-level explanation of a Git `push` when Git LFS is in use:
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart LR
+accTitle: Git pushes with Git LFS
+accDescr: Explains how the LFS hook routes new files depending on type
+
+A[Git push] -->B[LFS hook]
+    B -->C[Pointers]
+    B -->D[Binary files]
+    C -->E[Repository]
+    D -->F[LFS server]
+```
+
+This diagram is a high-level explanation of a Git `pull` when Git LFS is in use:
+
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart LR
+accTitle: Git pull using Git LFS
+accDescr: Explains how the LFS hook pulls LFS assets from the LFS server, and everything else from the Git repository
+
+A[User] -->|initiates<br>git pull| B[Repository]
+    B -->|Pull data and<br>LFS transfers| C[LFS hook]
+    C -->|LFS pointers| D[LFS server]
+    D -->|Binary<br>files| C
+    C -->|Pull data and<br>binary files| A
+```
+
 ## Controllers and Services
 
 ### Repositories::GitHttpClientController

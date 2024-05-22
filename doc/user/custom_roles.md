@@ -184,7 +184,7 @@ If you are assigning a custom role to an existing:
    group's hierarchy as a Guest. At this point, this Guest user cannot see any
    code on the projects in the group or subgroup.
 1. Optional. If you do not know the `id` of the Guest user receiving a custom
-   role, find that `id` by making an [API request](../api/member_roles.md#list-all-member-roles-of-a-group).
+   role, find that `id` by making an [API request](../api/member_roles.md).
 1. Use the [Group and Project Members API endpoint](../api/members.md#edit-a-member-of-a-group-or-project) to
    associate the member with the Guest+1 role:
 

@@ -12,6 +12,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
   subject(:analytics_instrumentation) { fake_danger.new(helper: fake_helper) }
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
+  let(:fake_project_helper) { instance_double(Tooling::Danger::ProjectHelper) }
   let(:previous_label_to_add) { 'label_to_add' }
   let(:labels_to_add) { [previous_label_to_add] }
   let(:ci_env) { true }
@@ -233,8 +234,6 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
   end
 
   describe '#check_deprecated_data_sources!' do
-    let(:fake_project_helper) { instance_double(Tooling::Danger::ProjectHelper) }
-
     subject(:check_data_source) { analytics_instrumentation.check_deprecated_data_sources! }
 
     before do
@@ -288,6 +287,140 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
 
           check_data_source
         end
+      end
+    end
+  end
+
+  describe '#check_removed_metric_fields!' do
+    let(:file_lines) do
+      file_diff.map { |line| line.delete_prefix('+') }
+    end
+
+    let(:filename) { 'config/metrics/new_metric.yml' }
+    let(:mr_url) { 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1' }
+    let(:milestone) { '17.0' }
+
+    before do
+      allow(fake_project_helper).to receive(:file_lines).with(filename).and_return(file_lines)
+      allow(fake_helper).to receive(:modified_files).and_return([filename])
+      allow(fake_helper).to receive(:changed_lines).with(filename).and_return(file_diff)
+      allow(fake_helper).to receive(:mr_web_url).and_return(mr_url)
+      allow(fake_helper).to receive(:mr_milestone).and_return(milestone)
+      allow(analytics_instrumentation).to receive(:project_helper).and_return(fake_project_helper)
+    end
+
+    context 'when metric was removed' do
+      context 'and removed_by_url is missing' do
+        let(:file_diff) do
+          [
+            "+---",
+            "+status: removed",
+            "+milestone_removed: #{milestone}"
+          ]
+        end
+
+        it 'adds suggestions' do
+          template = <<~SUGGEST_COMMENT
+            ```suggestion
+            status: removed
+            removed_by_url: %<mr_url>s
+            ```
+          SUGGEST_COMMENT
+
+          expected_format = format(template, mr_url: mr_url)
+
+          expect(analytics_instrumentation).to receive(:markdown).with(expected_format, file: filename, line: 2)
+
+          analytics_instrumentation.check_removed_metric_fields!
+        end
+      end
+
+      context 'and milestone_removed is missing' do
+        let(:file_diff) do
+          [
+            "+---",
+            "+status: removed",
+            "+removed_by_url: #{mr_url}"
+          ]
+        end
+
+        context 'when milestone is set for the MR' do
+          it 'adds suggestions' do
+            template = <<~SUGGEST_COMMENT
+            ```suggestion
+            status: removed
+            milestone_removed: %<milestone>s
+            ```
+            SUGGEST_COMMENT
+
+            expected_format = format(template, milestone: milestone)
+
+            expect(analytics_instrumentation).to receive(:markdown).with(expected_format, file: filename, line: 2)
+
+            analytics_instrumentation.check_removed_metric_fields!
+          end
+        end
+
+        context 'when milestone is not set for the MR' do
+          let(:milestone) { nil }
+
+          it 'adds suggestions with placeholder text and a comment' do
+            template = <<~SUGGEST_COMMENT
+            ```suggestion
+            status: removed
+            milestone_removed: [PLEASE SET MILESTONE]
+            ```
+            SUGGEST_COMMENT
+
+            expected_format = format("#{template}\nPlease set the `milestone_removed` value manually")
+
+            expect(analytics_instrumentation).to receive(:markdown).with(expected_format, file: filename, line: 2)
+
+            analytics_instrumentation.check_removed_metric_fields!
+          end
+        end
+      end
+
+      context 'and both removed_by_url and milestone_removed are missing' do
+        let(:file_diff) do
+          [
+            "+---",
+            "+status: removed"
+          ]
+        end
+
+        it 'adds suggestions' do
+          template = <<~SUGGEST_COMMENT
+            ```suggestion
+            status: removed
+            removed_by_url: %<mr_url>s
+            milestone_removed: %<milestone>s
+            ```
+          SUGGEST_COMMENT
+
+          expected_format = format(template, mr_url: mr_url, milestone: milestone)
+
+          expect(analytics_instrumentation).to receive(:markdown).with(expected_format, file: filename, line: 2)
+
+          analytics_instrumentation.check_removed_metric_fields!
+        end
+      end
+    end
+
+    context 'when metric was not removed' do
+      let(:file_diff) do
+        [
+          "+---",
+          "+status: active",
+          "+removed_by_url: #{mr_url}",
+          "+milestone_removed: #{milestone}"
+        ]
+      end
+
+      it 'does not add suggestions' do
+        expect(analytics_instrumentation).not_to receive(:markdown)
+
+        analytics_instrumentation.check_removed_metric_fields!
       end
     end
   end

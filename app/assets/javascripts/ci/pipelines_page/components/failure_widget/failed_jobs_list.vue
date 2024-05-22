@@ -157,7 +157,7 @@ export default {
   <div>
     <gl-loading-icon v-if="isInitialLoading" class="gl-p-4" />
     <div v-else-if="!hasFailedJobs" class="gl-p-4">{{ $options.i18n.noFailedJobs }}</div>
-    <div v-else class="container-fluid gl-grid-tpl-rows-auto">
+    <div v-else class="container-fluid gl-grid-rows-auto">
       <div class="row gl-my-4 gl-text-gray-900">
         <div
           v-for="col in $options.columns"

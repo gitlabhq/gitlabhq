@@ -86,7 +86,7 @@ export default {
       >
         <div class="gl-flex-grow-1 gl-flex-basis-0 gl-mr-3">
           <gl-form-input
-            class="gl-w-full!"
+            class="!gl-w-full"
             :value="path"
             :data-testid="entry.generateInputDataTestId(index)"
             @input="$emit('update-job', `${entry.key}[${index}]`, $event)"

@@ -128,7 +128,7 @@ export default {
     ref="dropdown"
     :text="selectText"
     lazy
-    menu-class="gl-w-full!"
+    menu-class="!gl-w-full"
     class="gl-w-full"
     v-on="$listeners"
     @shown="setFocus"

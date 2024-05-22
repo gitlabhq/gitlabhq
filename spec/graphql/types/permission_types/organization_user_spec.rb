@@ -3,13 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Types::PermissionTypes::OrganizationUser, feature_category: :cell do
-  it do
-    expected_permissions = [
-      :remove_user
+  it 'exposes the expected fields' do
+    expected_permissions = %i[
+      remove_user
+      delete_user
     ]
 
-    expected_permissions.each do |permission|
-      expect(described_class).to have_graphql_field(permission)
-    end
+    expect(described_class).to have_graphql_fields(expected_permissions)
   end
 end
