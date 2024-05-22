@@ -5,29 +5,38 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 type: reference, howto
 ---
 
-# Authentication configuration
+# Authentication
 
-WARNING:
-**DO NOT** use credentials that are valid for production systems, production servers, or any that
-contain production data.
+For complete coverage, the DAST analyzer must authenticate with the application being tested. This
+requires configuring the authentication credentials and authentication method in the DAST CI/CD job.
 
-WARNING:
-**DO NOT** run an authenticated scan against a production server.
-Authenticated scans may perform **any** function that the authenticated user can,
-including modifying or deleting data, submitting forms, and following links.
-Only run an authenticated scan against non-production systems or servers.
+DAST requires authentication to:
 
-Authentication logs a user in before a DAST scan so that the analyzer can test
-as much of the application as possible when searching for vulnerabilities.
+- Simulate real-world attacks and identify vulnerabilities that might be exploited by
+  attackers.
+- Test user-specific features and custom behavior that may only be visible after authentication.
 
-DAST uses a browser to authenticate the user so that the login form has the necessary JavaScript
-and styling required to submit the form. DAST finds the username and password fields and fills them with their respective values.
-The login form is submitted, and when the response returns, a series of checks verify if authentication was successful.
-DAST saves the credentials for reuse when crawling the target application.
+The DAST job authenticates itself to the application, most commonly by filling in and submitting a
+login form on a browser. After the form is submitted, the DAST job confirms that authentication was
+successful. If authentication was successful, the DAST job continues and also saves the credentials
+for reuse when crawling the target application. If not, the DAST job stops.
 
-If DAST fails to authenticate, the scan halts and the CI job fails.
+Authentication methods supported by DAST include:
 
-Authentication supports single-step login forms, multi-step login forms, single sign-on, and authenticating to URLs outside of the configured target URL.
+- Single-step login form
+- Multi-step login form
+- Authenticating to URLs outside the configured target URL
+
+When choosing authentication credentials:
+
+- **DO NOT** use credentials that are valid for production systems, production servers, or used to access production data.
+- **DO NOT** run an authenticated scan against a production server. Authenticated scans may perform
+  **any** function that the authenticated user can, including modifying or deleting data, submitting
+  forms, and following links. Only run an authenticated scan against non-production systems or
+  servers.
+- Provide credentials that allow DAST to test the entire application.
+- Note the credentials' expiry date, if any, for future reference. For example, with a password
+  manager such as 1Password.
 
 ## Getting started
 

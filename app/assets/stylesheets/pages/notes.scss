@@ -332,6 +332,10 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
           display: none;
         }
       }
+
+      .timeline-avatar {
+        padding-top: $gl-spacing-scale-1 !important;
+      }
     }
 
     .note-body {
@@ -615,8 +619,11 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
           }
 
           .note-header {
-            flex-wrap: wrap;
+            flex-wrap: wrap-reverse;
             align-items: center;
+            @include media-breakpoint-up(sm) {
+              flex-wrap: wrap;
+            }
           }
         }
 
@@ -767,11 +774,19 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  flex-wrap: wrap-reverse;
+  @include media-breakpoint-up(sm) {
+    flex-wrap: wrap;
+  }
 
   > .note-header-info,
   > .note-actions {
     flex-grow: 1;
     flex-shrink: 1;
+    width: 100%;
+    @include media-breakpoint-up(sm) {
+      width: auto;
+    }
   }
 }
 

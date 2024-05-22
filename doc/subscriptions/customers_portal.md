@@ -12,7 +12,8 @@ For some management tasks for your subscription and account, such as purchasing 
 - [GitLab SaaS subscription](gitlab_com/index.md)
 - [Self-managed subscription](self_managed/index.md)
 
-If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription (your subscriptions are read-only).
+If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
+For more information, see [Customers that purchased through a reseller](#customers-that-purchased-through-a-reseller).
 
 ## Sign in to Customers Portal
 
@@ -30,8 +31,7 @@ To sign in to Customers Portal with your email and to receive a one-time sign-in
 
 1. Go to [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. Select **Sign in with your email**.
-1. Provide the **Email** for your Customers Portal profile. You will receive
-   an email with a one-time, sign-in link for your Customers Portal profile.
+1. Provide the **Email** for your Customers Portal profile. You will receive an email with a one-time sign-in link.
 1. In the email you received, select **Sign in**.
 
 NOTE:
@@ -49,7 +49,9 @@ if required.
 
 ## Change profile owner information
 
-The profile owner's personal details are used on invoices. The profile owner's email address is used for the [Customers Portal legacy sign-in](#sign-in-to-customers-portal) and license-related email.
+The profile owner's email address is used for the [Customers Portal legacy sign-in](#sign-in-to-customers-portal).
+If the profile owner is also a [billing account manager](#subscription-and-billing-contacts),
+their personal details are used on invoices, and for license and subscription-related emails.
 
 To change profile details, including name and email address:
 
