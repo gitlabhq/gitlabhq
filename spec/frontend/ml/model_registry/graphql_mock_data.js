@@ -214,14 +214,14 @@ export const createModelResponses = {
 export const destroyModelResponses = {
   success: {
     data: {
-      mlModelDestroy: {
+      mlModelDelete: {
         errors: [],
       },
     },
   },
   failure: {
     data: {
-      mlModelDestroy: {
+      mlModelDelete: {
         errors: ['Model not found'],
       },
     },

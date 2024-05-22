@@ -2,19 +2,6 @@
 # Cop supports --autocorrect.
 Layout/FirstHashElementIndentation:
   Exclude:
-    - 'app/helpers/projects/project_members_helper.rb'
-    - 'app/helpers/search_helper.rb'
-    - 'app/helpers/ssh_keys_helper.rb'
-    - 'app/helpers/tags_helper.rb'
-    - 'app/models/application_setting.rb'
-    - 'app/models/ci/build_metadata.rb'
-    - 'app/models/concerns/has_wiki_page_slug_attributes.rb'
-    - 'app/models/concerns/subscribable.rb'
-    - 'app/models/concerns/taskable.rb'
-    - 'app/models/diff_note.rb'
-    - 'app/models/merge_request.rb'
-    - 'app/models/milestone.rb'
-    - 'app/models/operations/feature_flags/strategy.rb'
     - 'app/models/project.rb'
     - 'app/presenters/ci/build_metadata_presenter.rb'
     - 'app/serializers/detailed_status_entity.rb'
@@ -32,7 +19,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/app/models/ee/list.rb'
     - 'ee/app/services/app_sec/dast/profiles/update_service.rb'
     - 'ee/app/services/elastic/cluster_reindexing_service.rb'
-    - 'ee/app/services/gitlab_subscriptions/plan_upgrade_service.rb'
     - 'ee/app/services/iterations/create_service.rb'
     - 'ee/app/services/resource_events/change_iteration_service.rb'
     - 'ee/app/services/security/token_revocation_service.rb'

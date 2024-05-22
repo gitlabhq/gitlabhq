@@ -67,15 +67,24 @@ module Danger
       return "" if files_with_legacy_utils.empty?
 
       <<~MARKDOWN
-      ### Legacy utils
+      ### Legacy CSS utility classes
 
-      The following files contain legacy utils:
+      The following files contain legacy CSS utility classes:
       #{format_files_with_legacy_utils_list(files_with_legacy_utils)}
 
-      Use the [Tailwind documentation](https://tailwindcss.com/docs/installation) to find the Tailwind
-      equivalent to these legacy utils. If the Tailwind equivalent is not available it is okay to use the
-      legacy util for now. The Tailwind equivalent will be made available when the corresponding migration issue
+      We are in the process of migrating our CSS utility classes to [Tailwind CSS](https://tailwindcss.com/).
+      The above CSS utility classes do not comply with Tailwind CSS naming conventions.
+      Please use the Tailwind CSS equivalent if it is available.
+      For more information on how to determine what CSS utility classes to use see
+      our [Tailwind CSS developer documentation](https://docs.gitlab.com/ee/development/fe_guide/style/scss.html#tailwind-css).
+
+      If the Tailwind CSS equivalent is not available, it is okay to use the legacy CSS utility class for now.
+      The Tailwind CSS equivalent will be made available when the corresponding migration issue
       in [&13521](https://gitlab.com/groups/gitlab-org/-/epics/13521) is completed.
+
+      If a legacy CSS utility class is listed above but you did not change it in this MR it is okay to leave for now.
+      If it is a small or simple MR, feel free to leave the code better than you found it and migrate those
+      legacy CSS utility classes to Tailwind CSS.
       MARKDOWN
     end
 

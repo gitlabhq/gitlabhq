@@ -7,17 +7,6 @@ module Gitlab
         module Sources
           class PostgresHll
             class << self
-              def calculate_metrics_union(metric_names:, start_date:, end_date:, recorded_at:, property_name:) # rubocop:disable Lint/UnusedMethodArgument -- property_name is used only for RedisHLL source
-                time_period = start_date && end_date ? (start_date..end_date) : nil
-
-                Array(metric_names).each_with_object(Gitlab::Database::PostgresHll::Buckets.new) do |event, buckets|
-                  json = read_aggregated_metric(metric_name: event, time_period: time_period, recorded_at: recorded_at)
-                  raise UnionNotAvailable, "Union data not available for #{metric_names}" unless json
-
-                  buckets.merge_hash!(Gitlab::Json.parse(json))
-                end.estimated_distinct_count
-              end
-
               def save_aggregated_metrics(metric_name:, time_period:, recorded_at_timestamp:, data:)
                 unless data.is_a? ::Gitlab::Database::PostgresHll::Buckets
                   Gitlab::ErrorTracking.track_and_raise_for_dev_exception(StandardError.new("Unsupported data type: #{data.class}"))

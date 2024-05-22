@@ -108,9 +108,6 @@ We use the following categories to classify a metric:
 - `subscription`: Data related to licensing.
 - `standard`: Standard set of identifiers that are included when collecting data.
 
-An aggregate metric is a metric that is the sum of two or more child metrics. Service Ping uses the data category of
-the aggregate metric to determine whether or not the data is included in the reported Service Ping payload.
-
 ### Example YAML metric definition
 
 The linked [`uuid`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/license/uuid.yml)

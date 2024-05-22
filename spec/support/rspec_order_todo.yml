@@ -2573,7 +2573,6 @@
 - './ee/spec/services/gitlab_subscriptions/create_company_lead_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/fetch_purchase_eligible_namespaces_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/fetch_subscription_plans_service_spec.rb'
-- './ee/spec/services/gitlab_subscriptions/plan_upgrade_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/preview_billable_user_change_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service_spec.rb'
 - './ee/spec/services/gitlab_subscriptions/reconciliations/check_seat_usage_alerts_eligibility_service_spec.rb'

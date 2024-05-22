@@ -290,5 +290,26 @@ module Gitlab
 
       raise ConcurrentRubyThreadIsUsedError, "Cannot run '#{what}' if running from `Concurrent::Promise`."
     end
+
+    # Returns a valid Rails log_level, given a user input and an optional fallback
+    #
+    # `config.log_level=` does NOT accept integers, but Ruby Loggers do.
+    #
+    # @return [Symbol, nil]
+    def to_rails_log_level(input, fallback = nil)
+      case input.to_s.downcase
+      when 'debug',   '0' then :debug
+      when 'info',    '1' then :info
+      when 'warn',    '2' then :warn
+      when 'error',   '3' then :error
+      when 'fatal',   '4' then :fatal
+      when 'unknown', '5' then :unknown
+      else
+        return :info unless fallback
+
+        # Normalize the fallback value, just in case
+        to_rails_log_level(fallback)
+      end
+    end
   end
 end

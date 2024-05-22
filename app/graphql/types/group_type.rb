@@ -13,6 +13,11 @@ module Types
       null: false,
       description: 'Web URL of the group.'
 
+    field :organization_edit_path, GraphQL::Types::String,
+      null: true,
+      description: 'Path for editing group at the organization level.',
+      alpha: { milestone: '17.1' }
+
     field :avatar_url,
       type: GraphQL::Types::String,
       null: true,
@@ -415,6 +420,15 @@ module Types
           loader.call(group_id, max_access_level)
         end
       end
+    end
+
+    def organization_edit_path
+      return if group.organization.nil?
+
+      ::Gitlab::Routing.url_helpers.edit_groups_organization_path(
+        group.organization,
+        id: group.to_param
+      )
     end
 
     private

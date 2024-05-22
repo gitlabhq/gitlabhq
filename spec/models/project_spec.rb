@@ -6273,6 +6273,39 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#jenkins_integration_active?' do
+    let_it_be_with_reload(:project) { create(:project) }
+    let_it_be_with_reload(:integration) { create(:jenkins_integration, push_events: true, project: project) }
+
+    subject { project.jenkins_integration_active? }
+
+    before do
+      integration.update!(active: active)
+    end
+
+    context 'when a project has an activated Jenkins integration' do
+      let(:active) { true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when a project has an inactive Jenkins integration' do
+      let(:active) { false }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when a project does not have a Jenkins integration at all' do
+      let(:active) { true }
+
+      before do
+        integration.destroy!
+      end
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
   describe '#has_active_hooks?' do
     let_it_be_with_refind(:project) { create(:project) }
 

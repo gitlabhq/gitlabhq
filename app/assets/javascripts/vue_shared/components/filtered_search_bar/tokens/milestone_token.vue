@@ -57,9 +57,13 @@ export default {
 
       return (
         milestones.find(
-          (milestone) => milestone.title.toLowerCase() === stripQuotes(data).toLowerCase(),
+          (milestone) =>
+            this.getMilestoneTitle(milestone).toLowerCase() === stripQuotes(data).toLowerCase(),
         ) || this.defaultMilestones.find(({ value }) => value === data)
       );
+    },
+    getMilestoneTitle(milestone) {
+      return milestone.title;
     },
     fetchMilestonesBySearchTerm(search) {
       return this.$apollo
@@ -101,20 +105,21 @@ export default {
     :suggestions="milestones"
     :suggestions-loading="loading"
     :get-active-token-value="getActiveMilestone"
+    :value-identifier="getMilestoneTitle"
     v-bind="$attrs"
     @fetch-suggestions="fetchMilestones"
     v-on="$listeners"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
-      %{{ activeTokenValue ? activeTokenValue.title : inputValue }}
+      %{{ activeTokenValue ? getMilestoneTitle(activeTokenValue) : inputValue }}
     </template>
     <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion
         v-for="milestone in suggestions"
         :key="milestone.id"
-        :value="milestone.title"
+        :value="getMilestoneTitle(milestone)"
       >
-        {{ milestone.title }}
+        {{ getMilestoneTitle(milestone) }}
       </gl-filtered-search-suggestion>
     </template>
   </base-token>

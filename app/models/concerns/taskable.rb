@@ -112,8 +112,8 @@ module Taskable
 
   def task_completion_status
     @task_completion_status ||= {
-        count: tasks.summary.item_count,
-        completed_count: tasks.summary.complete_count
+      count: tasks.summary.item_count,
+      completed_count: tasks.summary.complete_count
     }
   end
 end

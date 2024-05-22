@@ -77,7 +77,7 @@ describe('formatProjects', () => {
 });
 
 describe('formatGroups', () => {
-  it('correctly formats the groups with delete permissions', () => {
+  it('correctly formats the groups with edit and delete permissions', () => {
     const [firstMockGroup] = organizationGroups;
     const formattedGroups = formatGroups(organizationGroups);
     const [firstFormattedGroup] = formattedGroups;
@@ -87,7 +87,7 @@ describe('formatGroups', () => {
       name: firstMockGroup.fullName,
       fullName: firstMockGroup.fullName,
       parent: null,
-      editPath: `${firstFormattedGroup.webUrl}/-/edit`,
+      editPath: firstMockGroup.organizationEditPath,
       accessLevel: {
         integerValue: 50,
       },
@@ -99,7 +99,7 @@ describe('formatGroups', () => {
     expect(formattedGroups.length).toBe(organizationGroups.length);
   });
 
-  it('correctly formats the groups without delete permissions', () => {
+  it('correctly formats the groups without edit or delete permissions', () => {
     const nonDeletableGroup = organizationGroups[1];
     const formattedGroups = formatGroups(organizationGroups);
     const nonDeletableFormattedGroup = formattedGroups[1];
@@ -109,11 +109,11 @@ describe('formatGroups', () => {
       name: nonDeletableGroup.fullName,
       fullName: nonDeletableGroup.fullName,
       parent: null,
-      editPath: `${nonDeletableFormattedGroup.webUrl}/-/edit`,
+      editPath: nonDeletableGroup.organizationEditPath,
       accessLevel: {
         integerValue: 0,
       },
-      availableActions: [ACTION_EDIT],
+      availableActions: [],
       actionLoadingStates: {
         [ACTION_DELETE]: false,
       },

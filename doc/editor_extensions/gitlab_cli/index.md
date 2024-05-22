@@ -72,6 +72,10 @@ glab mr merge
 
 ## Git suggestions
 
+DETAILS:
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com
+
 The GitLab CLI includes Git suggestions, powered by [GitLab Duo](../../user/ai_features.md).
 
 To ask questions about `git` commands while you work, type:

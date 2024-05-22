@@ -1,0 +1,9 @@
+---
+name: memoized_rules_changes
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461342
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152843
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461658
+milestone: '17.1'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

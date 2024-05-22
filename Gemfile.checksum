@@ -393,7 +393,7 @@
 {"name":"mustermann","version":"3.0.0","platform":"ruby","checksum":"6d3569aa3c3b2f048c60626f48d9b2d561cc8d2ef269296943b03da181c08b67"},
 {"name":"mustermann-grape","version":"1.0.2","platform":"ruby","checksum":"6f5309d6a338f801f211c644e8c2d3cc2577a8693f9cd51dadfdb29c1260f5fe"},
 {"name":"nap","version":"1.1.0","platform":"ruby","checksum":"949691660f9d041d75be611bb2a8d2fd559c467537deac241f4097d9b5eea576"},
-{"name":"neighbor","version":"0.2.3","platform":"ruby","checksum":"70887ac2110d0c7ab243ee988f64359b8bb94a63a0c78542bbeef4f33b1933e5"},
+{"name":"neighbor","version":"0.3.2","platform":"ruby","checksum":"b795bbcc24b1b9ae82d9f7e97a3461b0b3607d24a85a7acbed776bd498e7eba8"},
 {"name":"nenv","version":"0.3.0","platform":"ruby","checksum":"d9de6d8fb7072228463bf61843159419c969edb34b3cef51832b516ae7972765"},
 {"name":"net-http","version":"0.1.1","platform":"ruby","checksum":"75a4e109b6f9af32fad0e98a6180c47aceb415927ca3bd70c8fc3e7dbbabbe86"},
 {"name":"net-http-persistent","version":"4.0.1","platform":"ruby","checksum":"2752f4cce05fd1c45e0537c6f3a98fa5a4899efd5f88e63c104ed5f05cbddef9"},

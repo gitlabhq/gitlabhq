@@ -54,7 +54,7 @@ gem 'view_component', '~> 3.12.1' # rubocop:todo Gemfile/MissingFeatureCategory
 # Supported DBs
 gem 'pg', '~> 1.5.6' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'neighbor', '~> 0.2.3' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'neighbor', '~> 0.3.2', feature_category: :duo_chat
 
 gem 'rugged', '~> 1.6' # rubocop:todo Gemfile/MissingFeatureCategory
 

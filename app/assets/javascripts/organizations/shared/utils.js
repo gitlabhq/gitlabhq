@@ -28,10 +28,14 @@ const availableProjectActions = (userPermissions) => {
 };
 
 const availableGroupActions = (userPermissions) => {
-  const baseActions = [ACTION_EDIT];
+  const baseActions = [];
+
+  if (userPermissions.viewEditPage) {
+    baseActions.push(ACTION_EDIT);
+  }
 
   if (userPermissions.removeGroup) {
-    return [...baseActions, ACTION_DELETE];
+    baseActions.push(ACTION_DELETE);
   }
 
   return baseActions;
@@ -70,7 +74,16 @@ export const formatProjects = (projects) =>
 
 export const formatGroups = (groups) =>
   groups.map(
-    ({ id, fullName, webUrl, parent, maxAccessLevel: accessLevel, userPermissions, ...group }) => ({
+    ({
+      id,
+      fullName,
+      webUrl,
+      parent,
+      maxAccessLevel: accessLevel,
+      userPermissions,
+      organizationEditPath: editPath,
+      ...group
+    }) => ({
       ...group,
       id: getIdFromGraphQLId(id),
       name: fullName,
@@ -78,7 +91,7 @@ export const formatGroups = (groups) =>
       webUrl,
       parent: parent?.id || null,
       accessLevel,
-      editPath: `${webUrl}/-/edit`,
+      editPath,
       availableActions: availableGroupActions(userPermissions),
       actionLoadingStates: {
         [ACTION_DELETE]: false,

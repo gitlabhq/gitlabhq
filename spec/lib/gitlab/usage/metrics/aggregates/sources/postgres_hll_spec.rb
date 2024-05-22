@@ -14,53 +14,6 @@ RSpec.describe Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll, :clean_
   let(:metric_names) { [metric_1, metric_2] }
   let(:error_rate) { Gitlab::Database::PostgresHll::BatchDistinctCounter::ERROR_RATE }
 
-  describe 'metric calculations' do
-    before do
-      [
-        {
-          metric_name: metric_1,
-          time_period: time_period,
-          recorded_at_timestamp: recorded_at,
-          data: ::Gitlab::Database::PostgresHll::Buckets.new(141 => 1, 56 => 1)
-        },
-        {
-          metric_name: metric_2,
-          time_period: time_period,
-          recorded_at_timestamp: recorded_at,
-          data: ::Gitlab::Database::PostgresHll::Buckets.new(10 => 1, 56 => 1)
-        }
-      ].each do |params|
-        described_class.save_aggregated_metrics(**params)
-      end
-    end
-
-    describe '.calculate_events_union' do
-      subject(:calculate_metrics_union) do
-        described_class.calculate_metrics_union(metric_names: metric_names, start_date: start_date, end_date: end_date, recorded_at: recorded_at, property_name: property_name)
-      end
-
-      it 'returns the number of unique events in the union of all metrics' do
-        expect(calculate_metrics_union.round(2)).to be_within(error_rate).percent_of(3)
-      end
-
-      context 'when there is no aggregated data saved' do
-        let(:metric_names) { [metric_1, 'i do not have any records'] }
-
-        it 'raises error when union data is missing' do
-          expect { calculate_metrics_union }.to raise_error Gitlab::Usage::Metrics::Aggregates::Sources::UnionNotAvailable
-        end
-      end
-
-      context 'when there is only one metric defined as aggregated' do
-        let(:metric_names) { [metric_1] }
-
-        it 'returns the number of unique events for that metric' do
-          expect(calculate_metrics_union.round(2)).to be_within(error_rate).percent_of(2)
-        end
-      end
-    end
-  end
-
   describe '.save_aggregated_metrics' do
     subject(:save_aggregated_metrics) do
       described_class.save_aggregated_metrics(

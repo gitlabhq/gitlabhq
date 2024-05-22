@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
+RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category: :pipeline_composition do
   describe '#satisfied_by?' do
     let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
 
@@ -45,6 +45,101 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes do
       let(:globs) { { paths: [] } }
 
       it { is_expected.to be_truthy }
+    end
+
+    context 'when multiple rules have the same glob paths' do
+      let(:pipeline) { build(:ci_pipeline) }
+      let(:globs) { { paths: ['some/glob/*'] } }
+
+      before do
+        allow(pipeline).to receive(:modified_paths).and_return(['some/modified/file'])
+        allow(pipeline).to receive(:modified_paths_since).and_return(['some/modified/file'])
+        allow(pipeline.project).to receive(:commit).and_return(build_stubbed(:commit, sha: 'sha'))
+      end
+
+      subject(:call_twice) do
+        described_class.new(globs).satisfied_by?(pipeline, {})
+        described_class.new(globs).satisfied_by?(pipeline, {})
+      end
+
+      def expect_fnmatch_call_count(count)
+        expect(File).to(
+          receive(:fnmatch?)
+            .with('some/glob/*', 'some/modified/file', anything)
+            .exactly(count)
+            .times
+            .and_call_original
+        )
+      end
+
+      context 'without a request store' do
+        it 'calls the #fnmatch? each time' do
+          expect_fnmatch_call_count(2)
+
+          call_twice
+        end
+      end
+
+      context 'with a request store', :request_store do
+        it 'reuses the #fnmatch? calculations' do
+          expect_fnmatch_call_count(1)
+
+          call_twice
+        end
+
+        context 'when compare_to differs' do
+          subject(:call_twice) do
+            described_class.new(globs).satisfied_by?(pipeline, {})
+            described_class.new(globs.merge(compare_to: 'other')).satisfied_by?(pipeline, {})
+          end
+
+          it 'calls #fnmatch? each time' do
+            expect_fnmatch_call_count(2)
+
+            call_twice
+          end
+        end
+
+        context 'when pipeline sha differs' do
+          subject(:call_twice) do
+            described_class.new(globs).satisfied_by?(pipeline, {})
+            pipeline.sha = 'other'
+            described_class.new(globs).satisfied_by?(pipeline, {})
+          end
+
+          it 'calls #fnmatch? each time' do
+            expect_fnmatch_call_count(2)
+
+            call_twice
+          end
+        end
+
+        context 'when project_id differs' do
+          subject(:call_twice) do
+            described_class.new(globs).satisfied_by?(pipeline, {})
+            pipeline.project_id = -1
+            described_class.new(globs).satisfied_by?(pipeline, {})
+          end
+
+          it 'calls #fnmatch? each time' do
+            expect_fnmatch_call_count(2)
+
+            call_twice
+          end
+        end
+      end
+
+      context 'with FF memoized_rules_changes disabled' do
+        before do
+          stub_feature_flags(memoized_rules_changes: false)
+        end
+
+        it 'calls the #fnmatch? each time' do
+          expect_fnmatch_call_count(2)
+
+          call_twice
+        end
+      end
     end
 
     context 'when using variable expansion' do

@@ -242,6 +242,13 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def terraform_states_anchor_data
     if project.terraform_states.exists? && can_read_terraform_state?
+      terraform_warn_icon = content_tag(
+        :span,
+        title: s_('Terraform|Support for periods (`.`) in Terraform state names might break existing states.'),
+        class: 'gl-ml-2',
+        data: { toggle: 'tooltip' }
+      ) { sprite_icon('error', css_class: 'gl-text-gray-600') }
+
       AnchorData.new(
         true,
         statistic_icon('terraform') +
@@ -249,7 +256,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
           terraform_states_count: number_with_delimiter(project.terraform_states.count),
           strong_start: '<strong class="project-stat-value">'.html_safe,
           strong_end: '</strong>'.html_safe
-        },
+        } + terraform_warn_icon,
         project_terraform_index_path(project)
       )
     end

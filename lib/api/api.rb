@@ -13,7 +13,7 @@ module API
     USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
     LOG_FILTERS = ::Rails.application.config.filter_parameters + [/^output$/]
     LOG_FORMATTER = Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new
-    LOGGER = Logger.new(LOG_FILENAME)
+    LOGGER = Logger.new(LOG_FILENAME, level: ::Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :info))
 
     class MovedPermanentlyError < StandardError
       MSG_PREFIX = 'This resource has been moved permanently to'

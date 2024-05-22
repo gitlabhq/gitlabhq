@@ -6,7 +6,9 @@ product_section: sec
 product_stage: secure
 product_group: static_analysis
 value_type: number
-status: active
+status: removed
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152166
+milestone_removed: '17.1'
 milestone: '14.7'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76917
 time_frame: 28d

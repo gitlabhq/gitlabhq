@@ -27,9 +27,9 @@ module Operations
 
       validates :name,
         inclusion: {
-        in: STRATEGIES.keys,
-        message: ->(_object, _data) { s_('Validation|strategy name is invalid') }
-      }
+          in: STRATEGIES.keys,
+          message: ->(_object, _data) { s_('Validation|strategy name is invalid') }
+        }
 
       validate :parameters_validations, if: -> { errors[:name].blank? }
       validates :user_list, presence: true, if: -> { name == STRATEGY_GITLABUSERLIST }

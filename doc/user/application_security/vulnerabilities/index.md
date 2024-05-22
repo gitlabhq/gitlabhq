@@ -31,7 +31,7 @@ the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#ac
 ## Explaining a vulnerability
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Beta
 
@@ -89,7 +89,7 @@ The following data is shared with third-party AI APIs:
 ## Vulnerability resolution
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 

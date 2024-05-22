@@ -35,7 +35,8 @@ module Gitlab
                 location: masked_location,
                 blob: masked_blob,
                 raw: nil,
-                extra: extra_attrs
+                extra: {},
+                component: component_attrs
               )
             end
 
@@ -95,13 +96,13 @@ module Gitlab
             end
             strong_memoize_attr :component_payload
 
-            def extra_attrs
+            def component_attrs
               return {} unless component_payload
 
               {
-                component_project: component_payload.fetch(:project),
-                component_sha: component_payload.fetch(:sha),
-                component_name: component_payload.fetch(:name)
+                project: component_payload.fetch(:project),
+                sha: component_payload.fetch(:sha),
+                name: component_payload.fetch(:name)
               }
             end
           end

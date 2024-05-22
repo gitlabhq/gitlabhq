@@ -7,9 +7,9 @@ module HasWikiPageSlugAttributes
     validates :slug, uniqueness: { scope: meta_foreign_key }
     validates :slug, length: { maximum: 2048 }, allow_nil: false
     validates :canonical, uniqueness: {
-          scope: meta_foreign_key,
-          if: :canonical?,
-          message: 'Only one slug can be canonical per wiki metadata record'
+      scope: meta_foreign_key,
+      if: :canonical?,
+      message: 'Only one slug can be canonical per wiki metadata record'
     }
 
     scope :canonical, -> { where(canonical: true) }

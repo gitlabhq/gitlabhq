@@ -224,8 +224,8 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     it 'returns only components included with `include:component`' do
       expect(config.metadata[:includes].size).to eq(3)
       expect(included_components).to contain_exactly(
-        { component_project: project1, component_sha: project1.commit.sha, component_name: 'dast' },
-        { component_project: project2, component_sha: project2.commit.sha, component_name: 'template' }
+        { project: project1, sha: project1.commit.sha, name: 'dast' },
+        { project: project2, sha: project2.commit.sha, name: 'template' }
       )
     end
 
@@ -241,7 +241,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       it 'returns only unique components' do
         expect(config.metadata[:includes].size).to eq(2)
         expect(included_components).to contain_exactly(
-          { component_project: project1, component_sha: project1.commit.sha, component_name: 'dast' }
+          { project: project1, sha: project1.commit.sha, name: 'dast' }
         )
       end
     end

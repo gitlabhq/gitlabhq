@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-GitLab reviews your seat usage and sends you an invoice for any overages.
+In accordance with [the GitLab Subscription Agreement](https://about.gitlab.com/terms/), GitLab reviews your seat usage and sends you an invoice for any overages.
 This review can occur:
 
 - **Annually**. This process is also known as **the annual true-up process**. This process requires you to pay the full annual subscription fee

@@ -279,6 +279,8 @@ class User < MainClusterwide::ApplicationRecord
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
     disable_joins: true
+  has_many :owned_organizations, -> { where(organization_users: { access_level: Gitlab::Access::OWNER }) },
+    through: :organization_users, source: :organization, class_name: 'Organizations::Organization'
 
   has_one :status, class_name: 'UserStatus'
   has_one :user_preference
@@ -1609,6 +1611,24 @@ class User < MainClusterwide::ApplicationRecord
 
     Group
       .from(owned_groups, :namespaces)
+      .where_exists(counts)
+  end
+
+  # All organizations that are owned by this user, and only this user.
+  def solo_owned_organizations
+    ownerships_cte = Gitlab::SQL::CTE.new(:ownerships, organization_users.owners, materialized: false)
+
+    owned_orgs_from_cte = Organizations::Organization
+      .joins('INNER JOIN ownerships ON ownerships.organization_id = organizations.id')
+
+    counts = Organizations::OrganizationUser
+      .owners
+      .joins('INNER JOIN ownerships ON ownerships.organization_id = organization_users.organization_id')
+      .having('count(organization_users.user_id) = 1')
+
+    Organizations::Organization
+      .with(ownerships_cte.to_arel)
+      .from(owned_orgs_from_cte, :organizations)
       .where_exists(counts)
   end
 

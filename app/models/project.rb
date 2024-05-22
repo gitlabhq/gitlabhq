@@ -1137,6 +1137,10 @@ class Project < ApplicationRecord
     !!prometheus_integration&.active?
   end
 
+  def jenkins_integration_active?
+    !!jenkins_integration&.active?
+  end
+
   def personal_namespace_holder?(user)
     return false unless personal?
     return false unless user

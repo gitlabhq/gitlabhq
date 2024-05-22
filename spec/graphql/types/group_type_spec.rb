@@ -29,6 +29,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       contact_state_counts contacts work_item_types
       recent_issue_boards ci_variables releases environment_scopes work_items autocomplete_users
       lock_math_rendering_limits_enabled math_rendering_limits_enabled created_at updated_at
+      organization_edit_path
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -236,6 +237,42 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       end
 
       it { is_expected.to eq(false) }
+    end
+  end
+
+  describe 'organizationEditPath' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:organization) { create(:organization) }
+    let(:query) do
+      %(
+        query {
+          group(fullPath: "#{group.full_path}") {
+            organizationEditPath
+          }
+        }
+      )
+    end
+
+    let(:response) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    subject(:organization_edit_path) { response.dig('data', 'group', 'organizationEditPath') }
+
+    context 'when group has an organization associated with it' do
+      let_it_be(:group) { create(:group, :public, organization: organization) }
+
+      it 'returns edit path scoped to organization' do
+        expect(organization_edit_path).to eq(
+          "/-/organizations/#{organization.path}/groups/#{group.full_path}/edit"
+        )
+      end
+    end
+
+    context 'when group does not have an organization associated with it' do
+      let_it_be(:group) { create(:group, :public, organization: nil) }
+
+      it 'returns nil' do
+        expect(organization_edit_path).to be_nil
+      end
     end
   end
 end

@@ -89,41 +89,18 @@
     padding: 0 $gl-padding;
   }
 
-  a {
-    &:hover,
-    &.active {
-      text-decoration: none;
-
-      span {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  .active > .wiki-list {
-    background-color: var(--gray-50, $gray-50);
-  }
-
   .wiki-list {
-    padding: $gl-spacing-scale-2 $gl-spacing-scale-3;
-    margin-bottom: $gl-spacing-scale-1;
-    border-radius: $gl-border-radius-base;
+    min-height: 30px;
 
     &:hover {
       background: var(--gray-50, $gray-50);
 
+      a {
+        color: $black;
+      }
+
       .wiki-list-create-child-button {
         display: block;
-        box-shadow: none;
-
-        &:focus {
-          box-shadow: 0 0 0 1px #fff, 0 0 0 3px $blue-400;
-        }
-
-        &:active {
-          background: $gray-100 !important;
-          box-shadow: 0 0 0 1px #fff, 0 0 0 3px $blue-400;
-        }
       }
     }
   }
@@ -131,10 +108,6 @@
   .wiki-list-expand-button,
   .wiki-list-collapse-button {
     color: $gray-400;
-
-    &:hover {
-      color: $black;
-    }
   }
 
   ul.wiki-pages,
@@ -146,10 +119,6 @@
 
   ul.wiki-pages ul {
     padding-left: 20px;
-  }
-
-  .wiki-sidebar-header {
-    padding: 0 $gl-padding $gl-padding;
   }
 }
 
@@ -176,11 +145,6 @@ ul.wiki-pages-list.content-list {
 .wiki-list {
   .wiki-list-create-child-button {
     display: none;
-  }
-
-  .wiki-list-expand-button,
-  .wiki-list-collapse-button {
-    left: -$gl-spacing-scale-5;
   }
 
   .wiki-list-expand-button {

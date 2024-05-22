@@ -6,10 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Control GitLab Duo availability
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 > - [Settings to turn off AI features introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
 > - [Settings to turn off AI features added to the UI](https://gitlab.com/gitlab-org/gitlab/-/issues/441489) in GitLab 16.11.
 
@@ -18,6 +14,7 @@ In addition:
 
 - If you have self-managed GitLab, you must
   [allow connectivity](#configure-gitlab-duo-on-a-self-managed-instance).
+- If you have GitLab Dedicated, you must have [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 - For some generally available features, like [Code Suggestions](project/repository/code_suggestions/index.md),
   [you must assign seats](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats)
   to the users you want to have access.

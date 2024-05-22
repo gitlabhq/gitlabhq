@@ -183,4 +183,30 @@ RSpec.describe MergeRequestPollWidgetEntity do
       end
     end
   end
+
+  describe '#jenkins_integration_active' do
+    let_it_be_with_reload(:project_with_integration) { create :project, :repository }
+    let_it_be_with_reload(:integration) { create(:jenkins_integration, push_events: true, project: project_with_integration) }
+    let_it_be_with_reload(:resource) { create(:merge_request, source_project: project_with_integration, target_project: project_with_integration) }
+
+    subject do
+      described_class.new(resource, { request: request }.merge(options)).as_json
+    end
+
+    before do
+      integration.update!(active: active)
+    end
+
+    context 'with active Jenkins integration' do
+      let(:active) { true }
+
+      it { expect(subject[:jenkins_integration_active]).to eq(true) }
+    end
+
+    context 'with inactive Jenkins integration' do
+      let(:active) { false }
+
+      it { expect(subject[:jenkins_integration_active]).to eq(false) }
+    end
+  end
 end

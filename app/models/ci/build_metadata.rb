@@ -45,10 +45,10 @@ module Ci
     scope :with_exposed_artifacts, -> { where(has_exposed_artifacts: true) }
 
     enum timeout_source: {
-        unknown_timeout_source: 1,
-        project_timeout_source: 2,
-        runner_timeout_source: 3,
-        job_timeout_source: 4
+      unknown_timeout_source: 1,
+      project_timeout_source: 2,
+      runner_timeout_source: 3,
+      job_timeout_source: 4
     }
 
     def update_timeout_state

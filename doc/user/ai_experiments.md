@@ -13,7 +13,7 @@ The following GitLab Duo features are
 ## Explain code in the Web UI with Code explanation
 
 DETAILS:
-**Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md).
+**Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
@@ -65,7 +65,7 @@ We cannot guarantee that the large language model produces results that are corr
 ## Summarize issue discussions with Discussion summary
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
@@ -95,7 +95,7 @@ language model referenced above.
 ## Forecast deployment frequency with Value stream forecasting
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** Freely available for Premium and Ultimate for a limited time for self-managed and GitLab.com. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
@@ -127,7 +127,7 @@ Provide feedback on this experimental feature in [issue 416833](https://gitlab.c
 ## Root cause analysis
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
@@ -154,7 +154,7 @@ An analysis of the reasons for the failure is displayed.
 ## Summarize an issue with Issue description generation
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 

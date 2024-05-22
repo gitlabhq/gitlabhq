@@ -8174,9 +8174,6 @@ msgstr ""
 msgid "BillingPlans|Free guest users"
 msgstr ""
 
-msgid "BillingPlans|Free upgrade!"
-msgstr ""
-
 msgid "BillingPlans|Have a question? We're here to help."
 msgstr ""
 
@@ -8315,9 +8312,6 @@ msgstr ""
 msgid "BillingPlans|billed annually at %{price_per_year}"
 msgstr ""
 
-msgid "BillingPlans|for the remainder of your subscription"
-msgstr ""
-
 msgid "BillingPlans|frequently asked questions"
 msgstr ""
 
@@ -8331,9 +8325,6 @@ msgid "BillingPlans|per user"
 msgstr ""
 
 msgid "BillingPlan|Upgrade"
-msgstr ""
-
-msgid "BillingPlan|Upgrade for free"
 msgstr ""
 
 msgid "Billings|Error validating card details"
@@ -14129,6 +14120,9 @@ msgstr ""
 msgid "ContainerRegistry|Keep these tags"
 msgstr ""
 
+msgid "ContainerRegistry|Last published at %{time}"
+msgstr ""
+
 msgid "ContainerRegistry|Login"
 msgstr ""
 
@@ -19473,9 +19467,6 @@ msgid "Edit public deploy key"
 msgstr ""
 
 msgid "Edit release"
-msgstr ""
-
-msgid "Edit sidebar"
 msgstr ""
 
 msgid "Edit single file"
@@ -51751,6 +51742,9 @@ msgstr ""
 msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to change, %{deleteNum} to delete"
 msgstr ""
 
+msgid "Terraform|Support for periods (`.`) in Terraform state names might break existing states."
+msgstr ""
+
 msgid "Terraform|Terraform init command"
 msgstr ""
 
@@ -55799,9 +55793,6 @@ msgstr ""
 msgid "Updating…"
 msgstr ""
 
-msgid "Upgrade offers available!"
-msgstr ""
-
 msgid "Upload"
 msgstr ""
 
@@ -58707,10 +58698,16 @@ msgstr ""
 msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
+msgid "Wiki|Create a new page under \"%{page_title}\""
+msgstr ""
+
 msgid "Wiki|Edit page"
 msgstr ""
 
 msgid "Wiki|Edit template"
+msgstr ""
+
+msgid "Wiki|Edit wiki sidebar"
 msgstr ""
 
 msgid "Wiki|New page"
@@ -58743,7 +58740,7 @@ msgstr ""
 msgid "Wiki|The sidebar failed to load. You can reload the page to try again."
 msgstr ""
 
-msgid "Wiki|View All Pages"
+msgid "Wiki|View all"
 msgstr ""
 
 msgid "Wiki|Wiki Pages"

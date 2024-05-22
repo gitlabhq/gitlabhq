@@ -22,7 +22,7 @@ const apolloProvider = new VueApollo({
 });
 
 function mountBoardApp(el) {
-  const { boardId, groupId, fullPath, rootPath } = el.dataset;
+  const { boardId, groupId, fullPath, rootPath, hasScopedLabelsFeature } = el.dataset;
 
   const rawFilterParams = queryToObject(window.location.search, { gatherArrays: true });
 
@@ -82,6 +82,7 @@ function mountBoardApp(el) {
       multipleIssueBoardsAvailable: parseBoolean(el.dataset.multipleBoardsAvailable),
       scopedIssueBoardFeatureEnabled: parseBoolean(el.dataset.scopedIssueBoardFeatureEnabled),
       allowSubEpics: false,
+      hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
     },
     render: (createComponent) => createComponent(BoardApp),
   });

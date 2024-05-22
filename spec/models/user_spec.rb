@@ -225,6 +225,11 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     it do
+      is_expected.to have_many(:owned_organizations)
+                      .through(:organization_users).class_name('Organizations::Organization')
+    end
+
+    it do
       is_expected.to have_many(:alert_assignees).class_name('::AlertManagement::AlertAssignee').inverse_of(:assignee)
     end
 
@@ -4760,6 +4765,46 @@ RSpec.describe User, feature_category: :user_profile do
 
           expect { solo_owned_groups }.not_to exceed_query_limit(control)
         end
+      end
+    end
+  end
+
+  describe '#solo_owned_organizations' do
+    let_it_be_with_refind(:user) { create(:user) }
+
+    subject(:solo_owned_organizations) { user.solo_owned_organizations }
+
+    context 'no owned organizations' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'has owned organizations' do
+      let(:organization) { create(:organization) }
+
+      before do
+        organization.add_owner(user)
+      end
+
+      context 'not solo owner' do
+        let_it_be(:user2) { create(:user) }
+
+        before do
+          organization.add_owner(user2)
+        end
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'solo owner' do
+        it { is_expected.to include(organization) }
+      end
+
+      context 'solo owner with other members' do
+        before do
+          create(:organization_user, organization: organization)
+        end
+
+        it { is_expected.to include(organization) }
       end
     end
   end

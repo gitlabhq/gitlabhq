@@ -184,9 +184,9 @@ class Milestone < ApplicationRecord
                .count
 
     {
-        opened: counts['active'] || 0,
-        closed: counts['closed'] || 0,
-        all: counts.values.sum
+      opened: counts['active'] || 0,
+      closed: counts['closed'] || 0,
+      all: counts.values.sum
     }
   end
 

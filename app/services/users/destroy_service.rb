@@ -43,6 +43,11 @@ module Users
         raise Gitlab::Access::AccessDeniedError, "#{current_user} tried to destroy user #{user}!"
       end
 
+      if user.solo_owned_organizations.present?
+        user.errors.add(:base, 'You must transfer ownership of organizations before you can remove user')
+        return user
+      end
+
       if !delete_solo_owned_groups && user.solo_owned_groups.present?
         user.errors.add(:base, 'You must transfer ownership or delete groups before you can remove user')
         return user

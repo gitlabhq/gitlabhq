@@ -16,6 +16,7 @@ GitLab Duo is designed to provide contextually relevant information during the l
 ## Generate a description by summarizing code changes
 
 DETAILS:
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Beta
 
@@ -39,6 +40,7 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 ## Generate a description from a template
 
 DETAILS:
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Beta
 
@@ -73,6 +75,7 @@ Provide feedback on this experimental feature in [issue 416537](https://gitlab.c
 ## Summarize a code review
 
 DETAILS:
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
@@ -96,6 +99,7 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 ## Generate a merge or squash commit message
 
 DETAILS:
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 

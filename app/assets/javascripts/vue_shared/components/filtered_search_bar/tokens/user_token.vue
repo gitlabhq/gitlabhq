@@ -56,10 +56,13 @@ export default {
   },
   methods: {
     getActiveUser(users, data) {
-      return users.find((user) => user.username.toLowerCase() === data.toLowerCase());
+      return users.find((user) => this.getUsername(user).toLowerCase() === data.toLowerCase());
     },
     getAvatarUrl(user) {
       return user?.avatarUrl || user?.avatar_url;
+    },
+    getUsername(user) {
+      return user.username;
     },
     displayNameFor(username) {
       return this.getActiveUser(this.allUsers, username)?.name || username;
@@ -115,7 +118,7 @@ export default {
     :get-active-token-value="getActiveUser"
     :default-suggestions="defaultUsers"
     :preloaded-suggestions="preloadedUsers"
-    value-identifier="username"
+    :value-identifier="getUsername"
     v-bind="$attrs"
     @fetch-suggestions="fetchUsers"
     v-on="$listeners"
@@ -144,22 +147,22 @@ export default {
     <template #suggestions-list="{ suggestions, selections = [] }">
       <gl-filtered-search-suggestion
         v-for="user in suggestions"
-        :key="user.username"
-        :value="user.username"
+        :key="getUsername(user)"
+        :value="getUsername(user)"
       >
         <div
           class="gl-display-flex gl-align-items-center"
-          :class="{ 'gl-pl-6': !selections.includes(user.username) }"
+          :class="{ 'gl-pl-6': !selections.includes(getUsername(user)) }"
         >
           <gl-icon
-            v-if="selections.includes(user.username)"
+            v-if="selections.includes(getUsername(user))"
             name="check"
             class="gl-mr-3 gl-text-secondary gl-flex-shrink-0"
           />
           <gl-avatar :size="32" :src="getAvatarUrl(user)" />
           <div>
             <div>{{ user.name }}</div>
-            <div>@{{ user.username }}</div>
+            <div>@{{ getUsername(user) }}</div>
           </div>
         </div>
       </gl-filtered-search-suggestion>

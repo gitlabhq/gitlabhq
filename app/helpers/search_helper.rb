@@ -345,11 +345,11 @@ module SearchHelper
 
     [
       {
-          category: 'In this project',
-          id: issue.id,
-          label: search_result_sanitize("#{issue.title} (#{issue.to_reference})"),
-          url: issue_path(issue),
-          avatar_url: issue.project.avatar_url || ''
+        category: 'In this project',
+        id: issue.id,
+        label: search_result_sanitize("#{issue.title} (#{issue.to_reference})"),
+        url: issue_path(issue),
+        avatar_url: issue.project.avatar_url || ''
       }
     ]
   end

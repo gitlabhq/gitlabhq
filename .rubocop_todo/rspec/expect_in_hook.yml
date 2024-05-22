@@ -65,7 +65,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/services/geo/blob_download_service_spec.rb'
     - 'ee/spec/services/geo/registry_consistency_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/fetch_subscription_plans_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/plan_upgrade_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/reconciliations/calculate_seat_count_data_service_spec.rb'
     - 'ee/spec/services/groups/update_repository_storage_service_spec.rb'
     - 'ee/spec/services/members/await_service_spec.rb'

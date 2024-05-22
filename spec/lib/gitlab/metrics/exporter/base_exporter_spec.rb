@@ -2,9 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics::Exporter::BaseExporter,
-  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/462928',
-  feature_category: :cloud_connector do
+RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :cloud_connector do
   let(:settings) { double('settings') }
   let(:log_enabled) { false }
   let(:exporter) { described_class.new(settings, log_enabled: log_enabled, log_file: 'test_exporter.log') }
@@ -218,7 +216,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter,
       # in separate thread
       allow_any_instance_of(::WEBrick::HTTPServer)
         .to receive(:start).and_wrap_original do |m, *args|
-        Thread.new do
+        @request_thread = Thread.new do # rubocop:disable RSpec/InstanceVariable -- allowing for now
           m.call(*args)
         rescue IOError
           # is raised as we close listeners
@@ -228,6 +226,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter,
 
     after do
       exporter.stop
+      @request_thread.kill.join # rubocop:disable RSpec/InstanceVariable -- allowing for now
     end
 
     with_them do
