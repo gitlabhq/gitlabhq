@@ -83,6 +83,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe 'validation' do
+    it { is_expected.to validate_length_of(:name).is_at_most(256) }
+    it { is_expected.to validate_length_of(:description).is_at_most(1024) }
     it { is_expected.to validate_presence_of(:access_level) }
     it { is_expected.to validate_presence_of(:runner_type) }
     it { is_expected.to validate_presence_of(:registration_type) }
