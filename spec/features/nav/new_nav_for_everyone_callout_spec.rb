@@ -28,7 +28,7 @@ RSpec.describe 'new navigation for everyone callout', :js, feature_category: :na
     end
 
     context 'when user dismisses callout' do
-      it 'hides callout' do
+      it 'hides callout', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/454405' do
         expect(page).to have_content callout_title
 
         page.within(find('[data-feature-id="new_nav_for_everyone_callout"]')) do

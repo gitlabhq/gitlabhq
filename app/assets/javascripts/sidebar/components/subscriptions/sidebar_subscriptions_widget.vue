@@ -234,7 +234,7 @@ export default {
       category="secondary"
       data-testid="subscribe-button"
       :title="notificationTooltip"
-      class="sidebar-collapsed-icon sidebar-collapsed-container gl-rounded-0! gl-shadow-none!"
+      class="sidebar-collapsed-icon sidebar-collapsed-container gl-rounded-0! !gl-shadow-none"
       @click="toggleSubscribed"
     >
       <gl-icon :name="notificationIcon" :size="16" :class="{ 'gl-fill-blue-500': subscribed }" />

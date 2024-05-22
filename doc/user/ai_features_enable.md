@@ -157,7 +157,7 @@ To turn on GitLab Duo experiment and beta features for a top-level group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Experiment and Beta features**, select the **Use Experiment and Beta features** checkbox.
+1. Under **Experiment and beta features**, select the **Use experiment and beta features** checkbox.
 1. Select **Save changes**.
 
 This setting [cascades to all projects](../user/project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)

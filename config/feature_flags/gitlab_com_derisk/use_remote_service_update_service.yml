@@ -1,0 +1,9 @@
+---
+name: use_remote_service_update_service
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/455517
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149707
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461556
+milestone: '17.1'
+group: group::source code
+type: gitlab_com_derisk
+default_enabled: false

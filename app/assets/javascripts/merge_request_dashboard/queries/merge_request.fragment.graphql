@@ -2,6 +2,7 @@
 #import "~/graphql_shared/fragments/label.fragment.graphql"
 #import "~/graphql_shared/fragments/milestone.fragment.graphql"
 #import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "ee_else_ce/merge_request_dashboard/queries/merge_request_approval.fragment.graphql"
 
 fragment MergeRequestDashboardFragment on MergeRequest {
   id
@@ -38,4 +39,5 @@ fragment MergeRequestDashboardFragment on MergeRequest {
   userDiscussionsCount
   createdAt
   updatedAt
+  ...MergeRequestApprovalFragment
 }

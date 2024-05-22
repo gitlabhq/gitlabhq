@@ -7,6 +7,8 @@ class Notify < ApplicationMailer
   include ReminderEmailsHelper
   include IssuablesHelper
 
+  mattr_accessor :override_layout_lookup_table, default: {}
+
   include Emails::Shared
   include Emails::Issues
   include Emails::MergeRequests
@@ -40,6 +42,8 @@ class Notify < ApplicationMailer
   helper InProductMarketingHelper
   helper RegistrationsHelper
 
+  layout :determine_layout
+
   def test_email(recipient_email, subject, body)
     mail_with_locale(
       to: recipient_email,
@@ -69,6 +73,10 @@ class Notify < ApplicationMailer
   end
 
   private
+
+  def determine_layout
+    override_layout_lookup_table[action_name&.to_sym]
+  end
 
   # Return an email address that displays the name of the sender.
   # Override sender_email if you want to hard replace the sender address (e.g. custom email for Service Desk)

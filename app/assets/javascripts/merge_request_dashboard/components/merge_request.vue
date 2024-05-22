@@ -1,5 +1,6 @@
 <script>
 import { GlLink, GlSprintf, GlIcon, GlLabel, GlTooltipDirective } from '@gitlab/ui';
+import ApprovalCount from 'ee_component/merge_request_dashboard/components/approval_count.vue';
 import { __, sprintf } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -23,6 +24,7 @@ export default {
     CiIcon,
     TimeAgoTooltip,
     UserAvatarLink,
+    ApprovalCount,
   },
   directives: {
     SafeHtml,
@@ -114,6 +116,12 @@ export default {
               :tooltip-text="reviewerTitle(reviewer)"
               :class="{ 'gl-mr-2': index !== mergeRequest.reviewers.nodes.length - 1 }"
             />
+          </li>
+          <li
+            v-if="mergeRequest.approvalsRequired || mergeRequest.approved"
+            class="gl-ml-4 gl-display-flex gl-align-self-center"
+          >
+            <approval-count :merge-request="mergeRequest" />
           </li>
           <li
             v-if="mergeRequest.userDiscussionsCount"

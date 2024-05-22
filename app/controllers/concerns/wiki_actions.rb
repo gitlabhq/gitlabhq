@@ -99,6 +99,7 @@ module WikiActions
   end
 
   def templates
+    @wiki_entries_count = templates_list.total_count
     @wiki_entries = WikiDirectory.group_pages(templates_list, templates: true)
 
     render 'shared/wikis/templates'

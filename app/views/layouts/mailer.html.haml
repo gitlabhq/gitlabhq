@@ -3,6 +3,6 @@
     %td
       %img.footer-logo{ alt: "GitLab", src: image_url('mailers/gitlab_logo_black_text.png') }
       %div
-        = notification_reason_text(show_manage_notifications_link: true, show_help_link: true, format: :html)
+        = notification_reason_text(show_manage_notifications_link: true, show_help_link: true, unsubscribe_url: @unsubscribe_url, format: :html)
 
 = render 'layouts/mailer'

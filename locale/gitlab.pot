@@ -2102,10 +2102,10 @@ msgstr ""
 msgid "AIPoweredSM|Enable %{link_start}AI-powered features%{link_end} for this instance."
 msgstr ""
 
-msgid "AIPoweredSM|Enable Experiment and Beta AI-powered features"
+msgid "AIPoweredSM|Enable GitLab Duo features"
 msgstr ""
 
-msgid "AIPoweredSM|Enable GitLab Duo features"
+msgid "AIPoweredSM|Enable experiment and beta AI-powered features"
 msgstr ""
 
 msgid "AIPoweredSM|Enforce Duo features setting for all subgroups"
@@ -7685,6 +7685,9 @@ msgstr ""
 msgid "Autosave|Note"
 msgstr ""
 
+msgid "Availability"
+msgstr ""
+
 msgid "Available"
 msgstr ""
 
@@ -8000,34 +8003,28 @@ msgstr ""
 msgid "Beta"
 msgstr ""
 
-msgid "BetaBadge|A Beta feature is not production-ready, but is unlikely to change drastically before it's released. We encourage users to try Beta features and provide feedback."
+msgid "BetaBadge|A beta feature is not yet production-ready, but is ready for testing and unlikely to change significantly before it's released."
 msgstr ""
 
-msgid "BetaBadge|A Beta feature:"
+msgid "BetaBadge|Are subject to the GitLab Testing Agreement."
 msgstr ""
 
-msgid "BetaBadge|A Beta feature: "
+msgid "BetaBadge|Are supported on a commercially-reasonable effort basis."
 msgstr ""
 
 msgid "BetaBadge|Beta"
 msgstr ""
 
-msgid "BetaBadge|Is complete or near completion."
+msgid "BetaBadge|Beta features:"
 msgstr ""
 
-msgid "BetaBadge|Is supported by a commercially reasonable effort."
+msgid "BetaBadge|Have a low risk of data loss, but might still be unstable."
 msgstr ""
 
-msgid "BetaBadge|May be unstable."
+msgid "BetaBadge|Have a near complete user experience."
 msgstr ""
 
-msgid "BetaBadge|Should not cause data loss."
-msgstr ""
-
-msgid "BetaBadge|What's Beta?"
-msgstr ""
-
-msgid "BetaBadge|What's a Beta?"
+msgid "BetaBadge|What's a beta?"
 msgstr ""
 
 msgid "BeyondIdentityService|API Token. User must have access to `git-commit-signing` endpoint."
@@ -21285,28 +21282,28 @@ msgstr ""
 msgid "Experiment features' settings not allowed."
 msgstr ""
 
-msgid "ExperimentBadge|An Experiment is a feature that's in the process of being developed. It's not production-ready. We encourage users to try Experimental features and provide feedback."
+msgid "ExperimentBadge|An experiment is not yet production-ready, but is released for initial testing and feedback during development."
 msgstr ""
 
-msgid "ExperimentBadge|An Experiment:"
+msgid "ExperimentBadge|Are not supported and might not be documented."
 msgstr ""
 
-msgid "ExperimentBadge|Can be removed at any time."
+msgid "ExperimentBadge|Are subject to the GitLab Testing Agreement."
 msgstr ""
 
-msgid "ExperimentBadge|Can cause data loss."
+msgid "ExperimentBadge|Could be changed or removed at any time."
 msgstr ""
 
 msgid "ExperimentBadge|Experiment"
 msgstr ""
 
-msgid "ExperimentBadge|Has no support and might not be documented."
+msgid "ExperimentBadge|Experiments:"
 msgstr ""
 
-msgid "ExperimentBadge|May be unstable."
+msgid "ExperimentBadge|Might be unstable or cause data loss."
 msgstr ""
 
-msgid "ExperimentBadge|What's an Experiment?"
+msgid "ExperimentBadge|What's an experiment?"
 msgstr ""
 
 msgid "Experiments"
@@ -25081,7 +25078,7 @@ msgstr ""
 msgid "GroupSelect|Select a group"
 msgstr ""
 
-msgid "GroupSettings| %{link_start}What do Experiment and Beta mean?%{link_end}"
+msgid "GroupSettings| %{link_start}What do experiment and beta mean?%{link_end}"
 msgstr ""
 
 msgid "GroupSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave empty for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{project_sharing_docs_link_start}project sharing%{link_end} and %{group_sharing_docs_link_start}group sharing%{link_end}."
@@ -25192,7 +25189,7 @@ msgstr ""
 msgid "GroupSettings|Experiment"
 msgstr ""
 
-msgid "GroupSettings|Experiment and Beta features"
+msgid "GroupSettings|Experiment and beta features"
 msgstr ""
 
 msgid "GroupSettings|Export group"
@@ -25315,7 +25312,7 @@ msgstr ""
 msgid "GroupSettings|Use Duo features"
 msgstr ""
 
-msgid "GroupSettings|Use Experiment and Beta features"
+msgid "GroupSettings|Use experiment and beta features"
 msgstr ""
 
 msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"
@@ -39025,7 +39022,7 @@ msgstr ""
 msgid "Preferences|Enable Gitpod integration"
 msgstr ""
 
-msgid "Preferences|Enable Zoekt code search"
+msgid "Preferences|Enable exact code search"
 msgstr ""
 
 msgid "Preferences|Enable extension marketplace"
@@ -39041,6 +39038,9 @@ msgid "Preferences|Enable integrated code intelligence on code views"
 msgstr ""
 
 msgid "Preferences|Enable keyboard shortcuts"
+msgstr ""
+
+msgid "Preferences|Exact code search"
 msgstr ""
 
 msgid "Preferences|Failed to save preferences."
@@ -39115,7 +39115,7 @@ msgstr ""
 msgid "Preferences|Turns on or off the ability to follow or be followed by other users."
 msgstr ""
 
-msgid "Preferences|Turns on or off the preference to search with Zoekt instead of Elasticsearch."
+msgid "Preferences|Use exact code search instead of advanced search to search for code in GitLab."
 msgstr ""
 
 msgid "Preferences|Use relative times"
@@ -40253,6 +40253,9 @@ msgid "Project members"
 msgstr ""
 
 msgid "Project milestone"
+msgstr ""
+
+msgid "Project mismatch"
 msgstr ""
 
 msgid "Project must have default branch"
@@ -42945,6 +42948,9 @@ msgid "Reminder set."
 msgstr ""
 
 msgid "Remote"
+msgstr ""
+
+msgid "Remote mirror is missing"
 msgstr ""
 
 msgid "Remote object has no absolute path."
@@ -58665,16 +58671,10 @@ msgstr ""
 msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
-msgid "Wiki|Edit Page"
+msgid "Wiki|Edit page"
 msgstr ""
 
-msgid "Wiki|Edit Template"
-msgstr ""
-
-msgid "Wiki|New Page"
-msgstr ""
-
-msgid "Wiki|New Template"
+msgid "Wiki|Edit template"
 msgstr ""
 
 msgid "Wiki|New page"
@@ -58713,10 +58713,10 @@ msgstr ""
 msgid "Wiki|Wiki Pages"
 msgstr ""
 
-msgid "Wiki|Wiki Templates"
+msgid "Wiki|Wiki actions"
 msgstr ""
 
-msgid "Wiki|Wiki actions"
+msgid "Wiki|Wiki templates"
 msgstr ""
 
 msgid "Will be created"
@@ -59250,6 +59250,12 @@ msgstr ""
 msgid "Workspaces|Agents connect workspaces to your Kubernetes cluster. To create a workspace with an allowed agent, group members must have at least the Developer role."
 msgstr ""
 
+msgid "Workspaces|All agents"
+msgstr ""
+
+msgid "Workspaces|Allowed Agents"
+msgstr ""
+
 msgid "Workspaces|Cancel"
 msgstr ""
 
@@ -59352,7 +59358,10 @@ msgstr ""
 msgid "Workspaces|The branch, tag, or commit hash GitLab uses to create your workspace."
 msgstr ""
 
-msgid "Workspaces|This group has no available agents. Select the All agents tab and allow at least one agent."
+msgid "Workspaces|This group has no agents. Start by creating an agent."
+msgstr ""
+
+msgid "Workspaces|This group has no available agents. Select the %{strongStart}All agents%{strongEnd} tab and allow at least one agent."
 msgstr ""
 
 msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
@@ -60697,6 +60706,9 @@ msgstr ""
 msgid "added a Zoom call to this issue"
 msgstr ""
 
+msgid "agents"
+msgstr ""
+
 msgid "ago"
 msgstr ""
 
@@ -60930,6 +60942,9 @@ msgid "cannot be enabled unless all domains have TLS certificates"
 msgstr ""
 
 msgid "cannot be enabled until a valid credit card is on file"
+msgstr ""
+
+msgid "cannot be enabled until identity verification is completed"
 msgstr ""
 
 msgid "cannot be used because it belongs to a compromised private key. Stop using this key and generate a new one."

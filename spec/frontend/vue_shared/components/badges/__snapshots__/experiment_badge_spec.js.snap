@@ -13,27 +13,27 @@ exports[`Experiment badge component renders the badge 1`] = `
     class="gl-popover"
   >
     <p>
-      An Experiment is a feature that's in the process of being developed. It's not production-ready. We encourage users to try Experimental features and provide feedback.
+      An experiment is not yet production-ready, but is released for initial testing and feedback during development.
     </p>
     <p
       class="gl-mb-0"
     >
-      An Experiment:
+      Experiments:
     </p>
     <ul
       class="gl-pl-4"
     >
       <li>
-        May be unstable.
+        Might be unstable or cause data loss.
       </li>
       <li>
-        Can cause data loss.
+        Are not supported and might not be documented.
       </li>
       <li>
-        Has no support and might not be documented.
+        Could be changed or removed at any time.
       </li>
       <li>
-        Can be removed at any time.
+        Are subject to the GitLab Testing Agreement.
       </li>
     </ul>
   </div>

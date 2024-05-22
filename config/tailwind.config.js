@@ -107,6 +107,15 @@ module.exports = {
       9: '.9',
       10: '1',
     },
+    // TODO: Backport to GitLab UI
+    zIndex: {
+      0: '0',
+      1: '1',
+      2: '2',
+      3: '3',
+      200: '200',
+      9999: '9999',
+    },
     // These extends probably should be moved to GitLab UI:
     extend: {
       // TODO: Backport to GitLab UI. This should be part of the default colors config.
@@ -163,13 +172,6 @@ module.exports = {
         screen: '100vw',
         limited: '1006px',
         '1/2': '50%',
-      },
-      zIndex: {
-        1: '1',
-        2: '2',
-        3: '3',
-        200: '200',
-        9999: '9999',
       },
       transitionProperty: {
         stroke: 'stroke',

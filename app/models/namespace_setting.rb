@@ -23,6 +23,8 @@ class NamespaceSetting < ApplicationRecord
   validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
+  validates :remove_dormant_members, inclusion: { in: [false] }, if: :subgroup?
+  validates :remove_dormant_members_period, numericality: { only_integer: true, greater_than_or_equal_to: 90 }
 
   validate :allow_mfa_for_group
   validate :allow_resource_access_token_creation_for_group
@@ -112,14 +114,18 @@ class NamespaceSetting < ApplicationRecord
     self.default_branch_name = default_branch_name.presence
   end
 
+  def subgroup?
+    !!namespace&.subgroup?
+  end
+
   def allow_mfa_for_group
-    if namespace&.subgroup? && allow_mfa_for_subgroups == false
+    if subgroup? && allow_mfa_for_subgroups == false
       errors.add(:allow_mfa_for_subgroups, _('is not allowed since the group is not top-level group.'))
     end
   end
 
   def allow_resource_access_token_creation_for_group
-    if namespace&.subgroup? && !resource_access_token_creation_allowed
+    if subgroup? && !resource_access_token_creation_allowed
       errors.add(:resource_access_token_creation_allowed, _('is not allowed since the group is not top-level group.'))
     end
   end

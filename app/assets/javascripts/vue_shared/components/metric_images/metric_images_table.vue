@@ -221,7 +221,7 @@ export default {
       <div class="gl-w-full gl-display-flex gl-flex-direction-row gl-justify-content-space-between">
         <div class="gl-display-flex gl-flex-direction-row gl-align-items-center gl-w-full">
           <gl-button
-            class="collapsible-card-btn gl-display-flex gl-text-decoration-none gl-reset-color! gl-hover-text-blue-800! gl-shadow-none!"
+            class="collapsible-card-btn gl-display-flex gl-text-decoration-none gl-reset-color! gl-hover-text-blue-800! !gl-shadow-none"
             :aria-label="filename"
             variant="link"
             category="tertiary"

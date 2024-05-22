@@ -90,7 +90,7 @@ export default {
         : ['gl-border-l-0!', ...this.$options.styles.flatLeftBorder];
     },
     buttonShadowClass() {
-      return this.isExpandBtnFocus ? '' : 'gl-shadow-none!';
+      return this.isExpandBtnFocus ? '' : '!gl-shadow-none';
     },
     buttonId() {
       return `js-linked-pipeline-${this.pipeline.id}`;

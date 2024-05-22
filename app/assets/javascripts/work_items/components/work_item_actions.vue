@@ -182,7 +182,7 @@ export default {
         return data.workspace?.workItemTypes?.nodes;
       },
       skip() {
-        return !this.canUpdate;
+        return !this.canUpdate || this.workItemType !== WORK_ITEM_TYPE_VALUE_KEY_RESULT;
       },
     },
   },

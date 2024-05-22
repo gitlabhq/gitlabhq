@@ -136,7 +136,7 @@ export default {
       <clipboard-button
         :text="mergeInfo1"
         :title="$options.i18n.copyCommands"
-        class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0"
+        class="!gl-shadow-none gl-bg-transparent! gl-flex-shrink-0"
       />
     </div>
     <p v-if="reviewingDocsPath">
@@ -181,7 +181,7 @@ export default {
       <clipboard-button
         :text="mergeInfo2"
         :title="$options.i18n.copyCommands"
-        class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0"
+        class="!gl-shadow-none gl-bg-transparent! gl-flex-shrink-0"
       />
     </div>
   </gl-modal>

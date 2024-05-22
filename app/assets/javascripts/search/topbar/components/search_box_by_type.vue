@@ -118,7 +118,7 @@ export default {
     regexButtonHighlightClass() {
       return {
         'gl-bg-blue-50!': this.regexButtonState,
-        'gl-shadow-none!': !this.regexButtonState,
+        '!gl-shadow-none': !this.regexButtonState,
       };
     },
   },

@@ -1,4 +1,4 @@
-- breadcrumb_title(@page.template? ? s_("Wiki|New Template") : s_("Wiki|New Page")) unless @page.persisted?
+- breadcrumb_title(@page.template? ? s_("Wiki|New template") : s_("Wiki|New page")) unless @page.persisted?
 - wiki_page_title @page, @page.persisted? ? _('Edit') : _('New')
 - add_page_specific_style 'page_bundles/wiki'
 - @gfm_form = true
@@ -15,9 +15,9 @@
       = link_to_wiki_page @page
       %span.gl-text-secondary
         &middot;
-        = @page.template? ? s_("Wiki|Edit Template") : s_("Wiki|Edit Page")
+        = @page.template? ? s_("Wiki|Edit template") : s_("Wiki|Edit page")
     - else
-      = @page.template? ? s_("Wiki|New Template") : s_("Wiki|New Page")
+      = @page.template? ? s_("Wiki|New template") : s_("Wiki|New page")
 
 = render 'shared/wikis/form', uploads_path: wiki_attachment_upload_url
 

@@ -1,12 +1,5 @@
 <script>
-import {
-  GlLabel,
-  GlTooltip,
-  GlTooltipDirective,
-  GlIcon,
-  GlLoadingIcon,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlLabel, GlTooltipDirective, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { sortBy } from 'lodash';
 import boardCardInner from 'ee_else_ce/boards/mixins/board_card_inner';
 import { isScopedLabel, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -24,7 +17,6 @@ import IssueTimeEstimate from './issue_time_estimate.vue';
 
 export default {
   components: {
-    GlTooltip,
     GlLabel,
     GlLoadingIcon,
     GlIcon,
@@ -34,11 +26,12 @@ export default {
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
     IssueIteration: () => import('ee_component/boards/components/issue_iteration.vue'),
     IssuableBlockedIcon,
-    GlSprintf,
     WorkItemTypeIcon,
     IssueMilestone,
     IssueHealthStatus: () =>
       import('ee_component/related_items_tree/components/issue_health_status.vue'),
+    EpicCountables: () =>
+      import('ee_else_ce/vue_shared/components/epic_countables/epic_countables.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -142,9 +135,6 @@ export default {
     shouldRenderEpicCountables() {
       return this.isEpicBoard && this.hasChildren;
     },
-    shouldRenderEpicProgress() {
-      return this.totalWeight > 0;
-    },
     showLabelFooter() {
       return this.isShowingLabels && this.item.labels.find(this.showLabel);
     },
@@ -164,19 +154,17 @@ export default {
       }
       return __('Blocked issue');
     },
+    descendantCounts() {
+      return this.item.descendantCounts;
+    },
+    descendantWeightSum() {
+      return this.item.descendantWeightSum;
+    },
     totalEpicsCount() {
-      return this.item.descendantCounts.openedEpics + this.item.descendantCounts.closedEpics;
+      return this.descendantCounts.openedEpics + this.descendantCounts.closedEpics;
     },
     totalIssuesCount() {
-      return this.item.descendantCounts.openedIssues + this.item.descendantCounts.closedIssues;
-    },
-    totalWeight() {
-      return (
-        this.item.descendantWeightSum.openedIssues + this.item.descendantWeightSum.closedIssues
-      );
-    },
-    totalProgress() {
-      return Math.round((this.item.descendantWeightSum.closedIssues / this.totalWeight) * 100);
+      return this.descendantCounts.openedIssues + this.descendantCounts.closedIssues;
     },
     showReferencePath() {
       return this.isGroupBoard && this.itemReferencePath;
@@ -321,83 +309,16 @@ export default {
             </span>
             {{ itemId }}
           </span>
-          <span v-if="shouldRenderEpicCountables" data-testid="epic-countables">
-            <gl-tooltip :target="() => $refs.countBadge">
-              <p v-if="allowSubEpics" class="gl-font-weight-bold gl-m-0">
-                {{ __('Epics') }} &#8226;
-                <span class="gl-font-weight-normal">
-                  <gl-sprintf :message="__('%{openedEpics} open, %{closedEpics} closed')">
-                    <template #openedEpics>{{ item.descendantCounts.openedEpics }}</template>
-                    <template #closedEpics>{{ item.descendantCounts.closedEpics }}</template>
-                  </gl-sprintf>
-                </span>
-              </p>
-              <p class="gl-font-weight-bold gl-m-0">
-                {{ __('Issues') }} &#8226;
-                <span class="gl-font-weight-normal">
-                  <gl-sprintf :message="__('%{openedIssues} open, %{closedIssues} closed')">
-                    <template #openedIssues>{{ item.descendantCounts.openedIssues }}</template>
-                    <template #closedIssues>{{ item.descendantCounts.closedIssues }}</template>
-                  </gl-sprintf>
-                </span>
-              </p>
-              <p class="gl-font-weight-bold gl-m-0">
-                {{ __('Total weight') }} &#8226;
-                <span class="gl-font-weight-normal" data-testid="epic-countables-total-weight">
-                  {{ totalWeight }}
-                </span>
-              </p>
-            </gl-tooltip>
-
-            <gl-tooltip
-              v-if="shouldRenderEpicProgress"
-              :target="() => $refs.progressBadge"
-              data-testid="epic-progress-tooltip"
-            >
-              <p class="gl-font-weight-bold gl-m-0">
-                {{ __('Progress') }} &#8226;
-                <span class="gl-font-weight-normal" data-testid="epic-progress-tooltip-content">
-                  <gl-sprintf
-                    :message="__('%{completedWeight} of %{totalWeight} weight completed')"
-                  >
-                    <template #completedWeight>{{
-                      item.descendantWeightSum.closedIssues
-                    }}</template>
-                    <template #totalWeight>{{ totalWeight }}</template>
-                  </gl-sprintf>
-                </span>
-              </p>
-            </gl-tooltip>
-
-            <span
-              ref="countBadge"
-              class="board-card-info gl-mr-0 gl-pr-0 gl-pl-3 gl-text-secondary gl-cursor-help"
-            >
-              <span v-if="allowSubEpics" class="gl-mr-3">
-                <gl-icon name="epic" />
-                {{ totalEpicsCount }}
-              </span>
-              <span class="gl-mr-3" data-testid="epic-countables-counts-issues">
-                <gl-icon name="issues" />
-                {{ totalIssuesCount }}
-              </span>
-              <span class="gl-mr-3" data-testid="epic-countables-weight-issues">
-                <gl-icon name="weight" />
-                {{ totalWeight }}
-              </span>
-            </span>
-
-            <span
-              v-if="shouldRenderEpicProgress"
-              ref="progressBadge"
-              class="board-card-info gl-pl-0 gl-text-secondary gl-cursor-help"
-            >
-              <span class="gl-mr-3" data-testid="epic-progress">
-                <gl-icon name="progress" />
-                {{ totalProgress }}%
-              </span>
-            </span>
-          </span>
+          <epic-countables
+            v-if="shouldRenderEpicCountables"
+            :allow-sub-epics="allowSubEpics"
+            :opened-epics-count="descendantCounts.openedEpics"
+            :closed-epics-count="descendantCounts.closedEpics"
+            :opened-issues-count="descendantCounts.openedIssues"
+            :closed-issues-count="descendantCounts.closedIssues"
+            :opened-issues-weight="descendantWeightSum.openedIssues"
+            :closed-issues-weight="descendantWeightSum.closedIssues"
+          />
           <span v-if="!isEpicBoard">
             <issue-card-weight
               v-if="validIssueWeight(item)"

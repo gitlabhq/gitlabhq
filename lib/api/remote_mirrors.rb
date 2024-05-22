@@ -145,20 +145,32 @@ module API
       put ':id/remote_mirrors/:mirror_id' do
         mirror = find_remote_mirror
 
-        mirror_params = declared_params(include_missing: false)
-        mirror_params[:id] = mirror_params.delete(:mirror_id)
+        if Feature.enabled?(:use_remote_service_update_service, user_project)
+          service = ::RemoteMirrors::UpdateService.new(
+            user_project,
+            current_user,
+            declared_params(include_missing: false)
+          )
 
-        verify_mirror_branches_setting(mirror_params)
-        update_params = { remote_mirrors_attributes: mirror_params }
+          result = service.execute(mirror)
 
-        result = ::Projects::UpdateService
-          .new(user_project, current_user, update_params)
-          .execute
+          render_api_error!(result.message, 400) if result.error?
 
-        if result[:status] == :success
-          present mirror.reset, with: Entities::RemoteMirror
+          present result.payload[:remote_mirror], with: Entities::RemoteMirror
         else
-          render_api_error!(result[:message], 400)
+          mirror_params = declared_params(include_missing: false)
+          mirror_params[:id] = mirror_params.delete(:mirror_id)
+
+          verify_mirror_branches_setting(mirror_params)
+          update_params = { remote_mirrors_attributes: mirror_params }
+
+          result = ::Projects::UpdateService
+                     .new(user_project, current_user, update_params)
+                     .execute
+
+          render_api_error!(result[:message], 400) unless result[:status] == :success
+
+          present mirror.reset, with: Entities::RemoteMirror
         end
       end
 

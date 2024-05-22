@@ -3,7 +3,8 @@ import { GlTabs, GlTab, GlBadge, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { queryToObject } from '~/lib/utils/url_utility';
-import { MEMBER_TYPES, TABS, ACTIVE_TAB_QUERY_PARAM_NAME } from 'ee_else_ce/members/constants';
+import { MEMBER_TYPES, ACTIVE_TAB_QUERY_PARAM_NAME } from 'ee_else_ce/members/constants';
+import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersApp from './app.vue';
 
 const countComputed = (state, namespace) => state[namespace]?.pagination?.totalItems || 0;

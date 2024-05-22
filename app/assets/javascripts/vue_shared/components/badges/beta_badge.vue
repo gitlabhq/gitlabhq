@@ -7,15 +7,17 @@ export default {
   components: { HoverBadge },
   i18n: {
     badgeLabel: s__('BetaBadge|Beta'),
-    popoverTitle: s__("BetaBadge|What's Beta?"),
+    popoverTitle: s__("BetaBadge|What's a beta?"),
     descriptionParagraph: s__(
-      "BetaBadge|A Beta feature is not production-ready, but is unlikely to change drastically before it's released. We encourage users to try Beta features and provide feedback.",
+      "BetaBadge|A beta feature is not yet production-ready, but is ready for testing and unlikely to change significantly before it's released.",
     ),
-    listIntroduction: s__('BetaBadge|A Beta feature:'),
-    listItemStability: s__('BetaBadge|May be unstable.'),
-    listItemDataLoss: s__('BetaBadge|Should not cause data loss.'),
-    listItemReasonableEffort: s__('BetaBadge|Is supported by a commercially reasonable effort.'),
-    listItemNearCompletion: s__('BetaBadge|Is complete or near completion.'),
+    listIntroduction: s__('BetaBadge|Beta features:'),
+    listItemStability: s__('BetaBadge|Have a low risk of data loss, but might still be unstable.'),
+    listItemReasonableEffort: s__(
+      'BetaBadge|Are supported on a commercially-reasonable effort basis.',
+    ),
+    listItemNearCompletion: s__('BetaBadge|Have a near complete user experience.'),
+    listItemTestAgreement: s__('BetaBadge|Are subject to the GitLab Testing Agreement.'),
   },
   props: {
     size: {
@@ -48,9 +50,9 @@ export default {
 
     <ul class="gl-pl-4">
       <li>{{ $options.i18n.listItemStability }}</li>
-      <li>{{ $options.i18n.listItemDataLoss }}</li>
       <li>{{ $options.i18n.listItemReasonableEffort }}</li>
       <li>{{ $options.i18n.listItemNearCompletion }}</li>
+      <li>{{ $options.i18n.listItemTestAgreement }}</li>
     </ul>
   </hover-badge>
 </template>

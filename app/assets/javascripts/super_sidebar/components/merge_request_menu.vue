@@ -24,7 +24,7 @@ export default {
 <template>
   <gl-disclosure-dropdown
     :items="items"
-    placement="center"
+    placement="bottom"
     @shown="$emit('shown')"
     @hidden="$emit('hidden')"
   >

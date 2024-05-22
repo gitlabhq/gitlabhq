@@ -502,7 +502,7 @@ RSpec.shared_examples 'wiki controller actions' do
         request
 
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to include(s_('Wiki|Edit Page'))
+        expect(response.body).to include(s_('Wiki|Edit page'))
       end
     end
   end

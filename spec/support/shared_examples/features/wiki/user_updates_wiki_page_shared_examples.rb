@@ -48,7 +48,7 @@ RSpec.shared_examples 'User updates wiki page' do
       click_on('Edit')
 
       expect(page).to have_current_path(%r{one/two/three-test}, ignore_query: true)
-      expect(page).to have_content('Edit Page')
+      expect(page).to have_content('Edit page')
 
       fill_in('Content', with: 'Updated Wiki Content')
       click_on('Save changes')

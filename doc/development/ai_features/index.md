@@ -203,6 +203,57 @@ Gitlab::Llm::AiGateway::Client.new(User.first).stream(prompt: [{role: "user", co
 
    If you can't fetch the response, check `graphql_json.log`, `sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error information.
 
+#### Optional: Test with OIDC authentication
+
+In production environment, AI Gateway verifies that the JWT sent by client request is signed by the authentic OIDC provider.
+To test this authentication and authorization flow with scopes/unit-primitives, you can take the following optional step.
+
+Apply the following config to AI Gateway:
+
+```shell
+# <AI-Gateway-root>/.env
+AIGW_AUTH__BYPASS_EXTERNAL=false
+AIGW_GITLAB_URL=<your-gdk-url> # e.g. http://gdk.test:3000/ ... This instance behaves as a OIDC provider.
+```
+
+Apply the following config to GDK:
+
+```shell
+# <GDK-root>/env.runit
+GITLAB_SIMULATE_SAAS=1
+```
+
+and `gdk update`.
+
+You can test a request from Rails console:
+
+```shell
+# Open a terminal and login to Rails console:
+gdk rails console
+```
+
+Try requests from GitLab-Rails to AI Gateway. Example:
+
+```ruby
+# Optionally, you should allow the local requests since your AI Gateway is running in localhost.
+Gitlab::CurrentSettings.update(allow_local_requests_from_web_hooks_and_services: true)
+
+Gitlab::Llm::VertexAi::Client.new(User.first, unit_primitive: 'explain_vulnerability').chat(content: "Hi, how are you?")
+Gitlab::Llm::VertexAi::Client.new(User.first, unit_primitive: 'explain_vulnerability').messages_chat(content: [{"author": "user", "content": "Hi, how are you?"}])
+Gitlab::Llm::VertexAi::Client.new(User.first, unit_primitive: 'explain_vulnerability').code_completion(content: {"prefix": "print('Hello", "suffix": ""})
+```
+
+Here is the underlying process happening per request:
+
+1. GitLab-Rails generates a new JWT with a given scope (e.g. `duo_chat`).
+1. GitLab-Rails requets to AI Gateway with the JWT (bearer token in `Authorization` HTTP header).
+1. AI Gateway decodes the JWT with the JWKS issued by the GitLab-Rails. If it's successfuly, the request is authenticated.
+1. AI Gateway verifies if the `scopes` claim in the JWT satisfies the target endpoint's scope requirement.
+   Required scope varies per endpoint (e.g. `/v1/chat/agent` requires `duo_chat`, `/v2/code/suggestions` requires `code_suggestions`).
+
+NOTE:
+If you want to test as self-managed GitLab instance, you need to set up Customer Dot as described in the above section.
+
 ### SaaS-only features
 
 These features do not use the AI Gateway and instead reach out to the LLM provider directly because they are not yet following the [architecture blueprint](../../architecture/blueprints/ai_gateway/index.md). [We are planning on](https://gitlab.com/groups/gitlab-org/-/epics/13024) moving these features to our self managed offering, so any features developed under this setup will be migrated over time.
@@ -238,7 +289,7 @@ GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[
    1. Go to the group with the Ultimate license.
    1. Select **Settings > General**.
    1. Expand the **Permissions and group features** section.
-   1. Enable **Experiment & Beta features**.
+   1. Enable **Use experiment and beta features**.
 1. Enable the specific feature flag for the feature you want to test.
 1. You can use Rake task `rake gitlab:duo:enable_feature_flags` to enable all feature flags that are assigned to group AI Framework.
 1. Setup [AI Gateway](#test-ai-features-with-ai-gateway-locally).

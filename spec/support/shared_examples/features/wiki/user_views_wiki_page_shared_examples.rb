@@ -66,7 +66,7 @@ RSpec.shared_examples 'User views a wiki page' do
       click_on('Edit')
 
       expect(page).to have_current_path(%r{one/two/three-test})
-      expect(page).to have_content('Edit Page')
+      expect(page).to have_content('Edit page')
 
       fill_in('Content', with: 'Updated Wiki Content')
       click_on('Save changes')
@@ -115,7 +115,7 @@ RSpec.shared_examples 'User views a wiki page' do
       click_on('image')
 
       expect(page).to have_current_path(%r{wikis/#{path}})
-      expect(page).to have_content('New Page')
+      expect(page).to have_content('New page')
     end
   end
 
@@ -277,6 +277,6 @@ RSpec.shared_examples 'User views a wiki page' do
 
     click_link "Create your first page"
 
-    expect(page).to have_content('New Page')
+    expect(page).to have_content('New page')
   end
 end

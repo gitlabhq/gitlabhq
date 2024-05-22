@@ -11,28 +11,10 @@ export default {
     GlLink,
   },
   props: {
-    getPos: {
-      type: Function,
-      required: true,
-    },
-    editor: {
-      type: Object,
-      required: true,
-    },
     node: {
       type: Object,
       required: true,
     },
-    selected: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-  data() {
-    return {
-      dragData: {},
-    };
   },
   computed: {
     isStaleUploadedMedia() {
@@ -53,9 +35,17 @@ export default {
       :src="node.attrs.src"
       controls="true"
       data-setup="{}"
+      draggable="true"
+      data-drag-handle=""
       :data-title="node.attrs.title || node.attrs.alt"
     />
-    <gl-link :href="node.attrs.src" class="with-attachment-icon" target="_blank">
+    <gl-link
+      :href="node.attrs.src"
+      class="with-attachment-icon"
+      target="_blank"
+      draggable="true"
+      data-drag-handle=""
+    >
       {{ node.attrs.title || node.attrs.alt }}
     </gl-link>
   </node-view-wrapper>

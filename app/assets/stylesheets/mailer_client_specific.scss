@@ -62,3 +62,15 @@ div[style*='margin: 16px 0'] {
   }
 }
 
+ul.users-list {
+  list-style: none;
+  padding: 0px;
+  display: block;
+  margin-top: 0px;
+}
+
+ul.users-list li {
+  display: inline-block;
+  padding-right: 12px;
+  padding-top: 8px;
+}

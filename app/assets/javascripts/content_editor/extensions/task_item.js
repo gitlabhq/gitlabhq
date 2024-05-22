@@ -2,6 +2,8 @@ import { TaskItem } from '@tiptap/extension-task-item';
 import { PARSE_HTML_PRIORITY_HIGHEST } from '../constants';
 
 export default TaskItem.extend({
+  draggable: true,
+
   addOptions() {
     return {
       ...this.parent?.(),

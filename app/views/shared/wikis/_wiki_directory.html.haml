@@ -7,6 +7,6 @@
     = render Pajamas::ButtonComponent.new(icon: 'plus', size: :small, href: "#{wiki_path}/{new_page_title}", button_options: { class: 'wiki-list-create-child-button gl-bg-transparent! gl-hover-bg-gray-50! gl-focus-bg-gray-50! gl-absolute gl-top-1/2 -gl-translate-y-1/2 gl-cursor-pointer gl-right-2' })
     = link_to wiki_path, data: { testid: 'wiki-dir-page-link', qa_page_name: wiki_directory.title } do
       = wiki_directory.title
-  %ul{ class: '!gl-pl-7' }
+  %ul{ class: '!gl-pl-5' }
     - wiki_directory.entries.each do |entry|
       = render partial: entry.to_partial_path, object: entry, locals: { context: context }

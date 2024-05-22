@@ -311,7 +311,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     let_it_be(:expected_html) { expected_text }
 
-    before do
+    before_all do
       issue.update!(external_author: email)
     end
 
@@ -325,6 +325,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       subject { Notify.service_desk_thank_you_email(issue_id) }
 
       it_behaves_like 'a service desk notification email that uses custom email'
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template service_desk')
     end
   end
 
@@ -496,6 +500,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
       it_behaves_like 'a service desk notification email that uses custom email'
     end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template service_desk')
+    end
   end
 
   describe '.service_desk_new_participant_email' do
@@ -519,6 +527,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       subject { Notify.service_desk_new_participant_email(issue_id, issue_email_participant) }
 
       it_behaves_like 'a service desk notification email that uses custom email'
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template service_desk')
     end
   end
 
@@ -577,6 +589,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     it 'contains triggerer username' do
       is_expected.to have_body_text("@#{user.username}")
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template mailer')
     end
   end
 

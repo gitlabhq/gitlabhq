@@ -23,7 +23,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
-    placement="right"
+    placement="bottom-end"
     category="tertiary"
     :aria-label="__('More actions')"
     icon="ellipsis_v"

@@ -23,6 +23,10 @@ describe('content_editor/extensions/task_item', () => {
     }));
   });
 
+  it('sets the draggable option to true', () => {
+    expect(TaskItem.config.draggable).toBe(true);
+  });
+
   it('renders a regular task item for non-inapplicable items', () => {
     const initialDoc = doc(taskList(taskItem(p('foo'))));
 

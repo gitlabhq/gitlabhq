@@ -19,6 +19,10 @@ WARNING:
 This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
+Prerequisites:
+
+- You must [enable exact code search](../profile/preferences.md#enable-exact-code-search) in user preferences.
+
 With exact code search, you can use regular expression and exact match modes
 to search for code in all GitLab or in a specific project.
 

@@ -1,6 +1,6 @@
 #import "./work_item.fragment.graphql"
 
-query groupNamespaceLevel($fullPath: ID!, $iid: String!) {
+query groupWorkItem($fullPath: ID!, $iid: String!) {
   workspace: namespace(fullPath: $fullPath) {
     id
     workItem(iid: $iid) {

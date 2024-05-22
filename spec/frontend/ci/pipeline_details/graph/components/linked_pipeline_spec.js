@@ -388,7 +388,7 @@ describe('Linked pipeline', () => {
       `(
         'applies the class on $activateEventName and removes it on $deactivateEventName',
         async ({ activateEventName, deactivateEventName }) => {
-          const shadowClass = 'gl-shadow-none!';
+          const shadowClass = '!gl-shadow-none';
 
           expect(findExpandButton().classes()).toContain(shadowClass);
 

@@ -98,7 +98,7 @@ export default {
         modal-id="fork-sync-conflicts-modal"
         :text="instructionsStep1"
         :title="$options.i18n.copyToClipboard"
-        class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0"
+        class="!gl-shadow-none gl-bg-transparent! gl-flex-shrink-0"
       />
     </div>
     <p>
@@ -112,7 +112,7 @@ export default {
         modal-id="fork-sync-conflicts-modal"
         :text="instructionsStep2"
         :title="$options.i18n.copyToClipboard"
-        class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0"
+        class="!gl-shadow-none gl-bg-transparent! gl-flex-shrink-0"
       />
     </div>
     <p>
@@ -127,7 +127,7 @@ export default {
         modal-id="fork-sync-conflicts-modal"
         :text="$options.instructionsStep3"
         :title="$options.i18n.copyToClipboard"
-        class="gl-shadow-none! gl-bg-transparent! gl-flex-shrink-0 gl-ml-3"
+        class="!gl-shadow-none gl-bg-transparent! gl-flex-shrink-0 gl-ml-3"
       />
     </div>
     <template #modal-footer>
