@@ -39,6 +39,7 @@ dast:
     - if [[ -f "environment_url.txt" ]]; then DAST_WEBSITE="${DAST_WEBSITE:-$(cat environment_url.txt)}"; export DAST_WEBSITE; fi
     - /analyze
   artifacts:
+    access: 'developer'
     when: always
     reports:
       dast: gl-dast-report.json

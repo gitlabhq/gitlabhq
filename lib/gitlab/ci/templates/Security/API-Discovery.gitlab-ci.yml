@@ -45,6 +45,7 @@ variables:
     - if [[ ! -e "gl-api-discovery-openapi.json" ]]; then echo "Error, Unable to find gl-api-discovery-openapi.json"; exit 1; fi
     #
   artifacts:
+    access: 'developer'
     when: always
     paths:
       - gl-api-discovery-openapi.json

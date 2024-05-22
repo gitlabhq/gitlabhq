@@ -167,4 +167,12 @@ RSpec.describe Banzai::Filter::GollumTagsFilter, feature_category: :wiki do
 
     expect(doc.at_css('i a').to_html).to eq "<a href=\"#{wiki.wiki_base_path}/'%22&gt;&lt;svg&gt;&lt;i/class=gl-show-field-errors&gt;&lt;input/title=%22&lt;script&gt;alert(0)&lt;/script&gt;%22/&gt;&lt;/svg&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1\" class=\"gfm gfm-gollum-wiki-page\" data-canonical-src=\"'&quot;&gt;&lt;svg&gt;&lt;i/class=gl-show-field-errors&gt;&lt;input/title=&quot;&lt;script&gt;alert(0)&lt;/script&gt;&quot;/&gt;&lt;/svg&gt;https://gitlab.com/gitlab-org/gitlab/-/issues/1\" data-link=\"true\" data-gollum=\"true\" data-reference-type=\"wiki_page\" data-project=\"#{project.id}\">a</a>"
   end
+
+  it 'protects against malicious input' do
+    text = "]#{'[[a' * 200000}[]"
+
+    expect do
+      Timeout.timeout(3.seconds) { filter(text, wiki: wiki) }
+    end.not_to raise_error
+  end
 end

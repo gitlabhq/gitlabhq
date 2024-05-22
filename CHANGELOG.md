@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.0.1 (2024-05-21)
+
+### Fixed (2 changes)
+
+- [Don't fail so loudly if default work item type is invalid](gitlab-org/security/gitlab@c0817a7654e3fb68e1cc89e19599fd16ff63f121)
+- [Ensure BLPOP/BRPOP returns nil instead of raising ReadTimeoutError](gitlab-org/security/gitlab@9a0c5c69aa9d54aaae8ceb1698c7fbae0aa74694)
+
+### Security (7 changes)
+
+- [Prevent PDF.js from evaluating scripts](gitlab-org/security/gitlab@2820f31998ca2dcf61eb4b6893b615cebb503b07) ([merge request](gitlab-org/security/gitlab!4069))
+- [Caching test_report api response to reduce calculations](gitlab-org/security/gitlab@b64b0178e955d5091dfaf47b632af266165a5a2e) ([merge request](gitlab-org/security/gitlab!4051))
+- [Restrict access to Secure artifacts to developer role](gitlab-org/security/gitlab@5dd7b7377e0d33dd635fedca66e4aefd5bdf7c7e) ([merge request](gitlab-org/security/gitlab!4053))
+- [Fail create commit status on pipeline_id / sha mismatch](gitlab-org/security/gitlab@460dd3c803da58973d2a4597581c42f4f82e76cc) ([merge request](gitlab-org/security/gitlab!4049))
+- [Use UntrustedRegexp for gollum pattern](gitlab-org/security/gitlab@b5499fca0fa5ac226f97665168562a9f93465525) ([merge request](gitlab-org/security/gitlab!4039))
+- [Patch @gitlab/web-ide to fix XSS webWorkerExtensionHostIframe.html](gitlab-org/security/gitlab@c848b946ee4867332692d15e6c27e8efaf37ae53) ([merge request](gitlab-org/security/gitlab!4055))
+- [Add text limit to ci_runners text fields](gitlab-org/security/gitlab@20cf74de115473a32bb3c1e3d52e3c7b8f31b3f9) ([merge request](gitlab-org/security/gitlab!4050))
+
 ## 17.0.0 (2024-05-15)
 
 ### Added (164 changes)
