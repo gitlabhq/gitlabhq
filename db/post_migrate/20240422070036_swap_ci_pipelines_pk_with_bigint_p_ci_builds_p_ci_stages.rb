@@ -208,7 +208,7 @@ class SwapCiPipelinesPkWithBigintPCiBuildsPCiStages < Gitlab::Database::Migratio
     reset_trigger_function(TRIGGER_FUNCTION)
     reset_trigger_function(LOOSE_FK_TRIGGER_FUNCTION)
     swap_columns_default(TABLE, COLUMNS[:new], COLUMNS[:old])
-    drop_constraint(TABLE, PRIMARY_KEY[:name])
+    drop_constraint(TABLE, PRIMARY_KEY[:name], cascade: true)
     add_primary_key_using_index(TABLE, PRIMARY_KEY[:name], PRIMARY_KEY[:new_index][:name])
     INDEXES.each do |index_metadata|
       remove_index(TABLE, name: index_metadata[:old_name], if_exists: true) # rubocop:disable Migration/RemoveIndex -- remove the existing one before renaming
