@@ -40,6 +40,8 @@ dast:
     - if [ -z "$DAST_WEBSITE$DAST_API_SPECIFICATION" ]; then echo "Either DAST_WEBSITE or DAST_API_SPECIFICATION must be set. See https://docs.gitlab.com/ee/user/application_security/dast/#configuration for more details." && exit 1; fi
     - /analyze
   artifacts:
+    access: 'developer'
+    when: always
     reports:
       dast: gl-dast-report.json
   rules:

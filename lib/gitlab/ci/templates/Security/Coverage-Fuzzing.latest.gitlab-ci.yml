@@ -41,6 +41,7 @@ coverage_fuzzing_unlicensed:
     - export REGRESSION=true
     - if [[ "$CI_COMMIT_BRANCH" = "$COVFUZZ_BRANCH" ]]; then REGRESSION=false; fi;
   artifacts:
+    access: 'developer'
     paths:
       - corpus
       - crashes

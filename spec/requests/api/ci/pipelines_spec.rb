@@ -1338,6 +1338,34 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
           expect(json_response['test_suites'].first['suite_error']).to eq('JUnit XML parsing failed: 1:1: FATAL: Document is empty')
         end
       end
+
+      context 'caching', :use_clean_rails_redis_caching, :clean_gitlab_redis_shared_state do
+        context 'when the test report is not ready yet' do
+          it 'does not cache the endpoint' do
+            api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", user)
+
+            expect(TestReportEntity).to receive(:represent)
+
+            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", user)
+          end
+        end
+
+        context 'when the test report is ready' do
+          before do
+            allow_next_found_instance_of(Ci::Pipeline) do |pipeline|
+              allow(pipeline).to receive(:has_test_reports?).and_return(true)
+            end
+          end
+
+          it 'caches the test report' do
+            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", user)
+
+            expect(TestReportEntity).not_to receive(:represent)
+
+            get api("/projects/#{project.id}/pipelines/#{pipeline.id}/test_report", user)
+          end
+        end
+      end
     end
 
     context 'unauthorized user' do

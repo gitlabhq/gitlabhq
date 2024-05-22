@@ -42,6 +42,8 @@ dast:
   artifacts:
     paths:
       - dast_artifacts/*
+    access: 'developer'
+    when: always
     reports:
       dast: gl-dast-report.json
   rules:
