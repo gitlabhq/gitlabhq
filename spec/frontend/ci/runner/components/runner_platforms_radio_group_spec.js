@@ -23,21 +23,11 @@ describe('RunnerPlatformsRadioGroup', () => {
       .filter((w) => w.text() === text)
       .at(0);
 
-  const createComponent = ({
-    props = {},
-    mountFn = shallowMountExtended,
-    googleCloudSupportFeatureFlag = false,
-    ...options
-  } = {}) => {
+  const createComponent = ({ props = {}, mountFn = shallowMountExtended, ...options } = {}) => {
     wrapper = mountFn(RunnerPlatformsRadioGroup, {
       propsData: {
         value: null,
         ...props,
-      },
-      provide: {
-        glFeatures: {
-          googleCloudSupportFeatureFlag,
-        },
       },
       ...options,
     });
@@ -95,14 +85,11 @@ describe('RunnerPlatformsRadioGroup', () => {
       });
       expect(radio.findComponent(GlIcon).props('name')).toBe('external-link');
     });
-  });
 
-  describe('with googleCloudSupportFeatureFlag flag enabled', () => {
     it('contains google cloud platform option', () => {
       createComponent({
         props: {},
         mountFn: shallowMountExtended,
-        googleCloudSupportFeatureFlag: true,
         slots: {
           'cloud-options': 'Google cloud',
         },

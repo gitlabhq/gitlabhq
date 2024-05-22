@@ -1,5 +1,6 @@
 <script>
 import {
+  GlIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
@@ -12,6 +13,7 @@ import DeleteWikiModal from './delete_wiki_modal.vue';
 
 export default {
   components: {
+    GlIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
@@ -20,7 +22,16 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['print', 'history', 'pagePersisted'],
+  inject: [
+    'newUrl',
+    'history',
+    'print',
+    'templatesUrl',
+    'templatesLinkClass',
+    'cloneUrl',
+    'cloneLinkClass',
+    'pagePersisted',
+  ],
   i18n: {
     wikiActions: s__('Wiki|Wiki actions'),
   },
@@ -31,6 +42,15 @@ export default {
   },
   computed: {
     isTemplate,
+    newItem() {
+      return {
+        text: this.isTemplate ? s__('Wiki|New template') : s__('Wiki|New page'),
+        href: this.newUrl,
+        extraAttrs: {
+          'data-testid': 'page-new-button',
+        },
+      };
+    },
     historyItem() {
       return {
         text: this.isTemplate ? s__('Wiki|Template history') : s__('Wiki|Page history'),
@@ -49,8 +69,31 @@ export default {
         },
       };
     },
+    templateItem() {
+      return {
+        text: __('Templates'),
+        href: this.templatesUrl,
+        extraAttrs: {
+          class: this.templateLinkClass,
+          'data-testid': 'page-templates-button',
+        },
+      };
+    },
+    cloneRepositoryItem() {
+      return {
+        text: __('Clone repository'),
+        href: this.cloneUrl,
+        extraAttrs: {
+          class: this.cloneLinkClass,
+          'data-testid': 'page-clone-button',
+        },
+      };
+    },
     showDropdownTooltip() {
       return !this.isDropdownVisible ? this.$options.i18n.wikiActions : '';
+    },
+    showPrintItem() {
+      return this.print && !this.isTemplat;
     },
   },
   methods: {
@@ -81,8 +124,42 @@ export default {
     @shown="showDropdown"
     @hidden="hideDropdown"
   >
-    <gl-disclosure-dropdown-item v-if="history" :item="historyItem" />
-    <gl-disclosure-dropdown-item v-if="print && !isTemplate" :item="printItem" />
+    <gl-disclosure-dropdown-item v-if="newUrl" :item="newItem">
+      <template #list-item>
+        <gl-icon name="plus" class="gl-mr-2 gl-text-secondary" />
+        {{ newItem.text }}
+      </template>
+    </gl-disclosure-dropdown-item>
+
+    <gl-disclosure-dropdown-item v-if="templatesUrl" :item="templateItem">
+      <template #list-item>
+        <gl-icon name="template" class="gl-mr-2 gl-text-secondary" />
+        {{ templateItem.text }}
+      </template>
+    </gl-disclosure-dropdown-item>
+
+    <gl-disclosure-dropdown-item v-if="cloneUrl" :item="cloneRepositoryItem">
+      <template #list-item>
+        <gl-icon name="branch" class="gl-mr-2 gl-text-secondary" />
+        {{ cloneRepositoryItem.text }}
+      </template>
+    </gl-disclosure-dropdown-item>
+
+    <gl-disclosure-dropdown-group v-if="history || showPrintItem" bordered>
+      <gl-disclosure-dropdown-item v-if="history" :item="historyItem">
+        <template #list-item>
+          <gl-icon name="history" class="gl-mr-2 gl-text-secondary" />
+          {{ historyItem.text }}
+        </template>
+      </gl-disclosure-dropdown-item>
+      <gl-disclosure-dropdown-item v-if="showPrintItem" :item="printItem">
+        <template #list-item>
+          <gl-icon name="document" class="gl-mr-2 gl-text-secondary" />
+          {{ printItem.text }}
+        </template>
+      </gl-disclosure-dropdown-item>
+    </gl-disclosure-dropdown-group>
+
     <gl-disclosure-dropdown-group v-if="pagePersisted" bordered>
       <delete-wiki-modal show-as-dropdown-item />
     </gl-disclosure-dropdown-group>

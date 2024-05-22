@@ -38,7 +38,7 @@ func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, a
 
 		jsonParams, err := json.Marshal(sendData)
 		require.NoError(t, err)
-		data := base64.URLEncoding.EncodeToString([]byte(jsonParams))
+		data := base64.URLEncoding.EncodeToString(jsonParams)
 
 		// The server returns a Content-Disposition
 		w.Header().Set("Content-Disposition", "attachment; filename=\"archive.txt\"")
@@ -230,11 +230,11 @@ func TestPostRequest(t *testing.T) {
 		jsonParams, err := json.Marshal(sendData)
 		require.NoError(t, err)
 
-		data := base64.URLEncoding.EncodeToString([]byte(jsonParams))
+		data := base64.URLEncoding.EncodeToString(jsonParams)
 
 		SendURL.Inject(w, r, data)
 	}
-	externalPostUrlHandler := func(w http.ResponseWriter, r *http.Request) {
+	externalPostURLHandler := func(w http.ResponseWriter, r *http.Request) {
 		require.Equal(t, "POST", r.Method)
 
 		b, err := io.ReadAll(r.Body)
@@ -247,7 +247,7 @@ func TestPostRequest(t *testing.T) {
 	}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/post/request/external/url", externalPostUrlHandler)
+	mux.HandleFunc("/post/request/external/url", externalPostURLHandler)
 
 	server := httptest.NewServer(mux)
 	defer server.Close()
@@ -283,7 +283,7 @@ func TestErrorWithCustomStatusCode(t *testing.T) {
 
 	jsonParams, err := json.Marshal(sendData)
 	require.NoError(t, err)
-	data := base64.URLEncoding.EncodeToString([]byte(jsonParams))
+	data := base64.URLEncoding.EncodeToString(jsonParams)
 
 	response := httptest.NewRecorder()
 	request := httptest.NewRequest("GET", "/target", nil)
@@ -304,7 +304,7 @@ func TestHttpClientReuse(t *testing.T) {
 	response := testEntryServer(t, "/get/request", nil, false)
 	require.Equal(t, http.StatusOK, response.Code)
 	_, found := httpClients.Load(expectedKey)
-	require.Equal(t, true, found)
+	require.True(t, found)
 
 	storedClient := &http.Client{}
 	httpClients.Store(expectedKey, storedClient)

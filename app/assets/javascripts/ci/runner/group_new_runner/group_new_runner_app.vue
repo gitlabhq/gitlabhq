@@ -25,11 +25,6 @@ export default {
       platform: DEFAULT_PLATFORM,
     };
   },
-  computed: {
-    googleCloudProvisioningEnabled() {
-      return this.glFeatures.googleCloudSupportFeatureFlag;
-    },
-  },
   methods: {
     onSaved(runner) {
       this.trackEvent('click_create_group_runner_button');

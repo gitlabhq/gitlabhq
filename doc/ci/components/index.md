@@ -166,7 +166,9 @@ In order of highest priority first, the component version can be:
   the tag takes precedence over the branch.
 - `~latest`, which always points to the latest semantic version
   published in the CI/CD Catalog. Use `~latest` only if you want to use the absolute
-  latest version at all times, which could include breaking changes.
+  latest version at all times, which could include breaking changes. `~latest`
+  does not include pre-releases, for example `1.0.1-rc`, which are not considered
+  production-ready.
 
 You can use any version supported by the component, but using a version published
 to the CI/CD catalog is recommended. The version referenced with a commit SHA or branch name
@@ -204,6 +206,9 @@ In this example, referencing the component with:
 - `1` would use the `1.2.0` version.
 - `1.1` would use the `1.1.1` version.
 - `~latest` would use the `2.1.0` version.
+
+Pre-release versions are never fetched when referencing a version range. To fetch
+a pre-release version, specify the full version, for example `1.0.1-rc`.
 
 ## CI/CD Catalog
 

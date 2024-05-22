@@ -44598,9 +44598,6 @@ msgstr ""
 msgid "Runners|Google Cloud project ID"
 msgstr ""
 
-msgid "Runners|Google Cloud provisioning is disabled for this top-level namespace"
-msgstr ""
-
 msgid "Runners|Group"
 msgstr ""
 

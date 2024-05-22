@@ -31,7 +31,7 @@ module API
       end
       params do
         requires :fingerprint, type: String, desc: 'The fingerprint of an SSH key',
-                               documentation: { example: 'ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1' }
+          documentation: { example: 'ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1' }
       end
       get do
         authenticated_with_can_read_all_resources!

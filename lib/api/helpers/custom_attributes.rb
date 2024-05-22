@@ -11,7 +11,7 @@ module API
             optional :with_custom_attributes, type: ::Grape::API::Boolean, default: false, desc: 'Include custom attributes in the response'
 
             optional :custom_attributes, type: Hash,
-                                         desc: 'Filter with custom attributes'
+              desc: 'Filter with custom attributes'
           end
 
           # rubocop: disable CodeReuse/ActiveRecord

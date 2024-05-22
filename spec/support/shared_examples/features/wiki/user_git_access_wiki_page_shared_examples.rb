@@ -9,6 +9,8 @@ RSpec.shared_examples 'User views Git access wiki page' do
 
   it 'shows the correct clone URLs', :js do
     visit wiki_page_path(wiki, wiki_page)
+
+    find_by_testid('wiki-more-dropdown').click
     click_link 'Clone repository'
 
     expect(page).to have_text("Clone repository #{wiki.full_path}")

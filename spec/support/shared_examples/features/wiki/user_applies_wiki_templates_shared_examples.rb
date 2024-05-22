@@ -5,6 +5,7 @@ RSpec.shared_examples 'user applies wiki templates' do
     create(:wiki_page, wiki: wiki, title: 'templates/Template title 1', content: 'Template 1 content')
     create(:wiki_page, wiki: wiki, title: 'templates/Template title 2', content: 'Template 2 content')
 
+    find_by_testid('wiki-more-dropdown').click
     click_link "New page"
   end
 

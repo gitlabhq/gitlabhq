@@ -18,14 +18,18 @@
       - edit_button_title = "#{edit_action_description} <kbd class='flat ml-1' aria-hidden=true>#{edit_action_shortcut}</kbd>"
       = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :edit), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: 'has-tooltip js-wiki-edit', data: { html: 'true', testid: 'wiki-edit-button' }, title: edit_button_title }) do
         = _('Edit')
-    = render 'shared/wikis/main_links'
 
     #js-wiki-more-actions{ data: {
-      delete_wiki_url: wiki_page_path(@wiki, @page),
-      page_title: @page.human_title,
-      page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
+      new_url: @page.template? ? wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true) : wiki_path(@wiki, action: :new),
       history: page_history,
       print: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [universal_path_to_stylesheet('application')] }.to_json,
+      page_title: @page.human_title,
+      templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+      templates_link_class: (@page&.slug == Wiki::TEMPLATES_DIR) ? 'active' : '',
+      clone_url: wiki_path(@wiki, action: :git_access),
+      clone_link_class: active_nav_link?(path: 'wikis#git_access') ? ' active' : '',
+      delete_wiki_url: wiki_page_path(@wiki, @page),
+      page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
     } }
 
 - if @page.historical?

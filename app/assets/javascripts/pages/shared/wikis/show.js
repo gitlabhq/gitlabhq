@@ -27,16 +27,32 @@ const mountWikiMoreDropdownApp = () => {
   const el = document.querySelector('#js-wiki-more-actions');
 
   if (!el) return false;
-  const { history, print, deleteWikiUrl, pageTitle, pagePersisted } = el.dataset;
+  const {
+    newUrl,
+    history,
+    print,
+    pageTitle,
+    templatesUrl,
+    templatesLinkClass,
+    cloneUrl,
+    cloneLinkClass,
+    deleteWikiUrl,
+    pagePersisted,
+  } = el.dataset;
 
   return new Vue({
     el,
     provide: {
+      newUrl,
       history,
       print: JSON.parse(print),
       pageTitle,
-      deleteWikiUrl,
       csrfToken: csrf.token,
+      templatesUrl,
+      templatesLinkClass,
+      cloneUrl,
+      cloneLinkClass,
+      deleteWikiUrl,
       pagePersisted: parseBoolean(pagePersisted),
     },
     render(createElement) {

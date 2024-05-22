@@ -895,13 +895,14 @@ GET /projects/:id/integrations/hangouts-chat
 ## Google Artifact Management
 
 DETAILS:
+**Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425066) in GitLab 16.9 as a [beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
-FLAG:
-On GitLab.com, this feature is not available. This feature is not ready for production use.
+This feature is in [beta](../policy/experiment-beta-support.md).
 
 ### Set up Google Artifact Management
 
@@ -937,11 +938,15 @@ GET /projects/:id/integrations/google-cloud-platform-artifact-registry
 
 ## Google Cloud Identity and Access Management (IAM)
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439200) in GitLab 16.10 as a [beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com
+**Status:** Beta
 
-FLAG:
-On GitLab.com, this feature is not available.
-This feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439200) in GitLab 16.10 as a [beta](../policy/experiment-beta-support.md) feature [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
+
+This feature is in [beta](../policy/experiment-beta-support.md).
 
 ### Set up Google Cloud Identity and Access Management
 

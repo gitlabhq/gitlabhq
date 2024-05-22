@@ -15396,6 +15396,29 @@ The edge type for [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransi
 | <a id="vulnerabilitystatetransitiontypeedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="vulnerabilitystatetransitiontypeedgenode"></a>`node` | [`VulnerabilityStateTransitionType`](#vulnerabilitystatetransitiontype) | The item at the end of the edge. |
 
+#### `WorkItemClosingMergeRequestConnection`
+
+The connection type for [`WorkItemClosingMergeRequest`](#workitemclosingmergerequest).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemclosingmergerequestconnectionedges"></a>`edges` | [`[WorkItemClosingMergeRequestEdge]`](#workitemclosingmergerequestedge) | A list of edges. |
+| <a id="workitemclosingmergerequestconnectionnodes"></a>`nodes` | [`[WorkItemClosingMergeRequest]`](#workitemclosingmergerequest) | A list of nodes. |
+| <a id="workitemclosingmergerequestconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `WorkItemClosingMergeRequestEdge`
+
+The edge type for [`WorkItemClosingMergeRequest`](#workitemclosingmergerequest).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemclosingmergerequestedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="workitemclosingmergerequestedgenode"></a>`node` | [`WorkItemClosingMergeRequest`](#workitemclosingmergerequest) | The item at the end of the edge. |
+
 #### `WorkItemConnection`
 
 The connection type for [`WorkItem`](#workitem).
@@ -15418,29 +15441,6 @@ The edge type for [`WorkItem`](#workitem).
 | ---- | ---- | ----------- |
 | <a id="workitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="workitemedgenode"></a>`node` | [`WorkItem`](#workitem) | The item at the end of the edge. |
-
-#### `WorkItemRelatedMergeRequestConnection`
-
-The connection type for [`WorkItemRelatedMergeRequest`](#workitemrelatedmergerequest).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="workitemrelatedmergerequestconnectionedges"></a>`edges` | [`[WorkItemRelatedMergeRequestEdge]`](#workitemrelatedmergerequestedge) | A list of edges. |
-| <a id="workitemrelatedmergerequestconnectionnodes"></a>`nodes` | [`[WorkItemRelatedMergeRequest]`](#workitemrelatedmergerequest) | A list of nodes. |
-| <a id="workitemrelatedmergerequestconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
-
-#### `WorkItemRelatedMergeRequestEdge`
-
-The edge type for [`WorkItemRelatedMergeRequest`](#workitemrelatedmergerequest).
-
-##### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="workitemrelatedmergerequestedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
-| <a id="workitemrelatedmergerequestedgenode"></a>`node` | [`WorkItemRelatedMergeRequest`](#workitemrelatedmergerequest) | The item at the end of the edge. |
 
 #### `WorkItemTimelogConnection`
 
@@ -21124,7 +21124,7 @@ Represents a repository of Google Artifact Registry.
 
 ##### `GoogleCloudArtifactRegistryRepository.artifacts`
 
-Google Artifact Registry repository artifacts. Returns `null` if `google_cloud_support_feature_flag` feature flag is disabled or GitLab.com feature is unavailable.
+Google Artifact Registry repository artifacts. Returns `null` if GitLab.com feature is unavailable.
 
 Returns [`GoogleCloudArtifactRegistryArtifactConnection`](#googlecloudartifactregistryartifactconnection).
 
@@ -22185,7 +22185,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.runnerCloudProvisioning`
 
-Information used for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_support_feature_flag` feature flag is disabled, or the GitLab instance is not a SaaS instance.
+Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
 
 DETAILS:
 **Introduced** in GitLab 16.10.
@@ -26877,7 +26877,7 @@ Represents generic policy violation information.
 | <a id="projectforkingaccesslevel"></a>`forkingAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for forking access. |
 | <a id="projectforkscount"></a>`forksCount` | [`Int!`](#int) | Number of times the project has been forked. |
 | <a id="projectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. |
-| <a id="projectgooglecloudartifactregistryrepository"></a>`googleCloudArtifactRegistryRepository` **{warning-solid}** | [`GoogleCloudArtifactRegistryRepository`](#googlecloudartifactregistryrepository) | **Introduced** in GitLab 16.10. **Status**: Experiment. Google Artifact Registry repository. Returns `null` if `google_cloud_support_feature_flag` feature flag is disabled, or the GitLab instance is not a SaaS instance. |
+| <a id="projectgooglecloudartifactregistryrepository"></a>`googleCloudArtifactRegistryRepository` **{warning-solid}** | [`GoogleCloudArtifactRegistryRepository`](#googlecloudartifactregistryrepository) | **Introduced** in GitLab 16.10. **Status**: Experiment. Google Artifact Registry repository. Returns `null` if the GitLab instance is not a SaaS instance. |
 | <a id="projectgrafanaintegration"></a>`grafanaIntegration` | [`GrafanaIntegration`](#grafanaintegration) | Grafana integration details for the project. |
 | <a id="projectgroup"></a>`group` | [`Group`](#group) | Group of the project. |
 | <a id="projecthasjiravulnerabilityissuecreationenabled"></a>`hasJiraVulnerabilityIssueCreationEnabled` | [`Boolean!`](#boolean) | Indicates whether Jira issue creation from vulnerabilities is enabled. |
@@ -28219,7 +28219,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.runnerCloudProvisioning`
 
-Information used for provisioning the runner on a cloud provider. Returns `null` if `:google_cloud_support_feature_flag` feature flag is disabled, or the GitLab instance is not a SaaS instance.
+Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
 
 DETAILS:
 **Introduced** in GitLab 16.9.
@@ -31790,6 +31790,16 @@ Returns [`String!`](#string).
 | ---- | ---- | ----------- |
 | <a id="workitemreferencefull"></a>`full` | [`Boolean`](#boolean) | Boolean option specifying whether the reference should be returned in full. |
 
+### `WorkItemClosingMergeRequest`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemclosingmergerequestfrommrdescription"></a>`fromMrDescription` | [`Boolean!`](#boolean) | Whether this merge request link was created by referencing the work item on the merge request description, using the closing pattern. |
+| <a id="workitemclosingmergerequestid"></a>`id` | [`MergeRequestsClosingIssuesID!`](#mergerequestsclosingissuesid) | Global ID of the closing merge request association. |
+| <a id="workitemclosingmergerequestmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Related merge request. |
+
 ### `WorkItemPermissions`
 
 Check permissions for the current user on a work item.
@@ -31806,14 +31816,6 @@ Check permissions for the current user on a work item.
 | <a id="workitempermissionsreadworkitem"></a>`readWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_work_item` on this resource. |
 | <a id="workitempermissionssetworkitemmetadata"></a>`setWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can perform `set_work_item_metadata` on this resource. |
 | <a id="workitempermissionsupdateworkitem"></a>`updateWorkItem` | [`Boolean!`](#boolean) | If `true`, the user can perform `update_work_item` on this resource. |
-
-### `WorkItemRelatedMergeRequest`
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="workitemrelatedmergerequestmergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Related merge request. |
 
 ### `WorkItemStateCountsType`
 
@@ -31996,8 +31998,8 @@ Represents a development widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemwidgetdevelopmentclosingmergerequests"></a>`closingMergeRequests` | [`WorkItemClosingMergeRequestConnection`](#workitemclosingmergerequestconnection) | Merge requests that will close the work item when merged. (see [Connections](#connections)) |
 | <a id="workitemwidgetdevelopmentfeatureflags"></a>`featureFlags` | [`FeatureFlagConnection`](#featureflagconnection) | Feature flags associated with the work item. (see [Connections](#connections)) |
-| <a id="workitemwidgetdevelopmentrelatedmergerequests"></a>`relatedMergeRequests` | [`WorkItemRelatedMergeRequestConnection`](#workitemrelatedmergerequestconnection) | Merge requests related to the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgetdevelopmenttype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetHealthStatus`
@@ -35951,6 +35953,12 @@ An example `MemberRoleID` is: `"gid://gitlab/MemberRole/1"`.
 A `MergeRequestID` is a global ID. It is encoded as a string.
 
 An example `MergeRequestID` is: `"gid://gitlab/MergeRequest/1"`.
+
+### `MergeRequestsClosingIssuesID`
+
+A `MergeRequestsClosingIssuesID` is a global ID. It is encoded as a string.
+
+An example `MergeRequestsClosingIssuesID` is: `"gid://gitlab/MergeRequestsClosingIssues/1"`.
 
 ### `MergeRequestsExternalStatusCheckID`
 

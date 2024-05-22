@@ -17,16 +17,21 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
       provide: {
+        newUrl: 'https://new.url/path',
         history: 'https://history.url/path',
         print: {
           target: '#content-body',
           title: 'test title',
           stylesheet: [],
         },
-        pagePersisted: true,
         pageTitle: 'Wiki title',
         csrfToken: '',
         deleteWikiUrl: 'https://delete.url/path',
+        cloneUrl: 'https://clone.url/path',
+        cloneLinkClass: '',
+        templatesUrl: 'https://templates.url/path',
+        templatesLinkClass: '',
+        pagePersisted: true,
         ...provide,
       },
       stubs: {
@@ -39,9 +44,46 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
 
   const findMoreDropdown = () => wrapper.findByTestId('wiki-more-dropdown');
   const findMoreDropdownTooltip = () => getBinding(findMoreDropdown().element, 'gl-tooltip');
+  const findNewItem = () => wrapper.findByTestId('page-new-button');
   const findHistoryItem = () => wrapper.findByTestId('page-history-button');
   const findPrintItem = () => wrapper.findByTestId('page-print-button');
   const findDeleteItem = () => wrapper.findByTestId('page-delete-button');
+  const findTemplatesItem = () => wrapper.findByTestId('page-templates-button');
+  const findCloneRepositoryItem = () => wrapper.findByTestId('page-clone-button');
+
+  describe('new page', () => {
+    it('shows label "New page"', () => {
+      createComponent();
+
+      expect(findNewItem().text()).toBe('New page');
+    });
+
+    it('renders if `newUrl` is set', () => {
+      createComponent({ newUrl: false });
+
+      expect(findNewItem().exists()).toBe(false);
+
+      createComponent();
+
+      expect(findNewItem().exists()).toBe(true);
+    });
+
+    it('should have new page url', () => {
+      createComponent();
+
+      expect(findNewItem().attributes('href')).toBe('https://new.url/path');
+    });
+
+    it('shows label "New template" on a template page', () => {
+      mockLocation('http://gitlab.com/gitlab-org/gitlab/-/wikis/templates/abc');
+
+      createComponent();
+
+      expect(findNewItem().text()).toBe('New template');
+
+      restoreLocation();
+    });
+  });
 
   describe('history', () => {
     it('shows label "Page history"', () => {
@@ -126,6 +168,54 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
       createComponent();
 
       expect(findDeleteItem().exists()).toBe(true);
+    });
+  });
+
+  describe('templates', () => {
+    it('shows label "Templates"', () => {
+      createComponent();
+
+      expect(findTemplatesItem().text()).toBe('Templates');
+    });
+
+    it('renders if `templatesUrl` is set', () => {
+      createComponent({ templatesUrl: false });
+
+      expect(findTemplatesItem().exists()).toBe(false);
+
+      createComponent();
+
+      expect(findTemplatesItem().exists()).toBe(true);
+    });
+
+    it('should have templates page url', () => {
+      createComponent();
+
+      expect(findTemplatesItem().attributes('href')).toBe('https://templates.url/path');
+    });
+  });
+
+  describe('clone repository', () => {
+    it('shows label "Clone repository"', () => {
+      createComponent();
+
+      expect(findCloneRepositoryItem().text()).toBe('Clone repository');
+    });
+
+    it('renders if `templatesUrl` is set', () => {
+      createComponent({ cloneUrl: false });
+
+      expect(findCloneRepositoryItem().exists()).toBe(false);
+
+      createComponent();
+
+      expect(findCloneRepositoryItem().exists()).toBe(true);
+    });
+
+    it('should have clone repository page url', () => {
+      createComponent();
+
+      expect(findCloneRepositoryItem().attributes('href')).toBe('https://clone.url/path');
     });
   });
 

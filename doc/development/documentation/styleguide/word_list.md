@@ -355,6 +355,8 @@ Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#co
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.
 **Select** applies to more devices, while **click** is more specific to a mouse.
 
+However, you can make an exception for **right-click** and **click-through demo**.
+
 ## cloud licensing
 
 Do not use the phrase **cloud licensing**. Instead, focus on the fact
@@ -1744,6 +1746,8 @@ Instead of:
 
 Use **select** with buttons, links, menu items, and lists. **Select** applies to more devices,
 while **click** is more specific to a mouse.
+
+However, you can make an exception for **right-click** and **click-through demo**.
 
 ## self-managed
 

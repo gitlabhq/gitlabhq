@@ -849,6 +849,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_7a8b08eed782() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "boards_epic_boards"
+  WHERE "boards_epic_boards"."id" = NEW."epic_board_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_94514aeadc50() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -5727,7 +5743,8 @@ CREATE TABLE boards_epic_board_positions (
     epic_id bigint NOT NULL,
     relative_position integer,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    group_id bigint
 );
 
 CREATE SEQUENCE boards_epic_board_positions_id_seq
@@ -24708,6 +24725,8 @@ CREATE UNIQUE INDEX index_boards_epic_board_positions_on_epic_board_id_and_epic_
 
 CREATE INDEX index_boards_epic_board_positions_on_epic_id ON boards_epic_board_positions USING btree (epic_id);
 
+CREATE INDEX index_boards_epic_board_positions_on_group_id ON boards_epic_board_positions USING btree (group_id);
+
 CREATE INDEX index_boards_epic_board_positions_on_scoped_relative_position ON boards_epic_board_positions USING btree (epic_board_id, epic_id, relative_position);
 
 CREATE INDEX index_boards_epic_board_recent_visits_on_epic_board_id ON boards_epic_board_recent_visits USING btree (epic_board_id);
@@ -29972,6 +29991,8 @@ CREATE TRIGGER trigger_43484cb41aca BEFORE INSERT OR UPDATE ON wiki_repository_s
 
 CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variables FOR EACH ROW EXECUTE FUNCTION trigger_56d49f4ed623();
 
+CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board_positions FOR EACH ROW EXECUTE FUNCTION trigger_7a8b08eed782();
+
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
 
 CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_request_rule_sources FOR EACH ROW EXECUTE FUNCTION trigger_b4520c29ea74();
@@ -31051,6 +31072,9 @@ ALTER TABLE ONLY work_item_dates_sources
 
 ALTER TABLE ONLY security_scans
     ADD CONSTRAINT fk_dbc89265b9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY boards_epic_board_positions
+    ADD CONSTRAINT fk_dc62428d81 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspaces
     ADD CONSTRAINT fk_dc7c316be1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

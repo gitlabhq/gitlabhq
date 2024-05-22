@@ -1,9 +1,8 @@
 /*
-The xSendFile middleware transparently sends static files in HTTP responses
+Package sendfile middleware transparently sends static files in HTTP responses
 via the X-Sendfile mechanism. All that is needed in the Rails code is the
 'send_file' method.
 */
-
 package sendfile
 
 import (
@@ -51,6 +50,7 @@ type sendFileResponseWriter struct {
 	req      *http.Request
 }
 
+// SendFile wraps an HTTP handler and serves static files efficiently using sendfile.
 func SendFile(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		s := &sendFileResponseWriter{
@@ -129,7 +129,11 @@ func sendFileFromDisk(w http.ResponseWriter, r *http.Request, file string) {
 		http.NotFound(w, r)
 		return
 	}
-	defer content.Close()
+	defer func() {
+		if err = content.Close(); err != nil {
+			fmt.Printf("Error closing file: %v", err)
+		}
+	}()
 
 	countSendFileMetrics(fi.Size(), r)
 
@@ -140,7 +144,11 @@ func sendFileFromDisk(w http.ResponseWriter, r *http.Request, file string) {
 			return
 		}
 
-		content.Seek(0, io.SeekStart)
+		_, err = content.Seek(0, io.SeekStart)
+		if err != nil {
+			fail.Request(w, r, fmt.Errorf("error rewinding file: %v", err))
+			return
+		}
 
 		contentType, contentDisposition := headers.SafeContentHeaders(data, w.Header().Get(headers.ContentDispositionHeader))
 		w.Header().Set(headers.ContentTypeHeader, contentType)

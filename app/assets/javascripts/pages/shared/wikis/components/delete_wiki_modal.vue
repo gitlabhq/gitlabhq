@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlDisclosureDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlIcon, GlDisclosureDropdownItem, GlModal, GlModalDirective } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
 import { isTemplate } from '../utils';
@@ -8,6 +8,7 @@ export default {
   components: {
     GlModal,
     GlButton,
+    GlIcon,
     GlDisclosureDropdownItem,
   },
   directives: {
@@ -56,10 +57,6 @@ export default {
     cancelProps() {
       return {
         text: this.$options.i18n.cancelButtonText,
-        href: this.deleteWikiUrl,
-        extraAttrs: {
-          class: 'gl-text-red-500!',
-        },
       };
     },
     listItem() {
@@ -99,7 +96,12 @@ export default {
       v-if="showAsDropdownItem"
       v-gl-modal="$options.modal.modalId"
       :item="listItem"
-    />
+    >
+      <template #list-item>
+        <gl-icon name="remove" class="gl-mr-2 gl-text-red-500" />
+        {{ listItem.text }}
+      </template>
+    </gl-disclosure-dropdown-item>
     <gl-button
       v-else
       v-gl-modal="$options.modal.modalId"

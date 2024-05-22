@@ -16,7 +16,7 @@ module API
         optional :labels, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, desc: 'Comma-separated list of label names'
         optional :milestone, type: String, desc: 'Milestone title'
         optional :milestone_id, types: String, values: %w[Any None Upcoming Started],
-                                desc: 'Return issues assigned to milestones without the specified timebox value ("Any", "None", "Upcoming" or "Started")'
+          desc: 'Return issues assigned to milestones without the specified timebox value ("Any", "None", "Upcoming" or "Started")'
         mutually_exclusive :milestone_id, :milestone
 
         optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
@@ -27,8 +27,8 @@ module API
 
         optional :assignee_id, type: Integer, desc: 'Return issues which are not assigned to the user with the given ID'
         optional :assignee_username, type: Array[String], check_assignees_count: true,
-                                     coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
-                                     desc: 'Return issues which are not assigned to the user with the given username'
+          coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
+          desc: 'Return issues which are not assigned to the user with the given username'
         mutually_exclusive :assignee_id, :assignee_username
 
         use :negatable_issue_filter_params_ee
@@ -40,7 +40,7 @@ module API
         # 'milestone_id' only accepts wildcard values 'Any', 'None', 'Upcoming', 'Started'
         # the param has '_id' in the name to keep consistency (ex. assignee_id accepts id and wildcard values).
         optional :milestone_id, types: String, values: %w[Any None Upcoming Started],
-                                desc: 'Return issues assigned to milestones with the specified timebox value ("Any", "None", "Upcoming" or "Started")'
+          desc: 'Return issues assigned to milestones with the specified timebox value ("Any", "None", "Upcoming" or "Started")'
         optional :iids, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'The IID array of issues'
         optional :search, type: String, desc: 'Search issues for text present in the title, description, or any combination of these'
         optional :in, type: String, desc: '`title`, `description`, or a string joining them with comma'
@@ -51,10 +51,10 @@ module API
         mutually_exclusive :author_id, :author_username
 
         optional :assignee_id, types: [Integer, String], integer_none_any: true,
-                               desc: 'Return issues which are assigned to the user with the given ID'
+          desc: 'Return issues which are assigned to the user with the given ID'
         optional :assignee_username, type: Array[String], check_assignees_count: true,
-                                     coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
-                                     desc: 'Return issues which are assigned to the user with the given username'
+          coerce_with: Validations::Validators::CheckAssigneesCount.coerce,
+          desc: 'Return issues which are assigned to the user with the given username'
         mutually_exclusive :assignee_id, :assignee_username
 
         optional :created_after, type: DateTime, desc: 'Return issues created after the specified time'
@@ -67,7 +67,7 @@ module API
         end
 
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
-                         desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         optional :confidential, type: Boolean, desc: 'Filter confidential or public issues'
 
@@ -77,13 +77,13 @@ module API
       params :issues_params do
         optional :with_labels_details, type: Boolean, desc: 'Return titles of labels and other details', default: false
         optional :state, type: String, values: %w[opened closed all], default: 'all',
-                         desc: 'Return opened, closed, or all issues'
+          desc: 'Return opened, closed, or all issues'
         optional :order_by, type: String, values: Helpers::IssuesHelpers.sort_options, default: 'created_at',
-                            desc: 'Return issues ordered by `created_at`, `due_date`, `label_priority`, `milestone_due`, `popularity`, `priority`, `relative_position`, `title`, or `updated_at` fields.'
+          desc: 'Return issues ordered by `created_at`, `due_date`, `label_priority`, `milestone_due`, `popularity`, `priority`, `relative_position`, `title`, or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return issues sorted in `asc` or `desc` order.'
+          desc: 'Return issues sorted in `asc` or `desc` order.'
         optional :due_date, type: String, values: %w[0 any today tomorrow overdue week month next_month_and_previous_two_weeks] << '',
-                            desc: 'Return issues that have no due date (`0`), or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`, `0`'
+          desc: 'Return issues that have no due date (`0`), or whose due date is this week, this month, between two weeks ago and next month, or which are overdue. Accepts: `overdue`, `week`, `month`, `next_month_and_previous_two_weeks`, `0`'
         optional :issue_type, type: String, values: WorkItems::Type.allowed_types_for_issues, desc: "The type of the issue. Accepts: #{WorkItems::Type.allowed_types_for_issues.join(', ')}"
 
         use :issues_stats_params
@@ -111,7 +111,7 @@ module API
     params do
       use :issues_stats_params
       optional :scope, type: String, values: %w[created_by_me assigned_to_me all], default: 'created_by_me',
-                       desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+        desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
     end
     get '/issues_statistics' do
       authenticate! unless params[:scope] == 'all'
@@ -127,9 +127,9 @@ module API
       params do
         use :issues_params
         optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
-                         desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
+          desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :non_archived, type: Boolean, default: true,
-                                desc: 'Return issues from non archived projects'
+          desc: 'Return issues from non archived projects'
       end
       get do
         authenticate! unless params[:scope] == 'all'
@@ -251,13 +251,13 @@ module API
       params do
         requires :title, type: String, desc: 'The title of an issue'
         optional :created_at, type: DateTime,
-                              desc: 'Date time when the issue was created. Available only for admins and project owners.'
+          desc: 'Date time when the issue was created. Available only for admins and project owners.'
         optional :merge_request_to_resolve_discussions_of, type: Integer,
-                                                           desc: 'The IID of a merge request for which to resolve discussions'
+          desc: 'The IID of a merge request for which to resolve discussions'
         optional :discussion_to_resolve, type: String,
-                                         desc: 'The ID of a discussion to resolve, also pass `merge_request_to_resolve_discussions_of`'
+          desc: 'The ID of a discussion to resolve, also pass `merge_request_to_resolve_discussions_of`'
         optional :iid, type: Integer,
-                       desc: 'The internal ID of a project issue. Available only for admins and project owners.'
+          desc: 'The internal ID of a project issue. Available only for admins and project owners.'
 
         use :issue_params
       end
@@ -272,8 +272,8 @@ module API
 
         begin
           result = ::Issues::CreateService.new(container: user_project,
-                                               current_user: current_user,
-                                               params: issue_params).execute
+            current_user: current_user,
+            params: issue_params).execute
 
           if result.success?
             present result[:issue], with: Entities::Issue, current_user: current_user, project: user_project
@@ -298,8 +298,8 @@ module API
         requires :issue_iid, type: Integer, desc: 'The internal ID of a project issue'
         optional :title, type: String, desc: 'The title of an issue'
         optional :updated_at, type: DateTime,
-                              allow_blank: false,
-                              desc: 'Date time when the issue was updated. Available only for admins and project owners.'
+          allow_blank: false,
+          desc: 'Date time when the issue was updated. Available only for admins and project owners.'
         optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
         use :issue_params
 
@@ -317,9 +317,9 @@ module API
         update_params = convert_parameters_from_legacy_format(update_params)
 
         issue = ::Issues::UpdateService.new(container: user_project,
-                                            current_user: current_user,
-                                            params: update_params,
-                                            perform_spam_check: true).execute(issue)
+          current_user: current_user,
+          params: update_params,
+          perform_spam_check: true).execute(issue)
 
         if issue.valid?
           present issue, with: Entities::Issue, current_user: current_user, project: user_project

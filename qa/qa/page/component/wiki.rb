@@ -18,10 +18,6 @@ module QA
             element 'wiki-page-content'
           end
 
-          base.view 'app/views/shared/wikis/_main_links.html.haml' do
-            element 'new-page-button'
-          end
-
           base.view 'app/views/shared/empty_states/_wikis.html.haml' do
             element 'wiki-empty-state'
           end
@@ -32,7 +28,8 @@ module QA
         end
 
         def click_new_page
-          click_element('new-page-button')
+          click_element('wiki-more-dropdown')
+          click_element('page-new-button')
         end
 
         def click_page_history

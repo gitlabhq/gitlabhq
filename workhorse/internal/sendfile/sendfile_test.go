@@ -12,6 +12,10 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 )
 
+const (
+	fixturePath = "../../testdata/forgedfile.png"
+)
+
 func TestResponseWriter(t *testing.T) {
 	upstreamResponse := "hello world"
 
@@ -48,7 +52,7 @@ func TestResponseWriter(t *testing.T) {
 			upstreamBody := []byte(upstreamResponse)
 			n, err := sf.Write(upstreamBody)
 			require.NoError(t, err)
-			require.Equal(t, len(upstreamBody), n, "bytes written")
+			require.Len(t, upstreamBody, n, "bytes written")
 
 			rw.Flush()
 
@@ -63,14 +67,13 @@ func TestResponseWriter(t *testing.T) {
 }
 
 func TestAllowExistentContentHeaders(t *testing.T) {
-	fixturePath := "../../testdata/forgedfile.png"
-
 	httpHeaders := map[string]string{
 		headers.ContentTypeHeader:        "image/png",
 		headers.ContentDispositionHeader: "inline",
 	}
 
 	resp := makeRequest(t, fixturePath, httpHeaders)
+	defer resp.Body.Close()
 	require.Equal(t, "image/png", resp.Header.Get(headers.ContentTypeHeader))
 	require.Equal(t, "inline", resp.Header.Get(headers.ContentDispositionHeader))
 }
@@ -84,13 +87,12 @@ func TestSuccessOverrideContentHeadersFeatureEnabled(t *testing.T) {
 	httpHeaders["Range"] = "bytes=1-2"
 
 	resp := makeRequest(t, fixturePath, httpHeaders)
+	defer resp.Body.Close()
 	require.Equal(t, "image/png", resp.Header.Get(headers.ContentTypeHeader))
 	require.Equal(t, "inline", resp.Header.Get(headers.ContentDispositionHeader))
 }
 
 func TestSuccessOverrideContentHeadersRangeRequestFeatureEnabled(t *testing.T) {
-	fixturePath := "../../testdata/forgedfile.png"
-
 	fixtureContent, err := os.ReadFile(fixturePath)
 	require.NoError(t, err)
 
@@ -106,8 +108,7 @@ func TestSuccessOverrideContentHeadersRangeRequestFeatureEnabled(t *testing.T) {
 	sf.Header().Set(headers.ContentDispositionHeader, "inline")
 	sf.Header().Set(headers.GitlabWorkhorseDetectContentTypeHeader, "true")
 
-	upstreamBody := []byte(fixtureContent)
-	_, err = sf.Write(upstreamBody)
+	_, err = sf.Write(fixtureContent)
 	require.NoError(t, err)
 
 	rw.Flush()
@@ -125,14 +126,15 @@ func TestSuccessOverrideContentHeadersRangeRequestFeatureEnabled(t *testing.T) {
 }
 
 func TestSuccessInlineWhitelistedTypesFeatureEnabled(t *testing.T) {
-	fixturePath := "../../testdata/image.png"
+	fixtureImagePath := "../../testdata/image.png"
 
 	httpHeaders := map[string]string{
 		headers.ContentDispositionHeader:               "inline",
 		headers.GitlabWorkhorseDetectContentTypeHeader: "true",
 	}
 
-	resp := makeRequest(t, fixturePath, httpHeaders)
+	resp := makeRequest(t, fixtureImagePath, httpHeaders)
+	defer resp.Body.Close()
 
 	require.Equal(t, "image/png", resp.Header.Get(headers.ContentTypeHeader))
 	require.Equal(t, "inline", resp.Header.Get(headers.ContentDispositionHeader))
@@ -156,7 +158,7 @@ func makeRequest(t *testing.T, fixturePath string, httpHeaders map[string]string
 	upstreamBody := []byte("hello")
 	n, err := sf.Write(upstreamBody)
 	require.NoError(t, err)
-	require.Equal(t, len(upstreamBody), n, "bytes written")
+	require.Len(t, upstreamBody, n, "bytes written")
 
 	rw.Flush()
 
@@ -174,6 +176,7 @@ func makeRequest(t *testing.T, fixturePath string, httpHeaders map[string]string
 func TestSendFileResponseWriterFlushable(t *testing.T) {
 	rw := httptest.NewRecorder()
 	sfrw := sendFileResponseWriter{rw: rw}
+
 	rc := http.NewResponseController(&sfrw)
 
 	err := rc.Flush()

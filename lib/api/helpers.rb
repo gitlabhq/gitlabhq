@@ -761,12 +761,12 @@ module API
       finder_params.merge!(
         params
           .slice(:search,
-                 :custom_attributes,
-                 :last_activity_after,
-                 :last_activity_before,
-                 :topic,
-                 :topic_id,
-                 :repository_storage)
+            :custom_attributes,
+            :last_activity_after,
+            :last_activity_before,
+            :topic,
+            :topic_id,
+            :repository_storage)
           .symbolize_keys
           .compact
       )

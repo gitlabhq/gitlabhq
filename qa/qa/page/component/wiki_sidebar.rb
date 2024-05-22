@@ -10,7 +10,6 @@ module QA
           super
 
           base.view 'app/views/shared/wikis/_sidebar.html.haml' do
-            element 'clone-repository-link'
             element 'view-all-pages-button'
           end
 
@@ -25,7 +24,8 @@ module QA
         end
 
         def click_clone_repository
-          click_element('clone-repository-link')
+          click_element('wiki-more-dropdown')
+          click_element('page-clone-button')
         end
 
         def click_view_all_pages

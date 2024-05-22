@@ -255,7 +255,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     message = [_("Signing in using your %{label} account without a pre-existing GitLab account is not allowed.") % { label: label }]
 
     if Gitlab::CurrentSettings.allow_signup?
-      message << _("Create a GitLab account first, and then connect it to your %{label} account.") % { label: label }
+      message << (_("Create a GitLab account first, and then connect it to your %{label} account.") % { label: label })
     end
 
     flash[:alert] = message.join(' ')

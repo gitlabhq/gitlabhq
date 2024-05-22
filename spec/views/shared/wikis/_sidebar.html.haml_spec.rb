@@ -10,18 +10,6 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
     assign(:project, project)
   end
 
-  it 'includes a link to clone the repository' do
-    render
-
-    expect(rendered).to have_link('Clone repository')
-  end
-
-  it 'includes a link to a list of templates' do
-    render
-
-    expect(rendered).to have_link('Templates')
-  end
-
   context 'the sidebar failed to load' do
     before do
       assign(:sidebar_error, Object.new)

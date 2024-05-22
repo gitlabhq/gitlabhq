@@ -14,7 +14,7 @@ module API
 
       params :sort_params do
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return events sorted in ascending and descending order'
+          desc: 'Return events sorted in ascending and descending order'
       end
 
       def present_events(events)

@@ -129,11 +129,11 @@ module TimeboxesHelper
     content = []
 
     if opened > 0
-      content << n_("1 open issue", "%{issues} open issues", opened) % { issues: opened }
+      content << (n_("1 open issue", "%{issues} open issues", opened) % { issues: opened })
     end
 
     if closed > 0
-      content << n_("1 closed issue", "%{issues} closed issues", closed) % { issues: closed }
+      content << (n_("1 closed issue", "%{issues} closed issues", closed) % { issues: closed })
     end
 
     content.join('<br />').html_safe
@@ -146,9 +146,9 @@ module TimeboxesHelper
 
     content = []
 
-    content << n_("1 open merge request", "%{merge_requests} open merge requests", merge_requests.opened.count) % { merge_requests: merge_requests.opened.count } if merge_requests.opened.any?
-    content << n_("1 closed merge request", "%{merge_requests} closed merge requests", merge_requests.closed.count) % { merge_requests: merge_requests.closed.count } if merge_requests.closed.any?
-    content << n_("1 merged merge request", "%{merge_requests} merged merge requests", merge_requests.merged.count) % { merge_requests: merge_requests.merged.count } if merge_requests.merged.any?
+    content << (n_("1 open merge request", "%{merge_requests} open merge requests", merge_requests.opened.count) % { merge_requests: merge_requests.opened.count }) if merge_requests.opened.any?
+    content << (n_("1 closed merge request", "%{merge_requests} closed merge requests", merge_requests.closed.count) % { merge_requests: merge_requests.closed.count }) if merge_requests.closed.any?
+    content << (n_("1 merged merge request", "%{merge_requests} merged merge requests", merge_requests.merged.count) % { merge_requests: merge_requests.merged.count }) if merge_requests.merged.any?
 
     content.join('<br />').html_safe
   end

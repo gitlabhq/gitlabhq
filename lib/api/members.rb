@@ -168,9 +168,9 @@ module API
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the member'
           optional :skip_subresources, type: Boolean, default: false,
-                                       desc: 'Flag indicating if the deletion of direct memberships of the removed member in subgroups and projects should be skipped'
+            desc: 'Flag indicating if the deletion of direct memberships of the removed member in subgroups and projects should be skipped'
           optional :unassign_issuables, type: Boolean, default: false,
-                                        desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
+            desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
         end
         # rubocop: disable CodeReuse/ActiveRecord
         delete ":id/members/:user_id", feature_category: feature_category do

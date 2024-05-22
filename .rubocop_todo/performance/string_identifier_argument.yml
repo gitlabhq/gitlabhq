@@ -63,7 +63,6 @@ Performance/StringIdentifierArgument:
     - 'ee/spec/helpers/push_rules_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/hook_data/merge_request_builder_spec.rb'
     - 'ee/spec/lib/ee/sidebars/projects/menus/packages_registries_menu_spec.rb'
-    - 'ee/spec/lib/gitlab/background_migration/create_vulnerability_links_spec.rb'
     - 'ee/spec/lib/gitlab/insights/reducers/count_per_period_reducer_spec.rb'
     - 'ee/spec/models/concerns/elastic/projects_search_spec.rb'
     - 'ee/spec/models/concerns/elastic/repositories_search_spec.rb'

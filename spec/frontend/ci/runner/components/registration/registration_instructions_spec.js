@@ -351,9 +351,6 @@ describe('RegistrationInstructions', () => {
           platform: GOOGLE_CLOUD_PLATFORM,
           groupPath: 'mock/group/path',
         },
-        provide: {
-          glFeatures: { googleCloudSupportFeatureFlag: true },
-        },
       });
 
       await waitForPromises();
@@ -371,9 +368,6 @@ describe('RegistrationInstructions', () => {
           platform: GOOGLE_CLOUD_PLATFORM,
           projectPath: 'mock/project/path',
         },
-        provide: {
-          glFeatures: { googleCloudSupportFeatureFlag: true },
-        },
       });
 
       await waitForPromises();
@@ -385,30 +379,11 @@ describe('RegistrationInstructions', () => {
       });
     });
 
-    it('does not show google instructions when disabled', async () => {
-      createComponent({
-        props: {
-          platform: GOOGLE_CLOUD_PLATFORM,
-          projectPath: 'mock/project/path',
-        },
-        provide: {
-          glFeatures: { googleCloudSupportFeatureFlag: false },
-        },
-      });
-
-      await waitForPromises();
-
-      expect(findGoogleCloudRegistrationInstructions().exists()).toBe(false);
-    });
-
     it('does not show google instructions when on another platform', async () => {
       createComponent({
         props: {
           platform: WINDOWS_PLATFORM,
           projectPath: 'mock/project/path',
-        },
-        provide: {
-          glFeatures: { googleCloudSupportFeatureFlag: true },
         },
       });
 

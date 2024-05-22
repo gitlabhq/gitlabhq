@@ -1,3 +1,4 @@
+// Package sendurl provides functionality for sending URLs.
 package sendurl
 
 import (
@@ -43,6 +44,7 @@ type cacheKey struct {
 
 var httpClients sync.Map
 
+// SendURL represents the entry for sending a URL.
 var SendURL = &entry{"send-url:"}
 
 var rangeHeaderKeys = []string{
@@ -165,7 +167,11 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	}
 	w.WriteHeader(resp.StatusCode)
 
-	defer resp.Body.Close()
+	defer func() {
+		if err = resp.Body.Close(); err != nil {
+			fmt.Printf("Error closing response body: %v\n", err)
+		}
+	}()
 
 	// Flushes the response right after it received.
 	// Important for streaming responses, where content delivered in chunks.

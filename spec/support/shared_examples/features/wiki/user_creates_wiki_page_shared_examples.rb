@@ -195,6 +195,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
     context "via the `new wiki page` page", :js do
       it "creates a page with a single word" do
+        find_by_testid('wiki-more-dropdown').click
         click_link("New page")
 
         page.within(".wiki-form") do
@@ -213,6 +214,7 @@ RSpec.shared_examples 'User creates wiki page' do
       end
 
       it "creates a page with spaces in the name", :js do
+        find_by_testid('wiki-more-dropdown').click
         click_link("New page")
 
         page.within(".wiki-form") do
@@ -231,6 +233,7 @@ RSpec.shared_examples 'User creates wiki page' do
       end
 
       it "creates a page with hyphens in the name", :js do
+        find_by_testid('wiki-more-dropdown').click
         click_link("New page")
 
         page.within(".wiki-form") do
@@ -259,6 +262,7 @@ RSpec.shared_examples 'User creates wiki page' do
           message: 'Add redirect', branch_name: 'master'
         )
 
+        find_by_testid('wiki-more-dropdown').click
         click_link('New page')
 
         page.within('.wiki-form') do
@@ -284,6 +288,7 @@ RSpec.shared_examples 'User creates wiki page' do
             message: 'Add redirect', branch_name: 'master'
           )
 
+          find_by_testid('wiki-more-dropdown').click
           click_link('New page')
 
           page.within('.wiki-form') do
@@ -300,6 +305,7 @@ RSpec.shared_examples 'User creates wiki page' do
 
       context 'when a server side validation error is returned' do
         it "still displays edit form", :js do
+          find_by_testid('wiki-more-dropdown').click
           click_link("New page")
 
           page.within(".wiki-form") do
@@ -317,6 +323,7 @@ RSpec.shared_examples 'User creates wiki page' do
     end
 
     it "shows the emoji autocompletion dropdown", :js do
+      find_by_testid('wiki-more-dropdown').click
       click_link("New page")
 
       page.within(".wiki-form") do

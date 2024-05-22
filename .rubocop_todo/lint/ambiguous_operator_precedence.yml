@@ -2,15 +2,6 @@
 # Cop supports --autocorrect.
 Lint/AmbiguousOperatorPrecedence:
   Exclude:
-    - 'app/controllers/explore/projects_controller.rb'
-    - 'app/controllers/omniauth_callbacks_controller.rb'
-    - 'app/controllers/profiles/two_factor_auths_controller.rb'
-    - 'app/helpers/form_helper.rb'
-    - 'app/helpers/groups_helper.rb'
-    - 'app/helpers/time_helper.rb'
-    - 'app/helpers/timeboxes_helper.rb'
-    - 'app/helpers/tree_helper.rb'
-    - 'app/helpers/users_helper.rb'
     - 'app/presenters/project_presenter.rb'
     - 'app/services/cohorts_service.rb'
     - 'app/services/concerns/validates_classification_label.rb'

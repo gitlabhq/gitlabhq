@@ -308,7 +308,6 @@ Lint/UnusedMethodArgument:
     - 'ee/spec/helpers/ee/integrations_helper_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/members_helpers_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/notes_helpers_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/background_migration/migrate_vulnerabilities_feedback_to_vulnerabilities_state_transition_spec.rb'
     - 'ee/spec/lib/gitlab/analytics/cycle_analytics/data_collector_spec.rb'
     - 'ee/spec/services/ee/resource_events/merge_into_notes_service_spec.rb'
     - 'ee/spec/support/helpers/ee/geo_helpers.rb'
