@@ -72,9 +72,25 @@ module UnnestedInFilters
     # A naive query planner implementation.
     # Checks if a database-level index can be utilized by given filtering and ordering predicates.
     #
-    # Partial index support:
-    #     - Supports partial indices if the partial index predicate contains only one column.
-    #     - Supports only the `=` operator in partial index predicate.
+    # Supported index conditions:
+    #     - All columns queried are present in the index or partial predicate
+    #     - Unqueried index columns are at the end of the index
+    #     - Partial indices if the partial index predicate contains only one column.
+    #     - Only the `=` operator present in partial index predicate.
+    #
+    # Examples:
+    #
+    # ------------------------------------------------------------------------------
+    # Queried             | Index                                      | Supported?
+    # (col_1, col_2)      | (col_1, col_2)                             | Y
+    # (col_1)             | (col_1, col_2)                             | Y
+    # (col_2)             | (col_1, col_2)                             | N
+    # (col_1, col_3)      | (col_1, col_2, col_3)                      | N
+    # (col_1, col_2)      | (col_1) where col_2 = "1"                  | Y
+    # (col_1, col_2)      | (col_1) where col_2 <= 1                   | N
+    # (col_1, col_2)      | (col_1) where col_2 IS NULL                | N
+    # (col_1, col_2)      | (col_1) where col_2 = "1" AND COL_1 = "2"  | N
+    #
     class IndexCoverage
       PARTIAL_INDEX_REGEX = /(?<!\s)(?>\(*(?<column_name>\b\w+)\s*=\s*(?<column_value>\w+)\)*)(?!\s)/
 
@@ -85,9 +101,9 @@ module UnnestedInFilters
       end
 
       def covers?
-        filter_attributes_covered? &&
-          can_be_used_for_sorting? &&
-          does_not_contain_any_other_column?
+        filter_attributes_covered?            &&
+          unused_columns_at_end_of_index?     &&
+          can_be_used_for_sorting?
       end
 
       private
@@ -99,11 +115,32 @@ module UnnestedInFilters
       end
 
       def can_be_used_for_sorting?
-        index.columns.last(order_attributes.length) == order_attributes
+        sorts_in_same_order_as_index? &&
+          no_filtering_after_sort_columns?
       end
 
-      def does_not_contain_any_other_column?
-        (index.columns - combined_attributes).empty?
+      # All order attributes exist in the query in the same order as they are queried.
+      def sorts_in_same_order_as_index?
+        (index.columns & order_attributes) == order_attributes
+      end
+
+      # All order attributes exist in the query in the same order as they are queried.
+      # We rely on sort order to be the same here to assume that anything following the last sort
+      # should not be filtered on.
+      def no_filtering_after_sort_columns?
+        return true if order_attributes.empty?
+
+        (index.columns.split(order_attributes.last).last & filter_attributes).empty?
+      end
+
+      # We assume there are <= attributes than columns because filter_attributes_covered has already passed.
+      # So we check the count of unqueried columns, take that number from the end of the index,
+      # and compare to ensure that any unqueried columns are only at the end of the index.
+      # This also helps ensure there are no gaps in the used columns of the index.
+      def unused_columns_at_end_of_index?
+        remaining_columns = (index.columns - combined_attributes)
+
+        (index.columns.last(remaining_columns.size) - remaining_columns).empty?
       end
 
       def partial?
@@ -159,6 +196,22 @@ module UnnestedInFilters
 
     # Rewrites the given ActiveRecord::Relation object to
     # utilize the DB indices efficiently.
+    #
+    # Currently Postgres will produce inefficient query plans which use a `filter_predicate`
+    # instead of a `access_predicate` to filter by IN clause contents. This behaviour does a table
+    # read of the data for filtering, disregarding the structure of the index and losing any benefit
+    # from any sorting applied to the index as it will have to resort the table read data.
+    #
+    # Rewriting the query using the `unnest` command induces Postgres into using the
+    # appropriate index search behaviour for each column in the index by generating a
+    # cartesian product between the individual items of the IN filter items and queried table.
+    # This means each read column will maintain the sort order provided by the index,
+    # avoiding a memory sort node in the final query plan.
+    #
+    # This will not work if queried columns are not all present in the index, or if unqueried
+    # columns exist in the index that are not at the end, as this makes that part of the index
+    # useless to Postgres and will result in a table scan anyways from that point.
+    #
     #
     # Example usage;
     #

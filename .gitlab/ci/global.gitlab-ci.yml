@@ -321,7 +321,7 @@
 
 .ai-gateway-services:
   services:
-    - name: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:84ed0661
+    - name: registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest
       alias: ai-gateway
 
 .use-pg13:

@@ -1,6 +1,6 @@
 ---
 description: Counts source code pushes
-category: InternalEventTracking
+internal_events: true
 action: source_code_pushed
 identifiers:
 - project

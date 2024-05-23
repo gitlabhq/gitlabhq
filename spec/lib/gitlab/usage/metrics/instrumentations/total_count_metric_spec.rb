@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric, :clean_gitlab_redis_shared_state,
   feature_category: :product_analytics_data_management do
   before do
-    allow(Gitlab::InternalEvents::EventDefinitions).to receive(:known_event?).and_return(true)
+    allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).and_return(true)
 
     event_definition = instance_double(
       Gitlab::Tracking::EventDefinition,

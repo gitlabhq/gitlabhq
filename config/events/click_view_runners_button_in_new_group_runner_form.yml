@@ -1,6 +1,6 @@
 ---
 description: View Runners clicked after group runner creation
-category: InternalEventTracking
+internal_events: true
 action: click_view_runners_button_in_new_group_runner_form
 identifiers:
   - namespace

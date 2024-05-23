@@ -1,9 +1,9 @@
-- breadcrumb_title _("Edit Snippet")
+- breadcrumb_title _("Edit snippet")
 - page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 - content_for :prefetch_asset_tags do
   - webpack_preload_asset_tag('monaco')
 
 %h1.page-title.gl-font-size-h-display
-  = _("Edit Snippet")
+  = _("Edit snippet")
 %hr
 = render 'shared/snippets/form', url: gitlab_snippet_path(@snippet)

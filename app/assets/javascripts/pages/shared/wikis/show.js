@@ -30,7 +30,6 @@ const mountWikiMoreDropdownApp = () => {
   const {
     newUrl,
     history,
-    print,
     pageTitle,
     templatesUrl,
     templatesLinkClass,
@@ -45,7 +44,6 @@ const mountWikiMoreDropdownApp = () => {
     provide: {
       newUrl,
       history,
-      print: JSON.parse(print),
       pageTitle,
       csrfToken: csrf.token,
       templatesUrl,

@@ -37,6 +37,7 @@ container_scanning:
     GIT_STRATEGY: none
   allow_failure: true
   artifacts:
+    access: 'developer'
     reports:
       container_scanning: gl-container-scanning-report.json
       cyclonedx: "**/gl-sbom-*.cdx.json"

@@ -16930,6 +16930,9 @@ msgstr ""
 msgid "Days of inactivity before deactivation"
 msgstr ""
 
+msgid "Days of inactivity before removal"
+msgstr ""
+
 msgid "Days to merge"
 msgstr ""
 
@@ -19044,6 +19047,9 @@ msgstr ""
 msgid "Done"
 msgstr ""
 
+msgid "Dormant members"
+msgstr ""
+
 msgid "Dormant users"
 msgstr ""
 
@@ -19376,9 +19382,6 @@ msgstr ""
 msgid "Edit Slack integration"
 msgstr ""
 
-msgid "Edit Snippet"
-msgstr ""
-
 msgid "Edit System Hook"
 msgstr ""
 
@@ -19464,6 +19467,9 @@ msgid "Edit release"
 msgstr ""
 
 msgid "Edit single file"
+msgstr ""
+
+msgid "Edit snippet"
 msgstr ""
 
 msgid "Edit table"
@@ -21620,6 +21626,9 @@ msgid "Failed to fetch the iterations for the group. Please try again."
 msgstr ""
 
 msgid "Failed to find import label for Jira import."
+msgstr ""
+
+msgid "Failed to find issue or merge request"
 msgstr ""
 
 msgid "Failed to find users for %{missing}"
@@ -39508,13 +39517,7 @@ msgstr ""
 msgid "ProductAnalytics|Sessions"
 msgstr ""
 
-msgid "ProductAnalytics|Set up Product Analytics to track how your product is performing. Combine analytics with your GitLab data to better understand where you can improve your product and development processes."
-msgstr ""
-
 msgid "ProductAnalytics|Set up Product Analytics to track how your product is performing. Combine analytics with your GitLab data to better understand where you can improve your product and development processes. %{linkStart}Learn more%{linkEnd}."
-msgstr ""
-
-msgid "ProductAnalytics|Set up product analytics"
 msgstr ""
 
 msgid "ProductAnalytics|Set up to track how your product is performing and optimize your product and development processes."
@@ -43061,6 +43064,9 @@ msgstr ""
 msgid "Remove description history"
 msgstr ""
 
+msgid "Remove dormant members after a period of inactivity"
+msgstr ""
+
 msgid "Remove due date"
 msgstr ""
 
@@ -43203,6 +43209,9 @@ msgid "Removed an issue from an epic."
 msgstr ""
 
 msgid "Removed link with %{issue_ref}."
+msgstr ""
+
+msgid "Removed members no longer have access to this top-level group, its sub-groups, and their projects."
 msgstr ""
 
 msgid "Removed parent epic %{epic_ref}."
@@ -51779,6 +51788,9 @@ msgid "Terraform|Reported Resource Changes: %{addNum} to add, %{changeNum} to ch
 msgstr ""
 
 msgid "Terraform|Support for periods (`.`) in Terraform state names might break existing states."
+msgstr ""
+
+msgid "Terraform|Support for periods (`.`) in Terraform state names might break existing states. Refer to the %{link_start}troubleshooting%{link_end} to learn more."
 msgstr ""
 
 msgid "Terraform|Terraform init command"

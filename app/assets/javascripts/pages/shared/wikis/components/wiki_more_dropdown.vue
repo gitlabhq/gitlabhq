@@ -7,7 +7,6 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
-import printMarkdownDom from '~/lib/print_markdown_dom';
 import { isTemplate } from '../utils';
 import DeleteWikiModal from './delete_wiki_modal.vue';
 
@@ -25,7 +24,6 @@ export default {
   inject: [
     'newUrl',
     'history',
-    'print',
     'templatesUrl',
     'templatesLinkClass',
     'cloneUrl',
@@ -93,16 +91,15 @@ export default {
       return !this.isDropdownVisible ? this.$options.i18n.wikiActions : '';
     },
     showPrintItem() {
-      return this.print && !this.isTemplat;
+      return !this.isTemplate;
     },
   },
   methods: {
     printPage() {
-      printMarkdownDom({
-        target: document.querySelector(this.print.target),
-        title: this.print.title,
-        stylesheet: this.print.stylesheet,
-      });
+      document.querySelectorAll('img').forEach((img) => img.setAttribute('loading', 'eager'));
+      document.querySelectorAll('details').forEach((detail) => detail.setAttribute('open', ''));
+
+      window.print();
     },
     showDropdown() {
       this.isDropdownVisible = true;

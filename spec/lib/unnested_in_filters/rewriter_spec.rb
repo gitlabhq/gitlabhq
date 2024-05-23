@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UnnestedInFilters::Rewriter do
+RSpec.describe UnnestedInFilters::Rewriter, feature_category: :shared do
   let(:rewriter) { described_class.new(relation) }
 
   before_all do
@@ -79,6 +79,16 @@ RSpec.describe UnnestedInFilters::Rewriter do
           it { is_expected.to be_truthy }
         end
 
+        context 'when there is a partial index coverage for the used columns and unused columns at the end' do
+          before do
+            ApplicationRecord.connection.execute(<<~SQL)
+              CREATE INDEX on vulnerabilities USING btree(state, severity, id) WHERE (resolved_on_default_branch = false)
+            SQL
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
         context 'when there is no partial index coverage for the used columns' do
           before do
             ApplicationRecord.connection.execute(<<~SQL)
@@ -93,6 +103,64 @@ RSpec.describe UnnestedInFilters::Rewriter do
           before do
             ApplicationRecord.connection.execute(<<~SQL)
               CREATE INDEX on vulnerabilities USING btree(state) WHERE (resolved_on_default_branch = false AND id = 100)
+            SQL
+          end
+
+          it { is_expected.to be_falsey }
+        end
+      end
+
+      context 'with unused index columns' do
+        let(:base_relation) { Vulnerability.where(state: [:detected, :confirmed], resolved_on_default_branch: false) }
+        let(:relation) { base_relation }
+
+        before do
+          Vulnerability.reset_column_information
+        end
+
+        context 'when the unused columns are at the end of the index' do
+          before do
+            ApplicationRecord.connection.execute(<<~SQL)
+              CREATE INDEX on vulnerabilities USING btree(state, resolved_on_default_branch, severity, id)
+            SQL
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'with ordering' do
+          let(:relation) { base_relation.order(severity: :DESC, id: :DESC) }
+
+          before do
+            ApplicationRecord.connection.execute(<<~SQL)
+              CREATE INDEX on vulnerabilities USING btree(state, resolved_on_default_branch, severity DESC, id DESC, present_on_default_branch)
+            SQL
+          end
+
+          context 'when the unused columns are at the end of the index' do
+            it { is_expected.to be_truthy }
+          end
+
+          context 'when the query ordering does not match the index' do
+            let(:relation) { base_relation.order(id: :DESC, severity: :DESC) }
+
+            it { is_expected.to be_falsey }
+          end
+
+          context 'when the order columns are at the beginning of the index' do
+            let(:relation) do
+              Vulnerability.where(severity: [:high, :critical], id: [1, 2]).order(state: :desc,
+                resolved_on_default_branch: :desc)
+            end
+
+            it { is_expected.to be_falsey }
+          end
+        end
+
+        context 'when an unused column is in the middle of the index' do
+          before do
+            ApplicationRecord.connection.execute(<<~SQL)
+              CREATE INDEX on vulnerabilities USING btree(state, id, resolved_on_default_branch, severity)
             SQL
           end
 

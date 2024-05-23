@@ -58,6 +58,10 @@ module Gitlab
           @known_events ||= load_events
         end
 
+        def legacy_event?(event_name)
+          legacy_events.include?(event_name)
+        end
+
         private
 
         def track(values, event_name, property_name:, time: Time.zone.now)

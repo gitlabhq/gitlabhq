@@ -1,6 +1,6 @@
 ---
 description: Counts VSA (both group- and project-level) views
-category: InternalEventTracking
+internal_events: true
 action: view_cycle_analytics
 identifiers:
 - project

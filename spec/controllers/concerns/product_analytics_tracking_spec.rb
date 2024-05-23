@@ -58,7 +58,7 @@ RSpec.describe ProductAnalyticsTracking, :snowplow, feature_category: :product_a
     end
 
     before do
-      allow(Gitlab::InternalEvents::EventDefinitions).to receive(:known_event?).with('an_event').and_return(true)
+      allow(Gitlab::Tracking::EventDefinition).to receive(:internal_event_exists?).with('an_event').and_return(true)
       event_definition = instance_double(
         Gitlab::Tracking::EventDefinition,
         event_selection_rules: [

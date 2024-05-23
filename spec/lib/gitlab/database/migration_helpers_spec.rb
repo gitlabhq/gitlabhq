@@ -522,7 +522,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           expect(model).to receive(:execute).with(/REFERENCES users \(id\)/)
 
           model.add_concurrent_foreign_key(:projects, :users,
-                                           column: :user_id)
+            column: :user_id)
         end
 
         it 'references the custom taget column when provided' do
@@ -536,8 +536,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           expect(model).to receive(:execute).with(/REFERENCES users \(id_convert_to_bigint\)/)
 
           model.add_concurrent_foreign_key(:projects, :users,
-                                           column: :user_id,
-                                           target_column: :id_convert_to_bigint)
+            column: :user_id,
+            target_column: :id_convert_to_bigint)
         end
       end
 
@@ -554,8 +554,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             expect(model).to receive(:execute).with(/ON DELETE SET NULL/)
 
             model.add_concurrent_foreign_key(:projects, :users,
-                                             column: :user_id,
-                                             on_delete: :nullify)
+              column: :user_id,
+              on_delete: :nullify)
           end
         end
 
@@ -571,8 +571,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             expect(model).to receive(:execute).with(/ON DELETE CASCADE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
-                                             column: :user_id,
-                                             on_delete: :cascade)
+              column: :user_id,
+              on_delete: :cascade)
           end
         end
 
@@ -588,8 +588,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             expect(model).not_to receive(:execute).with(/ON DELETE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
-                                             column: :user_id,
-                                             on_delete: nil)
+              column: :user_id,
+              on_delete: nil)
           end
         end
       end
@@ -607,8 +607,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             expect(model).to receive(:execute).with(/ON UPDATE SET NULL/)
 
             model.add_concurrent_foreign_key(:projects, :users,
-                                             column: :user_id,
-                                             on_update: :nullify)
+              column: :user_id,
+              on_update: :nullify)
           end
         end
 
@@ -624,8 +624,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             expect(model).to receive(:execute).with(/ON UPDATE CASCADE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
-                                             column: :user_id,
-                                             on_update: :cascade)
+              column: :user_id,
+              on_update: :cascade)
           end
         end
 
@@ -641,8 +641,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             expect(model).not_to receive(:execute).with(/ON UPDATE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
-                                             column: :user_id,
-                                             on_update: nil)
+              column: :user_id,
+              on_update: nil)
           end
         end
 
@@ -658,7 +658,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
             expect(model).not_to receive(:execute).with(/ON UPDATE/)
 
             model.add_concurrent_foreign_key(:projects, :users,
-                                             column: :user_id)
+              column: :user_id)
           end
         end
       end
@@ -679,11 +679,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
         it 'does not create a foreign key if it exists already' do
           name = model.concurrent_foreign_key_name(:projects, :user_id)
           expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
-                                                              column: :user_id,
-                                                              on_update: nil,
-                                                              on_delete: :cascade,
-                                                              name: name,
-                                                              primary_key: :id).and_return(true)
+            column: :user_id,
+            on_update: nil,
+            on_delete: :cascade,
+            name: name,
+            primary_key: :id).and_return(true)
 
           expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
           expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)
@@ -711,11 +711,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
           context 'when the supplied key name is the same as the existing foreign key name' do
             it 'does not create a new foreign key' do
               expect(model).to receive(:foreign_key_exists?).with(:projects, :users,
-                                                                  name: :foo,
-                                                                  primary_key: :id,
-                                                                  on_update: nil,
-                                                                  on_delete: :cascade,
-                                                                  column: :user_id).and_return(true)
+                name: :foo,
+                primary_key: :id,
+                on_update: nil,
+                on_delete: :cascade,
+                column: :user_id).and_return(true)
 
               expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
               expect(model).to receive(:execute).with(/VALIDATE CONSTRAINT/)
@@ -955,7 +955,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   describe '#concurrent_foreign_key_name' do
     it 'returns the name for a foreign key' do
       name = model.concurrent_foreign_key_name(:this_is_a_very_long_table_name,
-                                               :with_a_very_long_column_name)
+        :with_a_very_long_column_name)
 
       expect(name).to be_an_instance_of(String)
       expect(name.length).to eq(13)
@@ -1281,12 +1281,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'outside a transaction' do
       let(:old_column) do
         double(:column,
-               type: :integer,
-               limit: 8,
-               default: 0,
-               null: false,
-               precision: 5,
-               scale: 1)
+          type: :integer,
+          limit: 8,
+          default: 0,
+          null: false,
+          precision: 5,
+          scale: 1)
       end
 
       let(:trigger_name) { model.rename_trigger_name(:users, :old, :new) }
@@ -1310,9 +1310,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
           expect(model).to receive(:add_column)
             .with(:users, :new, :integer,
-                 limit: old_column.limit,
-                 precision: old_column.precision,
-                 scale: old_column.scale)
+              limit: old_column.limit,
+              precision: old_column.precision,
+              scale: old_column.scale)
 
           expect(model).to receive(:change_column_default)
             .with(:users, :new, old_column.default)
@@ -1381,12 +1381,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
         context 'when default is false' do
           let(:old_column) do
             double(:column,
-                 type: :boolean,
-                 limit: nil,
-                 default: false,
-                 null: false,
-                 precision: nil,
-                 scale: nil)
+              type: :boolean,
+              limit: nil,
+              default: false,
+              null: false,
+              precision: nil,
+              scale: nil)
           end
 
           it 'copies the default to the new column' do
@@ -1486,12 +1486,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'outside a transaction' do
       let(:new_column) do
         double(:column,
-              type: :integer,
-              limit: 8,
-              default: 0,
-              null: false,
-              precision: 5,
-              scale: 1)
+          type: :integer,
+          limit: 8,
+          default: 0,
+          null: false,
+          precision: 5,
+          scale: 1)
       end
 
       let(:trigger_name) { model.rename_trigger_name(:users, :old, :new) }
@@ -1511,9 +1511,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
 
         expect(model).to receive(:add_column)
           .with(:users, :old, :integer,
-              limit: new_column.limit,
-              precision: new_column.precision,
-              scale: new_column.scale)
+            limit: new_column.limit,
+            precision: new_column.precision,
+            scale: new_column.scale)
 
         expect(model).to receive(:change_column_default)
           .with(:users, :old, new_column.default)
@@ -1551,12 +1551,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
       context 'when default is false' do
         let(:new_column) do
           double(:column,
-               type: :boolean,
-               limit: nil,
-               default: false,
-               null: false,
-               precision: nil,
-               scale: nil)
+            type: :boolean,
+            limit: nil,
+            default: false,
+            null: false,
+            precision: nil,
+            scale: nil)
         end
 
         it 'copies the default to the old column' do
@@ -1818,27 +1818,27 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'when index name is too long' do
       it 'does not fail' do
         index = double(:index,
-                       columns: %w[uuid],
-                       name: 'index_vuln_findings_on_uuid_including_vuln_id_1',
-                       using: nil,
-                       where: nil,
-                       opclasses: {},
-                       unique: true,
-                       lengths: [],
-                       orders: [])
+          columns: %w[uuid],
+          name: 'index_vuln_findings_on_uuid_including_vuln_id_1',
+          using: nil,
+          where: nil,
+          opclasses: {},
+          unique: true,
+          lengths: [],
+          orders: [])
 
         allow(model).to receive(:indexes_for).with(:vulnerability_occurrences, 'uuid')
           .and_return([index])
 
         expect(model).to receive(:add_concurrent_index)
           .with(:vulnerability_occurrences,
-               %w[tmp_undo_cleanup_column_8cbf300838],
-              {
-               unique: true,
-               name: 'idx_copy_191a1af1a0',
-               length: [],
-               order: []
-              })
+            %w[tmp_undo_cleanup_column_8cbf300838],
+            {
+             unique: true,
+             name: 'idx_copy_191a1af1a0',
+             length: [],
+             order: []
+            })
 
         model.copy_indexes(:vulnerability_occurrences, :uuid, :tmp_undo_cleanup_column_8cbf300838)
       end
@@ -1847,27 +1847,27 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using a regular index using a single column' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w[project_id],
-                       name: 'index_on_issues_project_id',
-                       using: nil,
-                       where: nil,
-                       opclasses: {},
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+          columns: %w[project_id],
+          name: 'index_on_issues_project_id',
+          using: nil,
+          where: nil,
+          opclasses: {},
+          unique: false,
+          lengths: [],
+          orders: [])
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w[gl_project_id],
-              {
-               unique: false,
-               name: 'index_on_issues_gl_project_id',
-               length: [],
-               order: []
-              })
+            %w[gl_project_id],
+            {
+             unique: false,
+             name: 'index_on_issues_gl_project_id',
+             length: [],
+             order: []
+            })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1876,27 +1876,27 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using a regular index with multiple columns' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w[project_id foobar],
-                       name: 'index_on_issues_project_id_foobar',
-                       using: nil,
-                       where: nil,
-                       opclasses: {},
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+          columns: %w[project_id foobar],
+          name: 'index_on_issues_project_id_foobar',
+          using: nil,
+          where: nil,
+          opclasses: {},
+          unique: false,
+          lengths: [],
+          orders: [])
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w[gl_project_id foobar],
-              {
-               unique: false,
-               name: 'index_on_issues_gl_project_id_foobar',
-               length: [],
-               order: []
-              })
+            %w[gl_project_id foobar],
+            {
+             unique: false,
+             name: 'index_on_issues_gl_project_id_foobar',
+             length: [],
+             order: []
+            })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1905,28 +1905,28 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using an index with a WHERE clause' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w[project_id],
-                       name: 'index_on_issues_project_id',
-                       using: nil,
-                       where: 'foo',
-                       opclasses: {},
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+          columns: %w[project_id],
+          name: 'index_on_issues_project_id',
+          using: nil,
+          where: 'foo',
+          opclasses: {},
+          unique: false,
+          lengths: [],
+          orders: [])
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w[gl_project_id],
-              {
-               unique: false,
-               name: 'index_on_issues_gl_project_id',
-               length: [],
-               order: [],
-               where: 'foo'
-              })
+            %w[gl_project_id],
+            {
+             unique: false,
+             name: 'index_on_issues_gl_project_id',
+             length: [],
+             order: [],
+             where: 'foo'
+            })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1935,28 +1935,28 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using an index with a USING clause' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w[project_id],
-                       name: 'index_on_issues_project_id',
-                       where: nil,
-                       using: 'foo',
-                       opclasses: {},
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+          columns: %w[project_id],
+          name: 'index_on_issues_project_id',
+          where: nil,
+          using: 'foo',
+          opclasses: {},
+          unique: false,
+          lengths: [],
+          orders: [])
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w[gl_project_id],
-              {
-               unique: false,
-               name: 'index_on_issues_gl_project_id',
-               length: [],
-               order: [],
-               using: 'foo'
-              })
+            %w[gl_project_id],
+            {
+             unique: false,
+             name: 'index_on_issues_gl_project_id',
+             length: [],
+             order: [],
+             using: 'foo'
+            })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1965,28 +1965,28 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using an index with custom operator classes' do
       it 'copies the index' do
         index = double(:index,
-                       columns: %w[project_id],
-                       name: 'index_on_issues_project_id',
-                       using: nil,
-                       where: nil,
-                       opclasses: { 'project_id' => 'bar' },
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+          columns: %w[project_id],
+          name: 'index_on_issues_project_id',
+          using: nil,
+          where: nil,
+          opclasses: { 'project_id' => 'bar' },
+          unique: false,
+          lengths: [],
+          orders: [])
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w[gl_project_id],
-              {
-               unique: false,
-               name: 'index_on_issues_gl_project_id',
-               length: [],
-               order: [],
-               opclass: { 'gl_project_id' => 'bar' }
-              })
+            %w[gl_project_id],
+            {
+             unique: false,
+             name: 'index_on_issues_gl_project_id',
+             length: [],
+             order: [],
+             opclass: { 'gl_project_id' => 'bar' }
+            })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -1995,31 +1995,31 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using an index with multiple columns and custom operator classes' do
       it 'copies the index' do
         index = double(:index,
-                       {
-                         columns: %w[project_id foobar],
-                         name: 'index_on_issues_project_id_foobar',
-                         using: :gin,
-                         where: nil,
-                         opclasses: { 'project_id' => 'bar', 'foobar' => :gin_trgm_ops },
-                         unique: false,
-                         lengths: [],
-                         orders: []
-                       })
+          {
+            columns: %w[project_id foobar],
+            name: 'index_on_issues_project_id_foobar',
+            using: :gin,
+            where: nil,
+            opclasses: { 'project_id' => 'bar', 'foobar' => :gin_trgm_ops },
+            unique: false,
+            lengths: [],
+            orders: []
+          })
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w[gl_project_id foobar],
-              {
-               unique: false,
-               name: 'index_on_issues_gl_project_id_foobar',
-               length: [],
-               order: [],
-               opclass: { 'gl_project_id' => 'bar', 'foobar' => :gin_trgm_ops },
-               using: :gin
-              })
+            %w[gl_project_id foobar],
+            {
+             unique: false,
+             name: 'index_on_issues_gl_project_id_foobar',
+             length: [],
+             order: [],
+             opclass: { 'gl_project_id' => 'bar', 'foobar' => :gin_trgm_ops },
+             using: :gin
+            })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -2028,31 +2028,31 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     context 'using an index with multiple columns and a custom operator class on the non affected column' do
       it 'copies the index' do
         index = double(:index,
-                       {
-                         columns: %w[project_id foobar],
-                         name: 'index_on_issues_project_id_foobar',
-                         using: :gin,
-                         where: nil,
-                         opclasses: { 'foobar' => :gin_trgm_ops },
-                         unique: false,
-                         lengths: [],
-                         orders: []
-                       })
+          {
+            columns: %w[project_id foobar],
+            name: 'index_on_issues_project_id_foobar',
+            using: :gin,
+            where: nil,
+            opclasses: { 'foobar' => :gin_trgm_ops },
+            unique: false,
+            lengths: [],
+            orders: []
+          })
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
 
         expect(model).to receive(:add_concurrent_index)
           .with(:issues,
-               %w[gl_project_id foobar],
-              {
-               unique: false,
-               name: 'index_on_issues_gl_project_id_foobar',
-               length: [],
-               order: [],
-               opclass: { 'foobar' => :gin_trgm_ops },
-               using: :gin
-              })
+            %w[gl_project_id foobar],
+            {
+             unique: false,
+             name: 'index_on_issues_gl_project_id_foobar',
+             length: [],
+             order: [],
+             opclass: { 'foobar' => :gin_trgm_ops },
+             using: :gin
+            })
 
         model.copy_indexes(:issues, :project_id, :gl_project_id)
       end
@@ -2061,14 +2061,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
     describe 'using an index of which the name does not contain the source column' do
       it 'raises RuntimeError' do
         index = double(:index,
-                       columns: %w[project_id],
-                       name: 'index_foobar_index',
-                       using: nil,
-                       where: nil,
-                       opclasses: {},
-                       unique: false,
-                       lengths: [],
-                       orders: [])
+          columns: %w[project_id],
+          name: 'index_foobar_index',
+          using: nil,
+          where: nil,
+          opclasses: {},
+          unique: false,
+          lengths: [],
+          orders: [])
 
         allow(model).to receive(:indexes_for).with(:issues, 'project_id')
           .and_return([index])
@@ -2082,9 +2082,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   describe '#copy_foreign_keys' do
     it 'copies foreign keys from one column to another' do
       fk = double(:fk,
-                  from_table: 'issues',
-                  to_table: 'projects',
-                  on_delete: :cascade)
+        from_table: 'issues',
+        to_table: 'projects',
+        on_delete: :cascade)
 
       allow(model).to receive(:foreign_keys_for).with(:issues, :project_id)
         .and_return([fk])

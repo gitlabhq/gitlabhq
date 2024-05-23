@@ -3,10 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import WikiMoreDropdown from '~/pages/shared/wikis/components/wiki_more_dropdown.vue';
 import DeleteWikiModal from '~/pages/shared/wikis/components/delete_wiki_modal.vue';
-import printMarkdownDom from '~/lib/print_markdown_dom';
 import { mockLocation, restoreLocation } from '../test_utils';
-
-jest.mock('~/lib/print_markdown_dom');
 
 describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
   let wrapper;
@@ -19,11 +16,6 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
       provide: {
         newUrl: 'https://new.url/path',
         history: 'https://history.url/path',
-        print: {
-          target: '#content-body',
-          title: 'test title',
-          stylesheet: [],
-        },
         pageTitle: 'Wiki title',
         csrfToken: '',
         deleteWikiUrl: 'https://delete.url/path',
@@ -121,34 +113,53 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
 
   describe('print', () => {
     beforeEach(() => {
-      document.body.innerHTML = '<div id="content-body">Content</div>';
+      document.body.innerHTML = `
+        <div id="content-body">
+          <details><summary>Summary</summary><p>Content</p></details>
+          <img src="https://example.com/image.png" loading="lazy" />
+        </div>'
+      `;
     });
 
     afterEach(() => {
       document.body.innerHTML = '';
     });
 
-    it('renders if `print` is set', () => {
-      createComponent({ print: false });
-
-      expect(findPrintItem().exists()).toBe(false);
-
+    it('renders', () => {
       createComponent();
 
       expect(findPrintItem().exists()).toBe(true);
     });
 
-    it('should print the content', () => {
+    it('does not render for a template page', () => {
+      mockLocation('http://gitlab.com/gitlab-org/gitlab/-/wikis/templates/abc');
+
       createComponent();
 
-      expect(findPrintItem().exists()).toBe(true);
+      expect(findPrintItem().exists()).toBe(false);
 
-      findPrintItem().trigger('click');
+      restoreLocation();
+    });
 
-      expect(printMarkdownDom).toHaveBeenCalledWith({
-        target: document.querySelector('#content-body'),
-        title: 'test title',
-        stylesheet: [],
+    describe('on click', () => {
+      beforeEach(() => {
+        jest.spyOn(window, 'print').mockImplementation(() => {});
+
+        createComponent();
+
+        findPrintItem().trigger('click');
+      });
+
+      it('should print the content', () => {
+        expect(window.print).toHaveBeenCalled();
+      });
+
+      it('sets all images to eager loading', () => {
+        expect(document.querySelector('img').getAttribute('loading')).toBe('eager');
+      });
+
+      it('opens all details elements', () => {
+        expect(document.querySelector('details').getAttribute('open')).toBe('');
       });
     });
   });

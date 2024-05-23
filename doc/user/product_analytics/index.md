@@ -180,9 +180,7 @@ To onboard a project:
 1. Select **Analyze > Analytics dashboards**.
 1. Under **Product analytics**, select **Set up**.
 
-Then continue with the setup depending on your environment.
-
-### On GitLab.com
+Then continue with the setup depending on the provider type.
 
 ::Tabs
 
@@ -218,13 +216,6 @@ Your instance is being created, and the project onboarded.
 Your instance is being created, and the project onboarded.
 
 ::EndTabs
-
-### On GitLab self-managed or GitLab Dedicated
-
-- Select **Set up product analytics**.
-  Project-level settings are used if defined, otherwise [instance-level settings](#instance-level-settings).
-
-Your instance is being created, and the project onboarded.
 
 ## Instrument your application
 

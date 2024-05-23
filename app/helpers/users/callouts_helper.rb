@@ -17,6 +17,7 @@ module Users
     BRANCH_RULES_INFO_CALLOUT = 'branch_rules_info_callout'
     NEW_NAV_FOR_EVERYONE_CALLOUT = 'new_nav_for_everyone_callout'
     TRANSITION_TO_JIHU_CALLOUT = 'transition_to_jihu_callout'
+    PERIOD_IN_TERRAFORM_STATE_NAME_ALERT = 'period_in_terraform_state_name_alert'
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -89,6 +90,10 @@ module Users
         current_user&.can_admin_all_resources? &&
         %w[Asia/Hong_Kong Asia/Shanghai Asia/Macau Asia/Chongqing].include?(current_user.timezone) &&
         !user_dismissed?(TRANSITION_TO_JIHU_CALLOUT)
+    end
+
+    def show_period_in_terraform_state_name_alert_callout?
+      !user_dismissed?(PERIOD_IN_TERRAFORM_STATE_NAME_ALERT)
     end
 
     private

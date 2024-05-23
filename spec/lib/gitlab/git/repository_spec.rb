@@ -726,7 +726,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     it 'has the correct matching line' do
       expect(subject).to contain_exactly("#{ref}:encoding/CHANGELOG\u00001\u0000#{content}\n",
-                                         "#{ref}:anotherfile\u00001\u0000#{content}\n")
+        "#{ref}:anotherfile\u00001\u0000#{content}\n")
     end
   end
 
@@ -740,8 +740,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       it 'returns matched files' do
         expect(result).to contain_exactly('files/ruby/popen.rb',
-                                          'files/ruby/regex.rb',
-                                          'files/ruby/version_info.rb')
+          'files/ruby/regex.rb',
+          'files/ruby/version_info.rb')
       end
     end
 
@@ -750,7 +750,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
       it 'raises error' do
         expect { result }.to raise_error(GRPC::InvalidArgument,
-                                         /missing argument to repetition operator: `*`/)
+          /missing argument to repetition operator: `*`/)
       end
     end
 
@@ -1231,9 +1231,9 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
           expect(service)
             .to receive(:list_blobs)
             .with(expected_newrevs,
-                  limit: Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT,
-                  with_paths: true,
-                  dynamic_timeout: nil)
+              limit: Gitlab::Git::Repository::REV_LIST_COMMIT_LIMIT,
+              with_paths: true,
+              dynamic_timeout: nil)
             .once
             .and_call_original
         end
@@ -1992,8 +1992,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         expect(Gitlab::GitalyClient)
           .to receive(:call)
           .and_raise(new_detailed_error(GRPC::Core::StatusCodes::NOT_FOUND,
-                                        "tag was not found",
-                                        Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))
+            "tag was not found",
+            Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))
       end
 
       it_behaves_like 'a nonexistent tag'
@@ -2253,8 +2253,8 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
 
     def merge_to_ref
       repository.merge_to_ref(user,
-          source_sha: left_sha, branch: right_branch, target_ref: target_ref,
-          message: 'Merge message', first_parent_ref: first_parent_ref)
+        source_sha: left_sha, branch: right_branch, target_ref: target_ref,
+        message: 'Merge message', first_parent_ref: first_parent_ref)
     end
 
     it 'generates a commit in the target_ref' do

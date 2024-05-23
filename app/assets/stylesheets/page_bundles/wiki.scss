@@ -189,3 +189,21 @@ ul.wiki-pages-list.content-list {
   z-index: 1100;
   visibility: hidden;
 }
+
+@media print {
+  .top-bar-fixed {
+    display: none;
+  }
+
+  .content-wrapper {
+    padding: 0 !important;
+  }
+
+  .container-limited.limit-container-width {
+    max-width: 100%;
+  }
+
+  .gl-disclosure-dropdown {
+    display: none !important;
+  }
+}

@@ -31,6 +31,8 @@ class NamespaceSetting < ApplicationRecord
 
   sanitizes! :default_branch_name
 
+  after_initialize :set_default_values, if: :new_record?
+
   before_validation :normalize_default_branch_name
 
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
@@ -101,6 +103,10 @@ class NamespaceSetting < ApplicationRecord
   end
 
   private
+
+  def set_default_values
+    self.remove_dormant_members_period = 90
+  end
 
   def all_ancestors_have_emails_enabled?
     self.class.where(namespace_id: namespace.self_and_ancestors, emails_enabled: false).none?

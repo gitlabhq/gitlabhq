@@ -29,23 +29,28 @@ function initUserInternalRegexPlaceholder() {
 }
 
 /**
- * Sets up logic inside "Dormant users" subsection:
- * - checkbox enables/disables additional input
- * - shows/hides an inline error on input validation
+ * Creates a custom client-side behavior for dormant users: Admin and Group
+ *
+ * @param {*} checkboxId - the checkbox that enables/disables the feature
+ * @param {*} inputId -where the user inputs the number of days
+ * @param {*} inputErrorId - custom invalid state behavior
+ * @returns
  */
-function initDeactivateDormantUsersPeriodInputSection() {
-  const DISPLAY_NONE_CLASS = 'gl-display-none';
+export function initDormantUsersInputSection(checkboxId, inputId, inputErrorId) {
+  const DISPLAY_NONE_CLASS = 'gl-hidden';
 
   /** @type {HTMLInputElement} */
-  const checkbox = document.getElementById('application_setting_deactivate_dormant_users');
+  const checkbox = document.getElementById(checkboxId);
   /** @type {HTMLInputElement} */
-  const input = document.getElementById('application_setting_deactivate_dormant_users_period');
+  const oldInput = document.getElementById(inputId);
   /** @type {HTMLDivElement} */
-  const errorLabel = document.getElementById(
-    'application_setting_deactivate_dormant_users_period_error',
-  );
+  const errorLabel = document.getElementById(inputErrorId);
 
-  if (!checkbox || !input || !errorLabel) return;
+  if (!checkbox || !oldInput || !errorLabel) return;
+
+  // Clone input to remove previous event listeners
+  const input = oldInput.cloneNode(true);
+  oldInput.replaceWith(input);
 
   const hideInputErrorLabel = () => {
     if (input.checkValidity()) {
@@ -76,6 +81,19 @@ function initDeactivateDormantUsersPeriodInputSection() {
   // Handle checkbox change and set initial state
   checkbox.addEventListener('change', updateInputDisabledState);
   updateInputDisabledState();
+}
+
+/**
+ * Sets up logic inside "Dormant users" subsection:
+ * - checkbox enables/disables additional input
+ * - shows/hides an inline error on input validation
+ */
+function initDeactivateDormantUsersPeriodInputSection() {
+  initDormantUsersInputSection(
+    'application_setting_deactivate_dormant_users',
+    'application_setting_deactivate_dormant_users_period',
+    'application_setting_deactivate_dormant_users_period_error',
+  );
 }
 
 export default function initAccountAndLimitsSection() {

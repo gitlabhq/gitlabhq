@@ -18,6 +18,12 @@ module Gitlab
           @definitions ||= paths.flat_map { |glob_path| load_all_from_path(glob_path) }
         end
 
+        def internal_event_exists?(event_name)
+          definitions
+            .any? { |event| event.attributes[:internal_events] && event.attributes[:action] == event_name } ||
+            Gitlab::UsageDataCounters::HLLRedisCounter.legacy_event?(event_name)
+        end
+
         def find(event_name)
           strong_memoize_with(:find, event_name) do
             definitions.find { |definition| definition.attributes[:action] == event_name }

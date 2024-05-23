@@ -1,6 +1,6 @@
 ---
 description: A user clicks the merge request comment filter dropdown
-category: InternalEventTracking
+internal_events: true
 action: user_clicks_comment_filter_dropdown
 identifiers:
 - project

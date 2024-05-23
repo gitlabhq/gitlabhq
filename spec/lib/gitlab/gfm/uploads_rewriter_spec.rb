@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Gfm::UploadsRewriter do
 
     let(:zip_uploader) do
       build(:file_uploader, project: old_project,
-                            fixture: 'ci_build_artifacts.zip')
+        fixture: 'ci_build_artifacts.zip')
     end
 
     let(:text) do

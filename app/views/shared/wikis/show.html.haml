@@ -22,7 +22,6 @@
     #js-wiki-more-actions{ data: {
       new_url: @page.template? ? wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true) : wiki_path(@wiki, action: :new),
       history: page_history,
-      print: { target: '.js-wiki-page-content', title: @page.human_title, stylesheet: [universal_path_to_stylesheet('application')] }.to_json,
       page_title: @page.human_title,
       templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
       templates_link_class: (@page&.slug == Wiki::TEMPLATES_DIR) ? 'active' : '',

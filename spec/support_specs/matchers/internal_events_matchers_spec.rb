@@ -54,7 +54,8 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
           "received: 0 times"
     end
 
-    it 'bubbles up failure messages for negated matcher' do
+    it 'bubbles up failure messages for negated matcher',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463147' do
       expect do
         expect { track_event }.not_to trigger_internal_events('g_edit_by_sfe')
       end.to raise_error RSpec::Expectations::ExpectationNotMetError,

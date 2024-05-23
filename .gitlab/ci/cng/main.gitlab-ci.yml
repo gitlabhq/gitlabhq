@@ -24,7 +24,7 @@ include:
   script:
     - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > $BUILD_ENV'
     - echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
-    - ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> build.env
+    - echo "FULL_RUBY_VERSION=${CNG_RUBY_VERSION}" >> $BUILD_ENV
     - cat $BUILD_ENV
   artifacts:
     reports:

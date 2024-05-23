@@ -15,17 +15,17 @@ RSpec.describe Gitlab::CrossProjectAccess do
     it 'keeps track of the properties to check' do
       expect do
         described_class.add_check(super_class,
-                                  actions: { index: true },
-                                  positive_condition: -> { true },
-                                  negative_condition: -> { false })
+          actions: { index: true },
+          positive_condition: -> { true },
+          negative_condition: -> { false })
       end.to change { described_class.checks.size }.by(1)
     end
 
     it 'builds the check correctly' do
       check_collection = described_class.add_check(super_class,
-                                                   actions: { index: true },
-                                                   positive_condition: -> { 'positive' },
-                                                   negative_condition: -> { 'negative' })
+        actions: { index: true },
+        positive_condition: -> { 'positive' },
+        negative_condition: -> { 'negative' })
 
       check = check_collection.checks.first
 
@@ -53,9 +53,9 @@ RSpec.describe Gitlab::CrossProjectAccess do
   describe '#find_check' do
     it 'returns a check when it was defined for a superclass' do
       expected_check = described_class.add_check(super_class,
-                                                 actions: { index: true },
-                                                 positive_condition: -> { 'positive' },
-                                                 negative_condition: -> { 'negative' })
+        actions: { index: true },
+        positive_condition: -> { 'positive' },
+        negative_condition: -> { 'negative' })
 
       expect(described_class.find_check(descendant_class.new))
         .to eq(expected_check)
@@ -63,9 +63,9 @@ RSpec.describe Gitlab::CrossProjectAccess do
 
     it 'caches the result for a subclass' do
       described_class.add_check(super_class,
-                                actions: { index: true },
-                                positive_condition: -> { 'positive' },
-                                negative_condition: -> { 'negative' })
+        actions: { index: true },
+        positive_condition: -> { 'positive' },
+        negative_condition: -> { 'negative' })
 
       expect(described_class.instance).to receive(:closest_parent).once.and_call_original
 
@@ -74,9 +74,9 @@ RSpec.describe Gitlab::CrossProjectAccess do
 
     it 'returns the checks for the closest class if there are more checks available' do
       described_class.add_check(super_class,
-                                actions: { index: true })
+        actions: { index: true })
       expected_check = described_class.add_check(descendant_class,
-                                                 actions: { index: true, show: false })
+        actions: { index: true, show: false })
 
       check = described_class.find_check(descendant_class.new)
 

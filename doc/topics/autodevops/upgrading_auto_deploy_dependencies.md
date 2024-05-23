@@ -194,48 +194,61 @@ your environments. Do not test it with important projects or environments.
 ### v0 and v1 chart resource architecture
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD;
+accTitle: v0 and v1 chart resource architecture
+accDescr: Shows the relationships between the components of the v0 and v1 charts.
+
 subgraph gl-managed-app
-Z[Nginx Ingress]
+  Z[Nginx Ingress]
+  end
+  Z[Nginx Ingress] --> A(Ingress);
+  Z[Nginx Ingress] --> B(Ingress);
+  subgraph stg namespace
+  B[Ingress] --> H(...);
 end
-Z[Nginx Ingress] --> A(Ingress);
-Z[Nginx Ingress] --> B(Ingress);
-subgraph stg namespace
-B[Ingress] --> H(...);
-end
+
 subgraph prd namespace
-A[Ingress] --> D(Service);
-D[Service] --> E(Deployment:Pods:app:stable);
-D[Service] --> F(Deployment:Pods:app:canary);
-D[Service] --> I(Deployment:Pods:app:rollout);
-E(Deployment:Pods:app:stable)---id1[(Pods:Postgres)]
-F(Deployment:Pods:app:canary)---id1[(Pods:Postgres)]
-I(Deployment:Pods:app:rollout)---id1[(Pods:Postgres)]
+  A[Ingress] --> D(Service);
+  D[Service] --> E(Deployment:Pods:app:stable);
+  D[Service] --> F(Deployment:Pods:app:canary);
+  D[Service] --> I(Deployment:Pods:app:rollout);
+  E(Deployment:Pods:app:stable)---id1[(Pods:Postgres)]
+  F(Deployment:Pods:app:canary)---id1[(Pods:Postgres)]
+  I(Deployment:Pods:app:rollout)---id1[(Pods:Postgres)]
 end
 ```
 
 ### v2 chart resource architecture
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD;
+accTitle: v2 chart resource architecture
+accDescr: Shows the relationships between the components of the v2 chart.
+
 subgraph gl-managed-app
-Z[Nginx Ingress]
+  Z[Nginx Ingress]
+  end
+  Z[Nginx Ingress] --> A(Ingress);
+  Z[Nginx Ingress] --> B(Ingress);
+  Z[Nginx Ingress] --> |If canary is present or incremental rollout/|J(Canary Ingress);
+  subgraph stg namespace
+  B[Ingress] --> H(...);
 end
-Z[Nginx Ingress] --> A(Ingress);
-Z[Nginx Ingress] --> B(Ingress);
-Z[Nginx Ingress] --> |If canary is present or incremental rollout/|J(Canary Ingress);
-subgraph stg namespace
-B[Ingress] --> H(...);
-end
+
 subgraph prd namespace
-subgraph stable track
-A[Ingress] --> D[Service];
-D[Service] --> E(Deployment:Pods:app:stable);
-end
-subgraph canary track
-J(Canary Ingress) --> K[Service]
-K[Service] --> F(Deployment:Pods:app:canary);
-end
+
+  subgraph stable track
+    A[Ingress] --> D[Service];
+    D[Service] --> E(Deployment:Pods:app:stable);
+  end
+
+  subgraph canary track
+    J(Canary Ingress) --> K[Service]
+    K[Service] --> F(Deployment:Pods:app:canary);
+  end
+
 E(Deployment:Pods:app:stable)---id1[(Pods:Postgres)]
 F(Deployment:Pods:app:canary)---id1[(Pods:Postgres)]
 end

@@ -134,11 +134,8 @@ export default class VisualTokenValue {
 
     token.style.backgroundColor = backgroundColor;
     token.style.color = textColor;
-
-    if (textColor === '#FFFFFF') {
-      const removeToken = token.querySelector('.remove-token');
-      removeToken.classList.add('inverted');
-    }
+    const removeToken = token.querySelector('.close-icon');
+    removeToken.style.color = textColor;
 
     return token;
   }

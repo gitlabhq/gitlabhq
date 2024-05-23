@@ -123,7 +123,15 @@ const InternalEvents = {
       return;
     }
 
-    window.glClient?.track(event, additionalProperties);
+    const { data = {} } = { ...window.gl?.snowplowStandardContext };
+
+    const trackedAttributes = {
+      project_id: data?.project_id,
+      namespace_id: data?.namespace_id,
+      ...additionalProperties,
+    };
+
+    window.glClient?.track(event, trackedAttributes);
   },
 };
 

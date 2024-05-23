@@ -22,8 +22,7 @@ module Gitlab
           author_id: author_id,
           assignee_id: assignee_id,
           created_at: raw_data[:created_at],
-          updated_at: raw_data[:updated_at],
-          imported: true
+          updated_at: raw_data[:updated_at]
         }
       end
 

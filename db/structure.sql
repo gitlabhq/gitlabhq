@@ -21224,6 +21224,12 @@ ALTER TABLE vulnerability_scanners
 ALTER TABLE epics
     ADD CONSTRAINT check_450724d1bb CHECK ((issue_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE ci_runners
+    ADD CONSTRAINT check_46c685e76f CHECK ((char_length((description)::text) <= 1024)) NOT VALID;
+
+ALTER TABLE ci_runners
+    ADD CONSTRAINT check_91230910ec CHECK ((char_length((name)::text) <= 256)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 
@@ -26037,8 +26043,6 @@ CREATE INDEX index_group_stages_on_stage_event_hash_id ON analytics_cycle_analyt
 
 CREATE UNIQUE INDEX index_group_user_callouts_feature ON user_group_callouts USING btree (user_id, feature_name, group_id);
 
-CREATE INDEX index_group_vulnerability_reads_common_finder_query_desc ON vulnerability_reads USING btree (namespace_id, state, report_type, severity DESC, vulnerability_id DESC);
-
 CREATE UNIQUE INDEX index_group_wiki_repositories_on_disk_path ON group_wiki_repositories USING btree (disk_path);
 
 CREATE INDEX index_group_wiki_repositories_on_shard_id ON group_wiki_repositories USING btree (shard_id);
@@ -27230,8 +27234,6 @@ CREATE UNIQUE INDEX index_project_topics_on_project_id_and_topic_id ON project_t
 CREATE INDEX index_project_topics_on_topic_id ON project_topics USING btree (topic_id);
 
 CREATE UNIQUE INDEX index_project_user_callouts_feature ON user_project_callouts USING btree (user_id, feature_name, project_id);
-
-CREATE INDEX index_project_vulnerability_reads_common_finder_query_desc ON vulnerability_reads USING btree (project_id, state, report_type, severity DESC, vulnerability_id DESC);
 
 CREATE UNIQUE INDEX index_project_wiki_repositories_on_project_id ON project_wiki_repositories USING btree (project_id);
 

@@ -3145,6 +3145,19 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       end
     end
 
+    describe 'copy_metadata command' do
+      context 'when reference is invalid' do
+        let(:content) { '/copy_metadata xxx' }
+
+        it 'returns an error message' do
+          _, explanations = service.explain(content, merge_request)
+
+          expect(explanations)
+            .to contain_exactly _("Problem with copy_metadata command: Failed to find issue or merge request.")
+        end
+      end
+    end
+
     describe 'subscribe command' do
       let(:content) { '/subscribe' }
 

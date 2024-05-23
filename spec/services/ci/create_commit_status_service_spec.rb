@@ -247,12 +247,13 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
         end
       end
 
+      let(:ref) { 'master' }
       let(:params) do
         {
           sha: sha,
           pipeline_id: other_pipeline.id,
           state: 'success',
-          ref: 'master'
+          ref: ref
         }
       end
 
@@ -264,6 +265,55 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
 
         expect(first_pipeline.reload.status).to eq('created')
         expect(other_pipeline.reload.status).to eq('success')
+      end
+
+      context 'when pipeline_id and sha do not match' do
+        let(:other_commit) { create(:commit) }
+        let(:sha) { other_commit.id }
+
+        it 'returns a service error' do
+          expect { response }
+            .to not_change { ::Ci::Pipeline.count }.from(2)
+            .and not_change { ::Ci::Stage.count }.from(0)
+            .and not_change { ::CommitStatus.count }.from(0)
+
+          expect(response).to be_error
+          expect(response.http_status).to eq(:not_found)
+          expect(response.message).to eq("404 Pipeline for pipeline_id, sha and ref Not Found")
+        end
+
+        context 'when an missing pipeline_id is provided' do
+          let(:sha) { commit.id }
+          let(:other_pipeline) do
+            Struct.new(:id).new('FakeID')
+          end
+
+          it 'returns a service error' do
+            expect { response }
+              .to not_change { ::Ci::Pipeline.count }.from(1)
+              .and not_change { ::Ci::Stage.count }.from(0)
+              .and not_change { ::CommitStatus.count }.from(0)
+
+            expect(response).to be_error
+            expect(response.http_status).to eq(:not_found)
+            expect(response.message).to eq("404 Pipeline for pipeline_id, sha and ref Not Found")
+          end
+        end
+      end
+
+      context 'when sha and pipeline_id match but ref does not' do
+        let(:ref) { 'FakeRef' }
+
+        it 'returns a service error' do
+          expect { response }
+            .to not_change { ::Ci::Pipeline.count }.from(2)
+            .and not_change { ::Ci::Stage.count }.from(0)
+            .and not_change { ::CommitStatus.count }.from(0)
+
+          expect(response).to be_error
+          expect(response.http_status).to eq(:not_found)
+          expect(response.message).to eq("404 Pipeline for pipeline_id, sha and ref Not Found")
+        end
       end
     end
   end

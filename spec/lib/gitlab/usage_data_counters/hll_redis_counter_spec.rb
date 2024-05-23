@@ -457,6 +457,13 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     end
   end
 
+  describe '.legacy_event?' do
+    it 'returns true only for legacy event names' do
+      expect(described_class.legacy_event?('g_analytics_insights')).to be true
+      expect(described_class.legacy_event?('g_project_management_epic_reopened')).to be false
+    end
+  end
+
   describe '.weekly_time_range' do
     it 'return hash with weekly time range boundaries' do
       expect(described_class.weekly_time_range).to eq(start_date: 7.days.ago.to_date, end_date: Date.current)
