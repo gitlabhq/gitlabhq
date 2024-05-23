@@ -55,7 +55,7 @@ RSpec.describe WikiPageVersionHelper do
 
       it 'renders commit header with user info' do
         expect(header.css('a')[0].attr('href')).to eq("http://localhost/foo")
-        expect(header.css('a')[0].children[2].to_s).to eq("<strong>#{user.name}</strong>")
+        expect(header.css('a')[0].children[0].to_s).to eq("<span class=\"gl-font-bold gl-text-black-normal\">#{user.name}</span>")
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe WikiPageVersionHelper do
 
       it 'renders commit header with info from commit' do
         expect(header.css('a')[0].attr('href')).to eq("mailto:#{commit.author_email}")
-        expect(header.css('a')[0].children[2].to_s).to eq("<strong>#{wiki_page_version.author_name}</strong>")
+        expect(header.css('a')[0].children[0].to_s).to eq("<span class=\"gl-font-bold gl-text-black-normal\">#{wiki_page_version.author_name}</span>")
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe WikiPageVersionHelper do
 
       it 'sets the right href and escapes HTML chars' do
         expect(header.css('a')[0].attr('href')).to eq("mailto:#{commit.author_email}")
-        expect(header.css('a')[0].children[2].to_s).to eq("<strong>&lt;i&gt;foo&lt;/i&gt;</strong>")
+        expect(header.css('a')[0].children[0].to_s).to eq("<span class=\"gl-font-bold gl-text-black-normal\">&lt;i&gt;foo&lt;/i&gt;</span>")
       end
     end
   end

@@ -22,6 +22,19 @@ the diffs.
 
 All the diffs features related to this document are [listed on a dedicated page](features.md).
 
+## Work breakdown
+
+[Rapid Diffs work](https://gitlab.com/groups/gitlab-org/-/epics/13236) is split into 3 stages and can be tracked in the following epics:
+
+1. [Stage 0 — foundation](https://gitlab.com/groups/gitlab-org/-/epics/13764):
+    - Have foundational components in place.
+    - Stream diffs on MR, commit and compare revisions pages.
+1. [Stage 1 — baseline features](https://gitlab.com/groups/gitlab-org/-/epics/13765):
+    - Most of the features are working (dicussions, navigation, review, etc.)
+1. [Stage 2 — production ready](https://gitlab.com/groups/gitlab-org/-/epics/13767):
+    - Feature specs pass against Rapid Diffs
+    - Full accessibility compliance
+
 ## Motivation
 
 ### Goals

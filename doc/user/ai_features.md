@@ -83,7 +83,7 @@ DETAILS:
 ### Merge request summary
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time for GitLab.com and self-managed. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Efficiently communicates the impact of your merge request changes.

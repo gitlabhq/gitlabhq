@@ -255,7 +255,7 @@ ul.related-merge-requests > li gl-emoji {
 
 .issuable-header-slide-enter-active,
 .issuable-header-slide-leave-active {
-  @include gl-transition-medium;
+  @apply gl-transition-all;
 }
 
 .issuable-header-slide-enter,

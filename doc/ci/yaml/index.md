@@ -663,8 +663,6 @@ and the pipeline is for either:
 
 **Related topics**:
 
-- You can use the [`workflow:rules` templates](workflow.md#workflowrules-templates) to import
-  a preconfigured `workflow: rules` entry.
 - [Common `if` clauses for `workflow:rules`](workflow.md#common-if-clauses-for-workflowrules).
 - [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines).
 
@@ -1025,11 +1023,13 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 ### `after_script`
 
-Use `after_script` to define an array of commands that run after a job's `script` section, including failed jobs with failure type of `script_failure`.
-`after_script` commands do not run after [other failure types](#retrywhen).
+> - Running `after_script` commands for cancelled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0.
 
-NOTE:
-In GitLab 17.0, `after_script` commands will run when a [job is cancelled](script.md#run-after_script-on-cancel).
+Use `after_script` to define an array of commands to run last, after a job's `before_script` and
+`script` sections complete. `after_script` commands also run when:
+
+- The job is cancelled while the `before_script` or `script` sections are still running.
+- The job fails with failure type of `script_failure`, but not [other failure types](#retrywhen).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1076,6 +1076,7 @@ If a job times out, the `after_script` commands do not execute.
 
 - [Use `after_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
   to define a default array of commands that should run after all jobs.
+- You can configure a job to [skip `after_script` commands if the job is cancelled](script.md#skip-after_script-commands-if-a-job-is-cancelled).
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `after_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.

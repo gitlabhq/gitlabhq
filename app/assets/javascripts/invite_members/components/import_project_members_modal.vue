@@ -315,7 +315,7 @@ export default {
             {{ errorCollapseText }}
             <gl-icon
               name="chevron-down"
-              class="gl-transition-medium"
+              class="gl-transition-all"
               :class="{ 'gl-rotate-180': isErrorsSectionExpanded }"
             />
           </gl-button>

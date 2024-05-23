@@ -30180,9 +30180,6 @@ msgstr ""
 msgid "Last edited %{date}"
 msgstr ""
 
-msgid "Last edited by %{link_start}%{avatar} %{name}%{link_end}"
-msgstr ""
-
 msgid "Last event"
 msgstr ""
 
@@ -47182,6 +47179,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security policy projects store your organization's security policies. They are identified when policies are created, or when a project is linked as a security policy project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "SecurityOrchestration|Security policy scheduled scans maximum concurrency"
+msgstr ""
+
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr ""
 
@@ -58756,6 +58756,9 @@ msgid "Wiki|Edit template"
 msgstr ""
 
 msgid "Wiki|Edit wiki sidebar"
+msgstr ""
+
+msgid "Wiki|Last edited by %{link_start}%{span_start}%{name}%{span_end}%{link_end}"
 msgstr ""
 
 msgid "Wiki|New page"

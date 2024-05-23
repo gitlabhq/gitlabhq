@@ -120,6 +120,12 @@ module.exports = {
     lineHeight: {
       reset: 'inherit',
     },
+    transitionDuration: {
+      DEFAULT: '200ms',
+      slow: '400ms',
+      medium: '200ms',
+      fast: '100ms',
+    },
     // These extends probably should be moved to GitLab UI:
     extend: {
       // TODO: Backport to GitLab UI. This should be part of the default colors config.
@@ -181,6 +187,9 @@ module.exports = {
       transitionProperty: {
         stroke: 'stroke',
         'stroke-opacity': 'stroke-opacity',
+      },
+      transitionTimingFunction: {
+        DEFAULT: 'ease',
       },
       gridTemplateRows: {
         auto: 'auto',

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module WikiPageVersionHelper
+  include SafeFormatHelper
+
   def wiki_page_version_author_url(wiki_page_version)
     user = wiki_page_version.author
     user.nil? ? "mailto:#{wiki_page_version.author_email}" : Gitlab::UrlBuilder.build(user)
@@ -11,10 +13,10 @@ module WikiPageVersionHelper
   end
 
   def wiki_page_version_author_header(wiki_page_version)
-    avatar = wiki_page_version_author_avatar(wiki_page_version)
-    name = "<strong>".html_safe + wiki_page_version.author_name + "</strong>".html_safe
-    link_start = "<a href='".html_safe + wiki_page_version_author_url(wiki_page_version) + "'>".html_safe
-
-    ERB::Util.html_escape(_("Last edited by %{link_start}%{avatar} %{name}%{link_end}")) % { avatar: avatar, name: name, link_start: link_start, link_end: '</a>'.html_safe }
+    safe_format(s_("Wiki|Last edited by %{link_start}%{span_start}%{name}%{span_end}%{link_end}"),
+      tag_pair(content_tag(:span, '', class: 'gl-font-bold gl-text-black-normal'), :span_start, :span_end),
+      tag_pair(link_to('', wiki_page_version_author_url(wiki_page_version)), :link_start, :link_end),
+      name: wiki_page_version.author_name
+    )
   end
 end

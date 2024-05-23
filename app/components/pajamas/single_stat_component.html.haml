@@ -9,7 +9,7 @@
       %span{ data: { testid: @stat_value_testid } }
         = stat_value || @stat_value
     - if unit?
-      %span.gl-font-sm.gl-mx-2.gl-transition-medium.gl-opacity-10{ data: { testid: 'unit' } }
+      %span.gl-font-sm.gl-mx-2.gl-transition-all.gl-opacity-10{ data: { testid: 'unit' } }
         = @unit
     - if meta_icon? && !meta_text?
       = sprite_icon(@meta_icon, css_class: @text_color)

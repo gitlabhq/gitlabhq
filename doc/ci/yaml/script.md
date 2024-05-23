@@ -96,35 +96,37 @@ job2:
   after_script: []
 ```
 
-## Run `after_script` on cancel
+## Skip `after_script` commands if a job is cancelled
 
-DETAILS:
-**Offering:** GitLab.com, Self-managed
-
-> - [Introduced on self-managed](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Enabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17520) in GitLab 17.0.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
-`after_script` commands will run after a job is canceled while the `before_script` or `script` section of that job are `running`. This applies when the GitLab Runner version is 16.9 and above and the `ci_canceling_status` flag is enabled.
+[`after_script`](index.md) commands run if a job is canceled while the `before_script`
+or `script` section of that job are running.
 
-The job status displayed in the UI will be `canceling` while the `after_script` commands are processed, and will transition to `canceled` after the `after_script` commands are finished. The `$CI_JOB_STATUS` predefined variable will have a value of `canceled` while the `after_script` commands are processed.
+The job's status in the UI is `canceling` while the `after_script` are executing,
+and changes to `canceled` after the `after_script` commands complete. The `$CI_JOB_STATUS`
+predefined variable has a value of `canceled` while the `after_script` commands are running.
 
-**Additional details:**
+To prevent `after_script` commands running after canceling a job, configure the `after_script`
+section to:
 
-- To avoid `after_script` commands being executed after canceling a job, you can check the `$CI_JOB_STATUS` predefined variable at the beginning of your `after_script` and end execution early depending on the value, for example:
+1. Check the `$CI_JOB_STATUS` predefined variable at the start of the `after_script` section.
+1. End execution early if the value is `canceled`.
 
-  ```shell
-  - if [ "$CI_JOB_STATUS" == "canceled" ]; then exit 0; fi
-  ```
+For example:
 
-- GitLab Runner 16.11.1 and above are recommended to support this feature:
-  - In the GitLab Runner 16.11.1 patch release, [`canceled` is supported for `$CI_JOB_STATUS`](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/37485). Before the patch release, the status will be `failed` while `canceling`.
-  - Prior to the GitLab Runner 16.11.1 patch release, a bug caused the `after_script` work to close pre-maturely.
-- For shared runners on GitLab.com, the `ci_canceling_status` flag will be turned on during the last breaking change window on May 8th while runner is on patch version 16.11.1 or above.
-- For self-managed, the `ci_canceling_status` flag will be enabled by default in 17.0 and can be disabled in case administrators need to revert to the old behavior. This flag could be removed in the next milestone and should not be relied on for long-term use.
+```yaml
+job1:
+  script:
+    - my-script.sh
+  after_script:
+    - if [ "$CI_JOB_STATUS" == "canceled" ]; then exit 0; fi
+    - my-after-script.sh
+```
 
 ## Split long commands
 
@@ -387,3 +389,11 @@ environment variable is set to `dumb`. To fix the formatting for these tools, yo
 
 - Add an additional script line to set `TERM=ansi` in the shell's environment before running the command.
 - Add a `TERM` [CI/CD variable](../variables/index.md) with a value of `ansi`.
+
+### `after_script` section execution stops early and incorrect `$CI_JOB_STATUS` values
+
+In GitLab Runner 16.9.0 to 16.11.0:
+
+- The `after_script` section execution sometimes stops too early.
+- The status of the `$CI_JOB_STATUS` predefined variable is
+  [incorrectly set as `failed` while the job is canceling](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/37485).

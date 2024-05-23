@@ -44,7 +44,7 @@ RSpec.describe BulkImports::FinishBatchedRelationExportWorker, feature_category:
         it 'reenqueues itself' do
           create(:bulk_import_export_batch, :started, export: export)
 
-          expect(described_class).to receive(:perform_in).twice
+          expect(described_class).to receive(:perform_in).twice.with(described_class::REENQUEUE_DELAY, export.id)
 
           perform_multiple(job_args)
 
