@@ -29,8 +29,6 @@ Each event is defined in a separate YAML file consisting of the following fields
 | `category`          | no       | Required for legacy events. Should not be used for Internal Events.                                                                                                                                                                                                                                                              |
 | `action`            | yes      | A unique name for the event. Only lowercase, numbers, and underscores are allowed. Use the format `<operation>_<target_of_operation>_<where/when>`. <br/><br/> Ex: `publish_go_module_to_the_registry_from_pipeline` <br/>`<operation> = publish`<br/>`<target> = go_module`<br/>`<when/where> = to_the_registry_from_pipeline`. |
 | `identifiers`       | no       | A list of identifiers sent with the event. Can be set to one or more of `project`, `user`, or `namespace`.                                                                                                                                                                                                                       |
-| `product_section`   | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml).                                                                                                                                                                                                                                     |
-| `product_stage`     | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the event.                                                                                                                                                                                                                             |
 | `product_group`     | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the event.                                                                                                                                                                                                                       |
 | `milestone`         | no       | The milestone when the event is introduced.                                                                                                                                                                                                                                                                                      |
 | `introduced_by_url` | no       | The URL to the merge request that introduced the event.                                                                                                                                                                                                                                                                          |
@@ -49,8 +47,6 @@ identifiers:
 - project
 - user
 - namespace
-product_section: dev
-product_stage: monitor
 product_group: group::product analytics
 milestone: "16.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128029

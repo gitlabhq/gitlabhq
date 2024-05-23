@@ -7248,6 +7248,29 @@ Input type: `ProductAnalyticsProjectSettingsUpdateInput`
 | <a id="mutationproductanalyticsprojectsettingsupdateproductanalyticsconfiguratorconnectionstring"></a>`productAnalyticsConfiguratorConnectionString` | [`String`](#string) | Connection string for the product analytics configurator. |
 | <a id="mutationproductanalyticsprojectsettingsupdateproductanalyticsdatacollectorhost"></a>`productAnalyticsDataCollectorHost` | [`String`](#string) | Host for the product analytics data collector. |
 
+### `Mutation.projectBlobsRemove`
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Input type: `projectBlobsRemoveInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectblobsremovebloboids"></a>`blobOids` | [`[String!]!`](#string) | List of blob oids. |
+| <a id="mutationprojectblobsremoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectblobsremoveprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project to replace. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojectblobsremoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojectblobsremoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.projectCiCdSettingsUpdate`
 
 Input type: `ProjectCiCdSettingsUpdateInput`

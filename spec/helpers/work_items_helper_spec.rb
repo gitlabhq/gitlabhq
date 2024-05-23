@@ -16,7 +16,7 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           register_path: new_user_registration_path(redirect_to_referer: 'yes'),
           sign_in_path: user_session_path(redirect_to_referer: 'yes'),
           new_comment_template_paths:
-            [{ text: "Manage your comment templates", path: profile_comment_templates_path }].to_json,
+            [{ text: "Your comment templates", href: profile_comment_templates_path }].to_json,
           report_abuse_path: add_category_abuse_reports_path
         }
       )

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::Issues::MoveService, feature_category: :team_planning do
+RSpec.describe Boards::Issues::MoveService, feature_category: :portfolio_management do
   describe '#execute' do
     context 'when parent is a project' do
       let(:user) { create(:user) }

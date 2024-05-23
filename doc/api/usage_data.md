@@ -65,8 +65,6 @@ Example response:
 - key_path: redis_hll_counters.search.i_search_paid_monthly
   description: Calculated unique users to perform a search with a paid license enabled
     by month
-  product_section: enablement
-  product_stage: enablement
   product_group: global_search
   value_type: number
   status: active

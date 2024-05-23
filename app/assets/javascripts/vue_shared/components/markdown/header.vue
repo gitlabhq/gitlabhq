@@ -20,7 +20,7 @@ import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { updateText } from '~/lib/utils/text_markdown';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
-import CommentTemplatesDropdown from './comment_templates_dropdown.vue';
+import CommentTemplatesModal from './comment_templates_modal.vue';
 import HeaderDivider from './header_divider.vue';
 
 export default {
@@ -29,7 +29,7 @@ export default {
     GlPopover,
     GlButton,
     DrawioToolbarButton,
-    CommentTemplatesDropdown,
+    CommentTemplatesModal,
     AiActionsDropdown: () => import('ee_component/ai/components/ai_actions_dropdown.vue'),
     HeaderDivider,
   },
@@ -235,6 +235,10 @@ export default {
     },
     insertSavedReply(savedReply) {
       this.insertIntoTextarea(savedReply);
+
+      setTimeout(() => {
+        this.$el.closest('.md-area')?.querySelector('textarea')?.focus();
+      }, 500);
     },
   },
   shortcuts: {
@@ -521,7 +525,7 @@ export default {
             icon="quick-actions"
             tracking-property="quickAction"
           />
-          <comment-templates-dropdown
+          <comment-templates-modal
             v-if="!previewMarkdown && newCommentTemplatePaths.length"
             :new-comment-template-paths="newCommentTemplatePaths"
             @select="insertSavedReply"

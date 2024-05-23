@@ -93,7 +93,7 @@ Prerequisites:
 
 To delete the currently active issue board:
 
-1. In the upper-left corner of the issue board page, select the dropdown list with the current board name.
+1. In the upper-right corner of the issue board page, select **Configure board** (**{settings}**).
 1. Select **Delete board**.
 1. Select **Delete** to confirm.
 

@@ -3,7 +3,7 @@ import { nextTick } from 'vue';
 import { GlToggle, GlButton } from '@gitlab/ui';
 import HeaderComponent from '~/vue_shared/components/markdown/header.vue';
 import HeaderDividerComponent from '~/vue_shared/components/markdown/header_divider.vue';
-import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
+import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import ToolbarButton from '~/vue_shared/components/markdown/toolbar_button.vue';
 import DrawioToolbarButton from '~/vue_shared/components/markdown/drawio_toolbar_button.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -36,7 +36,7 @@ describe('Markdown field header component', () => {
       .filter((button) => button.props(prop) === value)
       .at(0);
   const findDrawioToolbarButton = () => wrapper.findComponent(DrawioToolbarButton);
-  const findCommentTemplatesDropdown = () => wrapper.findComponent(CommentTemplatesDropdown);
+  const findCommentTemplatesModal = () => wrapper.findComponent(CommentTemplatesModal);
 
   beforeEach(() => {
     window.gl = {
@@ -269,7 +269,7 @@ describe('Markdown field header component', () => {
         },
       });
 
-      await findCommentTemplatesDropdown().vm.$emit('select', 'Some saved comment');
+      await findCommentTemplatesModal().vm.$emit('select', 'Some saved comment');
 
       expect(updateText).toHaveBeenCalledWith({
         textArea: document.querySelector('textarea'),
@@ -288,7 +288,7 @@ describe('Markdown field header component', () => {
         },
       });
 
-      expect(findCommentTemplatesDropdown().exists()).toBe(false);
+      expect(findCommentTemplatesModal().exists()).toBe(false);
     });
   });
 });

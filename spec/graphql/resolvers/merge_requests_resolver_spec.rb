@@ -289,7 +289,7 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
 
       context 'with deployment' do
         it 'returns merge request with matching deployment' do
-          result = resolve_mr(project, deployment_id: gprd.id)
+          result = resolve_mr(project, deployment_id: deploy2.id)
 
           expect(result).to contain_exactly(merge_request_2)
         end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :team_planning do
+RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :portfolio_management do
   include BoardHelpers
 
   let_it_be(:group)       { create(:group, :public) }

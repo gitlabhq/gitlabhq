@@ -342,13 +342,15 @@ describe('BoardsSelector', () => {
       expect(wrapper.emitted('showBoardModal')).toEqual([[formType.new]]);
     });
 
-    it('emits showBoardModal with delete when clicking on delete board button', async () => {
-      createComponent({ isProjectBoard: true });
+    it('emits showBoardModal when BoardForm emits showBoardModal', () => {
+      createComponent({
+        isProjectBoard: true,
+        props: {
+          boardModalForm: formType.edit,
+        },
+      });
 
-      findDropdown().vm.$emit('shown');
-      await waitForPromises();
-
-      wrapper.findAllComponents(GlButton).at(1).vm.$emit('click');
+      findBoardForm().vm.$emit('showBoardModal', formType.delete);
       expect(wrapper.emitted('showBoardModal')).toEqual([[formType.delete]]);
     });
   });

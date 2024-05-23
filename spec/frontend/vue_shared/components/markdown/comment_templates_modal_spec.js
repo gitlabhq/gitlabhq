@@ -1,13 +1,18 @@
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import {
+  GlModal,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownGroup,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import savedRepliesResponse from 'test_fixtures/graphql/comment_templates/saved_replies.query.graphql.json';
 import { mockTracking } from 'helpers/tracking_helper';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
+import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import savedRepliesQuery from 'ee_else_ce/vue_shared/components/markdown/saved_replies.query.graphql';
 import {
   TRACKING_SAVED_REPLIES_USE,
@@ -19,8 +24,8 @@ let wrapper;
 let savedRepliesResp;
 
 const newCommentTemplatePaths = [
-  { path: '/user/comment_templates', text: 'Manage user' },
-  { path: '/group/comment_templates', text: 'Manage group' },
+  { href: '/user/comment_templates', text: 'Manage user' },
+  { href: '/group/comment_templates', text: 'Manage group' },
 ];
 
 function createMockApolloProvider(response) {
@@ -38,26 +43,31 @@ function createMockApolloProvider(response) {
 function createComponent(options = {}) {
   const { mockApollo } = options;
 
-  return mountExtended(CommentTemplatesDropdown, {
+  return shallowMountExtended(CommentTemplatesDropdown, {
     propsData: {
       newCommentTemplatePaths,
     },
     apolloProvider: mockApollo,
+    stubs: {
+      GlModal,
+      GlDisclosureDropdown,
+      GlDisclosureDropdownGroup,
+      GlDisclosureDropdownItem,
+    },
   });
 }
 
-function findDropdownComponent() {
-  return wrapper.findComponent(GlCollapsibleListbox);
-}
+const findToggleButton = () => wrapper.findByTestId('comment-templates-dropdown-toggle');
+const findModalComponent = () => wrapper.findComponent(GlModal);
+const findActionButton = () =>
+  findModalComponent().findComponent(GlDisclosureDropdownItem).find('button');
 
 async function selectSavedReply() {
-  const dropdown = findDropdownComponent();
-
-  dropdown.vm.$emit('shown');
+  findToggleButton().vm.$emit('click');
 
   await waitForPromises();
 
-  dropdown.vm.$emit('select', savedRepliesResponse.data.object.savedReplies.nodes[0].id);
+  await findActionButton().trigger('click');
 }
 
 useMockLocationHelper();
@@ -67,7 +77,7 @@ describe('Comment templates dropdown', () => {
     const mockApollo = createMockApolloProvider(savedRepliesResponse);
     wrapper = createComponent({ mockApollo });
 
-    wrapper.find('.js-comment-template-toggle').trigger('click');
+    findToggleButton().vm.$emit('click');
 
     await waitForPromises();
 
@@ -78,16 +88,13 @@ describe('Comment templates dropdown', () => {
     const mockApollo = createMockApolloProvider(savedRepliesResponse);
     wrapper = createComponent({ mockApollo });
 
-    wrapper.find('.js-comment-template-toggle').trigger('click');
+    findToggleButton().vm.$emit('click');
 
-    const links = wrapper.findAllByTestId('manage-button');
+    const manageDropdown = wrapper.findByTestId('manage-dropdown');
+    const links = manageDropdown.props('items');
 
     expect(links).toHaveLength(newCommentTemplatePaths.length);
-
-    newCommentTemplatePaths.forEach(({ path, text }, index) => {
-      expect(links.at(index).attributes('href')).toBe(path);
-      expect(links.at(index).text()).toBe(text);
-    });
+    expect(links).toBe(newCommentTemplatePaths);
   });
 
   describe('when selecting a comment', () => {
@@ -101,11 +108,7 @@ describe('Comment templates dropdown', () => {
     });
 
     it('emits a select event', async () => {
-      wrapper.find('.js-comment-template-toggle').trigger('click');
-
-      await waitForPromises();
-
-      wrapper.find('.gl-new-dropdown-item').trigger('click');
+      await selectSavedReply();
 
       expect(wrapper.emitted().select[0]).toEqual(['Saved Reply Content']);
     });

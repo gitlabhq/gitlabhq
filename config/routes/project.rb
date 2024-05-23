@@ -327,6 +327,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :stop
             post :cancel_auto_stop
             get :terminal
+            get '/k8s(/*vueroute)', to: 'environments#k8s', as: :k8s_subroute
 
             # This route is also defined in gitlab-workhorse. Make sure to update accordingly.
             get '/terminal.ws/authorize', to: 'environments#terminal_websocket_authorize', format: false

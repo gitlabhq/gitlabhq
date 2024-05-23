@@ -2,18 +2,10 @@
 import { GlSearchBoxByType, GlOutsideDirective as Outside, GlModal } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { debounce, clamp } from 'lodash';
+import { debounce } from 'lodash';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { sprintf } from '~/locale';
-import {
-  ARROW_DOWN_KEY,
-  ARROW_UP_KEY,
-  END_KEY,
-  HOME_KEY,
-  ESC_KEY,
-  NUMPAD_ENTER_KEY,
-} from '~/lib/utils/keys';
 import {
   COMMAND_PALETTE,
   MIN_SEARCH_TERM,
@@ -23,6 +15,7 @@ import {
   SEARCH_RESULTS_LOADING,
   COMMAND_PALETTE_TIP,
 } from '~/vue_shared/global_search/constants';
+import modalKeyboardNavigationMixin from '~/vue_shared/mixins/modal_keyboard_navigation_mixin';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
 import {
@@ -30,8 +23,6 @@ import {
   SEARCH_RESULTS_DESCRIPTION,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
   SEARCH_MODAL_ID,
-  SEARCH_INPUT_SELECTOR,
-  SEARCH_RESULTS_ITEM_SELECTOR,
   KEY_K,
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
@@ -71,6 +62,7 @@ export default {
     ScrollScrim,
     CommandsOverviewDropdown,
   },
+  mixins: [modalKeyboardNavigationMixin],
   data() {
     return {
       nextFocusedItemIndex: null,
@@ -152,51 +144,6 @@ export default {
         this.fetchAutocompleteOptions();
       }
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
-    getFocusableOptions() {
-      return Array.from(
-        this.$refs.resultsList?.querySelectorAll(SEARCH_RESULTS_ITEM_SELECTOR) || [],
-      );
-    },
-    onKeydown(event) {
-      const { code, target } = event;
-
-      let stop = true;
-
-      const elements = this.getFocusableOptions();
-      if (elements.length < 1) return;
-
-      const isSearchInput = target.matches(SEARCH_INPUT_SELECTOR);
-
-      if (code === HOME_KEY) {
-        if (isSearchInput) return;
-
-        this.focusItem(0, elements);
-      } else if (code === END_KEY) {
-        if (isSearchInput) return;
-
-        this.focusItem(elements.length - 1, elements);
-      } else if (code === ARROW_UP_KEY) {
-        if (isSearchInput) return;
-
-        if (elements.indexOf(target) === 0) {
-          this.focusSearchInput();
-        } else {
-          this.focusNextItem(event, elements, -1);
-        }
-      } else if (code === ARROW_DOWN_KEY) {
-        this.focusNextItem(event, elements, 1);
-      } else if (code === ESC_KEY) {
-        this.$refs.searchModal.close();
-      } else if (code === NUMPAD_ENTER_KEY) {
-        event.target?.firstChild.click();
-      } else {
-        stop = false;
-      }
-
-      if (stop) {
-        event.preventDefault();
-      }
-    },
     onKeyComboDown(event) {
       const { code, metaKey } = event;
 
@@ -208,21 +155,6 @@ export default {
         }
         this.commandPaletteDropdownOpen = !this.commandPaletteDropdownOpen;
       }
-    },
-    focusSearchInput() {
-      this.$refs.searchInput.$el.querySelector('input')?.focus();
-    },
-    focusNextItem(event, elements, offset) {
-      const { target } = event;
-      const currentIndex = elements.indexOf(target);
-      const nextIndex = clamp(currentIndex + offset, 0, elements.length - 1);
-
-      this.focusItem(nextIndex, elements);
-    },
-    focusItem(index, elements) {
-      this.nextFocusedItemIndex = index;
-
-      elements[index]?.focus();
     },
     submitSearch() {
       if (this.isCommandMode) {
@@ -283,7 +215,7 @@ export default {
 
 <template>
   <gl-modal
-    ref="searchModal"
+    ref="modal"
     :modal-id="$options.SEARCH_MODAL_ID"
     hide-header
     hide-header-close

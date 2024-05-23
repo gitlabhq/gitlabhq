@@ -105,3 +105,24 @@
     font-weight: $gl-font-weight-normal;
   }
 }
+
+.comment-templates-modal {
+  padding: 3rem 0.5rem 0;
+  
+  &.gl-modal .modal-dialog {
+    align-items: flex-start;
+  }
+
+  @include gl-media-breakpoint-up(sm) {
+    padding: 5rem 1rem 0;
+  }
+
+  [id*='gl-disclosure-dropdown-group'] {
+    padding-left: 0;
+  }
+
+  .comment-templates-options .gl-new-dropdown-item {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

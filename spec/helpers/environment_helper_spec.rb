@@ -21,6 +21,7 @@ RSpec.describe EnvironmentHelper, feature_category: :environment_management do
         name: environment.name,
         id: environment.id,
         project_full_path: project.full_path,
+        base_path: project_environment_path(project, environment),
         external_url: environment.external_url,
         can_update_environment: true,
         can_destroy_environment: true,

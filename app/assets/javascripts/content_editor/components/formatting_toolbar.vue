@@ -1,5 +1,5 @@
 <script>
-import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
+import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import { __, sprintf } from '~/locale';
 import { getModifierKey } from '~/constants';
 import trackUIControl from '../services/track_ui_control';
@@ -17,7 +17,7 @@ export default {
     ToolbarTableButton,
     ToolbarAttachmentButton,
     ToolbarMoreDropdown,
-    CommentTemplatesDropdown,
+    CommentTemplatesModal,
     HeaderDivider,
   },
   inject: {
@@ -201,7 +201,7 @@ export default {
       />
       <header-divider v-if="newCommentTemplatePaths.length" />
     </div>
-    <comment-templates-dropdown
+    <comment-templates-modal
       v-if="newCommentTemplatePaths.length"
       :new-comment-template-paths="newCommentTemplatePaths"
       @select="insertSavedReply"

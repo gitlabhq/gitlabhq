@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Boards', feature_category: :team_planning do
+RSpec.describe 'Group Boards', feature_category: :portfolio_management do
   include DragTo
   include MobileHelpers
   include BoardHelpers

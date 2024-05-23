@@ -396,6 +396,8 @@ describe('Tracking', () => {
       });
 
       it('ignores and removes old entries from the cache', () => {
+        window.gl.maskedDefaultReferrerUrl =
+          'https://gitlab.com/namespace:#/project:#/-/merge_requests/';
         const oldTimestamp = Date.now() - (REFERRER_TTL + 1);
         Object.defineProperty(document, 'referrer', { value: testOriginalUrl });
         setUrlsCache([
@@ -408,8 +410,28 @@ describe('Tracking', () => {
 
         Tracking.setAnonymousUrls();
 
-        expect(snowplowSpy).not.toHaveBeenCalledWith('setReferrerUrl', testUrl);
+        expect(snowplowSpy).toHaveBeenCalledWith(
+          'setReferrerUrl',
+          window.gl.maskedDefaultReferrerUrl,
+        );
         expect(localStorage.getItem(URLS_CACHE_STORAGE_KEY)).not.toContain(oldTimestamp.toString());
+      });
+
+      it('sets the referrer URL to maskedDefaultReferrerUrl if no referrer is found in cache', () => {
+        window.gl.maskedDefaultReferrerUrl =
+          'https://gitlab.com/namespace:#/project:#/-/merge_requests/';
+        setUrlsCache([]);
+
+        Object.defineProperty(document, 'referrer', {
+          value: 'https://gitlab.com/my-namespace/my-project/-/merge_requests/',
+        });
+
+        Tracking.setAnonymousUrls();
+
+        expect(snowplowSpy).toHaveBeenCalledWith(
+          'setReferrerUrl',
+          window.gl.maskedDefaultReferrerUrl,
+        );
       });
     });
   });

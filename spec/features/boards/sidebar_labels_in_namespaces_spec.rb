@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue boards sidebar labels select', :js, feature_category: :team_planning do
+RSpec.describe 'Issue boards sidebar labels select', :js, feature_category: :portfolio_management do
   include BoardHelpers
 
   include_context 'labels from nested groups and projects'

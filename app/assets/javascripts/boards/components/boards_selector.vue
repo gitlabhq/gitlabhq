@@ -303,18 +303,6 @@ export default {
             >
               {{ s__('IssueBoards|Create new board') }}
             </gl-button>
-
-            <gl-button
-              v-if="showDelete"
-              v-gl-modal-directive="'board-config-modal'"
-              block
-              category="tertiary"
-              variant="danger"
-              class="gl-mt-0! gl-justify-content-start!"
-              @click="$emit('showBoardModal', $options.formType.delete)"
-            >
-              {{ s__('IssueBoards|Delete board') }}
-            </gl-button>
           </div>
         </template>
       </gl-collapsible-listbox>
@@ -326,8 +314,11 @@ export default {
         :weights="weights"
         :current-board="board"
         :current-page="boardModalForm"
+        :show-delete="showDelete"
         @addBoard="addBoard"
         @updateBoard="$emit('updateBoard', $event)"
+        @showBoardModal="$emit('showBoardModal', $event)"
+        @shown="loadBoards"
         @cancel="cancel"
       />
     </span>

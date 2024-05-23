@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Boards::Lists::UpdateService, feature_category: :team_planning do
+RSpec.describe Boards::Lists::UpdateService, feature_category: :portfolio_management do
   let_it_be(:user) { create(:user) }
 
   let!(:list) { create(:list, board: board, position: 0) }

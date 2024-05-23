@@ -53,7 +53,7 @@ In most cases, an Analytics Instrumentation review is automatically added, but i
   - For a metric's YAML definition:
     - Check the metric's `description`.
     - Check the metric's `key_path`.
-    - Check the `product_section`, `product_stage`, and `product_group` fields.
+    - Check the `product_group` field.
       They should correspond to the [stages file](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml).
     - Check the file location. Consider the time frame, and if the file should be under `ee`.
     - Check the tiers.

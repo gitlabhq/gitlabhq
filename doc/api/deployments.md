@@ -284,32 +284,7 @@ Example response:
 }
 ```
 
-When the [unified approval setting](../ci/environments/deployment_approvals.md#unified-approval-setting-deprecated) is configured, deployments created by users on GitLab Premium or Ultimate include the `approvals` and `pending_approval_count` properties:
-
-```json
-{
-  "status": "created",
-  "pending_approval_count": 0,
-  "approvals": [
-    {
-      "user": {
-        "id": 49,
-        "username": "project_6_bot",
-        "name": "****",
-        "state": "active",
-        "avatar_url": "https://www.gravatar.com/avatar/e83ac685f68ea07553ad3054c738c709?s=80&d=identicon",
-        "web_url": "http://localhost:3000/project_6_bot"
-      },
-      "status": "approved",
-      "created_at": "2022-02-24T20:22:30.097Z",
-      "comment": "Looks good to me"
-    }
-  ],
-  ...
-}
-```
-
-When the [multiple approval rules](../ci/environments/deployment_approvals.md#add-multiple-approval-rules) is configured, deployments created by users on GitLab Premium or Ultimate include the `approval_summary` property:
+When [multiple approval rules](../ci/environments/deployment_approvals.md#add-multiple-approval-rules) are configured, deployments created by users on GitLab Premium or Ultimate include the `approval_summary` property:
 
 ```json
 {

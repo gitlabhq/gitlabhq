@@ -33,8 +33,6 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 |------------------------------|----------|------------------------|
 | `key_path`                   | yes      | JSON key path for the metric, location in Service Ping payload. |
 | `description`                | yes      |                        |
-| `product_section`            | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml). |
-| `product_stage`              | yes      | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
 | `product_group`              | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
 | `value_type`                 | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type). |
 | `status`                     | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `removed`, `broken`. |
@@ -117,8 +115,6 @@ instance unique identifier.
 ```yaml
 key_path: uuid
 description: GitLab instance unique identifier
-product_section: analytics
-product_stage: analytics
 product_group: analytics_instrumentation
 value_type: string
 status: active

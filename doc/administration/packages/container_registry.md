@@ -394,19 +394,6 @@ Although most S3 compatible services (like [MinIO](https://min.io/)) should work
 we only guarantee support for AWS S3. Because we cannot assert the correctness of third-party S3 implementations,
 we can debug issues, but we cannot patch the registry unless an issue is reproducible against an AWS S3 bucket.
 
-<!--- start_remove The following content will be removed on remove_date: '2024-05-16' -->
-
-WARNING:
-Support for the following drivers was [deprecated](https://gitlab.com/gitlab-org/container-registry/-/issues/1141)
-in GitLab 16.6, and is planned for removal in 17.0. This change is a breaking change.
-
-| Driver  | Description |
-|---------|-------------|
-| `swift` | OpenStack Swift Object Storage |
-| `oss`   | Aliyun OSS  |
-
-<!--- end_remove -->
-
 ### Use file system
 
 If you want to store your images on the file system, you can change the storage

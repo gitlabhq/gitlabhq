@@ -17,7 +17,7 @@ require 'spec_helper'
 # - https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105849
 # - https://gitlab.com/gitlab-org/gitlab/-/issues/383970
 #
-RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
+RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_management do
   include DragTo
   include MobileHelpers
   include BoardHelpers
