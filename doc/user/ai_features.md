@@ -38,7 +38,7 @@ DETAILS:
 ### GitLab Duo Chat
 
 DETAILS:
-**Tier:** Freely available for Premium and Ultimate for a limited time
+**Tier:** Freely available for Premium and Ultimate for a limited time for GitLab.com and self-managed. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Processes and generates text and code in a conversational manner.
@@ -62,7 +62,7 @@ DETAILS:
 ### Test generation
 
 DETAILS:
-**Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md).
+**Tier:** Freely available for Premium and Ultimate for a limited time for GitLab.com and self-managed. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Automates repetitive tasks and helps catch bugs early.
@@ -178,7 +178,7 @@ DETAILS:
 ### Value stream forecasting
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** Freely available for Ultimate for a limited time for self-managed and GitLab.com. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle.

@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Duo Chat
 
 DETAILS:
-**Tier:** Premium, Ultimate
+**Tier:** Freely available for Premium and Ultimate for a limited time for GitLab.com and self-managed. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) as an [Experiment](../policy/experiment-beta-support.md#experiment) for SaaS in GitLab 16.0.
@@ -24,10 +24,11 @@ It can assist various tasks of your daily work with the AI-generated content.
 >
 > - GitLab.com users who are members of at least one group with a Premium or Ultimate subscription.
 > - GitLab self-managed users with a Premium or Ultimate subscription.
-> - GitLab Dedicated users.
 >
 > Eventually a subscription add-on will be required for continued access to GitLab Duo Chat.
 > Learn more about [Duo Pro and Duo Enterprise pricing](https://about.gitlab.com/gitlab-duo/#pricing).
+
+For GitLab Dedicated, you must have GitLab Duo Pro or Enterprise.
 
 Here are examples of common use cases:
 

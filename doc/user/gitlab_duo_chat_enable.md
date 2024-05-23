@@ -62,7 +62,7 @@ Without the manual synchronization, it might take up to 24 hours to activate Git
 ## For GitLab Dedicated
 
 In GitLab 16.11 and later, on GitLab Dedicated, GitLab Duo Chat is generally available and
-automatically enabled.
+automatically enabled for those with GitLab Duo Pro or Enterprise.
 
 In GitLab 16.8, 16.9, and 16.10, on GitLab Dedicated, GitLab Duo Chat is available in Beta.
 
