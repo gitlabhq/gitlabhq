@@ -2,18 +2,5 @@
 # Cop supports --autocorrect.
 Lint/AmbiguousRegexpLiteral:
   Exclude:
-    - 'lib/api/features.rb'
-    - 'qa/spec/page/element_spec.rb'
-    - 'spec/components/pajamas/avatar_component_spec.rb'
-    - 'spec/features/atom/users_spec.rb'
-    - 'spec/features/issues/user_creates_branch_and_merge_request_spec.rb'
-    - 'spec/features/issues/user_creates_issue_spec.rb'
-    - 'spec/helpers/labels_helper_spec.rb'
-    - 'spec/helpers/users_helper_spec.rb'
-    - 'spec/helpers/visibility_level_helper_spec.rb'
-    - 'spec/initializers/direct_upload_support_spec.rb'
-    - 'spec/initializers/validate_database_config_spec.rb'
-    - 'spec/lib/banzai/filter/references/label_reference_filter_spec.rb'
-    - 'spec/lib/feature_spec.rb'
     - 'spec/serializers/commit_entity_spec.rb'
 

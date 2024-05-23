@@ -40,7 +40,7 @@ module InternalEventsCli
 
       prompt_for_description
       defaults = prompt_for_copying_event_properties
-      prompt_for_product_ownership(defaults)
+      prompt_for_product_group(defaults)
       prompt_for_url(defaults)
       prompt_for_tier(defaults)
       outcomes = create_metric_files
@@ -172,9 +172,12 @@ module InternalEventsCli
 
     # Check existing event files for attributes to copy over
     def prompt_for_copying_event_properties
-      defaults = collect_values_for_shared_event_properties
+      shared_values = collect_values_for_shared_event_properties
+      defaults = shared_values.except(:stage, :section)
 
-      return {} if defaults.none?
+      return {} if shared_values.none?
+
+      return shared_values if defaults.none?
 
       new_page!(5, 9, STEPS)
 
@@ -192,7 +195,7 @@ module InternalEventsCli
         menu.choice 'Modify attributes'
       end
 
-      defaults
+      shared_values
     end
 
     def collect_values_for_shared_event_properties
@@ -200,9 +203,9 @@ module InternalEventsCli
 
       selected_events.each do |event|
         fields[:introduced_by_url] << event.introduced_by_url
-        fields[:product_section] << event.product_section
-        fields[:product_stage] << event.product_stage
         fields[:product_group] << event.product_group
+        fields[:stage] << find_stage(event.product_group)
+        fields[:section] << find_section(event.product_group)
         fields[:distribution] << event.distributions&.sort
         fields[:tier] << event.tiers&.sort
       end
@@ -215,18 +218,11 @@ module InternalEventsCli
       end
     end
 
-    def prompt_for_product_ownership(defaults)
-      assign_shared_attrs(:product_section, :product_stage, :product_group) do
+    def prompt_for_product_group(defaults)
+      assign_shared_attr(:product_group) do
         new_page!(6, 9, STEPS)
 
-        prompt_for_group_ownership(
-          {
-            product_section: 'Which section owns the metric?',
-            product_stage: 'Which stage owns the metric?',
-            product_group: 'Which group owns the metric?'
-          },
-          defaults.slice(:product_section, :product_stage, :product_group)
-        )
+        prompt_for_group_ownership('Which group owns the metric?', defaults)
       end
     end
 

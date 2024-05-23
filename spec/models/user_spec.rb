@@ -1560,6 +1560,18 @@ RSpec.describe User, feature_category: :user_profile do
         expect(described_class.trusted).to match_array([trusted_user1, trusted_user2])
       end
     end
+
+    describe '.by_ids' do
+      let_it_be(:first_user) { create(:user) }
+      let_it_be(:second_user) { create(:user) }
+      let_it_be(:third_user) { create(:user) }
+
+      it 'returns users for the given ids' do
+        user_ids = [first_user, second_user].map(&:id)
+
+        expect(described_class.by_ids(user_ids)).to contain_exactly(first_user, second_user)
+      end
+    end
   end
 
   context 'strip attributes' do

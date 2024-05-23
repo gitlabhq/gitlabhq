@@ -77,7 +77,7 @@ RSpec.describe 'validate database config' do
       end
 
       it 'raises exception' do
-        expect { subject }.to raise_error /This installation of GitLab uses unsupported database names/
+        expect { subject }.to raise_error(/This installation of GitLab uses unsupported database names/)
       end
 
       it_behaves_like 'with SKIP_DATABASE_CONFIG_VALIDATION=true'
@@ -99,7 +99,7 @@ RSpec.describe 'validate database config' do
       end
 
       it 'raises exception' do
-        expect { subject }.to raise_error /with 'replica: true' parameter in/
+        expect { subject }.to raise_error(/with 'replica: true' parameter in/)
       end
 
       it_behaves_like 'with SKIP_DATABASE_CONFIG_VALIDATION=true'
@@ -130,7 +130,7 @@ RSpec.describe 'validate database config' do
       end
 
       it 'raises exception' do
-        expect { subject }.to raise_error /The `main:` database needs to be defined as a first configuration item/
+        expect { subject }.to raise_error(/The `main:` database needs to be defined as a first configuration item/)
       end
 
       it_behaves_like 'with SKIP_DATABASE_CONFIG_VALIDATION=true'

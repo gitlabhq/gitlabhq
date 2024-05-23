@@ -14,20 +14,20 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     context 'used with a Project' do
       it 'delegates projects to #project_visibility_icon_description' do
         expect(visibility_icon_description(project))
-          .to match /project/i
+          .to match(/project/i)
       end
 
       context 'used with a ProjectPresenter' do
         it 'delegates projects to #project_visibility_icon_description' do
           expect(visibility_icon_description(project.present))
-            .to match /project/i
+            .to match(/project/i)
         end
       end
 
       context 'used with a Group' do
         it 'delegates groups to #group_visibility_icon_description' do
           expect(visibility_icon_description(group))
-            .to match /group/i
+            .to match(/group/i)
         end
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
 
       it 'returns different project related descriptions depending on visibility level' do
         expect(descriptions.uniq.size).to eq(descriptions.size)
-        expect(descriptions).to all match /project/i
+        expect(descriptions).to all match(/project/i)
       end
     end
 
@@ -76,7 +76,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
 
       it 'returns different group related descriptions depending on visibility level' do
         expect(descriptions.uniq.size).to eq(descriptions.size)
-        expect(descriptions).to all match /group/i
+        expect(descriptions).to all match(/group/i)
       end
 
       it 'returns default description for public group' do
@@ -92,7 +92,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
         end
 
         it 'returns updated description for public visibility option in group general settings' do
-          expect(public_option_description).to match /^The group, any public projects, and any of their members, issues, and merge requests can be viewed without authentication./
+          expect(public_option_description).to match(/^The group, any public projects, and any of their members, issues, and merge requests can be viewed without authentication./)
         end
       end
     end

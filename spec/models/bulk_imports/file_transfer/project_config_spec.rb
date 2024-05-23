@@ -90,6 +90,16 @@ RSpec.describe BulkImports::FileTransfer::ProjectConfig, feature_category: :impo
     end
   end
 
+  describe '#user_contributions_relation?' do
+    it 'returns true for the user_contributions relation' do
+      expect(subject.user_contributions_relation?('user_contributions')).to eq(true)
+    end
+
+    it 'returns false for non user_contributions relations' do
+      expect(subject.user_contributions_relation?('milestones')).to eq(false)
+    end
+  end
+
   describe '#tree_relation_definition_for' do
     it 'returns relation definition' do
       expected = { service_desk_setting: { except: [:outgoing_name, :file_template_project_id], include: [], only: %i[project_id issue_template_key project_key] } }

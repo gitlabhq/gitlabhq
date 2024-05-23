@@ -1909,13 +1909,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
 
         context 'then the parent is deleted' do
-          before do
-            parent.delete
-            group.reload
-          end
-
-          it 'returns its own config with status based on the instance settings' do
-            expect(group.first_auto_devops_config).to eq({ scope: :instance, status: instance_autodevops_status })
+          it 'throws an InvalidForeignKey exception' do
+            expect { parent.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
           end
         end
       end

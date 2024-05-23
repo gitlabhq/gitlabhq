@@ -31,8 +31,8 @@ module ConfigurationHelper
     # Remove duplicated or add missing models
     # - project is not part of the tree, so it has to be added manually.
     # - milestone, labels, merge_request have both singular and plural versions in the tree, so remove the duplicates.
-    # - User, Author... Models we do not care about for checking models
-    names.flatten.uniq - %w[milestones labels user author merge_request design] + [key.to_s]
+    # - User, Author... Models we do not care about for checking models (user_contributions are just users)
+    names.flatten.uniq - %w[milestones labels user user_contributions author merge_request design] + [key.to_s]
   end
 
   def relation_class_for_name(relation_name)

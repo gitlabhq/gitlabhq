@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import DesignDisclosure from '~/design_management/components/design_disclosure.vue';
+import DesignDisclosure from '~/vue_shared/components/design_management/design_disclosure.vue';
 
 describe('Design Disclosure', () => {
   let wrapper;

@@ -1,15 +1,24 @@
 <script>
-import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
+import { GlButton, GlIcon, GlSkeletonLoader, GlTooltipDirective } from '@gitlab/ui';
 import { TYPE_DESIGN } from '~/import/constants';
+import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import CloseButton from './close_button.vue';
 
 export default {
+  i18n: {
+    hideCommentsButtonLabel: s__('DesignManagement|Hide comments'),
+    showCommentsButtonLabel: s__('DesignManagement|Show comments'),
+  },
   components: {
+    GlButton,
     GlIcon,
     GlSkeletonLoader,
     ImportedBadge,
     CloseButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     workItemTitle: {
@@ -23,6 +32,17 @@ export default {
     isLoading: {
       type: Boolean,
       required: true,
+    },
+    isSidebarOpen: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  computed: {
+    toggleCommentsButtonLabel() {
+      return this.isSidebarOpen
+        ? this.$options.i18n.hideCommentsButtonLabel
+        : this.$options.i18n.showCommentsButtonLabel;
     },
   },
   TYPE_DESIGN,
@@ -51,6 +71,18 @@ export default {
         </h2>
       </div>
       <close-button class="md:gl-hidden gl-ml-auto" />
+    </div>
+    <div class="gl-flex md:gl-flex-row gl-flex-shrink-0 gl-md-ml-auto">
+      <gl-button
+        v-gl-tooltip.bottom
+        category="tertiary"
+        icon="comments"
+        :title="toggleCommentsButtonLabel"
+        :aria-label="toggleCommentsButtonLabel"
+        class="gl-ml-2 gl-mr-6"
+        data-testid="toggle-design-sidebar"
+        @click="$emit('toggle-sidebar')"
+      />
     </div>
     <close-button class="gl-hidden md:gl-flex" />
   </header>

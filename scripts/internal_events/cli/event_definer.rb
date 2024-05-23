@@ -44,7 +44,7 @@ module InternalEventsCli
       prompt_for_action
       prompt_for_identifiers
       prompt_for_url
-      prompt_for_product_ownership
+      prompt_for_product_group
       prompt_for_tier
 
       outcome = create_event_file
@@ -105,16 +105,12 @@ module InternalEventsCli
       event.introduced_by_url = prompt_for_text('Which MR URL will merge the event definition?')
     end
 
-    def prompt_for_product_ownership
+    def prompt_for_product_group
       new_page!(5, 7, STEPS)
 
-      ownership = prompt_for_group_ownership({
-        product_section: 'Which section will own the event?',
-        product_stage: 'Which stage will own the event?',
-        product_group: 'Which group will own the event?'
-      })
+      product_group = prompt_for_group_ownership('Which group will own the event?')
 
-      event.bulk_assign(ownership)
+      event.product_group = product_group
     end
 
     def prompt_for_tier

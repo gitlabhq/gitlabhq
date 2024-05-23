@@ -58,21 +58,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
     end
   end
 
-  shared_examples 'it requires a group' do
-    context 'when given an deleted group' do
-      before do
-        # destroy group and group member
-        group_member.destroy!
-        group.destroy!
-      end
-
-      it 'returns NullMail type message' do
-        expect(Gitlab::AppLogger).to receive(:info)
-        expect(subject.message).to be_a(ActionMailer::Base::NullMail)
-      end
-    end
-  end
-
   context 'for a project' do
     shared_examples 'an assignee email' do
       let(:recipient) { assignee }
@@ -1756,7 +1741,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
-      it_behaves_like 'it requires a group'
 
       it 'contains all the useful information' do
         is_expected.to have_subject "Access to the #{group.name} group was granted"
@@ -1792,7 +1776,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
-      it_behaves_like 'it requires a group'
       it_behaves_like 'does not render a manage notifications link'
 
       context 'when there is an inviter' do
@@ -1914,7 +1897,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       it_behaves_like "a user cannot unsubscribe through footer link"
       it_behaves_like 'appearance header and footer enabled'
       it_behaves_like 'appearance header and footer not enabled'
-      it_behaves_like 'it requires a group'
 
       it 'contains all the useful information' do
         is_expected.to have_subject 'Invitation accepted'

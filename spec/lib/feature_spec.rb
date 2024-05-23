@@ -465,7 +465,7 @@ RSpec.describe Feature, :clean_gitlab_redis_feature_flag, stub_feature_flags: fa
         context 'when is dev_or_test_env' do
           it 'does raise exception' do
             expect { described_class.enabled?(:enabled_feature_flag, actor) }
-              .to raise_error /needs to include `FeatureGate` or implement `flipper_id`/
+              .to raise_error(/needs to include `FeatureGate` or implement `flipper_id`/)
           end
         end
       end

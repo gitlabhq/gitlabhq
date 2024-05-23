@@ -1,3 +1,4 @@
+import { nextTick } from 'vue';
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DesignToolbar from '~/work_items/components/design_management/design_preview/design_toolbar.vue';
@@ -15,6 +16,7 @@ describe('DesignToolbar', () => {
         workItemTitle,
         isLoading,
         design,
+        isSidebarOpen: true,
       },
     });
   }
@@ -54,5 +56,14 @@ describe('DesignToolbar', () => {
     createComponent({ design: { ...mockDesign, imported: false } });
 
     expect(wrapper.findComponent(ImportedBadge).exists()).toBe(false);
+  });
+
+  it('emits toggle-sidebar event when clicking on toggle sidebar button', async () => {
+    createComponent();
+
+    wrapper.findByTestId('toggle-design-sidebar').vm.$emit('click');
+    await nextTick();
+
+    expect(wrapper.emitted('toggle-sidebar')).toHaveLength(1);
   });
 });

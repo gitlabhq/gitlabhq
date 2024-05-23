@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 # rubocop:disable RSpec/FactoriesInMigrationSpecs
-RSpec.describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
+RSpec.describe Gitlab::BackgroundMigration::BackfillProjectRepositories, feature_category: :groups_and_projects do
   let(:group) { create(:group, name: 'foo', path: 'foo') }
 
   describe described_class::ShardFinder do
@@ -85,19 +85,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectRepositories do
           project = described_class.find(project_legacy_storage_5.id)
 
           expect(project.disk_path).to eq('zoo/new-test')
-        end
-
-        it 'raises OrphanedNamespaceError when any parent namespace does not exist' do
-          subgroup = create(:group, parent: group)
-          project_orphaned_namespace = create(:project, name: 'baz', path: 'baz', namespace: subgroup, storage_version: nil)
-          subgroup.update_column(:parent_id, non_existing_record_id)
-
-          project = described_class.find(project_orphaned_namespace.id)
-          project.route.destroy!
-          subgroup.route.destroy!
-
-          expect { project.reload.disk_path }
-            .to raise_error(Gitlab::BackgroundMigration::BackfillProjectRepositories::OrphanedNamespaceError)
         end
       end
     end

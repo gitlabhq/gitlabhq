@@ -8,7 +8,7 @@ module Gitlab
 
         IMPORTED_OBJECT_MAX_RETRIES = 5
 
-        OVERRIDES = {}.freeze
+        OVERRIDES = { user_contributions: :user }.freeze
         EXISTING_OBJECT_RELATIONS = %i[].freeze
 
         # This represents all relations that have unique key on `project_id` or `group_id`
@@ -41,6 +41,9 @@ module Gitlab
           # There are scenarios where the model is pluralized (e.g.
           # MergeRequest::Metrics), and we don't want to force it to singular
           # with #classify.
+          overridden_relation = OVERRIDES.with_indifferent_access[relation_name]
+          relation_name = overridden_relation if overridden_relation
+
           relation_name.to_s.classify.constantize
         rescue NameError
           relation_name.to_s.constantize

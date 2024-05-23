@@ -7,6 +7,7 @@ module BulkImports
 
       UPLOADS_RELATION = 'uploads'
       SELF_RELATION = 'self'
+      USER_CONTRIBUTIONS_RELATION = 'user_contributions'
 
       def initialize(portable)
         @portable = portable
@@ -51,6 +52,10 @@ module BulkImports
 
       def file_relation?(relation)
         file_relations.include?(relation)
+      end
+
+      def user_contributions_relation?(relation)
+        relation == USER_CONTRIBUTIONS_RELATION
       end
 
       def tree_relation_definition_for(relation)

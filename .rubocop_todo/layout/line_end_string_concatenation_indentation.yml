@@ -505,7 +505,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'lib/bulk_imports/error.rb'
     - 'lib/feature/definition.rb'
     - 'lib/feature/shared.rb'
-    - 'lib/generators/gitlab/analytics/internal_events_generator.rb'
     - 'lib/gitlab/audit/auditor.rb'
     - 'lib/gitlab/auth/ldap/access.rb'
     - 'lib/gitlab/auth/user_access_denied_reason.rb'

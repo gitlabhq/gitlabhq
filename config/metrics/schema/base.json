@@ -6,8 +6,6 @@
     "value_type",
     "status",
     "product_group",
-    "product_section",
-    "product_stage",
     "time_frame",
     "data_source",
     "distribution",
@@ -21,16 +19,6 @@
     },
     "description": {
       "type": "string"
-    },
-    "product_section": {
-      "type": [
-        "string"
-      ]
-    },
-    "product_stage": {
-      "type": [
-        "string"
-      ]
     },
     "product_group": {
       "$ref": "product_groups.json"

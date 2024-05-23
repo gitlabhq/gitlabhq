@@ -153,7 +153,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       it "doesn't add double newline to end of a single attachment markdown" do
         dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
-        expect(page.find_field("issue_description").value).not_to match /\n\n$/
+        expect(page.find_field("issue_description").value).not_to match(/\n\n$/)
       end
 
       it "cancels a file upload correctly", :capybara_ignore_server_errors do

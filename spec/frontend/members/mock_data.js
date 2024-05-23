@@ -113,8 +113,6 @@ export const accessRequest = {
 
 export const members = [member];
 
-export const membersJsonString = JSON.stringify(members);
-
 export const directMember = { ...member, isDirectMember: true };
 export const inheritedMember = { ...member, isDirectMember: false };
 

@@ -13,7 +13,7 @@ export default {
   <transition name="design-disclosure">
     <aside
       v-if="open"
-      class="design-disclosure gl-w-full gl-display-flex gl-flex-direction-column gl-relative gl-border-l gl-z-0 gl-bg-white gl-top-0 gl-right-0 gl-h-full gl-overflow-y-auto"
+      class="design-disclosure gl-w-full gl-flex gl-flex-col gl-relative gl-border-l gl-z-0 gl-bg-white gl-top-0 gl-right-0 gl-h-full gl-overflow-y-auto"
     >
       <slot></slot>
     </aside>

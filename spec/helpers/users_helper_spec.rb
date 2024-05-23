@@ -541,7 +541,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
       it 'contains resend confirmation e-mail text' do
         expect(user_email_help_text).to include _('Resend confirmation e-mail')
-        expect(user_email_help_text).to match /Please click the link in the confirmation email before continuing. It was sent to.*#{user.unconfirmed_email}/
+        expect(user_email_help_text).to match(/Please click the link in the confirmation email before continuing. It was sent to.*#{user.unconfirmed_email}/)
       end
     end
   end

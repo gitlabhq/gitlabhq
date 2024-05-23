@@ -9,6 +9,7 @@ import getDesignQuery from '~/work_items/components/design_management/graphql/de
 import DesignDetails from '~/work_items/components/design_management/design_preview/design_details.vue';
 import DesignPresentation from '~/work_items/components/design_management/design_preview/design_presentation.vue';
 import DesignToolbar from '~/work_items/components/design_management/design_preview/design_toolbar.vue';
+import DesignSidebar from '~/work_items/components/design_management/design_preview/design_sidebar.vue';
 import { DESIGN_NOT_FOUND_ERROR } from '~/work_items/components/design_management/error_messages';
 import * as utils from '~/work_items/components/design_management/utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '~/work_items/components/design_management/constants';
@@ -41,6 +42,7 @@ describe('DesignDetails', () => {
 
   const findDesignPresentation = () => wrapper.findComponent(DesignPresentation);
   const findDesignToolbar = () => wrapper.findComponent(DesignToolbar);
+  const findDesignSidebar = () => wrapper.findComponent(DesignSidebar);
 
   const getDesignQueryHandler = jest.fn().mockResolvedValue(getDesignResponse);
   const error = new Error('ruh roh some error');
@@ -77,6 +79,7 @@ describe('DesignDetails', () => {
 
     expect(findDesignPresentation().props('isLoading')).toBe(true);
     expect(findDesignToolbar().props('isLoading')).toBe(true);
+    expect(findDesignSidebar().props('isLoading')).toBe(true);
   });
 
   describe('when loaded', () => {
@@ -92,6 +95,15 @@ describe('DesignDetails', () => {
         filenames: ['image_name.png'],
         atVersion: null,
       });
+    });
+
+    it('closes sidebar on toggle', async () => {
+      expect(findDesignSidebar().props('isOpen')).toBe(true);
+
+      findDesignToolbar().vm.$emit('toggle-sidebar');
+      await nextTick();
+
+      expect(findDesignSidebar().props('isOpen')).toBe(false);
     });
   });
 

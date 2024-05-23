@@ -35,12 +35,20 @@ To enable the Beyond Identity integration for your instance:
 1. Select **Save changes**.
 
 The Beyond Identity integration for your instance is now enabled.
-When a user adds a GPG key to their profile, the key is verified.
-If the key wasn't issued by the Beyond Identity Authenticator or the email used in their GitLab
-profile is different from the email assigned to the key in the Beyond Identity Authenticator, it's rejected.
+
+## GPG key verificatioon
+
+When a user adds a GPG key to their profile, the key is verified:
+
+- If the key wasn't issued by the Beyond Identity Authenticator, it's accepted.
+- If the key was issued by the Beyond Identity Authenticator, but the key is invalid, it's rejected.
+  For example: the email used in the user's GitLab profile is different from the email assigned to
+  the key in the Beyond Identity Authenticator.
 
 When a user pushes a commit, GitLab checks that the commit was signed by a GPG signature uploaded to the
-user profile. If the signature cannot be verified, the push is rejected. Web commits are accepted without a signature.
+user profile.
+If the signature cannot be verified, the push is rejected.
+Web commits are accepted without a signature.
 
 ## Skip push check for service accounts
 

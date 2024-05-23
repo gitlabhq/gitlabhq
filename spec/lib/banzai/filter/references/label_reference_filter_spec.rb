@@ -439,7 +439,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'has valid color' do
-      expect(result.css('a span').first.attr('style')).to match /background-color: #00ff00/
+      expect(result.css('a span').first.attr('style')).to match(/background-color: #00ff00/)
     end
 
     it 'has valid link text' do
@@ -471,7 +471,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'has valid color' do
-      expect(result.css('a span').first.attr('style')).to match /background-color: #00ff00/
+      expect(result.css('a span').first.attr('style')).to match(/background-color: #00ff00/)
     end
 
     it 'has valid link text' do
@@ -504,7 +504,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'has valid color' do
       expect(result.css('a span').first.attr('style'))
-        .to match /background-color: #00ff00/
+        .to match(/background-color: #00ff00/)
     end
 
     it 'has valid link text' do
@@ -538,7 +538,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'has valid color' do
       expect(result.css('a span').first.attr('style'))
-        .to match /background-color: #00ff00/
+        .to match(/background-color: #00ff00/)
     end
 
     it 'has valid link text' do
@@ -587,7 +587,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'has valid color' do
       expect(result.css('a span').first.attr('style'))
-        .to match /background-color: #00ff00/
+        .to match(/background-color: #00ff00/)
     end
 
     it 'has valid link text' do
@@ -621,7 +621,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'has valid color' do
       expect(result.css('a span').first.attr('style'))
-        .to match /background-color: #00ff00/
+        .to match(/background-color: #00ff00/)
     end
 
     it 'has valid link text' do
@@ -653,7 +653,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
     it 'has valid color' do
       expect(result.css('a span').first.attr('style'))
-        .to match /background-color: #00ff00/
+        .to match(/background-color: #00ff00/)
     end
 
     it 'has valid link text' do

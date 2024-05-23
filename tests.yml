@@ -41,9 +41,19 @@ mapping:
   - source: '.gitlab/ci/(?<rest>.+)\.gitlab-ci\.yml'
     test: 'spec/dot_gitlab_ci/%{rest}_spec.rb'
 
+  # Map config to respective specs
+  - source: 'config/(?<rest>.+)\..*'
+    test: 'spec/config/%{rest}_spec.rb'
+
   # Initializers should map to respective spec
   - source: 'config/initializers/(?<rest>.+)\.rb'
     test: 'spec/initializers/%{rest}_spec.rb'
+
+  # Snowplow definitions map to schema validation spec
+  - source:
+      - '(?<prefix>ee/)?config/events/.+\.yml'
+      - 'config/events/schema\.json'
+    test: 'spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb'
 
   # DB structure should map to schema spec
   - source: 'db/structure\.sql'

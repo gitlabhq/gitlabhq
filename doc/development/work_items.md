@@ -456,3 +456,7 @@ in [GitLab.com](https://gitlab.com).
 For implementation details, this [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93231) can be used
 as a reference. The MR covers the definition of new unique actions, event tracking in the code and also
 adding the new unique actions to the required aggregate counters.
+
+## Related topics
+
+- [Design management](../user/project/issues/design_management.md)

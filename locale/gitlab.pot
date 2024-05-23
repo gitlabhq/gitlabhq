@@ -31777,6 +31777,12 @@ msgstr ""
 msgid "MemberRole|Permissions"
 msgstr ""
 
+msgid "MemberRole|Role"
+msgstr ""
+
+msgid "MemberRole|Role details"
+msgstr ""
+
 msgid "MemberRole|Role is assigned to one or more group members. Remove role from all group members, then delete role."
 msgstr ""
 
@@ -31796,6 +31802,9 @@ msgid "MemberRole|Standard roles"
 msgstr ""
 
 msgid "MemberRole|To delete custom role, remove role from all group members."
+msgstr ""
+
+msgid "MemberRole|View permissions"
 msgstr ""
 
 msgid "MemberRole|You can create a custom role by adding specific %{linkStart}permissions to a base role.%{linkEnd}"

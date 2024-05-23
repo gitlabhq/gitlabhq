@@ -22,6 +22,8 @@ module BulkImports
 
     validate :portable_relation?
 
+    scope :for_status, ->(status) { where(status: status) }
+
     state_machine :status, initial: :started do
       state :started, value: STARTED
       state :finished, value: FINISHED
@@ -37,6 +39,12 @@ module BulkImports
 
       event :fail_op do
         transition any => :failed
+      end
+
+      after_transition any => :finished do |export|
+        if export.config.user_contributions_relation?(export.relation)
+          UserContributionsExportMapper.new(export.portable).clear_cache
+        end
       end
     end
 

@@ -50,7 +50,7 @@ PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?sta
 | `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding). |
 | `package_name`    | string         | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`). |
 | `package_version` | string         | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8). |
-| `file_name`       | string         | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`). |
+| `file_name`       | string         | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), underscores (`_`), or slashes (`/`). |
 | `status`          | string         | no       | The package status. It can be `default` or `hidden`. Hidden packages do not appear in the UI or [package API list endpoints](../../../api/packages.md). |
 | `select`          | string         | no       | The response payload. By default, the response is empty. Valid values are: `package_file`. `package_file` returns details of the package file record created by this request. |
 
@@ -62,6 +62,12 @@ Example request using a personal access token:
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
+
+<!-- Or with a full path file -->
+
+curl --user "user:<your_access_token>" \
+     --upload-file path/to/file.txt \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/path/to/file.txt"
 ```
 
 Example response without attribute `select`:

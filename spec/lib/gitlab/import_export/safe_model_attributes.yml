@@ -186,7 +186,8 @@ ProjectMember:
 User:
 - id
 - username
-- email
+- name
+- public_email
 MergeRequest:
 - id
 - target_branch

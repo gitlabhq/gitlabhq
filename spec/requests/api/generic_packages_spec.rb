@@ -83,7 +83,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
     end
   end
 
-  describe 'PUT /api/v4/projects/:id/packages/generic/:package_name/:package_version/:file_name/authorize' do
+  describe 'PUT /api/v4/projects/:id/packages/generic/:package_name/:package_version/(*path)/:file_name/authorize' do
     context 'with valid project' do
       where(:project_visibility, :user_role, :member?, :authenticate_with, :expected_status) do
         'PUBLIC'  | :developer | true  | :personal_access_token         | :success
@@ -197,7 +197,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
     end
   end
 
-  describe 'PUT /api/v4/projects/:id/packages/generic/:package_name/:package_version/:file_name' do
+  describe 'PUT /api/v4/projects/:id/packages/generic/:package_name/:package_version/(*path)/:file_name' do
     include WorkhorseHelpers
 
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/generic/myfile.tar.gz') }
@@ -397,6 +397,22 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             end
           end
         end
+
+        context 'when file has path' do
+          let(:params) { super().merge(path: 'path/to') }
+
+          it 'creates a package and package file with path' do
+            headers = workhorse_headers.merge(auth_header)
+
+            upload_file(params, headers)
+
+            aggregate_failures do
+              package = project.packages.generic.last
+              expect(response).to have_gitlab_http_status(:created)
+              expect(package.package_files.last.file_name).to eq('path%2Fto%2Fmyfile.tar.gz')
+            end
+          end
+        end
       end
 
       context 'when valid personal access token is used' do
@@ -529,7 +545,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
     end
   end
 
-  describe 'GET /api/v4/projects/:id/packages/generic/:package_name/:package_version/:file_name' do
+  describe 'GET /api/v4/projects/:id/packages/generic/:package_name/:package_version/(*path)/:file_name' do
     let_it_be(:package) { create(:generic_package, project: project) }
     let_it_be(:package_file) { create(:package_file, :generic, package: package) }
 
@@ -737,6 +753,21 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       download_file(personal_access_token_header, file_name: 'no-such-file')
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when file has path' do
+      let_it_be(:file_path) { "path/to/#{package_file.file_name}" }
+
+      before do
+        project.add_developer(user)
+        package_file.update_column(:file_name, URI.encode_uri_component(file_path))
+      end
+
+      it 'responds with 200 OK' do
+        download_file(personal_access_token_header, file_name: file_path)
+
+        expect(response).to have_gitlab_http_status(:success)
+      end
     end
 
     def download_file(request_headers, package_name: nil, file_name: nil)

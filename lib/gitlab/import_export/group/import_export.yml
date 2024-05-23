@@ -15,12 +15,17 @@ tree:
     - members:
       - :user
     - :namespace_settings
+    - :user_contributions
 
 included_attributes:
   user:
     - :id
     - :public_email
     - :username
+  user_contributions:
+    - :public_email
+    - :username
+    - :name
   author:
     - :name
   namespace_settings:

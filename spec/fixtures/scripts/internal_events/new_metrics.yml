@@ -118,7 +118,7 @@
     - "\n" # Select: Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "2\n" # Enum-select: Modify attributes
-    - "\n" # Accept group/section/stage from event definition
+    - "\n" # Accept group from event definition
     - "\n" # Accept URL from event definition
     - "2\n" # Override tier -> Select: [premium, ultimate]
     - "y\n" # Create file

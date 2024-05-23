@@ -23,6 +23,7 @@ RSpec.describe 'Projects > Members > Manage members', :js, feature_category: :on
     project.add_owner(project_owner)
     group.add_owner(group_owner)
 
+    stub_feature_flags(show_role_details_in_drawer: false)
     sign_in(group_owner)
   end
 

@@ -41,7 +41,8 @@ module Gitlab
                       commit_author: 'MergeRequest::DiffCommitUser',
                       committer: 'MergeRequest::DiffCommitUser',
                       merge_request_diff_commits: 'MergeRequestDiffCommit',
-                      work_item_type: 'WorkItems::Type' }.freeze
+                      work_item_type: 'WorkItems::Type',
+                      user_contributions: 'User' }.freeze
 
         BUILD_MODELS = %i[Ci::Build Ci::Bridge commit_status generic_commit_status].freeze
 

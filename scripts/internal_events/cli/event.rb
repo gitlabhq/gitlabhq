@@ -12,8 +12,6 @@ module InternalEventsCli
     :value_type,
     :extra_properties,
     :identifiers,
-    :product_section,
-    :product_stage,
     :product_group,
     :milestone,
     :introduced_by_url,
@@ -23,8 +21,6 @@ module InternalEventsCli
 
   EVENT_DEFAULTS = {
     internal_events: true,
-    product_section: nil,
-    product_stage: nil,
     product_group: nil,
     introduced_by_url: 'TODO'
   }.freeze

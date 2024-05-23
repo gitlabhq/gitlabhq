@@ -21221,6 +21221,9 @@ ALTER TABLE workspaces
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 
+ALTER TABLE epics
+    ADD CONSTRAINT check_450724d1bb CHECK ((issue_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 
@@ -30808,6 +30811,9 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_7f28d925f3 FOREIGN KEY (merged_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY namespaces
+    ADD CONSTRAINT fk_7f813d8c90 FOREIGN KEY (parent_id) REFERENCES namespaces(id) ON DELETE RESTRICT NOT VALID;
 
 ALTER TABLE ONLY group_import_states
     ADD CONSTRAINT fk_8053b3ebd6 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

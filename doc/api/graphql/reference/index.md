@@ -32188,6 +32188,7 @@ Represents a hierarchy widget definition.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetdefinitionhierarchyallowedchildtypes"></a>`allowedChildTypes` | [`WorkItemTypeConnection`](#workitemtypeconnection) | Allowed child types for the work item type. (see [Connections](#connections)) |
+| <a id="workitemwidgetdefinitionhierarchyallowedparenttypes"></a>`allowedParentTypes` | [`WorkItemTypeConnection`](#workitemtypeconnection) | Allowed parent types for the work item type. (see [Connections](#connections)) |
 | <a id="workitemwidgetdefinitionhierarchytype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
 ### `WorkItemWidgetDefinitionLabels`

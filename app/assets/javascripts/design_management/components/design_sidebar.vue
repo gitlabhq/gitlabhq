@@ -5,13 +5,13 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 
 import { s__, n__ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import DesignDisclosure from '~/vue_shared/components/design_management/design_disclosure.vue';
 import { ACTIVE_DISCUSSION_SOURCE_TYPES } from '../constants';
 import updateActiveDiscussionMutation from '../graphql/mutations/update_active_discussion.mutation.graphql';
 import { extractDiscussions, extractParticipants } from '../utils/design_management_utils';
 import DesignDiscussion from './design_notes/design_discussion.vue';
 import DescriptionForm from './design_description/description_form.vue';
 import DesignNoteSignedOut from './design_notes/design_note_signed_out.vue';
-import DesignDisclosure from './design_disclosure.vue';
 
 export default {
   components: {

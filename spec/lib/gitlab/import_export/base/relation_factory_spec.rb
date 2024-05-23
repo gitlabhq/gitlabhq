@@ -204,5 +204,13 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory, feature_category: :i
         expect(described_class.relation_class(relation_name)).to eq(Badge)
       end
     end
+
+    context 'when relation name is user_contributions' do
+      let(:relation_name) { 'user_contributions' }
+
+      it 'returns constantized class' do
+        expect(described_class.relation_class(relation_name)).to eq(User)
+      end
+    end
   end
 end

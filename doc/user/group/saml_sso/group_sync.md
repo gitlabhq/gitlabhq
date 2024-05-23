@@ -55,10 +55,16 @@ To link the SAML groups:
 
 ![SAML Group Links](img/saml_group_links_v13_9.png)
 
+### How role conflicts are resolved
+
+#### Members of multiple mapped SAML groups
+
 If a user is a member of multiple SAML groups mapped to the same GitLab group,
 the user gets the highest role from the groups. For example, if one group
 is linked as Guest and another Maintainer, a user in both groups gets the Maintainer
 role.
+
+#### Parent group role is higher than child group
 
 Users granted:
 

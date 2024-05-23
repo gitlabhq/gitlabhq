@@ -61,6 +61,38 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
       context 'when export is not batched' do
         include_examples 'export service', BulkImports::RelationExportService
       end
+
+      context 'when export is user_contributions' do
+        let(:relation) { 'user_contributions' }
+
+        context 'and :bulk_import_user_mapping feature flag is enabled' do
+          it 'enqueues the UserContributionsExportWorker' do
+            expect(BulkImports::UserContributionsExportWorker).to receive(:perform_async).with(
+              group.id, group.class.name, user.id
+            ).twice
+
+            perform_multiple(job_args)
+          end
+        end
+
+        context 'and :bulk_import_user_mapping feature flag is disabled' do
+          before do
+            stub_feature_flags(bulk_import_user_mapping: false)
+          end
+
+          it 'does not enqueue the UserContributionsExportWorker' do
+            expect(BulkImports::UserContributionsExportWorker).not_to receive(:perform_async)
+
+            perform_multiple(job_args)
+          end
+
+          it 'does not create a user contributions export with a different service' do
+            expect { perform_multiple(job_args) }.not_to change {
+              group.bulk_import_exports.where(relation: 'user_contributions').count
+            }.from(0)
+          end
+        end
+      end
     end
   end
 

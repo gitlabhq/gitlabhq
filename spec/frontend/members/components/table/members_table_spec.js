@@ -1,7 +1,8 @@
-import { GlTable } from '@gitlab/ui';
-import Vue from 'vue';
+import { GlTable, GlLink, GlBadge } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { cloneDeep } from 'lodash';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
@@ -12,6 +13,7 @@ import MemberActivity from '~/members/components/table/member_activity.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
 import MembersPagination from '~/members/components/table/members_pagination.vue';
 import MaxRole from '~/members/components/table/max_role.vue';
+import RoleDetailsDrawer from '~/members/components/table/role_details_drawer.vue';
 import {
   MEMBER_TYPES,
   MEMBER_STATE_CREATED,
@@ -56,7 +58,7 @@ describe('MembersTable', () => {
     });
   };
 
-  const createComponent = (state, provide = {}) => {
+  const createComponent = (state, { showRoleDetailsInDrawer = true } = {}) => {
     wrapper = mountExtended(MembersTable, {
       propsData: {
         tabQueryParamValue: TAB_QUERY_PARAM_VALUES.invite,
@@ -69,22 +71,21 @@ describe('MembersTable', () => {
         namespace: MEMBER_TYPES.invite,
         namespaceReachedLimit: false,
         namespaceUserLimit: 1,
-        ...provide,
+        glFeatures: { showRoleDetailsInDrawer },
       },
-      stubs: [
-        'member-avatar',
-        'member-source',
-        'created-at',
-        'member-actions',
-        'max-role',
-        'remove-group-link-modal',
-        'remove-member-modal',
-        'expiration-datepicker',
-      ],
+      stubs: {
+        RemoveGroupLinkModal: true,
+        RemoveMemberModal: true,
+        MemberActions: true,
+        MaxRole: true,
+      },
     });
   };
 
   const findTable = () => wrapper.findComponent(GlTable);
+  const findRoleDetailsDrawer = () => wrapper.findComponent(RoleDetailsDrawer);
+  const findMaxRoleLink = () => wrapper.findByTestId('max-role').findComponent(GlLink);
+  const findCustomRoleBadge = () => wrapper.findByTestId('max-role').findComponent(GlBadge);
   const findTableCellByMemberId = (tableCellLabel, memberId) =>
     wrapper
       .findByTestId(`members-table-row-${memberId}`)
@@ -96,7 +97,7 @@ describe('MembersTable', () => {
       canUpdate: true,
     };
 
-    it.each`
+    describe.each`
       field           | label           | member             | expectedComponent
       ${'account'}    | ${'Account'}    | ${memberMock}      | ${MemberAvatar}
       ${'source'}     | ${'Source'}     | ${memberMock}      | ${MemberSource}
@@ -105,24 +106,48 @@ describe('MembersTable', () => {
       ${'maxRole'}    | ${'Max role'}   | ${memberCanUpdate} | ${MaxRole}
       ${'expiration'} | ${'Expiration'} | ${memberMock}      | ${ExpirationDatepicker}
       ${'activity'}   | ${'Activity'}   | ${memberMock}      | ${MemberActivity}
-    `('renders the $label field', ({ field, label, member, expectedComponent }) => {
-      createComponent({
-        members: [member],
-        tableFields: [field],
+    `('$label field', ({ field, label, member, expectedComponent }) => {
+      beforeEach(() => {
+        createComponent(
+          { members: [member], tableFields: [field] },
+          { showRoleDetailsInDrawer: false },
+        );
       });
 
-      expect(wrapper.findByText(label, { selector: '[role="columnheader"] > div' }).exists()).toBe(
-        true,
-      );
+      it('shows the table header', () => {
+        expect(wrapper.findByText(label, { selector: 'th span' }).exists()).toBe(true);
+      });
 
-      if (expectedComponent) {
-        expect(
-          wrapper
-            .find(`[data-label="${label}"][role="cell"]`)
-            .findComponent(expectedComponent)
-            .exists(),
-        ).toBe(true);
-      }
+      it('shows the expected component', () => {
+        expect(wrapper.findComponent(expectedComponent).exists()).toBe(true);
+      });
+    });
+
+    describe('Max role column', () => {
+      const createMaxRoleComponent = (member = memberMock) => {
+        createComponent({ members: [member], tableFields: ['maxRole'] });
+      };
+
+      it('shows the max role link', () => {
+        createMaxRoleComponent();
+
+        expect(findMaxRoleLink().text()).toBe('Owner');
+      });
+
+      it('does not show the "Custom role" badge', () => {
+        createMaxRoleComponent();
+
+        expect(findCustomRoleBadge().exists()).toBe(false);
+      });
+
+      it('shows the "Custom role" badge', () => {
+        const member = cloneDeep(memberMock);
+        member.accessLevel.memberRoleId = 1;
+        createMaxRoleComponent(member);
+
+        expect(findCustomRoleBadge().props('size')).toBe('sm');
+        expect(findCustomRoleBadge().text()).toBe('Custom role');
+      });
     });
 
     describe('Invited column', () => {
@@ -265,6 +290,38 @@ describe('MembersTable', () => {
       createComponent();
 
       expect(wrapper.findByText('No members found').exists()).toBe(true);
+    });
+  });
+
+  describe('role details drawer', () => {
+    it('shows role details drawer', () => {
+      createComponent();
+      // Drawer should start off with no member passed to it.
+      expect(findRoleDetailsDrawer().props('member')).toBe(null);
+    });
+
+    it('does not show role details drawer if showRoleDetailsInDrawer feature flag is off', () => {
+      createComponent(null, { showRoleDetailsInDrawer: false });
+
+      expect(findRoleDetailsDrawer().exists()).toBe(false);
+    });
+
+    describe('with member selected', () => {
+      beforeEach(() => {
+        createComponent({ members: [memberMock], tableFields: ['maxRole'] });
+        return findMaxRoleLink().trigger('click');
+      });
+
+      it('passes member to drawer', () => {
+        expect(findRoleDetailsDrawer().props('member')).toBe(memberMock);
+      });
+
+      it('clears member when drawer is closed', async () => {
+        await findRoleDetailsDrawer().vm.$emit('close');
+        await nextTick();
+
+        expect(findRoleDetailsDrawer().props('member')).toBe(null);
+      });
     });
   });
 
