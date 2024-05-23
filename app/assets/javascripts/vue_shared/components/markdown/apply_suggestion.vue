@@ -82,6 +82,7 @@ export default {
         :placeholder="defaultCommitMessage"
         submit-on-enter
         data-testid="commit-message-field"
+        no-resize
         @submit="onApply"
       />
 

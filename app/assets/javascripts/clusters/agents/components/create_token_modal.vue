@@ -166,6 +166,7 @@ export default {
           id="token-description"
           v-model="token.description"
           :disabled="loading"
+          no-resize
           name="description"
         />
       </gl-form-group>

@@ -45,6 +45,7 @@ export default {
         required="required"
         rows="7"
         max-rows="32"
+        no-resize
         @input="(val) => $emit('input', val)"
       />
     </div>

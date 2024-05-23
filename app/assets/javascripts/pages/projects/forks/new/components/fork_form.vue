@@ -365,6 +365,7 @@ export default {
         v-model="form.fields.description.value"
         data-testid="fork-description-textarea"
         name="description"
+        no-resize
         :state="form.fields.description.state"
       />
     </gl-form-group>

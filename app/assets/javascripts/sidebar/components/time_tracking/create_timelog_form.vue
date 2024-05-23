@@ -244,7 +244,7 @@ export default {
         </gl-form-group>
       </div>
       <gl-form-group :label="s__('CreateTimelogForm|Summary')" optional label-for="summary">
-        <gl-form-textarea id="summary" v-model="summary" rows="3" :no-resize="true" />
+        <gl-form-textarea id="summary" v-model="summary" rows="3" no-resize />
       </gl-form-group>
       <gl-alert v-if="saveError" variant="danger" class="gl-mb-3" :dismissible="false">
         {{ saveError }}

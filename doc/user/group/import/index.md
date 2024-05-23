@@ -59,6 +59,11 @@ ready for production use.
 We invite you to leave your feedback about migrating by direct transfer in
 [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
 
+## Migrating specific projects
+
+Migrating groups by using direct transfer in the GitLab UI migrates all projects in the group. If you want to migrate only specific projects in the group by using direct
+transfer, you must use the [API](../../../api/bulk_imports.md#start-a-new-group-or-project-migration).
+
 ## Known issues
 
 - Because of [issue 406685](https://gitlab.com/gitlab-org/gitlab/-/issues/406685), files with a filename longer than 255 characters are not migrated.

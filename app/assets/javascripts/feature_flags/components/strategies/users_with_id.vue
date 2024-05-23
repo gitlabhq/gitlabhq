@@ -41,7 +41,7 @@ export default {
     :description="$options.translations.rolloutUserIdsDescription"
   >
     <template #default="{ inputId }">
-      <gl-form-textarea :id="inputId" :value="userIds" @input="onUserIdsChange" />
+      <gl-form-textarea :id="inputId" :value="userIds" no-resize @input="onUserIdsChange" />
     </template>
   </parameter-form-group>
 </template>

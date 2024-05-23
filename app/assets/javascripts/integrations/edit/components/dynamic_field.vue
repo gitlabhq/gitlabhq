@@ -188,6 +188,7 @@ export default {
       v-else-if="isTextarea"
       v-model="model"
       v-bind="sharedProps"
+      no-resize
       :placeholder="placeholder"
       :required="required"
     />

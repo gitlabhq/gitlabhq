@@ -6656,6 +6656,32 @@ Input type: `MlModelDestroyInput`
 | <a id="mutationmlmodeldestroymessage"></a>`message` | [`String`](#string) | Model deletion result message. |
 | <a id="mutationmlmodeldestroymodel"></a>`model` | [`MlModel`](#mlmodel) | Model after mutation. |
 
+### `Mutation.mlModelVersionCreate`
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Input type: `MlModelVersionCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodelversioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodelversioncreatedescription"></a>`description` | [`String`](#string) | Description of the model version. |
+| <a id="mutationmlmodelversioncreatemodelid"></a>`modelId` | [`MlModelID!`](#mlmodelid) | Global ID of the model the version belongs to. |
+| <a id="mutationmlmodelversioncreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the model to mutate is in. |
+| <a id="mutationmlmodelversioncreateversion"></a>`version` | [`String`](#string) | Model version. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmlmodelversioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmlmodelversioncreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationmlmodelversioncreatemodelversion"></a>`modelVersion` | [`MlModelVersion`](#mlmodelversion) | Model after mutation. |
+
 ### `Mutation.mlModelVersionDelete`
 
 DETAILS:
@@ -23658,6 +23684,7 @@ Represents links to perform actions on the model version.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mlmodelversionlinksimportpath"></a>`importPath` | [`String`](#string) | File upload path for the machine learning model. |
 | <a id="mlmodelversionlinkspackagepath"></a>`packagePath` | [`String`](#string) | Path to the package of the model version. |
 | <a id="mlmodelversionlinksshowpath"></a>`showPath` | [`String`](#string) | Path to the details page of the model version. |
 

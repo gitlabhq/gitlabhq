@@ -1,0 +1,59 @@
+# frozen_string_literal: true
+
+module Mutations
+  module Ml
+    module ModelVersions
+      class Create < BaseMutation
+        graphql_name 'MlModelVersionCreate'
+        authorize :write_model_registry
+
+        argument :project_path, GraphQL::Types::ID,
+          required: true,
+          description: "Project the model to mutate is in."
+
+        include FindsProject
+
+        argument :model_id, ::Types::GlobalIDType[::Ml::Model],
+          required: true,
+          description: 'Global ID of the model the version belongs to.'
+
+        argument :version, GraphQL::Types::String,
+          required: false,
+          description: 'Model version.'
+
+        argument :description, GraphQL::Types::String,
+          required: false,
+          description: 'Description of the model version.'
+
+        field :model_version,
+          Types::Ml::ModelVersionType,
+          null: true,
+          description: 'Model after mutation.'
+
+        def resolve(**args)
+          project = authorized_find!(args[:project_path])
+          model = ::Ml::Model.by_project_id_and_id(project.id, args[:model_id].model_id)
+
+          return { errors: ['Model not found'] } unless model
+
+          model_version = ::Ml::CreateModelVersionService.new(model,
+            {
+              version: args[:version],
+              description: args[:description]
+            }
+          ).execute
+
+          {
+            model_version: model_version,
+            errors: []
+          }
+        rescue ActiveRecord::RecordInvalid, RuntimeError => e
+          {
+            model_version: nil,
+            errors: [e.message]
+          }
+        end
+      end
+    end
+  end
+end

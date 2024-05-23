@@ -9712,6 +9712,34 @@ CREATE SEQUENCE grafana_integrations_id_seq
 
 ALTER SEQUENCE grafana_integrations_id_seq OWNED BY grafana_integrations.id;
 
+CREATE SEQUENCE shared_audit_event_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE group_audit_events (
+    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    group_id bigint NOT NULL,
+    author_id bigint NOT NULL,
+    target_id bigint,
+    event_name text,
+    details text,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    target_type text,
+    CONSTRAINT group_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT group_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT group_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT group_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
+    CONSTRAINT group_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
+)
+PARTITION BY RANGE (created_at);
+
 CREATE TABLE group_crm_settings (
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -10344,6 +10372,26 @@ CREATE SEQUENCE insights_id_seq
     CACHE 1;
 
 ALTER SEQUENCE insights_id_seq OWNED BY insights.id;
+
+CREATE TABLE instance_audit_events (
+    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    author_id bigint NOT NULL,
+    target_id bigint,
+    event_name text,
+    details text,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    target_type text,
+    CONSTRAINT instance_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT instance_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT instance_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT instance_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
+    CONSTRAINT instance_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
+)
+PARTITION BY RANGE (created_at);
 
 CREATE TABLE instance_audit_events_streaming_headers (
     id bigint NOT NULL,
@@ -14293,6 +14341,27 @@ CREATE SEQUENCE project_aliases_id_seq
 
 ALTER SEQUENCE project_aliases_id_seq OWNED BY project_aliases.id;
 
+CREATE TABLE project_audit_events (
+    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    author_id bigint NOT NULL,
+    target_id bigint,
+    event_name text,
+    details text,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    target_type text,
+    CONSTRAINT project_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT project_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT project_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT project_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
+    CONSTRAINT project_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
+)
+PARTITION BY RANGE (created_at);
+
 CREATE TABLE project_authorizations (
     user_id integer NOT NULL,
     project_id integer NOT NULL,
@@ -17182,6 +17251,27 @@ CREATE SEQUENCE user_agent_details_id_seq
     CACHE 1;
 
 ALTER SEQUENCE user_agent_details_id_seq OWNED BY user_agent_details.id;
+
+CREATE TABLE user_audit_events (
+    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    author_id bigint NOT NULL,
+    target_id bigint,
+    event_name text,
+    details text,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    target_type text,
+    CONSTRAINT user_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT user_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT user_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT user_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
+    CONSTRAINT user_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
+)
+PARTITION BY RANGE (created_at);
 
 CREATE TABLE user_callouts (
     id integer NOT NULL,
@@ -21660,6 +21750,9 @@ ALTER TABLE ONLY gpg_signatures
 ALTER TABLE ONLY grafana_integrations
     ADD CONSTRAINT grafana_integrations_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY group_audit_events
+    ADD CONSTRAINT group_audit_events_pkey PRIMARY KEY (id, created_at);
+
 ALTER TABLE ONLY group_crm_settings
     ADD CONSTRAINT group_crm_settings_pkey PRIMARY KEY (group_id);
 
@@ -21767,6 +21860,9 @@ ALTER TABLE ONLY index_statuses
 
 ALTER TABLE ONLY insights
     ADD CONSTRAINT insights_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY instance_audit_events
+    ADD CONSTRAINT instance_audit_events_pkey PRIMARY KEY (id, created_at);
 
 ALTER TABLE ONLY instance_audit_events_streaming_headers
     ADD CONSTRAINT instance_audit_events_streaming_headers_pkey PRIMARY KEY (id);
@@ -22320,6 +22416,9 @@ ALTER TABLE ONLY project_alerting_settings
 ALTER TABLE ONLY project_aliases
     ADD CONSTRAINT project_aliases_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY project_audit_events
+    ADD CONSTRAINT project_audit_events_pkey PRIMARY KEY (id, created_at);
+
 ALTER TABLE ONLY project_authorizations
     ADD CONSTRAINT project_authorizations_pkey PRIMARY KEY (user_id, project_id, access_level);
 
@@ -22760,6 +22859,9 @@ ALTER TABLE ONLY user_achievements
 
 ALTER TABLE ONLY user_agent_details
     ADD CONSTRAINT user_agent_details_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY user_audit_events
+    ADD CONSTRAINT user_audit_events_pkey PRIMARY KEY (id, created_at);
 
 ALTER TABLE ONLY user_callouts
     ADD CONSTRAINT user_callouts_pkey PRIMARY KEY (id);
@@ -24277,6 +24379,12 @@ CREATE INDEX idx_external_status_checks_on_id_and_project_id ON external_status_
 
 CREATE INDEX idx_gpg_keys_on_user_externally_verified ON gpg_keys USING btree (user_id) WHERE (externally_verified = true);
 
+CREATE INDEX idx_group_audit_events_on_author_id_created_at_id ON ONLY group_audit_events USING btree (author_id, created_at, id);
+
+CREATE INDEX idx_group_audit_events_on_group_id_author_created_at_id ON ONLY group_audit_events USING btree (group_id, author_id, created_at, id DESC);
+
+CREATE INDEX idx_group_audit_events_on_project_created_at_id ON ONLY group_audit_events USING btree (group_id, created_at, id);
+
 CREATE INDEX idx_headers_instance_external_audit_event_destination_id ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id);
 
 CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id) WHERE ((package_type = 3) AND (status = ANY (ARRAY[0, 1])));
@@ -24284,6 +24392,8 @@ CREATE INDEX idx_installable_conan_pkgs_on_project_id_id ON packages_packages US
 CREATE INDEX idx_installable_helm_pkgs_on_project_id_id ON packages_packages USING btree (project_id, id);
 
 CREATE INDEX idx_installable_npm_pkgs_on_project_id_name_version_id ON packages_packages USING btree (project_id, name, version, id) WHERE ((package_type = 2) AND (status = 0));
+
+CREATE INDEX idx_instance_audit_events_on_author_id_created_at_id ON ONLY instance_audit_events USING btree (author_id, created_at, id);
 
 CREATE UNIQUE INDEX idx_instance_external_audit_event_destination_id_key_uniq ON instance_audit_events_streaming_headers USING btree (instance_external_audit_event_destination_id, key);
 
@@ -24395,6 +24505,12 @@ CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_cloud_last_sync_at_and_proj_id ON pr
 
 CREATE INDEX idx_proj_feat_usg_on_jira_dvcs_server_last_sync_at_and_proj_id ON project_feature_usages USING btree (jira_dvcs_server_last_sync_at, project_id) WHERE (jira_dvcs_server_last_sync_at IS NOT NULL);
 
+CREATE INDEX idx_project_audit_events_on_author_id_created_at_id ON ONLY project_audit_events USING btree (author_id, created_at, id);
+
+CREATE INDEX idx_project_audit_events_on_project_created_at_id ON ONLY project_audit_events USING btree (project_id, created_at, id);
+
+CREATE INDEX idx_project_audit_events_on_project_id_author_created_at_id ON ONLY project_audit_events USING btree (project_id, author_id, created_at, id DESC);
+
 CREATE UNIQUE INDEX idx_project_id_payload_key_self_managed_prometheus_alert_events ON self_managed_prometheus_alert_events USING btree (project_id, payload_key);
 
 CREATE INDEX idx_project_repository_check_partial ON projects USING btree (repository_storage, created_at) WHERE (last_repository_check_at IS NULL);
@@ -24442,6 +24558,12 @@ CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_mana
 CREATE UNIQUE INDEX idx_uniq_analytics_dashboards_pointers_on_project_id ON analytics_dashboards_pointers USING btree (project_id);
 
 CREATE INDEX idx_user_add_on_assignments_on_add_on_purchase_id_and_id ON subscription_user_add_on_assignments USING btree (add_on_purchase_id, id);
+
+CREATE INDEX idx_user_audit_events_on_author_id_created_at_id ON ONLY user_audit_events USING btree (author_id, created_at, id);
+
+CREATE INDEX idx_user_audit_events_on_project_created_at_id ON ONLY user_audit_events USING btree (user_id, created_at, id);
+
+CREATE INDEX idx_user_audit_events_on_user_id_author_created_at_id ON ONLY user_audit_events USING btree (user_id, author_id, created_at, id DESC);
 
 CREATE INDEX idx_user_credit_card_validations_on_holder_name_hash ON user_credit_card_validations USING btree (holder_name_hash);
 

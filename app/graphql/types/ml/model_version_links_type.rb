@@ -14,6 +14,9 @@ module Types
 
       field :package_path, GraphQL::Types::String,
         null: true, description: 'Path to the package of the model version.', method: :package_path
+
+      field :import_path, GraphQL::Types::String,
+        null: true, description: 'File upload path for the machine learning model.', method: :import_path
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

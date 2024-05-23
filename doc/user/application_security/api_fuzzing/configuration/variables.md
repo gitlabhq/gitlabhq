@@ -13,6 +13,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 | `FUZZAPI_IMAGE_SUFFIX`                                      | Specify a container image suffix. Defaults to none. |
 | `FUZZAPI_API_PORT`                                          | Specify the communication port number used by API Fuzzing engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
 | `FUZZAPI_TARGET_URL`                                        | Base URL of API testing target. |
+| `FUZZAPI_TARGET_CHECK_SKIP`                      | Disable waiting for target to become available. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442699) in GitLab 17.1. |
+| `FUZZAPI_TARGET_CHECK_STATUS_CODE`                   | Provide the expected status code for target availability check. If not provided, any non-500 status code is acceptable. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442699) in GitLab 17.1. |
 |[`FUZZAPI_PROFILE`](customizing_analyzer_settings.md#api-fuzzing-profiles)                   | Configuration profile to use during testing. Defaults to `Quick-10`. |
 |[`FUZZAPI_EXCLUDE_PATHS`](customizing_analyzer_settings.md#exclude-paths)                    | Exclude API URL paths from testing. |
 |[`FUZZAPI_EXCLUDE_URLS`](customizing_analyzer_settings.md#exclude-urls)                      | Exclude API URL from testing. |

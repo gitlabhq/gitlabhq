@@ -64,7 +64,7 @@ export default {
     <template #default>
       <p data-testid="add-userids-description">{{ $options.translations.description }}</p>
       <gl-form-group label-for="add-user-ids" :label="$options.translations.userIdsLabel">
-        <gl-form-textarea id="add-user-ids" v-model="userIds" />
+        <gl-form-textarea id="add-user-ids" v-model="userIds" no-resize />
       </gl-form-group>
     </template>
   </gl-modal>

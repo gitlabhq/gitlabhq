@@ -17,6 +17,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 | `DAST_API_IMAGE_SUFFIX`                              | Specify a container image suffix. Defaults to none. |
 | `DAST_API_API_PORT`                                  | Specify the communication port number used by API security testing engine. Defaults to `5500`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) in GitLab 15.5. |
 | `DAST_API_TARGET_URL`                                 | Base URL of API testing target. |
+| `DAST_API_TARGET_CHECK_SKIP`                      | Disable waiting for target to become available. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442699) in GitLab 17.1. |
+| `DAST_API_TARGET_CHECK_STATUS_CODE`                   | Provide the expected status code for target availability check. If not provided, any non-500 status code is acceptable. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442699) in GitLab 17.1. |
 |[`DAST_API_CONFIG`](#configuration-files)              | API security testing configuration file. Defaults to `.gitlab-dast-api.yml`. |
 |[`DAST_API_PROFILE`](#configuration-files)             | Configuration profile to use during testing. Defaults to `Quick`. |
 |[`DAST_API_EXCLUDE_PATHS`](customizing_analyzer_settings.md#exclude-paths)              | Exclude API URL paths from testing. |

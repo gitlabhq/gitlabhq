@@ -240,6 +240,7 @@ export default {
               class="note-textarea-rounded-bottom js-gfm-input js-autosize markdown-area !gl-font-monospace"
               data-testid="input-note"
               dir="auto"
+              no-resize
               data-supports-quick-actions="false"
               :aria-label="$options.i18n.description"
               aria-describedby="timeline-form-hint"

@@ -266,6 +266,7 @@ export default {
         autofocus
         :debounce="$options.DEFAULT_DEBOUNCE_AND_THROTTLE_MS"
         :placeholder="$options.i18n.messagePlaceholder"
+        no-resize
         data-testid="message-input"
       />
     </gl-form-group>

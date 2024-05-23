@@ -491,6 +491,7 @@ export default {
                   :debounce="$options.JSON_VALIDATE_DELAY"
                   rows="6"
                   max-rows="10"
+                  no-resize
                   @input="validateJson"
                 />
               </gl-form-group>
@@ -656,6 +657,7 @@ export default {
               :debounce="$options.JSON_VALIDATE_DELAY"
               rows="6"
               max-rows="10"
+              no-resize
               data-testid="test-payload-field"
               @input="validateJson(false)"
             />

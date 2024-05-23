@@ -36,7 +36,7 @@ export default {
         <gl-form-textarea
           class="form-control"
           rows="2"
-          :no-resize="true"
+          no-resize
           :placeholder="s__('Snippets|Describe what your snippet does or how to use it…')"
           data-testid="description-placeholder"
         />
