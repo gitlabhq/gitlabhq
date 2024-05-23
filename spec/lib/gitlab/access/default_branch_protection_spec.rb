@@ -43,6 +43,62 @@ RSpec.describe Gitlab::Access::DefaultBranchProtection, feature_category: :sourc
     end
   end
 
+  describe '#no_one_can_push?' do
+    it 'when push access level is NO_ACCESS' do
+      expect(
+        described_class.new({ allowed_to_push: [access_level: Gitlab::Access::NO_ACCESS] }).no_one_can_push?
+      ).to be_truthy
+    end
+
+    it 'when push access level is not NO_ACCESS' do
+      expect(
+        described_class.new({ allowed_to_push: [access_level: Gitlab::Access::MAINTAINER] }).no_one_can_push?
+      ).to be_falsey
+    end
+  end
+
+  describe '#no_one_can_merge?' do
+    it 'when merge access level is NO_ACCESS' do
+      expect(
+        described_class.new({ allowed_to_merge: [access_level: Gitlab::Access::NO_ACCESS] }).no_one_can_merge?
+      ).to be_truthy
+    end
+
+    it 'when merge access level is not NO_ACCESS' do
+      expect(
+        described_class.new({ allowed_to_merge: [access_level: Gitlab::Access::MAINTAINER] }).no_one_can_merge?
+      ).to be_falsey
+    end
+  end
+
+  describe '#maintainer_can_push?' do
+    it 'when push access level is MAINTAINER' do
+      expect(
+        described_class.new({ allowed_to_push: [access_level: Gitlab::Access::MAINTAINER] }).maintainer_can_push?
+      ).to be_truthy
+    end
+
+    it 'when push access level is not MAINTAINER' do
+      expect(
+        described_class.new({ allowed_to_push: [access_level: Gitlab::Access::NO_ACCESS] }).maintainer_can_push?
+      ).to be_falsey
+    end
+  end
+
+  describe '#maintainer_can_merge?' do
+    it 'when merge access level is MAINTAINER' do
+      expect(
+        described_class.new({ allowed_to_merge: [access_level: Gitlab::Access::MAINTAINER] }).maintainer_can_merge?
+      ).to be_truthy
+    end
+
+    it 'when merge access level is not MAINTAINER' do
+      expect(
+        described_class.new({ allowed_to_merge: [access_level: Gitlab::Access::NO_ACCESS] }).maintainer_can_merge?
+      ).to be_falsey
+    end
+  end
+
   describe '#developer_can_push?' do
     it 'when developer can push' do
       expect(

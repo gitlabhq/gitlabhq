@@ -47,7 +47,7 @@ export default {
       return this.descriptionHtml?.trim() === '';
     },
     isTruncated() {
-      return this.truncated && !this.disableTruncation && this.glFeatures.workItemsMvc2;
+      return this.truncated && !this.disableTruncation && this.glFeatures.workItemsBeta;
     },
   },
   watch: {

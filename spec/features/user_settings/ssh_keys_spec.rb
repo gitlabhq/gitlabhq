@@ -9,12 +9,12 @@ RSpec.describe 'User Settings > SSH Keys', feature_category: :source_code_manage
     sign_in(user)
   end
 
-  describe 'User adds a key' do
+  describe 'User adds a key', :js do
     before do
       visit user_settings_ssh_keys_path
     end
 
-    it 'auto-populates the title', :js do
+    it 'auto-populates the title' do
       click_button('Add new key')
       fill_in('Key', with: attributes_for(:key).fetch(:key))
 
@@ -31,7 +31,7 @@ RSpec.describe 'User Settings > SSH Keys', feature_category: :source_code_manage
 
       expect(page).to have_content(format(s_('Profiles|SSH Key: %{title}'), title: attrs[:title]))
       expect(page).to have_content(attrs[:key])
-      expect(find_by_testid('breadcrumb-current-link')).to have_link(attrs[:title])
+      expect(find_by_testid('breadcrumb-links').find('li:last-of-type')).to have_link(attrs[:title])
     end
 
     it 'shows a confirmable warning if the key begins with an algorithm name that is unsupported' do

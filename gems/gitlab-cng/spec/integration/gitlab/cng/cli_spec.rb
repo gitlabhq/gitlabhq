@@ -42,13 +42,36 @@ RSpec.describe Gitlab::Cng::CLI do
         allow(Gitlab::Cng::Kind::Cluster).to receive(:new).and_return(cluster_instance)
       end
 
-      it_behaves_like "command with help", [:help, %w[create cluster]], /Create kind cluster for local deployments/
+      it_behaves_like "command with help", [:create, %w[help cluster]], /Create kind cluster for local deployments/
 
       it "invokes cluster create command" do
         cli.invoke(:create, %w[cluster])
 
         expect(Gitlab::Cng::Kind::Cluster).to have_received(:new).with(ci: false, name: "gitlab")
         expect(cluster_instance).to have_received(:create)
+      end
+    end
+
+    context "with deployment subcommand" do
+      let(:installation_instance) { instance_double(Gitlab::Cng::Deployment::Installation, create: nil) }
+
+      before do
+        allow(Gitlab::Cng::Deployment::Installation).to receive(:new).and_return(installation_instance)
+      end
+
+      it_behaves_like "command with help", [:create, %w[help deployment]],
+        /This command installs a GitLab chart archive/
+
+      it "invokes cluster create command" do
+        cli.invoke(:create, %w[deployment])
+
+        expect(Gitlab::Cng::Deployment::Installation).to have_received(:new).with(
+          "gitlab",
+          configuration: "kind",
+          namespace: "gitlab",
+          ci: false
+        )
+        expect(installation_instance).to have_received(:create)
       end
     end
   end

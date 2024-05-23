@@ -170,9 +170,9 @@ end
 
 RSpec.shared_examples 'submits edit runner form' do
   it 'breadcrumb contains runner id and token' do
-    page.within '[data-testid="breadcrumb-links"]' do
+    within_testid 'breadcrumb-links' do
       expect(page).to have_link("##{runner.id} (#{runner.short_sha})")
-      expect(page.find('[data-testid="breadcrumb-current-link"]')).to have_content("Edit")
+      expect(find('li:last-of-type')).to have_content("Edit")
     end
   end
 

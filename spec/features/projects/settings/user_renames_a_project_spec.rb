@@ -51,7 +51,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
     expect(page).to have_content "Project 'hello world' was successfully updated."
   end
 
-  context 'when changing project name' do
+  context 'when changing project name', :js do
     it 'renames the repository' do
       change_name(project, 'bar')
       expect(find_by_testid('breadcrumb-links')).to have_content(project.name)
@@ -66,7 +66,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
     end
   end
 
-  context 'when changing project path' do
+  context 'when changing project path', :js do
     let(:project) { create(:project, :repository, namespace: user.namespace, path: 'gitlabhq') }
 
     before(:context) do

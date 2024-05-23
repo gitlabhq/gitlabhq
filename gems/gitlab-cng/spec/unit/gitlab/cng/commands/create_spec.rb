@@ -29,4 +29,33 @@ RSpec.describe Gitlab::Cng::Commands::Create do
       })
     end
   end
+
+  describe "deployment command" do
+    let(:command_name) { "deployment" }
+    let(:deployment_install) { instance_double(Gitlab::Cng::Deployment::Installation, create: nil) }
+
+    before do
+      allow(Gitlab::Cng::Deployment::Installation).to receive(:new).and_return(deployment_install)
+    end
+
+    it "defines cluster command" do
+      expect_command_to_include_attributes(command_name, {
+        description: "Create CNG deployment from official GitLab Helm chart",
+        name: command_name,
+        usage: "#{command_name} [NAME]"
+      })
+    end
+
+    it "invokes kind cluster creation with correct arguments" do
+      invoke_command(command_name, [], { configuration: "kind", ci: true, namespace: "gitlab" })
+
+      expect(deployment_install).to have_received(:create)
+      expect(Gitlab::Cng::Deployment::Installation).to have_received(:new).with(
+        "gitlab",
+        configuration: "kind",
+        ci: true,
+        namespace: "gitlab"
+      )
+    end
+  end
 end

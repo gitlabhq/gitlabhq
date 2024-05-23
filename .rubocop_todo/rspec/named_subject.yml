@@ -1634,7 +1634,6 @@ RSpec/NamedSubject:
     - 'spec/lib/api/helpers/packages_helpers_spec.rb'
     - 'spec/lib/api/helpers/pagination_spec.rb'
     - 'spec/lib/api/helpers/pagination_strategies_spec.rb'
-    - 'spec/lib/api/helpers/rate_limiter_spec.rb'
     - 'spec/lib/api/helpers/variables_helpers_spec.rb'
     - 'spec/lib/api/helpers_spec.rb'
     - 'spec/lib/api/support/git_access_actor_spec.rb'

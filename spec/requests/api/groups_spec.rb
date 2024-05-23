@@ -90,6 +90,24 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
     end
 
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :groups_api do
+      def request
+        get api("/groups")
+      end
+    end
+
+    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_groups_and_projects_api: false)
+      end
+
+      it_behaves_like 'unthrottled endpoint'
+
+      def request
+        get api("/groups")
+      end
+    end
+
     context "when unauthenticated" do
       it "returns public groups", :aggregate_failures do
         get api("/groups")
@@ -580,6 +598,24 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     def response_project_ids(json_response, key)
       json_response[key].map do |project|
         project['id'].to_i
+      end
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :group_api do
+      def request
+        get api("/groups/#{group2.id}")
+      end
+    end
+
+    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_groups_and_projects_api: false)
+      end
+
+      it_behaves_like 'unthrottled endpoint'
+
+      def request
+        get api("/groups/#{group2.id}")
       end
     end
 
@@ -1230,6 +1266,24 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   end
 
   describe "GET /groups/:id/projects" do
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :group_projects_api do
+      def request
+        get api("/groups/#{group1.id}/projects")
+      end
+    end
+
+    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_groups_and_projects_api: false)
+      end
+
+      it_behaves_like 'unthrottled endpoint'
+
+      def request
+        get api("/groups/#{group1.id}/projects")
+      end
+    end
+
     context "when authenticated as user" do
       context 'with min access level' do
         it 'returns projects with min access level or higher' do

@@ -38,8 +38,8 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     end
 
     it 'uses IID path in breadcrumbs' do
-      within_testid('breadcrumb-current-link') do
-        expect(page).to have_link("##{work_item.iid}", href: work_items_path)
+      within_testid('breadcrumb-links') do
+        expect(find('li:last-of-type')).to have_link("##{work_item.iid}", href: work_items_path)
       end
     end
 

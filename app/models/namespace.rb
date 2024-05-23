@@ -554,11 +554,9 @@ class Namespace < ApplicationRecord
 
   def container_repositories_size
     strong_memoize(:container_repositories_size) do
-      next unless Gitlab.com_except_jh?
       next unless root?
       next unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
       next 0 if all_container_repositories.empty?
-      next unless all_container_repositories.all_migrated?
 
       Rails.cache.fetch(container_repositories_size_cache_key, expires_in: 7.days) do
         ContainerRegistry::GitlabApiClient.deduplicated_size(full_path)

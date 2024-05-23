@@ -276,13 +276,10 @@ After you have set up the project, set up the configuration file:
 | `height` (subfield of `gridAttributes`) | Height of the panel |
 
 ```yaml
-# version - The latest version of the analytics dashboard schema
-version: '2'
-
-# title - Change the title of the Value Streams Dashboard.
+# title - Change the title of the Value Streams Dashboard. [optional]
 title: 'Custom Dashboard title'
 
-# description - Change the description of the Value Streams Dashboard.
+# description - Change the description of the Value Streams Dashboard. [optional]
 description: 'Custom description'
 
 # panels - List of panels that contain panel settings.

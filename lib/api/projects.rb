@@ -112,6 +112,14 @@ module API
       def validate_projects_api_rate_limit_for_unauthenticated_users!
         check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: [ip_address]) if current_user.blank?
       end
+
+      def validate_projects_api_rate_limit!
+        if current_user && Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:projects_api)
+        else
+          validate_projects_api_rate_limit_for_unauthenticated_users!
+        end
+      end
     end
 
     helpers do
@@ -247,6 +255,10 @@ module API
         use :with_custom_attributes
       end
       get ":user_id/projects", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:user_projects_api)
+        end
+
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -270,6 +282,10 @@ module API
                           desc: 'Return only the ID, URL, name, and path of each project'
       end
       get ":user_id/contributed_projects", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:user_contributed_projects_api)
+        end
+
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -289,6 +305,10 @@ module API
         use :statistics_params
       end
       get ":user_id/starred_projects", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:user_starred_projects_api)
+        end
+
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -315,7 +335,7 @@ module API
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/211495
       get feature_category: :groups_and_projects, urgency: :low do
-        validate_projects_api_rate_limit_for_unauthenticated_users!
+        validate_projects_api_rate_limit!
         validate_updated_at_order_and_filter!
 
         present_projects load_projects
@@ -441,6 +461,10 @@ module API
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/357622
       get ":id", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:project_api)
+        end
+
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,

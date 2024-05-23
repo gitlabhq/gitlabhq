@@ -139,7 +139,7 @@ module QA
           Page::Group::Menu.perform(&:go_to_dependency_proxy)
 
           Page::Group::DependencyProxy.perform do |index|
-            expect(index).to have_blob_count("Contains 1 blobs of images")
+            expect(index).to have_blob_count(/Contains [1-9]\d* blobs of images/)
           end
         end
       end

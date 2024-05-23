@@ -177,6 +177,55 @@ module Gitlab
           rename_indexes(current_index_names, new_index_names, schema_name: schema_name)
         end
 
+        # Prepare async index creation for partitions
+        # Once the partition indexes are created, we can then use `#add_concurrent_partitioned_index` below
+        # to synchronously create the partitioned index
+        def prepare_partitioned_async_index(table_name, column_name, **options)
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+          return unless async_index_creation_available?
+
+          partitioned_table = find_partitioned_table(table_name)
+
+          if index_exists?(table_name, column_name, **options)
+            return Gitlab::AppLogger.warn(
+              message: 'Partitioned index not prepared because it already exists',
+              table_name: table_name,
+              column_name: column_name,
+              index_name: options[:name]
+            )
+          end
+
+          options[:name] ||= index_name(table_name, column_name)
+
+          partitioned_table
+            .postgres_partitions
+            .order(:name)
+            .each do |partition|
+            partition_index_name = generated_index_name(partition.identifier, options[:name])
+            prepare_async_index(partition.identifier, column_name, **options.merge(name: partition_index_name))
+          end
+        end
+
+        def unprepare_partitioned_async_index(table_name, column_name, **options)
+          partitioned_index_name = options[:name] || index_name(table_name, column_name)
+          unprepare_partitioned_async_index_by_name(table_name, partitioned_index_name)
+        end
+
+        def unprepare_partitioned_async_index_by_name(table_name, index_name)
+          raise ArgumentError, 'Partitioned index name is required' if index_name.blank?
+
+          Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_ddl_mode!
+          return unless async_index_creation_available?
+
+          find_partitioned_table(table_name)
+            .postgres_partitions
+            .order(:name)
+            .each do |partition|
+            partition_index_name = generated_index_name(partition.identifier, index_name)
+            unprepare_async_index_by_name(partition.identifier, partition_index_name)
+          end
+        end
+
         private
 
         def find_indexes(table_name, schema_name: connection.current_schema)

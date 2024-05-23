@@ -18,6 +18,7 @@ You can change network settings to limit the rate of connections with your insta
 - [Package registry](package_registry_rate_limits.md)
 - [Pipeline creation](rate_limit_on_pipelines_creation.md)
 - [Projects API](rate_limit_on_projects_api.md)
+- [Groups API](rate_limit_on_groups_api.md)
 - [Raw endpoints](rate_limits_on_raw_endpoints.md)
 - [Repository files API](files_api_rate_limits.md)
 - [User and IP](user_and_ip_rate_limits.md)

@@ -98,7 +98,7 @@ export default {
     <sidebar-portal>
       <all-scopes-start-filters />
       <div
-        class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-reset-line-height gl-font-weight-bold gl-font-sm super-sidebar-context-header"
+        class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-leading-reset gl-font-weight-bold gl-font-sm super-sidebar-context-header"
       >
         {{ $options.i18n.headerText }}
       </div>

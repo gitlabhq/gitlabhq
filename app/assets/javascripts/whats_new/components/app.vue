@@ -78,7 +78,7 @@ export default {
       v-gl-resize-observer="handleResize"
       aria-labelledby="whats-new-drawer-heading"
       tabindex="0"
-      class="whats-new-drawer gl-reset-line-height gl-focus--focus"
+      class="whats-new-drawer gl-leading-reset gl-focus--focus"
       :header-height="getDrawerHeaderHeight"
       :z-index="700"
       :open="open"

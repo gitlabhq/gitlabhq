@@ -15751,6 +15751,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="addonuserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="addonuserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="addonuserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="addonuserassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="addonuserassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="addonuserassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="addonuserassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="addonuserassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -15790,6 +15793,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="addonuserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="addonuserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="addonuserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="addonuserauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="addonuserauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="addonuserauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="addonuserauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="addonuserauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -15883,6 +15889,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="addonuserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="addonuserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="addonuserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="addonuserreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="addonuserreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="addonuserreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="addonuserreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="addonuserreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -16531,6 +16540,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="autocompleteduserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="autocompleteduserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="autocompleteduserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="autocompleteduserassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="autocompleteduserassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="autocompleteduserassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="autocompleteduserassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="autocompleteduserassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -16570,6 +16582,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="autocompleteduserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="autocompleteduserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="autocompleteduserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="autocompleteduserauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="autocompleteduserauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="autocompleteduserauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="autocompleteduserauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="autocompleteduserauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -16675,6 +16690,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="autocompleteduserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="autocompleteduserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="autocompleteduserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="autocompleteduserreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="autocompleteduserreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="autocompleteduserreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="autocompleteduserreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="autocompleteduserreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -18723,6 +18741,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="currentuserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="currentuserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="currentuserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="currentuserassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="currentuserassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="currentuserassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="currentuserassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="currentuserassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -18762,6 +18783,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="currentuserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="currentuserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="currentuserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="currentuserauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="currentuserauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="currentuserauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="currentuserauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="currentuserauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -18855,6 +18879,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="currentuserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="currentuserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="currentuserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="currentuserreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="currentuserreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="currentuserreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="currentuserreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="currentuserreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -19053,10 +19080,10 @@ Represents a product analytics dashboard.
 | <a id="customizabledashboardconfigurationproject"></a>`configurationProject` | [`Project`](#project) | Project which contains the dashboard definition. |
 | <a id="customizabledashboarddescription"></a>`description` | [`String`](#string) | Description of the dashboard. |
 | <a id="customizabledashboarderrors"></a>`errors` | [`[String!]`](#string) | Errors on yaml definition. |
-| <a id="customizabledashboardpanels"></a>`panels` | [`CustomizableDashboardPanelConnection`](#customizabledashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
+| <a id="customizabledashboardpanels"></a>`panels` | [`CustomizableDashboardPanelConnection!`](#customizabledashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
 | <a id="customizabledashboardslug"></a>`slug` | [`String!`](#string) | Slug of the dashboard. |
 | <a id="customizabledashboardstatus"></a>`status` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.0. **Status**: Experiment. Status of the dashboard. |
-| <a id="customizabledashboardtitle"></a>`title` | [`String`](#string) | Title of the dashboard. |
+| <a id="customizabledashboardtitle"></a>`title` | [`String!`](#string) | Title of the dashboard. |
 | <a id="customizabledashboarduserdefined"></a>`userDefined` | [`Boolean!`](#boolean) | Indicates whether the dashboard is user-defined or provided by GitLab. |
 
 ### `CustomizableDashboardPanel`
@@ -19069,8 +19096,8 @@ Represents a product analytics dashboard panel.
 | ---- | ---- | ----------- |
 | <a id="customizabledashboardpanelgridattributes"></a>`gridAttributes` | [`JSON`](#json) | Description of the position and size of the panel. |
 | <a id="customizabledashboardpanelqueryoverrides"></a>`queryOverrides` | [`JSON`](#json) | Overrides for the visualization query object. |
-| <a id="customizabledashboardpaneltitle"></a>`title` | [`String`](#string) | Title of the panel. |
-| <a id="customizabledashboardpanelvisualization"></a>`visualization` | [`CustomizableDashboardVisualization`](#customizabledashboardvisualization) | Visualization of the panel. |
+| <a id="customizabledashboardpaneltitle"></a>`title` | [`String!`](#string) | Title of the panel. |
+| <a id="customizabledashboardpanelvisualization"></a>`visualization` | [`CustomizableDashboardVisualization!`](#customizabledashboardvisualization) | Visualization of the panel. |
 
 ### `CustomizableDashboardVisualization`
 
@@ -22054,6 +22081,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="groupmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="groupmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="groupmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="groupmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="groupmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="groupmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="groupmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="groupmergerequestsincludearchived"></a>`includeArchived` | [`Boolean`](#boolean) | Return merge requests from archived projects. |
@@ -24016,6 +24046,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="mergerequestassigneeassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestassigneeassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestassigneeassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestassigneeassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestassigneeassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -24055,6 +24088,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestassigneeauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestassigneeauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestassigneeauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestassigneeauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestassigneeauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -24148,6 +24184,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneereviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="mergerequestassigneereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestassigneereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -24344,6 +24383,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="mergerequestauthorassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestauthorassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestauthorassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestauthorassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestauthorassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestauthorassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestauthorassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestauthorassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -24383,6 +24425,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestauthorauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestauthorauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestauthorauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestauthorauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestauthorauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -24476,6 +24521,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="mergerequestauthorreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestauthorreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -24719,6 +24767,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="mergerequestparticipantassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestparticipantassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestparticipantassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestparticipantassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestparticipantassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -24758,6 +24809,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestparticipantauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestparticipantauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestparticipantauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestparticipantauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestparticipantauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -24851,6 +24905,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -25083,6 +25140,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="mergerequestreviewerassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestreviewerassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestreviewerassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestreviewerassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestreviewerassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -25122,6 +25182,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestreviewerauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestreviewerauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestreviewerauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestreviewerauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestreviewerauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -25215,6 +25278,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -28068,6 +28134,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="projectmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="projectmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="projectmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="projectmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="projectmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="projectmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="projectmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="projectmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
@@ -30807,6 +30876,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="usercoreassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="usercoreassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="usercoreassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="usercoreassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="usercoreassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="usercoreassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="usercoreassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="usercoreassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -30846,6 +30918,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="usercoreauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="usercoreauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="usercoreauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="usercoreauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="usercoreauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="usercoreauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="usercoreauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="usercoreauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -30939,6 +31014,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercorereviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="usercorereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="usercorereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="usercorereviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="usercorereviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="usercorereviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="usercorereviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="usercorereviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="usercorereviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -37115,6 +37193,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="userassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="userassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="userassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="userassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="userassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="userassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="userassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="userassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -37154,6 +37235,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="userauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="userauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="userauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="userauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="userauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="userauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="userauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="userauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
@@ -37247,6 +37331,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
 | <a id="userreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
 | <a id="userreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
+| <a id="userreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
+| <a id="userreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="userreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="userreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="userreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="userreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |

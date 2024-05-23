@@ -5944,9 +5944,6 @@ msgstr ""
 msgid "Analytics|Host"
 msgstr ""
 
-msgid "Analytics|Invalid dashboard configuration"
-msgstr ""
-
 msgid "Analytics|Invalid visualization configuration"
 msgstr ""
 
@@ -14354,9 +14351,6 @@ msgid "ContainerRegistry|You can add an image to this registry with the followin
 msgstr ""
 
 msgid "Containers"
-msgstr ""
-
-msgid "Contains errors"
 msgstr ""
 
 msgid "Contains only whitespace changes."
@@ -25357,6 +25351,9 @@ msgstr ""
 msgid "Groups (%{count})"
 msgstr ""
 
+msgid "Groups API rate limits"
+msgstr ""
+
 msgid "Groups and projects"
 msgstr ""
 
@@ -31573,9 +31570,6 @@ msgstr ""
 msgid "Maximum push size (MiB)"
 msgstr ""
 
-msgid "Maximum requests per 10 minutes per IP address"
-msgstr ""
-
 msgid "Maximum requests per 10 minutes per user"
 msgstr ""
 
@@ -31583,6 +31577,15 @@ msgid "Maximum requests per minute"
 msgstr ""
 
 msgid "Maximum requests per minute per group / project"
+msgstr ""
+
+msgid "Maximum requests to the %{api_name} API per %{timeframe} per IP address for unauthenticated requests"
+msgstr ""
+
+msgid "Maximum requests to the %{api_name} API per %{timeframe} per user for authenticated requests"
+msgstr ""
+
+msgid "Maximum requests to the %{api_name} API per %{timeframe} per user or IP address"
 msgstr ""
 
 msgid "Maximum running slices"
@@ -48699,7 +48702,10 @@ msgstr ""
 msgid "Set the milestone to %{milestone_reference}."
 msgstr ""
 
-msgid "Set the per-IP address rate limit applicable to unauthenticated requests for getting a list of projects via the API."
+msgid "Set the per-user and per-IP address rate limits for the requests to Groups API."
+msgstr ""
+
+msgid "Set the per-user and per-IP address rate limits for the requests to Projects API."
 msgstr ""
 
 msgid "Set the per-user rate limit for getting a user by ID via the API."

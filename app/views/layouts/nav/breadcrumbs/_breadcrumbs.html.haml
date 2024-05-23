@@ -11,7 +11,7 @@
     #{schema_breadcrumb_json}
 
 - if Feature.enabled?(:vue_page_breadcrumbs)
-  #js-vue-page-breadcrumbs-wrapper
+  #js-vue-page-breadcrumbs-wrapper{ data: { testid: 'breadcrumb-links' } }
     #js-vue-page-breadcrumbs{ data: { breadcrumbs_json: breadcrumbs_as_json } }
     #js-injected-page-breadcrumbs
 

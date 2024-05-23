@@ -71,6 +71,15 @@ module Resolvers
     argument :created_before, Types::TimeType,
       required: false,
       description: 'Merge requests created before this timestamp.'
+    argument :deployed_after, Types::TimeType,
+      required: false,
+      description: 'Merge requests deployed after this timestamp.'
+    argument :deployed_before, Types::TimeType,
+      required: false,
+      description: 'Merge requests deployed before this timestamp.'
+    argument :deployment_id, GraphQL::Types::String,
+      required: false,
+      description: 'ID of the deployment.'
     argument :updated_after, Types::TimeType,
       required: false,
       description: 'Merge requests updated after this timestamp.'

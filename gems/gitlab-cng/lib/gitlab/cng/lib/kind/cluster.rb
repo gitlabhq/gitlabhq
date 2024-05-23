@@ -48,12 +48,12 @@ module Gitlab
         # @return [void]
         def create_cluster
           Helpers::Spinner.spin("performing cluster creation") do
-            execute_shell([
+            puts execute_shell([
               "kind",
               "create",
               "cluster",
               "--name", name,
-              "--wait", "10s",
+              "--wait", "30s",
               "--config", ci ? ci_config(docker_hostname) : default_config(docker_hostname)
             ])
           end

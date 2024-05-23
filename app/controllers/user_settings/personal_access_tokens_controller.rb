@@ -3,10 +3,12 @@
 module UserSettings
   class PersonalAccessTokensController < ApplicationController
     include RenderAccessTokens
+    include FeedTokenHelper
 
     feature_category :system_access
 
     before_action :check_personal_access_tokens_enabled
+    prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:ics) }
 
     def index
       set_index_vars
@@ -20,6 +22,14 @@ module UserSettings
         format.html
         format.json do
           render json: @active_access_tokens
+        end
+        format.ics do
+          if params[:feed_token]
+            response.headers['Content-Type'] = 'text/plain'
+            render plain: expiry_ics(@active_access_tokens)
+          else
+            redirect_to "#{request.path}?feed_token=#{generate_feed_token_with_path(:ics, request.path)}"
+          end
         end
       end
     end

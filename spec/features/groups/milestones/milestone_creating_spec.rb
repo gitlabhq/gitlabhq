@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Create a group milestone', feature_category: :team_planning do
+RSpec.describe 'Create a group milestone', :js, feature_category: :team_planning do
   let(:user)  { create(:user) }
   let(:group) { create(:group) }
 

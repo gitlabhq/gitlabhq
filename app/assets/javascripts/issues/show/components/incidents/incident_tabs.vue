@@ -144,7 +144,7 @@ export default {
   <div>
     <gl-tabs
       v-model="currentTabIndex"
-      content-class="gl-reset-line-height"
+      content-class="gl-leading-reset"
       class="gl-mt-n3"
       data-testid="incident-tabs"
     >

@@ -147,27 +147,6 @@ EOF
 echo $values_file
 }
 
-function create_admin_password_secret() {
-  log_info "Create the 'gitlab-initial-root-password' secret"
-  kubectl create secret generic --namespace "${NAMESPACE}" \
-    "gitlab-initial-root-password" \
-    --from-literal="password=${GITLAB_ADMIN_PASSWORD}" \
-    --dry-run=client -o json | kubectl apply -f -
-}
-
-function create_license_secret() {
-  log_info "Create the 'gitlab-license' secret"
-  kubectl create secret generic --namespace "${NAMESPACE}" \
-    "gitlab-license" \
-    --from-literal=license="${QA_EE_LICENSE}" \
-    --dry-run=client -o json | kubectl apply -f -
-}
-
-function create_hook_configmap() {
-  log_info "Create 'pre-receive-hook' configmap"
-  kubectl create configmap pre-receive-hook --namespace ${NAMESPACE} --from-file $CI_PROJECT_DIR/scripts/qa/cng_deploy/config/hook.sh
-}
-
 function add_root_token() {
   cmd=$(
     cat <<EOF
@@ -188,18 +167,6 @@ EOF
 function deploy() {
   local domain=$1
   local values=$(chart_values $domain)
-
-  log_with_header "Running pre-deploy setup"
-  log_info "Add gitlab chart repo"
-  helm repo add gitlab https://charts.gitlab.io/
-  helm repo update
-
-  log_info "Create '${NAMESPACE} namespace'"
-  kubectl create namespace "$NAMESPACE"
-
-  create_license_secret
-  create_admin_password_secret
-  create_hook_configmap
 
   log_with_header "Install GitLab"
   log_info "Using following values.yml"

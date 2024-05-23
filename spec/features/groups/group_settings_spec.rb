@@ -56,7 +56,7 @@ RSpec.describe 'Edit group settings', feature_category: :groups_and_projects do
       end
     end
 
-    context 'with a project' do
+    context 'with a project', :js do
       let!(:project) { create(:project, group: group) }
       let(:old_project_full_path) { "/#{group.path}/#{project.path}" }
       let(:new_project_full_path) { "/#{new_group_path}/#{project.path}" }

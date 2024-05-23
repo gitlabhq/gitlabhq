@@ -227,20 +227,21 @@ If the webhook URL has changed, you cannot resend the request.
 
 Webhook receiver endpoints should be fast and stable.
 Slow and unstable receivers might be [disabled automatically](#auto-disabled-webhooks) to ensure system reliability.
-Webhooks that [time out](../../../user/gitlab_com/index.md#webhooks) might lead to duplicate events.
+Webhooks that [time out](../../../user/gitlab_com/index.md#other-limits) might lead to duplicate events.
 
 Endpoints should follow these best practices:
 
 - **Respond quickly with a `200` or `201` status response.**
   Avoid any significant processing of webhooks in the same request.
   Instead, implement a queue to handle webhooks after they are received.
-  Webhook receivers that do not respond before the timeout limit
+  Webhook receivers that do not respond before the [timeout limit](../../../user/gitlab_com/index.md#other-limits)
   might be disabled automatically on GitLab.com.
 - **Be prepared to handle duplicate events.**
   If a webhook has timed out, the same event might be sent twice.
   To mitigate this issue, ensure your endpoint is reliably fast and stable.
 - **Keep the response headers and body minimal.**
-  GitLab stores the response headers and body so you can examine them later in the logs to help diagnose problems.
+  GitLab stores the response headers and body so you can
+  [inspect them later in the webhook request history](#inspect-request-and-response-details) to help diagnose problems.
   You should limit the number and size of returned headers.
   You can also respond to the webhook request with an empty body.
 - Only return client error status responses (in the `4xx` range) to indicate the webhook is misconfigured.

@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Namespace, feature_category: :groups_and_projects do
+  include ContainerRegistryHelpers
   include ProjectForksHelper
   include ReloadHelpers
 
@@ -918,7 +919,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     context 'when Gitlab API is not supported' do
       before do
         stub_container_registry_config(enabled: true)
-        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+        stub_gitlab_api_client_to_support_gitlab_api(supported: false)
       end
 
       it 'returns the project' do
@@ -949,7 +950,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     context 'when Gitlab API is supported' do
       before do
         allow(Gitlab).to receive(:com_except_jh?).and_return(true)
-        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+        stub_gitlab_api_client_to_support_gitlab_api(supported: true)
         stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
       end
 
@@ -975,52 +976,71 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     subject { project_namespace.container_repositories_size }
 
-    context 'on gitlab.com' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:gitlab_api_supported, :no_container_repositories, :all_migrated, :returned_size, :expected_result) do
-        nil   | nil   | nil   | nil | nil
-        false | nil   | nil   | nil | nil
-        true  | true  | nil   | nil | 0
-        true  | false | false | nil | nil
-        true  | false | true  | 555 | 555
-        true  | false | true  | nil | nil
-      end
-
-      with_them do
+    context 'for a root' do
+      context 'when the GitLab API is supported' do
         before do
-          allow(ContainerRegistry::GitlabApiClient).to receive(:one_project_with_container_registry_tag).and_return(nil)
-          stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
-          allow(Gitlab).to receive(:com_except_jh?).and_return(true)
-          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)
-          allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(no_container_repositories)
-          allow(project_namespace).to receive_message_chain(:all_container_repositories, :all_migrated?).and_return(all_migrated)
-          allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project_namespace.full_path).and_return(returned_size)
+          stub_gitlab_api_client_to_support_gitlab_api(supported: true)
         end
 
-        it { is_expected.to eq(expected_result) }
+        context 'when there are non-empty container repositories' do
+          before do
+            allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(false)
+          end
 
-        it 'caches the result when all migrated' do
-          if all_migrated
-            expect(Rails.cache)
-              .to receive(:fetch)
-              .with(project_namespace.container_repositories_size_cache_key, expires_in: 7.days)
+          shared_examples "caching the result" do
+            it 'caches the result' do
+              expect(Rails.cache)
+                .to receive(:fetch)
+                .with(project_namespace.container_repositories_size_cache_key, expires_in: 7.days)
 
-            subject
+              subject
+            end
+          end
+
+          context 'when the Gitlab API client returns a value for deduplicated_size' do
+            before do
+              allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project_namespace.full_path).and_return(321)
+            end
+
+            it { is_expected.to eq(321) }
+
+            it_behaves_like 'caching the result'
+          end
+
+          context 'when the Gitlab API client returns nil for deduplicated_size' do
+            before do
+              allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project_namespace.full_path).and_return(nil)
+            end
+
+            it { is_expected.to be_nil }
+
+            it_behaves_like 'caching the result'
           end
         end
-      end
-    end
 
-    context 'not on gitlab.com' do
-      it { is_expected.to eq(nil) }
+        context 'when all the container repositories are empty' do
+          before do
+            allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(true)
+          end
+
+          it { is_expected.to eq(0) }
+        end
+      end
+
+      context 'when the GitLab API is not supported' do
+        before do
+          stub_gitlab_api_client_to_support_gitlab_api(supported: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
 
     context 'for a sub-group' do
       let(:parent_namespace) { create(:group) }
       let(:project_namespace) { create(:group, parent: parent_namespace) }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 

@@ -865,6 +865,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_8e66b994e8f0() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."group_id"
+  FROM "audit_events_external_audit_event_destinations"
+  WHERE "audit_events_external_audit_event_destinations"."id" = NEW."external_audit_event_destination_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_94514aeadc50() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -5330,6 +5346,7 @@ CREATE TABLE audit_events_streaming_event_type_filters (
     updated_at timestamp with time zone NOT NULL,
     external_audit_event_destination_id bigint NOT NULL,
     audit_event_type text NOT NULL,
+    group_id bigint,
     CONSTRAINT check_d20c8e5a51 CHECK ((char_length(audit_event_type) <= 255))
 );
 
@@ -24811,6 +24828,8 @@ CREATE INDEX index_audit_events_instance_namespace_filters_on_namespace_id ON au
 
 CREATE INDEX index_audit_events_on_entity_id_and_entity_type_and_created_at ON ONLY audit_events USING btree (entity_id, entity_type, created_at, id);
 
+CREATE INDEX index_audit_events_streaming_event_type_filters_on_group_id ON audit_events_streaming_event_type_filters USING btree (group_id);
+
 CREATE INDEX index_audit_events_streaming_headers_on_group_id ON audit_events_streaming_headers USING btree (group_id);
 
 CREATE INDEX index_authentication_events_on_provider ON authentication_events USING btree (provider);
@@ -30157,6 +30176,8 @@ CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variabl
 
 CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board_positions FOR EACH ROW EXECUTE FUNCTION trigger_7a8b08eed782();
 
+CREATE TRIGGER trigger_8e66b994e8f0 BEFORE INSERT OR UPDATE ON audit_events_streaming_event_type_filters FOR EACH ROW EXECUTE FUNCTION trigger_8e66b994e8f0();
+
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
 
 CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_request_rule_sources FOR EACH ROW EXECUTE FUNCTION trigger_b4520c29ea74();
@@ -30298,6 +30319,9 @@ ALTER TABLE ONLY deployment_approvals
 
 ALTER TABLE ONLY project_pages_metadata
     ADD CONSTRAINT fk_0fd5b22688 FOREIGN KEY (pages_deployment_id) REFERENCES pages_deployments(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY audit_events_streaming_event_type_filters
+    ADD CONSTRAINT fk_107946dffb FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_deletion_schedules
     ADD CONSTRAINT fk_11e3ebfcdd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

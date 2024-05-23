@@ -53,6 +53,8 @@ workflow:
     - source scripts/qa/cng_deploy/cng-kind.sh
     - cd qa && bundle install
     - bundle exec cng create cluster --ci
+    # Currently this only performs pre-deploy setup
+    - bundle exec cng create deployment --ci
     - deploy ${GITLAB_DOMAIN}
   script:
     - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- --force-color --order random --format documentation"

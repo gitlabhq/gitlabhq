@@ -11,7 +11,7 @@ RSpec.describe 'Projects > Show > Redirects', feature_category: :groups_and_proj
     allow(Gitlab.config.gitlab).to receive(:host).and_return('www.example.com')
   end
 
-  it 'shows public project page' do
+  it 'shows public project page', :js do
     visit project_path(public_project)
 
     within_testid 'breadcrumb-links' do

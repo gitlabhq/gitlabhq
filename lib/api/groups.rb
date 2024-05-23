@@ -227,6 +227,10 @@ module API
         use :with_custom_attributes
       end
       get feature_category: :groups_and_projects do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:groups_api)
+        end
+
         groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups_with_pagination_strategies params, groups
       end
@@ -308,6 +312,10 @@ module API
       end
       # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/357841
       get ":id", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:group_api)
+        end
+
         group = find_group!(params[:id])
         group.preload_shared_group_links
 
@@ -356,6 +364,10 @@ module API
       end
       # TODO: Set higher urgency after resolving https://gitlab.com/gitlab-org/gitlab/-/issues/211498
       get ":id/projects", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:group_projects_api)
+        end
+
         finder_options = {
           exclude_shared: !params[:with_shared],
           include_subgroups: params[:include_subgroups],

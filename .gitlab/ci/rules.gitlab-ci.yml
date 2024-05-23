@@ -1813,6 +1813,9 @@
     - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
     - <<: *if-merge-request
       changes: *qa-patterns
+    - <<: *if-merge-request
+      changes:
+        - gems/gitlab-cng/**/*.rb
 
 .qa:rules:package-and-test-nightly:
   rules:

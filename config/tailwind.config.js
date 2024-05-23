@@ -116,6 +116,10 @@ module.exports = {
       200: '200',
       9999: '9999',
     },
+    // TODO: Backport to GitLab UI.
+    lineHeight: {
+      reset: 'inherit',
+    },
     // These extends probably should be moved to GitLab UI:
     extend: {
       // TODO: Backport to GitLab UI. This should be part of the default colors config.

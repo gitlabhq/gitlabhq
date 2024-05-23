@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Configure project templates and make them available to all projects on your GitLab instance."
 ---
 
 # Custom instance-level project templates

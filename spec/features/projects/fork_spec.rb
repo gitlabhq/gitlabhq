@@ -96,10 +96,10 @@ RSpec.describe 'Project fork', feature_category: :source_code_management do
         :forking_access_level, forking_access_level)
     end
 
-    context 'forking is enabled' do
+    context 'forking is enabled', :js do
       let(:forking_access_level) { ProjectFeature::ENABLED }
 
-      it 'enables fork button', :js do
+      it 'enables fork button' do
         visit project_path(project)
 
         fork_button = find_link 'Fork'
@@ -109,7 +109,6 @@ RSpec.describe 'Project fork', feature_category: :source_code_management do
       it 'renders new project fork page' do
         visit new_project_fork_path(project)
 
-        expect(page.status_code).to eq(200)
         expect(page).to have_text(fork_page_text)
       end
     end
@@ -157,12 +156,12 @@ RSpec.describe 'Project fork', feature_category: :source_code_management do
         end
       end
 
-      context 'user is a team member' do
+      context 'user is a team member', :js do
         before do
           project.add_developer(user)
         end
 
-        it 'enables fork button', :js do
+        it 'enables fork button' do
           visit project_path(project)
 
           fork_button = find_link 'Fork'
@@ -174,7 +173,6 @@ RSpec.describe 'Project fork', feature_category: :source_code_management do
         it 'renders new project fork page' do
           visit new_project_fork_path(project)
 
-          expect(page.status_code).to eq(200)
           expect(page).to have_text(fork_page_text)
         end
       end

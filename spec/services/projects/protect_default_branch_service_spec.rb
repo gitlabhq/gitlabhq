@@ -6,6 +6,18 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
   let(:service) { described_class.new(project) }
   let(:project) { create(:project) }
 
+  let(:allowed_to_push) { Gitlab::Access::MAINTAINER }
+  let(:allowed_to_merge) { Gitlab::Access::MAINTAINER }
+
+  let(:protection_settings) do
+    {
+      allowed_to_push: [{ 'access_level' => allowed_to_push }],
+      allowed_to_merge: [{ 'access_level' => allowed_to_merge }],
+      allow_force_push: false,
+      developer_can_initial_push: false
+    }
+  end
+
   describe '#execute' do
     before do
       allow(service)
@@ -298,13 +310,39 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
       end
     end
 
-    context 'when developers can not push' do
+    context 'when maintainer can push' do
+      let(:allowed_to_push) { Gitlab::Access::MAINTAINER }
+
       it 'returns the MAINTAINER access level' do
         allow(project.namespace)
           .to receive(:default_branch_protection_settings)
-                .and_return(Gitlab::Access::BranchProtection.protected_against_developer_pushes)
+                .and_return(protection_settings)
 
         expect(service.push_access_level).to eq(Gitlab::Access::MAINTAINER)
+      end
+    end
+
+    context 'when no one can push' do
+      let(:allowed_to_push) { Gitlab::Access::NO_ACCESS }
+
+      it 'returns the NO_ACCESS access level' do
+        allow(project.namespace)
+          .to receive(:default_branch_protection_settings)
+                .and_return(protection_settings)
+
+        expect(service.push_access_level).to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
+
+    context 'when admin can push' do
+      let(:allowed_to_push) { Gitlab::Access::ADMIN }
+
+      it 'returns the ADMIN access level' do
+        allow(project.namespace)
+          .to receive(:default_branch_protection_settings)
+                .and_return(protection_settings)
+
+        expect(service.push_access_level).to eq(Gitlab::Access::ADMIN)
       end
     end
   end
@@ -320,13 +358,37 @@ RSpec.describe Projects::ProtectDefaultBranchService, feature_category: :source_
       end
     end
 
-    context 'when developers can not merge' do
+    context 'when maintainers can merge' do
       it 'returns the MAINTAINER access level' do
         allow(project.namespace)
           .to receive(:default_branch_protection_settings)
                 .and_return(Gitlab::Access::BranchProtection.protection_partial)
 
         expect(service.merge_access_level).to eq(Gitlab::Access::MAINTAINER)
+      end
+    end
+
+    context 'when no one can merge' do
+      let(:allowed_to_merge) { Gitlab::Access::NO_ACCESS }
+
+      it 'returns the NO_ACCESS access level' do
+        allow(project.namespace)
+          .to receive(:default_branch_protection_settings)
+                .and_return(protection_settings)
+
+        expect(service.merge_access_level).to eq(Gitlab::Access::NO_ACCESS)
+      end
+    end
+
+    context 'when admin can merge' do
+      let(:allowed_to_merge) { Gitlab::Access::ADMIN }
+
+      it 'returns the ADMIN access level' do
+        allow(project.namespace)
+          .to receive(:default_branch_protection_settings)
+                .and_return(protection_settings)
+
+        expect(service.merge_access_level).to eq(Gitlab::Access::ADMIN)
       end
     end
   end

@@ -51,7 +51,8 @@ You can set these rate limits in the Admin Area of your instance:
 - [GitLab Pages rate limits](../administration/pages/index.md#rate-limits)
 - [Pipeline rate limits](../administration/settings/rate_limit_on_pipelines_creation.md)
 - [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
-- [Unauthenticated access to Projects List API rate limits](../administration/settings/rate_limit_on_projects_api.md)
+- [Projects API rate limits](../administration/settings/rate_limit_on_projects_api.md)
+- [Groups API rate limits](../administration/settings/rate_limit_on_groups_api.md)
 
 You can set these rate limits using the Rails console:
 

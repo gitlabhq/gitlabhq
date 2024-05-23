@@ -870,16 +870,117 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(current_settings.gitlab_shell_operation_limit).to eq(100)
       end
 
-      it 'changes Projects API rate limits settings' do
-        visit network_admin_application_settings_path
+      shared_examples 'API rate limit setting' do
+        it 'changes the rate limits settings' do
+          visit network_admin_application_settings_path
 
-        page.within('.as-projects-api-limits') do
-          fill_in 'Maximum requests per 10 minutes per IP address', with: 100
-          click_button 'Save changes'
+          new_rate_limit = 1234
+          page.within(network_settings_section) do
+            fill_in rate_limit_field, with: new_rate_limit
+            click_button 'Save changes'
+          end
+
+          expect(page).to have_content 'Application settings saved successfully'
+          expect(current_settings[application_setting_key]).to eq(new_rate_limit)
+        end
+      end
+
+      describe 'groups API rate limits' do
+        let_it_be(:network_settings_section) { '.as-groups-api-limits' }
+
+        context 'for unauthenticated GET /groups API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /groups', timeframe: 'minute')
+          end
+
+          let_it_be(:application_setting_key) { :groups_api_limit }
+
+          it_behaves_like 'API rate limit setting'
         end
 
-        expect(page).to have_content 'Application settings saved successfully'
-        expect(current_settings.projects_api_rate_limit_unauthenticated).to eq(100)
+        context 'for GET /groups/:id API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /groups/:id', timeframe: 'minute')
+          end
+
+          let_it_be(:application_setting_key) { :group_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /groups/:id/projects API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /groups/:id/projects', timeframe: 'minute')
+          end
+
+          let_it_be(:application_setting_key) { :group_projects_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+      end
+
+      describe 'projects API rate limits' do
+        let_it_be(:network_settings_section) { '.as-projects-api-limits' }
+
+        context 'for unauthenticated GET /projects API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per IP address for unauthenticated requests'), api_name: 'GET /projects', timeframe: '10 minutes')
+          end
+
+          let_it_be(:application_setting_key) { :projects_api_rate_limit_unauthenticated }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /projects API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user for authenticated requests'), api_name: 'GET /projects', timeframe: '10 minutes')
+          end
+
+          let_it_be(:application_setting_key) { :projects_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /projects/:id API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /projects/:id', timeframe: 'minute')
+          end
+
+          let_it_be(:application_setting_key) { :project_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /users/:user_id/projects API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/projects', timeframe: 'minute')
+          end
+
+          let_it_be(:application_setting_key) { :user_projects_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /users/:user_id/contributed_projects API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/contributed_projects', timeframe: 'minute')
+          end
+
+          let_it_be(:application_setting_key) { :user_contributed_projects_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /users/:user_id/starred_projects API requests' do
+          let_it_be(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/starred_projects', timeframe: 'minute')
+          end
+
+          let_it_be(:application_setting_key) { :user_starred_projects_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
       end
 
       shared_examples 'regular throttle rate limit settings' do

@@ -565,9 +565,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
     describe 'runner show page breadcrumbs' do
       it 'contains the current runner id and token' do
         within_testid('breadcrumb-links') do
-          expect(find_by_testid('breadcrumb-current-link')).to have_link(
-            "##{runner.id} (#{runner.short_sha})"
-          )
+          expect(find('li:last-of-type')).to have_link("##{runner.id} (#{runner.short_sha})")
         end
       end
     end
@@ -603,7 +601,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
     end
   end
 
-  describe "Runner edit page" do
+  describe "Runner edit page", :js do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
     let_it_be(:project_runner) { create(:ci_runner, :unregistered, :project) }
@@ -623,7 +621,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
       it 'contains the current runner id and token' do
         within_testid('breadcrumb-links') do
           expect(page).to have_link("##{project_runner.id} (#{project_runner.short_sha})")
-          expect(find_by_testid('breadcrumb-current-link')).to have_content("Edit")
+          expect(find('li:last-of-type')).to have_content("Edit")
         end
       end
     end

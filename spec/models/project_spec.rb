@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_projects do
+  include ContainerRegistryHelpers
   include ProjectForksHelper
   include ExternalAuthorizationServiceHelpers
   include ReloadHelpers
@@ -3393,31 +3394,50 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     subject { project.container_repositories_size }
 
-    context 'on gitlab.com' do
-      where(:no_container_repositories, :all_migrated, :gitlab_api_supported, :returned_size, :expected_result) do
-        true  | nil   | nil   | nil | 0
-        false | false | nil   | nil | nil
-        false | true  | false | nil | nil
-        false | true  | true  | 555 | 555
-        false | true  | true  | nil | nil
+    context 'when there are no container repositories' do
+      before do
+        allow(project.container_repositories).to receive(:empty?).and_return(true)
       end
 
-      with_them do
-        before do
-          stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
-          allow(Gitlab).to receive(:com?).and_return(true)
-          allow(project.container_repositories).to receive(:empty?).and_return(no_container_repositories)
-          allow(project.container_repositories).to receive(:all_migrated?).and_return(all_migrated)
-          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)
-          allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project.full_path).and_return(returned_size)
-        end
-
-        it { is_expected.to eq(expected_result) }
-      end
+      it { is_expected.to eq(0) }
     end
 
-    context 'not on gitlab.com' do
-      it { is_expected.to eq(nil) }
+    context 'when there are container repositories' do
+      include_context 'container registry client stubs'
+
+      before do
+        allow(project.container_repositories).to receive(:empty?).and_return(false)
+      end
+
+      context 'when the GitLab API is supported' do
+        before do
+          stub_gitlab_api_client_to_support_gitlab_api(supported: true)
+        end
+
+        context 'when the Gitlab API client returns a value for deduplicated_size' do
+          before do
+            allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project.full_path).and_return(123)
+          end
+
+          it { is_expected.to eq(123) }
+        end
+
+        context 'when the Gitlab API client returns nil for deduplicated_size' do
+          before do
+            allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project.full_path).and_return(nil)
+          end
+
+          it { is_expected.to be_nil }
+        end
+      end
+
+      context 'when the GitLab API is not supported' do
+        before do
+          stub_gitlab_api_client_to_support_gitlab_api(supported: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
   end
 

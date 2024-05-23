@@ -14,15 +14,15 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
     allow(Gitlab::Cng::Helpers::Spinner).to receive(:spin).and_yield
     allow(File).to receive(:write).with(tmp_config_path, kind_config_content)
 
-    allow(Open3).to receive(:capture2e).with({}, *%w[
+    allow(Open3).to receive(:popen2e).with({}, *%w[
       kind get clusters
     ]).and_return([clusters, command_status])
-    allow(Open3).to receive(:capture2e).with({}, *[
+    allow(Open3).to receive(:popen2e).with({}, *[
       "kind",
       "create",
       "cluster",
       "--name", name,
-      "--wait", "10s",
+      "--wait", "30s",
       "--config", tmp_config_path
     ]).and_return(["", command_status])
   end
@@ -66,10 +66,10 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
 
     context "without existing cluster" do
       before do
-        allow(Open3).to receive(:capture2e).with({}, *[
+        allow(Open3).to receive(:popen2e).with({}, *[
           "kubectl", "config", "view", "-o", "jsonpath={.clusters[?(@.name == \"kind-#{name}\")].cluster.server}"
         ]).and_return(["https://127.0.0.1:6443", command_status])
-        allow(Open3).to receive(:capture2e).with({}, *%W[
+        allow(Open3).to receive(:popen2e).with({}, *%W[
           kubectl config set-cluster kind-#{name} --server=https://#{docker_hostname}:6443
         ]).and_return(["", command_status])
       end

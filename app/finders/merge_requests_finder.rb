@@ -269,6 +269,10 @@ class MergeRequestsFinder < IssuableFinder
   end
 
   def parse_datetime(input)
+    # NOTE: Input from GraphQL query is a Time object already.
+    #   Just return DateTime object for consistency instead of trying to parse it.
+    return input.to_datetime if input.is_a?(Time)
+
     # To work around http://www.ruby-lang.org/en/news/2021/11/15/date-parsing-method-regexp-dos-cve-2021-41817/
     DateTime.parse(input.byteslice(0, 128)) if input
   rescue Date::Error
