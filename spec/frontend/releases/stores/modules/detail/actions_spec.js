@@ -5,7 +5,7 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { getTag } from '~/api/tags_api';
 import { createAlert } from '~/alert';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { s__ } from '~/locale';
 import { ASSET_LINK_TYPE } from '~/releases/constants';
@@ -25,7 +25,7 @@ jest.mock('~/alert');
 
 jest.mock('~/lib/utils/accessor');
 jest.mock('~/lib/utils/url_utility', () => ({
-  redirectTo: jest.fn(),
+  visitUrl: jest.fn(),
   joinPaths: jest.requireActual('~/lib/utils/url_utility').joinPaths,
 }));
 
@@ -549,8 +549,8 @@ describe('Release edit/new actions', () => {
           { commit: jest.fn(), state, dispatch: jest.fn() },
           selfUrl,
         );
-        expect(redirectTo).toHaveBeenCalledTimes(1); // eslint-disable-line import/no-deprecated
-        expect(redirectTo).toHaveBeenCalledWith(selfUrl); // eslint-disable-line import/no-deprecated
+        expect(visitUrl).toHaveBeenCalledTimes(1);
+        expect(visitUrl).toHaveBeenCalledWith(selfUrl);
       });
     });
 

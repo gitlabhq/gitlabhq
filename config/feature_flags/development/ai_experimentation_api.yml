@@ -1,8 +1,0 @@
----
-name: ai_experimentation_api
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117369
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/406754
-milestone: '15.11'
-type: development
-group: group::ai framework
-default_enabled: false

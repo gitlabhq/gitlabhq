@@ -146,6 +146,7 @@ module.exports = {
         'inner-l-4-gray-100': 'inset 4px 0 0 0 var(--gray-100, #dcdcde)',
         'inner-1-red-400': 'inset 0 0 0 1px var(--red-400, #ec5941)',
         'inner-1-gray-400': 'inset 0 0 0 1px var(--gray-400, #89888d)',
+        'inner-2-blue-400': 'inset 0 0 0 2px var(--blue-400, #428fdc)',
         'inner-1-blue-500': 'inset 0 0 0 1px var(--blue-500, #1f75cb)',
         'inner-1-red-500': 'inset 0 0 0 1px var(--red-500, #dd2b0e)',
         'inner-l-3-red-600': 'inset 3px 0 0 0 var(--red-600, #c91c00)',

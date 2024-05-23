@@ -2597,7 +2597,6 @@ Style/InlineDisableAnnotation:
     - 'qa/qa/resource/ci_cd_settings.rb'
     - 'qa/qa/resource/graphql.rb'
     - 'qa/qa/resource/registry_repository.rb'
-    - 'qa/qa/resource/runner_base.rb'
     - 'qa/qa/runtime/api/client.rb'
     - 'qa/qa/runtime/browser.rb'
     - 'qa/qa/runtime/env.rb'

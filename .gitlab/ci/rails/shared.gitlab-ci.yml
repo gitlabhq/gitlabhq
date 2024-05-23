@@ -56,6 +56,10 @@ include:
   variables:
     GITALY_PRAEFECT_WITH_DB: '1'
 
+.gitaly-with-transactions:
+  variables:
+    GITALY_TRANSACTIONS_ENABLED: "true"
+
 .rspec-base-needs:
   needs:
     - job: "clone-gitlab-repo"

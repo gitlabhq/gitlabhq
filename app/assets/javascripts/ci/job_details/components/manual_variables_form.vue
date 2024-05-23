@@ -16,7 +16,7 @@ import { TYPENAME_CI_BUILD, TYPENAME_COMMIT_STATUS } from '~/graphql_shared/cons
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { JOB_GRAPHQL_ERRORS } from '~/ci/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import GetJob from '../graphql/queries/get_job.query.graphql';
@@ -191,7 +191,7 @@ export default {
       return `${this.$options.inputTypes[type]}-${id}`;
     },
     navigateToJob(path) {
-      redirectTo(path); // eslint-disable-line import/no-deprecated
+      visitUrl(path);
     },
     runJob() {
       this.runBtnDisabled = true;

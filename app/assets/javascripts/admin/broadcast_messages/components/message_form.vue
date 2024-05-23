@@ -14,7 +14,7 @@ import {
 import axios from '~/lib/utils/axios_utils';
 import { s__, __ } from '~/locale';
 import { createAlert, VARIANT_DANGER } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
@@ -204,7 +204,7 @@ export default {
 
       const success = await this.submitForm();
       if (success) {
-        redirectTo(this.messagesPath); // eslint-disable-line import/no-deprecated
+        visitUrl(this.messagesPath);
       } else {
         this.loading = false;
       }

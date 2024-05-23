@@ -16,7 +16,7 @@ import { buildApiUrl } from '~/api/api_utils';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import csrf from '~/lib/utils/csrf';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __ } from '~/locale';
 import validation from '~/vue_shared/directives/validation';
 import {
@@ -280,7 +280,7 @@ export default {
 
       try {
         const { data } = await axios.post(url, postParams);
-        redirectTo(data.web_url); // eslint-disable-line import/no-deprecated
+        visitUrl(data.web_url);
       } catch (error) {
         this.isSaving = false;
         const message =

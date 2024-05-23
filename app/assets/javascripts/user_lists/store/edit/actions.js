@@ -1,5 +1,5 @@
 import Api from '~/api';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import { getErrorMessages } from '../utils';
 import * as types from './mutation_types';
 
@@ -17,6 +17,6 @@ export const updateUserList = ({ commit, state }, userList) => {
     iid: userList.iid,
     name: userList.name,
   })
-    .then(({ data }) => redirectTo(data.path)) // eslint-disable-line import/no-deprecated
+    .then(({ data }) => visitUrl(data.path))
     .catch((response) => commit(types.RECEIVE_USER_LIST_ERROR, getErrorMessages(response)));
 };

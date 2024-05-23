@@ -8,7 +8,7 @@ import { TYPENAME_CI_BUILD } from '~/graphql_shared/constants';
 import { JOB_GRAPHQL_ERRORS } from '~/ci/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import ManualVariablesForm from '~/ci/job_details/components/manual_variables_form.vue';
 import getJobQuery from '~/ci/job_details/graphql/queries/get_job.query.graphql';
 import playJobMutation from '~/ci/job_details/graphql/mutations/job_play_with_variables.mutation.graphql';
@@ -28,7 +28,7 @@ Vue.use(VueApollo);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
-  redirectTo: jest.fn(),
+  visitUrl: jest.fn(),
 }));
 
 const defaultProvide = {
@@ -209,7 +209,7 @@ describe('Manual Variables Form', () => {
       await waitForPromises();
 
       expect(requestHandlers.playJobMutationHandler).toHaveBeenCalledTimes(1);
-      expect(redirectTo).toHaveBeenCalledWith(mockJobPlayMutationData.data.jobPlay.job.webPath); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).toHaveBeenCalledWith(mockJobPlayMutationData.data.jobPlay.job.webPath);
     });
 
     it('does not refetch variables after job is run', async () => {
@@ -263,7 +263,7 @@ describe('Manual Variables Form', () => {
       await waitForPromises();
 
       expect(requestHandlers.retryJobMutationHandler).toHaveBeenCalledTimes(1);
-      expect(redirectTo).toHaveBeenCalledWith(mockJobRetryMutationData.data.jobRetry.job.webPath); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).toHaveBeenCalledWith(mockJobRetryMutationData.data.jobRetry.job.webPath);
     });
 
     it('does not refetch variables after job is rerun', async () => {

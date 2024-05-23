@@ -2,7 +2,7 @@
 import { GlModal } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import {
   CANCEL_TEXT,
   CANCEL_JOBS_FAILED_TEXT,
@@ -30,8 +30,8 @@ export default {
       return axios
         .post(this.url)
         .then((response) => {
-          // follow the rediect to refresh the page
-          redirectTo(response.request.responseURL); // eslint-disable-line import/no-deprecated
+          // follow the redirect to refresh the page
+          visitUrl(response.request.responseURL);
         })
         .catch((error) => {
           createAlert({

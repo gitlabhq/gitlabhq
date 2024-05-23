@@ -805,6 +805,11 @@ class User < MainClusterwide::ApplicationRecord
 
       items = [from_users, from_emails]
 
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/461885
+      # What about private commit emails with capitalized username, we'd never find them and
+      # since the private_commit_email derives from the username, it can
+      # be uppercase in parts. So we'll never find an existing user during the invite
+      # process by email if that is true as we are case sensitive in this case.
       user_ids = Gitlab::PrivateCommitEmail.user_ids_for_emails(Array(emails).map(&:downcase))
       items << where(id: user_ids) if user_ids.present?
 

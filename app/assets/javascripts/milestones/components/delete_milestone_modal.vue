@@ -3,7 +3,7 @@ import { GlSprintf, GlModal } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, s__, sprintf } from '~/locale';
 import eventHub from '../event_hub';
 
@@ -80,8 +80,8 @@ Once deleted, it cannot be undone or recovered.`),
             successful: true,
           });
 
-          // follow the rediect to milestones overview page
-          redirectTo(response.request.responseURL); // eslint-disable-line import/no-deprecated
+          // follow the redirect to milestones overview page
+          visitUrl(response.request.responseURL);
         })
         .catch((error) => {
           eventHub.$emit('deleteMilestoneModal.requestFinished', {

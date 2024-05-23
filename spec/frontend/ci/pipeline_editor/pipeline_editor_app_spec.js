@@ -7,7 +7,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR } from '~/lib/utils/http_status';
-import { objectToQuery, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 import PipelineEditorTabs from '~/ci/pipeline_editor/components/pipeline_editor_tabs.vue';
 import PipelineEditorEmptyState from '~/ci/pipeline_editor/components/ui/pipeline_editor_empty_state.vue';
@@ -51,7 +51,7 @@ import {
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
-  redirectTo: jest.fn(),
+  visitUrl: jest.fn(),
 }));
 
 const defaultProvide = {
@@ -400,7 +400,7 @@ describe('Pipeline editor app component', () => {
             'merge_request[target_branch]': mockDefaultBranch,
           });
 
-          expect(redirectTo).toHaveBeenCalledWith(`${mockNewMergeRequestPath}?${branchesQuery}`); // eslint-disable-line import/no-deprecated
+          expect(visitUrl).toHaveBeenCalledWith(`${mockNewMergeRequestPath}?${branchesQuery}`);
         });
       });
 

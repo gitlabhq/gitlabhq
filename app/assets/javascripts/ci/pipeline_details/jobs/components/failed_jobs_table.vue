@@ -4,7 +4,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import Tracking from '~/tracking';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { TRACKING_CATEGORIES } from '~/ci/constants';
 import RetryFailedJobMutation from '../graphql/mutations/retry_failed_job.mutation.graphql';
@@ -45,7 +45,7 @@ export default {
         if (errors.length > 0) {
           this.showErrorMessage();
         } else {
-          redirectTo(job.detailedStatus.detailsPath); // eslint-disable-line import/no-deprecated
+          visitUrl(job.detailedStatus.detailsPath);
         }
       } catch {
         this.showErrorMessage();

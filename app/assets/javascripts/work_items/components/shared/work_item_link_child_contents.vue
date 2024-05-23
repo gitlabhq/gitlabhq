@@ -145,7 +145,7 @@ export default {
 
 <template>
   <div
-    class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-rounded-base gl-p-3 gl-gap-3"
+    class="item-body work-item-link-child gl-relative gl-display-flex gl-flex-grow-1 gl-break-words gl-hyphens-auto gl-min-w-0 gl-rounded-base gl-p-3 gl-gap-3"
     data-testid="links-child"
   >
     <div ref="stateIcon" class="gl-cursor-help">
@@ -171,7 +171,7 @@ export default {
           </span>
           <gl-link
             :href="childItem.webUrl"
-            class="gl-overflow-break-word gl-font-weight-semibold"
+            class="gl-break-words gl-hyphens-auto gl-font-weight-semibold"
             @click="$emit('click', $event)"
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"

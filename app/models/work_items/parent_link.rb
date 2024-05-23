@@ -106,7 +106,7 @@ module WorkItems
       end
 
       if work_item_parent.ancestors.detect { |ancestor| work_item.id == ancestor.id }
-        errors.add :work_item, _('is already present in ancestors')
+        errors.add :work_item, _("it's already present in this item's hierarchy")
       end
     end
 

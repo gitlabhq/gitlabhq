@@ -1,13 +1,5 @@
 <script>
-import {
-  GlAlert,
-  GlFormGroup,
-  GlForm,
-  GlButton,
-  GlFormInput,
-  GlFormCheckbox,
-  GlTooltip,
-} from '@gitlab/ui';
+import { GlFormGroup, GlForm, GlButton, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import { addHierarchyChild } from '../../graphql/cache_utils';
@@ -29,7 +21,6 @@ import {
 
 export default {
   components: {
-    GlAlert,
     GlForm,
     GlButton,
     GlFormGroup,
@@ -312,41 +303,38 @@ export default {
     data-testid="add-item-form"
     @submit.prevent="addOrCreateMethod"
   >
-    <gl-alert v-if="error" variant="danger" class="gl-mb-3" @dismiss="unsetError">
-      {{ error }}
-    </gl-alert>
-    <gl-form-group
-      v-if="isCreateForm"
-      :label="$options.i18n.inputLabel"
-      :description="$options.i18n.fieldValidationMessage"
-    >
-      <gl-form-input
-        ref="wiTitleInput"
-        v-model="search"
-        :placeholder="$options.i18n.createPlaceholder"
-        maxlength="255"
-        class="gl-mb-3"
-        autofocus
-      />
-    </gl-form-group>
-    <gl-form-checkbox
-      v-if="isCreateForm"
-      ref="confidentialityCheckbox"
-      v-model="confidential"
-      name="isConfidential"
-      class="gl-md-mt-5 gl-mb-5 gl-md-mb-3!"
-      :disabled="parentConfidential"
-      >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
-    >
-    <gl-tooltip
-      v-if="showConfidentialityTooltip"
-      :target="getConfidentialityTooltipTarget"
-      triggers="hover"
-      >{{ confidentialityCheckboxTooltip }}</gl-tooltip
-    >
-    <div class="gl-mb-4">
+    <template v-if="isCreateForm">
+      <gl-form-group
+        :label="$options.i18n.inputLabel"
+        :description="$options.i18n.fieldValidationMessage"
+        :invalid-feedback="error"
+      >
+        <gl-form-input
+          ref="wiTitleInput"
+          v-model="search"
+          :placeholder="$options.i18n.createPlaceholder"
+          maxlength="255"
+          class="gl-mb-3"
+          autofocus
+        />
+      </gl-form-group>
+      <gl-form-checkbox
+        ref="confidentialityCheckbox"
+        v-model="confidential"
+        name="isConfidential"
+        class="gl-md-mt-5 gl-mb-5 gl-md-mb-3!"
+        :disabled="parentConfidential"
+        >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
+      >
+      <gl-tooltip
+        v-if="showConfidentialityTooltip"
+        :target="getConfidentialityTooltipTarget"
+        triggers="hover"
+        >{{ confidentialityCheckboxTooltip }}</gl-tooltip
+      >
+    </template>
+    <div v-else class="gl-mb-4">
       <work-item-token-input
-        v-if="!isCreateForm"
         v-model="workItemsToAdd"
         :is-create-form="isCreateForm"
         :parent-work-item-id="issuableGid"
@@ -361,6 +349,9 @@ export default {
         data-testid="work-items-invalid"
       >
         {{ workItemsToAddInvalidMessage }}
+      </div>
+      <div v-if="error" class="gl-text-red-500">
+        {{ error }}
       </div>
     </div>
     <gl-button

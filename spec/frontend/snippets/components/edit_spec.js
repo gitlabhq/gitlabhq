@@ -104,7 +104,7 @@ describe('Snippet Edit app', () => {
     mutateSpy = jest.fn().mockImplementation((key) => Promise.resolve(createMutationResponse(key)));
 
     gon.relative_url_root = relativeUrlRoot;
-    jest.spyOn(urlUtils, 'redirectTo').mockImplementation();
+    jest.spyOn(urlUtils, 'visitUrl').mockImplementation();
   });
 
   const findBlobActions = () => wrapper.findComponent(SnippetBlobActionsEdit);
@@ -329,7 +329,7 @@ describe('Snippet Edit app', () => {
       it('should redirect to snippet view on successful mutation', async () => {
         await createComponentAndSubmit();
 
-        expect(urlUtils.redirectTo).toHaveBeenCalledWith(TEST_WEB_URL); // eslint-disable-line import/no-deprecated
+        expect(urlUtils.visitUrl).toHaveBeenCalledWith(TEST_WEB_URL);
       });
 
       describe('when there are errors after creating a new snippet', () => {
@@ -350,7 +350,7 @@ describe('Snippet Edit app', () => {
 
           await waitForPromises();
 
-          expect(urlUtils.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+          expect(urlUtils.visitUrl).not.toHaveBeenCalled();
           expect(createAlert).toHaveBeenCalledWith({
             message: `Can't create snippet: ${TEST_MUTATION_ERROR}`,
           });
@@ -374,7 +374,7 @@ describe('Snippet Edit app', () => {
               },
             });
 
-            expect(urlUtils.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+            expect(urlUtils.visitUrl).not.toHaveBeenCalled();
             expect(createAlert).toHaveBeenCalledWith({
               message: `Can't update snippet: ${TEST_MUTATION_ERROR}`,
             });
@@ -392,7 +392,7 @@ describe('Snippet Edit app', () => {
         });
 
         it('should not redirect', () => {
-          expect(urlUtils.redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+          expect(urlUtils.visitUrl).not.toHaveBeenCalled();
         });
 
         it('should alert', () => {

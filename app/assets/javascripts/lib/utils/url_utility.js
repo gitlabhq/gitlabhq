@@ -696,15 +696,6 @@ export const removeLastSlashInUrlPath = (url) =>
   url.replace(/\/$/, '').replace(/\/(\?|#){1}([^/]*)$/, '$1$2');
 
 /**
- * Navigates to a URL
- * @deprecated Use visitUrl from ~/lib/utils/url_utility.js instead
- * @param {*} url
- */
-export function redirectTo(url) {
-  return window.location.assign(url);
-}
-
-/**
  * Navigates to a URL.
  *
  * If destination is a querystring, it will be automatically transformed into a fully qualified URL.

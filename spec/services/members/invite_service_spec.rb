@@ -6,7 +6,7 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
   feature_category: :groups_and_projects do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:user) { project.first_owner }
-  let_it_be(:project_user) { create(:user) }
+  let_it_be(:project_user, reload: true) { create(:user) }
   let_it_be(:user_invited_by_id) { create(:user) }
   let_it_be(:namespace) { project.namespace }
 
@@ -257,6 +257,50 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
     end
   end
 
+  context 'with case insensitive emails' do
+    let(:params) { { email: %w[email@example.org EMAIL@EXAMPLE.ORG] } }
+
+    it 'only creates one member and returns the error object correctly formatted' do
+      expect_to_create_members(count: 1)
+      expect(result[:status]).to eq(:error)
+      expect(result[:message][params[:email].last]).to eq("The member's email address has already been taken")
+    end
+
+    context 'when the invite already exists for the last email' do
+      let(:params) { { email: %w[EMAIL@EXAMPLE.ORG], access_level: -1 } }
+
+      before do
+        create(:project_member, :invited, source: project, invite_email: 'EMAIL@EXAMPLE.ORG')
+      end
+
+      it 'returns an error object correctly formatted' do
+        expect(result[:message]['EMAIL@EXAMPLE.ORG']).to eq("Access level is not included in the list")
+      end
+    end
+
+    context 'with invite email sent in as upper case of an existing user email' do
+      let(:params) { { email: project_user.email.upcase } }
+
+      before do
+        create(:project_member, source: project, user: project_user)
+      end
+
+      it 'does not create a new member' do
+        expect_to_create_members(count: 0)
+        expect(result[:status]).to eq(:success)
+      end
+    end
+
+    context 'with invite email sent in as upper case of an existing member user email' do
+      let(:params) { { email: user.email.upcase } }
+
+      it 'does not create a new member' do
+        expect_not_to_create_members
+        expect(result[:message][user.email.upcase]).to eq("not authorized to update member")
+      end
+    end
+  end
+
   context 'when observing invite limits' do
     context 'with emails and in general' do
       let_it_be(:emails) { Array(1..101).map { |n| "email#{n}@example.com" } }
@@ -335,6 +379,24 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
         expect(project.users).to include project_user
       end
     end
+
+    context 'with case sensitive private_commit_email' do
+      let(:email) do
+        "#{user.id}-bobby_tables@#{Gitlab::CurrentSettings.current_application_settings.commit_email_hostname}"
+      end
+
+      let(:params) { { email: email.upcase } }
+
+      it 'does not find the existing user and creates a new member as an invite' do
+        # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/461885 will change this logic so that the existing
+        # user is found once we are case insensitive for private_commit_email
+        expect(project.users).to include user
+
+        expect_to_create_members(count: 1)
+        expect(result[:status]).to eq(:success)
+        expect(project.members.last).to be_invite
+      end
+    end
   end
 
   context 'when access level is not valid' do
@@ -344,6 +406,42 @@ RSpec.describe Members::InviteService, :aggregate_failures, :clean_gitlab_redis_
       it 'returns an error' do
         expect_not_to_create_members
         expect(result[:message][project_user.email]).to eq("Access level is not included in the list")
+      end
+
+      context 'with upper case private commit email due to username casing' do
+        let(:email) do
+          hostname = Gitlab::CurrentSettings.current_application_settings.commit_email_hostname
+          "#{project_user.id}-bobby_tables@#{hostname}"
+        end
+
+        let(:params) { { email: email, access_level: -1 } }
+
+        before do
+          project_user.update!(username: 'BOBBY_TABLES')
+        end
+
+        it 'returns an error object correctly formatted' do
+          expect_not_to_create_members
+          expect(result[:message][email]).to eq("Access level is not included in the list")
+        end
+
+        context 'with invite email sent in as upper case' do
+          let(:params) { { email: email.upcase, access_level: -1 } }
+
+          it 'returns an error object correctly formatted' do
+            expect_not_to_create_members
+            expect(result[:message][email.upcase]).to eq("Access level is not included in the list")
+          end
+        end
+      end
+
+      context 'with invite email sent in as upper case' do
+        let(:params) { { email: project_user.email.upcase, access_level: -1 } }
+
+        it 'returns an error' do
+          expect_not_to_create_members
+          expect(result[:message][params[:email]]).to eq("Access level is not included in the list")
+        end
       end
     end
 

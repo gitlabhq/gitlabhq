@@ -3,7 +3,7 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import MembersFilteredSearchBar from '~/members/components/filter_sort/members_filtered_search_bar.vue';
 import {
   MEMBER_TYPES,
@@ -19,7 +19,7 @@ jest.mock('~/lib/utils/url_utility', () => {
   return {
     __esModule: true,
     ...urlUtility,
-    redirectTo: jest.fn(),
+    visitUrl: jest.fn(),
   };
 });
 
@@ -168,7 +168,7 @@ describe('MembersFilteredSearchBar', () => {
         { type: FILTERED_SEARCH_TOKEN_TWO_FACTOR.type, value: { data: 'enabled', operator: '=' } },
       ]);
 
-      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?two_factor=enabled'); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).toHaveBeenCalledWith('https://localhost/?two_factor=enabled');
     });
 
     it('adds search query param', () => {
@@ -179,10 +179,7 @@ describe('MembersFilteredSearchBar', () => {
         { type: FILTERED_SEARCH_TERM, value: { data: 'foobar' } },
       ]);
 
-      // eslint-disable-next-line import/no-deprecated
-      expect(redirectTo).toHaveBeenCalledWith(
-        'https://localhost/?two_factor=enabled&search=foobar',
-      );
+      expect(visitUrl).toHaveBeenCalledWith('https://localhost/?two_factor=enabled&search=foobar');
     });
 
     it('adds search query param with multiple words', () => {
@@ -193,8 +190,7 @@ describe('MembersFilteredSearchBar', () => {
         { type: FILTERED_SEARCH_TERM, value: { data: 'foo bar baz' } },
       ]);
 
-      // eslint-disable-next-line import/no-deprecated
-      expect(redirectTo).toHaveBeenCalledWith(
+      expect(visitUrl).toHaveBeenCalledWith(
         'https://localhost/?two_factor=enabled&search=foo+bar+baz',
       );
     });
@@ -209,8 +205,7 @@ describe('MembersFilteredSearchBar', () => {
         { type: FILTERED_SEARCH_TERM, value: { data: 'foobar' } },
       ]);
 
-      // eslint-disable-next-line import/no-deprecated
-      expect(redirectTo).toHaveBeenCalledWith(
+      expect(visitUrl).toHaveBeenCalledWith(
         'https://localhost/?two_factor=enabled&search=foobar&sort=name_asc',
       );
     });
@@ -224,7 +219,7 @@ describe('MembersFilteredSearchBar', () => {
         { type: FILTERED_SEARCH_TERM, value: { data: 'foobar' } },
       ]);
 
-      expect(redirectTo).toHaveBeenCalledWith('https://localhost/?search=foobar&tab=invited'); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).toHaveBeenCalledWith('https://localhost/?search=foobar&tab=invited');
     });
   });
 });

@@ -82,11 +82,11 @@ export default {
 
       <gl-table-lite :items="trigger.variables" :fields="$options.fields" small bordered fixed>
         <template #cell(key)="{ item }">
-          <span class="gl-overflow-break-word">{{ item.key }}</span>
+          <span class="gl-break-words gl-hyphens-auto">{{ item.key }}</span>
         </template>
 
         <template #cell(value)="data">
-          <span class="gl-overflow-break-word">{{ getDisplayValue(data.value) }}</span>
+          <span class="gl-break-words gl-hyphens-auto">{{ getDisplayValue(data.value) }}</span>
         </template>
       </gl-table-lite>
     </template>

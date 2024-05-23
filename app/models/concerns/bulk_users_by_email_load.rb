@@ -6,7 +6,11 @@ module BulkUsersByEmailLoad
   included do
     def users_by_emails(emails)
       Gitlab::SafeRequestLoader.execute(resource_key: user_by_email_resource_key, resource_ids: emails) do |emails|
-        # have to consider all emails - even secondary, so use all_emails here
+        # We have to consider all emails - even secondary, so use all_emails here to accomplish that.
+        # The by_any_email method will search for lowercased emails only, which means the
+        # private_commit_email values may not get cached properly due to it being able to be non-lowercased.
+        # That is likely ok as the use of those in the current use of this construct is likely very rare.
+        # Perhaps to be looked at more in https://gitlab.com/gitlab-org/gitlab/-/issues/461885
         grouped_users_by_email = User.by_any_email(emails, confirmed: true).preload(:emails).group_by(&:all_emails)
 
         grouped_users_by_email.each_with_object({}) do |(found_emails, users), h|

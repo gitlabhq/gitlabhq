@@ -2,7 +2,7 @@
 import { GlButton } from '@gitlab/ui';
 import { featureToMutationMap } from 'ee_else_ce/security_configuration/constants';
 import { parseErrorMessage } from '~/lib/utils/error_message';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import { sprintf, s__ } from '~/locale';
 import apolloProvider from '../provider';
 
@@ -77,7 +77,7 @@ export default {
           );
         }
 
-        redirectTo(successPath); // eslint-disable-line import/no-deprecated
+        visitUrl(successPath);
       } catch (e) {
         this.$emit('error', parseErrorMessage(e, this.$options.i18n.genericErrorText));
         this.isLoading = false;

@@ -61663,9 +61663,6 @@ msgstr ""
 msgid "is already linked to this vulnerability"
 msgstr ""
 
-msgid "is already present in ancestors"
-msgstr ""
-
 msgid "is an invalid IP address range"
 msgstr ""
 
@@ -61783,6 +61780,9 @@ msgid "it is stored in LFS"
 msgstr ""
 
 msgid "it is too large"
+msgstr ""
+
+msgid "it's already present in this item's hierarchy"
 msgstr ""
 
 msgid "item"

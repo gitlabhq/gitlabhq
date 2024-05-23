@@ -230,7 +230,7 @@ export default {
   <div>
     <div class="gl-display-flex" dir="auto">
       <h4
-        class="board-card-title gl-min-w-0 gl-mb-0 gl-mt-0 gl-mr-3 gl-font-base gl-overflow-break-word"
+        class="board-card-title gl-min-w-0 gl-mb-0 gl-mt-0 gl-mr-3 gl-font-base gl-break-words gl-hyphens-auto"
       >
         <issuable-blocked-icon
           v-if="item.blocked"

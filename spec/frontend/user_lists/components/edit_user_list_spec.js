@@ -5,7 +5,7 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import EditUserList from '~/user_lists/components/edit_user_list.vue';
 import UserListForm from '~/user_lists/components/user_list_form.vue';
 import createStore from '~/user_lists/store/edit';
@@ -115,7 +115,7 @@ describe('user_lists/components/edit_user_list', () => {
       });
 
       it('should redirect to the feature flag details page', () => {
-        expect(redirectTo).toHaveBeenCalledWith(userList.path); // eslint-disable-line import/no-deprecated
+        expect(visitUrl).toHaveBeenCalledWith(userList.path);
       });
     });
 
