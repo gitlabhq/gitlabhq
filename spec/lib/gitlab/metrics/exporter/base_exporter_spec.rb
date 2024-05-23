@@ -216,7 +216,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :cloud
       # in separate thread
       allow_any_instance_of(::WEBrick::HTTPServer)
         .to receive(:start).and_wrap_original do |m, *args|
-        Thread.new do
+        @request_thread = Thread.new do # rubocop:disable RSpec/InstanceVariable -- allowing for now
           m.call(*args)
         rescue IOError
           # is raised as we close listeners
@@ -226,6 +226,7 @@ RSpec.describe Gitlab::Metrics::Exporter::BaseExporter, feature_category: :cloud
 
     after do
       exporter.stop
+      @request_thread.kill.join # rubocop:disable RSpec/InstanceVariable -- allowing for now
     end
 
     with_them do
