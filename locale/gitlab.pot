@@ -39307,6 +39307,9 @@ msgstr ""
 msgid "ProductAnalytics|Back to dashboards"
 msgstr ""
 
+msgid "ProductAnalytics|By providing feedback on AI-generated content, you acknowledge that GitLab may review the prompts you submitted alongside this feedback."
+msgstr ""
+
 msgid "ProductAnalytics|Collector host"
 msgstr ""
 
@@ -39361,6 +39364,9 @@ msgstr ""
 msgid "ProductAnalytics|Events over time"
 msgstr ""
 
+msgid "ProductAnalytics|Feedback acknowledgement"
+msgstr ""
+
 msgid "ProductAnalytics|For more information, see the %{linkStart}docs%{linkEnd}."
 msgstr ""
 
@@ -39385,10 +39391,16 @@ msgstr ""
 msgid "ProductAnalytics|Help us improve Product Analytics Dashboards by sharing your experience."
 msgstr ""
 
+msgid "ProductAnalytics|Helpful"
+msgstr ""
+
 msgid "ProductAnalytics|How many sessions a user has"
 msgstr ""
 
 msgid "ProductAnalytics|How often users returned compared to all sessions"
+msgstr ""
+
+msgid "ProductAnalytics|How was the result?"
 msgstr ""
 
 msgid "ProductAnalytics|I agree to event collection and processing in this region."
@@ -39505,6 +39517,9 @@ msgstr ""
 msgid "ProductAnalytics|Tell us what you think!"
 msgstr ""
 
+msgid "ProductAnalytics|Thank you for your feedback."
+msgstr ""
+
 msgid "ProductAnalytics|The Product Analytics Beta on GitLab.com is offered only in the Google Cloud Platform zone %{zone}."
 msgstr ""
 
@@ -39553,6 +39568,9 @@ msgstr ""
 msgid "ProductAnalytics|Uncheck if you would like to configure a different provider for this project."
 msgstr ""
 
+msgid "ProductAnalytics|Unhelpful"
+msgstr ""
+
 msgid "ProductAnalytics|Unique Users"
 msgstr ""
 
@@ -39593,6 +39611,9 @@ msgid "ProductAnalytics|Waiting for events"
 msgstr ""
 
 msgid "ProductAnalytics|What metric do you want to visualize?"
+msgstr ""
+
+msgid "ProductAnalytics|Wrong"
 msgstr ""
 
 msgid "ProductAnalytics|You can instrument your application using a JS module or an HTML script. Follow the instructions below for the option you prefer."

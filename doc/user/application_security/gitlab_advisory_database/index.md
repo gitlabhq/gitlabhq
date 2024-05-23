@@ -64,7 +64,11 @@ GitLab Advisory Database Terms prohibit the use of data contained in the GitLab 
 As an example, we highlight the use of the database as a source for an Advisory Ingestion process as part of Continuous Vulnerability Scans.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TB
+accTitle: Advisory ingestion process
+accDescr: Sequence of actions that make up the advisory ingestion process.
+
     subgraph Dependency Scanning
         A[GitLab Advisory Database]
     end

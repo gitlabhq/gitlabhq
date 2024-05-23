@@ -342,12 +342,27 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
             pull_request_author.update!(username: 'another_username')
           end
 
-          it 'finds the user based on email' do
-            importer.execute
+          it 'does not set an approver' do
+            expect { importer.execute }
+              .to not_change { merge_request.approvals.count }
+              .and not_change { merge_request.notes.count }
+              .and not_change { merge_request.reviewers.count }
 
-            approval = merge_request.approvals.first
+            expect(merge_request.approvals).to be_empty
+          end
 
-            expect(approval.user).to eq(pull_request_author)
+          context 'when bitbucket_server_user_mapping_by_username flag is disabled' do
+            before do
+              stub_feature_flags(bitbucket_server_user_mapping_by_username: false)
+            end
+
+            it 'finds the user based on email' do
+              importer.execute
+
+              approval = merge_request.approvals.first
+
+              expect(approval.user).to eq(pull_request_author)
+            end
           end
 
           context 'when no users match email or username' do

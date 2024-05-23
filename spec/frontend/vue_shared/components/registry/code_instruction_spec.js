@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Tracking from '~/tracking';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
@@ -59,7 +59,11 @@ describe('Package code instruction', () => {
     const trackingLabel = 'foo_label';
 
     beforeEach(() => {
-      eventSpy = jest.spyOn(Tracking, 'event');
+      eventSpy = mockTracking(undefined, undefined, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
     });
 
     it('should not track when no trackingAction is provided', () => {

@@ -17,7 +17,7 @@ import {
   CANCEL_DELETE_PACKAGES_TRACKING_ACTION,
 } from '~/packages_and_registries/package_registry/constants';
 import PackagesList from '~/packages_and_registries/package_registry/components/list/packages_list.vue';
-import Tracking from '~/tracking';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { defaultPackageGroupSettings, packageData } from '../../mock_data';
 
 describe('packages_list', () => {
@@ -158,13 +158,17 @@ describe('packages_list', () => {
     ${'when the user can destroy the package'}                                | ${findPackagesListRow} | ${firstPackage}
     ${'when the user can bulk destroy packages and deletes only one package'} | ${findRegistryList}    | ${[firstPackage]}
   `('$description', ({ finderFunction, deletePayload }) => {
-    let eventSpy;
+    let trackingSpy;
     const category = 'UI::NpmPackages';
 
     beforeEach(() => {
-      eventSpy = jest.spyOn(Tracking, 'event');
+      trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
       mountComponent({ stubs: { RegistryList } });
       finderFunction().vm.$emit('delete', deletePayload);
+    });
+
+    afterEach(() => {
+      unmockTracking();
     });
 
     it('passes itemsToBeDeleted to the modal', () => {
@@ -172,7 +176,7 @@ describe('packages_list', () => {
     });
 
     it('requesting delete tracks the right action', () => {
-      expect(eventSpy).toHaveBeenCalledWith(
+      expect(trackingSpy).toHaveBeenCalledWith(
         category,
         REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
         expect.any(Object),
@@ -193,7 +197,7 @@ describe('packages_list', () => {
       });
 
       it('tracks the right action', () => {
-        expect(eventSpy).toHaveBeenCalledWith(
+        expect(trackingSpy).toHaveBeenCalledWith(
           category,
           DELETE_PACKAGE_TRACKING_ACTION,
           expect.any(Object),
@@ -210,7 +214,7 @@ describe('packages_list', () => {
     it('canceling delete tracks the right action', () => {
       findDeletePackagesModal().vm.$emit('cancel');
 
-      expect(eventSpy).toHaveBeenCalledWith(
+      expect(trackingSpy).toHaveBeenCalledWith(
         category,
         CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
         expect.any(Object),
@@ -219,13 +223,17 @@ describe('packages_list', () => {
   });
 
   describe('when the user can bulk destroy packages', () => {
-    let eventSpy;
+    let trackingSpy;
     const items = [firstPackage, secondPackage];
 
     beforeEach(() => {
-      eventSpy = jest.spyOn(Tracking, 'event');
+      trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
       mountComponent();
       findRegistryList().vm.$emit('delete', items);
+    });
+
+    afterEach(() => {
+      unmockTracking();
     });
 
     it('passes itemsToBeDeleted to the modal', () => {
@@ -234,7 +242,7 @@ describe('packages_list', () => {
     });
 
     it('requesting delete tracks the right action', () => {
-      expect(eventSpy).toHaveBeenCalledWith(
+      expect(trackingSpy).toHaveBeenCalledWith(
         undefined,
         REQUEST_DELETE_PACKAGES_TRACKING_ACTION,
         expect.any(Object),
@@ -251,7 +259,7 @@ describe('packages_list', () => {
       });
 
       it('tracks the right action', () => {
-        expect(eventSpy).toHaveBeenCalledWith(
+        expect(trackingSpy).toHaveBeenCalledWith(
           undefined,
           DELETE_PACKAGES_TRACKING_ACTION,
           expect.any(Object),
@@ -268,7 +276,7 @@ describe('packages_list', () => {
     it('canceling delete tracks the right action', () => {
       findDeletePackagesModal().vm.$emit('cancel');
 
-      expect(eventSpy).toHaveBeenCalledWith(
+      expect(trackingSpy).toHaveBeenCalledWith(
         undefined,
         CANCEL_DELETE_PACKAGES_TRACKING_ACTION,
         expect.any(Object),

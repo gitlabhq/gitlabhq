@@ -120,7 +120,11 @@ You can see an [example of how one user discovered an issue with long polling wi
 The diagram shows how a single runner gets a job with long polling enabled:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+accTitle: Long polling workflow
+accDescr: The flow of a single runner getting a job with long polling enabled
+
     autonumber
     participant C as Runner
     participant W as Workhorse

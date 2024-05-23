@@ -6,7 +6,7 @@ RSpec.describe Gitlab::BitbucketServerImport::UserFinder, :clean_gitlab_redis_sh
   let_it_be(:user) { create(:user) }
 
   let(:created_id) { 1 }
-  let(:project) { instance_double(Project, creator_id: created_id, id: 1) }
+  let(:project) { build_stubbed(:project, creator_id: created_id, id: 1) }
 
   subject(:user_finder) { described_class.new(project) }
 

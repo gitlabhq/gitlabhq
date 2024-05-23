@@ -25,6 +25,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     container_registry_import_target_plan
     container_registry_import_created_before
   ], remove_with: '17.2', remove_after: '2024-06-24'
+  ignore_column %i[sign_in_text help_text], remove_with: '17.3', remove_after: '2024-08-15'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \

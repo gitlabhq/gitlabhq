@@ -73,7 +73,7 @@ module Gitlab
           return [] unless object[:reviewers].present?
 
           object[:reviewers].filter_map do |reviewer|
-            if Feature.enabled?(:bitbucket_server_user_mapping_by_username, type: :ops)
+            if Feature.enabled?(:bitbucket_server_user_mapping_by_username, project, type: :ops)
               user_finder.find_user_id(by: :username, value: reviewer.dig('user', 'slug'))
             else
               user_finder.find_user_id(by: :email, value: reviewer.dig('user', 'emailAddress'))

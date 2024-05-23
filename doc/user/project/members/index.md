@@ -329,9 +329,7 @@ To sort members:
 GitLab users can request to become a member of a project.
 
 1. On the left sidebar, select **Search or go to** and find the project you want to be a member of.
-1. By the project's name, select **Request Access**.
-
-![Request access button](img/request_access_button.png)
+1. In the top right, select the vertical ellipsis (**{ellipsis_v}**) and select **Request Access**.
 
 An email is sent to the most recently active project Maintainers or Owners.
 Up to ten project Maintainers or Owners are notified.

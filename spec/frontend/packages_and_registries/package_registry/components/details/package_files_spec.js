@@ -13,7 +13,7 @@ import { stubComponent } from 'helpers/stub_component';
 import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import Tracking from '~/tracking';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import {
@@ -181,9 +181,16 @@ describe('Package Files', () => {
   });
 
   describe('link', () => {
-    beforeEach(async () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
       createComponent();
-      await waitForPromises();
+      return waitForPromises();
+    });
+
+    afterEach(() => {
+      unmockTracking();
     });
 
     it('exists', () => {
@@ -195,11 +202,9 @@ describe('Package Files', () => {
     });
 
     it('tracks "download-file" event on click', () => {
-      const eventSpy = jest.spyOn(Tracking, 'event');
-
       findFirstRowDownloadLink().vm.$emit('click');
 
-      expect(eventSpy).toHaveBeenCalledWith(
+      expect(trackingSpy).toHaveBeenCalledWith(
         eventCategory,
         DOWNLOAD_PACKAGE_ASSET_TRACKING_ACTION,
         expect.any(Object),

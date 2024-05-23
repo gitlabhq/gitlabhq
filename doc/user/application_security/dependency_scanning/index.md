@@ -181,7 +181,7 @@ The following languages and dependency managers are supported when using the Dep
     <tr>
       <td rowspan="4">Python</td>
       <td rowspan="4">3.11<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-7">7</a></b></sup></td>
-      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
+      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">8</a></b></sup></td>
       <td><code>setup.py</code></td>
       <td>N</td>
     </tr>
@@ -277,6 +277,12 @@ The following languages and dependency managers are supported when using the Dep
     <a id="notes-regarding-supported-languages-and-package-managers-7"></a>
     <p>
       Support for prior Python versions was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/441201">deprecated</a> in GitLab 16.9 and <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/441491">removed</a> in GitLab 17.0.
+    </p>
+  </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
+    <p>
+      Excludes both <code>pip</code> and <code>setuptools</code> from the report as they are required by the installer.
     </p>
   </li>
 </ol>

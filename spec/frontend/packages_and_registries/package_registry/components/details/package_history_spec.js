@@ -17,7 +17,7 @@ import HistoryItem from '~/vue_shared/components/registry/history_item.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import getPackagePipelines from '~/packages_and_registries/package_registry/graphql/queries/get_package_pipelines.query.graphql';
-import Tracking from '~/tracking';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import {
   TRACKING_ACTION_CLICK_PIPELINE_LINK,
   TRACKING_ACTION_CLICK_COMMIT_LINK,
@@ -194,8 +194,12 @@ describe('Package History', () => {
     const category = 'UI::Packages';
 
     beforeEach(() => {
+      eventSpy = mockTracking(undefined, undefined, jest.spyOn);
       mountComponent();
-      eventSpy = jest.spyOn(Tracking, 'event');
+    });
+
+    afterEach(() => {
+      unmockTracking();
     });
 
     it('clicking pipeline link tracks the right action', () => {

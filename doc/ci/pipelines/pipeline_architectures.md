@@ -42,19 +42,26 @@ It's not the most efficient, and if you have lots of steps it can grow quite com
 easier to maintain:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
+accTitle: Basic pipelines
+accDescr: Shows a pipeline that runs sequentially through the build, test, and deploy stages.
+
   subgraph deploy stage
     deploy --> deploy_a
     deploy --> deploy_b
   end
+
   subgraph test stage
     test --> test_a
     test --> test_b
   end
+
   subgraph build stage
     build --> build_a
     build --> build_b
   end
+
   build_a -.-> test
   build_b -.-> test
   test_a -.-> deploy
@@ -121,7 +128,11 @@ In the example below, if `build_a` and `test_a` are much faster than `build_b` a
 `test_b`, GitLab starts `deploy_a` even if `build_b` is still running.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
+accTitle: Pipeline using DAG
+accDescr: Shows how two jobs can start without waiting for earlier stages to complete
+
   subgraph Pipeline using DAG
     build_a --> test_a --> deploy_a
     build_b --> test_b --> deploy_b
@@ -210,7 +221,11 @@ You can combine parent-child pipelines with:
 - [DAG pipelines](#directed-acyclic-graph-pipelines) inside of child pipelines, achieving the benefits of both.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
+accTitle: Parent and child pipelines
+accDescr: Shows that a parent pipeline can trigger independent child pipelines
+
   subgraph Parent pipeline
     trigger_a -.-> build_a
   trigger_b -.-> build_b

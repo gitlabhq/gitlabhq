@@ -1267,4 +1267,165 @@ describe('buildClient', () => {
       });
     });
   });
+
+  describe('fetchLogsSearchMetadata', () => {
+    const mockResponse = {
+      start_ts: 1713513680617331200,
+      end_ts: 1714723280617331200,
+      summary: {
+        service_names: ['adservice', 'cartservice', 'quoteservice', 'recommendationservice'],
+        trace_flags: [0, 1],
+        severity_names: ['info', 'warn'],
+        severity_numbers: [9, 13],
+      },
+      severity_numbers_counts: [
+        {
+          time: 1713519360000000000,
+          counts: {
+            13: 0,
+            9: 0,
+          },
+        },
+        {
+          time: 1713545280000000000,
+          counts: {
+            13: 0,
+            9: 0,
+          },
+        },
+      ],
+    };
+
+    beforeEach(() => {
+      axiosMock.onGet(logsSearchMetadataUrl).reply(200, mockResponse);
+    });
+
+    it('fetches logs metadata from the logs URL', async () => {
+      const result = await client.fetchLogsSearchMetadata();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(logsSearchMetadataUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+      });
+      expect(result).toEqual(mockResponse);
+    });
+
+    describe('filters', () => {
+      describe('date range filter', () => {
+        it('handle predefined date range value', async () => {
+          await client.fetchLogsSearchMetadata({
+            filters: { dateRange: { value: '5m' } },
+          });
+          expect(getQueryParam()).toContain(`period=5m`);
+        });
+
+        it('handle custom date range value', async () => {
+          await client.fetchLogsSearchMetadata({
+            filters: {
+              dateRange: {
+                endDate: new Date('2020-07-06'),
+                startDate: new Date('2020-07-05'),
+                value: 'custom',
+              },
+            },
+          });
+          expect(getQueryParam()).toContain(
+            'start_time=2020-07-05T00:00:00.000Z&end_time=2020-07-06T00:00:00.000Z',
+          );
+        });
+
+        it('handles exact timestamps', async () => {
+          await client.fetchLogsSearchMetadata({
+            filters: {
+              dateRange: {
+                timestamp: '2024-02-19T16:10:15.4433398Z',
+                endDate: new Date('2024-02-19'),
+                startDate: new Date('2024-02-19'),
+                value: 'custom',
+              },
+            },
+          });
+          expect(getQueryParam()).toContain(
+            'start_time=2024-02-19T16:10:15.4433398Z&end_time=2024-02-19T16:10:15.4433398Z',
+          );
+        });
+      });
+
+      describe('attributes filters', () => {
+        it('converts filter to proper query params', async () => {
+          await client.fetchLogsSearchMetadata({
+            filters: {
+              attributes: {
+                service: [
+                  { operator: '=', value: 'serviceName' },
+                  { operator: '!=', value: 'serviceName2' },
+                ],
+                severityName: [
+                  { operator: '=', value: 'info' },
+                  { operator: '!=', value: 'warning' },
+                ],
+                severityNumber: [
+                  { operator: '=', value: '9' },
+                  { operator: '!=', value: '10' },
+                ],
+                traceId: [{ operator: '=', value: 'traceId' }],
+                spanId: [{ operator: '=', value: 'spanId' }],
+                fingerprint: [{ operator: '=', value: 'fingerprint' }],
+                traceFlags: [
+                  { operator: '=', value: '1' },
+                  { operator: '!=', value: '2' },
+                ],
+                attribute: [{ operator: '=', value: 'attr=bar' }],
+                resourceAttribute: [{ operator: '=', value: 'res=foo' }],
+                search: [{ value: 'some-search' }],
+              },
+            },
+          });
+          expect(getQueryParam()).toEqual(
+            `service_name=serviceName&not[service_name]=serviceName2` +
+              `&severity_name=info&not[severity_name]=warning` +
+              `&severity_number=9&not[severity_number]=10` +
+              `&trace_id=traceId` +
+              `&span_id=spanId` +
+              `&fingerprint=fingerprint` +
+              `&trace_flags=1&not[trace_flags]=2` +
+              `&log_attr_name=attr&log_attr_value=bar` +
+              `&res_attr_name=res&res_attr_value=foo` +
+              `&body=some-search`,
+          );
+        });
+
+        it('ignores unsupported operators', async () => {
+          await client.fetchLogsSearchMetadata({
+            filters: {
+              attributes: {
+                traceId: [{ operator: '!=', value: 'traceId2' }],
+                spanId: [{ operator: '!=', value: 'spanId2' }],
+                fingerprint: [{ operator: '!=', value: 'fingerprint2' }],
+                attribute: [{ operator: '!=', value: 'bar' }],
+                resourceAttribute: [{ operator: '!=', value: 'resourceAttribute2' }],
+                unsupported: [{ value: 'something', operator: '=' }],
+              },
+            },
+          });
+          expect(getQueryParam()).toEqual('');
+        });
+      });
+
+      it('ignores empty filter', async () => {
+        await client.fetchLogsSearchMetadata({
+          filters: { attributes: {}, dateRange: {} },
+        });
+        expect(getQueryParam()).toBe('');
+      });
+
+      it('ignores undefined filter', async () => {
+        await client.fetchLogsSearchMetadata({
+          filters: { dateRange: undefined, attributes: undefined },
+        });
+        expect(getQueryParam()).toBe('');
+      });
+    });
+  });
 });

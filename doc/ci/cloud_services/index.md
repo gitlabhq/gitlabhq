@@ -57,7 +57,11 @@ Each job can be configured with ID tokens, which are provided as a CI/CD variabl
 ### Authorization workflow
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+accTitle: Authorization workflow
+accDescr: The flow of authorization requests between GitLab and a cloud provider.
+
     participant GitLab
     Note right of Cloud: Create OIDC identity provider
     Note right of Cloud: Create role with conditionals

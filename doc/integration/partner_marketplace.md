@@ -28,7 +28,11 @@ The following example shows a typical purchase flow of request and response betw
 - Salesforce
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+accTitle: Purchase flow
+accDescr: Shows the flow of a purchase from the customer, through the customer portal, Zuora, and Salesforce.
+
     participant Customer
     participant Marketplace partner system
     participant Customers Portal

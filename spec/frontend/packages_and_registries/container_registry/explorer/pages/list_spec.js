@@ -22,7 +22,7 @@ import {
 import deleteContainerRepositoryMutation from '~/packages_and_registries/container_registry/explorer/graphql/mutations/delete_container_repository.mutation.graphql';
 import getContainerRepositoriesDetails from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repositories_details.query.graphql';
 import component from '~/packages_and_registries/container_registry/explorer/pages/list.vue';
-import Tracking from '~/tracking';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
 import MetadataDatabaseAlert from '~/packages_and_registries/shared/components/container_registry_metadata_database_alert.vue';
@@ -671,22 +671,26 @@ describe('List Page', () => {
   });
 
   describe('tracking', () => {
+    let trackingSpy;
+
     beforeEach(() => {
+      trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
       mountComponent();
       fireFirstSortUpdate();
     });
 
+    afterEach(() => {
+      unmockTracking();
+    });
+
     const testTrackingCall = (action) => {
-      expect(Tracking.event).toHaveBeenCalledWith(undefined, action, {
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, action, {
         label: 'registry_repository_delete',
       });
     };
 
-    beforeEach(() => {
-      jest.spyOn(Tracking, 'event');
-    });
-
-    it('send an event when delete button is clicked', () => {
+    it('send an event when delete button is clicked', async () => {
+      await waitForPromises();
       findImageList().vm.$emit('delete', {});
 
       testTrackingCall('click_button');
