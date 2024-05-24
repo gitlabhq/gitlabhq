@@ -10,7 +10,7 @@ module ProjectTemplateTestHelper
       serverless_framework tencent_serverless_framework
       jsonnet cluster_management kotlin_native_linux
       pelican bridgetown typo3_distribution laravel
-      astro_tailwind
+      astro_tailwind nist_80053r5
     ]
   end
 end

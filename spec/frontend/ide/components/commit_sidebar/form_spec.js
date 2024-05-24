@@ -1,6 +1,6 @@
 import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -73,10 +73,13 @@ describe('IDE commit form', () => {
     store.state.stagedFiles.push('test');
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'main';
-    Vue.set(store.state.projects, 'abcproject', {
-      ...projectData,
-      userPermissions: { pushCode: true },
-    });
+    store.state.projects = {
+      ...store.state.projects,
+      abcproject: {
+        ...projectData,
+        userPermissions: { pushCode: true },
+      },
+    };
   });
 
   // Notes:

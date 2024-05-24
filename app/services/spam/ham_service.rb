@@ -10,8 +10,8 @@ module Spam
       @spam_log = spam_log
       @user = spam_log.user
       @options = {
-          ip_address: spam_log.source_ip,
-          user_agent: spam_log.user_agent
+        ip_address: spam_log.source_ip,
+        user_agent: spam_log.user_agent
       }
     end
 

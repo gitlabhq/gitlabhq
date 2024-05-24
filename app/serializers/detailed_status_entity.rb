@@ -23,7 +23,7 @@ class DetailedStatusEntity < Grape::Entity
     JSON
   } do |status|
     illustration = {
-        image: ActionController::Base.helpers.image_path(status.illustration[:image])
+      image: ActionController::Base.helpers.image_path(status.illustration[:image])
     }
     illustration = status.illustration.merge(illustration)
 

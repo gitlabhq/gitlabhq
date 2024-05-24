@@ -1979,6 +1979,9 @@ msgstr ""
 msgid "A project containing issues for each audit inquiry in the HIPAA Audit Protocol published by the U.S. Department of Health & Human Services"
 msgstr ""
 
+msgid "A project containing issues for security and privacy controls published by the U.S. National Institute of Standards and Technology"
+msgstr ""
+
 msgid "A project’s repository name defines its URL (the one you use to access the project via a browser) and its place on the file disk where GitLab is installed. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
@@ -26138,6 +26141,9 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
+msgid "ID of the Google Cloud project."
+msgstr ""
+
 msgid "ID portion of the Campfire room URL."
 msgstr ""
 
@@ -41215,6 +41221,9 @@ msgstr ""
 msgid "ProjectTemplates|Laravel Framework"
 msgstr ""
 
+msgid "ProjectTemplates|NIST 800-53r5"
+msgstr ""
+
 msgid "ProjectTemplates|Netlify/GitBook"
 msgstr ""
 
@@ -43746,6 +43755,9 @@ msgid "Repository mirroring has been paused due to too many failed attempts. It 
 msgstr ""
 
 msgid "Repository must contain at least 1 file."
+msgstr ""
+
+msgid "Repository of Artifact Registry."
 msgstr ""
 
 msgid "Repository size is above the limit."
@@ -52072,6 +52084,9 @@ msgstr ""
 msgid "The Snowplow cookie domain."
 msgstr ""
 
+msgid "The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`)."
+msgstr ""
+
 msgid "The URL of the Jenkins server."
 msgstr ""
 
@@ -55565,6 +55580,9 @@ msgstr ""
 msgid "Unhelpful or irrelevant"
 msgstr ""
 
+msgid "Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`)."
+msgstr ""
+
 msgid "Units|d"
 msgstr ""
 
@@ -58602,16 +58620,28 @@ msgstr ""
 msgid "Wiki page was successfully updated."
 msgstr ""
 
-msgid "WikiClone|Clone your wiki"
+msgid "WikiClone|Clone Wiki repository"
+msgstr ""
+
+msgid "WikiClone|Clone repository"
 msgstr ""
 
 msgid "WikiClone|Git Access"
+msgstr ""
+
+msgid "WikiClone|Go to directory"
 msgstr ""
 
 msgid "WikiClone|Install Gollum"
 msgstr ""
 
 msgid "WikiClone|Start Gollum and edit locally"
+msgstr ""
+
+msgid "WikiClone|Step 1: Clone repository"
+msgstr ""
+
+msgid "WikiClone|Step 2: Install and start Gollum"
 msgstr ""
 
 msgid "WikiEdit|There is already a page with the same title in that path."

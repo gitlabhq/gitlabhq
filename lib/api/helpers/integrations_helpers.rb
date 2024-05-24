@@ -575,39 +575,7 @@ module API
               desc: 'The password of the user'
             }
           ],
-          'telegram' => [
-            {
-              required: false,
-              name: :hostname,
-              type: String,
-              desc: 'Custom hostname of the Telegram API. The default value is `https://api.telegram.org`.'
-            },
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The Telegram chat token. For example, 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
-            },
-            {
-              required: true,
-              name: :room,
-              type: String,
-              desc: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)'
-            },
-            {
-              required: false,
-              name: :thread,
-              type: Integer,
-              desc: 'Unique identifier for the target message thread (topic in a forum supergroup)'
-            },
-            {
-              required: false,
-              name: :branches_to_be_notified,
-              type: String,
-              desc: 'Branches for which notifications are to be sent.'
-            },
-            chat_notification_flags
-          ].flatten,
+          'telegram' => ::Integrations::Telegram.api_arguments,
           'unify-circuit' => [
             {
               required: true,

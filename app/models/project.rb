@@ -2037,11 +2037,11 @@ class Project < ApplicationRecord
     # Backward compatibility
     if backward
       attrs.merge!({
-                    homepage: web_url,
-                    url: url_to_repo,
-                    ssh_url: ssh_url_to_repo,
-                    http_url: http_url_to_repo
-                  })
+        homepage: web_url,
+        url: url_to_repo,
+        ssh_url: ssh_url_to_repo,
+        http_url: http_url_to_repo
+      })
     end
 
     attrs

@@ -7,6 +7,7 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
   let_it_be(:project) { create(:project, group: group) }
   let_it_be(:public_project) { create(:project, :public, group: group) }
   let_it_be(:guest) { create(:user, guest_of: project) }
+  let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:guest_author) { create(:user, guest_of: project, developer_of: public_project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:group_reporter) { create(:user, reporter_of: group) }
@@ -213,6 +214,12 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
 
     context 'when user is reporter' do
       let(:current_user) { reporter }
+
+      it { is_expected.to be_allowed(:admin_work_item_link) }
+    end
+
+    context 'when user is an administrator', :enable_admin_mode do
+      let(:current_user) { admin }
 
       it { is_expected.to be_allowed(:admin_work_item_link) }
     end

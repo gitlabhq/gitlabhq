@@ -31958,6 +31958,7 @@ Represents a state transition of a vulnerability.
 | <a id="vulnerabilitystatetransitiontypecreatedat"></a>`createdAt` | [`Time!`](#time) | Time of the state change of the vulnerability. |
 | <a id="vulnerabilitystatetransitiontypedismissalreason"></a>`dismissalReason` | [`VulnerabilityDismissalReason`](#vulnerabilitydismissalreason) | Reason for the dismissal. |
 | <a id="vulnerabilitystatetransitiontypefromstate"></a>`fromState` | [`VulnerabilityState!`](#vulnerabilitystate) | State of the vulnerability before transition. |
+| <a id="vulnerabilitystatetransitiontypeid"></a>`id` | [`VulnerabilitiesStateTransitionID!`](#vulnerabilitiesstatetransitionid) | ID of the state transition. |
 | <a id="vulnerabilitystatetransitiontypetostate"></a>`toState` | [`VulnerabilityState!`](#vulnerabilitystate) | State of the vulnerability after transition. |
 
 ### `VulnerableDependency`
@@ -36548,6 +36549,12 @@ An example `VulnerabilitiesExternalIssueLinkID` is: `"gid://gitlab/Vulnerabiliti
 A `VulnerabilitiesScannerID` is a global ID. It is encoded as a string.
 
 An example `VulnerabilitiesScannerID` is: `"gid://gitlab/Vulnerabilities::Scanner/1"`.
+
+### `VulnerabilitiesStateTransitionID`
+
+A `VulnerabilitiesStateTransitionID` is a global ID. It is encoded as a string.
+
+An example `VulnerabilitiesStateTransitionID` is: `"gid://gitlab/Vulnerabilities::StateTransition/1"`.
 
 ### `VulnerabilityID`
 

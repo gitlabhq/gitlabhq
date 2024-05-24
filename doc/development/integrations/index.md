@@ -224,6 +224,7 @@ This method should return an array of hashes for each field, where the keys can 
 | `placeholder:` | string  | false    |                              | A placeholder for the form field. |
 | `help:`        | string  | false    |                              | A help text that displays below the form field. |
 | `api_only:`    | boolean | false    | `false`                      | Specify if the field should only be available through the API, and excluded from the frontend form. |
+| `description`  | string  | false   |                               | Description of the API field. |
 | `if:`          | boolean or lambda | false | `true`                | Specify if the field should be available. The value can be a boolean or a lambda. |
 
 ### Additional keys for `type: :checkbox`

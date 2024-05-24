@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ListItem from '~/ide/components/commit_sidebar/list_item.vue';
@@ -22,6 +22,7 @@ describe('Multi-file editor commit sidebar list item', () => {
     router = createRouter(store);
 
     testFile = file('test-file');
+    testFile.prevName = '';
 
     store.state.entries[testFile.path] = testFile;
 
@@ -43,14 +44,14 @@ describe('Multi-file editor commit sidebar list item', () => {
   });
 
   it('correctly renders renamed entries', async () => {
-    Vue.set(testFile, 'prevName', 'Old name');
+    testFile.prevName = 'Old name';
     await nextTick();
 
     expect(findPathText()).toEqual(`Old name → ${testFile.name}`);
   });
 
   it('correctly renders entry, the name of which did not change after rename (as within a folder)', async () => {
-    Vue.set(testFile, 'prevName', testFile.name);
+    testFile.prevName = testFile.name;
     await nextTick();
 
     expect(findPathText()).toEqual(testFile.name);

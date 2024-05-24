@@ -51,13 +51,13 @@ module AuditEvents
 
     def base_details_payload
       @additional_details.merge({
-                                  author_name: @author.name,
-                                  author_class: @author.class.name,
-                                  target_id: @target.id,
-                                  target_type: @target.type,
-                                  target_details: @target_details || @target.details,
-                                  custom_message: @message
-                                })
+        author_name: @author.name,
+        author_class: @author.class.name,
+        target_id: @target.id,
+        target_type: @target.type,
+        target_details: @target_details || @target.details,
+        custom_message: @message
+      })
     end
 
     def build_author(author)

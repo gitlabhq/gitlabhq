@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import WikiMoreDropdown from '~/pages/shared/wikis/components/wiki_more_dropdown.vue';
 import DeleteWikiModal from '~/pages/shared/wikis/components/delete_wiki_modal.vue';
+import CloneWikiModal from '~/pages/shared/wikis/components/clone_wiki_modal.vue';
 import { mockLocation, restoreLocation } from '../test_utils';
 
 describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
@@ -19,16 +20,18 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
         pageTitle: 'Wiki title',
         csrfToken: '',
         deleteWikiUrl: 'https://delete.url/path',
-        cloneUrl: 'https://clone.url/path',
+        wikiPath: '',
+        cloneSshUrl: 'ssh://clone.url/path',
+        cloneHttpUrl: 'http://clone.url/path',
         cloneLinkClass: '',
         templatesUrl: 'https://templates.url/path',
-        templatesLinkClass: '',
         pagePersisted: true,
         ...provide,
       },
       stubs: {
         GlDisclosureDropdown,
         GlDisclosureDropdownItem,
+        CloneWikiModal,
         DeleteWikiModal,
       },
     });
@@ -213,20 +216,14 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
       expect(findCloneRepositoryItem().text()).toBe('Clone repository');
     });
 
-    it('renders if `templatesUrl` is set', () => {
-      createComponent({ cloneUrl: false });
+    it('renders if `cloneSshUrl` or `cloneHttpUrl` is set', () => {
+      createComponent({ cloneSshUrl: '', cloneHttpUrl: '' });
 
       expect(findCloneRepositoryItem().exists()).toBe(false);
 
       createComponent();
 
       expect(findCloneRepositoryItem().exists()).toBe(true);
-    });
-
-    it('should have clone repository page url', () => {
-      createComponent();
-
-      expect(findCloneRepositoryItem().attributes('href')).toBe('https://clone.url/path');
     });
   });
 

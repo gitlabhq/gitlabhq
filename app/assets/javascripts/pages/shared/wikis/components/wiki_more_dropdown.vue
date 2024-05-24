@@ -8,6 +8,7 @@ import {
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import { isTemplate } from '../utils';
+import CloneWikiModal from './clone_wiki_modal.vue';
 import DeleteWikiModal from './delete_wiki_modal.vue';
 
 export default {
@@ -16,20 +17,13 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
+    CloneWikiModal,
     DeleteWikiModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: [
-    'newUrl',
-    'history',
-    'templatesUrl',
-    'templatesLinkClass',
-    'cloneUrl',
-    'cloneLinkClass',
-    'pagePersisted',
-  ],
+  inject: ['newUrl', 'history', 'templatesUrl', 'cloneLinkClass', 'pagePersisted'],
   i18n: {
     wikiActions: s__('Wiki|Wiki actions'),
   },
@@ -74,16 +68,6 @@ export default {
         extraAttrs: {
           class: this.templateLinkClass,
           'data-testid': 'page-templates-button',
-        },
-      };
-    },
-    cloneRepositoryItem() {
-      return {
-        text: __('Clone repository'),
-        href: this.cloneUrl,
-        extraAttrs: {
-          class: this.cloneLinkClass,
-          'data-testid': 'page-clone-button',
         },
       };
     },
@@ -135,12 +119,7 @@ export default {
       </template>
     </gl-disclosure-dropdown-item>
 
-    <gl-disclosure-dropdown-item v-if="cloneUrl" :item="cloneRepositoryItem">
-      <template #list-item>
-        <gl-icon name="branch" class="gl-mr-2 gl-text-secondary" />
-        {{ cloneRepositoryItem.text }}
-      </template>
-    </gl-disclosure-dropdown-item>
+    <clone-wiki-modal show-as-dropdown-item />
 
     <gl-disclosure-dropdown-group v-if="history || showPrintItem" bordered>
       <gl-disclosure-dropdown-item v-if="history" :item="historyItem">

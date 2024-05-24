@@ -22,7 +22,7 @@ class WorkItemPolicy < IssuePolicy
     enable :admin_parent_link
   end
 
-  rule { is_member & can?(:read_work_item) }.enable :admin_work_item_link
+  rule { (is_member & can?(:read_work_item)) | admin }.enable :admin_work_item_link
 end
 
 WorkItemPolicy.prepend_mod

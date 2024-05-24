@@ -3,10 +3,10 @@
 module Ci
   class BuildMetadataPresenter < Gitlab::View::Presenter::Delegated
     TIMEOUT_SOURCES = {
-        unknown_timeout_source: nil,
-        project_timeout_source: 'project',
-        runner_timeout_source: 'runner',
-        job_timeout_source: 'job'
+      unknown_timeout_source: nil,
+      project_timeout_source: 'project',
+      runner_timeout_source: 'runner',
+      job_timeout_source: 'job'
     }.freeze
 
     presents ::Ci::BuildMetadata, as: :metadata

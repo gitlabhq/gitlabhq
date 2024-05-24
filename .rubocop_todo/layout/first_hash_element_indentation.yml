@@ -2,18 +2,6 @@
 # Cop supports --autocorrect.
 Layout/FirstHashElementIndentation:
   Exclude:
-    - 'app/models/project.rb'
-    - 'app/presenters/ci/build_metadata_presenter.rb'
-    - 'app/serializers/detailed_status_entity.rb'
-    - 'app/services/audit_events/build_service.rb'
-    - 'app/services/spam/ham_service.rb'
-    - 'app/validators/bytesize_validator.rb'
-    - 'ee/app/components/namespaces/free_user_cap/enforcement_alert_component.rb'
-    - 'ee/app/graphql/mutations/boards/epic_lists/destroy.rb'
-    - 'ee/app/graphql/mutations/boards/epics/create.rb'
-    - 'ee/app/graphql/mutations/iterations/cadences/update.rb'
-    - 'ee/app/graphql/mutations/iterations/create.rb'
-    - 'ee/app/graphql/mutations/iterations/update.rb'
     - 'ee/app/helpers/ee/geo_helper.rb'
     - 'ee/app/helpers/ee/groups/group_members_helper.rb'
     - 'ee/app/models/ee/list.rb'

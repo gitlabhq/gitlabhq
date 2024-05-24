@@ -29,11 +29,12 @@
 
     #js-wiki-more-actions{ data: {
       new_url: @page.template? ? wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true) : wiki_path(@wiki, action: :new),
+      wiki_path: @wiki.path,
+      clone_ssh_url: ssh_clone_url_to_repo(@wiki),
+      clone_http_url: http_clone_url_to_repo(@wiki),
       history: page_history,
       page_title: @page.human_title,
       templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
-      templates_link_class: (@page&.slug == Wiki::TEMPLATES_DIR) ? 'active' : '',
-      clone_url: wiki_path(@wiki, action: :git_access),
       clone_link_class: active_nav_link?(path: 'wikis#git_access') ? ' active' : '',
       delete_wiki_url: wiki_page_path(@wiki, @page),
       page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,

@@ -28,12 +28,13 @@ const mountWikiMoreDropdownApp = () => {
 
   if (!el) return false;
   const {
+    wikiPath,
+    cloneSshUrl,
+    cloneHttpUrl,
     newUrl,
     history,
     pageTitle,
     templatesUrl,
-    templatesLinkClass,
-    cloneUrl,
     cloneLinkClass,
     deleteWikiUrl,
     pagePersisted,
@@ -42,13 +43,14 @@ const mountWikiMoreDropdownApp = () => {
   return new Vue({
     el,
     provide: {
+      wikiPath,
+      cloneSshUrl,
+      cloneHttpUrl,
       newUrl,
       history,
       pageTitle,
       csrfToken: csrf.token,
       templatesUrl,
-      templatesLinkClass,
-      cloneUrl,
       cloneLinkClass,
       deleteWikiUrl,
       pagePersisted: parseBoolean(pagePersisted),
