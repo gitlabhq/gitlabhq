@@ -101,6 +101,22 @@ RSpec.describe BulkImports::Groups::Transformers::GroupAttributesTransformer, fe
       end
     end
 
+    context 'when the destination_slug has . in the path' do
+      let(:entity) do
+        build_stubbed(
+          :bulk_import_entity,
+          bulk_import: bulk_import,
+          source_full_path: 'source/full/path',
+          destination_slug: 'Destination.slug-path.With-dots',
+          destination_namespace: destination_namespace
+        )
+      end
+
+      it 'normalizes the path but retains the .' do
+        expect(transformed_data[:path]).to eq('destination.slug-path.with-dots')
+      end
+    end
+
     describe 'parent group transformation' do
       it 'sets parent id' do
         expect(transformed_data['parent_id']).to eq(destination_group.id)

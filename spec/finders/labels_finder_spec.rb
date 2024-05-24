@@ -16,9 +16,9 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
     let_it_be(:project_4) { create(:project, :public) }
     let_it_be(:project_5) { create(:project, namespace: group_1) }
 
-    let_it_be(:project_label_1) { create(:label, project: project_1, title: 'Label 1', description: 'awesome label') }
+    let_it_be(:project_label_1) { create(:label, project: project_1, title: 'Label 1', description: 'awesome label name') }
     let_it_be(:project_label_2) { create(:label, project: project_2, title: 'Label 2') }
-    let_it_be(:project_label_4) { create(:label, project: project_4, title: 'Label 4') }
+    let_it_be(:project_label_4) { create(:label, project: project_4, title: 'Renamed', description: 'old label 5') }
     let_it_be(:project_label_5) { create(:label, project: project_5, title: 'Label 5') }
     let_it_be(:project_label_locked) { create(:label, project: project_1, title: 'Label Locked', lock_on_merge: true) }
 
@@ -319,6 +319,28 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
         finder = described_class.new(user, search: '(')
 
         expect(finder.execute).to match_array([group_label_1])
+      end
+    end
+
+    context 'when searching by title only' do
+      it 'returns labels partially matching the title' do
+        finder = described_class.new(user, search: 'label', search_in: [:title])
+
+        expect(finder.execute).to match_array([group_label_1, group_label_2, group_label_locked, project_label_1, project_label_locked])
+      end
+
+      it 'returns label matching the "name" in their title' do
+        finder = described_class.new(user, search: 'name', search_in: [:title])
+
+        expect(finder.execute).to match_array([project_label_4])
+      end
+    end
+
+    context 'when searching by description only' do
+      it 'returns labels partially matching the description' do
+        finder = described_class.new(user, search: 'label', search_in: [:description])
+
+        expect(finder.execute).to match_array([project_label_1, project_label_4])
       end
     end
 

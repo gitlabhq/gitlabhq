@@ -50,7 +50,7 @@ module Timebox
     has_many :merge_requests
 
     scope :closed, -> { with_state(:closed) }
-    scope :with_title, -> (title) { where(title: title) }
+    scope :with_title, ->(title) { where(title: title) }
 
     # A timebox is within the timeframe (start_date, end_date) if it overlaps
     # with that timeframe:
@@ -78,7 +78,7 @@ module Timebox
     #        |--- no end
     #        |--| defined start and end
     #
-    scope :within_timeframe, -> (start_date, end_date) do
+    scope :within_timeframe, ->(start_date, end_date) do
       where('start_date is not NULL or due_date is not NULL')
         .where('start_date is NULL or start_date <= ?', end_date)
         .where('due_date is NULL or due_date >= ?', start_date)

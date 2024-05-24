@@ -753,6 +753,9 @@ msgid_plural "%{digit} total tests"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{docs_link_start}How to add certificates to your project?%{docs_link_end}"
+msgstr ""
+
 msgid "%{docs_link_start}Learn about visibility levels.%{docs_link_end}"
 msgstr ""
 
@@ -15127,9 +15130,6 @@ msgstr ""
 msgid "Create New Directory"
 msgstr ""
 
-msgid "Create New Domain"
-msgstr ""
-
 msgid "Create Self-Hosted Model"
 msgstr ""
 
@@ -15272,6 +15272,9 @@ msgid "Create new confidential %{issuableType}"
 msgstr ""
 
 msgid "Create new directory"
+msgstr ""
+
+msgid "Create new domain"
 msgstr ""
 
 msgid "Create new emoji"
@@ -23540,16 +23543,13 @@ msgstr ""
 msgid "GitLabPages|Maximum size (MB)"
 msgstr ""
 
-msgid "GitLabPages|New Domain"
+msgid "GitLabPages|New domain"
 msgstr ""
 
 msgid "GitLabPages|Only project maintainers can remove pages"
 msgstr ""
 
 msgid "GitLabPages|Pages"
-msgstr ""
-
-msgid "GitLabPages|Remove"
 msgstr ""
 
 msgid "GitLabPages|Remove certificate"
@@ -23561,7 +23561,7 @@ msgstr ""
 msgid "GitLabPages|Remove pages"
 msgstr ""
 
-msgid "GitLabPages|Removing pages will prevent them from being exposed to the outside world."
+msgid "GitLabPages|Removing pages will prevent them from being exposed to the public internet."
 msgstr ""
 
 msgid "GitLabPages|Save changes"
@@ -23573,7 +23573,7 @@ msgstr ""
 msgid "GitLabPages|Start over"
 msgstr ""
 
-msgid "GitLabPages|Support for domains and certificates is disabled. Ask your system's administrator to enable it."
+msgid "GitLabPages|Support for domains and certificates is disabled. Ask your GitLab administrator to enable it."
 msgstr ""
 
 msgid "GitLabPages|Unverified"
@@ -30330,9 +30330,6 @@ msgstr ""
 msgid "Learn more about X.509 signed commits"
 msgstr ""
 
-msgid "Learn more about adding certificates to your project by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}."
-msgstr ""
-
 msgid "Learn more about custom project templates"
 msgstr ""
 
@@ -33932,9 +33929,6 @@ msgstr ""
 msgid "New Milestone"
 msgstr ""
 
-msgid "New Pages Domain"
-msgstr ""
-
 msgid "New Pipeline Schedule"
 msgstr ""
 
@@ -34043,6 +34037,9 @@ msgid "New milestone"
 msgstr ""
 
 msgid "New name"
+msgstr ""
+
+msgid "New pages domain"
 msgstr ""
 
 msgid "New password"

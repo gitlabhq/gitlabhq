@@ -6,7 +6,7 @@ const SSL_TOGGLE_CLASS = 'js-enable-ssl-gl-toggle';
 const SSL_TOGGLE_INPUT_CLASS = 'js-project-feature-toggle-input';
 const SHOW_IF_AUTO_SSL_CLASS = 'js-shown-if-auto-ssl';
 const SHOW_UNLESS_AUTO_SSL_CLASS = 'js-shown-unless-auto-ssl';
-const D_NONE_CLASS = 'd-none';
+const D_NONE_CLASS = '!gl-hidden';
 
 describe('Page domains form', () => {
   let toggle;

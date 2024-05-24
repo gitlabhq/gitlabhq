@@ -5,13 +5,13 @@ class CreateSharedSequenceForAuditEvents < Gitlab::Database::Migration[2.2]
 
   def up
     execute <<-SQL
-      CREATE SEQUENCE shared_audit_event_id_seq;
+      CREATE SEQUENCE IF NOT EXISTS shared_audit_event_id_seq;
     SQL
   end
 
   def down
     execute <<-SQL
-      DROP SEQUENCE shared_audit_event_id_seq;
+      DROP SEQUENCE IF EXISTS shared_audit_event_id_seq;
     SQL
   end
 end

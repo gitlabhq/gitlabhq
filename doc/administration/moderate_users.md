@@ -43,13 +43,17 @@ sign in.
 
 ### View user sign ups pending approval
 
+> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+
 To view user sign ups pending approval:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select the **Pending approval** tab.
+1. In the search box, filter by **State=Pending approval**, and press <kbd>Enter</kbd>.
 
 ### Approve or reject a user sign up
+
+> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
 A user sign up pending approval can be approved or rejected from the Admin Area.
 
@@ -57,7 +61,7 @@ To approve or reject a user sign up:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select the **Pending approval** tab.
+1. In the search box, filter by **State=Pending approval** and press <kbd>Enter</kbd>.
 1. For the user sign up you want to approve or reject, select the vertical ellipsis (**{ellipsis_v}**), then **Approve** or **Reject**.
 
 Approving a user:
@@ -102,11 +106,13 @@ To report abuse from other users, see [report abuse](../user/report_abuse.md). F
 
 ### Unblock a user
 
+> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+
 A blocked user can be unblocked from the Admin Area. To do this:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select the **Blocked** tab.
+1. In the search box, filter by **State=Blocked** and press <kbd>Enter</kbd>.
 1. For the user you want to unblock, select the vertical ellipsis (**{ellipsis_v}**), then **Unblock**.
 
 The user's state is set to active and they consume a
@@ -120,7 +126,7 @@ the LDAP identity first needs to be deleted:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select the **Blocked** tab.
+1. In the search box, filter by **State=Blocked** and press <kbd>Enter</kbd>.
 1. Select a user.
 1. Select the **Identities** tab.
 1. Find the LDAP provider and select **Delete**.
@@ -218,13 +224,15 @@ A maximum of 240,000 users can be deleted per day.
 
 ### Activate a user
 
+> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+
 A deactivated user can be activated from the Admin Area.
 
 To do this:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select the **Deactivated** tab.
+1. In the search box, filter by **State=Deactivated** and press <kbd>Enter</kbd>.
 1. For the user you want to activate, select the vertical ellipsis (**{ellipsis_v}**), then **Activate**.
 
 The user's state is set to active and they consume a
@@ -260,11 +268,13 @@ Users can be banned using the Admin Area. To do this:
 
 ### Unban a user
 
+> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
+
 A banned user can be unbanned using the Admin Area. To do this:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select the **Banned** tab.
+1. In the search box , filter by **State=Banned** and press <kbd>Enter</kbd>.
 1. For the user you want to unban, select the vertical ellipsis (**{ellipsis_v}**), then **Unban user**.
 
 The user's state is set to active and they consume a
@@ -297,6 +307,7 @@ Before 15.1, additionally groups of which deleted user were the only owner among
 ## Trust and untrust users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132402) in GitLab 16.5.
+> - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
 You can trust and untrust users from the Admin Area.
 
@@ -322,7 +333,7 @@ The user is trusted.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Overview > Users**.
-1. Select the **Trusted** tab.
+1. In the search box, filter by **State=Trusted** and press <kbd>Enter</kbd>.
 1. Select a user.
 1. From the **User administration** dropdown list, select **Untrust user**.
 1. On the confirmation dialog, select **Untrust user**.

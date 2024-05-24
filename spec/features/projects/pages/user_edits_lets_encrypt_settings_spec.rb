@@ -31,7 +31,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
     fill_in 'Domain', with: 'my.test.domain.com'
 
     expect(find("#pages_domain_auto_ssl_enabled", visible: false).value).to eq 'true'
-    click_button 'Create New Domain'
+    click_button 'Create new domain'
 
     expect(page).to have_content('my.test.domain.com')
     expect(PagesDomain.find_by_domain('my.test.domain.com').auto_ssl_enabled).to eq(true)
@@ -57,7 +57,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
       expect(page).not_to have_selector '.gl-card-header', text: 'Certificate'
       expect(page).not_to have_text domain.subject
 
-      click_on 'Save Changes'
+      click_on 'Save changes'
 
       expect(domain.reload.auto_ssl_enabled).to eq true
     end
@@ -81,7 +81,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
       expect(page).to have_field 'Certificate (PEM)', type: 'textarea'
       expect(page).to have_field 'Key (PEM)', type: 'textarea'
 
-      click_on 'Save Changes'
+      click_on 'Save changes'
 
       expect(domain.reload.auto_ssl_enabled).to eq false
     end
@@ -140,7 +140,7 @@ RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_categor
 
         expect(page).to have_selector '.gl-card-header', text: 'Certificate'
         expect(page).to have_text domain.subject
-        within('.gl-card') { click_on 'Remove' }
+        within('.gl-card') { find_by_testid('remove-certificate').click }
         accept_gl_confirm(button_text: 'Remove certificate')
         expect(page).to have_field 'Certificate (PEM)', with: ''
         expect(page).to have_field 'Key (PEM)', with: ''

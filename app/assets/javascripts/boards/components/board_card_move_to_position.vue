@@ -105,7 +105,7 @@ export default {
       title: $options.i18n.moveCardText,
       boundary: 'viewport',
     }"
-    class="move-to-position gl-display-block gl-mb-2 gl-ml-auto gl-mt-n3 gl-mr-n3 js-no-trigger"
+    class="move-to-position gl-display-block gl-mb-2 gl-ml-auto -gl-mt-3 gl-mr-n3 js-no-trigger"
     category="tertiary"
     :items="$options.BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS"
     icon="ellipsis_v"

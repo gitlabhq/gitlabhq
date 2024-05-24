@@ -13,7 +13,7 @@ module Clusters
       belongs_to :agent_token, class_name: 'Clusters::AgentToken'
 
       scope :in_timeline_order, -> { order(recorded_at: :desc, id: :desc) }
-      scope :recorded_before, -> (cutoff) { where('recorded_at < ?', cutoff) }
+      scope :recorded_before, ->(cutoff) { where('recorded_at < ?', cutoff) }
 
       validates :recorded_at, :kind, :level, presence: true
 

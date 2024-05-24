@@ -145,7 +145,7 @@ export default {
     <gl-tabs
       v-model="currentTabIndex"
       content-class="gl-leading-reset"
-      class="gl-mt-n3"
+      class="-gl-mt-3"
       data-testid="incident-tabs"
     >
       <gl-tab :title="$options.i18n.summaryTitle" data-testid="summary-tab">

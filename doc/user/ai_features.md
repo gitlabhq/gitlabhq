@@ -48,6 +48,7 @@ DETAILS:
   Anthropic [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai),
   [`claude-2.1`](https://docs.anthropic.com/en/docs/legacy-model-guide#anthropics-legacy-models),
   and [Vertex AI Search](https://cloud.google.com/enterprise-search).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](gitlab_duo_chat.md).
 
 NOTE:
@@ -75,7 +76,7 @@ DETAILS:
 
 - Automates repetitive tasks and helps catch bugs early.
 - LLM: Anthropic [`Claude-2.1`](https://docs.anthropic.com/claude/docs/models-overview#model-comparison)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=g6MS1JsRWgs)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](gitlab_duo_chat_examples.md#write-tests-in-the-ide).
 
 ## Beta features
@@ -152,6 +153,7 @@ DETAILS:
 
 - Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](project/merge_requests/ai_in_merge_requests.md#summarize-a-code-review).
 
 ### Vulnerability resolution
@@ -193,6 +195,7 @@ DETAILS:
 
 - Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle.
 - LLM: Statistical forecasting
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=6u8_8QQ5pEQ&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](ai_experiments.md#forecast-deployment-frequency-with-value-stream-forecasting).
 
 ### Product Analytics

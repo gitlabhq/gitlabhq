@@ -669,7 +669,7 @@ export default {
             />
             <input v-model="enforceAuthChecksOnUploads" type="checkbox" />
             {{ s__('ProjectSettings|Require authentication to view media files') }}
-            <span class="gl-text-gray-500 gl-display-block gl-ml-5 gl-mt-n3">{{
+            <span class="gl-text-gray-500 gl-display-block gl-ml-5 -gl-mt-3">{{
               s__('ProjectSettings|Prevents direct linking to potentially sensitive media files')
             }}</span>
           </label>

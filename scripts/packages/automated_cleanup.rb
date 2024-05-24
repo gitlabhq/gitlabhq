@@ -62,7 +62,7 @@ module Packages
     end
 
     def time_ago(days:)
-      Time.now - days * 24 * 3600
+      Time.now - (days * 24 * 3600)
     end
 
     def old_enough(package, days_for_delete)

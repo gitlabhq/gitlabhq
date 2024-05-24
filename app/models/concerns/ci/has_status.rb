@@ -103,7 +103,7 @@ module Ci
         where(status: klass::CANCELABLE_STATUSES)
       end
 
-      scope :without_statuses, -> (names) do
+      scope :without_statuses, ->(names) do
         with_status(all_state_names - names.to_a)
       end
     end

@@ -203,6 +203,8 @@ If you edit the policy and select **Save** again, the interval is reset.
 
 Cleanup policies use regex patterns to determine which tags should be preserved or removed, both in the UI and the API.
 
+GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in the cleanup policy.
+
 Regex patterns are automatically surrounded with `\A` and `\Z` anchors. Therefore, you do not need to include any
 `\A`, `\Z`, `^` or `$` tokens in the regex patterns.
 
@@ -339,7 +341,7 @@ Here are some other options you can use to reduce the container registry storage
 
 If you see this error message, check the regex patterns to ensure they are valid.
 
-GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in the cleanup policy. You can test them with the [regex101 regex tester](https://regex101.com/) using the `Golang` flavor.
+You can test them with the [regex101 regex tester](https://regex101.com/) using the `Golang` flavor.
 View some common [regex pattern examples](#regex-pattern-examples).
 
 ### The cleanup policy doesn't delete any tags

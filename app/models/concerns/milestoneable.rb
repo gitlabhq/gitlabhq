@@ -26,10 +26,10 @@ module Milestoneable
     scope :any_release, -> do
       where("EXISTS (?)", milestone_releases_subquery)
     end
-    scope :with_release, -> (tag, project_id) do
+    scope :with_release, ->(tag, project_id) do
       where("EXISTS (?)", milestone_releases_subquery.where(releases: { tag: tag, project_id: project_id }))
     end
-    scope :without_particular_release, -> (tag, project_id) do
+    scope :without_particular_release, ->(tag, project_id) do
       where("EXISTS (?)", milestone_releases_subquery.where.not(releases: { tag: tag, project_id: project_id }))
     end
 

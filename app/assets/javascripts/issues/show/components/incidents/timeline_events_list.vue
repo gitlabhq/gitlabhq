@@ -130,7 +130,7 @@ export default {
 </script>
 
 <template>
-  <div class="issuable-discussion incident-timeline-events gl-mt-n3">
+  <div class="issuable-discussion incident-timeline-events -gl-mt-3">
     <div
       v-for="[eventDate, events] in dateGroupedEvents"
       :key="eventDate"

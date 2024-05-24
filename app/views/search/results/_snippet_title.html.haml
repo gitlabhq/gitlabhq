@@ -15,6 +15,6 @@
     %span
       by
       = link_to user_snippets_path(snippet_title.author) do
-        = render Pajamas::AvatarComponent.new(snippet_title.author, size: 16, class: 'gl-mt-n1')
+        = render Pajamas::AvatarComponent.new(snippet_title.author, size: 16, class: '-gl-mt-1')
         = snippet_title.author_name
       %span.light= time_ago_with_tooltip(snippet_title.created_at)

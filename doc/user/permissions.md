@@ -342,6 +342,7 @@ The following table lists group permissions available for each role:
 | Change group visibility level                                                           |       |          |           |            | ✓     |       |
 | Create and manage compliance frameworks                                                 |       |          |           |            | ✓     |       |
 | Create/Delete group deploy tokens                                                       |       |          |           |            | ✓     |       |
+| Create/Delete [group access tokens](group/settings/group_access_tokens.md)              |       |          |           |            | ✓     |       |
 | Delete group                                                                            |       |          |           |            | ✓     |       |
 | Delete group [epic](group/epics/index.md)                                               |       |          |           |            | ✓     |       |
 | Disable notification emails                                                             |       |          |           |            | ✓     |       |

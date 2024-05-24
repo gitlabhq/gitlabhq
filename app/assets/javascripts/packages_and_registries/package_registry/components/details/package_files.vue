@@ -428,7 +428,7 @@ export default {
             :aria-label="detailsShowing ? __('Collapse') : __('Expand')"
             data-testid="toggle-details-button"
             category="tertiary"
-            class="gl-mt-n2!"
+            class="!-gl-mt-2"
             size="small"
             @click="
               toggleDetails();

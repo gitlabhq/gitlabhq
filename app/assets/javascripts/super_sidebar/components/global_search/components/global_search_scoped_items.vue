@@ -56,7 +56,7 @@ export default {
           <search-result-hover-layover :text-message="$options.i18n.OVERLAY_SEARCH">
             <gl-icon
               name="search-results"
-              class="gl-flex-shrink-0 gl-mr-2 gl-pt-2 gl-mt-n2 gl-text-gray-500"
+              class="gl-flex-shrink-0 gl-mr-2 gl-pt-2 -gl-mt-2 gl-text-gray-500"
             />
             <span class="gl-flex-grow-1">
               {{ item.scopeName }}

@@ -125,6 +125,20 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
 
       it_behaves_like 'raising too many files error'
       it_behaves_like 'aggregating metadata'
+
+      context 'with relative path module (its path starts with ./)' do
+        let(:package_file) do
+          build(
+            :package_file,
+            :terraform_module,
+            file_fixture: expand_fixture_path('packages/terraform_module/module-relative-path.tgz')
+          )
+        end
+
+        let(:archive_file) { Gem::Package::TarReader.new(Zlib::GzipReader.open(package_file.file.path)) }
+
+        it_behaves_like 'extracting metadata'
+      end
     end
 
     context 'when processing a zip archive' do
@@ -153,28 +167,31 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
       let_it_be(:archive_file) { Zip::File.new('', create: true) }
 
       where(:path, :module_type) do
-        'README'                           | :root
-        'README.md'                        | :root
-        'main.tf'                          | :root
-        './main.tf'                        | :root
-        'modules/foo.tf'                   | :root
-        'examples/foo.tf'                  | :root
-        'module_name/modules.tf'           | :root
-        'module_name/examples.tf'          | :root
-        'modules/module_name/main.tf'      | :submodule
-        './modules/module_name/main.tf'    | :submodule
-        'foo/modules/module_name/main.tf'  | :submodule
-        'examples/module_name/main.tf'     | :example
-        './examples/module_name/main.tf'   | :example
-        'foo/examples/module_name/main.tf' | :example
-        'module_name/modules/main.tf'      | nil
-        'example_name/examples/main.tf'    | nil
-        'main/module_name/modules.tf'      | nil
-        'main/example_name/examples.tf'    | nil
-        './module_name/modules/foo.tf'     | nil
-        './module_name/examples/foo.tf'    | nil
-        'submodules/module_name/main.tf'   | nil
-        'invalid/path/file.tf'             | nil
+        'README'                              | :root
+        'README.md'                           | :root
+        './root/README.md'                    | :root
+        'main.tf'                             | :root
+        './main.tf'                           | :root
+        'modules/foo.tf'                      | :root
+        'examples/foo.tf'                     | :root
+        'module_name/modules.tf'              | :root
+        'module_name/examples.tf'             | :root
+        'modules/module_name/main.tf'         | :submodule
+        './modules/module_name/main.tf'       | :submodule
+        './root/modules/module_name/main.tf'  | :submodule
+        'root/modules/module_name/main.tf'    | :submodule
+        'examples/module_name/main.tf'        | :example
+        './examples/module_name/main.tf'      | :example
+        'root/examples/module_name/main.tf'   | :example
+        './root/examples/module_name/main.tf' | :example
+        'module_name/modules/main.tf'         | nil
+        'example_name/examples/main.tf'       | nil
+        'main/module_name/modules.tf'         | nil
+        'main/example_name/examples.tf'       | nil
+        './module_name/modules/foo.tf'        | nil
+        './module_name/examples/foo.tf'       | nil
+        'submodules/module_name/main.tf'      | nil
+        'invalid/path/file.tf'                | nil
       end
 
       with_them do

@@ -92,11 +92,11 @@ RSpec.describe Gitlab::Ci::Ansi2json::Line, feature_category: :continuous_integr
       0.seconds                                   | '00:00'
       7.seconds                                   | '00:07'
       75                                          | '01:15'
-      1.minute + 15.seconds                       | '01:15'
-      13.hours + 14.minutes + 15.seconds          | '13:14:15'
-      1.day + 13.hours + 14.minutes + 15.seconds  | '37:14:15'
-      Float::MAX                                  | '8765:00:00'
-      10**10000                                   | '8765:00:00'
+      (1.minute + 15.seconds)                       | '01:15'
+      (13.hours + 14.minutes + 15.seconds)          | '13:14:15'
+      (1.day + 13.hours + 14.minutes + 15.seconds)  | '37:14:15'
+      Float::MAX | '8765:00:00'
+      (10**10000) | '8765:00:00'
     end
 
     with_them do

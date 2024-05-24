@@ -162,7 +162,7 @@ After you have added all the DNS records:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit**.
+1. Next to the domain name, select **Edit** (**{pencil}**).
 1. In **Verification status**, select **Retry verification** (**{retry}**).
 
 ![Verify your domain](img/retry_domain_verification_v12_0.png)
@@ -263,7 +263,7 @@ meet these requirements.
 
   1. On the left sidebar, select **Search or go to** and find your project.
   1. On the left sidebar, select **Deploy > Pages**.
-  1. Next to the domain name, select **Edit**.
+  1. Next to the domain name, select **Edit** (**{pencil}**).
   1. In **Certificate**, turn off the **Automatic certificate management using Let's Encrypt** toggle to add an [SSL/TLS certificate](#adding-an-ssltls-certificate-to-pages).
   1. Select **Save changes**.
 
@@ -311,7 +311,7 @@ To edit a custom domain:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit**.
+1. Next to the domain name, select **Edit** (**{pencil}**).
 
 ## Delete a custom domain
 
@@ -321,7 +321,7 @@ To delete and remove a custom domain:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Remove**.
+1. Next to the domain name, select **Remove domain** (**{remove}**)
 1. When prompted, select **Remove domain**.
 
 ## Troubleshooting

@@ -103,11 +103,11 @@ module Clusters
     scope :default_environment, -> { where(environment_scope: DEFAULT_ENVIRONMENT) }
     scope :with_management_project, -> { where.not(management_project: nil) }
 
-    scope :for_project_namespace, -> (namespace_id) { joins(:projects).where(projects: { namespace_id: namespace_id }) }
-    scope :with_name, -> (name) { where(name: name) }
+    scope :for_project_namespace, ->(namespace_id) { joins(:projects).where(projects: { namespace_id: namespace_id }) }
+    scope :with_name, ->(name) { where(name: name) }
 
     scope :with_integration_prometheus, -> { includes(:integration_prometheus).joins(:integration_prometheus) }
-    scope :with_project_http_integrations, -> (project_ids) do
+    scope :with_project_http_integrations, ->(project_ids) do
       conditions = { projects: :alert_management_http_integrations }
       includes(conditions).joins(conditions).where(projects: { id: project_ids })
     end

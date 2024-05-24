@@ -102,7 +102,7 @@ export default {
 };
 </script>
 <template>
-  <div v-if="clusterAgent" class="gl-p-5 gl-bg-gray-10 gl-mt-n3">
+  <div v-if="clusterAgent" class="gl-p-5 gl-bg-gray-10 -gl-mt-3">
     <div
       class="gl-display-flex gl-flex-wrap gl-justify-content-space-between gl-align-items-center"
     >

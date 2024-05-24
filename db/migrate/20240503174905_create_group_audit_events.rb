@@ -10,7 +10,7 @@ class CreateGroupAuditEvents < Gitlab::Database::Migration[2.2]
 
   def up
     execute <<-SQL
-      CREATE TABLE group_audit_events (
+      CREATE TABLE IF NOT EXISTS group_audit_events (
         id BIGINT NOT NULL DEFAULT nextval('shared_audit_event_id_seq'),
         created_at TIMESTAMP WITH TIME ZONE NOT NULL,
         group_id BIGINT NOT NULL,

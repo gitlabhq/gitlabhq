@@ -4,11 +4,9 @@
 - has_user_defined_certificate = domain_presenter.certificate && domain_presenter.certificate_user_provided?
 
 - if auto_ssl_available
-  .form-group.border-section
+  .form-group
     .row
-      .col-sm-2
-        = _('Certificate')
-      .col-sm-10.js-auto-ssl-toggle-container
+      .col-12.js-auto-ssl-toggle-container
         %label{ for: "pages_domain_auto_ssl_enabled_button" }
           - lets_encrypt_link_url = "https://letsencrypt.org/"
           - lets_encrypt_link_start = "<a href=\"%{lets_encrypt_link_url}\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"text-nowrap\">".html_safe % { lets_encrypt_link_url: lets_encrypt_link_url }
@@ -26,39 +24,40 @@
           - docs_link_end = "</a>".html_safe
           = _("Let's Encrypt is a free, automated, and open certificate authority (CA) that gives digital certificates in order to enable HTTPS (SSL/TLS) for websites. Learn more about Let's Encrypt configuration by following the %{docs_link_start}documentation on GitLab Pages%{docs_link_end}.").html_safe % { docs_link_url: docs_link_url, docs_link_start: docs_link_start, docs_link_end: docs_link_end }
 
-.form-group.border-section.js-shown-unless-auto-ssl{ class: ("d-none" if auto_ssl_available_and_enabled) }
+.form-group.js-shown-unless-auto-ssl{ class: ("!gl-hidden" if auto_ssl_available_and_enabled) }
   - if has_user_defined_certificate
-    .row
-      .col-sm-10.offset-sm-2
-        = render Pajamas::CardComponent.new(body_options: { class: 'gl-display-flex gl-align-items-center gl-justify-content-space-between gl-p-5' }) do |c|
+    .row.gl-mt-5
+      .col-12
+        = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-mt-0' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-flex gl-items-center gl-justify-between gl-px-5 gl-py-4' }) do |c|
           - c.with_header do
-            = _('Certificate')
+            .gl-new-card-title-wrapper
+              %h2.gl-new-card-title
+                = _('Certificate')
+                .gl-new-card-count
+                  = sprite_icon('partner-verified', css_class: 'gl-mr-2')
           - c.with_body do
             %span
               = domain_presenter.pages_domain.subject || _('missing')
-            = link_button_to _('Remove'),
-              clean_certificate_project_pages_domain_path(@project, domain_presenter),
-              data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' },
-              'aria-label': s_("GitLabPages|Remove certificate"),
-              variant: :danger,
-              size: :small,
-              method: :delete
+            = render Pajamas::ButtonComponent.new(href: clean_certificate_project_pages_domain_path(@project, domain_presenter),
+              icon: 'remove',
+              category: :tertiary,
+              button_options: { title: s_('GitLabPages|Remove certificate'), "aria-label": s_('GitLabPages|Remove certificate'), data: { method: :delete, confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger', toggle: 'tooltip', container: 'body', testid: 'remove-certificate' } })
   - else
-    .row
-      .col-sm-10.offset-sm-2
+    .row.gl-mt-5
+      .col-12
         = f.label :user_provided_certificate, _("Certificate (PEM)")
         = f.text_area :user_provided_certificate,
           rows: 5,
           class: "form-control js-enabled-unless-auto-ssl",
           disabled: auto_ssl_available_and_enabled
-        %span.help-inline.text-muted= _("Upload a certificate for your domain with all intermediates")
+        %span.help-inline.gl-text-secondary= _("Upload a certificate for your domain with all intermediates")
     .row
-      .col-sm-10.offset-sm-2
+      .col-12
         = f.label :user_provided_key, _("Key (PEM)")
         = f.text_area :user_provided_key,
           rows: 5,
           class: "form-control js-enabled-unless-auto-ssl",
           disabled: auto_ssl_available_and_enabled
-        %span.help-inline.text-muted= _("Upload a private key for your certificate")
+        %span.help-inline.gl-text-secondary= _("Upload a private key for your certificate")
 
 = render 'lets_encrypt_callout', auto_ssl_available_and_enabled: auto_ssl_available_and_enabled

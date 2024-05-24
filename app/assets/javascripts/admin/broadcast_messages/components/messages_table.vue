@@ -99,7 +99,7 @@ export default {
     :items="messages"
     :fields="$options.fields"
     :tbody-tr-attr="{ 'data-testid': 'message-row' }"
-    class="gl-mt-n1 gl-mb-n2"
+    class="-gl-mt-1 gl-mb-n2"
     stacked="md"
   >
     <template #cell(preview)="{ item: { message, theme, broadcast_type, dismissable } }">

@@ -190,7 +190,17 @@ class Label < ApplicationRecord
   #
   # Returns an ActiveRecord::Relation.
   def self.search(query, **options)
-    fuzzy_search(query, [:title, :description])
+    # make sure we prevent passing in disallowed columns
+    search_in = case options[:search_in]
+                when [:title]
+                  [:title]
+                when [:description]
+                  [:description]
+                else
+                  [:title, :description]
+                end
+
+    fuzzy_search(query, search_in)
   end
 
   # Override Gitlab::SQL::Pattern.min_chars_for_partial_matching as

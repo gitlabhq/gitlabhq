@@ -273,7 +273,9 @@ After you have authorized access to the source GitLab instance, you are redirect
 importer page. Here you can see a list of the top-level groups on the connected source instance where you have the Owner
 role.
 
-1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you proceed to import any of them.
+1. By default, the proposed group namespaces match the names as they exist in source instance, but based on your permissions, you can choose to edit these names before you
+   proceed to import any of them. Group and project paths must conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names)
+   and are normalized if necessary to avoid import failures.
 1. Next to the groups you want to import, select either:
    - **Import with projects**. If this is not available, see [prerequisites](#prerequisites).
    - **Import without projects**.
@@ -599,6 +601,11 @@ You can receive other `404` errors when importing a group, for example:
 
 This error indicates a problem transferring from the _source_ instance. To solve this, check that you have met the [prerequisites](#prerequisites) on the source
 instance.
+
+### Mismatched group or project path names
+
+If a source group or project path doesn't conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names), the path is normalized to 
+ensure it is valid. For example, `Destination-Project-Path` is normalized to `destination-project-path`.
 
 ### Reducing migration duration
 

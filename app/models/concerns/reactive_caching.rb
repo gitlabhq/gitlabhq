@@ -26,7 +26,7 @@ module ReactiveCaching
     class_attribute :reactive_cache_worker_finder
 
     # defaults
-    self.reactive_cache_key = -> (record) { [model_name.singular, record.id] }
+    self.reactive_cache_key = ->(record) { [model_name.singular, record.id] }
     self.reactive_cache_lease_timeout = 2.minutes
     self.reactive_cache_refresh_interval = 1.minute
     self.reactive_cache_lifetime = 10.minutes

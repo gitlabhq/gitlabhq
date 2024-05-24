@@ -157,7 +157,7 @@ export default {
             <div class="gl-relative">
               <gl-button
                 v-gl-tooltip
-                class="gl-absolute gl-mt-n3 gl-ml-2"
+                class="gl-absolute -gl-mt-3 gl-ml-2"
                 variant="default"
                 category="tertiary"
                 size="medium"

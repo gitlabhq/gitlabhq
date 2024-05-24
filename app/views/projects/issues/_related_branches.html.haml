@@ -18,7 +18,7 @@
                   .item-contents.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-flex-grow-1.gl-min-h-7
                     .item-title.gl-display-flex.mb-xl-0.gl-min-w-0.gl-align-items-center
                       - if branch[:pipeline_status].present?
-                        %span.gl-mt-n2.gl-mb-n2.gl-mr-3
+                        %span.-gl-mt-2.gl-mb-n2.gl-mr-3
                           = render 'ci/status/icon', status: branch[:pipeline_status]
                       %span.related-branch-info
                         %strong

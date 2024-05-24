@@ -35,7 +35,7 @@ module IncidentManagement
       # Ascending sort order sorts statuses: Ignored > Resolved > Acknowledged > Triggered
       # Descending sort order sorts statuses: Triggered > Acknowledged > Resolved > Ignored
       # https://gitlab.com/gitlab-org/gitlab/-/issues/221242#what-is-the-expected-correct-behavior
-      scope :order_status, -> (sort_order) { order(status: sort_order == :asc ? :desc : :asc) }
+      scope :order_status, ->(sort_order) { order(status: sort_order == :asc ? :desc : :asc) }
       scope :open, -> { with_status(OPEN_STATUSES) }
 
       state_machine :status, initial: :triggered do

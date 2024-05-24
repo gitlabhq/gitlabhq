@@ -2188,7 +2188,7 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_profile 
     end
   end
 
-  describe 'GET /users/:id/project_deploy_keys' do
+  describe 'GET /users/:id/project_deploy_keys', feature_category: :continuous_delivery do
     let(:project) { create(:project) }
     let(:path) { "/users/#{user.id}/project_deploy_keys" }
 

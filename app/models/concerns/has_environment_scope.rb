@@ -22,7 +22,7 @@ module HasEnvironmentScope
     #     selected even if its scope matches the environment name.
     #     This is equivalent to using `#last` from SQL standpoint.
     #
-    scope :on_environment, -> (environment_name, relevant_only: false) do
+    scope :on_environment, ->(environment_name, relevant_only: false) do
       order_direction = relevant_only ? 'DESC' : 'ASC'
 
       where = <<~SQL

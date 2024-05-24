@@ -41,6 +41,11 @@ RSpec.describe BulkImports::Projects::Transformers::ProjectAttributesTransformer
       expect(transformed_data[:path]).to eq(entity.destination_slug.downcase)
     end
 
+    it 'retains . in destination slug if present' do
+      entity.update!(destination_slug: 'Destination.Project-Path.with.dots')
+      expect(transformed_data[:path]).to eq('destination.project-path.with.dots')
+    end
+
     it 'adds import type' do
       expect(transformed_data[:import_type]).to eq(described_class::PROJECT_IMPORT_TYPE)
     end

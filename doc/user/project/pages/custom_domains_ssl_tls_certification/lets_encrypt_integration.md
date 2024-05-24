@@ -47,7 +47,7 @@ Once you've met the requirements, enable Let's Encrypt integration:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit**.
+1. Next to the domain name, select **Edit** (**{pencil}**).
 1. Turn on the **Automatic certificate management using Let's Encrypt** toggle.
 
    ![Enable Let's Encrypt](img/lets_encrypt_integration_v12_1.png)
@@ -72,7 +72,7 @@ If you get an error **Something went wrong while obtaining the Let's Encrypt cer
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Next to the domain name, select **Edit**.
+1. Next to the domain name, select **Edit** (**{pencil}**).
 1. In **Verification status**, select **Retry verification** (**{retry}**).
 1. If you're still getting the same error:
    1. Make sure you have properly set only one `CNAME` or `A` DNS record for your domain.
