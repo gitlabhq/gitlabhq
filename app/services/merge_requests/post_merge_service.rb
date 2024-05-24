@@ -33,6 +33,7 @@ module MergeRequests
       cleanup_environments(merge_request)
       cleanup_refs(merge_request)
       deactivate_pages_deployments(merge_request)
+      cancel_auto_merges_targeting_source_branch(merge_request)
 
       execute_hooks(merge_request, 'merge')
     end
@@ -86,6 +87,20 @@ module MergeRequests
         merge_event = create_merge_event(merge_request, current_user)
         merge_request_metrics_service(merge_request).merge(merge_event)
       end
+    end
+
+    def cancel_auto_merges_targeting_source_branch(merge_request)
+      return unless Feature.enabled?(:merge_when_checks_pass, merge_request.project)
+      return unless params[:delete_source_branch]
+
+      merge_request.source_project
+        .merge_requests
+        .by_target_branch(merge_request.source_branch)
+        .with_auto_merge_enabled.each do |targetting_merge_request|
+          if targetting_merge_request.auto_merge_strategy == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
+            abort_auto_merge_with_todo(targetting_merge_request, "target branch was merged in #{merge_request.iid}")
+          end
+        end
     end
   end
 end

@@ -30,14 +30,10 @@ default:
 .default-ruby-variables: &default-ruby-variables
   RUBY_VERSION: "3.1"
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_1"
-  OMNIBUS_RUBY_VERSION: "3.1.5"
-  CNG_RUBY_VERSION: "3.1.5"
 
 .next-ruby-variables: &next-ruby-variables
   RUBY_VERSION: "3.2"
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
-  OMNIBUS_RUBY_VERSION: "3.2.4"
-  CNG_RUBY_VERSION: "3.2.4"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
   CREATE_RAILS_FLAKY_TEST_ISSUES: "true"

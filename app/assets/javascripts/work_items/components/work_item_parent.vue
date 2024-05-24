@@ -242,42 +242,39 @@ export default {
           >{{ __('Apply') }}</gl-button
         >
       </div>
-      <div>
-        <!-- wrapper for the form input so the borders fit inside the sidebar -->
-        <div class="gl-pr-2 gl-relative">
-          <gl-collapsible-listbox
-            id="$options.inputId"
-            ref="input"
-            class="gl-display-block"
-            data-testid="work-item-parent-listbox"
-            block
-            searchable
-            start-opened
-            is-check-centered
-            category="primary"
-            fluid-width
-            :searching="isLoading"
-            :header-text="$options.i18n.assignParentLabel"
-            :no-results-text="$options.i18n.noMatchingResults"
-            :loading="updateInProgress"
-            :items="workItems"
-            :toggle-text="listboxText"
-            :selected="localSelectedItem"
-            :reset-button-label="$options.i18n.unAssign"
-            @reset="unassignParent"
-            @search="debouncedSearchKeyUpdate"
-            @select="handleItemClick"
-            @shown="onListboxShown"
-            @hidden="onListboxHide"
-          >
-            <template #list-item="{ item }">
-              <div @click="handleItemClick(item.value, $event)">
-                {{ item.text }}
-              </div>
-            </template>
-          </gl-collapsible-listbox>
-        </div>
-      </div>
+      <gl-collapsible-listbox
+        id="$options.inputId"
+        ref="input"
+        class="gl-display-block"
+        data-testid="work-item-parent-listbox"
+        block
+        searchable
+        start-opened
+        is-check-centered
+        category="primary"
+        fluid-width
+        toggle-class="work-item-sidebar-dropdown-toggle"
+        positioning-strategy="fixed"
+        :searching="isLoading"
+        :header-text="$options.i18n.assignParentLabel"
+        :no-results-text="$options.i18n.noMatchingResults"
+        :loading="updateInProgress"
+        :items="workItems"
+        :toggle-text="listboxText"
+        :selected="localSelectedItem"
+        :reset-button-label="$options.i18n.unAssign"
+        @reset="unassignParent"
+        @search="debouncedSearchKeyUpdate"
+        @select="handleItemClick"
+        @shown="onListboxShown"
+        @hidden="onListboxHide"
+      >
+        <template #list-item="{ item }">
+          <div @click="handleItemClick(item.value, $event)">
+            {{ item.text }}
+          </div>
+        </template>
+      </gl-collapsible-listbox>
     </gl-form>
     <template v-else-if="hasParent">
       <gl-link

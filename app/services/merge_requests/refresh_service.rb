@@ -211,14 +211,6 @@ module MergeRequests
       end
     end
 
-    def abort_auto_merge_with_todo(merge_request, reason)
-      response = abort_auto_merge(merge_request, reason)
-      response = ServiceResponse.new(**response)
-      return unless response.success?
-
-      todo_service.merge_request_became_unmergeable(merge_request)
-    end
-
     def merge_requests_with_auto_merge_enabled_to(target_branch)
       @project
         .merge_requests

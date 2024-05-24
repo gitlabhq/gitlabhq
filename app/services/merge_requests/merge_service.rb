@@ -103,7 +103,8 @@ module MergeRequests
 
     def after_merge
       log_info("Post merge started on JID #{merge_jid} with state #{state}")
-      MergeRequests::PostMergeService.new(project: project, current_user: current_user).execute(merge_request)
+      MergeRequests::PostMergeService.new(project: project, current_user: current_user, params: { delete_source_branch:
+                                          delete_source_branch? }).execute(merge_request)
       log_info("Post merge finished on JID #{merge_jid} with state #{state}")
 
       if delete_source_branch?

@@ -24,7 +24,9 @@ with the `--cache-from` argument must be pulled
 
 ## Docker caching example
 
-This example `.gitlab-ci.yml` file shows how to use Docker caching:
+This example `.gitlab-ci.yml` file shows how to use Docker caching with 
+the `inline` cache backend with the default `docker build` command. For
+more advanced caching options, see the [`docker buildx build` command and its cache options](https://docs.docker.com/build/cache/backends/).
 
 ```yaml
 default:
@@ -43,7 +45,7 @@ build:
   stage: build
   script:
     - docker pull $CI_REGISTRY_IMAGE:latest || true
-    - docker build --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
+    - docker build --build-arg BUILDKIT_INLINE_CACHE=1 --cache-from $CI_REGISTRY_IMAGE:latest --tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA --tag $CI_REGISTRY_IMAGE:latest .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
 ```
@@ -54,6 +56,8 @@ In the `script` section for the `build` job:
    used as a cache for the `docker build` command.
 1. The second command builds a Docker image by using the pulled image as a
    cache (see the `--cache-from $CI_REGISTRY_IMAGE:latest` argument) if
-   available, and tags it.
+   available, and tags it. The `--build-arg BUILDKIT_INLINE_CACHE=1` tells
+   Docker to use [inline caching](https://docs.docker.com/build/cache/backends/inline/),
+   which embeds the build cache into the image itself.
 1. The last two commands push the tagged Docker images to the container registry
    so that they can also be used as cache for subsequent builds.

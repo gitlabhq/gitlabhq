@@ -208,7 +208,6 @@ export default {
       <gl-collapsible-listbox
         :id="inputId"
         ref="listbox"
-        class="!gl-w-full"
         :multiple="multiSelect"
         :searchable="searchable"
         start-opened
@@ -219,6 +218,7 @@ export default {
         :header-text="headerText"
         :toggle-text="toggleText"
         :no-results-text="$options.i18n.noMatchingResults"
+        positioning-strategy="fixed"
         :items="listItems"
         :selected="localSelectedItem"
         :reset-button-label="resetButton"

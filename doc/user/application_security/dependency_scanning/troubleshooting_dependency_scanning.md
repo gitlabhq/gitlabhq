@@ -187,10 +187,6 @@ gemnasium-python-dependency_scanning:
 This error can occur when the automatically generated `CI_JOB_TOKEN` starts with a hyphen (`-`).
 To avoid this error, follow [Poetry's configuration advice](https://python-poetry.org/docs/repositories/#configuring-credentials).
 
-## Error: Project has `<number>` unresolved dependencies
-
-The error message `Project has <number> unresolved dependencies` indicates a dependency resolution problem caused by your `gradle.build` or `gradle.build.kts` file. In the current release, `gemnasium-maven` cannot continue processing when an unresolved dependency is encountered. However, there is an [open epic](https://gitlab.com/groups/gitlab-org/-/epics/12361) to allow `gemnasium-maven` to recover from unresolved dependency errors and produce a dependency graph. Until this epic has been resolved, consult the [Gradle dependency resolution documentation](https://docs.gradle.org/current/userguide/dependency_resolution.html) for details on how to fix your `gradle.build` file.
-
 ## Setting build constraints when scanning Go projects
 
 Dependency scanning runs within a `linux/amd64` container. As a result, the build list generated

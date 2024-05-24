@@ -7,7 +7,6 @@
 ---
 agent_users_using_ci_tunnel-user: agent_users_using_ci_tunnel
 ci_template_included-project: ci_template_included
-code_suggestions_requested-user: code_suggestions_requested
 create_ci_build-user: create_ci_build
 create_ci_internal_pipeline-user: create_ci_internal_pipeline
 exclude_anonymised_users-user: exclude_anonymised_users
