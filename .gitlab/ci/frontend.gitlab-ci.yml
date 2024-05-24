@@ -257,7 +257,7 @@ graphql-schema-dump:
 .jest-base:
   extends: .frontend-test-base
   script:
-    - run_timed_command "yarn jest:ci"
+    - run_timed_command "yarn jest:ci:without-fixtures"
 
 jest-build-cache:
   extends:
@@ -287,7 +287,7 @@ jest-build-cache-vue3:
     - .frontend:rules:jest-vue3
     - .vue3
 
-jest:
+jest-with-fixtures:
   extends:
     - .jest-base
     - .frontend:rules:jest
@@ -305,7 +305,38 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
-  parallel: 12
+  parallel: 2
+  script:
+    - run_timed_command "yarn jest:ci:with-fixtures"
+
+jest:
+  extends:
+    - .jest-base
+    - .frontend:rules:jest
+  needs:
+    - job: jest-build-cache
+      optional: true
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    when: always
+    paths:
+      - coverage-frontend/
+      - junit_jest.xml
+      - tmp/tests/frontend/
+    reports:
+      junit: junit_jest.xml
+  parallel: 11
+
+jest-with-fixtures vue3:
+  extends:
+    - jest-with-fixtures
+    - .frontend:rules:jest-vue3
+    - .vue3
+  needs:
+    - "rspec-all frontend_fixture"
+    - job: jest-build-cache-vue3
+      optional: true
 
 jest vue3:
   extends:
@@ -313,7 +344,6 @@ jest vue3:
     - .frontend:rules:jest-vue3
     - .vue3
   needs:
-    - "rspec-all frontend_fixture"
     - job: jest-build-cache-vue3
       optional: true
 
@@ -322,7 +352,7 @@ jest predictive:
     - jest
     - .frontend:rules:jest:predictive
   needs:
-    - !reference [jest, needs]
+    - !reference [jest-with-fixtures, needs]
     - "detect-tests"
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive"; fi
@@ -388,6 +418,8 @@ coverage-frontend:
     - .frontend:rules:coverage-frontend
   needs:
     - job: "jest"
+      optional: true
+    - job: "jest-with-fixtures"
       optional: true
     - job: "jest predictive"
       optional: true

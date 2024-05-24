@@ -88,7 +88,8 @@ module Support
           output.puts \
             "# [RSpecRunTime] RSpec elapsed time: #{readable_duration(elapsed_seconds)}. " \
             "#{current_rss_in_megabytes}. " \
-            "#{load_average}\n\n"
+            "Threads: #{threads_count}. " \
+            "#{load_average}.\n\n" \
         end
 
         @last_elapsed_seconds = elapsed_seconds
@@ -106,6 +107,10 @@ module Support
         else
           `uptime`[/(load average:[^\n]+)/, 1] || '(uptime failed)'
         end
+      end
+
+      def threads_count
+        Thread.list.size
       end
     end
   end

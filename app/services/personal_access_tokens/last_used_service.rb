@@ -12,7 +12,7 @@ module PersonalAccessTokens
 
       # We _only_ want to update last_used_at and not also updated_at (which
       # would be updated when using #touch).
-      @personal_access_token.update_column(:last_used_at, Time.zone.now) if update?
+      without_sticky_writes { @personal_access_token.update_column(:last_used_at, Time.zone.now) } if update?
     end
 
     private
@@ -25,6 +25,16 @@ module PersonalAccessTokens
       return true if last_used.nil?
 
       last_used <= 10.minutes.ago
+    end
+
+    def without_sticky_writes
+      if Feature.enabled?(:disable_sticky_writes_for_pat_last_used, @personal_access_token.user)
+        ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+          yield
+        end
+      else
+        yield
+      end
     end
   end
 end

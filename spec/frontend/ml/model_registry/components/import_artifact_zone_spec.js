@@ -26,12 +26,6 @@ describe('ImportArtifactZone', () => {
   const emulateFileDrop = () => zone().vm.$emit('change', file);
 
   beforeEach(() => {
-    wrapper = shallowMountExtended(ImportArtifactZone, {
-      propsData: {
-        ...initialProps,
-      },
-    });
-
     axiosMock = new MockAdapter(axios);
     axiosMock.onPut(filePath).replyOnce(HTTP_STATUS_OK, {});
   });
@@ -41,6 +35,14 @@ describe('ImportArtifactZone', () => {
   });
 
   describe('successful upload', () => {
+    beforeEach(() => {
+      wrapper = shallowMountExtended(ImportArtifactZone, {
+        propsData: {
+          ...initialProps,
+        },
+      });
+    });
+
     it('displays the formatted file size', async () => {
       await emulateFileDrop();
       expect(formattedFileSizeDiv().text()).toContain('1.00 KiB');
@@ -83,6 +85,14 @@ describe('ImportArtifactZone', () => {
     });
 
     describe('failed uploads', () => {
+      beforeEach(() => {
+        wrapper = shallowMountExtended(ImportArtifactZone, {
+          propsData: {
+            ...initialProps,
+          },
+        });
+      });
+
       it('displays an error on failure', async () => {
         axiosMock.reset();
         axiosMock.onPut(filePath).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
@@ -104,6 +114,44 @@ describe('ImportArtifactZone', () => {
         expect(loadingIcon().exists()).toBe(false);
         expect(formattedFileSizeDiv().exists()).toBe(false);
         expect(fileNameDiv().exists()).toBe(false);
+      });
+    });
+
+    describe('when submit-on-load is false', () => {
+      beforeEach(() => {
+        wrapper = shallowMountExtended(ImportArtifactZone, {
+          propsData: {
+            ...initialProps,
+            submitOnSelect: false,
+          },
+        });
+      });
+
+      it('does not submit the request', async () => {
+        await emulateFileDrop();
+        await waitForPromises();
+
+        expect(axiosMock.history.put).toHaveLength(0);
+        expect(loadingIcon().exists()).toBe(false);
+      });
+    });
+
+    describe('when path is empty', () => {
+      beforeEach(() => {
+        wrapper = shallowMountExtended(ImportArtifactZone, {
+          propsData: {
+            ...initialProps,
+            path: null,
+          },
+        });
+      });
+
+      it('does not submit the request', async () => {
+        await emulateFileDrop();
+        await waitForPromises();
+
+        expect(axiosMock.history.put).toHaveLength(0);
+        expect(loadingIcon().exists()).toBe(false);
       });
     });
   });

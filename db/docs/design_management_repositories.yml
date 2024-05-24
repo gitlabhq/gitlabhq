@@ -23,3 +23,4 @@ desired_sharding_key:
         table: projects
         sharding_key: namespace_id
         belongs_to: project
+desired_sharding_key_migration_job_name: BackfillDesignManagementRepositoriesNamespaceId

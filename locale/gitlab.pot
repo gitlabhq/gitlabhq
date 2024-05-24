@@ -15577,6 +15577,9 @@ msgstr ""
 msgid "Created At"
 msgstr ""
 
+msgid "Created Date"
+msgstr ""
+
 msgid "Created On"
 msgstr ""
 
@@ -17913,6 +17916,9 @@ msgid "Deployment approvals is not configured for this environment."
 msgstr ""
 
 msgid "Deployment frequency"
+msgstr ""
+
+msgid "Deployment status"
 msgstr ""
 
 msgid "DeploymentApprovals|Allow pipeline triggerer to approve deployment."
@@ -33103,10 +33109,19 @@ msgstr ""
 msgid "MlModelRegistry|Copy MLflow tracking URL"
 msgstr ""
 
+msgid "MlModelRegistry|Create & import"
+msgstr ""
+
 msgid "MlModelRegistry|Create a model version"
 msgstr ""
 
 msgid "MlModelRegistry|Create model"
+msgstr ""
+
+msgid "MlModelRegistry|Create model version"
+msgstr ""
+
+msgid "MlModelRegistry|Create model version & import artifacts"
 msgstr ""
 
 msgid "MlModelRegistry|Creating models is also possible through the MLflow client. %{linkStart}Follow the documentation to learn more.%{linkEnd}"
@@ -33136,6 +33151,12 @@ msgstr ""
 msgid "MlModelRegistry|Drop to start upload"
 msgstr ""
 
+msgid "MlModelRegistry|Enter some description"
+msgstr ""
+
+msgid "MlModelRegistry|Error creating model version and uploading artifacts. Please try again."
+msgstr ""
+
 msgid "MlModelRegistry|Error importing artifact. Please try again."
 msgstr ""
 
@@ -33154,6 +33175,9 @@ msgstr ""
 msgid "MlModelRegistry|Failed to load model with error: %{message}"
 msgstr ""
 
+msgid "MlModelRegistry|For example 1.0.0"
+msgstr ""
+
 msgid "MlModelRegistry|ID"
 msgstr ""
 
@@ -33161,6 +33185,9 @@ msgid "MlModelRegistry|Info"
 msgstr ""
 
 msgid "MlModelRegistry|Latest version"
+msgstr ""
+
+msgid "MlModelRegistry|Leave empty to auto increment."
 msgstr ""
 
 msgid "MlModelRegistry|MLflow run ID"
@@ -33200,6 +33227,9 @@ msgid "MlModelRegistry|No logged parameters"
 msgstr ""
 
 msgid "MlModelRegistry|No registered versions"
+msgstr ""
+
+msgid "MlModelRegistry|Nothing to submit. Please try again."
 msgstr ""
 
 msgid "MlModelRegistry|Parameters"
@@ -55934,6 +55964,9 @@ msgstr ""
 msgid "Updated %{updated_at} by %{updated_by}"
 msgstr ""
 
+msgid "Updated Date"
+msgstr ""
+
 msgid "Updated at %{updatedAt}"
 msgstr ""
 
@@ -62012,6 +62045,9 @@ msgstr ""
 msgid "locked by %{path_lock_user_name} %{created_at}"
 msgstr ""
 
+msgid "main"
+msgstr ""
+
 msgid "manual"
 msgstr ""
 
@@ -62640,6 +62676,9 @@ msgid "policy"
 msgid_plural "policies"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "prefixed"
+msgstr ""
 
 msgid "previously merged commits"
 msgstr ""

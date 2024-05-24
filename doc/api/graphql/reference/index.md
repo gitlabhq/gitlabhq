@@ -3959,6 +3959,30 @@ Input type: `DeletePackagesProtectionRuleInput`
 | <a id="mutationdeletepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationdeletepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule that was deleted successfully. |
 
+### `Mutation.deletePagesDeployment`
+
+Deletes a Pages deployment.
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Input type: `DeletePagesDeploymentInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletepagesdeploymentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletepagesdeploymentid"></a>`id` | [`PagesDeploymentID!`](#pagesdeploymentid) | ID of the Pages Deployment. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationdeletepagesdeploymentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationdeletepagesdeploymenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.designManagementDelete`
 
 Input type: `DesignManagementDeleteInput`
@@ -36440,6 +36464,12 @@ An example `PackagesProtectionRuleID` is: `"gid://gitlab/Packages::Protection::R
 A `PackagesPypiMetadatumID` is a global ID. It is encoded as a string.
 
 An example `PackagesPypiMetadatumID` is: `"gid://gitlab/Packages::Pypi::Metadatum/1"`.
+
+### `PagesDeploymentID`
+
+A `PagesDeploymentID` is a global ID. It is encoded as a string.
+
+An example `PagesDeploymentID` is: `"gid://gitlab/PagesDeployment/1"`.
 
 ### `PathLockID`
 

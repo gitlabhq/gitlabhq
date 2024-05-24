@@ -1,0 +1,24 @@
+mutation createModelVersion(
+  $projectPath: ID!
+  $modelId: MlModelID!
+  $version: String!
+  $description: String
+) {
+  mlModelVersionCreate(
+    input: {
+      projectPath: $projectPath
+      modelId: $modelId
+      version: $version
+      description: $description
+    }
+  ) {
+    modelVersion {
+      id
+      _links {
+        showPath
+        importPath
+      }
+    }
+    errors
+  }
+}

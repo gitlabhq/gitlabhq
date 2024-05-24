@@ -8,10 +8,6 @@ module Ci
       class Component < ::ApplicationRecord
         self.table_name = 'catalog_resource_components'
 
-        include IgnorableColumns
-        ignore_column :inputs, remove_with: '17.1', remove_after: '2024-05-16'
-        ignore_column :path, remove_with: '17.1', remove_after: '2024-05-20'
-
         belongs_to :project, inverse_of: :ci_components
         belongs_to :catalog_resource, class_name: 'Ci::Catalog::Resource', inverse_of: :components
         belongs_to :version, class_name: 'Ci::Catalog::Resources::Version', inverse_of: :components

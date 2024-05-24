@@ -1,12 +1,10 @@
 <script>
 import { GlLoadingIcon } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import axios from '~/lib/utils/axios_utils';
-import { contentTypeMultipartFormData } from '~/lib/utils/headers';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
+import { uploadModel } from '../services/upload_model';
 
 export default {
   name: 'ImportArtifactZone',
@@ -17,12 +15,23 @@ export default {
   props: {
     path: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
+    },
+    submitOnSelect: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    value: {
+      type: File,
+      required: false,
+      default: null,
     },
   },
   data() {
     return {
-      file: null,
+      file: this.value,
       loading: false,
     };
   },
@@ -30,24 +39,17 @@ export default {
     formattedFileSize() {
       return numberToHumanSize(this.file.size);
     },
-    importUrl() {
-      return joinPaths(this.path, encodeURIComponent(this.file.name));
-    },
   },
   methods: {
     resetFile() {
       this.file = null;
       this.loading = false;
+      this.$emit('input', null);
     },
-    submitRequest() {
-      const formData = new FormData();
-      formData.append('file', this.file);
-      return axios
-        .put(this.importUrl, formData, {
-          headers: {
-            ...contentTypeMultipartFormData,
-          },
-        })
+    submitRequest(importPath) {
+      this.loading = true;
+
+      uploadModel({ importPath, file: this.file })
         .then(() => {
           this.$emit('change');
           this.resetFile();
@@ -59,9 +61,12 @@ export default {
     },
     uploadFile(file) {
       this.file = file;
-      this.loading = true;
 
-      return this.submitRequest();
+      if (this.submitOnSelect && this.path) {
+        this.submitRequest(this.path);
+      }
+
+      this.$emit('input', file);
     },
   },
   i18n: {
@@ -70,6 +75,7 @@ export default {
       'MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifact to attach',
     ),
     errorMessage: s__('MlModelRegistry|Error importing artifact. Please try again.'),
+    submitErrorMessage: s__('MlModelRegistry|Nothing to submit. Please try again.'),
   },
   validFileMimetypes: [],
 };
@@ -88,7 +94,7 @@ export default {
       v-if="file"
       class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full align-items-center justify-content-center gl-p-3"
     >
-      <gl-loading-icon class="gl-p-5" size="sm" />
+      <gl-loading-icon v-if="loading" class="gl-p-5" size="sm" />
       <div data-testid="formatted-file-size">{{ formattedFileSize }}</div>
       <div data-testid="file-name">{{ file.name }}</div>
     </div>

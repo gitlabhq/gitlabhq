@@ -205,4 +205,13 @@ RSpec.describe PagesDeployment, feature_category: :pages do
       expect(described_class.older_than(deployment.id)).to eq(old_deployments)
     end
   end
+
+  # Verify that calling deactivate on an instance sets the deleted_at value to now
+  describe '.deactivate (instance method)' do
+    it 'sets deleted_at to the current time', :freeze_time do
+      deployment = create(:pages_deployment)
+      expect { deployment.deactivate }
+        .to change { deployment.deleted_at }.from(nil).to(Time.zone.now)
+    end
+  end
 end

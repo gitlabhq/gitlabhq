@@ -1,0 +1,167 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require 'test_file_finder'
+
+# Show mappings for `test_file_finder` defined in `tests.yml`.
+#
+# Usage:
+#   tooling/bin/tff_mappings --help
+#   tooling/bin/tff_mappings                        # Show summary for all commited files
+#   tooling/bin/tff_mappings app/ lib/              # Show summary for specific folders
+#   tooling/bin/tff_mappings --missing app/         # List missing files in app/ folder
+#   tooling/bin/tff_mappings --ignored --no-summary # List ignored files without summary
+module Tooling
+  class TffMappings
+    TESTS_YAML = File.expand_path('../../tests.yml', __dir__)
+    STRATEGY = TestFileFinder::MappingStrategies::PatternMatching.load(TESTS_YAML)
+
+    IGNORE = %w[
+      **/.*ignore
+      **/.{,git}keep
+      **/*.{jpg,js,mjs,md,patch,png,sh,svg,toml,txt}
+      .rubocop.yml .rubocop_todo/
+      db/schema_migrations db/*.sql
+      gems/ vendor/
+      locale/
+      public/ app/assets/ ee/app/assets/
+      qa/
+      spec/components/previews/ ee/spec/components/previews/
+      spec/contracts/ ee/spec/contracts/
+      spec/factories/ ee/spec/factories/
+      spec/fixtures/ ee/spec/fixtures/
+      spec/frontend/ ee/spec/frontend/
+      spec/frontend_integration/ ee/spec/frontend_integration/
+      spec/support/ ee/spec/support/
+      tmp/
+      workhorse/
+    ].freeze
+
+    UNIGNORE = %w[
+      spec/contracts/provider_specs ee/spec/contracts/provider_specs
+    ].freeze
+
+    def self.options(argv)
+      options = {
+        found: false,
+        missing: false,
+        ignored: false,
+        summary: true
+      }
+
+      OptionParser.new do |parser|
+        parser.banner = "Usage: #{__FILE__} [options] [<file> ...]"
+
+        parser.on('--found', 'Show found tff mappings.')
+        parser.on('--missing', 'Show missing tff mappings.')
+        parser.on('--ignored', 'Show ignored files.')
+        parser.on('--all', 'Show all states: found, missing, and ignored.') do
+          options.except(:summary).each_key { |key| options[key] = true }
+        end
+        parser.on('--[no-]summary', 'Show summary of found and missing entries. Default: true')
+
+        parser.on('-h', '--help', 'Show this help.') do
+          puts parser
+          exit
+        end
+      end.parse!(argv, into: options)
+
+      if argv.empty?
+        files = `git ls-files -z`.split("\0")
+      else
+        pattern = argv
+          .map { |arg| File.directory?(arg) ? "#{arg.delete_suffix('/')}/**/*" : arg }
+          .join(",")
+        files = Dir.glob("{#{pattern}}").reject { |file| File.directory?(file) }
+      end
+
+      [options, files]
+    end
+
+    def initialize(options)
+      @options = options
+      @output = any_combination?(@options.except(:summary)) ? with_label : without_label
+      @ignore = matchers_for(IGNORE)
+      @unignore = matchers_for(UNIGNORE)
+    end
+
+    def run(files)
+      stats = {
+        total: 0,
+        found: 0,
+        missing: 0,
+        ignored: 0
+      }
+
+      files.each do |file|
+        stats[:total] += 1
+
+        if match_list?(@ignore, file) && !match_list?(@unignore, file)
+          stats[:ignored] += 1
+          puts @output.call('IGNORED', file) if @options[:ignored]
+          next
+        end
+
+        result = test_files(file)
+
+        if result.empty?
+          stats[:missing] += 1
+          puts @output.call('MISSING', file) if @options[:missing]
+        else
+          stats[:found] += 1
+          puts @output.call('FOUND', file) if @options[:found]
+        end
+      end
+
+      print_summary(stats)
+    end
+
+    private
+
+    def print_summary(stats)
+      return unless @options[:summary]
+
+      puts stats.map { |key, value| "#{key}=#{value}" }.join(' ').prepend('# ')
+    end
+
+    def matchers_for(list)
+      list.map do |item|
+        %r{[*?\[\{]}.match?(item) ? pattern_match(item) : start_with_match(item)
+      end
+    end
+
+    def pattern_match(glob)
+      ->(path) { File.fnmatch?(glob, path, File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB) }
+    end
+
+    def start_with_match(string)
+      ->(path) { path.start_with?(string) }
+    end
+
+    def match_list?(list, file)
+      list.any? { |matcher| matcher.call(file) }
+    end
+
+    def any_combination?(options)
+      options.values.count(&:itself) >= 2
+    end
+
+    def with_label
+      ->(label, file) { "#{file} #{label}" }
+    end
+
+    def without_label
+      ->(_label, file) { file }
+    end
+
+    def test_files(source)
+      tff = TestFileFinder::FileFinder.new(paths: [source])
+      tff.use STRATEGY
+      tff.test_files
+    end
+  end
+end
+
+options, files = Tooling::TffMappings.options(ARGV)
+Tooling::TffMappings.new(**options).run(files)
