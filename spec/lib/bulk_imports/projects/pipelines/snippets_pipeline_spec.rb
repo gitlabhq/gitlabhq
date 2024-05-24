@@ -106,7 +106,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsPipeline, feature_categ
         note_updated_at = exported_snippet['notes'].first['updated_at'].split('.').first
 
         expect(snippet_note).to have_attributes(
-          note: note.note + "\n\n *By #{author_name} on #{note_updated_at} (imported from GitLab)*",
+          note: note.note + "\n\n *By #{author_name} on #{note_updated_at}*",
           noteable_type: note.noteable_type,
           author_id: user.id,
           updated_at: note.updated_at,

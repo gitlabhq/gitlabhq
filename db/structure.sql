@@ -881,6 +881,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_8fbb044c64ad() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "projects"
+  WHERE "projects"."id" = NEW."project_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_94514aeadc50() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8643,6 +8659,7 @@ CREATE TABLE design_management_designs (
     description_html text,
     imported smallint DEFAULT 0 NOT NULL,
     imported_from smallint DEFAULT 0 NOT NULL,
+    namespace_id bigint,
     CONSTRAINT check_07155e2715 CHECK ((char_length((filename)::text) <= 255)),
     CONSTRAINT check_aaf9fa6ae5 CHECK ((char_length(description) <= 1000000)),
     CONSTRAINT check_cfb92df01a CHECK ((iid IS NOT NULL))
@@ -13673,7 +13690,9 @@ CREATE TABLE personal_access_tokens (
     expire_notification_delivered boolean DEFAULT false NOT NULL,
     last_used_at timestamp with time zone,
     after_expiry_notification_delivered boolean DEFAULT false NOT NULL,
-    previous_personal_access_token_id bigint
+    previous_personal_access_token_id bigint,
+    advanced_scopes text,
+    CONSTRAINT check_aa95773861 CHECK ((char_length(advanced_scopes) <= 4096))
 );
 
 CREATE SEQUENCE personal_access_tokens_id_seq
@@ -25710,6 +25729,8 @@ CREATE UNIQUE INDEX index_design_management_designs_on_iid_and_project_id ON des
 
 CREATE UNIQUE INDEX index_design_management_designs_on_issue_id_and_filename ON design_management_designs USING btree (issue_id, filename);
 
+CREATE INDEX index_design_management_designs_on_namespace_id ON design_management_designs USING btree (namespace_id);
+
 CREATE INDEX index_design_management_designs_on_project_id ON design_management_designs USING btree (project_id);
 
 CREATE INDEX index_design_management_designs_versions_on_design_id ON design_management_designs_versions USING btree (design_id);
@@ -30184,6 +30205,8 @@ CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board
 
 CREATE TRIGGER trigger_8e66b994e8f0 BEFORE INSERT OR UPDATE ON audit_events_streaming_event_type_filters FOR EACH ROW EXECUTE FUNCTION trigger_8e66b994e8f0();
 
+CREATE TRIGGER trigger_8fbb044c64ad BEFORE INSERT OR UPDATE ON design_management_designs FOR EACH ROW EXECUTE FUNCTION trigger_8fbb044c64ad();
+
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
 
 CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_request_rule_sources FOR EACH ROW EXECUTE FUNCTION trigger_b4520c29ea74();
@@ -30412,6 +30435,9 @@ ALTER TABLE ONLY users_star_projects
 
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_2358b75436 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY design_management_designs
+    ADD CONSTRAINT fk_239cd63678 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
     ADD CONSTRAINT fk_23f3ab7df0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

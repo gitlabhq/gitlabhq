@@ -426,7 +426,7 @@ module QA
       #
       # @return [Regex]
       def created_by_pattern
-        @created_by_pattern ||= /\n\n \*By .+ on \S+ \(imported from GitLab\)\*/
+        @created_by_pattern ||= /\n\n \*By .+ on \S+\*/
       end
 
       # Source project url

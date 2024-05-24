@@ -171,7 +171,7 @@ To use this feature:
 You can generate the description for an issue from a short summary.
 
 1. Create a new issue.
-1. Above the **Description** field, select **AI actions > Generate issue description**.
+1. Above the **Description** field, select **GitLab Duo** (**{tanuki-ai}**) **> Generate issue description**.
 1. Write a short description and select **Submit**.
 
 The issue description is replaced with AI-generated text.

@@ -142,6 +142,16 @@ RSpec.describe Projects::ParticipantsService, feature_category: :groups_and_proj
               group_1.full_path, subgroup.full_path
             ])
           end
+
+          context 'when user search already returns enough results' do
+            before do
+              described_class::SEARCH_LIMIT.times { |i| create(:user, name: "bb#{i}", guest_of: project) }
+            end
+
+            it 'does not return any groups' do
+              expect(group_items).to be_empty
+            end
+          end
         end
       end
     end

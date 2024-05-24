@@ -27,10 +27,15 @@ export const I18N = {
   statusChecksHeader: s__('BranchRules|Status checks (%{total})'),
   allowedToPushHeader: s__('BranchRules|Allowed to push and merge (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),
+  allowForcePushLabel: s__('BranchRules|Allow force push'),
   allowForcePushTitle: s__('BranchRules|Allows force push'),
   doesNotAllowForcePushTitle: s__('BranchRules|Does not allow force push'),
-  forcePushDescription: s__('BranchRules|From users with push access.'),
-  requiresCodeOwnerApprovalTitle: s__('BranchRules|Requires approval from code owners'),
+  forcePushIconDescription: s__('BranchRules|From users with push access.'),
+  forcePushDescriptionWithDocs: s__(
+    'BranchRules|Allow all users with push access to %{linkStart}force push%{linkEnd}.',
+  ),
+  requiresCodeOwnerApprovalLabel: s__('BranchRules|Require code owner approval'),
+  requiresCodeOwnerApprovalTitle: s__('BranchRules|Requires code owner approval'),
   doesNotRequireCodeOwnerApprovalTitle: s__(
     'BranchRules|Does not require approval from code owners',
   ),
@@ -39,6 +44,9 @@ export const I18N = {
   ),
   doesNotRequireCodeOwnerApprovalDescription: s__(
     'BranchRules|Also accepts code pushes that change files listed in CODEOWNERS file.',
+  ),
+  codeOwnerApprovalDescription: s__(
+    'BranchRules|Changed files listed in %{linkStart}CODEOWNERS%{linkEnd} require an approval for merge requests and will be rejected for code pushes.',
   ),
   noData: s__('BranchRules|No data to display'),
   deleteRuleModalTitle: s__('BranchRules|Delete branch rule?'),
@@ -69,6 +77,10 @@ export const PROTECTED_BRANCHES_HELP_PATH = 'user/project/protected_branches';
 export const APPROVALS_HELP_PATH = 'user/project/merge_requests/approvals/index.md';
 
 export const STATUS_CHECKS_HELP_PATH = 'user/project/merge_requests/status_checks.md';
+
+export const CODE_OWNERS_HELP_PATH = 'user/project/code_owners.md';
+
+export const PUSH_RULES_HELP_PATH = 'user/project/repository/push_rules.md';
 
 export const REQUIRED_ICON = 'check-circle-filled';
 export const NOT_REQUIRED_ICON = 'status-failed';

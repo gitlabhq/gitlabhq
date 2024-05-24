@@ -5,7 +5,6 @@ import Vue, { nextTick } from 'vue';
 import AgentEmptyState from '~/clusters_list/components/agent_empty_state.vue';
 import AgentTable from '~/clusters_list/components/agent_table.vue';
 import Agents from '~/clusters_list/components/agents.vue';
-import GitopsDeprecationAlert from '~/clusters_list/components/gitops_deprecation_alert.vue';
 import {
   ACTIVE_CONNECTION_TIME,
   AGENT_FEEDBACK_KEY,
@@ -86,7 +85,6 @@ describe('Agents', () => {
   const findEmptyState = () => wrapper.findComponent(AgentEmptyState);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findBanner = () => wrapper.findComponent(GlBanner);
-  const findGitopsDeprecationAlert = () => wrapper.findComponent(GitopsDeprecationAlert);
 
   afterEach(() => {
     localStorage.removeItem(AGENT_FEEDBACK_KEY);
@@ -279,13 +277,6 @@ describe('Agents', () => {
         expect(findAgentTable().props('agents')).toMatchObject(expectedAgentsList);
       });
     });
-
-    it('should show agent gitops deprecation alert', () => {
-      expect(findGitopsDeprecationAlert().props()).toEqual({
-        agentConfigs: ['.gitlab/agents/agent-2'],
-        projectGid: 'gid://gitlab/Project/1',
-      });
-    });
   });
 
   describe('when the agent list is empty', () => {
@@ -300,10 +291,6 @@ describe('Agents', () => {
 
     it('should not show agent feedback alert', () => {
       expect(findAlert().exists()).toBe(false);
-    });
-
-    it('should not show agent gitops deprecation alert', () => {
-      expect(findGitopsDeprecationAlert().exists()).toBe(false);
     });
   });
 

@@ -101,7 +101,9 @@
       a {
         color: $black;
       }
+    }
 
+    &:hover, &:focus, &:focus-within {
       .wiki-list-create-child-button {
         display: block;
       }

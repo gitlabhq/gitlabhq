@@ -88,6 +88,24 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
 
         expect(users.pluck(:username)).to eq([member_1.username])
       end
+
+      context 'when user search already returns enough results' do
+        let(:params) { { search: 'bb' } }
+
+        let(:matching_group) { create(:group, path: 'bb') }
+
+        before do
+          matching_group.add_developer(developer)
+
+          described_class::SEARCH_LIMIT.times { |i| create(:user, name: "bb#{i}", guest_of: group) }
+        end
+
+        it 'does not return any groups' do
+          group_items = service_result.select { |hash| hash[:type].eql?('Group') }
+
+          expect(group_items).to be_empty
+        end
+      end
     end
   end
 

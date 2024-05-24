@@ -2024,9 +2024,6 @@ msgstr ""
 msgid "AI Agent was successfully deleted"
 msgstr ""
 
-msgid "AI actions"
-msgstr ""
-
 msgid "AI-generated summary"
 msgstr ""
 
@@ -2132,7 +2129,7 @@ msgstr ""
 msgid "AI|Autocomplete"
 msgstr ""
 
-msgid "AI|Creates issue description based on a short prompt"
+msgid "AI|Create issue description based on a short prompt"
 msgstr ""
 
 msgid "AI|Description is required"
@@ -9026,6 +9023,9 @@ msgstr ""
 msgid "BranchRules|Allow all users with push access to %{linkStart}force push%{linkEnd}."
 msgstr ""
 
+msgid "BranchRules|Allow force push"
+msgstr ""
+
 msgid "BranchRules|Allowed to force push"
 msgstr ""
 
@@ -9075,6 +9075,9 @@ msgid "BranchRules|Branch rule details"
 msgstr ""
 
 msgid "BranchRules|Cancel"
+msgstr ""
+
+msgid "BranchRules|Changed files listed in %{linkStart}CODEOWNERS%{linkEnd} require an approval for merge requests and will be rejected for code pushes."
 msgstr ""
 
 msgid "BranchRules|Changes require a merge request. The following users can push and merge directly."
@@ -9164,10 +9167,13 @@ msgstr ""
 msgid "BranchRules|Require approval from code owners."
 msgstr ""
 
+msgid "BranchRules|Require code owner approval"
+msgstr ""
+
 msgid "BranchRules|Requires CODEOWNERS approval"
 msgstr ""
 
-msgid "BranchRules|Requires approval from code owners"
+msgid "BranchRules|Requires code owner approval"
 msgstr ""
 
 msgid "BranchRules|Roles"
@@ -12098,9 +12104,6 @@ msgid "ClusterAgents|The agent uses the token to connect with GitLab."
 msgstr ""
 
 msgid "ClusterAgents|The agent version do not match each other across your cluster's pods. This can happen when a new agent version was just deployed and Kubernetes is shutting down the old pods."
-msgstr ""
-
-msgid "ClusterAgents|The pull-based deployment features of the GitLab agent for Kubernetes is deprecated. If you use the agent for pull-based deployments, you should %{linkStart}migrate to Flux%{linkEnd}."
 msgstr ""
 
 msgid "ClusterAgents|This agent has no tokens"
@@ -20255,6 +20258,9 @@ msgstr ""
 msgid "Environments|How do I grant Kubernetes access?"
 msgstr ""
 
+msgid "Environments|If a Flux resource is specified, its reconciliation status is reflected in GitLab."
+msgstr ""
+
 msgid "Environments|Job"
 msgstr ""
 
@@ -20277,6 +20283,9 @@ msgid "Environments|No deployments yet"
 msgstr ""
 
 msgid "Environments|No results found"
+msgstr ""
+
+msgid "Environments|No selection shows all authorized resources in the cluster. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file."
@@ -23385,6 +23394,9 @@ msgid "GitLab Billing Team."
 msgstr ""
 
 msgid "GitLab Community Edition"
+msgstr ""
+
+msgid "GitLab Duo"
 msgstr ""
 
 msgid "GitLab Duo Pro seats"

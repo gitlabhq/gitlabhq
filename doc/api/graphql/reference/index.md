@@ -9436,6 +9436,27 @@ Input type: `ValueStreamUpdateInput`
 | <a id="mutationvaluestreamupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvaluestreamupdatevaluestream"></a>`valueStream` | [`ValueStream`](#valuestream) | Updated value stream. |
 
+### `Mutation.verifiedNamespaceCreate`
+
+Create a verified namespace and mark all child catalog resources with the passed verification level info.
+
+Input type: `VerifiedNamespaceCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationverifiednamespacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationverifiednamespacecreatenamespacepath"></a>`namespacePath` | [`ID!`](#id) | Root namespace path. |
+| <a id="mutationverifiednamespacecreateverificationlevel"></a>`verificationLevel` | [`String!`](#string) | Verification level used to indicate the verification for namespace given by Gitlab. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationverifiednamespacecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationverifiednamespacecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.vulnerabilitiesDismiss`
 
 Input type: `VulnerabilitiesDismissInput`
@@ -33881,6 +33902,7 @@ Import source.
 | <a id="importsourcegit"></a>`GIT` | Imported from Git. |
 | <a id="importsourcegitea"></a>`GITEA` | Imported from Gitea. |
 | <a id="importsourcegithub"></a>`GITHUB` | Imported from Github. |
+| <a id="importsourcegitlab_group"></a>`GITLAB_GROUP` | Imported from Gitlab Group. |
 | <a id="importsourcegitlab_migration"></a>`GITLAB_MIGRATION` | Imported from Gitlab Migration. |
 | <a id="importsourcegitlab_project"></a>`GITLAB_PROJECT` | Imported from Gitlab Project. |
 | <a id="importsourcemanifest"></a>`MANIFEST` | Imported from Manifest. |

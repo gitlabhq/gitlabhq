@@ -59,7 +59,7 @@ GitLab Duo fills in the template and replaces the contents of the description.
 To use GitLab Duo to generate a merge request description:
 
 1. [Create a new merge request](creating_merge_requests.md) and go to the **Description** field.
-1. Select **AI Actions** (**{tanuki}**).
+1. Select **GitLab Duo** (**{tanuki-ai}**).
 1. Select **Fill in merge request template**.
 
 The updated description is applied. You can edit or revise the description before you finish creating your merge request.

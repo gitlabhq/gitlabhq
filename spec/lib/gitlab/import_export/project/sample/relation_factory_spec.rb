@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Project::Sample::RelationFactory do
+RSpec.describe Gitlab::ImportExport::Project::Sample::RelationFactory, feature_category: :importers do
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
@@ -22,6 +22,7 @@ RSpec.describe Gitlab::ImportExport::Project::Sample::RelationFactory do
       members_mapper: members_mapper,
       user: importer_user,
       importable: project,
+      import_source: ::Import::SOURCE_PROJECT_EXPORT_IMPORT,
       excluded_keys: excluded_keys,
       date_calculator: date_calculator
     )

@@ -19,6 +19,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       members_mapper: members_mapper,
       user: importer_user,
       importable: project,
+      import_source: ::Import::SOURCE_PROJECT_EXPORT_IMPORT,
       excluded_keys: excluded_keys
     )
   end

@@ -162,7 +162,7 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline, feature_categor
         note = project.issues.last.notes.first
 
         aggregate_failures do
-          expect(note.note).to eq("Issue note\n\n *By User 22 on 2016-06-14T15:02:47 (imported from GitLab)*")
+          expect(note.note).to eq("Issue note\n\n *By User 22 on 2016-06-14T15:02:47*")
           expect(note.award_emoji.first.name).to eq('clapper')
         end
       end

@@ -23,6 +23,7 @@ module Ci
         scope :by_name, ->(name) { joins(:release).merge(Release.where(tag: name)) }
         scope :by_sha, ->(sha) { joins(:release).merge(Release.where(sha: sha)) }
         scope :with_semver, -> { where.not(semver_major: nil) }
+        scope :without_prerelease, -> { where(semver_prerelease: nil) }
 
         delegate :sha, :author_id, to: :release
 
@@ -36,6 +37,7 @@ module Ci
               major.blank?
 
             relation = with_semver
+            relation = relation.without_prerelease
             relation = relation.where(semver_major: major) if major
             relation = relation.where(semver_minor: minor) if minor
 

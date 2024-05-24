@@ -92,9 +92,31 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
     end
   end
 
+  describe '.without_prerelease' do
+    subject { described_class.without_prerelease }
+
+    it 'excludes pre-releases' do
+      beta_release = create(:release, project: project, tag: '3.1.3-beta')
+      create(:ci_catalog_resource_version, semver: '3.1.3-beta', catalog_resource: resource,
+        release: beta_release)
+
+      is_expected.to match_array([v2_0_0, v1_1_0, v1_1_3])
+    end
+  end
+
   describe '.latest' do
     context 'when providing the ~latest tag' do
       it 'returns the latest version' do
+        latest_version = described_class.latest
+
+        expect(latest_version).to eq(v2_0_0)
+      end
+
+      it 'excludes pre-release versions' do
+        beta_release = create(:release, project: project, tag: '3.1.3-beta', created_at: Date.today)
+        create(:ci_catalog_resource_version, semver: '3.1.3-beta', catalog_resource: resource,
+          release: beta_release)
+
         latest_version = described_class.latest
 
         expect(latest_version).to eq(v2_0_0)

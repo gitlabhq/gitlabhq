@@ -9,7 +9,7 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory, feature_category: :i
   let(:relation_sym) { :project_snippets }
   let(:relation_hash) { {} }
   let(:excluded_keys) { [] }
-  let(:import_source) { nil }
+  let(:import_source) { Import::SOURCE_DIRECT_TRANSFER }
 
   subject do
     described_class.create( # rubocop:disable Rails/SaveBang
@@ -92,21 +92,25 @@ RSpec.describe Gitlab::ImportExport::Base::RelationFactory, feature_category: :i
         expect(subject).to be_instance_of(Note)
       end
 
-      context 'when import_source is given' do
-        let(:import_source) { Import::SOURCE_DIRECT_TRANSFER }
+      it 'sets imported_from' do
+        expect(subject.imported_from).to eq(Import::SOURCE_DIRECT_TRANSFER.to_s)
+      end
 
-        it 'sets the imported_from' do
-          expect(subject.imported_from).to eq(import_source.to_s)
+      context 'when import_source is gitlab_project' do
+        let(:import_source) { Import::SOURCE_PROJECT_EXPORT_IMPORT }
+
+        it 'sets imported_from' do
+          expect(subject.imported_from).to eq(Import::SOURCE_PROJECT_EXPORT_IMPORT.to_s)
         end
+      end
 
-        context 'when object does not have an imported_from attribute' do
-          let(:relation_sym) { :user }
-          let(:relation_hash) { attributes_for(:user) }
+      context 'when object does not have an imported_from attribute' do
+        let(:relation_sym) { :user }
+        let(:relation_hash) { attributes_for(:user) }
 
-          it 'works without an error' do
-            expect(subject).not_to respond_to(:imported_from) # Sanity check: This must be true for test subject
-            expect(subject).to be_instance_of(User)
-          end
+        it 'works without an error' do
+          expect(subject).not_to respond_to(:imported_from) # Sanity check: This must be true for test subject
+          expect(subject).to be_instance_of(User)
         end
       end
 

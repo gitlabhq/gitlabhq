@@ -5,7 +5,6 @@ import {
   GlSprintf,
   GlLink,
   GlLoadingIcon,
-  GlIcon,
   GlCard,
   GlButton,
   GlModal,
@@ -28,36 +27,39 @@ import { getAccessLevels } from '../../../utils';
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
 import RuleDrawer from './rule_drawer.vue';
+import ProtectionToggle from './protection_toggle.vue';
 import {
   I18N,
   ALL_BRANCHES_WILDCARD,
   BRANCH_PARAM_NAME,
   PROTECTED_BRANCHES_HELP_PATH,
-  REQUIRED_ICON,
-  NOT_REQUIRED_ICON,
-  REQUIRED_ICON_CLASS,
-  NOT_REQUIRED_ICON_CLASS,
+  CODE_OWNERS_HELP_PATH,
+  PUSH_RULES_HELP_PATH,
   DELETE_RULE_MODAL_ID,
   EDIT_RULE_MODAL_ID,
 } from './constants';
 
 const protectedBranchesHelpDocLink = helpPagePath(PROTECTED_BRANCHES_HELP_PATH);
+const codeOwnersHelpDocLink = helpPagePath(CODE_OWNERS_HELP_PATH);
+const pushRulesHelpDocLink = helpPagePath(PUSH_RULES_HELP_PATH);
 
 export default {
   name: 'RuleView',
   i18n: I18N,
   deleteModalId: DELETE_RULE_MODAL_ID,
   protectedBranchesHelpDocLink,
+  codeOwnersHelpDocLink,
+  pushRulesHelpDocLink,
   directives: {
     GlModal: GlModalDirective,
   },
   editModalId: EDIT_RULE_MODAL_ID,
   components: {
     Protection,
+    ProtectionToggle,
     GlSprintf,
     GlLink,
     GlLoadingIcon,
-    GlIcon,
     GlCard,
     GlModal,
     GlButton,
@@ -124,26 +126,37 @@ export default {
   computed: {
     forcePushAttributes() {
       const { allowForcePush } = this.branchProtection || {};
-      const icon = allowForcePush ? REQUIRED_ICON : NOT_REQUIRED_ICON;
-      const iconClass = allowForcePush ? REQUIRED_ICON_CLASS : NOT_REQUIRED_ICON_CLASS;
       const title = allowForcePush
         ? this.$options.i18n.allowForcePushTitle
         : this.$options.i18n.doesNotAllowForcePushTitle;
 
-      return { icon, iconClass, title };
+      if (!this.glFeatures.editBranchRules) {
+        return { title, description: this.$options.i18n.forcePushIconDescription };
+      }
+
+      return {
+        title,
+        description: this.$options.i18n.forcePushDescriptionWithDocs,
+      };
     },
     codeOwnersApprovalAttributes() {
       const { codeOwnerApprovalRequired } = this.branchProtection || {};
-      const icon = codeOwnerApprovalRequired ? REQUIRED_ICON : NOT_REQUIRED_ICON;
-      const iconClass = codeOwnerApprovalRequired ? REQUIRED_ICON_CLASS : NOT_REQUIRED_ICON_CLASS;
       const title = codeOwnerApprovalRequired
         ? this.$options.i18n.requiresCodeOwnerApprovalTitle
         : this.$options.i18n.doesNotRequireCodeOwnerApprovalTitle;
-      const description = codeOwnerApprovalRequired
-        ? this.$options.i18n.requiresCodeOwnerApprovalDescription
-        : this.$options.i18n.doesNotRequireCodeOwnerApprovalDescription;
 
-      return { icon, iconClass, title, description };
+      if (!this.glFeatures.editBranchRules) {
+        const description = codeOwnerApprovalRequired
+          ? this.$options.i18n.requiresCodeOwnerApprovalDescription
+          : this.$options.i18n.doesNotRequireCodeOwnerApprovalDescription;
+
+        return { title, description };
+      }
+
+      return {
+        title,
+        description: this.$options.i18n.codeOwnerApprovalDescription,
+      };
     },
     mergeAccessLevels() {
       const { mergeAccessLevels } = this.branchProtection || {};
@@ -353,32 +366,26 @@ export default {
         />
 
         <!-- Force push -->
-        <div class="gl-display-flex gl-align-items-center">
-          <gl-icon
-            :size="14"
-            data-testid="force-push-icon"
-            :name="forcePushAttributes.icon"
-            :class="forcePushAttributes.iconClass"
-          />
-          <strong class="gl-ml-2">{{ forcePushAttributes.title }}</strong>
-        </div>
-
-        <div class="gl-text-secondary gl-mb-2">{{ $options.i18n.forcePushDescription }}</div>
+        <protection-toggle
+          data-test-id="force-push"
+          :is-protected="branchProtection.allowForcePush"
+          :label="$options.i18n.allowForcePushLabel"
+          :icon-title="forcePushAttributes.title"
+          :description="forcePushAttributes.description"
+          :description-link="$options.pushRulesHelpDocLink"
+        />
 
         <!-- EE start -->
         <!-- Code Owners -->
         <div v-if="showCodeOwners">
-          <div class="gl-display-flex gl-align-items-center">
-            <gl-icon
-              data-testid="code-owners-icon"
-              :size="14"
-              :name="codeOwnersApprovalAttributes.icon"
-              :class="codeOwnersApprovalAttributes.iconClass"
-            />
-            <strong class="gl-ml-2">{{ codeOwnersApprovalAttributes.title }}</strong>
-          </div>
-
-          <div class="gl-text-secondary">{{ codeOwnersApprovalAttributes.description }}</div>
+          <protection-toggle
+            data-test-id="code-owners"
+            :is-protected="branchProtection.codeOwnerApprovalRequired"
+            :label="$options.i18n.requiresCodeOwnerApprovalLabel"
+            :icon-title="codeOwnersApprovalAttributes.title"
+            :description="codeOwnersApprovalAttributes.description"
+            :description-link="$options.codeOwnersHelpDocLink"
+          />
         </div>
       </section>
 

@@ -63,7 +63,6 @@ Style/ArgumentsForwarding:
     - 'ee/app/services/vulnerability_exports/exporters/csv_service.rb'
     - 'ee/app/workers/compliance_management/merge_requests/compliance_violations_consistency_worker.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/user.rb'
-    - 'ee/lib/gitlab/elastic/document_reference.rb'
     - 'ee/lib/gitlab/elastic/elasticsearch_enabled_cache.rb'
     - 'ee/lib/gitlab/elastic/expr_name.rb'
     - 'ee/lib/gitlab/license_scanning/package_licenses.rb'
