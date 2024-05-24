@@ -154,7 +154,7 @@ export default {
         {{ metricDetailsLabel }}
       </span>
     </gl-button>
-    <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="d-none" scrollable>
+    <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="!gl-hidden" scrollable>
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
         <div class="gl-display-flex gl-align-items-center" data-testid="performance-bar-summary">
           <div v-for="(value, name) in metricDetailsSummary" :key="name" class="gl-pr-8">

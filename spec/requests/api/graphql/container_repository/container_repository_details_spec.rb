@@ -11,17 +11,35 @@ RSpec.describe 'container repository details', feature_category: :container_regi
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_reload(:container_repository) { create(:container_repository, project: project) }
 
-  let(:excluded) { %w[pipeline size agentConfigurations iterations iterationCadences productAnalyticsState] }
+  let(:variables) do
+    { id: container_repository_global_id }
+  end
+
   let(:query) do
-    graphql_query_for(
-      'containerRepository',
-      { id: container_repository_global_id },
-      all_graphql_fields_for('ContainerRepositoryDetails', excluded: excluded, max_depth: 4)
-    )
+    <<~GQL
+      query($id: ContainerRepositoryID!) {
+        containerRepository(id: $id) {
+          #{all_graphql_fields_for('ContainerRepositoryDetails', max_depth: 1)}
+          tags {
+            nodes {
+              #{all_graphql_fields_for('ContainerRepositoryTag', max_depth: 1)}
+              userPermissions {
+                destroyContainerRepositoryTag
+              }
+            }
+          }
+          userPermissions {
+            destroyContainerRepository
+          }
+          project {
+            id
+          }
+        }
+      }
+    GQL
   end
 
   let(:user) { project.first_owner }
-  let(:variables) { {} }
   let(:tags) { %w[latest tag1 tag2 tag3 tag4 tag5] }
   let(:container_repository_global_id) { container_repository.to_global_id.to_s }
   let(:container_repository_details_response) { graphql_data.dig('containerRepository') }

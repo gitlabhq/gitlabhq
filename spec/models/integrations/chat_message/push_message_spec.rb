@@ -26,7 +26,7 @@ RSpec.describe Integrations::ChatMessage::PushMessage do
       args[:commits] = [
         { message: 'message1', title: 'message1', url: 'http://url1.com', id: 'abcdefghijkl', author: { name: 'author1' } },
         {
-          message: 'message2' + ' w' * 100 + "\nsecondline",
+          message: 'message2' + (' w' * 100) + "\nsecondline",
           title: 'message2 w w w w w w w w w w w w w w w w w w w w w w w w w w w w w w w w w w ...',
           url: 'http://url2.com',
           id: '123456789012',

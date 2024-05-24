@@ -1,6 +1,6 @@
 by
 %a{ href: user_path(@build.user) }
-  %span.d-none.d-sm-inline
+  %span.gl-hidden.sm:gl-inline
     = render Pajamas::AvatarComponent.new(@build.user, size: 24, alt: "")
     %strong{ data: { toggle: 'tooltip', placement: 'top', title: @build.user.to_reference } }
       = @build.user.name

@@ -26,7 +26,7 @@
   - if branch.name != @repository.root_ref
     .js-branch-divergence-graph
 
-  .pipeline-status.d-none.d-md-block<
+  .pipeline-status.gl-hidden.md:gl-block<
     - if commit_status
       = render 'ci/status/icon', status: commit_status
     - elsif show_commit_status

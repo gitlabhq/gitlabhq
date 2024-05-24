@@ -12,3 +12,6 @@ export const TAG_REF_TYPE = 'tag';
 export const CC_VALIDATION_REQUIRED_ERROR = __(
   'Credit card required to be on file in order to run CI jobs',
 );
+export const IDENTITY_VERIFICATION_REQUIRED_ERROR = __(
+  'Identity verification is required in order to run CI jobs',
+);

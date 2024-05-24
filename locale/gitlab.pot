@@ -26276,6 +26276,9 @@ msgstr ""
 msgid "Identity verification exemption has been removed."
 msgstr ""
 
+msgid "Identity verification is required in order to run CI jobs"
+msgstr ""
+
 msgid "IdentityVerification|%d country found"
 msgid_plural "IdentityVerification|%d countries found"
 msgstr[0] ""

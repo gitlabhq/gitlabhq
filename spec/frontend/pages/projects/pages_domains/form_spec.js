@@ -6,7 +6,7 @@ const SSL_TOGGLE_CLASS = 'js-enable-ssl-gl-toggle';
 const SSL_TOGGLE_INPUT_CLASS = 'js-project-feature-toggle-input';
 const SHOW_IF_AUTO_SSL_CLASS = 'js-shown-if-auto-ssl';
 const SHOW_UNLESS_AUTO_SSL_CLASS = 'js-shown-unless-auto-ssl';
-const D_NONE_CLASS = '!gl-hidden';
+const HIDDEN_CLASS = '!gl-hidden';
 
 describe('Page domains form', () => {
   let toggle;
@@ -51,8 +51,8 @@ describe('Page domains form', () => {
     });
 
     it('sets the correct classes', () => {
-      expect(Array.from(findIfAutoSsl().classList)).not.toContain(D_NONE_CLASS);
-      expect(Array.from(findUnlessAutoSsl().classList)).toContain(D_NONE_CLASS);
+      expect(Array.from(findIfAutoSsl().classList)).not.toContain(HIDDEN_CLASS);
+      expect(Array.from(findUnlessAutoSsl().classList)).toContain(HIDDEN_CLASS);
     });
 
     it('sets the correct disabled value', () => {
@@ -72,8 +72,8 @@ describe('Page domains form', () => {
     });
 
     it('sets the correct classes', () => {
-      expect(Array.from(findIfAutoSsl().classList)).toContain(D_NONE_CLASS);
-      expect(Array.from(findUnlessAutoSsl().classList)).not.toContain(D_NONE_CLASS);
+      expect(Array.from(findIfAutoSsl().classList)).toContain(HIDDEN_CLASS);
+      expect(Array.from(findUnlessAutoSsl().classList)).not.toContain(HIDDEN_CLASS);
     });
 
     it('sets the correct disabled value', () => {

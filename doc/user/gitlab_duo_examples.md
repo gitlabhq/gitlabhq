@@ -306,10 +306,10 @@ Resources:
 
 ### Answer questions about GitLab
 
-In this example, the challenge is exploring the GitLab Duo Chat beta to solve problems.
+In this example, the challenge is to use GitLab Duo Chat to solve problems.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch the recording here: [GitLab Duo Coffee Chat: Solve problems with GitLab Duo Chat Beta Challenge](https://www.youtube.com/watch?v=Ypwx4lFnHP0)
+Watch the recording here: [GitLab Duo Coffee Chat: Solve problems with GitLab Duo Chat Challenge](https://www.youtube.com/watch?v=Ypwx4lFnHP0)
 <!-- Video published on 2024-02-02 -->
 
 - You can use GitLab Duo Chat to explain CI/CD errors.

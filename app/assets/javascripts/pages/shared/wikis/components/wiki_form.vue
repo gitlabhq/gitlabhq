@@ -12,7 +12,7 @@ import {
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
 import csrf from '~/lib/utils/csrf';
 import { setUrlFragment } from '~/lib/utils/url_utility';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
@@ -78,6 +78,9 @@ export default {
     },
     format: {
       label: s__('WikiPage|Format'),
+    },
+    template: {
+      label: __('Template'),
     },
     content: {
       label: s__('WikiPage|Content'),
@@ -335,7 +338,7 @@ export default {
       <div class="col-12">
         <gl-form-group :label="$options.i18n.title.label" label-for="wiki_title">
           <template v-if="!isTemplate" #description>
-            <gl-icon class="-gl-mr-1" name="bulb" />
+            <gl-icon name="bulb" />
             {{ titleHelpText }}
             <gl-link :href="helpPath" target="_blank">
               {{ $options.i18n.title.helpText.learnMore }}
@@ -354,15 +357,16 @@ export default {
           <input v-model="title" type="hidden" name="wiki[title]" />
         </gl-form-group>
       </div>
+    </div>
 
-      <div class="col-sm-3 row-sm-10">
+    <div class="row">
+      <div class="col-sm-6">
         <gl-form-group :label="$options.i18n.format.label" label-for="wiki_format">
           <gl-form-select
             id="wiki_format"
             v-model="format"
             name="wiki[format]"
             :disabled="isContentEditorActive"
-            class="form-control"
             :value="formatOptions.Markdown"
           >
             <option v-for="(key, label) of formatOptions" :key="key" :value="key">
@@ -371,18 +375,16 @@ export default {
           </gl-form-select>
         </gl-form-group>
       </div>
+      <div v-if="!isTemplate && templates.length" class="col-sm-6">
+        <gl-form-group :label="$options.i18n.template.label" label-for="wiki_template">
+          <wiki-template :format="format" :templates="templates" @input="setTemplate" />
+        </gl-form-group>
+      </div>
     </div>
 
     <div class="row">
       <div class="col-sm-12 row-sm-5">
         <gl-form-group :label="$options.i18n.content.label" label-for="wiki_content">
-          <wiki-template
-            v-if="!isTemplate && templates.length"
-            :format="format"
-            :templates="templates"
-            class="gl-mb-4"
-            @input="setTemplate"
-          />
           <markdown-editor
             ref="markdownEditor"
             v-model="content"
@@ -402,7 +404,7 @@ export default {
             @keydown.ctrl.enter="submitFormWithShortcut"
             @keydown.meta.enter="submitFormWithShortcut"
           />
-          <div class="form-text gl-text-gray-600">
+          <template #description>
             <gl-sprintf
               v-if="displayWikiSpecificMarkdownHelp && !isTemplate"
               :message="$options.i18n.linksHelpText"
@@ -421,7 +423,7 @@ export default {
                 ></template
               >
             </gl-sprintf>
-          </div>
+          </template>
         </gl-form-group>
       </div>
     </div>

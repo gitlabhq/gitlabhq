@@ -1,6 +1,6 @@
 - @force_desktop_expanded_sidebar = true
-- add_form_class = 'gl-display-none' if !form_errors(@application)
-- hide_class = 'gl-display-none' if form_errors(@application)
+- add_form_class = 'gl-hidden' if !form_errors(@application)
+- hide_class = 'gl-hidden' if form_errors(@application)
 
 .settings-section.js-search-settings-section
   .settings-sticky-header
@@ -36,7 +36,7 @@
         - if @applications.any?
           .table-holder
             %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.gl-mb-n2
-              %thead.d-none.d-md-table-header-group
+              %thead.gl-hidden.md:gl-table-header-group
                 %tr
                   %th= _('Name')
                   %th= _('Callback URL')
@@ -78,7 +78,7 @@
         - if @authorized_tokens.any?
           .table-holder
             %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.gl-mb-n2
-              %thead.d-none.d-md-table-header-group
+              %thead.gl-hidden.md:gl-table-header-group
                 %tr
                   %th= _('Name')
                   %th= _('Authorized At')

@@ -59,7 +59,7 @@ export default {
 </script>
 
 <template>
-  <div :title="title" class="divergence-graph px-2 d-none d-md-block">
+  <div :title="title" class="divergence-graph px-2 gl-hidden md:gl-block">
     <template v-if="distance">
       <graph-bar :count="distance" :max-commits="maxCommits" position="full" />
     </template>

@@ -1,9 +1,9 @@
 - is_project_overview = local_assigns.fetch(:is_project_overview, false)
 
-.nav-block.d-none.d-sm-flex.activities.gl-static
+.nav-block.activities.gl-static
   = render 'shared/event_filter'
-  .controls.gl-display-flex
-    = link_button_to nil, project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: 'd-none d-sm-inline-flex has-tooltip', icon: 'rss'
+  .controls.gl-flex
+    = link_button_to nil, project_path(@project, rss_url_options), title: s_("ProjectActivityRSS|Subscribe"), class: '!gl-hidden sm:!gl-inline-flex has-tooltip', icon: 'rss'
     - if is_project_overview && can?(current_user, :download_code, @project)
       .project-code-holder.gl-hidden.md:gl-inline-flex.gl-ml-2
         = render "projects/buttons/code", dropdown_class: 'dropdown-menu-right', ref: @ref

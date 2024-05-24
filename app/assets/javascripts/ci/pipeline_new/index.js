@@ -8,6 +8,7 @@ const mountPipelineNewForm = (el) => {
   const {
     // provide/inject
     projectRefsEndpoint,
+    identityVerificationPath,
 
     // props
     defaultBranch,
@@ -37,6 +38,12 @@ const mountPipelineNewForm = (el) => {
     apolloProvider,
     provide: {
       projectRefsEndpoint,
+      identityVerificationPath,
+      // Normally this will have a value from a helper. In this case, this is
+      // set to true because the alert that uses this field is dynamically
+      // rendered if a specific error is returned from the backend after
+      // the create pipeline XHR request completes
+      identityVerificationRequired: true,
     },
     render(createElement) {
       return createElement(PipelineNewForm, {

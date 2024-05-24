@@ -740,7 +740,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
       describe 'that have new commits on top of more than two existing ones' do
         let(:existing_commits) do
-          [merge_request.commits.first] + [double(:commit)] * 3 + [merge_request.commits.second]
+          [merge_request.commits.first] + ([double(:commit)] * 3) + [merge_request.commits.second]
         end
 
         subject do

@@ -177,11 +177,11 @@ export default {
       <gl-loading-icon
         v-if="group.isChildrenLoading"
         size="lg"
-        class="d-none d-sm-inline-flex flex-shrink-0 gl-mr-3"
+        class="gl-hidden sm:gl-inline-flex flex-shrink-0 gl-mr-3"
       />
       <a
         :class="{ 'gl-sm-display-flex': !group.isChildrenLoading }"
-        class="gl-display-none gl-text-decoration-none! gl-mr-3"
+        class="gl-hidden gl-text-decoration-none! gl-mr-3"
         :href="group.relativePath"
         :aria-label="group.name"
       >
@@ -270,7 +270,7 @@ export default {
         >
           <item-stats
             :item="group"
-            class="group-stats gl-display-none gl-md-display-flex gl-align-items-center"
+            class="group-stats gl-hidden md:gl-flex gl-align-items-center"
           />
           <item-actions
             v-if="showActionsMenu"

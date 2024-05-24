@@ -32,7 +32,7 @@ export default {
   <div class="form-group js-description-input">
     <label for="snippet-description">{{ s__('Snippets|Description (optional)') }}</label>
     <div class="js-collapsible-input">
-      <div class="js-collapsed" :class="{ 'd-none': value }">
+      <div class="js-collapsed" :class="{ '!gl-hidden': value }">
         <gl-form-textarea
           class="form-control"
           rows="2"
@@ -43,7 +43,7 @@ export default {
       </div>
       <markdown-field
         class="js-expanded"
-        :class="{ 'd-none': !value }"
+        :class="{ '!gl-hidden': !value }"
         :add-spacing-classes="false"
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"

@@ -94,7 +94,7 @@ export default {
       class="d-block d-sm-flex flex-row-reverse justify-content-between align-items-start flex-lg-row-reverse"
     >
       <div
-        class="commit-actions flex-row d-none d-sm-flex gl-align-items-center gl-flex-wrap justify-content-end"
+        class="commit-actions flex-row gl-hidden sm:gl-flex gl-align-items-center gl-flex-wrap justify-content-end"
       >
         <div
           v-if="commit.signature_html"
@@ -129,7 +129,7 @@ export default {
             :img-src="authorAvatar"
             :img-alt="authorName"
             :img-size="32"
-            class="avatar-cell d-none d-sm-block gl-my-2 gl-mr-4"
+            class="avatar-cell gl-hidden sm:gl-block gl-my-2 gl-mr-4"
           />
         </div>
         <div

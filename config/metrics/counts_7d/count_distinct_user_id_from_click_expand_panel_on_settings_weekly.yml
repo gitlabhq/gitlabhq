@@ -3,7 +3,7 @@ key_path: redis_hll_counters.count_distinct_user_id_from_click_expand_panel_on_s
 description: Weekly count of unique users who expanded a settings panel
 product_section: core_platform
 product_stage: manage
-product_group: foundations
+product_group: personal_productivity
 performance_indicator_type: []
 value_type: number
 status: active

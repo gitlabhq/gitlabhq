@@ -1,7 +1,7 @@
 %tr.key-list-item
   %td{ data: { label: s_('Profiles|Key') } }
     %div{ class: 'gl-display-flex! gl-pl-0!' }
-      = sprite_icon('key', css_class: "settings-list-icon d-none d-sm-inline gl-mr-2")
+      = sprite_icon('key', css_class: "settings-list-icon gl-hidden sm:gl-inline gl-mr-2")
       .gl-display-flex.gl-flex-direction-column.gl-text-truncate
         %p.gl-text-truncate.gl-m-0
           %code= key.fingerprint

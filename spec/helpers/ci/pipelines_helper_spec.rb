@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
   include Devise::Test::ControllerHelpers
 
+  let_it_be(:project) { create(:project) }
+
   describe 'has_gitlab_ci?' do
     using RSpec::Parameterized::TableSyntax
 
@@ -25,8 +27,6 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
   end
 
   describe '#pipelines_list_data' do
-    let_it_be(:project) { create(:project) }
-
     subject(:data) { helper.pipelines_list_data(project, 'list_url') }
 
     before do
@@ -109,6 +109,27 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
 
     with_them do
       it { expect(subject).to eq(result) }
+    end
+  end
+
+  describe '#new_pipeline_data' do
+    subject(:data) { helper.new_pipeline_data(project) }
+
+    it 'has the expected keys' do
+      expect(subject.keys).to include(
+        :project_id,
+        :pipelines_path,
+        :default_branch,
+        :pipelines_editor_path,
+        :can_view_pipeline_editor,
+        :ref_param,
+        :var_param,
+        :file_param,
+        :project_path,
+        :project_refs_endpoint,
+        :settings_link,
+        :max_warnings
+      )
     end
   end
 end

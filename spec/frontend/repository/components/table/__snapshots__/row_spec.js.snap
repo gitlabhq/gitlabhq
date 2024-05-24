@@ -34,7 +34,7 @@ exports[`Repository table row component renders a symlink table row 1`] = `
     />
   </td>
   <td
-    class="cursor-default d-none d-sm-table-cell tree-commit"
+    class="cursor-default gl-hidden sm:gl-table-cell tree-commit"
   >
     <gl-link-stub
       class="gl-text-gray-600 str-truncated-100 tree-commit-link"
@@ -90,7 +90,7 @@ exports[`Repository table row component renders table row 1`] = `
     />
   </td>
   <td
-    class="cursor-default d-none d-sm-table-cell tree-commit"
+    class="cursor-default gl-hidden sm:gl-table-cell tree-commit"
   >
     <gl-link-stub
       class="gl-text-gray-600 str-truncated-100 tree-commit-link"
@@ -146,7 +146,7 @@ exports[`Repository table row component renders table row for path with special 
     />
   </td>
   <td
-    class="cursor-default d-none d-sm-table-cell tree-commit"
+    class="cursor-default gl-hidden sm:gl-table-cell tree-commit"
   >
     <gl-link-stub
       class="gl-text-gray-600 str-truncated-100 tree-commit-link"

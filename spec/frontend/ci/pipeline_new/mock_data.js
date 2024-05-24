@@ -43,6 +43,12 @@ export const mockCreditCardValidationRequiredError = {
   total_warnings: 0,
 };
 
+export const mockIdentityVerificationRequiredError = {
+  errors: ['Identity verification is required in order to run CI jobs'],
+  warnings: [],
+  total_warnings: 0,
+};
+
 export const mockBranchRefs = ['main', 'dev', 'release'];
 
 export const mockTagRefs = ['1.0.0', '1.1.0', '1.2.0'];

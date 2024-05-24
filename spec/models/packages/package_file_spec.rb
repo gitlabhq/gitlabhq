@@ -55,12 +55,12 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
 
       context 'file_sha256' do
         where(:sha256_value, :expected_success) do
-          'a' * 64       | true
-          nil            | true
-          'a' * 63       | false
-          'a' * 65       | false
-          'a' * 63 + '%' | false
-          ''             | false
+          ('a' * 64) | true
+          nil | true
+          ('a' * 63)       | false
+          ('a' * 65)       | false
+          (('a' * 63) + '%') | false
+          '' | false
         end
 
         with_them do

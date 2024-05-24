@@ -143,7 +143,9 @@ ul.wiki-pages-list.content-list {
   }
 }
 
-.wiki-form .markdown-area {
+.wiki-form .markdown-area,
+.wiki-form .ProseMirror {
+  min-height: min(20vh, 320px);
   max-height: 55vh;
 }
 

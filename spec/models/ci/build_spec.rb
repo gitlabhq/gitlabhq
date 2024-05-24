@@ -2298,13 +2298,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       '1-foo'              | '1-foo'
       'fix/1-foo'          | 'fix-1-foo'
       'fix-1-foo'          | 'fix-1-foo'
-      'a' * 63             | 'a' * 63
-      'a' * 64             | 'a' * 63
-      'FOO'                | 'foo'
-      '-' + 'a' * 61 + '-' | 'a' * 61
-      '-' + 'a' * 62 + '-' | 'a' * 62
-      '-' + 'a' * 63 + '-' | 'a' * 62
-      'a' * 62 + ' '       | 'a' * 62
+      ('a' * 63)             | ('a' * 63)
+      ('a' * 64)             | ('a' * 63)
+      'FOO' | 'foo'
+      ('-' + ('a' * 61) + '-') | ('a' * 61)
+      ('-' + ('a' * 62) + '-') | ('a' * 62)
+      ('-' + ('a' * 63) + '-') | ('a' * 62)
+      (('a' * 62) + ' ')       | ('a' * 62)
     end
 
     with_them do

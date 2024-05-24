@@ -2,6 +2,8 @@
 
 module Ci
   class DailyBuildGroupReportResult < Ci::ApplicationRecord
+    include Ci::Partitionable
+
     PARAM_TYPES = %w[coverage].freeze
 
     belongs_to :last_pipeline, class_name: 'Ci::Pipeline', foreign_key: :last_pipeline_id,
@@ -10,6 +12,8 @@ module Ci
     belongs_to :group, class_name: '::Group'
 
     validates :data, json_schema: { filename: "daily_build_group_report_result_data" }
+
+    partitionable scope: :last_pipeline
 
     scope :by_ref_path, ->(ref_path) { where(ref_path: ref_path) }
     scope :by_projects, ->(ids) { where(project_id: ids) }

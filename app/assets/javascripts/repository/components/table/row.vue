@@ -248,7 +248,7 @@ export default {
         class="ml-1"
       />
     </td>
-    <td class="d-none d-sm-table-cell tree-commit cursor-default">
+    <td class="gl-hidden sm:gl-table-cell tree-commit cursor-default">
       <gl-link
         v-if="commitData"
         v-safe-html:[$options.safeHtmlConfig]="commitData.titleHtml"

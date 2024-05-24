@@ -11,7 +11,7 @@
     .js-file-title.file-title-flex-parent
       = render 'projects/blob/header_content', blob: blob
 
-      .file-actions.d-none.d-sm-block
+      .file-actions.gl-hidden.sm:gl-block
         .btn-group{ role: "group" }<
           = copy_blob_source_button(blob)
           = download_blob_button(blob)

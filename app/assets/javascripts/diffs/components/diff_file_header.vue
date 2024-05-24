@@ -508,7 +508,7 @@ export default {
 
     <div
       v-if="diffFile.submodule_compare"
-      class="file-actions d-none d-sm-flex gl-align-items-center gl-flex-wrap"
+      class="file-actions gl-hidden sm:gl-flex gl-align-items-center gl-flex-wrap"
     >
       <gl-button
         v-gl-tooltip.hover

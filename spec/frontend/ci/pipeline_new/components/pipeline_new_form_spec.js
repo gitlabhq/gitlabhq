@@ -101,6 +101,10 @@ describe('Pipeline New Form', () => {
 
     wrapper = shallowMountExtended(PipelineNewForm, {
       apolloProvider: mockApollo,
+      provide: {
+        identityVerificationRequired: true,
+        identityVerificationPath: '/test',
+      },
       propsData: {
         projectId: mockProjectId,
         pipelinesPath,

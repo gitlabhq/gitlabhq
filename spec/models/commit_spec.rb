@@ -335,7 +335,7 @@ RSpec.describe Commit do
       '1234567' | true
       '123456' | false
       '1' | false
-      '0' * 40 | true
+      ('0' * 40) | true
       'c1acaa58bbcbc3eafe538cb8274ba387047b69f8' | true
       'H1acaa58bbcbc3eafe538cb8274ba387047b69f8' | false
       nil | false

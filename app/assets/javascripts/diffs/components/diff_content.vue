@@ -228,7 +228,7 @@ export default {
             :img-src="author.avatar_url"
             :img-alt="author.name"
             :img-size="48"
-            class="d-none d-sm-block new-comment"
+            class="!gl-hidden sm:!gl-block new-comment"
           />
           <diff-discussions
             v-if="imageDiscussions.length"
