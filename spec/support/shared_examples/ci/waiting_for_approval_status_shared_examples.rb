@@ -43,8 +43,10 @@ RSpec.shared_examples 'a deployment job waiting for approval' do |factory_type|
     it { expect(subject.illustration).to include(:image, :size) }
     it { expect(subject.illustration[:title]).to eq('Waiting for approvals') }
 
-    it do
-      expect(subject.illustration[:content]).to include('This job deploys to the protected environment "production"')
+    it 'has the correct message' do
+      expected_message = "This job deploys to the protected environment \"production\", which requires approvals. " \
+        "You can approve or reject the deployment on the deployment details page."
+      expect(subject.illustration[:content]).to eq expected_message
     end
   end
 
@@ -61,16 +63,18 @@ RSpec.shared_examples 'a deployment job waiting for approval' do |factory_type|
   end
 
   describe '#action_button_title' do
-    it { expect(subject.action_button_title).to eq('View environment details page') }
+    it { expect(subject.action_button_title).to eq('View deployment details page') }
   end
 
   describe '#action_path' do
-    before do
-      environment = create(:environment, name: 'production', project: project)
-      create(:deployment, :blocked, project: project, environment: environment, deployable: job)
-    end
+    let!(:environment) { create(:environment, name: 'production', project: project) }
+    let!(:deployment) { create(:deployment, :blocked, project: project, environment: environment, deployable: job) }
 
-    it { expect(subject.action_path).to include('environments') }
+    it 'points to the deployment details page' do
+      expected_path = Rails.application.routes.url_helpers.project_environment_deployment_path(
+        project, environment, deployment)
+      expect(subject.action_path).to eq expected_path
+    end
   end
 
   describe '#action_method' do

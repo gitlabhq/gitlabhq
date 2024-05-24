@@ -15361,6 +15361,9 @@ msgstr ""
 msgid "CreateGroup|You don’t have permission to create groups."
 msgstr ""
 
+msgid "CreateGroup|You have reached the group limit until you verify your account."
+msgstr ""
+
 msgid "CreateTag|Tag"
 msgstr ""
 
@@ -49688,6 +49691,9 @@ msgstr ""
 msgid "Some common domains are not allowed. %{learn_more_link}."
 msgstr ""
 
+msgid "Some friendly information"
+msgstr ""
+
 msgid "Someone edited the %{issuableType} at the same time you did. Review %{linkStart}the %{issuableType}%{linkEnd} and make sure you don't unintentionally overwrite their changes."
 msgstr ""
 
@@ -53375,6 +53381,9 @@ msgstr ""
 msgid "This is an experimental feature developed by GitLab Incubation Engineering."
 msgstr ""
 
+msgid "This is really just a warning"
+msgstr ""
+
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr ""
 
@@ -53411,7 +53420,7 @@ msgstr ""
 msgid "This job depends on upstream jobs that need to succeed in order for this job to be triggered"
 msgstr ""
 
-msgid "This job deploys to the protected environment \"%{environment}\", which requires approvals. You can approve or reject the deployment on the environment details page."
+msgid "This job deploys to the protected environment \"%{environment}\", which requires approvals. You can approve or reject the deployment on the deployment details page."
 msgstr ""
 
 msgid "This job does not have a trace."
@@ -57308,6 +57317,9 @@ msgstr ""
 msgid "View deployment"
 msgstr ""
 
+msgid "View deployment details page"
+msgstr ""
+
 msgid "View details"
 msgstr ""
 
@@ -57315,9 +57327,6 @@ msgid "View details: %{details_url}"
 msgstr ""
 
 msgid "View documentation"
-msgstr ""
-
-msgid "View environment details page"
 msgstr ""
 
 msgid "View exposed artifact"

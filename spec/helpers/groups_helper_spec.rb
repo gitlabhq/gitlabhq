@@ -468,12 +468,17 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
   describe '#subgroup_creation_data' do
     let_it_be(:name) { 'parent group' }
+    let_it_be(:user) { build(:user) }
     let_it_be(:group) { build(:group, name: name) }
     let_it_be(:subgroup) { build(:group, parent: group) }
 
+    before do
+      allow(helper).to receive(:current_user) { user }
+    end
+
     context 'when group has a parent' do
       it 'returns expected hash' do
-        expect(subgroup_creation_data(subgroup)).to include({
+        expect(helper.subgroup_creation_data(subgroup)).to include({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: name,
           parent_group_url: group_url(group),
@@ -484,7 +489,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     context 'when group does not have a parent' do
       it 'returns expected hash' do
-        expect(subgroup_creation_data(group)).to include({
+        expect(helper.subgroup_creation_data(group)).to include({
           import_existing_group_path: '/groups/new#import-group-pane',
           parent_group_name: nil,
           parent_group_url: nil,

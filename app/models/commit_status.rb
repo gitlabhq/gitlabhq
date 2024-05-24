@@ -8,6 +8,7 @@ class CommitStatus < Ci::ApplicationRecord
   include Presentable
   include BulkInsertableAssociations
   include TaggableQueries
+  include SafelyChangeColumnDefault
   include IgnorableColumns
 
   ignore_columns %i[
@@ -20,6 +21,8 @@ class CommitStatus < Ci::ApplicationRecord
     upstream_pipeline_id_convert_to_bigint
     user_id_convert_to_bigint
   ], remove_with: '17.0', remove_after: '2024-04-22'
+
+  columns_changing_default :auto_canceled_by_partition_id
 
   self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq

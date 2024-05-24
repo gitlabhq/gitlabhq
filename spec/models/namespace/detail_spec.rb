@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespace::Detail, type: :model do
+RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_projects do
   describe 'associations' do
     it { is_expected.to belong_to :namespace }
     it { is_expected.to belong_to(:creator).class_name('User') }
@@ -48,6 +48,17 @@ RSpec.describe Namespace::Detail, type: :model do
         namespace.namespace_details.save!
         namespace.namespace_details
       end
+    end
+  end
+
+  describe '#add_creator' do
+    let(:namespace) { create(:namespace) }
+    let_it_be(:user) { create(:user) }
+
+    it 'adds the creator' do
+      namespace.namespace_details.add_creator(user)
+
+      expect(namespace.namespace_details.creator).to eq(user)
     end
   end
 end

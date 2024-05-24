@@ -4,7 +4,7 @@ module Gitlab
   module Middleware
     class PathTraversalCheck
       PATH_TRAVERSAL_MESSAGE = 'Potential path traversal attempt detected'
-      EXCLUDED_QUERY_PARAM_NAMES = %w[search term name filter].freeze
+      EXCLUDED_QUERY_PARAM_NAMES = %w[search term name filter filter_projects].freeze
 
       def initialize(app)
         @app = app
