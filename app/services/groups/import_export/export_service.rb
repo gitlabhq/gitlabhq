@@ -112,7 +112,6 @@ module Groups
       end
 
       def audit_export
-        return if Feature.disabled?(:export_audit_events, current_user)
         return if exported_by_admin && Gitlab::CurrentSettings.silent_admin_exports_enabled?
 
         audit_context = {

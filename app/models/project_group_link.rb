@@ -15,8 +15,8 @@ class ProjectGroupLink < ApplicationRecord
   validate :different_group
 
   scope :non_guests, -> { where('group_access > ?', Gitlab::Access::GUEST) }
-  scope :in_group, -> (group_ids) { where(group_id: group_ids) }
-  scope :for_projects, -> (project_ids) { where(project_id: project_ids) }
+  scope :in_group, ->(group_ids) { where(group_id: group_ids) }
+  scope :for_projects, ->(project_ids) { where(project_id: project_ids) }
 
   alias_method :shared_with_group, :group
   alias_method :shared_from, :project

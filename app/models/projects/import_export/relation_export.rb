@@ -32,7 +32,7 @@ module Projects
       validates :relation, presence: true, length: { maximum: 255 }, uniqueness: { scope: :project_export_job_id }
       validates :status, numericality: { only_integer: true }, presence: true
 
-      scope :by_relation, -> (relation) { where(relation: relation) }
+      scope :by_relation, ->(relation) { where(relation: relation) }
 
       STATUS = {
         queued: 0,

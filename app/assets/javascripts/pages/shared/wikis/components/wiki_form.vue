@@ -335,7 +335,7 @@ export default {
       <div class="col-12">
         <gl-form-group :label="$options.i18n.title.label" label-for="wiki_title">
           <template v-if="!isTemplate" #description>
-            <gl-icon class="gl-mr-n1" name="bulb" />
+            <gl-icon class="-gl-mr-1" name="bulb" />
             {{ titleHelpText }}
             <gl-link :href="helpPath" target="_blank">
               {{ $options.i18n.title.helpText.learnMore }}

@@ -54,7 +54,7 @@ class Packages::Package < ApplicationRecord
   has_one :terraform_module_metadatum, inverse_of: :package, class_name: 'Packages::TerraformModule::Metadatum'
   has_many :build_infos, inverse_of: :package
   has_many :pipelines, through: :build_infos, disable_joins: true
-  has_many :matching_package_protection_rules, -> (package) { where(package_type: package.package_type).for_package_name(package.name) }, through: :project, source: :package_protection_rules
+  has_many :matching_package_protection_rules, ->(package) { where(package_type: package.package_type).for_package_name(package.name) }, through: :project, source: :package_protection_rules
 
   accepts_nested_attributes_for :maven_metadatum
 
@@ -126,7 +126,7 @@ class Packages::Package < ApplicationRecord
 
   scope :search_by_name, ->(query) { fuzzy_search(query, [:name], use_minimum_char_limit: false) }
   scope :with_version, ->(version) { where(version: version) }
-  scope :without_version_like, -> (version) { where.not(arel_table[:version].matches(version)) }
+  scope :without_version_like, ->(version) { where.not(arel_table[:version].matches(version)) }
   scope :with_package_type, ->(package_type) { where(package_type: package_type) }
   scope :without_package_type, ->(package_type) { where.not(package_type: package_type) }
   scope :displayable, -> { with_status(DISPLAYABLE_STATUSES) }
@@ -136,7 +136,7 @@ class Packages::Package < ApplicationRecord
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
   scope :including_dependency_links_with_nuget_metadatum, -> { includes(dependency_links: [:dependency, :nuget_metadatum]) }
 
-  scope :with_composer_target, -> (target) do
+  scope :with_composer_target, ->(target) do
     includes(:composer_metadatum)
       .joins(:composer_metadatum)
       .where(Packages::Composer::Metadatum.table_name => { target_sha: target })

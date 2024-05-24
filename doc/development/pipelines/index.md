@@ -681,9 +681,8 @@ We also run our test suite against PostgreSQL 13 upon specific database library 
 | Merge requests                                                                                   | 14 (default version), 13 for DB library changes | 3.1 (default version) |
 | `master` branch commits                                                                          | 14 (default version), 13 for DB library changes | 3.1 (default version) |
 | `maintenance` scheduled pipelines for the `master` branch (every even-numbered hour at XX:05)    | 14 (default version), 13 for DB library changes | 3.1 (default version) |
-| `maintenance` scheduled pipelines for the `ruby3_0` branch (every odd-numbered hour at XX:40)    | 14 (default version), 13 for DB library changes | 3.0                   |
 | `maintenance` scheduled pipelines for the `ruby3_2` branch (every odd-numbered hour at XX:10)    | 14 (default version), 13 for DB library changes | 3.2                   |
-| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 13, 15, 16                    | 3.1 (default version) |
+| `nightly` scheduled pipelines for the `master` branch                                            | 14 (default version), 13, 15, 16                | 3.1 (default version) |
 
 For each current Ruby versions we're testing against with, we run
 maintenance scheduled pipelines every 2 hours on their respective `ruby\d_\d`
@@ -753,7 +752,8 @@ In general, pipelines for an MR fall into one of the following types (from short
 
 A "pipeline type" is an abstract term that mostly describes the "critical path" (for example, the chain of jobs for which the sum
 of individual duration equals the pipeline's duration).
-We use these "pipeline types" in [metrics dashboards](https://app.periscopedata.com/app/gitlab/858266/GitLab-Pipeline-Durations) to detect what types and jobs need to be optimized first.
+We use these "pipeline types" in [metrics dashboards](https://10az.online.tableau.com/#/site/gitlab/views/GitlabPipelineDurations/SuccessfulMergeRequestPipelineDurationHistogramsbyTypes?:iid=1)
+to detect what types and jobs need to be optimized first.
 
 An MR that touches multiple areas would be associated with the longest type applicable. For instance, an MR that touches backend
 and frontend would fall into the "Frontend" pipeline type since this type takes longer to finish than the "Backend" pipeline type.

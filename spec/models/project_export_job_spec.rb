@@ -131,18 +131,6 @@ RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
       finish
     end
 
-    context 'when the flag is disabled' do
-      before do
-        stub_feature_flags(export_audit_events: false)
-      end
-
-      it 'does not create an audit event' do
-        expect(Gitlab::Audit::Auditor).not_to receive(:audit)
-
-        finish
-      end
-    end
-
     context 'when user is nil' do
       let_it_be(:user) { nil }
 

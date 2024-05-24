@@ -52,7 +52,7 @@ export const CLUSTER_IMAGE_SCANNING_NAME = s__('ciReport|Cluster Image Scanning'
 
 export const PRE_RECEIVE_SECRET_DETECTION = 'pre_receive_secret_detection';
 
-export const PRE_RECEIVE_SECRET_DETECTION_NAME = __('Pre-receive Secret Detection');
+export const PRE_RECEIVE_SECRET_DETECTION_NAME = __('Secret push protection');
 
 export const SCANNER_NAMES_MAP = {
   SAST: SAST_SHORT_NAME,

@@ -33,7 +33,11 @@ Subgroups can:
 For example:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+accTitle: Parent and subgroup nesting
+accDescr: How parent groups, subgroups, and projects nest.
+
     subgraph "Parent group"
       subgraph "Subgroup A"
         subgraph "Subgroup A1"
@@ -136,7 +140,11 @@ Subgroup members can be:
 1. [Indirect members](../../project/members/index.md#indirect-membership) include [inherited members](../../project/members/index.md#inherited-membership) and members of a group that was [invited to the subgroup or its ancestors](../manage.md#share-a-group-with-another-group).
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart RL
+accTitle: Subgroup membership
+accDescr: How users become members of a subgroup - through direct, indirect, or inherited membership.
+
   subgraph Group A
     A(Direct member)
     B{{Shared member}}

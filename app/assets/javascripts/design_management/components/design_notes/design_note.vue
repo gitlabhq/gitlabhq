@@ -309,7 +309,7 @@ export default {
           <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" size="sm" />
         </span>
       </div>
-      <div class="gl-display-flex gl-align-items-flex-start -gl-mt-2 gl-mr-n2">
+      <div class="gl-display-flex gl-align-items-flex-start -gl-mt-2 -gl-mr-2">
         <slot name="resolve-discussion"></slot>
         <emoji-picker
           v-if="canAwardEmoji"

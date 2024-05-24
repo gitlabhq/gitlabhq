@@ -248,3 +248,29 @@ The error can be avoided by:
 - Using a reverse proxy to direct all requests from the source instance to the primary Geo node.
 - Adding a local `hosts` file entry on the source to force the target host name to resolve to the Geo primary node's IP address.
 - Configuring a pull mirror on the target instead.
+
+## Pull or push mirror fails to update: `The project is not mirrored`
+
+Pull and push mirrors fail to update when [GitLab Silent Mode](../../../../administration/silent_mode/index.md) is enabled.
+When this happens, the option to allow mirroring on the UI is disabled.
+
+An administrator can check to confirm that GitLab Silent Mode is disabled.
+
+When mirroring fails due to Silent Mode the following are the debug steps:
+
+- [Triggering the mirror using the API](pull.md#trigger-pipelines-for-mirror-updates) shows: `The project is not mirrored`.
+
+- If pull or push mirror was already set up but there are no further updates on the mirrored repository,
+confirm the [project's pull and push mirror details ans status](../../../../api/projects.md#get-a-projects-pull-mirror-details) are not recent as shown below. This indicates mirroring was paused and disabling GitLab Silent Mode restarts it automatically.
+
+For example, if Silent Mode is what is impeding your imports, the output is similar to the following:
+
+```json
+"id": 1,
+"update_status": "finished",
+"url": "https://test.git"
+"last_error": null,
+"last_update_at": null,
+"last_update_started_at": "2023-12-12T00:01:02.222Z",
+"last_successful_update_at": null
+```

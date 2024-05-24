@@ -1,7 +1,7 @@
 - wiki_path = wiki_page_path(@wiki, wiki_directory)
 
 %li{ data: { testid: 'wiki-directory-content' } }
-  .gl-relative.gl-flex.gl-items-center.js-wiki-list-toggle.wiki-list.gl-px-3.gl-rounded-base.gl-cursor-pointer{ data: { testid: 'wiki-list' } }<
+  .gl-relative.gl-flex.gl-items-center.js-wiki-list-toggle.wiki-list.gl-px-3.gl-rounded-base.gl-cursor-pointer{ data: { testid: 'wiki-list' }, class: active_when(params[:id] == wiki_directory.slug) }
     = link_to wiki_path, data: { testid: 'wiki-dir-page-link', qa_page_name: wiki_directory.title }, class: 'gl-str-truncated ' do
       = wiki_directory.title
     - plus_tooltip_title = safe_format(s_('Wiki|Create a new page under "%{page_title}"'), { page_title: wiki_directory.title })

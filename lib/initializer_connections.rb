@@ -12,15 +12,15 @@ module InitializerConnections
     return yield if Gitlab::Utils.to_boolean(ENV['SKIP_RAISE_ON_INITIALIZE_CONNECTIONS'])
 
     previous_connection_counts =
-      ActiveRecord::Base.connection_handler.connection_pool_list(ApplicationRecord.current_role).to_h do |pool|
-        [pool.db_config.name, pool.connections.size]
+      ActiveRecord::Base.connection_handler.connection_pool_list(ApplicationRecord.current_role).map do |pool|
+        pool.connections.size
       end
 
     yield
 
     new_connection_counts =
-      ActiveRecord::Base.connection_handler.connection_pool_list(ApplicationRecord.current_role).to_h do |pool|
-        [pool.db_config.name, pool.connections.size]
+      ActiveRecord::Base.connection_handler.connection_pool_list(ApplicationRecord.current_role).map do |pool|
+        pool.connections.size
       end
 
     raise_database_connection_made_error unless previous_connection_counts == new_connection_counts

@@ -1,6 +1,5 @@
 import { GlSkeletonLoader } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
 import IdeTreeList from '~/ide/components/ide_tree_list.vue';
 import { createStore } from '~/ide/stores';
 import FileTree from '~/vue_shared/components/file_tree.vue';
@@ -15,7 +14,10 @@ describe('IdeTreeList component', () => {
     store.state.currentProjectId = 'abcproject';
     store.state.currentBranchId = 'main';
     store.state.projects.abcproject = { ...projectData };
-    Vue.set(store.state.trees, 'abcproject/main', { tree, loading });
+    store.state.trees = {
+      ...store.state.trees,
+      'abcproject/main': { tree, loading },
+    };
 
     wrapper = shallowMount(IdeTreeList, {
       propsData: {

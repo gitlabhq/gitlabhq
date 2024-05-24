@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:backup namespace rake tasks', :delete, feature_category: :backup_restore do
+RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_record_base, :delete, feature_category: :backup_restore do
   let(:enable_registry) { true }
   let(:backup_restore_pid_path) { "#{Rails.application.root}/tmp/backup_restore.pid" }
   let(:backup_rake_task_names) do

@@ -137,9 +137,9 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
         help_path: "/help/user/application_security/container_scanning/index",
         configuration_help_path: "/help/user/application_security/container_scanning/index#configuration",
         type: "container_scanning" }
-      :pre_receive_secret_detection | { name: _("Pre-receive Secret Detection"),
+      :pre_receive_secret_detection | { name: _("Secret push protection"),
         description: "Block secrets such as keys and API tokens from being pushed to your repositories. " \
-                     "Pre-receive secret detection is triggered when commits are pushed to a repository. " \
+                     "Secret push protection is triggered when commits are pushed to a repository. " \
                      "If any secrets are detected, the push is blocked.",
         help_path: Gitlab::Routing.url_helpers.help_page_path(
           "user/application_security/secret_detection/pre_receive/index"),

@@ -50,7 +50,6 @@ class ProjectExportJob < ApplicationRecord
   private
 
   def audit_project_exported
-    return if Feature.disabled?(:export_audit_events, user)
     return if exported_by_admin? && Gitlab::CurrentSettings.silent_admin_exports_enabled?
 
     audit_context = {

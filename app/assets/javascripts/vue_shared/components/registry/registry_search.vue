@@ -126,12 +126,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-md-display-flex row-content-block">
-    <!-- `gl-w-full gl-md-w-15` forces fixed width needed to prevent
-    filtered component to grow beyond available width -->
+  <div
+    class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-gap-3 row-content-block"
+  >
     <gl-filtered-search
       v-model="internalFilter"
-      class="gl-w-full gl-md-w-15 gl-mr-4 gl-flex-grow-1"
+      class="gl-flex-grow-1 gl-min-w-0"
       :placeholder="__('Filter results')"
       :available-tokens="tokens"
       @submit="submitSearch"
@@ -139,10 +139,8 @@ export default {
     />
     <gl-sorting
       data-testid="registry-sort-dropdown"
-      class="gl-mt-3 gl-md-mt-0 gl-w-full gl-md-w-auto"
       dropdown-class="gl-w-full"
-      dropdown-toggle-class="!gl-shadow-inner-1-gray-400"
-      sort-direction-toggle-class="!gl-shadow-inner-1-gray-400"
+      block
       :text="sortText"
       :is-ascending="isSortAscending"
       :sort-direction-tool-tip="sortDirectionData.tooltip"

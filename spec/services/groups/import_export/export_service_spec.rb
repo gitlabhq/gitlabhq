@@ -112,18 +112,6 @@ RSpec.describe Groups::ImportExport::ExportService, feature_category: :importers
       service.execute
     end
 
-    context 'when the flag is disabled' do
-      before do
-        stub_feature_flags(export_audit_events: false)
-      end
-
-      it 'does not create an audit event' do
-        expect(Gitlab::Audit::Auditor).not_to receive(:audit)
-
-        service.execute
-      end
-    end
-
     context 'when the user was an admin' do
       let(:exported_by_admin) { true }
 

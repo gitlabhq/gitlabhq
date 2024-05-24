@@ -89,17 +89,6 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(page).to have_content 'Application settings saved successfully'
       end
 
-      context 'when `export_audit_events` flag is disabled' do
-        before do
-          stub_feature_flags(export_audit_events: false)
-          visit general_admin_application_settings_path
-        end
-
-        it 'does not display the silent admin exports setting' do
-          expect(page).not_to have_selector('[data-testid="silent-admin-exports"]')
-        end
-      end
-
       it 'change Keys settings' do
         within_testid('admin-visibility-access-settings') do
           select 'Are forbidden', from: 'RSA SSH keys'

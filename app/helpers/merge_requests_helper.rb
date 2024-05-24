@@ -271,7 +271,7 @@ module MergeRequestsHelper
   def merge_request_source_branch(merge_request)
     fork_icon = if merge_request.for_fork?
                   title = _('The source project is a fork')
-                  content_tag(:span, class: 'gl-align-middle gl-mr-n2 has-tooltip', title: title) do
+                  content_tag(:span, class: 'gl-align-middle -gl-mr-2 has-tooltip', title: title) do
                     sprite_icon('fork', size: 12, css_class: 'gl-ml-1 has-tooltip')
                   end
                 else

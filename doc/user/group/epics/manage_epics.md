@@ -344,10 +344,14 @@ On the **Child issues and epics** section, under each epic name, hover over the 
 The number indicates all epics associated with the project, including issues
 you might not have permission to.
 
-### Add a new issue to an epic
+### Add an issue to an epic
+
+> - Maximum number of child issues and epics [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452111) to 100 in GitLab 17.0.
 
 Add an existing issue to an epic, or create a new issue that's automatically
 added to the epic.
+
+The maximum number of direct child issues and epics is 100.
 
 #### Add an existing issue to an epic
 

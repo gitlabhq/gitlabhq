@@ -51,10 +51,11 @@ Product analytics uses the following tools:
 The following diagram illustrates the product analytics flow:
 
 ```mermaid
----
-title: Product Analytics flow
----
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TB
+accTitle: Product Analytics flow
+accDescr: How data is collected, processed, and visualized in dashboards.
+
     subgraph Event collection
         A([SDK]) --Send user data--> B[Snowplow Collector]
         B --Pass data--> C[Snowplow Enricher]

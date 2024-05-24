@@ -3902,9 +3902,6 @@ msgstr ""
 msgid "AdminSettings|Pause Elasticsearch indexing"
 msgstr ""
 
-msgid "AdminSettings|Pre-receive secret detection"
-msgstr ""
-
 msgid "AdminSettings|Prevent non-administrators from using the selected visibility levels for groups, projects and snippets."
 msgstr ""
 
@@ -3936,6 +3933,9 @@ msgid "AdminSettings|Save %{name} limits"
 msgstr ""
 
 msgid "AdminSettings|Search with Elasticsearch enabled"
+msgstr ""
+
+msgid "AdminSettings|Secret Push Protection"
 msgstr ""
 
 msgid "AdminSettings|Select a group to use as a source of custom templates for new projects. %{link_start}Learn more%{link_end}."
@@ -4326,6 +4326,9 @@ msgid "AdminUsers|Reset link will be generated and sent to the user. User will b
 msgstr ""
 
 msgid "AdminUsers|Restore user access to the account, including web, Git and API."
+msgstr ""
+
+msgid "AdminUsers|Role Promotions"
 msgstr ""
 
 msgid "AdminUsers|Search by name, email, or username"
@@ -5195,19 +5198,19 @@ msgstr ""
 msgid "Allow possible spam"
 msgstr ""
 
-msgid "Allow pre-receive secret detection"
-msgstr ""
-
 msgid "Allow project maintainers to configure repository mirroring"
 msgstr ""
 
 msgid "Allow projects and subgroups to override the group setting"
 msgstr ""
 
-msgid "Allow projects to enable pre-receive detection. This does not enable pre-receive secret detection. When you enable this feature, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
+msgid "Allow projects to enable secret push protection. This does not enable secret push protection. When you enable this feature, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
 msgid "Allow public access to pipelines and job details, including output logs and artifacts."
+msgstr ""
+
+msgid "Allow secret push protection"
 msgstr ""
 
 msgid "Allow this key to push to this repository"
@@ -8594,7 +8597,7 @@ msgstr ""
 msgid "BlobViewer|View on %{environmentName}"
 msgstr ""
 
-msgid "Block secrets such as keys and API tokens from being pushed to your repositories. Pre-receive secret detection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked."
+msgid "Block secrets such as keys and API tokens from being pushed to your repositories. Secret push protection is triggered when commits are pushed to a repository. If any secrets are detected, the push is blocked."
 msgstr ""
 
 msgid "Block user"
@@ -9593,6 +9596,9 @@ msgstr ""
 msgid "BulkImport|History"
 msgstr ""
 
+msgid "BulkImport|Import completed"
+msgstr ""
+
 msgid "BulkImport|Import failed. '%{path}' already exists. Change the destination and try again."
 msgstr ""
 
@@ -9609,6 +9615,9 @@ msgid "BulkImport|Import groups by direct transfer"
 msgstr ""
 
 msgid "BulkImport|Import is finished. Pick another name for re-import"
+msgstr ""
+
+msgid "BulkImport|Import of %{source_group} from %{hostname}"
 msgstr ""
 
 msgid "BulkImport|Import with projects"
@@ -9707,6 +9716,9 @@ msgstr ""
 msgid "BulkImport|Template / File-based import / Direct transfer"
 msgstr ""
 
+msgid "BulkImport|The import of %{strong_open}%{source_group}%{strong_close} from %{strong_open}%{hostname}%{strong_close} to %{strong_color_open}%{destination_group}%{strong_color_close} is complete. You can view the results of the import."
+msgstr ""
+
 msgid "BulkImport|This %{importable} was imported from another instance."
 msgstr ""
 
@@ -9714,6 +9726,9 @@ msgid "BulkImport|Unsupported GitLab version. Minimum supported version is '%{ve
 msgstr ""
 
 msgid "BulkImport|Update of import statuses with realtime changes failed"
+msgstr ""
+
+msgid "BulkImport|View import results"
 msgstr ""
 
 msgid "BulkImport|Your imported groups and projects will appear here."
@@ -23378,9 +23393,6 @@ msgstr ""
 msgid "GitLab Duo could not connect to the AI provider."
 msgstr ""
 
-msgid "GitLab Duo didn't respond. Try again? If it fails again, your request might be too large."
-msgstr ""
-
 msgid "GitLab Enterprise Edition"
 msgstr ""
 
@@ -26136,6 +26148,9 @@ msgid "I'd like to receive updates about GitLab via email"
 msgstr ""
 
 msgid "I'm signing up for GitLab because:"
+msgstr ""
+
+msgid "I'm sorry, I couldn't respond in time. Please try again."
 msgstr ""
 
 msgid "I'm sorry, I was not able to find any documentation to answer your question."
@@ -38884,12 +38899,6 @@ msgstr ""
 msgid "Pre-defined push rules"
 msgstr ""
 
-msgid "Pre-receive Secret Detection"
-msgstr ""
-
-msgid "Pre-receive secret detection skipped via"
-msgstr ""
-
 msgid "PreScanVerification|(optional)"
 msgstr ""
 
@@ -39310,6 +39319,9 @@ msgstr ""
 msgid "ProductAnalytics|All Sessions Compared"
 msgstr ""
 
+msgid "ProductAnalytics|An analytics provider has been successfully created, but it has not received any events yet. To continue with the setup, instrument your application and start sending events."
+msgstr ""
+
 msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
 msgstr ""
 
@@ -39359,6 +39371,9 @@ msgid "ProductAnalytics|Connect your own provider"
 msgstr ""
 
 msgid "ProductAnalytics|Contact our sales team"
+msgstr ""
+
+msgid "ProductAnalytics|Continue set up"
 msgstr ""
 
 msgid "ProductAnalytics|Creating your product analytics instance..."
@@ -39551,6 +39566,9 @@ msgid "ProductAnalytics|The receiver of tracking events"
 msgstr ""
 
 msgid "ProductAnalytics|The sender of tracking events"
+msgstr ""
+
+msgid "ProductAnalytics|The system is creating your analytics provider. In the meantime, you can instrument your application."
 msgstr ""
 
 msgid "ProductAnalytics|Then, return to this page and continue with the setup."
@@ -40390,7 +40408,37 @@ msgstr ""
 msgid "ProjectMaintenance| To ensure that a full backup is available in case changes need to be restored, you should make an %{docs_link_start}export of the project%{docs_link_end}."
 msgstr ""
 
+msgid "ProjectMaintenance|Blob IDs to remove"
+msgstr ""
+
+msgid "ProjectMaintenance|Cancel"
+msgstr ""
+
+msgid "ProjectMaintenance|Enter a list of object IDs to be removed to reduce repository size."
+msgstr ""
+
+msgid "ProjectMaintenance|Enter multiple entries on separate lines."
+msgstr ""
+
+msgid "ProjectMaintenance|Housekeeping will need to be triggered manually afterwards to remove old versions of the file."
+msgstr ""
+
+msgid "ProjectMaintenance|How do I get a list of object IDs?"
+msgstr ""
+
 msgid "ProjectMaintenance|Manage repository storage and cleanup."
+msgstr ""
+
+msgid "ProjectMaintenance|Provide a list of blob object IDs to be removed."
+msgstr ""
+
+msgid "ProjectMaintenance|Remove blobs"
+msgstr ""
+
+msgid "ProjectMaintenance|Removing blobs by ID cannot be undone. Are you sure you want to continue?"
+msgstr ""
+
+msgid "ProjectMaintenance|Yes, remove blobs"
 msgstr ""
 
 msgid "ProjectOverview|Create new fork"
@@ -46305,6 +46353,12 @@ msgstr ""
 msgid "Secret Detection"
 msgstr ""
 
+msgid "Secret push protection"
+msgstr ""
+
+msgid "Secret push protection skipped via"
+msgstr ""
+
 msgid "Secret token"
 msgstr ""
 
@@ -46317,10 +46371,10 @@ msgstr ""
 msgid "SecretDetection|Only a project maintainer or owner can toggle this feature."
 msgstr ""
 
-msgid "SecretDetection|Pre-receive Secret Detection is disabled"
+msgid "SecretDetection|Secret push protection is disabled"
 msgstr ""
 
-msgid "SecretDetection|Pre-receive Secret Detection is enabled"
+msgid "SecretDetection|Secret push protection is enabled"
 msgstr ""
 
 msgid "SecretDetection|This comment appears to have a token in it. Are you sure you want to add it?"
@@ -46638,7 +46692,7 @@ msgstr ""
 msgid "SecurityConfiguration|The status of the tools only applies to the default branch and is based on the %{linkStart}latest pipeline%{linkEnd}."
 msgstr ""
 
-msgid "SecurityConfiguration|Toggle Pre-receive secret detection"
+msgid "SecurityConfiguration|Toggle secret push protection"
 msgstr ""
 
 msgid "SecurityConfiguration|Upgrade or start a free trial"
@@ -51594,6 +51648,9 @@ msgstr ""
 msgid "Target branch: %{target_branch}"
 msgstr ""
 
+msgid "Target branches"
+msgstr ""
+
 msgid "Target project"
 msgstr ""
 
@@ -56461,7 +56518,7 @@ msgstr ""
 msgid "User cap cannot be enabled. The group or one of its subgroups or projects is shared externally."
 msgstr ""
 
-msgid "User caps is enabled for this group, visit the %{pending_members_link_start}pending members%{pending_members_link_end} page to manage them."
+msgid "User caps is enabled for this group. You can manage members on the %{pending_members_link_start}pending members%{pending_members_link_end} page."
 msgstr ""
 
 msgid "User created at"
@@ -59897,7 +59954,10 @@ msgstr ""
 msgid "You cannot access the raw file. Please wait a minute."
 msgstr ""
 
-msgid "You cannot add any more epics. This epic already has maximum number of child epics."
+msgid "You cannot add any more epics. This epic already has maximum number of child issues & epics."
+msgstr ""
+
+msgid "You cannot add any more issues. This epic already has maximum number of child issues & epics."
 msgstr ""
 
 msgid "You cannot approve your own deployment. This configuration can be adjusted in the protected environment settings."
@@ -61080,6 +61140,9 @@ msgid "cannot be enabled until a valid credit card is on file"
 msgstr ""
 
 msgid "cannot be enabled until identity verification is completed"
+msgstr ""
+
+msgid "cannot be linked to the epic. This epic already has maximum number of child issues & epics."
 msgstr ""
 
 msgid "cannot be used because it belongs to a compromised private key. Stop using this key and generate a new one."

@@ -8266,7 +8266,7 @@ Input type: `SetContainerScanningForRegistryInput`
 
 ### `Mutation.setPreReceiveSecretDetection`
 
-Enable/disable pre-receive secret detection for the given project.
+Enable/disable secret push protection for the given project.
 
 Input type: `SetPreReceiveSecretDetectionInput`
 
@@ -8275,7 +8275,7 @@ Input type: `SetPreReceiveSecretDetectionInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationsetprereceivesecretdetectionclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationsetprereceivesecretdetectionenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for pre-receive secret detection feature. |
+| <a id="mutationsetprereceivesecretdetectionenable"></a>`enable` | [`Boolean!`](#boolean) | Desired status for secret push protection feature. |
 | <a id="mutationsetprereceivesecretdetectionnamespacepath"></a>`namespacePath` | [`ID!`](#id) | Full path of the namespace (project). |
 
 #### Fields

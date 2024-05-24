@@ -257,6 +257,9 @@ For example, in the following diagram:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+accTitle: Automatic member removal
+accDescr: How group membership of users is determined before sign in if group sync is set up.
+
    subgraph SAML users
       SAMLUserA[Sidney Jones]
       SAMLUserB[Zhang Wei]
@@ -283,6 +286,9 @@ graph TB
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+accTitle: Automatic member removal
+accDescr: User membership for Sidney when she has not signed into group C, and group B has not configured group links.
+
     subgraph GitLab users
       GitLabUserA[Sidney Jones]
       GitLabUserB[Zhang Wei]
@@ -306,7 +312,11 @@ graph TB
 ```
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+accTitle: Automatic member removal
+accDescr: How membership of Alex Garcia works once she has signed into a group that has group links enabled.
+
    subgraph GitLab users
       GitLabUserA[Sidney Jones]
       GitLabUserB[Zhang Wei]

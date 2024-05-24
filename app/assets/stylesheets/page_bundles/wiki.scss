@@ -92,9 +92,12 @@
   .wiki-list {
     min-height: 30px;
 
-    &:hover {
+    &:hover,
+    &.active {
       background: var(--gray-50, $gray-50);
+    }
 
+    &:hover {
       a {
         color: $black;
       }

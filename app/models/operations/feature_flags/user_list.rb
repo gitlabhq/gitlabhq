@@ -24,7 +24,7 @@ module Operations
 
       before_destroy :ensure_no_associated_strategies
 
-      scope :for_name_like, -> (query) do
+      scope :for_name_like, ->(query) do
         fuzzy_search(query, [:name], use_minimum_char_limit: false)
       end
 

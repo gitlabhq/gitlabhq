@@ -37,14 +37,13 @@ RSpec.describe InitializerConnections do
       expect { block_with_database_call }.not_to raise_error
     end
 
-    it 'prevents any database connection if SKIP_RAISE_ON_INITIALIZE_CONNECTIONS is false',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444962' do
+    it 'prevents any database connection if SKIP_RAISE_ON_INITIALIZE_CONNECTIONS is false' do
       stub_env('SKIP_RAISE_ON_INITIALIZE_CONNECTIONS', 'false')
 
       expect { block_with_database_call }.to raise_error(/Database connection should not be called during initializer/)
     end
 
-    it 'restores original connection handler', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444963' do
+    it 'restores original connection handler' do
       original_handler = ActiveRecord::Base.connection_handler
 
       expect { block_with_database_call }.to raise_error(/Database connection should not be called during initializer/)

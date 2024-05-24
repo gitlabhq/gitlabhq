@@ -513,3 +513,39 @@ flow of how we construct a Chat prompt:
    context to the request. It loops to up to 10 times until a final answer is reached.
 
 (`*`) indicates that this step is part of the actual construction of the prompt
+
+## Interpreting GitLab Duo Chat error codes
+
+GitLab Duo Chat has error codes with specified meanings to assist in debugging.
+Currently, they are only logged, but in the future, they will be displayed on the UI.
+
+When developing for GitLab Duo Chat, please include these error codes when returning an error, especially a user-facing error.
+
+### Error Code Format
+
+The error codes follow the format: `<Layer Identifier><Four-digit Series Number>`.
+
+For example:
+
+- `M1001`: A network communication error in the monolith layer.
+- `G2005`: A data formatting/processing error in the AI gateway layer.
+- `A3010`: An authentication or data access permissions error in a third-party API.
+
+### Error Code Layer Identifier
+
+| Code | Layer           |
+|------|-----------------|
+| M    | Monolith        |
+| G    | AI Gateway      |
+| A    | Third-party API |
+
+### Error Series
+
+| Series | Type                                                                         |
+|--------|------------------------------------------------------------------------------|
+| 1000   | Network communication errors                                                 |
+| 2000   | Data formatting/processing errors                                            |
+| 3000   | Authentication and/or data access permission errors                          |
+| 4000   | Code execution exceptions                                                    |
+| 5000   | Bad configuration or bad parameters errors                                   |
+| 6000   | Semantic or inference errors (the model does not understand or hallucinates) |

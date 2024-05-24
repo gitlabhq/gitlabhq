@@ -649,7 +649,7 @@ class Project < ApplicationRecord
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
-  scope :order_by_storage_size, -> (direction) do
+  scope :order_by_storage_size, ->(direction) do
     build_keyset_order_on_joined_column(
       scope: joins(:statistics),
       attribute_name: 'project_statistics_storage_size',
@@ -659,7 +659,7 @@ class Project < ApplicationRecord
     )
   end
 
-  scope :sorted_by_similarity_desc, -> (search, full_path_only: false) do
+  scope :sorted_by_similarity_desc, ->(search, full_path_only: false) do
     rules = if full_path_only
               [{ column: arel_table["path"], multiplier: 1 }]
             else
@@ -713,9 +713,9 @@ class Project < ApplicationRecord
   scope :with_group, -> { includes(:group) }
   scope :with_import_state, -> { includes(:import_state) }
   scope :include_project_feature, -> { includes(:project_feature) }
-  scope :include_integration, -> (integration_association_name) { includes(integration_association_name) }
-  scope :with_integration, -> (integration_class) { joins(:integrations).merge(integration_class.all) }
-  scope :with_active_integration, -> (integration_class) { with_integration(integration_class).merge(integration_class.active) }
+  scope :include_integration, ->(integration_association_name) { includes(integration_association_name) }
+  scope :with_integration, ->(integration_class) { joins(:integrations).merge(integration_class.all) }
+  scope :with_active_integration, ->(integration_class) { with_integration(integration_class).merge(integration_class.active) }
   scope :with_shared_runners_enabled, -> { where(shared_runners_enabled: true) }
   # .with_slack_integration can generate poorly performing queries. It is intended only for UsagePing.
   scope :with_slack_integration, -> { joins(:slack_integration) }
@@ -763,12 +763,12 @@ class Project < ApplicationRecord
   scope :with_package_registry_enabled, -> { with_feature_enabled(:package_registry) }
   scope :with_issues_available_for_user, ->(current_user) { with_feature_available_for_user(:issues, current_user) }
   scope :with_merge_requests_available_for_user, ->(current_user) { with_feature_available_for_user(:merge_requests, current_user) }
-  scope :with_issues_or_mrs_available_for_user, -> (user) do
+  scope :with_issues_or_mrs_available_for_user, ->(user) do
     with_issues_available_for_user(user).or(with_merge_requests_available_for_user(user))
   end
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
   scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }) }
-  scope :with_limit, -> (maximum) { limit(maximum) }
+  scope :with_limit, ->(maximum) { limit(maximum) }
 
   scope :with_group_runners_enabled, -> do
     joins(:ci_cd_settings)
@@ -788,14 +788,14 @@ class Project < ApplicationRecord
     preload(:project_feature, :route, namespace: [:route, :owner])
   }
 
-  scope :with_name, -> (name) { where(name: name) }
-  scope :created_by, -> (user) { where(creator: user) }
-  scope :imported_from, -> (type) { where(import_type: type) }
+  scope :with_name, ->(name) { where(name: name) }
+  scope :created_by, ->(user) { where(creator: user) }
+  scope :imported_from, ->(type) { where(import_type: type) }
   scope :imported, -> { where.not(import_type: nil) }
   scope :with_enabled_error_tracking, -> { joins(:error_tracking_setting).where(project_error_tracking_settings: { enabled: true }) }
-  scope :last_activity_before, -> (time) { where('projects.last_activity_at < ?', time) }
+  scope :last_activity_before, ->(time) { where('projects.last_activity_at < ?', time) }
 
-  scope :with_service_desk_key, -> (key) do
+  scope :with_service_desk_key, ->(key) do
     # project_key is not indexed for now
     # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24063#note_282435524 for details
     joins(:service_desk_setting).where('service_desk_settings.project_key' => key)
@@ -815,8 +815,8 @@ class Project < ApplicationRecord
     .order(id: :desc)
   end
 
-  scope :in_organization, -> (organization) { where(organization: organization) }
-  scope :by_project_namespace, -> (project_namespace) { where(project_namespace_id: project_namespace) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
+  scope :by_project_namespace, ->(project_namespace) { where(project_namespace_id: project_namespace) }
 
   scope :not_a_fork, -> {
     left_outer_joins(:fork_network_member).where(fork_network_member: { forked_from_project_id: nil })
@@ -945,7 +945,7 @@ class Project < ApplicationRecord
 
   # We require an alias to the project_mirror_data_table in order to use import_state in our queries
   scope :joins_import_state, -> { joins("INNER JOIN project_mirror_data import_state ON import_state.project_id = projects.id") }
-  scope :for_group, -> (group) { where(group: group) }
+  scope :for_group, ->(group) { where(group: group) }
   scope :for_group_and_its_subgroups, ->(group) { where(namespace_id: group.self_and_descendants.select(:id)) }
   scope :for_group_and_its_ancestor_groups, ->(group) { where(namespace_id: group.self_and_ancestors.select(:id)) }
   scope :is_importing, -> { with_import_state.where(import_state: { status: %w[started scheduled] }) }

@@ -288,6 +288,8 @@ module API
           end
         rescue ::ActiveRecord::RecordNotUnique
           render_api_error!('Duplicated issue', 409)
+        rescue ::Issues::BaseService::EpicAssignmentError => error
+          render_api_error!(error.message, 422)
         end
       end
 

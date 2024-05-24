@@ -273,7 +273,7 @@ gem 're2', '2.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Misc
 
-gem 'semver_dialects', '~> 2.0', '>= 2.0.2', feature_category: :static_application_security_testing
+gem 'semver_dialects', '~> 2.0', '>= 2.0.2', feature_category: :software_composition_analysis
 gem 'version_sorter', '~> 2.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'csv_builder', path: 'gems/csv_builder' # rubocop:todo Gemfile/MissingFeatureCategory
 

@@ -196,9 +196,9 @@ export const securityFeaturesMock = [
 ];
 
 export const preReceiveSecretDetectionMock = {
-  name: 'Pre-receive Secret Detection',
+  name: 'Secret push protection',
   description: `Block secrets such as keys and API tokens from being pushed to your repositories.
-  'Pre-receive secret detection is triggered when commits are pushed to a repository. ' \
+  'Secret push protection is triggered when commits are pushed to a repository. ' \
   'If any secrets are detected, the push is blocked.`,
   helpPath: SAST_HELP_PATH,
   configurationHelpPath: helpPagePath(

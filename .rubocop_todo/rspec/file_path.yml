@@ -40,6 +40,7 @@ RSpec/FilePath:
     - 'spec/requests/api/issues/get_project_issues_spec.rb'
     - 'spec/requests/api/issues/issues_spec.rb'
     - 'spec/requests/api/issues/post_projects_issues_spec.rb'
+    - 'ee/spec/requests/api/ee/issues/post_projects_issues_spec.rb'
     - 'spec/requests/api/issues/put_projects_issues_spec.rb'
     - 'spec/requests/api/pages/pages_spec.rb'
     - 'spec/services/ci/create_pipeline_service/*'

@@ -24,7 +24,7 @@ namespace :tw do
       CodeOwnerRule.new('AI Framework', '@sselhorn'),
       CodeOwnerRule.new('AI Model Validation', '@sselhorn'),
       # CodeOwnerRule.new('Analytics Instrumentation', ''),
-      CodeOwnerRule.new('Anti-Abuse', '@phillipwells'),
+      # CodeOwnerRule.new('Anti-Abuse', ''),
       CodeOwnerRule.new('Authentication', '@jglassman1'),
       CodeOwnerRule.new('Authorization', '@jglassman1'),
       # CodeOwnerRule.new('Billing and Subscription Management', ''),

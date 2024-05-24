@@ -1,0 +1,7 @@
+<% destination_group = @bulk_import_entity.full_path_with_fallback %>
+
+<%= s_('BulkImport|Import completed') %>
+
+<%= safe_format(s_('BulkImport|The import of %{strong_open}%{source_group}%{strong_close} from %{strong_open}%{hostname}%{strong_close} to %{strong_color_open}%{destination_group}%{strong_color_close} is complete. You can view the results of the import.'), strong_open: '', strong_close: '', strong_color_open: '', strong_color_close: '', source_group: @source_group, hostname: @hostname, destination_group: destination_group) %>
+
+<%= s_('BulkImport|View import results') %>: <%= history_import_bulk_import_url(@bulk_import.id) %>

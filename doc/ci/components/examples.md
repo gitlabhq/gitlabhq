@@ -177,7 +177,7 @@ The CI/CD template migration involves the following steps:
    - The name of the template should follow the `go` command, for example `format.yml`, `build.yml`, and `test.yml`.
    - Create a new project, initialize a Git repository, add/commit all changes, set a remote origin and push.
      Modify the URL for your CI/CD component project path.
-   - Create additional files to follow [best practice](index.md#best-practices):
+   - Create additional files as outlined in the guidance to [write a component](index.md#write-a-component):
      `README.md`, `LICENSE.md`, `.gitlab-ci.yml`, `.gitignore`. The following shell commands
      initialize the Go component structure:
 
@@ -336,7 +336,7 @@ Follow the remaining steps in the [converting a CI/CD template into a component]
 section to complete the migration:
 
 1. Commit and push the changes, and verify the CI/CD pipeline results.
-1. Follow [documentation best practices](index.md#best-practices) to update the `README.md` and `LICENSE.md` files.
+1. Follow the guidance on [writing a component](index.md#write-a-component) to update the `README.md` and `LICENSE.md` files.
 1. [Release the component](index.md#publish-a-new-release) and verify it in the CI/CD catalog.
 1. Add the CI/CD component into your staging/production environment.
 

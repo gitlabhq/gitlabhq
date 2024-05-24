@@ -6,6 +6,8 @@ module Issues
     include IncidentManagement::UsageData
     include IssueTypeHelpers
 
+    EpicAssignmentError = Class.new(::ArgumentError)
+
     def hook_data(issue, action, old_associations: {})
       hook_data = issue.to_hook_data(current_user, old_associations: old_associations)
       hook_data[:object_attributes][:action] = action

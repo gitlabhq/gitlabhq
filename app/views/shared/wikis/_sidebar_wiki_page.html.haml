@@ -1,7 +1,7 @@
 - wiki_path = wiki_page_path(@wiki, wiki_page)
 
-%li{ class: active_when(params[:id] == wiki_page.slug) }
-  .gl-relative.gl-flex.gl-items-center.js-wiki-list-toggle.wiki-list.gl-px-3.gl-rounded-base{ data: { testid: 'wiki-list' } }
+%li
+  .gl-relative.gl-flex.gl-items-center.js-wiki-list-toggle.wiki-list.gl-px-3.gl-rounded-base{ data: { testid: 'wiki-list' }, class: active_when(params[:id] == wiki_page.slug) }
     = link_to wiki_path, class: 'gl-str-truncated', data: { testid: 'wiki-page-link', qa_page_name: wiki_page.human_title } do
       = wiki_page.human_title
     - plus_tooltip_title = safe_format(s_('Wiki|Create a new page under "%{page_title}"'), { page_title: wiki_page.human_title })

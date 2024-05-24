@@ -127,8 +127,8 @@ export default {
     accessLevelTooltipDescription: s__(
       'SecretDetection|Only a project maintainer or owner can toggle this feature.',
     ),
-    toastMessageEnabled: s__('SecretDetection|Pre-receive Secret Detection is enabled'),
-    toastMessageDisabled: s__('SecretDetection|Pre-receive Secret Detection is disabled'),
+    toastMessageEnabled: s__('SecretDetection|Secret push protection is enabled'),
+    toastMessageDisabled: s__('SecretDetection|Secret push protection is disabled'),
   },
 };
 </script>
@@ -188,7 +188,7 @@ export default {
         class="gl-mt-5"
         :disabled="isToggleDisabled"
         :value="toggleValue"
-        :label="s__('SecurityConfiguration|Toggle Pre-receive secret detection')"
+        :label="s__('SecurityConfiguration|Toggle secret push protection')"
         label-position="hidden"
         @change="togglePreReceiveSecretDetection"
       />
