@@ -11,11 +11,11 @@ func TestResultSetRead(t *testing.T) {
 
 	var ref ResultSetRef
 	require.NoError(t, r.Cache.Entry(2, &ref))
-	require.Equal(t, ResultSetRef{Id: 1, Property: ReferencesProp}, ref)
+	require.Equal(t, ResultSetRef{ID: 1, Property: ReferencesProp}, ref)
 	require.False(t, ref.IsDefinition())
 
 	require.NoError(t, r.Cache.Entry(4, &ref))
-	require.Equal(t, ResultSetRef{Id: 3, Property: DefinitionProp}, ref)
+	require.Equal(t, ResultSetRef{ID: 3, Property: DefinitionProp}, ref)
 	require.True(t, ref.IsDefinition())
 
 	require.NoError(t, r.Close())
@@ -24,14 +24,14 @@ func TestResultSetRead(t *testing.T) {
 func TestResultSetRefById(t *testing.T) {
 	r := setupResultSet(t)
 
-	ref, err := r.RefById(2)
+	ref, err := r.RefByID(2)
 	require.NoError(t, err)
-	require.Equal(t, &ResultSetRef{Id: 1, Property: ReferencesProp}, ref)
+	require.Equal(t, &ResultSetRef{ID: 1, Property: ReferencesProp}, ref)
 	require.False(t, ref.IsDefinition())
 
-	ref, err = r.RefById(4)
+	ref, err = r.RefByID(4)
 	require.NoError(t, err)
-	require.Equal(t, &ResultSetRef{Id: 3, Property: DefinitionProp}, ref)
+	require.Equal(t, &ResultSetRef{ID: 3, Property: DefinitionProp}, ref)
 	require.True(t, ref.IsDefinition())
 
 	require.NoError(t, r.Close())

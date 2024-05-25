@@ -10,17 +10,17 @@ import (
 func TestRangesRead(t *testing.T) {
 	r := setup(t)
 
-	firstRange := Range{Line: 1, Character: 2, ResultSetId: 4}
+	firstRange := Range{Line: 1, Character: 2, ResultSetID: 4}
 	rg, err := r.getRange(1)
 	require.NoError(t, err)
 	require.Equal(t, &firstRange, rg)
 
-	secondRange := Range{Line: 5, Character: 4, ResultSetId: 4}
+	secondRange := Range{Line: 5, Character: 4, ResultSetID: 4}
 	rg, err = r.getRange(2)
 	require.NoError(t, err)
 	require.Equal(t, &secondRange, rg)
 
-	thirdRange := Range{Line: 7, Character: 4, ResultSetId: 4}
+	thirdRange := Range{Line: 7, Character: 4, ResultSetID: 4}
 	rg, err = r.getRange(3)
 	require.NoError(t, err)
 	require.Equal(t, &thirdRange, rg)
