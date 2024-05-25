@@ -166,32 +166,32 @@ To leave a group:
 1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v})**.
 1. Select **Leave group**, then **Leave group** again.
 
-## Remove a group
+## Delete a group
 
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-To remove a group and its contents:
+To delete a group and its contents:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Advanced** section.
-1. In the **Remove group** section, select **Remove group**.
+1. In the **Delete group** section, select **Delete group**.
 1. On the confirmation dialog, type the group name and select **Confirm**.
 
-You can also remove a group from the groups dashboard:
+You can also delete a group from the groups dashboard:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my groups**.
 1. Select (**{ellipsis_v}**) for the group you want to delete.
 1. Select **Delete**.
-1. In the **Remove group** section, select **Remove group**.
+1. In the **Delete group** section, select **Delete group**.
 1. On the confirmation dialog, type the group name and select **Confirm**.
 
 On GitLab [Premium](https://about.gitlab.com/pricing/premium/) and [Ultimate](https://about.gitlab.com/pricing/ultimate/), this action adds a background job to mark a group for deletion. By default, the job schedules the deletion seven days in the future. You can modify this retention period through the [instance settings](../../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
-If the user who sets up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
+If the user who set up the deletion is removed from the group before the deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
-## Remove a group immediately
+## Delete a group immediately
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -199,19 +199,19 @@ DETAILS:
 
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-If you don't want to wait, you can remove a group immediately.
+If you don't want to wait, you can delete a group immediately.
 
 Prerequisites:
 
 - You must have the Owner role for a group.
-- You have [marked the group for deletion](#remove-a-group).
+- You have [marked the group for deletion](#delete-a-group).
 
-To immediately remove a group marked for deletion:
+To immediately delete a group marked for deletion:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Advanced**.
-1. In the **Permanently remove group** section, select **Remove group**.
+1. In the **Permanently delete group** section, select **Delete group**.
 1. Confirm the action when asked to.
 
 This action deletes the group, its subgroups, projects, and all related resources, including issues and merge requests.

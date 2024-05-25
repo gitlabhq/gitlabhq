@@ -65,7 +65,7 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
     it 'benchmarks several pipelines' do
       name = 'example.jpg'
       path = "images/#{name}"
-      blob = double(name: name, path: path, mime_type: 'image/jpeg', data: nil)
+      blob = instance_double('Gitlab::Git::Blob', name: name, path: path, mime_type: 'image/jpeg', data: nil)
       allow(wiki).to receive(:find_file).with(path, load_content: false).and_return(Gitlab::Git::WikiFile.new(blob))
       allow(wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
 

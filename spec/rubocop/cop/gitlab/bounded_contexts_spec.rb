@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'spec_helper'
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/gitlab/bounded_contexts'
 
@@ -22,7 +23,7 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
     SOURCE
   end
 
-  it 'flags an offense for a class not bounded context module which contains a class (compact version)' do
+  it 'flags an offense for a non bounded context module which contains a class (compact version)' do
     expect_offense(<<~SOURCE)
       class NotABoundedContext::SomeClass
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Class `NotABoundedContext::SomeClass` is not within a valid bounded context module. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.

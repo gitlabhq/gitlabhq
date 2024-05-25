@@ -6762,7 +6762,7 @@
   canonical: |
     <p>[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto">[<a data-sourcepos="1:2-1:12" href="/url" title="title"><em data-sourcepos="1:3-1:7">foo</em> bar</a>]</p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><a data-sourcepos="1:1-1:13" href="*foo*%20bar" data-wikilink="true">*foo* bar</a></p>
   wysiwyg: |-
     <p dir="auto">[<a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title"><em>foo</em> bar</a>]</p>
     <pre>[*foo* bar]: /url "title"</pre>
@@ -7011,7 +7011,7 @@
     <p>[[foo]]: /url &quot;title&quot;</p>
   static: |-
     <p data-sourcepos="1:1-1:8" dir="auto">![[foo]]</p>
-    <p data-sourcepos="3:1-3:21" dir="auto">[[foo]]: /url "title"</p>
+    <p data-sourcepos="3:1-3:21" dir="auto"><a data-sourcepos="3:1-3:7" href="foo" data-wikilink="true">foo</a>: /url "title"</p>
   wysiwyg: |-
     <p dir="auto">![[foo]]</p>
     <p dir="auto">[[foo]]: /url "title"</p>
@@ -7822,7 +7822,7 @@
     <p>[[<em>TOC</em>]]text</p>
     <p>text[TOC]</p>
   static: |-
-    <p data-sourcepos="1:1-2:4" dir="auto">[[<em data-sourcepos="1:3-1:7">TOC</em>]]
+    <p data-sourcepos="1:1-2:4" dir="auto"><a data-sourcepos="1:1-1:9" href="_TOC_" data-wikilink="true">_TOC_</a>
     text</p>
     <p data-sourcepos="4:1-5:5" dir="auto">text
     [TOC]</p>

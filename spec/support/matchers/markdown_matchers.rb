@@ -93,7 +93,7 @@ module MarkdownMatchers
   end
 
   # GollumTagsFilter
-  matcher :parse_gollum_tags do
+  matcher :parse_wiki_link_gollum_tags do
     def have_image(src)
       have_css("img[data-src$='#{src}']")
     end

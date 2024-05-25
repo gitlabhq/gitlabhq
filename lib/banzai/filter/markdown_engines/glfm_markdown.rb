@@ -26,7 +26,8 @@ module Banzai
           strikethrough: true,
           table: true,
           tagfilter: false,
-          tasklist: false, # still handled by a banzai filter/gem
+          tasklist: false, # still handled by a banzai filter/gem,
+          wikilinks_title_before_pipe: true,
           unsafe: true
         }.freeze
 

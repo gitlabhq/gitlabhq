@@ -439,3 +439,66 @@ PersonalAccessToken.project_access_token.where(expires_at: Date.today .. Date.to
   end
 end
 ```
+
+### Extend token lifetime
+
+Delay the expiration of certain tokens with this script.
+
+From GitLab 16.0, all access tokens have an expiration date. After you deploy at least GitLab 16.0,
+any non-expiring access tokens expire one year from the date of deployment.
+
+If this date is approaching and there are tokens that have not yet
+been rotated, you can use this script to delay expiration and give
+users more time to rotate their tokens.
+
+#### extend_expiring_tokens.rb
+
+This script extends the lifetime of all tokens which expire on a specified date, including:
+
+- Personal access tokens
+- Group access tokens
+- Project access tokens
+
+Users that have intentionally set a token to expire on the specified date will have their
+token lifetimes extended as well.
+
+To use the script:
+
+::Tabs
+
+:::TabTitle Rails console session
+
+1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
+1. Paste in the entire script. If desired, change the `expiring_date` to a different date.
+1. Press <kbd>Enter</kbd>.
+
+:::TabTitle Rails Runner
+
+1. In your terminal window, connect to your instance.
+1. Copy this entire script, and save it as a file on your instance:
+   - Name it `extend_expiring_tokens.rb`.
+   - If desired, change the `expiring_date` to a different date.
+   - The file must be accessible to `git:git`.
+1. Run this command, changing `/path/to/extend_expiring_tokens.rb`
+   to the _full_ path to your `extend_expiring_tokens.rb` file:
+
+   ```shell
+   sudo gitlab-rails runner /path/to/extend_expiring_tokens.rb
+   ```
+
+For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
+
+::EndTabs
+
+```ruby
+expiring_date = Date.new(2024, 5, 30)
+new_expires_at = 6.months.from_now
+
+total_updated = PersonalAccessToken
+                  .not_revoked
+                  .without_impersonation
+                  .where(expires_at: expiring_date.to_date)
+                  .update_all(expires_at: new_expires_at.to_date)
+
+puts "Updated #{total_updated} tokens with new expiry date #{new_expires_at}"
+```

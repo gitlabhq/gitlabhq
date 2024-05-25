@@ -44,6 +44,8 @@ module Banzai
           allowlist[:attributes][:all].delete('name')
           allowlist[:attributes]['a'].push('name')
 
+          allowlist[:attributes]['a'].push('data-wikilink')
+
           allowlist[:attributes]['img'].push('data-diagram')
           allowlist[:attributes]['img'].push('data-diagram-src')
 
