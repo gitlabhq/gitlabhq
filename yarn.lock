@@ -1284,10 +1284,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/at.js/-/at.js-1.5.7.tgz#1ee6f838cc4410a1d797770934df91d90df8179e"
   integrity sha512-c6ySRK/Ma7lxwpIVbSAF3P+xiTLrNTGTLRx4/pHK111AdFxwgUwrYF6aVZFXvmG65jHOJHoa0eQQ21RW6rm0Rg==
 
-"@gitlab/cluster-client@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/cluster-client/-/cluster-client-2.1.0.tgz#a85aba41cab930a968122c2ea1193563aa6666f0"
-  integrity sha512-6FuluixJ/79n3yamEX88T6dBtsyPJCU9llZxuT+COYfoSMO40rFCMgbfk+jBtF6VCJsdmH/1SQfub8k7Y+tKWg==
+"@gitlab/cluster-client@^2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/cluster-client/-/cluster-client-2.2.0.tgz#418a1783d8a6b38624d3f446f55b7a5c737cae73"
+  integrity sha512-57k5U1dDXSvIvbveKkRccNDl3qliDp+dfaJAPktL+V6GUMleoCbsx9pXselW4RK9YoHh+Zx9afIkczlR0TUv2Q==
   dependencies:
     axios "^0.24.0"
     core-js "^3.29.1"
