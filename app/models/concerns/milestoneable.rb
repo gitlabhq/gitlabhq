@@ -42,6 +42,8 @@ module Milestoneable
         .where(milestone_releases: { release_id: nil })
     end
 
+    scope :milestone_id_in, ->(ids) { where(milestone_id: ids) }
+
     private
 
     def milestone_is_valid
