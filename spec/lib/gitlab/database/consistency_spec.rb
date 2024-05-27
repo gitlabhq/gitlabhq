@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Database::Consistency do
     it 'sticks to primary database' do
       expect(session).not_to be_using_primary
 
-      block = -> (&control) do
+      block = ->(&control) do
         described_class.with_read_consistency do
           expect(session).to be_using_primary
 

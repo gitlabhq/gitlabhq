@@ -217,8 +217,8 @@ RSpec.describe Gitlab::EventStore::Store, feature_category: :shared do
     context 'when event has subscribed workers with condition' do
       let(:store) do
         described_class.new do |s|
-          s.subscribe worker, to: event_klass, if: -> (event) { event.data[:name] == 'Bob' }
-          s.subscribe another_worker, to: event_klass, if: -> (event) { event.data[:name] == 'Alice' }
+          s.subscribe worker, to: event_klass, if: ->(event) { event.data[:name] == 'Bob' }
+          s.subscribe another_worker, to: event_klass, if: ->(event) { event.data[:name] == 'Alice' }
         end
       end
 

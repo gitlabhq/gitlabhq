@@ -32,8 +32,8 @@ RSpec.describe Gitlab::Config::Entry::Simplifiable do
     context 'when first strategy should be used' do
       let(:entry) do
         Class.new(described_class) do
-          strategy :Something, if: -> (arg) { arg == 'something' }
-          strategy :DifferentOne, if: -> (*) { false }
+          strategy :Something, if: ->(arg) { arg == 'something' }
+          strategy :DifferentOne, if: ->(*) { false }
         end
       end
 
@@ -47,8 +47,8 @@ RSpec.describe Gitlab::Config::Entry::Simplifiable do
     context 'when second strategy should be used' do
       let(:entry) do
         Class.new(described_class) do
-          strategy :Something, if: -> (arg) { arg == 'something' }
-          strategy :DifferentOne, if: -> (arg) { arg == 'test' }
+          strategy :Something, if: ->(arg) { arg == 'something' }
+          strategy :DifferentOne, if: ->(arg) { arg == 'test' }
         end
       end
 
@@ -62,8 +62,8 @@ RSpec.describe Gitlab::Config::Entry::Simplifiable do
     context 'when neither one is a valid strategy' do
       let(:entry) do
         Class.new(described_class) do
-          strategy :Something, if: -> (*) { false }
-          strategy :DifferentOne, if: -> (*) { false }
+          strategy :Something, if: ->(*) { false }
+          strategy :DifferentOne, if: ->(*) { false }
         end
       end
 
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Config::Entry::Simplifiable do
   context 'when a unknown strategy class is not defined' do
     let(:entry) do
       Class.new(described_class) do
-        strategy :String, if: -> (*) { true }
+        strategy :String, if: ->(*) { true }
       end
     end
 

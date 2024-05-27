@@ -67,7 +67,7 @@ RSpec.describe Gitlab::Analytics::DateFiller do
     end
 
     context 'when a custom date formatter is given' do
-      let(:formatter) { -> (date) { date.to_s } }
+      let(:formatter) { ->(date) { date.to_s } }
 
       it do
         expected_result.transform_keys!(&:to_s)

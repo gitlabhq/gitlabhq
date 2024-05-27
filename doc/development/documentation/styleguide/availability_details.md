@@ -25,47 +25,11 @@ DETAILS:
 > - Updated in GitLab 16.4.
 ```
 
-## When to add availability details
+## Available options
 
-Assign availability details under:
+Use the following text for the tier, offering, and status.
 
-- Most H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
-- Topic titles for features that have different availability details than the H1 title.
-
-The H1 availability details should be the details that apply to the widest availability
-for the features on the page. For example:
-
-- If some sections apply to Premium and Ultimate, and others apply to just Ultimate,
-  the H1 **Tier:** should be `Premium, Ultimate`.
-- If some sections apply to all instances, and others apply to only `Self-managed`,
-  the **Offering:** should be `GitLab.com, Self-managed, GitLab Dedicated`
-- If some sections are beta, and others are experiment, the H1 **Status:** should be `Beta`.
-  If some sections are beta, and others are generally available, then there should
-  be no **Status:** at the H1 level.
-
-## When not to add availability details
-
-Do not assign availability details:
-
-- When a feature does not have one obvious subscription tier or offering.
-  For example, if a feature applies to one tier for SaaS and a different availability for self-managed.
-
-In this case, do any or all of the following:
-
-- Use a [`NOTE`](index.md#note) alert box to describe the availability details.
-- Add availability details under other topic titles where this information makes more sense.
-- Do not add availability details under the H1.
-
-### Pages that don't need product availability details
-
-Some pages won't have availability details, because no obvious availability details apply. For example:
-
-- Tutorials.
-- Pages that compare features from different tiers.
-- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
-- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
-
-## Available product availability details
+### Offering
 
 For offering, use any combination of these words, in this order, separated by commas:
 
@@ -80,11 +44,15 @@ For example:
 - `Self-managed`
 - `Self-managed, GitLab Dedicated`
 
+### Tier
+
 For tier, choose one:
 
 - `Free, Premium, Ultimate`
 - `Premium, Ultimate`
 - `Ultimate`
+
+### Status
 
 For status, choose one:
 
@@ -93,14 +61,51 @@ For status, choose one:
 
 Generally available features should not have a status.
 
-### GitLab Duo Pro add-on
+### GitLab Duo Pro or Enterprise add-on
 
-The add-on belongs with other subscription tiers. Document it by using the phrase `with GitLab Duo Pro`.
+The add-ons belong with other subscription tiers. Document them by using the phrase `with` and the add-on.
+For example, `with GitLab Duo Pro`.
 For example:
 
 ```markdown
 **Tier:** Premium or Ultimate with GitLab Duo Pro
 ```
+
+## When to add availability details
+
+Assign availability details under:
+
+- Most H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
+- Topic titles for features that have different availability details than the H1 title.
+
+The H1 availability details should be the details that apply to the widest availability
+for the features on the page. For example:
+
+- If some sections apply to Premium and Ultimate, and others apply to just Ultimate,
+  the H1 `Tier:` should be `Premium, Ultimate`.
+- If some sections apply to all instances, and others apply to only `Self-managed`,
+  the `Offering:` should be `GitLab.com, Self-managed, GitLab Dedicated`.
+- If some sections are beta, and others are experiment, the H1 `Status:` should be `Beta`.
+  If some sections are beta, and others are generally available, then there should
+  be no `Status:` for the H1.
+
+## When not to add availability details
+
+Do not assign availability details to the following pages:
+
+- Tutorials.
+- Pages that compare features from different tiers.
+- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
+- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
+
+Also, do not assign them when a feature does not have one obvious subscription tier or offering.
+For example, if a feature applies to one tier for GitLab.com and a different availability for self-managed.
+
+In this case, do any or all of the following:
+
+- Use a [`NOTE`](index.md#note) alert box to describe the availability details.
+- Add availability details under other topic titles where this information makes more sense.
+- Do not add availability details under the H1.
 
 ### Duplicating tier, offering, or status on subheadings
 

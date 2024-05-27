@@ -74,7 +74,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-10-22T14:13:35Z",
+    "expires_at": "2012-10-22",
     "access_level": 30,
     "group_saml_identity": null
   },
@@ -94,7 +94,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-10-22T14:13:35Z",
+    "expires_at": "2012-10-22",
     "access_level": 30,
     "email": "john@example.com",
     "group_saml_identity": {
@@ -172,7 +172,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-10-22T14:13:35Z",
+    "expires_at": "2012-10-22",
     "access_level": 30,
     "group_saml_identity": null
   },
@@ -192,7 +192,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-10-22T14:13:35Z",
+    "expires_at": "2012-10-22",
     "access_level": 30,
     "email": "john@example.com",
     "group_saml_identity": {
@@ -217,7 +217,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-11-22T14:13:35Z",
+    "expires_at": "2012-11-22",
     "access_level": 30,
     "group_saml_identity": null
   }
@@ -620,7 +620,7 @@ Example response:
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root"
   },
-  "expires_at": "2012-10-22T14:13:35Z",
+  "expires_at": "2012-10-22",
   "access_level": 30,
   "email": "john@example.com",
   "group_saml_identity": null
@@ -668,7 +668,7 @@ Example response:
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root"
   },
-  "expires_at": "2012-10-22T14:13:35Z",
+  "expires_at": "2012-10-22",
   "access_level": 40,
   "email": "john@example.com",
   "group_saml_identity": null
@@ -712,7 +712,7 @@ Example response:
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root"
   },
-  "expires_at": "2012-10-22T14:13:35Z",
+  "expires_at": "2012-10-22",
   "access_level": 40,
   "email": "john@example.com",
   "override": true

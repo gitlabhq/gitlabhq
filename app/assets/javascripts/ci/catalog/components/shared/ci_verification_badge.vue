@@ -8,7 +8,9 @@ export default {
   i18n: {
     verificationLevelPopoverLink: s__('CiCatalog|Learn more about designated creators'),
   },
-  verificationHelpPagePath: helpPagePath('ci/components/index', { anchor: 'verified-components' }),
+  verificationHelpPagePath: helpPagePath('ci/components/index', {
+    anchor: 'verified-component-creators',
+  }),
   verificationLevelOptions: VERIFICATION_LEVELS,
   components: {
     GlIcon,

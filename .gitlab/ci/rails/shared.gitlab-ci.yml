@@ -210,17 +210,6 @@ include:
     - !reference [.base-script, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
 
-.rspec-base-pg14-as-if-foss:
-  extends:
-    - .rspec-base
-    - .as-if-foss
-    - .use-pg14
-  needs:
-    - !reference [.rspec-base-needs, needs]
-    - job: "compile-test-assets as-if-foss"
-    - job: "detect-tests"
-      optional: true
-
 .rspec-base-pg15:
   extends:
     - .rspec-base

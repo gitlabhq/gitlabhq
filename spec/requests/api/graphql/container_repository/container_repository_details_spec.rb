@@ -331,7 +331,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       GQL
     end
 
-    it 'returns the last_published_at' do
+    it 'returns the last_published_at', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463763' do
       stub_container_registry_gitlab_api_support(supported: true) do |client|
         stub_container_registry_gitlab_api_repository_details(client, path: container_repository.path, last_published_at: '2024-04-30T06:07:36.225Z')
       end
@@ -342,7 +342,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
     end
 
     context 'with a network error' do
-      it 'returns an error' do
+      it 'returns an error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463764' do
         stub_container_registry_gitlab_api_network_error
 
         subject
@@ -413,13 +413,15 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       }
     end
 
-    it_behaves_like 'a working graphql query' do # OK
-      before do
-        subject
-      end
+    context 'quarantine', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/439529' do
+      it_behaves_like 'a working graphql query' do # OK
+        before do
+          subject
+        end
 
-      it 'matches the JSON schema' do
-        expect(container_repository_details_response).to match_schema('graphql/container_repository_details')
+        it 'matches the JSON schema' do
+          expect(container_repository_details_response).to match_schema('graphql/container_repository_details')
+        end
       end
     end
 

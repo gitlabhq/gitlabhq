@@ -98,8 +98,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     let(:in_operator_optimization_options) do
       {
         array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
-        array_mapping_scope: -> (id_expression) { ignored_column_model.where(ignored_column_model.arel_table[:project_id].eq(id_expression)) },
-        finder_query: -> (id_expression) { ignored_column_model.where(ignored_column_model.arel_table[:id].eq(id_expression)) }
+        array_mapping_scope: ->(id_expression) { ignored_column_model.where(ignored_column_model.arel_table[:project_id].eq(id_expression)) },
+        finder_query: ->(id_expression) { ignored_column_model.where(ignored_column_model.arel_table[:id].eq(id_expression)) }
       }
     end
 
@@ -147,8 +147,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     let(:in_operator_optimization_options) do
       {
         array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
-        array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
-        finder_query: -> (id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+        array_mapping_scope: ->(id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
+        finder_query: ->(id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
       }
     end
 
@@ -199,8 +199,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     let(:in_operator_optimization_options) do
       {
         array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
-        array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
-        finder_query: -> (_relative_position_expression, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+        array_mapping_scope: ->(id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
+        finder_query: ->(_relative_position_expression, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
       }
     end
 
@@ -223,8 +223,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
       let(:in_operator_optimization_options) do
         {
           array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
-          array_mapping_scope: -> (id_expression) { Issue.merge(base_scope.dup).where(Issue.arel_table[:project_id].eq(id_expression)) },
-          finder_query: -> (_relative_position_expression, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+          array_mapping_scope: ->(id_expression) { Issue.merge(base_scope.dup).where(Issue.arel_table[:project_id].eq(id_expression)) },
+          finder_query: ->(_relative_position_expression, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
         }
       end
 
@@ -249,8 +249,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     let(:in_operator_optimization_options) do
       {
         array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
-        array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
-        finder_query: -> (_created_at_expression, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+        array_mapping_scope: ->(id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
+        finder_query: ->(_created_at_expression, id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
       }
     end
 
@@ -281,8 +281,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
       {
         scope: scope,
         array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
-        array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
-        finder_query: -> (id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+        array_mapping_scope: ->(id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
+        finder_query: ->(id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
       }
     end
 
@@ -329,8 +329,8 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     options = {
       scope: scope,
       array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
-      array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
-      finder_query: -> (id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
+      array_mapping_scope: ->(id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) },
+      finder_query: ->(id_expression) { Issue.where(Issue.arel_table[:id].eq(id_expression)) }
     }
 
     expect { described_class.new(**options).execute }.to raise_error(/The order on the scope does not support keyset pagination/)
@@ -359,7 +359,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     let(:in_operator_optimization_options) do
       {
         array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
-        array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
+        array_mapping_scope: ->(id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
       }
     end
 
@@ -379,7 +379,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
       let(:batch_size) { 3 }
 
       it 'raises error, loading complete rows are not supported with SQL expressions' do
-        in_operator_optimization_options[:finder_query] = -> (_, _) { Issue.select(:id, '(id * 10)').where(id: -1) }
+        in_operator_optimization_options[:finder_query] = ->(_, _) { Issue.select(:id, '(id * 10)').where(id: -1) }
 
         expect(in_operator_optimization_options[:finder_query]).not_to receive(:call)
 
@@ -401,7 +401,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     let(:in_operator_optimization_options) do
       {
         array_scope: Project.where(namespace_id: top_level_group.self_and_descendants.select(:id)).select(:id),
-        array_mapping_scope: -> (id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
+        array_mapping_scope: ->(id_expression) { Issue.where(Issue.arel_table[:project_id].eq(id_expression)) }
       }
     end
 

@@ -39,22 +39,22 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
           a: {
             doc: HTML::Pipeline.parse("<a href='#{scheme}alert(1);'>foo</a>"),
             attr: "href",
-            node_to_check: -> (doc) { doc.children.first }
+            node_to_check: ->(doc) { doc.children.first }
           },
           img: {
             doc: HTML::Pipeline.parse("<img src='#{scheme}alert(1);'>"),
             attr: "src",
-            node_to_check: -> (doc) { doc.children.first }
+            node_to_check: ->(doc) { doc.children.first }
           },
           video: {
             doc: HTML::Pipeline.parse("<video><source src='#{scheme}alert(1);'></video>"),
             attr: "src",
-            node_to_check: -> (doc) { doc.children.first.children.filter("source").first }
+            node_to_check: ->(doc) { doc.children.first.children.filter("source").first }
           },
           audio: {
             doc: HTML::Pipeline.parse("<audio><source src='#{scheme}alert(1);'></audio>"),
             attr: "src",
-            node_to_check: -> (doc) { doc.children.first.children.filter("source").first }
+            node_to_check: ->(doc) { doc.children.first.children.filter("source").first }
           }
         }
 

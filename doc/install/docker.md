@@ -692,7 +692,7 @@ GitLab from backup. The secrets file is stored at `/etc/gitlab/gitlab-secrets.js
 
 ### Create a database backup
 
-A database backup is required to roll back GitLab upgrade if you encounter issues.
+A database backup is required to roll back a GitLab upgrade if you encounter issues.
 
 ```shell
 docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories,registry,uploads,builds,pages,lfs,packages,terraform_state
