@@ -609,11 +609,49 @@ ensure it is valid. For example, `Destination-Project-Path` is normalized to `de
 
 ### Reducing migration duration
 
-A single direct transfer migration runs 5 entities (groups or projects) per import at a time, independent of the number of workers available on the destination instance.
-That said, having more workers on the destination instance speeds up migration by decreasing the time it takes to import each entity.
+These are some strategies for reducing the duration of migrations that use direct transfer.
 
-Increasing the number of workers on the destination instance helps reduce the migration duration until the source instance hardware resources are saturated. Exporting and importing relations in batches (proposed in [epic 9036](https://gitlab.com/groups/gitlab-org/-/epics/9036)) will make having enough available workers on
+#### Add Sidekiq workers to the destination instance
+
+A single direct transfer migration runs 5 entities (groups or projects) per import at a time, independent of the number of workers available on the destination instance.
+That said, adding more Sidekiq worker processes on the destination instance speeds up migration by decreasing the time it takes to import each entity.
+
+To add more Sidekiq workers on the destination instance, you can either:
+
+1. [Use routing rules](../../../administration/sidekiq/processing_specific_job_classes.md#routing-rules). This approach creates additional Sidekiq
+   workers that are dedicated to direct transfer operations.
+1. [Start multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md#start-multiple-processes). This approach allows all
+   queues in GitLab to make use of the additional Sidekiq worker processes.
+
+An example of how to use the routing rules is below. This example:
+
+- Can be added to the `/etc/gitlab/gitlab.rb` file on a destination instance, with a subsequent [reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
+  to apply the changes.
+- Creates four Sidekiq worker processes. Three of the processes are used exclusively for the direct transfer importer queues, and the last process is used for all other queues.
+- Should have a number of processes set that, at most, equal (and not exceed) the number of CPU cores you want to dedicate to Sidekiq. The Sidekiq worker process uses no more than one CPU core.
+
+```ruby
+sidekiq['routing_rules'] = [
+  ['feature_category=importers', 'importers'],
+  ['*', 'default']
+]
+
+sidekiq['queue_selector'] = false
+sidekiq['queue_groups'] = [
+  # Run two processes just for importers
+  'importers',
+  'importers',
+  'importers',
+
+  # Run one 'catchall' process on the default and mailers queues
+  'default,mailers'
+]
+```
+
+Increasing the number of workers on the destination instance helps reduce the migration duration until the source instance hardware resources are saturated. Exporting and importing relations in batches, available by default from GitLab 16.8, makes having enough available workers on
 the destination instance even more useful.
+
+#### Redistribute large projects or start separate migrations
 
 The number of workers on the source instance should be enough to export the 5 concurrent entities in parallel (for each running import). Otherwise, there can be
 delays and potential timeouts as the destination is waiting for exported data to become available.
