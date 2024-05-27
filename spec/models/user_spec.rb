@@ -195,6 +195,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout') }
+    it { is_expected.to have_many(:broadcast_message_dismissals).class_name('Users::BroadcastMessageDismissal') }
     it { is_expected.to have_many(:created_projects).dependent(:nullify).class_name('Project') }
     it { is_expected.to have_many(:created_namespace_details).class_name('Namespace::Detail') }
     it { is_expected.to have_many(:user_achievements).class_name('Achievements::UserAchievement').inverse_of(:user) }

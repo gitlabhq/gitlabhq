@@ -48,10 +48,38 @@ module Gitlab
               message: "importing merge request #{merge_request.iid} notes"
             )
 
-            activities = client.activities(project_key, repository_slug, merge_request.iid)
-            activities.each do |activity|
-              process_comment(merge_request, activity)
+            # The page counter needs to be scoped by parent_record to avoid skipping
+            # pages of notes from already imported parent_record. As 2 different MR(s)
+            # might share the same page counter.
+            page_counter = Gitlab::Import::PageCounter.new(
+              project, page_counter_id(merge_request), 'bitbucket-server-importer'
+            )
+            page = page_counter.current
+
+            log_message = "importing merge request #{merge_request.iid} notes, "
+            log_message += "page #{page} using batch-size #{concurrent_import_jobs_limit}"
+            loop do
+              log_info(
+                import_stage: 'import_notes',
+                message: log_message
+              )
+
+              activities = client.activities(
+                project_key, repository_slug, merge_request.iid,
+                page_offset: page, limit: concurrent_import_jobs_limit
+              ).to_a
+
+              break if activities.empty?
+
+              activities.each do |activity|
+                process_comment(merge_request, activity)
+              end
+
+              page += 1
+              page_counter.set(page)
             end
+
+            page_counter.expire!
 
             mark_merge_request_processed(merge_request)
           end
@@ -133,6 +161,10 @@ module Gitlab
 
         def merge_request_collection
           project.merge_requests.where.not(iid: already_processed_merge_requests) # rubocop: disable CodeReuse/ActiveRecord -- no need to move this to ActiveRecord model
+        end
+
+        def page_counter_id(merge_request)
+          "merge_request/#{merge_request.id}/#{collection_method}"
         end
       end
     end

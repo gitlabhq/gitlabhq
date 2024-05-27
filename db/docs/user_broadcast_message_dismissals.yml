@@ -1,0 +1,10 @@
+---
+table_name: user_broadcast_message_dismissals
+classes:
+  - Users::BroadcastMessageDismissal
+feature_categories:
+  - onboarding
+description: Table to track user dismissed broadcast messages
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151056
+milestone: '17.0'
+gitlab_schema: gitlab_main_clusterwide

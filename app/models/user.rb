@@ -312,6 +312,8 @@ class User < MainClusterwide::ApplicationRecord
   has_many :requested_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'requested_by_id'
   has_many :reviewed_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'reviewed_by_id'
 
+  has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
+
   #
   # Validations
   #

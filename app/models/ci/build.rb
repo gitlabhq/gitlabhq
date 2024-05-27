@@ -195,8 +195,8 @@ module Ci
     scope :without_coverage, -> { where(coverage: nil) }
     scope :with_coverage_regex, -> { where.not(coverage_regex: nil) }
 
-    scope :in_merge_request, ->(merge_request) do
-      joins(:pipeline).where(Ci::Pipeline.arel_table[:merge_request_id].eq(merge_request))
+    scope :in_merge_request, ->(merge_request_id) do
+      joins(:pipeline).where(Ci::Pipeline.arel_table[:merge_request_id].eq(merge_request_id))
     end
 
     acts_as_taggable
@@ -383,8 +383,8 @@ module Ci
       end
     end
 
-    def self.ids_in_merge_request(merge_request_ids)
-      in_merge_request(merge_request_ids).pluck(:id)
+    def self.ids_in_merge_request(merge_request_id)
+      in_merge_request(merge_request_id).pluck(:id)
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend

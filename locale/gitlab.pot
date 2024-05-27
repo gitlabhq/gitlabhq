@@ -21793,6 +21793,9 @@ msgstr ""
 msgid "Failed to retrieve page"
 msgstr ""
 
+msgid "Failed to save dismissal"
+msgstr ""
+
 msgid "Failed to save merge conflicts resolutions. Please try again!"
 msgstr ""
 

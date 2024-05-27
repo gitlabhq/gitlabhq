@@ -1,0 +1,9 @@
+---
+name: new_broadcast_message_dismissal
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/438595
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151056
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461564
+milestone: '17.1'
+type: gitlab_com_derisk
+group: group::activation
+default_enabled: false

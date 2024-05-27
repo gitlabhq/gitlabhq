@@ -232,7 +232,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
         create(:ci_build_need, build: test_job, name: 'my test job')
       end
 
-      it 'reports the build needs and execution requirements', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448867' do
+      it 'reports the build needs and execution requirements' do
         post_graphql(query, current_user: user)
 
         expect(jobs_graphql_data).to contain_exactly(
@@ -244,9 +244,7 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
           a_hash_including(
             'name' => 'docker 1 2',
             'needs' => { 'nodes' => [] },
-            'previousStageJobsOrNeeds' => { 'nodes' => [
-              a_hash_including('name' => 'my test job')
-            ] }
+            'previousStageJobsOrNeeds' => { 'nodes' => [a_hash_including('name' => 'my test job')] }
           ),
           a_hash_including(
             'name' => 'docker 2 2',
@@ -256,25 +254,23 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
           a_hash_including(
             'name' => 'rspec 1 2',
             'needs' => { 'nodes' => [] },
-            'previousStageJobsOrNeeds' => { 'nodes' => [
+            'previousStageJobsOrNeeds' => { 'nodes' => an_array_matching([
               a_hash_including('name' => 'docker 1 2'),
               a_hash_including('name' => 'docker 2 2')
-            ] }
+            ]) }
           ),
           a_hash_including(
             'name' => 'rspec 2 2',
             'needs' => { 'nodes' => [a_hash_including('name' => 'my test job')] },
-            'previousStageJobsOrNeeds' => { 'nodes' => [
-              a_hash_including('name' => 'my test job')
-            ] }
+            'previousStageJobsOrNeeds' => { 'nodes' => [a_hash_including('name' => 'my test job')] }
           ),
           a_hash_including(
             'name' => 'deploy',
             'needs' => { 'nodes' => [] },
-            'previousStageJobsOrNeeds' => { 'nodes' => [
+            'previousStageJobsOrNeeds' => { 'nodes' => an_array_matching([
               a_hash_including('name' => 'rspec 1 2'),
               a_hash_including('name' => 'rspec 2 2')
-            ] }
+            ]) }
           )
         )
       end

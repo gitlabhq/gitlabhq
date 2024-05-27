@@ -16,6 +16,7 @@ class SessionsController < Devise::SessionsController
   include PreferredLanguageSwitcher
   include SkipsAlreadySignedInMessage
   include AcceptsPendingInvitations
+  include SynchronizeBroadcastMessageDismissals
   extend ::Gitlab::Utils::Override
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
@@ -78,6 +79,10 @@ class SessionsController < Devise::SessionsController
       end
 
       accept_pending_invitations
+
+      if Feature.enabled?(:new_broadcast_message_dismissal, current_user, type: :gitlab_com_derisk)
+        synchronize_broadcast_message_dismissals
+      end
 
       log_audit_event(current_user, resource, with: authentication_method)
       log_user_activity(current_user)

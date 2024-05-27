@@ -159,6 +159,24 @@ end
 If classes that are defined into a namespace have a lot in common with classes in other namespaces,
 chances are that these two namespaces are part of the same bounded context.
 
+### How to resolve GitLab/BoundedContexts RuboCop offenses
+
+The `Gitlab/BoundedContexts` RuboCop cop ensures that every Ruby class or module is nested inside a
+top-level Ruby namespace existing in [`config/bounded_contexts.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/bounded_contexts.yml).
+
+Offenses should be resolved by nesting the constant inside an existing bounded context namespace.
+
+- Search in `config/bounded_contexts.yml` for namespaces that more closely relate to the feature,
+  for example by matching the feature category.
+- If needed, use sub-namespaces to further nest the constant inside the namespace.
+  For example: `Repositories::Mirrors::SyncService`.
+- Create follow-up issues to move the existing related code into the same namespace.
+
+In exceptional cases, we may need to add a new bounded context to the list. This can be done if:
+
+- We are introducing a new product category that does not align with any existing bounded contexts.
+- We are extracting a bounded context out of an existing one because it's too large and we want to decouple the two.
+
 ## Distinguish domain code from generic code
 
 The [guidelines above](#use-namespaces-to-define-bounded-contexts) refer primarily to the domain code.

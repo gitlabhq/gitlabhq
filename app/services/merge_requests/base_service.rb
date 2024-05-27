@@ -120,7 +120,7 @@ module MergeRequests
     end
 
     def deactivate_pages_deployments(merge_request)
-      Pages::DeactivateMrDeploymentsWorker.perform_async(merge_request)
+      Pages::DeactivateMrDeploymentsWorker.perform_async(merge_request.id)
     end
 
     private

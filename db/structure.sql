@@ -4491,12 +4491,6 @@ CREATE TABLE application_settings (
     static_objects_external_storage_auth_token_encrypted text,
     future_subscriptions jsonb DEFAULT '[]'::jsonb NOT NULL,
     packages_cleanup_package_file_worker_capacity smallint DEFAULT 2 NOT NULL,
-    container_registry_import_max_tags_count integer DEFAULT 100 NOT NULL,
-    container_registry_import_max_retries integer DEFAULT 3 NOT NULL,
-    container_registry_import_start_max_retries integer DEFAULT 50 NOT NULL,
-    container_registry_import_max_step_duration integer DEFAULT 300 NOT NULL,
-    container_registry_import_target_plan text DEFAULT 'free'::text NOT NULL,
-    container_registry_import_created_before timestamp with time zone DEFAULT '2022-01-23 00:00:00+00'::timestamp with time zone NOT NULL,
     runner_token_expiration_interval integer,
     group_runner_token_expiration_interval integer,
     project_runner_token_expiration_interval integer,
@@ -4530,8 +4524,6 @@ CREATE TABLE application_settings (
     max_export_size integer DEFAULT 0,
     encrypted_slack_app_signing_secret bytea,
     encrypted_slack_app_signing_secret_iv bytea,
-    container_registry_pre_import_timeout integer DEFAULT 1800 NOT NULL,
-    container_registry_import_timeout integer DEFAULT 600 NOT NULL,
     pipeline_limit_per_project_user_sha integer DEFAULT 0 NOT NULL,
     dingtalk_integration_enabled boolean DEFAULT false NOT NULL,
     encrypted_dingtalk_corpid bytea,
@@ -4542,7 +4534,6 @@ CREATE TABLE application_settings (
     encrypted_dingtalk_app_secret_iv bytea,
     jira_connect_application_key text,
     globally_allowed_ips text DEFAULT ''::text NOT NULL,
-    container_registry_pre_import_tags_rate numeric(6,2) DEFAULT 0.5 NOT NULL,
     license_usage_data_exported boolean DEFAULT false NOT NULL,
     phone_verification_code_enabled boolean DEFAULT false NOT NULL,
     max_number_of_repository_downloads smallint DEFAULT 0 NOT NULL,
@@ -4688,7 +4679,6 @@ CREATE TABLE application_settings (
     importers jsonb DEFAULT '{}'::jsonb NOT NULL,
     security_policy_scheduled_scans_max_concurrency integer DEFAULT 100 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
-    CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_failed_login_attempts_unlock_period_positive CHECK ((failed_login_attempts_unlock_period_in_minutes > 0)),
@@ -4712,7 +4702,6 @@ CREATE TABLE application_settings (
     CONSTRAINT check_2dba05b802 CHECK ((char_length(gitpod_url) <= 255)),
     CONSTRAINT check_32710817e9 CHECK ((char_length(static_objects_external_storage_auth_token_encrypted) <= 255)),
     CONSTRAINT check_3455368420 CHECK ((char_length(database_grafana_api_url) <= 255)),
-    CONSTRAINT check_3559645ae5 CHECK ((char_length(container_registry_import_target_plan) <= 255)),
     CONSTRAINT check_3b22213b72 CHECK ((char_length(snowplow_database_collector_hostname) <= 255)),
     CONSTRAINT check_3def0f1829 CHECK ((char_length(sentry_clientside_dsn) <= 255)),
     CONSTRAINT check_4847426287 CHECK ((char_length(jira_connect_proxy_url) <= 255)),
@@ -17328,6 +17317,24 @@ CREATE TABLE user_audit_events (
 )
 PARTITION BY RANGE (created_at);
 
+CREATE TABLE user_broadcast_message_dismissals (
+    id bigint NOT NULL,
+    user_id bigint NOT NULL,
+    broadcast_message_id bigint NOT NULL,
+    expires_at timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE user_broadcast_message_dismissals_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE user_broadcast_message_dismissals_id_seq OWNED BY user_broadcast_message_dismissals.id;
+
 CREATE TABLE user_callouts (
     id integer NOT NULL,
     feature_name integer NOT NULL,
@@ -20290,6 +20297,8 @@ ALTER TABLE ONLY user_achievements ALTER COLUMN id SET DEFAULT nextval('user_ach
 
 ALTER TABLE ONLY user_agent_details ALTER COLUMN id SET DEFAULT nextval('user_agent_details_id_seq'::regclass);
 
+ALTER TABLE ONLY user_broadcast_message_dismissals ALTER COLUMN id SET DEFAULT nextval('user_broadcast_message_dismissals_id_seq'::regclass);
+
 ALTER TABLE ONLY user_callouts ALTER COLUMN id SET DEFAULT nextval('user_callouts_id_seq'::regclass);
 
 ALTER TABLE ONLY user_canonical_emails ALTER COLUMN id SET DEFAULT nextval('user_canonical_emails_id_seq'::regclass);
@@ -22927,6 +22936,9 @@ ALTER TABLE ONLY user_agent_details
 ALTER TABLE ONLY user_audit_events
     ADD CONSTRAINT user_audit_events_pkey PRIMARY KEY (id, created_at);
 
+ALTER TABLE ONLY user_broadcast_message_dismissals
+    ADD CONSTRAINT user_broadcast_message_dismissals_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY user_callouts
     ADD CONSTRAINT user_callouts_pkey PRIMARY KEY (id);
 
@@ -24990,6 +25002,8 @@ CREATE INDEX index_boards_on_iteration_id ON boards USING btree (iteration_id);
 CREATE INDEX index_boards_on_milestone_id ON boards USING btree (milestone_id);
 
 CREATE INDEX index_boards_on_project_id ON boards USING btree (project_id);
+
+CREATE UNIQUE INDEX index_broadcast_dismissals_on_user_id_and_broadcast_message_id ON user_broadcast_message_dismissals USING btree (user_id, broadcast_message_id);
 
 CREATE INDEX index_broadcast_message_on_ends_at_and_broadcast_type_and_id ON broadcast_messages USING btree (ends_at, broadcast_type, id);
 
@@ -27977,6 +27991,8 @@ CREATE INDEX index_user_achievements_on_user_id_revoked_by_is_null ON user_achie
 
 CREATE INDEX index_user_agent_details_on_subject_id_and_subject_type ON user_agent_details USING btree (subject_id, subject_type);
 
+CREATE INDEX index_user_broadcast_message_dismissals_on_broadcast_message_id ON user_broadcast_message_dismissals USING btree (broadcast_message_id);
+
 CREATE UNIQUE INDEX index_user_callouts_on_user_id_and_feature_name ON user_callouts USING btree (user_id, feature_name);
 
 CREATE INDEX index_user_canonical_emails_on_canonical_email ON user_canonical_emails USING btree (canonical_email);
@@ -30696,6 +30712,9 @@ ALTER TABLE ONLY project_export_jobs
 ALTER TABLE ONLY dependency_list_exports
     ADD CONSTRAINT fk_5b3d11e1ef FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY user_broadcast_message_dismissals
+    ADD CONSTRAINT fk_5c0cfb74ce FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY dast_scanner_profiles_builds
     ADD CONSTRAINT fk_5d46286ad3 FOREIGN KEY (dast_scanner_profile_id) REFERENCES dast_scanner_profiles(id) ON DELETE CASCADE;
 
@@ -31220,6 +31239,9 @@ ALTER TABLE ONLY sbom_occurrences_vulnerabilities
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_c78fbacd64 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_broadcast_message_dismissals
+    ADD CONSTRAINT fk_c7cbf5566d FOREIGN KEY (broadcast_message_id) REFERENCES broadcast_messages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_c815368376 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;

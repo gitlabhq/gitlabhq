@@ -28,6 +28,8 @@ module System
     attribute :color, default: '#E75E40'
     attribute :font, default: '#FFFFFF'
 
+    has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
+
     scope :current_and_future_messages, -> { where('ends_at > :now', now: Time.current).order_id_asc }
 
     CACHE_KEY = 'broadcast_message_current_json'
