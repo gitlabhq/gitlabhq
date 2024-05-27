@@ -1,11 +1,15 @@
-FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main:cb5028c5070c4ba17985d26326e941a058442304 as base
+ARG GDK_SHA=e8a2f3c30d3031c5574957efbaa917bacdeb3f1a
+# Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
+ARG GDK_BASE_TAG_PREFIX
+
+FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main:${GDK_BASE_TAG_PREFIX}${GDK_SHA} as base
 
 ENV GITLAB_LICENSE_MODE=test \
     GDK_KILL_CONFIRM=true
 
 # Clone GDK at specific sha and bootstrap packages
 #
-ARG GDK_SHA=768deeebc94e37ba103dfec8102e794ba0f22c4e
+ARG GDK_SHA=29758852952861820408bb4fb1976a5d89791942
 RUN set -eux; \
     git clone --depth 1 https://gitlab.com/gitlab-org/gitlab-development-kit.git && cd gitlab-development-kit; \
     git fetch --depth 1 origin ${GDK_SHA} && git -c advice.detachedHead=false checkout ${GDK_SHA}; \
@@ -53,7 +57,7 @@ RUN set -eux; \
 #
 FROM base as gitlab-gems
 
-COPY --chown=gdk:gdk Gemfile Gemfile.lock ./gitlab/
+COPY --chown=gdk:gdk Gemfile Gemfile.lock .tool-versions ./gitlab/
 COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
 COPY --chown=gdk:gdk gems/ ./gitlab/gems/
 RUN make .gitlab-bundle \
