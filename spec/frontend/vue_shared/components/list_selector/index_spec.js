@@ -25,6 +25,12 @@ jest.mock('~/rest_api', () => ({
       { name: 'Project 2', id: '2' },
     ],
   }),
+  getSubgroups: jest.fn().mockResolvedValue({
+    data: [
+      { name: 'Subgroup 1', id: '1' },
+      { name: 'Subgroup 2', id: '2' },
+    ],
+  }),
 }));
 Vue.use(VueApollo);
 

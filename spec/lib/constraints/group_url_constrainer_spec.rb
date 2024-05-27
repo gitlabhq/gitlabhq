@@ -61,7 +61,7 @@ RSpec.describe Constraints::GroupUrlConstrainer do
 
   def build_request(path, method = 'GET')
     double(:request,
-      'get?': (method == 'GET'),
+      get?: (method == 'GET'),
       params: { id: path })
   end
 end

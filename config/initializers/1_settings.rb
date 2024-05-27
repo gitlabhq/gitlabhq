@@ -938,7 +938,7 @@ Settings['sidekiq']['routing_rules'] = Settings.build_sidekiq_routing_rules(Sett
 # GitLab Shell
 #
 Settings['gitlab_shell'] ||= {}
-Settings.gitlab_shell['path']           = Settings.absolute(Settings.gitlab_shell['path'] || Settings.gitlab['user_home'] + '/gitlab-shell/')
+Settings.gitlab_shell['path']           = Settings.absolute(Settings.gitlab_shell['path'] || (Settings.gitlab['user_home'] + '/gitlab-shell/'))
 Settings.gitlab_shell['hooks_path']     = :deprecated_use_gitlab_shell_path_instead
 Settings.gitlab_shell['authorized_keys_file'] ||= File.join(Dir.home, '.ssh', 'authorized_keys')
 Settings.gitlab_shell['secret_file'] ||= Rails.root.join('.gitlab_shell_secret')

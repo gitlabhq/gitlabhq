@@ -18,7 +18,7 @@ module ValidatesClassificationLabel
 
   def rejection_reason_for_label(label)
     reason_from_service = ::Gitlab::ExternalAuthorization.rejection_reason(current_user, label).presence
-    reason_from_service || _("Access to '%{classification_label}' not allowed") % { classification_label: label }
+    reason_from_service || (_("Access to '%{classification_label}' not allowed") % { classification_label: label })
   end
 
   def classification_label_change?(record, attribute_name)

@@ -30,7 +30,10 @@ describe('Branch rule protection row', () => {
   });
 
   it('renders an avatars-inline component', () => {
-    expect(findAvatarsInline().props('avatars')).toMatchObject(protectionRowPropsMock.users);
+    expect(findAvatarsInline().props('avatars')).toMatchObject([
+      ...protectionRowPropsMock.users,
+      ...protectionRowPropsMock.groups,
+    ]);
     expect(findAvatarsInline().props('badgeSrOnlyText')).toBe('1 additional user');
   });
 

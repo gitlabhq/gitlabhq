@@ -1,7 +1,7 @@
 ---
 status: ongoing
 creation-date: "2023-11-23"
-authors: [ "@Andysoiron", "@g.hickman" ]
+authors: [ "@Andysoiron", "@g.hickman", "@mcavoj" ]
 coach: "@fabiopitino"
 approvers: [ "@g.hickman" ]
 owning-stage: "~devops::govern"
@@ -53,11 +53,14 @@ Known compliance pipelines issues are:
 ## Proposal
 
 Currently, security policies can include multiple scan actions. Each scan action will result in a CI job that will be injected in the project CI pipeline.
-The new feature allows you to define custom CI jobs that will be injected into the project CI pipeline as well. We want to generalize the security policy
+The new policy type Pipeline Execution Policy allows users to define custom CI jobs that will be injected into the project CI pipeline as well. We want to generalize the security policy
 approach to provide the same flexibility that [compliance framework](../../../user/group/compliance_frameworks.md) needs. The combination of the 2 features
 means that security policies can be scope to compliance frameworks and enforce the presence of custom CI jobs.
 
-Like scan execution policies, custom CI jobs can be scoped to certain branch names, branch types or compliance frameworks applied to the project.
+Like Scan Execution Policies, Pipeline Execution Policy jobs can be
+[scoped](../../../user/application_security/policies/scan-execution-policies.md#policy_scope-scope-type)
+to certain compliance frameworks applied to the project.
+It should be possible to control when the policy jobs are enforced by using the existing [workflow rules](../../../ci/yaml/workflow.md).
 Users can leverage one of the predefined security-policy stages to position jobs in the pipeline according to their needs.
 Transitioning from compliance pipelines to the new feature should be as smooth as possible.
 
@@ -67,25 +70,25 @@ Transitioning from compliance pipelines to the new feature should be as smooth a
 
 The Pipeline Execution Policy MVC will allow the transition from compliance pipelines.
 
-- It should be possible to add custom CI YAML to a security policy. The CI YAML should follow the same schema as `.gitlab-ci.yml` files. The custom CI will be merged with the project CI when a pipeline starts.
+- It should be possible to add custom CI YAML to a security policy. For simplicity, the custom CI YAML should support the same configuration and follow the same schema as `.gitlab-ci.yml` files. The custom CI will be merged with the project CI when a pipeline starts.
 - The security policy schema should allow the custom CI to be defined in an external file by allowing a project and file path to be added.
-- Scan execution policies should execute custom CI YAML similar to existing policies, by injecting the job into the GitLab CI YAML of the target projects.
-- At minimum, pipeline execution policy jobs should align with [existing CI variable precedence](../../../ci/variables/index.md#cicd-variable-precedence). Ideally, all CI variables defined in a scan execution policy job should execute as highest precedence. Specifically, scan execution job variables should take precedence over project, group, and instance variables compliance project variables, among others.
-- Jobs should be executed in a way that is visible to users within the pipeline and that will not allow project jobs to override the SEP jobs. In scan execution policies today, we utilize the index pattern (-0,-1,-2,...) to increment the name of the job if a job of the same name exists. This also gives some minor indication of which jobs are executed by a security policy. For custom YAML jobs, the same pattern should be utilized.
-- Users should be able to define the stage in which their job will run, and scan execution policies will have a method to handle precedence. For example, a security/compliance team may define want to enforce jobs that run commonly after a build stage. They would be able to use build_after (for example) and scan execution policies would inject the build_after stage after the build stage and enforce the custom CI YAML defined in the pipeline execution policy within this stage. The stage and job cannot be interfered with by development teams once enforced by a scan execution policy. We should define the rules that allow for injecting stages cleanly into all enforced projects but be minimal invasive as to the project CI.
-- Pipeline execution policies should execute custom CI YAML in projects that do not contain an existing CI configuration, the same as standard scan execution policies work today.
+- Pipeline Execution Policies should execute custom CI YAML by creating jobs in isolated pipelines which are merged into the pipeline of the target projects.
+- At minimum, Pipeline Execution Policy jobs should align with [existing CI variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
+  Ideally, Pipeline Execution Policy jobs should not get any user-defined variables except those defined in the group or project where the policy belongs.
+- Jobs should be executed in a way that is visible to users within the pipeline and that will not allow project jobs to override the policy jobs. In Scan Execution Policies today, we utilize the index pattern (-0,-1,-2,...) to increment the name of the job if a job of the same name exists. This also gives some minor indication of which jobs are executed by a security policy. For Pipeline Execution Policy jobs, the same pattern should be utilized.
+- Jobs coming from the policies should be marked as such in the database so that they can be distinguished, for example by using build metadata. This allows for different handling of jobs and the corresponding variables by the runner.
+- Users should be able to define the stage in which their job will run, and Pipeline Execution Policies will have a method to handle precedence. For example, a security/compliance team may want to enforce jobs that run commonly after a build stage. The stages and jobs must not interfere with those defined by development teams once enforced by a Pipeline Execution Policy.
+- Pipeline Execution Policies should allow for jobs to be enforced in projects that do not contain an existing CI configuration.
 
 ### Stages management strategy
 
 We want users to be able to place jobs to run before or after certain CI stages of the project pipeline.
-To achieve this, we want to introduce 3 reserved stages that can be used only by pipeline execution policies and injected into the project pipeline:
+To achieve this, we want to introduce 2 reserved stages that can be used only by pipeline execution policies and injected into the project pipeline:
 
 1. `.pipeline-policy-pre` stage will run at the very beginning of the pipeline, before the `.pre` stage.
-1. `.pipeline-policy` stage will be injected after the `test` stage. If the `test` stage does not exist, it will be injected after the `build` stage. If the `build` stage does not exist, it will be injected at the beginning of the pipeline after the `.pre` stage.
 1. `.pipeline-policy-post` stage will run at the very end of the pipeline, after the `.post` stage.
 
-Injecting jobs in any of these 3 stages is guaranteed to always work. Execution policy jobs can also be assigned to any stage that exists in the project pipeline. In this case, however, it's not guaranteed that the injection always works as it depends whether the project pipeline has declared such stage.
-It will not be possible to create custom stages in a pipeline execution policy.
+Injecting jobs in any of these stages is guaranteed to always work. Execution policy jobs can also be assigned to any standard (`build`, `test`, `deploy`) or user-declared stages. However, in this case, the jobs may be ignored depending on the project pipeline configuration.
 
 We will try this approach as part of the experiment phase. We also discussed the following strategies that we might want to try:
 
@@ -133,4 +136,5 @@ If the `test` stage doesn't exist, it will be injected after the `build` stage. 
 
 ## Links
 
-- [Pipeline execution policy MVC epic](https://gitlab.com/groups/gitlab-org/-/epics/7312)
+- [Pipeline Execution Policy Type](https://gitlab.com/groups/gitlab-org/-/epics/13266#top)
+- [Pipeline Execution Action (Custom CI YAML Support) for Scan Execution Policy Type](https://gitlab.com/groups/gitlab-org/-/epics/7312)

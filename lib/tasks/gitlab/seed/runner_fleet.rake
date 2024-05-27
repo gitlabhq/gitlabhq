@@ -19,7 +19,7 @@ namespace :gitlab do
   namespace :seed do
     desc 'Seed groups with sub-groups/projects/runners/jobs for Runner Fleet testing'
     task :runner_fleet,
-         [:username, :registration_prefix, :runner_count, :job_count] => :gitlab_environment do |_t, args|
+      [:username, :registration_prefix, :runner_count, :job_count] => :gitlab_environment do |_t, args|
       timings = Benchmark.measure do
         projects_to_runners = Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder.new(
           Gitlab::AppLogger,

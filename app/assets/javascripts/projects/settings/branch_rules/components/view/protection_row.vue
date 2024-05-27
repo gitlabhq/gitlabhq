@@ -36,6 +36,11 @@ export default {
       required: false,
       default: () => [],
     },
+    groups: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     statusCheckUrl: {
       type: String,
       required: false,
@@ -49,6 +54,9 @@ export default {
         '%d additional users',
         this.users.length - this.$options.MAX_VISIBLE_AVATARS,
       );
+    },
+    usersAndGroups() {
+      return [...this.users, ...this.groups];
     },
   },
 };
@@ -65,9 +73,9 @@ export default {
       <div v-if="statusCheckUrl" class="gl-flex-grow-1">{{ statusCheckUrl }}</div>
 
       <gl-avatars-inline
-        v-if="users.length"
+        v-if="usersAndGroups.length"
         class="!gl-w-1/4"
-        :avatars="users"
+        :avatars="usersAndGroups"
         :collapsed="true"
         :max-visible="$options.MAX_VISIBLE_AVATARS"
         :avatar-size="$options.AVATAR_SIZE"
@@ -77,7 +85,7 @@ export default {
       >
         <template #avatar="{ avatar }">
           <gl-avatar-link
-            :key="avatar.username"
+            :key="avatar.name"
             v-gl-tooltip
             target="_blank"
             :href="avatar.webUrl"
@@ -86,6 +94,7 @@ export default {
             <gl-avatar
               :src="avatar.avatarUrl"
               :label="avatar.name"
+              :entity-name="avatar.name"
               :alt="avatar.name"
               :size="$options.AVATAR_SIZE"
             />

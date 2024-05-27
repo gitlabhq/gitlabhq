@@ -12,13 +12,13 @@ RSpec.describe Gitlab::Ci::Parsers::Accessibility::Pa11y do
       context "when there are no URLs provided" do
         let(:pa11y) do
           {
-            "total": 1,
-            "passes": 0,
-            "errors": 0,
-            "results": {
+            total: 1,
+            passes: 0,
+            errors: 0,
+            results: {
               "": [
                 {
-                  "message": "Protocol error (Page.navigate): Cannot navigate to invalid URL"
+                  message: "Protocol error (Page.navigate): Cannot navigate to invalid URL"
                 }
               ]
             }
@@ -39,10 +39,10 @@ RSpec.describe Gitlab::Ci::Parsers::Accessibility::Pa11y do
       context "when there are no errors" do
         let(:pa11y) do
           {
-            "total": 1,
-            "passes": 1,
-            "errors": 0,
-            "results": {
+            total: 1,
+            passes: 1,
+            errors: 0,
+            results: {
               "http://pa11y.org/": []
             }
           }.to_json
@@ -61,20 +61,20 @@ RSpec.describe Gitlab::Ci::Parsers::Accessibility::Pa11y do
       context "when there are errors" do
         let(:pa11y) do
           {
-            "total": 1,
-            "passes": 0,
-            "errors": 1,
-            "results": {
+            total: 1,
+            passes: 0,
+            errors: 1,
+            results: {
               "https://about.gitlab.com/": [
                 {
-                  "code": "WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.A.NoContent",
-                  "type": "error",
-                  "typeCode": 1,
-                  "message": "Anchor element found with a valid href attribute, but no link content has been supplied.",
-                  "context": "<a href=\"/\" class=\"navbar-brand animated\"><svg height=\"36\" viewBox=\"0 0 1...</a>",
-                  "selector": "#main-nav > div:nth-child(1) > a",
-                  "runner": "htmlcs",
-                  "runnerExtras": {}
+                  code: "WCAG2AA.Principle4.Guideline4_1.4_1_2.H91.A.NoContent",
+                  type: "error",
+                  typeCode: 1,
+                  message: "Anchor element found with a valid href attribute, but no link content has been supplied.",
+                  context: "<a href=\"/\" class=\"navbar-brand animated\"><svg height=\"36\" viewBox=\"0 0 1...</a>",
+                  selector: "#main-nav > div:nth-child(1) > a",
+                  runner: "htmlcs",
+                  runnerExtras: {}
                 }
               ]
             }
@@ -96,10 +96,10 @@ RSpec.describe Gitlab::Ci::Parsers::Accessibility::Pa11y do
     context "when data is not a valid JSON string" do
       let(:pa11y) do
         {
-          "total": 1,
-          "passes": 1,
-          "errors": 0,
-          "results": {
+          total: 1,
+          passes: 1,
+          errors: 0,
+          results: {
             "http://pa11y.org/": []
           }
         }

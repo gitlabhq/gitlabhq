@@ -22,11 +22,13 @@ export default {
     },
     users: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
     groups: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
     roles: {
       type: Array,
@@ -36,6 +38,11 @@ export default {
       type: String,
       required: true,
     },
+    groupId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     isLoading: {
       type: Boolean,
       required: true,
@@ -43,8 +50,8 @@ export default {
   },
   data() {
     return {
-      updatedGroups: [],
-      updatedUsers: [],
+      updatedGroups: this.groups,
+      updatedUsers: this.users,
       isRuleUpdated: false,
     };
   },
@@ -64,6 +71,7 @@ export default {
     getRuleEditData() {
       return [
         ...this.formatItemsData(this.updatedUsers, 'userId', 'User'), // eslint-disable-line @gitlab/require-i18n-strings
+        ...this.formatItemsData(this.updatedGroups, 'groupId', 'Group'), // eslint-disable-line @gitlab/require-i18n-strings
       ];
     },
     formatItemsIds(items) {
@@ -109,7 +117,16 @@ export default {
           :items="formatItemsIds(users)"
           is-project-only-namespace
           :users-options="$options.projectUsersOptions"
+          data-testid="users-selector"
           @change="handleRuleDataUpdate('updatedUsers', $event)"
+        />
+        <items-selector
+          type="groups"
+          :items="formatItemsIds(groups)"
+          :group-id="groupId"
+          data-testid="groups-selector"
+          is-project-only-namespace
+          @change="handleRuleDataUpdate('updatedGroups', $event)"
         />
       </gl-form-group>
     </template>

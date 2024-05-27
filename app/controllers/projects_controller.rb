@@ -194,7 +194,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
+    flash[:toast] = format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
 
     redirect_to dashboard_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => e

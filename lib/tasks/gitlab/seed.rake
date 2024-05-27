@@ -37,7 +37,7 @@ namespace :gitlab do
         puts "\nSeeding issues for the '#{project.full_path}' project"
         seeder = Quality::Seeders::Issues.new(project: project)
         issues_created = seeder.seed(backfill_weeks: args.backfill_weeks.to_i,
-                                     average_issues_per_week: args.average_issues_per_week.to_i)
+          average_issues_per_week: args.average_issues_per_week.to_i)
         puts "\n#{issues_created} issues created!"
       end
     end

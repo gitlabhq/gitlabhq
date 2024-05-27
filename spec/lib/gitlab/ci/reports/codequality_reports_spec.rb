@@ -30,11 +30,11 @@ RSpec.describe Gitlab::Ci::Reports::CodequalityReports do
     context 'when a required property is missing in the degradation' do
       let(:invalid_degradation) do
         {
-          "type": "Issue",
-          "check_name": "Rubocop/Metrics/ParameterLists",
-          "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
-          "fingerprint": "ab5f8b935886b942d621399aefkaehfiaehf",
-          "severity": "minor"
+          type: "Issue",
+          check_name: "Rubocop/Metrics/ParameterLists",
+          description: "Avoid parameter lists longer than 5 parameters. [12/5]",
+          fingerprint: "ab5f8b935886b942d621399aefkaehfiaehf",
+          severity: "minor"
         }.with_indifferent_access
       end
 

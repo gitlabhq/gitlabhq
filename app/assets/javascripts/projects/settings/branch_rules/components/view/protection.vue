@@ -6,7 +6,7 @@ import ProtectionRow from './protection_row.vue';
 
 export const i18n = {
   rolesTitle: s__('BranchRules|Roles'),
-  usersTitle: s__('BranchRules|Users'),
+  usersAndGroupsTitle: s__('BranchRules|Users & groups'),
   groupsTitle: s__('BranchRules|Groups'),
 };
 
@@ -117,20 +117,13 @@ export default {
     <!-- Roles -->
     <protection-row v-if="roles.length" :title="$options.i18n.rolesTitle" :access-levels="roles" />
 
-    <!-- Users -->
+    <!-- Users and Groups -->
     <protection-row
-      v-if="users.length"
+      v-if="hasUsers || hasGroups"
       :show-divider="hasRoles"
-      :title="$options.i18n.usersTitle"
       :users="users"
-    />
-
-    <!-- Groups -->
-    <protection-row
-      v-if="groups.length"
-      :show-divider="showDivider"
-      :title="$options.i18n.groupsTitle"
-      :access-levels="groups"
+      :groups="groups"
+      :title="$options.i18n.usersAndGroupsTitle"
     />
 
     <!-- Status checks -->

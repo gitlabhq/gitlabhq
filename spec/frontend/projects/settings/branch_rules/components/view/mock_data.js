@@ -69,6 +69,7 @@ export const protectionEmptyStatePropsMock = {
 export const protectionRowPropsMock = {
   title: 'Test title',
   users: usersMock,
+  groups: groupsMock,
   accessLevels: accessLevelsMock,
   approvalsRequired,
   statusCheckUrl: statusChecksRulesMock[0].externalUrl,
@@ -106,6 +107,10 @@ export const branchProtectionsMockResponse = {
     project: {
       id: 'gid://gitlab/Project/1',
       __typename: 'Project',
+      group: {
+        id: 'gid://gitlab/Group/1',
+        __typename: 'Group',
+      },
       branchRules: {
         __typename: 'BranchRuleConnection',
         nodes: [
@@ -158,6 +163,10 @@ export const predefinedBranchRulesMockResponse = {
     project: {
       id: 'gid://gitlab/Project/1',
       __typename: 'Project',
+      group: {
+        id: 'gid://gitlab/Group/1',
+        __typename: 'Group',
+      },
       branchRules: {
         __typename: 'BranchRuleConnection',
         nodes: [

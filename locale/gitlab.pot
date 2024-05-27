@@ -9212,7 +9212,7 @@ msgstr ""
 msgid "BranchRules|Update target branch"
 msgstr ""
 
-msgid "BranchRules|Users"
+msgid "BranchRules|Users & groups"
 msgstr ""
 
 msgid "BranchRules|View details"
@@ -24685,9 +24685,6 @@ msgstr ""
 msgid "Group %{group_name} was exported successfully."
 msgstr ""
 
-msgid "Group %{group_name} was scheduled for deletion."
-msgstr ""
-
 msgid "Group %{group_name} was successfully created."
 msgstr ""
 
@@ -24695,6 +24692,9 @@ msgid "Group '%{group_name}' could not be updated."
 msgstr ""
 
 msgid "Group '%{group_name}' has been successfully restored."
+msgstr ""
+
+msgid "Group '%{group_name}' is being deleted."
 msgstr ""
 
 msgid "Group '%{group_name}' was successfully updated."
@@ -33148,6 +33148,9 @@ msgstr ""
 msgid "MlModelRegistry|Create model version & import artifacts"
 msgstr ""
 
+msgid "MlModelRegistry|Create model, version & import artifacts"
+msgstr ""
+
 msgid "MlModelRegistry|Creating models is also possible through the MLflow client. %{linkStart}Follow the documentation to learn more.%{linkEnd}"
 msgstr ""
 
@@ -33178,7 +33181,13 @@ msgstr ""
 msgid "MlModelRegistry|Enter some description"
 msgstr ""
 
+msgid "MlModelRegistry|Enter some model description"
+msgstr ""
+
 msgid "MlModelRegistry|Error creating model version and uploading artifacts. Please try again."
+msgstr ""
+
+msgid "MlModelRegistry|Error creating model, version and uploading artifacts. Please try again."
 msgstr ""
 
 msgid "MlModelRegistry|Error importing artifact. Please try again."
@@ -33202,16 +33211,25 @@ msgstr ""
 msgid "MlModelRegistry|For example 1.0.0"
 msgstr ""
 
+msgid "MlModelRegistry|For example my-model"
+msgstr ""
+
 msgid "MlModelRegistry|ID"
 msgstr ""
 
 msgid "MlModelRegistry|Info"
 msgstr ""
 
+msgid "MlModelRegistry|Initial version name. Must be a semantic version."
+msgstr ""
+
 msgid "MlModelRegistry|Latest version"
 msgstr ""
 
 msgid "MlModelRegistry|Leave empty to auto increment."
+msgstr ""
+
+msgid "MlModelRegistry|Leave empty to skip version creation."
 msgstr ""
 
 msgid "MlModelRegistry|MLflow run ID"
@@ -33224,6 +33242,15 @@ msgid "MlModelRegistry|Metadata"
 msgstr ""
 
 msgid "MlModelRegistry|Model deleted successfully"
+msgstr ""
+
+msgid "MlModelRegistry|Model has been created but version or artifacts could not be uploaded. Try creating model version."
+msgstr ""
+
+msgid "MlModelRegistry|Model name"
+msgstr ""
+
+msgid "MlModelRegistry|Model name must not contain spaces or upper case letter."
 msgstr ""
 
 msgid "MlModelRegistry|Model performance"
@@ -33275,6 +33302,9 @@ msgid "MlModelRegistry|Triggered by"
 msgstr ""
 
 msgid "MlModelRegistry|Use versions to track performance, parameters, and metadata"
+msgstr ""
+
+msgid "MlModelRegistry|Version Description"
 msgstr ""
 
 msgid "MlModelRegistry|Version candidates"
@@ -40264,10 +40294,10 @@ msgstr ""
 msgid "Project '%{project_name}' has been successfully restored."
 msgstr ""
 
-msgid "Project '%{project_name}' is being imported."
+msgid "Project '%{project_name}' is being deleted."
 msgstr ""
 
-msgid "Project '%{project_name}' is in the process of being deleted."
+msgid "Project '%{project_name}' is being imported."
 msgstr ""
 
 msgid "Project '%{project_name}' queued for deletion."
@@ -44433,12 +44463,6 @@ msgid_plural "Runners|%{highlightStart}%{duration}%{highlightEnd} seconds"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Runners|%{installLinkStart}Upgrade GitLab Runner%{installLinkEnd} to match your GitLab version. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
-msgstr ""
-
-msgid "Runners|%{installLinkStart}Upgrade GitLab Runner%{installLinkEnd} to match your GitLab version. This upgrade is highly recommended for this runner and may contain security or compatibilty fixes. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
-msgstr ""
-
 msgid "Runners|%{linkStart}Create a new runner%{linkEnd} to get started."
 msgstr ""
 
@@ -44463,6 +44487,12 @@ msgid "Runners|%{strongStart}%{count}%{strongEnd} runner will be permanently del
 msgid_plural "Runners|%{strongStart}%{count}%{strongEnd} runners will be permanently deleted and no longer available for projects or groups in the instance. Are you sure you want to continue?"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Runners|%{upgradeLinkStart}Upgrade GitLab Runner%{upgradeLinkEnd} to match your GitLab version. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
+msgstr ""
+
+msgid "Runners|%{upgradeLinkStart}Upgrade GitLab Runner%{upgradeLinkEnd} to match your GitLab version. This upgrade is highly recommended for this runner and may contain security or compatibilty fixes. %{versionLinkStart}Major and minor versions%{versionLinkEnd} must match."
+msgstr ""
 
 msgid "Runners|1. Configure your Google Cloud project"
 msgstr ""

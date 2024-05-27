@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable, feature_category: :pipeli
       end
 
       context 'when job name is empty' do
-        let(:entry) { node_class.new(config, name: ''.to_sym) }
+        let(:entry) { node_class.new(config, name: :"") }
 
         it 'reports error' do
           expect(entry.errors).to include "job name can't be blank"

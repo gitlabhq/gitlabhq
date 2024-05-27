@@ -205,6 +205,19 @@ describe('Api', () => {
     });
   });
 
+  describe('groupSubgroups', () => {
+    it('fetches group subgroups', () => {
+      const groupId = '54321';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/subgroups`;
+      const expectedData = [{ id: 7 }];
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, expectedData);
+
+      return Api.groupSubgroups(groupId).then(({ data }) => {
+        expect(data).toEqual(expectedData);
+      });
+    });
+  });
+
   describe('inviteGroupMembers', () => {
     it('invites a new email address to create a new User and become a Group Member', () => {
       const groupId = 1;

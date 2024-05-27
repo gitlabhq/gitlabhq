@@ -650,24 +650,24 @@ export default {
             />
           </div>
         </template>
-        <work-item-detail-modal
-          v-if="!isModal"
-          ref="modal"
-          :work-item-id="modalWorkItemId"
-          :work-item-iid="modalWorkItemIid"
-          :work-item-full-path="modalWorkItemNamespaceFullPath"
-          :show="true"
-          @close="updateUrl"
-          @openReportAbuse="toggleReportAbuseDrawer(true, $event)"
-        />
-        <abuse-category-selector
-          v-if="isReportDrawerOpen"
-          :reported-user-id="reportedUserId"
-          :reported-from-url="reportedUrl"
-          :show-drawer="true"
-          @close-drawer="toggleReportAbuseDrawer(false)"
-        />
       </section>
     </section>
+    <work-item-detail-modal
+      v-if="!isModal"
+      ref="modal"
+      :work-item-id="modalWorkItemId"
+      :work-item-iid="modalWorkItemIid"
+      :work-item-full-path="modalWorkItemNamespaceFullPath"
+      :show="true"
+      @close="updateUrl"
+      @openReportAbuse="toggleReportAbuseDrawer(true, $event)"
+    />
+    <abuse-category-selector
+      v-if="isReportDrawerOpen"
+      :reported-user-id="reportedUserId"
+      :reported-from-url="reportedUrl"
+      :show-drawer="true"
+      @close-drawer="toggleReportAbuseDrawer(false)"
+    />
   </div>
 </template>

@@ -35,6 +35,43 @@ We are in the process of migrating our CSS utility class setup to [Tailwind CSS]
 See the [Tailwind CSS blueprint](../../../architecture/blueprints/tailwindcss/index.md) for motivation, proposal,
 and implementation details.
 
+#### Tailwind CSS basics
+
+Below are some Tailwind CSS basics and information about how it has been configured to use the [Pajamas design system](https://design.gitlab.com/). For a more in-depth guide see the [official Tailwind CSS documentation](https://tailwindcss.com/docs/utility-first).
+
+##### Prefix
+
+We have configured Tailwind CSS to use a [prefix](https://tailwindcss.com/docs/configuration#prefix) so all utility classes are prefixed with `gl-`. 
+When using responsive utilities or state modifiers the prefix goes after the colon.  
+**Examples:** `gl-mt-5`, `lg:gl-mt-5`.
+
+##### Responsive CSS utility classes
+
+[Responsive CSS utility classes](https://tailwindcss.com/docs/responsive-design) are prefixed with the breakpoint name, followed by the `:` character.
+The available breakpoints are configured in [tailwind.defaults.js#L44](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6612eaee37cdb4dd0258468c9f415be28c1053f0/tailwind.defaults.js#L44)  
+**Example:** `lg:gl-mt-5`
+
+##### Hover, focus, and other state modifiers
+
+[State modifiers](https://tailwindcss.com/docs/hover-focus-and-other-states) can be used to conditionally apply any Tailwind CSS class. Prefix the CSS utility class with the name of the modifier, followed by the `:` character.  
+**Example:** `hover:gl-underline`
+
+##### `!important` modifier
+
+You can use the [important modifier](https://tailwindcss.com/docs/configuration#important-modifier) by adding `!` to the beginning of the CSS utility class. When using in conjunction with responsive utility classes or state modifiers the `!` goes after the `:` character.  
+**Examples:** `!gl-mt-5`, `lg:!gl-mt-5`, `hover:!gl-underline`
+
+##### Spacing and sizing CSS utility classes
+
+Spacing and sizing CSS utility classes (e.g. `margin`, `padding`, `width`, `height`) use our spacing scale defined in
+[tailwind.defaults.js#L4](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6612eaee37cdb4dd0258468c9f415be28c1053f0/tailwind.defaults.js#L4). They will use the naming conventions documented in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/installation) but the scale will not match. When using the [Tailwind CSS autocomplete](#tailwind-css-autocomplete) our configured spacing scale will be shown.  
+**Example:** `gl-mt-5` will be `margin-top: 1rem;`
+
+##### Color CSS utility classes
+
+Color CSS utility classes (e.g. `color` and `background-color`) use colors defined in [src/tokens/build/tailwind/tokens.cjs](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/24a08b50da6bd3d34fb3f8d24f84436d90d165f6/src/tokens/build/tailwind/tokens.cjs). They will use the naming conventions documented in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/installation) but the color names will not match. When using the [Tailwind CSS autocomplete](#tailwind-css-autocomplete) our configured colors will be shown.  
+**Example:** `gl-text-red-500` will be `color: var(--red-500, #dd2b0e);`
+
 #### Building the Tailwind CSS bundle
 
 When using Vite or Webpack with the GitLab Development Kit, Tailwind CSS watches for file changes to
@@ -92,7 +129,7 @@ For full HAML and custom `*-class` prop support these are the recommended update
 
 #### Official Tailwind CSS documentation
 
-GitLab defines its own Tailwind CSS config in [https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/tailwind.defaults.js](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/tailwind.defaults.js) to match the Pajamas design system and to prefix CSS utility classes with `gl-`. This means that in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/installation) the spacing, sizing, and color CSS utility classes may not match. Also, the `gl-` prefix will not be shown. Here is our [spacing scale](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/tailwind.defaults.js#L51) and [colors](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/tailwind.defaults.js#L8). In the future we plan to utilize [Tailwind config viewer](https://github.com/rogden/tailwind-config-viewer) to have a Tailwind CSS documentation site specific to GitLab.
+GitLab defines its own Tailwind CSS config in [tailwind.defaults.js](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6612eaee37cdb4dd0258468c9f415be28c1053f0/tailwind.defaults.js) to match the Pajamas design system and to prefix CSS utility classes with `gl-`. This means that in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/installation) the spacing, sizing, and color CSS utility classes may not match. Also, the `gl-` prefix will not be shown. Here is our [spacing scale](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6612eaee37cdb4dd0258468c9f415be28c1053f0/tailwind.defaults.js#L4) and [colors](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/24a08b50da6bd3d34fb3f8d24f84436d90d165f6/src/tokens/build/tailwind/tokens.cjs). In the future we plan to utilize [Tailwind config viewer](https://github.com/rogden/tailwind-config-viewer) to have a Tailwind CSS documentation site specific to GitLab.
 
 ### Where should you put new utility classes?
 

@@ -34,12 +34,12 @@ module CloudSeed
           current_user.id,
           project.id,
           {
-            'google_oauth2_token': google_oauth2_token,
-            'gcp_project_id': gcp_project_id,
-            'instance_name': instance_name,
-            'database_version': database_version,
-            'environment_name': environment_name,
-            'is_protected': protected?
+            google_oauth2_token: google_oauth2_token,
+            gcp_project_id: gcp_project_id,
+            instance_name: instance_name,
+            database_version: database_version,
+            environment_name: environment_name,
+            is_protected: protected?
           }
         )
       end

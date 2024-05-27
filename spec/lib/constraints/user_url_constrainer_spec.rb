@@ -38,7 +38,7 @@ RSpec.describe Constraints::UserUrlConstrainer do
 
   def build_request(username, method = 'GET')
     double(:request,
-      'get?': (method == 'GET'),
+      get?: (method == 'GET'),
       params: { username: username })
   end
 end

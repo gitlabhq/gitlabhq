@@ -1,5 +1,5 @@
 <script>
-import { GlExperimentBadge, GlButton } from '@gitlab/ui';
+import { GlExperimentBadge } from '@gitlab/ui';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -8,6 +8,7 @@ import EmptyState from '../components/empty_state.vue';
 import * as i18n from '../translations';
 import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '../constants';
 import ModelRow from '../components/model_row.vue';
+import ModelCreate from '../components/model_create.vue';
 import ActionsDropdown from '../components/actions_dropdown.vue';
 import getModelsQuery from '../graphql/queries/get_models.query.graphql';
 import { makeLoadModelErrorMessage } from '../translations';
@@ -17,10 +18,10 @@ export default {
   name: 'IndexMlModels',
   components: {
     ModelRow,
+    ModelCreate,
     MetadataItem,
     TitleArea,
     GlExperimentBadge,
-    GlButton,
     EmptyState,
     ActionsDropdown,
     SearchableList,
@@ -28,14 +29,11 @@ export default {
   provide() {
     return {
       mlflowTrackingUrl: this.mlflowTrackingUrl,
+      projectPath: this.projectPath,
     };
   },
   props: {
     projectPath: {
-      type: String,
-      required: true,
-    },
-    createModelPath: {
       type: String,
       required: true,
     },
@@ -129,12 +127,7 @@ export default {
         <metadata-item icon="machine-learning" :text="$options.i18n.modelsCountLabel(count)" />
       </template>
       <template #right-actions>
-        <gl-button
-          v-if="canWriteModelRegistry"
-          :href="createModelPath"
-          data-testid="create-model-button"
-          >{{ $options.i18n.CREATE_MODEL_LABEL }}</gl-button
-        >
+        <model-create v-if="canWriteModelRegistry" />
 
         <actions-dropdown />
       </template>

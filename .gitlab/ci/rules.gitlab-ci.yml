@@ -2039,6 +2039,11 @@
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
       allow_failure: true
 
+.rails:rules:gitaly-without-transactions:
+  rules:
+    - <<: *if-schedule-maintenance
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-without-gitaly-transactions/'
+
 .rails:rules:ee-and-foss-migration:
   rules:
     - <<: *if-fork-merge-request

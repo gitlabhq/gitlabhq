@@ -36,12 +36,12 @@ namespace :gems do
       user_id = File.stat(vendor_gem_dir).uid
 
       Kernel.system('docker', 'run',
-                    "--user=#{user_id}", '--rm', "--volume=#{vendor_gem_dir}:/code", docker_image,
-                    'generate',
-                    '--input-spec', api_url,
-                    '--generator-name', 'ruby',
-                    '--output', "/code/#{gem_name}",
-                    "--additional-properties=moduleName=#{module_name}"
+        "--user=#{user_id}", '--rm', "--volume=#{vendor_gem_dir}:/code", docker_image,
+        'generate',
+        '--input-spec', api_url,
+        '--generator-name', 'ruby',
+        '--output', "/code/#{gem_name}",
+        "--additional-properties=moduleName=#{module_name}"
       )
     end
 

@@ -56,6 +56,16 @@ include:
   variables:
     GITALY_PRAEFECT_WITH_DB: '1'
 
+.gitaly-with-transactions:
+  variables:
+    GITALY_TRANSACTIONS_ENABLED: "true"
+
+.gitaly-without-transactions:
+  extends:
+    - .rails:rules:gitaly-without-transactions
+  variables:
+    GITALY_TRANSACTIONS_ENABLED: "false"
+
 .rspec-base-needs:
   needs:
     - job: "clone-gitlab-repo"
@@ -68,6 +78,7 @@ include:
     - .rails-job-base
     - .base-artifacts
     - .repo-from-artifacts
+    - .gitaly-with-transactions
   stage: test
   variables:
     RUBY_GC_MALLOC_LIMIT: 67108864

@@ -95,7 +95,7 @@ module Gitlab
             property: MR_APPROVE_ACTION,
             label: 'redis_hll_counters.code_review.i_code_review_user_approve_mr_monthly',
             context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                               event: MR_APPROVE_ACTION).to_context]
+              event: MR_APPROVE_ACTION).to_context]
           )
         end
 

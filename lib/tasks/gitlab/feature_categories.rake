@@ -55,9 +55,9 @@ namespace :gitlab do
       end
 
       puts YAML.dump('controller_actions' => controller_actions,
-                     'api_endpoints' => endpoints,
-                     'sidekiq_workers' => workers,
-                     'database_tables' => database_tables)
+        'api_endpoints' => endpoints,
+        'sidekiq_workers' => workers,
+        'database_tables' => database_tables)
     end
 
     private

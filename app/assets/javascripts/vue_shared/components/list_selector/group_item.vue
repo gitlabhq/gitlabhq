@@ -25,7 +25,7 @@ export default {
       return sprintf(__('Delete %{name}'), { name: this.name });
     },
     fullName() {
-      return this.data.fullName;
+      return this.data.fullName || this.data.name;
     },
     name() {
       return this.data.name;

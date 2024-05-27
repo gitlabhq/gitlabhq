@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { IndexMlModels } from '~/ml/model_registry/apps';
 import ModelRow from '~/ml/model_registry/components/model_row.vue';
+import ModelCreate from '~/ml/model_registry/components/model_create.vue';
 import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
@@ -58,7 +59,7 @@ describe('ml/model_registry/apps/index_ml_models', () => {
   const findTitleArea = () => wrapper.findComponent(TitleArea);
   const findModelCountMetadataItem = () => findTitleArea().findComponent(MetadataItem);
   const findBadge = () => wrapper.findComponent(GlExperimentBadge);
-  const findCreateButton = () => wrapper.findByTestId('create-model-button');
+  const findModelCreate = () => wrapper.findComponent(ModelCreate);
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
   const findSearchableList = () => wrapper.findComponent(SearchableList);
 
@@ -99,7 +100,7 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
         await waitForPromises();
 
-        expect(findCreateButton().exists()).toBe(false);
+        expect(findModelCreate().exists()).toBe(false);
       });
     });
 
@@ -112,7 +113,7 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
         await waitForPromises();
 
-        expect(findCreateButton().attributes().href).toBe('path/to/create');
+        expect(findModelCreate().exists()).toBe(true);
       });
     });
   });

@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       end
 
       context 'when job name is empty' do
-        let(:entry) { described_class.new(config, name: ''.to_sym) }
+        let(:entry) { described_class.new(config, name: :"") }
 
         it 'reports error' do
           expect(entry.errors).to include "job name can't be blank"

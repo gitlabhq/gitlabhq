@@ -143,12 +143,23 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-.work-item-view {
+.gl-modal .work-item-view,
+.work-item-drawer .work-item-view {
   container-name: work-item-view;
   container-type: inline-size;
 }
 
-@container work-item-view (max-width: #{calc($breakpoint-md - 1px)}) {
+@mixin container-and-media($query) {
+  @container work-item-view (#{$query}) {
+    @content;
+  }
+
+  @media ($query) {
+    @content;
+  }
+}
+
+@include container-and-media("max-width: #{calc($breakpoint-md - 0.02px)}") {
   .work-item-overview {
     display: block !important;
   }
@@ -176,7 +187,7 @@ $work-item-overview-gap-width: 2rem;
   margin-top: $gl-spacing-scale-5;
 }
 
-@container work-item-view (min-width: #{$breakpoint-md}) {
+@include container-and-media("min-width: #{calc($breakpoint-md)}") {
   .work-item-attributes-wrapper {
       top: calc(#{$calc-application-header-height} + #{$work-item-sticky-header-height});
       height: calc(#{$calc-application-viewport-height} - #{$work-item-sticky-header-height});
@@ -190,9 +201,7 @@ $work-item-overview-gap-width: 2rem;
   .work-item-date-picker {
     max-width: 175px;
   }
-}
 
-@container work-item-view (min-width: #{$breakpoint-md}) {
   .work-item-overview-right-sidebar {
     margin-top: 0;
     grid-row-start: 1;

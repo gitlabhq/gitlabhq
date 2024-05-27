@@ -698,6 +698,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       it 'redirects to the root path' do
         delete :destroy, params: { id: group.to_param }
 
+        expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
         expect(response).to redirect_to(root_path)
       end
     end

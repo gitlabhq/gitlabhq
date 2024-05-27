@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillRelatedEpicLinksToIssueLinks
+description: Creates a record on issue_links table for every related_epic_links record
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152104
+milestone: '17.1'
+queued_migration_version: 20240517131715
+finalize_after: '2024-06-13'
+finalized_by: # version of the migration that finalized this BBM

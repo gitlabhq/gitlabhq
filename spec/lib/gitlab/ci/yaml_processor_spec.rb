@@ -2815,12 +2815,12 @@ module Gitlab
               build1: {
                 stage: 'build',
                 script: 'build',
-                parallel: { matrix: [{ 'PROVIDER': ['aws'], 'STACK': %w[monitoring app1 app2] }] }
+                parallel: { matrix: [{ PROVIDER: ['aws'], STACK: %w[monitoring app1 app2] }] }
               },
               test1: {
                 stage: 'test',
                 script: 'test',
-                needs: [{ job: 'build1', parallel: { matrix: [{ 'PROVIDER': ['aws'], 'STACK': ['app1'] }] } }]
+                needs: [{ job: 'build1', parallel: { matrix: [{ PROVIDER: ['aws'], STACK: ['app1'] }] } }]
               }
             }
           end
@@ -3255,7 +3255,7 @@ module Gitlab
         end
 
         context 'returns errors if there are no visible jobs defined' do
-          let(:config) { YAML.dump({ before_script: ["bundle update"], '.hidden'.to_sym => { script: 'ls' } }) }
+          let(:config) { YAML.dump({ before_script: ["bundle update"], ".hidden": { script: 'ls' } }) }
 
           it_behaves_like 'returns errors', 'jobs config should contain at least one visible job'
         end

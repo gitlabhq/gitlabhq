@@ -10,6 +10,7 @@ import {
   GlModal,
   GlModalDirective,
 } from '@gitlab/ui';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { sprintf, n__, s__ } from '~/locale';
 import {
   getParameterByName,
@@ -92,13 +93,13 @@ export default {
           projectPath: this.projectPath,
         };
       },
-      update({ project: { branchRules } }) {
+      update({ project: { branchRules, group } }) {
         const branchRule = branchRules.nodes.find((rule) => rule.name === this.branch);
         this.branchRule = branchRule;
         this.branchProtection = branchRule?.branchProtection;
         this.statusChecks = branchRule?.externalStatusChecks?.nodes || [];
         this.matchingBranchesCount = branchRule?.matchingBranchesCount;
-
+        this.groupId = getIdFromGraphQLId(group?.id) || '';
         if (!this.showApprovers) return;
         // The approval rules app uses a separate endpoint to fetch the list of approval rules.
         // In future, we will update the GraphQL request to include the approval rules data.
@@ -118,6 +119,7 @@ export default {
       branchProtection: {},
       statusChecks: [],
       branchRule: {},
+      groupId: null,
       matchingBranchesCount: null,
       isAllowedToMergeDrawerOpen: false,
       isRuleUpdating: false,
@@ -355,6 +357,7 @@ export default {
           :users="mergeAccessLevels.users"
           :groups="mergeAccessLevels.groups"
           :is-loading="isRuleUpdating"
+          :group-id="groupId"
           :title="s__('BranchRules|Edit allowed to merge')"
           @editRule="
             editBranchRule({

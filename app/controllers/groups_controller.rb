@@ -173,7 +173,9 @@ class GroupsController < Groups::ApplicationController
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to root_path, status: :found, alert: "Group '#{@group.name}' was scheduled for deletion."
+    flash[:toast] = format(_("Group '%{group_name}' is being deleted."), group_name: @group.full_name)
+
+    redirect_to root_path, status: :found
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

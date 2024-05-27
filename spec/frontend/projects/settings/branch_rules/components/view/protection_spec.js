@@ -58,31 +58,24 @@ describe('Branch rule protection', () => {
     });
   });
 
-  it('renders a protection row for users', () => {
+  it('renders a protection row for users and groups', () => {
     expect(findProtectionRows().at(1).props()).toMatchObject({
+      showDivider: true,
+      groups: protectionPropsMock.groups,
       users: protectionPropsMock.users,
-      showDivider: true,
-      title: i18n.usersTitle,
-    });
-  });
-
-  it('renders a protection row for groups', () => {
-    expect(findProtectionRows().at(2).props()).toMatchObject({
-      accessLevels: protectionPropsMock.groups,
-      showDivider: true,
-      title: i18n.groupsTitle,
+      title: i18n.usersAndGroupsTitle,
     });
   });
 
   it('renders a protection row for status checks', () => {
     const statusCheck = protectionPropsMock.statusChecks[0];
-    expect(findProtectionRows().at(3).props()).toMatchObject({
+    expect(findProtectionRows().at(2).props()).toMatchObject({
       title: statusCheck.name,
       showDivider: false,
       statusCheckUrl: statusCheck.externalUrl,
     });
 
-    expect(findProtectionRows().at(4).props('showDivider')).toBe(true);
+    expect(findProtectionRows().at(3).props('showDivider')).toBe(true);
   });
 
   describe('When `isEditAvailable` prop is set to true', () => {

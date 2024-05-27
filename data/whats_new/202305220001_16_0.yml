@@ -16,7 +16,7 @@
 
 - name: Upsizing GitLab SaaS runners on Linux
   description: | # Do not modify this line, instead modify the lines below.
-    You asked, we listened! In our efforts to be best-in-class for CI/CD build speeds, we're doubling the vCPU & RAM for all GitLab SaaS runners on Linux, with no increase in the [cost factor](https://docs.gitlab.com/ee/ci/pipelines/cicd_minutes.html#cost-factor).
+    You asked, we listened! In our efforts to be best-in-class for CI/CD build speeds, we're doubling the vCPU & RAM for all GitLab SaaS runners on Linux, with no increase in the [cost factor](https://docs.gitlab.com/ee/ci/pipelines/compute_minutes.html#cost-factor).
 
     We're excited to see pipelines run faster and boost productivity.
   stage: Verify

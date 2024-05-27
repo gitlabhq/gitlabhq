@@ -161,7 +161,7 @@ module Issues
     end
 
     def start_position
-      @start_position ||= (RelativePositioning::START_POSITION - (gaps / 2) * gap_size).to_i
+      @start_position ||= (RelativePositioning::START_POSITION - ((gaps / 2) * gap_size)).to_i
     end
 
     def with_retry(initial_batch_size, exit_batch_size)

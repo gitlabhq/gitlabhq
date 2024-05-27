@@ -922,7 +922,7 @@ export default {
           :key="activeIssuable.iid"
           :work-item-iid="activeIssuable.iid"
           is-drawer
-          class="gl-pt-0!"
+          class="gl-pt-0! work-item-drawer"
           @work-item-updated="updateIssuablesCache"
           @work-item-emoji-updated="updateIssuableEmojis"
           @addChild="refetchIssuables"

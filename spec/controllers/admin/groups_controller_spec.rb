@@ -111,6 +111,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
     it 'redirects to the admin group path' do
       delete :destroy, params: { id: project.group.path }
 
+      expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
       expect(response).to redirect_to(admin_groups_path)
     end
   end

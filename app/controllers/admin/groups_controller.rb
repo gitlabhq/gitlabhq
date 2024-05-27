@@ -65,9 +65,9 @@ class Admin::GroupsController < Admin::ApplicationController
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to admin_groups_path,
-      status: :found,
-      alert: format(_('Group %{group_name} was scheduled for deletion.'), group_name: @group.name)
+    flash[:toast] = format(_("Group '%{group_name}' is being deleted."), group_name: @group.full_name)
+
+    redirect_to admin_groups_path, status: :found
   end
 
   private

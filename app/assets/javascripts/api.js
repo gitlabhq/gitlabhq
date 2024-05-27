@@ -176,6 +176,17 @@ const Api = {
     });
   },
 
+  groupSubgroups(id, options) {
+    const url = Api.buildUrl(this.subgroupsPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url, {
+      params: {
+        per_page: DEFAULT_PER_PAGE,
+        ...options,
+      },
+    });
+  },
+
   inviteGroupMembers(id, data) {
     const url = Api.buildUrl(this.groupInvitationsPath).replace(':id', encodeURIComponent(id));
 
