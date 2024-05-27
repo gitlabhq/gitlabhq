@@ -2,16 +2,20 @@
 import { GlAlert, GlLink, GlToggle, GlSprintf } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
 import { __, s__ } from '~/locale';
-import { CC_VALIDATION_REQUIRED_ERROR } from '../constants';
+import { CC_VALIDATION_REQUIRED_ERROR, IDENTITY_VERIFICATION_REQUIRED_ERROR } from '../constants';
 
 const DEFAULT_ERROR_MESSAGE = __('An error occurred while updating the configuration.');
 const REQUIRES_VALIDATION_TEXT = s__(
   `Billings|Instance runners cannot be enabled until a valid credit card is on file.`,
 );
+const REQUIRES_IDENTITY_VERIFICATION_TEXT = s__(
+  `IdentityVerification|Before you can use GitLab-hosted runners, we need to verify your account.`,
+);
 
 export default {
   i18n: {
     REQUIRES_VALIDATION_TEXT,
+    REQUIRES_IDENTITY_VERIFICATION_TEXT,
   },
   components: {
     GlAlert,
@@ -20,6 +24,8 @@ export default {
     GlSprintf,
     CcValidationRequiredAlert: () =>
       import('ee_component/billings/components/cc_validation_required_alert.vue'),
+    IdentityVerificationRequiredAlert: () =>
+      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
   props: {
     isDisabledAndUnoverridable: {
@@ -62,10 +68,14 @@ export default {
     ccRequiredError() {
       return this.errorMessage === CC_VALIDATION_REQUIRED_ERROR && !this.ccAlertDismissed;
     },
+    identityVerificationRequiredError() {
+      return this.errorMessage === IDENTITY_VERIFICATION_REQUIRED_ERROR;
+    },
     genericError() {
       return (
         this.errorMessage &&
         this.errorMessage !== CC_VALIDATION_REQUIRED_ERROR &&
+        this.errorMessage !== IDENTITY_VERIFICATION_REQUIRED_ERROR &&
         !this.ccAlertDismissed
       );
     },
@@ -106,6 +116,12 @@ export default {
         :custom-message="$options.i18n.REQUIRES_VALIDATION_TEXT"
         @verifiedCreditCard="creditCardValidated"
         @dismiss="ccAlertDismissed = true"
+      />
+
+      <identity-verification-required-alert
+        v-if="identityVerificationRequiredError"
+        :title="$options.i18n.REQUIRES_IDENTITY_VERIFICATION_TEXT"
+        class="gl-mb-5"
       />
 
       <gl-alert

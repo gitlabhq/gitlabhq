@@ -317,8 +317,6 @@ class Label < ApplicationRecord
   end
 
   def hook_attrs
-    return attributes unless Feature.enabled?(:webhooks_static_label_hook_attrs, Group.actor_from_id(group_id))
-
     {
       id: id,
       title: title,

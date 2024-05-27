@@ -26299,6 +26299,9 @@ msgstr ""
 msgid "IdentityVerification|Before you can run pipelines, we need to verify your account."
 msgstr ""
 
+msgid "IdentityVerification|Before you can use GitLab-hosted runners, we need to verify your account."
+msgstr ""
+
 msgid "IdentityVerification|Before you finish creating your account, we need to verify your identity. On the verification page, enter the following code."
 msgstr ""
 
@@ -49033,6 +49036,9 @@ msgid "Share the %{strong_open}GitLab single sign-on URL%{strong_close} with mem
 msgstr ""
 
 msgid "Shared projects"
+msgstr ""
+
+msgid "Shared runners enabled cannot be enabled until identity verification is completed"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|Reset compute usage"

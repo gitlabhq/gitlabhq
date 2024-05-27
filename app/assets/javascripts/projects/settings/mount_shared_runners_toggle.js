@@ -14,6 +14,7 @@ export default (containerId = 'toggle-shared-runners-form') => {
     isEnabled,
     updatePath,
     isCreditCardValidationRequired,
+    identityVerificationPath,
 
     // optional
     groupName,
@@ -22,6 +23,15 @@ export default (containerId = 'toggle-shared-runners-form') => {
 
   return new Vue({
     el: containerEl,
+    provide: {
+      identityVerificationPath,
+
+      // Normally this will have a value from a helper. We set it to true here
+      // because the alert that uses the value is only rendered if a specific
+      // error is returned from the backend after the update project settings
+      // XHR request completes
+      identityVerificationRequired: true,
+    },
     render(createElement) {
       return createElement(SharedRunnersToggle, {
         props: {

@@ -335,14 +335,6 @@ RSpec.describe Label, feature_category: :team_planning do
         is_expected.to include(group_id: group.id)
       end
     end
-
-    context 'when flag is disabled' do
-      before do
-        stub_feature_flags(webhooks_static_label_hook_attrs: false)
-      end
-
-      it { is_expected.to eq(label.attributes) }
-    end
   end
 
   describe 'priorization' do
