@@ -85,7 +85,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('<http://custom-url.com|click here>') }
     it { is_expected.to match('<custom-url.com|any-Charact3r$>') }
     it { is_expected.to match('<any-Charact3r$|any-Charact3r$>') }
-    it { is_expected.to match('<<|' * 1000 + '<https://gitlab.example|click here>') }
+    it { is_expected.to match(('<<|' * 1000) + '<https://gitlab.example|click here>') }
   end
 
   describe '.environment_name_regex' do
@@ -321,7 +321,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
 
     it 'has no backtracking issue' do
       Timeout.timeout(1) do
-        expect(subject).not_to match("-" * 50000 + ";")
+        expect(subject).not_to match(("-" * 50000) + ";")
       end
     end
   end
@@ -371,7 +371,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
 
     it 'has no ReDos issues with long strings ending with an exclamation mark' do
       Timeout.timeout(5) do
-        expect(subject).not_to match('a' * 50000 + '!')
+        expect(subject).not_to match(('a' * 50000) + '!')
       end
     end
 
@@ -978,11 +978,11 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('abcdefABCDEF1234567890abcdefABCDEF1234567890abcdefABCDEF12345678') }
     it { is_expected.not_to match('a' * 63) }
     it { is_expected.not_to match('a' * 65) }
-    it { is_expected.not_to match('a' * 63 + 'g') }
-    it { is_expected.not_to match('a' * 63 + '{') }
-    it { is_expected.not_to match('a' * 63 + '%') }
-    it { is_expected.not_to match('a' * 63 + '*') }
-    it { is_expected.not_to match('a' * 63 + '#') }
+    it { is_expected.not_to match(('a' * 63) + 'g') }
+    it { is_expected.not_to match(('a' * 63) + '{') }
+    it { is_expected.not_to match(('a' * 63) + '%') }
+    it { is_expected.not_to match(('a' * 63) + '*') }
+    it { is_expected.not_to match(('a' * 63) + '#') }
     it { is_expected.not_to match('') }
   end
 

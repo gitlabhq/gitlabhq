@@ -70,7 +70,7 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
 
       it 'returns the correct number of matches and batches checked' do
         expected_result = {
-          next_start_id: Namespace.minimum(:id) + described_class::MAX_BATCHES * described_class::BATCH_SIZE,
+          next_start_id: Namespace.minimum(:id) + (described_class::MAX_BATCHES * described_class::BATCH_SIZE),
           batches: max_batches,
           matches: max_batches * batch_size,
           mismatches: 0,
@@ -110,7 +110,7 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
 
       it 'reports the missing elements' do
         expected_result = {
-          next_start_id: Namespace.first.id + described_class::MAX_BATCHES * described_class::BATCH_SIZE,
+          next_start_id: Namespace.first.id + (described_class::MAX_BATCHES * described_class::BATCH_SIZE),
           batches: max_batches,
           matches: 39,
           mismatches: 1,
@@ -137,7 +137,7 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
 
       it 'reports the missing elements' do
         expected_result = {
-          next_start_id: Namespace.first.id + described_class::MAX_BATCHES * described_class::BATCH_SIZE,
+          next_start_id: Namespace.first.id + (described_class::MAX_BATCHES * described_class::BATCH_SIZE),
           batches: 4,
           matches: 39,
           mismatches: 1,
@@ -167,7 +167,7 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
 
       it 'reports the difference between the two tables' do
         expected_result = {
-          next_start_id: Namespace.first.id + described_class::MAX_BATCHES * described_class::BATCH_SIZE,
+          next_start_id: Namespace.first.id + (described_class::MAX_BATCHES * described_class::BATCH_SIZE),
           batches: 4,
           matches: 37,
           mismatches: 3,

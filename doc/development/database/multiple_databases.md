@@ -29,7 +29,7 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | Database | Description | Notes |
 | -------- | ----------- | ------- |
 | `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture. `gitlab_main_cell` schema describes all tables that are local to a cell in a GitLab installation. For example, `projects` and `groups` |
-| `gitlab_main_clusterwide` | All tables that are being stored cluster-wide in a GitLab installation, in the [Cells](../../architecture/blueprints/cells/index.md) architecture. For example, `users` and `application_settings` | |
+| `gitlab_main_clusterwide` | All tables where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](../../architecture/blueprints/cells/index.md) architecture. For example, `users` and `application_settings`.| For the [Cells 1.0 architecture](../../architecture/blueprints/cells/iterations/cells-1.0.md), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
 | `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |
 | `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`) | |
 | `gitlab_shared` | All application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`. | |
@@ -54,7 +54,7 @@ Depending on the use case, your feature may be [cell-local or clusterwide](../..
 When you choose the appropriate schema for tables, consider the following guidelines as part of the [Cells](../../architecture/blueprints/cells/index.md) architecture:
 
 - Default to `gitlab_main_cell`: We expect most tables to be assigned to the `gitlab_main_cell` schema by default. Choose this schema if the data in the table is related to `projects` or `namespaces`.
-- Consult with the Tenant Scale group: If you believe that the `gitlab_main_clusterwide` schema is more suitable for a table, seek approval from the Tenant Scale group This is crucial because it has scaling implications and may require reconsideration of the schema choice.
+- Consult with the Tenant Scale group: If you believe that the `gitlab_main_clusterwide` schema is more suitable for a table, seek approval from the Tenant Scale group. This is crucial because it has scaling implications and may require reconsideration of the schema choice.
 
 To understand how existing tables are classified, you can use [this dashboard](https://manojmj.gitlab.io/tenant-scale-schema-progress/).
 

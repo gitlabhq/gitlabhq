@@ -171,8 +171,8 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :team_planning d
 
       it 'has smaller than linear execution time growth with a malformed "to"' do
         Timeout.timeout(3.seconds) do
-          sample1 = duration_for { described_class.match("deploy abc t" + "o" * 1000 + "X") }
-          sample2 = duration_for { described_class.match("deploy abc t" + "o" * 4000 + "X") }
+          sample1 = duration_for { described_class.match("deploy abc t" + ("o" * 1000) + "X") }
+          sample2 = duration_for { described_class.match("deploy abc t" + ("o" * 4000) + "X") }
 
           expect((sample2 / sample1) < 4).to be_truthy
         end

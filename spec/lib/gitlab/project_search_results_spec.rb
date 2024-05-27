@@ -180,12 +180,12 @@ RSpec.describe Gitlab::ProjectSearchResults, feature_category: :global_search do
     end
 
     it 'limits search results based on the third page' do
-      expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit + per_page * 2)
+      expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit + (per_page * 2))
       results.objects(blob_type, page: 3, per_page: per_page)
     end
 
     it 'uses the per_page value when passed' do
-      expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit + 10 * 2)
+      expect(file_finder).to receive(:find).with(query, content_match_cutoff: count_limit + (10 * 2))
       results.objects(blob_type, page: 3, per_page: 10)
     end
   end

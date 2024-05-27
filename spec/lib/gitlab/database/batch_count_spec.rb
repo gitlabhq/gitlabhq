@@ -35,7 +35,7 @@ RSpec.describe Gitlab::Database::BatchCount do
     end
 
     it 'returns fallback if loops more than allowed' do
-      large_finish = max_allowed_loops * default_batch_size + 1
+      large_finish = (max_allowed_loops * default_batch_size) + 1
       expect(described_class.public_send(method, *args, start: 1, finish: large_finish)).to eq(fallback)
     end
 

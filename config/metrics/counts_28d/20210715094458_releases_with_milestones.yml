@@ -12,7 +12,7 @@ introduced_by_url: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71287'
 time_frame: 28d
 data_source: database
 instrumentation_class: 'CountUsersAssociatingMilestonesToReleasesMetric'
-data_category: Optional
+data_category: optional
 distribution:
 - ce
 - ee

@@ -375,7 +375,7 @@ RSpec.describe Gitlab::QuickActions::Extractor, feature_category: :team_planning
     end
 
     it 'fails fast for strings with many newlines' do
-      msg = '`' + "\n" * 100_000
+      msg = '`' + ("\n" * 100_000)
 
       expect do
         Timeout.timeout(3.seconds) { extractor.extract_commands(msg) }

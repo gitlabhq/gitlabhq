@@ -435,7 +435,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model d
     context 'when job has finished' do
       it 'returns ratio of duration to interval, here: 0.5' do
         freeze_time do
-          job.started_at = Time.zone.now - migration.interval / 2
+          job.started_at = Time.zone.now - (migration.interval / 2)
           job.finished_at = Time.zone.now
 
           expect(subject).to eq(0.5)

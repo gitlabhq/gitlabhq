@@ -335,7 +335,7 @@ RSpec.describe Gitlab::PrometheusClient do
     where(:time_interval_in_seconds, :step) do
       0               | 60
       10.hours        | 60
-      10.hours + 1    | 61
+      (10.hours + 1) | 61
       # frontend options
       30.minutes      | 60
       3.hours         | 60

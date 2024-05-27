@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :cloud_connect
         mem_objects: be > 1000,
         mem_mallocs: be > 1000,
         mem_bytes: be > 1000_000, # 1000 items * 1000 bytes each
-        mem_total_bytes: eq(result[:mem_bytes] + 40 * result[:mem_objects])
+        mem_total_bytes: eq(result[:mem_bytes] + (40 * result[:mem_objects]))
       )
     end
 

@@ -14,9 +14,9 @@ RSpec.describe Gitlab::Kroki do
 
     where(:enabled_formats, :expected_formats) do
       ''           | default_formats
-      'blockdiag'  | default_formats + %w[actdiag blockdiag nwdiag packetdiag rackdiag seqdiag]
-      'bpmn'       | default_formats + %w[bpmn]
-      'excalidraw' | default_formats + %w[excalidraw]
+      'blockdiag'  | (default_formats + %w[actdiag blockdiag nwdiag packetdiag rackdiag seqdiag])
+      'bpmn'       | (default_formats + %w[bpmn])
+      'excalidraw' | (default_formats + %w[excalidraw])
     end
 
     with_them do

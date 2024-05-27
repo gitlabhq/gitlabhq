@@ -223,7 +223,7 @@ RSpec.describe Gitlab::Issues::Rebalancing::State, :clean_gitlab_redis_shared_st
 
     count.times do |idx|
       id = idx + 1
-      issues << double(relative_position: position_direction * (id * 10 + position_offset), id: id)
+      issues << double(relative_position: position_direction * ((id * 10) + position_offset), id: id)
     end
 
     rebalance_caching.cache_issue_ids(issues)

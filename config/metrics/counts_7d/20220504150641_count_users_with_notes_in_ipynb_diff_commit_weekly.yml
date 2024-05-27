@@ -14,7 +14,7 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_code_review_user_create_note_in_ipynb_diff_commit
-data_category: Optional
+data_category: optional
 performance_indicator_type: []
 distribution:
   - ce
