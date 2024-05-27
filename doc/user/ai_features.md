@@ -19,11 +19,11 @@ Some features are still in development. View details about [support for each sta
 | Goal | Feature | Tier/Offering/Status |
 |---|---|---|
 | Helps you write code more efficiently by showing code suggestions as you type. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=hCAyCTacdAQ) | [Code Suggestions](project/repository/code_suggestions/index.md) | **Tier:** Premium or Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md) <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated |
-| Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [Chat](gitlab_duo_chat.md) | **Tier:** Premium, Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Beta (Subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/)) |
+| Processes and generates text and code in a conversational manner. Helps you quickly identify useful information in large volumes of text in issues, epics, code, and GitLab documentation. | [Chat](gitlab_duo_chat.md) | **Tier/Offering:** For GitLab.com and Self-managed: Premium, Ultimate. <br>For Dedicated: GitLab Duo Pro or Enterprise<br>**Status:** Beta (Subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/)) |
 | Helps you discover or recall Git commands when and where you need them. | [Git suggestions](../editor_extensions/gitlab_cli/index.md#gitlab-duo-commands) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page.  <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc) | [Discussion summary](#summarize-issue-discussions-with-discussion-summary) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Generates issue descriptions. | [Issue description generation](#summarize-an-issue-with-issue-description-generation) | **Tier:** Ultimate<br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Automates repetitive tasks and helps catch bugs early. | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Beta |
+| Automates repetitive tasks and helps catch bugs early. | [Test generation](gitlab_duo_chat.md#write-tests-in-the-ide) | **Tier/Offering:** For GitLab.com and Self-managed: Premium, Ultimate. <br>For Dedicated: GitLab Duo Pro or Enterprise <br>**Status:** Beta |
 | Generates a description for the merge request based on the contents of the template. | [Merge request template population](project/merge_requests/ai_in_merge_requests.md#fill-in-merge-request-templates) | **Tier:** Ultimate<br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Assists in creating faster and higher-quality reviews by automatically suggesting reviewers for your merge request. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw) | [Suggested Reviewers](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers) | **Tier:** Ultimate <br>**Offering:** GitLab.com<br>**Status:** Generally Available  |
 | Efficiently communicates the impact of your merge request changes. | [Merge request summary](project/merge_requests/ai_in_merge_requests.md#summarize-merge-request-changes) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Beta |
@@ -32,7 +32,7 @@ Some features are still in development. View details about [support for each sta
 | Generates a merge request containing the changes required to mitigate a vulnerability. | [Vulnerability resolution](application_security/vulnerabilities/index.md#vulnerability-resolution) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Helps you understand code by explaining it in English language. <br><br><i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=1izKaLmmaCA) | [Code explanation](#explain-code-in-the-web-ui-with-code-explanation) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
 | Assists you in determining the root cause for a pipeline failure and failed CI/CD build. | [Root cause analysis](#root-cause-analysis) | **Tier:** Ultimate <br>**Offering:** GitLab.com <br>**Status:** Experiment |
-| Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier:** Ultimate <br>**Offering:** GitLab.com, Self-managed, GitLab Dedicated <br>**Status:** Experiment |
+| Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle. | [Value stream forecasting](#forecast-deployment-frequency-with-value-stream-forecasting) | **Tier/Offering:** For GitLab.com and Self-managed: Ultimate. <br>For Dedicated: GitLab Duo Enterprise <br>**Status:** Experiment |
 
 ## Controlling GitLab Duo features
 
@@ -75,10 +75,6 @@ To enable Beta and Experimental AI-powered features for GitLab versions where Gi
   services. Consider policy updates to allow these services.
 
 ### Disable GitLab Duo features for specific groups or projects or an entire instance
-
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Settings to disable AI features introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10.
 
@@ -216,7 +212,7 @@ language model referenced above.
 ### Forecast deployment frequency with Value stream forecasting
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** Freely available for Ultimate for a limited time for self-managed and GitLab.com. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 

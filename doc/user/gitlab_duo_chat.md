@@ -7,7 +7,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # GitLab Duo Chat
 
 DETAILS:
-**Tier:** Premium, Ultimate
+**Tier:** Freely available for Premium and Ultimate for a limited time for GitLab.com and self-managed. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
@@ -277,6 +277,8 @@ Prerequisites:
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - All of the users in your instance have the latest version of their IDE extension.
 - You must be an administrator.
+
+For GitLab Dedicated, you must have [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 
 To enable GitLab Duo Chat for your self-managed GitLab instance:
 
