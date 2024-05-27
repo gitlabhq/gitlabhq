@@ -103,11 +103,11 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
 
   it 'drops Cluster Image Scanning and Custom Vulnerabilities without any Findings' do
     expect(vulnerabilities.pluck(:id)).to match_array([
-                                                        vulnerability_with_finding.id,
+      vulnerability_with_finding.id,
                                                         vulnerability_without_finding.id,
                                                         cis_vulnerability_without_finding.id,
                                                         custom_vulnerability_without_finding.id
-                                                      ])
+    ])
 
     expect { background_migration.perform }.to change(vulnerabilities, :count).by(-2)
 

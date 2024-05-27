@@ -1,0 +1,9 @@
+---
+name: k8s_tree_view
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/13963
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154083
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463616
+milestone: '17.1'
+group: group::environments
+type: wip
+default_enabled: false

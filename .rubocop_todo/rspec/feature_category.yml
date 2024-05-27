@@ -117,7 +117,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/graphql/ee/types/group_type_spec.rb'
     - 'ee/spec/graphql/ee/types/issuable_type_spec.rb'
     - 'ee/spec/graphql/ee/types/issue_sort_enum_spec.rb'
-    - 'ee/spec/graphql/ee/types/merge_request_type_spec.rb'
     - 'ee/spec/graphql/ee/types/milestone_type_spec.rb'
     - 'ee/spec/graphql/ee/types/mutation_type_spec.rb'
     - 'ee/spec/graphql/ee/types/notes/noteable_interface_spec.rb'

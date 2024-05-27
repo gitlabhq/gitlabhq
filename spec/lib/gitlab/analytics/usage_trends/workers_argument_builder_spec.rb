@@ -70,13 +70,13 @@ RSpec.describe Gitlab::Analytics::UsageTrends::WorkersArgumentBuilder do
 
       it 'uses custom min/max for ids' do
         expect(subject).to eq([
-                                [
-                                  users_measurement_identifier,
-                                  min_id,
-                                  max_id,
-                                  recorded_at
-                                ]
-                              ])
+          [
+            users_measurement_identifier,
+            min_id,
+            max_id,
+            recorded_at
+          ]
+        ])
       end
     end
   end

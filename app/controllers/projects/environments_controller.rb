@@ -14,6 +14,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     push_frontend_feature_flag(:environments_folder_new_look, project)
   end
 
+  before_action only: [:show] do
+    push_frontend_feature_flag(:k8s_tree_view, project)
+  end
+
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]

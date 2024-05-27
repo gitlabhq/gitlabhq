@@ -4,6 +4,7 @@ import { GlTabs, GlDrawer } from '@gitlab/ui';
 import KubernetesTabs from '~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue';
 import KubernetesPods from '~/environments/environment_details/components/kubernetes/kubernetes_pods.vue';
 import KubernetesServices from '~/environments/environment_details/components/kubernetes/kubernetes_services.vue';
+import KubernetesSummary from '~/environments/environment_details/components/kubernetes/kubernetes_summary.vue';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
 import { mockKasTunnelUrl } from 'jest/environments/mock_data';
@@ -22,31 +23,49 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findKubernetesPods = () => wrapper.findComponent(KubernetesPods);
   const findKubernetesServices = () => wrapper.findComponent(KubernetesServices);
+  const findKubernetesSummary = () => wrapper.findComponent(KubernetesSummary);
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findWorkloadDetails = () => wrapper.findComponent(WorkloadDetails);
 
-  const createWrapper = (activeTab = k8sResourceType.k8sPods) => {
+  const createWrapper = ({
+    activeTab = k8sResourceType.k8sPods,
+    k8sTreeViewEnabled = false,
+  } = {}) => {
     wrapper = shallowMount(KubernetesTabs, {
+      provide: {
+        glFeatures: { k8sTreeView: k8sTreeViewEnabled },
+      },
       propsData: { configuration, namespace, value: activeTab },
       stubs: { GlDrawer },
     });
   };
 
   describe('mounted', () => {
-    beforeEach(() => {
-      createWrapper();
+    describe('when `k8sTreeView feature flag is disabled', () => {
+      beforeEach(() => {
+        createWrapper();
+      });
+
+      it('shows tabs', () => {
+        expect(findTabs().exists()).toBe(true);
+      });
+
+      it('renders pods tab', () => {
+        expect(findKubernetesPods().props()).toEqual({ namespace, configuration });
+      });
+
+      it('renders services tab', () => {
+        expect(findKubernetesServices().props()).toEqual({ namespace, configuration });
+      });
+
+      it("doesn't render summary tab", () => {
+        expect(findKubernetesSummary().exists()).toBe(false);
+      });
     });
 
-    it('shows tabs', () => {
-      expect(findTabs().exists()).toBe(true);
-    });
-
-    it('renders pods tab', () => {
-      expect(findKubernetesPods().props()).toEqual({ namespace, configuration });
-    });
-
-    it('renders services tab', () => {
-      expect(findKubernetesServices().props()).toEqual({ namespace, configuration });
+    it('renders summary tab if the feature flag is enabled', () => {
+      createWrapper({ k8sTreeViewEnabled: true });
+      expect(findKubernetesSummary().exists()).toBe(true);
     });
   });
 
@@ -57,7 +76,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
     ])(
       'when activeTab is %s, it activates the right tab and emit the correct tab name when switching',
       async (activeTab, tabIndex, newTabIndex, newActiveTab) => {
-        createWrapper(activeTab);
+        createWrapper({ activeTab });
         const tabsComponent = findTabs();
         expect(tabsComponent.props('value')).toBe(tabIndex);
 

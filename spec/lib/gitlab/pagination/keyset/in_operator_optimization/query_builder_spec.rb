@@ -408,17 +408,17 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     context 'when directions are project.id DESC, issues.id ASC' do
       let(:order) do
         Gitlab::Pagination::Keyset::Order.build([
-                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                                                    attribute_name: 'projects_id',
-                                                    order_expression: Issue.arel_table[:projects_id].asc,
-                                                    sql_type: 'integer',
-                                                    nullable: :not_nullable
-                                                  ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'projects_id',
+            order_expression: Issue.arel_table[:projects_id].asc,
+            sql_type: 'integer',
+            nullable: :not_nullable
+          ),
                                                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                                                     attribute_name: :id,
                                                     order_expression: Issue.arel_table[:id].asc
                                                   )
-                                                ])
+        ])
       end
 
       let(:expected_order) { issues.sort_by { |issue| [issue.project_id, issue.id] } }
@@ -439,17 +439,17 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     context 'when directions are projects.id DESC, issues.id ASC' do
       let(:order) do
         Gitlab::Pagination::Keyset::Order.build([
-                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                                                    attribute_name: 'projects_id',
-                                                    order_expression: Issue.arel_table[:projects_id].desc,
-                                                    sql_type: 'integer',
-                                                    nullable: :not_nullable
-                                                  ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'projects_id',
+            order_expression: Issue.arel_table[:projects_id].desc,
+            sql_type: 'integer',
+            nullable: :not_nullable
+          ),
                                                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                                                     attribute_name: :id,
                                                     order_expression: Issue.arel_table[:id].asc
                                                   )
-                                                ])
+        ])
       end
 
       let(:expected_order) { issues.sort_by { |issue| [issue.project_id * -1, issue.id] } }
@@ -470,12 +470,12 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
     context 'when directions are projects.name ASC, projects.id ASC, issues.id ASC' do
       let(:order) do
         Gitlab::Pagination::Keyset::Order.build([
-                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                                                    attribute_name: 'projects_name',
-                                                    order_expression: Issue.arel_table[:projects_name].asc,
-                                                    sql_type: 'character varying',
-                                                    nullable: :not_nullable
-                                                  ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'projects_name',
+            order_expression: Issue.arel_table[:projects_name].asc,
+            sql_type: 'character varying',
+            nullable: :not_nullable
+          ),
                                                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                                                     attribute_name: 'projects_id',
                                                     order_expression: Issue.arel_table[:projects_id].asc,
@@ -486,7 +486,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
                                                     attribute_name: :id,
                                                     order_expression: Issue.arel_table[:id].asc
                                                   )
-                                                ])
+        ])
       end
 
       let(:expected_order) { issues.sort_by { |issue| [issue.project.name, issue.project.id, issue.id] } }
@@ -506,17 +506,17 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::QueryBuilder 
 
       let(:order) do
         Gitlab::Pagination::Keyset::Order.build([
-                                                  Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-                                                    attribute_name: 'projects_name',
-                                                    order_expression: Issue.arel_table[:projects_name].asc,
-                                                    sql_type: 'character varying',
-                                                    nullable: :nulls_last
-                                                  ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'projects_name',
+            order_expression: Issue.arel_table[:projects_name].asc,
+            sql_type: 'character varying',
+            nullable: :nulls_last
+          ),
                                                   Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
                                                     attribute_name: :id,
                                                     order_expression: Issue.arel_table[:id].asc
                                                   )
-                                                ])
+        ])
       end
 
       let(:expected_order) { issues.sort_by { |issue| [issue.id] } }

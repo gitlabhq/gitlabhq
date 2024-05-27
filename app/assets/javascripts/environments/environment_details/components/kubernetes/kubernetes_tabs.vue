@@ -2,10 +2,12 @@
 import { GlTabs, GlDrawer } from '@gitlab/ui';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import KubernetesPods from './kubernetes_pods.vue';
 import KubernetesServices from './kubernetes_services.vue';
+import KubernetesSummary from './kubernetes_summary.vue';
 
 const tabs = [k8sResourceType.k8sPods, k8sResourceType.k8sServices];
 
@@ -14,10 +16,11 @@ export default {
     GlTabs,
     KubernetesPods,
     KubernetesServices,
+    KubernetesSummary,
     GlDrawer,
     WorkloadDetails,
   },
-
+  mixins: [glFeatureFlagMixin()],
   props: {
     configuration: {
       required: true,
@@ -43,6 +46,9 @@ export default {
     drawerHeaderHeight() {
       return getContentWrapperHeight();
     },
+    renderTreeView() {
+      return this.glFeatures.k8sTreeView;
+    },
   },
   watch: {
     activeTabIndex(newValue) {
@@ -64,6 +70,8 @@ export default {
 <template>
   <div>
     <gl-tabs v-model="activeTabIndex">
+      <kubernetes-summary v-if="renderTreeView" />
+
       <kubernetes-pods
         :namespace="namespace"
         :configuration="configuration"

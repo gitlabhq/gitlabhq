@@ -523,101 +523,101 @@ RSpec.describe Gitlab::UsageData::Topology do
     receive(:query)
       .with(/gitlab_usage_ping:ops:rate/)
       .and_return(result || [
-                    {
-                      'metric' => { 'component' => 'http_requests', 'service' => 'workhorse' },
-                      'value' => [1000, '0.01']
-                    }
-                  ])
+        {
+          'metric' => { 'component' => 'http_requests', 'service' => 'workhorse' },
+          'value' => [1000, '0.01']
+        }
+      ])
   end
 
   def receive_query_apdex_ratio_query(result: nil)
     receive(:query)
       .with(/gitlab_usage_ping:sql_duration_apdex:ratio_rate5m/)
       .and_return(result || [
-                    {
-                      'metric' => {},
-                      'value' => [1000, '0.996']
-                    }
-                  ])
+        {
+          'metric' => {},
+          'value' => [1000, '0.996']
+        }
+      ])
   end
 
   def receive_node_memory_query(result: nil)
     receive(:query)
       .with(/node_memory_total_bytes/, an_instance_of(Hash))
       .and_return(result || [
-                    {
-                      'metric' => { 'instance' => 'instance1:8080' },
-                      'value' => [1000, '512']
-                    },
+        {
+          'metric' => { 'instance' => 'instance1:8080' },
+          'value' => [1000, '512']
+        },
                     {
                       'metric' => { 'instance' => 'instance2:8090' },
                       'value' => [1000, '1024']
                     }
-                  ])
+      ])
   end
 
   def receive_node_memory_utilization_query(result: nil)
     receive(:query)
       .with(/node_memory_utilization/, an_instance_of(Hash))
       .and_return(result || [
-                    {
-                      'metric' => { 'instance' => 'instance1:8080' },
-                      'value' => [1000, '0.45']
-                    },
+        {
+          'metric' => { 'instance' => 'instance1:8080' },
+          'value' => [1000, '0.45']
+        },
                     {
                       'metric' => { 'instance' => 'instance2:8090' },
                       'value' => [1000, '0.25']
                     }
-                  ])
+      ])
   end
 
   def receive_node_cpu_count_query(result: nil)
     receive(:query)
       .with(/node_cpus/, an_instance_of(Hash))
       .and_return(result || [
-                    {
-                      'metric' => { 'instance' => 'instance2:8090' },
-                      'value' => [1000, '16']
-                    },
+        {
+          'metric' => { 'instance' => 'instance2:8090' },
+          'value' => [1000, '16']
+        },
                     {
                       'metric' => { 'instance' => 'instance1:8080' },
                       'value' => [1000, '8']
                     }
-                  ])
+      ])
   end
 
   def receive_node_cpu_utilization_query(result: nil)
     receive(:query)
       .with(/node_cpu_utilization/, an_instance_of(Hash))
       .and_return(result || [
-                    {
-                      'metric' => { 'instance' => 'instance2:8090' },
-                      'value' => [1000, '0.2']
-                    },
+        {
+          'metric' => { 'instance' => 'instance2:8090' },
+          'value' => [1000, '0.2']
+        },
                     {
                       'metric' => { 'instance' => 'instance1:8080' },
                       'value' => [1000, '0.1']
                     }
-                  ])
+      ])
   end
 
   def receive_node_uname_info_query(result: nil)
     receive(:query)
       .with('node_uname_info')
       .and_return(result || [
-                    {
-                      "metric" => {
-                        "__name__" => "node_uname_info",
-                        "domainname" => "(none)",
-                        "instance" => "instance1:9100",
-                        "job" => "node_exporter",
-                        "machine" => "x86_64",
-                        "nodename" => "instance1",
-                        "release" => "4.19.76-linuxkit",
-                        "sysname" => "Linux"
-                      },
-                      "value" => [1592463033.359, "1"]
-                    },
+        {
+          "metric" => {
+            "__name__" => "node_uname_info",
+            "domainname" => "(none)",
+            "instance" => "instance1:9100",
+            "job" => "node_exporter",
+            "machine" => "x86_64",
+            "nodename" => "instance1",
+            "release" => "4.19.76-linuxkit",
+            "sysname" => "Linux"
+          },
+          "value" => [1592463033.359, "1"]
+        },
                     {
                       "metric" => {
                         "__name__" => "node_uname_info",
@@ -631,17 +631,17 @@ RSpec.describe Gitlab::UsageData::Topology do
                       },
                       "value" => [1592463033.359, "1"]
                     }
-                  ])
+      ])
   end
 
   def receive_node_service_memory_rss_query(result: nil)
     receive(:query)
       .with(/process_resident_memory_bytes/, an_instance_of(Hash))
       .and_return(result || [
-                    {
-                      'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
-                      'value' => [1000, '300']
-                    },
+        {
+          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
+          'value' => [1000, '300']
+        },
                     {
                       'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq' },
                       'value' => [1000, '303']
@@ -655,44 +655,44 @@ RSpec.describe Gitlab::UsageData::Topology do
                       'metric' => { 'instance' => 'instance2:9121', 'job' => 'redis' },
                       'value' => [1000, '402']
                     }
-                  ])
+      ])
   end
 
   def receive_node_service_memory_uss_query(result: nil)
     receive(:query)
       .with(/process_unique_memory_bytes/, an_instance_of(Hash))
       .and_return(result || [
-                    {
-                      'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
-                      'value' => [1000, '301']
-                    }
-                  ])
+        {
+          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
+          'value' => [1000, '301']
+        }
+      ])
   end
 
   def receive_node_service_memory_pss_query(result: nil)
     receive(:query)
       .with(/process_proportional_memory_bytes/, an_instance_of(Hash))
       .and_return(result || [
-                    {
-                      'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
-                      'value' => [1000, '302']
-                    },
+        {
+          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
+          'value' => [1000, '302']
+        },
                     {
                       'metric' => { 'instance' => 'instance2:8090', 'job' => 'gitlab-sidekiq' },
                       'value' => [1000, '401']
                     }
-                  ])
+      ])
   end
 
   def receive_node_service_process_count_query(result: nil)
     receive(:query)
       .with(/service_process:count/, an_instance_of(Hash))
       .and_return(result || [
-                    # instance 1
-                    {
-                      'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
-                      'value' => [1000, '10']
-                    },
+        # instance 1
+        {
+          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails' },
+          'value' => [1000, '10']
+        },
                     {
                       'metric' => { 'instance' => 'instance1:8090', 'job' => 'gitlab-sidekiq' },
                       'value' => [1000, '5']
@@ -710,23 +710,23 @@ RSpec.describe Gitlab::UsageData::Topology do
                       'metric' => { 'instance' => 'instance2:8080', 'job' => 'registry' },
                       'value' => [1000, '1']
                     }
-                  ])
+      ])
   end
 
   def receive_node_service_app_server_workers_query(result: nil)
     receive(:query)
       .with(/app_server_workers/, an_instance_of(Hash))
       .and_return(result || [
-                    # instance 1
-                    {
-                      'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails', 'server' => 'puma' },
-                      'value' => [1000, '2']
-                    },
+        # instance 1
+        {
+          'metric' => { 'instance' => 'instance1:8080', 'job' => 'gitlab-rails', 'server' => 'puma' },
+          'value' => [1000, '2']
+        },
                     # instance 2
                     {
                       'metric' => { 'instance' => 'instance2:8080', 'job' => 'gitlab-rails', 'server' => 'puma' },
                       'value' => [1000, '1']
                     }
-                  ])
+      ])
   end
 end

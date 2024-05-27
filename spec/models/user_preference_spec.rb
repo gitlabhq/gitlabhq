@@ -22,7 +22,7 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       using RSpec::Parameterized::TableSyntax
 
       where(color: [
-              '#000000',
+        '#000000',
               '#123456',
               '#abcdef',
               '#AbCdEf',
@@ -35,7 +35,7 @@ RSpec.describe UserPreference, feature_category: :user_profile do
               '#fff',
               '#fFf',
               ''
-            ])
+      ])
 
       with_them do
         it { is_expected.to allow_value(color).for(:diffs_deletion_color) }
@@ -43,14 +43,14 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       end
 
       where(color: [
-              '#1',
+        '#1',
               '#12',
               '#1234',
               '#12345',
               '#1234567',
               '123456',
               '#12345x'
-            ])
+      ])
 
       with_them do
         it { is_expected.not_to allow_value(color).for(:diffs_deletion_color) }

@@ -35,13 +35,13 @@ describe('markdownPreviewPath', () => {
 
   it('returns correct data sources', () => {
     expect(markdownPreviewPath({ fullPath: 'project/group', iid: '2' })).toBe(
-      '/foobar/project/group/preview_markdown?target_type=WorkItem&target_id=2',
+      '/foobar/project/group/-/preview_markdown?target_type=WorkItem&target_id=2',
     );
   });
 
   it('returns correct data sources with group context', () => {
     expect(markdownPreviewPath({ fullPath: 'group', iid: '2', isGroup: true })).toBe(
-      '/foobar/groups/group/preview_markdown?target_type=WorkItem&target_id=2',
+      '/foobar/groups/group/-/preview_markdown?target_type=WorkItem&target_id=2',
     );
   });
 });

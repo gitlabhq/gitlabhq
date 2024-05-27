@@ -117,7 +117,7 @@ describe('WebIDE', () => {
       };
 
       const markdownPreview = 'test preview_markdown result';
-      mockServer.post('/:namespace/:project/preview_markdown', () => ({
+      mockServer.post('/:namespace/:project/-/preview_markdown', () => ({
         body: markdownPreview,
       }));
 

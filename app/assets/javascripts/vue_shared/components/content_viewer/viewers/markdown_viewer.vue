@@ -79,7 +79,7 @@ export default {
 
         axios
           .post(
-            `${gon.relative_url_root}/${this.projectPath}/preview_markdown`,
+            `${gon.relative_url_root}/${this.projectPath}/-/preview_markdown`,
             postBody,
             postOptions,
           )

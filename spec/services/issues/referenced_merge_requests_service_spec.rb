@@ -77,11 +77,11 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
   describe '#referenced_merge_requests' do
     it 'returns the referenced merge requests' do
       expect(service.referenced_merge_requests(issue)).to match_array([
-                                                                        closing_mr,
+        closing_mr,
                                                                         closing_mr_other_project,
                                                                         referencing_mr,
                                                                         referencing_mr_other_project
-                                                                      ])
+      ])
     end
 
     it 'excludes cross project references if the user cannot read cross project' do

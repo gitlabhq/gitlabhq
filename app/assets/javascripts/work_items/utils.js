@@ -69,7 +69,7 @@ export const autocompleteDataSources = ({ fullPath, iid, isGroup = false }) => (
 export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-  return `${domain}/${basePath}/preview_markdown?target_type=WorkItem&target_id=${iid}`;
+  return `${domain}/${basePath}/-/preview_markdown?target_type=WorkItem&target_id=${iid}`;
 };
 
 export const isReference = (input) => {

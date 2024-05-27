@@ -23,7 +23,7 @@ RSpec.describe Gitlab::BacktraceCleaner do
 
       expect(described_class.clean_backtrace(backtrace))
         .to eq([
-                 "lib/gitlab/gitaly_client.rb:294:in `block (2 levels) in migrate'",
+          "lib/gitlab/gitaly_client.rb:294:in `block (2 levels) in migrate'",
                  "lib/gitlab/gitaly_client.rb:331:in `allow_n_plus_1_calls'",
                  "lib/gitlab/gitaly_client.rb:280:in `block in migrate'",
                  "lib/gitlab/gitaly_client.rb:278:in `migrate'",
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::BacktraceCleaner do
                  "app/models/repository.rb:1047:in `find_commit'",
                  "app/models/repository.rb:113:in `commit'",
                  "ee/lib/gitlab/jira/middleware.rb:15:in `call'"
-               ])
+        ])
     end
   end
 end

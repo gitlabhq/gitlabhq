@@ -20462,6 +20462,9 @@ msgstr ""
 msgid "Environment|Stalled"
 msgstr ""
 
+msgid "Environment|Summary"
+msgstr ""
+
 msgid "Environment|There are no Kubernetes cluster connections configured for this environment. Connect a cluster to add the status of your workloads, resources, and the Flux reconciliation state to the dashboard. %{linkStart}Learn more about Kubernetes integration.%{linkEnd}"
 msgstr ""
 
@@ -20469,6 +20472,9 @@ msgid "Environment|There was an error connecting to the cluster agent."
 msgstr ""
 
 msgid "Environment|There was an error fetching %{resourceType}."
+msgstr ""
+
+msgid "Environment|Tree view"
 msgstr ""
 
 msgid "Environment|Unauthorized to access %{resourceType} from this environment."
@@ -32040,6 +32046,15 @@ msgid "Members|Remove \"%{groupName}\""
 msgstr ""
 
 msgid "Members|Remove group"
+msgstr ""
+
+msgid "Members|Requested By"
+msgstr ""
+
+msgid "Members|Requested On"
+msgstr ""
+
+msgid "Members|Requested Role"
 msgstr ""
 
 msgid "Members|Revert to LDAP synced settings"
@@ -61307,6 +61322,9 @@ msgid "ciReport|Code Quality is loading"
 msgstr ""
 
 msgid "ciReport|Container Scanning"
+msgstr ""
+
+msgid "ciReport|Container Scanning for Registry"
 msgstr ""
 
 msgid "ciReport|Container scanning"

@@ -147,7 +147,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/app/graphql/ee/resolvers/ci/all_jobs_resolver.rb'
     - 'ee/app/graphql/ee/types/deployment_type.rb'
     - 'ee/app/graphql/ee/types/group_type.rb'
-    - 'ee/app/graphql/ee/types/merge_request_type.rb'
     - 'ee/app/graphql/ee/types/namespace_type.rb'
     - 'ee/app/graphql/ee/types/permission_types/deployment.rb'
     - 'ee/app/graphql/ee/types/project_statistics_type.rb'

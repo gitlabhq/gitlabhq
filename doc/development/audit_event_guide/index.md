@@ -224,6 +224,7 @@ To add a new audit event type:
 | `milestone` | yes | Milestone in which this type was added |
 | `saved_to_database` | yes | Indicate whether to persist events to database and JSON logs |
 | `streamed` | yes | Indicate that events should be streamed to external services (if configured) |
+| `scope` | yes | List of scopes that this audit event type is available for. Should be an Array containing one or more of `Project`, `User`, `Group` or `Instance` |
 
 ### Generate documentation
 

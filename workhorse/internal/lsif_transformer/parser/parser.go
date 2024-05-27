@@ -75,7 +75,7 @@ func NewParser(ctx context.Context, r io.Reader) (io.ReadCloser, error) {
 		pr:   pr,
 	}
 
-	go parser.transform(pw)
+	go func() { _ = parser.transform(pw) }()
 
 	return parser, nil
 }
@@ -86,25 +86,24 @@ func (p *Parser) Read(b []byte) (int, error) {
 }
 
 // Close closes the parser and its associated resources
-func (p *Parser) Close() error {
-	_ = p.pr.Close()
 
-	return p.Docs.Close()
+func (p *Parser) Close() error {
+	return errors.Join(p.pr.Close(), p.Docs.Close())
 }
 
-func (p *Parser) transform(pw *io.PipeWriter) {
+func (p *Parser) transform(pw *io.PipeWriter) error {
 	zw := zip.NewWriter(pw)
 
 	if err := p.Docs.SerializeEntries(zw); err != nil {
 		_ = zw.Close() // Free underlying resources only
 		pw.CloseWithError(fmt.Errorf("lsif parser: Docs.SerializeEntries: %v", err))
-		return
+		return err
 	}
 
 	if err := zw.Close(); err != nil {
 		pw.CloseWithError(fmt.Errorf("lsif parser: ZipWriter.Close: %v", err))
-		return
+		return err
 	}
 
-	_ = pw.Close()
+	return pw.Close()
 }

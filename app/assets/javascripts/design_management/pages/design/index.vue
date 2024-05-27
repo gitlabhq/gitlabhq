@@ -124,7 +124,7 @@ export default {
       return extractDiscussions(this.design.discussions);
     },
     markdownPreviewPath() {
-      return `/${this.projectPath}/preview_markdown?target_type=Issue`;
+      return `/${this.projectPath}/-/preview_markdown?target_type=Issue`;
     },
     designVariables() {
       return {

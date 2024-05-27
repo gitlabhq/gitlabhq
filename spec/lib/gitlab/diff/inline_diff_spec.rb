@@ -23,9 +23,9 @@ RSpec.describe Gitlab::Diff::InlineDiff do
       it 'finds all inline diffs', :aggregate_failures do
         expect(subject[0]).to eq([Gitlab::MarkerRange.new(3, 6, mode: :deletion)])
         expect(subject[1]).to eq([
-                                   Gitlab::MarkerRange.new(3, 3, mode: :addition),
+          Gitlab::MarkerRange.new(3, 3, mode: :addition),
                                    Gitlab::MarkerRange.new(17, 22, mode: :addition)
-                                 ])
+        ])
       end
     end
   end
