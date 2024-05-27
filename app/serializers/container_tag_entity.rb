@@ -5,7 +5,7 @@ class ContainerTagEntity < Grape::Entity
 
   expose :name, :path, :location, :digest, :revision, :short_revision, :total_size, :created_at
 
-  expose :destroy_path, if: -> (*) { can_destroy? } do |tag|
+  expose :destroy_path, if: ->(*) { can_destroy? } do |tag|
     project_registry_repository_tag_path(project, tag.repository, tag.name)
   end
 

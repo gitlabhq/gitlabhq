@@ -36,7 +36,7 @@ export default {
     label: [
       'gl-font-base',
       'gl-font-weight-normal',
-      'gl-line-height-normal',
+      'gl-leading-normal',
       'gl-shadow-inner-1-gray-200',
       'gl-py-3',
       'gl-px-4',

@@ -43,8 +43,8 @@ module Gitlab
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
     attr_reader :actor, :protocol, :authentication_abilities,
-                :repository_path, :redirected_path, :auth_result_type,
-                :cmd, :changes, :push_options
+      :repository_path, :redirected_path, :auth_result_type,
+      :cmd, :changes, :push_options
     attr_accessor :container
 
     def self.error_message(key)

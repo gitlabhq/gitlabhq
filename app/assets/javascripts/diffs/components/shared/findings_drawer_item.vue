@@ -16,7 +16,7 @@ export default {
 </script>
 <template>
   <li class="gl-mb-4">
-    <p class="gl-line-height-20">
+    <p class="gl-leading-20">
       <span
         data-testid="findings-drawer-item-description"
         class="gl-font-weight-bold gl-display-block gl-mb-1"

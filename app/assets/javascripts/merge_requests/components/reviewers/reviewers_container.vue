@@ -69,7 +69,7 @@ export default {
         <div class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-w-20"></div>
         <div class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-w-2 gl-ml-auto"></div>
       </template>
-      <div v-else class="gl-line-height-20 gl-text-gray-900 gl-font-weight-bold">
+      <div v-else class="gl-leading-20 gl-text-gray-900 gl-font-weight-bold">
         {{ reviewersTitle }}
       </div>
     </div>

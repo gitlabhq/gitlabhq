@@ -251,7 +251,7 @@ export default {
         />
         <div v-else class="gl-pr-3"><gl-loading-icon size="sm" inline /></div>
         <div
-          class="gl-display-flex gl-flex-direction-column gl-line-height-normal gl-downstream-pipeline-job-width"
+          class="gl-display-flex gl-flex-direction-column gl-leading-normal gl-downstream-pipeline-job-width"
         >
           <span class="gl-text-truncate" data-testid="downstream-title-content">
             {{ downstreamTitle }}

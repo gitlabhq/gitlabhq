@@ -60,7 +60,7 @@ export default {
     <div class="value hide-collapsed">
       <span
         v-if="hasNoUsers"
-        class="no-value gl-display-flex gl-font-base gl-line-height-normal"
+        class="no-value gl-display-flex gl-font-base gl-leading-normal"
         data-testid="no-value"
       >
         {{ __('None') }}

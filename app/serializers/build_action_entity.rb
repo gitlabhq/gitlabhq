@@ -13,9 +13,9 @@ class BuildActionEntity < Grape::Entity
 
   expose :playable?, as: :playable
   expose :scheduled?, as: :scheduled
-  expose :scheduled_at, if: -> (*) { scheduled? }
+  expose :scheduled_at, if: ->(*) { scheduled? }
 
-  expose :unschedule_path, if: -> (build) { build.scheduled? } do |build|
+  expose :unschedule_path, if: ->(build) { build.scheduled? } do |build|
     unschedule_project_job_path(build.project, build)
   end
 

@@ -44,6 +44,11 @@ export default {
       });
     },
   },
+  watch: {
+    items() {
+      this.currentPage = 1;
+    },
+  },
   methods: {
     selectItem(item) {
       const selectedItem = item[0];

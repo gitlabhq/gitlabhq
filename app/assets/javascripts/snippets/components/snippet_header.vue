@@ -259,7 +259,7 @@ export default {
     >
       <span
         v-if="snippet.hidden"
-        class="gl-bg-orange-50 gl-text-orange-600 gl-h-6 gl-w-6 gl-rounded-base gl-line-height-24 gl-text-center gl-mt-2"
+        class="gl-bg-orange-50 gl-text-orange-600 gl-h-6 gl-w-6 gl-rounded-base gl-leading-24 gl-text-center gl-mt-2"
       >
         <gl-icon
           v-gl-tooltip.bottom
@@ -366,7 +366,7 @@ export default {
           class="gl-mr-2"
         />
 
-        <div data-testid="authored-message" class="gl-line-height-20">
+        <div data-testid="authored-message" class="gl-leading-20">
           <gl-sprintf :message="authoredMessage">
             <template #timeago>
               <time-ago-tooltip

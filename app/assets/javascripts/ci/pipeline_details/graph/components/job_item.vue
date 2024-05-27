@@ -327,7 +327,7 @@ export default {
         <ci-icon :status="job.status" :use-link="false" :show-tooltip="false" />
         <div class="gl-pl-3 gl-pr-3 gl-display-flex gl-flex-direction-column gl-pipeline-job-width">
           <div
-            class="gl-text-truncate gl-pr-9 gl-line-height-normal gl-text-left gl-text-gray-700"
+            class="gl-text-truncate gl-pr-9 gl-leading-normal gl-text-left gl-text-gray-700"
             :title="job.name"
           >
             {{ job.name }}
@@ -335,7 +335,7 @@ export default {
           <div
             v-if="showStageName"
             data-testid="stage-name-in-job"
-            class="gl-text-truncate gl-pr-9 gl-font-sm gl-text-gray-500 gl-line-height-normal gl-text-left"
+            class="gl-text-truncate gl-pr-9 gl-font-sm gl-text-gray-500 gl-leading-normal gl-text-left"
           >
             {{ stageName }}
           </div>

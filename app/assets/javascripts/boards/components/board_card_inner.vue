@@ -286,7 +286,7 @@ export default {
       <div
         class="gl-display-flex align-items-start gl-flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
-        <span class="board-info-items gl-mt-3 gl-line-height-20 gl-display-inline-block">
+        <span class="board-info-items gl-mt-3 gl-leading-20 gl-display-inline-block">
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
           <span
             v-if="showBoardCardNumber"
@@ -368,7 +368,7 @@ export default {
           v-if="shouldRenderCounter"
           v-gl-tooltip
           :title="assigneeCounterTooltip"
-          class="avatar-counter gl-bg-gray-100 gl-text-gray-900 gl-cursor-help gl-font-weight-bold gl-border-0 gl-line-height-24 gl-ml-n3"
+          class="avatar-counter gl-bg-gray-100 gl-text-gray-900 gl-cursor-help gl-font-weight-bold gl-border-0 gl-leading-24 gl-ml-n3"
           data-placement="bottom"
           >{{ assigneeCounterLabel }}</span
         >

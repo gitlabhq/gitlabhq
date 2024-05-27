@@ -86,7 +86,7 @@ export default {
         :key="idx"
         :title="tab.title"
         :query-param-value="tab.queryParamValue"
-        class="gl-line-height-20 gl-mt-5"
+        class="gl-leading-20 gl-mt-5"
       >
         <component
           :is="tab.component"

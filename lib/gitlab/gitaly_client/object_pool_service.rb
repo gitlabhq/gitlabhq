@@ -19,7 +19,7 @@ module Gitlab
 
         GitalyClient.with_feature_flag_actors(**gitaly_feature_flag_actors(repository)) do
           GitalyClient.call(storage, :object_pool_service, :create_object_pool,
-                            request, timeout: GitalyClient.medium_timeout)
+            request, timeout: GitalyClient.medium_timeout)
         end
       end
 
@@ -27,7 +27,7 @@ module Gitlab
         request = Gitaly::DeleteObjectPoolRequest.new(object_pool: object_pool)
 
         GitalyClient.call(storage, :object_pool_service, :delete_object_pool,
-                          request, timeout: GitalyClient.long_timeout)
+          request, timeout: GitalyClient.long_timeout)
       end
 
       def link_repository(repository)
@@ -38,7 +38,7 @@ module Gitlab
 
         GitalyClient.with_feature_flag_actors(**gitaly_feature_flag_actors(repository)) do
           GitalyClient.call(storage, :object_pool_service, :link_repository_to_object_pool,
-                            request, timeout: GitalyClient.fast_timeout)
+            request, timeout: GitalyClient.fast_timeout)
         end
       end
 
@@ -50,7 +50,7 @@ module Gitlab
 
         GitalyClient.with_feature_flag_actors(**gitaly_feature_flag_actors(repository)) do
           GitalyClient.call(storage, :object_pool_service, :fetch_into_object_pool,
-                            request, timeout: GitalyClient.long_timeout)
+            request, timeout: GitalyClient.long_timeout)
         end
       end
     end

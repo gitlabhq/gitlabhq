@@ -164,10 +164,7 @@ export default {
           <gl-skeleton-loader />
         </div>
         <template v-else>
-          <h3
-            data-testid="unresolved-discussion-count"
-            class="gl-line-height-20! gl-font-lg gl-my-5"
-          >
+          <h3 data-testid="unresolved-discussion-count" class="!gl-leading-20 gl-font-lg gl-my-5">
             {{ unresolvedDiscussionsCount }}
           </h3>
           <gl-empty-state

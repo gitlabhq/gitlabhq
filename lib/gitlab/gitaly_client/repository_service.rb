@@ -37,7 +37,7 @@ module Gitlab
                    end
 
         request = Gitaly::OptimizeRepositoryRequest.new(repository: @gitaly_repo,
-                                                        strategy: strategy)
+          strategy: strategy)
         gitaly_client_call(@storage, :repository_service, :optimize_repository, request, timeout: GitalyClient.long_timeout)
       end
 

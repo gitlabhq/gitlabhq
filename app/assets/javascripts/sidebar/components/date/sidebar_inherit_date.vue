@@ -84,7 +84,7 @@ export default {
         :reset-text="$options.i18n.remove"
         :is-loading="isLoading"
         :can-delete="dateIsFixed && hasFixedDate"
-        class="gl-line-height-normal"
+        class="gl-leading-normal"
         @reset-date="$emit('reset-date', $event)"
       />
     </div>
@@ -105,7 +105,7 @@ export default {
         :reset-text="$options.i18n.remove"
         :is-loading="isLoading"
         :can-delete="false"
-        class="gl-line-height-normal"
+        class="gl-leading-normal"
       />
     </div>
   </div>

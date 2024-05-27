@@ -235,7 +235,7 @@ export default {
       :time-estimate-human-readable="humanTimeEstimate"
     />
     <div
-      class="hide-collapsed gl-line-height-20 gl-text-gray-900 gl-display-flex gl-align-items-center gl-font-weight-bold"
+      class="hide-collapsed gl-leading-20 gl-text-gray-900 gl-display-flex gl-align-items-center gl-font-weight-bold"
     >
       {{ __('Time tracking') }}
       <gl-loading-icon v-if="isTimeTrackingInfoLoading" size="sm" class="gl-ml-2" inline />

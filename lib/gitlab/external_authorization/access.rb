@@ -4,10 +4,10 @@ module Gitlab
   module ExternalAuthorization
     class Access
       attr_reader :user,
-                  :reason,
-                  :loaded_at,
-                  :label,
-                  :load_type
+        :reason,
+        :loaded_at,
+        :label,
+        :load_type
 
       def initialize(user, label)
         @user = user

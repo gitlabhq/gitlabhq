@@ -41,7 +41,7 @@ export default {
       <gl-link :href="linkHref">{{ linkText }}</gl-link>
     </div>
     <span
-      class="gl-font-size-h-display gl-font-weight-bold gl-line-height-ratio-1000 gl-mt-2 gl-display-block"
+      class="gl-font-size-h-display gl-font-weight-bold gl-leading-1 gl-mt-2 gl-display-block"
       >{{ count }}</span
     >
   </gl-card>

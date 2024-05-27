@@ -346,12 +346,12 @@ you might not have permission to.
 
 ### Add an issue to an epic
 
-> - Maximum number of child issues and epics [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452111) to 100 in GitLab 17.0.
+> - Maximum number of child issues and epics [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452111) to 5000 in GitLab 17.1.
 
 Add an existing issue to an epic, or create a new issue that's automatically
 added to the epic.
 
-The maximum number of direct child issues and epics is 100.
+The maximum number of direct child issues and epics is 5000.
 
 #### Add an existing issue to an epic
 

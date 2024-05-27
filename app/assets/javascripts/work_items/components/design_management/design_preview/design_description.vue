@@ -22,7 +22,7 @@ export default {
   <div class="design-description-container">
     <div class="design-description-view">
       <div class="design-description-header gl-flex gl-justify-between gl-mb-2">
-        <h3 class="gl-line-height-20! gl-font-lg gl-m-0">
+        <h3 class="!gl-leading-20 gl-font-lg gl-m-0">
           {{ $options.i18n.descriptionLabel }}
         </h3>
       </div>

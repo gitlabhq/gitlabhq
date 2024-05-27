@@ -100,7 +100,7 @@ export default {
             'gl-display-flex gl-align-items-center': actions.length,
             'gl-md-display-flex gl-align-items-center gl-flex-wrap gl-gap-3': !actions.length,
           }"
-          class="media-body gl-line-height-normal"
+          class="media-body gl-leading-normal"
         >
           <slot></slot>
           <div

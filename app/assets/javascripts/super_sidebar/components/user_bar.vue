@@ -208,7 +208,7 @@ export default {
       id="super-sidebar-search"
       v-gl-tooltip.bottom.html="searchTooltip"
       v-gl-modal="$options.SEARCH_MODAL_ID"
-      class="user-bar-button gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-line-height-1 gl-w-full"
+      class="user-bar-button gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-leading-1 gl-w-full"
       data-testid="super-sidebar-search-button"
       @click="trackEvent('click_search_button_to_activate_command_palette')"
     >

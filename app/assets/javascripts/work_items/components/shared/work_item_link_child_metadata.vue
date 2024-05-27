@@ -42,7 +42,7 @@ export default {
       <item-milestone
         v-if="milestone"
         :milestone="milestone"
-        class="gl-display-flex gl-align-items-center gl-max-w-15 gl-font-sm gl-line-height-normal gl-text-gray-900! gl-cursor-help! gl-text-decoration-none!"
+        class="gl-display-flex gl-align-items-center gl-max-w-15 gl-font-sm gl-leading-normal gl-text-gray-900! gl-cursor-help! gl-text-decoration-none!"
       />
       <slot name="left-metadata"></slot>
     </div>

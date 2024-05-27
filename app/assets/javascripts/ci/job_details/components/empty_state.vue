@@ -72,7 +72,7 @@ export default {
     </div>
     <div class="gl-empty-state-content gl-mx-auto gl-my-0 gl-m-auto gl-p-5">
       <h1
-        class="gl-font-size-h-display gl-line-height-36 gl-mt-0 gl-mb-0"
+        class="gl-font-size-h-display gl-leading-36 gl-mt-0 gl-mb-0"
         data-testid="job-empty-state-title"
       >
         {{ title }}

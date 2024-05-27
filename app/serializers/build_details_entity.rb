@@ -11,7 +11,7 @@ class BuildDetailsEntity < Ci::JobEntity
   expose :metadata, using: BuildMetadataEntity
   expose :pipeline, using: Ci::PipelineEntity
 
-  expose :deployment_status, if: -> (*) { build.deployment_job? } do
+  expose :deployment_status, if: ->(*) { build.deployment_job? } do
     expose :deployment_status, as: :status
     expose :persisted_environment, as: :environment do |build, options|
       options.merge(deployment_details: false).then do |opts|
@@ -20,30 +20,30 @@ class BuildDetailsEntity < Ci::JobEntity
     end
   end
 
-  expose :deployment_cluster, if: -> (build) { build&.deployment&.cluster } do |build, options|
+  expose :deployment_cluster, if: ->(build) { build&.deployment&.cluster } do |build, options|
     # Until data is copied over from deployments.cluster_id, this entity must represent Deployment instead of DeploymentCluster
     # https://gitlab.com/gitlab-org/gitlab/issues/202628
     DeploymentClusterEntity.represent(build.deployment, options)
   end
 
-  expose :artifact, if: -> (*) { can?(current_user, :read_job_artifacts, build) } do
-    expose :download_path, if: -> (*) { build.locked_artifacts? || build.artifacts? } do |build|
+  expose :artifact, if: ->(*) { can?(current_user, :read_job_artifacts, build) } do
+    expose :download_path, if: ->(*) { build.locked_artifacts? || build.artifacts? } do |build|
       fast_download_project_job_artifacts_path(project, build)
     end
 
-    expose :browse_path, if: -> (*) { build.locked_artifacts? || build.browsable_artifacts? } do |build|
+    expose :browse_path, if: ->(*) { build.locked_artifacts? || build.browsable_artifacts? } do |build|
       fast_browse_project_job_artifacts_path(project, build)
     end
 
-    expose :keep_path, if: -> (*) { (build.has_expired_locked_archive_artifacts? || build.has_expiring_archive_artifacts?) && can?(current_user, :update_build, build) } do |build|
+    expose :keep_path, if: ->(*) { (build.has_expired_locked_archive_artifacts? || build.has_expiring_archive_artifacts?) && can?(current_user, :update_build, build) } do |build|
       fast_keep_project_job_artifacts_path(project, build)
     end
 
-    expose :expire_at, if: -> (*) { build.artifacts_expire_at.present? } do |build|
+    expose :expire_at, if: ->(*) { build.artifacts_expire_at.present? } do |build|
       build.artifacts_expire_at
     end
 
-    expose :expired, if: -> (*) { build.artifacts_expire_at.present? } do |build|
+    expose :expired, if: ->(*) { build.artifacts_expire_at.present? } do |build|
       build.artifacts_expired?
     end
 
@@ -55,24 +55,24 @@ class BuildDetailsEntity < Ci::JobEntity
   expose :report_artifacts,
     as: :reports,
     using: JobArtifactReportEntity,
-    if: -> (*) { can?(current_user, :read_build, build) }
+    if: ->(*) { can?(current_user, :read_build, build) }
 
   expose :job_annotations,
     as: :annotations,
     using: Ci::JobAnnotationEntity
 
-  expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
-  expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
+  expose :erased_by, if: ->(*) { build.erased? }, using: UserEntity
+  expose :erase_path, if: ->(*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
     erase_project_job_path(project, build)
   end
 
-  expose :failure_reason, if: -> (*) { build.failed? }
+  expose :failure_reason, if: ->(*) { build.failed? }
 
-  expose :terminal_path, if: -> (*) { can_create_build_terminal? } do |build|
+  expose :terminal_path, if: ->(*) { can_create_build_terminal? } do |build|
     terminal_project_job_path(project, build)
   end
 
-  expose :merge_request, if: -> (*) { can?(current_user, :read_merge_request, build.merge_request) } do
+  expose :merge_request, if: ->(*) { can?(current_user, :read_merge_request, build.merge_request) } do
     expose :iid do |build|
       build.merge_request.iid
     end
@@ -82,7 +82,7 @@ class BuildDetailsEntity < Ci::JobEntity
     end
   end
 
-  expose :new_issue_path, if: -> (*) { can?(request.current_user, :create_issue, project) && build.failed? } do |build|
+  expose :new_issue_path, if: ->(*) { can?(request.current_user, :create_issue, project) && build.failed? } do |build|
     new_project_issue_path(project, issue: build_failed_issue_options)
   end
 
@@ -90,7 +90,7 @@ class BuildDetailsEntity < Ci::JobEntity
     raw_project_job_path(project, build)
   end
 
-  expose :trigger, if: -> (*) { build.trigger_request } do
+  expose :trigger, if: ->(*) { build.trigger_request } do
     expose :trigger_short_token, as: :short_token
 
     expose :trigger_variables, as: :variables, using: TriggerVariableEntity
@@ -105,7 +105,7 @@ class BuildDetailsEntity < Ci::JobEntity
       build.any_runners_available?
     end
 
-    expose :settings_path, if: -> (*) { can_admin_build? } do |build|
+    expose :settings_path, if: ->(*) { can_admin_build? } do |build|
       project_runners_path(project)
     end
   end

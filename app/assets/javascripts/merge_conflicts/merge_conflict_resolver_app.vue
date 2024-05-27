@@ -81,7 +81,7 @@ export default {
       {{ conflictsData.errorMessage }}
     </div>
     <template v-if="!isLoading && !hasError">
-      <div class="gl-border-b-0 gl-py-5 gl-line-height-32">
+      <div class="gl-border-b-0 gl-py-5 gl-leading-32">
         <div v-if="fileTextTypePresent" class="gl-float-right">
           <gl-button-group>
             <gl-button :selected="!isParallel" @click="setViewType('inline')">

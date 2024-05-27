@@ -22,7 +22,7 @@ module Ci
       trigger.can_access_project?
     end
 
-    expose :project_trigger_path, if: -> (trigger) { can_manage_trigger?(trigger) } do |trigger|
+    expose :project_trigger_path, if: ->(trigger) { can_manage_trigger?(trigger) } do |trigger|
       project_trigger_path(options[:project], trigger)
     end
 

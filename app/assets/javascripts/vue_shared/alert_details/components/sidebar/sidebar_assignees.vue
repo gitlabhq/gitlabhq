@@ -217,7 +217,7 @@ export default {
 
     <div v-else>
       <p
-        class="gl-text-gray-900 gl-mb-2 gl-line-height-20 gl-display-flex gl-justify-content-space-between"
+        class="gl-text-gray-900 gl-mb-2 gl-leading-20 gl-display-flex gl-justify-content-space-between"
       >
         {{ __('Assignee') }}
         <gl-button
@@ -293,7 +293,7 @@ export default {
           <span class="dropdown-menu-user-username">@{{ userName }}</span>
         </span>
       </div>
-      <span v-else class="gl-display-flex gl-align-items-center gl-line-height-normal">
+      <span v-else class="gl-display-flex gl-align-items-center gl-leading-normal">
         {{ __('None') }} -
         <gl-button
           class="gl-ml-2 gl-reset-color!"

@@ -26,8 +26,8 @@ module Gitlab
           begin
             @type = 'text'
             @lines = Gitlab::Git::Conflict::Parser.parse(content,
-                                                         our_path: our_path,
-                                                         their_path: their_path)
+              our_path: our_path,
+              their_path: their_path)
           rescue Gitlab::Git::Conflict::Parser::ParserError
             @type = 'text-editor'
             @lines = nil

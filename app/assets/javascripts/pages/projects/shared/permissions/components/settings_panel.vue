@@ -648,7 +648,7 @@ export default {
           <strong class="gl-display-block">{{ s__('ProjectSettings|Additional options') }}</strong>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
-            class="gl-line-height-28 gl-font-weight-normal gl-mb-0"
+            class="gl-leading-28 gl-font-weight-normal gl-mb-0"
           >
             <input
               :value="requestAccessEnabled"
@@ -660,7 +660,7 @@ export default {
           </label>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
-            class="gl-line-height-28 gl-font-weight-normal gl-display-block gl-mb-0"
+            class="gl-leading-28 gl-font-weight-normal gl-display-block gl-mb-0"
           >
             <input
               :value="enforceAuthChecksOnUploads"

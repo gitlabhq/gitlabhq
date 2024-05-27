@@ -10,7 +10,7 @@ class ContainerRepositoryEntity < Grape::Entity
     project_registry_repository_tags_path(project, repository, format: :json)
   end
 
-  expose :destroy_path, if: -> (*) { can_destroy? } do |repository|
+  expose :destroy_path, if: ->(*) { can_destroy? } do |repository|
     project_container_registry_path(project, repository, format: :json)
   end
 

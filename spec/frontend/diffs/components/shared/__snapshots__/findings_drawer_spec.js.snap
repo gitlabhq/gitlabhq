@@ -64,7 +64,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           data-testid="findings-drawer-title"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -83,7 +83,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -102,7 +102,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -121,7 +121,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -141,7 +141,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -158,7 +158,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -180,7 +180,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -199,7 +199,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -284,7 +284,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           data-testid="findings-drawer-title"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -303,7 +303,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -322,7 +322,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -341,7 +341,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -361,7 +361,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -378,7 +378,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -400,7 +400,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"
@@ -419,7 +419,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
               class="gl-display-block gl-font-weight-bold gl-mb-1"

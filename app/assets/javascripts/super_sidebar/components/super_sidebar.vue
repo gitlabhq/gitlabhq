@@ -231,13 +231,13 @@ export default {
       <user-bar ref="userBar" :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
       <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
         <trial-status-widget
-          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-text-decoration-none! gl-py-3"
+          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-leading-normal gl-text-black-normal! gl-text-decoration-none! gl-py-3"
         />
         <trial-status-popover />
       </div>
       <div v-else-if="showDuoProTrialStatusWidget" class="gl-px-2 gl-py-2">
         <duo-pro-trial-status-widget
-          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-line-height-normal gl-text-black-normal! gl-text-decoration-none! gl-py-3"
+          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-leading-normal gl-text-black-normal! gl-text-decoration-none! gl-py-3"
         />
         <duo-pro-trial-status-popover />
       </div>

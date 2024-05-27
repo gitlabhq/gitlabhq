@@ -79,7 +79,7 @@ export default {
     </div>
     <div
       v-safe-html:[$options.safeHtmlConfig]="feature.description"
-      class="gl-pt-3 gl-line-height-20"
+      class="gl-pt-3 gl-leading-20"
     ></div>
     <gl-button
       :href="feature.documentation_link"

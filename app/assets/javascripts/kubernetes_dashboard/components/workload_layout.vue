@@ -44,11 +44,17 @@ export default {
     return {
       showDetailsDrawer: false,
       selectedItem: {},
+      filterOption: '',
     };
   },
   computed: {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
+    },
+    filteredItems() {
+      if (!this.filterOption) return this.items;
+
+      return this.items.filter((item) => item.status === this.filterOption);
     },
   },
   methods: {
@@ -58,6 +64,9 @@ export default {
     onItemSelect(item) {
       this.selectedItem = item;
       this.showDetailsDrawer = true;
+    },
+    filterItems(status) {
+      this.filterOption = status;
     },
   },
   DRAWER_Z_INDEX,
@@ -69,9 +78,9 @@ export default {
     {{ errorMessage }}
   </gl-alert>
   <div v-else>
-    <workload-stats :stats="stats" />
+    <workload-stats :stats="stats" @select="filterItems" />
     <workload-table
-      :items="items"
+      :items="filteredItems"
       :fields="fields"
       class="gl-mt-8"
       @select-item="onItemSelect"

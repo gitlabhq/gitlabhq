@@ -44,7 +44,7 @@ export default {
 </script>
 
 <template>
-  <li class="gl-line-height-20 gl-py-3 gl-border-b-solid gl-border-b-2 gl-border-b-gray-100">
+  <li class="gl-leading-20 gl-py-3 gl-border-b-solid gl-border-b-2 gl-border-b-gray-100">
     <div
       :class="{
         'gl-display-flex gl-flex-wrap gl-justify-content-space-between gl-align-items-center': collapsible,

@@ -52,7 +52,7 @@ export default {
     </div>
 
     <pre
-      class="gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-line-height-0"
+      class="gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-leading-0"
     ><code><span :id="`LC${number}`" v-safe-html="content" :lang="language" class="line" data-testid="content"></span></code></pre>
   </div>
 </template>

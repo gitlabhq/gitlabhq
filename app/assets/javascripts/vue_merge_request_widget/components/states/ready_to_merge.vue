@@ -772,7 +772,7 @@ export default {
                 {{ __('Merge details') }}
               </p>
               <ul class="gl-pl-4 gl-mb-0 gl-ml-3 gl-text-gray-600">
-                <li v-if="sourceHasDivergedFromTarget" class="gl-line-height-normal">
+                <li v-if="sourceHasDivergedFromTarget" class="gl-leading-normal">
                   <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
                     <template #link>
                       <gl-link :href="mr.targetBranchPath">{{
@@ -781,7 +781,7 @@ export default {
                     </template>
                   </gl-sprintf>
                 </li>
-                <li class="gl-line-height-normal">
+                <li class="gl-leading-normal">
                   <added-commit-message
                     :state="mr.state"
                     :merge-commit-sha="mr.shortMergeCommitSha"
@@ -794,12 +794,12 @@ export default {
                 </li>
                 <li
                   v-if="isNotClosed"
-                  class="gl-line-height-normal"
+                  class="gl-leading-normal"
                   data-testid="source-branch-deleted-text"
                 >
                   {{ sourceBranchDeletedText }}
                 </li>
-                <li v-if="mr.relatedLinks" class="gl-line-height-normal">
+                <li v-if="mr.relatedLinks" class="gl-leading-normal">
                   <related-links
                     :state="mr.state"
                     :related-links="mr.relatedLinks"
@@ -807,7 +807,7 @@ export default {
                     class="mr-ready-merge-related-links gl-display-inline"
                   />
                 </li>
-                <li v-if="state.autoMergeEnabled" class="gl-line-height-normal">
+                <li v-if="state.autoMergeEnabled" class="gl-leading-normal">
                   {{ s__('mrWidget|Auto-merge enabled') }}
                 </li>
               </ul>

@@ -54,7 +54,7 @@ export default {
 </script>
 <template>
   <div
-    class="hide-collapsed gl-display-flex gl-align-items-center gl-line-height-20 gl-text-gray-900 gl-font-weight-bold gl-gap-2"
+    class="hide-collapsed gl-display-flex gl-align-items-center gl-leading-20 gl-text-gray-900 gl-font-weight-bold gl-gap-2"
   >
     {{ reviewerTitle }}
     <gl-loading-icon v-if="loading" size="sm" inline class="align-bottom" />

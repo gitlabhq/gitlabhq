@@ -95,7 +95,7 @@ export default {
 
     <div v-else>
       <p
-        class="gl-text-gray-900 gl-mb-2 gl-line-height-20 gl-display-flex gl-justify-content-space-between"
+        class="gl-text-gray-900 gl-mb-2 gl-leading-20 gl-display-flex gl-justify-content-space-between"
       >
         {{ s__('AlertManagement|Status') }}
         <gl-button

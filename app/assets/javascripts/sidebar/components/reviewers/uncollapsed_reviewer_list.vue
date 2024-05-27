@@ -165,7 +165,7 @@ export default {
         class="gl-break-anywhere gl-mr-2"
         data-css-area="user"
       >
-        <div class="gl-ml-3 gl-line-height-normal gl-display-grid gl-align-items-center">
+        <div class="gl-ml-3 gl-leading-normal gl-display-grid gl-align-items-center">
           {{ user.name }}
         </div>
       </reviewer-avatar-link>

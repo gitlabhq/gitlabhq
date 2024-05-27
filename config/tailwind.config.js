@@ -119,6 +119,15 @@ module.exports = {
     // TODO: Backport to GitLab UI.
     lineHeight: {
       reset: 'inherit',
+      0: '0',
+      1: '1',
+      normal: '1rem',
+      20: '1.25rem',
+      24: '1.5rem',
+      28: '1.75rem',
+      32: '2rem',
+      36: '2.25rem',
+      42: '2.625rem',
     },
     transitionDuration: {
       DEFAULT: '200ms',

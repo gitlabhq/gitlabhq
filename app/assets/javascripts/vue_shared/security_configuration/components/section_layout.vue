@@ -21,7 +21,7 @@ export default {
 </script>
 
 <template>
-  <div class="row gl-m-0 gl-border-b gl-line-height-20 gl-py-6">
+  <div class="row gl-m-0 gl-border-b gl-leading-20 gl-py-6">
     <div class="col-lg-4 gl-pl-0 gl-pr-9">
       <h2 class="gl-font-size-h2 gl-mt-0">{{ heading }}</h2>
       <slot name="description"></slot>

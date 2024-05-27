@@ -134,7 +134,7 @@ export default {
       </gl-link>
       <gl-popover :target="autoDevopsTagId" triggers="focus" placement="top">
         <template #title>
-          <div class="gl-font-weight-normal gl-line-height-normal">
+          <div class="gl-font-weight-normal gl-leading-normal">
             <gl-sprintf
               :message="
                 __(

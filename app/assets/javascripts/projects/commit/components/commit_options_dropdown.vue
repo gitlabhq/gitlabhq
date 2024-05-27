@@ -144,7 +144,7 @@ export default {
     :toggle-text="__('Options')"
     right
     data-testid="commit-options-dropdown"
-    class="gl-line-height-20"
+    class="gl-leading-20"
   >
     <gl-disclosure-dropdown-group :group="optionsGroup" @action="closeDropdown" />
 

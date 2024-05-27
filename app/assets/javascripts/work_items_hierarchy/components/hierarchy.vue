@@ -42,7 +42,7 @@ export default {
       :class="{ flex: !workItem.available }"
     >
       <span
-        class="gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base gl-pl-2 gl-pt-2 gl-pb-2 gl-pr-3 gl-display-inline-flex gl-align-items-center gl-justify-content-center gl-line-height-normal"
+        class="gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base gl-pl-2 gl-pt-2 gl-pb-2 gl-pr-3 gl-display-inline-flex gl-align-items-center gl-justify-content-center gl-leading-normal"
         data-testid="work-item-wrapper"
       >
         <span
@@ -98,7 +98,7 @@ export default {
           />
           <span
             :key="nestedWorkItem.id"
-            class="gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base gl-pl-2 gl-pt-2 gl-pb-2 gl-pr-3 gl-display-inline-flex gl-align-items-center gl-justify-content-center gl-mt-2 gl-line-height-normal"
+            class="gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base gl-pl-2 gl-pt-2 gl-pb-2 gl-pr-3 gl-display-inline-flex gl-align-items-center gl-justify-content-center gl-mt-2 gl-leading-normal"
             :class="nestedWorkItemTypeMargin(index, workItem)"
           >
             <span

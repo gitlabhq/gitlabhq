@@ -233,7 +233,7 @@ export default {
       :group="itemGroups.versionCheck"
     >
       <template #list-item="{ item }">
-        <span class="gl-display-flex gl-flex-direction-column gl-line-height-24">
+        <span class="gl-display-flex gl-flex-direction-column gl-leading-24">
           <span class="gl-font-sm gl-font-weight-bold">
             {{ item.text }}
             <gl-emoji data-name="rocket" />

@@ -62,7 +62,7 @@ export default {
     'gl-font-weight-bold',
     'gl-pipeline-job-width',
     'gl-text-truncate',
-    'gl-line-height-36',
+    'gl-leading-36',
   ],
   minWidth: `${ONE_COL_WIDTH}px`,
   computed: {

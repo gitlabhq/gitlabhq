@@ -126,7 +126,7 @@ export default {
             <li v-for="link in section.links" :key="link.url" class="gl-display-flex">
               <gl-link
                 :href="link.directAssetUrl || link.url"
-                class="gl-display-flex gl-align-items-center gl-line-height-24"
+                class="gl-display-flex gl-align-items-center gl-leading-24"
               >
                 <gl-icon :name="section.iconName" class="gl-mr-2 gl-flex-shrink-0 gl-flex-grow-0" />
                 {{ link.name }}

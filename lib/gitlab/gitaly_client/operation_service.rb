@@ -54,7 +54,7 @@ module Gitlab
           raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+            fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         when :reference_exists
           raise Gitlab::Git::Repository::TagExistsError
         else
@@ -74,7 +74,7 @@ module Gitlab
           start_point: encode_binary(start_point)
         )
         response = gitaly_client_call(@repository.storage, :operation_service,
-                                     :user_create_branch, request, timeout: GitalyClient.long_timeout)
+          :user_create_branch, request, timeout: GitalyClient.long_timeout)
 
         branch = response.branch
         return unless branch
@@ -87,7 +87,7 @@ module Gitlab
         case detailed_error.try(:error)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+            fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         else
           if e.code == GRPC::Core::StatusCodes::FAILED_PRECONDITION
             raise Gitlab::Git::Repository::InvalidRef, e
@@ -107,7 +107,7 @@ module Gitlab
         )
 
         response = gitaly_client_call(@repository.storage, :operation_service,
-                                     :user_update_branch, request, timeout: GitalyClient.long_timeout)
+          :user_update_branch, request, timeout: GitalyClient.long_timeout)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -122,14 +122,14 @@ module Gitlab
         )
 
         gitaly_client_call(@repository.storage, :operation_service,
-                           :user_delete_branch, request, timeout: GitalyClient.long_timeout)
+          :user_delete_branch, request, timeout: GitalyClient.long_timeout)
       rescue GRPC::BadStatus => e
         detailed_error = GitalyClient.decode_detailed_error(e)
 
         case detailed_error.try(:error)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+            fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         else
           raise
         end
@@ -149,7 +149,7 @@ module Gitlab
         )
 
         response = gitaly_client_call(@repository.storage, :operation_service,
-                                     :user_merge_to_ref, request, timeout: GitalyClient.long_timeout)
+          :user_merge_to_ref, request, timeout: GitalyClient.long_timeout)
 
         response.commit_id
       end
@@ -200,7 +200,7 @@ module Gitlab
           raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+            fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         when :reference_update
           # We simply ignore any reference update errors which are typically an
           # indicator of multiple RPC calls trying to update the same reference
@@ -329,7 +329,7 @@ module Gitlab
           raise Gitlab::Git::Repository::CreateTreeError, 'EMPTY'
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+            fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         when :not_ancestor
           raise Gitlab::Git::CommitError, 'branch diverged'
         else
@@ -407,7 +407,7 @@ module Gitlab
         )
 
         response = gitaly_client_call(@repository.storage, :operation_service,
-                                     :user_rebase_to_ref, request, timeout: GitalyClient.long_timeout)
+          :user_rebase_to_ref, request, timeout: GitalyClient.long_timeout)
 
         response.commit_id
       end
@@ -488,8 +488,8 @@ module Gitlab
         start_branch_name, start_repository, force = false, start_sha = nil, sign = true)
         req_enum = Enumerator.new do |y|
           header = user_commit_files_request_header(user, branch_name,
-          commit_message, actions, author_email, author_name,
-          start_branch_name, start_repository, force, start_sha, sign)
+            commit_message, actions, author_email, author_name,
+            start_branch_name, start_repository, force, start_sha, sign)
 
           y.yield Gitaly::UserCommitFilesRequest.new(header: header)
 
@@ -534,7 +534,7 @@ module Gitlab
           raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
         when :custom_hook
           raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
-                                                 fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
+            fallback_message: CUSTOM_HOOK_FALLBACK_MESSAGE)
         when :index_update
           raise Gitlab::Git::Index::IndexError, index_error_message(detailed_error.index_update)
         else
@@ -571,7 +571,7 @@ module Gitlab
         end
 
         response = gitaly_client_call(@repository.storage, :operation_service,
-                                     :user_apply_patch, chunks, timeout: GitalyClient.long_timeout)
+          :user_apply_patch, chunks, timeout: GitalyClient.long_timeout)
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end

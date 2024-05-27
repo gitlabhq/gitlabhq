@@ -140,7 +140,7 @@ export default {
   >
     <template #toggle>
       <button
-        class="organization-switcher-button gl-display-flex gl-align-items-center gl-gap-3 gl-p-3 gl-rounded-base gl-border-none gl-line-height-1 gl-w-full"
+        class="organization-switcher-button gl-display-flex gl-align-items-center gl-gap-3 gl-p-3 gl-rounded-base gl-border-none gl-leading-1 gl-w-full"
         data-testid="toggle-button"
       >
         <gl-avatar

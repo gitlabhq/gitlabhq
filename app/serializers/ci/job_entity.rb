@@ -8,7 +8,7 @@ module Ci
     expose :name
 
     expose :started?, as: :started
-    expose :started_at, if: -> (job) { job.started? }
+    expose :started_at, if: ->(job) { job.started? }
     expose :complete?, as: :complete
     expose :archived?, as: :archived
 
@@ -17,11 +17,11 @@ module Ci
       job_path(job)
     end
 
-    expose :retry_path, if: -> (*) { retryable? } do |job|
+    expose :retry_path, if: ->(*) { retryable? } do |job|
       path_to(:retry_namespace_project_job, job)
     end
 
-    expose :cancel_path, if: -> (*) { cancelable? } do |job|
+    expose :cancel_path, if: ->(*) { cancelable? } do |job|
       path_to(
         :cancel_namespace_project_job,
         job,
@@ -29,24 +29,24 @@ module Ci
       )
     end
 
-    expose :play_path, if: -> (*) { playable? } do |job|
+    expose :play_path, if: ->(*) { playable? } do |job|
       path_to(:play_namespace_project_job, job)
     end
 
-    expose :unschedule_path, if: -> (*) { scheduled? } do |job|
+    expose :unschedule_path, if: ->(*) { scheduled? } do |job|
       path_to(:unschedule_namespace_project_job, job)
     end
 
     expose :playable?, as: :playable
     expose :scheduled?, as: :scheduled
-    expose :scheduled_at, if: -> (*) { scheduled? }
+    expose :scheduled_at, if: ->(*) { scheduled? }
     expose :created_at
     expose :queued_at
     expose :queued_duration
     expose :updated_at
     expose :detailed_status, as: :status, with: DetailedStatusEntity
-    expose :callout_message, if: -> (*) { failed? && !job.script_failure? }
-    expose :recoverable, if: -> (*) { failed? }
+    expose :callout_message, if: ->(*) { failed? && !job.script_failure? }
+    expose :recoverable, if: ->(*) { failed? }
 
     private
 
