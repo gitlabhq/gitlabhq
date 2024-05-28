@@ -102,7 +102,7 @@ pre-push:
     audit_event_types_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '{config/audit_events/types/*.yml,ee/config/audit_events/types/*yml,doc/administration/audit_event_types.md,tooling/audit_events/docs/templates/audit_event_types.md.erb}'
+      glob: '{config/audit_events/types/*.yml,ee/config/audit_events/types/*yml,doc/user/compliance/audit_event_types.md,tooling/audit_events/docs/templates/audit_event_types.md.erb}'
       run: bundle exec rake gitlab:audit_event_types:check_docs
     custom_roles_docs:
       tags: documentation

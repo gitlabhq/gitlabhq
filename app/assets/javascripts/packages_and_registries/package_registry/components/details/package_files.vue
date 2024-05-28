@@ -459,7 +459,7 @@ export default {
             category="tertiary"
             icon="ellipsis_v"
             placement="bottom-end"
-            class="gl-my-n3!"
+            class="!-gl-my-3"
             :toggle-text="$options.i18n.moreActionsText"
             text-sr-only
             no-caret

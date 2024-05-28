@@ -94,14 +94,14 @@ To fix this issue:
    ```shell
    sudo gitlab-ctl restart
    ```
-   
+
 ## 500 errors with `PG::UndefinedColumn: ERROR:..` message in logs
 
 After upgrading, if you start getting `500` errors in the logs showings messages similar to `PG::UndefinedColumn: ERROR:...`, these errors could be cause by either:
 
-- [Database migrations](../background_migrations.md) not being complete. Wait until migrations are completed. 
+- [Database migrations](../background_migrations.md) not being complete. Wait until migrations are completed.
 - Database migrations being complete, but GitLab needing to load the new schema. To load the new schema, [restart GitLab](../../administration/restart_gitlab.md).
- 
+
 ## Error: Failed to connect to the internal GitLab API
 
 If you receive the error `Failed to connect to the internal GitLab API` on a separate GitLab Pages server,

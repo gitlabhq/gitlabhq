@@ -19,12 +19,12 @@ module Types
         description: 'ID of the alert.'
 
       field :iid,
-        GraphQL::Types::ID,
+        GraphQL::Types::String,
         null: false,
         description: 'Internal ID of the alert.'
 
       field :issue_iid,
-        GraphQL::Types::ID,
+        GraphQL::Types::String,
         null: true,
         deprecated: { reason: 'Use issue field', milestone: '13.10' },
         description: 'Internal ID of the GitLab issue attached to the alert.'

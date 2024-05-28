@@ -53,6 +53,8 @@ export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
 export const WORK_ITEM_ROUTE_NAME = 'workItem';
 export const DESIGN_ROUTE_NAME = 'design';
 
+export const SEARCH_DEBOUNCE = 500;
+
 export const i18n = {
   fetchErrorTitle: s__('WorkItem|Work item not found'),
   fetchError: s__(
@@ -347,4 +349,5 @@ export const EPIC_COLORS = [
 
 export const DEFAULT_EPIC_COLORS = '#1068bf';
 
+export const MAX_FREQUENT_PROJECTS = 3;
 export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';

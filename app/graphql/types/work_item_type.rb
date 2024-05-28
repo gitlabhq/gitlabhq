@@ -21,7 +21,7 @@ module Types
       description: 'Description of the work item.'
     field :id, Types::GlobalIDType[::WorkItem], null: false,
       description: 'Global ID of the work item.'
-    field :iid, GraphQL::Types::ID, null: false,
+    field :iid, GraphQL::Types::String, null: false,
       description: 'Internal ID of the work item.'
     field :lock_version,
       GraphQL::Types::Int,

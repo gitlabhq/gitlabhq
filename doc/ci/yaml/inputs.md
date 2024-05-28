@@ -329,6 +329,53 @@ You cannot use [`!reference` tags](yaml_optimization.md#reference-tags) in input
 but [issue 424481](https://gitlab.com/gitlab-org/gitlab/-/issues/424481) proposes adding
 this functionality.
 
+## `inputs` examples
+
+### Use `inputs` with `needs`
+
+You can use array type inputs with [`needs`](index.md#needs) for complex job dependencies.
+
+For example, in a file named `component.yml`:
+
+```yaml
+spec:
+  inputs:
+    first_needs:
+      type: array
+    second_needs:
+      type: array
+---
+
+test_job:
+  script: echo "this job has needs"
+  needs:
+    - $[[ inputs.first_needs ]]
+    - $[[ inputs.second_needs ]]
+```
+
+In this example, the inputs are `first_needs` and `second_needs`, both [array type inputs](#array-type).
+Then, in a `.gitlab-ci.yml` file, you can add this configuration and set the input values:
+
+```yaml
+include:
+  - local: 'component.yml'
+    inputs:
+      first_needs:
+        - build1
+      second_needs:
+        - build2
+```
+
+When the pipeline starts, the items in the `needs` array for `test_job` get concatenated into:
+
+```yaml
+test_job:
+  script: echo "this job has needs"
+  needs:
+  - build1
+  - build2
+```
+
 ## Specify functions to manipulate input values
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.

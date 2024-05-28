@@ -19,7 +19,7 @@
     = render_if_exists 'admin/users/auditor_user_badge'
     = render_if_exists 'admin/users/gma_user_badge'
 
-  .gl-my-3.gl-display-flex.gl-flex-wrap.gl-my-n2.gl-mx-n2
+  .gl-my-3.gl-display-flex.gl-flex-wrap.-gl-my-2.gl-mx-n2
     - if @user != current_user
       - if impersonation_enabled?
         .gl-p-2

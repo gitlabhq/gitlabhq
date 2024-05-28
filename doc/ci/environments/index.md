@@ -784,7 +784,7 @@ problematic deployment, they can roll back to a previous stable version.
 
 GitLab Auto Rollback eases this workflow by automatically triggering a rollback when a
 [critical alert](../../operations/incident_management/alerts.md)
-is detected. 
+is detected.
 For GitLab to select the appropriate environment for the rollback, the alert should contain a `gitlab_environment_name` key with the name of the environment.
 GitLab selects and redeploys the most recent successful deployment.
 

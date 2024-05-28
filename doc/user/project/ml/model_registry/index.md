@@ -72,7 +72,7 @@ if a new version can be deployed without changes to the application:
 - **Minor (integer):** A change in the minor component signifies a non-breaking change, and that the
   consumer can safely use the new version without breaking, although the consumer might
   need to be updated to use its new functionality. For example, adding a non-mandatory
-  feature column with a default value to the model is a minor bump, because when a value for 
+  feature column with a default value to the model is a minor bump, because when a value for
   the added column is not passed, inference will still work.
 
 - **Patch (integer):** A change in the patch component means that a new version is out that does not
@@ -80,7 +80,7 @@ if a new version can be deployed without changes to the application:
   model does not change the feature set or how the application consumes the
   model version. Auto updating to a new patch is a safe update.
 
-- **Prerelease (text):**  Represents a version that is not yet ready for production use. 
+- **Prerelease (text):**  Represents a version that is not yet ready for production use.
   Used to identify alpha, beta, or release candidate versions of the model.
 
 ### Model version examples

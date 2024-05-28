@@ -56,7 +56,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
 
           expect(set_after.length).to eq(3)
           expect(set_after.map(&:first)).to all(include('queue' => 'default',
-                                                        'class' => 'AuthorizedProjectsWorker'))
+            'class' => 'AuthorizedProjectsWorker'))
         end
       end
 
@@ -298,7 +298,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
         expect(jobs.length).to eq(3)
         sorted = jobs.sort_by { |job| [job["class"], job["args"]] }
         expect(sorted[0]).to include('class' => 'AuthorizedProjectUpdate::ProjectRecalculateWorker',
-                                     'queue' => 'default')
+          'queue' => 'default')
         expect(sorted[1]).to include('class' => 'EmailReceiverWorker', 'args' => ['bar'], 'queue' => 'default')
         expect(sorted[2]).to include('class' => 'EmailReceiverWorker', 'args' => ['foo'], 'queue' => 'default')
       end
@@ -334,7 +334,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
         export_jobs = list_jobs('new_authorized')
         expect(export_jobs.length).to eq(1)
         expect(export_jobs[0]).to include('class' => 'AuthorizedProjectUpdate::ProjectRecalculateWorker',
-                                          'queue' => 'new_authorized')
+          'queue' => 'new_authorized')
       end
 
       it_behaves_like 'migrating queues'
@@ -377,7 +377,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
         expect(jobs.length).to eq(3)
         sorted = jobs.sort_by { |job| [job["class"], job["args"]] }
         expect(sorted[0]).to include('class' => 'AuthorizedProjectUpdate::ProjectRecalculateWorker',
-                                     'queue' => 'default')
+          'queue' => 'default')
         expect(sorted[1]).to include('class' => 'EmailReceiverWorker', 'args' => ['bar'], 'queue' => 'default')
         expect(sorted[2]).to include('class' => 'EmailReceiverWorker', 'args' => ['foo'], 'queue' => 'default')
       end
@@ -453,7 +453,7 @@ RSpec.describe Gitlab::SidekiqMigrateJobs, :clean_gitlab_redis_queues,
           expect(jobs.length).to eq(4)
           sorted = jobs.sort_by { |job| [job["class"], job["args"]] }
           expect(sorted[0]).to include('class' => 'AuthorizedProjectUpdate::ProjectRecalculateWorker',
-                                       'queue' => 'default')
+            'queue' => 'default')
           expect(sorted[1]).to include('class' => 'EmailReceiverWorker', 'args' => ['bar'], 'queue' => 'default')
           expect(sorted[2]).to include('class' => 'EmailReceiverWorker', 'args' => ['foo'], 'queue' => 'default')
           expect(sorted[3]).to include('class' => 'ExportCsvWorker', 'args' => ['fizz'], 'queue' => 'default')

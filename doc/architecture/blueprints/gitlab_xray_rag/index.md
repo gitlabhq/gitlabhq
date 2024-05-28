@@ -20,7 +20,7 @@ Integrate the existing Repository X-Ray scan flow with the RAG platform.
 
 Proof of concept has been built at [merge request 144715](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144715). This MR contains a large amount of information that can be helpful during implementation.
 
-## Implementation 
+## Implementation
 
 ### Current state
 

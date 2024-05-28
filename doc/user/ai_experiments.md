@@ -10,58 +10,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 The following GitLab Duo features are
 [experiments](../policy/experiment-beta-support.md#experiment).
 
-## Explain code in the Web UI with Code explanation
-
-DETAILS:
-**Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
-
-> - Introduced in GitLab 15.11 as an [experiment](../policy/experiment-beta-support.md#experiment) on GitLab.com.
-
-To use this feature:
-
-- The parent group of the project must:
-  - Enable the [experiment and beta features setting](ai_features_enable.md#turn-on-beta-and-experimental-features).
-- You must:
-  - Belong to at least one group with the [experiment and beta features setting](ai_features_enable.md#turn-on-beta-and-experimental-features) enabled.
-  - Have sufficient permissions to view the project.
-
-GitLab can help you get up to speed faster if you:
-
-- Spend a lot of time trying to understand pieces of code that others have created, or
-- Struggle to understand code written in a language that you are not familiar with.
-
-By using a large language model, GitLab can explain the code in natural language.
-
-To explain your code:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select any file in your project that contains code.
-1. On the file, select the lines that you want to have explained.
-1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
-1. A drawer is displayed on the right side of the page. Wait a moment for the explanation to be generated.
-1. Provide feedback about how satisfied you are with the explanation, so we can improve the results.
-
-You can also have code explained in the context of a merge request. To explain
-code in a merge request:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Merge requests**, then select your merge request.
-1. On the secondary menu, select **Changes**.
-1. On the file you would like explained, select the three dots (**{ellipsis_v}**) and select **View File @ $SHA**.
-
-   A separate browser tab opens and shows the full file with the latest changes.
-
-1. On the new tab, select the lines that you want to have explained.
-1. On the left side, select the question mark (**{question}**). You might have to scroll to the first line of your selection to view it. This sends the selected code, together with a prompt, to provide an explanation to the large language model.
-1. A drawer is displayed on the right side of the page. Wait a moment for the explanation to be generated.
-1. Provide feedback about how satisfied you are with the explanation, so we can improve the results.
-
-![How to use the Explain Code Experiment](img/explain_code_experiment.png)
-
-We cannot guarantee that the large language model produces results that are correct. Use the explanation with caution.
-
 ## Summarize issue discussions with Discussion summary
 
 DETAILS:

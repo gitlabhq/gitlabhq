@@ -55280,9 +55280,6 @@ msgstr ""
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
 msgstr ""
 
-msgid "Trial|Continue"
-msgstr ""
-
 msgid "Trial|Cookie Policy"
 msgstr ""
 
@@ -55295,10 +55292,16 @@ msgstr ""
 msgid "Trial|Privacy Statement"
 msgstr ""
 
+msgid "Trial|Start free GitLab Ultimate trial"
+msgstr ""
+
 msgid "Trial|State/Province"
 msgstr ""
 
 msgid "Trial|To activate your trial, we need additional details from you."
+msgstr ""
+
+msgid "Trial|You don't need a credit card to start a trial. After the 30-day trial period, your account automatically becomes a GitLab Free account. You can use your GitLab Free account forever, or upgrade to a paid tier."
 msgstr ""
 
 msgid "Trial|Your GitLab Ultimate trial lasts for 30 days, but you can keep your free GitLab account forever. We just need some additional information to activate your trial."
@@ -59350,6 +59353,9 @@ msgid "WorkItem|Save and overwrite"
 msgstr ""
 
 msgid "WorkItem|Search existing items, paste URL, or enter reference ID"
+msgstr ""
+
+msgid "WorkItem|Select a project"
 msgstr ""
 
 msgid "WorkItem|Select type"

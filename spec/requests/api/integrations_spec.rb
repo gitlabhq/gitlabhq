@@ -265,8 +265,8 @@ RSpec.describe API::Integrations, feature_category: :integrations do
           project.create_pipelines_email_integration(
             active: false,
             properties: {
-              "notify_only_broken_pipelines": "true",
-              "branches_to_be_notified": "default"
+              notify_only_broken_pipelines: "true",
+              branches_to_be_notified: "default"
             }
           )
         end

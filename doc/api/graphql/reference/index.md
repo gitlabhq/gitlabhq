@@ -16212,9 +16212,9 @@ Describes an alert from the project's Alert Management.
 | <a id="alertmanagementalerteventcount"></a>`eventCount` | [`Int`](#int) | Number of events of this alert. |
 | <a id="alertmanagementalerthosts"></a>`hosts` | [`[String!]`](#string) | List of hosts the alert came from. |
 | <a id="alertmanagementalertid"></a>`id` | [`ID!`](#id) | ID of the alert. |
-| <a id="alertmanagementalertiid"></a>`iid` | [`ID!`](#id) | Internal ID of the alert. |
+| <a id="alertmanagementalertiid"></a>`iid` | [`String!`](#string) | Internal ID of the alert. |
 | <a id="alertmanagementalertissue"></a>`issue` | [`Issue`](#issue) | Issue attached to the alert. |
-| <a id="alertmanagementalertissueiid"></a>`issueIid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in GitLab 13.10. Use issue field. |
+| <a id="alertmanagementalertissueiid"></a>`issueIid` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 13.10. Use issue field. |
 | <a id="alertmanagementalertmetricsdashboardurl"></a>`metricsDashboardUrl` **{warning-solid}** | [`String`](#string) | **Deprecated** in GitLab 16.0. Returns no data. Underlying feature was removed in 16.0. |
 | <a id="alertmanagementalertmonitoringtool"></a>`monitoringTool` | [`String`](#string) | Monitoring tool the alert came from. |
 | <a id="alertmanagementalertprometheusalert"></a>`prometheusAlert` | [`PrometheusAlert`](#prometheusalert) | Alert condition for Prometheus. |
@@ -17066,7 +17066,7 @@ Represents an epic on an issue board.
 | <a id="boardepichasparent"></a>`hasParent` | [`Boolean!`](#boolean) | Indicates if the epic has a parent epic. |
 | <a id="boardepichealthstatus"></a>`healthStatus` | [`EpicHealthStatus`](#epichealthstatus) | Current health status of the epic. |
 | <a id="boardepicid"></a>`id` | [`ID!`](#id) | ID of the epic. |
-| <a id="boardepiciid"></a>`iid` | [`ID!`](#id) | Internal ID of the epic. |
+| <a id="boardepiciid"></a>`iid` | [`String!`](#string) | Internal ID of the epic. |
 | <a id="boardepicissues"></a>`issues` | [`EpicIssueConnection`](#epicissueconnection) | A list of issues associated with the epic. (see [Connections](#connections)) |
 | <a id="boardepiclabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels assigned to the epic. (see [Connections](#connections)) |
 | <a id="boardepicparent"></a>`parent` | [`Epic`](#epic) | Parent epic of the epic. |
@@ -19537,7 +19537,7 @@ The deployment of an environment.
 | <a id="deploymentcreatedat"></a>`createdAt` | [`Time`](#time) | When the deployment record was created. |
 | <a id="deploymentfinishedat"></a>`finishedAt` | [`Time`](#time) | When the deployment finished. |
 | <a id="deploymentid"></a>`id` | [`ID`](#id) | Global ID of the deployment. |
-| <a id="deploymentiid"></a>`iid` | [`ID`](#id) | Project-level internal ID of the deployment. |
+| <a id="deploymentiid"></a>`iid` | [`String`](#string) | Project-level internal ID of the deployment. |
 | <a id="deploymentjob"></a>`job` | [`CiJob`](#cijob) | Pipeline job of the deployment. |
 | <a id="deploymentpendingapprovalcount"></a>`pendingApprovalCount` | [`Int`](#int) | Number of pending unified approvals on the deployment. |
 | <a id="deploymentref"></a>`ref` | [`String`](#string) | Git-Ref that the deployment ran on. |
@@ -20266,7 +20266,7 @@ Represents an epic.
 | <a id="epichasparent"></a>`hasParent` | [`Boolean!`](#boolean) | Indicates if the epic has a parent epic. |
 | <a id="epichealthstatus"></a>`healthStatus` | [`EpicHealthStatus`](#epichealthstatus) | Current health status of the epic. |
 | <a id="epicid"></a>`id` | [`ID!`](#id) | ID of the epic. |
-| <a id="epiciid"></a>`iid` | [`ID!`](#id) | Internal ID of the epic. |
+| <a id="epiciid"></a>`iid` | [`String!`](#string) | Internal ID of the epic. |
 | <a id="epicissues"></a>`issues` | [`EpicIssueConnection`](#epicissueconnection) | A list of issues associated with the epic. (see [Connections](#connections)) |
 | <a id="epiclabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels assigned to the epic. (see [Connections](#connections)) |
 | <a id="epicparent"></a>`parent` | [`Epic`](#epic) | Parent epic of the epic. |
@@ -20528,7 +20528,7 @@ Relationship between an epic and an issue.
 | <a id="epicissuehumantimeestimate"></a>`humanTimeEstimate` | [`String`](#string) | Human-readable time estimate of the issue. |
 | <a id="epicissuehumantotaltimespent"></a>`humanTotalTimeSpent` | [`String`](#string) | Human-readable total time reported as spent on the issue. |
 | <a id="epicissueid"></a>`id` | [`ID`](#id) | Global ID of the epic-issue relation. |
-| <a id="epicissueiid"></a>`iid` | [`ID!`](#id) | Internal ID of the issue. |
+| <a id="epicissueiid"></a>`iid` | [`String!`](#string) | Internal ID of the issue. |
 | <a id="epicissueiteration"></a>`iteration` | [`Iteration`](#iteration) | Iteration of the issue. |
 | <a id="epicissuelabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the issue. (see [Connections](#connections)) |
 | <a id="epicissuemergerequestscount"></a>`mergeRequestsCount` | [`Int!`](#int) | Number of merge requests that close the issue on merge. |
@@ -23080,7 +23080,7 @@ Describes an incident management on-call schedule.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="incidentmanagementoncallscheduledescription"></a>`description` | [`String`](#string) | Description of the on-call schedule. |
-| <a id="incidentmanagementoncallscheduleiid"></a>`iid` | [`ID!`](#id) | Internal ID of the on-call schedule. |
+| <a id="incidentmanagementoncallscheduleiid"></a>`iid` | [`String!`](#string) | Internal ID of the on-call schedule. |
 | <a id="incidentmanagementoncallschedulename"></a>`name` | [`String!`](#string) | Name of the on-call schedule. |
 | <a id="incidentmanagementoncallscheduleoncallusers"></a>`oncallUsers` | [`[UserCore!]`](#usercore) |  |
 | <a id="incidentmanagementoncallschedulerotations"></a>`rotations` | [`IncidentManagementOncallRotationConnection!`](#incidentmanagementoncallrotationconnection) | On-call rotations for the on-call schedule. (see [Connections](#connections)) |
@@ -23333,7 +23333,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issuehumantimeestimate"></a>`humanTimeEstimate` | [`String`](#string) | Human-readable time estimate of the issue. |
 | <a id="issuehumantotaltimespent"></a>`humanTotalTimeSpent` | [`String`](#string) | Human-readable total time reported as spent on the issue. |
 | <a id="issueid"></a>`id` | [`ID!`](#id) | ID of the issue. |
-| <a id="issueiid"></a>`iid` | [`ID!`](#id) | Internal ID of the issue. |
+| <a id="issueiid"></a>`iid` | [`String!`](#string) | Internal ID of the issue. |
 | <a id="issueiteration"></a>`iteration` | [`Iteration`](#iteration) | Iteration of the issue. |
 | <a id="issuelabels"></a>`labels` | [`LabelConnection`](#labelconnection) | Labels of the issue. (see [Connections](#connections)) |
 | <a id="issuemergerequestscount"></a>`mergeRequestsCount` | [`Int!`](#int) | Number of merge requests that close the issue on merge. |
@@ -23495,7 +23495,7 @@ Represents an iteration object.
 | <a id="iterationdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="iterationduedate"></a>`dueDate` | [`Time`](#time) | Timestamp of the iteration due date. |
 | <a id="iterationid"></a>`id` | [`ID!`](#id) | ID of the iteration. |
-| <a id="iterationiid"></a>`iid` | [`ID!`](#id) | Internal ID of the iteration. |
+| <a id="iterationiid"></a>`iid` | [`String!`](#string) | Internal ID of the iteration. |
 | <a id="iterationiterationcadence"></a>`iterationCadence` | [`IterationCadence!`](#iterationcadence) | Cadence of the iteration. |
 | <a id="iterationscopedpath"></a>`scopedPath` | [`String`](#string) | Web path of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts. |
 | <a id="iterationscopedurl"></a>`scopedUrl` | [`String`](#string) | Web URL of the iteration, scoped to the query parent. Only valid for Project parents. Returns null in other contexts. |
@@ -25503,7 +25503,7 @@ Represents a metric image upload.
 | <a id="metricimagefilename"></a>`fileName` | [`String`](#string) | File name of the metric image. |
 | <a id="metricimagefilepath"></a>`filePath` | [`String`](#string) | File path of the metric image. |
 | <a id="metricimageid"></a>`id` | [`ID!`](#id) | ID of the metric upload. |
-| <a id="metricimageiid"></a>`iid` | [`ID!`](#id) | Internal ID of the metric upload. |
+| <a id="metricimageiid"></a>`iid` | [`String!`](#string) | Internal ID of the metric upload. |
 | <a id="metricimageurl"></a>`url` | [`String!`](#string) | URL of the metric source. |
 
 ### `MetricsDashboardAnnotation`
@@ -29740,7 +29740,7 @@ Represents a requirement.
 | <a id="requirementdescription"></a>`description` | [`String`](#string) | Description of the requirement. |
 | <a id="requirementdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="requirementid"></a>`id` | [`ID!`](#id) | ID of the requirement. |
-| <a id="requirementiid"></a>`iid` **{warning-solid}** | [`ID!`](#id) | **Deprecated** in GitLab 15.8. Use work_item_iid instead. |
+| <a id="requirementiid"></a>`iid` **{warning-solid}** | [`String!`](#string) | **Deprecated** in GitLab 15.8. Use work_item_iid instead. |
 | <a id="requirementlasttestreportmanuallycreated"></a>`lastTestReportManuallyCreated` | [`Boolean`](#boolean) | Indicates if latest test report was created by user. |
 | <a id="requirementlasttestreportstate"></a>`lastTestReportState` | [`TestReportState`](#testreportstate) | Latest requirement test report state. |
 | <a id="requirementproject"></a>`project` | [`Project!`](#project) | Project to which the requirement belongs. |
@@ -29749,7 +29749,7 @@ Represents a requirement.
 | <a id="requirementtitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
 | <a id="requirementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the requirement was last updated. |
 | <a id="requirementuserpermissions"></a>`userPermissions` | [`RequirementPermissions!`](#requirementpermissions) | Permissions for the current user on the resource. |
-| <a id="requirementworkitemiid"></a>`workItemIid` | [`ID!`](#id) | Work item IID of the requirement, will replace current IID as identifier soon. |
+| <a id="requirementworkitemiid"></a>`workItemIid` | [`String!`](#string) | Work item IID of the requirement, will replace current IID as identifier soon. |
 
 #### Fields with arguments
 
@@ -32072,7 +32072,7 @@ Represents vulnerability letter grades with associated projects.
 | <a id="workitemdescription"></a>`description` | [`String`](#string) | Description of the work item. |
 | <a id="workitemdescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="workitemid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
-| <a id="workitemiid"></a>`iid` | [`ID!`](#id) | Internal ID of the work item. |
+| <a id="workitemiid"></a>`iid` | [`String!`](#string) | Internal ID of the work item. |
 | <a id="workitemlockversion"></a>`lockVersion` | [`Int!`](#int) | Lock version of the work item. Incremented each time the work item is updated. |
 | <a id="workitemnamespace"></a>`namespace` **{warning-solid}** | [`Namespace`](#namespace) | **Introduced** in GitLab 15.10. **Status**: Experiment. Namespace the work item belongs to. |
 | <a id="workitemproject"></a>`project` **{warning-solid}** | [`Project`](#project) | **Introduced** in GitLab 15.3. **Status**: Experiment. Project the work item belongs to. |

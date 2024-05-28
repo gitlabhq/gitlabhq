@@ -6,7 +6,7 @@ module WorkItems
 
     self.table_name = 'work_item_parent_links'
 
-    MAX_CHILDREN = 100
+    MAX_CHILDREN = 5000
 
     belongs_to :work_item
     belongs_to :work_item_parent, class_name: 'WorkItem'

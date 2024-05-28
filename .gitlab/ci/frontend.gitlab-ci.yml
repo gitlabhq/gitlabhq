@@ -77,12 +77,6 @@ compile-test-assets:
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
 
-compile-test-assets as-if-foss:
-  extends:
-    - compile-test-assets
-    - .frontend:rules:compile-test-assets-as-if-foss
-    - .as-if-foss
-
 update-assets-compile-production-cache:
   extends:
     - compile-production-assets
@@ -179,23 +173,6 @@ rspec-all frontend_fixture:
     - !reference [.frontend-fixtures-base, needs]
     - "compile-test-assets"
   parallel: 7
-
-# Builds FOSS fixtures in the EE project, with the `ee/` folder removed (due to `as-if-foss`).
-rspec-all frontend_fixture as-if-foss:
-  extends:
-    - .frontend-fixtures-base
-    - .frontend:rules:frontend_fixture-as-if-foss
-    - .as-if-foss
-  variables:
-    # We explicitly disable Crystalball here so as even in scheduled pipelines we don't need it
-    # since it's already enabled for `rspec-all frontend_fixture` there.
-    CRYSTALBALL: "false"
-    WEBPACK_VENDOR_DLL: "true"
-    KNAPSACK_GENERATE_REPORT: ""
-    FLAKY_RSPEC_GENERATE_REPORT: ""
-  needs:
-    - !reference [.frontend-fixtures-base, needs]
-    - "compile-test-assets as-if-foss"
 
 # Uploads EE fixtures in the EE project.
 # Uploads FOSS fixtures in the FOSS project.
@@ -356,15 +333,6 @@ jest predictive:
     - "detect-tests"
   script:
     - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive"; fi
-
-jest predictive as-if-foss:
-  extends:
-    - jest predictive
-    - .frontend:rules:jest:predictive-as-if-foss
-    - .as-if-foss
-  needs:
-    - "rspec-all frontend_fixture as-if-foss"
-    - "detect-tests"
 
 jest-integration:
   extends:

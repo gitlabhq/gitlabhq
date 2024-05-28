@@ -125,7 +125,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.modalWorkItemFullPath || this.fullPath,
+          fullPath: this.workItemFullPath,
           iid: this.workItemIid,
         };
       },
@@ -169,6 +169,9 @@ export default {
     },
   },
   computed: {
+    workItemFullPath() {
+      return this.modalWorkItemFullPath || this.fullPath;
+    },
     workItemLoading() {
       return isEmpty(this.workItem) && this.$apollo.queries.workItem.loading;
     },
@@ -439,7 +442,7 @@ export default {
       :show-work-item-current-user-todos="showWorkItemCurrentUserTodos"
       :parent-work-item-confidentiality="parentWorkItemConfidentiality"
       :update-in-progress="updateInProgress"
-      :full-path="fullPath"
+      :full-path="workItemFullPath"
       :is-modal="isModal"
       :work-item="workItem"
       :is-sticky-header-showing="isStickyHeaderShowing"
@@ -501,20 +504,20 @@ export default {
                 v-if="showWorkItemCurrentUserTodos"
                 :work-item-id="workItem.id"
                 :work-item-iid="workItemIid"
-                :work-item-fullpath="fullPath"
+                :work-item-fullpath="workItemFullPath"
                 :current-user-todos="currentUserTodos"
                 @error="updateError = $event"
               />
               <work-item-notifications-widget
                 v-if="newTodoAndNotificationsEnabled"
-                :full-path="fullPath"
+                :full-path="workItemFullPath"
                 :work-item-id="workItem.id"
                 :subscribed-to-notifications="workItemNotificationsSubscribed"
                 :can-update="canUpdate"
                 @error="updateError = $event"
               />
               <work-item-actions
-                :full-path="fullPath"
+                :full-path="workItemFullPath"
                 :work-item-id="workItem.id"
                 :hide-subscribe="newTodoAndNotificationsEnabled"
                 :subscribed-to-notifications="workItemNotificationsSubscribed"
@@ -560,7 +563,7 @@ export default {
             />
             <work-item-created-updated
               v-if="!editMode"
-              :full-path="fullPath"
+              :full-path="workItemFullPath"
               :work-item-iid="workItemIid"
               :update-in-progress="updateInProgress"
             />
@@ -570,7 +573,7 @@ export default {
               <work-item-description
                 v-if="hasDescriptionWidget"
                 :edit-mode="editMode"
-                :full-path="fullPath"
+                :full-path="workItemFullPath"
                 :work-item-id="workItem.id"
                 :work-item-iid="workItem.iid"
                 :update-in-progress="updateInProgress"
@@ -582,7 +585,7 @@ export default {
               <work-item-award-emoji
                 v-if="workItemAwardEmoji"
                 :work-item-id="workItem.id"
-                :work-item-fullpath="fullPath"
+                :work-item-fullpath="workItemFullPath"
                 :award-emoji="workItemAwardEmoji.awardEmoji"
                 :work-item-iid="workItemIid"
                 @error="updateError = $event"
@@ -596,7 +599,7 @@ export default {
               :class="{ 'is-modal': isModal }"
             >
               <work-item-attributes-wrapper
-                :full-path="fullPath"
+                :full-path="workItemFullPath"
                 :work-item="workItem"
                 @error="updateError = $event"
               />
@@ -604,7 +607,7 @@ export default {
 
             <work-item-tree
               v-if="showWorkItemTree"
-              :full-path="fullPath"
+              :full-path="workItemFullPath"
               :work-item-type="workItemType"
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
@@ -619,13 +622,13 @@ export default {
               v-if="workItemLinkedItems"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
-              :work-item-full-path="fullPath"
+              :work-item-full-path="workItemFullPath"
               :work-item-type="workItem.workItemType.name"
               @showModal="openInModal"
             />
             <work-item-notes
               v-if="workItemNotes"
-              :full-path="fullPath"
+              :full-path="workItemFullPath"
               :work-item-id="workItem.id"
               :work-item-iid="workItem.iid"
               :work-item-type="workItemType"

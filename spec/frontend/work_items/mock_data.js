@@ -4037,3 +4037,64 @@ export const allowedChildrenTypesResponse = {
 
 export const generateWorkItemsListWithId = (count) =>
   Array.from({ length: count }, (_, i) => ({ id: `gid://gitlab/WorkItem/${i + 1}` }));
+
+export const groupProjectsList = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
+      projects: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Project/1',
+            name: 'Example project A',
+            avatarUrl: null,
+            nameWithNamespace: 'Group A / Example project A',
+            fullPath: 'group-a/example-project-a',
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              name: 'Group A',
+              __typename: 'Namespace',
+            },
+            __typename: 'Project',
+          },
+          {
+            id: 'gid://gitlab/Project/2',
+            name: 'Example project B',
+            avatarUrl: null,
+            nameWithNamespace: 'Group A / Example project B',
+            fullPath: 'group-a/example-project-b',
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              name: 'Group A',
+              __typename: 'Namespace',
+            },
+            __typename: 'Project',
+          },
+        ],
+        __typename: 'ProjectConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const mockFrequentlyUsedProjects = [
+  {
+    id: 1,
+    name: 'Example project B',
+    namespace: 'Group A / Example project B',
+    webUrl: '/group-a/example-project-b',
+    avatarUrl: null,
+    lastAccessedOn: 123,
+    frequency: 4,
+  },
+  {
+    id: 2,
+    name: 'Example project A',
+    namespace: 'Group A / Example project A',
+    webUrl: '/group-a/example-project-a',
+    avatarUrl: null,
+    lastAccessedOn: 124,
+    frequency: 3,
+  },
+];

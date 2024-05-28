@@ -290,7 +290,7 @@ export default {
                 v-gl-tooltip
                 category="tertiary"
                 icon="copy-to-clipboard"
-                class="gl-my-n2 gl-ml-2"
+                class="-gl-my-2 gl-ml-2"
                 size="small"
                 :title="__('Copy key')"
                 :data-clipboard-text="item.key"
@@ -329,7 +329,7 @@ export default {
               v-gl-tooltip
               category="tertiary"
               icon="copy-to-clipboard"
-              class="gl-my-n2 gl-ml-2"
+              class="-gl-my-2 gl-ml-2"
               size="small"
               :title="__('Copy value')"
               :data-clipboard-text="item.value"
@@ -350,7 +350,7 @@ export default {
               v-gl-tooltip
               category="tertiary"
               icon="copy-to-clipboard"
-              class="gl-my-n2 gl-ml-2"
+              class="-gl-my-2 gl-ml-2"
               size="small"
               :title="__('Copy environment')"
               :data-clipboard-text="convertEnvironmentScopeValue(item.environmentScope)"

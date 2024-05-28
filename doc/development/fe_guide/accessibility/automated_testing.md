@@ -152,7 +152,7 @@ In most cases you do not want to test accessibility of a whole page. There are a
 When axe test case fails, it outputs the violation found and an element that it concerns. Because we often use Pajamas Components,
 it may happen that the element will be a `<div>` without any annotation that could help you identify it. However, we can take
 advantage of a fact that axe_core rules is used both for Ruby tests and Deque browser extension - axe devTools. They both
-provide the same output. 
+provide the same output.
 
 1. Make sure you have axe DevTools extension installed in a browser of your choice. See [axe DevTools official website for more information](https://www.deque.com/axe/browser-extensions/).
 

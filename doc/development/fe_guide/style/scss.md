@@ -41,7 +41,7 @@ Below are some Tailwind CSS basics and information about how it has been configu
 
 ##### Prefix
 
-We have configured Tailwind CSS to use a [prefix](https://tailwindcss.com/docs/configuration#prefix) so all utility classes are prefixed with `gl-`. 
+We have configured Tailwind CSS to use a [prefix](https://tailwindcss.com/docs/configuration#prefix) so all utility classes are prefixed with `gl-`.
 When using responsive utilities or state modifiers the prefix goes after the colon.  
 **Examples:** `gl-mt-5`, `lg:gl-mt-5`.
 

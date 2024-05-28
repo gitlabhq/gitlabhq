@@ -181,7 +181,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
   end
 
   describe 'POST /projects/:id/terraform/state/:name' do
-    let(:params) { { 'instance': 'example-instance', 'serial': state.latest_version.version + 1 } }
+    let(:params) { { instance: 'example-instance', serial: state.latest_version.version + 1 } }
 
     subject(:request) { post api(state_path), headers: auth_header, as: :json, params: params }
 
@@ -215,7 +215,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         end
 
         context 'when serial already exists' do
-          let(:params) { { 'instance': 'example-instance', 'serial': state.latest_version.version } }
+          let(:params) { { instance: 'example-instance', serial: state.latest_version.version } }
 
           it 'returns unprocessable entity' do
             request

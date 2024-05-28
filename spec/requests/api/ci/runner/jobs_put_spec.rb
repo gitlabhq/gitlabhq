@@ -76,7 +76,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
           # GitLab is installed.
           #
           it 'ignores unrecognized fields' do
-            update_job(state: 'success', 'unknown': 'something')
+            update_job(state: 'success', unknown: 'something')
 
             expect(job.reload).to be_success
           end

@@ -523,7 +523,6 @@ lib/gitlab/checks/**
 /doc/administration/audit_event_reports.md @eread
 /doc/administration/audit_event_schema.md @eread
 /doc/administration/audit_event_streaming/ @eread
-/doc/administration/audit_event_types.md @eread
 /doc/administration/auditor_users.md @jglassman1
 /doc/administration/auth/ @jglassman1
 /doc/administration/backup_restore/ @axil
@@ -885,6 +884,7 @@ lib/gitlab/checks/**
 /doc/integration/jira/ @eread @ashrafkhamis
 /doc/integration/mattermost/ @axil
 /doc/integration/partner_marketplace.md @fneill
+/doc/integration/snowflake.md @eread
 /doc/integration/sourcegraph.md @msedlakjakubowski
 /doc/integration/trello_power_up.md @eread @ashrafkhamis
 /doc/integration/vault.md @phillipwells

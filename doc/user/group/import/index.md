@@ -604,7 +604,7 @@ instance.
 
 ### Mismatched group or project path names
 
-If a source group or project path doesn't conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names), the path is normalized to 
+If a source group or project path doesn't conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names), the path is normalized to
 ensure it is valid. For example, `Destination-Project-Path` is normalized to `destination-project-path`.
 
 ### Reducing migration duration

@@ -24,7 +24,7 @@ with the `--cache-from` argument must be pulled
 
 ## Docker caching example
 
-This example `.gitlab-ci.yml` file shows how to use Docker caching with 
+This example `.gitlab-ci.yml` file shows how to use Docker caching with
 the `inline` cache backend with the default `docker build` command. For
 more advanced caching options, see the [`docker buildx build` command and its cache options](https://docs.docker.com/build/cache/backends/).
 

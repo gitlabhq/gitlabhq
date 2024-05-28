@@ -79,6 +79,16 @@ DETAILS:
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](gitlab_duo_chat_examples.md#write-tests-in-the-ide).
 
+### Code explanation in the IDE
+
+DETAILS:
+**Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com
+
+- Helps you understand code by explaining it in English language.
+- LLM: Anthropic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+- View documentation for [explaining code in the IDE](../user/gitlab_duo_chat_examples.md#explain-code-in-the-ide).
+
 ## Beta features
 
 ### Merge request summary
@@ -166,16 +176,17 @@ DETAILS:
 - LLM: Vertex AI Codey [`code-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-generation)
 - [View documentation](application_security/vulnerabilities/index.md#vulnerability-resolution).
 
-### Code explanation
+### Code explanation in a file or merge request
 
 DETAILS:
 **Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Helps you understand code by explaining it in English language.
-- LLM: Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat)
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=1izKaLmmaCA)
-- [View documentation](ai_experiments.md#explain-code-in-the-web-ui-with-code-explanation).
+- LLM: Anthropic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+- View documentation for explaining code in:
+  - [A file](../user/project/repository/code_explain.md).
+  - [A merge request](../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
 
 ### Root cause analysis
 

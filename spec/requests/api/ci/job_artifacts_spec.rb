@@ -392,7 +392,7 @@ RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
               allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
             end
 
-            subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), env: { 'REMOTE_ADDR': '18.245.0.1' } }
+            subject { get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user), env: { REMOTE_ADDR: '18.245.0.1' } }
 
             it 'returns CDN-signed URL' do
               expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: true).and_call_original

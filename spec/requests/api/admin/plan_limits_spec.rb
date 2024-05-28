@@ -86,7 +86,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
 
   describe 'PUT /application/plan_limits' do
     it_behaves_like 'PUT request permissions for admin mode' do
-      let(:params) { { 'plan_name': 'default' } }
+      let(:params) { { plan_name: 'default' } }
     end
 
     context 'as an admin user', :freeze_time do
@@ -95,27 +95,27 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
       context 'correct params' do
         it 'updates multiple plan limits', :aggregate_failures do
           put api(path, admin, admin_mode: true), params: {
-            'plan_name': 'default',
-            'ci_instance_level_variables': 103,
-            'ci_pipeline_size': 101,
-            'ci_active_jobs': 102,
-            'ci_project_subscriptions': 104,
-            'ci_pipeline_schedules': 105,
-            'ci_needs_size_limit': 106,
-            'ci_registered_group_runners': 107,
-            'ci_registered_project_runners': 108,
-            'conan_max_file_size': 10,
-            'enforcement_limit': 100,
-            'generic_packages_max_file_size': 20,
-            'helm_max_file_size': 25,
-            'maven_max_file_size': 30,
-            'notification_limit': 90,
-            'npm_max_file_size': 40,
-            'nuget_max_file_size': 50,
-            'pypi_max_file_size': 60,
-            'terraform_module_max_file_size': 70,
-            'storage_size_limit': 80,
-            'pipeline_hierarchy_size': 250
+            plan_name: 'default',
+            ci_instance_level_variables: 103,
+            ci_pipeline_size: 101,
+            ci_active_jobs: 102,
+            ci_project_subscriptions: 104,
+            ci_pipeline_schedules: 105,
+            ci_needs_size_limit: 106,
+            ci_registered_group_runners: 107,
+            ci_registered_project_runners: 108,
+            conan_max_file_size: 10,
+            enforcement_limit: 100,
+            generic_packages_max_file_size: 20,
+            helm_max_file_size: 25,
+            maven_max_file_size: 30,
+            notification_limit: 90,
+            npm_max_file_size: 40,
+            nuget_max_file_size: 50,
+            pypi_max_file_size: 60,
+            terraform_module_max_file_size: 70,
+            storage_size_limit: 80,
+            pipeline_hierarchy_size: 250
           }
 
           expect(json_response).to be_an Hash
@@ -148,8 +148,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
 
         it 'updates single plan limits', :aggregate_failures do
           put api(path, admin, admin_mode: true), params: {
-            'plan_name': 'default',
-            'maven_max_file_size': 100
+            plan_name: 'default',
+            maven_max_file_size: 100
           }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -170,27 +170,27 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
       context 'params with wrong type' do
         it 'fails to update plan limits', :aggregate_failures do
           put api(path, admin, admin_mode: true), params: {
-            'plan_name': 'default',
-            'ci_instance_level_variables': 'a',
-            'ci_pipeline_size': 'z',
-            'ci_active_jobs': 'y',
-            'ci_project_subscriptions': 'w',
-            'ci_pipeline_schedules': 'v',
-            'ci_needs_size_limit': 'u',
-            'ci_registered_group_runners': 't',
-            'ci_registered_project_runners': 's',
-            'conan_max_file_size': 'a',
-            'enforcement_limit': 'e',
-            'generic_packages_max_file_size': 'b',
-            'helm_max_file_size': 'h',
-            'maven_max_file_size': 'c',
-            'notification_limit': 'n',
-            'npm_max_file_size': 'd',
-            'nuget_max_file_size': 'e',
-            'pypi_max_file_size': 'f',
-            'terraform_module_max_file_size': 'g',
-            'storage_size_limit': 'j',
-            'pipeline_hierarchy_size': 'r'
+            plan_name: 'default',
+            ci_instance_level_variables: 'a',
+            ci_pipeline_size: 'z',
+            ci_active_jobs: 'y',
+            ci_project_subscriptions: 'w',
+            ci_pipeline_schedules: 'v',
+            ci_needs_size_limit: 'u',
+            ci_registered_group_runners: 't',
+            ci_registered_project_runners: 's',
+            conan_max_file_size: 'a',
+            enforcement_limit: 'e',
+            generic_packages_max_file_size: 'b',
+            helm_max_file_size: 'h',
+            maven_max_file_size: 'c',
+            notification_limit: 'n',
+            npm_max_file_size: 'd',
+            nuget_max_file_size: 'e',
+            pypi_max_file_size: 'f',
+            terraform_module_max_file_size: 'g',
+            storage_size_limit: 'j',
+            pipeline_hierarchy_size: 'r'
           }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -221,7 +221,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
 
       context 'missing plan_name in params' do
         it 'fails to update plan limits', :aggregate_failures do
-          put api(path, admin, admin_mode: true), params: { 'conan_max_file_size': 0 }
+          put api(path, admin, admin_mode: true), params: { conan_max_file_size: 0 }
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['error']).to match('plan_name is missing')
@@ -230,14 +230,14 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
 
       context 'additional undeclared params' do
         before do
-          Plan.default.actual_limits.update!({ 'golang_max_file_size': 1000 })
+          Plan.default.actual_limits.update!({ golang_max_file_size: 1000 })
         end
 
         it 'updates only declared plan limits', :aggregate_failures do
           put api(path, admin, admin_mode: true), params: {
-            'plan_name': 'default',
-            'pypi_max_file_size': 200,
-            'golang_max_file_size': 999
+            plan_name: 'default',
+            pypi_max_file_size: 200,
+            golang_max_file_size: 999
           }
 
           expect(response).to have_gitlab_http_status(:ok)

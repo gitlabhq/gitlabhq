@@ -39,19 +39,19 @@ module API
       params do
         use :pagination
         optional :order_by, type: String, values: %w[created_at name version type], default: 'created_at',
-                            desc: 'Return packages ordered by `created_at`, `name`, `version` or `type` fields.'
+          desc: 'Return packages ordered by `created_at`, `name`, `version` or `type` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'asc',
-                        desc: 'Return packages sorted in `asc` or `desc` order.'
+          desc: 'Return packages sorted in `asc` or `desc` order.'
         optional :package_type, type: String, values: Packages::Package.package_types.keys,
-                                desc: 'Return packages of a certain type'
+          desc: 'Return packages of a certain type'
         optional :package_name, type: String,
-                                desc: 'Return packages with this name'
+          desc: 'Return packages with this name'
         optional :package_version, type: String,
-                                desc: 'Return packages with this version'
+          desc: 'Return packages with this version'
         optional :include_versionless, type: Boolean,
-                                       desc: 'Returns packages without a version'
+          desc: 'Returns packages without a version'
         optional :status, type: String, values: Packages::Package.statuses.keys,
-                          desc: 'Return packages with specified status'
+          desc: 'Return packages with specified status'
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/packages' do
@@ -98,8 +98,8 @@ module API
         optional :cursor, type: String, desc: 'Cursor for obtaining the next set of records'
         # Overrides the original definition to add the `values: 1..20` restriction
         optional :per_page, type: Integer, default: 20,
-                            desc: 'Number of items per page', documentation: { example: 20 },
-                            values: 1..20
+          desc: 'Number of items per page', documentation: { example: 20 },
+          values: 1..20
       end
       route_setting :authentication, job_token_allowed: true
       get ':id/packages/:package_id/pipelines' do

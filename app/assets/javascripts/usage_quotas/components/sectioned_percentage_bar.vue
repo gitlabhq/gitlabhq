@@ -60,7 +60,7 @@ export default {
       </div>
     </div>
     <div class="gl-mt-5">
-      <div class="gl-display-flex gl-align-items-center gl-flex-wrap gl-my-n3 gl-mx-n3">
+      <div class="gl-display-flex gl-align-items-center gl-flex-wrap -gl-my-3 gl-mx-n3">
         <div
           v-for="{ id, label, backgroundColor, formattedValue } in computedSections"
           :key="id"

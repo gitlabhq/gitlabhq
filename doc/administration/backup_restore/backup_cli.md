@@ -85,7 +85,7 @@ For example, if the backup directory name is `1714053314_2024_04_25_17.0.0-pre`,
 
 ## Limitations
 
-- The tool has only been tested on the [1K architecture](../reference_architectures/1k_users.md) 
+- The tool has only been tested on the [1K architecture](../reference_architectures/1k_users.md)
   and therefore only recommended to be used on relevant environments.
 - The initial version doesn't use the [copy strategy](backup_gitlab.md#backup-strategy-option),
   so as long as there is nothing changing existing files while you perform the backup, you should be fine.

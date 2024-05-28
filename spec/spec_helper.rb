@@ -537,6 +537,9 @@ Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s
 # Initialize FactoryDefault to use create_default helper
 TestProf::FactoryDefault.init
 
+# Set the start of ID sequence for records initialized by `build_stubbed` to prevent conflicts
+FactoryBot::Strategy::Stub.next_id = 1_000_000_000
+
 # Exclude the Geo proxy API request from getting on_next_request Warden handlers,
 # necessary to prevent race conditions with feature tests not getting authenticated.
 ::Warden.asset_paths << %r{^/api/v4/geo/proxy$}

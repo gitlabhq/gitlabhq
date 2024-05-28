@@ -39,8 +39,8 @@ RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues, :clean_gitlab_r
         it 'returns a non-completion flag, the number of jobs deleted, and the remaining queue size' do
           expect(sidekiq_queue.drop_jobs!(search_metadata, timeout: 10))
             .to eq(completed: false,
-                   deleted_jobs: timeout_deleted,
-                   queue_size: 3 - timeout_deleted)
+              deleted_jobs: timeout_deleted,
+              queue_size: 3 - timeout_deleted)
         end
       end
 
@@ -48,8 +48,8 @@ RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues, :clean_gitlab_r
         it 'returns a completion flag, the number of jobs deleted, and the remaining queue size' do
           expect(sidekiq_queue.drop_jobs!(search_metadata, timeout: 10))
             .to eq(completed: true,
-                   deleted_jobs: no_timeout_deleted,
-                   queue_size: 3 - no_timeout_deleted)
+              deleted_jobs: no_timeout_deleted,
+              queue_size: 3 - no_timeout_deleted)
         end
       end
     end
@@ -97,8 +97,8 @@ RSpec.describe Gitlab::SidekiqQueue, :clean_gitlab_redis_queues, :clean_gitlab_r
 
         expect(sidekiq_queue.drop_jobs!(search_metadata, timeout: 10))
             .to eq(completed: true,
-                   deleted_jobs: 2,
-                   queue_size: 2) # Note: intentional double count
+              deleted_jobs: 2,
+              queue_size: 2) # Note: intentional double count
       end
     end
 

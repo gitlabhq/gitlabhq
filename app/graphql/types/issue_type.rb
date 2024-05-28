@@ -20,7 +20,7 @@ module Types
       description: 'Description of the issue.'
     field :id, GraphQL::Types::ID, null: false,
       description: "ID of the issue."
-    field :iid, GraphQL::Types::ID, null: false,
+    field :iid, GraphQL::Types::String, null: false,
       description: "Internal ID of the issue."
     field :state, IssueStateEnum, null: false,
       description: 'State of the issue.'

@@ -8,7 +8,7 @@ authors: [ "@fabiopitino" ]
 ## Context
 
 How do we assign stewardship to domain and platform modules? We have a large amount of shared code
-that does not have explicit stewards who can provide a vision and direction on that part of code. 
+that does not have explicit stewards who can provide a vision and direction on that part of code.
 
 ## Decision
 

@@ -69,7 +69,7 @@ Repository X Ray hasn't yet implemented any semantic seach and this section is b
   - Data source: Repository X Ray report CI artifact
   - Data size: N/A
   - Example of user input: "# generate function that fetches sales report for vendor from App Store"
-  - Example of expected AI-generated response: 
+  - Example of expected AI-generated response:
   
   ```python
   def sales_reports(vendor_id)\n  app_store_connect.sales_reports(\n  filter: {\n    report_type: 'SALES',\n    report_sub_type: 'SUMMARY',\n    frequency: 'DAILY',

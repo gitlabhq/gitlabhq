@@ -125,7 +125,7 @@ In GitLab 18.0, the [Runners API](../runners.md) will return `""` in place of `v
 and `architecture` for runners.
 In v5 of the REST API, the fields will be removed.
 
-## `default_branch_protection` API field 
+## `default_branch_protection` API field
 
 Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/408315).
 

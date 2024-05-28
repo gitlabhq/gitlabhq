@@ -16,7 +16,7 @@ module Types
       description: 'Global ID of the deployment.'
 
     field :iid,
-      GraphQL::Types::ID,
+      GraphQL::Types::String,
       description: 'Project-level internal ID of the deployment.'
 
     field :ref,
