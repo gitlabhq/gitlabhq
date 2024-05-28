@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::DependencyProxyForContainersController, feature_category: :dependency_proxy do
+RSpec.describe Groups::DependencyProxyForContainersController, feature_category: :virtual_registry do
   include HttpBasicAuthHelpers
   include DependencyProxyHelpers
   include WorkhorseHelpers

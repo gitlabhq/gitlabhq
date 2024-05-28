@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::HeadManifestService, feature_category: :dependency_proxy do
+RSpec.describe DependencyProxy::HeadManifestService, feature_category: :virtual_registry do
   include DependencyProxyHelpers
 
   let(:image) { 'alpine' }

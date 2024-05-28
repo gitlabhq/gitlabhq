@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Bizible content security policy', feature_category: :purchase do
+RSpec.describe 'Bizible content security policy', feature_category: :subscription_management do
   before do
     stub_config(extra: { one_trust_id: SecureRandom.uuid })
   end

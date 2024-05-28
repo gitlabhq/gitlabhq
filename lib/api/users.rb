@@ -1249,7 +1249,7 @@ module API
 
         optional :zuora_payment_method_xid, type: String, desc: 'The Zuora payment method ID'
       end
-      put ":user_id/credit_card_validation", urgency: :low, feature_category: :purchase do
+      put ":user_id/credit_card_validation", urgency: :low, feature_category: :subscription_management do
         authenticated_as_admin!
 
         user = find_user(params[:user_id])

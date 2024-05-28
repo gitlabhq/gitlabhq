@@ -11,7 +11,7 @@ class PurgeDependencyProxyCacheWorker
   idempotent!
 
   queue_namespace :dependency_proxy
-  feature_category :dependency_proxy
+  feature_category :virtual_registry
 
   def perform(current_user_id, group_id)
     @current_user = User.find_by_id(current_user_id)

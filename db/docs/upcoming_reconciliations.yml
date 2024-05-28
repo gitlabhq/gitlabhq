@@ -3,7 +3,7 @@ table_name: upcoming_reconciliations
 classes:
 - GitlabSubscriptions::UpcomingReconciliation
 feature_categories:
-- purchase
+- subscription_management
 description: Stores the data needed to notify a user of an upcoming reconciliation
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63054
 milestone: '14.0'

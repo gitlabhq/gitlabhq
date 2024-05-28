@@ -3,7 +3,7 @@ table_name: dependency_proxy_image_ttl_group_policies
 classes:
 - DependencyProxy::ImageTtlGroupPolicy
 feature_categories:
-- dependency_proxy
+- virtual_registry
 description: Group-level settings for dependency proxy cleanup policies
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68809
 milestone: '14.3'

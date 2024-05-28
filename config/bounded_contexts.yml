@@ -112,7 +112,7 @@ domains:
   DependencyProxy:
     description:
     feature_categories:
-      - dependency_proxy
+      - virtual_registry
       - package_registry
 
   DesignManagement:
@@ -137,10 +137,8 @@ domains:
     description:
     feature_categories:
       - seat_cost_management
-      - saas_provisioning
-      - sm_provisioning
+      - plan_provisioning
       - subscription_management
-      - purchase
 
   Import:
     description:

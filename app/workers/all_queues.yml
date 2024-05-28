@@ -464,7 +464,7 @@
   :tags: []
 - :name: cronjob:dependency_proxy_cleanup_dependency_proxy
   :worker_name: DependencyProxy::CleanupDependencyProxyWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -473,7 +473,7 @@
   :tags: []
 - :name: cronjob:dependency_proxy_image_ttl_group_policy
   :worker_name: DependencyProxy::ImageTtlGroupPolicyWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1004,7 +1004,7 @@
   :tags: []
 - :name: dependency_proxy:purge_dependency_proxy_cache
   :worker_name: PurgeDependencyProxyCacheWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1013,7 +1013,7 @@
   :tags: []
 - :name: dependency_proxy_blob:dependency_proxy_cleanup_blob
   :worker_name: DependencyProxy::CleanupBlobWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1022,7 +1022,7 @@
   :tags: []
 - :name: dependency_proxy_manifest:dependency_proxy_cleanup_manifest
   :worker_name: DependencyProxy::CleanupManifestWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

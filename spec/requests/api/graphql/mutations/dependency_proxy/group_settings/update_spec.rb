@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Updating the dependency proxy group settings', feature_category: :dependency_proxy do
+RSpec.describe 'Updating the dependency proxy group settings', feature_category: :virtual_registry do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

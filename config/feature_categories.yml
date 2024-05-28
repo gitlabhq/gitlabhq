@@ -9,6 +9,7 @@
 ---
 - acquisition
 - activation
+- add-on_provisioning
 - advisory_database
 - ai_abstraction_layer
 - ai_agents
@@ -33,7 +34,6 @@
 - code_search
 - code_suggestions
 - code_testing
-- commerce_integrations
 - compliance_management
 - consumables_cost_management
 - container_registry
@@ -41,14 +41,13 @@
 - continuous_delivery
 - continuous_integration
 - custom_models
-- customersdot_application
+- customersdot_and_quote_to_cash_integrations
 - database
 - dataops
 - dedicated
 - delivery
 - dependency_firewall
 - dependency_management
-- dependency_proxy
 - deployment_management
 - design_management
 - design_system
@@ -64,13 +63,12 @@
 - feature_flags
 - five_minute_production_app
 - fleet_visibility
-- fulfillment_admin_tooling
-- fulfillment_infrastructure
+- fulfillment_infradev
+- fulfillment_internal_admin_tooling
 - fuzz_testing
 - geo_replication
 - gitaly
 - gitlab_cli
-- gitlab_docs
 - global_search
 - groups_and_projects
 - helm_chart_registry
@@ -89,6 +87,7 @@
 - mlops
 - mobile_devops
 - navigation
+- notifications
 - okr_management
 - omnibus_package
 - on_call_schedule_management
@@ -98,11 +97,11 @@
 - pages
 - permissions
 - pipeline_composition
+- plan_provisioning
 - portfolio_management
 - product_analytics_data_management
 - product_analytics_visualization
 - pubsec_services
-- purchase
 - quality_management
 - rate_limiting
 - redis
@@ -112,7 +111,6 @@
 - requirements_management
 - review_apps
 - runner
-- saas_provisioning
 - sbom
 - scalability
 - seat_cost_management
@@ -121,7 +119,7 @@
 - security_policy_management
 - service_desk
 - service_ping
-- sm_provisioning
+- settings
 - software_composition_analysis
 - source_code_management
 - static_application_security_testing
@@ -133,6 +131,7 @@
 - user_management
 - user_profile
 - value_stream_management
+- virtual_registry
 - vulnerability_management
 - web_ide
 - webhooks

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PurgeDependencyProxyCacheWorker, feature_category: :dependency_proxy do
+RSpec.describe PurgeDependencyProxyCacheWorker, feature_category: :virtual_registry do
   let_it_be(:user) { create(:admin) }
   let_it_be_with_refind(:blob) { create(:dependency_proxy_blob ) }
   let_it_be_with_reload(:group) { blob.group }

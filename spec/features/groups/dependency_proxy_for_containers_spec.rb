@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :dependency_proxy do
+RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :virtual_registry do
   include DependencyProxyHelpers
 
   include_context 'file upload requests helpers'

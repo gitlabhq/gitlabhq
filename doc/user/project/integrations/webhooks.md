@@ -136,6 +136,13 @@ with the data for the current event. The template must render as valid JSON.
 You can use any field from the [payload of any event](webhook_events.md), such as `{{build_name}}` for a job event and `{{deployable_url}}`
 for a deployment event. To access properties nested in objects, specify the path segments separated with `.`. For example:
 
+#### Known issue
+
+Custom webhook templates can't access properties in arrays. Support for accessing properties in arrays is proposed in
+[issue 463332](https://gitlab.com/gitlab-org/gitlab/-/issues/463332).
+
+#### Example
+
 Given this custom payload template:
 
 ```json
@@ -153,9 +160,6 @@ You'll have this request payload that combines the template with a `push` event:
   "project_name": "Example"
 }
 ```
-
-Custom webhook templates do not support accessing properties that are in arrays. Support for this is proposed in
-[issue 463332](https://gitlab.com/gitlab-org/gitlab/-/issues/463332).
 
 ### Filter push events by branch
 

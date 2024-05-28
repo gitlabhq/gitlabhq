@@ -3,7 +3,7 @@ table_name: gitlab_subscriptions
 classes:
 - GitlabSubscription
 feature_categories:
-- purchase
+- subscription_management
 description: Used to store information related to GitLab subscriptions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7885
 milestone: '11.6'

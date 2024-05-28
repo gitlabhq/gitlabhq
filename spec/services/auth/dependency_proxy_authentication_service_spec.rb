@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :dependency_proxy do
+RSpec.describe Auth::DependencyProxyAuthenticationService, feature_category: :virtual_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:params) { {} }
 

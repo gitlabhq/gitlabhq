@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe UserHighestRole, feature_category: :sm_provisioning do
+RSpec.describe UserHighestRole, feature_category: :plan_provisioning do
   describe 'associations' do
     it { is_expected.to belong_to(:user).required }
   end

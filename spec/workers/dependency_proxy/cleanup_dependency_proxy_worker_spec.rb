@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::CleanupDependencyProxyWorker, feature_category: :dependency_proxy do
+RSpec.describe DependencyProxy::CleanupDependencyProxyWorker, feature_category: :virtual_registry do
   describe '#perform' do
     subject { described_class.new.perform }
 

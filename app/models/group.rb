@@ -729,7 +729,7 @@ class Group < Namespace
 
     unless only_concrete_membership
       return GroupMember::OWNER if user.can_admin_all_resources?
-      return GroupMember::OWNER if user.can_admin_organization?(organization_id)
+      return GroupMember::OWNER if user.can_admin_organization?(organization)
     end
 
     max_member_access(user)
