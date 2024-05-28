@@ -320,7 +320,7 @@ Multiple stages, Canary and Main, are leveraged to help with risk management of 
 **What will GitLab.com Cells do:**
 
 [Delivery](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/delivery/) remains responsible for initial development of this.
-[The current blueprint](../application-deployment.md) that surrounds this work introduces a concept of Ring deployments to manage risk.
+[The current blueprint](deployments.md) that surrounds this work introduces a concept of Ring deployments to manage risk.
 
 ### Subnets
 

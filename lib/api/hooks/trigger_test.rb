@@ -31,7 +31,7 @@ module API
         hook = find_hook
 
         if Feature.enabled?(:web_hook_test_api_endpoint_rate_limit, Feature.current_request)
-          check_rate_limit!(:web_hook_test_api_endpoint, scope: hook)
+          check_rate_limit!(:web_hook_test, scope: [hook.parent, current_user])
         end
 
         service = hook_test_service(hook, configuration[:entity])

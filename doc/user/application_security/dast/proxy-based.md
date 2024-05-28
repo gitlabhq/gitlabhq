@@ -18,7 +18,7 @@ to DAST version 5, see the [migration guide](proxy_based_to_browser_based_migrat
 
 The DAST proxy-based analyzer can be added to your [GitLab CI/CD](../../../ci/index.md) pipeline.
 This helps you discover vulnerabilities in web applications that do not use JavaScript heavily. For applications that do,
-see the [DAST browser-based analyzer](browser_based.md).
+see the [DAST browser-based analyzer](browser/index.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a video walkthrough, see [How to set up Dynamic Application Security Testing (DAST) with GitLab](https://youtu.be/EiFE1QrUQfk?si=6rpgwgUpalw3ByiV).

@@ -26,7 +26,6 @@
 - g_analytics_valuestream
 - g_compliance_audit_events
 - g_geo_proxied_requests
-- g_metrics_comparison_page
 - g_project_management_users_creating_epic_boards
 - g_project_management_users_updating_epic_board_names
 - g_project_management_users_viewing_epic_boards

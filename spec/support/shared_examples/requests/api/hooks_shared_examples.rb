@@ -426,7 +426,7 @@ RSpec.shared_examples 'test web-hook endpoint' do
       stub_full_request(hook.url, method: :post).to_return(status: 200)
     end
 
-    it_behaves_like 'rate limited endpoint', rate_limit_key: :web_hook_test_api_endpoint do
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :web_hook_test do
       let(:current_user) { user }
 
       def request

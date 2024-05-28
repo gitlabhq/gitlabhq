@@ -44,7 +44,7 @@ GitLab provides the following DAST analyzers, one or more of which may be useful
 For scanning websites, use one of:
 
 - The [DAST proxy-based analyzer](proxy-based.md) for scanning traditional applications serving simple HTML. The proxy-based analyzer can be run automatically or on-demand.
-- The [DAST browser-based analyzer](browser_based.md) for scanning applications that make heavy use of JavaScript. This includes single page web applications.
+- The [DAST browser-based analyzer](browser/index.md) for scanning applications that make heavy use of JavaScript. This includes single page web applications.
 
 For scanning APIs, use:
 
@@ -89,7 +89,7 @@ which GitLab uses to determine discovered vulnerabilities based on differences b
 
 #### Analyzer configuration
 
-See [DAST proxy-based analyzer](proxy-based.md), [DAST browser-based analyzer](browser_based.md) or [DAST API analyzer](../dast_api/index.md) for
+See [DAST proxy-based analyzer](proxy-based.md), [DAST browser-based analyzer](browser/index.md) or [DAST API analyzer](../dast_api/index.md) for
 analyzer-specific configuration instructions.
 
 ### View scan results

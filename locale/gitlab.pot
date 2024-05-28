@@ -14105,6 +14105,9 @@ msgstr ""
 msgid "ContainerRegistry|Enable cleanup policy"
 msgstr ""
 
+msgid "ContainerRegistry|GitLab is unable to validate this signature automatically. Validate the signature manually before trusting it."
+msgstr ""
+
 msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd} instead of a password."
 msgstr ""
 
@@ -14251,9 +14254,6 @@ msgstr ""
 msgid "ContainerRegistry|Something went wrong while fetching the repository list."
 msgstr ""
 
-msgid "ContainerRegistry|Something went wrong while fetching the tags list."
-msgstr ""
-
 msgid "ContainerRegistry|Something went wrong while marking the tag for deletion."
 msgstr ""
 
@@ -14321,9 +14321,6 @@ msgid "ContainerRegistry|There are no container images available in this group"
 msgstr ""
 
 msgid "ContainerRegistry|There are no container images stored for this project"
-msgstr ""
-
-msgid "ContainerRegistry|There was an error during the deletion of this image repository, please try again."
 msgstr ""
 
 msgid "ContainerRegistry|This image has no active tags"

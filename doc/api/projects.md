@@ -2927,7 +2927,8 @@ is returned.
 
 Trigger a test hook for a specified project.
 
-In GitLab 17.0 and later, this endpoint has a special rate limit of three requests per minute per project hook.
+In GitLab 17.0 and later, this endpoint has a special rate limit. In GitLab 17.0 the rate was three requests per minute for each project hook.
+In GitLab 17.1 this was changed to five requests per minute for each project and authenticated user.
 To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
 [disable the feature flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`.
 

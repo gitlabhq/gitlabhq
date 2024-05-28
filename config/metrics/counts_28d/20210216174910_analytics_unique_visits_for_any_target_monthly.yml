@@ -65,8 +65,6 @@ events:
   unique: user.id
 - name: g_analytics_ci_cd_change_failure_rate
   unique: user.id
-- name: g_metrics_comparison_page
-  unique: user.id
 distribution:
 - ce
 - ee

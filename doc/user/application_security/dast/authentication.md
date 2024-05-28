@@ -55,14 +55,14 @@ To run a DAST authenticated scan:
 
 #### Form authentication
 
-- You are using either the [DAST proxy-based analyzer](proxy-based.md) or the [DAST browser-based analyzer](browser_based.md).
+- You are using either the [DAST proxy-based analyzer](proxy-based.md) or the [DAST browser-based analyzer](browser/index.md).
 - You know the URL of the login form of your application. Alternatively, you know how to go to the login form from the authentication URL (see [clicking to go to the login form](#click-to-go-to-the-login-form)).
 - You know the [selectors](#finding-an-elements-selector) of the username and password HTML fields that DAST uses to input the respective values.
 - You know the element's [selector](#finding-an-elements-selector) that submits the login form when selected.
 
 #### HTTP authentication
 
-- You must be using the [DAST browser-based analyzer](browser_based.md).
+- You must be using the [DAST browser-based analyzer](browser/index.md).
 
 ### Available CI/CD variables
 

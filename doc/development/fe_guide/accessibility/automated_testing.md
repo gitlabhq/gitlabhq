@@ -116,6 +116,52 @@ For help on how to do it, refer to [this guide](best_practices.md#quick-checklis
 You can also check accessibility sections in [Pajamas components' documentation](https://design.gitlab.com/components/overview).
 If any of the errors require global changes, create a follow-up issue and assign these labels: `accessability`, `WG::product accessibility`.
 
+### Good practices
+
+Adding accessibility checks in feature tests is easier if you have domain knowledge from the product area in question.
+However, there are a few things that can help you contribute to accessibility tests.
+
+#### Find a page from a test
+
+When you don't have the page URL, you can start by running a feature spec in preview mode. To do this, add `WEBDRIVER_HEADLESS=0` to the beginning of the command that runs the tests. You can also pair it with `live_debug` to stop the browser right inside any test case with a `:js` tag (see the documentation on [testing best practices](../../testing_guide/best_practices.md#run-js-spec-in-a-visible-browser)).
+
+#### What parts of a page to add accessibility tests for
+
+In most cases you do not want to test accessibility of a whole page. There are a couple of reasons:
+
+1. We have elements that appear on every application view, such as breadcrumbs or main navigation. Including them in every feature spec takes up quite a lot of resources and multiplies something that can be done just once. These elements have their own feature specs and that's where we want to test them.
+
+1. If a feature spec covers a whole view, the best practice would be to scope it to `<main id="content-body">` element. Here's an example of such test case:
+
+   ```ruby
+    it "passes axe automated accessibility testing" do
+      expect(page).to be_axe_clean.within('#content-body')
+    end
+   ```
+
+1. If a feature test covers only a part of a page, like a section that includes some components, keep the test scoped to that section. If possible, use the same selector that the feature spec uses for its test cases. Here's an example of such test case:
+
+   ```ruby
+    it 'passes axe automated accessibility testing for todo' do
+      expect(page).to be_axe_clean.within(todo_selector)
+    end
+   ```
+
+#### Test output not specific enough
+
+When axe test case fails, it outputs the violation found and an element that it concerns. Because we often use Pajamas Components,
+it may happen that the element will be a `<div>` without any annotation that could help you identify it. However, we can take
+advantage of a fact that axe_core rules is used both for Ruby tests and Deque browser extension - axe devTools. They both
+provide the same output. 
+
+1. Make sure you have axe DevTools extension installed in a browser of your choice. See [axe DevTools official website for more information](https://www.deque.com/axe/browser-extensions/).
+
+1. Navigate to the view you're testing with a feature test.
+
+1. Open axe DevTools extension and run a scan of the page.
+
+1. Expand found issues and use Highlight option to see the elements on the page for each violation.
+
 ### Known accessibility violations
 
 This section documents violations where a recommendation differs with the [design system](https://design.gitlab.com/):

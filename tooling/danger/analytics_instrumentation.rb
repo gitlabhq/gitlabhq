@@ -81,36 +81,19 @@ module Tooling
 
       def check_removed_metric_fields!
         modified_config_files.each do |filename|
-          affected = false
-          removed_url = false
-          removed_milestone = false
+          metric_removed = false
+          has_removed_url = false
+          has_removed_milestone = false
           helper.changed_lines(filename).each do |mod_line, _i|
-            affected =  true if mod_line == '+status: removed'
-            removed_url = true if /^\+removed_by_url:\s?\w+/.match?(mod_line)
-            removed_milestone = true if /^\+milestone_removed:\s?\w+/.match?(mod_line)
+            metric_removed = true if mod_line == '+status: removed'
+            has_removed_url = true if /^\+removed_by_url:\s.+/.match?(mod_line)
+            has_removed_milestone = true if /^\+milestone_removed:\s.+/.match?(mod_line)
           end
 
-          next unless affected
+          next unless metric_removed
+          next if has_removed_url && has_removed_milestone
 
-          milestone = helper.mr_milestone || '[PLEASE SET MILESTONE]'
-          comment_text = helper.mr_milestone ? nil : "Please set the `milestone_removed` value manually"
-
-          replacement = "status: removed\n"
-          if !removed_url && !removed_milestone
-            replacement += "removed_by_url: #{helper.mr_web_url}\nmilestone_removed: #{milestone}"
-          elsif !removed_url
-            replacement += "removed_by_url: #{helper.mr_web_url}"
-            comment_text = nil
-          elsif !removed_milestone
-            replacement += "milestone_removed: #{milestone}"
-          end
-
-          add_suggestion(
-            filename: filename,
-            regex: STATUS_REMOVED_REGEX,
-            replacement: replacement,
-            comment_text: comment_text
-          )
+          comment_removed_metric(filename, has_removed_url, has_removed_milestone)
         end
       end
 
@@ -119,6 +102,29 @@ module Tooling
       end
 
       private
+
+      def comment_removed_metric(filename, has_removed_url, has_removed_milestone)
+        mr_has_milestone = !helper.mr_milestone.nil?
+        milestone = mr_has_milestone ? helper.mr_milestone['title'] : '[PLEASE SET MILESTONE]'
+        comment_text = mr_has_milestone ? nil : "Please set the `milestone_removed` value manually"
+
+        replacement = "status: removed\n"
+        if !has_removed_url && !has_removed_milestone
+          replacement += "removed_by_url: #{helper.mr_web_url}\nmilestone_removed: '#{milestone}'"
+        elsif !has_removed_url
+          replacement += "removed_by_url: #{helper.mr_web_url}"
+          comment_text = nil
+        elsif !has_removed_milestone
+          replacement += "milestone_removed: '#{milestone}'"
+        end
+
+        add_suggestion(
+          filename: filename,
+          regex: STATUS_REMOVED_REGEX,
+          replacement: replacement,
+          comment_text: comment_text
+        )
+      end
 
       def convert_to_table(items)
         message = "Scope | Affected files |\n"

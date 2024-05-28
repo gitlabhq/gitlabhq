@@ -15,8 +15,7 @@ module QA
           end
 
           base.view 'app/assets/javascripts/snippets/components/snippet_description_edit.vue' do
-            element 'snippet-description-field'
-            element 'description-placeholder', required: true
+            element 'snippet-description-field', required: true
           end
 
           base.view 'app/assets/javascripts/snippets/components/snippet_blob_edit.vue' do
@@ -43,7 +42,6 @@ module QA
         end
 
         def fill_description(description)
-          click_element 'description-placeholder'
           fill_element 'snippet-description-field', description
         end
 

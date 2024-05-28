@@ -28,18 +28,6 @@ RSpec.describe 'Projects > Snippets > Create Snippet', :js, feature_category: :s
     visit new_project_snippet_path(project)
   end
 
-  it 'shows collapsible description input' do
-    collapsed = snippet_description_field_collapsed
-
-    expect(page).not_to have_field(snippet_description_locator)
-    expect(collapsed).to be_visible
-
-    collapsed.click
-
-    expect(page).to have_field(snippet_description_locator)
-    expect(collapsed).not_to be_visible
-  end
-
   it 'creates a new snippet' do
     fill_form
     click_button('Create snippet')

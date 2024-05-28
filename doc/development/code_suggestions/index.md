@@ -37,7 +37,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
    1. Set the AI Gateway URL environmental variable by running `export AI_GATEWAY_URL=http://localhost:5052`.
    1. Run your GDK server with `gdk start` if it's not already running.
 1. [Setup AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist):
-   1. Run the AI Gateway as part of your GDK 
+   1. Run the AI Gateway as part of your GDK
       1. Follow the "How to set up and validate locally" steps in [this MR](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/3646#how-to-set-up-and-validate-locally)
       1. Be sure to add your `ANTHROPIC_API_KEY` to your GDK's `gitlab-ai-gateway/.env` file
    1. Run the AI Gateway externally
@@ -73,7 +73,7 @@ with the deployed staging AI Gateway. To do this:
    ```
 
 1. Restart the GDK.
-1. Ensure you followed the necessary [steps to enable the Code Suggestions feature](../../user/project/repository/code_suggestions/self_managed.md).
+1. Ensure you followed the necessary [steps to enable the Code Suggestions feature](../../user/project/repository/code_suggestions/index.md).
 1. Test out the Code Suggestions feature by opening the Web IDE for a project.
 
 ### Setup instructions to use GDK with the Code Suggestions Add-on
@@ -97,4 +97,4 @@ To set up your GDK for local development using the add-on, please follow these s
    1. Remove any active license.
    1. Add the new activation code.
 1. Inside your GDK, navigate to Admin Area > GitLab Duo Pro, go to `/admin/code_suggestions`
-1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user 
+1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user

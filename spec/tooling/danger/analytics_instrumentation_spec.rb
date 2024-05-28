@@ -296,9 +296,11 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
       file_diff.map { |line| line.delete_prefix('+') }
     end
 
+    let(:milestone) { { 'title' => '17.1' } }
     let(:filename) { 'config/metrics/new_metric.yml' }
     let(:mr_url) { 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1' }
-    let(:milestone) { '17.0' }
+
+    subject(:check_removed_metric_fields) { analytics_instrumentation.check_removed_metric_fields! }
 
     before do
       allow(fake_project_helper).to receive(:file_lines).with(filename).and_return(file_lines)
@@ -315,7 +317,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
           [
             "+---",
             "+status: removed",
-            "+milestone_removed: #{milestone}"
+            "+milestone_removed: '#{milestone['title']}'"
           ]
         end
 
@@ -331,7 +333,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
 
           expect(analytics_instrumentation).to receive(:markdown).with(expected_format, file: filename, line: 2)
 
-          analytics_instrumentation.check_removed_metric_fields!
+          check_removed_metric_fields
         end
       end
 
@@ -349,15 +351,15 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
             template = <<~SUGGEST_COMMENT
             ```suggestion
             status: removed
-            milestone_removed: %<milestone>s
+            milestone_removed: '%<milestone>s'
             ```
             SUGGEST_COMMENT
 
-            expected_format = format(template, milestone: milestone)
+            expected_format = format(template, milestone: milestone['title'])
 
             expect(analytics_instrumentation).to receive(:markdown).with(expected_format, file: filename, line: 2)
 
-            analytics_instrumentation.check_removed_metric_fields!
+            check_removed_metric_fields
           end
         end
 
@@ -368,7 +370,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
             template = <<~SUGGEST_COMMENT
             ```suggestion
             status: removed
-            milestone_removed: [PLEASE SET MILESTONE]
+            milestone_removed: '[PLEASE SET MILESTONE]'
             ```
             SUGGEST_COMMENT
 
@@ -376,7 +378,7 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
 
             expect(analytics_instrumentation).to receive(:markdown).with(expected_format, file: filename, line: 2)
 
-            analytics_instrumentation.check_removed_metric_fields!
+            check_removed_metric_fields
           end
         end
       end
@@ -394,15 +396,32 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
             ```suggestion
             status: removed
             removed_by_url: %<mr_url>s
-            milestone_removed: %<milestone>s
+            milestone_removed: '%<milestone>s'
             ```
           SUGGEST_COMMENT
 
-          expected_format = format(template, mr_url: mr_url, milestone: milestone)
+          expected_format = format(template, mr_url: mr_url, milestone: milestone['title'])
 
           expect(analytics_instrumentation).to receive(:markdown).with(expected_format, file: filename, line: 2)
 
-          analytics_instrumentation.check_removed_metric_fields!
+          check_removed_metric_fields
+        end
+      end
+
+      context 'and both removed_by_url and milestone_removed are present' do
+        let(:file_diff) do
+          [
+            "+---",
+            "+status: removed",
+            "+removed_by_url: #{mr_url}",
+            "+milestone_removed: '#{milestone['title']}'"
+          ]
+        end
+
+        it 'does not add suggestions' do
+          expect(analytics_instrumentation).not_to receive(:markdown)
+
+          check_removed_metric_fields
         end
       end
     end
@@ -413,14 +432,14 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
           "+---",
           "+status: active",
           "+removed_by_url: #{mr_url}",
-          "+milestone_removed: #{milestone}"
+          "+milestone_removed: '#{milestone['title']}'"
         ]
       end
 
       it 'does not add suggestions' do
         expect(analytics_instrumentation).not_to receive(:markdown)
 
-        analytics_instrumentation.check_removed_metric_fields!
+        check_removed_metric_fields
       end
     end
   end

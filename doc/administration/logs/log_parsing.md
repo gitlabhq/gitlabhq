@@ -190,10 +190,8 @@ jq --raw-output 'select(.remote_ip != "127.0.0.1") | [.remote_ip, .username, .ro
 ```
 
 This example shows a custom tool or script causing an unexpectedly high number of requests.
-User agents in this situation can be:
-
-- Third party libraries like `python-requests` or `curl`.
-- [GitLab CLI clients](https://about.gitlab.com/partners/technology-partners/#cli-clients).
+User agents in this situation can be specialized [third-party clients](../../api/rest/index.md#third-party-clients),
+or general tools like `curl`.
 
 You can also [use `fast-stats top`](#parsing-gitlab-logs-with-jq) to extract performance statistics for those users or bots.
 

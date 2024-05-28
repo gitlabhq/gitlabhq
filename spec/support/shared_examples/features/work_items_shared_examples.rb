@@ -688,3 +688,64 @@ RSpec.shared_examples 'work items rolled up dates' do
     end
   end
 end
+
+RSpec.shared_examples 'work items time tracking' do
+  it 'passes axe automated accessibility testing for estimate and time spent modals', :aggregate_failures do
+    click_button 'estimate'
+
+    expect(page).to be_axe_clean.within('[role="dialog"]')
+
+    click_button 'Close'
+    click_button 'time spent'
+
+    expect(page).to be_axe_clean.within('[role="dialog"]')
+  end
+
+  it 'adds and removes an estimate', :aggregate_failures do
+    click_button 'estimate'
+    fill_in 'Estimate', with: '5d'
+    click_button 'Save'
+
+    expect(page).to have_text 'Estimate 5d'
+    expect(page).to have_button '5d'
+    expect(page).not_to have_button 'estimate'
+
+    click_button '5d'
+    click_button 'Remove'
+
+    expect(page).not_to have_text 'Estimate 5d'
+    expect(page).not_to have_button '5d'
+    expect(page).to have_button 'estimate'
+  end
+
+  it 'adds and deletes time entries and view report', :aggregate_failures do
+    click_button 'time entry'
+    fill_in 'Time spent', with: '1d'
+    fill_in 'Summary', with: 'First summary'
+    click_button 'Save'
+
+    click_button 'Add time entry'
+    fill_in 'Time spent', with: '2d'
+    fill_in 'Summary', with: 'Second summary'
+    click_button 'Save'
+
+    expect(page).to have_text 'Spent 3d'
+    expect(page).to have_button '3d'
+
+    click_button '3d'
+
+    expect(page).to have_css 'h2', text: 'Time tracking report'
+    expect(page).to have_text '1d Sidney Jones1 First summary'
+    expect(page).to have_text '2d Sidney Jones1 Second summary'
+
+    click_button 'Delete time spent', match: :first
+
+    expect(page).to have_text '1d Sidney Jones1 First summary'
+    expect(page).not_to have_text '2d Sidney Jones1 Second summary'
+
+    click_button 'Close'
+
+    expect(page).to have_text 'Spent 1d'
+    expect(page).to have_button '1d'
+  end
+end

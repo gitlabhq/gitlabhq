@@ -15,7 +15,7 @@ information, configure the [authentication report](#configure-the-authentication
 
 For more information about particular error messages or situations see [known problems](#known-problems).
 
-The browser-based analyzer is used to authenticate the user. For advanced troubleshooting, see [browser-based troubleshooting](browser_based_troubleshooting.md).
+The browser-based analyzer is used to authenticate the user. For advanced troubleshooting, see [browser-based troubleshooting](browser/troubleshooting.md).
 
 ## Read the logs
 

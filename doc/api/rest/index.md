@@ -804,6 +804,9 @@ Report bugs and feature proposals to the respective projects.
 
 For questions about these integrations, use the [GitLab community forum](https://forum.gitlab.com/).
 
+Administrators can monitor usage of these API clients by
+[parsing logs](../../administration/logs/log_parsing.md#print-top-api-user-agents).
+
 ### `C#`
 
 - [`GitLabApiClient`](https://github.com/nmklotas/GitLabApiClient)
