@@ -7,6 +7,7 @@ source "$(dirname "$0")/utils.sh"
 REGISTRY="${CI_REGISTRY}/${CI_PROJECT_PATH}"
 SHA_TAG="${CI_COMMIT_SHA}"
 BRANCH_TAG="${CI_COMMIT_REF_SLUG}"
+STABLE_BRANCH_PATTERN="^[\d-]+-stable-ee$"
 
 IMAGE="${REGISTRY}/gitlab-qa-gdk"
 
@@ -14,6 +15,10 @@ if [[ -n "${CI}" ]]; then
   OUTPUT_OPTION="--push"
 else
   OUTPUT_OPTION="--load"
+fi
+
+if [[ "$BRANCH_TAG" =~ $STABLE_BRANCH_PATTERN || "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" =~ $STABLE_BRANCH_PATTERN ]]; then
+  GDK_BASE_TAG_PREFIX="stable-"
 fi
 
 echoinfo "Building GDK image" "yes"
@@ -24,6 +29,7 @@ docker buildx build \
   --cache-from="${IMAGE}/cache:master" \
   --file="qa/gdk/Dockerfile.gdk" \
   --platform=${ARCH:-amd64} \
+  --build-arg "GDK_BASE_TAG_PREFIX=${GDK_BASE_TAG_PREFIX}" \
   --tag="${IMAGE}:${SHA_TAG}" \
   --tag="${IMAGE}:${BRANCH_TAG}" \
   ${OUTPUT_OPTION} \
