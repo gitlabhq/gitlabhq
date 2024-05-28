@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > LFS settings', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Settings > LFS settings', feature_category: :source_code_management do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :maintainer }

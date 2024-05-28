@@ -44,12 +44,14 @@ Therefore, communicate with project users about compliance pipeline configuratio
 
 ## Configure a compliance pipeline
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383209) in GitLab 15.11, compliance frameworks moved to compliance center.
+
 To configure a compliance pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings** > **General**.
-1. Expand the **Compliance frameworks** section.
-1. In **Compliance pipeline configuration (optional)**, add the path to the compliance framework configuration. Use the
+1. Select **Secure** > **Compliance Center**.
+1. Select **Frameworks** section.
+1. Select **New framework** section, add information of compliance framework including path to the compliance framework configuration. Use the
    `path/file.y[a]ml@group-name/project-name` format. For example:
 
    - `.compliance-ci.yml@gitlab-org/gitlab`.

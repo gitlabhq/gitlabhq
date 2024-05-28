@@ -10111,6 +10111,9 @@ msgstr ""
 msgid "Can't contain spaces, %{chars}"
 msgstr ""
 
+msgid "Can't create model version package"
+msgstr ""
+
 msgid "Can't create snippet: %{err}"
 msgstr ""
 
@@ -57396,6 +57399,9 @@ msgid "Version %{versionNumber}"
 msgstr ""
 
 msgid "Version %{versionNumber} (latest)"
+msgstr ""
+
+msgid "Version must be semantic version"
 msgstr ""
 
 msgid "VersionCheck|%{details}"

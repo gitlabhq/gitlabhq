@@ -154,6 +154,9 @@ You'll have this request payload that combines the template with a `push` event:
 }
 ```
 
+Custom webhook templates do not support accessing properties that are in arrays. Support for this is proposed in
+[issue 463332](https://gitlab.com/gitlab-org/gitlab/-/issues/463332).
+
 ### Filter push events by branch
 
 You can filter push events by branch. Use one of the following options to filter which push events are sent to your webhook endpoint:

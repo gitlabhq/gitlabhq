@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Projects > Settings > Pipelines settings", feature_category: :groups_and_projects do
+RSpec.describe "Projects > Settings > Pipelines settings", feature_category: :continuous_integration do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }

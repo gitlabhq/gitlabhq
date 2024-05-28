@@ -118,7 +118,7 @@ module QA
             end
           end
 
-          it "pushes image and deletes tag", :registry, testcase: params[:testcase] do
+          it "pushes image and deletes tag", :blocking, :registry, testcase: params[:testcase] do
             Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
               create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
                 {

@@ -49,10 +49,9 @@ RSpec.describe 'Creation of a machine learning model version', feature_category:
     end
 
     context 'when version is invalid' do
-      err_msg = "Validation failed: Version is invalid"
       let(:version) { 'invalid-version' }
 
-      it_behaves_like 'a mutation that returns errors in the response', errors: [err_msg]
+      it_behaves_like 'a mutation that returns errors in the response', errors: ["Version must be semantic version"]
     end
   end
 end

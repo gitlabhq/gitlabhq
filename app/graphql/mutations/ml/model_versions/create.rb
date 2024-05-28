@@ -36,7 +36,7 @@ module Mutations
 
           return { errors: ['Model not found'] } unless model
 
-          model_version = ::Ml::CreateModelVersionService.new(model,
+          result = ::Ml::CreateModelVersionService.new(model,
             {
               version: args[:version],
               description: args[:description]
@@ -44,13 +44,8 @@ module Mutations
           ).execute
 
           {
-            model_version: model_version,
-            errors: []
-          }
-        rescue ActiveRecord::RecordInvalid, RuntimeError => e
-          {
-            model_version: nil,
-            errors: [e.message]
+            model_version: result.payload[:model_version],
+            errors: result.message
           }
         end
       end
