@@ -40,6 +40,7 @@ describe('ModelCreate', () => {
   const createWrapper = (
     createModelResolver = jest.fn().mockResolvedValue(createModelResponses.success),
     createModelVersionResolver = jest.fn().mockResolvedValue(createModelVersionResponses.success),
+    createModelVisible = false,
   ) => {
     const requestHandlers = [
       [createModelMutation, createModelResolver],
@@ -48,6 +49,9 @@ describe('ModelCreate', () => {
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(ModelCreate, {
+      propsData: {
+        createModelVisible,
+      },
       provide: {
         projectPath: 'some/project',
       },
@@ -69,17 +73,37 @@ describe('ModelCreate', () => {
   };
 
   describe('Initial state', () => {
-    beforeEach(() => {
-      createWrapper();
-    });
+    describe('Modal closed', () => {
+      beforeEach(() => {
+        createWrapper();
+      });
 
-    it('renders the modal button', () => {
-      expect(findModalButton().text()).toBe('Create model');
+      it('does not show modal', () => {
+        expect(findGlModal().props('visible')).toBe(false);
+      });
+
+      it('renders the modal button', () => {
+        expect(findModalButton().text()).toBe('Create model');
+      });
+
+      it('clicking create button triggers show-create-model', async () => {
+        await findModalButton().vm.$emit('click');
+
+        expect(wrapper.emitted('show-create-model')).toHaveLength(1);
+      });
     });
 
     describe('Modal open', () => {
       beforeEach(() => {
-        findModalButton().trigger('click');
+        createWrapper(
+          jest.fn().mockResolvedValue(createModelResponses.success),
+          jest.fn().mockResolvedValue(createModelVersionResponses.success),
+          true,
+        );
+      });
+
+      it('does not show modal', () => {
+        expect(findGlModal().props('visible')).toBe(true);
       });
 
       it('renders the name input', () => {
@@ -134,6 +158,18 @@ describe('ModelCreate', () => {
 
       it('does not render the alert by default', () => {
         expect(findGlAlert().exists()).toBe(false);
+      });
+
+      it('clicking on cancel button triggers hide-create-model', async () => {
+        await findGlModal().vm.$emit('cancel');
+
+        expect(wrapper.emitted('hide-create-model')).toHaveLength(1);
+      });
+
+      it('dismissing modal triggers hide-create-model', async () => {
+        await findGlModal().vm.$emit('hide');
+
+        expect(wrapper.emitted('hide-create-model')).toHaveLength(1);
       });
     });
   });

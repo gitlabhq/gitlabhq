@@ -5,10 +5,9 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { IndexMlModels } from '~/ml/model_registry/apps';
 import ModelRow from '~/ml/model_registry/components/model_row.vue';
 import ModelCreate from '~/ml/model_registry/components/model_create.vue';
-import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
-import EmptyState from '~/ml/model_registry/components/empty_state.vue';
+import EmptyState from '~/ml/model_registry/components/model_list_empty_state.vue';
 import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
 import SearchableList from '~/ml/model_registry/components/searchable_list.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -21,7 +20,6 @@ Vue.use(VueApollo);
 
 const defaultProps = {
   projectPath: 'path/to/project',
-  createModelPath: 'path/to/create',
   canWriteModelRegistry: false,
 };
 
@@ -89,7 +87,18 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
       await waitForPromises();
 
-      expect(findEmptyState().props('entityType')).toBe(MODEL_ENTITIES.model);
+      expect(findEmptyState().exists()).toBe(true);
+    });
+
+    it('opens model creation from empty state', async () => {
+      createWrapper({
+        props: { canWriteModelRegistry: true },
+        resolver: emptyQueryResolver(),
+      });
+
+      await findEmptyState().vm.$emit('open-create-model');
+
+      expect(findModelCreate().props('createModelVisible')).toBe(true);
     });
   });
 
@@ -114,6 +123,21 @@ describe('ml/model_registry/apps/index_ml_models', () => {
         await waitForPromises();
 
         expect(findModelCreate().exists()).toBe(true);
+      });
+
+      it('opens and closes model creation', async () => {
+        createWrapper({
+          props: { canWriteModelRegistry: true },
+          resolver: emptyQueryResolver(),
+        });
+
+        await findModelCreate().vm.$emit('show-create-model');
+
+        expect(findModelCreate().props('createModelVisible')).toBe(true);
+
+        await findModelCreate().vm.$emit('hide-create-model');
+
+        expect(findModelCreate().props('createModelVisible')).toBe(false);
       });
     });
   });

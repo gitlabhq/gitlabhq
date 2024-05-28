@@ -360,33 +360,5 @@ RSpec.describe AutoMerge::BaseService, feature_category: :code_review_workflow d
         expect(available_for).to be_falsey
       end
     end
-
-    context 'when refactor_auto_merge is disabled' do
-      before do
-        stub_feature_flags(refactor_auto_merge: false)
-        allow(merge_request).to receive(:can_be_merged_by?).and_return(can_be_merged)
-        allow(merge_request).to receive(:open?).and_return(open)
-        allow(merge_request).to receive(:broken?).and_return(broken)
-        allow(merge_request).to receive(:draft?).and_return(draft)
-        allow(merge_request).to receive(:mergeable_discussions_state?).and_return(discussions)
-        allow(merge_request).to receive(:merge_blocked_by_other_mrs?).and_return(blocked)
-      end
-
-      where(:can_be_merged, :open, :broken, :discussions, :blocked, :draft, :result) do
-        true | true | false | true | false | false | true
-        false | true | false | true | false | false | false
-        true | false | false | true | false | false | false
-        true | true | true | true | false | false | false
-        true | true | false | false | false | false | false
-        true | true | false | true | true | false | false
-        true | true | false | true | false | true | false
-      end
-
-      with_them do
-        it 'returns the expected results' do
-          expect(available_for).to eq(result)
-        end
-      end
-    end
   end
 end

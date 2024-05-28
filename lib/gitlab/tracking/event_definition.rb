@@ -90,15 +90,10 @@ module Gitlab
           { name: attributes[:action], time_framed?: true, filter: {} }
         ]
         Gitlab::Usage::MetricDefinition.definitions.each_value do |metric_definition|
-          metric_definition.attributes[:events]&.each do |event_selection_rule|
-            if event_selection_rule[:name] == attributes[:action]
-              result << {
-                name: attributes[:action],
-                time_framed?: %w[7d 28d].include?(metric_definition.attributes[:time_frame]),
-                filter: event_selection_rule[:filter] || {}
-              }
-            end
+          matching_event_selection_rules = metric_definition.event_selection_rules.select do |event_selection_rule|
+            event_selection_rule[:name] == attributes[:action]
           end
+          result.concat(matching_event_selection_rules)
         end
         result.uniq
       end

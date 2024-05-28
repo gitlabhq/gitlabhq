@@ -45,7 +45,7 @@
           = markdown_field(project, :description)
 
       - if project.topics.any?
-        .gl-mt-3.gl-ml-n1
+        .gl-mt-3.-gl-ml-1
           = render "shared/projects/topics", project: project.present(current_user: current_user)
       - if project.catalog_resource
         = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-mt-2' }

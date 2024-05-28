@@ -58,17 +58,9 @@ module AutoMerge
 
     def available_for?(merge_request)
       strong_memoize("available_for_#{merge_request.id}") do
-        if Feature.enabled?(:refactor_auto_merge, merge_request.project, type: :gitlab_com_derisk)
-          merge_request.can_be_merged_by?(current_user) &&
-            merge_request.mergeability_checks_pass?(**skippable_available_for_checks(merge_request)) &&
-            yield
-        else
-          merge_request.can_be_merged_by?(current_user) &&
-            merge_request.open? &&
-            !merge_request.broken? &&
-            overrideable_available_for_checks(merge_request) &&
-            yield
-        end
+        merge_request.can_be_merged_by?(current_user) &&
+          merge_request.mergeability_checks_pass?(**skippable_available_for_checks(merge_request)) &&
+          yield
       end
     end
 
@@ -79,12 +71,6 @@ module AutoMerge
         auto_merge_requested: true,
         auto_merge_strategy: strategy
       )
-    end
-
-    def overrideable_available_for_checks(merge_request)
-      !merge_request.draft? &&
-        merge_request.mergeable_discussions_state? &&
-        !merge_request.merge_blocked_by_other_mrs?
     end
 
     # Overridden in child classes

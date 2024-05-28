@@ -384,7 +384,7 @@ RSpec::Matchers.define :increment_usage_metrics do |*key_paths|
   # to be passed to a change matcher
   def metric_value_tracker(key_path, metric_definition)
     proc do
-      stub_usage_data_connections if metric_definition.attributes[:data_source] == 'database'
+      stub_usage_data_connections if metric_definition.data_source == 'database'
 
       metric = Gitlab::Usage::Metric.new(metric_definition)
       instrumentation_object = stub_metric_timeframe(metric)

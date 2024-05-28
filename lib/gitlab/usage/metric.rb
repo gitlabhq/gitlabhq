@@ -39,7 +39,7 @@ module Gitlab
 
       def instrumentation_object
         instrumentation_class = "Gitlab::Usage::Metrics::Instrumentations::#{definition.instrumentation_class}"
-        @instrumentation_object ||= instrumentation_class.constantize.new(definition.attributes)
+        @instrumentation_object ||= instrumentation_class.constantize.new(definition.raw_attributes)
       end
     end
   end

@@ -4,7 +4,7 @@ import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import EmptyState from '../components/empty_state.vue';
+import EmptyState from '../components/model_list_empty_state.vue';
 import * as i18n from '../translations';
 import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '../constants';
 import ModelRow from '../components/model_row.vue';
@@ -71,6 +71,7 @@ export default {
       errorMessage: '',
       skipQueries: true,
       queryVariables: {},
+      createModelVisible: false,
     };
   },
   computed: {
@@ -127,7 +128,12 @@ export default {
         <metadata-item icon="machine-learning" :text="$options.i18n.modelsCountLabel(count)" />
       </template>
       <template #right-actions>
-        <model-create v-if="canWriteModelRegistry" />
+        <model-create
+          v-if="canWriteModelRegistry"
+          :create-model-visible="createModelVisible"
+          @show-create-model="createModelVisible = true"
+          @hide-create-model="createModelVisible = false"
+        />
 
         <actions-dropdown />
       </template>
@@ -142,7 +148,7 @@ export default {
       @fetch-page="fetchPage"
     >
       <template #empty-state>
-        <empty-state :entity-type="$options.modelEntity" />
+        <empty-state @open-create-model="createModelVisible = true" />
       </template>
 
       <template #item="{ item }">

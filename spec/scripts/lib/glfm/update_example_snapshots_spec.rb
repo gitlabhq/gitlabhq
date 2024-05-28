@@ -678,7 +678,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
             canonical: |
               <p><a href="groups-test-file">groups-test-file</a></p>
             static: |-
-              <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
+              <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/-/group/66666/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
             wysiwyg: |-
               <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/groups-test-file">groups-test-file</a></p>
           06_02_00__api_request_overrides__project_repo_link__001:

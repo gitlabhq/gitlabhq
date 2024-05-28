@@ -1,38 +1,28 @@
-import axios from 'axios';
-import MockAdapter from 'axios-mock-adapter';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import { uploadModel } from '~/ml/model_registry/services/upload_model';
 import ImportArtifactZone from '~/ml/model_registry/components/import_artifact_zone.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 
 jest.mock('~/alert');
+jest.mock('~/ml/model_registry/services/upload_model', () => ({
+  uploadModel: jest.fn(() => Promise.resolve()),
+}));
 
 describe('ImportArtifactZone', () => {
   let wrapper;
-  let axiosMock;
 
   const file = { name: 'file.txt', size: 1024 };
   const initialProps = {
     path: 'some/path',
   };
-  const filePath = 'some/path/file.txt';
   const formattedFileSizeDiv = () => wrapper.findByTestId('formatted-file-size');
   const fileNameDiv = () => wrapper.findByTestId('file-name');
   const zone = () => wrapper.findComponent(UploadDropzone);
   const loadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const emulateFileDrop = () => zone().vm.$emit('change', file);
-
-  beforeEach(() => {
-    axiosMock = new MockAdapter(axios);
-    axiosMock.onPut(filePath).replyOnce(HTTP_STATUS_OK, {});
-  });
-
-  afterEach(() => {
-    axiosMock.restore();
-  });
 
   describe('successful upload', () => {
     beforeEach(() => {
@@ -72,9 +62,13 @@ describe('ImportArtifactZone', () => {
       await emulateFileDrop();
       await waitForPromises();
 
-      expect(axiosMock.history.put).toHaveLength(1);
-      const uploadRequest = axiosMock.history.put[0];
-      expect(uploadRequest.url).toBe('some/path/file.txt');
+      expect(uploadModel).toHaveBeenCalledWith({
+        file: {
+          name: 'file.txt',
+          size: 1024,
+        },
+        importPath: 'some/path',
+      });
     });
 
     it('emits a change event on success', async () => {
@@ -94,8 +88,7 @@ describe('ImportArtifactZone', () => {
       });
 
       it('displays an error on failure', async () => {
-        axiosMock.reset();
-        axiosMock.onPut(filePath).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR, {});
+        uploadModel.mockRejectedValue('Internal server error.');
 
         await emulateFileDrop();
         await waitForPromises();
@@ -106,8 +99,7 @@ describe('ImportArtifactZone', () => {
       });
 
       it('resets the state on failure', async () => {
-        axiosMock.reset();
-        axiosMock.onPut(filePath).timeout();
+        uploadModel.mockRejectedValue('Internal server error.');
 
         await emulateFileDrop();
         await waitForPromises();
@@ -131,7 +123,7 @@ describe('ImportArtifactZone', () => {
         await emulateFileDrop();
         await waitForPromises();
 
-        expect(axiosMock.history.put).toHaveLength(0);
+        expect(uploadModel).not.toHaveBeenCalled();
         expect(loadingIcon().exists()).toBe(false);
       });
     });
@@ -150,7 +142,7 @@ describe('ImportArtifactZone', () => {
         await emulateFileDrop();
         await waitForPromises();
 
-        expect(axiosMock.history.put).toHaveLength(0);
+        expect(uploadModel).not.toHaveBeenCalled();
         expect(loadingIcon().exists()).toBe(false);
       });
     });

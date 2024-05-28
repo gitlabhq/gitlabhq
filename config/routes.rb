@@ -108,7 +108,8 @@ InitializerConnections.raise_if_new_database_connection do
         constraints: {
           model: /project|group/,
           filename: %r{[^/]+}
-        }
+        },
+        as: 'banzai_upload'
 
       get '/whats_new' => 'whats_new#index'
 

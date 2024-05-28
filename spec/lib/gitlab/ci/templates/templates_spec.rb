@@ -20,10 +20,11 @@ RSpec.describe 'CI YML Templates' do
 
   context 'that support autodevops' do
     exceptions = [
-      'Diffblue-Cover.gitlab-ci.yml',       # no auto-devops
-      'Security/DAST.gitlab-ci.yml',        # DAST stage is defined inside AutoDevops yml
-      'Security/DAST-API.gitlab-ci.yml',    # no auto-devops
-      'Security/API-Fuzzing.gitlab-ci.yml', # no auto-devops
+      'Diffblue-Cover.gitlab-ci.yml',        # no auto-devops
+      'Security/DAST.gitlab-ci.yml',         # DAST stage is defined inside AutoDevops yml
+      'Security/DAST-API.gitlab-ci.yml',     # no auto-devops
+      'Security/API-Fuzzing.gitlab-ci.yml',  # no auto-devops
+      'Security/API-Security.gitlab-ci.yml', # no auto-decops
       'ThemeKit.gitlab-ci.yml'
     ]
 
@@ -164,6 +165,51 @@ RSpec.describe 'CI YML Templates' do
         it { is_expected.to be_valid }
 
         include_examples 'require default stages to be included'
+      end
+
+      context 'when API Security template' do
+        # The API Security template purposly excludes a stages
+        # definition.
+
+        let(:template_name) { 'Security/API-Security.gitlab-ci.yml' }
+
+        context 'with default stages' do
+          let(:content) do
+            <<~EOS
+              include:
+                - template: #{template_name}
+
+              concrete_build_implemented_by_a_user:
+                stage: test
+                script: do something
+            EOS
+          end
+
+          it { is_expected.not_to be_valid }
+        end
+
+        context 'with defined stages' do
+          let(:content) do
+            <<~EOS
+              include:
+                - template: #{template_name}
+
+              stages:
+                - build
+                - test
+                - deploy
+                - dast
+
+              concrete_build_implemented_by_a_user:
+                stage: test
+                script: do something
+            EOS
+          end
+
+          it { is_expected.to be_valid }
+
+          include_examples 'require default stages to be included'
+        end
       end
     end
   end

@@ -217,7 +217,7 @@ export default {
       :fields="$options.fields"
       stacked="md"
       data-testid="deploy-keys-list"
-      class="-gl-mt-1 gl-mb-n2"
+      class="-gl-mt-1 -gl-mb-2"
     >
       <template #table-busy>
         <gl-loading-icon size="sm" class="gl-my-5" />

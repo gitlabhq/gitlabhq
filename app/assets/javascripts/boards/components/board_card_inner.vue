@@ -347,7 +347,7 @@ export default {
           </span>
         </span>
       </div>
-      <div class="board-card-assignee gl-display-flex gl-mb-n2">
+      <div class="board-card-assignee gl-display-flex -gl-mb-2">
         <user-avatar-link
           v-for="assignee in cappedAssignees"
           :key="assignee.id"
@@ -368,7 +368,7 @@ export default {
           v-if="shouldRenderCounter"
           v-gl-tooltip
           :title="assigneeCounterTooltip"
-          class="avatar-counter gl-bg-gray-100 gl-text-gray-900 gl-cursor-help gl-font-weight-bold gl-border-0 gl-leading-24 gl-ml-n3"
+          class="avatar-counter gl-bg-gray-100 gl-text-gray-900 gl-cursor-help gl-font-weight-bold gl-border-0 gl-leading-24 -gl-ml-3"
           data-placement="bottom"
           >{{ assigneeCounterLabel }}</span
         >

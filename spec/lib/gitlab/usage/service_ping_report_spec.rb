@@ -143,7 +143,7 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
     end
 
     def type_cast_to_defined_type(value, metric_definition)
-      case metric_definition&.attributes&.fetch(:value_type)
+      case metric_definition&.value_type
       when "string"
         value.to_s
       when "number"
@@ -181,7 +181,7 @@ RSpec.describe Gitlab::Usage::ServicePingReport, :use_clean_rails_memory_store_c
         metric_definition = metric_definitions[key_path.join('.')]
 
         # Skip broken metrics since they are usually overriden to return -1
-        next if metric_definition&.attributes&.fetch(:status) == 'broken'
+        next if metric_definition&.broken?
 
         value = type_cast_to_defined_type(value, metric_definition)
         payload_value = service_ping_payload.dig(*key_path)

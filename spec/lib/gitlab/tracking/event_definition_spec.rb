@@ -65,7 +65,7 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
   it 'has event definitions for all events used in Internal Events metric definitions', :aggregate_failures do
     from_metric_definitions = Gitlab::Usage::MetricDefinition.not_removed
       .values
-      .select { |m| m.attributes[:data_source] == 'internal_events' }
+      .select(&:internal_events?)
       .flat_map { |m| m.events&.keys }
       .compact
       .uniq

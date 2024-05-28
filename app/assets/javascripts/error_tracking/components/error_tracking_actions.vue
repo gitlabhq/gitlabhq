@@ -44,7 +44,7 @@ export default {
 
 <template>
   <div>
-    <gl-button-group class="gl-flex-direction-column gl-md-flex-direction-row gl-ml-n6">
+    <gl-button-group class="gl-flex-direction-column gl-md-flex-direction-row -gl-ml-6">
       <gl-button
         :key="ignoreBtn.status"
         :ref="`${ignoreBtn.title.toLowerCase()}Error`"

@@ -33099,6 +33099,15 @@ msgstr ""
 msgid "MlExperimentTracking|Version"
 msgstr ""
 
+msgid "MlModelRegistry|# Create a model"
+msgstr ""
+
+msgid "MlModelRegistry|# Create a version"
+msgstr ""
+
+msgid "MlModelRegistry|# Log artifacts"
+msgstr ""
+
 msgid "MlModelRegistry|%d model"
 msgid_plural "MlModelRegistry|%d models"
 msgstr[0] ""
@@ -33217,6 +33226,9 @@ msgstr ""
 msgid "MlModelRegistry|ID"
 msgstr ""
 
+msgid "MlModelRegistry|Import your machine learning using GitLab directly or using the MLflow client:"
+msgstr ""
+
 msgid "MlModelRegistry|Info"
 msgstr ""
 
@@ -33230,6 +33242,9 @@ msgid "MlModelRegistry|Leave empty to auto increment."
 msgstr ""
 
 msgid "MlModelRegistry|Leave empty to skip version creation."
+msgstr ""
+
+msgid "MlModelRegistry|MLflow compatibility"
 msgstr ""
 
 msgid "MlModelRegistry|MLflow run ID"
@@ -33275,6 +33290,9 @@ msgid "MlModelRegistry|No logged metrics"
 msgstr ""
 
 msgid "MlModelRegistry|No logged parameters"
+msgstr ""
+
+msgid "MlModelRegistry|No models registered"
 msgstr ""
 
 msgid "MlModelRegistry|No registered versions"

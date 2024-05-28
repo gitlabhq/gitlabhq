@@ -7,7 +7,7 @@ product_group: global_search
 performance_indicator_type: []
 value_type: number
 status: active
-milestone: '17.0'
+milestone: '17.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151645
 time_frame: 7d
 data_source: internal_events

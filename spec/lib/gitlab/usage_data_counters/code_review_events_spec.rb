@@ -20,8 +20,8 @@ RSpec.describe 'Code review events' do
     ]
 
     all_code_review_events = Gitlab::Usage::MetricDefinition.all.flat_map do |definition|
-      next [] unless definition.attributes[:key_path].include?('.code_review.') &&
-        definition.attributes[:status] == 'active' &&
+      next [] unless definition.key_path.include?('.code_review.') &&
+        definition.active? &&
         definition.events.count == 1
 
       definition.events.keys
@@ -37,8 +37,8 @@ RSpec.describe 'Code review events' do
   end
 
   def code_review_aggregated_metric?(definition)
-    definition.attributes[:product_group] == 'code_review' &&
-      definition.attributes[:status] == 'active' &&
+    definition.product_group == 'code_review' &&
+      definition.active? &&
       definition.events.count > 1
   end
 end

@@ -2341,7 +2341,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response['alt']).to eq("dk")
       expect(json_response['url']).to start_with("/uploads/")
       expect(json_response['url']).to end_with("/dk.png")
-      expect(json_response['full_path']).to start_with("/#{project.namespace.path}/#{project.path}/uploads")
+      expect(json_response['full_path']).to start_with("/-/project/#{project.id}/uploads")
     end
 
     it "does not leave the temporary file in place after uploading, even when the tempfile reaper does not run" do

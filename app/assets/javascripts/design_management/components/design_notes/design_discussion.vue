@@ -371,7 +371,7 @@ export default {
             <template v-if="discussion.resolvable" #resolve-checkbox>
               <gl-form-checkbox
                 v-model="shouldChangeResolvedStatus"
-                class="gl-mt-5 gl-mb-n3"
+                class="gl-mt-5 -gl-mb-3"
                 data-testid="resolve-checkbox"
               >
                 {{ resolveCheckboxText }}

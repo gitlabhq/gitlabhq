@@ -28,13 +28,18 @@ export default {
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
   inject: ['projectPath'],
+  props: {
+    createModelVisible: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       name: null,
       version: null,
       description: null,
       versionDescription: null,
-      modalVisible: false,
       errorMessage: null,
       selectedFile: null,
       modelData: null,
@@ -107,10 +112,10 @@ export default {
       }
     },
     showCreateModal() {
-      this.modalVisible = true;
+      this.$emit('show-create-model');
     },
     cancelModal() {
-      this.modalVisible = false;
+      this.$emit('hide-create-model');
     },
     hideAlert() {
       this.errorMessage = null;
@@ -158,13 +163,14 @@ export default {
   <div>
     <gl-button @click="showCreateModal">{{ $options.modal.buttonTitle }}</gl-button>
     <gl-modal
-      v-model="modalVisible"
       modal-id="create-model-modal"
+      :visible="createModelVisible"
       :title="$options.modal.title"
       :action-primary="$options.modal.actionPrimary"
       :action-cancel="$options.modal.actionCancel"
       size="sm"
       @primary="create"
+      @hide="cancelModal"
       @cancel="cancelModal"
     >
       <gl-form>

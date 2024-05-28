@@ -2,7 +2,7 @@
 
 RSpec.shared_context 'with GLFM example snapshot fixtures' do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, name: 'glfm_group', owners: user) }
+  let_it_be(:group) { create(:group, name: 'glfm_group', owners: user, id: 66666) }
 
   let_it_be(:project) do
     # NOTE: We hardcode the IDs on all fixtures to prevent variability in the

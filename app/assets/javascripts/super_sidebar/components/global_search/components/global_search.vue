@@ -232,7 +232,7 @@ export default {
       :aria-label="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
       class="gl-relative gl-rounded-lg gl-w-full gl-pb-0"
     >
-      <div class="input-box-wrapper gl-bg-white gl-border-b gl-mb-n1 gl-p-2">
+      <div class="input-box-wrapper gl-bg-white gl-border-b -gl-mb-1 gl-p-2">
         <gl-search-box-by-type
           id="search"
           ref="searchInput"

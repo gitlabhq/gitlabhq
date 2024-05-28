@@ -51,7 +51,7 @@ RSpec.describe 'Projects > Snippets > Create Snippet', :js, feature_category: :s
     wait_for_requests
 
     link = find('a.no-attachment-icon img.js-lazy-loaded[alt="banana_sample"]')['src']
-    expect(link).to match(%r{/#{Regexp.escape(project.full_path)}/uploads/\h{32}/banana_sample\.gif\z})
+    expect(link).to match(%r{/-/project/#{project.id}/uploads/\h{32}/banana_sample\.gif\z})
   end
 
   context 'when the git operation fails' do

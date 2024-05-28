@@ -7880,7 +7880,7 @@
   canonical: |
     <p><a href="groups-test-file">groups-test-file</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
+    <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/-/group/66666/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__002:
   canonical: |
     <p><a href="projects-test-file">projects-test-file</a></p>
@@ -7910,14 +7910,14 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
+    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/-/group/66666/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/-/group/66666/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" alt="test-file"></p>
 08_04_02__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
+    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/-/project/77777/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/-/project/77777/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" alt="test-file"></p>
 08_04_03__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project_wiki__001:
@@ -7931,14 +7931,14 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
+    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/-/group/66666/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip">test-file</a></p>
 08_04_05__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
+    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/-/project/77777/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip">test-file</a></p>
 08_04_06__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project_wiki__001:

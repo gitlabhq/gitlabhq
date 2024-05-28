@@ -180,7 +180,7 @@ export default {
       </template>
 
       <template #cell(actions)="{ item }">
-        <gl-button-group class="gl-ml-3 -gl-mt-2 gl-mb-n2">
+        <gl-button-group class="gl-ml-3 -gl-mt-2 -gl-mb-2">
           <gl-button
             icon="settings"
             :aria-label="$options.i18n.editIntegration"

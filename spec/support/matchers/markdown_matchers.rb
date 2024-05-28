@@ -18,8 +18,8 @@ module MarkdownMatchers
       link = actual.at_css('a:contains("Relative Upload Link")')
       image = actual.at_css('img[alt="Relative Upload Image"]')
 
-      expect(link['href']).to eq("/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg")
-      expect(image['data-src']).to eq("/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg")
+      expect(link['href']).to eq("/-/project/#{project.id}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg")
+      expect(image['data-src']).to eq("/-/project/#{project.id}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg")
     end
   end
 

@@ -47,9 +47,7 @@ module ServicePing
     end
 
     def metric_category(key_path)
-      metric_definitions[key_path]
-        &.attributes
-        &.fetch(:data_category, ::ServicePing::PermitDataCategories::OPTIONAL_CATEGORY)
+      metric_definitions[key_path]&.data_category || ::ServicePing::PermitDataCategories::OPTIONAL_CATEGORY
     end
 
     def metric_definitions
