@@ -29,17 +29,6 @@ build-qa-image as-if-foss:
     - .as-if-foss
     - .build-images:rules:build-qa-image-as-if-foss
 
-build-gdk-image:
-  extends:
-    - .base-image-build-buildx
-    - .build-images:rules:build-gdk-image
-  tags:
-    - saas-linux-xlarge-amd64
-  stage: build-images
-  needs: []
-  script:
-    - run_timed_command "scripts/build_gdk_image"
-
 # NOTE: release-tools verifies the presence on this job for a commit that is
 # candidate to an auto-deploy package. This job name can't be changed without
 # changing the code in release-tools.

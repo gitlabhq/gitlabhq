@@ -2538,6 +2538,8 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
+    - if: '$CI_REVIEW_APPS_ENABLED != "true"'
+      when: never
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns

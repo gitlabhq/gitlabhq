@@ -199,18 +199,3 @@ e2e:package-and-test-nightly:
     QA_RUN_TYPE: nightly
     PIPELINE_NAME: E2E Omnibus GitLab Nightly
     DYNAMIC_PIPELINE_YML: package-and-test-nightly-pipeline.yml
-
-e2e:test-on-gdk:
-  extends:
-    - .e2e-trigger-base
-    - .qa:rules:e2e:test-on-gdk
-  stage: qa
-  needs:
-    - build-gdk-image
-    - e2e-test-pipeline-generate
-  variables:
-    QA_RUN_TYPE: e2e-test-on-gdk
-    PIPELINE_NAME: E2E GDK
-    DYNAMIC_PIPELINE_YML: test-on-gdk-pipeline.yml
-    SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
-    GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
