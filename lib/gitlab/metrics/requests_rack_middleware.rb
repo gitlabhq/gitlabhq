@@ -43,7 +43,7 @@ module Gitlab
 
       def self.http_request_duration_seconds
         ::Gitlab::Metrics.histogram(:http_request_duration_seconds, 'Request handling execution time',
-                                    {}, [0.05, 0.1, 0.25, 0.5, 0.7, 1, 2.5, 5, 10, 25])
+          {}, [0.05, 0.1, 0.25, 0.5, 0.7, 1, 2.5, 5, 10, 25])
       end
 
       def self.http_health_requests_total

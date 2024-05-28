@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user) { create :user }
+  let_it_be(:user) { create(:user) }
   let(:project_name) { 'GitLab' }
   let(:opts) do
     {
@@ -82,6 +82,28 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
         expect(project.name).to eq('one.two_three-four and five')
         expect(project.path).to eq('one-two_three-four-and-five')
         expect(project.project_namespace).to be_in_sync_with_project(project)
+      end
+    end
+  end
+
+  describe 'setting organization' do
+    subject(:project) { create_project(user, opts) }
+
+    context 'with group namespace' do
+      let_it_be(:namespace) { create(:group) }
+
+      before do
+        opts[:namespace_id] = namespace.id
+      end
+
+      it 'sets correct organization' do
+        expect(project.organization).to eq(namespace.organization)
+      end
+    end
+
+    context 'with user namespace' do
+      it 'sets correct organization' do
+        expect(project.organization).to eq(user.namespace.organization)
       end
     end
   end

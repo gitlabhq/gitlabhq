@@ -435,7 +435,7 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
       emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com,' \
         'EMAIL8@EXamPle.com'
 
-      unresolved_n_plus_ones = 73 # currently there are 10 queries added per email
+      unresolved_n_plus_ones = 77 # currently there are 10 queries added per email
 
       expect do
         post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }

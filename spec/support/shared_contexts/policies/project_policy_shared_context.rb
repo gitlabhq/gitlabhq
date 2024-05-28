@@ -10,8 +10,8 @@ RSpec.shared_context 'ProjectPolicy context' do
   let_it_be(:inherited_reporter) { create(:user) }
   let_it_be(:inherited_developer) { create(:user) }
   let_it_be(:inherited_maintainer) { create(:user) }
-  let_it_be(:owner) { create(:user) }
   let_it_be(:organization) { create(:organization, :default) }
+  let_it_be(:owner) { create(:user, namespace: create(:user_namespace, organization: organization)) }
   let_it_be(:organization_owner) { create(:user, :organization_owner) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_member) { create(:user) }

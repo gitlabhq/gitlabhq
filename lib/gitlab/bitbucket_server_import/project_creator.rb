@@ -26,6 +26,7 @@ module Gitlab
           path: name,
           description: repo.description,
           namespace_id: namespace.id,
+          organization_id: namespace.organization_id,
           visibility_level: repo.visibility_level,
           import_type: 'bitbucket_server',
           import_source: repo.browse_url,

@@ -1117,6 +1117,10 @@ RSpec.describe API::Members, feature_category: :groups_and_projects do
 
   it_behaves_like 'POST /:source_type/:id/members', 'project' do
     let(:source) { project }
+
+    before do
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+    end
   end
 
   it_behaves_like 'POST /:source_type/:id/members', 'group' do

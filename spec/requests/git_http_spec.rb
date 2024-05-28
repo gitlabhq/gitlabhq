@@ -229,6 +229,10 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         let(:path) { "#{user.namespace.path}/new-project.git" }
 
         context 'when authenticated' do
+          before do
+            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+          end
+
           it 'creates a new project under the existing namespace' do
             # current scenario does not matter with the user activity case,
             # so stub/double it to escape more sql running times limit

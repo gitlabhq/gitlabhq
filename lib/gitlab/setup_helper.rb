@@ -172,7 +172,7 @@ module Gitlab
                          dbname: options.fetch(:dbname, 'praefect_test') }
 
             config.merge!(database: database,
-                          failover: failover)
+              failover: failover)
           else
             failover = { enabled: false, election_strategy: 'local' }
 

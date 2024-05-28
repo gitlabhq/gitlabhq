@@ -56,6 +56,9 @@ module Projects
       namespace_id = params[:namespace_id] || current_user.namespace_id
       @project.namespace_id = namespace_id.to_i
 
+      organization_id = params[:organization_id] || @project.namespace.organization_id
+      @project.organization_id = organization_id.to_i
+
       @project.check_personal_projects_limit
       return @project if @project.errors.any?
 

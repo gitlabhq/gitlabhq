@@ -75,11 +75,6 @@ module FinderWithGroupHierarchy
   end
 
   def preload_associations(groups)
-    ActiveRecord::Associations::Preloader.new(
-      records: groups,
-      associations: [:organization]
-    ).call
-
     Preloaders::UserMaxAccessLevelInGroupsPreloader.new(groups, current_user).execute
   end
 end

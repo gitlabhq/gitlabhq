@@ -23,7 +23,7 @@ module Gitlab
     rescue Timeout::Error => e
       class_name = name.demodulize
       Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, class_name: class_name,
-                                               file_name: file_name)
+        file_name: file_name)
 
       ActionController::Base.helpers.simple_format(input)
     end

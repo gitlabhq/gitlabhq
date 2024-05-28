@@ -2145,7 +2145,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def can_admin_organization?(organization)
-    can?(:admin_organization, organization)
+    owns_organization?(organization)
   end
 
   def update_two_factor_requirement

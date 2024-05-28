@@ -92,7 +92,7 @@ module Gitlab
 
           def create_pipeline(job_count:, runners:, project_id:, status: 'success', **attrs)
             logger.info(message: 'Creating pipeline with builds on project',
-                        status: status, job_count: job_count, project_id: project_id, **attrs)
+              status: status, job_count: job_count, project_id: project_id, **attrs)
 
             raise ArgumentError('runners') unless runners
             raise ArgumentError('project_id') unless project_id

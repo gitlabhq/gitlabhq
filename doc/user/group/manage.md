@@ -35,21 +35,21 @@ To add a group README:
 1. On the prompt for creating a README, select **Create and add README**. You're redirected to the Web IDE, where a README file is created.
 1. In the Web IDE, edit and commit the `README.md` file.
 
-## Change the owner of a group
+## Change the Owner of a group
 
-You can change the owner of a group. Each group must always have at least one
+You can change the Owner of a group. Each group must always have at least one
 member with the Owner role.
 
 - As an administrator:
   1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Manage > Members**.
-  1. Give a different member the **Owner** role.
-  1. Refresh the page. You can now remove the **Owner** role from the original owner.
-- As the current group's owner:
+  1. Give a different member the Owner role.
+  1. Refresh the page. You can now remove the Owner role from the original Owner.
+- As the current group's Owner:
   1. On the left sidebar, select **Search or go to** and find your group.
   1. Select **Manage > Members**.
-  1. Give a different member the **Owner** role.
-  1. Have the new owner sign in and remove the **Owner** role from you.
+  1. Give a different member the Owner role.
+  1. Have the new Owner sign in and remove the Owner role from you.
 
 ## Change a group's path
 
@@ -92,12 +92,12 @@ To change this setting for a specific group, see [group level default branch pro
 To change this setting globally, see [initial default branch protection](../project/repository/branches/default.md#instance-level-default-branch-protection).
 
 NOTE:
-In [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group owners from updating the default branch protection](../project/repository/branches/default.md#prevent-overrides-of-default-branch-protection).
+In [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/), GitLab administrators can choose to [disable group Owners from updating the default branch protection](../project/repository/branches/default.md#prevent-overrides-of-default-branch-protection).
 
 ## Use a custom name for the initial branch
 
 When you create a new project in GitLab, a default branch is created with the
-first push. The group owner can
+first push. The group Owner can
 [customize the initial branch](../project/repository/branches/default.md#group-level-custom-initial-branch-name)
 for the group's projects to meet your group's needs.
 
@@ -151,11 +151,11 @@ When transferring groups, note:
 - You must have the Owner role in the source and target group.
 - You must update your local repositories to point to the new location.
 - If the immediate parent group's visibility is lower than the group's current visibility, visibility levels for subgroups and projects change to match the new parent group's visibility.
-- Only explicit group membership is transferred, not inherited membership. If the group's owners have only inherited membership, this leaves the group without an owner. In this case, the user transferring the group becomes the group's owner.
+- Only explicit group membership is transferred, not inherited membership. If the group's Owners have only inherited membership, this leaves the group without an Owner. In this case, the user transferring the group becomes the group's Owner.
 - Transfers fail if the group is a top-level group and [npm packages](../packages/npm_registry/index.md) following the [naming convention](../packages/npm_registry/index.md#naming-convention) exist in any of the projects in the group, or in any of its subgroups.
 - `container_registry` images in the archived projects must be deleted before the transfer. For more information, see the [troubleshooting section](troubleshooting.md#missing-or-insufficient-permission-delete-button-disabled).
-- Existing packages that use a group-level endpoint (Maven, NuGet, PyPI, Composer, and Debian) need to be updated per the package's steps for setting up the group level endpoint.
-- Existing package names need to be updated if the package uses an instance level endpoint ([Maven](../packages/maven_repository/index.md#naming-convention), [npm](../packages/npm_registry/index.md#naming-convention), [Conan](../packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another root level namespace.
+- Existing packages that use a group-level endpoint (Maven, NuGet, PyPI, Composer, and Debian) need to be updated per the package's steps for setting up the group-level endpoint.
+- Existing package names need to be updated if the package uses an instance-level endpoint ([Maven](../packages/maven_repository/index.md#naming-convention), [npm](../packages/npm_registry/index.md#naming-convention), [Conan](../packages/conan_repository/index.md#package-recipe-naming-convention-for-instance-remotes)) and the group was moved to another top-level group.
 - Top-level groups that have a subscription on GitLab.com cannot be transferred. To make the transfer possible, the top-level group's subscription must be removed first. Then the top-level group can be transferred as a subgroup to another top-level group.
 
 To transfer a group:
@@ -163,7 +163,7 @@ To transfer a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Advanced** section.
-1. In the **Remove group** section, select **Transfer group**.
+1. Select **Transfer group**.
 1. Select the group name in the drop down menu.
 1. Select **Transfer group**.
 
@@ -222,7 +222,7 @@ For members with `Minimal Access` in the selected group, their `Max Role` and `S
 For more information about user caps for GitLab self-managed, see [User cap](../../administration/settings/sign_up_restrictions.md#user-cap).
 
 When the number of billable members reaches the user cap, new users can't be added to the group
-without being approved by the group owner.
+without being approved by the group Owner.
 
 Groups with the user cap feature enabled have [group sharing](#share-a-group-with-another-group)
 disabled for the group and its subgroups.
@@ -342,7 +342,7 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142708) in GitLab 16.9. Feature flag `support_group_level_merge_checks_setting` removed.
 
-Group owners can set up merge request checks on a top-level group, which apply to all subgroups and projects.
+Group Owners can set up merge request checks on a top-level group, which apply to all subgroups and projects.
 
 If the settings are inherited by a subgroup or project, they cannot be changed in the subgroup or project
 that inherited them.
@@ -356,7 +356,7 @@ See also [the project-level setting](../project/merge_requests/auto_merge.md#req
 
 Prerequisites:
 
-- You must be the owner of the group.
+- You must be the Owner of the group.
 
 To enable this setting:
 
@@ -375,7 +375,7 @@ See also [the project-level setting](../project/merge_requests/auto_merge.md#all
 
 Prerequisites:
 
-- You must be the owner of the group.
+- You must be the Owner of the group.
 
 To change this behavior:
 
@@ -394,7 +394,7 @@ You can prevent merge requests from being merged until all threads are resolved.
 
 Prerequisites:
 
-- You must be the owner of the group.
+- You must be the Owner of the group.
 
 To enable this setting:
 

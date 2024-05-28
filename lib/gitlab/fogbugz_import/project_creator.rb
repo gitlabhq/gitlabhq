@@ -20,6 +20,7 @@ module Gitlab
           name: name,
           path: name,
           namespace_id: namespace.id,
+          organization_id: namespace.organization_id,
           creator: current_user,
           visibility_level: Gitlab::VisibilityLevel::PRIVATE,
           import_type: 'fogbugz',

@@ -672,10 +672,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe 'validation' do
-    let!(:project) { create(:project) }
-
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to allow_value('space last ').for(:name) }
     it { is_expected.not_to allow_value('colon:in:path').for(:path) } # This is to validate that a specially crafted name cannot bypass a pattern match. See !72555
@@ -691,6 +688,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to validate_presence_of(:repository_storage) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
     it { is_expected.to validate_length_of(:suggestion_commit_message).is_at_most(255) }
+
+    it 'validates name is case-sensitively unique within the scope of namespace_id' do
+      project = create(:project)
+
+      expect(project).to validate_uniqueness_of(:name).scoped_to(:namespace_id)
+    end
 
     it 'validates build timeout constraints' do
       is_expected.to validate_numericality_of(:build_timeout)
@@ -9278,7 +9281,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   context 'with loose foreign key on organization_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let_it_be(:parent) { create(:organization) }
-      let_it_be(:model) { create(:project, organization: parent) }
+      let_it_be(:group) { create(:group, organization: parent) }
+      let_it_be(:model) { create(:project, group: group, organization: parent) }
     end
   end
 

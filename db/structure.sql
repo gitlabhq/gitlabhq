@@ -11302,6 +11302,7 @@ CREATE TABLE members (
     member_role_id bigint,
     expiry_notified_at timestamp with time zone,
     request_accepted_at timestamp with time zone,
+    last_activity_on date DEFAULT now(),
     CONSTRAINT check_508774aac0 CHECK ((member_namespace_id IS NOT NULL))
 );
 

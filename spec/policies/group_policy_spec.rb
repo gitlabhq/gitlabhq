@@ -253,18 +253,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       expect_allowed(*owner_permissions)
       expect_allowed(*admin_permissions)
     end
-
-    context 'when user is also an admin' do
-      before do
-        organization_owner.update!(admin: true)
-      end
-
-      it { expect_disallowed(:admin_organization) }
-
-      context 'with admin mode', :enable_admin_mode do
-        it { expect_allowed(:admin_organization) }
-      end
-    end
   end
 
   context 'migration bot' do

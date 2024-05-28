@@ -6,7 +6,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
   let(:group) { create(:group, maintainers: importer_user) }
   let(:project) { create(:project, :repository, group: group) }
   let(:members_mapper) { double('members_mapper').as_null_object }
-  let(:admin) { create(:admin) }
+  let(:admin) { create(:admin, :without_default_org) }
   let(:importer_user) { admin }
   let(:excluded_keys) { [] }
   let(:additional_relation_attributes) { {} }

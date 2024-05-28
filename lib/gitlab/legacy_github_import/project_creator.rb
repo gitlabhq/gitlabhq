@@ -20,6 +20,7 @@ module Gitlab
           path: name,
           description: repo[:description],
           namespace_id: namespace.id,
+          organization_id: namespace.organization_id,
           visibility_level: visibility_level,
           import_type: type,
           import_source: repo[:full_name],
