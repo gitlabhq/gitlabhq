@@ -289,14 +289,11 @@ $dropdown-member-form-control-width: 163px;
 $filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
 
 /*
-* Contextual Sidebar
+* Sidebar
 */
-$link-hover-background: rgba($gray-900, 0.06);
 $sidebar-toggle-height: 60px;
 $sidebar-toggle-width: 40px;
 $sidebar-milestone-toggle-bottom-margin: 10px;
-$sidebar-top-item-lr-margin: 8px;
-$sidebar-top-item-tb-margin: 1px;
 
 /*
 * Buttons
@@ -362,10 +359,7 @@ $blame-blue: #254e77;
 * Builds
 */
 $builds-log-bg: #111;
-$job-log-line-padding: 63px;
 $job-line-number-width: 50px;
-$job-line-number-margin: 51px;
-$job-arrow-margin: 63px;
 
 /*
  * Calendar

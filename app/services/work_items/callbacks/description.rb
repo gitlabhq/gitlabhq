@@ -3,8 +3,6 @@
 module WorkItems
   module Callbacks
     class Description < Base
-      include Gitlab::Utils::StrongMemoize
-
       def after_initialize
         params[:description] = nil if excluded_in_new_type?
 
@@ -19,9 +17,6 @@ module WorkItems
       def update_description?
         params.present? && params.key?(:description) && has_permission?(:update_work_item)
       end
-      strong_memoize_attr :update_description?
     end
   end
 end
-
-WorkItems::Callbacks::Description.prepend_mod

@@ -64,22 +64,22 @@ module Gitlab
 
             if unknown_extensions.any?
               raise Entry::InvalidExtensionError,
-                    "#{key}: unknown keys in `extends` (#{show_keys(unknown_extensions)})"
+                "#{key}: unknown keys in `extends` (#{show_keys(unknown_extensions)})"
             end
 
             if invalid_bases.any?
               raise Entry::InvalidExtensionError,
-                    "#{key}: invalid base hashes in `extends` (#{show_keys(invalid_bases)})"
+                "#{key}: invalid base hashes in `extends` (#{show_keys(invalid_bases)})"
             end
 
             if nesting_too_deep?
               raise Entry::NestingTooDeepError,
-                    "#{key}: nesting too deep in `extends`"
+                "#{key}: nesting too deep in `extends`"
             end
 
             if circular_dependency?
               raise Entry::CircularDependencyError,
-                    "#{key}: circular dependency detected in `extends`"
+                "#{key}: circular dependency detected in `extends`"
             end
 
             merged = {}

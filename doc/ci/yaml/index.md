@@ -961,7 +961,7 @@ Use `spec:inputs:regex` to specify a regular expression that the input must matc
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: Must be a regular expression that starts and ends with the `/` character.
+**Possible inputs**: Must be a regular expression.
 
 **Example of `spec:inputs:regex`**:
 
@@ -969,7 +969,7 @@ in a header section.
 spec:
   inputs:
     version:
-      regex: /^v\d\.\d+(\.\d+)$/
+      regex: ^v\d\.\d+(\.\d+)$
 ---
 
 # The pipeline configuration would follow...
@@ -982,6 +982,8 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
 
 - `inputs:regex` can only be used with a [`type`](#specinputstype) of `string`,
   not `number` or `boolean`.
+- Do not enclose the regular expression with the `/` character. For example, use `regex.*`,
+  not `/regex.*/`.
 
 ##### `spec:inputs:type`
 

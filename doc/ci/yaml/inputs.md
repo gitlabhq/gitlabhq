@@ -96,7 +96,7 @@ spec:
       default: 1
     version:        # Mandatory string input that must match the regular expression
       type: string
-      regex: /^v\d\.\d+(\.\d+)$/
+      regex: ^v\d\.\d+(\.\d+)$
     export_results: # Optional boolean input with a default value when not provided
       type: boolean
       default: true

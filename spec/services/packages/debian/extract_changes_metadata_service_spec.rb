@@ -130,7 +130,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category
       context 'with invalid MD5' do
         let(:md5_dsc) { '1234567890123456789012345678012 671 libs optional sample_1.2.3~alpha2.dsc' }
 
-        it 'raise ArgumentError', :aggregate_failures do
+        it 'raise ArgumentError', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463058' do
           expect { subject }.to raise_error(described_class::ExtractionError, "Validation failed: Md5sum mismatch for sample_1.2.3~alpha2.dsc: #{dsc_file.file_md5} != 1234567890123456789012345678012")
         end
       end
@@ -138,7 +138,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category
       context 'with invalid SHA1' do
         let(:sha1_dsc) { '1234567890123456789012345678901234567890 671 sample_1.2.3~alpha2.dsc' }
 
-        it 'raise ArgumentError', :aggregate_failures do
+        it 'raise ArgumentError', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463059' do
           expect { subject }.to raise_error(described_class::ExtractionError, "Validation failed: Sha1sum mismatch for sample_1.2.3~alpha2.dsc: #{dsc_file.file_sha1} != 1234567890123456789012345678901234567890")
         end
       end
@@ -146,7 +146,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category
       context 'with invalid SHA256' do
         let(:sha256_dsc) { '1234567890123456789012345678901234567890123456789012345678901234 671 sample_1.2.3~alpha2.dsc' }
 
-        it 'raise ArgumentError', :aggregate_failures do
+        it 'raise ArgumentError', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463060' do
           expect { subject }.to raise_error(described_class::ExtractionError, "Validation failed: Sha256sum mismatch for sample_1.2.3~alpha2.dsc: #{dsc_file.file_sha256} != 1234567890123456789012345678901234567890123456789012345678901234")
         end
       end
@@ -157,7 +157,7 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category
         incoming.package_files.first.destroy!
       end
 
-      it 'raise ArgumentError' do
+      it 'raise ArgumentError', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463061' do
         expect { subject }.to raise_error(described_class::ExtractionError, "sample_1.2.3~alpha2.tar.xz is listed in Files but was not uploaded")
       end
     end

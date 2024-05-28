@@ -39,6 +39,7 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 ^[Backend] @gitlab-org/maintainers/rails-backend
 *.rb
 *.rake
+.rubocop_todo/
 
 ^[Frontend] @gitlab-org/maintainers/frontend
 *.scss
@@ -137,7 +138,6 @@ Dangerfile
 
 ^[Backend Static Code Analysis] @gl-quality/eng-prod @dstull
 .rubocop*.yml
-.rubocop_todo/
 /gems/config/rubocop.yml
 /rubocop/
 /spec/rubocop/

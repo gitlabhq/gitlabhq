@@ -1613,6 +1613,16 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
       end
 
       context 'admin updates their own password' do
+        # `Users::ActivityService` should not be allowed to execute
+        # as the same fails on update user_details
+        # This prevents a failure we saw in
+        # https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/6616
+        before do
+          allow_next_instance_of(Users::ActivityService) do |service|
+            allow(service).to receive(:execute).and_return(true)
+          end
+        end
+
         it 'does not force reset on next login' do
           update_password(admin, admin)
 

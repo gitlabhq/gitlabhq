@@ -273,6 +273,26 @@ A large Sidekiq backlog might accompany this error. To fix the indexing failures
    sudo gitlab-rake gitlab:elastic:resume_indexing
    ```
 
+### Indexing keeps pausing with `elasticsearch_pause_indexing setting is enabled`
+
+You might notice that new data is not being detected when you run a search.
+
+This error occurs when that new data is not being indexed properly.
+
+To resolve this error, [reindex your data](elasticsearch.md#zero-downtime-reindexing).
+
+However, when reindexing, you might get an error where the indexing process keeps pausing, and the Elasticsearch logs show the following:
+
+```shell
+"message":"elasticsearch_pause_indexing setting is enabled. Job was added to the waiting queue"
+```
+
+If reindexing does not resolve this issue, and you did not pause the indexing process manually, this error might be happening because two GitLab instances share one Elasticsearch cluster.
+
+To resolve this error, disconnect one of the GitLab instances from using the Elasticsearch cluster.
+
+For more information, see [issue 3421](https://gitlab.com/gitlab-org/gitlab/-/issues/3421).
+
 ### Last resort to recreate an index
 
 There may be cases where somehow data never got indexed and it's not in the

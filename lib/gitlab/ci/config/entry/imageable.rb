@@ -36,10 +36,10 @@ module Gitlab
             attributes :docker, :ports, :pull_policy
 
             entry :ports, Entry::Ports,
-                description: 'Ports used to expose the image/service'
+              description: 'Ports used to expose the image/service'
 
             entry :pull_policy, Entry::PullPolicy,
-                description: 'Pull policy for the image/service'
+              description: 'Pull policy for the image/service'
           end
 
           def name

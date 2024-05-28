@@ -21,7 +21,7 @@ module Gitlab
                 validates :config, numericality: { only_integer: true,
                                                    greater_than_or_equal_to: 1,
                                                    less_than_or_equal_to: Entry::Product::Parallel::PARALLEL_LIMIT },
-                                   allow_nil: true
+                  allow_nil: true
 
                 validate do
                   next unless opt(:allowed_strategies)

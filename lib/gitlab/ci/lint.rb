@@ -80,11 +80,11 @@ module Gitlab
       def yaml_processor_result(content, logger)
         logger.instrument(:yaml_process, once: true) do
           Gitlab::Ci::YamlProcessor.new(content, project: project,
-                                                 user: current_user,
-                                                 ref: project_ref_name,
-                                                 sha: sha,
-                                                 verify_project_sha: verify_project_sha,
-                                                 logger: logger).execute
+            user: current_user,
+            ref: project_ref_name,
+            sha: sha,
+            verify_project_sha: verify_project_sha,
+            logger: logger).execute
         end
       end
 

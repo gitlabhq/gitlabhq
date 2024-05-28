@@ -102,8 +102,8 @@ module Gitlab
             # expand variables as they are added
             variable = item.to_runner_variable
             variable[:value] = new_collection.expand_value(variable[:value], keep_undefined: keep_undefined,
-                                                                             expand_file_refs: expand_file_refs,
-                                                                             expand_raw_refs: expand_raw_refs)
+              expand_file_refs: expand_file_refs,
+              expand_raw_refs: expand_raw_refs)
             new_collection.append(variable)
           end
 

@@ -48,11 +48,11 @@ module Gitlab
 
                 validates :when, array_of_strings_or_string: true
                 validates :when,
-                          allowed_array_values: { in: FullRetry.possible_retry_when_values },
-                          if: -> (config) { config.when.is_a?(Array) }
+                  allowed_array_values: { in: FullRetry.possible_retry_when_values },
+                  if: -> (config) { config.when.is_a?(Array) }
                 validates :when,
-                          inclusion: { in: FullRetry.possible_retry_when_values },
-                          if: -> (config) { config.when.is_a?(String) }
+                  inclusion: { in: FullRetry.possible_retry_when_values },
+                  if: -> (config) { config.when.is_a?(String) }
                 validates :exit_codes, array_of_integers_or_integer: true
               end
             end

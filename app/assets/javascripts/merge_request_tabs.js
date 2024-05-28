@@ -131,7 +131,7 @@ function mountPipelines() {
   return table;
 }
 
-function destroyPipelines(app) {
+export function destroyPipelines(app) {
   if (app && app.$destroy) {
     app.$destroy();
 
@@ -167,7 +167,7 @@ function loadDiffs({ url, tabs }) {
   });
 }
 
-function toggleLoader(state) {
+export function toggleLoader(state) {
   $('.mr-loading-status .loading').toggleClass('hide', !state);
 }
 
@@ -183,7 +183,7 @@ export function getActionFromHref(pathName) {
   return action;
 }
 
-const pageBundles = {
+export const pageBundles = {
   show: () => import(/* webpackPrefetch: true */ '~/mr_notes/mount_app'),
   diffs: () => import(/* webpackPrefetch: true */ '~/diffs'),
 };
@@ -208,6 +208,7 @@ export default class MergeRequestTabs {
     this.pageLayout = document.querySelector('.layout-page');
     this.expandSidebar = document.querySelectorAll('.js-expand-sidebar, .js-sidebar-toggle');
     this.paddingTop = 16;
+    this.actionRegex = /\/(commits|diffs|pipelines)(\.html)?\/?$/;
 
     this.scrollPositions = {};
 
@@ -435,7 +436,7 @@ export default class MergeRequestTabs {
     this.currentAction = action;
 
     // Remove a trailing '/commits' '/diffs' '/pipelines'
-    let newState = location.pathname.replace(/\/(commits|diffs|pipelines)(\.html)?\/?$/, '');
+    let newState = location.pathname.replace(this.actionRegex, '');
 
     // Append the new action if we're on a tab other than 'notes'
     if (this.currentAction !== 'show' && this.currentAction !== 'new') {

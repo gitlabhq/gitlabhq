@@ -235,6 +235,12 @@ To view the Value Streams Dashboard as an analytics dashboard for a project:
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select **Value Streams Dashboard**.
 
+### View the Value Streams Dashboard in issue Markdown format
+
+Using CI/CD component you can scheduled Value Streams Dashboard reports using a reports generator tool. This tool collects metrics from projects or groups via the public GitLab GraphQL API, then builds a report using the GitLab [Flavored Markdown format](../../user/markdown.md), and as the last step, an issue is opened in the designated project, with Markdown comparison metrics table, like in this [example](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report).  
+
+ For more information, see Value [Stream Dashboard reports generator tool readme](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report).
+
 ## Customize the dashboard panels
 
 You can customize the Value Streams Dashboard and configure what subgroups and projects to include in the page.

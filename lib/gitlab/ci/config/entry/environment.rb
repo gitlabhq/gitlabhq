@@ -38,19 +38,19 @@ module Gitlab
               validates :config, allowed_keys: ALLOWED_KEYS
 
               validates :url,
-                        type: String,
-                        length: { maximum: 255 },
-                        allow_nil: true
+                type: String,
+                length: { maximum: 255 },
+                allow_nil: true
 
               validates :action,
-                        type: String,
-                        inclusion: { in: %w[start stop prepare verify access], message: 'should be start, stop, prepare, verify, or access' },
-                        allow_nil: true
+                type: String,
+                inclusion: { in: %w[start stop prepare verify access], message: 'should be start, stop, prepare, verify, or access' },
+                allow_nil: true
 
               validates :deployment_tier,
-                        type: String,
-                        inclusion: { in: ::Environment.tiers.keys, message: "must be one of #{::Environment.tiers.keys.join(', ')}" },
-                        allow_nil: true
+                type: String,
+                inclusion: { in: ::Environment.tiers.keys, message: "must be one of #{::Environment.tiers.keys.join(', ')}" },
+                allow_nil: true
 
               validates :on_stop, type: String, allow_nil: true
               validates :kubernetes, type: Hash, allow_nil: true

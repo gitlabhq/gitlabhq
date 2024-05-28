@@ -15,8 +15,8 @@ module Gitlab
 
                 validations do
                   validates :config,
-                            array_of_strings: true,
-                            length: { maximum: 50, too_long: "has too many entries (maximum %{count})" }
+                    array_of_strings: true,
+                    length: { maximum: 50, too_long: "has too many entries (maximum %{count})" }
                 end
 
                 def value
@@ -41,8 +41,8 @@ module Gitlab
 
                   with_options allow_nil: false do
                     validates :paths,
-                              array_of_strings: true,
-                              length: { maximum: 50, too_long: "has too many entries (maximum %{count})" }
+                      array_of_strings: true,
+                      length: { maximum: 50, too_long: "has too many entries (maximum %{count})" }
                     validates :compare_to, type: String, allow_nil: true
                   end
                 end

@@ -185,17 +185,16 @@
 }
 
 .job-log-line {
-  padding: 1px $gl-padding-8 1px $job-log-line-padding;
+  display: flex;
+  padding: 1px $gl-padding-8 1px $gl-padding-8;
   min-height: $gl-line-height-20;
 }
 
 .job-log-line-number {
   color: $gray-500;
-  padding: 0 1em 0 $gl-padding-8;
+  padding-right: $gl-padding-8;
   min-width: $job-line-number-width;
-  margin-left: -$job-line-number-margin;
   user-select: none;
-  display: inline-block;
   text-align: right;
 
   &:hover,
@@ -216,7 +215,7 @@
   }
 
   .arrow {
-    margin-left: -$job-arrow-margin;
+    left: 0;
   }
 }
 

@@ -15,12 +15,12 @@ module Gitlab
           validations do
             validates :config, array_of_strings_or_string: true
             validates :config,
-                      allowed_array_values: { in: ALLOWED_POLICIES },
-                      presence: true,
-                      if: :array?
+              allowed_array_values: { in: ALLOWED_POLICIES },
+              presence: true,
+              if: :array?
             validates :config,
-                      inclusion: { in: ALLOWED_POLICIES },
-                      if: :string?
+              inclusion: { in: ALLOWED_POLICIES },
+              if: :string?
           end
 
           def value
