@@ -144,23 +144,3 @@ e2e:package-and-test-nightly:
     ALLURE_JOB_NAME: nightly
     PIPELINE_NAME: E2E Omnibus GitLab Nightly
     DYNAMIC_PIPELINE_YML: package-and-test-nightly-pipeline.yml
-
-e2e:test-on-gdk:
-  extends:
-    - .e2e-trigger-base
-    - .qa:rules:e2e:test-on-gdk
-  stage: qa
-  needs:
-    # In scheduled master pipelines we wait for the image to be built.
-    # In MRs we assume the last scheduled master pipeline built the image already.
-    - job: build-qa-on-gdk-master-image
-      optional: true
-    - job: e2e-test-pipeline-generate
-      artifacts: true
-  variables:
-    ALLURE_JOB_NAME: e2e-test-on-gdk
-    QA_RUN_TYPE: e2e-test-on-gdk
-    PIPELINE_NAME: E2E GDK
-    DYNAMIC_PIPELINE_YML: test-on-gdk-pipeline.yml
-    SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
-  allow_failure: true

@@ -18,6 +18,14 @@ RSpec.describe Gitlab::SidekiqConfig do
   end
 
   describe '.cron_jobs' do
+    around do |example|
+      described_class.clear_memoization(:cron_jobs)
+
+      example.run
+
+      described_class.clear_memoization(:cron_jobs)
+    end
+
     it 'renames job_class to class and removes incomplete jobs' do
       expect(Gitlab)
         .to receive(:config)

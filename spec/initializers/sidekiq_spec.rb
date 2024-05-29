@@ -78,11 +78,13 @@ RSpec.describe 'sidekiq' do
     end
 
     around do |example|
+      Gitlab::SidekiqConfig.clear_memoization(:cron_jobs)
       original_settings = Gitlab.config['cron_jobs']
       Gitlab.config['cron_jobs'] = cron_jobs_settings
 
       example.run
 
+      Gitlab::SidekiqConfig.clear_memoization(:cron_jobs)
       Gitlab.config['cron_jobs'] = original_settings
     end
 
