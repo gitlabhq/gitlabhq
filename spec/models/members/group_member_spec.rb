@@ -12,11 +12,12 @@ RSpec.describe GroupMember, feature_category: :cell do
   context 'scopes' do
     let_it_be(:user_1) { create(:user) }
     let_it_be(:user_2) { create(:user) }
+    let_it_be(:user_3) { create(:user) }
+
+    let_it_be(:group_1) { create(:group) }
+    let_it_be(:group_2) { create(:group) }
 
     it 'counts users by group ID' do
-      group_1 = create(:group)
-      group_2 = create(:group)
-
       group_1.add_owner(user_1)
       group_1.add_owner(user_2)
       group_2.add_owner(user_1)
