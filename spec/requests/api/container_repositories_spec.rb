@@ -91,17 +91,13 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
         context 'when the repository is migrated', :saas do
           context 'when the GitLab API is supported' do
             before do
-              allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+              stub_container_registry_gitlab_api_support(supported: true) do |client|
+                allow(client).to receive(:tags).and_return(response_body)
+              end
             end
 
             context 'when the Gitlab API returns tags' do
               include_context 'with the container registry GitLab API returning tags'
-
-              before do
-                allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
-                  allow(client).to receive(:tags).and_return(response_body)
-                end
-              end
 
               it 'returns instantiated tags from the response' do
                 expect_any_instance_of(ContainerRepository) do |repository|
@@ -124,11 +120,7 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
             end
 
             context 'when the Gitlab API does not return any tags' do
-              before do
-                allow_next_instance_of(ContainerRegistry::GitlabApiClient) do |client|
-                  allow(client).to receive(:tags).and_return({ pagination: {}, response_body: {} })
-                end
-              end
+              let(:response_body) { { pagination: {}, response_body: {} } }
 
               it 'returns an instantiated tag from the response' do
                 subject
@@ -143,7 +135,7 @@ RSpec.describe API::ContainerRepositories, feature_category: :container_registry
 
           context 'when the GitLab API is not supported' do
             before do
-              allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+              stub_container_registry_gitlab_api_support(supported: false)
             end
 
             it_behaves_like 'returning a repository and its tags'
