@@ -22,6 +22,7 @@ module StubFeatureFlags
 
   def unstub_all_feature_flags
     Feature.stub = false
+    Feature.reset_flipper
   end
 
   # Stub Feature flags with `flag_name: true/false`
