@@ -1,8 +1,6 @@
 ---
 key_path: counts.groups_google_play_active
 description: Count of active groups inheriting integrations for Google Play
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active

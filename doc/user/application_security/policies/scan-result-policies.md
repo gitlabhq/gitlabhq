@@ -256,6 +256,69 @@ On self-managed GitLab, by default the `fallback_behavior` field is available. T
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
 | `fail` | `string` | false    | `open` or `closed` | `closed` (default): Invalid or unenforceable rules of a policy require approval. `open`: Invalid or unenforceable rules of a policy do not require approval. |
 
+## Security policy scopes
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
+
+Security policy enforcement depends first on establishing a link between the group, subgroup, or
+project on which you want to enforce policies, and the security policy project that contains the
+policies. For example, if you are linking policies to a group, a group owner must create the link to
+the security policy project. Then, all policies in the security policy project are inherited by all
+projects in the group.
+
+You can refine a security policy's scope to:
+
+- _Include_ only projects containing a compliance framework label.
+- _Include_ or _exclude_ selected projects from enforcement.
+
+### Policy scope schema
+
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
+
+### `policy_scope` scope type
+
+| Field | Type | Possible values | Description |
+|-------|------|-----------------|-------------|
+| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
+| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
+
+### Example `policy.yml` with security policy scopes
+
+```yaml
+---
+approval_policy:
+- name: critical vulnerability CS approvals
+  description: critical severity level only for container scanning
+  enabled: true
+  rules:
+  - type: scan_finding
+    branches:
+    - main
+    scanners:
+    - container_scanning
+    vulnerabilities_allowed: 1
+    severity_levels:
+    - critical
+    vulnerability_states:
+    - newly_detected
+  actions:
+  - type: require_approval
+    approvals_required: 1
+    user_approvers:
+    - adalberto.dare
+  policy_scope:
+    compliance_frameworks:
+      - id: 2
+      - id: 11
+    projects:
+      including:
+        - id: 24
+        - id: 27
+```
+
 ## Example security merge request approval policies project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
@@ -406,86 +469,6 @@ We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/
 - Findings or errors that cause approval to be required on a merge request approval policy may not be evident in the Security MR widget. With `merge base` introduced in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases were addressed. Support for displaying more granular details about what caused security policy violations is proposed in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
 - Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
 - When merged results pipelines are enabled for the project, along with branch pipelines for created MRs, the comparison between source and target branches depends on the order in which the source branch's pipeline finishes. This can create race conditions, a resolution of which is proposed in [issue 384927](https://gitlab.com/gitlab-org/gitlab/-/issues/384927). The approvals may behave differently, depending on which target branch pipeline is selected.
-
-## Experimental features
-
-DETAILS:
-**Status:** Experiment
-
-### Security policy scopes
-
-Prerequisites:
-
-- To enable these experimental features, a group owner or administrator must enable the experimental
-  features:
-  1. On the left sidebar, select **Search or go to** and find your group.
-  1. Select **Settings > General**.
-  1. Expand **Permissions and group features**.
-  1. Select the **Security Policy Scopes** checkbox.
-  1. Optional. Select **Enforce for all subgroups**.
-
-     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
-
-Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our
-[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
-
-Security policy enforcement depends first on establishing a link between the group, subgroup, or
-project on which you want to enforce policies, and the security policy project that contains the
-policies. For example, if you are linking policies to a group, a group owner must create the link to
-the security policy project. Then, all policies in the security policy project are inherited by all
-projects in the group.
-
-You can refine a security policy's scope to:
-
-- _Include_ only projects containing a compliance framework label.
-- _Include_ or _exclude_ selected projects from enforcement.
-
-#### Policy scope schema
-
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
-| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
-
-#### `policy_scope` scope type
-
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
-| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
-
-#### Example `policy.yml` with security policy scopes
-
-```yaml
----
-approval_policy:
-- name: critical vulnerability CS approvals
-  description: critical severity level only for container scanning
-  enabled: true
-  rules:
-  - type: scan_finding
-    branches:
-    - main
-    scanners:
-    - container_scanning
-    vulnerabilities_allowed: 1
-    severity_levels:
-    - critical
-    vulnerability_states:
-    - newly_detected
-  actions:
-  - type: require_approval
-    approvals_required: 1
-    user_approvers:
-    - adalberto.dare
-  policy_scope:
-    compliance_frameworks:
-      - id: 2
-      - id: 11
-    projects:
-      including:
-        - id: 24
-        - id: 27
-```
 
 ## Troubleshooting
 

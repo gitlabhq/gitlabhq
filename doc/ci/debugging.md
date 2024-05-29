@@ -262,7 +262,7 @@ Some text editors could insert a BOM character if configured to do so.
 
 If your pipeline has confusing behavior, you can check for the presence of BOM characters
 with a tool capable of displaying them. The pipeline editor cannot display the characters,
-so you must use an external tool. See [issue 35402](https://gitlab.com/gitlab-org/gitlab/-/issues/354026)
+so you must use an external tool. See [issue 354026](https://gitlab.com/gitlab-org/gitlab/-/issues/354026)
 for more details.
 
 ### A job with the `changes` keyword runs unexpectedly
@@ -483,4 +483,19 @@ You might receive the following pipeline errors:
 
 These errors can happen if records of internal IDs become out of sync after a project is imported.
 
-To resolve this, see the [Workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/352382#workaround) in issue #352382.
+To resolve this, see the [workaround in issue 352382](https://gitlab.com/gitlab-org/gitlab/-/issues/352382#workaround).
+
+### `config should be an array of hashes` error message
+
+You might see an error similar to the following when using [`!reference` tags](../ci/yaml/yaml_optimization.md#reference-tags)
+with the [`parallel:matrix` keyword](../ci/yaml/index.md#parallelmatrix):
+
+```plaintext
+This GitLab CI configuration is invalid: jobs:my_job_name:parallel:matrix config should be an array of hashes.
+```
+
+The `parallel:matrix` keyword does not support multiple `!reference` tags at the same time.
+Try using [YAML anchors](yaml/yaml_optimization.md#anchors) instead.
+
+[Issue 439828](https://gitlab.com/gitlab-org/gitlab/-/issues/439828) proposes improving
+`!reference` tag support in `parallel:matrix`.

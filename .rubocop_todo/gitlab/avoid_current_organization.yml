@@ -1,5 +1,0 @@
----
-Gitlab/AvoidCurrentOrganization:
-  Details: grace period
-  Exclude:
-    - 'app/services/groups/create_service.rb'

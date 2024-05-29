@@ -18431,6 +18431,9 @@ msgstr ""
 msgid "Developer"
 msgstr ""
 
+msgid "Development widget is not enabled for this work item type"
+msgstr ""
+
 msgid "Devfile"
 msgstr ""
 
@@ -45925,7 +45928,7 @@ msgstr ""
 msgid "ScanResultPolicy|Age is:"
 msgstr ""
 
-msgid "ScanResultPolicy|Allow the merge request to be merged"
+msgid "ScanResultPolicy|Allow the merge request to proceed, even if not all criteria are met"
 msgstr ""
 
 msgid "ScanResultPolicy|Attribute is:"
@@ -45958,7 +45961,13 @@ msgstr ""
 msgid "ScanResultPolicy|Fail closed"
 msgstr ""
 
+msgid "ScanResultPolicy|Fail closed: Block the merge request until all criteria are met"
+msgstr ""
+
 msgid "ScanResultPolicy|Fail open"
+msgstr ""
+
+msgid "ScanResultPolicy|Fail open: Allow the merge request to proceed, even if not all criteria are met"
 msgstr ""
 
 msgid "ScanResultPolicy|Failure cases:"
@@ -47111,6 +47120,9 @@ msgid "SecurityOrchestration|Failed to load group projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Failed to load images."
+msgstr ""
+
+msgid "SecurityOrchestration|Fallback behavior in case of policy failure"
 msgstr ""
 
 msgid "SecurityOrchestration|Fetching"

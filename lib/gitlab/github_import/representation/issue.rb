@@ -7,8 +7,8 @@ module Gitlab
         include Representable
 
         expose_attribute :iid, :title, :description, :milestone_number,
-                         :created_at, :updated_at, :state, :assignees,
-                         :label_names, :author, :work_item_type_id
+          :created_at, :updated_at, :state, :assignees,
+          :label_names, :author, :work_item_type_id
 
         # Builds an issue from a GitHub API response.
         #

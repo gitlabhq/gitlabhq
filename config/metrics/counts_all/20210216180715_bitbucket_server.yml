@@ -2,8 +2,6 @@
 data_category: optional
 key_path: usage_activity_by_stage.manage.projects_imported.bitbucket_server
 description: Distinct count of users that imported projects from Bitbucket Server
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: removed

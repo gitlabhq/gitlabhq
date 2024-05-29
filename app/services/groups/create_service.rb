@@ -196,9 +196,6 @@ module Groups
         @group.organization_id = params[:organization_id]
       elsif @group.parent_id
         @group.organization = @group.parent.organization
-      # Rely on middleware setting of the organization, but sometimes it won't be set, so we need to guard it here.
-      elsif Current.organization
-        @group.organization = Current.organization
       end
     end
   end

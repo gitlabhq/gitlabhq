@@ -5,7 +5,7 @@ module Gitlab
     module Importer
       class IssueImporter
         attr_reader :project, :issue, :client, :user_finder, :milestone_finder,
-                    :issuable_finder
+          :issuable_finder
 
         # Imports an issue if it's a regular issue and not a pull request.
         def self.import_if_issue(issue, project, client)

@@ -127,7 +127,7 @@ module Gitlab
       # We also can't use Gitlab::Utils.append_path because the image path
       # may be an absolute URL.
       URI.join(Gitlab.config.gitlab.url,
-               ActionController::Base.helpers.image_path('no_avatar.png')).to_s
+        ActionController::Base.helpers.image_path('no_avatar.png')).to_s
     end
 
     def add_browsersdk_tracking

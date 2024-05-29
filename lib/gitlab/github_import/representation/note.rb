@@ -7,7 +7,7 @@ module Gitlab
         include Representable
 
         expose_attribute :noteable_id, :noteable_type, :author, :note,
-                         :created_at, :updated_at, :note_id
+          :created_at, :updated_at, :note_id
 
         NOTEABLE_TYPE_REGEX = %r{/(?<type>(pull|issues))/(?<iid>\d+)}i
 

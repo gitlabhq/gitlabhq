@@ -7,10 +7,10 @@ module Gitlab
         include Representable
 
         expose_attribute :iid, :title, :description, :source_branch,
-                         :source_branch_sha, :target_branch, :target_branch_sha,
-                         :milestone_number, :author, :assignee, :created_at,
-                         :updated_at, :merged_at, :source_repository_id,
-                         :target_repository_id, :source_repository_owner, :merged_by
+          :source_branch_sha, :target_branch, :target_branch_sha,
+          :milestone_number, :author, :assignee, :created_at,
+          :updated_at, :merged_at, :source_repository_id,
+          :target_repository_id, :source_repository_owner, :merged_by
 
         # Builds a PR from a GitHub API response.
         #

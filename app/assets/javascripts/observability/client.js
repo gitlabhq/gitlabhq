@@ -578,7 +578,10 @@ function addLogsAttributesFiltersToQueryParams(filterObj, filterParams) {
   return filterParams;
 }
 
-export async function fetchLogs(logsSearchUrl, { pageToken, pageSize, filters = {} } = {}) {
+export async function fetchLogs(
+  logsSearchUrl,
+  { pageToken, pageSize, filters = {}, abortController } = {},
+) {
   try {
     const params = new URLSearchParams();
 
@@ -600,6 +603,7 @@ export async function fetchLogs(logsSearchUrl, { pageToken, pageSize, filters = 
     const { data } = await axios.get(logsSearchUrl, {
       withCredentials: true,
       params,
+      signal: abortController?.signal,
     });
     if (!Array.isArray(data.results)) {
       throw new Error('logs are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
@@ -613,7 +617,10 @@ export async function fetchLogs(logsSearchUrl, { pageToken, pageSize, filters = 
   }
 }
 
-export async function fetchLogsSearchMetadata(logsSearchMetadataUrl, { filters = {} } = {}) {
+export async function fetchLogsSearchMetadata(
+  logsSearchMetadataUrl,
+  { filters = {}, abortController } = {},
+) {
   try {
     const params = new URLSearchParams();
 
@@ -629,6 +636,7 @@ export async function fetchLogsSearchMetadata(logsSearchMetadataUrl, { filters =
     const { data } = await axios.get(logsSearchMetadataUrl, {
       withCredentials: true,
       params,
+      signal: abortController?.signal,
     });
     return data;
   } catch (e) {

@@ -1,8 +1,6 @@
 ---
 key_path: counts_monthly.unique_active_users
 description: Users that have a last_activity_on date within the past 28 days
-product_section: dev
-product_stage: manage
 product_group: analytics_instrumentation
 value_type: number
 status: removed

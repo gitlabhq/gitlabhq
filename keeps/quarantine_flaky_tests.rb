@@ -32,7 +32,7 @@ module Keeps
     MINIMUM_REMAINING_RATE = 25
     QUERY_URL_TEMPLATE = "https://gitlab.com/api/v4/projects/278964/issues/?order_by=updated_at&state=opened&labels[]=test&labels[]=failure::flaky-test&labels[]=%<flakiness_label>s&not[labels][]=QA&not[labels][]=quarantine&per_page=20"
     EXAMPLE_LINE_REGEX = /([\w'",])? do$/
-    FLAKINESS_LABELS = %w[flakiness::1 flakyness::2].freeze
+    FLAKINESS_LABELS = %w[flakiness::1 flakiness::2].freeze
 
     def each_change
       FLAKINESS_LABELS.each do |flakiness_label|

@@ -17,8 +17,8 @@ module Gitlab
         validates :milestone, presence: true, format: { with: /\A\d+\.\d+\z/, message: 'must be milestone-ish' }
         validates :reason, presence: true
         validates :reason,
-                  format: { with: /.*[^.]\z/, message: 'must not end with a period' },
-                  if: :reason_is_string?
+          format: { with: /.*[^.]\z/, message: 'must not end with a period' },
+          if: :reason_is_string?
         validate :milestone_is_string
         validate :reason_known_or_string
 

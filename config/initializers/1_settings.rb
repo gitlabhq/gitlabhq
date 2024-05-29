@@ -907,6 +907,9 @@ Gitlab.ee do
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker'] ||= {}
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['cron'] ||= "0 */4 * * *"
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::ScheduleBulkRefreshUserAssignmentsWorker'
+  Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker'] ||= {}
+  Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['cron'] ||= '0 1 * * *'
+  Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::CleanupWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}

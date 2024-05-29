@@ -235,11 +235,19 @@ To view the Value Streams Dashboard as an analytics dashboard for a project:
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select **Value Streams Dashboard**.
 
-### View the Value Streams Dashboard in issue Markdown format
+### Schedule Value Streams Dashboard reports
 
-Using CI/CD component you can scheduled Value Streams Dashboard reports using a reports generator tool. This tool collects metrics from projects or groups via the public GitLab GraphQL API, then builds a report using the GitLab [Flavored Markdown format](../../user/markdown.md), and as the last step, an issue is opened in the designated project, with Markdown comparison metrics table, like in this [example](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report).  
+You can schedule reports using the CI/CD component
+[Value Streams Dashboard Scheduled Reports tool](https://gitlab.com/components/vsd-reports-generator).
+This tool saves time and effort by eliminating the need to manually search for the right dashboard with the relevant data, so that you can focus on analyzing insights.
+By scheduling reports, you can ensure that the decision-makers in your organization receive proactive, timely, and relevant information.
 
- For more information, see Value [Stream Dashboard reports generator tool readme](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report).
+The Scheduled Reports tool collects metrics from projects or groups through the public GitLab GraphQL API,
+then builds a report using [GitLab Flavored Markdown](../../user/markdown.md),
+and opens an issue in a specified project.
+The issue includes a comparison metrics table in Markdown format.
+
+See an [example scheduled report](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report).
 
 ## Customize the dashboard panels
 

@@ -11,6 +11,12 @@ module InternalEventsCli
       %w[namespace user] => { "namespace" => "group" }
     }.freeze
 
+    PROPERTY_EXAMPLES = {
+      'label' => "'string'",
+      'property' => "'string'",
+      'value' => '72'
+    }.freeze
+
     attr_reader :cli, :event
 
     def initialize(cli, event_path = nil, event = nil)
@@ -92,10 +98,22 @@ module InternalEventsCli
     end
 
     def rails_examples
-      args = Array(event['identifiers']).map do |identifier|
+      identifier_args = identifiers.map do |identifier|
         "  #{identifier}: #{identifier_examples[identifier]}"
       end
-      action = args.any? ? "\n  '#{event['action']}',\n" : "'#{event['action']}'"
+
+      property_args = format_additional_properties do |property, value, description|
+        "    #{property}: #{value}, # #{description}"
+      end
+
+      if property_args.any?
+        # remove trailing comma after last arg but keep any other commas
+        property_args.last.sub!(',', '')
+        property_arg = "  additional_properties: {\n#{property_args.join("\n")}\n  }"
+      end
+
+      args = ["'#{action}'", *identifier_args, property_arg].compact.join(",\n")
+      args = "\n  #{args}\n" if args.lines.count > 1
 
       cli.say format_warning <<~TEXT
         #{divider}
@@ -103,52 +121,58 @@ module InternalEventsCli
 
         include Gitlab::InternalEventsTracking
 
-        track_internal_event(#{action}#{args.join(",\n")}#{"\n" unless args.empty?})
+        track_internal_event(#{args})
 
         #{divider}
       TEXT
     end
 
     def rspec_examples
+      identifier_args = identifiers.map do |identifier|
+        "  let(:#{identifier}) { #{identifier_examples[identifier]} }\n"
+      end.join('')
+
+      property_args = format_additional_properties do |property, value, _|
+        "  let(:#{property}) { #{value} }\n"
+      end.join('')
+
+      args = [*identifier_args, *property_args].join('')
+
       cli.say format_warning <<~TEXT
         #{divider}
         #{format_help('# RSPEC')}
 
         it_behaves_like 'internal event tracking' do
-          let(:event) { '#{event['action']}' }
-        #{
-          Array(event['identifiers']).map do |identifier|
-            "  let(:#{identifier}) { #{identifier_examples[identifier]} }\n"
-          end.join('')
-        }end
+          let(:event) { '#{action}' }
+        #{args}end
 
         #{divider}
       TEXT
     end
 
-    def identifier_examples
-      event['identifiers']
-        .to_h { |identifier| [identifier, identifier] }
-        .merge(IDENTIFIER_EXAMPLES[event['identifiers'].sort] || {})
-    end
-
     def haml_examples
+      property_args = format_additional_properties do |property, value, _|
+        "event_#{property}: #{value}"
+      end
+
+      args = ["event_tracking: '#{action}'", *property_args].join(', ')
+
       cli.say <<~TEXT
         #{divider}
         #{format_help('# HAML -- ON-CLICK')}
 
-        .gl-display-inline-block{ #{format_warning("data: { event_tracking: '#{event['action']}' }")} }
+        .inline-block{ #{format_warning("data: { #{args} }")} }
           = _('Important Text')
 
         #{divider}
         #{format_help('# HAML -- COMPONENT ON-CLICK')}
 
-        = render Pajamas::ButtonComponent.new(button_options: { #{format_warning("data: { event_tracking: '#{event['action']}' }")} })
+        = render Pajamas::ButtonComponent.new(button_options: { #{format_warning("data: { #{args} }")} })
 
         #{divider}
         #{format_help('# HAML -- COMPONENT ON-LOAD')}
 
-        = render Pajamas::ButtonComponent.new(button_options: { #{format_warning("data: { event_tracking_load: true, event_tracking: '#{event['action']}' }")} })
+        = render Pajamas::ButtonComponent.new(button_options: { #{format_warning("data: { event_tracking_load: true, #{args} }")} })
 
         #{divider}
       TEXT
@@ -157,6 +181,9 @@ module InternalEventsCli
     end
 
     def vue_template_examples
+      on_click_args = template_formatted_args('data-event-tracking', indent: 2)
+      on_load_args = template_formatted_args('data-event-tracking-load', indent: 2)
+
       cli.say <<~TEXT
         #{divider}
         #{format_help('// VUE TEMPLATE -- ON-CLICK')}
@@ -170,7 +197,7 @@ module InternalEventsCli
         </script>
 
         <template>
-          <gl-button #{format_warning("data-event-tracking=\"#{event['action']}\"")}>
+          <gl-button#{on_click_args}
             Click Me
           </gl-button>
         </template>
@@ -187,7 +214,7 @@ module InternalEventsCli
         </script>
 
         <template>
-          <gl-button #{format_warning("data-event-tracking-load=\"#{event['action']}\"")}>
+          <gl-button#{on_load_args}
             Click Me
           </gl-button>
         </template>
@@ -199,6 +226,8 @@ module InternalEventsCli
     end
 
     def js_examples
+      args = js_formatted_args(indent: 2)
+
       cli.say <<~TEXT
         #{divider}
         #{format_help('// FRONTEND -- RAW JAVASCRIPT')}
@@ -206,7 +235,7 @@ module InternalEventsCli
         #{format_warning("import { InternalEvents } from '~/tracking';")}
 
         export const performAction = () => {
-          #{format_warning("InternalEvents.trackEvent('#{event['action']}');")}
+          #{format_warning("InternalEvents.trackEvent#{args}")}
 
           return true;
         };
@@ -219,6 +248,8 @@ module InternalEventsCli
     end
 
     def vue_examples
+      args = js_formatted_args(indent: 6)
+
       cli.say <<~TEXT
         #{divider}
         #{format_help('// VUE')}
@@ -234,7 +265,7 @@ module InternalEventsCli
           components: { GlButton },
           methods: {
             performAction() {
-              #{format_warning("this.trackEvent('#{event['action']}');")}
+              #{format_warning("this.trackEvent#{args}")}
             },
           },
         };
@@ -248,6 +279,69 @@ module InternalEventsCli
       TEXT
 
       cli.say("Want to see the implementation details? See app/assets/javascripts/tracking/internal_events.js\n\n")
+    end
+
+    private
+
+    def action
+      event['action']
+    end
+
+    def identifiers
+      Array(event['identifiers'])
+    end
+
+    def additional_properties
+      Array(event['additional_properties'])
+    end
+
+    def identifier_examples
+      identifiers
+        .to_h { |identifier| [identifier, identifier] }
+        .merge(IDENTIFIER_EXAMPLES[identifiers.sort] || {})
+    end
+
+    def format_additional_properties
+      additional_properties.map do |property, details|
+        example_value = PROPERTY_EXAMPLES[property]
+        description = details['description'] || 'TODO'
+
+        yield(property, example_value, description)
+      end
+    end
+
+    def js_formatted_args(indent:)
+      return "('#{action}');" if additional_properties.none?
+
+      property_args = format_additional_properties do |property, value, description|
+        "    #{property}: #{value}, // #{description}"
+      end
+
+      [
+        '(',
+        "  '#{action}',",
+        '  {',
+        *property_args,
+        '  },',
+        ');'
+      ].join("\n#{' ' * indent}")
+    end
+
+    def template_formatted_args(data_attr, indent:)
+      return " #{data_attr}=\"#{action}\">" if additional_properties.none?
+
+      spacer = ' ' * indent
+      property_args = format_additional_properties do |property, value, _|
+        "  data-event-#{property}=#{value.tr("'", '"')}"
+      end
+
+      args = [
+        '', # start args on next line
+        "  #{data_attr}=\"#{action}\"",
+        *property_args
+      ].join("\n#{spacer}")
+
+      "#{format_warning(args)}\n#{spacer}>"
     end
 
     def gdk_examples

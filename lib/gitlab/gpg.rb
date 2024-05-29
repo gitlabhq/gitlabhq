@@ -111,8 +111,8 @@ module Gitlab
         # This means we left a GPG-agent process hanging. Logging the problem in
         # sentry will make this more visible.
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(e,
-                                       issue_url: 'https://gitlab.com/gitlab-org/gitlab/issues/20918',
-                                       tmp_dir: tmp_dir, contents: folder_contents)
+          issue_url: 'https://gitlab.com/gitlab-org/gitlab/issues/20918',
+          tmp_dir: tmp_dir, contents: folder_contents)
       end
 
       tmp_keychains_removed.increment unless File.exist?(tmp_dir)

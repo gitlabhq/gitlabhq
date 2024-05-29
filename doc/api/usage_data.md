@@ -4,13 +4,13 @@ group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Service Data API
+# Service Ping API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-The Service Data API is associated with [Service Ping](../development/internal_analytics/service_ping/index.md).
+The Service Ping API is associated with [Service Ping](../development/internal_analytics/service_ping/index.md).
 
 ## Export Service Ping data
 

@@ -2222,11 +2222,11 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
 
         context 'and organization_id is not passed' do
-          it 'creates organization using current organization' do
+          it 'uses database default value' do
             post api('/groups', user3), params: attributes_for_group_api
 
             expect(response).to have_gitlab_http_status(:created)
-            expect(json_response['organization_id']).to eq(Current.organization.id)
+            expect(json_response['organization_id']).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID)
           end
         end
 

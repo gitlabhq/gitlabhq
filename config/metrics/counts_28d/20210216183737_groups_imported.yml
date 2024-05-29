@@ -2,8 +2,6 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.manage.groups_imported
 description: Count of imported groups
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: removed

@@ -1150,6 +1150,17 @@ describe('buildClient', () => {
       expectErrorToBeReported(new Error(FETCHING_LOGS_ERROR));
     });
 
+    it('passes the abort controller to axios', async () => {
+      const abortController = new AbortController();
+      await client.fetchLogs({ abortController });
+
+      expect(axios.get).toHaveBeenCalledWith(logsSearchUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+        signal: abortController.signal,
+      });
+    });
+
     describe('filters', () => {
       describe('date range filter', () => {
         it('handle predefined date range value', async () => {
@@ -1309,6 +1320,17 @@ describe('buildClient', () => {
         params: expect.any(URLSearchParams),
       });
       expect(result).toEqual(mockResponse);
+    });
+
+    it('passes the abort controller to axios', async () => {
+      const abortController = new AbortController();
+      await client.fetchLogsSearchMetadata({ abortController });
+
+      expect(axios.get).toHaveBeenCalledWith(logsSearchMetadataUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+        signal: abortController.signal,
+      });
     });
 
     describe('filters', () => {

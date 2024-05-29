@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.groups_inheriting_pumble_active
 description: Count of active groups inheriting integrations for Pumble
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active

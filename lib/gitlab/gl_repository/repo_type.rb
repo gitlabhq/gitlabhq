@@ -16,12 +16,12 @@ module Gitlab
 
     class RepoType
       attr_reader :name,
-                  :access_checker_class,
-                  :repository_resolver,
-                  :container_class,
-                  :project_resolver,
-                  :guest_read_ability,
-                  :suffix
+        :access_checker_class,
+        :repository_resolver,
+        :container_class,
+        :project_resolver,
+        :guest_read_ability,
+        :suffix
 
       def initialize(
         name:,

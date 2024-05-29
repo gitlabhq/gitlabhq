@@ -3547,15 +3547,6 @@ deploystacks: [vultr, processing]
   the jobs from each other, but [large values can cause names to exceed limits](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
   - Job names must be [255 characters or fewer](../jobs/index.md#job-name-limitations).
   - When using [`needs`](#needs), job names must be 128 characters or fewer.
-
-**Related topics**:
-
-- [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
-- [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
-- [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
-
-**Additional details**:
-
 - You cannot create multiple matrix configurations with the same variable values but different variable names.
   Job names are generated from the variable values, not the variable names, so matrix entries
   with identical values generate identical job names that overwrite each other.
@@ -3572,6 +3563,14 @@ deploystacks: [vultr, processing]
         - OS2: [ubuntu]
           PROVIDER: [aws, gcp]
   ```
+
+  - There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using [`!reference` tags](../yaml/yaml_optimization.md#reference-tags) with `parallel:matrix`.
+
+**Related topics**:
+
+- [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
+- [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
+- [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
 
 ### `release`
 

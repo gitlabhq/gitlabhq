@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.analytics.p_analytics_pipelines_monthly
 description: Unique visitors to /groups/:group/-/analytics/ci_cd by month
-product_section: dev
-product_stage: manage
 product_group: optimize
 value_type: number
 status: active

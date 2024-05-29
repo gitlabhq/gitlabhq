@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.projects_inheriting_slack_active
 description: Count of active projects inheriting integrations for Slack
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active

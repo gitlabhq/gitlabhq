@@ -1,8 +1,6 @@
 ---
 key_path: counts.instances_clickup_active
 description: Count of active instance-level integrations for ClickUp
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active

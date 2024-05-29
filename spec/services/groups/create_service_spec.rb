@@ -230,12 +230,6 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
           expect(created_group.organization).to eq(other_organization)
         end
       end
-
-      context 'and has no parent group' do
-        it 'creates group with the current organization' do
-          expect(created_group.organization).to eq(current_organization)
-        end
-      end
     end
 
     context 'when organization_id is set to nil' do

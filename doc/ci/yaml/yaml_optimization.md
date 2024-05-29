@@ -437,6 +437,8 @@ test-vars-2:
     - printenv
 ```
 
+There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using `!reference` tags with the [`parallel:matrix` keyword](../yaml/index.md#parallelmatrix).
+
 ### Nest `!reference` tags in `script`, `before_script`, and `after_script`
 
 > - Support for `!reference` with the [`stages`](../yaml/index.md#stages) keyword [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439451) in GitLab 16.9.

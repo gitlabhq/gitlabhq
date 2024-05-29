@@ -9693,6 +9693,34 @@ Input type: `VulnerabilityRevertToDetectedInput`
 | <a id="mutationvulnerabilityreverttodetectederrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationvulnerabilityreverttodetectedvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability after state change. |
 
+### `Mutation.workItemAddClosingMergeRequest`
+
+Adds a closing merge request to a work item.
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Input type: `WorkItemAddClosingMergeRequestInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemaddclosingmergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemaddclosingmergerequestcontextnamespacepath"></a>`contextNamespacePath` | [`ID!`](#id) | Full path of the context namespace (project or group). Only project full paths are used to find a merge request using a short reference syntax like `!1`. |
+| <a id="mutationworkitemaddclosingmergerequestid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+| <a id="mutationworkitemaddclosingmergerequestmergerequestreference"></a>`mergeRequestReference` | [`String!`](#string) | Merge request short reference. Example: `!1`. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemaddclosingmergerequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemaddclosingmergerequestclosingmergerequest"></a>`closingMergeRequest` | [`WorkItemClosingMergeRequest`](#workitemclosingmergerequest) | Closing merge request added to the work item. |
+| <a id="mutationworkitemaddclosingmergerequesterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemaddclosingmergerequestworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item with new closing merge requests. |
+
 ### `Mutation.workItemAddLinkedItems`
 
 Add linked items to the work item.

@@ -4,7 +4,9 @@ classes:
 - BulkImports::Configuration
 feature_categories:
 - importers
-description: Used to store the configuration details of a bulk import of groups or projects
+description: Used to store the configuration details of a bulk import of groups or
+  projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42978
 milestone: '13.5'
 gitlab_schema: gitlab_main
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463854

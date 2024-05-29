@@ -2,8 +2,6 @@
 data_category: operational
 key_path: redis_hll_counters.analytics.analytics_total_unique_counts_monthly
 description: The number of unique users who visited any analytics feature by month
-product_section: dev
-product_stage: manage
 product_group: optimize
 value_type: number
 status: active
