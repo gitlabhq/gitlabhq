@@ -9,10 +9,11 @@ RSpec.describe Gitlab::GithubImport::Representation::LfsObject do
         oid: 42,
         size: 123456
       }
-      other_attributes = { something_else: '_something_else_' }
+      other_attributes = { headers: { Authorization: 'RemoteAuth 123456' } }
       lfs_object = described_class.new(github_identifiers.merge(other_attributes))
 
       expect(lfs_object.github_identifiers).to eq(github_identifiers)
+      expect(lfs_object.headers).to eq({ Authorization: 'RemoteAuth 123456' })
     end
   end
 end
