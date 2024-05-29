@@ -217,9 +217,7 @@ function handleTracingPeriodFilter(rawValue, filterName, filterParams) {
  * @param {Object} filterObj : An Object representing filters
  * @returns URLSearchParams
  */
-function tracingFilterObjToQueryParams(filterObj) {
-  const filterParams = new URLSearchParams();
-
+function addTracingAttributesFiltersToQueryParams(filterObj, filterParams) {
   Object.keys(SUPPORTED_TRACING_FILTERS).forEach((filterName) => {
     const filterValues = Array.isArray(filterObj[filterName]) ? filterObj[filterName] : [];
     const validFilters = filterValues.filter((f) =>
@@ -266,7 +264,13 @@ async function fetchTraces(
   tracingUrl,
   { filters = {}, pageToken, pageSize, sortBy, abortController } = {},
 ) {
-  const params = tracingFilterObjToQueryParams(filters);
+  const params = new URLSearchParams();
+
+  const { attributes } = filters;
+  if (attributes) {
+    addTracingAttributesFiltersToQueryParams(attributes, params);
+  }
+
   if (pageToken) {
     params.append('page_token', pageToken);
   }
@@ -294,7 +298,12 @@ async function fetchTraces(
 }
 
 async function fetchTracesAnalytics(tracingAnalyticsUrl, { filters = {}, abortController } = {}) {
-  const params = tracingFilterObjToQueryParams(filters);
+  const params = new URLSearchParams();
+
+  const { attributes } = filters;
+  if (attributes) {
+    addTracingAttributesFiltersToQueryParams(attributes, params);
+  }
 
   try {
     const { data } = await axios.get(tracingAnalyticsUrl, {

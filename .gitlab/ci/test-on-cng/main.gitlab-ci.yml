@@ -50,12 +50,8 @@ workflow:
     - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}"
     - source scripts/utils.sh
     - source scripts/rspec_helpers.sh
-    - source scripts/qa/cng_deploy/cng-kind.sh
     - cd qa && bundle install
-    - bundle exec cng create cluster --ci
-    # Currently this only performs pre-deploy setup
-    - bundle exec cng create deployment --ci
-    - deploy ${GITLAB_DOMAIN}
+    - bundle exec cng create deployment --gitlab-domain "${GITLAB_DOMAIN}" --ci --with-cluster ${EXTRA_DEPLOY_VALUES}
   script:
     - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- --force-color --order random --format documentation"
     - echo "Running - '$QA_COMMAND'"
@@ -120,7 +116,11 @@ cng-qa-min-redis-version:
   extends: .cng-base
   variables:
     QA_SCENARIO: Test::Instance::Smoke
-    REDIS_VERSION_TYPE: MIN_REDIS_VERSION
+  before_script:
+    - |
+      redis_version=$(awk -F "=" "/MIN_REDIS_VERSION =/ {print \$2}" $CI_PROJECT_DIR/lib/system_check/app/redis_version_check.rb | sed "s/['\" ]//g")
+      export EXTRA_DEPLOY_VALUES="--set redis.image.tag=${redis_version%.*}"
+    - !reference [.cng-base, before_script]
   after_script:
     - !reference [.set-suite-status, after_script]
     - !reference [.cng-base, after_script]

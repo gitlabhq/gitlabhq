@@ -10,7 +10,7 @@
       &middot;
       = sprintf(s_('created %{issuable_created} by %{author}'), { issuable_created: time_ago_with_tooltip(issuable.created_at, placement: 'bottom'), author: link_to_member(@project, issuable.author, avatar: false) }).html_safe
       - if (target_branch = issuable_visible_target_branch(issuable))
-        %span.project-ref-path.has-tooltip.d-inline-block.gl-text-truncate.gl-max-w-26.gl-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: target_branch} }
+        %span.project-ref-path.has-tooltip.gl-inline-block.gl-text-truncate.gl-max-w-26.gl-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: target_branch} }
           &nbsp;
           = link_to project_ref_path(issuable.project, target_branch), class: 'ref-name gl-text-secondary!' do
             = sprite_icon('branch', size: 12, css_class: 'fork-sprite')

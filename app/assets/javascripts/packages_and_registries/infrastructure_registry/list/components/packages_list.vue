@@ -76,14 +76,14 @@ export default {
 
     <template v-else>
       <ul data-testid="packages-table" class="gl-pl-0">
-        <packages-list-row
-          v-for="packageEntity in list"
-          :key="packageEntity.id"
-          :package-entity="packageEntity"
-          :package-link="packageEntity._links.web_path"
-          :is-group="isGroupPage"
-          @packageToDelete="setItemToBeDeleted"
-        />
+        <li v-for="packageEntity in list" :key="packageEntity.id" class="gl-list-style-none">
+          <packages-list-row
+            :package-entity="packageEntity"
+            :package-link="packageEntity._links.web_path"
+            :is-group="isGroupPage"
+            @packageToDelete="setItemToBeDeleted"
+          />
+        </li>
       </ul>
 
       <gl-pagination

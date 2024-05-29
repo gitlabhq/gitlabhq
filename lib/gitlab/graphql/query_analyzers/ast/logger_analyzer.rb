@@ -25,6 +25,8 @@ module Gitlab
             complexity, depth, field_usages =
               GraphQL::Analysis::AST.analyze_query(@subject, ALL_ANALYZERS, multiplex_analyzers: [])
 
+            field_usages ||= {} # in various edge cases, #analyze_query returns []
+
             results[:depth] = depth
             results[:complexity] = complexity
             # This duration is not the execution time of the

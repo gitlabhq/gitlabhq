@@ -17409,7 +17409,7 @@ Represents the total number of issues and their weights for a particular day.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Description of the catalog resource. |
-| <a id="cicatalogresourcefullpath"></a>`fullPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Full project path of the catalog resource. |
+| <a id="cicatalogresourcefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Introduced** in GitLab 16.11. **Status**: Experiment. Full project path of the catalog resource. |
 | <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Icon for the catalog resource. |
 | <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in GitLab 15.11. **Status**: Experiment. ID of the catalog resource. |
 | <a id="cicatalogresourcelast30dayusagecount"></a>`last30DayUsageCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 17.0. **Status**: Experiment. Number of projects that used a component from this catalog resource in a pipeline, by using `include:component`, in the last 30 days. |
@@ -19708,7 +19708,7 @@ A single design.
 | <a id="designdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on this noteable. (see [Connections](#connections)) |
 | <a id="designevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |
 | <a id="designfilename"></a>`filename` | [`String!`](#string) | Filename of the design. |
-| <a id="designfullpath"></a>`fullPath` | [`String!`](#string) | Full path to the design file. |
+| <a id="designfullpath"></a>`fullPath` | [`ID!`](#id) | Full path to the design file. |
 | <a id="designid"></a>`id` | [`ID!`](#id) | ID of this design. |
 | <a id="designimage"></a>`image` | [`String!`](#string) | URL of the full-sized image. |
 | <a id="designimagev432x230"></a>`imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |
@@ -19782,7 +19782,7 @@ A design pinned to a specific version. The image field reflects the design as of
 | <a id="designatversiondiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | Diff refs for this design. |
 | <a id="designatversionevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |
 | <a id="designatversionfilename"></a>`filename` | [`String!`](#string) | Filename of the design. |
-| <a id="designatversionfullpath"></a>`fullPath` | [`String!`](#string) | Full path to the design file. |
+| <a id="designatversionfullpath"></a>`fullPath` | [`ID!`](#id) | Full path to the design file. |
 | <a id="designatversionid"></a>`id` | [`ID!`](#id) | ID of this design. |
 | <a id="designatversionimage"></a>`image` | [`String!`](#string) | URL of the full-sized image. |
 | <a id="designatversionimagev432x230"></a>`imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |
@@ -37048,7 +37048,7 @@ Implementations:
 | <a id="designfieldsdiffrefs"></a>`diffRefs` | [`DiffRefs!`](#diffrefs) | Diff refs for this design. |
 | <a id="designfieldsevent"></a>`event` | [`DesignVersionEvent!`](#designversionevent) | How this design was changed in the current version. |
 | <a id="designfieldsfilename"></a>`filename` | [`String!`](#string) | Filename of the design. |
-| <a id="designfieldsfullpath"></a>`fullPath` | [`String!`](#string) | Full path to the design file. |
+| <a id="designfieldsfullpath"></a>`fullPath` | [`ID!`](#id) | Full path to the design file. |
 | <a id="designfieldsid"></a>`id` | [`ID!`](#id) | ID of this design. |
 | <a id="designfieldsimage"></a>`image` | [`String!`](#string) | URL of the full-sized image. |
 | <a id="designfieldsimagev432x230"></a>`imageV432x230` | [`String`](#string) | The URL of the design resized to fit within the bounds of 432x230. This will be `null` if the image has not been generated. |

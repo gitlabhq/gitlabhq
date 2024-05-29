@@ -255,7 +255,6 @@ export default {
   >
     <gl-form-checkbox
       v-if="showCheckbox"
-      class="issue-check gl-mr-0"
       :checked="checked"
       :data-id="issuableId"
       :data-iid="issuableIid"

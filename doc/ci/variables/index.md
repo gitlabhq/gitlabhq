@@ -749,7 +749,7 @@ You should avoid overriding predefined variables in most cases, as it can cause 
 
 ### Restrict who can override variables
 
-You can limit the ability to override variables to only users with the Maintainer role.
+You can limit the ability to override variables to only users with at least the Maintainer role.
 When other users try to run a pipeline with overridden variables, they receive the
 `Insufficient permissions to set pipeline variables` error message.
 
@@ -758,6 +758,28 @@ to enable the `restrict_user_defined_variables` setting. The setting is `disable
 
 If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
 use this setting for control over the environment the pipeline runs in.
+
+#### By minimum role
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `allow_user_variables_by_minimum_role`. Disabled by default.
+
+When the `restrict_user_defined_variables` option is enabled, you can specify which
+[roles](../../user/permissions.md#roles) can override variables with the
+`ci_pipeline_variables_minimum_override_role` setting.
+
+To change the setting, use [the projects API](../../api/projects.md#edit-project)
+to modify `ci_pipeline_variables_minimum_override_role` to one of:
+
+- `owner`: Only users with the Owner role can override variables. You must have the Owner
+  role in the project to change the setting to this value.
+- `maintainer`: Only users with at least the Maintainer role can override variables.
+  Default when not specified.
+- `developer`: Only users with at least the Developer role can override variables.
+- `no_one_allowed`: Users cannot override variables.
+
+If you set the minimum role to `owner`, only users with at least the `owner` role
+can update the `ci_pipeline_variables_minimum_override_role` and `restrict_user_defined_variables`
+settings.
 
 ## Exporting variables
 

@@ -2,20 +2,6 @@
 # Cop supports --autocorrect.
 Layout/SpaceInLambdaLiteral:
   Exclude:
-    - 'app/serializers/deploy_keys/basic_deploy_key_entity.rb'
-    - 'app/serializers/deployment_cluster_entity.rb'
-    - 'app/serializers/deployment_entity.rb'
-    - 'app/serializers/detailed_status_entity.rb'
-    - 'app/serializers/diff_file_base_entity.rb'
-    - 'app/serializers/diff_file_entity.rb'
-    - 'app/serializers/diffs_entity.rb'
-    - 'app/serializers/discussion_entity.rb'
-    - 'app/serializers/draft_note_entity.rb'
-    - 'app/serializers/environment_entity.rb'
-    - 'app/serializers/feature_flag_entity.rb'
-    - 'app/serializers/issue_board_entity.rb'
-    - 'app/serializers/issue_entity.rb'
-    - 'app/serializers/issue_sidebar_basic_entity.rb'
     - 'ee/app/serializers/blocking_merge_request_entity.rb'
     - 'ee/app/serializers/clusters/environment_entity.rb'
     - 'ee/app/serializers/dashboard_operations_project_entity.rb'

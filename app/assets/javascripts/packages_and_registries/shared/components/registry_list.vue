@@ -117,13 +117,15 @@ export default {
       </gl-button>
     </div>
 
-    <ul v-for="(item, index) in items" :key="index" class="gl-pl-0">
-      <slot
-        :select-item="selectItem"
-        :is-selected="isSelected"
-        :item="item"
-        :first="!hiddenDelete && index === 0"
-      ></slot>
+    <ul class="gl-pl-0">
+      <li v-for="(item, index) in items" :key="index" class="gl-list-style-none">
+        <slot
+          :select-item="selectItem"
+          :is-selected="isSelected"
+          :item="item"
+          :first="!hiddenDelete && index === 0"
+        ></slot>
+      </li>
     </ul>
 
     <div class="gl-display-flex gl-justify-content-center">

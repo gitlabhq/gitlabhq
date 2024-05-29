@@ -331,30 +331,45 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       GQL
     end
 
-    it 'returns the last_published_at', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463763' do
-      stub_container_registry_gitlab_api_support(supported: true) do |client|
-        stub_container_registry_gitlab_api_repository_details(client, path: container_repository.path, last_published_at: '2024-04-30T06:07:36.225Z')
-      end
-
-      subject
-
-      expect(last_published_at_response).to eq('2024-04-30T06:07:36+00:00')
-    end
-
-    context 'with a network error' do
-      it 'returns an error', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463764' do
-        stub_container_registry_gitlab_api_network_error
+    context 'on Gitlab.com', :saas do
+      it 'returns the last_published_at' do
+        stub_container_registry_gitlab_api_support(supported: true) do |client|
+          stub_container_registry_gitlab_api_repository_details(
+            client,
+            path: container_repository.path,
+            sizing: :self,
+            last_published_at: '2024-04-30T06:07:36.225Z'
+          )
+        end
 
         subject
 
-        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+        expect(last_published_at_response).to eq('2024-04-30T06:07:36+00:00')
+      end
+
+      context 'with not supporting the gitlab api' do
+        it 'returns nil' do
+          stub_container_registry_gitlab_api_support(supported: false)
+
+          subject
+
+          expect(last_published_at_response).to eq(nil)
+        end
+      end
+
+      context 'with a network error' do
+        it 'returns an error' do
+          stub_container_registry_gitlab_api_network_error
+
+          subject
+
+          expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
+        end
       end
     end
 
-    context 'with not supporting the gitlab api' do
+    context 'when not on Gitlab.com' do
       it 'returns nil' do
-        stub_container_registry_gitlab_api_support(supported: false)
-
         subject
 
         expect(last_published_at_response).to eq(nil)

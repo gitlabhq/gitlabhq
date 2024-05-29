@@ -81,7 +81,7 @@ export default {
     v-gl-tooltip.right
     :title="tooltipTitle"
     :class="{ 'ml-auto': isCentered }"
-    class="file-changed-icon d-inline-block"
+    class="file-changed-icon gl-inline-block"
   >
     <gl-icon v-if="showIcon" :name="changedIcon" :size="size" :class="changedIconClass" />
   </span>

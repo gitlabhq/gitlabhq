@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :container_registry do
+  include_context 'container registry client stubs'
+
   using RSpec::Parameterized::TableSyntax
 
   let(:group) { create(:group, name: 'group') }
@@ -54,7 +56,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     context 'on GitLab.com', :saas do
       context 'supports gitlab api' do
         before do
-          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+          stub_container_registry_gitlab_api_support(supported: true)
           expect(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, sizing: :self).and_return(response)
         end
 
@@ -80,7 +82,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
       context 'does not support gitlab api' do
         before do
-          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+          stub_container_registry_gitlab_api_support(supported: false)
           expect(repository.gitlab_api_client).not_to receive(:repository_details)
         end
 
@@ -116,7 +118,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     context 'when the repository is migrated', :saas do
       context 'when Gitlab API is supported' do
         before do
-          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+          stub_container_registry_gitlab_api_support(supported: true)
         end
 
         shared_examples 'returning an instantiated tag from the API response' do
@@ -199,7 +201,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
       context 'when the Gitlab API is not supported' do
         before do
-          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+          stub_container_registry_gitlab_api_support(supported: false)
         end
 
         it_behaves_like 'returning an instantiated tag'
@@ -264,7 +266,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     context 'when the repository is migrated', :saas do
       context 'when Gitlab API is supported' do
         before do
-          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+          stub_container_registry_gitlab_api_support(supported: true)
         end
 
         context 'when the Gitlab API returns tags' do
@@ -309,7 +311,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
 
       context 'when the Gitlab API is not supported' do
         before do
-          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+          stub_container_registry_gitlab_api_support(supported: false)
         end
 
         it_behaves_like 'returning the non-empty tags list'

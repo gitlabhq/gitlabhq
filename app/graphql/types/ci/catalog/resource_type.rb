@@ -29,7 +29,7 @@ module Types
         field :icon, GraphQL::Types::String, null: true, description: 'Icon for the catalog resource.',
           method: :avatar_path, alpha: { milestone: '15.11' }
 
-        field :full_path, GraphQL::Types::String, null: true, description: 'Full project path of the catalog resource.',
+        field :full_path, GraphQL::Types::ID, null: true, description: 'Full project path of the catalog resource.',
           alpha: { milestone: '16.11' }
 
         field :web_path, GraphQL::Types::String, null: true, description: 'Web path of the catalog resource.',

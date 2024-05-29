@@ -2,17 +2,6 @@
 # Cop supports --autocorrect.
 Layout/FirstHashElementIndentation:
   Exclude:
-    - 'ee/app/helpers/ee/geo_helper.rb'
-    - 'ee/app/helpers/ee/groups/group_members_helper.rb'
-    - 'ee/app/models/ee/list.rb'
-    - 'ee/app/services/app_sec/dast/profiles/update_service.rb'
-    - 'ee/app/services/elastic/cluster_reindexing_service.rb'
-    - 'ee/app/services/iterations/create_service.rb'
-    - 'ee/app/services/resource_events/change_iteration_service.rb'
-    - 'ee/app/services/security/token_revocation_service.rb'
-    - 'ee/app/services/timebox_report_service.rb'
-    - 'ee/lib/ee/gitlab/ci/parsers.rb'
-    - 'ee/lib/ee/gitlab/usage_data.rb'
     - 'ee/spec/factories/dependencies.rb'
     - 'ee/spec/finders/epics_finder_spec.rb'
     - 'ee/spec/finders/namespaces/free_user_cap/users_finder_spec.rb'

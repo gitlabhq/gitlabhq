@@ -6,6 +6,7 @@ module Projects
     include ValidatesClassificationLabel
 
     ValidationError = Class.new(StandardError)
+    ApiError = Class.new(StandardError)
 
     def execute
       build_topics
@@ -40,6 +41,8 @@ module Projects
       end
     rescue ValidationError => e
       error(e.message)
+    rescue ApiError => e
+      error(e.message, status: :api_error)
     end
 
     def run_auto_devops_pipeline?
@@ -63,6 +66,22 @@ module Projects
 
       validate_default_branch_change
       validate_renaming_project_with_tags
+      validate_restrict_user_defined_variables_change
+    end
+
+    def validate_restrict_user_defined_variables_change
+      return if ::Feature.disabled?(:allow_user_variables_by_minimum_role, project)
+      return unless changing_restrict_user_defined_variables? || changing_pipeline_variables_minimum_override_role?
+
+      if changing_pipeline_variables_minimum_override_role? &&
+          params[:ci_pipeline_variables_minimum_override_role] == 'owner' &&
+          !can?(current_user, :owner_access, project)
+        raise_api_error(s_("UpdateProject|Changing the ci_pipeline_variables_minimum_override_role to the owner role is not allowed"))
+      end
+
+      return if can?(current_user, :change_restrict_user_defined_variables, project)
+
+      raise_api_error(s_("UpdateProject|Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed"))
     end
 
     def validate_default_branch_change
@@ -167,6 +186,10 @@ module Projects
       raise ValidationError, message
     end
 
+    def raise_api_error(message)
+      raise ApiError, message
+    end
+
     def update_failed!
       model_errors = project.errors.full_messages.to_sentence
       error_message = model_errors.presence || s_('UpdateProject|Project could not be updated!')
@@ -186,6 +209,20 @@ module Projects
 
       new_branch && project.repository.exists? &&
         new_branch != project.default_branch
+    end
+
+    def changing_restrict_user_defined_variables?
+      new_restrict_user_defined_variables = params[:restrict_user_defined_variables]
+      return false if new_restrict_user_defined_variables.nil?
+
+      project.restrict_user_defined_variables != new_restrict_user_defined_variables
+    end
+
+    def changing_pipeline_variables_minimum_override_role?
+      new_pipeline_variables_minimum_override_role = params[:ci_pipeline_variables_minimum_override_role]
+      return false if new_pipeline_variables_minimum_override_role.nil?
+
+      project.ci_pipeline_variables_minimum_override_role != new_pipeline_variables_minimum_override_role
     end
 
     def enabling_wiki?

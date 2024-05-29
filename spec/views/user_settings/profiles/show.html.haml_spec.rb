@@ -11,6 +11,7 @@ RSpec.describe 'user_settings/profiles/show', feature_category: :user_profile do
     allow(controller).to receive(:current_user).and_return(user)
     allow(view).to receive(:experiment_enabled?)
     stub_feature_flags(edit_user_profile_vue: false)
+    allow(view).to receive(:can?)
   end
 
   context 'when the profile page is opened' do
@@ -49,6 +50,20 @@ RSpec.describe 'user_settings/profiles/show', feature_category: :user_profile do
         with: user_status.clear_status_at.to_fs(:iso8601),
         type: :hidden
       )
+    end
+
+    describe 'private profile', feature_category: :user_management do
+      before do
+        allow(view).to receive(:can?).with(user, :make_profile_private, user).and_return(true)
+      end
+
+      it 'renders correct CE partial' do
+        render
+
+        expect(rendered).to render_template('user_settings/profiles/_private_profile')
+        expect(rendered).to have_link 'Learn more',
+          href: help_page_path('user/profile/index', anchor: 'make-your-user-profile-page-private')
+      end
     end
   end
 end

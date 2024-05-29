@@ -54,12 +54,12 @@ export default {
 
     <div v-else data-testid="main-area">
       <ul class="gl-pl-0">
-        <manifest-row
-          v-for="(manifest, index) in manifests"
-          :key="index"
-          :dependency-proxy-image-prefix="dependencyProxyImagePrefix"
-          :manifest="manifest"
-        />
+        <li v-for="(manifest, index) in manifests" :key="index">
+          <manifest-row
+            :dependency-proxy-image-prefix="dependencyProxyImagePrefix"
+            :manifest="manifest"
+          />
+        </li>
       </ul>
       <div class="gl-display-flex gl-justify-content-center">
         <gl-keyset-pagination

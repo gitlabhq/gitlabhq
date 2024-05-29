@@ -31,7 +31,7 @@ class DiffFileBaseEntity < Grape::Entity
     }
   end
 
-  expose :edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
+  expose :edit_path, if: ->(_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
     next unless has_edit_path?(merge_request)
@@ -43,7 +43,7 @@ class DiffFileBaseEntity < Grape::Entity
     project_edit_blob_path(target_project, tree_join(target_branch, diff_file.new_path), options)
   end
 
-  expose :ide_edit_path, if: -> (_, options) { options[:merge_request] } do |diff_file|
+  expose :ide_edit_path, if: ->(_, options) { options[:merge_request] } do |diff_file|
     merge_request = options[:merge_request]
 
     next unless has_edit_path?(merge_request)
@@ -61,11 +61,11 @@ class DiffFileBaseEntity < Grape::Entity
     new_path
   end
 
-  expose :formatted_external_url, if: -> (_, options) { options[:environment] } do |diff_file|
+  expose :formatted_external_url, if: ->(_, options) { options[:environment] } do |diff_file|
     options[:environment].formatted_external_url
   end
 
-  expose :external_url, if: -> (_, options) { options[:environment] } do |diff_file|
+  expose :external_url, if: ->(_, options) { options[:environment] } do |diff_file|
     options[:environment].external_url_for(diff_file.new_path, diff_file.content_sha)
   end
 

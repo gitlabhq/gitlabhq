@@ -2,6 +2,7 @@ PATH
   remote: ../gems/gitlab-cng
   specs:
     gitlab-cng (0.0.1)
+      activesupport (>= 7)
       rainbow (~> 3.1)
       require_all (~> 3.0)
       thor (~> 1.3)

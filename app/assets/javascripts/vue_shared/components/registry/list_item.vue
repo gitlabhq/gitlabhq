@@ -58,7 +58,7 @@ export default {
 </script>
 
 <template>
-  <li
+  <div
     class="gl-display-flex gl-flex-direction-column gl-border-b-solid gl-border-t-solid gl-border-t-1 gl-border-b-1"
     :class="optionalClasses"
   >
@@ -159,5 +159,5 @@ export default {
       </div>
       <div class="gl-w-9"></div>
     </div>
-  </li>
+  </div>
 </template>

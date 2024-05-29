@@ -4703,6 +4703,9 @@ msgstr ""
 msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
 msgstr ""
 
+msgid "AiImpactAnalytics|Usage rate for Code Suggestions is calculated with data starting on %{startDate}"
+msgstr ""
+
 msgid "Akismet"
 msgstr ""
 
@@ -39990,6 +39993,9 @@ msgstr ""
 msgid "Profiles|Do not show on profile"
 msgstr ""
 
+msgid "Profiles|Don't display activity-related personal information on your profile."
+msgstr ""
+
 msgid "Profiles|Don't display activity-related personal information on your profile. %{private_profile_help_link_start}Learn more%{private_profile_help_link_end}."
 msgstr ""
 
@@ -49109,6 +49115,9 @@ msgstr ""
 msgid "Setting enforced"
 msgstr ""
 
+msgid "Setting locked. Profiles are required to be public in this instance."
+msgstr ""
+
 msgid "Settings"
 msgstr ""
 
@@ -56054,6 +56063,12 @@ msgid "UpdateProject|Cannot rename project because it contains container registr
 msgstr ""
 
 msgid "UpdateProject|Cannot rename project, the container registry path rename validation failed: %{error}"
+msgstr ""
+
+msgid "UpdateProject|Changing the ci_pipeline_variables_minimum_override_role to the owner role is not allowed"
+msgstr ""
+
+msgid "UpdateProject|Changing the restrict_user_defined_variables or ci_pipeline_variables_minimum_override_role is not allowed"
 msgstr ""
 
 msgid "UpdateProject|Could not set the default branch"

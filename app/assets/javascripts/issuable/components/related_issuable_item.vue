@@ -180,7 +180,7 @@ export default {
               v-if="itemPath"
               v-gl-tooltip
               :title="itemPath"
-              class="path-id-text d-inline-block"
+              class="path-id-text gl-inline-block"
               >{{ itemPath }}</span
             >
             <span>{{ pathIdSeparator }}{{ itemId }}</span>
@@ -232,7 +232,7 @@ export default {
     <span
       v-if="isLocked"
       v-gl-tooltip
-      class="gl-display-inline-block gl-cursor-not-allowed"
+      class="gl-inline-block gl-cursor-not-allowed"
       :title="lockedMessage"
       data-testid="lockIcon"
     >

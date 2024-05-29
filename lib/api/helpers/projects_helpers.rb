@@ -116,6 +116,7 @@ module API
         optional :ci_allow_fork_pipelines_to_run_in_parent_project, type: Boolean, desc: 'Allow fork merge request pipelines to run in parent project'
         optional :ci_separated_caches, type: Boolean, desc: 'Enable or disable separated caches based on branch protection.'
         optional :restrict_user_defined_variables, type: Boolean, desc: 'Restrict use of user-defined variables when triggering a pipeline'
+        optional :ci_pipeline_variables_minimum_override_role, values: %w[no_one_allowed developer maintainer owner], type: String, desc: 'Limit ability to override CI/CD variables when triggering a pipeline to only users with at least the set minimum role'
       end
 
       params :optional_update_params_ee do
@@ -208,6 +209,7 @@ module API
           :model_experiments_access_level,
           :model_registry_access_level,
           :warn_about_potentially_unwanted_characters,
+          :ci_pipeline_variables_minimum_override_role,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

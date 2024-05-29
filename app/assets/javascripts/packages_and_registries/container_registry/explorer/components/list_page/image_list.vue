@@ -27,13 +27,13 @@ export default {
 
 <template>
   <ul class="gl-pl-0">
-    <image-list-row
-      v-for="(listItem, index) in images"
-      :key="index"
-      :item="listItem"
-      :metadata-loading="metadataLoading"
-      :expiration-policy="expirationPolicy"
-      @delete="$emit('delete', $event)"
-    />
+    <li v-for="(listItem, index) in images" :key="index" class="gl-list-style-none">
+      <image-list-row
+        :item="listItem"
+        :metadata-loading="metadataLoading"
+        :expiration-policy="expirationPolicy"
+        @delete="$emit('delete', $event)"
+      />
+    </li>
   </ul>
 </template>

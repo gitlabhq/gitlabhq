@@ -118,6 +118,17 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
         expect(tasks_parent).to match_array([work_item])
       end
 
+      context 'when relative_position is set' do
+        let(:params) { { issuable_references: [task1, task2], relative_position: 1337 } }
+
+        it 'creates relationships with given relative_position' do
+          result = subject
+
+          expect(result[:created_references].first.relative_position).to eq(1337)
+          expect(result[:created_references].second.relative_position).to eq(1337)
+        end
+      end
+
       it 'returns success status and created links', :aggregate_failures do
         expect(subject.keys).to match_array([:status, :created_references])
         expect(subject[:status]).to eq(:success)

@@ -20,9 +20,11 @@ module Gitlab
         class Base
           include Helpers::Output
 
-          def initialize(namespace, kubeclient)
+          def initialize(namespace, kubeclient, ci, gitlab_domain)
             @namespace = namespace
             @kubeclient = kubeclient
+            @ci = ci
+            @gitlab_domain = gitlab_domain
           end
 
           class << self
@@ -41,7 +43,7 @@ module Gitlab
             #
             # @return [void]
             def skip_post_deployment_setup!
-              @skip_pre_deployment_setup = true
+              @skip_post_deployment_setup = true
             end
           end
 
@@ -51,7 +53,7 @@ module Gitlab
           def run_pre_deployment_setup
             return if self.class.skip_pre_deployment_setup
 
-            raise(NoMethodError, 'run_pre_deployment_setup not implemented')
+            raise(NoMethodError, "run_pre_deployment_setup not implemented")
           end
 
           # Steps to be executed after helm deployment has been performed
@@ -60,19 +62,26 @@ module Gitlab
           def run_post_deployment_setup
             return if self.class.skip_post_deployment_setup
 
-            raise(NoMethodError, 'run_post_deployment_setup not implemented')
+            raise(NoMethodError, "run_post_deployment_setup not implemented")
           end
 
           # Values hash containing the values to be passed to helm chart install
           #
           # @return [Hash]
           def values
-            raise(NoMethodError, 'values not implemented')
+            {}
+          end
+
+          # Deployed app url
+          #
+          # @return [String]
+          def gitlab_url
+            "http://gitlab.#{gitlab_domain}"
           end
 
           private
 
-          attr_reader :namespace, :kubeclient
+          attr_reader :namespace, :kubeclient, :ci, :gitlab_domain
         end
       end
     end

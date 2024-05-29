@@ -271,28 +271,30 @@ describe('buildClient', () => {
       it('converts filter to proper query params', async () => {
         await client.fetchTraces({
           filters: {
-            durationMs: [
-              { operator: '>', value: '100' },
-              { operator: '<', value: '1000' },
-            ],
-            operation: [
-              { operator: '=', value: 'op' },
-              { operator: '!=', value: 'not-op' },
-            ],
-            service: [
-              { operator: '=', value: 'service' },
-              { operator: '!=', value: 'not-service' },
-            ],
-            period: [{ operator: '=', value: '5m' }],
-            status: [
-              { operator: '=', value: 'ok' },
-              { operator: '!=', value: 'error' },
-            ],
-            traceId: [
-              { operator: '=', value: 'trace-id' },
-              { operator: '!=', value: 'not-trace-id' },
-            ],
-            attribute: [{ operator: '=', value: 'name1=value1' }],
+            attributes: {
+              durationMs: [
+                { operator: '>', value: '100' },
+                { operator: '<', value: '1000' },
+              ],
+              operation: [
+                { operator: '=', value: 'op' },
+                { operator: '!=', value: 'not-op' },
+              ],
+              service: [
+                { operator: '=', value: 'service' },
+                { operator: '!=', value: 'not-service' },
+              ],
+              period: [{ operator: '=', value: '5m' }],
+              status: [
+                { operator: '=', value: 'ok' },
+                { operator: '!=', value: 'error' },
+              ],
+              traceId: [
+                { operator: '=', value: 'trace-id' },
+                { operator: '!=', value: 'not-trace-id' },
+              ],
+              attribute: [{ operator: '=', value: 'name1=value1' }],
+            },
           },
         });
         expect(getQueryParam()).toContain(
@@ -309,7 +311,9 @@ describe('buildClient', () => {
         it('handles custom date range period filter', async () => {
           await client.fetchTraces({
             filters: {
-              period: [{ operator: '=', value: '2023-01-01 - 2023-02-01' }],
+              attributes: {
+                period: [{ operator: '=', value: '2023-01-01 - 2023-02-01' }],
+              },
             },
           });
           expect(getQueryParam()).not.toContain('period=');
@@ -328,7 +332,9 @@ describe('buildClient', () => {
         ])('ignore invalid values', async (val) => {
           await client.fetchTraces({
             filters: {
-              period: [{ operator: '=', value: val }],
+              attributes: {
+                period: [{ operator: '=', value: val }],
+              },
             },
           });
 
@@ -341,10 +347,12 @@ describe('buildClient', () => {
       it('handles repeated params', async () => {
         await client.fetchTraces({
           filters: {
-            operation: [
-              { operator: '=', value: 'op' },
-              { operator: '=', value: 'op2' },
-            ],
+            attributes: {
+              operation: [
+                { operator: '=', value: 'op' },
+                { operator: '=', value: 'op2' },
+              ],
+            },
           },
         });
         expect(getQueryParam()).toContain('operation=op&operation=op2');
@@ -353,7 +361,9 @@ describe('buildClient', () => {
       it('ignores unsupported filters', async () => {
         await client.fetchTraces({
           filters: {
-            unsupportedFilter: [{ operator: '=', value: 'foo' }],
+            attributes: {
+              unsupportedFilter: [{ operator: '=', value: 'foo' }],
+            },
           },
         });
 
@@ -363,8 +373,10 @@ describe('buildClient', () => {
       it('ignores empty filters', async () => {
         await client.fetchTraces({
           filters: {
-            durationMs: null,
-            traceId: undefined,
+            attributes: {
+              durationMs: null,
+              traceId: undefined,
+            },
           },
         });
 
@@ -374,7 +386,9 @@ describe('buildClient', () => {
       it('ignores non-array filters', async () => {
         await client.fetchTraces({
           filters: {
-            traceId: { operator: '=', value: 'foo' },
+            attributes: {
+              traceId: { operator: '=', value: 'foo' },
+            },
           },
         });
 
@@ -384,24 +398,26 @@ describe('buildClient', () => {
       it('ignores unsupported operators', async () => {
         await client.fetchTraces({
           filters: {
-            durationMs: [
-              { operator: '*', value: 'foo' },
-              { operator: '=', value: 'foo' },
-              { operator: '!=', value: 'foo' },
-            ],
-            operation: [
-              { operator: '>', value: 'foo' },
-              { operator: '<', value: 'foo' },
-            ],
-            service: [
-              { operator: '>', value: 'foo' },
-              { operator: '<', value: 'foo' },
-            ],
-            period: [{ operator: '!=', value: 'foo' }],
-            traceId: [
-              { operator: '>', value: 'foo' },
-              { operator: '<', value: 'foo' },
-            ],
+            attributes: {
+              durationMs: [
+                { operator: '*', value: 'foo' },
+                { operator: '=', value: 'foo' },
+                { operator: '!=', value: 'foo' },
+              ],
+              operation: [
+                { operator: '>', value: 'foo' },
+                { operator: '<', value: 'foo' },
+              ],
+              service: [
+                { operator: '>', value: 'foo' },
+                { operator: '<', value: 'foo' },
+              ],
+              period: [{ operator: '!=', value: 'foo' }],
+              traceId: [
+                { operator: '>', value: 'foo' },
+                { operator: '<', value: 'foo' },
+              ],
+            },
           },
         });
 
@@ -475,28 +491,30 @@ describe('buildClient', () => {
       it('converts filter to proper query params', async () => {
         await client.fetchTracesAnalytics({
           filters: {
-            durationMs: [
-              { operator: '>', value: '100' },
-              { operator: '<', value: '1000' },
-            ],
-            operation: [
-              { operator: '=', value: 'op' },
-              { operator: '!=', value: 'not-op' },
-            ],
-            service: [
-              { operator: '=', value: 'service' },
-              { operator: '!=', value: 'not-service' },
-            ],
-            period: [{ operator: '=', value: '5m' }],
-            status: [
-              { operator: '=', value: 'ok' },
-              { operator: '!=', value: 'error' },
-            ],
-            traceId: [
-              { operator: '=', value: 'trace-id' },
-              { operator: '!=', value: 'not-trace-id' },
-            ],
-            attribute: [{ operator: '=', value: 'name1=value1' }],
+            attributes: {
+              durationMs: [
+                { operator: '>', value: '100' },
+                { operator: '<', value: '1000' },
+              ],
+              operation: [
+                { operator: '=', value: 'op' },
+                { operator: '!=', value: 'not-op' },
+              ],
+              service: [
+                { operator: '=', value: 'service' },
+                { operator: '!=', value: 'not-service' },
+              ],
+              period: [{ operator: '=', value: '5m' }],
+              status: [
+                { operator: '=', value: 'ok' },
+                { operator: '!=', value: 'error' },
+              ],
+              traceId: [
+                { operator: '=', value: 'trace-id' },
+                { operator: '!=', value: 'not-trace-id' },
+              ],
+              attribute: [{ operator: '=', value: 'name1=value1' }],
+            },
           },
         });
         expect(getQueryParam()).toContain(
@@ -513,7 +531,9 @@ describe('buildClient', () => {
         it('handles custom date range period filter', async () => {
           await client.fetchTracesAnalytics({
             filters: {
-              period: [{ operator: '=', value: '2023-01-01 - 2023-02-01' }],
+              attributes: {
+                period: [{ operator: '=', value: '2023-01-01 - 2023-02-01' }],
+              },
             },
           });
           expect(getQueryParam()).not.toContain('period=');
@@ -545,10 +565,12 @@ describe('buildClient', () => {
       it('handles repeated params', async () => {
         await client.fetchTracesAnalytics({
           filters: {
-            operation: [
-              { operator: '=', value: 'op' },
-              { operator: '=', value: 'op2' },
-            ],
+            attributes: {
+              operation: [
+                { operator: '=', value: 'op' },
+                { operator: '=', value: 'op2' },
+              ],
+            },
           },
         });
         expect(getQueryParam()).toContain('operation=op&operation=op2');
@@ -557,7 +579,9 @@ describe('buildClient', () => {
       it('ignores unsupported filters', async () => {
         await client.fetchTracesAnalytics({
           filters: {
-            unsupportedFilter: [{ operator: '=', value: 'foo' }],
+            attributes: {
+              unsupportedFilter: [{ operator: '=', value: 'foo' }],
+            },
           },
         });
 
@@ -567,7 +591,9 @@ describe('buildClient', () => {
       it('ignores empty filters', async () => {
         await client.fetchTracesAnalytics({
           filters: {
-            durationMs: null,
+            attributes: {
+              durationMs: null,
+            },
           },
         });
 
@@ -577,7 +603,9 @@ describe('buildClient', () => {
       it('ignores non-array filters', async () => {
         await client.fetchTracesAnalytics({
           filters: {
-            traceId: { operator: '=', value: 'foo' },
+            attributes: {
+              traceId: { operator: '=', value: 'foo' },
+            },
           },
         });
 
@@ -587,24 +615,26 @@ describe('buildClient', () => {
       it('ignores unsupported operators', async () => {
         await client.fetchTracesAnalytics({
           filters: {
-            durationMs: [
-              { operator: '*', value: 'foo' },
-              { operator: '=', value: 'foo' },
-              { operator: '!=', value: 'foo' },
-            ],
-            operation: [
-              { operator: '>', value: 'foo' },
-              { operator: '<', value: 'foo' },
-            ],
-            service: [
-              { operator: '>', value: 'foo' },
-              { operator: '<', value: 'foo' },
-            ],
-            period: [{ operator: '!=', value: 'foo' }],
-            traceId: [
-              { operator: '>', value: 'foo' },
-              { operator: '<', value: 'foo' },
-            ],
+            attributes: {
+              durationMs: [
+                { operator: '*', value: 'foo' },
+                { operator: '=', value: 'foo' },
+                { operator: '!=', value: 'foo' },
+              ],
+              operation: [
+                { operator: '>', value: 'foo' },
+                { operator: '<', value: 'foo' },
+              ],
+              service: [
+                { operator: '>', value: 'foo' },
+                { operator: '<', value: 'foo' },
+              ],
+              period: [{ operator: '!=', value: 'foo' }],
+              traceId: [
+                { operator: '>', value: 'foo' },
+                { operator: '<', value: 'foo' },
+              ],
+            },
           },
         });
 

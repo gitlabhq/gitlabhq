@@ -52,10 +52,10 @@ module BaseServiceUtility
   # message     - Error message to include in the Hash
   # http_status - Optional HTTP status code override (default: nil)
   # pass_back   - Additional attributes to be included in the resulting Hash
-  def error(message, http_status = nil, pass_back: {})
+  def error(message, http_status = nil, status: :error, pass_back: {})
     result = {
       message: message,
-      status: :error
+      status: status
     }.reverse_merge(pass_back)
 
     result[:http_status] = http_status if http_status

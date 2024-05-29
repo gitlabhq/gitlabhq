@@ -15,6 +15,12 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
     end
   end
 
+  describe '#pipeline_variables_minimum_override_role' do
+    it 'is maintainer by default' do
+      expect(described_class.new.pipeline_variables_minimum_override_role).to eq('maintainer')
+    end
+  end
+
   describe '#forward_deployment_enabled' do
     it 'is true by default' do
       expect(described_class.new.forward_deployment_enabled).to be_truthy

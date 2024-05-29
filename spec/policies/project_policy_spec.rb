@@ -855,44 +855,236 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
-  describe 'set_pipeline_variables' do
-    context 'when user is developer' do
-      let(:current_user) { developer }
+  describe 'change_restrict_user_defined_variables' do
+    using RSpec::Parameterized::TableSyntax
 
-      context 'when project allows user defined variables' do
-        before do
-          project.update!(restrict_user_defined_variables: false)
-        end
+    where(:user_role, :minimum_role, :allowed) do
+      :guest      | :developer      | false
+      :reporter   | :developer      | false
+      :developer  | :developer      | false
+      :maintainer | :developer      | true
+      :maintainer | :maintainer     | true
+      :maintainer | :no_one_allowed | true
+      :owner      | :owner          | true
+      :developer  | :owner          | false
+      :maintainer | :owner          | false
+    end
 
-        it { is_expected.to be_allowed(:set_pipeline_variables) }
+    with_them do
+      let(:current_user) { public_send(user_role) }
+
+      before do
+        ci_cd_settings = project.ci_cd_settings
+        ci_cd_settings.pipeline_variables_minimum_override_role = minimum_role
+        ci_cd_settings.save!
       end
 
-      context 'when project restricts use of user defined variables' do
+      it 'allows/disallows change_restrict_user_defined_variables variables based on project defined minimum role' do
+        if allowed
+          is_expected.to be_allowed(:change_restrict_user_defined_variables)
+        else
+          is_expected.to be_disallowed(:change_restrict_user_defined_variables)
+        end
+      end
+    end
+  end
+
+  describe 'set_pipeline_variables' do
+    context 'when `pipeline_variables_minimum_override_role` is defined' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:user_role, :minimum_role, :restrict_variables, :allowed) do
+        :developer   | :no_one_allowed | true | false
+        :maintainer  | :no_one_allowed | true | false
+        :owner       | :no_one_allowed | true | false
+        :guest       | :no_one_allowed | true | false
+        :reporter    | :no_one_allowed | true | false
+        :anonymous   | :no_one_allowed | true | false
+        :developer   | :developer      | true | true
+        :maintainer  | :developer      | true | true
+        :owner       | :developer      | true | true
+        :guest       | :developer      | true | false
+        :reporter    | :developer      | true | false
+        :anonymous   | :developer      | true | false
+        :developer   | :maintainer     | true | false
+        :maintainer  | :maintainer     | true | true
+        :owner       | :maintainer     | true | true
+        :guest       | :maintainer     | true | false
+        :reporter    | :maintainer     | true | false
+        :anonymous   | :maintainer     | true | false
+        :developer   | :owner          | true | false
+        :maintainer  | :owner          | true | false
+        :owner       | :owner          | true | true
+        :guest       | :owner          | true | false
+        :reporter    | :owner          | true | false
+        :anonymous   | :owner          | true | false
+        :developer   | :no_one_allowed | false | true
+        :maintainer  | :no_one_allowed | false | true
+        :owner       | :no_one_allowed | false | true
+        :guest       | :no_one_allowed | false | true
+        :reporter    | :no_one_allowed | false | true
+        :anonymous   | :no_one_allowed | false | true
+        :developer   | :developer      | false | true
+        :maintainer  | :developer      | false | true
+        :owner       | :developer      | false | true
+        :guest       | :developer      | false | true
+        :reporter    | :developer      | false | true
+        :anonymous   | :developer      | false | true
+        :developer   | :maintainer     | false | true
+        :maintainer  | :maintainer     | false | true
+        :owner       | :maintainer     | false | true
+        :guest       | :maintainer     | false | true
+        :reporter    | :maintainer     | false | true
+        :anonymous   | :maintainer     | false | true
+        :developer   | :owner          | false | true
+        :maintainer  | :owner          | false | true
+        :owner       | :owner          | false | true
+        :guest       | :owner          | false | true
+        :reporter    | :owner          | false | true
+        :anonymous   | :owner          | false | true
+      end
+      with_them do
+        let(:current_user) { public_send(user_role) }
+
         before do
-          project.update!(restrict_user_defined_variables: true)
+          ci_cd_settings = project.ci_cd_settings
+          ci_cd_settings.restrict_user_defined_variables = restrict_variables
+          ci_cd_settings.pipeline_variables_minimum_override_role = minimum_role
+          ci_cd_settings.save!
         end
 
-        it { is_expected.not_to be_allowed(:set_pipeline_variables) }
+        it 'allows/disallows set pipeline variables based on project defined minimum role' do
+          if allowed
+            is_expected.to be_allowed(:set_pipeline_variables)
+          else
+            is_expected.to be_disallowed(:set_pipeline_variables)
+          end
+        end
       end
     end
 
-    context 'when user is maintainer' do
-      let(:current_user) { maintainer }
+    shared_examples 'set_pipeline_variables only on restrict_user_defined_variables' do
+      context 'when user is developer' do
+        let(:current_user) { developer }
 
-      context 'when project allows user defined variables' do
-        before do
-          project.update!(restrict_user_defined_variables: false)
+        context 'when project allows user defined variables' do
+          before do
+            project.update!(restrict_user_defined_variables: false)
+          end
+
+          it { is_expected.to be_allowed(:set_pipeline_variables) }
         end
 
-        it { is_expected.to be_allowed(:set_pipeline_variables) }
+        context 'when project restricts use of user defined variables' do
+          before do
+            project.update!(restrict_user_defined_variables: true)
+          end
+
+          it { is_expected.not_to be_allowed(:set_pipeline_variables) }
+        end
       end
 
-      context 'when project restricts use of user defined variables' do
-        before do
-          project.update!(restrict_user_defined_variables: true)
+      context 'when user is maintainer' do
+        let(:current_user) { maintainer }
+
+        context 'when project allows user defined variables' do
+          before do
+            project.update!(restrict_user_defined_variables: false)
+          end
+
+          it { is_expected.to be_allowed(:set_pipeline_variables) }
         end
 
-        it { is_expected.to be_allowed(:set_pipeline_variables) }
+        context 'when project restricts use of user defined variables' do
+          before do
+            project.update!(restrict_user_defined_variables: true)
+          end
+
+          it { is_expected.to be_allowed(:set_pipeline_variables) }
+        end
+      end
+    end
+
+    it_behaves_like 'set_pipeline_variables only on restrict_user_defined_variables'
+
+    context 'when feature flag allow_user_variables_by_minimum_role is disabled' do
+      before do
+        stub_feature_flags(allow_user_variables_by_minimum_role: false)
+      end
+
+      it_behaves_like 'set_pipeline_variables only on restrict_user_defined_variables'
+
+      context 'when `pipeline_variables_minimum_override_role` is defined' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:user_role, :minimum_role, :restrict_variables, :allowed) do
+          :developer  | :no_one_allowed       | false | true
+          :maintainer | :no_one_allowed       | false | true
+          :owner      | :no_one_allowed       | false | true
+          :guest      | :no_one_allowed       | false | true
+          :reporter   | :no_one_allowed       | false | true
+          :anonymous  | :no_one_allowed       | false | true
+          :developer  | :developer            | false | true
+          :maintainer | :developer            | false | true
+          :owner      | :developer            | false | true
+          :guest      | :developer            | false | true
+          :reporter   | :developer            | false | true
+          :anonymous  | :developer            | false | true
+          :developer  | :maintainer           | false | true
+          :maintainer | :maintainer           | false | true
+          :owner      | :maintainer           | false | true
+          :guest      | :maintainer           | false | true
+          :reporter   | :maintainer           | false | true
+          :anonymous  | :maintainer           | false | true
+          :developer  | :owner                | false | true
+          :maintainer | :owner                | false | true
+          :owner      | :owner                | false | true
+          :guest      | :owner                | false | true
+          :reporter   | :owner                | false | true
+          :anonymous  | :owner                | false | true
+          :developer  | :no_one_allowed       | true  | false
+          :maintainer | :no_one_allowed       | true  | true
+          :owner      | :no_one_allowed       | true  | true
+          :guest      | :no_one_allowed       | true  | false
+          :reporter   | :no_one_allowed       | true  | false
+          :anonymous  | :no_one_allowed       | true  | false
+          :developer  | :developer            | true  | false
+          :maintainer | :developer            | true  | true
+          :owner      | :developer            | true  | true
+          :guest      | :developer            | true  | false
+          :reporter   | :developer            | true  | false
+          :anonymous  | :developer            | true  | false
+          :developer  | :maintainer           | true  | false
+          :maintainer | :maintainer           | true  | true
+          :owner      | :maintainer           | true  | true
+          :guest      | :maintainer           | true  | false
+          :reporter   | :maintainer           | true  | false
+          :anonymous  | :maintainer           | true  | false
+          :developer  | :owner                | true  | false
+          :maintainer | :owner                | true  | true
+          :owner      | :owner                | true  | true
+          :guest      | :owner                | true  | false
+          :reporter   | :owner                | true  | false
+          :anonymous  | :owner                | true  | false
+        end
+        with_them do
+          let(:current_user) { public_send(user_role) }
+
+          before do
+            ci_cd_settings = project.ci_cd_settings
+            ci_cd_settings.restrict_user_defined_variables = restrict_variables
+            ci_cd_settings.pipeline_variables_minimum_override_role = minimum_role
+            ci_cd_settings.save!
+          end
+
+          it 'allows/disallows set pipeline variables based on restrict_user_defined_variables' do
+            if allowed
+              is_expected.to be_allowed(:set_pipeline_variables)
+            else
+              is_expected.to be_disallowed(:set_pipeline_variables)
+            end
+          end
+        end
       end
     end
   end

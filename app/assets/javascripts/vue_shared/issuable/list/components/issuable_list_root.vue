@@ -1,9 +1,7 @@
 <script>
 import { GlAlert, GlBadge, GlKeysetPagination, GlSkeletonLoader, GlPagination } from '@gitlab/ui';
-import { uniqueId } from 'lodash';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
-import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { DRAG_DELAY } from '~/sortable/constants';
@@ -221,7 +219,7 @@ export default {
   },
   data() {
     return {
-      checkedIssuables: {},
+      checkedIssuableIds: [],
     };
   },
   computed: {
@@ -237,18 +235,10 @@ export default {
       return DEFAULT_SKELETON_COUNT;
     },
     allIssuablesChecked() {
-      return this.bulkEditIssuables.length === this.issuables.length;
+      return this.checkedIssuables.length === this.issuables.length;
     },
-    /**
-     * Returns all the checked issuables from `checkedIssuables` map.
-     */
-    bulkEditIssuables() {
-      return Object.keys(this.checkedIssuables).reduce((acc, issuableId) => {
-        if (this.checkedIssuables[issuableId].checked) {
-          acc.push(this.checkedIssuables[issuableId].issuable);
-        }
-        return acc;
-      }, []);
+    checkedIssuables() {
+      return this.issuables.filter((issuable) => this.checkedIssuableIds.includes(issuable.id));
     },
     issuablesWrapper() {
       return this.isManualOrdering ? VueDraggable : 'ul';
@@ -258,24 +248,6 @@ export default {
     },
   },
   watch: {
-    issuables(list) {
-      this.checkedIssuables = list.reduce((acc, issuable) => {
-        const id = this.issuableId(issuable);
-        acc[id] = {
-          // By default, an issuable is not checked,
-          // But if `checkedIssuables` is already
-          // populated, use existing value.
-          checked:
-            typeof this.checkedIssuables[id] !== 'boolean'
-              ? false
-              : this.checkedIssuables[id].checked,
-          // We're caching issuable reference here
-          // for ease of populating in `bulkEditIssuables`.
-          issuable,
-        };
-        return acc;
-      }, {});
-    },
     urlParams: {
       deep: true,
       immediate: true,
@@ -291,21 +263,28 @@ export default {
     },
   },
   methods: {
-    issuableId(issuable) {
-      return getIdFromGraphQLId(issuable.id) || issuable.iid || uniqueId();
+    isIssuableChecked(issuable) {
+      return this.checkedIssuableIds.includes(issuable.id);
     },
-    issuableChecked(issuable) {
-      return this.checkedIssuables[this.issuableId(issuable)]?.checked;
+    updateCheckedIssuableIds(issuable, toCheck) {
+      const isIdChecked = this.checkedIssuableIds.includes(issuable.id);
+      if (toCheck && !isIdChecked) {
+        this.checkedIssuableIds.push(issuable.id);
+      }
+      if (!toCheck && isIdChecked) {
+        const indexToDelete = this.checkedIssuableIds.findIndex((id) => id === issuable.id);
+        this.checkedIssuableIds.splice(indexToDelete, 1);
+      }
     },
     handleIssuableCheckedInput(issuable, value) {
-      this.checkedIssuables[this.issuableId(issuable)].checked = value;
+      this.updateCheckedIssuableIds(issuable, value);
+
       this.$emit('update-legacy-bulk-edit');
       issuableEventHub.$emit('issuables:issuableChecked', issuable, value);
     },
     handleAllIssuablesCheckedInput(value) {
-      Object.keys(this.checkedIssuables).forEach((issuableId) => {
-        this.checkedIssuables[issuableId].checked = value;
-      });
+      this.issuables.forEach((issuable) => this.updateCheckedIssuableIds(issuable, value));
+
       this.$emit('update-legacy-bulk-edit');
     },
     handleVueDraggableUpdate({ newIndex, oldIndex }) {
@@ -357,10 +336,10 @@ export default {
     <gl-alert v-if="error" variant="danger" @dismiss="$emit('dismiss-alert')">{{ error }}</gl-alert>
     <issuable-bulk-edit-sidebar :expanded="showBulkEditSidebar">
       <template #bulk-edit-actions>
-        <slot name="bulk-edit-actions" :checked-issuables="bulkEditIssuables"></slot>
+        <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
       </template>
       <template #sidebar-items>
-        <slot name="sidebar-items" :checked-issuables="bulkEditIssuables"></slot>
+        <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
       </template>
     </issuable-bulk-edit-sidebar>
     <slot name="list-body"></slot>
@@ -380,7 +359,7 @@ export default {
       >
         <issuable-item
           v-for="issuable in issuables"
-          :key="issuableId(issuable)"
+          :key="issuable.id"
           :class="{ 'gl-cursor-grab': isManualOrdering }"
           data-testid="issuable-container"
           :data-qa-issuable-title="issuable.title"
@@ -389,7 +368,7 @@ export default {
           :issuable="issuable"
           :label-filter-param="labelFilterParam"
           :show-checkbox="showBulkEditSidebar"
-          :checked="issuableChecked(issuable)"
+          :checked="isIssuableChecked(issuable)"
           :show-work-item-type-icon="showWorkItemTypeIcon"
           :prevent-redirect="preventRedirect"
           :is-active="isIssuableActive(issuable)"

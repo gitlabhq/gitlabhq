@@ -59,7 +59,7 @@ export default {
         v-if="parentPath === loadingPath"
         size="sm"
         inline
-        class="d-inline-block align-text-bottom"
+        class="gl-inline-block align-text-bottom"
       />
       <router-link v-else :to="parentRoute" :aria-label="__('Go to parent')"> .. </router-link>
     </td>

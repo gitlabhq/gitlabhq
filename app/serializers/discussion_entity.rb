@@ -11,11 +11,11 @@ class DiscussionEntity < BaseDiscussionEntity
     )
   end
 
-  expose :positions, if: -> (d, _) { display_merge_ref_discussions?(d) } do |discussion|
+  expose :positions, if: ->(d, _) { display_merge_ref_discussions?(d) } do |discussion|
     discussion.diff_note_positions.map(&:position)
   end
 
-  expose :line_codes, if: -> (d, _) { display_merge_ref_discussions?(d) } do |discussion|
+  expose :line_codes, if: ->(d, _) { display_merge_ref_discussions?(d) } do |discussion|
     discussion.diff_note_positions.map(&:line_code)
   end
 

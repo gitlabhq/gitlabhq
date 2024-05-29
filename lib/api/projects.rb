@@ -596,6 +596,8 @@ module API
           present_project user_project, with: Entities::Project,
             user_can_admin_project: can?(current_user, :admin_project, user_project),
             current_user: current_user
+        elsif result[:status] == :api_error
+          render_api_error!(result[:message], 400)
         else
           render_validation_error!(user_project)
         end

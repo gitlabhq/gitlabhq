@@ -2790,6 +2790,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['allow_merge_on_skipped_pipeline']).to eq(project.allow_merge_on_skipped_pipeline)
         expect(json_response['restrict_user_defined_variables']).to eq(project.restrict_user_defined_variables?)
+        expect(json_response['ci_pipeline_variables_minimum_override_role']).to eq(project.ci_pipeline_variables_minimum_override_role.to_s)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['security_and_compliance_access_level']).to be_present
         expect(json_response['releases_access_level']).to be_present
@@ -3297,6 +3298,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           'build_git_strategy',
           'keep_latest_artifact',
           'restrict_user_defined_variables',
+          'ci_pipeline_variables_minimum_override_role',
           'runners_token',
           'runner_token_expiration_interval',
           'group_runners_enabled',
@@ -4301,6 +4303,118 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
+      context 'when ci_pipeline_variables_minimum_override_role is owner' do
+        before do
+          project3.add_maintainer(user2)
+          ci_cd_settings = project3.ci_cd_settings
+          ci_cd_settings.restrict_user_defined_variables = false
+          ci_cd_settings.pipeline_variables_minimum_override_role = 'owner'
+          ci_cd_settings.save!
+        end
+
+        context 'and current user is maintainer' do
+          let_it_be(:current_user) { user2 }
+
+          it 'rejects to change restrict_user_defined_variables' do
+            project_param = { restrict_user_defined_variables: true }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+
+          it 'rejects to change ci_pipeline_variables_minimum_override_role' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'developer' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'and current user is owner' do
+          let_it_be(:current_user) { user }
+
+          it 'successfully changes restrict_user_defined_variables' do
+            project_param = { restrict_user_defined_variables: true }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it 'successfully changes ci_pipeline_variables_minimum_override_role' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'developer' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
+
+      context 'when ci_pipeline_variables_minimum_override_role is set to maintainer' do
+        before do
+          project3.add_maintainer(user2)
+          ci_cd_settings = project3.ci_cd_settings
+          ci_cd_settings.restrict_user_defined_variables = false
+          ci_cd_settings.pipeline_variables_minimum_override_role = 'maintainer'
+          ci_cd_settings.save!
+        end
+
+        context 'and current user is maintainer' do
+          let_it_be(:current_user) { user2 }
+
+          it 'sucessfully changes restrict_user_defined_variables' do
+            project_param = { restrict_user_defined_variables: true }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it 'successfully changes ci_pipeline_variables_minimum_override_role' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'developer' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it 'rejects to ci_pipeline_variables_minimum_override_role to owner' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'owner' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'and current user is developer' do
+          let_it_be(:current_user) { user3 }
+
+          before do
+            project3.add_developer(user3)
+          end
+
+          it 'fails to change restrict_user_defined_variables' do
+            project_param = { restrict_user_defined_variables: true }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+
+          it 'fails to change ci_pipeline_variables_minimum_override_role' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'developer' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+      end
+
       it 'updates restrict_user_defined_variables' do
         project_param = { restrict_user_defined_variables: true }
 
@@ -4311,6 +4425,34 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
+      end
+
+      it 'updates ci_pipeline_variables_minimum_override_role' do
+        project_param = { ci_pipeline_variables_minimum_override_role: 'owner' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
+      it 'rejects updating ci_pipeline_variables_minimum_override_role when an invalid role is provided' do
+        project_param = { ci_pipeline_variables_minimum_override_role: 'wrong' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'rejects updating ci_pipeline_variables_minimum_override_role when an existing but not allowed role is provided' do
+        project_param = { ci_pipeline_variables_minimum_override_role: 'guest' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'updates public_builds (deprecated)' do

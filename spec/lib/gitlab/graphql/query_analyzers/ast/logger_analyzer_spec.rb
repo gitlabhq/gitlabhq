@@ -46,5 +46,14 @@ RSpec.describe Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer do
 
       expect(RequestStore.store[:graphql_logs]).to match([request])
     end
+
+    it 'does not crash when #analyze_query returns []' do
+      stub_const('Gitlab::Graphql::QueryAnalyzers::AST::LoggerAnalyzer::ALL_ANALYZERS', [])
+      results = GraphQL::Analysis::AST.analyze_query(query, [described_class], multiplex_analyzers: [])
+      result = results.first
+
+      expect(result[:duration_s]).to eq monotonic_time_duration
+      expect(RequestStore.store[:graphql_logs]).to match([hash_including(operation_name: 'createNote')])
+    end
   end
 end

@@ -138,7 +138,7 @@ class ContainerRepository < ApplicationRecord
   # does a search of tags containing the name and we filter them
   # to find the exact match. Otherwise, we instantiate a tag.
   def tag(tag)
-    if can_access_the_gitlab_api?
+    if migrated_and_can_access_the_gitlab_api?
       page = tags_page(name: tag)
       return if page[:tags].blank?
 
@@ -158,7 +158,7 @@ class ContainerRepository < ApplicationRecord
 
   def tags
     strong_memoize(:tags) do
-      if can_access_the_gitlab_api?
+      if migrated_and_can_access_the_gitlab_api?
         result = []
         each_tags_page do |array_of_tags|
           result << array_of_tags
@@ -268,7 +268,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def last_published_at
-    return unless can_access_the_gitlab_api?
+    return unless migrated_and_can_access_the_gitlab_api?
 
     timestamp_string = gitlab_api_client_repository_details['last_published_at']
     DateTime.iso8601(timestamp_string)
@@ -321,8 +321,8 @@ class ContainerRepository < ApplicationRecord
 
   private
 
-  def can_access_the_gitlab_api?
-    migrated? && ContainerRegistry::GitlabApiClient.supports_gitlab_api?
+  def migrated_and_can_access_the_gitlab_api?
+    migrated? && gitlab_api_client.supports_gitlab_api?
   end
 
   def transform_tags_page(tags_response_body)

@@ -21,12 +21,12 @@ module Gitlab
         end
 
         def create
-          log "Creating cluster '#{name}'", :info
-          return log "  cluster '#{name}' already exists, skipping!" if cluster_exists?
+          log("Creating cluster '#{name}'", :info, bright: true)
+          return log("  cluster '#{name}' already exists, skipping!", :warn) if cluster_exists?
 
           create_cluster
           update_server_url
-          log "Cluster '#{name}' created", :success
+          log("Cluster '#{name}' created", :success)
         rescue Helpers::Shell::CommandFailure
           # Exit cleanly without stacktrace if shell command fails
           exit(1)

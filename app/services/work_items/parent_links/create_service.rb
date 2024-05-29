@@ -9,7 +9,14 @@ module WorkItems
       def relate_issuables(work_item)
         link = set_parent(issuable, work_item)
 
-        link.move_to_end
+        # It's possible to force the relative_position. This is for example used when importing parent links from
+        # legacy epics.
+        if params[:relative_position]
+          link.relative_position = params[:relative_position]
+        else
+          link.move_to_end
+        end
+
         create_notes_and_resource_event(work_item, link) if link.changed? && link.save
 
         link

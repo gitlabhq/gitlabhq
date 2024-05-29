@@ -21,7 +21,7 @@ If the GitLab instance uses Admin Mode, you must [enable Admin Mode for your ses
 the **Admin Area** button is visible.
 
 NOTE:
-Only administrators can access the Admin Area.
+Only administrators on GitLab self-managed can access the Admin Area. On GitLab.com the Admin Area feature is not available.
 
 ## Administering organizations
 

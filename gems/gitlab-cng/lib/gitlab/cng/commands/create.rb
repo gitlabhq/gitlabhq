@@ -6,6 +6,9 @@ module Gitlab
       # Create command composed of subcommands that create various resources needed for CNG deployment
       #
       class Create < Command
+        # @return [Array] configurations that are used for kind cluster deployments
+        KIND_CLUSTER_CONFIGURATIONS = %w[kind].freeze
+
         desc "cluster", "Create kind cluster for local deployments"
         option :name,
           desc: "Cluster name",
@@ -29,6 +32,8 @@ module Gitlab
         long_desc <<~LONGDESC
           This command installs a GitLab chart archive and performs all additional pre-install and post-install setup.
           Argument NAME is helm install name and defaults to "gitlab".
+          Deployment has several optional environment variables it can read before performing chart install:
+            QA_EE_LICENSE|EE_LICENSE - gitlab test license, if present, will be added to deployment,
         LONGDESC
         option :configuration,
           desc: "Deployment configuration",
@@ -49,8 +54,21 @@ module Gitlab
           desc: "Use CI specific configuration",
           default: false,
           type: :boolean
+        option :gitlab_domain,
+          desc: "Domain for deployed app. Defaults to (your host IP).nip.io",
+          type: :string
+        option :with_cluster,
+          desc: "Create kind cluster for local deployments. \
+            Only valid for configurations designed to run against local kind cluster",
+          type: :boolean
         def deployment(name = "gitlab")
-          Deployment::Installation.new(name, **symbolized_options).create
+          if options[:with_cluster] && KIND_CLUSTER_CONFIGURATIONS.include?(options[:configuration])
+            invoke :cluster, [], ci: options[:ci]
+          end
+
+          Deployment::Installation
+            .new(name, **symbolized_options.slice(:configuration, :namespace, :set, :ci, :gitlab_domain))
+            .create
         end
       end
     end

@@ -40826,6 +40826,8 @@ definitions:
         type: boolean
       restrict_user_defined_variables:
         type: boolean
+      ci_pipeline_variables_minimum_override_role:
+        type: string
       runners_token:
         type: string
         example: b8547b1dc37721d05889db52fa2f02
@@ -52502,6 +52504,8 @@ definitions:
         type: boolean
       restrict_user_defined_variables:
         type: boolean
+      ci_pipeline_variables_minimum_override_role:
+        type: string
       runners_token:
         type: string
         example: b8547b1dc37721d05889db52fa2f02
@@ -53075,7 +53079,16 @@ definitions:
         description: Enable or disable separated caches based on branch protection.
       restrict_user_defined_variables:
         type: boolean
-        description: Restrict use of user-defined variables when triggering a pipeline
+        description: Restrict ability to override variables when triggering a pipeline
+      ci_pipeline_variables_minimum_override_role:
+        type: string
+        description: Limit ability to override CI/CD variables when triggering a pipeline
+          to only users with at least the set minimum role
+        enum:
+        - no_one_allowed
+        - developer
+        - maintainer
+        - owner
       allow_pipeline_trigger_approve_deployment:
         type: boolean
         description: Allow pipeline triggerer to approve deployments

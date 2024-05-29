@@ -46,17 +46,17 @@ export default {
 </script>
 
 <template>
-  <!-- must be `d-inline-block` or parent flex-basis causes width issues -->
+  <!-- must be `gl-inline-block` or parent flex-basis causes width issues -->
   <gl-link
     :href="reviewerUrl"
     :data-user-id="reviewerId"
     :data-username="user.username"
     :data-cannot-merge="cannotMerge"
     data-placement="left"
-    class="gl-display-inline-block js-user-link gl-reset-color! gl-hover-text-blue-800!"
+    class="gl-inline-block js-user-link gl-reset-color! gl-hover-text-blue-800!"
   >
     <!-- use d-flex so that slot can be appropriately styled -->
-    <span class="gl-display-flex">
+    <span class="gl-flex">
       <reviewer-avatar :user="user" :img-size="24" :issuable-type="issuableType" />
       <slot :user="user"></slot>
     </span>

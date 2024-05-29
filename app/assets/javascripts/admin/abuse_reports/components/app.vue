@@ -40,7 +40,9 @@ export default {
 
     <gl-empty-state v-if="abuseReports.length == 0" :title="s__('AbuseReports|No reports found')" />
     <ul v-else class="gl-pl-0">
-      <abuse-report-row v-for="(report, index) in abuseReports" :key="index" :report="report" />
+      <li v-for="(report, index) in abuseReports" :key="index" class="gl-list-style-none">
+        <abuse-report-row :report="report" />
+      </li>
     </ul>
 
     <gl-pagination

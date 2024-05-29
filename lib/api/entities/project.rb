@@ -124,6 +124,7 @@ module API
         end
         expose :keep_latest_artifacts_available?, as: :keep_latest_artifact, documentation: { type: 'boolean' }
         expose :restrict_user_defined_variables, documentation: { type: 'boolean' }
+        expose :ci_pipeline_variables_minimum_override_role, documentation: { type: 'string' }
         expose :runners_token, documentation: { type: 'string', example: 'b8547b1dc37721d05889db52fa2f02' }
         expose :runner_token_expiration_interval, documentation: { type: 'integer', example: 3600 }
         expose :group_runners_enabled, documentation: { type: 'boolean' }
