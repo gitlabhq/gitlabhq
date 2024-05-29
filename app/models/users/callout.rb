@@ -88,7 +88,7 @@ module Users
       # 86 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152619
       deployment_details_feedback: 87,
       # 88 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152999
-      board_add_new_column_trigger_popover: 89,
+      # 89 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152981
       deployment_approvals_empty_state: 90,
       period_in_terraform_state_name_alert: 91
     }

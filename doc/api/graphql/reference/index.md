@@ -35244,7 +35244,6 @@ Name of the feature that the callout is for.
 | Value | Description |
 | ----- | ----------- |
 | <a id="usercalloutfeaturenameenumactive_user_count_threshold"></a>`ACTIVE_USER_COUNT_THRESHOLD` | Callout feature name for active_user_count_threshold. |
-| <a id="usercalloutfeaturenameenumboard_add_new_column_trigger_popover"></a>`BOARD_ADD_NEW_COLUMN_TRIGGER_POPOVER` | Callout feature name for board_add_new_column_trigger_popover. |
 | <a id="usercalloutfeaturenameenumbranch_rules_info_callout"></a>`BRANCH_RULES_INFO_CALLOUT` | Callout feature name for branch_rules_info_callout. |
 | <a id="usercalloutfeaturenameenumbuy_pipeline_minutes_notification_dot"></a>`BUY_PIPELINE_MINUTES_NOTIFICATION_DOT` | Callout feature name for buy_pipeline_minutes_notification_dot. |
 | <a id="usercalloutfeaturenameenumcanary_deployment"></a>`CANARY_DEPLOYMENT` | Callout feature name for canary_deployment. |

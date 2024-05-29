@@ -2,8 +2,6 @@
 data_category: operational
 key_path: counts.projects_bamboo_active
 description: Count of projects with active integrations for Bamboo CI
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active

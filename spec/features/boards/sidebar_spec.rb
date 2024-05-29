@@ -19,8 +19,6 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio
 
     sign_in(user)
 
-    create(:callout, feature_name: :board_add_new_column_trigger_popover, user: user)
-
     visit project_board_path(project, board)
 
     wait_for_requests

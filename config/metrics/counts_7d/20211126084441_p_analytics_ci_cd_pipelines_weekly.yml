@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.analytics.p_analytics_ci_cd_pipelines_weekly
 description: Count of unique visits to the project level CI CD Analytics pipelines tab
-product_section: dev
-product_stage: manage
 product_group: optimize
 value_type: number
 status: active

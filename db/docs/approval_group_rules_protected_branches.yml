@@ -3,15 +3,11 @@ table_name: approval_group_rules_protected_branches
 classes:
 - ApprovalRules::ApprovalGroupRulesProtectedBranch
 feature_categories:
-  - source_code_management
+- source_code_management
 description: Keeps relation between approval group rules and protected branches.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132651
 milestone: '16.5'
 gitlab_schema: gitlab_main_cell
-allow_cross_joins:
-- gitlab_main_clusterwide
-allow_cross_transactions:
-- gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 desired_sharding_key:

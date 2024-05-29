@@ -329,19 +329,19 @@ class MergeRequest < ApplicationRecord
   scope :by_commit_sha, ->(sha) do
     where('EXISTS (?)', MergeRequestDiff.select(1).where('merge_requests.latest_merge_request_diff_id = merge_request_diffs.id').by_commit_sha(sha)).reorder(nil)
   end
-  scope :by_merge_commit_sha, -> (sha) do
+  scope :by_merge_commit_sha, ->(sha) do
     where(merge_commit_sha: sha)
   end
-  scope :by_squash_commit_sha, -> (sha) do
+  scope :by_squash_commit_sha, ->(sha) do
     where(squash_commit_sha: sha)
   end
-  scope :by_merged_commit_sha, -> (sha) do
+  scope :by_merged_commit_sha, ->(sha) do
     where(merged_commit_sha: sha)
   end
-  scope :by_merged_or_merge_or_squash_commit_sha, -> (sha) do
+  scope :by_merged_or_merge_or_squash_commit_sha, ->(sha) do
     from_union([by_squash_commit_sha(sha), by_merge_commit_sha(sha), by_merged_commit_sha(sha)])
   end
-  scope :by_related_commit_sha, -> (sha) do
+  scope :by_related_commit_sha, ->(sha) do
     from_union(
       [
         by_commit_sha(sha),
@@ -351,11 +351,11 @@ class MergeRequest < ApplicationRecord
       ]
     )
   end
-  scope :by_latest_merge_request_diffs, -> (merge_request_diffs) do
+  scope :by_latest_merge_request_diffs, ->(merge_request_diffs) do
     where(latest_merge_request_diff_id: merge_request_diffs)
   end
   scope :join_project, -> { joins(:target_project) }
-  scope :join_metrics, -> (target_project_id = nil) do
+  scope :join_metrics, ->(target_project_id = nil) do
     # Do not join the relation twice
     return self if self.arel.join_sources.any? { |join| join.left.try(:name).eql?(MergeRequest::Metrics.table_name) }
 
@@ -430,7 +430,7 @@ class MergeRequest < ApplicationRecord
   end
   scope :preload_author, -> { preload(:author) }
   scope :preload_approved_by_users, -> { preload(:approved_by_users) }
-  scope :preload_metrics, -> (relation) { preload(metrics: relation) }
+  scope :preload_metrics, ->(relation) { preload(metrics: relation) }
   scope :preload_project_and_latest_diff, -> { preload(:source_project, :latest_merge_request_diff) }
   scope :preload_latest_diff_commit, -> { preload(latest_merge_request_diff: { merge_request_diff_commits: [:commit_author, :committer] }) }
   scope :preload_milestoneish_associations, -> { preload_routables.preload(:assignees, :labels) }
@@ -1095,7 +1095,7 @@ class MergeRequest < ApplicationRecord
     return true unless reviewers.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
 
     errors.add :reviewers,
-      -> (_object, _data) { self.class.max_number_of_assignees_or_reviewers_message }
+      ->(_object, _data) { self.class.max_number_of_assignees_or_reviewers_message }
   end
 
   def merge_ongoing?

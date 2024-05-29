@@ -980,7 +980,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
           context "when the merge request is in progress" do
             before do
               create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature',
-                                     state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
+                state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
             end
 
             run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: true }))
@@ -1011,8 +1011,8 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         let(:protected_branch) { build(:protected_branch, :no_one_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
-                                                            maintainer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
-                                                            admin_with_admin_mode: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
+          maintainer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
+          admin_with_admin_mode: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
       end
     end
 
@@ -1285,9 +1285,9 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
 
   def access
     access_class.new(actor, project, protocol,
-                        authentication_abilities: authentication_abilities,
-                        repository_path: repository_path,
-                        redirected_path: redirected_path, auth_result_type: auth_result_type)
+      authentication_abilities: authentication_abilities,
+      repository_path: repository_path,
+      redirected_path: redirected_path, auth_result_type: auth_result_type)
   end
 
   def push_changes(changes)

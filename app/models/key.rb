@@ -51,7 +51,7 @@ class Key < ApplicationRecord
   alias_attribute :name, :title
 
   scope :preload_users, -> { preload(:user) }
-  scope :for_user, -> (user) { where(user: user) }
+  scope :for_user, ->(user) { where(user: user) }
   scope :order_last_used_at_desc, -> { reorder(arel_table[:last_used_at].desc.nulls_last) }
   scope :auth, -> { where(usage_type: [:auth, :auth_and_signing]) }
   scope :signing, -> { where(usage_type: [:signing, :auth_and_signing]) }

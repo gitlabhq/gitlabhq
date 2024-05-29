@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.templates_external_wiki_active
 description: Count of active service templates for External Wiki
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: removed

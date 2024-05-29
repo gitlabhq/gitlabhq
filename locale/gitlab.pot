@@ -6575,7 +6575,7 @@ msgstr ""
 msgid "ApprovalRule|Increase quality and maintain standards."
 msgstr ""
 
-msgid "ApprovalRule|Learn more about merge request approval rules."
+msgid "ApprovalRule|Learn more about merge request approval rules"
 msgstr ""
 
 msgid "ApprovalRule|Less than"
@@ -8867,9 +8867,6 @@ msgstr ""
 msgid "Boards|Failed to fetch blocking %{issuableType}s"
 msgstr ""
 
-msgid "Boards|Got it"
-msgstr ""
-
 msgid "Boards|Move to end of list"
 msgstr ""
 
@@ -8885,13 +8882,7 @@ msgstr ""
 msgid "Boards|Retrieving blocking %{issuableType}s"
 msgstr ""
 
-msgid "Boards|The \"New list\" button has moved"
-msgstr ""
-
 msgid "Boards|View all blocking %{issuableType}s"
-msgstr ""
-
-msgid "Boards|You can add a new list to the board here"
 msgstr ""
 
 msgid "Board|Are you sure you want to delete this board?"
@@ -31906,8 +31897,16 @@ msgstr ""
 msgid "Members of a group may only view projects they have permission to access"
 msgstr ""
 
+msgid "MembersOverage|Continue with overages"
+msgstr ""
+
 msgid "MembersOverage|If you continue, the %{groupName} group will have %{quantity} seat in use and will be billed for the overage."
 msgid_plural "MembersOverage|If you continue, the %{groupName} group will have %{quantity} seats in use and will be billed for the overage."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "MembersOverage|If you continue, the %{groupName} group will have %{seatCount} seat in use and will be billed for the overage."
+msgid_plural "MembersOverage|If you continue, the %{groupName} group will have %{seatCount} seats in use and will be billed for the overage."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -47390,6 +47389,9 @@ msgid "SecurityOrchestration|Select security policy project"
 msgstr ""
 
 msgid "SecurityOrchestration|Select users"
+msgstr ""
+
+msgid "SecurityOrchestration|Send a bot message when the conditions match."
 msgstr ""
 
 msgid "SecurityOrchestration|Send bot message"

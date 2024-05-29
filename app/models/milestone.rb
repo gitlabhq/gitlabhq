@@ -41,7 +41,7 @@ class Milestone < ApplicationRecord
 
   scope :of_projects, ->(ids) { where(project_id: ids) }
   scope :for_projects, -> { where(group: nil).includes(:project) }
-  scope :for_projects_and_groups, -> (projects, groups) do
+  scope :for_projects_and_groups, ->(projects, groups) do
     projects = projects.compact if projects.is_a? Array
     projects = [] if projects.nil?
 
@@ -61,7 +61,7 @@ class Milestone < ApplicationRecord
   validates :group, presence: true, unless: :project
   validates :project, presence: true, unless: :group
   validates :title, presence: true
-  validates_associated :milestone_releases, message: -> (_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
+  validates_associated :milestone_releases, message: ->(_, obj) { obj[:value].map(&:errors).map(&:full_messages).join(",") }
   validate :parent_type_check
   validate :uniqueness_of_title, if: :title_changed?
 

@@ -24,19 +24,25 @@ module Keeps
   # You can run it individually with:
   #
   # ```
+  # gdk start db
   # bundle exec gitlab-housekeeper -d \
   #   -k Keeps::QuarantineFlakyTests
   # ```
   class QuarantineFlakyTests < ::Gitlab::Housekeeper::Keep
     MINIMUM_REMAINING_RATE = 25
-    FLAKINESS_1_TEST_ISSUES_URL = "https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab/issues/?order_by=updated_at&state=opened&labels%5B%5D=test&labels%5B%5D=failure%3A%3Aflaky-test&labels%5B%5D=flakiness%3A%3A1&not%5Blabels%5D%5B%5D=QA&not%5Blabels%5D%5B%5D=quarantine&per_page=20"
+    QUERY_URL_TEMPLATE = "https://gitlab.com/api/v4/projects/278964/issues/?order_by=updated_at&state=opened&labels[]=test&labels[]=failure::flaky-test&labels[]=%<flakiness_label>s&not[labels][]=QA&not[labels][]=quarantine&per_page=20"
     EXAMPLE_LINE_REGEX = /([\w'",])? do$/
+    FLAKINESS_LABELS = %w[flakiness::1 flakyness::2].freeze
 
     def each_change
-      each_very_flaky_issue do |flaky_issue|
-        change = prepare_change(flaky_issue)
+      FLAKINESS_LABELS.each do |flakiness_label|
+        query_url = very_flaky_issues_query_url(flakiness_label)
 
-        yield(change) if change
+        each_very_flaky_issue(query_url) do |flaky_issue|
+          change = prepare_change(flaky_issue)
+
+          yield(change) if change
+        end
       end
     end
 
@@ -44,6 +50,10 @@ module Keeps
 
     def groups_helper
       @groups_helper ||= ::Keeps::Helpers::Groups.new
+    end
+
+    def very_flaky_issues_query_url(flakiness_label)
+      format(QUERY_URL_TEMPLATE, { flakiness_label: flakiness_label })
     end
 
     def prepare_change(flaky_issue)
@@ -73,8 +83,8 @@ module Keeps
       construct_change(filename, line_number, description, flaky_issue)
     end
 
-    def each_very_flaky_issue
-      query_api(FLAKINESS_1_TEST_ISSUES_URL) do |flaky_test_issue|
+    def each_very_flaky_issue(url)
+      query_api(url) do |flaky_test_issue|
         yield(flaky_test_issue)
       end
     end
@@ -153,8 +163,8 @@ module Keeps
         change.changed_files = [filename]
         change.description = <<~MARKDOWN
         The #{description}
-        test has the ~"flakiness::1" label set, which means it has
-        more than 1000 flakiness reports.
+        test has either ~"flakiness::1" or ~"flakiness::2" label set, which means the number of reported failures
+        is at or above 95 percentile, indicating unusually high failure count.
 
         This MR quarantines the test. This is a discussion starting point to let the
         responsible group know about the flakiness so that they can take action:

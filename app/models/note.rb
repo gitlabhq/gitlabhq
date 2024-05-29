@@ -159,7 +159,7 @@ class Note < ApplicationRecord
     includes(relations)
   end
 
-  scope :with_notes_filter, -> (notes_filter) do
+  scope :with_notes_filter, ->(notes_filter) do
     case notes_filter
     when UserPreference::NOTES_FILTERS[:only_comments]
       user

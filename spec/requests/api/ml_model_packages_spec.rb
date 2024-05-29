@@ -219,6 +219,21 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       response
     end
 
+    describe  'upload' do
+      context 'when file does not have path' do
+        it_behaves_like 'process ml model package upload'
+      end
+
+      context 'when file has path' do
+        let(:file_path) { 'my_dir/' }
+        let(:saved_file_name) { "my_dir%2F#{file_name}" }
+
+        it_behaves_like 'process ml model package upload'
+      end
+
+      it_behaves_like 'Not found when model version does not exist'
+    end
+
     describe 'user access' do
       where(:visibility, :user_role, :member, :token_type, :valid_token, :expected_status) do
         authorize_permissions_table
@@ -232,33 +247,11 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
         end
 
-        if params[:expected_status] == :success
-          context 'when file does not have path' do
-            it_behaves_like 'process ml model package upload'
-          end
-
-          context 'when file has path' do
-            let(:file_path) { 'my_dir/' }
-            let(:saved_file_name) { "my_dir%2F#{file_name}" }
-
-            it_behaves_like 'process ml model package upload'
-          end
-        else
-          context 'when file does not have path' do
-            it { is_expected.to have_gitlab_http_status(expected_status) }
-          end
-
-          context 'when file has path' do
-            let(:file_path) { 'my_dir/' }
-
-            it { is_expected.to have_gitlab_http_status(expected_status) }
-          end
-        end
+        it { is_expected.to have_gitlab_http_status(expected_status) }
       end
 
       it_behaves_like 'Endpoint not found if read_model_registry not available'
       it_behaves_like 'Endpoint not found if write_model_registry not available'
-      it_behaves_like 'Not found when model version does not exist'
     end
   end
 
@@ -288,6 +281,18 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       response
     end
 
+    describe 'download' do
+      it_behaves_like 'process ml model package download'
+
+      context 'when file has path' do
+        let(:file_path) { 'my_dir/' }
+
+        it_behaves_like 'process ml model package download'
+      end
+
+      it_behaves_like 'Not found when model version does not exist'
+    end
+
     describe 'user access' do
       where(:visibility, :user_role, :member, :token_type, :valid_token, :expected_status) do
         download_permissions_tables
@@ -301,23 +306,7 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
           project.update_column(:visibility_level, Gitlab::VisibilityLevel.level_value(visibility.to_s))
         end
 
-        context 'when file does not have path' do
-          if params[:expected_status] == :success
-            it_behaves_like 'process ml model package download'
-          else
-            it { is_expected.to have_gitlab_http_status(expected_status) }
-          end
-        end
-
-        context 'when file has path' do
-          let(:file_path) { 'my_dir/' }
-
-          if params[:expected_status] == :success
-            it_behaves_like 'process ml model package download'
-          else
-            it { is_expected.to have_gitlab_http_status(expected_status) }
-          end
-        end
+        it { is_expected.to have_gitlab_http_status(expected_status) }
       end
 
       it_behaves_like 'Endpoint not found if read_model_registry not available'

@@ -17,9 +17,9 @@ RSpec.describe Gitlab::HealthChecks::Redis do
     described_class::ALL_INSTANCE_CHECKS.each do |check|
       describe check do
         include_examples 'simple_check',
-                         "redis_#{check.redis_instance_class_name.store_name.underscore}_ping",
-                         check.redis_instance_class_name.store_name,
-                         'PONG'
+          "redis_#{check.redis_instance_class_name.store_name.underscore}_ping",
+          check.redis_instance_class_name.store_name,
+          'PONG'
       end
     end
   end

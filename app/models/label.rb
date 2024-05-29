@@ -52,7 +52,7 @@ class Label < ApplicationRecord
   scope :subscribed_by, ->(user_id) { joins(:subscriptions).where(subscriptions: { user_id: user_id, subscribed: true }) }
   scope :with_preloaded_container, -> { preload(parent_container: :route) }
 
-  scope :top_labels_by_target, -> (target_relation) {
+  scope :top_labels_by_target, ->(target_relation) {
     label_id_column = arel_table[:id]
 
     # Window aggregation to count labels
@@ -75,7 +75,7 @@ class Label < ApplicationRecord
       .with_preloaded_container
   end
 
-  scope :sorted_by_similarity_desc, -> (search) do
+  scope :sorted_by_similarity_desc, ->(search) do
     order_expression = Gitlab::Database::SimilarityScore.build_expression(
       search: search,
       rules: [

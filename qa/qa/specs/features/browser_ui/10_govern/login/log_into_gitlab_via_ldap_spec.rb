@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Govern', :orchestrated, :ldap_no_tls, :ldap_tls, product_group: :authentication do
     describe 'LDAP login' do
-      it 'user logs into GitLab using LDAP credentials',
+      it 'user logs into GitLab using LDAP credentials', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347892' do
         Flow::Login.sign_in
 
