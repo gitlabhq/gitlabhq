@@ -99,7 +99,7 @@ module API
         optional :certificate, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
         optional :key, types: [File, String], desc: 'The key', as: :user_provided_key
         optional :auto_ssl_enabled, allow_blank: false, type: Boolean, default: false,
-                                    desc: "Enables automatic generation of SSL certificates issued by Let's Encrypt for custom domains."
+          desc: "Enables automatic generation of SSL certificates issued by Let's Encrypt for custom domains."
         # rubocop:enable Scalability/FileUploads
         all_or_none_of :user_provided_certificate, :user_provided_key
       end
@@ -127,7 +127,7 @@ module API
         optional :certificate, types: [File, String], desc: 'The certificate', as: :user_provided_certificate
         optional :key, types: [File, String], desc: 'The key', as: :user_provided_key
         optional :auto_ssl_enabled, allow_blank: true, type: Boolean,
-                                    desc: "Enables automatic generation of SSL certificates issued by Let's Encrypt for custom domains."
+          desc: "Enables automatic generation of SSL certificates issued by Let's Encrypt for custom domains."
         # rubocop:enable Scalability/FileUploads
       end
       put ":id/pages/domains/:domain", requirements: PAGES_DOMAINS_ENDPOINT_REQUIREMENTS do

@@ -4,6 +4,10 @@ Check out [the original
 blueprint](https://docs.gitlab.com/ee/architecture/blueprints/gitlab_housekeeper/)
 for the motivation behind the `gitlab-housekeeper`.
 
+Also watch [this walkthrough video](https://youtu.be/KNJPVx8izAc) for an
+overview on how to create your first Keep as well as the philosophy behind
+`gitlab-housekeeper`.
+
 This is a gem which can be run locally or in CI to do static and dynamic
 analysis of the GitLab codebase and, using a list of predefined "keeps", it will
 automatically create merge requests for things that developers would have
@@ -169,3 +173,19 @@ Some best practices to consider when using a once-off keep:
 1. Consider adding a link back to this MR in the description of your generated
    MRs. This allows reviewers to understand where this work comes from and can
    also help if they want to contribute improvements to an ongoing group of MRs.
+
+## Using Housekeeper in other projects
+
+Right now we do not publish housekeeper to RubyGems. We have published it once
+to hold the name but it's not up to date.
+
+In order to use Housekeeper in another project you would need to add the
+following to your `Gemfile` and run `bundle install`:
+
+```
+gem 'gitlab-housekeeper', git: 'https://gitlab.com/gitlab-org/gitlab.git', branch: 'master', glob: 'gems/gitlab-housekeeper/*.gemspec'
+```
+
+After that you can just run `bundle exec gitlab-housekeeper`. Housekeeper
+defaults to loading all keeps in the `./keeps` directory so you would also
+create that directory in your project and put your keeps there.

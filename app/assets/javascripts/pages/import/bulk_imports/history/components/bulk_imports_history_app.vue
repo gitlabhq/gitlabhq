@@ -24,7 +24,7 @@ import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
-import { isImporting } from '../utils';
+import { isFailed, isImporting } from '../utils';
 import { DEFAULT_ERROR } from '../utils/error_messages';
 
 const DEFAULT_PER_PAGE = 20;
@@ -59,7 +59,14 @@ export default {
     GlTooltip,
   },
 
-  inject: ['realtimeChangesPath'],
+  inject: {
+    detailsPath: {
+      default: undefined,
+    },
+    realtimeChangesPath: {
+      default: undefined,
+    },
+  },
 
   props: {
     id: {
@@ -211,6 +218,28 @@ export default {
       return !isEmpty(item.stats);
     },
 
+    showFailuresLinkInStatus(item) {
+      if (isFailed(item.status)) {
+        return true;
+      }
+      // Import has failures but no stats
+      if (item.has_failures && !this.hasStats(item)) {
+        return true;
+      }
+
+      return false;
+    },
+
+    failuresLinkHref(item) {
+      if (!item.has_failures) {
+        return '';
+      }
+
+      return this.detailsPath
+        .replace(':id', encodeURIComponent(item.bulk_import_id))
+        .replace(':entity_id', encodeURIComponent(item.id));
+    },
+
     getEntityTooltip(item) {
       switch (item.entity_type) {
         case WORKSPACE_PROJECT:
@@ -238,7 +267,7 @@ export default {
   <div>
     <h1 class="gl-font-size-h1 gl-my-0 gl-py-4 gl-display-flex gl-align-items-center gl-gap-3">
       <img :src="$options.gitlabLogo" :alt="__('GitLab Logo')" class="gl-w-6 gl-h-6" />
-      <span>{{ s__('BulkImport|Direct transfer history') }}</span>
+      <span>{{ s__('BulkImport|Migration history') }}</span>
     </h1>
 
     <gl-loading-icon v-if="loading" size="lg" class="gl-mt-5" />
@@ -272,13 +301,13 @@ export default {
         <template #cell(status)="{ value, item }">
           <div>
             <import-status
-              :id="item.bulk_import_id"
-              :entity-id="item.id"
               :has-failures="item.has_failures"
+              :failures-href="showFailuresLinkInStatus(item) ? failuresLinkHref(item) : null"
               :status="value"
             />
             <import-stats
               v-if="hasStats(item)"
+              :failures-href="failuresLinkHref(item)"
               :stats="item.stats"
               :stats-mapping="$options.BULK_IMPORT_STATIC_ITEMS"
               :status="value"

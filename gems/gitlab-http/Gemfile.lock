@@ -23,6 +23,7 @@ PATH
       concurrent-ruby (~> 1.2)
       httparty (~> 0.21.0)
       ipaddress (~> 0.8.3)
+      net-http (= 0.4.1)
       railties (~> 7)
 
 GEM
@@ -82,6 +83,8 @@ GEM
     mini_mime (1.1.2)
     minitest (5.18.1)
     multi_xml (0.6.0)
+    net-http (0.4.1)
+      uri
     nokogiri (1.15.4)
       racc (~> 1.4)
     parallel (1.23.0)
@@ -165,10 +168,12 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.4.2)
+    uri (0.13.0)
     webmock (3.18.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
+    webrick (1.8.1)
     zeitwerk (2.6.8)
 
 PLATFORMS
@@ -183,6 +188,7 @@ DEPENDENCIES
   rubocop (~> 1.50.2)
   rubocop-rspec (~> 2.22)
   webmock (~> 3.18.1)
+  webrick (~> 1.8)
 
 BUNDLED WITH
    2.4.14

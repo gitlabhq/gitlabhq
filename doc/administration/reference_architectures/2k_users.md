@@ -1007,7 +1007,7 @@ running [Prometheus](../monitoring/prometheus/index.md):
         ],
      },
      {
-        'job_name': 'node',
+        'job_name': 'static-node',
         'static_configs' => [
         'targets' => ['1.1.1.1:9100', '1.1.1.2:9100', '1.1.1.3:9100', '1.1.1.4:9100', '1.1.1.5:9100'],
         ],

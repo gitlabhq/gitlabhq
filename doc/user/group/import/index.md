@@ -43,18 +43,12 @@ Migrating groups by direct transfer copies the groups from one place to another.
   - The subgroup of any existing top-level group.
   - Another GitLab instance, including GitLab.com.
 - In the [API](../../../api/bulk_imports.md), copy top-level groups and subgroups to these locations.
-- Copy groups with projects (in [beta](../../../policy/experiment-beta-support.md#beta) and not ready for production
-  use) or without projects. Copying projects with groups is available:
-  - On GitLab.com by default.
+- Copy groups with projects or without projects.
 
 Not all group and project resources are copied. See list of copied resources below:
 
 - [Migrated group items](#migrated-group-items).
 - [Migrated project items](#migrated-project-items).
-
-WARNING:
-Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not
-ready for production use.
 
 We invite you to leave your feedback about migrating by direct transfer in
 [the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
@@ -282,10 +276,6 @@ role.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
-WARNING:
-Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not
-ready for production use.
-
 ## Group import history
 
 > - **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.
@@ -304,7 +294,7 @@ To view group import history:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 1. Select **Import group**.
 1. In the upper-right corner, select **History**.
-1. If there are any errors for a particular import, select **See failures** to see their details.
+1. If there are any errors for a particular import, select **Show errors** to see their details.
 
 ## Review results of the import
 
@@ -316,8 +306,8 @@ To view group import history:
 To review the results of an import:
 
 1. Go to the [Group import history page](#group-import-history).
-1. To see the details of a failed import, select the **See failures** link on any import with a **Failed** or **Partially completed** status.
-1. If the import has a **Partially completed** or **Complete** status, to see which items were and were not imported, select **Details**.
+1. To see the details of a failed import, select the **Show errors** link on any import with a **Failed** or **Partially completed** status.
+1. If the import has a **Partially completed** or **Complete** status, to see which items were and were not imported, select **View details**.
 
 You can also see that an item was imported when you see an **Imported** badge on some items in the GitLab UI.
 
@@ -406,12 +396,10 @@ Some group items are excluded from migration because they either:
 
 ## Migrated project items
 
-DETAILS:
-**Status:** Beta
-
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
 > - Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
+> - Migrating projects [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461326) in GitLab 17.1.
 
 If you choose to migrate projects when you [select groups to migrate](#select-the-groups-and-projects-to-import),
 project items are migrated with the projects.
@@ -435,10 +423,6 @@ Any other project items are **not** migrated.
 
 If you choose not to migrate projects along with groups or if you want to retry a project migration, you can
 initiate project-only migrations using the [API](../../../api/bulk_imports.md).
-
-WARNING:
-Migrating projects when migrating groups by direct transfer is in [beta](../../../policy/experiment-beta-support.md#beta)
-and is not ready for production use.
 
 Project items that are migrated to the destination GitLab instance include:
 

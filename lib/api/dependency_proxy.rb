@@ -13,7 +13,7 @@ module API
 
     params do
       requires :id, types: [String, Integer],
-                    desc: 'The ID or URL-encoded path of the group owned by the authenticated user'
+        desc: 'The ID or URL-encoded path of the group owned by the authenticated user'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Purge the dependency proxy for a group' do

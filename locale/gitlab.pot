@@ -6037,6 +6037,9 @@ msgstr ""
 msgid "Analytics|Something went wrong."
 msgstr ""
 
+msgid "Analytics|Start by choosing a measure"
+msgstr ""
+
 msgid "Analytics|Start by choosing a metric"
 msgstr ""
 
@@ -9575,9 +9578,6 @@ msgstr ""
 msgid "BulkImport|Direct transfer"
 msgstr ""
 
-msgid "BulkImport|Direct transfer history"
-msgstr ""
-
 msgid "BulkImport|Direct transfer maximum download file size (MiB)"
 msgstr ""
 
@@ -9623,9 +9623,6 @@ msgstr ""
 msgid "BulkImport|Import without projects"
 msgstr ""
 
-msgid "BulkImport|Importing projects is a %{docsLinkStart}Beta%{docsLinkEnd} feature."
-msgstr ""
-
 msgid "BulkImport|Importing the group failed."
 msgstr ""
 
@@ -9642,6 +9639,12 @@ msgid "BulkImport|Last imported to %{link}"
 msgstr ""
 
 msgid "BulkImport|Maximum download file size when importing from source GitLab instances by direct transfer."
+msgstr ""
+
+msgid "BulkImport|Migration details"
+msgstr ""
+
+msgid "BulkImport|Migration history"
 msgstr ""
 
 msgid "BulkImport|Name already exists."
@@ -14426,6 +14429,9 @@ msgid "Contribution Analytics"
 msgstr ""
 
 msgid "Contribution analytics"
+msgstr ""
+
+msgid "Contribution type"
 msgstr ""
 
 msgid "ContributionAnalytics|%{createdCount} created, %{closedCount} closed."
@@ -24343,6 +24349,9 @@ msgstr ""
 msgid "GoogleArtifactRegistry|Image"
 msgstr ""
 
+msgid "GoogleArtifactRegistry|Instructions"
+msgstr ""
+
 msgid "GoogleArtifactRegistry|Interact with them from your CI/CD pipeline. %{link_start}Learn more%{link_end}."
 msgstr ""
 
@@ -24368,9 +24377,6 @@ msgid "GoogleArtifactRegistry|Project ID"
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Project ID: %{projectId}"
-msgstr ""
-
-msgid "GoogleArtifactRegistry|Replace %{codeStart}your_access_token%{codeEnd} with a new %{linkStart}personal access token%{linkEnd} with the %{strongStart}read_api%{strongEnd} scope. This token gets information from your Google Cloud IAM integration in GitLab."
 msgstr ""
 
 msgid "GoogleArtifactRegistry|Replace %{codeStart}your_google_cloud_project_id%{codeEnd} with your Google Cloud project ID."
@@ -25574,6 +25580,9 @@ msgid "Groups|Avatar will be removed. Are you sure?"
 msgstr ""
 
 msgid "Groups|Changing group URL can have unintended side effects."
+msgstr ""
+
+msgid "Groups|Changing group URL can have unintended side effects. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "Groups|Checking group URL availability..."
@@ -26920,7 +26929,7 @@ msgstr ""
 msgid "Import|Partially completed"
 msgstr ""
 
-msgid "Import|See failures"
+msgid "Import|Show errors"
 msgstr ""
 
 msgid "Import|The repository could not be imported."
@@ -39579,6 +39588,9 @@ msgstr ""
 msgid "ProductAnalytics|Manage your own analytics provider to process, store, and query analytics data."
 msgstr ""
 
+msgid "ProductAnalytics|Measure"
+msgstr ""
+
 msgid "ProductAnalytics|Measure All tracked Events"
 msgstr ""
 
@@ -40518,10 +40530,10 @@ msgstr ""
 msgid "ProjectList|Yours"
 msgstr ""
 
-msgid "ProjectMaintenance| To ensure that a full backup is available in case changes need to be restored, you should make an %{docs_link_start}export of the project%{docs_link_end}."
+msgid "ProjectMaintenance|Blob IDs to remove"
 msgstr ""
 
-msgid "ProjectMaintenance|Blob IDs to remove"
+msgid "ProjectMaintenance|Blobs removed"
 msgstr ""
 
 msgid "ProjectMaintenance|Cancel"
@@ -40531,6 +40543,12 @@ msgid "ProjectMaintenance|Enter a list of object IDs to be removed to reduce rep
 msgstr ""
 
 msgid "ProjectMaintenance|Enter multiple entries on separate lines."
+msgstr ""
+
+msgid "ProjectMaintenance|Enter the following to confirm:"
+msgstr ""
+
+msgid "ProjectMaintenance|Go to housekeeping"
 msgstr ""
 
 msgid "ProjectMaintenance|Housekeeping will need to be triggered manually afterwards to remove old versions of the file."
@@ -40549,6 +40567,15 @@ msgid "ProjectMaintenance|Remove blobs"
 msgstr ""
 
 msgid "ProjectMaintenance|Removing blobs by ID cannot be undone. Are you sure you want to continue?"
+msgstr ""
+
+msgid "ProjectMaintenance|Run housekeeping to remove old versions from repository."
+msgstr ""
+
+msgid "ProjectMaintenance|Something went wrong while removing blobs."
+msgstr ""
+
+msgid "ProjectMaintenance|To ensure that a full backup is available in case changes need to be restored, you should make an %{docs_link_start}export of the project%{docs_link_end}."
 msgstr ""
 
 msgid "ProjectMaintenance|Yes, remove blobs"
@@ -53344,6 +53371,9 @@ msgstr ""
 msgid "This code snippet contains everything reflected in the configuration form. Copy and paste it into %{linkStart}.gitlab-ci.yml%{linkEnd} file and save your changes. Future %{scanType} scans will use these settings."
 msgstr ""
 
+msgid "This command is used for explaining vulnerabilities and can only be invoked from a vulnerability detail page."
+msgstr ""
+
 msgid "This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost."
 msgstr ""
 
@@ -53456,6 +53486,9 @@ msgid "This epic cannot be added. You don't have access to perform this action."
 msgstr ""
 
 msgid "This epic does not exist or you don't have sufficient permission."
+msgstr ""
+
+msgid "This feature is not enabled yet."
 msgstr ""
 
 msgid "This feature is only allowed in groups or projects that enable this feature."
@@ -57659,6 +57692,9 @@ msgstr ""
 msgid "Visibility level"
 msgstr ""
 
+msgid "Visibility level not allowed"
+msgstr ""
+
 msgid "Visibility level:"
 msgstr ""
 
@@ -57701,6 +57737,15 @@ msgstr ""
 msgid "VisibilityLevel|The project can be accessed without any authentication."
 msgstr ""
 
+msgid "VisibilityLevel|This visibility level has been restricted by your administrator."
+msgstr ""
+
+msgid "VisibilityLevel|This visibility level is not allowed because a child of %{group_name} has a less restrictive visibility level. %{learn_more_link_start}Learn more%{learn_more_link_end}."
+msgstr ""
+
+msgid "VisibilityLevel|This visibility level is not allowed because the parent group has a more restrictive visibility level."
+msgstr ""
+
 msgid "VisibilityLevel|Unknown"
 msgstr ""
 
@@ -57723,6 +57768,9 @@ msgid "Vulnerability"
 msgstr ""
 
 msgid "Vulnerability Report"
+msgstr ""
+
+msgid "Vulnerability explanation currently only supports vulnerabilities reported by SAST."
 msgstr ""
 
 msgid "Vulnerability remediated. Review before resolving."

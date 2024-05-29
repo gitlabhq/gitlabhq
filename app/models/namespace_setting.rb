@@ -14,6 +14,8 @@ class NamespaceSetting < ApplicationRecord
   cascading_attr :toggle_security_policy_custom_ci
   cascading_attr :math_rendering_limits_enabled
 
+  scope :for_namespaces, ->(namespaces) { where(namespace: namespaces) }
+
   belongs_to :namespace, inverse_of: :namespace_settings
 
   enum jobs_to_be_done: { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, _suffix: true

@@ -83,7 +83,7 @@ module API
               tags %w[npm_packages]
             end
             route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
-                                           authenticate_non_public: true
+              authenticate_non_public: true
             get 'dist-tags', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
               package_name = params[:package_name]
 
@@ -198,7 +198,7 @@ module API
             use :package_name
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
-                                         authenticate_non_public: true
+            authenticate_non_public: true
           get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
             package_name = params[:package_name]
             available_packages =

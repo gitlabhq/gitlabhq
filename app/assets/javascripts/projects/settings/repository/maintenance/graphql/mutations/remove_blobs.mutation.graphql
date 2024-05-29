@@ -1,0 +1,5 @@
+mutation removeBlobs($projectPath: ID!, $blobOids: [String!]!) {
+  projectBlobsRemove(input: { projectPath: $projectPath, blobOids: $blobOids }) {
+    errors
+  }
+}

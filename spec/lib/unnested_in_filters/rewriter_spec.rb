@@ -210,7 +210,7 @@ RSpec.describe UnnestedInFilters::Rewriter, feature_category: :shared do
 
       let(:users_unnest) do
         'FROM
-          unnest\(ARRAY\(SELECT "users"."state" FROM "users"\)::character varying\[\]\) AS "states"\("state"\)\,
+          \(SELECT "users"."state" FROM "users"\) AS "states"\("state"\)\,
           unnest\(\'{1\,2}\'::smallint\[\]\) AS "user_types"\("user_type"\)\,
           LATERAL \('
       end

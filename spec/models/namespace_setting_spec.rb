@@ -24,6 +24,17 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
   end
 
+  describe '.for_namespaces' do
+    let(:setting_1) { create(:namespace_settings, namespace: namespace_1) }
+    let(:setting_2) { create(:namespace_settings, namespace: namespace_2) }
+    let_it_be(:namespace_1) { create(:namespace) }
+    let_it_be(:namespace_2) { create(:namespace) }
+
+    it 'returns namespace setting for the given projects' do
+      expect(described_class.for_namespaces(namespace_1)).to contain_exactly(setting_1)
+    end
+  end
+
   describe "validations" do
     describe "#default_branch_name_content" do
       shared_examples "doesn't return an error" do

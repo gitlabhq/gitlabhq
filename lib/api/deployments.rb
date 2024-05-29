@@ -176,9 +176,9 @@ module API
       end
       params do
         requires :status,
-                 type: String,
-                 desc: 'The new status of the deployment. One of `running`, `success`, `failed`, or `canceled`',
-                 values: %w[running success failed canceled]
+          type: String,
+          desc: 'The new status of the deployment. One of `running`, `success`, `failed`, or `canceled`',
+          values: %w[running success failed canceled]
       end
       route_setting :authentication, job_token_allowed: true
       put ':id/deployments/:deployment_id' do

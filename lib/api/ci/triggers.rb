@@ -12,7 +12,7 @@ module API
 
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
-                      documentation: { example: 18 }
+          documentation: { example: 18 }
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Trigger a GitLab project pipeline' do
@@ -26,11 +26,11 @@ module API
         end
         params do
           requires :ref, type: String, desc: 'The commit sha or name of a branch or tag', allow_blank: false,
-                         documentation: { example: 'develop' }
+            documentation: { example: 'develop' }
           requires :token, type: String, desc: 'The unique token of trigger or job token',
-                           documentation: { example: '6d056f63e50fe6f8c5f8f4aa10edb7' }
+            documentation: { example: '6d056f63e50fe6f8c5f8f4aa10edb7' }
           optional :variables, type: Hash, desc: 'The list of variables to be injected into build',
-                               documentation: { example: { VAR1: "value1", VAR2: "value2" } }
+            documentation: { example: { VAR1: "value1", VAR2: "value2" } }
         end
         post ":id/(ref/:ref/)trigger/pipeline", requirements: { ref: /.+/ } do
           Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/20758')
@@ -111,7 +111,7 @@ module API
         end
         params do
           requires :description, type: String, desc: 'The trigger token description',
-                                 documentation: { example: 'my trigger token description' }
+            documentation: { example: 'my trigger token description' }
         end
         post ':id/triggers' do
           authenticate!

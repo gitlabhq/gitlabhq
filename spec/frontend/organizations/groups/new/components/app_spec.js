@@ -6,7 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
 import App from '~/organizations/groups/new/components/app.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import NewGroupForm from '~/groups/components/new_group_form.vue';
+import NewEditForm from '~/groups/components/new_edit_form.vue';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
 import {
@@ -28,7 +28,6 @@ describe('OrganizationGroupsNewApp', () => {
     basePath: 'https://gitlab.com',
     groupsAndProjectsOrganizationPath: '/-/organizations/carrot/groups_and_projects?display=groups',
     groupsOrganizationPath: '/-/organizations/default/groups',
-    mattermostEnabled: false,
     availableVisibilityLevels: [
       VISIBILITY_LEVEL_PRIVATE_INTEGER,
       VISIBILITY_LEVEL_INTERNAL_INTEGER,
@@ -52,7 +51,7 @@ describe('OrganizationGroupsNewApp', () => {
 
   const findAllParagraphs = () => wrapper.findAll('p');
   const findAllLinks = () => wrapper.findAllComponents(GlLink);
-  const findForm = () => wrapper.findComponent(NewGroupForm);
+  const findForm = () => wrapper.findComponent(NewEditForm);
 
   const submitForm = async () => {
     findForm().vm.$emit('submit', {
@@ -104,6 +103,7 @@ describe('OrganizationGroupsNewApp', () => {
         path: '',
         visibilityLevel: VISIBILITY_LEVEL_INTERNAL_INTEGER,
       },
+      submitButtonText: 'Create group',
     });
   });
 
@@ -116,7 +116,7 @@ describe('OrganizationGroupsNewApp', () => {
         await submitForm();
       });
 
-      it('sets `NewGroupForm` `loading` prop to `true`', async () => {
+      it('sets `NewEditForm` `loading` prop to `true`', async () => {
         expect(findForm().props('loading')).toBe(true);
         await waitForPromises();
       });

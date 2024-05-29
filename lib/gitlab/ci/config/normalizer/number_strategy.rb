@@ -7,7 +7,7 @@ module Gitlab
         class NumberStrategy
           class << self
             def applies_to?(config)
-              config.is_a?(Integer) || config.is_a?(Hash) && config.key?(:number)
+              config.is_a?(Integer) || (config.is_a?(Hash) && config.key?(:number))
             end
 
             def build_from(job_name, config)

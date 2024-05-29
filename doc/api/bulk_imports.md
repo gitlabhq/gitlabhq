@@ -15,10 +15,6 @@ DETAILS:
 With the group migration by direct transfer API, you can start and view the progress of migrations initiated with
 [group migration by direct transfer](../user/group/import/index.md).
 
-WARNING:
-Migrating projects with this API is in [beta](../policy/experiment-beta-support.md#beta). This feature is not
-ready for production use.
-
 ## Prerequisites
 
 For information on prerequisites for group migration by direct transfer API, see
@@ -31,7 +27,7 @@ prerequisites for [migrating groups by direct transfer](../user/group/import/ind
 Use this endpoint to start a new group or project migration. Specify:
 
 - `entities[group_entity]` to migrate a group.
-- `entities[project_entity]` to migrate a project. (**Status:** Beta)
+- `entities[project_entity]` to migrate a project.
 
 ```plaintext
 POST /bulk_imports

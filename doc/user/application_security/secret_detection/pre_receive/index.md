@@ -14,11 +14,32 @@ DETAILS:
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [experiment](../../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
 
 NOTE:
-This feature is an [experiment](../../../../policy/experiment-beta-support.md), available only on GitLab Dedicated, and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+This feature is an [experiment](../../../../policy/experiment-beta-support.md), available only on
+GitLab Dedicated, and is subject to the
+[GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+On GitLab.com and GitLab self-managed, use [pipeline secret detection](../index.md) instead.
 
-Block secrets such as keys and API tokens from being pushed to your GitLab instance. Secret push protection is triggered when commits are pushed to any repository. If any secrets are detected, the push is blocked.
+Secret push protection blocks secrets such as keys and API tokens from being pushed to GitLab.
+The content of each commit is checked for secrets when pushed to GitLab. If any secrets are
+detected, the push is blocked. Regardless of the Git client, GitLab prompts a message when a push is
+blocked, including details of:
 
-Push protection is an experiment, and only available on GitLab Dedicated. To use secret detection in your instance, use [pipeline secret detection](../index.md) instead.
+- Commit ID containing the secret.
+- Filename and line containing the secret.
+- Type of secret.
+
+For example, the following is an extract of the message returned when a push using the Git CLI is
+blocked. When using other clients, including the GitLab Web IDE, the format of the message is
+different but the content is the same.
+
+```plain
+remote: PUSH BLOCKED: Secrets detected in code changes
+remote: Secret push protection found the following secrets in commit: 37e54de5e78c31d9e3c3821fd15f7069e3d375b6
+remote:
+remote: -- test.txt:2 GitLab Personal Access Token
+remote:
+remote: To push your changes you must remove the identified secrets.
+```
 
 ## Enable secret push protection
 
@@ -30,7 +51,7 @@ Prerequisites:
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Security and Compliance**.
 1. Expand **Secret Detection**.
-1. Select the **Enable pre-receive secret detection** checkbox.
+1. Select the **Allow secret push protection** checkbox.
 
 ## Resolve a blocked push
 

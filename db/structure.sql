@@ -243,7 +243,7 @@ CREATE TABLE projects (
     suggestion_commit_message character varying(255),
     project_namespace_id bigint,
     hidden boolean DEFAULT false NOT NULL,
-    organization_id bigint DEFAULT 1
+    organization_id bigint
 );
 
 CREATE FUNCTION find_projects_by_id(projects_id bigint) RETURNS projects
@@ -858,6 +858,22 @@ IF NEW."group_id" IS NULL THEN
   INTO NEW."group_id"
   FROM "boards_epic_boards"
   WHERE "boards_epic_boards"."id" = NEW."epic_board_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_8a38ce2327de() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "epics"
+  WHERE "epics"."id" = NEW."epic_id";
 END IF;
 
 RETURN NEW;
@@ -5928,7 +5944,8 @@ CREATE TABLE boards_epic_user_preferences (
     board_id bigint NOT NULL,
     user_id bigint NOT NULL,
     epic_id bigint NOT NULL,
-    collapsed boolean DEFAULT false NOT NULL
+    collapsed boolean DEFAULT false NOT NULL,
+    group_id bigint
 );
 
 CREATE SEQUENCE boards_epic_user_preferences_id_seq
@@ -11247,7 +11264,8 @@ CREATE TABLE member_approvals (
     old_access_level integer,
     status smallint DEFAULT 0 NOT NULL,
     user_id bigint NOT NULL,
-    member_role_id bigint
+    member_role_id bigint,
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE member_approvals_id_seq
@@ -12280,6 +12298,7 @@ CREATE TABLE namespace_settings (
     lock_duo_features_enabled boolean DEFAULT false NOT NULL,
     disable_personal_access_tokens boolean DEFAULT false NOT NULL,
     enable_auto_assign_gitlab_duo_pro_seats boolean DEFAULT false NOT NULL,
+    early_access_program_participant boolean DEFAULT false NOT NULL,
     remove_dormant_members boolean DEFAULT false NOT NULL,
     remove_dormant_members_period integer DEFAULT 90 NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
@@ -25027,6 +25046,8 @@ CREATE UNIQUE INDEX index_boards_epic_user_preferences_on_board_user_epic_unique
 
 CREATE INDEX index_boards_epic_user_preferences_on_epic_id ON boards_epic_user_preferences USING btree (epic_id);
 
+CREATE INDEX index_boards_epic_user_preferences_on_group_id ON boards_epic_user_preferences USING btree (group_id);
+
 CREATE INDEX index_boards_epic_user_preferences_on_user_id ON boards_epic_user_preferences USING btree (user_id);
 
 CREATE INDEX index_boards_on_group_id ON boards USING btree (group_id);
@@ -30275,6 +30296,8 @@ CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variabl
 
 CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board_positions FOR EACH ROW EXECUTE FUNCTION trigger_7a8b08eed782();
 
+CREATE TRIGGER trigger_8a38ce2327de BEFORE INSERT OR UPDATE ON boards_epic_user_preferences FOR EACH ROW EXECUTE FUNCTION trigger_8a38ce2327de();
+
 CREATE TRIGGER trigger_8ac78f164b2d BEFORE INSERT OR UPDATE ON design_management_repositories FOR EACH ROW EXECUTE FUNCTION trigger_8ac78f164b2d();
 
 CREATE TRIGGER trigger_8e66b994e8f0 BEFORE INSERT OR UPDATE ON audit_events_streaming_event_type_filters FOR EACH ROW EXECUTE FUNCTION trigger_8e66b994e8f0();
@@ -31345,6 +31368,9 @@ ALTER TABLE ONLY environments
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_d3130c9a7f FOREIGN KEY (commit_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY boards_epic_user_preferences
+    ADD CONSTRAINT fk_d32c3d693c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7 FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;

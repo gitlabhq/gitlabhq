@@ -50,7 +50,7 @@ module Git
       strong_memoize(:commits_count) do
         next threshold_commits.count if
           strong_memoized?(:threshold_commits) &&
-          threshold_commits.count <= PROCESS_COMMIT_LIMIT
+            threshold_commits.count <= PROCESS_COMMIT_LIMIT
 
         if creating_default_branch?
           project.repository.commit_count_for_ref(ref)

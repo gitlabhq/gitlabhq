@@ -5,7 +5,7 @@ module DeployKeys
     expose :deploy_keys_projects, using: DeployKeysProjectEntity do |deploy_key|
       deploy_key.deploy_keys_projects.select do |deploy_key_project|
         !deploy_key_project.project&.pending_delete? &&
-        (allowed_to_read_project?(deploy_key_project.project) || options[:user].can_admin_all_resources?)
+          (allowed_to_read_project?(deploy_key_project.project) || options[:user].can_admin_all_resources?)
       end
     end
 

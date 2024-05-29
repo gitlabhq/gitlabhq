@@ -86,7 +86,7 @@ like `:hover` and others ([Chrome](https://developer.chrome.com/docs/devtools/cs
 - Account for states dependent on data size ([empty](https://design.gitlab.com/patterns/empty-states),
   some data, and lots of data).
 - Account for states dependent on user role, user preferences, and subscription.
-- Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/product-foundations/motion/).
+- Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/brand-design/motion).
 
 ### Responsive
 

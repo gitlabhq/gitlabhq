@@ -147,7 +147,7 @@ module Groups
 
     def transfer_to_subgroup?
       @new_parent_group && \
-      @group.self_and_descendants.pluck_primary_key.include?(@new_parent_group.id)
+        @group.self_and_descendants.pluck_primary_key.include?(@new_parent_group.id)
     end
 
     def valid_policies?

@@ -182,8 +182,8 @@ module API
       params do
         use :merge_requests_params
         optional :non_archived, type: Boolean,
-                                default: true,
-                                desc: 'Returns merge requests from non archived projects only.'
+          default: true,
+          desc: 'Returns merge requests from non archived projects only.'
       end
       get ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
         validate_search_rate_limit! if declared_params[:search].present?
@@ -211,26 +211,26 @@ module API
         params :optional_params do
           optional :assignee_id, type: Integer, desc: 'Assignee user ID.'
           optional :assignee_ids, type: Array[Integer],
-                                  coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-                                  desc: 'The IDs of the users to assign the merge request to, as a comma-separated list. Set to 0 or provide an empty value to unassign all assignees.',
-                                  documentation: { is_array: true }
+            coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
+            desc: 'The IDs of the users to assign the merge request to, as a comma-separated list. Set to 0 or provide an empty value to unassign all assignees.',
+            documentation: { is_array: true }
           optional :reviewer_ids, type: Array[Integer],
-                                  coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-                                  desc: 'The IDs of the users to review the merge request, as a comma-separated list. Set to 0 or provide an empty value to unassign all reviewers.',
-                                  documentation: { is_array: true }
+            coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
+            desc: 'The IDs of the users to review the merge request, as a comma-separated list. Set to 0 or provide an empty value to unassign all reviewers.',
+            documentation: { is_array: true }
           optional :description, type: String, desc: 'Description of the merge request. Limited to 1,048,576 characters.'
           optional :labels, type: Array[String],
-                            coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
-                            desc: 'Comma-separated label names for a merge request. Set to an empty string to unassign all labels.',
-                            documentation: { is_array: true }
+            coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
+            desc: 'Comma-separated label names for a merge request. Set to an empty string to unassign all labels.',
+            documentation: { is_array: true }
           optional :add_labels, type: Array[String],
-                                coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
-                                desc: 'Comma-separated label names to add to a merge request.',
-                                documentation: { is_array: true }
+            coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
+            desc: 'Comma-separated label names to add to a merge request.',
+            documentation: { is_array: true }
           optional :remove_labels, type: Array[String],
-                                   coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
-                                   desc: 'Comma-separated label names to remove from a merge request.',
-                                   documentation: { is_array: true }
+            coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
+            desc: 'Comma-separated label names to remove from a merge request.',
+            documentation: { is_array: true }
           optional :milestone_id, type: Integer, desc: 'The global ID of a milestone to assign the merge reques to.'
           optional :remove_source_branch, type: Boolean, desc: 'Flag indicating if a merge request should remove the source branch when merging.'
           optional :allow_collaboration, type: Boolean, desc: 'Allow commits from members who can merge to the target branch.'
@@ -259,9 +259,9 @@ module API
         use :merge_requests_params
 
         optional :iids, type: Array[Integer],
-                        coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
-                        desc: 'Returns the request having the given `iid`.',
-                        documentation: { is_array: true }
+          coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce,
+          desc: 'Returns the request having the given `iid`.',
+          documentation: { is_array: true }
       end
       get ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
         authorize! :read_merge_request, user_project
@@ -305,7 +305,7 @@ module API
         requires :source_branch, type: String, desc: 'The source branch.'
         requires :target_branch, type: String, desc: 'The target branch.'
         optional :target_project_id, type: Integer,
-                                     desc: 'The target project of the merge request defaults to the :id of the project.'
+          desc: 'The target project of the merge request defaults to the :id of the project.'
         use :optional_params
       end
       post ":id/merge_requests", feature_category: :code_review_workflow, urgency: :low do
@@ -442,10 +442,10 @@ module API
 
       params do
         requires :commits, type: Array[String],
-                           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-                           allow_blank: false,
-                           desc: 'The context commits’ SHA.',
-                           documentation: { is_array: true }
+          coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+          allow_blank: false,
+          desc: 'The context commits’ SHA.',
+          documentation: { is_array: true }
       end
       desc 'Create merge request context commits' do
         detail 'Create a list of merge request context commits.'
@@ -479,10 +479,10 @@ module API
 
       params do
         requires :commits, type: Array[String],
-                           coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-                           allow_blank: false,
-                           desc: 'The context commits’ SHA.',
-                           documentation: { is_array: true }
+          coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+          allow_blank: false,
+          desc: 'The context commits’ SHA.',
+          documentation: { is_array: true }
       end
       desc 'Delete merge request context commits' do
         detail 'Delete a list of merge request context commits.'
@@ -604,10 +604,10 @@ module API
         optional :title, type: String, allow_blank: false, desc: 'The title of the merge request.'
         optional :target_branch, type: String, allow_blank: false, desc: 'The target branch.'
         optional :state_event, type: String,
-                               values: %w[close reopen],
-                               desc: 'New state (close/reopen).'
+          values: %w[close reopen],
+          desc: 'New state (close/reopen).'
         optional :discussion_locked, type: Boolean,
-                                     desc: 'Flag indicating if the merge request’s discussion is locked. If the discussion is locked only project members can add, edit or resolve comments.'
+          desc: 'Flag indicating if the merge request’s discussion is locked. If the discussion is locked only project members can add, edit or resolve comments.'
 
         use :optional_params
         at_least_one_of(*::API::MergeRequests.update_params_at_least_one_of)
@@ -648,9 +648,9 @@ module API
         optional :merge_commit_message, type: String, desc: 'Custom merge commit message.'
         optional :squash_commit_message, type: String, desc: 'Custom squash commit message.'
         optional :should_remove_source_branch, type: Boolean,
-                                               desc: 'If `true`, removes the source branch.'
+          desc: 'If `true`, removes the source branch.'
         optional :merge_when_pipeline_succeeds, type: Boolean,
-                                                desc: 'If `true`, the merge request is merged when the pipeline succeeds.'
+          desc: 'If `true`, the merge request is merged when the pipeline succeeds.'
         optional :sha, type: String, desc: 'If present, then this SHA must match the HEAD of the source branch, otherwise the merge fails.'
         optional :squash, type: Grape::API::Boolean, desc: 'If `true`, the commits are squashed into a single commit on merge.'
 

@@ -337,12 +337,30 @@ You can always view the issues assigned to the epic if they are in the group's c
 It's possible because the visibility setting of a project must be the same as or less restrictive than
 of its parent group.
 
-### View count of issues in an epic
+### View count and weight of issues in an epic
 
-On the **Child issues and epics** section, under each epic name, hover over the total counts.
+On the **Child issues and epics** section header, the number of descendant epics and issues and their total
+weight is displayed.
 
-The number indicates all epics associated with the project, including issues
-you might not have permission to.
+To see the number of open and closed epics and issues:
+
+- In the section header or under each epic name, hover over the total counts.
+
+The numbers reflect all child issues and epics associated with the epic, including those you might
+not have permission to view.
+
+### View epic progress
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5163) in GitLab 17.1.
+
+On the **Child issues and epics** section header, the epic progress percentage is displayed.
+
+To see the completed and total weight of child issues:
+
+1. In the section header, hover over the percentage.
+
+The weights and progress reflect all issues associated with the epic, including issues you might
+not have permission to view.
 
 ### Add an issue to an epic
 

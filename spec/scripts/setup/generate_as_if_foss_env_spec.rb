@@ -32,7 +32,7 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         'rspec integration pg14',
         'rspec system pg14',
         'rspec migration pg14',
-        'rspec background-migration pg14',
+        'rspec background_migration pg14',
         'rspec-all frontend_fixture',
         'build-assets-image',
         'build-qa-image',

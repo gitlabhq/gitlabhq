@@ -16,6 +16,12 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415581) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `code_suggestions_completion_api`. Disabled by default. This feature is an experiment.
 > - Requirement to generate a JWT before calling this endpoint was [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127863) in GitLab 16.3.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416371) in GitLab 16.8. [Feature flag `code_suggestions_completion_api`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138174) removed.
+> - `context` and `user_instruction` attributes [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
+
+FLAG:
+The availability of the `context` and `user_instruction` attributes is controlled by a feature flag.
+For more information, see the history.
+These attributes are available for testing, but are not ready for production use.
 
 ```plaintext
 POST /code_suggestions/completions
@@ -31,12 +37,14 @@ Requests to this endpoint are proxied to the
 
 Parameters:
 
-| Attribute      | Type    | Required | Description |
-|----------------|---------|----------|-------------|
-| `current_file` | hash    | yes      | Attributes of file for which code suggestions are being generated. See [File attributes](#file-attributes) for a list of strings this attribute accepts. |
-| `intent`       | string  | no       | The intent of the completion request. Options: `completion` or `generation`. |
-| `stream`       | boolean | no       | Whether to stream the response as smaller chunks as they are ready (if applicable). Default: `false`. |
-| `project_path` | string  | no       | The path of the project. |
+| Attribute          | Type    | Required | Description |
+|--------------------|---------|----------|-------------|
+| `current_file`     | hash    | yes      | Attributes of file for which Code Suggestions are being generated. See [File attributes](#file-attributes) for a list of strings this attribute accepts. |
+| `intent`           | string  | no       | The intent of the completion request. This can be either `completion` or `generation`. |
+| `stream`           | boolean | no       | Whether to stream the response as smaller chunks as they are ready (if applicable). Default: `false`. |
+| `project_path`     | string  | no       | The path of the project. |
+| `context`          | array   | no       | Additional context to be used for Code Suggestions. See [Context attributes](#context-attributes) for a list of parameters this attribute accepts. |
+| `user_instruction` | string  | no       | A user's instructions for Code Suggestions. |
 
 ### File attributes
 
@@ -45,6 +53,14 @@ The `current_file` attribute accepts the following strings:
 - `file_name` - The name of the file. Required.
 - `content_above_cursor` - The content of the file above the current cursor position. Required.
 - `content_below_cursor` - The content of the file below the current cursor position. Optional.
+
+### Context attributes
+
+The `context` attribute accepts a list of elements with the following attributes:
+
+- `type` - The type of the context element. This can be either `file` or `snippet`.
+- `name` - The name of the context element. A name of the file or a code snippet.
+- `content` - The content of the context element. The body of the file or a function.
 
 Example request:
 

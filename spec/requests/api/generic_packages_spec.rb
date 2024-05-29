@@ -413,6 +413,20 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             end
           end
         end
+
+        context 'when there is + sign is in filename' do
+          it 'creates a package and package file with filename' do
+            headers = workhorse_headers.merge(auth_header)
+
+            upload_file(params, headers, file_name: 'my+file.tar.gz')
+
+            aggregate_failures do
+              package = project.packages.generic.last
+              expect(response).to have_gitlab_http_status(:created)
+              expect(package.package_files.last.file_name).to eq('my+file.tar.gz')
+            end
+          end
+        end
       end
 
       context 'when valid personal access token is used' do
@@ -765,6 +779,21 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
       it 'responds with 200 OK' do
         download_file(personal_access_token_header, file_name: file_path)
+
+        expect(response).to have_gitlab_http_status(:success)
+      end
+    end
+
+    context 'when there is + sign is in filename' do
+      let(:file_name) { 'my+file.tar.gz' }
+
+      before do
+        project.add_developer(user)
+        package_file.update_column(:file_name, file_name)
+      end
+
+      it 'responds with 200 OK' do
+        download_file(personal_access_token_header, file_name: file_name)
 
         expect(response).to have_gitlab_http_status(:success)
       end

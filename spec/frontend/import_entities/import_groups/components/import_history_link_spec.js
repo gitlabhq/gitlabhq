@@ -28,7 +28,7 @@ describe('import history link', () => {
       },
     });
 
-    expect(findGlLink().text()).toBe('View details');
+    expect(findGlLink().text()).toBe('Migration details >');
     expect(findGlLink().attributes('href')).toBe('/import/174/history');
   });
 });

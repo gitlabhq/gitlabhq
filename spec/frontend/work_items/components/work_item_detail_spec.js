@@ -346,14 +346,25 @@ describe('WorkItemDetail component', () => {
     });
   });
 
-  it('shows empty state with an error message when the work item query was unsuccessful', async () => {
-    const errorHandler = jest.fn().mockRejectedValue('Oops');
-    createComponent({ handler: errorHandler });
-    await waitForPromises();
+  describe('when the work item query is unsuccessful', () => {
+    beforeEach(() => {
+      const errorHandler = jest.fn().mockRejectedValue('Oops');
+      createComponent({ handler: errorHandler });
+      return waitForPromises();
+    });
 
-    expect(errorHandler).toHaveBeenCalled();
-    expect(findEmptyState().props('description')).toBe(i18n.fetchError);
-    expect(findWorkItemTitle().exists()).toBe(false);
+    it('shows empty state with an error message', () => {
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findEmptyState().props('description')).toBe(i18n.fetchError);
+    });
+
+    it('does not render work item UI elements', () => {
+      expect(findWorkItemType().exists()).toBe(false);
+      expect(findWorkItemTitle().exists()).toBe(false);
+      expect(findCreatedUpdated().exists()).toBe(false);
+      expect(findWorkItemActions().exists()).toBe(false);
+      expect(findWorkItemTwoColumnViewContainer().exists()).toBe(false);
+    });
   });
 
   it('shows an error message when WorkItemTitle emits an `error` event', async () => {

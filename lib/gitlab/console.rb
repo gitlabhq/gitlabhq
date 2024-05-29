@@ -32,7 +32,7 @@ module Gitlab
         else
           boot_time_seconds = Gitlab::Metrics::BootTimeTracker.instance.startup_time
           booted_in = "[ booted in %.2fs ]" % [boot_time_seconds]
-          puts '-' * (80 - booted_in.length) + booted_in
+          puts ('-' * (80 - booted_in.length)) + booted_in
         end
       end
     end

@@ -152,6 +152,75 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     end
   end
 
+  describe '#disallowed_visibility_level_by_parent?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:parent_group) { create(:group, parent_group_visibility_level) }
+    let(:group) { build(:group, :private, parent: parent_group) }
+
+    subject { helper.disallowed_visibility_level_by_parent?(group, visibility_level) }
+
+    where(:parent_group_visibility_level, :visibility_level, :expected) do
+      :public   | Gitlab::VisibilityLevel::PUBLIC   | false
+      :public   | Gitlab::VisibilityLevel::INTERNAL | false
+      :public   | Gitlab::VisibilityLevel::PRIVATE  | false
+      :internal | Gitlab::VisibilityLevel::PUBLIC   | true
+      :internal | Gitlab::VisibilityLevel::INTERNAL | false
+      :internal | Gitlab::VisibilityLevel::PRIVATE  | false
+      :private  | Gitlab::VisibilityLevel::PUBLIC   | true
+      :private  | Gitlab::VisibilityLevel::INTERNAL | true
+      :private  | Gitlab::VisibilityLevel::PRIVATE  | false
+    end
+
+    with_them do
+      it { is_expected.to eq expected }
+    end
+  end
+
+  shared_examples_for 'disallowed visibility level by child' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:child_visibility_level, :visibility_level, :expected) do
+      Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PUBLIC   | false
+      Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::INTERNAL | true
+      Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PRIVATE  | true
+      Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::PUBLIC   | false
+      Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::INTERNAL | false
+      Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::PRIVATE  | true
+      Gitlab::VisibilityLevel::PRIVATE  | Gitlab::VisibilityLevel::PUBLIC   | false
+      Gitlab::VisibilityLevel::PRIVATE  | Gitlab::VisibilityLevel::INTERNAL | false
+      Gitlab::VisibilityLevel::PRIVATE  | Gitlab::VisibilityLevel::PRIVATE  | false
+    end
+
+    with_them do
+      before do
+        child.update!(visibility_level: child_visibility_level)
+      end
+
+      it { is_expected.to eq expected }
+    end
+  end
+
+  describe '#disallowed_visibility_level_by_projects?' do
+    let_it_be(:group) { create(:group, :public) }
+
+    let_it_be_with_reload(:child) { create(:project, group: group) }
+
+    subject { helper.disallowed_visibility_level_by_projects?(group, visibility_level) }
+
+    it_behaves_like 'disallowed visibility level by child'
+  end
+
+  describe '#disallowed_visibility_level_by_sub_groups?' do
+    let_it_be(:group) { create(:group, :public) }
+
+    let_it_be_with_reload(:child) { create(:group, parent: group) }
+
+    subject { helper.disallowed_visibility_level_by_sub_groups?(group, visibility_level) }
+
+    it_behaves_like 'disallowed visibility level by child'
+  end
+
   describe "selected_visibility_level" do
     let(:group) { create(:group, :public) }
     let!(:project) { create(:project, :internal, group: group) }
@@ -321,6 +390,104 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
       end
 
       it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#all_visibility_levels' do
+    subject { helper.all_visibility_levels }
+
+    it 'returns all visibility levels' do
+      is_expected.to eq [
+        Gitlab::VisibilityLevel::PRIVATE,
+        Gitlab::VisibilityLevel::INTERNAL,
+        Gitlab::VisibilityLevel::PUBLIC
+      ]
+    end
+  end
+
+  describe '#disabled_visibility_level?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be_with_reload(:child) { create(:project, group: group) }
+
+    subject { helper.disabled_visibility_level?(group, visibility_level) }
+
+    where(:restricted_visibility_levels, :child_visibility_level, :visibility_level, :expected) do
+      []                                                                   | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PUBLIC   | false
+      []                                                                   | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::INTERNAL | true
+      []                                                                   | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PRIVATE  | true
+      []                                                                   | Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::PUBLIC   | false
+      []                                                                   | Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::INTERNAL | false
+      []                                                                   | Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::PRIVATE  | true
+      []                                                                   | Gitlab::VisibilityLevel::PRIVATE  | Gitlab::VisibilityLevel::PUBLIC   | false
+      []                                                                   | Gitlab::VisibilityLevel::PRIVATE  | Gitlab::VisibilityLevel::INTERNAL | false
+      []                                                                   | Gitlab::VisibilityLevel::PRIVATE  | Gitlab::VisibilityLevel::PRIVATE  | false
+
+      [Gitlab::VisibilityLevel::PUBLIC]                                    | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PUBLIC   | true
+      [Gitlab::VisibilityLevel::PUBLIC]                                    | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::INTERNAL | true
+      [Gitlab::VisibilityLevel::PUBLIC]                                    | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PRIVATE  | true
+      [Gitlab::VisibilityLevel::PUBLIC]                                    | Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::PUBLIC   | true
+      [Gitlab::VisibilityLevel::PUBLIC]                                    | Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::INTERNAL | false
+      [Gitlab::VisibilityLevel::PUBLIC]                                    | Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::PRIVATE  | true
+
+      [Gitlab::VisibilityLevel::INTERNAL]                                  | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PUBLIC   | false
+      [Gitlab::VisibilityLevel::INTERNAL]                                  | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::INTERNAL | true
+      [Gitlab::VisibilityLevel::INTERNAL]                                  | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PRIVATE  | true
+      [Gitlab::VisibilityLevel::INTERNAL]                                  | Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::PUBLIC   | false
+      [Gitlab::VisibilityLevel::INTERNAL]                                  | Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::INTERNAL | true
+      [Gitlab::VisibilityLevel::INTERNAL]                                  | Gitlab::VisibilityLevel::INTERNAL | Gitlab::VisibilityLevel::PRIVATE  | true
+
+      [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PUBLIC   | true
+      [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::INTERNAL | true
+      [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::INTERNAL | true
+
+      Gitlab::VisibilityLevel.values                                       | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::PUBLIC   | true
+      Gitlab::VisibilityLevel.values                                       | Gitlab::VisibilityLevel::PUBLIC   | Gitlab::VisibilityLevel::INTERNAL | true
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive(:current_user) { user }
+        stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
+
+        child.update!(visibility_level: child_visibility_level)
+      end
+
+      it { is_expected.to eq expected }
+    end
+  end
+
+  describe '#restricted_visibility_level?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { create(:user) }
+
+    subject { helper.restricted_visibility_level?(visibility_level) }
+
+    where(:restricted_visibility_levels, :visibility_level, :expected) do
+      []                                                                   | Gitlab::VisibilityLevel::PUBLIC   | false
+      []                                                                   | Gitlab::VisibilityLevel::INTERNAL | false
+      []                                                                   | Gitlab::VisibilityLevel::PRIVATE  | false
+      [Gitlab::VisibilityLevel::PUBLIC]                                    | Gitlab::VisibilityLevel::PUBLIC   | true
+      [Gitlab::VisibilityLevel::PUBLIC]                                    | Gitlab::VisibilityLevel::INTERNAL | false
+      [Gitlab::VisibilityLevel::PUBLIC]                                    | Gitlab::VisibilityLevel::PRIVATE  | false
+      [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] | Gitlab::VisibilityLevel::PUBLIC   | true
+      [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] | Gitlab::VisibilityLevel::INTERNAL | true
+      [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] | Gitlab::VisibilityLevel::PRIVATE  | false
+      Gitlab::VisibilityLevel.values                                       | Gitlab::VisibilityLevel::PUBLIC   | true
+      Gitlab::VisibilityLevel.values                                       | Gitlab::VisibilityLevel::INTERNAL | true
+      Gitlab::VisibilityLevel.values                                       | Gitlab::VisibilityLevel::PRIVATE  | true
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive(:current_user) { user }
+        stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
+      end
+
+      it { is_expected.to eq expected }
     end
   end
 end

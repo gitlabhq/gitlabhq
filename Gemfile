@@ -140,7 +140,7 @@ gem 'rack-cors', '~> 2.0.1', require: 'rack/cors' # rubocop:todo Gemfile/Missing
 gem 'graphql', '~> 2.3.3', feature_category: :api
 gem 'graphql-docs', '~> 4.0.0', group: [:development, :test], feature_category: :api
 gem 'graphiql-rails', '~> 1.8.0', feature_category: :api
-gem 'apollo_upload_server', '~> 2.1.5', feature_category: :api
+gem 'apollo_upload_server', '~> 2.1.6', feature_category: :api
 gem 'graphlient', '~> 0.6.0', feature_category: :importers # Used by BulkImport feature (group::import)
 
 # Generate Fake data
@@ -536,7 +536,7 @@ group :test do
 
   gem 'capybara', '~> 3.40' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'capybara-screenshot', '~> 1.0.26' # rubocop:todo Gemfile/MissingFeatureCategory
-  gem 'selenium-webdriver', '~> 4.20', '>= 4.20.1' # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'selenium-webdriver', '~> 4.21', '>= 4.21.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
   gem 'graphlyte', '~> 1.0.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
@@ -682,9 +682,10 @@ gem 'telesignenterprise', '~> 2.2' # rubocop:todo Gemfile/MissingFeatureCategory
 # BufferedIO patch
 # Updating this version will require updating scripts/allowed_warnings.txt
 gem 'net-protocol', '~> 0.1.3' # rubocop:todo Gemfile/MissingFeatureCategory
-# Lock this until we make DNS rebinding work with the updated net-http:
-# https://gitlab.com/gitlab-org/gitlab/-/issues/413528
-gem 'net-http', '= 0.1.1' # rubocop:todo Gemfile/MissingFeatureCategory
+
+# This is locked to 0.4.1 because we patch Net::HTTP#connect in
+# gems/gitlab-http/lib/net_http/connect_patch.rb.
+gem 'net-http', '= 0.4.1', feature_category: :shared
 
 gem 'duo_api', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 

@@ -1249,7 +1249,7 @@ Do not override the `reports.html.destination` or `reports.html.outputLocation` 
 
 ### Python projects
 
-Extra care needs to be taken when using the [`PIP_EXTRA_INDEX_URL`](https://pipenv.pypa.io/en/latest/cli/#envvar-PIP_EXTRA_INDEX_URL)
+Extra care needs to be taken when using the [`PIP_EXTRA_INDEX_URL`](https://pipenv.pypa.io/en/latest/indexes.html)
 environment variable due to a possible exploit documented by [CVE-2018-20225](https://nvd.nist.gov/vuln/detail/CVE-2018-20225):
 
 > An issue was discovered in pip (all versions) because it installs the version with the highest version number, even if the user had

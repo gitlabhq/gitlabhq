@@ -47,6 +47,9 @@ class Project < ApplicationRecord
   include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
   include Importable
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :organization_id
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
 

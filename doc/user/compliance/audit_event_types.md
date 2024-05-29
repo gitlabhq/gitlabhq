@@ -386,6 +386,12 @@ Audit event types belong to the following product categories.
 | [`epic_created_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | Triggered when an epic is created by a group access token| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Group |
 | [`epic_reopened_by_project_bot`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121485) | Triggered when an epic is reopened by a group access token| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323299) | Group |
 
+### Product analytics data management
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`product_analytics_settings_update`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154101) | Triggered when product analytics settings are changed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/463318) | Project |
+
 ### Project
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |

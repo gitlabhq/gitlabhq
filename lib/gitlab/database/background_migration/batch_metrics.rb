@@ -21,7 +21,7 @@ module Gitlab
 
           count = yield
 
-          timings_for_label(label) << monotonic_time - start_time
+          timings_for_label(label) << (monotonic_time - start_time)
           affected_rows_for_label(label) << count if instrument_affected_rows && count.is_a?(Integer)
         end
 

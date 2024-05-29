@@ -11,13 +11,31 @@ export const initOrganizationsGroupsEdit = () => {
   const {
     dataset: { appData },
   } = el;
-  const { group } = convertObjectPropsToCamelCase(JSON.parse(appData), { deep: true });
+  const {
+    group,
+    basePath,
+    groupsAndProjectsOrganizationPath,
+    groupsOrganizationPath,
+    availableVisibilityLevels,
+    restrictedVisibilityLevels,
+    defaultVisibilityLevel,
+    pathMaxlength,
+    pathPattern,
+  } = convertObjectPropsToCamelCase(JSON.parse(appData), { deep: true });
 
   return new Vue({
     el,
     name: 'OrganizationGroupsEditRoot',
     provide: {
       group,
+      basePath,
+      groupsAndProjectsOrganizationPath,
+      groupsOrganizationPath,
+      availableVisibilityLevels,
+      restrictedVisibilityLevels,
+      defaultVisibilityLevel,
+      pathMaxlength,
+      pathPattern,
     },
     render(createElement) {
       return createElement(App);

@@ -26,17 +26,17 @@ module API
       params do
         optional :user_id, type: Integer, desc: 'Filter PATs by User ID', documentation: { example: 2 }
         optional :revoked, type: Boolean, desc: 'Filter PATs where revoked state matches parameter',
-                           documentation: { example: false }
+          documentation: { example: false }
         optional :state, type: String, desc: 'Filter PATs which are either active or not',
-                         values: %w[active inactive], documentation: { example: 'active' }
+          values: %w[active inactive], documentation: { example: 'active' }
         optional :created_before, type: DateTime, desc: 'Filter PATs which were created before given datetime',
-                                  documentation: { example: '2022-01-01' }
+          documentation: { example: '2022-01-01' }
         optional :created_after, type: DateTime, desc: 'Filter PATs which were created after given datetime',
-                                 documentation: { example: '2021-01-01' }
+          documentation: { example: '2021-01-01' }
         optional :last_used_before, type: DateTime, desc: 'Filter PATs which were used before given datetime',
-                                    documentation: { example: '2021-01-01' }
+          documentation: { example: '2021-01-01' }
         optional :last_used_after, type: DateTime, desc: 'Filter PATs which were used after given datetime',
-                                   documentation: { example: '2022-01-01' }
+          documentation: { example: '2022-01-01' }
         optional :search, type: String, desc: 'Filters PATs by its name', documentation: { example: 'token' }
 
         use :pagination
@@ -74,9 +74,9 @@ module API
       end
       params do
         optional :expires_at,
-                 type: Date,
-                 desc: "The expiration date of the token",
-                 documentation: { example: '2021-01-31' }
+          type: Date,
+          desc: "The expiration date of the token",
+          documentation: { example: '2021-01-31' }
       end
       post ':id/rotate' do
         token = PersonalAccessToken.find_by_id(params[:id])

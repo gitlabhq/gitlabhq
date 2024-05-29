@@ -20,9 +20,7 @@ DETAILS:
 > - Enabled in GitLab 16.7 as a [beta](../../policy/experiment-beta-support.md#beta) feature.
 > - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
 > - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/444345) in GitLab 16.11.
-
-FLAG:
-The availability of this feature is controlled by feature flags. For more information, see the history.
+> - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
 
 The product analytics feature empowers you to track user behavior and gain insights into how your
 applications are used and how users interact with your product.

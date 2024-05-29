@@ -208,11 +208,11 @@ module Gitlab
           efficiencies = jobs.map(&:time_efficiency).reject(&:nil?).each_with_index
 
           dividend = efficiencies.reduce(0) do |total, (job_eff, i)|
-            total + job_eff * (1 - alpha)**i
+            total + (job_eff * ((1 - alpha)**i))
           end
 
           divisor = efficiencies.reduce(0) do |total, (job_eff, i)|
-            total + (1 - alpha)**i
+            total + ((1 - alpha)**i)
           end
 
           return if divisor == 0

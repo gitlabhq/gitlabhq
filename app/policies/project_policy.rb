@@ -80,8 +80,8 @@ class ProjectPolicy < BasePolicy
   condition(:container_registry_disabled) do
     if user.is_a?(DeployToken)
       (!user.read_registry? && !user.write_registry?) ||
-      user.revoked? ||
-      !project.container_registry_enabled?
+        user.revoked? ||
+        !project.container_registry_enabled?
     else
       !access_allowed_to?(:container_registry)
     end
@@ -1103,7 +1103,7 @@ class ProjectPolicy < BasePolicy
       false
     when ProjectFeature::PRIVATE
       can?(:read_all_resources) ||
-      can?(:read_all_organization_resources) ||
+        can?(:read_all_organization_resources) ||
         team_access_level >= ProjectFeature.required_minimum_access_level(feature)
     else
       true

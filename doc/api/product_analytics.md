@@ -14,11 +14,7 @@ DETAILS:
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 > - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
-
-FLAG:
-On self-managed GitLab and GitLab Dedicated, by default this feature is not available. To make it available per project or for your entire instance, an administrator can [enable the feature flag](../administration/feature_flags.md) named `cube_api_proxy`.
-On GitLab.com, this feature is available.
-This feature is not ready for production use.
+> - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
 
 NOTE:
 Make sure to define the `cube_api_base_url` and `cube_api_key` application settings first using [the API](settings.md).

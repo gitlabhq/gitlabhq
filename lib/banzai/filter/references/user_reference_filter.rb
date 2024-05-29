@@ -113,7 +113,7 @@ module Banzai
         def link_to_group(group, namespace, link_content: nil)
           url = urls.group_url(group, only_path: context[:only_path])
           data = data_attribute(group: namespace.id)
-          content = link_content || Group.reference_prefix + group
+          content = link_content || (Group.reference_prefix + group)
 
           link_tag(url, data, content, namespace.full_name)
         end
@@ -121,7 +121,7 @@ module Banzai
         def link_to_user(user, namespace, link_content: nil)
           url = urls.user_url(user, only_path: context[:only_path])
           data = data_attribute(user: namespace.owner_id)
-          content = link_content || User.reference_prefix + user
+          content = link_content || (User.reference_prefix + user)
 
           link_tag(url, data, content, namespace.owner_name)
         end
@@ -151,7 +151,7 @@ module Banzai
             data = data_attribute(project: project.id, author: author.try(:id))
           end
 
-          content = link_content || User.reference_prefix + 'all'
+          content = link_content || (User.reference_prefix + 'all')
           link_tag(url, data, content, 'All Project and Group Members')
         end
       end

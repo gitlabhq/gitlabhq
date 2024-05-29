@@ -1,9 +1,14 @@
 <script>
-import { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal } from '@gitlab/ui';
+import { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal, GlFormInput } from '@gitlab/ui';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { s__ } from '~/locale';
+import { createAlert, VARIANT_WARNING } from '~/alert';
+import removeBlobsMutation from './graphql/mutations/remove_blobs.mutation.graphql';
+
+export const BLOB_OID_LENGTH = 40;
 
 const i18n = {
   removeBlobs: s__('ProjectMaintenance|Remove blobs'),
@@ -18,21 +23,51 @@ const i18n = {
   modalContent: s__(
     'ProjectMaintenance|Removing blobs by ID cannot be undone. Are you sure you want to continue?',
   ),
+  modalConfirm: s__('ProjectMaintenance|Enter the following to confirm:'),
+  removeBlobsError: s__('ProjectMaintenance|Something went wrong while removing blobs.'),
+  successAlertTitle: s__('ProjectMaintenance|Blobs removed'),
+  successAlertContent: s__(
+    'ProjectMaintenance|Run housekeeping to remove old versions from repository.',
+  ),
+  successAlertButtonText: s__('ProjectMaintenance|Go to housekeeping'),
 };
 
 export default {
   i18n,
   DRAWER_Z_INDEX,
-  removeBlobsHelpLink: helpPagePath('/user/project/repository/reducing_the_repo_size_using_git'),
+  removeBlobsHelpLink: helpPagePath('/user/project/repository/reducing_the_repo_size_using_git', {
+    anchor: 'repository-cleanup',
+  }),
   modalCancel: { text: i18n.modalCancelText },
-  modalPrimary: { text: i18n.modalPrimaryText, attributes: { variant: 'danger' } },
-  components: { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal },
+  components: { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal, GlFormInput },
+  inject: { projectPath: { default: '' }, housekeepingPath: { default: '' } },
   data() {
-    return { isDrawerOpen: false, blobIDs: null, showConfirmationModal: false };
+    return {
+      isDrawerOpen: false,
+      blobIDs: null,
+      showConfirmationModal: false,
+      confirmInput: null,
+      isLoading: false,
+    };
   },
   computed: {
     getDrawerHeaderHeight() {
       return getContentWrapperHeight();
+    },
+    blobOids() {
+      return this.blobIDs?.split('\n') || [];
+    },
+    isValid() {
+      return this.blobOids.length && this.blobOids.every((s) => s.length >= BLOB_OID_LENGTH);
+    },
+    modalPrimary() {
+      return {
+        text: i18n.modalPrimaryText,
+        attributes: { variant: 'danger', disabled: !this.isConfirmEnabled },
+      };
+    },
+    isConfirmEnabled() {
+      return this.confirmInput === this.projectPath;
     },
   },
   methods: {
@@ -47,8 +82,47 @@ export default {
       this.showConfirmationModal = true;
     },
     removeBlobsConfirm() {
-      // TODO (follow-up MR): submit mutation + show alert/toast...
-      this.closeDrawer();
+      this.isLoading = true;
+      this.$apollo
+        .mutate({
+          mutation: removeBlobsMutation,
+          variables: {
+            blobOids: this.blobOids,
+            projectPath: this.projectPath,
+          },
+        })
+        .then(({ data: { projectBlobsRemove: { errors } = {} } = {} }) => {
+          this.isLoading = false;
+
+          if (errors?.length) {
+            this.handleError();
+            return;
+          }
+
+          this.closeDrawer();
+          this.generateSuccessAlert();
+        })
+        .catch(() => {
+          this.isLoading = false;
+          this.handleError();
+        });
+    },
+    generateSuccessAlert() {
+      createAlert({
+        title: i18n.successAlertTitle,
+        message: i18n.successAlertContent,
+        variant: VARIANT_WARNING,
+        primaryButton: {
+          text: i18n.successAlertButtonText,
+          clickHandler: () => this.navigateToHousekeeping(),
+        },
+      });
+    },
+    navigateToHousekeeping() {
+      visitUrl(this.housekeepingPath);
+    },
+    handleError() {
+      createAlert({ message: i18n.removeBlobsError, captureError: true });
     },
   },
 };
@@ -56,9 +130,14 @@ export default {
 
 <template>
   <div>
-    <gl-button class="gl-mb-6" data-testid="drawer-trigger" @click="openDrawer">{{
-      $options.i18n.removeBlobs
-    }}</gl-button>
+    <gl-button
+      class="gl-mb-6"
+      category="secondary"
+      variant="danger"
+      data-testid="drawer-trigger"
+      @click="openDrawer"
+      >{{ $options.i18n.removeBlobs }}</gl-button
+    >
 
     <gl-drawer
       :header-height="getDrawerHeaderHeight"
@@ -82,6 +161,7 @@ export default {
           id="blobs"
           v-model.trim="blobIDs"
           class="!gl-font-monospace gl-mb-3"
+          :disabled="isLoading"
           autofocus
         />
 
@@ -90,7 +170,8 @@ export default {
         <gl-button
           data-testid="remove-blobs"
           variant="danger"
-          :disabled="!blobIDs"
+          :disabled="!isValid"
+          :loading="isLoading"
           @click="removeBlobs"
           >{{ $options.i18n.removeBlobs }}</gl-button
         >
@@ -102,10 +183,15 @@ export default {
       :title="$options.i18n.removeBlobs"
       modal-id="remove-blobs-confirmation-modal"
       :action-cancel="$options.modalCancel"
-      :action-primary="$options.modalPrimary"
+      :action-primary="modalPrimary"
       @primary="removeBlobsConfirm"
     >
-      {{ $options.i18n.modalContent }}
+      <p>{{ $options.i18n.modalContent }}</p>
+
+      <p class="gl-mb-0">{{ $options.i18n.modalConfirm }}</p>
+      <code>{{ projectPath }}</code>
+
+      <gl-form-input v-model="confirmInput" class="gl-mt-2 gl-max-w-34" />
     </gl-modal>
   </div>
 </template>

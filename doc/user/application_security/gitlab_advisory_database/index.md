@@ -40,10 +40,6 @@ Each advisory has a page with the following details:
 - **Solution**: How to remediate the vulnerability.
 - **Last Modified**: The date when the advisory was last modified.
 
-### Statistics
-
-The home page also offers a [statistic section](https://advisories.gitlab.com/stats/index.html) that provides valuable insights into advisory distribution, the origins of vulnerabilities, dependency scanning coverage, and timelines for vulnerability resolution.
-
 ## Open Source Edition
 
 GitLab provides a free and open-source version of the database, the [GitLab Advisory Database (Open Source Edition)](https://gitlab.com/gitlab-org/advisories-community).

@@ -467,22 +467,15 @@ Inline-style:
 
 <!-- markdownlint-disable proper-names -->
 
-<pre class="highlight"><code>
-
-![alt text](img/markdown_logo.png "Title Text")
-
+<pre class="highlight"><code>![alt text](img/markdown_logo.png "Title Text")
 </code></pre>
 
 ![alt text](img/markdown_logo.png "Title Text")
 
 Reference-style:
 
-<pre class="highlight"><code>
-
-![alt text1][logo]
-
+<pre class="highlight"><code>![alt text1][logo]
 &#91;logo]: img/markdown_logo.png "Title Text"
-
 </code></pre>
 
 ![alt text](img/markdown_logo.png "Title Text")
@@ -527,6 +520,12 @@ For example
 
 You can also use the `img` HTML tag instead of Markdown and set its `height` and
 `width` parameters.
+
+When you paste a higher resolution PNG image into a Markdown text box [in GitLab 17.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/419913),
+dimensions are always appended. The dimensions are automatically adjusted to
+accommodate for retina (and other higher-resolution) displays. For instance,
+a 144ppi image is resized to 50% of its dimensions, whereas a 96ppi image is
+resized to 75% of its dimensions.
 
 ### Audio
 

@@ -424,4 +424,4 @@ accDescr: Sequence of actions that happen when a user authenticates to GitLab th
 For help and support around your GitLab Mattermost deployment, see:
 
 - [Troubleshooting Mattermost issues](https://docs.mattermost.com/install/troubleshooting.html).
-- [Mattermost GitLab Issues Support Handbook](https://docs.mattermost.com/process/support.html?highlight=omnibus#gitlab-issues).
+- [Mattermost forum](https://forum.mattermost.com/search?q=gitlab).

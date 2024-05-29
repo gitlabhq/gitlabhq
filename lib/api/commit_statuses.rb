@@ -59,21 +59,21 @@ module API
       end
       params do
         requires :sha,          type: String, desc: 'The commit hash',
-                                documentation: { example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
+          documentation: { example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
         requires :state,        type: String, desc: 'The state of the status',
-                                values: %w[pending running success failed canceled],
-                                documentation: { example: 'pending' }
+          values: %w[pending running success failed canceled],
+          documentation: { example: 'pending' }
         optional :ref,          type: String, desc: 'The ref',
-                                documentation: { example: 'develop' }
+          documentation: { example: 'develop' }
         optional :target_url,   type: String, desc: 'The target URL to associate with this status',
-                                documentation: { example: 'https://gitlab.example.com/janedoe/gitlab-foss/builds/91' }
+          documentation: { example: 'https://gitlab.example.com/janedoe/gitlab-foss/builds/91' }
         optional :description,  type: String, desc: 'A short description of the status'
         optional :name,         type: String, desc: 'A string label to differentiate this status from the status of other systems',
-                                documentation: { example: 'coverage', default: 'default' }
+          documentation: { example: 'coverage', default: 'default' }
         optional :context,      type: String, desc: 'A string label to differentiate this status from the status of other systems',
-                                documentation: { example: 'coverage', default: 'default' }
+          documentation: { example: 'coverage', default: 'default' }
         optional :coverage,     type: Float, desc: 'The total code coverage',
-                                documentation: { example: 100.0 }
+          documentation: { example: 100.0 }
         optional :pipeline_id,  type: Integer, desc: 'An existing pipeline ID, when multiple pipelines on the same commit SHA have been triggered'
       end
       # rubocop: disable CodeReuse/ActiveRecord

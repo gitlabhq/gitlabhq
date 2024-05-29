@@ -729,7 +729,7 @@ We must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasti
 
 ### Proxy Protocol
 
-If Proxy protocol is enabled in the [load balancer](#load-balancer) we created earlier, we must also [enable](https://docs.gitlab.com/omnibus/settings/nginx.md#configuring-the-proxy-protocol) this on the `gitlab.rb` file.
+If Proxy protocol is enabled in the [load balancer](#load-balancer) we created earlier, we must also [enable](https://docs.gitlab.com/omnibus/settings/nginx.html#configuring-the-proxy-protocol) this on the `gitlab.rb` file.
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 

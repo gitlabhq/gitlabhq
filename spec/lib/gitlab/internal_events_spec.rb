@@ -591,6 +591,16 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     end
 
     context 'with early access program tracking' do
+      let(:namespace_participating) { false }
+      let(:namespace) do
+        settings = create(:namespace_settings, early_access_program_participant: namespace_participating)
+        create(:namespace, namespace_settings: settings)
+      end
+
+      let(:event_kwargs) do
+        { user: user, project: project, send_snowplow_event: send_snowplow_event, namespace: namespace }
+      end
+
       shared_examples 'does not create early access program tracking event' do
         it do
           track_event
@@ -601,7 +611,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
 
       before do
         allow(sdk_client).to receive(:track)
-          .with(event_name, { project_id: project.id, namespace_id: project.namespace.id })
+          .with(event_name, { project_id: project&.id, namespace_id: namespace&.id })
       end
 
       context 'when early_access_program FF is enabled' do
@@ -615,25 +625,31 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
           it_behaves_like 'does not create early access program tracking event'
         end
 
+        context 'without namespace' do
+          let(:project) { nil }
+          let(:namespace) { nil }
+
+          it_behaves_like 'does not create early access program tracking event'
+        end
+
         context 'with user' do
-          context 'when user is not early access program participant' do
+          context 'when namespace is not early access program participant' do
             it_behaves_like 'does not create early access program tracking event'
           end
 
-          context 'when user is early access program participant' do
+          context 'when namespace is early access program participant' do
+            let(:namespace_participating) { true }
             let(:event_name) { 'g_edit_by_snippet_ide' }
             let(:additional_properties) { { label: 'label_name' } }
             let(:user) { create(:user) }
 
             before do
-              preference_stub = instance_double(UserPreference, early_access_event_tracking?: true)
-              allow(user).to receive(:user_preference).and_return(preference_stub)
               allow(sdk_client).to receive(:track)
                 .with(
                   event_name,
                   {
                     project_id: project.id,
-                    namespace_id: project.namespace.id,
+                    namespace_id: namespace.id,
                     additional_properties: additional_properties
                   }
                 )

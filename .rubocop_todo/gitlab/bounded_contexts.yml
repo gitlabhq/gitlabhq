@@ -2568,6 +2568,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/graphql/resolvers/vulnerabilities_grade_resolver.rb'
     - 'ee/app/graphql/resolvers/vulnerabilities_resolver.rb'
     - 'ee/app/graphql/resolvers/vulnerability_severities_count_resolver.rb'
+    - 'ee/app/graphql/resolvers/vulnerability_filterable.rb'
     - 'ee/app/graphql/subscriptions/ai_completion_response.rb'
     - 'ee/app/graphql/types/access_levels/group_type.rb'
     - 'ee/app/graphql/types/admin/cloud_licenses/current_license_type.rb'

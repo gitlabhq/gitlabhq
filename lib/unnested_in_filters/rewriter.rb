@@ -13,7 +13,7 @@ module UnnestedInFilters
       end
 
       def to_sql
-        "unnest(#{serialized_values}::#{sql_type}[]) AS #{table_name}(#{column_name})"
+        "#{serialized_values} AS #{table_name}(#{column_name})"
       end
 
       def as_predicate
@@ -36,7 +36,11 @@ module UnnestedInFilters
       end
 
       def serialized_values
-        values.is_a?(Arel::Nodes::SelectStatement) ? "ARRAY(#{serialized_arel_value})" : serialized_array_values
+        if values.is_a?(Arel::Nodes::SelectStatement)
+          "(#{serialized_arel_value})"
+        else
+          "unnest(#{serialized_array_values}::#{sql_type}[])"
+        end
       end
 
       def serialized_arel_value

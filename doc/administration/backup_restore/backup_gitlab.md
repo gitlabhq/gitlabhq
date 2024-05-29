@@ -175,7 +175,7 @@ including:
 - Snippets
 - [Group wikis](../../user/project/wiki/group.md)
 - Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
-- Merge request diffs (Helm chart installation only)
+- External merge request diffs (GitLab Helm chart only. [Issue 438777](https://gitlab.com/gitlab-org/gitlab/-/issues/438777) proposes to backup local external MR diffs with the Linux package)
 
 Backups do not include:
 

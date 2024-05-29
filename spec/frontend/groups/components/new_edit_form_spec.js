@@ -1,7 +1,7 @@
 import { GlLink, GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
 
-import NewGroupForm from '~/groups/components/new_group_form.vue';
+import NewEditForm from '~/groups/components/new_edit_form.vue';
 import GroupPathField from '~/groups/components/group_path_field.vue';
 import VisibilityLevelRadioButtons from '~/visibility_level/components/visibility_level_radio_buttons.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -10,10 +10,16 @@ import {
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
   GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
 } from '~/visibility_level/constants';
-import { FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_VISIBILITY_LEVEL } from '~/groups/constants';
+import {
+  FORM_FIELD_NAME,
+  FORM_FIELD_PATH,
+  FORM_FIELD_ID,
+  FORM_FIELD_VISIBILITY_LEVEL,
+} from '~/groups/constants';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 
-describe('NewGroupForm', () => {
+describe('NewEditForm', () => {
   let wrapper;
 
   const defaultPropsData = {
@@ -32,7 +38,7 @@ describe('NewGroupForm', () => {
   };
 
   const createComponent = ({ propsData = {} } = {}) => {
-    wrapper = mountExtended(NewGroupForm, {
+    wrapper = mountExtended(NewEditForm, {
       attachTo: document.body,
       propsData: {
         ...defaultPropsData,
@@ -94,6 +100,41 @@ describe('NewGroupForm', () => {
       checked: VISIBILITY_LEVEL_PUBLIC_INTEGER,
       visibilityLevels: defaultPropsData.availableVisibilityLevels,
       visibilityLevelDescriptions: GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
+    });
+  });
+
+  describe('when editing a group', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          initialFormValues: {
+            [FORM_FIELD_ID]: 5,
+            [FORM_FIELD_NAME]: 'Foo bar',
+            [FORM_FIELD_PATH]: 'foo-bar',
+            [FORM_FIELD_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PUBLIC_INTEGER,
+          },
+        },
+      });
+    });
+
+    it('renders `Group ID` field', () => {
+      expect(wrapper.findByLabelText('Group ID').element.value).toBe('5');
+    });
+
+    it('renders alert about changing URL', () => {
+      const alert = wrapper.findByTestId('changing-url-alert');
+
+      expect(alert.text()).toBe('Changing group URL can have unintended side effects. Learn more.');
+      expect(alert.findComponent(HelpPageLink).props()).toEqual({
+        href: 'user/group/manage',
+        anchor: 'change-a-groups-path',
+      });
+    });
+
+    it('does not modify `Group URL` when typing in `Group name`', async () => {
+      await findNameField().setValue('Foo bar baz');
+
+      expect(findPathField().props('value')).toBe('foo-bar');
     });
   });
 
@@ -195,5 +236,15 @@ describe('NewGroupForm', () => {
     createComponent();
 
     expect(findSubmitButton().props('loading')).toBe(false);
+  });
+
+  describe('when `submitButtonText` prop is set', () => {
+    beforeEach(() => {
+      createComponent({ propsData: { submitButtonText: 'Save changes' } });
+    });
+
+    it('uses it for submit button', () => {
+      expect(wrapper.findByRole('button', { name: 'Save changes' }).exists()).toBe(true);
+    });
   });
 });

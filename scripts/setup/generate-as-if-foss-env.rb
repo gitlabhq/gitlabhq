@@ -6,34 +6,53 @@ require 'gitlab' unless Object.const_defined?(:Gitlab)
 require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
 class GenerateAsIfFossEnv
-  # rubocop:disable Style/WordArray -- Probably a bug? It already is
-  FOSS_JOBS = Set.new(%w[
-    build-assets-image
-    build-qa-image
-    compile-production-assets
-    compile-storybook
-    compile-test-assets
-    detect-tests
-    eslint
-    generate-apollo-graphql-schema
-    graphql-schema-dump
-    rspec-predictive:pipeline-generate
-    rspec:predictive:trigger
-    rspec:predictive:trigger\ single-db
-    rspec:predictive:trigger\ single-db-ci-connection
-    rubocop
-    qa:internal
-    qa:selectors
-    static-analysis
-  ]).freeze
-  # rubocop:enable Style/WordArray
+  PARALLEL = %r{(?: \d+/\d+)?}
+  PG_JOB = %r{\S+ pg\d+}
+
+  # Map job names to environment variables. One job can match multiple variables.
+  # For example: "rspec unit 1/2" returns `ENABLE_RSPEC` and `ENABLE_RSPEC_UNIT`.
+  JOB_VARIABLES = {
+    'build-assets-image' => 'ENABLE_BUILD_ASSETS_IMAGE',
+    'build-qa-image' => 'ENABLE_BUILD_QA_IMAGE',
+    'compile-production-assets' => 'ENABLE_COMPILE_PRODUCTION_ASSETS',
+    'compile-storybook' => 'ENABLE_COMPILE_STORYBOOK',
+    'compile-test-assets' => 'ENABLE_COMPILE_TEST_ASSETS',
+    'detect-tests' => 'ENABLE_DETECT_TESTS',
+    'eslint' => 'ENABLE_ESLINT',
+    'generate-apollo-graphql-schema' => 'ENABLE_GENERATE_APOLLO_GRAPHQL_SCHEMA',
+    'graphql-schema-dump' => 'ENABLE_GRAPHQL_SCHEMA_DUMP',
+    'rspec-predictive:pipeline-generate' => 'ENABLE_RSPEC_PREDICTIVE_PIPELINE_GENERATE',
+    'rspec:predictive:trigger' => 'ENABLE_RSPEC_PREDICTIVE_TRIGGER',
+    'rspec:predictive:trigger single-db' => 'ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB',
+    'rspec:predictive:trigger single-db-ci-connection' => 'ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION',
+    'rubocop' => 'ENABLE_RUBOCOP',
+    'qa:internal' => 'ENABLE_QA_INTERNAL',
+    'qa:selectors' => 'ENABLE_QA_SELECTORS',
+    'static-analysis' => 'ENABLE_STATIC_ANALYSIS',
+    /^cache-assets\b/ => 'ENABLE_CACHE_ASSETS',
+    # Jest
+    /^jest#{PARALLEL}/ => 'ENABLE_JEST',
+    /^jest-integration#{PARALLEL}/ => 'ENABLE_JEST_INTEGRATION',
+    /^jest predictive#{PARALLEL}/ => 'ENABLE_JEST_PREDICTIVE',
+    # RSpec
+    /^rspec/ => 'ENABLE_RSPEC',
+    /^rspec(?:-all)? frontend_fixture/ => 'ENABLE_RSPEC_FRONTEND_FIXTURE',
+    /^rspec unit/ => 'ENABLE_RSPEC_UNIT',
+    /^rspec fast_spec_helper/ => 'ENABLE_RSPEC_FAST_SPEC_HELPER',
+    /^rspec migration/ => 'ENABLE_RSPEC_MIGRATION',
+    /^rspec background_migration/ => 'ENABLE_RSPEC_BACKGROUND_MIGRATION',
+    /^rspec integration/ => 'ENABLE_RSPEC_INTEGRATION',
+    /^rspec system/ => 'ENABLE_RSPEC_SYSTEM',
+    /^rspec #{PG_JOB} praefect\b/ => 'ENABLE_RSPEC_PRAEFECT',
+    /^rspec #{PG_JOB} single-db\b/ => 'ENABLE_RSPEC_SINGLE_DB',
+    /^rspec #{PG_JOB} single-db-ci-connection\b/ => 'ENABLE_RSPEC_SINGLE_DB_CI_CONNECTION',
+    /^rspec #{PG_JOB} single-redis\b/ => 'ENABLE_RSPEC_SINGLE_REDIS'
+  }.freeze
 
   def initialize
     @client = Gitlab.client(
       endpoint: ENV['CI_API_V4_URL'],
       private_token: ENV['PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE'] || '')
-    @rspec_jobs = Set.new
-    @other_jobs = Set.new
   end
 
   def variables
@@ -48,23 +67,26 @@ class GenerateAsIfFossEnv
 
   private
 
-  attr_reader :client, :rspec_jobs, :other_jobs
+  attr_reader :client
 
   def generate_variables
-    scan_jobs
-
     {
       START_AS_IF_FOSS: 'true',
       RUBY_VERSION: ENV['RUBY_VERSION'],
       FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
-      FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID']
-    }.merge(rspec_variables).merge(other_jobs_variables)
+      FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
+      **variables_from_jobs
+    }
   end
 
-  def scan_jobs
+  def variables_from_jobs
+    variable_set = Set.new
+
     each_job do |job|
-      detect_rspec(job) || detect_other_jobs(job)
+      variable_set.merge(variables_from(job.name))
     end
+
+    variable_set.to_h { |v| [v.to_sym, 'true'] }
   end
 
   def each_job
@@ -75,44 +97,8 @@ class GenerateAsIfFossEnv
     end
   end
 
-  def detect_rspec(job)
-    rspec_type = job.name[%r{^rspec(?:-all)? ([\w\-]+)}, 1]
-
-    return unless rspec_type
-
-    rspec_kind = job.name[%r{pg\d+ ([\w\-]+)(?: \d+/\d+)?$}, 1]
-    rspec_jobs << rspec_type
-    rspec_jobs << rspec_kind if rspec_kind
-  end
-
-  def detect_other_jobs(job)
-    # rubocop:disable Lint/AssignmentInCondition -- More clear without this cop
-    if FOSS_JOBS.member?(job.name)
-      other_jobs << job.name
-    elsif jest_type = job.name[%r{^(jest(?:-\w+| predictive)?)(?: \d+/\d+)?$}, 1]
-      other_jobs << jest_type
-    elsif cache_assets_type = job.name[%r{^(cache-assets)\b}, 1]
-      other_jobs << cache_assets_type
-    end
-    # rubocop:enable Lint/AssignmentInCondition
-  end
-
-  def rspec_variables
-    return {} if rspec_jobs.empty?
-
-    rspec_jobs.inject({ ENABLE_RSPEC: 'true' }) do |result, rspec|
-      result.merge("ENABLE_RSPEC_#{job_name_to_variable_name(rspec)}": 'true')
-    end
-  end
-
-  def other_jobs_variables
-    other_jobs.inject({}) do |result, job_name|
-      result.merge("ENABLE_#{job_name_to_variable_name(job_name)}": 'true')
-    end
-  end
-
-  def job_name_to_variable_name(name)
-    name.upcase.tr('-: ', '_')
+  def variables_from(job_name)
+    JOB_VARIABLES.select { |match, _| match === job_name }.map(&:last)
   end
 end
 

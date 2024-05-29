@@ -1,5 +1,5 @@
 <script>
-import { GlForm, GlFormFields, GlButton, GlLink, GlAlert } from '@gitlab/ui';
+import { GlForm, GlFormFields, GlButton, GlLink, GlAlert, GlSprintf } from '@gitlab/ui';
 import { formValidators } from '@gitlab/ui/dist/utils';
 import { __, s__, sprintf } from '~/locale';
 import { slugify } from '~/lib/utils/text_utility';
@@ -7,25 +7,35 @@ import VisibilityLevelRadioButtons from '~/visibility_level/components/visibilit
 import { GROUP_VISIBILITY_LEVEL_DESCRIPTIONS } from '~/visibility_level/constants';
 import { restrictedVisibilityLevelsMessage } from '~/visibility_level/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { FORM_FIELD_NAME, FORM_FIELD_PATH, FORM_FIELD_VISIBILITY_LEVEL } from '../constants';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
+import {
+  FORM_FIELD_NAME,
+  FORM_FIELD_PATH,
+  FORM_FIELD_ID,
+  FORM_FIELD_VISIBILITY_LEVEL,
+} from '../constants';
 import GroupPathField from './group_path_field.vue';
 
 export default {
-  name: 'NewGroupForm',
+  name: 'NewEditForm',
   components: {
     GlForm,
     GlFormFields,
     GlButton,
     GlLink,
     GlAlert,
+    GlSprintf,
     GroupPathField,
     VisibilityLevelRadioButtons,
+    HelpPageLink,
   },
   i18n: {
     cancel: __('Cancel'),
-    submitButtonText: __('Create group'),
     warningForUsingDotInName: s__(
       'Groups|Your group name must not contain a period if you intend to use SCIM integration, as it can lead to errors.',
+    ),
+    warningForChangingUrl: s__(
+      'Groups|Changing group URL can have unintended side effects. %{linkStart}Learn more%{linkEnd}.',
     ),
   },
   GROUP_VISIBILITY_LEVEL_DESCRIPTIONS,
@@ -38,6 +48,11 @@ export default {
     basePath: {
       type: String,
       required: true,
+    },
+    submitButtonText: {
+      type: String,
+      required: false,
+      default: __('Create group'),
     },
     cancelPath: {
       type: String,
@@ -66,7 +81,7 @@ export default {
   },
   data() {
     return {
-      hasPathBeenManuallySet: false,
+      hasPathBeenManuallySet: this.initialFormValues[FORM_FIELD_PATH],
       isPathLoading: false,
       formValues: this.initialFormValues,
     };
@@ -114,6 +129,20 @@ export default {
               : null,
           },
         },
+        ...(this.isEditing
+          ? {
+              [FORM_FIELD_ID]: {
+                label: s__('Groups|Group ID'),
+                groupAttrs: {
+                  class: 'gl-w-full',
+                },
+                inputAttrs: {
+                  class: 'gl-md-form-input-lg',
+                  disabled: true,
+                },
+              },
+            }
+          : {}),
         [FORM_FIELD_VISIBILITY_LEVEL]: {
           label: __('Visibility level'),
           labelDescription: {
@@ -131,6 +160,9 @@ export default {
           },
         },
       };
+    },
+    isEditing() {
+      return this.initialFormValues[FORM_FIELD_ID];
     },
   },
   watch: {
@@ -184,6 +216,22 @@ export default {
           @loading-change="onPathLoading"
         />
       </template>
+      <template v-if="isEditing" #after(path)>
+        <gl-alert
+          class="gl-mb-5"
+          :dismissible="false"
+          variant="warning"
+          data-testid="changing-url-alert"
+        >
+          <gl-sprintf :message="$options.i18n.warningForChangingUrl">
+            <template #link="{ content }">
+              <help-page-link href="user/group/manage" anchor="change-a-groups-path">{{
+                content
+              }}</help-page-link>
+            </template>
+          </gl-sprintf>
+        </gl-alert>
+      </template>
       <template #input(visibilityLevel)="{ value, input }">
         <visibility-level-radio-buttons
           :checked="value"
@@ -207,7 +255,7 @@ export default {
         :loading="loading"
         class="js-no-auto-disable"
         data-testid="submit-button"
-        >{{ $options.i18n.submitButtonText }}</gl-button
+        >{{ submitButtonText }}</gl-button
       >
       <gl-button :href="cancelPath">{{ $options.i18n.cancel }}</gl-button>
     </div>

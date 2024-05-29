@@ -851,7 +851,7 @@ Administrators can monitor usage of these API clients by
 
 ### Rust
 
-- [`gitlab` crate](https://crates.io/crates/gitlab)
+- [`gitlab` crate](https://crates.io/crates/gitlab/)
 
 ### Swift
 

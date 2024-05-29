@@ -59,7 +59,7 @@ module Gitlab
 
           max_id = Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
             Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
-              define_batchable_model(table_name, connection: connection).maximum(column_name) || partition_size * PARTITION_BUFFER
+              define_batchable_model(table_name, connection: connection).maximum(column_name) || (partition_size * PARTITION_BUFFER)
             end
           end
 
@@ -100,7 +100,7 @@ module Gitlab
           max_date ||= Date.today + 1.month
 
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
-            min_date ||= connection.select_one(<<~SQL)['minimum'] || max_date - 1.month
+            min_date ||= connection.select_one(<<~SQL)['minimum'] || (max_date - 1.month)
               SELECT date_trunc('MONTH', MIN(#{column_name})) AS minimum
               FROM #{table_name}
             SQL
@@ -469,7 +469,7 @@ module Gitlab
           lower_bound = min_id
           upper_bound = min_id + partition_size
 
-          end_id = max_id + PARTITION_BUFFER * partition_size # Adds a buffer of 6 partitions
+          end_id = max_id + (PARTITION_BUFFER * partition_size) # Adds a buffer of 6 partitions
 
           while lower_bound < end_id
             create_range_partition_safely("#{table_name}_#{lower_bound}", table_name, lower_bound, upper_bound)

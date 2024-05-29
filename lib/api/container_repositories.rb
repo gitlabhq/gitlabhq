@@ -35,11 +35,11 @@ module API
           authorize!(:read_container_image, repository)
 
           present repository,
-                  with: Entities::ContainerRegistry::Repository,
-                  tags: params[:tags],
-                  tags_count: params[:tags_count],
-                  size: params[:size],
-                  user: current_user
+            with: Entities::ContainerRegistry::Repository,
+            tags: params[:tags],
+            tags_count: params[:tags_count],
+            size: params[:size],
+            user: current_user
         end
       end
     end

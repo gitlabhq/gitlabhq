@@ -45,6 +45,10 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
     allow_next_instance_of(Organizations::OrganizationAssociationCounter) do |finder|
       allow(finder).to receive(:execute).and_return(stubbed_results)
     end
+    allow(helper).to receive(:restricted_visibility_levels).and_return([])
+    allow(helper).to receive(:groups_organization_path)
+     .with(organization)
+     .and_return(groups_organization_path)
   end
 
   shared_examples 'includes that the user can create a group' do |method|
@@ -282,10 +286,6 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
       allow(helper).to receive(:groups_and_projects_organization_path)
         .with(organization, { display: 'groups' })
         .and_return(groups_and_projects_organization_path)
-      allow(helper).to receive(:groups_organization_path)
-        .with(organization)
-        .and_return(groups_organization_path)
-      allow(helper).to receive(:restricted_visibility_levels).and_return([])
       stub_application_setting(default_group_visibility: Gitlab::VisibilityLevel::PUBLIC)
     end
 
@@ -295,7 +295,6 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'base_path' => root_url,
           'groups_and_projects_organization_path' => groups_and_projects_organization_path,
           'groups_organization_path' => groups_organization_path,
-          'mattermost_enabled' => false,
           'available_visibility_levels' => [
             Gitlab::VisibilityLevel::PRIVATE,
             Gitlab::VisibilityLevel::INTERNAL,
@@ -313,12 +312,33 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   describe '#organization_groups_edit_app_data' do
     let_it_be(:group) { build_stubbed(:group, organization: organization) }
 
+    before do
+      allow(helper).to receive(:groups_and_projects_organization_path)
+       .with(organization, { display: 'groups' })
+       .and_return(groups_and_projects_organization_path)
+    end
+
     it 'returns expected json' do
-      expect(Gitlab::Json.parse(helper.organization_groups_edit_app_data(group))).to eq(
+      expect(Gitlab::Json.parse(helper.organization_groups_edit_app_data(organization, group))).to eq(
         {
           'group' => {
-            'full_name' => group.full_name
-          }
+            'id' => group.id,
+            'full_name' => group.full_name,
+            'name' => group.name,
+            'path' => group.path,
+            "visibility_level" => group.visibility_level
+          },
+          'base_path' => root_url,
+          'groups_and_projects_organization_path' => groups_and_projects_organization_path,
+          'groups_organization_path' => groups_organization_path,
+          'available_visibility_levels' => [
+            Gitlab::VisibilityLevel::PRIVATE,
+            Gitlab::VisibilityLevel::INTERNAL,
+            Gitlab::VisibilityLevel::PUBLIC
+          ],
+          'restricted_visibility_levels' => [],
+          'path_maxlength' => ::Namespace::URL_MAX_LENGTH,
+          'path_pattern' => Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS
         }
       )
     end
@@ -361,16 +381,54 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   end
 
   describe '#organization_activity_app_data' do
+    let_it_be(:expected_event_types) do
+      [
+        {
+          'title' => 'Comments',
+          'value' => EventFilter::COMMENTS
+        },
+        {
+          'title' => 'Designs',
+          'value' => EventFilter::DESIGNS
+        },
+        {
+          'title' => 'Issue events',
+          'value' => EventFilter::ISSUE
+        },
+        {
+          'title' => 'Merge events',
+          'value' => EventFilter::MERGED
+        },
+        {
+          'title' => 'Push events',
+          'value' => EventFilter::PUSH
+        },
+        {
+          'title' => 'Team',
+          'value' => EventFilter::TEAM
+        },
+        {
+          'title' => 'Wiki',
+          'value' => EventFilter::WIKI
+        }
+      ]
+    end
+
     before do
       allow(helper).to receive(:activity_organization_path)
         .with(organization, { format: :json })
         .and_return(activity_organization_path)
+
+      allow(helper).to receive(:organization_activity_event_types)
+        .and_return(expected_event_types)
     end
 
     it 'returns expected data object' do
       expect(Gitlab::Json.parse(helper.organization_activity_app_data(organization))).to eq(
         {
-          'organization_activity_path' => activity_organization_path
+          'organization_activity_path' => activity_organization_path,
+          'organization_activity_event_types' => expected_event_types,
+          'organization_activity_all_event' => EventFilter::ALL
         }
       )
     end

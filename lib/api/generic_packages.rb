@@ -161,7 +161,7 @@ module API
 
       def encoded_file_name
         file_name = [declared_params[:path], declared_params[:file_name]].compact.join('/')
-        URI.encode_uri_component(file_name)
+        declared_params[:path].present? ? URI.encode_uri_component(file_name) : file_name
       end
     end
   end

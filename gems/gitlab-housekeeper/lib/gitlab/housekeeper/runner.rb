@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'active_support'
+require 'active_support/core_ext'
 require 'active_support/core_ext/string'
 require 'gitlab/housekeeper/logger'
 require 'gitlab/housekeeper/keep'
