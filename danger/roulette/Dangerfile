@@ -62,7 +62,7 @@ def note_for_spin_role(spin, role, category)
       spin.public_send(role)&.markdown_name(author: roulette.team_mr_author) # rubocop:disable GitlabSecurity/PublicSend
     end
 
-  note || template % { role: role }
+  note || (template % { role: role })
 end
 
 def markdown_row_for_spin(category, spin)

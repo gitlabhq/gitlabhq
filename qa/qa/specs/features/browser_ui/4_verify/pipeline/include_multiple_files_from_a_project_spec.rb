@@ -9,14 +9,7 @@ module QA
 
       let(:project) { create(:project, name: 'project-with-pipeline-1') }
       let(:other_project) { create(:project, name: 'project-with-pipeline-2') }
-
-      let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = project
-          runner.name = executor
-          runner.tags = [executor]
-        end
-      end
+      let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
 
       before do
         Flow::Login.sign_in

@@ -124,15 +124,15 @@ DETAILS:
 
 ## Experimental features
 
-### Git suggestions
+### GitLab Duo for the CLI
 
 DETAILS:
 **Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Helps you discover or recall Git commands when and where you need them.
+- `glab duo ask` helps you discover or recall `git` commands when and where you need them.
 - LLM: Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat)
-- [View documentation](../editor_extensions/gitlab_cli/index.md#git-suggestions).
+- [View documentation](../editor_extensions/gitlab_cli/index.md#gitlab-duo-for-the-cli).
 
 ### Discussion summary
 

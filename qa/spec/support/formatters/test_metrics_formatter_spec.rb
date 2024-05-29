@@ -36,7 +36,9 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     {
       bucket: 'e2e-test-stats',
       org: 'gitlab-qa',
-      precision: InfluxDB2::WritePrecision::NANOSECOND
+      precision: InfluxDB2::WritePrecision::NANOSECOND,
+      read_timeout: 10,
+      open_timeout: 10
     }
   end
 
@@ -139,6 +141,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       stub_env('QA_RUN_TYPE', run_type)
       stub_env('QA_EXPORT_TEST_METRICS', "true")
       stub_env('QA_RSPEC_RETRIED', "false")
+      stub_env('QA_INFLUXDB_TIMEOUT', "10")
     end
 
     context 'with blocking spec' do

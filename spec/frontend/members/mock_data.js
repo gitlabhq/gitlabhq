@@ -54,6 +54,27 @@ export const member = {
   customRoles: [],
 };
 
+export const memberWithCustomRole = {
+  ...member,
+  ...{
+    accessLevel: {
+      ...member.accessLevel,
+      memberRoleId: 1,
+      description: 'Custom role description',
+    },
+    customRoles: [
+      {
+        memberRoleId: 1,
+        baseAccessLevel: 50,
+        permissions: [
+          { name: 'Permission 0', description: 'Permission description 0' },
+          { name: 'Permission 1', description: 'Permission description 1' },
+        ],
+      },
+    ],
+  },
+};
+
 export const group = {
   accessLevel: { integerValue: 10, stringValue: 'Guest' },
   sharedWithGroup: {

@@ -7,12 +7,11 @@ module QA
       let(:job_name) { "test-job-#{pull_policies.join('-')}" }
       let(:project) { create(:project, name: 'pipeline-with-image-pull-policy') }
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = project
-          runner.name = runner_name
-          runner.tags = [runner_name]
-          runner.executor = :docker
-        end
+        create(:project_runner,
+          project: project,
+          name: runner_name,
+          tags: [runner_name],
+          executor: :docker)
       end
 
       before do

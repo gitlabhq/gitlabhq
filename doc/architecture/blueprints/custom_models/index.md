@@ -164,7 +164,7 @@ sequenceDiagram
 | GitLab Duo Chat     | Anthropic Claude-2 <br/> Vertex AI Codey textembedding-gecko | Not planned        | Not planned         |
 | Code Completion     | Vertex AI Codey code-gecko                                   | ✅                 | ✅ |
 | Code Generation     | Anthropic Claude-3                                           | ✅                 | ✅ |
-| Git Suggestions     | Vertex AI Codey codechat-bison                               | Not planned        | Not planned        |
+| GitLab Duo for the CLI     | Vertex AI Codey codechat-bison                        | Not planned        | Not planned        |
 | Discussion Summary  | Vertex AI Codey text-bison                                   | Not planned        | Not planned        |
 | Issue Description Generation | Anthropic Claude-2                                  | Not planned        | Not planned        |
 | Test Generation     | Anthropic Claude-2                                           | Not planned        | Not planned        |

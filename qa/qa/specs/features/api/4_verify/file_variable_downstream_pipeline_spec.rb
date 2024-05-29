@@ -12,19 +12,17 @@ module QA
       let!(:downstream_project) { create(:project, name: 'downstream-project') }
 
       let!(:upstream_project_runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = upstream_project
-          runner.name = executor
-          runner.tags = [executor]
-        end
+        create(:project_runner,
+          project: upstream_project,
+          name: executor,
+          tags: [executor])
       end
 
       let!(:downstream_project_runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = downstream_project
-          runner.name = "#{executor}-downstream"
-          runner.tags = [executor]
-        end
+        create(:project_runner,
+          project: downstream_project,
+          name: "#{executor}-downstream",
+          tags: [executor])
       end
 
       let(:upstream_project_files) do

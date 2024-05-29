@@ -59,16 +59,16 @@ msgstr[1] ""
 msgid " or "
 msgstr ""
 
-msgid " or %{emphasisStart}!merge request id%{emphasisEnd}"
+msgid " or %{emphasisStart}!merge request ID%{emphasisEnd}"
 msgstr ""
 
-msgid " or %{emphasisStart}#id%{emphasisEnd}"
+msgid " or %{emphasisStart}#ID%{emphasisEnd}"
 msgstr ""
 
-msgid " or %{emphasisStart}#issue id%{emphasisEnd}"
+msgid " or %{emphasisStart}#issue ID%{emphasisEnd}"
 msgstr ""
 
-msgid " or %{emphasisStart}&epic id%{emphasisEnd}"
+msgid " or %{emphasisStart}&epic ID%{emphasisEnd}"
 msgstr ""
 
 msgid " or references"
@@ -19994,6 +19994,9 @@ msgstr ""
 msgid "Enter %{weights_link_start}weights%{weights_link_end} for storages for new repositories. Configured storages appear below."
 msgstr ""
 
+msgid "Enter URL"
+msgstr ""
+
 msgid "Enter a URL for your custom emoji"
 msgstr ""
 
@@ -20024,7 +20027,19 @@ msgstr ""
 msgid "Enter at least three characters to search."
 msgstr ""
 
+msgid "Enter confidential epic URL"
+msgstr ""
+
+msgid "Enter confidential issue URL"
+msgstr ""
+
+msgid "Enter epic URL"
+msgstr ""
+
 msgid "Enter in your Bitbucket Server URL and personal access token below"
+msgstr ""
+
+msgid "Enter issue URL"
 msgstr ""
 
 msgid "Enter license key"
@@ -31753,6 +31768,9 @@ msgstr ""
 msgid "MemberRole|Base role"
 msgstr ""
 
+msgid "MemberRole|Base role: %{role}"
+msgstr ""
+
 msgid "MemberRole|Cannot create a member role with no enabled permissions"
 msgstr ""
 
@@ -37425,22 +37443,7 @@ msgstr ""
 msgid "Paste a public key here. %{link_start}How do I generate it?%{link_end}"
 msgstr ""
 
-msgid "Paste confidential epic link"
-msgstr ""
-
-msgid "Paste confidential issue link"
-msgstr ""
-
-msgid "Paste epic link"
-msgstr ""
-
 msgid "Paste group path (i.e. gitlab-org) or project path (i.e. gitlab-org/gitlab)"
-msgstr ""
-
-msgid "Paste issue link"
-msgstr ""
-
-msgid "Paste link"
 msgstr ""
 
 msgid "Paste project path (i.e. gitlab-org/gitlab)"

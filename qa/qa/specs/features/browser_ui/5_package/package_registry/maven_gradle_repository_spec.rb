@@ -19,12 +19,11 @@ module QA
       let(:package_type) { 'maven_gradle' }
       let(:project) { create(:project, :private, :with_readme, name: "#{package_type}_project") }
       let(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.name}"]
-          runner.executor = :docker
-          runner.project = project
-        end
+        create(:project_runner,
+          name: "qa-runner-#{Time.now.to_i}",
+          tags: ["runner-for-#{project.name}"],
+          executor: :docker,
+          project: project)
       end
 
       let(:gitlab_address_with_port) do

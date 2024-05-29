@@ -164,7 +164,6 @@ const SUPPORTED_TRACING_FILTERS = {
   durationMs: ['>', '<'],
   operation: ['=', '!='],
   service: ['=', '!='],
-  period: ['='],
   traceId: ['=', '!='],
   attribute: ['='],
   status: ['=', '!='],
@@ -181,26 +180,7 @@ const TRACING_FILTER_TO_QUERY_PARAM = {
   traceId: 'trace_id',
   status: 'status',
   // `attribute` is handled separately, see `handleAttributeFilter` method
-  // `period` is handled separately, see `handleTracingPeriodFilter` method
 };
-
-function handleTracingPeriodFilter(rawValue, filterName, filterParams) {
-  if (rawValue.trim().indexOf(' ') < 0) {
-    filterParams.append(filterName, rawValue.trim());
-    return;
-  }
-
-  const dateParts = rawValue.split(' - ');
-  if (dateParts.length === 2) {
-    const [start, end] = dateParts;
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    if (isValidDate(startDate) && isValidDate(endDate)) {
-      filterParams.append('start_time', startDate.toISOString());
-      filterParams.append('end_time', endDate.toISOString());
-    }
-  }
-}
 
 /**
  * Builds URLSearchParams from a filter object of type { [filterName]: undefined | null | Array<{operator: String, value: any} }
@@ -227,8 +207,6 @@ function addTracingAttributesFiltersToQueryParams(filterObj, filterParams) {
     validFilters.forEach(({ operator, value: rawValue }) => {
       if (filterName === 'attribute') {
         handleAttributeFilter(rawValue, operator, filterParams, 'attr_name', 'attr_value');
-      } else if (filterName === 'period') {
-        handleTracingPeriodFilter(rawValue, filterName, filterParams);
       } else {
         const paramName = getFilterParamName(filterName, operator, TRACING_FILTER_TO_QUERY_PARAM);
         let value = rawValue;
@@ -266,9 +244,13 @@ async function fetchTraces(
 ) {
   const params = new URLSearchParams();
 
-  const { attributes } = filters;
+  const { attributes, dateRange } = filters;
+
   if (attributes) {
     addTracingAttributesFiltersToQueryParams(attributes, params);
+  }
+  if (dateRange) {
+    addDateRangeFilterToQueryParams(dateRange, params);
   }
 
   if (pageToken) {
@@ -300,9 +282,13 @@ async function fetchTraces(
 async function fetchTracesAnalytics(tracingAnalyticsUrl, { filters = {}, abortController } = {}) {
   const params = new URLSearchParams();
 
-  const { attributes } = filters;
+  const { attributes, dateRange } = filters;
+
   if (attributes) {
     addTracingAttributesFiltersToQueryParams(attributes, params);
+  }
+  if (dateRange) {
+    addDateRangeFilterToQueryParams(dateRange, params);
   }
 
   try {
