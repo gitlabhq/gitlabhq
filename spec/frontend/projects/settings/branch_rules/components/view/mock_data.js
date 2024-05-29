@@ -158,6 +158,39 @@ export const branchProtectionsMockResponse = {
   },
 };
 
+export const branchProtectionsNoPushAccessMockResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      __typename: 'Project',
+      branchRules: {
+        __typename: 'BranchRuleConnection',
+        nodes: [
+          {
+            __typename: 'BranchRule',
+            name: '*-test',
+            isDefault: false,
+            id: 'gid://gitlab/Projects/BranchRule/2',
+            matchingBranchesCount,
+            branchProtection: {
+              __typename: 'BranchProtection',
+              allowForcePush: false,
+              mergeAccessLevels: {
+                __typename: 'MergeAccessLevelConnection',
+                edges: accessLevelsMockResponse,
+              },
+              pushAccessLevels: {
+                __typename: 'PushAccessLevelConnection',
+                edges: [],
+              },
+            },
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const predefinedBranchRulesMockResponse = {
   data: {
     project: {

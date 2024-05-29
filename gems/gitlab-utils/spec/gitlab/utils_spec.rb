@@ -636,4 +636,39 @@ RSpec.describe Gitlab::Utils, feature_category: :shared do
       end
     end
   end
+
+  describe '.deep_sort_hash' do
+    it 'recursively sorts a hash' do
+      hash = {
+        z: "record-z",
+        e: { y: "nested-record-y", a: "nested-record-a", b: "nested-record-b" },
+        c: {
+          m: {
+            p: "doubly-nested-record-p",
+            o: "doubly-nested-record-o"
+          },
+          k: {
+            v: "doubly-nested-record-v",
+            u: "doubly-nested-record-u"
+          }
+        }
+      }
+      expect(JSON.generate(described_class.deep_sort_hash(hash))).to eq(JSON.generate({
+        c: {
+          k: {
+            u: "doubly-nested-record-u",
+            v: "doubly-nested-record-v"
+          },
+          m: {
+            o: "doubly-nested-record-o",
+            p: "doubly-nested-record-p"
+          }
+
+        },
+        e: { a: "nested-record-a", b: "nested-record-b",
+             y: "nested-record-y" },
+        z: "record-z"
+      }))
+    end
+  end
 end

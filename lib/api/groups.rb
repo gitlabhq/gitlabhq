@@ -40,6 +40,7 @@ module API
           :owned, :min_access_level,
           :include_parent_descendants,
           :repository_storage,
+          :marked_for_deletion_on,
           :search, :visibility
         )
 

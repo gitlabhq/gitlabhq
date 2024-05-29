@@ -27113,6 +27113,19 @@ Represents generic policy violation information.
 | <a id="previewbillableuserchangeseatsinsubscription"></a>`seatsInSubscription` | [`Int`](#int) | Number of seats in subscription. |
 | <a id="previewbillableuserchangewillincreaseoverage"></a>`willIncreaseOverage` | [`Boolean`](#boolean) | If the group will have an increased overage after change. |
 
+### `ProductAnalyticsProjectSettings`
+
+Project-level settings for product analytics provider.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="productanalyticsprojectsettingscubeapibaseurl"></a>`cubeApiBaseUrl` | [`String`](#string) | Base URL for the Cube API. |
+| <a id="productanalyticsprojectsettingscubeapikey"></a>`cubeApiKey` | [`String`](#string) | API key for the Cube API. |
+| <a id="productanalyticsprojectsettingsproductanalyticsconfiguratorconnectionstring"></a>`productAnalyticsConfiguratorConnectionString` | [`String`](#string) | Connection string for the product analytics configurator. |
+| <a id="productanalyticsprojectsettingsproductanalyticsdatacollectorhost"></a>`productAnalyticsDataCollectorHost` | [`String`](#string) | Host for the product analytics data collector. |
+
 ### `Project`
 
 #### Fields
@@ -27200,6 +27213,7 @@ Represents generic policy violation information.
 | <a id="projectpreventmergewithoutjiraissueenabled"></a>`preventMergeWithoutJiraIssueEnabled` | [`Boolean!`](#boolean) | Indicates if an associated issue from Jira is required. |
 | <a id="projectprintingmergerequestlinkenabled"></a>`printingMergeRequestLinkEnabled` | [`Boolean`](#boolean) | Indicates if a link to create or view a merge request should display after a push to Git repositories of the project from the command line. |
 | <a id="projectproductanalyticsinstrumentationkey"></a>`productAnalyticsInstrumentationKey` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.0. **Status**: Experiment. Product Analytics instrumentation key assigned to the project. |
+| <a id="projectproductanalyticssettings"></a>`productAnalyticsSettings` | [`ProductAnalyticsProjectSettings`](#productanalyticsprojectsettings) | Project-level settings for product analytics. |
 | <a id="projectproductanalyticsstate"></a>`productAnalyticsState` **{warning-solid}** | [`ProductAnalyticsState`](#productanalyticsstate) | **Introduced** in GitLab 15.10. **Status**: Experiment. Current state of the product analytics stack for this project.Can only be called for one project in a single request. |
 | <a id="projectprojectplanlimits"></a>`projectPlanLimits` **{warning-solid}** | [`ProjectPlanLimits`](#projectplanlimits) | **Introduced** in GitLab 16.9. **Status**: Experiment. Plan limits for the current project. |
 | <a id="projectprotectablebranches"></a>`protectableBranches` **{warning-solid}** | [`[String!]`](#string) | **Introduced** in GitLab 16.9. **Status**: Experiment. List of unprotected branches, ignoring any wildcard branch rules. |

@@ -34404,9 +34404,6 @@ msgstr ""
 msgid "No group provided"
 msgstr ""
 
-msgid "No grouping"
-msgstr ""
-
 msgid "No issues found"
 msgstr ""
 
@@ -44825,6 +44822,9 @@ msgstr ""
 msgid "Runners|How do runners pick up jobs?"
 msgstr ""
 
+msgid "Runners|How is this calculated?"
+msgstr ""
+
 msgid "Runners|IP Address"
 msgstr ""
 
@@ -44967,6 +44967,9 @@ msgid "Runners|New runner"
 msgstr ""
 
 msgid "Runners|No description"
+msgstr ""
+
+msgid "Runners|No jobs have been run by group runners assigned to this group in the past 3 hours."
 msgstr ""
 
 msgid "Runners|No jobs have been run by instance runners in the past 3 hours."
@@ -45311,7 +45314,10 @@ msgid_plural "Runners|%d runners will be permanently deleted and no longer avail
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Runners|The time it takes for an instance runner to pick up a job. Jobs waiting for runners are in the pending state. %{linkStart}How is this calculated?%{linkEnd}"
+msgid "Runners|The time it takes for a group runner assigned to this group to pick up a job. Jobs waiting for runners are in the pending state."
+msgstr ""
+
+msgid "Runners|The time it takes for an instance runner to pick up a job. Jobs waiting for runners are in the pending state."
 msgstr ""
 
 msgid "Runners|The unique ID for each runner that uses this configuration."

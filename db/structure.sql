@@ -14501,8 +14501,18 @@ ALTER SEQUENCE project_ci_feature_usages_id_seq OWNED BY project_ci_feature_usag
 CREATE TABLE project_compliance_framework_settings (
     project_id bigint NOT NULL,
     framework_id bigint,
+    id bigint NOT NULL,
     CONSTRAINT check_d348de9e2d CHECK ((framework_id IS NOT NULL))
 );
+
+CREATE SEQUENCE project_compliance_framework_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE project_compliance_framework_settings_id_seq OWNED BY project_compliance_framework_settings.id;
 
 CREATE SEQUENCE project_compliance_framework_settings_project_id_seq
     START WITH 1
@@ -20052,6 +20062,8 @@ ALTER TABLE ONLY project_ci_feature_usages ALTER COLUMN id SET DEFAULT nextval('
 
 ALTER TABLE ONLY project_compliance_framework_settings ALTER COLUMN project_id SET DEFAULT nextval('project_compliance_framework_settings_project_id_seq'::regclass);
 
+ALTER TABLE ONLY project_compliance_framework_settings ALTER COLUMN id SET DEFAULT nextval('project_compliance_framework_settings_id_seq'::regclass);
+
 ALTER TABLE ONLY project_compliance_standards_adherence ALTER COLUMN id SET DEFAULT nextval('project_compliance_standards_adherence_id_seq'::regclass);
 
 ALTER TABLE ONLY project_custom_attributes ALTER COLUMN id SET DEFAULT nextval('project_custom_attributes_id_seq'::regclass);
@@ -22511,7 +22523,7 @@ ALTER TABLE ONLY project_ci_feature_usages
     ADD CONSTRAINT project_ci_feature_usages_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_compliance_framework_settings
-    ADD CONSTRAINT project_compliance_framework_settings_pkey PRIMARY KEY (project_id);
+    ADD CONSTRAINT project_compliance_framework_settings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY project_compliance_standards_adherence
     ADD CONSTRAINT project_compliance_standards_adherence_pkey PRIMARY KEY (id);
@@ -27184,8 +27196,6 @@ CREATE UNIQUE INDEX index_project_ci_feature_usages_unique_columns ON project_ci
 
 CREATE INDEX index_project_compliance_framework_settings_on_framework_id ON project_compliance_framework_settings USING btree (framework_id);
 
-CREATE INDEX index_project_compliance_framework_settings_on_project_id ON project_compliance_framework_settings USING btree (project_id);
-
 CREATE INDEX index_project_compliance_standards_adherence_on_project_id ON project_compliance_standards_adherence USING btree (project_id);
 
 CREATE INDEX index_project_custom_attributes_on_key_and_value ON project_custom_attributes USING btree (key, value);
@@ -28539,6 +28549,8 @@ CREATE UNIQUE INDEX uniq_audit_instance_event_filters_destination_id_and_event_t
 CREATE UNIQUE INDEX uniq_google_cloud_logging_configuration_namespace_id_and_name ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, name);
 
 CREATE UNIQUE INDEX uniq_idx_packages_packages_on_project_id_name_version_ml_model ON packages_packages USING btree (project_id, name, version) WHERE ((package_type = 14) AND (status <> 4));
+
+CREATE UNIQUE INDEX uniq_idx_project_compliance_framework_on_project_framework ON project_compliance_framework_settings USING btree (project_id, framework_id);
 
 CREATE UNIQUE INDEX uniq_idx_streaming_destination_id_and_namespace_id ON audit_events_streaming_instance_namespace_filters USING btree (external_streaming_destination_id, namespace_id);
 

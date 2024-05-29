@@ -60,21 +60,25 @@ While not recommended, in certain circumstances GitLab may run in a [memory cons
 PostgreSQL is the only supported database, which is bundled with the Linux package.
 You can also use an [external PostgreSQL database](https://docs.gitlab.com/omnibus/settings/database.html#using-a-non-packaged-postgresql-database-management-server).
 
-### PostgreSQL Requirements
+### PostgreSQL requirements
 
-The server running PostgreSQL should have _at least_ 5-10 GB of storage
-available, though the exact requirements [depend on the number of users](../administration/reference_architectures/index.md). For Ultimate customers the server should have _at least_ 12 GB of storage available, as 1 GB of vulnerability data needs to be imported.
+The server running PostgreSQL should have a certain amount of storage available, though the exact amount
+[depends on the number of users](../administration/reference_architectures/index.md). For:
 
-We highly recommend using at least the minimum PostgreSQL versions (as specified in
-the following table) as these were used for development and testing:
+- Most GitLab self-managed instances, at least 5 to 10 GB of storage available.
+- GitLab self-managed instance at the Ultimate tier, at least 12 GB of storage available, because 1 GB of vulnerability
+  data must be imported.
+
+You should use the versions of PostgreSQL specified in the following table for your version of GitLab because these were
+used for development and testing:
 
 | GitLab version | Minimum PostgreSQL version<sup>1</sup> | Maximum PostgreSQL version<sup>2</sup> |
-|----------------|----------------------------------------|----------------------------------------|
-| 13.0           | 11                                     | <sup>2</sup>                                       |
-| 14.0           | 12.7                                   | <sup>2</sup>                                       |
-| 15.0           | 12.10                                  | 13.x (14.x<sup>3</sup>)                |
-| 16.0           | 13.6                                   | 15.x<sup>4</sup>                       |
-| 17.0 (planned) | 14.9                                   | 15.x<sup>4</sup>                       |
+|:---------------|:---------------------------------------|:---------------------------------------|
+| 15.x           | 12.10                                  | 13.x (14.x<sup>3</sup>)                |
+| 16.x           | 13.6                                   | 15.x<sup>4</sup>                       |
+| 17.x           | 14.9                                   | 15.x<sup>4</sup>                       |
+
+**Footnotes:**
 
 1. PostgreSQL minor release upgrades (for example 14.8 to 14.9) [include only bug and security fixes](https://www.postgresql.org/support/versioning/).
    Patch levels in this table are not prescriptive. Always deploy the most recent patch level

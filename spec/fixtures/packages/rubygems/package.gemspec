@@ -5,7 +5,6 @@ Gem::Specification.new do |s|
   s.authors = ['Tanuki Steve', 'Hal 9000']
   s.author = 'Tanuki Steve'
   s.version = '0.0.1'
-  s.date = '2011-09-29'
   s.summary = 'package is the best'
   s.files = ['lib/test_gem.rb']
   s.require_paths = ['lib']
@@ -33,7 +32,6 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.7.0' # rubocop:disable Gemspec/RequiredRubyVersion
   s.required_rubygems_version = '>= 1.8.11'
   s.requirements = 'A high powered server or calculator'
-  s.rubygems_version = '1.8.09'
 
   s.add_dependency 'dependency_1', '~> 1.2.3'
   s.add_dependency 'dependency_2', '3.0.0'

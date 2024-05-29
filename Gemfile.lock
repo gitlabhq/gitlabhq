@@ -1378,7 +1378,7 @@ GEM
     prime (0.1.2)
       forwardable
       singleton
-    prism (0.24.0)
+    prism (0.29.0)
     proc_to_ast (0.1.0)
       coderay
       parser
@@ -1604,9 +1604,9 @@ GEM
     ruby-fogbugz (0.3.0)
       crack (~> 0.4)
       multipart-post (~> 2.0)
-    ruby-lsp (0.16.6)
+    ruby-lsp (0.16.7)
       language_server-protocol (~> 3.17.0)
-      prism (>= 0.23.0, < 0.28)
+      prism (>= 0.29.0, < 0.30)
       sorbet-runtime (>= 0.5.10782)
     ruby-lsp-rails (0.3.5)
       ruby-lsp (>= 0.16.0, < 0.17.0)
@@ -2191,7 +2191,7 @@ DEPENDENCIES
   rspec_profiling (~> 0.0.9)
   rubocop
   ruby-fogbugz (~> 0.3.0)
-  ruby-lsp (~> 0.16.6)
+  ruby-lsp (~> 0.16.7)
   ruby-lsp-rails (~> 0.3.3)
   ruby-lsp-rspec (~> 0.1.10)
   ruby-magic (~> 0.6)

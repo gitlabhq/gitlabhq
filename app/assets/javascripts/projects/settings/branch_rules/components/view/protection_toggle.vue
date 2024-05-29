@@ -17,7 +17,7 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    dataTestId: {
+    dataTestIdPrefix: {
       type: String,
       required: true,
     },
@@ -58,7 +58,7 @@ export default {
     },
     iconDataTestId() {
       // eslint-disable-next-line @gitlab/require-i18n-strings
-      return this.dataTestId ? `${this.dataTestId}-icon` : '';
+      return this.dataTestIdPrefix ? `${this.dataTestIdPrefix}-icon` : '';
     },
     hasDescription() {
       if (!this.glFeatures.editBranchRules) {

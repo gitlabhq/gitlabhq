@@ -311,5 +311,13 @@ module Gitlab
         to_rails_log_level(fallback)
       end
     end
+
+    # Use this method to recursively sort a hash on its keys
+    def deep_sort_hash(hash)
+      hash.keys.sort.each_with_object({}) do |key, sorted_hash|
+        value = hash[key]
+        sorted_hash[key] = value.is_a?(Hash) ? deep_sort_hash(value) : value
+      end
+    end
   end
 end

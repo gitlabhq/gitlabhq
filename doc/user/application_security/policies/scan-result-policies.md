@@ -38,7 +38,7 @@ The following video gives you an overview of GitLab merge request approval polic
 ## Requirements and limitations
 
 - You must add the respective [security scanning tools](../index.md#application-coverage).
-  Otherwise, merge request approval policies cannot get evaluated and the corresonding approvals stay required.
+  Otherwise, merge request approval policies cannot get evaluated and the corresponding approvals stay required.
 - The maximum number of merge request approval policies is five per security policy project.
 - Each policy can have a maximum of five rules.
 - All configured scanners must be present in the merge request's latest pipeline. If not, approvals are required even if some vulnerability criteria have not been met.

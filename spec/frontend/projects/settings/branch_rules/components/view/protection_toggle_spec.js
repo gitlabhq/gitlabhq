@@ -22,7 +22,7 @@ describe('ProtectionToggle', () => {
         ...provided,
       },
       propsData: {
-        dataTestId: 'force-push',
+        dataTestIdPrefix: 'force-push',
         label: 'Force Push',
         iconTitle: 'icon title',
         isProtected: false,

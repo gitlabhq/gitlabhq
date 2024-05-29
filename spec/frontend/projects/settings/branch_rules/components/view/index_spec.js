@@ -30,6 +30,7 @@ import {
   editBranchRuleMockResponse,
   deleteBranchRuleMockResponse,
   branchProtectionsMockResponse,
+  branchProtectionsNoPushAccessMockResponse,
   predefinedBranchRulesMockResponse,
   matchingBranchesCount,
   protectableBranchesMockResponse,
@@ -118,11 +119,16 @@ describe('View branch rules', () => {
 
   beforeEach(() => createComponent());
 
+  afterEach(() => {
+    fakeApollo = null;
+  });
+
   const findBranchName = () => wrapper.findByTestId('branch');
   const findAllBranches = () => wrapper.findByTestId('all-branches');
   const findBranchProtectionTitle = () => wrapper.findByText(I18N.protectBranchTitle);
-  const findBranchProtections = () => wrapper.findAllComponents(Protection);
-  const findProtectionToggles = () => wrapper.findAllComponents(ProtectionToggle);
+  const findAllowedToMerge = () => wrapper.findByTestId('allowed-to-merge-content');
+  const findAllowedToPush = () => wrapper.findByTestId('allowed-to-push-content');
+  const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
   const findApprovalsTitle = () => wrapper.findByText(I18N.approvalsTitle);
   const findpageTitle = () => wrapper.findByText(I18N.pageTitle);
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
@@ -173,7 +179,7 @@ describe('View branch rules', () => {
   });
 
   it('renders a branch protection component for push rules', () => {
-    expect(findBranchProtections().at(0).props()).toMatchObject({
+    expect(findAllowedToPush().props()).toMatchObject({
       header: sprintf(I18N.allowedToPushHeader, {
         total: 2,
       }),
@@ -182,14 +188,23 @@ describe('View branch rules', () => {
   });
 
   it('passes expected roles for push rules via props', () => {
-    findBranchProtections()
-      .at(0)
+    findAllowedToPush()
       .props()
       .roles.forEach((role, i) => {
         expect(role).toMatchObject({
           accessLevelDescription: roles[i].accessLevelDescription,
         });
       });
+  });
+
+  it('does not render Allow force push toggle if there are no push rules set', async () => {
+    await createComponent({
+      branchRulesQueryHandler: jest
+        .fn()
+        .mockResolvedValue(branchProtectionsNoPushAccessMockResponse),
+    });
+
+    expect(findAllowForcePushToggle().exists()).toBe(false);
   });
 
   it.each`
@@ -206,13 +221,13 @@ describe('View branch rules', () => {
         branchRulesQueryHandler: jest.fn().mockResolvedValue(mockResponse),
       });
 
-      expect(findProtectionToggles().at(0).props('iconTitle')).toEqual(iconTitle);
-      expect(findProtectionToggles().at(0).props('description')).toEqual(description);
+      expect(findAllowForcePushToggle().props('iconTitle')).toEqual(iconTitle);
+      expect(findAllowForcePushToggle().props('description')).toEqual(description);
     },
   );
 
   it('renders a branch protection component for merge rules', () => {
-    expect(findBranchProtections().at(1).props()).toMatchObject({
+    expect(findAllowedToMerge().props()).toMatchObject({
       header: sprintf(I18N.allowedToMergeHeader, {
         total: 2,
       }),
@@ -221,8 +236,7 @@ describe('View branch rules', () => {
   });
 
   it('passes expected roles form merge rules via props', () => {
-    findBranchProtections()
-      .at(1)
+    findAllowedToMerge()
       .props()
       .roles.forEach((role, i) => {
         expect(role).toMatchObject({
@@ -285,7 +299,7 @@ describe('View branch rules', () => {
     });
 
     it('renders force push section with the correct toggle label and description', () => {
-      expect(findProtectionToggles().at(0).props('label')).toEqual('Allow force push');
+      expect(findAllowForcePushToggle().props('label')).toEqual('Allow force push');
     });
   });
 
@@ -434,8 +448,8 @@ describe('View branch rules', () => {
           branchRulesQueryHandler: jest.fn().mockResolvedValue(mockResponse),
         });
 
-        expect(findProtectionToggles().at(0).props('iconTitle')).toEqual(title);
-        expect(findProtectionToggles().at(0).props('description')).toEqual(description);
+        expect(findAllowForcePushToggle().props('iconTitle')).toEqual(title);
+        expect(findAllowForcePushToggle().props('description')).toEqual(description);
       },
     );
   });

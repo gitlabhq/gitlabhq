@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Gemspec/DeprecatedAttributeAssignment:
-  Details: grace period
-  Exclude:
-    - 'spec/fixtures/packages/rubygems/package.gemspec'

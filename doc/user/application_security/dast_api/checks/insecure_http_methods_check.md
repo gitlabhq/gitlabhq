@@ -3,7 +3,7 @@ redirect_to: '../../api_security_testing/checks/insecure_http_methods_check.md'
 remove_date: '2024-07-30'
 ---
 
-This document was moved to [another location](../../api_security_testing/configuration/insecure_http_methods_check.md).
+This document was moved to [another location](../../api_security_testing/checks/insecure_http_methods_check.md).
 
 <!-- This redirect file can be deleted after <2024-07-30>. -->
 <!-- Redirects that point to other docs in the same project expire in three months. -->

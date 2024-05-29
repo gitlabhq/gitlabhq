@@ -199,6 +199,9 @@ export default {
         this.branch === this.$options.i18n.allProtectedBranches
       );
     },
+    hasPushAccessLevelSet() {
+      return this.pushAccessLevels?.total > 0;
+    },
   },
   methods: {
     ...mapActions(['setRulesFilter', 'fetchRules']),
@@ -323,19 +326,6 @@ export default {
             </gl-link>
           </template>
         </gl-sprintf>
-        <!-- Allowed to push -->
-        <protection
-          class="gl-mt-3"
-          :header="allowedToPushHeader"
-          :header-link-title="$options.i18n.manageProtectionsLinkTitle"
-          :header-link-href="protectedBranchesPath"
-          :roles="pushAccessLevels.roles"
-          :users="pushAccessLevels.users"
-          :groups="pushAccessLevels.groups"
-          :empty-state-copy="$options.i18n.allowedToPushEmptyState"
-          :help-text="$options.i18n.allowedToPushDescription"
-          data-testid="allowed-to-push-content"
-        />
 
         <!-- Allowed to merge -->
         <protection
@@ -368,9 +358,25 @@ export default {
           @close="closeAllowedToMergeDrawer"
         />
 
+        <!-- Allowed to push -->
+        <protection
+          class="gl-mt-3"
+          :header="allowedToPushHeader"
+          :header-link-title="$options.i18n.manageProtectionsLinkTitle"
+          :header-link-href="protectedBranchesPath"
+          :roles="pushAccessLevels.roles"
+          :users="pushAccessLevels.users"
+          :groups="pushAccessLevels.groups"
+          :empty-state-copy="$options.i18n.allowedToPushEmptyState"
+          :help-text="$options.i18n.allowedToPushDescription"
+          data-testid="allowed-to-push-content"
+        />
+
         <!-- Force push -->
         <protection-toggle
-          data-test-id="force-push"
+          v-if="hasPushAccessLevelSet"
+          data-testid="force-push-content"
+          data-test-id-prefix="force-push"
           :is-protected="branchProtection.allowForcePush"
           :label="$options.i18n.allowForcePushLabel"
           :icon-title="forcePushAttributes.title"
@@ -380,16 +386,16 @@ export default {
 
         <!-- EE start -->
         <!-- Code Owners -->
-        <div v-if="showCodeOwners">
-          <protection-toggle
-            data-test-id="code-owners"
-            :is-protected="branchProtection.codeOwnerApprovalRequired"
-            :label="$options.i18n.requiresCodeOwnerApprovalLabel"
-            :icon-title="codeOwnersApprovalAttributes.title"
-            :description="codeOwnersApprovalAttributes.description"
-            :description-link="$options.codeOwnersHelpDocLink"
-          />
-        </div>
+        <protection-toggle
+          v-if="showCodeOwners"
+          data-testid="code-owners-content"
+          data-test-id-prefix="code-owners"
+          :is-protected="branchProtection.codeOwnerApprovalRequired"
+          :label="$options.i18n.requiresCodeOwnerApprovalLabel"
+          :icon-title="codeOwnersApprovalAttributes.title"
+          :description="codeOwnersApprovalAttributes.description"
+          :description-link="$options.codeOwnersHelpDocLink"
+        />
       </section>
 
       <!-- Approvals -->
@@ -426,6 +432,7 @@ export default {
         </gl-sprintf>
 
         <protection
+          data-testid="status-checks-content"
           class="gl-mt-3"
           :header="statusChecksHeader"
           :header-link-title="$options.i18n.statusChecksLinkTitle"

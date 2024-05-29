@@ -620,6 +620,21 @@ Toggling notes confidentiality with REST and GraphQL APIs is being deprecated. U
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### ZenTao integration
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">15.7</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377825).
+</div>
+
+The [ZenTao product integration](https://docs.gitlab.com/ee/user/project/integrations/zentao.html) has been deprecated
+and will be moved to the JiHu GitLab codebase.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN` is deprecated
 
 <div class="deprecation-notes">
@@ -3935,21 +3950,6 @@ In GitLab 15.10 we added support for using internal IDs (IID) in that path by ap
 the end (`iid_path`) in the following format: `https://gitlab.com/gitlab-org/gitlab/-/work_items/<iid>?iid_path=true`.
 
 In GitLab 16.0 we will remove the ability to use a global ID in the work items path. The number at the end of the path will be considered an internal ID (IID) without the need of adding a query param at the end. Only the following format will be supported: `https://gitlab.com/gitlab-org/gitlab/-/work_items/<iid>`.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="16.0">
-
-### ZenTao integration
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.7</span>
-- Removal in GitLab <span class="milestone">16.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/377825).
-</div>
-
-The [ZenTao product integration](https://docs.gitlab.com/ee/user/project/integrations/zentao.html) has been deprecated
-and will be moved to the JiHu GitLab codebase.
 
 </div>
 
