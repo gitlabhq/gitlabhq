@@ -83,7 +83,7 @@ export default {
       </div>
       <div
         role="row"
-        class="gl-responsive-table-row table-row-header gl-font-weight-bold gl-fill-gray-700"
+        class="gl-responsive-table-row table-row-header gl-font-bold gl-fill-gray-700"
       >
         <div role="rowheader" class="table-section section-20">
           {{ __('Suite') }}

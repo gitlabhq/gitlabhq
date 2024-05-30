@@ -321,7 +321,7 @@ export default {
             <gl-link
               v-if="user"
               :href="user.webUrl"
-              class="gl-display-inline-block gl-text-gray-900 gl-font-weight-bold js-user-link"
+              class="gl-display-inline-block gl-text-gray-900 gl-font-bold js-user-link"
               :data-user-id="userId"
               :data-username="user.username"
               data-testid="pipeline-user-link"

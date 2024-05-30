@@ -51,7 +51,7 @@ export default {
       <span
         v-if="showText"
         data-testid="verification-badge-text"
-        class="gl-text-blue-500 gl-font-weight-bold gl-cursor-default"
+        class="gl-text-blue-500 gl-font-bold gl-cursor-default"
       >
         {{ $options.verificationLevelOptions[verificationLevel].badgeText }}
       </span>

@@ -156,7 +156,7 @@ export default {
     <template v-else>
       <div class="gl-text-truncate gl-md-max-w-50p gl-mr-1">
         <ci-icon :status="status" data-testid="pipeline-status-icon" />
-        <span class="gl-font-weight-bold">
+        <span class="gl-font-bold">
           <gl-sprintf :message="$options.i18n.pipelineInfo">
             <template #id="{ content }">
               <span data-testid="pipeline-id"> {{ content }}{{ pipelineId }} </span>

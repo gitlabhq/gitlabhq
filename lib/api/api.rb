@@ -309,9 +309,10 @@ module API
         mount ::API::ProjectImport
         mount ::API::ProjectJobTokenScope
         mount ::API::ProjectPackages
+        mount ::API::ProjectPackagesProtectionRules
         mount ::API::ProjectRepositoryStorageMoves
-        mount ::API::ProjectSnippets
         mount ::API::ProjectSnapshots
+        mount ::API::ProjectSnippets
         mount ::API::ProjectStatistics
         mount ::API::ProjectTemplates
         mount ::API::Projects

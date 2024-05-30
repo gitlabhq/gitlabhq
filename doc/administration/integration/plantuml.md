@@ -118,6 +118,8 @@ services:
   plantuml:
     image: 'plantuml/plantuml-server:tomcat'
     container_name: plantuml
+    ports:
+     - "8005:8080"
 ```
 
 #### Configure local PlantUML access

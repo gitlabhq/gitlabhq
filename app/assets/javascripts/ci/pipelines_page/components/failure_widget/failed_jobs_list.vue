@@ -162,7 +162,7 @@ export default {
         <div
           v-for="col in $options.columns"
           :key="col.text"
-          class="gl-font-weight-bold gl-text-left"
+          class="gl-font-bold gl-text-left"
           :class="col.class"
           data-testid="header"
         >

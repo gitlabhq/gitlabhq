@@ -42,7 +42,7 @@ export default {
     triggers="hover focus"
     placement="top"
   >
-    <p class="gl-my-3 gl-font-weight-bold">{{ $options.i18n.title }}</p>
+    <p class="gl-my-3 gl-font-bold">{{ $options.i18n.title }}</p>
     <p>
       <gl-sprintf :message="$options.i18n.popoverContent">
         <template #code="{ content }">

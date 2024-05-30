@@ -137,7 +137,7 @@ export default {
 
     <template #header>
       <div
-        class="gl-display-flex gl-align-items-center gl-p-4! gl-min-h-8 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200 gl-font-sm gl-font-weight-bold gl-leading-1"
+        class="gl-display-flex gl-align-items-center gl-p-4! gl-min-h-8 gl-border-b-1 gl-border-b-solid gl-border-b-gray-200 gl-font-sm gl-font-bold gl-leading-1"
       >
         <template v-if="isLoading">
           <span>{{ $options.i18n.stage }}</span>

@@ -16,7 +16,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="title gl-font-weight-bold">{{ s__('Job|External links') }}</div>
+    <div class="title gl-font-bold">{{ s__('Job|External links') }}</div>
     <ul class="gl-list-none gl-p-0 gl-m-0">
       <li v-for="(externalLink, index) in externalLinks" :key="index">
         <gl-link

@@ -82,10 +82,7 @@ export default {
       >
         <ci-icon :status="item.detailedStatus" class="gl-mr-3" />
         <div class="gl-text-truncate">
-          <gl-link
-            :href="item.detailedStatus.detailsPath"
-            class="gl-font-weight-bold gl-text-gray-900!"
-          >
+          <gl-link :href="item.detailedStatus.detailsPath" class="gl-font-bold gl-text-gray-900!">
             {{ item.name }}
           </gl-link>
         </div>

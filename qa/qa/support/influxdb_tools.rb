@@ -40,8 +40,8 @@ module QA
           bucket: INFLUX_TEST_METRICS_BUCKET,
           org: "gitlab-qa",
           precision: InfluxDB2::WritePrecision::NANOSECOND,
-          read_timeout: ENV["QA_INFLUXDB_TIMEOUT"].to_i || 60,
-          open_timeout: ENV["QA_INFLUXDB_TIMEOUT"].to_i || 60
+          read_timeout: ENV["QA_INFLUXDB_TIMEOUT"]&.to_i || 60,
+          open_timeout: ENV["QA_INFLUXDB_TIMEOUT"]&.to_i || 60
         )
       end
 

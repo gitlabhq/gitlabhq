@@ -330,3 +330,15 @@ You can use the [AWS CLI](https://aws.amazon.com/cli/) to verify that access to 
 The S3 bucket contains a combination of **infrastructure logs** and **application logs** from the GitLab [log system](../../administration/logs/index.md). The logs in the bucket are encrypted using an AWS KMS key that is managed by GitLab. If you choose to enable [BYOK](../../administration/dedicated/create_instance.md#encrypted-data-at-rest-byok), the application logs are not encrypted with the key you provide.
 
 The logs in the S3 bucket are organized by date in `YYYY/MM/DD/HH` format. For example, there would be a directory like `2023/10/12/13`. That directory would contain the logs from October 12, 2023 at 1300 UTC. The logs are streamed into the bucket with [Amazon Kinesis Data Firehose](https://aws.amazon.com/firehose/).
+
+## Troubleshooting
+
+### Outbound Private Link
+
+If you have trouble establishing a connection after the Outbound Private Link has been set up, there are a few things in your AWS infrastructure that could be the cause of the problem. The specific things to check will vary based on the unexpected behavior you're seeking to fix. Things to check include:
+
+- Ensure that cross-zone load balancing is turned on in your Network Load Balancer (NLB).
+- Ensure that the Inbound Rules section of the appropriate Security Groups permits traffic from the correct IP ranges.
+- Ensure that the inbound traffic is mapped to the correct port on the Endpoint Service.
+- In Switchboard, expand **Reverse Private Link Config** and confirm that the details appear as you expect.
+- Ensure that you have [allowed requests to the local network from webhooks and integrations](../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations).

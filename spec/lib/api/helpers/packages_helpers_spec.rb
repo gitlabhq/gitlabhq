@@ -62,7 +62,7 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
     end
   end
 
-  %i[create_package destroy_package].each do |action|
+  %i[create_package destroy_package admin_package].each do |action|
     describe "authorize_#{action}!" do
       subject { helper.send("authorize_#{action}!", project) }
 

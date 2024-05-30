@@ -2,6 +2,7 @@
 stage: Create
 group: IDE
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+description: "Developer documentation for GitLab Flavored Markdown (GLFM)."
 ---
 
 <!-- vale gitlab.GitLabFlavoredMarkdown = NO -->

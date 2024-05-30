@@ -92,11 +92,7 @@ export default {
     :aria-expanded="isExpanded.toString()"
   >
     <template #header>
-      <gl-button
-        variant="link"
-        class="gl-text-gray-500! gl-font-weight-semibold"
-        @click="toggleWidget"
-      >
+      <gl-button variant="link" class="gl-text-gray-500! gl-font-semibold" @click="toggleWidget">
         <gl-icon :name="iconName" />{{ failedJobsCountText
         }}<gl-icon v-if="maximumJobs" :id="popoverId" name="information-o" class="gl-ml-2" />
         <gl-popover :target="popoverId" placement="top">

@@ -259,7 +259,7 @@ export default {
             />
           </template>
           <template #bold="{ content }">
-            <span class="gl-font-weight-bold">{{ content }}</span>
+            <span class="gl-font-bold">{{ content }}</span>
           </template>
           <template #code="{ content }">
             <code>{{ content }}</code>

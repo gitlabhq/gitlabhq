@@ -77,7 +77,7 @@ export default {
     </div>
     <div v-for="entry in formOptions" :key="entry.key" class="form-group">
       <div class="gl-display-flex">
-        <label class="gl-font-weight-bold gl-mb-3">{{ entry.title }}</label>
+        <label class="gl-font-bold gl-mb-3">{{ entry.title }}</label>
       </div>
       <div
         v-for="(path, index) in entry.paths"

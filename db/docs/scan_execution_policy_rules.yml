@@ -1,0 +1,12 @@
+---
+table_name: scan_execution_policy_rules
+classes:
+- Security::ScanExecutionPolicyRule
+feature_categories:
+- security_policy_management
+description: Stores scan execution policy rules.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148854
+milestone: '17.1'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  security_policy_management_project_id: projects

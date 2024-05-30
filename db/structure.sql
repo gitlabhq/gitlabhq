@@ -16074,6 +16074,26 @@ CREATE SEQUENCE sbom_sources_id_seq
 
 ALTER SEQUENCE sbom_sources_id_seq OWNED BY sbom_sources.id;
 
+CREATE TABLE scan_execution_policy_rules (
+    id bigint NOT NULL,
+    security_policy_id bigint NOT NULL,
+    security_policy_management_project_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    rule_index smallint NOT NULL,
+    type smallint NOT NULL,
+    content jsonb DEFAULT '{}'::jsonb NOT NULL
+);
+
+CREATE SEQUENCE scan_execution_policy_rules_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE scan_execution_policy_rules_id_seq OWNED BY scan_execution_policy_rules.id;
+
 CREATE TABLE scan_result_policies (
     id bigint NOT NULL,
     security_orchestration_policy_configuration_id bigint NOT NULL,
@@ -20238,6 +20258,8 @@ ALTER TABLE ONLY sbom_source_packages ALTER COLUMN id SET DEFAULT nextval('sbom_
 
 ALTER TABLE ONLY sbom_sources ALTER COLUMN id SET DEFAULT nextval('sbom_sources_id_seq'::regclass);
 
+ALTER TABLE ONLY scan_execution_policy_rules ALTER COLUMN id SET DEFAULT nextval('scan_execution_policy_rules_id_seq'::regclass);
+
 ALTER TABLE ONLY scan_result_policies ALTER COLUMN id SET DEFAULT nextval('scan_result_policies_id_seq'::regclass);
 
 ALTER TABLE ONLY scan_result_policy_violations ALTER COLUMN id SET DEFAULT nextval('scan_result_policy_violations_id_seq'::regclass);
@@ -22788,6 +22810,9 @@ ALTER TABLE ONLY sbom_source_packages
 
 ALTER TABLE ONLY sbom_sources
     ADD CONSTRAINT sbom_sources_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY scan_execution_policy_rules
+    ADD CONSTRAINT scan_execution_policy_rules_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY scan_result_policies
     ADD CONSTRAINT scan_result_policies_pkey PRIMARY KEY (id);
@@ -27692,6 +27717,10 @@ CREATE INDEX index_sbom_source_packages_on_source_package_id_and_id ON sbom_occu
 
 CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source ON sbom_sources USING btree (source_type, source);
 
+CREATE INDEX index_scan_execution_policy_rules_on_policy_mgmt_project_id ON scan_execution_policy_rules USING btree (security_policy_management_project_id);
+
+CREATE UNIQUE INDEX index_scan_execution_policy_rules_on_unique_policy_rule_index ON scan_execution_policy_rules USING btree (security_policy_id, rule_index);
+
 CREATE UNIQUE INDEX index_scan_result_policies_on_position_in_configuration ON scan_result_policies USING btree (security_orchestration_policy_configuration_id, project_id, orchestration_policy_idx, rule_idx);
 
 CREATE INDEX index_scan_result_policies_on_project_id ON scan_result_policies USING btree (project_id);
@@ -31667,6 +31696,9 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_protected_tag_create_access_levels_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY scan_execution_policy_rules
+    ADD CONSTRAINT fk_rails_003cb62f9b FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY approval_merge_request_rules
     ADD CONSTRAINT fk_rails_004ce82224 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -32551,6 +32583,9 @@ ALTER TABLE ONLY operations_scopes
 
 ALTER TABLE ONLY milestone_releases
     ADD CONSTRAINT fk_rails_7ae0756a2d FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY scan_execution_policy_rules
+    ADD CONSTRAINT fk_rails_7be2571ecf FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_7ddc5f7457 FOREIGN KEY (source_merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;

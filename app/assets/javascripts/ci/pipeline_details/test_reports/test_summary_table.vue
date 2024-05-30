@@ -40,7 +40,7 @@ export default {
     </div>
 
     <div v-if="hasSuites" class="js-test-suites-table">
-      <div role="row" class="gl-responsive-table-row table-row-header gl-font-weight-bold">
+      <div role="row" class="gl-responsive-table-row table-row-header gl-font-bold">
         <div role="rowheader" class="table-section section-25 gl-pl-5">
           {{ __('Job') }}
         </div>
@@ -75,7 +75,7 @@ export default {
         @click="tableRowClick(index)"
       >
         <div class="table-section section-25">
-          <div role="rowheader" class="table-mobile-header gl-font-weight-bold">
+          <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Suite') }}
           </div>
           <div class="table-mobile-content underline gl-text-gray-900 gl-pl-5">
@@ -92,7 +92,7 @@ export default {
         </div>
 
         <div class="table-section section-25">
-          <div role="rowheader" class="table-mobile-header gl-font-weight-bold">
+          <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Duration') }}
           </div>
           <div class="table-mobile-content gl-text-left">
@@ -101,35 +101,35 @@ export default {
         </div>
 
         <div class="table-section section-10 gl-text-center">
-          <div role="rowheader" class="table-mobile-header gl-font-weight-bold">
+          <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Failed') }}
           </div>
           <div class="table-mobile-content">{{ testSuite.failed_count }}</div>
         </div>
 
         <div class="table-section section-10 gl-text-center">
-          <div role="rowheader" class="table-mobile-header gl-font-weight-bold">
+          <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Errors') }}
           </div>
           <div class="table-mobile-content">{{ testSuite.error_count }}</div>
         </div>
 
         <div class="table-section section-10 gl-text-center">
-          <div role="rowheader" class="table-mobile-header gl-font-weight-bold">
+          <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Skipped') }}
           </div>
           <div class="table-mobile-content">{{ testSuite.skipped_count }}</div>
         </div>
 
         <div class="table-section section-10 gl-text-center">
-          <div role="rowheader" class="table-mobile-header gl-font-weight-bold">
+          <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Passed') }}
           </div>
           <div class="table-mobile-content">{{ testSuite.success_count }}</div>
         </div>
 
         <div class="table-section section-10 gl-text-right pr-md-3">
-          <div role="rowheader" class="table-mobile-header gl-font-weight-bold">
+          <div role="rowheader" class="table-mobile-header gl-font-bold">
             {{ __('Total') }}
           </div>
           <div class="table-mobile-content">{{ testSuite.total_count }}</div>

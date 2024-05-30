@@ -41,7 +41,7 @@ export default {
     classes() {
       return {
         'retried gl-text-secondary': this.job.retried,
-        'gl-font-weight-bold': this.isActive,
+        'gl-font-bold': this.isActive,
       };
     },
     dataTestId() {

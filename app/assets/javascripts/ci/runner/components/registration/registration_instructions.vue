@@ -245,7 +245,7 @@ export default {
                 />
               </template>
               <template #bold="{ content }"
-                ><span class="gl-font-weight-bold">{{ content }}</span></template
+                ><span class="gl-font-bold">{{ content }}</span></template
               >
               <template #code="{ content }"
                 ><code>{{ content }}</code></template
@@ -306,7 +306,7 @@ export default {
       <p class="gl-pl-6">
         <gl-sprintf :message="s__('Runners|To view the runner, go to %{runnerListName}.')">
           <template #runnerListName>
-            <span class="gl-font-weight-bold"><slot name="runner-list-name"></slot></span>
+            <span class="gl-font-bold"><slot name="runner-list-name"></slot></span>
           </template>
         </gl-sprintf>
       </p>

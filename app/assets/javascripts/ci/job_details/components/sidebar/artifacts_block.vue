@@ -56,7 +56,7 @@ export default {
 </script>
 <template>
   <div>
-    <div class="title gl-font-weight-bold">
+    <div class="title gl-font-bold">
       <span class="gl-mr-2">{{ $options.i18n.jobArtifacts }}</span>
       <gl-link :href="$options.artifactsHelpPath" data-testid="artifacts-help-link">
         <gl-icon id="artifacts-help" name="question-o" />

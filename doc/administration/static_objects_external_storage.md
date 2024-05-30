@@ -2,6 +2,7 @@
 stage: Create
 group: IDE
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Configure external storage, such as a CDN, for static objects in your GitLab repository."
 ---
 
 # External storage for static objects

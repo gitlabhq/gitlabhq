@@ -2,6 +2,7 @@
 stage: Create
 group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Learn how to create a GitLab development environment and connect a remote machine to the Web IDE."
 ---
 
 # Tutorial: Connect a remote machine to the Web IDE

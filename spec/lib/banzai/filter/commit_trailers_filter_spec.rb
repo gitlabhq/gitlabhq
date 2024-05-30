@@ -89,7 +89,7 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
       end
     end
 
-    it 'multiple trailers in the same message' do
+    it 'multiple trailers in the same message', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444895' do
       different_trailer = "#{FFaker::Lorem.word}-by:"
       message = commit_html %(
         #{commit_message}

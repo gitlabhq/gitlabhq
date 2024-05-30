@@ -2,6 +2,7 @@
 stage: Create
 group: IDE
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Documentation for the REST API for moving the storage for repositories in a GitLab group."
 ---
 
 # Group repository storage moves API
