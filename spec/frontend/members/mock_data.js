@@ -1,5 +1,5 @@
 import {
-  MEMBER_TYPES,
+  MEMBERS_TAB_TYPES,
   MEMBER_STATE_CREATED,
   MEMBER_MODEL_TYPE_GROUP_MEMBER,
 } from '~/members/constants';
@@ -156,7 +156,7 @@ export const pagination = {
 };
 
 export const dataAttribute = JSON.stringify({
-  [MEMBER_TYPES.user]: {
+  [MEMBERS_TAB_TYPES.user]: {
     members,
     pagination: paginationData,
     member_path: '/groups/foo-bar/-/group_members/:id',

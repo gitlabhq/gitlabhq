@@ -299,7 +299,7 @@ RSpec.describe ApplicationHelper do
     end
 
     it 'changes if promo_host changes' do
-      allow(helper).to receive(:promo_host).and_return('foobar.baz')
+      allow(described_class).to receive(:promo_host).and_return('foobar.baz')
 
       is_expected.to eq('https://foobar.baz')
     end

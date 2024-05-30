@@ -7,7 +7,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import MembersApp from '~/members/components/app.vue';
 import MembersTabs from '~/members/components/members_tabs.vue';
 import {
-  MEMBER_TYPES,
+  MEMBERS_TAB_TYPES,
   TAB_QUERY_PARAM_VALUES,
   ACTIVE_TAB_QUERY_PARAM_NAME,
   FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS,
@@ -23,7 +23,7 @@ describe('MembersTabs', () => {
   const createComponent = ({ totalItems = 10, provide = {} } = {}) => {
     const store = new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.user]: {
+        [MEMBERS_TAB_TYPES.user]: {
           namespaced: true,
           state: {
             pagination: {
@@ -35,7 +35,7 @@ describe('MembersTabs', () => {
             },
           },
         },
-        [MEMBER_TYPES.group]: {
+        [MEMBERS_TAB_TYPES.group]: {
           namespaced: true,
           state: {
             pagination: {
@@ -49,7 +49,7 @@ describe('MembersTabs', () => {
             },
           },
         },
-        [MEMBER_TYPES.invite]: {
+        [MEMBERS_TAB_TYPES.invite]: {
           namespaced: true,
           state: {
             pagination: {
@@ -62,7 +62,7 @@ describe('MembersTabs', () => {
             },
           },
         },
-        [MEMBER_TYPES.accessRequest]: {
+        [MEMBERS_TAB_TYPES.accessRequest]: {
           namespaced: true,
           state: {
             pagination: {
@@ -132,10 +132,10 @@ describe('MembersTabs', () => {
 
       const membersApps = wrapper.findAllComponents(MembersApp).wrappers;
 
-      expect(membersApps[0].props('namespace')).toBe(MEMBER_TYPES.user);
-      expect(membersApps[1].props('namespace')).toBe(MEMBER_TYPES.group);
-      expect(membersApps[2].props('namespace')).toBe(MEMBER_TYPES.invite);
-      expect(membersApps[3].props('namespace')).toBe(MEMBER_TYPES.accessRequest);
+      expect(membersApps[0].props('namespace')).toBe(MEMBERS_TAB_TYPES.user);
+      expect(membersApps[1].props('namespace')).toBe(MEMBERS_TAB_TYPES.group);
+      expect(membersApps[2].props('namespace')).toBe(MEMBERS_TAB_TYPES.invite);
+      expect(membersApps[3].props('namespace')).toBe(MEMBERS_TAB_TYPES.accessRequest);
 
       expect(membersApps[1].props('tabQueryParamValue')).toBe(TAB_QUERY_PARAM_VALUES.group);
       expect(membersApps[2].props('tabQueryParamValue')).toBe(TAB_QUERY_PARAM_VALUES.invite);

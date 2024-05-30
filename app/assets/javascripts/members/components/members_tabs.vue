@@ -3,7 +3,7 @@ import { GlTabs, GlTab, GlBadge, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { queryToObject } from '~/lib/utils/url_utility';
-import { MEMBER_TYPES, ACTIVE_TAB_QUERY_PARAM_NAME } from 'ee_else_ce/members/constants';
+import { MEMBERS_TAB_TYPES, ACTIVE_TAB_QUERY_PARAM_NAME } from 'ee_else_ce/members/constants';
 import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersApp from './app.vue';
 
@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     ...mapState(
-      Object.values(MEMBER_TYPES).reduce((getters, memberType) => {
+      Object.values(MEMBERS_TAB_TYPES).reduce((getters, memberType) => {
         return {
           ...getters,
           // eslint-disable-next-line @gitlab/require-i18n-strings
@@ -68,7 +68,7 @@ export default {
       return this[`${namespace}Count`];
     },
     showTab(tab, index) {
-      if (tab.namespace === MEMBER_TYPES.user) {
+      if (tab.namespace === MEMBERS_TAB_TYPES.user) {
         return true;
       }
 

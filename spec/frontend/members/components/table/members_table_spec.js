@@ -15,7 +15,7 @@ import MembersPagination from '~/members/components/table/members_pagination.vue
 import MaxRole from '~/members/components/table/max_role.vue';
 import RoleDetailsDrawer from '~/members/components/table/role_details_drawer.vue';
 import {
-  MEMBER_TYPES,
+  MEMBERS_TAB_TYPES,
   MEMBER_STATE_CREATED,
   MEMBER_STATE_AWAITING,
   MEMBER_STATE_ACTIVE,
@@ -42,7 +42,7 @@ describe('MembersTable', () => {
   const createStore = (state = {}) => {
     return new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.invite]: {
+        [MEMBERS_TAB_TYPES.invite]: {
           namespaced: true,
           state: {
             members: [],
@@ -68,7 +68,7 @@ describe('MembersTable', () => {
         sourceId: 1,
         currentUserId: 1,
         canManageMembers: true,
-        namespace: MEMBER_TYPES.invite,
+        namespace: MEMBERS_TAB_TYPES.invite,
         namespaceReachedLimit: false,
         namespaceUserLimit: 1,
         glFeatures: { showRoleDetailsInDrawer },

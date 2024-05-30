@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 module ListboxHelper
-  DROPDOWN_CONTAINER_CLASSES = %w[dropdown b-dropdown gl-dropdown js-redirect-listbox].freeze
-  DROPDOWN_BUTTON_CLASSES = %w[btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle].freeze
-  DROPDOWN_INNER_CLASS = 'gl-dropdown-button-text'
-  DROPDOWN_ICON_CLASS = 'gl-button-icon dropdown-chevron gl-icon'
+  DROPDOWN_CONTAINER_CLASSES = %w[gl-new-dropdown js-redirect-listbox].freeze
+  DROPDOWN_BUTTON_CLASSES = 'gl-new-dropdown-toggle'
+  DROPDOWN_INNER_CLASS = 'gl-new-dropdown-button-text'
+  DROPDOWN_ICON_CLASS = 'gl-button-icon gl-new-dropdown-chevron gl-icon'
 
   # Creates a listbox component with redirect behavior.
   #
@@ -46,7 +46,8 @@ module ListboxHelper
       selected = selected_option[:value]
     end
 
-    button = button_tag(type: :button, class: DROPDOWN_BUTTON_CLASSES) do
+    button = render Pajamas::ButtonComponent.new(variant: :default,
+      button_options: { class: DROPDOWN_BUTTON_CLASSES }) do
       content_tag(:span, selected_option[:text], class: DROPDOWN_INNER_CLASS) +
         sprite_icon('chevron-down', css_class: DROPDOWN_ICON_CLASS)
     end

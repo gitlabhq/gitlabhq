@@ -1,7 +1,7 @@
 import setWindowLocation from 'helpers/set_window_location_helper';
 import {
   DEFAULT_SORT,
-  MEMBER_TYPES,
+  MEMBERS_TAB_TYPES,
   I18N_USER_YOU,
   I18N_USER_BLOCKED,
   I18N_USER_BOT,
@@ -306,7 +306,7 @@ describe('Members Utils', () => {
 
     it('correctly parses the data attribute', () => {
       expect(parseDataAttributes(el)).toMatchObject({
-        [MEMBER_TYPES.user]: {
+        [MEMBERS_TAB_TYPES.user]: {
           members,
           pagination,
           memberPath: '/groups/foo-bar/-/group_members/:id',

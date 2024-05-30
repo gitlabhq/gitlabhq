@@ -11,5 +11,7 @@ description: a temporary table to store the orphaned notes records that have bee
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146023
 milestone: "16.10"
 gitlab_schema: gitlab_main_cell
+removed_in_milestone: "17.1"
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154317
 sharding_key:
   project_id: projects

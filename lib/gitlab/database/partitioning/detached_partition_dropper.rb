@@ -14,9 +14,9 @@ module Gitlab
             end
           rescue StandardError => e
             Gitlab::AppLogger.error(message: "Failed to drop previously detached partition",
-                                    partition_name: detached_partition.table_name,
-                                    exception_class: e.class,
-                                    exception_message: e.message)
+              partition_name: detached_partition.table_name,
+              exception_class: e.class,
+              exception_message: e.message)
           end
         end
 
@@ -76,9 +76,9 @@ module Gitlab
               connection.execute("ALTER TABLE #{connection.quote_table_name(partition_identifier)} DROP CONSTRAINT #{connection.quote_table_name(foreign_key.name)}")
 
               Gitlab::AppLogger.info(message: "Dropped foreign key for previously detached partition",
-                                     partition_name: detached_partition.table_name,
-                                     referenced_table_name: foreign_key.referenced_table_identifier,
-                                     foreign_key_name: foreign_key.name)
+                partition_name: detached_partition.table_name,
+                referenced_table_name: foreign_key.referenced_table_identifier,
+                foreign_key_name: foreign_key.name)
             end
           end
         end

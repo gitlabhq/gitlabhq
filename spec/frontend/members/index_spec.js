@@ -1,6 +1,6 @@
 import { createWrapper } from '@vue/test-utils';
 import MembersTabs from '~/members/components/members_tabs.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBERS_TAB_TYPES } from '~/members/constants';
 import { initMembersApp } from '~/members/index';
 import membersStore from '~/members/store';
 import { parseDataAttributes } from '~/members/utils';
@@ -17,7 +17,7 @@ describe('initMembersApp', () => {
   let wrapper;
 
   const options = {
-    [MEMBER_TYPES.user]: {
+    [MEMBERS_TAB_TYPES.user]: {
       tableFields: ['account'],
       tableAttrs: { table: { 'data-testid': 'members-list' } },
       tableSortableFields: ['account'],
@@ -54,8 +54,8 @@ describe('initMembersApp', () => {
       setup();
 
       expect(membersStore).toHaveBeenCalledWith({
-        ...parsedData[MEMBER_TYPES.user],
-        ...options[MEMBER_TYPES.user],
+        ...parsedData[MEMBERS_TAB_TYPES.user],
+        ...options[MEMBERS_TAB_TYPES.user],
       });
     });
   });

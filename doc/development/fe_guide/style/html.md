@@ -34,7 +34,7 @@ for a description on what each tag semantically means.
 <!-- good - prefer semantic classes used accurately -->
 <section class="...">
   <p>
-    Simply visit your <span class="gl-font-weight-bold">Settings</span> to say hello to the world.
+    Simply visit your <span class="gl-font-bold">Settings</span> to say hello to the world.
   </p>
   <footer class="...">...</footer>
 </section>

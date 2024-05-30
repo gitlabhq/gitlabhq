@@ -141,7 +141,7 @@ module Gitlab
           push_options: push_options,
           # DEPRECATED
           repository: project.hook_attrs.slice(:name, :url, :description, :homepage,
-                                               :git_http_url, :git_ssh_url, :visibility_level)
+            :git_http_url, :git_ssh_url, :visibility_level)
         }
       end
 
@@ -169,11 +169,11 @@ module Gitlab
         commits = project.repository.commits(project.default_branch.to_s, limit: 3)
 
         build(project: project,
-              user: user,
-              oldrev: commits.last&.id,
-              newrev: commits.first&.id,
-              ref: ref,
-              commits: commits)
+          user: user,
+          oldrev: commits.last&.id,
+          newrev: commits.first&.id,
+          ref: ref,
+          commits: commits)
       end
 
       def sample_data(is_tag = false)

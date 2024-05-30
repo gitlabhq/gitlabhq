@@ -6,7 +6,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import MembersFilteredSearchBar from '~/members/components/filter_sort/members_filtered_search_bar.vue';
 import {
-  MEMBER_TYPES,
+  MEMBERS_TAB_TYPES,
   FILTERED_SEARCH_TOKEN_TWO_FACTOR,
   FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
 } from '~/members/constants';
@@ -31,7 +31,7 @@ describe('MembersFilteredSearchBar', () => {
   const createComponent = ({ state = {}, provide = {} } = {}) => {
     const store = new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.user]: {
+        [MEMBERS_TAB_TYPES.user]: {
           namespaced: true,
           state: {
             filteredSearchBar: {
@@ -51,7 +51,7 @@ describe('MembersFilteredSearchBar', () => {
       provide: {
         sourceId: 1,
         canManageMembers: true,
-        namespace: MEMBER_TYPES.user,
+        namespace: MEMBERS_TAB_TYPES.user,
         ...provide,
       },
       store,

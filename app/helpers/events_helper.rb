@@ -335,7 +335,7 @@ module EventsHelper
   end
 
   def user_profile_activity_classes
-    current_path?('users#activity') ? ' gl-font-weight-semibold gl-text-black-normal' : ''
+    current_path?('users#activity') ? ' gl-font-semibold gl-text-black-normal' : ''
   end
 
   private

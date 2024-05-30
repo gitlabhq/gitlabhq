@@ -3,6 +3,7 @@
 module API
   module Ci
     class Runners < ::API::Base
+      include APIGuard
       include PaginationParams
 
       before { authenticate! }
@@ -102,6 +103,10 @@ module API
             { project: [:route, { namespace: :route }] }
           )
         end
+      end
+
+      allow_access_with_scope :manage_runner, if: ->(request) do
+        request.params.key?(:id) && request.path.match?(%r{\A/api/v[34]/runners/})
       end
 
       resource :runners do
@@ -274,7 +279,7 @@ module API
           desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        before { authorize_admin_project }
+        before { authorize! :read_project_runners, user_project }
 
         desc 'Get runners available for project' do
           summary "List project's runners"
@@ -310,6 +315,8 @@ module API
           requires :runner_id, type: Integer, desc: 'The ID of a runner'
         end
         post ':id/runners' do
+          authorize! :create_runner, user_project # Ensure the user is allowed to create a runner on the target project
+
           runner = get_runner(params[:runner_id])
           authenticate_enable_runner!(runner)
 
@@ -335,6 +342,8 @@ module API
         end
         # rubocop: disable CodeReuse/ActiveRecord
         delete ':id/runners/:runner_id' do
+          authorize! :admin_project_runners, user_project
+
           runner_project = user_project.runner_projects.find_by(runner_id: params[:runner_id])
           not_found!('Runner') unless runner_project
 
@@ -350,7 +359,7 @@ module API
         requires :id, type: String, desc: 'The ID of a group'
       end
       resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        before { authorize_admin_group }
+        before { authorize! :read_group_runners, user_group }
 
         desc 'Get runners available for group' do
           summary "List group's runners"

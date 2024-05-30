@@ -91,7 +91,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-justify-content-end -gl-my-2 gl-mx-n2"
+    class="gl-display-flex gl-justify-content-end -gl-my-2 -gl-mx-2"
     :data-testid="`user-actions-${user.id}`"
   >
     <div v-if="hasEditAction" class="gl-p-2" :class="{ 'gl-mr-3': hasEditActionOnly }">

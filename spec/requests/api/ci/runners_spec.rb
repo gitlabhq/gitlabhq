@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_visibility do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
@@ -26,6 +28,37 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   let(:query) { {} }
   let(:extra_query_parts) { {} }
   let(:query_path) { query.merge(extra_query_parts).to_param }
+
+  shared_context 'access token setup' do
+    let(:current_user) { nil }
+    let(:pat_user) { user }
+    let(:pat) { create(:personal_access_token, user: pat_user, scopes: [scope]) }
+    let(:extra_query_parts) { { private_token: pat.token } }
+  end
+
+  shared_examples 'when scope is forbidden' do |forbidden_scopes: []|
+    where(:scope) { forbidden_scopes }
+
+    with_them do
+      it 'returns 403' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  shared_examples 'when scope is not allowed' do |scopes: []|
+    where(:scope) { scopes }
+
+    with_them do
+      it 'returns 401' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
 
   describe 'GET /runners' do
     let(:path) { "/runners?#{query_path}" }
@@ -51,6 +84,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           a_hash_including('description' => 'Group runner A'),
           a_hash_including('description' => 'Group runner B')
         ]
+      end
+
+      context 'with request authorized with access token' do
+        include_context 'access token setup'
+
+        it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner manage_runner]
       end
 
       context 'when filtering by scope' do
@@ -202,6 +241,14 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
             a_hash_including('description' => 'Group runner B', 'is_shared' => false, 'runner_type' => 'group_type'),
             a_hash_including('description' => 'Shared runner', 'is_shared' => true, 'runner_type' => 'instance_type')
           ]
+        end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup' do
+            let(:pat_user) { admin }
+          end
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner manage_runner]
         end
 
         context 'when filtering runners by scope' do
@@ -487,9 +534,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
       end
     end
 
-    context 'authorized user' do
-      let(:current_user) { user }
-
+    shared_examples 'an endpoint returning expected results' do
       context 'when the runner is a group runner' do
         let(:runner) { group_runner_a }
 
@@ -524,6 +569,28 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(json_response['description']).to eq(runner.description)
+          end
+        end
+      end
+    end
+
+    context 'authorized user' do
+      let(:current_user) { user }
+
+      it_behaves_like 'an endpoint returning expected results'
+
+      context 'with request authorized with access token' do
+        include_context 'access token setup'
+
+        it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner] do
+          let(:runner) { project_runner }
+        end
+
+        context 'with sufficient scope' do
+          where(:scope) { %i[manage_runner read_api] }
+
+          with_them do
+            it_behaves_like 'an endpoint returning expected results'
           end
         end
       end
@@ -729,6 +796,26 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           expect(runner.ensure_runner_queue_value).not_to eq(runner_queue_value)
           expect(runner.maximum_timeout).to eq(1234)
         end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup' do
+            let(:pat_user) { admin }
+          end
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+          context 'with sufficient scope' do
+            let(:scope) { :manage_runner }
+
+            it 'updates runner' do
+              perform_request
+
+              runner.reload
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(runner.description).to eq(params[:description])
+            end
+          end
+        end
       end
 
       context 'when runner is not shared' do
@@ -773,6 +860,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup'
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[manage_runner create_runner read_api]
+        end
       end
 
       context 'when runner is not shared' do
@@ -783,6 +876,23 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(runner.reload.description).to eq(params[:description])
+        end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup'
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+          context 'with sufficient scope' do
+            let(:scope) { :manage_runner }
+
+            it 'updates runner description' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(runner.reload.description).to eq(params[:description])
+            end
+          end
         end
 
         context 'when user does not have access to runner' do
@@ -842,6 +952,30 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         it_behaves_like '412 response' do
           let(:request) { api(path, current_user) }
         end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup' do
+            let(:pat_user) { admin }
+          end
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner]
+
+          context 'with sufficient scope' do
+            let(:scope) { :manage_runner }
+
+            it 'deletes runner' do
+              expect_next_instance_of(Ci::Runners::UnregisterRunnerService, runner, pat_user) do |service|
+                expect(service).to receive(:execute).once.and_call_original
+              end
+
+              expect do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:no_content)
+              end.to change { ::Ci::Runner.instance_type.count }.by(-1)
+            end
+          end
+        end
       end
 
       context 'when runner is not shared' do
@@ -886,6 +1020,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup'
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[manage_runner create_runner read_api]
+        end
       end
 
       context 'with a project runner' do
@@ -920,6 +1060,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
               expect(response).to have_gitlab_http_status(:no_content)
             end.to change { ::Ci::Runner.project_type.count }.by(-1)
+          end
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
+
+              it 'deletes project runner' do
+                expect do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:no_content)
+                end.to change { ::Ci::Runner.project_type.count }.by(-1)
+              end
+            end
           end
         end
 
@@ -981,6 +1139,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
               expect(response).to have_gitlab_http_status(:no_content)
             end.to change { ::Ci::Runner.group_type.count }.by(-1)
           end
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
+
+              it 'deletes group runner' do
+                expect do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:no_content)
+                end.to change { ::Ci::Runner.group_type.count }.by(-1)
+              end
+            end
+          end
         end
 
         it_behaves_like '412 response' do
@@ -1000,6 +1176,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
               expect(response).to have_gitlab_http_status(:no_content)
             end.to change { ::Ci::Runner.group_type.count }.by(-1)
+          end
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
+
+              it 'deletes group runner' do
+                expect do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:no_content)
+                end.to change { ::Ci::Runner.group_type.count }.by(-1)
+              end
+            end
           end
         end
 
@@ -1053,13 +1247,20 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
       context 'when runner is shared' do
         let(:runner) { shared_runner }
 
-        it 'resets runner authentication token' do
-          expect do
-            perform_request
+        it_behaves_like 'a runner accepting authentication token reset'
 
-            expect(response).to have_gitlab_http_status(:success)
-            expect(json_response).to eq({ 'token' => runner.reload.token, 'token_expires_at' => nil })
-          end.to change { runner.reload.token }
+        context 'with request authorized with access token' do
+          include_context 'access token setup' do
+            let(:pat_user) { admin }
+          end
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+          context 'with sufficient scope' do
+            let(:scope) { :manage_runner }
+
+            it_behaves_like 'a runner accepting authentication token reset'
+          end
         end
       end
 
@@ -1088,12 +1289,32 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
               expect(response).to have_gitlab_http_status(:forbidden)
             end.not_to change { runner.reload.token }
           end
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup' do
+              let(:pat_user) { user2 }
+            end
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[manage_runner create_runner read_api]
+          end
         end
 
         context 'when user has access to runner' do
           let(:current_user) { user }
 
           it_behaves_like 'a runner accepting authentication token reset'
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
+
+              it_behaves_like 'a runner accepting authentication token reset'
+            end
+          end
         end
       end
 
@@ -1152,6 +1373,18 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           let(:current_user) { user }
 
           it_behaves_like 'a runner accepting authentication token reset'
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
+
+              it_behaves_like 'a runner accepting authentication token reset'
+            end
+          end
 
           context 'when runner token has expiration time', :freeze_time do
             before do
@@ -1239,6 +1472,30 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
             let(:second_record) { jobs[1] }
             let(:api_call) { api(path, current_user) }
           end
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup' do
+              let(:pat_user) { admin }
+            end
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner]
+
+            context 'with sufficient scope' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Need helpers for scenarios
+              let(:scope) { :manage_runner }
+
+              it 'return jobs' do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).to include_pagination_headers
+
+                expect(json_response).to match([
+                  a_hash_including('id' => jobs[1].id),
+                  a_hash_including('id' => jobs[2].id)
+                ])
+              end
+            end
+          end
         end
 
         context 'when runner is a project runner' do
@@ -1256,6 +1513,28 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
             ])
           end
 
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner]
+
+            context 'with sufficient scope' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Need helpers for scenarios
+              let(:scope) { :manage_runner }
+
+              it 'return jobs' do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).to include_pagination_headers
+
+                expect(json_response).to match([
+                  a_hash_including('id' => jobs[3].id),
+                  a_hash_including('id' => jobs[4].id)
+                ])
+              end
+            end
+          end
+
           context 'when user does not have authorization to see all jobs' do
             let(:runner) { two_projects_runner }
             let(:current_user) { user2 }
@@ -1271,6 +1550,26 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to match([a_hash_including('id' => jobs[6].id)])
+            end
+
+            context 'with request authorized with access token' do
+              include_context 'access token setup' do
+                let(:pat_user) { user2 }
+              end
+
+              it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner]
+
+              context 'with sufficient scope' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Need helpers for scenarios
+                let(:scope) { :manage_runner }
+
+                it 'shows only jobs it has permission to see' do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(response).to include_pagination_headers
+                  expect(json_response).to match([a_hash_including('id' => jobs[6].id)])
+                end
+              end
             end
           end
 
@@ -1686,6 +1985,26 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
       end
     end
 
+    context 'with request authorized with access token' do
+      include_context 'access token setup'
+
+      it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner manage_runner]
+
+      context 'with sufficient scope' do
+        let(:scope) { :read_api }
+
+        it 'returns all runners' do
+          perform_request
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner', 'active' => true, 'paused' => false),
+            a_hash_including('description' => 'Two projects runner', 'active' => true, 'paused' => false),
+            a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
+          ]
+        end
+      end
+    end
+
     it_behaves_like 'unauthorized access to runners list'
   end
 
@@ -1802,6 +2121,26 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
       end
     end
 
+    context 'with request authorized with access token' do
+      include_context 'access token setup'
+
+      it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner manage_runner]
+
+      context 'with sufficient scope' do
+        let(:scope) { :read_api }
+
+        it 'returns all runners' do
+          perform_request
+
+          expect(json_response).to match_array(
+            [
+              a_hash_including('description' => 'Group runner A', 'active' => true, 'paused' => false),
+              a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
+            ])
+        end
+      end
+    end
+
     it_behaves_like 'unauthorized access to runners list'
   end
 
@@ -1900,6 +2239,14 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         end
       end
 
+      context 'with request authorized with access token' do
+        include_context 'access token setup'
+
+        where(:scope) { %i[create_runner manage_runner] }
+
+        it_behaves_like 'when scope is not allowed', scopes: %i[create_runner manage_runner]
+      end
+
       context 'when no runner_id param is provided' do
         let(:params) { {} }
 
@@ -1966,6 +2313,12 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
         it_behaves_like '412 response' do
           let(:request) { api(path, current_user) }
+        end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup'
+
+          it_behaves_like 'when scope is not allowed', scopes: %i[create_runner manage_runner]
         end
       end
 

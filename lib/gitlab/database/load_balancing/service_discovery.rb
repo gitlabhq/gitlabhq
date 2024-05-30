@@ -18,7 +18,7 @@ module Gitlab
         attr_accessor :refresh_thread, :refresh_thread_last_run, :refresh_thread_interruption_logged
 
         attr_reader :interval, :record, :record_type, :disconnect_timeout,
-                    :load_balancer
+          :load_balancer
 
         MAX_SLEEP_ADJUSTMENT = 10
         MAX_DISCOVERY_RETRIES = 3

@@ -5,7 +5,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import RemoveGroupLinkButton from '~/members/components/action_buttons/remove_group_link_button.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBERS_TAB_TYPES } from '~/members/constants';
 import { group } from '../../mock_data';
 
 Vue.use(Vuex);
@@ -20,7 +20,7 @@ describe('RemoveGroupLinkButton', () => {
   const createStore = () => {
     return new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.group]: {
+        [MEMBERS_TAB_TYPES.group]: {
           namespaced: true,
           actions,
         },
@@ -32,7 +32,7 @@ describe('RemoveGroupLinkButton', () => {
     wrapper = mount(RemoveGroupLinkButton, {
       store: createStore(),
       provide: {
-        namespace: MEMBER_TYPES.group,
+        namespace: MEMBERS_TAB_TYPES.group,
       },
       propsData: {
         groupLink: group,

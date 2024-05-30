@@ -155,7 +155,7 @@ export default {
         >
           <template #meta>
             <div class="gl-px-2">
-              <div class="gl-mx-n2 gl-display-flex gl-align-items-center gl-flex-wrap">
+              <div class="-gl-mx-2 gl-display-flex gl-align-items-center gl-flex-wrap">
                 <div class="gl-px-2">
                   <gl-icon
                     v-if="visibility"

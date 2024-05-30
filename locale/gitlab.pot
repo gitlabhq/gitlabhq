@@ -36712,6 +36712,9 @@ msgstr ""
 msgid "PackageRegistry|%{count} packages were not published to the registry. Remove these packages and try again."
 msgstr ""
 
+msgid "PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `@my-scope/my-package-*` are supported."
+msgstr ""
+
 msgid "PackageRegistry|%{name} version %{version} was first created %{datetime}"
 msgstr ""
 

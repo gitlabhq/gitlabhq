@@ -12,7 +12,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
         class="diff-line-num gl-display-flex line-links"
       >
         <a
-          class="!gl-shadow-none file-line-blame gl-mx-n2 gl-select-none"
+          class="!gl-shadow-none -gl-mx-2 file-line-blame gl-select-none"
           href="/blame/foo-bar#L1"
         />
         <a
@@ -28,7 +28,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
         class="diff-line-num gl-display-flex line-links"
       >
         <a
-          class="!gl-shadow-none file-line-blame gl-mx-n2 gl-select-none"
+          class="!gl-shadow-none -gl-mx-2 file-line-blame gl-select-none"
           href="/blame/foo-bar#L2"
         />
         <a
@@ -44,7 +44,7 @@ exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
         class="diff-line-num gl-display-flex line-links"
       >
         <a
-          class="!gl-shadow-none file-line-blame gl-mx-n2 gl-select-none"
+          class="!gl-shadow-none -gl-mx-2 file-line-blame gl-select-none"
           href="/blame/foo-bar#L3"
         />
         <a

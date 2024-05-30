@@ -401,11 +401,11 @@ adds the start and end tags with the correct styling classes.
 
 | Placeholder | Style                                   |
 |-------------|-----------------------------------------|
-| success     | `gl-font-weight-bold gl-text-green-500` |
-| danger      | `gl-font-weight-bold gl-text-red-500`   |
-| critical    | `gl-font-weight-bold gl-text-red-800`   |
-| same        | `gl-font-weight-bold gl-text-gray-700`  |
-| strong      | `gl-font-weight-bold`                   |
+| success     | `gl-font-bold gl-text-green-500` |
+| danger      | `gl-font-bold gl-text-red-500`   |
+| critical    | `gl-font-bold gl-text-red-800`   |
+| same        | `gl-font-bold gl-text-gray-700`  |
+| strong      | `gl-font-bold`                   |
 | small       | `gl-font-sm`                            |
 
 ## Action buttons

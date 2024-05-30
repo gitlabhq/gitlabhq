@@ -5,7 +5,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import RemoveMemberModal from '~/members/components/modals/remove_member_modal.vue';
 import {
-  MEMBER_TYPES,
+  MEMBERS_TAB_TYPES,
   MEMBER_MODEL_TYPE_GROUP_MEMBER,
   MEMBER_MODEL_TYPE_PROJECT_MEMBER,
 } from '~/members/constants';
@@ -32,7 +32,7 @@ describe('RemoveMemberModal', () => {
   const createStore = (removeMemberModalData) =>
     new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.user]: {
+        [MEMBERS_TAB_TYPES.user]: {
           namespaced: true,
           state: {
             removeMemberModalData,
@@ -46,7 +46,7 @@ describe('RemoveMemberModal', () => {
     wrapper = shallowMount(RemoveMemberModal, {
       store: createStore(state),
       provide: {
-        namespace: MEMBER_TYPES.user,
+        namespace: MEMBERS_TAB_TYPES.user,
       },
     });
   };

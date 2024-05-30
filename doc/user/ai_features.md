@@ -32,8 +32,8 @@ DETAILS:
 **Tier:** Premium and Ultimate with [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-- Helps you write code more efficiently by showing code suggestions as you type.
-- LLM for code completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-completion)
+- Helps you write code more efficiently by generating code and showing suggestions as you type.
+- Large language model (LLM) for code completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-completion)
 - LLM for code generation: Anthropic [`claude-3-sonnet-20240229`](https://docs.anthropic.com/claude/docs/models-overview)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/ds7SG1wgcVM)
 - [View documentation](project/repository/code_suggestions/index.md).
@@ -44,9 +44,8 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-- Processes and generates text and code in a conversational manner.
-  Help you write and understand code faster, get up to speed on the status of projects,
-  and quickly learn about GitLab.
+- Help you write and understand code faster, get up to speed on the status of projects,
+  and quickly learn about GitLab by answering your questions in a chat window.
 - LLM: Anthropic [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai),
   Anthropic [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai),
   [`claude-2.1`](https://docs.anthropic.com/en/docs/legacy-model-guide#anthropics-legacy-models),
@@ -66,7 +65,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com
 
-- Assists in creating faster and higher-quality reviews by automatically suggesting reviewers for your merge request.
+- Helps create faster and higher-quality reviews by automatically suggesting reviewers for your merge request.
 - LLM: GitLab creates a machine learning model for each project, which is used to generate reviewers. [View the issue](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw)
 - [View documentation](project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers).
@@ -77,7 +76,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-- Automates repetitive tasks and helps catch bugs early.
+- Helps catch bugs early by generating tests for the selected code.
 - LLM: Anthropic [`Claude-2.1`](https://docs.anthropic.com/claude/docs/models-overview#model-comparison)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](gitlab_duo_chat_examples.md#write-tests-in-the-ide).
@@ -88,7 +87,7 @@ DETAILS:
 **Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Helps you understand code by explaining it in English language.
+- Helps you understand the selected code by explaining it more clearly.
 - LLM: Anthropic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 - View documentation for [explaining code in the IDE](../user/gitlab_duo_chat_examples.md#explain-code-in-the-ide).
 
@@ -100,7 +99,7 @@ DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Efficiently communicates the impact of your merge request changes.
+- Helps populate a merge request more quickly by generating a description based on the code changes.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
 - [View documentation](project/merge_requests/ai_in_merge_requests.md#generate-a-description-by-summarizing-code-changes).
 
@@ -110,7 +109,7 @@ DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Generates a description for the merge request based on the contents of the template.
+- Helps populate a merge request more quickly by generating a description based on the contents of the template.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
 - [View documentation](project/merge_requests/ai_in_merge_requests.md#generate-a-description-from-a-template).
 
@@ -120,7 +119,7 @@ DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Helps you remediate vulnerabilities more efficiently, boost your skills, and write more secure code.
+- Helps you understand vulnerabilities, how they can be exploited, and how to fix them.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text). If degraded performance, then Anthropic [`Claude-2.1`](https://docs.anthropic.com/claude/docs/models-overview#model-comparison).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/ctD_qcVpIJY)
 - [View documentation](application_security/vulnerabilities/index.md#explaining-a-vulnerability).
@@ -143,7 +142,7 @@ DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page.
+- Helps everyone get up to speed by summarizing lengthy conversations.
 - LLM: Anthropic [`Claude-2.1`](https://docs.anthropic.com/claude/docs/models-overview#model-comparison)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
 - [View documentation](ai_experiments.md#summarize-issue-discussions-with-discussion-summary).
@@ -154,7 +153,7 @@ DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Generates issue descriptions.
+- Helps populate an issue more quickly by generating a more in-depth description, based on a short summary you provide.
 - LLM: Anthropic [`Claude-2.1`](https://docs.anthropic.com/claude/docs/models-overview#model-comparison)
 - [View documentation](ai_experiments.md#summarize-an-issue-with-issue-description-generation).
 
@@ -164,7 +163,7 @@ DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions.
+- Helps make merge request handover to reviewers easier by summarizing all the comments in a merge request review.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](project/merge_requests/ai_in_merge_requests.md#summarize-a-code-review).
@@ -175,7 +174,7 @@ DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Generates a merge request containing the changes required to mitigate a vulnerability.
+- Help resolve a vulnerability by generating a merge request that addresses it.
 - LLM: Vertex AI Codey [`code-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-generation)
 - [View documentation](application_security/vulnerabilities/index.md#vulnerability-resolution).
 
@@ -185,7 +184,7 @@ DETAILS:
 **Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Helps you understand code by explaining it in English language.
+- Helps you understand the selected code by explaining it more clearly.
 - LLM: Anthropic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
 - View documentation for explaining code in:
   - [A file](../user/project/repository/code_explain.md).
@@ -197,7 +196,7 @@ DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Assists you in determining the root cause for a CI/CD job failure by analyzing the logs.
+- Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
 - [View documentation](ai_experiments.md#root-cause-analysis).
 
@@ -207,7 +206,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-- Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle.
+- Helps you improve planning and decision-making by predicting productivity metrics and identifying anomalies across your software development lifecycle.
 - LLM: Statistical forecasting
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=6u8_8QQ5pEQ&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](ai_experiments.md#forecast-deployment-frequency-with-value-stream-forecasting).
@@ -228,7 +227,7 @@ DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
-- Helps users generate meaningful commit messages for merge and squash commits.
+- Helps you merge more quickly by generating meaningful commit messages.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text).
 - [View documentation](project/merge_requests/ai_in_merge_requests.md#generate-a-merge-or-squash-commit-message).
 

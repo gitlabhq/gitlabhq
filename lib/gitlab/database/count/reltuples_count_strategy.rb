@@ -91,7 +91,7 @@ module Gitlab
 
           if check_statistics
             query = query.where('last_vacuum > ? OR last_autovacuum > ? OR last_analyze > ? OR last_autoanalyze > ?',
-                                time, time, time, time)
+              time, time, time, time)
           end
 
           query

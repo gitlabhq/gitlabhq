@@ -300,7 +300,7 @@ module MergeRequestsHelper
   end
 
   def merge_request_header(project, merge_request)
-    link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-weight-bold gl-mr-2', avatar: false)
+    link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-bold gl-mr-2', avatar: false)
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
     copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' aria-hidden=true>#{copy_action_shortcut}</kbd>"

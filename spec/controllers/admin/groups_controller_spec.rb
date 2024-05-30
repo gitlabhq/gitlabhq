@@ -29,7 +29,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
       get :index
 
       html_rendered = Nokogiri::HTML(response.body)
-      sort_options = Gitlab::Json.parse(html_rendered.css('div.dropdown')[0]['data-items'])
+      sort_options = Gitlab::Json.parse(html_rendered.css('[data-items]')[0]['data-items'])
 
       expect(response).to render_template('shared/groups/_dropdown')
 

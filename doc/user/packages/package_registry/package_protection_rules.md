@@ -52,6 +52,22 @@ To protect a package:
 
 The package protection rule is created, and appears in the settings.
 
+### Protecting multiple packages
+
+You can use a wildcard to protect multiple packages with the same package protection rule.
+For example, you can protect all the temporary packages built during a CI/CD pipeline.
+
+The following table contains examples of package protection rules that match multiple packages:
+
+| Package name pattern with wildcard | Matching packages                                                           |
+|------------------------------------|-----------------------------------------------------------------------------|
+| `@group/package-*`                 | `@group/package-prod`, `@group/package-prod-sha123456789`                   |
+| `@group/*package`                  | `@group/package`, `@group/prod-package`, `@group/prod-sha123456789-package` |
+| `@group/*package*`                 | `@group/package`, `@group/prod-sha123456789-package-v1`                     |
+
+It's possible to apply several protection rules to the same package.
+If at least one protection rule applies to the package, the package is protected.
+
 ## Delete a package protection rule and unprotect a package
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140483) in GitLab 16.10.

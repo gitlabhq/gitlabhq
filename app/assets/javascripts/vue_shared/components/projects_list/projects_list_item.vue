@@ -268,7 +268,7 @@ export default {
         >
           <template #meta>
             <div class="gl-px-2">
-              <div class="gl-mx-n2 gl-display-flex gl-align-items-center gl-flex-wrap">
+              <div class="-gl-mx-2 gl-display-flex gl-align-items-center gl-flex-wrap">
                 <div class="gl-px-2">
                   <gl-icon
                     v-if="visibility"
@@ -306,7 +306,7 @@ export default {
           </gl-truncate-text>
           <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
             <div
-              class="gl-w-full gl-display-inline-flex gl-flex-wrap gl-font-base gl-font-weight-normal gl-align-items-center gl-mx-n2 -gl-my-2"
+              class="gl-w-full gl-display-inline-flex gl-flex-wrap gl-font-base gl-font-weight-normal gl-align-items-center -gl-mx-2 -gl-my-2"
             >
               <span class="gl-p-2 gl-font-sm gl-text-secondary">{{ $options.i18n.topics }}:</span>
               <div v-for="topic in visibleTopics" :key="topic" class="gl-p-2">
@@ -330,7 +330,7 @@ export default {
                   </gl-sprintf>
                 </div>
                 <gl-popover :target="topicsPopoverTarget" :title="$options.i18n.moreTopics">
-                  <div class="gl-font-base gl-font-weight-normal gl-mx-n2 -gl-my-2">
+                  <div class="gl-font-base gl-font-weight-normal -gl-mx-2 -gl-my-2">
                     <div
                       v-for="topic in popoverTopics"
                       :key="topic"

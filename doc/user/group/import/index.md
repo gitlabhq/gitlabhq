@@ -246,6 +246,10 @@ To ensure GitLab maps users and their contributions correctly:
 1. If users already exist on the destination instance and you use [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md), all users must
    [link their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#link-saml-to-your-existing-gitlabcom-account).
 
+There is no way in the GitLab UI or API to automatically set public email addresses for users. If you need to set
+a lot of user accounts to have public email addresses, see
+[issue 284495](https://gitlab.com/gitlab-org/gitlab/-/issues/284495#note_1910159855) for a potential workaround.
+
 ## Connect the source GitLab instance
 
 Create the group you want to import to and connect the source GitLab instance:

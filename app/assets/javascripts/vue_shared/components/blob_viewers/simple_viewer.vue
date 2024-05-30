@@ -158,7 +158,7 @@ export default {
         >
           <a
             v-if="showBlameLink"
-            class="gl-select-none !gl-shadow-none file-line-blame gl-mx-n2"
+            class="gl-select-none !gl-shadow-none file-line-blame -gl-mx-2"
             :href="`${blamePath}#L${line}`"
           ></a>
           <a

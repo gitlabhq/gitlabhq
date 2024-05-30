@@ -147,7 +147,7 @@ export default {
             :work-item-type="issue.type"
             event-namespace="relatedIssue"
             data-testid="related-issuable-content"
-            class="gl-mx-n2"
+            class="-gl-mx-2"
             @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"
           />
         </li>

@@ -4,10 +4,10 @@ import { __, s__ } from '~/locale';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 
 // Overridden in EE
-export const EE_GROUPS_APP_OPTIONS = {};
-export const EE_PROJECTS_APP_OPTIONS = {};
+export const GROUPS_APP_OPTIONS = {};
+export const PROJECTS_APP_OPTIONS = {};
 
-export const EE_ACTION_BUTTONS = {};
+export const ACTION_BUTTONS = {};
 
 export const FIELD_KEY_ACCOUNT = 'account';
 export const FIELD_KEY_SOURCE = 'source';
@@ -161,7 +161,7 @@ export const AVAILABLE_FILTERED_SEARCH_TOKENS = [
 
 export const AVATAR_SIZE = 48;
 
-export const MEMBER_TYPES = Object.freeze({
+export const MEMBERS_TAB_TYPES = Object.freeze({
   user: 'user',
   group: 'group',
   invite: 'invite',

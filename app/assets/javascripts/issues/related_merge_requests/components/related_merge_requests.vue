@@ -120,7 +120,7 @@ export default {
                 :is-merge-request="true"
                 :pipeline-status="mr.head_pipeline && mr.head_pipeline.detailed_status"
                 path-id-separator="!"
-                class="gl-mx-n2"
+                class="-gl-mx-2"
               />
             </li>
           </ul>

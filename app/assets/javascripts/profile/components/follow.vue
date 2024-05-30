@@ -87,7 +87,7 @@ export default {
     :title="emptyStateTitle"
   />
   <div v-else>
-    <div class="-gl-my-3 gl-mx-n3 gl-display-flex gl-flex-wrap">
+    <div class="-gl-my-3 -gl-mx-3 gl-display-flex gl-flex-wrap">
       <div v-for="user in users" :key="user.id" class="gl-p-3 gl-w-full gl-md-w-half gl-lg-w-25p">
         <gl-avatar-link
           :href="user.web_url"

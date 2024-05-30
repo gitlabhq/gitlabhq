@@ -1,5 +1,14 @@
 <script>
-import { GlAlert, GlButton, GlFormGroup, GlForm, GlFormInput, GlFormSelect } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlFormGroup,
+  GlForm,
+  GlFormInput,
+  GlFormSelect,
+  GlSprintf,
+} from '@gitlab/ui';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import createPackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_packages_protection_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 
@@ -20,11 +29,16 @@ export default {
     GlFormGroup,
     GlAlert,
     GlForm,
+    GlSprintf,
+    HelpPageLink,
   },
   inject: ['projectPath'],
   i18n: {
     PACKAGES_PROTECTION_RULES_SAVED_SUCCESS_MESSAGE,
     PACKAGES_PROTECTION_RULES_SAVED_ERROR_MESSAGE,
+    packageNamePatternInputHelpText: s__(
+      'PackageRegistry|%{linkStart}Wildcards%{linkEnd} such as `@my-scope/my-package-*` are supported.',
+    ),
   },
   data() {
     return {
@@ -132,6 +146,17 @@ export default {
           required
           :disabled="isFieldDisabled"
         />
+        <template #description>
+          <gl-sprintf :message="$options.i18n.packageNamePatternInputHelpText">
+            <template #link="{ content }">
+              <help-page-link
+                href="user/packages/package_registry/package_protection_rules.md"
+                target="_blank"
+                >{{ content }}</help-page-link
+              >
+            </template>
+          </gl-sprintf>
+        </template>
       </gl-form-group>
 
       <gl-form-group

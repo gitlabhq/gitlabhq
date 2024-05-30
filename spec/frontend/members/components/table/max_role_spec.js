@@ -7,7 +7,7 @@ import Vuex from 'vuex';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
 import MaxRole from '~/members/components/table/max_role.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBERS_TAB_TYPES } from '~/members/constants';
 import { guestOverageConfirmAction } from 'ee_else_ce/members/guest_overage_confirm_action';
 import { logError } from '~/lib/logger';
 import * as utils from 'ee_else_ce/members/utils';
@@ -36,7 +36,7 @@ describe('MaxRole', () => {
 
     return new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.user]: { namespaced: true, actions },
+        [MEMBERS_TAB_TYPES.user]: { namespaced: true, actions },
       },
     });
   };
@@ -44,7 +44,7 @@ describe('MaxRole', () => {
   const createComponent = (propsData = {}, store = createStore()) => {
     wrapper = mount(MaxRole, {
       provide: {
-        namespace: MEMBER_TYPES.user,
+        namespace: MEMBERS_TAB_TYPES.user,
         group: {
           name: 'groupname',
           path: '/grouppath/',

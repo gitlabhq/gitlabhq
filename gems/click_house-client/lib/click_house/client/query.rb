@@ -3,9 +3,9 @@
 module ClickHouse
   module Client
     class Query < QueryLike
-      SUBQUERY_PLACEHOLDER_REGEX = /{\w+:Subquery}/ # exmaple: {var:Subquery}, special "internal" type for subqueries
-      PLACEHOLDER_REGEX = /{\w+:\w+}/ # exmaple: {var:UInt8}
-      PLACEHOLDER_NAME_REGEX = /{(\w+):/ # exmaple: {var:UInt8} => var
+      SUBQUERY_PLACEHOLDER_REGEX = /{\w+:Subquery}/ # example: {var:Subquery}, special "internal" type for subqueries
+      PLACEHOLDER_REGEX = /{\w+:\w+}/ # example: {var:UInt8}
+      PLACEHOLDER_NAME_REGEX = /{(\w+):/ # example: {var:UInt8} => var
 
       def initialize(raw_query:, placeholders: {})
         raise QueryError, 'Empty query string given' if raw_query.blank?

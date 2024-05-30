@@ -1,5 +1,5 @@
 <script>
-import { MEMBER_TYPES } from 'ee_else_ce/members/constants';
+import { MEMBERS_TAB_TYPES } from 'ee_else_ce/members/constants';
 import {
   isGroup,
   isDirectMember,
@@ -31,16 +31,16 @@ export default {
     },
     memberType() {
       if (this.isGroup) {
-        return MEMBER_TYPES.group;
+        return MEMBERS_TAB_TYPES.group;
       }
       if (this.isInvite) {
-        return MEMBER_TYPES.invite;
+        return MEMBERS_TAB_TYPES.invite;
       }
       if (this.isAccessRequest) {
-        return MEMBER_TYPES.accessRequest;
+        return MEMBERS_TAB_TYPES.accessRequest;
       }
 
-      return MEMBER_TYPES.user;
+      return MEMBERS_TAB_TYPES.user;
     },
     isDirectMember() {
       return isDirectMember(this.member);

@@ -217,9 +217,6 @@ export default {
     refText() {
       return this.pipeline?.refText;
     },
-    triggeredByPath() {
-      return this.pipeline?.triggeredByPath;
-    },
   },
   methods: {
     reportFailure(errorType, errorMessages = []) {

@@ -49,6 +49,11 @@ GitLab and the runner are then connected.
 
 Get a list of runners available to the user.
 
+Prerequisites:
+
+- You must be an administrator of or have the Owner role in the target namespace or project.
+- For `instance_type`, you must be an administrator of the GitLab instance.
+
 ```plaintext
 GET /runners
 GET /runners?scope=active
@@ -126,6 +131,11 @@ DETAILS:
 
 Get a list of all runners in the GitLab instance (project and shared). Access
 is restricted to users with administrator access.
+
+Prerequisites:
+
+- You must be an administrator of or have the Owner role in the target namespace or project.
+- For `instance_type`, you must be an administrator of the GitLab instance.
 
 ```plaintext
 GET /runners/all
@@ -226,10 +236,12 @@ To view more than the first 20 runners, use [pagination](rest/index.md#paginatio
 
 Get details of a runner.
 
-At least the Maintainer role is required to get runner details at the
-project and group level.
-
 Instance-level runner details via this endpoint are available to all authenticated users.
+
+Prerequisites:
+
+- You must at least the Developer role in the target namespace or project.
+- An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
 GET /runners/:id
@@ -313,6 +325,13 @@ Update details of a runner.
 PUT /runners/:id
 ```
 
+Prerequisites:
+
+- For `instance_type`, you must be an administrator of the GitLab instance.
+- For `group_type`, you must have the Owner role in the target namespace.
+- For `project_type`, you must have at least the Maintainer role in the target project.
+- An access token with the `manage_runner` scope and the appropriate role.
+
 | Attribute          | Type    | Required | Description                                                                                     |
 |--------------------|---------|----------|-------------------------------------------------------------------------------------------------|
 | `id`               | integer | yes      | The ID of a runner                                                                              |
@@ -389,6 +408,13 @@ Example response:
 ### Pause a runner
 
 Pause a runner.
+
+Prerequisites:
+
+- For `instance_type`, you must be an administrator of the GitLab instance.
+- For `group_type`, you must have the Owner role in the target namespace.
+- For `project_type`, you must have at least the Maintainer role in the target project.
+- An access token with the `manage_runner` scope and the appropriate role.
 
 ```plaintext
 PUT --form "paused=true" /runners/:runner_id
@@ -515,6 +541,10 @@ Example response:
 
 List all runners available in the project, including from ancestor groups and [any allowed shared runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
 
+Prerequisites:
+
+- You must be an administrator of or have at least the Maintainer role in the target project.
+
 ```plaintext
 GET /projects/:id/runners
 GET /projects/:id/runners?scope=active
@@ -589,6 +619,12 @@ Example response:
 
 Enable an available project runner in the project.
 
+Prerequisites:
+
+- For `instance_type`, you must be an administrator of the GitLab instance.
+- For `group_type`, you must have the Owner role in the target namespace.
+- For `project_type`, you must have at least the Maintainer role in the target project.
+
 ```plaintext
 POST /projects/:id/runners
 ```
@@ -633,6 +669,12 @@ Disable a project runner from the project. It works only if the project isn't
 the only project associated with the specified runner. If so, an error is
 returned. Use the call to [delete a runner](#delete-a-runner) instead.
 
+Prerequisites:
+
+- For `instance_type`, you must be an administrator of the GitLab instance.
+- For `group_type`, you must have the Owner role in the target namespace.
+- For `project_type`, you must have at least the Maintainer role in the target project.
+
 ```plaintext
 DELETE /projects/:id/runners/:runner_id
 ```
@@ -649,6 +691,10 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ## List group's runners
 
 List all runners available in the group as well as its ancestor groups, including [any allowed shared runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-group).
+
+Prerequisites:
+
+- You must be an administrator or have the Maintainer role of the target namespace.
 
 ```plaintext
 GET /groups/:id/runners
@@ -788,6 +834,13 @@ There are two ways to delete a runner:
 
 To delete the runner by ID, use your access token with the runner's ID:
 
+Prerequisites:
+
+- For `instance_type`, you must be an administrator of the GitLab instance.
+- For `group_type`, you must have the Owner role in the target namespace.
+- For `project_type`, you must have at least the Maintainer role in the target project.
+- An access token with the `manage_runner` scope and the appropriate role.
+
 ```plaintext
 DELETE /runners/:id
 ```
@@ -803,6 +856,11 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 ### Delete a runner by authentication token
 
 To delete the runner by using its authentication token:
+
+Prerequisites:
+
+- You must be an administrator of or have the Owner role in the target namespace or project.
+- For `instance_type`, you must be an administrator of the GitLab instance.
 
 ```plaintext
 DELETE /runners
@@ -910,6 +968,13 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 Reset the runner's authentication token by using its runner ID.
 
+Prerequisites:
+
+- For `instance_type`, you must be an administrator of the GitLab instance.
+- For `group_type`, you must have the Owner role in the target namespace.
+- For `project_type`, you must have at least the Maintainer role in the target project.
+- An access token with the `manage_runner` scope and the appropriate role.
+
 ```plaintext
 POST /runners/:id/reset_authentication_token
 ```
@@ -935,6 +1000,11 @@ Example response:
 ## Reset runner's authentication token by using the current token
 
 Reset the runner's authentication token by using the current token's value as an input.
+
+Prerequisites:
+
+- You must be an administrator of or have the Owner role in the target namespace or project.
+- For `instance_type`, you must be an administrator of the GitLab instance.
 
 ```plaintext
 POST /runners/reset_authentication_token

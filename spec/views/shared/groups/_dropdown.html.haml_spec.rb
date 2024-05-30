@@ -15,7 +15,7 @@ RSpec.describe 'shared/groups/_dropdown.html.haml' do
 
       it 'renders correct sort by options' do
         html_rendered = Nokogiri::HTML(rendered)
-        sort_options = Gitlab::Json.parse(html_rendered.css('div.dropdown')[0]['data-items'])
+        sort_options = Gitlab::Json.parse(html_rendered.css('[data-items]')[0]['data-items'])
 
         expect(sort_options.size).to eq(6)
         expect(sort_options[0]['value']).to eq('name_asc')

@@ -38,7 +38,7 @@ export default {
       class="gl-p-0! gl-absolute gl-z-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
     >
       <a
-        class="gl-select-none !gl-shadow-none file-line-blame gl-mx-n2 gl-flex-grow-1"
+        class="gl-select-none !gl-shadow-none file-line-blame -gl-mx-2 gl-flex-grow-1"
         :href="`${blamePath}${pageSearchString}#L${number}`"
       ></a>
       <a
