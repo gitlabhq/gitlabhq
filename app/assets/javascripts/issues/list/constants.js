@@ -357,11 +357,13 @@ export const filtersMap = {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'iterationId',
       [SPECIAL_FILTER]: 'iterationWildcardId',
+      [ALTERNATIVE_FILTER]: 'iterationCadenceId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'iteration_id',
         [SPECIAL_FILTER]: 'iteration_id',
+        [ALTERNATIVE_FILTER]: 'iteration_cadence_id',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[iteration_id]',

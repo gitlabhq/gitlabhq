@@ -13,8 +13,8 @@ module Gitlab
 
       def bundle_full_path
         File.join(shared.export_path,
-                  ::Gitlab::ImportExport.snippet_repo_bundle_dir,
-                  ::Gitlab::ImportExport.snippet_repo_bundle_filename_for(repository.container))
+          ::Gitlab::ImportExport.snippet_repo_bundle_dir,
+          ::Gitlab::ImportExport.snippet_repo_bundle_filename_for(repository.container))
       end
     end
   end

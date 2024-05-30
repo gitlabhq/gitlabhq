@@ -1,0 +1,119 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require 'open3'
+
+class GenerateSelectsForMissingShardingKey
+  attr_reader :psql_command
+
+  def self.for_cli
+    options = parse_options
+
+    new(**options)
+  end
+
+  def self.parse_options
+    options = {}
+
+    OptionParser.new do |opts|
+      opts.banner = "Usage: generate-selects-for-missing-sharding-key [options]"
+
+      opts.on('-p', '--psql COMMAND', 'Default: gdk psql -c') do |value|
+        options[:psql_command] = value
+      end
+      opts.on('--debug', 'Enable debugging output') { options[:debug] = true }
+    end.parse!
+
+    options
+  end
+
+  def initialize(psql_command: 'gdk psql -c', debug: false)
+    @psql_command = psql_command
+    @debug = debug
+  end
+
+  def execute
+    print_selects_for_tables_without_sharding_key
+  end
+
+  def print_selects_for_tables_without_sharding_key
+    table_names = get_table_names(without_columns: %w[organization_id namespace_id project_id])
+    table_names.each do |table_name|
+      copy_select_sql = <<~SQL
+        COPY (
+          SELECT #{table_name}.*
+          FROM #{table_name}
+        )
+        TO STDOUT
+        WITH (FORMAT CSV, HEADER)
+      SQL
+
+      puts copy_select_sql.split.join(' ')
+    end
+  end
+
+  def get_table_names(with_column: nil, without_columns: nil)
+    command = <<-SQL
+      COPY (
+        SELECT DISTINCT table_name
+        FROM information_schema.columns
+        WHERE
+          table_schema = 'public'
+          #{with_column_clause(with_column)}
+          #{without_columns_clause(without_columns)}
+      ) TO STDOUT
+    SQL
+
+    table_names_str, status = psql(command)
+    raise "Failed to get tables with #{column_name} column" unless status.success?
+
+    table_names_str.split("\n")
+  end
+
+  def with_column_clause(with_column)
+    return unless with_column
+
+    "AND column_name = '#{with_column}'"
+  end
+
+  def without_columns_clause(without_columns)
+    return unless without_columns
+
+    <<-SQL
+      AND table_name NOT IN (
+        SELECT table_name
+        FROM information_schema.columns
+        WHERE
+          table_schema = 'public'
+          AND column_name IN ('#{without_columns.join("','")}')
+      )
+    SQL
+  end
+
+  def psql(query)
+    command = psql_command.split << query.split.join(' ')
+
+    capture2(command)
+  end
+
+  def capture2(command)
+    debug %(Run command: #{command.inspect})
+
+    stdout_str, status = Open3.capture2(*command)
+
+    debug %(Run command: stdout: "#{stdout_str}", exitstatus: "#{status.exitstatus}")
+
+    [stdout_str, status]
+  end
+
+  def debug(output)
+    puts "[DEBUG] #{output}" if debug?
+  end
+
+  def debug?
+    !!@debug
+  end
+end
+
+GenerateSelectsForMissingShardingKey.for_cli.execute

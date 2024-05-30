@@ -129,7 +129,7 @@ export default {
         'author-name-link': true,
         'js-user-link': true,
         'gl-overflow-hidden': true,
-        'gl-overflow-wrap-break': true,
+        'gl-break-words': true,
       };
     },
     authorName() {

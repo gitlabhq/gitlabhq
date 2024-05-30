@@ -73,8 +73,8 @@ module Gitlab
 
         def members_mapper
           @members_mapper ||= Gitlab::ImportExport::MembersMapper.new(exported_members: @project_members,
-                                                                      user: @user,
-                                                                      importable: @project)
+            user: @user,
+            importable: @project)
         end
 
         def object_builder

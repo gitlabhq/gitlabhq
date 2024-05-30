@@ -19281,6 +19281,9 @@ msgstr ""
 msgid "DuoProTrial|Purchase now"
 msgstr ""
 
+msgid "DuoProTrial|Sign in with a different account"
+msgstr ""
+
 msgid "DuoProTrial|Start your free Duo Pro trial"
 msgstr ""
 
@@ -19290,7 +19293,13 @@ msgstr ""
 msgid "DuoProTrial|Test generation"
 msgstr ""
 
+msgid "DuoProTrial|To register for a trial of GitLab Duo Pro, you must be an Owner of a top-level group that has an active paid subscription or is on an Ultimate trial."
+msgstr ""
+
 msgid "DuoProTrial|We just need some additional information to activate your trial."
+msgstr ""
+
+msgid "DuoProTrial|You do not have access to the GitLab Duo Pro trial"
 msgstr ""
 
 msgid "DuoProTrial|You have successfully created a trial subscription for GitLab Duo Pro. It will expire on %{exp_date}.%{new_line}To get started, enable the GitLab Duo Pro add-on for team members on this page by turning on the toggle for each team member. The subscription may take a minute to sync, so refresh the page if it's not visible yet."
@@ -57873,6 +57882,9 @@ msgid "VulnerabilityExport|Vulnerability"
 msgstr ""
 
 msgid "VulnerabilityManagement|%{statusStart}Confirmed%{statusEnd} · %{timeago} by %{user}"
+msgstr ""
+
+msgid "VulnerabilityManagement|%{statusStart}Detected%{statusEnd} · %{timeago}"
 msgstr ""
 
 msgid "VulnerabilityManagement|%{statusStart}Detected%{statusEnd} · %{timeago} in pipeline %{pipelineLink}"

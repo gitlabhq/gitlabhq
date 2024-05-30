@@ -33,7 +33,7 @@ module Gitlab
 
       def log_upload_success(path, duration_s)
         logger.info(log_labels.merge(perf_report_status: 'upload success', perf_report_path: path,
-                                     duration_s: duration_s))
+          duration_s: duration_s))
       end
 
       def log_exception(error)

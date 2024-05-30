@@ -346,7 +346,8 @@ module Types
       null: true,
       authorize: :read_build,
       description: 'Jobs of a project. This field can only be resolved for one project in any single request.',
-      resolver: Resolvers::ProjectJobsResolver
+      resolver: Resolvers::ProjectJobsResolver,
+      connection_extension: ::Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
     field :job,
       type: Types::Ci::JobType,

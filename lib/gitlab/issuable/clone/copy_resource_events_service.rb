@@ -49,7 +49,7 @@ module Gitlab
             event.attributes
               .except(*blocked_state_event_attributes)
               .merge(entity_key => new_entity.id,
-                     'state' => ResourceStateEvent.states[event.state])
+                'state' => ResourceStateEvent.states[event.state])
           end
         end
 
@@ -62,9 +62,9 @@ module Gitlab
           event.attributes
             .except('id')
             .merge(entity_key => new_entity.id,
-                   'milestone_id' => milestone&.id,
-                   'action' => ResourceMilestoneEvent.actions[event.action],
-                   'state' => ResourceMilestoneEvent.states[event.state])
+              'milestone_id' => milestone&.id,
+              'action' => ResourceMilestoneEvent.actions[event.action],
+              'state' => ResourceMilestoneEvent.states[event.state])
         end
 
         def copy_events(table_name, events_to_copy)

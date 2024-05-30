@@ -194,6 +194,8 @@ module Ci
     scope :with_coverage, -> { where.not(coverage: nil) }
     scope :without_coverage, -> { where(coverage: nil) }
     scope :with_coverage_regex, -> { where.not(coverage_regex: nil) }
+    scope :id_before, ->(id) { where(arel_table[:id].lt(id)) }
+    scope :id_after, ->(id) { where(arel_table[:id].gt(id)) }
 
     scope :in_merge_request, ->(merge_request_id) do
       joins(:pipeline).where(Ci::Pipeline.arel_table[:merge_request_id].eq(merge_request_id))

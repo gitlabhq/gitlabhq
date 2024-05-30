@@ -1,4 +1,6 @@
 import produce from 'immer';
+import { TYPENAME_ITERATIONS_CADENCE } from '~/graphql_shared/constants';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -293,12 +295,22 @@ export const isAssigneeIdParam = (type, data) => {
   );
 };
 
+export const isIterationCadenceIdParam = (type, data) => {
+  return type === TOKEN_TYPE_ITERATION && data?.includes('&');
+};
+
 const getFilterType = ({ type, value: { data, operator } }) => {
   const isUnionedAuthor = type === TOKEN_TYPE_AUTHOR && operator === OPERATOR_OR;
   const isUnionedLabel = type === TOKEN_TYPE_LABEL && operator === OPERATOR_OR;
   const isAfter = operator === OPERATOR_AFTER;
 
-  if (isUnionedAuthor || isUnionedLabel || isAssigneeIdParam(type, data) || isAfter) {
+  if (
+    isUnionedAuthor ||
+    isUnionedLabel ||
+    isAssigneeIdParam(type, data) ||
+    isIterationCadenceIdParam(type, data) ||
+    isAfter
+  ) {
     return ALTERNATIVE_FILTER;
   }
   if (specialFilterValues.includes(data)) {
@@ -339,6 +351,14 @@ const formatData = (token) => {
   return token.value.data;
 };
 
+function fullIterationCadenceId(id) {
+  if (!id) {
+    return null;
+  }
+
+  return convertToGraphQLId(TYPENAME_ITERATIONS_CADENCE, getIdFromGraphQLId(id));
+}
+
 export const convertToApiParams = (filterTokens) => {
   const params = new Map();
   const not = new Map();
@@ -356,7 +376,21 @@ export const convertToApiParams = (filterTokens) => {
       obj = params;
     }
     const data = formatData(token);
-    obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
+    if (isIterationCadenceIdParam(token.type, token.value.data)) {
+      const [iteration, cadence] = data.split('&');
+      const cadenceId = fullIterationCadenceId(cadence);
+      const iterationWildCardId = iteration.toUpperCase();
+      obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), cadenceId].flat() : cadenceId);
+      const secondApiField = filtersMap[token.type][API_PARAM][SPECIAL_FILTER];
+      obj.set(
+        secondApiField,
+        obj.has(secondApiField)
+          ? [obj.get(secondApiField), iterationWildCardId].flat()
+          : iterationWildCardId,
+      );
+    } else {
+      obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
+    }
   });
 
   if (not.size) {

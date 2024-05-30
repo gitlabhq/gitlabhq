@@ -50,18 +50,18 @@ module Gitlab
 
                 # stack.push MonitorClass, args*, max_strikes:, kwargs**, &block
                 stack.push Gitlab::Memory::Watchdog::Monitor::HeapFragmentation,
-                           max_heap_fragmentation: max_heap_frag,
-                           max_strikes: max_strikes
+                  max_heap_fragmentation: max_heap_frag,
+                  max_strikes: max_strikes
 
                 stack.push Gitlab::Memory::Watchdog::Monitor::UniqueMemoryGrowth,
-                           max_mem_growth: max_mem_growth,
-                           max_strikes: max_strikes
+                  max_mem_growth: max_mem_growth,
+                  max_strikes: max_strikes
               else
                 memory_limit = ENV.fetch('PUMA_WORKER_MAX_MEMORY', DEFAULT_PUMA_WORKER_RSS_LIMIT_MB).to_i
 
                 stack.push Gitlab::Memory::Watchdog::Monitor::RssMemoryLimit,
-                           memory_limit_bytes: memory_limit.megabytes,
-                           max_strikes: max_strikes
+                  memory_limit_bytes: memory_limit.megabytes,
+                  max_strikes: max_strikes
               end
             end
           end
@@ -81,18 +81,18 @@ module Gitlab
                 max_strikes = grace_time / sidekiq_sleep_time
 
                 stack.push Gitlab::Memory::Watchdog::Monitor::RssMemoryLimit,
-                           memory_limit_bytes: soft_limit_bytes,
-                           max_strikes: max_strikes.to_i,
-                           monitor_name: :rss_memory_soft_limit
+                  memory_limit_bytes: soft_limit_bytes,
+                  max_strikes: max_strikes.to_i,
+                  monitor_name: :rss_memory_soft_limit
               end
 
               if ENV['SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS'].to_i.nonzero?
                 hard_limit_bytes = ENV['SIDEKIQ_MEMORY_KILLER_HARD_LIMIT_RSS'].to_i.kilobytes
 
                 stack.push Gitlab::Memory::Watchdog::Monitor::RssMemoryLimit,
-                           memory_limit_bytes: hard_limit_bytes,
-                           max_strikes: 0,
-                           monitor_name: :rss_memory_hard_limit
+                  memory_limit_bytes: hard_limit_bytes,
+                  max_strikes: 0,
+                  monitor_name: :rss_memory_hard_limit
               end
             end
           end

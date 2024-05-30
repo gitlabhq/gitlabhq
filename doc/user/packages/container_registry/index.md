@@ -29,11 +29,6 @@ You can view the container registry for a project or group.
 You can search, sort, filter, and [delete](delete_container_registry_images.md#use-the-gitlab-ui)
 your container images. You can share a filtered view by copying the URL from your browser.
 
-Only members of the project or group can access the container registry for a private project.
-Container images downloaded from a private registry may be [available to other users in an instance runner](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
-
-If a project is public, the container registry is also public.
-
 ### View the tags of a specific container image in the container registry
 
 You can use the container registry **Tag Details** page to view a list of tags associated with a given container image:

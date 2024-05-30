@@ -1245,17 +1245,14 @@ class MergeRequest < ApplicationRecord
   def skipped_mergeable_checks(options = {})
     merge_when_checks_pass_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
 
-    skip_additional_checks = merge_when_checks_pass_strat &&
-      ::Feature.enabled?(:additional_merge_when_checks_ready, project)
-
     {
       skip_ci_check: options.fetch(:auto_merge_requested, false),
       skip_approved_check: merge_when_checks_pass_strat,
-      skip_draft_check: skip_additional_checks,
-      skip_blocked_check: skip_additional_checks,
-      skip_discussions_check: skip_additional_checks,
-      skip_external_status_check: skip_additional_checks,
-      skip_requested_changes_check: skip_additional_checks
+      skip_draft_check: merge_when_checks_pass_strat,
+      skip_blocked_check: merge_when_checks_pass_strat,
+      skip_discussions_check: merge_when_checks_pass_strat,
+      skip_external_status_check: merge_when_checks_pass_strat,
+      skip_requested_changes_check: merge_when_checks_pass_strat
     }
   end
 

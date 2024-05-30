@@ -47,7 +47,8 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
       expect(names).to eq([public_group.name])
     end
 
-    it 'includes accessible private groups ordered by name' do
+    it 'includes accessible private groups ordered by name',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444846' do
       private_group.add_maintainer(user)
 
       subject

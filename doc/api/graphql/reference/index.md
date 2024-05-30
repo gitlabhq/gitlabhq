@@ -28199,6 +28199,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectjobsname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.1. **Status**: Experiment. Filter jobs by name. |
 | <a id="projectjobsstatuses"></a>`statuses` | [`[CiJobStatus!]`](#cijobstatus) | Filter jobs by status. |
 | <a id="projectjobswithartifacts"></a>`withArtifacts` | [`Boolean`](#boolean) | Filter by artifacts presence. |
 

@@ -138,7 +138,7 @@ module Gitlab
 
       def parsed_hash(member)
         Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: member.deep_stringify_keys,
-                                                     relation_class: relation_class)
+          relation_class: relation_class)
       end
 
       def relation_class

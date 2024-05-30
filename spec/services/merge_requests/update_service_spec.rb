@@ -885,7 +885,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           update_merge_request(title: 'New title')
         end
 
-        context 'when additional_merge_when_checks_ready is enabled' do
+        context 'when merge_when_checks_pass is enabled' do
           it 'publishes a DraftStateChangeEvent' do
             expected_data = {
               current_user_id: user.id,
@@ -896,9 +896,9 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           end
         end
 
-        context 'when additional_merge_when_checks_ready is disabled' do
+        context 'when merge_when_checks_pass is disabled' do
           before do
-            stub_feature_flags(additional_merge_when_checks_ready: false)
+            stub_feature_flags(merge_when_checks_pass: false)
           end
 
           it 'does not publish a DraftStateChangeEvent' do
@@ -932,7 +932,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           should_not_email(non_subscriber)
         end
 
-        context 'when additional_merge_when_checks_ready is enabled' do
+        context 'when merge_when_checks_pass is enabled' do
           it 'publishes a DraftStateChangeEvent' do
             expected_data = {
               current_user_id: user.id,
@@ -943,9 +943,9 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           end
         end
 
-        context 'when additional_merge_when_checks_ready is disabled' do
+        context 'when merge_when_checks_pass is disabled' do
           before do
-            stub_feature_flags(additional_merge_when_checks_ready: false)
+            stub_feature_flags(merge_when_checks_pass: false)
           end
 
           it 'does not publish a DraftStateChangeEvent' do

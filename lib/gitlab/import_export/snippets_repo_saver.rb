@@ -18,8 +18,8 @@ module Gitlab
 
           @project.snippets.find_each.all? do |snippet|
             Gitlab::ImportExport::SnippetRepoSaver.new(project: @project,
-                                                       shared: @shared,
-                                                       repository: snippet.repository)
+              shared: @shared,
+              repository: snippet.repository)
                                                   .save
           end
         end

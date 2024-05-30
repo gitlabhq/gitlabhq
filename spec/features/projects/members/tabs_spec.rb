@@ -51,7 +51,7 @@ RSpec.describe 'Projects > Members > Tabs', :js, feature_category: :groups_and_p
       fill_in_filtered_search 'Search groups', with: 'group'
     end
 
-    it 'displays "Groups" tab' do
+    it 'displays "Groups" tab', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448573' do
       expect(page).to have_selector('.nav-link.active', text: 'Groups')
     end
 

@@ -11,10 +11,6 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-FLAG:
-On GitLab.com, this feature is available for a subset of users.
-On GitLab Dedicated, this feature is not available.
-
 This feature is in [beta](../../policy/experiment-beta-support.md).
 
 This tutorial shows you how to integrate Google Cloud with GitLab,

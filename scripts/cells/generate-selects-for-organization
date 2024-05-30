@@ -1,0 +1,237 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+require 'open3'
+
+class GenerateSelectsForOrganization
+  attr_reader :organization_ids, :root_namespace_ids, :psql_command
+
+  def self.for_cli
+    options = parse_options
+
+    new(**options)
+  end
+
+  def self.parse_options
+    options = {}
+
+    OptionParser.new do |opts|
+      opts.banner = "Usage: generate-selects-for-organization [options]"
+
+      opts.on('-o', '--organization-ids IDS', 'Organization ID(s). Integer, or a comma-separated list of integers.
+                                     Required if --root-namespace-ids is not specified.') do |value|
+        options[:organization_ids] = value.split(',').map(&:to_i)
+      end
+      opts.on('-n', '--root-namespace-ids IDS', 'Root namespace ID(s). Integer, or a comma-separated list of integers.
+                                     Required if --organization-ids is not specified.') do |value|
+        options[:root_namespace_ids] = value.split(',').map(&:to_i)
+      end
+      opts.on('-p', '--psql COMMAND', 'Default: gdk psql -c') do |value|
+        options[:psql_command] = value
+      end
+      opts.on('--debug', 'Enable debugging output') { options[:debug] = true }
+    end.parse!
+
+    if options[:organization_ids].nil? && options[:root_namespace_ids].nil?
+      raise '--organization-ids or --root-namespace-ids is required'
+    end
+
+    options
+  end
+
+  def initialize(organization_ids: nil, root_namespace_ids: nil, psql_command: 'gdk psql -c', debug: false)
+    @organization_ids = organization_ids.sort if organization_ids
+    @root_namespace_ids = root_namespace_ids.sort if root_namespace_ids
+    @psql_command = psql_command
+    @debug = debug
+  end
+
+  def execute
+    if organization_ids
+      print_selects_for_organizations
+    else
+      print_selects_for_root_namespaces
+    end
+  end
+
+  def print_selects_for_organizations
+    print_selects_by_organization_id(organization_ids)
+
+    namespace_ids = get_namespace_ids_for_organizations(organization_ids)
+    return unless namespace_ids.any?
+
+    print_selects_by_namespace_id(namespace_ids)
+
+    project_ids = get_project_ids_for_namespaces(namespace_ids)
+    return unless project_ids.any?
+
+    print_selects_by_project_id(project_ids)
+  end
+
+  def print_selects_for_root_namespaces
+    namespace_ids = get_namespace_ids_for_root_namespaces(root_namespace_ids)
+    print_selects_by_namespace_id(namespace_ids)
+
+    project_ids = get_project_ids_for_namespaces(namespace_ids)
+    return unless project_ids.any?
+
+    print_selects_by_project_id(project_ids)
+  end
+
+  def print_selects_by_organization_id(organization_ids)
+    print_selects_of_tables(
+      with_column: 'organization_id', with_ids: organization_ids)
+  end
+
+  def print_selects_by_namespace_id(namespace_ids)
+    print_selects_of_tables(
+      with_column: 'namespace_id', with_ids: namespace_ids, without_columns: %w[organization_id])
+  end
+
+  def print_selects_by_project_id(project_ids)
+    print_selects_of_tables(
+      with_column: 'project_id', with_ids: project_ids, without_columns: %w[organization_id namespace_id])
+  end
+
+  def print_selects_of_tables(with_column: nil, with_ids: nil, without_columns: nil)
+    table_names = get_table_names(with_column: with_column, without_columns: without_columns)
+
+    table_names.each do |table_name|
+      with_column_and_ids_clause = <<~SQL
+        WHERE #{table_name}.#{with_column}
+        IN (#{with_ids.join(',')})
+      SQL
+
+      copy_select_sql = <<~SQL
+        COPY (
+          SELECT #{table_name}.*
+          FROM #{table_name}
+          #{with_column_and_ids_clause if with_ids}
+        )
+        TO STDOUT
+        WITH (FORMAT CSV, HEADER)
+      SQL
+
+      puts copy_select_sql.split.join(' ')
+    end
+  end
+
+  def get_namespace_ids_for_root_namespaces(root_namespace_ids)
+    command = <<-SQL
+      COPY (
+        SELECT DISTINCT namespaces.id
+        FROM namespaces
+        WHERE namespaces.traversal_ids[1] IN (#{root_namespace_ids.join(',')})
+        ORDER BY namespaces.id ASC
+      )
+      TO STDOUT
+    SQL
+
+    namespace_ids_str, status = psql(command)
+    raise "Failed to get namespace ids for root namespaces" unless status.success?
+
+    namespace_ids_str.split("\n")
+  end
+
+  def get_table_names(with_column: nil, without_columns: nil)
+    command = <<-SQL
+      COPY (
+        SELECT DISTINCT table_name
+        FROM information_schema.columns
+        WHERE
+          table_schema = 'public'
+          #{with_column_clause(with_column)}
+          #{without_columns_clause(without_columns)}
+      ) TO STDOUT
+    SQL
+
+    table_names_str, status = psql(command)
+    raise "Failed to get tables with #{column_name} column" unless status.success?
+
+    table_names_str.split("\n")
+  end
+
+  def with_column_clause(with_column)
+    return unless with_column
+
+    "AND column_name = '#{with_column}'"
+  end
+
+  def without_columns_clause(without_columns)
+    return unless without_columns
+
+    <<-SQL
+      AND table_name NOT IN (
+        SELECT table_name
+        FROM information_schema.columns
+        WHERE
+          table_schema = 'public'
+          AND column_name IN ('#{without_columns.join("','")}')
+      )
+    SQL
+  end
+
+  # @return [Array<String>]
+  def get_namespace_ids_for_organizations(organization_ids)
+    namespace_ids_str, status = psql(
+      <<~SQL
+        COPY (
+          SELECT namespaces.id
+          FROM namespaces
+          WHERE namespaces.organization_id
+          IN (#{organization_ids.join(',')})
+          ORDER BY namespaces.id ASC
+        )
+        TO STDOUT
+      SQL
+    )
+    raise "Failed to get namespace ids for organizations" unless status.success?
+
+    namespace_ids_str.split("\n")
+  end
+
+  def get_project_ids_for_namespaces(namespace_ids)
+    project_ids_str, status = psql(
+      <<~SQL
+        COPY (
+          SELECT projects.id
+          FROM projects
+          WHERE projects.namespace_id
+          IN (#{namespace_ids.join(',')})
+          ORDER BY projects.id ASC
+        )
+        TO STDOUT
+      SQL
+    )
+    raise "Failed to get project ids for organizations" unless status.success?
+
+    project_ids_str.split("\n")
+  end
+
+  def psql(query)
+    command = psql_command.split << query.split.join(' ')
+
+    capture2(command)
+  end
+
+  def capture2(command)
+    debug %(Run command: #{command.inspect})
+
+    stdout_str, status = Open3.capture2(*command)
+
+    debug %(Run command: stdout: "#{stdout_str}", exitstatus: "#{status.exitstatus}")
+
+    [stdout_str, status]
+  end
+
+  def debug(output)
+    puts "[DEBUG] #{output}" if debug?
+  end
+
+  def debug?
+    !!@debug
+  end
+end
+
+GenerateSelectsForOrganization.for_cli.execute

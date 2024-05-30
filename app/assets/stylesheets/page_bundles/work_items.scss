@@ -69,62 +69,6 @@ $work-item-overview-gap-width: 2rem;
   }
 }
 
-//TODO: remove all the styles related to `gl-dropdown` when all `.work-item-dropdown`s are migrated
-.work-item-dropdown {
-  // duplicate classname because we are fighting with gl-button styles
-  .gl-dropdown-toggle.gl-dropdown-toggle {
-    background: none;
-
-    &:hover,
-    &:focus {
-      box-shadow: $work-item-field-inset-shadow;
-      background-color: $input-bg;
-
-      .gl-dark & {
-        // $input-bg is overridden in dark mode but that does not
-        // work in page bundles currently, manually override here
-        background-color: var(--gray-50, $input-bg);
-      }
-    }
-
-    &.is-not-focused:not(:hover, :focus) {
-      box-shadow: none;
-
-      .gl-button-icon {
-        visibility: hidden;
-      }
-    }
-  }
-
-  // need to override the listbox styles to match with dropdown
-  // till the dropdown are converted to listbox
-  .gl-new-dropdown-toggle.gl-new-dropdown-toggle {
-    &:hover,
-    &:focus {
-      box-shadow: $work-item-field-inset-shadow;
-      background-color: $input-bg;
-
-      .gl-dark & {
-        // $input-bg is overridden in dark mode but that does not
-        // work in page bundles currently, manually override here
-        background-color: var(--gray-50, $input-bg);
-      }
-    }
-
-    &:not(:hover, :focus) {
-      box-shadow: none;
-
-      .gl-new-dropdown-chevron {
-        visibility: hidden;
-      }
-    }
-  }
-
-  > .col {
-    min-width: 0;
-  }
-}
-
 // sticky error placement for errors in modals , by default it is 83px for full view
 #work-item-detail-modal {
   .flash-container.flash-container-page.sticky {
@@ -426,7 +370,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   position: absolute;
   bottom: 0;
   pointer-events: none;
-  
+
   &::before {
     content: '';
     display: block;
@@ -454,7 +398,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
       border-top: 1px solid $gray-50;
 
       .gl-dark & {
-        border-top: 1px solid $gray-900;       
+        border-top: 1px solid $gray-900;
       }
     }
   }
