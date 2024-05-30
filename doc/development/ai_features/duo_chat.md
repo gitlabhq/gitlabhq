@@ -196,8 +196,8 @@ NOTE:
 Tracing is available in Development and Testing environment only.
 It's not available in Production environment.
 
-1. Access to [LangSmith](https://smith.langchain.com/) site and create an account.
-1. Create [an API key](https://docs.smith.langchain.com/#create-an-api-key).
+1. Access to [LangSmith](https://smith.langchain.com/) site and create an account (You can also be added to GitLab organization).
+1. Create [an API key](https://docs.smith.langchain.com/#create-an-api-key) (be careful where you create API key - they can be created in personal namespace or in GL namespace).
 1. Set the following environment variables in GDK. You can define it in `env.runit` or directly `export` in the terminal.
 
     ```shell
@@ -208,7 +208,13 @@ It's not available in Production environment.
     export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with Prompt Library as the evaluation tool.
     ```
 
+  Project name is the existing project in LangSmith or new one. It's enough to put new name in the environment variable -
+project will be created during request.
+
 1. Restart GDK.
+1. Ask any question to chat.
+1. Observe project in the LangSmith [page](https://smith.langchain.com/) > Projects > [Project name]. 'Runs' tab should contain
+your last requests.
 
 ## Testing GitLab Duo Chat
 

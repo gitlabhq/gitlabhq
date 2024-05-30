@@ -582,7 +582,7 @@ variables:
   DAST_API_PROFILE: Quick
   DAST_API_OPENAPI: test-api-specification.json
   DAST_API_TARGET_URL: http://test-deployment/
-  DAST_API_PRE_SCRIPT: user-pre-scan-set-up.sh
+  DAST_API_PRE_SCRIPT: ./user-pre-scan-set-up.sh
   DAST_API_OVERRIDES_FILE: dast-api-overrides.json
   DAST_API_OVERRIDES_CMD: renew_token.py
   DAST_API_OVERRIDES_INTERVAL: 300

@@ -19,3 +19,4 @@ desired_sharding_key:
         table: cluster_agents
         sharding_key: project_id
         belongs_to: agent
+desired_sharding_key_migration_job_name: BackfillAgentActivityEventsAgentProjectId

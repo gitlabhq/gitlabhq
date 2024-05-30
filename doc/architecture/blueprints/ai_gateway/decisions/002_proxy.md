@@ -97,7 +97,7 @@ POST /v1/proxy/vertex-ai/(*path)
 - Response body is returned to clients as-is.
 - Response headers are filtered/replaced by AI Gateway accordingly e.g. Allow only `date`, `content-type`, `transfer-encoding` and filter out the rest.
 - Response status is returned to clients as-is.
-- HTTP Streaming is supoprted.
+- HTTP Streaming is supported.
 - if unsupported `path` is specified, AI Gateway responds with a 404 Not Found error.
 
 #### Access control

@@ -82,7 +82,7 @@ RSpec.describe 'Multiple view Diffs', :js, feature_category: :source_code_manage
         page.find('#parallel-diff-btn').click
       end
 
-      it 'lines without mapping cannot receive comments' do
+      it 'lines without mapping cannot receive comments', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/452347' do
         expect(page).not_to have_selector('td.line_content.nomappinginraw ~ td.diff-line-num > .add-diff-note')
         expect(page).to have_selector('td.line_content:not(.nomappinginraw) ~ td.diff-line-num > .add-diff-note')
       end

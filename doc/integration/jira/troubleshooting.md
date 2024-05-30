@@ -252,7 +252,20 @@ Your Jira project key must not have [restricted words and characters](https://co
 
 ### Jira credentials not allowed to access the data
 
-When you try to view the Jira issue list in GitLab, you might get this message:
+When you try to view the Jira issue list in GitLab, you might see one of the following messages:
+
+```plaintext
+An error occurred while requesting data from Jira: The value 'AB' does not exist for the field 'project'. Check your Jira integration configuration and try again.
+```
+
+This error occurs when using the wrong authentication credential type based on the type of Jira installation:
+
+- Jira Cloud requires an email and API token.
+- Jira Data Center and Server require a username and password combination.
+
+For more information, see the [integration guide](configure.md#configure-the-integration).
+
+To resolve this issue, update the authentication credentials to match the required authentication details for your type of Jira.
 
 ```plaintext
 The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.

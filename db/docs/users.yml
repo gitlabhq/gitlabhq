@@ -16,3 +16,9 @@ schema_inconsistencies:
 - type: missing_indexes
   object_name: index_users_on_id_and_last_activity_on_for_active_human_service
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139230
+- type: missing_indexes
+  object_name: index_users_on_public_email_trigram
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152249
+- type: missing_indexes
+  object_name: index_users_on_email_trigram
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152249
