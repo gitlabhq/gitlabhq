@@ -14,22 +14,22 @@ module Gitlab
         attribute :environment_name, paths: %w[labels gitlab_environment_name]
         attribute :generator_url, paths: %w[generatorURL]
         attribute :gitlab_y_label,
-                  paths: [%w[annotations gitlab_y_label],
-                          %w[annotations title],
-                          %w[annotations summary],
-                          %w[labels alertname]]
+          paths: [%w[annotations gitlab_y_label],
+                  %w[annotations title],
+                  %w[annotations summary],
+                  %w[labels alertname]]
         attribute :runbook, paths: %w[annotations runbook]
         attribute :starts_at,
-                  paths: 'startsAt',
-                  type: :time,
-                  fallback: -> { Time.current.utc }
+          paths: 'startsAt',
+          type: :time,
+          fallback: -> { Time.current.utc }
         attribute :status, paths: 'status'
         attribute :title,
-                  paths: [%w[annotations title],
-                          %w[annotations summary],
-                          %w[labels alertname]]
+          paths: [%w[annotations title],
+                  %w[annotations summary],
+                  %w[labels alertname]]
         attribute :starts_at_raw,
-                  paths: [%w[startsAt]]
+          paths: [%w[startsAt]]
         private :starts_at_raw
 
         attribute :severity_raw, paths: %w[labels severity]

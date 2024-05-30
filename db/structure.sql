@@ -945,6 +945,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_a253cb3cacdf() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "environments"
+  WHERE "environments"."id" = NEW."environment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_b4520c29ea74() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8902,6 +8918,7 @@ CREATE TABLE dora_daily_metrics (
     lead_time_for_changes_in_seconds integer,
     time_to_restore_service_in_seconds integer,
     incidents_count integer,
+    project_id bigint,
     CONSTRAINT dora_daily_metrics_deployment_frequency_positive CHECK ((deployment_frequency >= 0)),
     CONSTRAINT dora_daily_metrics_lead_time_for_changes_in_seconds_positive CHECK ((lead_time_for_changes_in_seconds >= 0))
 );
@@ -8947,6 +8964,7 @@ CREATE TABLE draft_notes (
     commit_id bytea,
     line_code text,
     internal boolean DEFAULT false NOT NULL,
+    note_type smallint,
     CONSTRAINT check_c497a94a0e CHECK ((char_length(line_code) <= 255))
 );
 
@@ -25878,6 +25896,8 @@ CREATE UNIQUE INDEX index_dora_configurations_on_project_id ON dora_configuratio
 
 CREATE UNIQUE INDEX index_dora_daily_metrics_on_environment_id_and_date ON dora_daily_metrics USING btree (environment_id, date);
 
+CREATE INDEX index_dora_daily_metrics_on_project_id ON dora_daily_metrics USING btree (project_id);
+
 CREATE UNIQUE INDEX index_dora_performance_scores_on_project_id_and_date ON dora_performance_scores USING btree (project_id, date);
 
 CREATE INDEX index_draft_notes_on_author_id ON draft_notes USING btree (author_id);
@@ -30334,6 +30354,8 @@ CREATE TRIGGER trigger_8fbb044c64ad BEFORE INSERT OR UPDATE ON design_management
 
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
 
+CREATE TRIGGER trigger_a253cb3cacdf BEFORE INSERT OR UPDATE ON dora_daily_metrics FOR EACH ROW EXECUTE FUNCTION trigger_a253cb3cacdf();
+
 CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_request_rule_sources FOR EACH ROW EXECUTE FUNCTION trigger_b4520c29ea74();
 
 CREATE TRIGGER trigger_c17a166692a2 BEFORE INSERT OR UPDATE ON audit_events_streaming_headers FOR EACH ROW EXECUTE FUNCTION trigger_c17a166692a2();
@@ -31545,6 +31567,9 @@ ALTER TABLE ONLY approval_project_rules
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_efb96ab1e2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dora_daily_metrics
+    ADD CONSTRAINT fk_efc32a39fa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_group_rules_groups
     ADD CONSTRAINT fk_efff219a48 FOREIGN KEY (approval_group_rule_id) REFERENCES approval_group_rules(id) ON DELETE CASCADE;

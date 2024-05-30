@@ -542,4 +542,5 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`webhook_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154046) | Event triggered when a webhook is created.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/8068) | Project, Group, Instance |
 | [`webhook_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102342) | Event triggered when a webhook is destroyed.| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/458817) | Project, Group, Instance |

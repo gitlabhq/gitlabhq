@@ -28,6 +28,12 @@ class DraftNote < ApplicationRecord
   validates :discussion_id, allow_nil: true, format: { with: /\A\h{40}\z/ }
   validates :line_code, length: { maximum: 255 }, allow_nil: true
 
+  enum note_type: {
+    Note: 0,
+    DiffNote: 1,
+    DiscussionNote: 2
+  }
+
   scope :authored_by, ->(u) { where(author_id: u.id) }
 
   delegate :file_path, :file_hash, :file_identifier_hash, to: :diff_file, allow_nil: true
@@ -77,6 +83,7 @@ class DraftNote < ApplicationRecord
   end
 
   def type
+    return note_type if note_type.present?
     return 'DiffNote' if on_diff?
     return 'DiscussionNote' if discussion_id.present?
 

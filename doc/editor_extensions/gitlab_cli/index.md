@@ -73,7 +73,7 @@ glab mr merge
 ## GitLab Duo for the CLI
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 The GitLab CLI includes features powered by [GitLab Duo](../../user/ai_features.md). These include:

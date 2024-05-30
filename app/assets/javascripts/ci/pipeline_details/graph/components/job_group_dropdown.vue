@@ -6,6 +6,7 @@ import {
   GlResizeObserverDirective,
 } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
+import { sprintf } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 import { JOB_DROPDOWN, SINGLE_JOB } from '../constants';
 import JobItem from './job_item.vue';
@@ -54,6 +55,7 @@ export default {
   data() {
     return {
       isMobile: false,
+      showTooltip: false,
     };
   },
   computed: {
@@ -61,17 +63,7 @@ export default {
       return this.pipelineId > -1 ? `${this.group.name}-${this.pipelineId}` : '';
     },
     jobStatusText() {
-      const textBuilder = [];
-      const { tooltip: statusTooltip } = this.group.status;
-
-      if (statusTooltip) {
-        const statusText = statusTooltip.charAt(0).toUpperCase() + statusTooltip.slice(1);
-        textBuilder.push(statusText);
-      } else {
-        textBuilder.push(this.group.status?.text);
-      }
-
-      return textBuilder.join(' ');
+      return this.jobItemTooltip(this.group);
     },
     placement() {
       // MR !49053:
@@ -80,6 +72,9 @@ export default {
       // until we find a better solution in
       // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2615
       return this.isMobile ? 'left' : 'right-start';
+    },
+    moreActionsTooltip() {
+      return !this.showTooltip ? this.jobStatusText : '';
     },
   },
   errorCaptured(err, _vm, info) {
@@ -95,8 +90,26 @@ export default {
         href: job.status?.detailsPath,
       };
     },
+    jobItemTooltip(job) {
+      const { tooltip: statusTooltip } = job.status;
+      const { text: statusText } = job.status;
+
+      if (statusTooltip) {
+        if (this.isDelayedJob) {
+          return sprintf(statusTooltip, { remainingTime: job.remainingTime });
+        }
+        return statusTooltip;
+      }
+      return statusText;
+    },
     handleResize() {
       this.isMobile = GlBreakpointInstance.getBreakpointSize() === 'xs';
+    },
+    showDropdown() {
+      this.showTooltip = true;
+    },
+    hideDropdown() {
+      this.showTooltip = false;
     },
   },
 };
@@ -105,13 +118,15 @@ export default {
   <gl-disclosure-dropdown
     :id="computedJobId"
     v-gl-resize-observer="handleResize"
-    v-gl-tooltip.viewport.left
-    :title="jobStatusText"
+    v-gl-tooltip.viewport.left="{ customClass: 'ci-job-component-tooltip' }"
+    :title="moreActionsTooltip"
     class="ci-job-group-dropdown"
     block
     fluid-width
     :placement="placement"
     data-testid="job-dropdown-container"
+    @shown="showDropdown"
+    @hidden="hideDropdown"
   >
     <template #toggle>
       <button type="button" :class="cssClassJobName" class="gl-w-full gl-bg-transparent gl-pr-4">
@@ -130,13 +145,22 @@ export default {
       </button>
     </template>
 
-    <gl-disclosure-dropdown-item v-for="job in group.jobs" :key="job.id" :item="jobItem(job)">
+    <gl-disclosure-dropdown-item
+      v-for="job in group.jobs"
+      :key="job.id"
+      v-gl-tooltip.viewport.left="{
+        title: jobItemTooltip(job),
+        customClass: 'ci-job-component-tooltip',
+      }"
+      :item="jobItem(job)"
+    >
       <template #list-item>
         <job-item
           :is-link="false"
           :job="job"
           :type="$options.jobItemTypes.singleJob"
           css-class-job-name="gl-p-3"
+          hide-tooltip
           @pipelineActionRequestComplete="pipelineActionRequestComplete"
         />
       </template>

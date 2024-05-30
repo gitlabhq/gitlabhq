@@ -72,7 +72,7 @@ describe('pipeline graph job item', () => {
       expect(link.element.tagName).toBe('A');
       expect(link.attributes('href')).toBe(mockJob.status.detailsPath);
 
-      expect(link.attributes('title')).toBe('Passed');
+      expect(link.attributes('title')).toBe('passed');
 
       expect(findJobCiIcon().exists()).toBe(true);
       expect(findJobCiIcon().find('[data-testid="status_success_borderless-icon"]').exists()).toBe(
@@ -212,7 +212,7 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(findJobItemContent().attributes('title')).toBe('');
+      expect(findJobItemContent().attributes('title')).toBe(undefined);
     });
 
     it('should render status label when it is provided', () => {
@@ -230,7 +230,7 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(findJobItemContent().attributes('title')).toBe('Success');
+      expect(findJobItemContent().attributes('title')).toBe('success');
     });
   });
 
@@ -242,7 +242,7 @@ describe('pipeline graph job item', () => {
         },
       });
 
-      expect(findJobItemContent().attributes('title')).toBe(`Delayed manual action (00:00:00)`);
+      expect(findJobItemContent().attributes('title')).toBe(`delayed manual action (00:00:00)`);
     });
   });
 

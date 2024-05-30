@@ -35,8 +35,8 @@ module Gitlab
         end
 
         attr_reader :offset, :sections, :segments, :current_segment,
-                    :section_header, :section_footer, :section_duration,
-                    :section_options
+          :section_header, :section_footer, :section_duration,
+          :section_options
 
         def initialize(offset:, style:, sections: [])
           @offset = offset

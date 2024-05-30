@@ -31,8 +31,7 @@ module Types
 
       field :runner, Types::Ci::RunnerType, null: true, description: 'Runner assigned to execute the job.'
       field :runner_manager, ::Types::Ci::RunnerManagerType, null: true,
-        description: 'Runner manager assigned to the job.',
-        alpha: { milestone: '15.11' }
+        description: 'Runner manager assigned to the job.'
       field :stage, Types::Ci::StageType, null: true,
         description: 'Stage of the job.'
       field :status,

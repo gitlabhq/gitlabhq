@@ -14,7 +14,7 @@ module GemExtensions
             previous_reflection, last_reflection, last_ordered, last_join_ids = last_scope_chain(reverse_chain, owner)
 
             add_constraints(last_reflection, last_reflection.join_primary_key, last_join_ids, owner, last_ordered,
-                previous_reflection: previous_reflection)
+              previous_reflection: previous_reflection)
           end
 
           private

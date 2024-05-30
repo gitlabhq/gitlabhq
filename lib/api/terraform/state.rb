@@ -34,7 +34,7 @@ module API
           project: user_project,
           label: 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly',
           context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                             event: 'p_terraform_state_api_unique_users').to_context]
+            event: 'p_terraform_state_api_unique_users').to_context]
         )
       end
 

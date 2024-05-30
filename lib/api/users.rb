@@ -9,17 +9,17 @@ module API
     allow_access_with_scope :read_user, if: ->(request) { request.get? || request.head? }
 
     feature_category :user_profile,
-                     %w[
-                       /users/:id/custom_attributes
-                       /users/:id/custom_attributes/:key
-                       /users/:id/associations_count
-                     ]
+      %w[
+        /users/:id/custom_attributes
+        /users/:id/custom_attributes/:key
+        /users/:id/associations_count
+      ]
 
     urgency :medium,
-            %w[
-              /users/:id/custom_attributes
-              /users/:id/custom_attributes/:key
-            ]
+      %w[
+        /users/:id/custom_attributes
+        /users/:id/custom_attributes/:key
+      ]
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       include CustomAttributesEndpoints
@@ -83,9 +83,9 @@ module API
 
         params :sort_params do
           optional :order_by, type: String, values: %w[id name username created_at updated_at],
-                              default: 'id', desc: 'Return users ordered by a field'
+            default: 'id', desc: 'Return users ordered by a field'
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                          desc: 'Return users sorted in ascending and descending order'
+            desc: 'Return users sorted in ascending and descending order'
         end
 
         # Grape doesn't make it easy to tell whether a user supplied a
@@ -94,9 +94,9 @@ module API
         # not provided.
         params :sort_params_no_defaults do
           optional :order_by, type: String, values: %w[id name username created_at updated_at],
-                              desc: 'Return users ordered by a field'
+            desc: 'Return users ordered by a field'
           optional :sort, type: String, values: %w[asc desc],
-                          desc: 'Return users sorted in ascending and descending order'
+            desc: 'Return users sorted in ascending and descending order'
         end
       end
 
@@ -457,7 +457,7 @@ module API
         requires :title, type: String, desc: 'The title of the new SSH key'
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
         optional :usage_type, type: String, values: Key.usage_types.keys, default: 'auth_and_signing',
-                              desc: 'Scope of usage for the SSH key'
+          desc: 'Scope of usage for the SSH key'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ":user_id/keys", feature_category: :system_access do
@@ -1021,7 +1021,7 @@ module API
           params do
             requires :name, type: String, desc: 'The name of the personal access token'
             requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: ::Gitlab::Auth.all_available_scopes.map(&:to_s),
-                              desc: 'The array of scopes of the personal access token'
+              desc: 'The array of scopes of the personal access token'
             optional :expires_at, type: Date, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
           end
           post feature_category: :system_access do
@@ -1117,7 +1117,7 @@ module API
         requires :title, type: String, desc: 'The title of the new SSH key'
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
         optional :usage_type, type: String, values: Key.usage_types.keys, default: 'auth_and_signing',
-                              desc: 'Scope of usage for the SSH key'
+          desc: 'Scope of usage for the SSH key'
       end
       post "keys", feature_category: :system_access do
         key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false)).execute
@@ -1431,7 +1431,7 @@ module API
           # See details in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131923#note_1571272897
           # and in https://gitlab.com/gitlab-org/gitlab/-/issues/425171
           requires :scopes, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce, values: [::Gitlab::Auth::K8S_PROXY_SCOPE].map(&:to_s),
-                   desc: 'The array of scopes of the personal access token'
+            desc: 'The array of scopes of the personal access token'
           optional :expires_at, type: Date, default: -> { 1.day.from_now.to_date }, desc: 'The expiration date in the format YEAR-MONTH-DAY of the personal access token'
         end
         post feature_category: :system_access do

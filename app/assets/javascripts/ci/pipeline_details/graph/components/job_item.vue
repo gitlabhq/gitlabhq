@@ -182,26 +182,20 @@ export default {
       return this.job && this.job.status ? this.job.status : {};
     },
     tooltipText() {
-      if (!this.hideTooltip) {
-        const textBuilder = [];
-        const { tooltip: statusTooltip } = this.status;
-
-        if (statusTooltip) {
-          const statusText = statusTooltip.charAt(0).toUpperCase() + statusTooltip.slice(1);
-
-          if (this.isDelayedJob) {
-            textBuilder.push(sprintf(statusText, { remainingTime: this.remainingTime }));
-          } else {
-            textBuilder.push(statusText);
-          }
-        } else {
-          textBuilder.push(this.status?.text);
-        }
-
-        return textBuilder.join(' ');
+      if (this.hideTooltip) {
+        return '';
       }
 
-      return null;
+      const { tooltip: statusTooltip } = this.status;
+      const { text: statusText } = this.status;
+
+      if (statusTooltip) {
+        if (this.isDelayedJob) {
+          return sprintf(statusTooltip, { remainingTime: this.remainingTime });
+        }
+        return statusTooltip;
+      }
+      return statusText;
     },
     /**
      * Verifies if the provided job has an action path
@@ -314,7 +308,7 @@ export default {
   >
     <component
       :is="nameComponent"
-      v-gl-tooltip.viewport.left
+      v-gl-tooltip.viewport.left="{ customClass: 'ci-job-component-tooltip' }"
       :title="tooltipText"
       :class="jobClasses"
       :href="detailsPath"
@@ -363,6 +357,7 @@ export default {
       @actionButtonClicked="handleConfirmationModalPreferences"
       @pipelineActionRequestComplete="pipelineActionRequestComplete"
       @showActionConfirmationModal="showActionConfirmationModal"
+      @focus.native="hideTooltips"
     />
     <action-component
       v-if="hasUnauthorizedManualAction"

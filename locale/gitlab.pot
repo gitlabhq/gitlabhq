@@ -3077,6 +3077,9 @@ msgstr ""
 msgid "Add comment to incident timeline"
 msgstr ""
 
+msgid "Add comment to review"
+msgstr ""
+
 msgid "Add comment..."
 msgstr ""
 
@@ -3207,6 +3210,12 @@ msgid "Add suggestion to batch"
 msgstr ""
 
 msgid "Add tag"
+msgstr ""
+
+msgid "Add thread now"
+msgstr ""
+
+msgid "Add thread to review"
 msgstr ""
 
 msgid "Add time entry"

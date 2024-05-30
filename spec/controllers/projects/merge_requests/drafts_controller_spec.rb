@@ -210,6 +210,16 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
         expect(response.body).to eq('{"errors":"Error 1 and Error 2"}')
       end
     end
+
+    context 'when type is present in draft note params' do
+      it 'assign note_type to draft note' do
+        create_draft_note(draft_overrides: { type: 'DiscussionNote' })
+
+        draft_note = DraftNote.find_by(author: user)
+
+        expect(draft_note.note_type).to eq('DiscussionNote')
+      end
+    end
   end
 
   describe 'PUT #update' do

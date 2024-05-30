@@ -53,7 +53,7 @@ module API
       end
       params do
         requires :event, type: String, desc: 'The event name that should be tracked',
-                         documentation: { example: 'i_quickactions_page' }
+          documentation: { example: 'i_quickactions_page' }
       end
       post 'increment_counter' do
         event_name = params[:event]
@@ -73,7 +73,7 @@ module API
       end
       params do
         requires :event, type: String, desc: 'The event name that should be tracked',
-                         documentation: { example: 'i_quickactions_page' }
+          documentation: { example: 'i_quickactions_page' }
       end
       post 'increment_unique_users', urgency: :low do
         event_name = params[:event]

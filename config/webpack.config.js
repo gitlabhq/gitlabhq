@@ -270,7 +270,7 @@ module.exports = {
     return {
       default: defaultEntries,
       sentry: './sentry/index.js',
-      performance_bar: './performance_bar/index.js',
+      performance_bar: './entrypoints/performance_bar.js',
       jira_connect_app: './jira_connect/subscriptions/index.js',
       sandboxed_mermaid: './lib/mermaid.js',
       redirect_listbox: './entrypoints/behaviors/redirect_listbox.js',

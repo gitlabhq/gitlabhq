@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Explain code in a file
 
 DETAILS:
-**Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require [GitLab Duo Pro or Enterprise](../../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 

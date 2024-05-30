@@ -70,8 +70,7 @@ module Types
         description: 'Runner\'s maintenance notes.'
       field :managers, ::Types::Ci::RunnerManagerType.connection_type, null: true,
         description: 'Runner managers associated with the runner configuration.',
-        resolver: Resolvers::Ci::RunnerManagersResolver,
-        alpha: { milestone: '15.10' }
+        resolver: Resolvers::Ci::RunnerManagersResolver
       field :maximum_timeout, GraphQL::Types::Int, null: true,
         description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
       field :owner_project, ::Types::ProjectType, null: true,

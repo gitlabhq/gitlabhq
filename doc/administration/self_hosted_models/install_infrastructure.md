@@ -67,12 +67,16 @@ permissions have been granted to that directory.
 #### Find the AI Gateway Release
 
 In a production environment, you should pin your deployment to a specific
-GitLab AI Gateway release. Find the release to use in [GitLab AI Gateway Releases](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/releases), for example: `7d5f58e1` where `7d5f58e1` is the AI Gateway released version.
+GitLab AI Gateway release. Find the release to use in [GitLab AI Gateway Releases](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/releases), for example:
+
+```shell
+docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:v1.4.0`
+```
 
 To pin your deployment to the latest stable release, use the `latest` tag to run the latest stable release:
 
 ```shell
-docker run -p 5000:500 registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest`
+docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest`
 ```
 
 NOTE:
@@ -87,11 +91,12 @@ To use the GitLab Docker images:
 
 #### Install using Docker Engine
 
-1. For the AI Gateway to know where the GitLab instance is located so it can access the API, set the environment variable `AIGW_GITLAB_API_URL`.
+1. For the AI Gateway to know where the GitLab instance is located so it can access the API, set the environment variables `AIGW_GITLAB_URL` and `AIGW_GITLAB_API_URL`.
 
    For example, run:
 
    ```shell
+   AIGW_GITLAB_URL=https://YOUR_GITLAB_DOMAIN
    AIGW_GITLAB_API_URL=https://YOUR_GITLAB_DOMAIN/api/v4/
    ```
 
@@ -107,7 +112,7 @@ To use the GitLab Docker images:
 1. After you've set up the environment variables, run the image. For example:
 
    ```shell
-   docker run -p 5000:500 registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest
+   docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest
    ```
 
    This command downloads and starts a AI Gateway container, and
@@ -142,7 +147,7 @@ To upgrade the AI Gateway, download the newest Docker image tag.
 1. Pull the new image:
 
    ```shell
-   docker run -p 5000:500 registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest
+   docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest
    ```
 
 1. Ensure that the environment variables are all set correctly

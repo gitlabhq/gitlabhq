@@ -353,3 +353,10 @@
     grid-column: 1 / -1;
   }
 }
+
+// Temporary fix to make tooltip appear correctly
+// until we refactor the tooltip handling in
+// https://gitlab.com/gitlab-org/gitlab/-/issues/463629
+.ci-job-component-tooltip::first-letter {
+  text-transform: uppercase;
+}

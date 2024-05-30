@@ -249,14 +249,13 @@ domains:
       - global_search
 
   Security:
-    description: Manage and execute security scanners and policies 
+    description: Manage and execute security scanners and policies
     feature_categories:
       - container_scanning
       - dynamic_application_security_testing
       - security_policy_management
       - software_composition_analysis
       - static_application_security_testing
-      - vulnerability_management
 
   ServiceDesk:
     description:
@@ -288,6 +287,11 @@ domains:
     description:
     feature_categories:
       - consumables_cost_management
+
+  Vulnerabilities:
+    description: Vulnerability management
+    feature_categories:
+      - vulnerability_management
 
   WebHooks:
     description: Outbound integration of GitLab with external tools and workflows

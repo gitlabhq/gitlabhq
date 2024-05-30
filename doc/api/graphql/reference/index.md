@@ -17692,7 +17692,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobretried"></a>`retried` | [`Boolean`](#boolean) | Indicates that the job has been retried. |
 | <a id="cijobretryable"></a>`retryable` | [`Boolean!`](#boolean) | Indicates the job can be retried. |
 | <a id="cijobrunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner assigned to execute the job. |
-| <a id="cijobrunnermanager"></a>`runnerManager` **{warning-solid}** | [`CiRunnerManager`](#cirunnermanager) | **Introduced** in GitLab 15.11. **Status**: Experiment. Runner manager assigned to the job. |
+| <a id="cijobrunnermanager"></a>`runnerManager` | [`CiRunnerManager`](#cirunnermanager) | Runner manager assigned to the job. |
 | <a id="cijobscheduled"></a>`scheduled` | [`Boolean!`](#boolean) | Indicates the job is scheduled. |
 | <a id="cijobscheduledat"></a>`scheduledAt` | [`Time`](#time) | Schedule for the build. |
 | <a id="cijobschedulingtype"></a>`schedulingType` | [`String`](#string) | Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise. |
@@ -17907,10 +17907,6 @@ four standard [pagination arguments](#pagination-arguments):
 ##### `CiRunner.managers`
 
 Runner managers associated with the runner configuration.
-
-DETAILS:
-**Introduced** in GitLab 15.10.
-**Status**: Experiment.
 
 Returns [`CiRunnerManagerConnection`](#cirunnermanagerconnection).
 
@@ -29720,6 +29716,7 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="repositoryblobarchived"></a>`archived` | [`Boolean`](#boolean) | Whether the current project is archived. |
+| <a id="repositoryblobbase64encodedblob"></a>`base64EncodedBlob` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.1. **Status**: Experiment. Content of blob is encoded base64. Returns `null` if the `unicode_escaped_data` feature flag is disabled. |
 | <a id="repositoryblobblamepath"></a>`blamePath` | [`String`](#string) | Web path to blob blame page. |
 | <a id="repositoryblobcancurrentuserpushtobranch"></a>`canCurrentUserPushToBranch` | [`Boolean`](#boolean) | Whether the current user can push to the branch. |
 | <a id="repositoryblobcanmodifyblob"></a>`canModifyBlob` | [`Boolean`](#boolean) | Whether the current user can modify the blob. |
@@ -29758,7 +29755,6 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 | <a id="repositoryblobsimpleviewer"></a>`simpleViewer` | [`BlobViewer!`](#blobviewer) | Blob content simple viewer. |
 | <a id="repositoryblobsize"></a>`size` | [`BigInt`](#bigint) | Size (in bytes) of the blob. |
 | <a id="repositoryblobstoredexternally"></a>`storedExternally` | [`Boolean`](#boolean) | Whether the blob's content is stored externally (for instance, in LFS). |
-| <a id="repositoryblobunicodeescapedblob"></a>`unicodeEscapedBlob` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Raw content of the blob where invalid UTF-8 characters are escaped to unicode. Returns `null` if the `unicode_escaped_data` feature flag is disabled. |
 | <a id="repositoryblobwebpath"></a>`webPath` | [`String`](#string) | Web path of the blob. |
 
 #### Fields with arguments

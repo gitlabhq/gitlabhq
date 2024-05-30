@@ -12,7 +12,7 @@ module WebHooks
       hook = relation.new(hook_params)
 
       if hook.save
-        success({ hook: hook, async: false })
+        after_create(hook)
       else
         return error("Invalid url given", 422) if hook.errors[:url].present?
         return error("Invalid branch filter given", 422) if hook.errors[:push_events_branch_filter].present?
@@ -23,6 +23,12 @@ module WebHooks
 
     private
 
+    def after_create(hook)
+      success({ hook: hook, async: false })
+    end
+
     attr_reader :current_user
   end
 end
+
+WebHooks::CreateService.prepend_mod_with('WebHooks::CreateService')

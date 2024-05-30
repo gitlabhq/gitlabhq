@@ -29,7 +29,7 @@ Each feature uses the large language models (LLMs) listed in this page. However,
 ### Code Suggestions
 
 DETAILS:
-**Tier:** Premium and Ultimate with [GitLab Duo Pro](../subscriptions/subscription-add-ons.md)
+**Tier:** Premium and Ultimate with [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Helps you write code more efficiently by showing code suggestions as you type.
@@ -41,7 +41,7 @@ DETAILS:
 ### GitLab Duo Chat
 
 DETAILS:
-**Tier:** Freely available for Premium and Ultimate for a limited time for GitLab.com and self-managed. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Pro or Enterprise.
+**Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Processes and generates text and code in a conversational manner.
@@ -74,7 +74,7 @@ DETAILS:
 ### Test generation
 
 DETAILS:
-**Tier:** Freely available for Premium and Ultimate for a limited time for GitLab.com and self-managed. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Pro or Enterprise.
+**Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Automates repetitive tasks and helps catch bugs early.
@@ -85,7 +85,7 @@ DETAILS:
 ### Code explanation in the IDE
 
 DETAILS:
-**Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Helps you understand code by explaining it in English language.
@@ -97,7 +97,7 @@ DETAILS:
 ### Merge request summary
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Efficiently communicates the impact of your merge request changes.
@@ -107,7 +107,7 @@ DETAILS:
 ### Merge request template population
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Generates a description for the merge request based on the contents of the template.
@@ -117,7 +117,7 @@ DETAILS:
 ### Vulnerability explanation
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Helps you remediate vulnerabilities more efficiently, boost your skills, and write more secure code.
@@ -130,7 +130,7 @@ DETAILS:
 ### GitLab Duo for the CLI
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - `glab duo ask` helps you discover or recall `git` commands when and where you need them.
@@ -140,7 +140,7 @@ DETAILS:
 ### Discussion summary
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Assists with quickly getting everyone up to speed on lengthy conversations to help ensure you are all on the same page.
@@ -151,7 +151,7 @@ DETAILS:
 ### Issue description generation
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Generates issue descriptions.
@@ -161,7 +161,7 @@ DETAILS:
 ### Code review summary
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Helps ease merge request handoff between authors and reviewers and help reviewers efficiently understand suggestions.
@@ -172,7 +172,7 @@ DETAILS:
 ### Vulnerability resolution
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require Ultimate with [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Generates a merge request containing the changes required to mitigate a vulnerability.
@@ -182,7 +182,7 @@ DETAILS:
 ### Code explanation in a file or merge request
 
 DETAILS:
-**Tier:** Freely available for Premium and Ultimate for a limited time. In the future, will require [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Helps you understand code by explaining it in English language.
@@ -194,7 +194,7 @@ DETAILS:
 ### Root cause analysis
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Assists you in determining the root cause for a CI/CD job failure by analyzing the logs.
@@ -204,7 +204,7 @@ DETAILS:
 ### Value stream forecasting
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time for GitLab.com and self-managed. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md). For GitLab Dedicated, you must have GitLab Duo Enterprise.
+**Tier:** GitLab.com and Self-managed: For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Assists you with predicting productivity metrics and identifying anomalies across your software development lifecycle.
@@ -215,7 +215,7 @@ DETAILS:
 ### Product Analytics
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Processes and responds to your questions about your application's usage data.
@@ -225,7 +225,7 @@ DETAILS:
 ### Merge and squash commit generation
 
 DETAILS:
-**Tier:** Freely available for Ultimate for a limited time. In the future, will require [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 
 - Helps users generate meaningful commit messages for merge and squash commits.

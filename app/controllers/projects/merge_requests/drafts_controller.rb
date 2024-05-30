@@ -22,7 +22,11 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   end
 
   def create
-    create_params = draft_note_params.merge(in_reply_to_discussion_id: params[:in_reply_to_discussion_id])
+    create_params = draft_note_params.merge(
+      in_reply_to_discussion_id: params[:in_reply_to_discussion_id],
+      note_type: params.dig(:draft_note, :type)
+    )
+
     create_service = DraftNotes::CreateService.new(merge_request, current_user, create_params)
 
     draft_note = create_service.execute
