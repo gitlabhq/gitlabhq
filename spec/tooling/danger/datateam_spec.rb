@@ -60,14 +60,14 @@ RSpec.describe Tooling::Danger::Datateam do
         },
         'with metric file changes and no performance indicator changes' => {
           modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml],
-          changed_lines: ['-product_stage: growth'],
+          changed_lines: ['-product_group: activation'],
           mr_labels: [],
           impacted: false,
           impacted_files: []
         },
         'with metric file changes and no performance indicator changes and other label' => {
           modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml],
-          changed_lines: ['-product_stage: growth'],
+          changed_lines: ['-product_group: activation'],
           mr_labels: ['type::maintenance'],
           impacted: false,
           impacted_files: []

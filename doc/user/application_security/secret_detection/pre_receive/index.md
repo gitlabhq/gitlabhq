@@ -55,6 +55,16 @@ Prerequisites:
 
 ## Resolve a blocked push
 
+When secret push protection blocks a push, you can either:
+
+- [Remove the secret](#remove-the-secret)
+- [Skip secret push protection](#skip-secret-push-protection)
+
+### Remove the secret
+
+Remove a blocked secret to allow the commit to be pushed to GitLab. The method of removing the
+secret depends on how recently it was committed.
+
 If the blocked secret was added with the most recent commit on your branch:
 
 1. Remove the secrets from the files.
@@ -73,34 +83,51 @@ If the blocked secret appears earlier in your Git history:
 1. Continue the rebase with `git rebase --continue` until all secrets are removed.
 1. Push your changes with `git push`.
 
-## Skip secret detection
+### Skip secret push protection
 
-In some cases, it may be necessary to skip push protection. For example, a developer may need to commit a placeholder secret for testing, or a user may want to bypass secret detection due to a Git operation timeout.
+In some cases, it may be necessary to skip secret push protection. For example, a developer may need
+to commit a placeholder secret for testing, or a user may want to skip secret push protection due to
+a Git operation timeout.
 
-There are two ways to skip secret detection for all commits in a push:
+[Audit events](../../../compliance/audit_event_types.md#secret-detection) are logged when
+secret push protection is skipped. Audit event details include:
 
-- Add `[skip secret detection]` to one of the commit messages. For example:
+- Skip method used.
+- GitLab account name.
+- Date and time at which secret push protection was skipped.
+- Name of project that the secret was pushed to.
 
-```shell
-# These commits are in the same push. Both will not be scanned.
-Add real secret by accident
-Add placeholder token to test file [skip secret detection]
-```
+If [pipeline secret detection](../pipeline/index.md) is enabled, the content of all commits are
+scanned after they are pushed to the repository.
 
-- Use a [push option](../../../project/push_options.md). For example:
+To skip secret push protection for all commits in a push, either:
 
-```shell
-# These commits are in the same push. Both will not be scanned.
-Add real secret by accident
-Add placeholder token to test file
+- If you're using the Git CLI client, [instruct Git to skip secret push protection](#skip-when-using-the-git-cli-client).
+- If you're using any other client, [add `[skip secret detection]` to one of the commit messages](#skip-when-using-the-git-cli-client).
 
-git push -o secret_detection.skip_all
-```
+#### Skip when using the Git CLI client
 
-Skipping secret detection will generate [Project audit event](../../../compliance/audit_events.md#project-audit-events).
+To skip secret push protection when using the Git CLI client:
 
-NOTE:
-[Pipeline secret detection](../index.md) still scans the bypassed secrets when push protection is skipped.
+- Use the [push option](../../../project/push_options.md#push-options-for-secret-push-protection).
+
+  For example, you have several commits that are blocked from being pushed because one of them
+  contains a secret. To skip secret push protection, you append the push option to the Git command.
+
+  ```shell
+  git push -o secret_detection.skip_all
+  ```
+
+#### Skip when using any Git client
+
+To skip secret push protection when using any Git client:
+
+- Add `[skip secret detection]` to one of the commit messages, on either an existing line or a new
+  line, then push the commits.
+
+  For example, you are using the GitLab Web IDE and have several commits that are blocked from being
+  pushed because one of them contains a secret. To skip secret push protection, edit the latest
+  commit message and add `[skip secret detection]`, then push the commits.
 
 ## Troubleshooting
 

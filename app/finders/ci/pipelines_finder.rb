@@ -43,8 +43,15 @@ module Ci
     private
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def ids_for_ref(refs)
-      pipelines.where(ref: refs).group(:ref).select('max(id)')
+    def ids_for_ref(items, refs)
+      unfiltered_items =
+        if Feature.enabled?(:exclude_child_pipelines_from_tag_branch_query, project)
+          items
+        else
+          pipelines
+        end
+
+      unfiltered_items.where(ref: refs).group(:ref).select('max(id)')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -86,9 +93,9 @@ module Ci
       when ALLOWED_SCOPES[:FINISHED]
         items.finished
       when ALLOWED_SCOPES[:BRANCHES]
-        from_ids(ids_for_ref(branches))
+        from_ids(ids_for_ref(items, branches))
       when ALLOWED_SCOPES[:TAGS]
-        from_ids(ids_for_ref(tags))
+        from_ids(ids_for_ref(items, tags))
       else
         items
       end

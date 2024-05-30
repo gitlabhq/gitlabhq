@@ -27,6 +27,7 @@ module Ci
         Ci::PipelineArtifact
         Ci::PipelineChatData
         Ci::PipelineConfig
+        Ci::PipelineMessage
         Ci::PipelineMetadata
         Ci::PipelineVariable
         Ci::Sources::Pipeline

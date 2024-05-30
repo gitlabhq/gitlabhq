@@ -32,7 +32,7 @@ RSpec.describe Tooling::Danger::CustomerSuccess do
         },
         'with metric file changes and no data category changes' => {
           modified_files: %w[config/metrics/20210216182127_user_secret_detection_jobs.yml],
-          changed_lines: ['-product_stage: growth'],
+          changed_lines: ['-product_group: activation'],
           customer_labeled: false,
           impacted: false,
           impacted_files: []

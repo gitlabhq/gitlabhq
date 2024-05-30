@@ -14956,9 +14956,6 @@ msgstr ""
 msgid "Cost factor for forks of projects"
 msgstr ""
 
-msgid "Could not access the Wiki Repository at this time."
-msgstr ""
-
 msgid "Could not apply %{name} command."
 msgstr ""
 
@@ -33349,6 +33346,9 @@ msgid "MlModelRegistry|This model has no candidates"
 msgstr ""
 
 msgid "MlModelRegistry|Triggered by"
+msgstr ""
+
+msgid "MlModelRegistry|Upload files under path: "
 msgstr ""
 
 msgid "MlModelRegistry|Use versions to track performance, parameters, and metadata"
@@ -52696,15 +52696,6 @@ msgstr ""
 msgid "The number of times an upload record could not find its file"
 msgstr ""
 
-msgid "The page at \"%{redirected_from}\" has been moved to \"%{redirected_to}\"."
-msgstr ""
-
-msgid "The page at \"%{redirected_from}\" redirected too many times. You are now editing the page at \"%{redirected_from}\"."
-msgstr ""
-
-msgid "The page at \"%{redirected_from}\" tried to redirect to \"%{redirected_to}\", but it does not exist. You are now editing the page at \"%{redirected_to}\"."
-msgstr ""
-
 msgid "The page could not be displayed because it timed out."
 msgstr ""
 
@@ -58886,13 +58877,7 @@ msgstr ""
 msgid "Wiki page"
 msgstr ""
 
-msgid "Wiki page was successfully created."
-msgstr ""
-
 msgid "Wiki page was successfully deleted."
-msgstr ""
-
-msgid "Wiki page was successfully updated."
 msgstr ""
 
 msgid "WikiClone|Clone Wiki repository"
@@ -59063,6 +59048,9 @@ msgstr ""
 msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
+msgid "Wiki|Could not access the Wiki Repository at this time."
+msgstr ""
+
 msgid "Wiki|Create a new page under \"%{page_title}\""
 msgstr ""
 
@@ -59105,6 +59093,15 @@ msgstr ""
 msgid "Wiki|Templates"
 msgstr ""
 
+msgid "Wiki|The page at %{code_start}%{redirected_from}%{code_end} has been moved to %{code_start}%{redirected_to}%{code_end}."
+msgstr ""
+
+msgid "Wiki|The page at %{code_start}%{redirected_from}%{code_end} redirected too many times. You are now editing the page at %{code_start}%{redirected_from}%{code_end}."
+msgstr ""
+
+msgid "Wiki|The page at %{code_start}%{redirected_from}%{code_end} tried to redirect to %{code_start}%{redirected_to}%{code_end}, but it does not exist. You are now editing the page at %{code_start}%{redirected_to}%{code_end}. %{link_start}Edit page at %{code_start}%{redirected_from}%{code_end} instead.%{link_end}"
+msgstr ""
+
 msgid "Wiki|The sidebar failed to load. You can reload the page to try again."
 msgstr ""
 
@@ -59115,6 +59112,12 @@ msgid "Wiki|Wiki Pages"
 msgstr ""
 
 msgid "Wiki|Wiki actions"
+msgstr ""
+
+msgid "Wiki|Wiki page was successfully created."
+msgstr ""
+
+msgid "Wiki|Wiki page was successfully updated."
 msgstr ""
 
 msgid "Wiki|Wiki templates"

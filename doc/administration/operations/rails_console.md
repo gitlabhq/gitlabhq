@@ -75,6 +75,14 @@ session by running:
 ActiveRecord::Base.logger = Logger.new($stdout)
 ```
 
+By default, the previous script logs to the standard output. You can specify a log file to redirect
+output to, by replacing `$stdout` with the desired file path. For example, this code logs everything
+to `/tmp/output.log`:
+
+```ruby
+ActiveRecord::Base.logger = Logger.new('/tmp/output.log')
+```
+
 This shows information about database queries triggered by any Ruby code
 you may run in the console. To turn off logging again, run:
 

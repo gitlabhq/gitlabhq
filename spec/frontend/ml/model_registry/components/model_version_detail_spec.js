@@ -80,7 +80,10 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
       expect(findImportArtifactZone().props()).toEqual({
         path: 'path/to/import',
         submitOnSelect: true,
-        value: null,
+        value: {
+          file: null,
+          subfolder: '',
+        },
       });
     });
   });

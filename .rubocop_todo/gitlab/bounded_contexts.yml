@@ -3732,7 +3732,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/sitemap/create_service.rb'
     - 'ee/app/services/software_license_policies/bulk_create_scan_result_policy_service.rb'
     - 'ee/app/services/software_license_policies/create_service.rb'
-    - 'ee/app/services/software_license_policies/update_service.rb'
     - 'ee/app/services/start_pull_mirroring_service.rb'
     - 'ee/app/services/system_notes/epics_service.rb'
     - 'ee/app/services/system_notes/escalations_service.rb'

@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.code_review.i_code_review_user_load_conflict_ui_weekly
 description: Count of unique users per week who load the conflict resolution page
-product_section: 'TBD'
-product_stage: create
 product_group: code_review
 value_type: number
 status: active

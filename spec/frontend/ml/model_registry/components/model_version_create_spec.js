@@ -90,7 +90,7 @@ describe('ModelVersionCreate', () => {
         expect(findImportArtifactZone().props()).toEqual({
           path: null,
           submitOnSelect: false,
-          value: null,
+          value: { file: null, subfolder: '' },
         });
       });
 
@@ -147,6 +147,7 @@ describe('ModelVersionCreate', () => {
       expect(uploadModel).toHaveBeenCalledWith({
         file: null,
         importPath: '/api/v4/projects/1/packages/ml_models/1/files/',
+        subfolder: '',
       });
     });
   });

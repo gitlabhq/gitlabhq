@@ -10,8 +10,6 @@ RSpec.describe Gitlab::Usage::Metric do
       data_category: "Operational",
       key_path: "counts.issues",
       description: "Count of Issues created",
-      product_section: "dev",
-      product_stage: "plan",
       product_group: "plan",
       value_type: "number",
       status: "active",

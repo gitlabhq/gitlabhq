@@ -2736,7 +2736,6 @@
 - './ee/spec/services/security/vulnerability_counting_service_spec.rb'
 - './ee/spec/services/sitemap/create_service_spec.rb'
 - './ee/spec/services/software_license_policies/create_service_spec.rb'
-- './ee/spec/services/software_license_policies/update_service_spec.rb'
 - './ee/spec/services/start_pull_mirroring_service_spec.rb'
 - './ee/spec/services/system_notes/epics_service_spec.rb'
 - './ee/spec/services/system_note_service_spec.rb'

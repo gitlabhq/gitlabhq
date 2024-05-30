@@ -39,7 +39,7 @@ export default {
       description: null,
       modalVisible: false,
       errorMessage: null,
-      selectedFile: null,
+      selectedFile: { file: null, subfolder: '' },
     };
   },
   methods: {
@@ -64,7 +64,11 @@ export default {
         } else {
           const { importPath } = data.mlModelVersionCreate.modelVersion._links;
 
-          await uploadModel({ importPath, file: this.selectedFile });
+          await uploadModel({
+            importPath,
+            file: this.selectedFile.file,
+            subfolder: this.selectedFile.subfolder,
+          });
           const versionShowPath = data.mlModelVersionCreate.modelVersion._links.showPath;
           visitUrl(versionShowPath);
         }

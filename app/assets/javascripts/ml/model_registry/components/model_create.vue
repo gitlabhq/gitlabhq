@@ -41,7 +41,7 @@ export default {
       description: null,
       versionDescription: null,
       errorMessage: null,
-      selectedFile: null,
+      selectedFile: { file: null, subfolder: '' },
       modelData: null,
     };
   },
@@ -96,7 +96,11 @@ export default {
           } else {
             // attempt importing model artifacts
             const { importPath } = versionData.mlModelVersionCreate.modelVersion._links;
-            await uploadModel({ importPath, file: this.selectedFile });
+            await uploadModel({
+              importPath,
+              file: this.selectedFile.file,
+              subfolder: this.selectedFile.subfolder,
+            });
             const { showPath } = versionData.mlModelVersionCreate.modelVersion._links;
             visitUrl(showPath);
           }

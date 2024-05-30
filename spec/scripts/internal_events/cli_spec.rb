@@ -221,7 +221,7 @@ RSpec.describe Cli, feature_category: :service_ping do
     context 'when product group for event no longer exists' do
       let(:event) do
         {
-          action: '00_event1', product_section: 'other', product_stage: 'other', product_group: 'other'
+          action: '00_event1', product_group: 'other'
         }
       end
 

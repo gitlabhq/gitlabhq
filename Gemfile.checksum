@@ -598,7 +598,7 @@
 {"name":"rubocop-rspec","version":"2.27.1","platform":"ruby","checksum":"2f27ce04700be75db65afe83d7993a36e0fafd07ec062222f4b3cc10137a7a9e"},
 {"name":"ruby-fogbugz","version":"0.3.0","platform":"ruby","checksum":"5e04cde474648f498a71cf1e1a7ab42c66b953862fbe224f793ec0a7a1d5f657"},
 {"name":"ruby-lsp","version":"0.16.7","platform":"ruby","checksum":"c3d555463f04b50288afed9514a33a0df3e79b12f5c7507a533134a7c230601c"},
-{"name":"ruby-lsp-rails","version":"0.3.5","platform":"ruby","checksum":"01e0410acb4ef4069716725e441857b2877776d5a4cd8959537d8a22bc7ce0b0"},
+{"name":"ruby-lsp-rails","version":"0.3.6","platform":"ruby","checksum":"4f75172ee9221c75b0249d34058aa3b93aeaa4566d36f0e818c6a9937234b9dd"},
 {"name":"ruby-lsp-rspec","version":"0.1.11","platform":"ruby","checksum":"34fc7b60df85c8eb8a77007553e9914b18c5ea8e27ec04cf3e04e7e1b42fcc86"},
 {"name":"ruby-magic","version":"0.6.0","platform":"ruby","checksum":"7b2138877b7d23aff812c95564eba6473b74b815ef85beb0eb792e729a2b6101"},
 {"name":"ruby-openai","version":"3.7.0","platform":"ruby","checksum":"fb735d4c055e282ade264cab9864944c05a8a10e0cddd45a0551e8a9851b1850"},

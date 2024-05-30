@@ -1608,8 +1608,8 @@ GEM
       language_server-protocol (~> 3.17.0)
       prism (>= 0.29.0, < 0.30)
       sorbet-runtime (>= 0.5.10782)
-    ruby-lsp-rails (0.3.5)
-      ruby-lsp (>= 0.16.0, < 0.17.0)
+    ruby-lsp-rails (0.3.6)
+      ruby-lsp (>= 0.16.5, < 0.17.0)
       sorbet-runtime (>= 0.5.9897)
     ruby-lsp-rspec (0.1.11)
       ruby-lsp (~> 0.16.0)
@@ -2192,7 +2192,7 @@ DEPENDENCIES
   rubocop
   ruby-fogbugz (~> 0.3.0)
   ruby-lsp (~> 0.16.7)
-  ruby-lsp-rails (~> 0.3.3)
+  ruby-lsp-rails (~> 0.3.6)
   ruby-lsp-rspec (~> 0.1.10)
   ruby-magic (~> 0.6)
   ruby-openai (~> 3.7)
@@ -2256,4 +2256,4 @@ DEPENDENCIES
   yajl-ruby (~> 1.4.3)
 
 BUNDLED WITH
-   2.5.10
+   2.5.11

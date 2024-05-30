@@ -7,8 +7,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
     {
       description: 'GitLab instance unique identifier',
       value_type: 'string',
-      product_stage: 'growth',
-      product_section: 'devops',
       status: 'active',
       milestone: '14.1',
       default_generation: 'generation_1',
@@ -439,8 +437,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       {
         description: 'Test metric definition',
         value_type: 'string',
-        product_stage: 'growth',
-        product_section: 'devops',
         status: 'active',
         milestone: '14.1',
         default_generation: 'generation_1',

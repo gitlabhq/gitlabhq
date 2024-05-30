@@ -12,8 +12,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       property_description: 'The string "issue_id"',
       value_description: 'ID of the issue',
       extra_properties: { confidential: false },
-      product_stage: 'growth',
-      product_section: 'dev',
       product_group: 'group::product analytics',
       distributions: %w[ee ce],
       tiers: %w[free premium ultimate],
@@ -89,8 +87,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       :property_description | 1
       :value_description    | 1
       :extra_properties     | 'smth'
-      :product_stage        | 1
-      :product_section      | nil
       :product_group        | nil
       :distributions        | %(be eb)
       :tiers                | %(pro)

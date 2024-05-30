@@ -342,7 +342,7 @@ RSpec.shared_examples 'wiki controller actions' do
             request
 
             expect(response).to redirect_to_wiki(wiki, 'PageB', redirected_from: 'PageA')
-            expect(flash[:notice]).to eq('The page at "PageA" has been moved to "PageB".')
+            expect(flash[:notice]).to eq('The page at <code>PageA</code> has been moved to <code>PageB</code>.')
           end
         end
 
@@ -353,7 +353,7 @@ RSpec.shared_examples 'wiki controller actions' do
             request
 
             expect(response).to redirect_to_wiki(wiki, 'LoopA', redirect_limit_reached: true)
-            expect(flash[:notice]).to eq('The page at "LoopA" redirected too many times. You are now editing the page at "LoopA".')
+            expect(flash[:notice]).to eq('The page at <code>LoopA</code> redirected too many times. You are now editing the page at <code>LoopA</code>.')
           end
         end
 
@@ -364,7 +364,7 @@ RSpec.shared_examples 'wiki controller actions' do
             request
 
             expect(response).to redirect_to_wiki(wiki, 'Page0', redirect_limit_reached: true)
-            expect(flash[:notice]).to eq('The page at "Page0" redirected too many times. You are now editing the page at "Page0".')
+            expect(flash[:notice]).to eq('The page at <code>Page0</code> redirected too many times. You are now editing the page at <code>Page0</code>.')
           end
         end
 
@@ -388,16 +388,21 @@ RSpec.shared_examples 'wiki controller actions' do
           let(:redirected_from) { 'PageA' }
           let(:id) { 'PageB' }
 
+          render_views
+
           before do
             routing_params[:redirected_from] = redirected_from
           end
 
-          it 'renders the edit page with a notice' do
+          it 'renders the edit page for redirect with a notice and a link to edit the original page' do
             request
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to render_template('shared/wikis/edit')
-            expect(flash[:notice]).to eq('The page at "PageA" tried to redirect to "PageB", but it does not exist. You are now editing the page at "PageB".')
+
+            expect(response.body).to include("The page at <code>PageA</code> tried to redirect to <code>PageB</code>, but it does not exist. You are now editing the page at <code>PageB</code>. <a href=\"#{controller.wiki_page_path(wiki, 'PageA')}?no_redirect=true\">Edit page at <code>PageA</code> instead.</a>")
+
+            expect(flash[:notice]).to be_nil
           end
         end
       end

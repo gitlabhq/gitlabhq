@@ -1,8 +1,6 @@
 ---
 key_path: counts_weekly.test_metric
 description:
-product_section:
-product_stage:
 product_group:
 value_type: number
 status: active

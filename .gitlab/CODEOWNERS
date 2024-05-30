@@ -298,7 +298,6 @@ Dangerfile
 /ee/app/services/ci/compare_license_scanning_reports_collapsed_service.rb
 /ee/app/services/ci/compare_license_scanning_reports_service.rb
 /ee/app/services/software_license_policies/**
-/ee/app/services/software_license_policies/update_service.rb
 /ee/app/workers/refresh_license_compliance_checks_worker.rb
 /ee/lib/api/managed_licenses.rb
 /ee/lib/ee/api/entities/managed_license.rb

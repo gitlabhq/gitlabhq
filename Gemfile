@@ -442,7 +442,7 @@ group :development do
 
   gem 'ruby-lsp', "~> 0.16.7", require: false, feature_category: :tooling
 
-  gem 'ruby-lsp-rails', "~> 0.3.3", feature_category: :tooling
+  gem 'ruby-lsp-rails', "~> 0.3.6", feature_category: :tooling
 
   gem 'ruby-lsp-rspec', "~> 0.1.10", require: false, feature_category: :tooling
 
