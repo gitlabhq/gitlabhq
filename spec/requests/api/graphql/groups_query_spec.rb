@@ -7,8 +7,8 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:public_group) { create(:group, :public) }
-  let_it_be(:private_group) { create(:group, :private) }
+  let_it_be(:public_group) { create(:group, :public, name: 'Group A') }
+  let_it_be(:private_group) { create(:group, :private, name: 'Group B') }
   let(:current_user) { user }
 
   let(:fields) do
@@ -47,8 +47,7 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
       expect(names).to eq([public_group.name])
     end
 
-    it 'includes accessible private groups ordered by name',
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444846' do
+    it 'includes accessible private groups ordered by name' do
       private_group.add_maintainer(user)
 
       subject
@@ -78,8 +77,8 @@ RSpec.describe 'searching groups', :with_license, feature_category: :groups_and_
   end
 
   describe 'group sorting' do
-    let_it_be(:public_group2) { create(:group, :public) }
-    let_it_be(:public_group3) { create(:group, :public) }
+    let_it_be(:public_group2) { create(:group, :public, name: 'Group C') }
+    let_it_be(:public_group3) { create(:group, :public, name: 'Group D') }
     let_it_be(:all_groups) { [public_group, public_group2, public_group3] }
     let_it_be(:first_param) { 2 }
     let_it_be(:data_path) { [:groups] }

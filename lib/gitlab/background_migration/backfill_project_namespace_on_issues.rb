@@ -11,7 +11,7 @@ module Gitlab
 
       def perform
         each_sub_batch(
-          batching_scope: -> (relation) {
+          batching_scope: ->(relation) {
             relation.joins("INNER JOIN projects ON projects.id = issues.project_id")
               .select("issues.id AS issue_id, projects.project_namespace_id").where(issues: { namespace_id: nil })
           }

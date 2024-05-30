@@ -10,7 +10,7 @@
   - if @invite_email.present?
     .form-group
       = f.label :email, _('Email'), class: 'gl-display-block'
-      .gl-font-weight-bold{ 'data-testid': 'invite-email' }
+      .gl-font-bold{ 'data-testid': 'invite-email' }
         = @invite_email
       = f.hidden_field :email, value: @invite_email
       = hidden_field_tag :invite_email, @invite_email

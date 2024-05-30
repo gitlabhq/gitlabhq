@@ -1,3 +1,5 @@
+#import "ee_else_ce/vue_merge_request_widget/queries/states/merge_train_position.fragment.graphql"
+
 query getState($projectPath: ID!, $iid: String!) {
   project(fullPath: $projectPath) {
     id
@@ -29,6 +31,8 @@ query getState($projectPath: ID!, $iid: String!) {
         canMerge
       }
       draft
+
+      ...MergeTrainPosition
     }
   }
 }

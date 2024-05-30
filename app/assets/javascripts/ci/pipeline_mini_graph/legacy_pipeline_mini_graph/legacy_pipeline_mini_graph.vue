@@ -1,11 +1,9 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-import PipelineStages from './pipeline_stages.vue';
-import LinkedPipelinesMiniList from './linked_pipelines_mini_list.vue';
+import PipelineStages from '../pipeline_stages.vue';
+import LinkedPipelinesMiniList from '../linked_pipelines_mini_list.vue';
 /**
- * Renders the pipeline mini graph.
- * TODO: After all apps have updated to GraphQL data and use the `pipeline_mini_graph.vue` file as an entry,
- * we should rename this file to `pipeline_mini_graph_wrapper.vue`
+ * Renders the REST version of the pipeline mini graph.
  */
 export default {
   components: {

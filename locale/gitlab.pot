@@ -34930,6 +34930,12 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
+msgid "Notifications for %{project_or_group} are rate-limited due to the high volume of notifications sent."
+msgstr ""
+
+msgid "Notifications for %{project_or_group} are temporarily disabled due to excessive volume."
+msgstr ""
+
 msgid "Notifications have been disabled by the project or group owner"
 msgstr ""
 
@@ -54470,6 +54476,12 @@ msgid "To allow the user to confirm their identity by only confirming an email a
 msgstr ""
 
 msgid "To approve this merge request, please enter your password. This project requires all approvals to be authenticated."
+msgstr ""
+
+msgid "To avoid future interruption to notifications for #{project_or_group}, update your notification preferences."
+msgstr ""
+
+msgid "To avoid future interruption to notifications for %{project_or_group}, update your notification preferences."
 msgstr ""
 
 msgid "To connect an SVN repository, check out %{svn_link}."

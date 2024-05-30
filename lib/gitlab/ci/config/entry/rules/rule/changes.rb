@@ -7,8 +7,8 @@ module Gitlab
         class Rules
           class Rule
             class Changes < ::Gitlab::Config::Entry::Simplifiable
-              strategy :SimpleChanges, if: -> (config) { config.is_a?(Array) }
-              strategy :ComplexChanges, if: -> (config) { config.is_a?(Hash) }
+              strategy :SimpleChanges, if: ->(config) { config.is_a?(Array) }
+              strategy :ComplexChanges, if: ->(config) { config.is_a?(Hash) }
 
               class SimpleChanges < ::Gitlab::Config::Entry::Node
                 include ::Gitlab::Config::Entry::Validatable

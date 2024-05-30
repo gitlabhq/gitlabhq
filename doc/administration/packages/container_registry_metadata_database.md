@@ -38,7 +38,8 @@ You must continue to maintain an object storage solution even after migrating to
 
 - No support for online migrations.
 - Geo Support is not confirmed.
-- Registry database migrations must be ran manually when upgrading versions.
+- Registry database migrations must be run manually when upgrading versions.
+- No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Omnibus GitLab environments.
 
 ## Metadata database feature support
 

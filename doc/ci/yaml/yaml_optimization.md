@@ -390,7 +390,7 @@ files as well.
 In the following example, a `script` and an `after_script` from two different locations are
 reused in the `test` job:
 
-- `setup.yml`:
+- `configs.yml`:
 
   ```yaml
   .setup:
@@ -402,7 +402,7 @@ reused in the `test` job:
 
   ```yaml
   include:
-    - local: setup.yml
+    - local: configs.yml
 
   .teardown:
     after_script:

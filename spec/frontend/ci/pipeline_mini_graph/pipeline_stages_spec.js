@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { pipelines } from 'test_fixtures/pipelines/pipelines.json';
-import LegacyPipelineStage from '~/ci/pipeline_mini_graph/legacy_pipeline_stage.vue';
+import LegacyPipelineStage from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_stage.vue';
 import PipelineStages from '~/ci/pipeline_mini_graph/pipeline_stages.vue';
 
 const mockStages = pipelines[0].details.stages;

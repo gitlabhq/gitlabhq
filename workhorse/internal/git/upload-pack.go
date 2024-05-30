@@ -19,7 +19,7 @@ var (
 
 // Will not return a non-nil error after the response body has been
 // written to.
-func handleUploadPack(w *HttpResponseWriter, r *http.Request, a *api.Response) (*gitalypb.PackfileNegotiationStatistics, error) {
+func handleUploadPack(w *HTTPResponseWriter, r *http.Request, a *api.Response) (*gitalypb.PackfileNegotiationStatistics, error) {
 	ctx := r.Context()
 
 	// Prevent the client from holding the connection open indefinitely. A

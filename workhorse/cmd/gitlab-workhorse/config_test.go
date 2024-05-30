@@ -85,7 +85,7 @@ key = "/path/to/private/key"
 		{
 			Network: "tcp",
 			Addr:    "localhost:3445",
-			Tls: &config.TlsConfig{
+			Tls: &config.TLSConfig{
 				Certificate: "/path/to/certificate",
 				Key:         "/path/to/private/key",
 			},
@@ -93,7 +93,7 @@ key = "/path/to/private/key"
 		{
 			Network: "tcp",
 			Addr:    "localhost:3443",
-			Tls: &config.TlsConfig{
+			Tls: &config.TLSConfig{
 				Certificate: "/path/to/certificate",
 				Key:         "/path/to/private/key",
 				MinVersion:  "tls1.1",
@@ -560,7 +560,7 @@ func TestLoadConfigCommand(t *testing.T) {
 							{
 								Network: "tcp",
 								Addr:    "127.0.0.1:3443",
-								Tls: &config.TlsConfig{
+								Tls: &config.TLSConfig{
 									Certificate: "/path/to/certificate",
 									Key:         "/path/to/private/key",
 								},

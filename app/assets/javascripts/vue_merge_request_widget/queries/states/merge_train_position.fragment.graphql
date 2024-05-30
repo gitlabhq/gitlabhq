@@ -1,0 +1,4 @@
+fragment MergeTrainPosition on MergeRequest {
+  # Overridden in EE
+  id
+}

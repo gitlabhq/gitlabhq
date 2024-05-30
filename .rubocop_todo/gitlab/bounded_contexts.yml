@@ -2966,6 +2966,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/dora/watchers/issue_watcher.rb'
     - 'ee/app/models/ee/ability_prepend.rb'
     - 'ee/app/models/ee/abuse_report.rb'
+    - 'ee/app/models/ee/active_session.rb'
     - 'ee/app/models/ee/alert_management/alert.rb'
     - 'ee/app/models/ee/application_setting.rb'
     - 'ee/app/models/ee/audit_event.rb'

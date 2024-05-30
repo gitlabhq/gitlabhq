@@ -2,7 +2,7 @@ import { GlTableLite } from '@gitlab/ui';
 import fixture from 'test_fixtures/pipelines/pipelines.json';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineOperations from '~/ci/pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '~/ci/pipelines_page/components/pipeline_triggerer.vue';

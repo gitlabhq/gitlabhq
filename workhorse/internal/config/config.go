@@ -117,7 +117,7 @@ type MetadataConfig struct {
 	ZipReaderLimitBytes int64 `toml:"zip_reader_limit_bytes"`
 }
 
-type TlsConfig struct {
+type TLSConfig struct {
 	Certificate string `toml:"certificate" json:"certificate"`
 	Key         string `toml:"key" json:"key"`
 	MinVersion  string `toml:"min_version" json:"min_version"`
@@ -127,7 +127,7 @@ type TlsConfig struct {
 type ListenerConfig struct {
 	Network string     `toml:"network" json:"network"`
 	Addr    string     `toml:"addr" json:"addr"`
-	Tls     *TlsConfig `toml:"tls" json:"tls"`
+	Tls     *TLSConfig `toml:"tls" json:"tls"`
 }
 
 type Config struct {

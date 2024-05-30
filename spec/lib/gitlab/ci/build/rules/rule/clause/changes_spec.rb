@@ -128,18 +128,6 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
           end
         end
       end
-
-      context 'with FF memoized_rules_changes disabled' do
-        before do
-          stub_feature_flags(memoized_rules_changes: false)
-        end
-
-        it 'calls the #fnmatch? each time' do
-          expect_fnmatch_call_count(2)
-
-          call_twice
-        end
-      end
     end
 
     context 'when using variable expansion' do

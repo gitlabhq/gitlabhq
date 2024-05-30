@@ -10,6 +10,7 @@ RSpec.describe 'User adds pages domain', :js, feature_category: :pages do
   let(:user) { create(:user) }
 
   before do
+    stub_feature_flags(new_pages_ui: false)
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
 
     project.add_maintainer(user)

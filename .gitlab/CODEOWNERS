@@ -520,7 +520,6 @@ lib/gitlab/checks/**
 /doc/administration/analytics/ @lciutacu
 /doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/audit_event_reports.md @eread
-/doc/administration/audit_event_schema.md @eread
 /doc/administration/audit_event_streaming/ @eread
 /doc/administration/auditor_users.md @jglassman1
 /doc/administration/auth/ @jglassman1
@@ -598,6 +597,7 @@ lib/gitlab/checks/**
 /doc/administration/repository_checks.md @eread
 /doc/administration/repository_storage_paths.md @eread
 /doc/administration/restart_gitlab.md @axil
+/doc/administration/self_hosted_models/ @sselhorn
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @msedlakjakubowski
 /doc/administration/settings/continuous_integration.md @marcel.amirault @lyspin
@@ -625,7 +625,7 @@ lib/gitlab/checks/**
 /doc/administration/settings/rate_limit_on_users_api.md @jglassman1
 /doc/administration/settings/rate_limits_on_git_ssh_operations.md @msedlakjakubowski
 /doc/administration/settings/scim_setup.md @jglassman1
-/doc/administration/settings/security_and_compliance.md @rdickenson
+/doc/administration/settings/security_and_compliance.md @rdickenson @phillipwells
 /doc/administration/settings/security_contact_information.md @eread
 /doc/administration/settings/slack_app.md @eread @ashrafkhamis
 /doc/administration/settings/terraform_limits.md @phillipwells
@@ -658,7 +658,7 @@ lib/gitlab/checks/**
 /doc/api/commits.md @msedlakjakubowski
 /doc/api/container_registry.md @marcel.amirault
 /doc/api/custom_attributes.md @msedlakjakubowski
-/doc/api/dependencies.md @rdickenson
+/doc/api/dependencies.md @rdickenson @phillipwells
 /doc/api/dependency_list_export.md @rdickenson
 /doc/api/dependency_proxy.md @marcel.amirault
 /doc/api/deploy_keys.md @phillipwells
@@ -794,7 +794,7 @@ lib/gitlab/checks/**
 /doc/api/templates/dockerfiles.md @msedlakjakubowski
 /doc/api/templates/gitignores.md @msedlakjakubowski
 /doc/api/templates/gitlab_ci_ymls.md @marcel.amirault @lyspin
-/doc/api/templates/licenses.md @rdickenson
+/doc/api/templates/licenses.md @rdickenson @phillipwells
 /doc/api/todos.md @msedlakjakubowski
 /doc/api/topics.md @lciutacu
 /doc/api/users.md @jglassman1
@@ -830,8 +830,8 @@ lib/gitlab/checks/**
 /doc/ci/ssh_keys/ @marcel.amirault
 /doc/ci/steps/ @fneill
 /doc/ci/test_cases/ @msedlakjakubowski
-/doc/ci/testing/code_quality.md @rdickenson
-/doc/ci/testing/code_quality_troubleshooting.md @rdickenson
+/doc/ci/testing/code_quality.md @rdickenson @phillipwells
+/doc/ci/testing/code_quality_troubleshooting.md @rdickenson @phillipwells
 /doc/ci/variables/ @marcel.amirault
 /doc/ci/yaml/signing_examples.md @marcel.amirault
 /doc/development/advanced_search.md @gitlab-org/search-team/migration-maintainers
@@ -890,7 +890,7 @@ lib/gitlab/checks/**
 /doc/operations/ @phillipwells
 /doc/policy/ @axil
 /doc/raketasks/ @axil
-/doc/raketasks/spdx.md @rdickenson
+/doc/raketasks/spdx.md @rdickenson @phillipwells
 /doc/raketasks/x509_signatures.md @msedlakjakubowski
 /doc/security/ @jglassman1
 /doc/solutions/ @jfullam @brianwald @Darwinjs
@@ -905,12 +905,12 @@ lib/gitlab/checks/**
 /doc/tutorials/boards_for_teams/ @msedlakjakubowski
 /doc/tutorials/compliance_pipeline/ @eread
 /doc/tutorials/configure_gitlab_runner_to_use_gke/ @fneill
-/doc/tutorials/container_scanning/ @rdickenson
+/doc/tutorials/container_scanning/ @rdickenson @phillipwells
 /doc/tutorials/convert_personal_namespace_to_group/ @lciutacu
 /doc/tutorials/create_register_first_runner/ @fneill
-/doc/tutorials/dependency_scanning.md @rdickenson
-/doc/tutorials/export_sbom.md @rdickenson
-/doc/tutorials/fuzz_testing/ @rdickenson
+/doc/tutorials/dependency_scanning.md @rdickenson @phillipwells
+/doc/tutorials/export_sbom.md @rdickenson @phillipwells
+/doc/tutorials/fuzz_testing/ @rdickenson @phillipwells
 /doc/tutorials/idea_management/ @msedlakjakubowski
 /doc/tutorials/install_gitlab_single_node/ @axil
 /doc/tutorials/issue_triage/ @msedlakjakubowski
@@ -931,13 +931,19 @@ lib/gitlab/checks/**
 /doc/user/ai_features_enable.md @sselhorn
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
-/doc/user/application_security/ @rdickenson
+/doc/user/application_security/ @rdickenson @phillipwells
+/doc/user/application_security/cve_id_request.md @rdickenson
+/doc/user/application_security/policies/ @rdickenson
+/doc/user/application_security/secret_detection/ @rdickenson
+/doc/user/application_security/security_dashboard/ @rdickenson
+/doc/user/application_security/vulnerabilities/ @rdickenson
+/doc/user/application_security/vulnerability_report/ @rdickenson
 /doc/user/asciidoc.md @msedlakjakubowski
 /doc/user/clusters/ @phillipwells
 /doc/user/compliance/ @eread
 /doc/user/compliance/license_approval_policies.md @rdickenson
 /doc/user/compliance/license_list.md @rdickenson
-/doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson
+/doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson @phillipwells
 /doc/user/custom_roles.md @jglassman1
 /doc/user/custom_roles/ @jglassman1
 /doc/user/discussions/ @aqualls
@@ -1032,6 +1038,7 @@ lib/gitlab/checks/**
 /doc/user/project/releases/ @phillipwells
 /doc/user/project/releases/release_evidence.md @eread
 /doc/user/project/remote_development/ @ashrafkhamis
+/doc/user/project/repository/code_explain.md @sselhorn
 /doc/user/project/repository/code_suggestions/ @jglassman1
 /doc/user/project/repository/file_finder.md @ashrafkhamis
 /doc/user/project/repository/monorepos/ @eread

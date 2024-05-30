@@ -5,6 +5,8 @@ class DeleteInvalidRemoteMirrorsRecords < Gitlab::Database::Migration[2.2]
   restrict_gitlab_migration gitlab_schema: :gitlab_main
   disable_ddl_transaction!
 
+  BATCH_SIZE = 1000
+
   def up
     return if Gitlab.com?
 

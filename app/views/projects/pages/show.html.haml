@@ -1,14 +1,17 @@
-- page_title s_('GitLabPages|Pages')
-
-- unless @project.pages_deployed?
-  = render 'waiting'
+- if Feature.enabled?('new_pages_ui', @project)
+  #js-pages
 - else
-  = render 'header'
-  = render 'pages_settings'
-  = render 'ssl_limitations_warning' if pages_subdomain(@project).include?(".")
-  = render 'access'
-  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
-    = render 'list'
+  - page_title s_('GitLabPages|Pages')
+
+  - unless @project.pages_deployed?
+    = render 'waiting'
   - else
-    = render 'no_domains'
-  = render 'destroy'
+    = render 'header'
+    = render 'pages_settings'
+    = render 'ssl_limitations_warning' if pages_subdomain(@project).include?(".")
+    = render 'access'
+    - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+      = render 'list'
+    - else
+      = render 'no_domains'
+    = render 'destroy'

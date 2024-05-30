@@ -8,8 +8,8 @@ module Gitlab
         # Entry that represents an only/except trigger policy for the job.
         #
         class Policy < ::Gitlab::Config::Entry::Simplifiable
-          strategy :RefsPolicy, if: -> (config) { config.is_a?(Array) }
-          strategy :ComplexPolicy, if: -> (config) { config.is_a?(Hash) }
+          strategy :RefsPolicy, if: ->(config) { config.is_a?(Array) }
+          strategy :ComplexPolicy, if: ->(config) { config.is_a?(Hash) }
 
           DEFAULT_ONLY = { refs: %w[branches tags] }.freeze
 

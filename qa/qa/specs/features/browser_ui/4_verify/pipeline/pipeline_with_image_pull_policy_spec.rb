@@ -84,7 +84,11 @@ module QA
 
         it(
           'fails job with policy not allowed message', :smoke,
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853',
+          quarantine: {
+            type: :flaky,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/462232"
+          }
         ) do
           visit_job
 

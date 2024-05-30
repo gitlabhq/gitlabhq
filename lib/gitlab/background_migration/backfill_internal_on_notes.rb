@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     # This syncs the data to `internal` from `confidential` as we rename the column.
     class BackfillInternalOnNotes < BatchedMigrationJob
-      scope_to -> (relation) { relation.where(confidential: true) }
+      scope_to ->(relation) { relation.where(confidential: true) }
       operation_name :update_all
       feature_category :database
 

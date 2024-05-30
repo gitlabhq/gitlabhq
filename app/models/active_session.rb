@@ -108,18 +108,6 @@ class ActiveSession
     end
   end
 
-  # set marketing cookie when user has active session
-  def self.set_active_user_cookie(auth)
-    expiration_time = 2.weeks.from_now
-
-    auth.cookies[:gitlab_user] =
-      {
-        value: true,
-        domain: Gitlab.config.gitlab.host,
-        expires: expiration_time
-      }
-  end
-
   def self.list(user)
     Gitlab::Redis::Sessions.with do |redis|
       cleaned_up_lookup_entries(redis, user).map do |raw_session|
@@ -348,3 +336,5 @@ class ActiveSession
     session_ids_and_entries.values.compact
   end
 end
+
+ActiveSession.prepend_mod_with('ActiveSession')

@@ -13,7 +13,7 @@ import (
 // Will not return a non-nil error after the response body has been
 // written to.
 // and `git push` doesn't provide `gitalypb.PackfileNegotiationStatistics`.
-func handleReceivePack(w *HttpResponseWriter, r *http.Request, a *api.Response) (*gitalypb.PackfileNegotiationStatistics, error) {
+func handleReceivePack(w *HTTPResponseWriter, r *http.Request, a *api.Response) (*gitalypb.PackfileNegotiationStatistics, error) {
 	action := getService(r)
 	writePostRPCHeader(w, action)
 

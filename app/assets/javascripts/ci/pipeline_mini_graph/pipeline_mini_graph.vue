@@ -7,7 +7,7 @@ import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_d
 import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
 import getLinkedPipelinesQuery from '~/ci/pipeline_details/graphql/queries/get_linked_pipelines.query.graphql';
 import getPipelineStagesQuery from './graphql/queries/get_pipeline_stages.query.graphql';
-import LegacyPipelineMiniGraph from './legacy_pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from './legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 
 export default {
   i18n: {

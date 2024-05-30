@@ -1,6 +1,6 @@
 <script>
 import PipelineStage from './pipeline_stage.vue';
-import LegacyPipelineStage from './legacy_pipeline_stage.vue';
+import LegacyPipelineStage from './legacy_pipeline_mini_graph/legacy_pipeline_stage.vue';
 /**
  * Renders the pipeline stages portion of the pipeline mini graph.
  */

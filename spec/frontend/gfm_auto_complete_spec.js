@@ -188,22 +188,6 @@ describe('GfmAutoComplete', () => {
       mock.restore();
     });
 
-    describe('already loading data', () => {
-      beforeEach(() => {
-        const context = {
-          isLoadingData: { '[vulnerability:': true },
-          dataSources: {},
-          cachedData: {},
-        };
-        fetchData.call(context, {}, '[vulnerability:', '');
-      });
-
-      it('should not call either axios nor AjaxCache', () => {
-        expect(axios.get).not.toHaveBeenCalled();
-        expect(AjaxCache.retrieve).not.toHaveBeenCalled();
-      });
-    });
-
     describe('backend filtering', () => {
       describe('data is not in cache', () => {
         let context;
@@ -221,6 +205,26 @@ describe('GfmAutoComplete', () => {
 
           expect(axios.get).toHaveBeenCalledWith('vulnerabilities_autocomplete_url', {
             params: { search: 'query' },
+            signal: expect.any(AbortSignal),
+          });
+        });
+
+        it('should abort previous request and call axios again with another search query', () => {
+          const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+
+          fetchData.call(context, {}, '[vulnerability:', 'query');
+          fetchData.call(context, {}, '[vulnerability:', 'query2');
+
+          expect(axios.get).toHaveBeenCalledWith('vulnerabilities_autocomplete_url', {
+            params: { search: 'query' },
+            signal: expect.any(AbortSignal),
+          });
+
+          expect(abortSpy).toHaveBeenCalled();
+
+          expect(axios.get).toHaveBeenCalledWith('vulnerabilities_autocomplete_url', {
+            params: { search: 'query2' },
+            signal: expect.any(AbortSignal),
           });
         });
 

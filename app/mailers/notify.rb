@@ -44,6 +44,8 @@ class Notify < ApplicationMailer
 
   layout :determine_layout
 
+  after_action :check_rate_limit
+
   def test_email(recipient_email, subject, body)
     mail_with_locale(
       to: recipient_email,
@@ -244,6 +246,36 @@ class Notify < ApplicationMailer
       format.html { render layout: layout }
       format.text { render layout: layout }
     end
+  end
+
+  def check_rate_limit
+    return if rate_limit_scope.nil?
+    return if Feature.disabled?(:rate_limit_notification_emails, rate_limit_scope)
+
+    already_notified = throttled?(peek: true)
+
+    return unless throttled?
+
+    message.perform_deliveries = false
+
+    return if already_notified
+
+    Namespaces::RateLimiterMailer.project_or_group_emails(
+      rate_limit_scope,
+      message.to
+    ).deliver_later
+  end
+
+  def throttled?(peek: false)
+    ::Gitlab::ApplicationRateLimiter.throttled?(
+      :notification_emails,
+      scope: [rate_limit_scope, message.to].flatten,
+      peek: peek
+    )
+  end
+
+  def rate_limit_scope
+    @project || @group
   end
 end
 

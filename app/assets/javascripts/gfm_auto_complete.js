@@ -155,6 +155,7 @@ class GfmAutoComplete {
     this.cachedData = {};
     this.isLoadingData = {};
     this.previousQuery = undefined;
+    this.currentBackendFilterRequestController = null;
   }
 
   setup(input, enableMap = defaultAutocompleteConfig) {
@@ -930,7 +931,7 @@ class GfmAutoComplete {
   }
 
   fetchData($input, at, search) {
-    if (this.isLoadingData[at]) return;
+    if (this.isLoadingData[at] && !GfmAutoComplete.isTypeWithBackendFiltering(at)) return;
 
     this.isLoadingData[at] = true;
     const dataSource = this.dataSources[GfmAutoComplete.atTypeMap[at]];
@@ -939,13 +940,25 @@ class GfmAutoComplete {
       if (this.cachedData[at]?.[search]) {
         this.loadData($input, at, this.cachedData[at][search], { search });
       } else {
+        if (this.currentBackendFilterRequestController) {
+          this.currentBackendFilterRequestController.abort();
+        }
+
+        this.currentBackendFilterRequestController = new AbortController();
+
         axios
-          .get(dataSource, { params: { search } })
+          .get(dataSource, {
+            params: { search },
+            signal: this.currentBackendFilterRequestController.signal,
+          })
           .then(({ data }) => {
             this.loadData($input, at, data, { search });
           })
           .catch(() => {
             this.isLoadingData[at] = false;
+          })
+          .finally(() => {
+            this.currentBackendFilterRequestController = null;
           });
       }
     } else if (this.cachedData[at]) {

@@ -40,7 +40,7 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
       end
     end
 
-    context 'when recipient email is blocked', :clean_gitlab_redis_rate_limiting do
+    context 'when recipient email is blocked', :freeze_time, :clean_gitlab_redis_rate_limiting do
       before do
         allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
           .and_return(
@@ -61,11 +61,9 @@ RSpec.describe NotificationRecipient, feature_category: :team_planning do
 
       context 'with temporary failures' do
         it 'returns false' do
-          freeze_time do
-            2.times { Gitlab::ApplicationRateLimiter.throttled?(:temporary_email_failure, scope: user.email) }
+          2.times { Gitlab::ApplicationRateLimiter.throttled?(:temporary_email_failure, scope: user.email) }
 
-            expect(recipient.notifiable?).to eq(false)
-          end
+          expect(recipient.notifiable?).to eq(false)
         end
       end
     end

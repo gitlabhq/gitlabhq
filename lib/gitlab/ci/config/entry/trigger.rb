@@ -8,8 +8,8 @@ module Gitlab
         # Entry that represents a parent-child or cross-project downstream trigger.
         #
         class Trigger < ::Gitlab::Config::Entry::Simplifiable
-          strategy :SimpleTrigger, if: -> (config) { config.is_a?(String) }
-          strategy :ComplexTrigger, if: -> (config) { config.is_a?(Hash) }
+          strategy :SimpleTrigger, if: ->(config) { config.is_a?(String) }
+          strategy :ComplexTrigger, if: ->(config) { config.is_a?(Hash) }
 
           # cross-project
           class SimpleTrigger < ::Gitlab::Config::Entry::Node
@@ -23,9 +23,9 @@ module Gitlab
           end
 
           class ComplexTrigger < ::Gitlab::Config::Entry::Simplifiable
-            strategy :CrossProjectTrigger, if: -> (config) { !config.key?(:include) }
+            strategy :CrossProjectTrigger, if: ->(config) { !config.key?(:include) }
 
-            strategy :SameProjectTrigger, if: -> (config) do
+            strategy :SameProjectTrigger, if: ->(config) do
               config.key?(:include)
             end
 

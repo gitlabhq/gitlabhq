@@ -2495,4 +2495,39 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       end
     end
   end
+
+  describe 'rate limiting', :freeze_time, :clean_gitlab_redis_rate_limiting do
+    before do
+      allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
+        .and_return(notification_emails: { threshold: 1, interval: 1.minute })
+    end
+
+    it 'stops sending notifications and notifies the user of the rate limit only once', :aggregate_failures do
+      perform_enqueued_jobs do
+        3.times { described_class.new_issue_email(issue.assignees.first.id, issue.id).deliver }
+      end
+
+      expect(ActionMailer::Base.deliveries.count).to eq(2)
+
+      allowed_notification, rate_limit_notification = ActionMailer::Base.deliveries
+
+      expect(allowed_notification).to have_referable_subject(issue)
+      expect(rate_limit_notification).to have_subject(/Notifications temporarily disabled/)
+    end
+
+    context 'when rate_limit_notification_emails is disabled' do
+      before do
+        stub_feature_flags(rate_limit_notification_emails: false)
+      end
+
+      it 'does not stop sending of notifications' do
+        perform_enqueued_jobs do
+          3.times { described_class.new_issue_email(issue.assignees.first.id, issue.id).deliver }
+        end
+
+        expect(ActionMailer::Base.deliveries.count).to eq(3)
+        expect(ActionMailer::Base.deliveries).to all(have_referable_subject(issue))
+      end
+    end
+  end
 end

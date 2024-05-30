@@ -15,25 +15,20 @@ module Gitlab
           modified_paths = find_modified_paths(pipeline, compare_to_sha)
 
           return true unless modified_paths
+          return false if modified_paths.empty?
 
           expanded_globs = expand_globs(context).uniq
+          return false if expanded_globs.empty?
 
-          if Feature.enabled?(:memoized_rules_changes, Project.actor_from_id(pipeline.project_id))
-            return false if modified_paths.empty?
-            return false if expanded_globs.empty?
-
-            cache_key = [
-              self.class.to_s,
-              '#satisfied_by?',
-              pipeline.project_id,
-              pipeline.sha,
-              compare_to_sha,
-              expanded_globs.sort
-            ]
-            Gitlab::SafeRequestStore.fetch(cache_key) do
-              match?(expanded_globs, modified_paths)
-            end
-          else
+          cache_key = [
+            self.class.to_s,
+            '#satisfied_by?',
+            pipeline.project_id,
+            pipeline.sha,
+            compare_to_sha,
+            expanded_globs.sort
+          ]
+          Gitlab::SafeRequestStore.fetch(cache_key) do
             match?(expanded_globs, modified_paths)
           end
         end

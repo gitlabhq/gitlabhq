@@ -3,3 +3,4 @@ Cop/ExperimentsTestCoverage:
   Exclude:
     - 'app/controllers/groups/boards_controller.rb'
     - 'app/controllers/projects/boards_controller.rb'
+    - 'app/views/devise/shared/_signup_box_form.html.haml'

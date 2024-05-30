@@ -22,7 +22,7 @@ func GetInfoRefsHandler(a *api.API) http.Handler {
 }
 
 func handleGetInfoRefs(rw http.ResponseWriter, r *http.Request, a *api.Response) {
-	responseWriter := NewHttpResponseWriter(rw)
+	responseWriter := NewHTTPResponseWriter(rw)
 	// Log 0 bytes in because we ignore the request body (and there usually is none anyway).
 	defer responseWriter.Log(r, 0)
 
@@ -55,7 +55,7 @@ func handleGetInfoRefs(rw http.ResponseWriter, r *http.Request, a *api.Response)
 	}
 }
 
-func handleGetInfoRefsWithGitaly(ctx context.Context, responseWriter *HttpResponseWriter, a *api.Response, rpc, gitProtocol, encoding string) error {
+func handleGetInfoRefsWithGitaly(ctx context.Context, responseWriter *HTTPResponseWriter, a *api.Response, rpc, gitProtocol, encoding string) error {
 	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(ctx, a.GitalyServer)
 	if err != nil {
 		return err
