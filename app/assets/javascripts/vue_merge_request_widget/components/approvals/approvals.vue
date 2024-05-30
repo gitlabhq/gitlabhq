@@ -281,7 +281,9 @@ export default {
       <template v-if="isLoading">{{ $options.FETCH_LOADING }}</template>
       <template v-else>
         <div class="gl-display-flex gl-flex-direction-column">
-          <div class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3">
+          <div
+            class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3 gl-align-items-flex-start"
+          >
             <div v-if="requireSamlAuthToApprove && showApprove">
               <gl-form
                 ref="form"

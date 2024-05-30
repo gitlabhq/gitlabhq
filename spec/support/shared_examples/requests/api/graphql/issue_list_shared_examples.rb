@@ -18,7 +18,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
   describe 'filters' do
     let(:mutually_exclusive_error) do
-      'only one of [assigneeUsernames, assigneeUsername, assigneeWildcardId] arguments is allowed at the same time.'
+      'Only one of [assigneeUsernames, assigneeUsername, assigneeWildcardId] arguments is allowed at the same time.'
     end
 
     before_all do
@@ -48,7 +48,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
           post_query
 
           expect_graphql_errors_to_include(
-            'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.'
+            'Only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.'
           )
         end
       end

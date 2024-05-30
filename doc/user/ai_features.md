@@ -21,6 +21,9 @@ GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparenc
 As GitLab Duo features mature, the documentation will be updated to clearly state
 how and where you can access these features.
 
+Each feature uses the large language models (LLMs) listed in this page. However, you can
+[use your own self-hosted models instead](../administration/self_hosted_models/index.md).
+
 ## Generally available features
 
 ### Code Suggestions
@@ -30,7 +33,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Helps you write code more efficiently by showing code suggestions as you type.
-- Large language model (LLM) for code completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-completion)
+- LLM for code completion: Vertex AI Codey [`code-gecko`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-completion)
 - LLM for code generation: Anthropic [`claude-3-sonnet-20240229`](https://docs.anthropic.com/claude/docs/models-overview)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/ds7SG1wgcVM)
 - [View documentation](project/repository/code_suggestions/index.md).

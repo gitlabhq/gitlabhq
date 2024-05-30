@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'graphql'
 
-RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_category: :integrations do
+RSpec.describe Gitlab::Graphql::Validators::ExactlyOneOfValidator, feature_category: :integrations do
   let(:schema) do
     Class.new(GraphQL::Schema) do
       query(Class.new(GraphQL::Schema::Object) do
@@ -13,7 +13,7 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
           argument :username, GraphQL::Types::String, required: false
           argument :user_id, GraphQL::Types::String, required: false
 
-          validates({ Gitlab::Graphql::Validators::MutuallyExclusiveValidator => [:username, :user_id] })
+          validates({ Gitlab::Graphql::Validators::ExactlyOneOfValidator => [:username, :user_id] })
         end
 
         def find_user(**args)
@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
     result = execute_query(query)
 
     expect(result['errors']).to include(
-      a_hash_including('message' => 'Only one of [username, userId] arguments is allowed at the same time.')
+      a_hash_including('message' => 'One and only one of [username, userId] arguments is required.')
     )
   end
 
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
     expect(result.dig('data', 'findUser')).to eq('user1')
   end
 
-  it 'does not raise an error when no argument is provided' do
+  it 'raises an error when no argument is provided' do
     query = <<-GRAPHQL
       query {
         findUser
@@ -62,7 +62,9 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
 
     result = execute_query(query)
 
-    expect(result.dig('data', 'findUser')).to be_nil
+    expect(result['errors']).to include(
+      a_hash_including('message' => 'One and only one of [username, userId] arguments is required.')
+    )
   end
 
   context 'when on an InputObject' do
@@ -77,7 +79,7 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
             argument :username, GraphQL::Types::String, required: false
             argument :user_id, GraphQL::Types::String, required: false
 
-            validates({ Gitlab::Graphql::Validators::MutuallyExclusiveValidator => [:username, :user_id] })
+            validates({ Gitlab::Graphql::Validators::ExactlyOneOfValidator => [:username, :user_id] })
           end
 
           field :find_user, GraphQL::Types::String, null: true do
@@ -101,7 +103,7 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
       result = execute_query(query)
 
       expect(result['errors']).to include(
-        a_hash_including('message' => 'Only one of [username, userId] arguments is allowed at the same time.')
+        a_hash_including('message' => 'One and only one of [username, userId] arguments is required.')
       )
     end
 
@@ -117,7 +119,7 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
       expect(result.dig('data', 'findUser')).to eq('user1')
     end
 
-    it 'does not raise an error when no argument is provided' do
+    it 'raises an error when no argument is provided' do
       query = <<-GRAPHQL
         query {
           findUser(user: { })
@@ -126,7 +128,9 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
 
       result = execute_query(query)
 
-      expect(result.dig('data', 'findUser')).to be_nil
+      expect(result['errors']).to include(
+        a_hash_including('message' => 'One and only one of [username, userId] arguments is required.')
+      )
     end
   end
 end

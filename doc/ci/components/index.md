@@ -610,8 +610,15 @@ Some CI/CD components are badged with an icon to show that the component was cre
 and is maintained by users verified by GitLab:
 
 - GitLab-maintained (**{tanuki-verified}**): Components that are created and maintained by GitLab.
-- GitLab Partner (**{partner-verified}**): Components that are created and maintained by
-  a GitLab-verified partner.
+- GitLab Partner (**{partner-verified}**): Components that are independently created
+  and maintained by a GitLab-verified partner.
+
+  DISCLAIMER:
+  GitLab Partner-created components are provided **as-is**, without warranty of any kind.
+  An end user's use of a GitLab Partner-created component is at their own risk and
+  GitLab shall have no indemnification obligations nor any liability of any type
+  with respect to the end user's use of the component. The end user's use of such content
+  and any liability related thereto shall be between the publisher of the content and the end user.
 
 ## Convert a CI/CD template to a component
 

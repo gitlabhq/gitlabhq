@@ -64,12 +64,9 @@ module Mutations
         null: true,
         description: 'Issue after mutation.'
 
-      def ready?(**args)
-        if args.slice(*mutually_exclusive_label_args).size > 1
-          arg_str = mutually_exclusive_label_args.map { |x| x.to_s.camelize(:lower) }.join(' or ')
-          raise Gitlab::Graphql::Errors::ArgumentError, "one and only one of #{arg_str} is required."
-        end
+      validates mutually_exclusive: [:labels, :label_ids]
 
+      def ready?(**args)
         if args[:discussion_to_resolve].present? && args[:merge_request_to_resolve_discussions_of].blank?
           raise Gitlab::Graphql::Errors::ArgumentError,
             'to resolve a discussion please also provide `merge_request_to_resolve_discussions_of` parameter'
@@ -107,10 +104,6 @@ module Mutations
         end
 
         params
-      end
-
-      def mutually_exclusive_label_args
-        [:labels, :label_ids]
       end
     end
   end

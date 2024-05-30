@@ -29,20 +29,6 @@ RSpec.describe Resolvers::UserResolver do
       end
     end
 
-    context 'when neither an ID or a username is provided' do
-      it 'generates an ArgumentError' do
-        expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
-          resolve_user
-        end
-      end
-    end
-
-    it 'generates an ArgumentError when both an ID and username are provided' do
-      expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
-        resolve_user(id: user.to_global_id, username: user.username)
-      end
-    end
-
     context 'by username' do
       include_examples "queries user" do
         let(:args) { { username: user.username } }

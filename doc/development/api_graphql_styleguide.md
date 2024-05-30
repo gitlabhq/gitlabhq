@@ -2075,6 +2075,17 @@ argument :username, GraphQL::Types::String, required: false
 validates mutually_exclusive: [:user_id, :username]
 ```
 
+When exactly one argument is required, you can use the `exactly_one_of` validator.
+
+Example:
+
+```ruby
+argument :group_path, GraphQL::Types::String, required: false
+argument :project_path, GraphQL::Types::String, required: false
+
+validates exactly_one_of: [:group_path, :project_path]
+```
+
 ### Keywords
 
 Each GraphQL `argument` defined is passed to the `#resolve` method
