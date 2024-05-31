@@ -333,7 +333,7 @@ export default {
       :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
       category="tertiary"
-      class="note-action-button js-note-edit gl-block"
+      class="note-action-button js-note-edit"
       data-testid="note-edit-button"
       @click="onEdit"
     />

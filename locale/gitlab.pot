@@ -42023,7 +42023,7 @@ msgstr ""
 msgid "Promotions|Upgrade your plan to improve milestones with Burndown Charts."
 msgstr ""
 
-msgid "Promotions|Upgrade your plan to improve repositories."
+msgid "Promotions|Upgrade your plan to improve repositories"
 msgstr ""
 
 msgid "Promotions|Use GitLab Mobile DevOps to quickly build, sign, and release native and cross-platform mobile apps for Android and iOS using GitLab CI/CD."
@@ -46610,7 +46610,7 @@ msgstr ""
 msgid "Secrets|Delete"
 msgstr ""
 
-msgid "Secrets|Edit %{key}"
+msgid "Secrets|Edit %{id}"
 msgstr ""
 
 msgid "Secrets|Edit secret"

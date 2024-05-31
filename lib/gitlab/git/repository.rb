@@ -164,9 +164,9 @@ module Gitlab
         nil
       end
 
-      def replicate(source_repository)
+      def replicate(source_repository, partition_hint: "")
         wrapped_gitaly_errors do
-          gitaly_repository_client.replicate(source_repository)
+          gitaly_repository_client.replicate(source_repository, partition_hint: partition_hint)
         end
       end
 

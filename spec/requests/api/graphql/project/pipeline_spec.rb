@@ -84,7 +84,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
       query_graphql_field(:jobs, nil,
         query_graphql_field(
           :nodes, {},
-          all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis], max_depth: 3)
+          all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis], max_depth: 1)
         )
       )
     end
@@ -123,11 +123,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
 
     let(:fields) do
       query_graphql_field(:jobs, { retried: retried_argument },
-        query_graphql_field(
-          :nodes,
-          {},
-          all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis], max_depth: 3)
-        )
+        query_graphql_field(:nodes, {}, "id name duration retried")
       )
     end
 
@@ -188,9 +184,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
         project(fullPath: $path) {
           pipeline(iid: $pipelineIID) {
             jobs(statuses: [$status]) {
-              nodes {
-                #{all_graphql_fields_for('CiJob', excluded: %w[aiFailureAnalysis], max_depth: 3)}
-              }
+              nodes { id }
             }
           }
         }

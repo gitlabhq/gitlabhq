@@ -294,7 +294,7 @@ module Gitlab
         gitaly_client_call(@storage, :repository_service, :remove_repository, request, timeout: GitalyClient.long_timeout)
       end
 
-      def replicate(source_repository)
+      def replicate(source_repository, partition_hint: "")
         request = Gitaly::ReplicateRepositoryRequest.new(
           repository: @gitaly_repo,
           source: source_repository.gitaly_repository
@@ -307,7 +307,9 @@ module Gitlab
           request,
           remote_storage: source_repository.storage,
           timeout: GitalyClient.long_timeout
-        )
+        ) do |kwargs|
+          kwargs.deep_merge(metadata: { 'gitaly-partitioning-hint': partition_hint })
+        end
       end
 
       def object_pool

@@ -15,7 +15,7 @@ module Gitlab
 
       # gitaly_client_call performs Gitaly calls including collected feature flag actors. The actors are retrieved
       # from repository actor and memoized. The service must set `self.repository_actor = a_repository` beforehand.
-      def gitaly_client_call(*args, **kargs)
+      def gitaly_client_call(...)
         unless repository_actor
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(
             Feature::InvalidFeatureFlagError.new("gitaly_client_call called without setting repository_actor")
@@ -28,7 +28,7 @@ module Gitlab
           project: project_actor,
           group: group_actor
         ) do
-          GitalyClient.call(*args, **kargs)
+          GitalyClient.call(...)
         end
       end
 

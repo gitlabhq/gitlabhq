@@ -1483,8 +1483,8 @@ class User < MainClusterwide::ApplicationRecord
   def several_namespaces?
     union_sql = ::Gitlab::SQL::Union.new(
       [owned_groups,
-       maintainers_groups,
-       groups_with_developer_maintainer_project_access]).to_sql
+        maintainers_groups,
+        groups_with_developer_maintainer_project_access]).to_sql
 
     ::Group.from("(#{union_sql}) #{::Group.table_name}").any?
   end
@@ -1890,7 +1890,7 @@ class User < MainClusterwide::ApplicationRecord
     if include_groups_with_developer_maintainer_access
       union_sql = ::Gitlab::SQL::Union.new(
         [owned_and_maintainer_group_hierarchy,
-         groups_with_developer_maintainer_project_access]).to_sql
+          groups_with_developer_maintainer_project_access]).to_sql
 
       ::Group.from("(#{union_sql}) #{::Group.table_name}")
     else
@@ -1953,8 +1953,8 @@ class User < MainClusterwide::ApplicationRecord
   def ci_owned_runners
     @ci_owned_runners ||= Ci::Runner
         .from_union([ci_owned_project_runners_from_project_members,
-                     ci_owned_project_runners_from_group_members,
-                     ci_owned_group_runners])
+          ci_owned_project_runners_from_group_members,
+          ci_owned_group_runners])
   end
 
   def owns_runner?(runner)

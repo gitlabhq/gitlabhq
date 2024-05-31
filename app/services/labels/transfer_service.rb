@@ -40,9 +40,9 @@ module Labels
     def labels_to_transfer
       Label
         .from_union([
-                      group_labels_applied_to_issues,
-                      group_labels_applied_to_merge_requests
-                    ])
+          group_labels_applied_to_issues,
+          group_labels_applied_to_merge_requests
+        ])
         .reorder(nil)
         .distinct
     end

@@ -289,26 +289,26 @@ module SearchHelper
 
       if can?(current_user, :read_code, @project)
         result.concat([
-                        { category: "In this project", label: _("Files"),          url: project_tree_path(@project, ref) },
-                        { category: "In this project", label: _("Commits"),        url: project_commits_path(@project, ref) }
-                      ])
+          { category: "In this project", label: _("Files"),          url: project_tree_path(@project, ref) },
+          { category: "In this project", label: _("Commits"),        url: project_commits_path(@project, ref) }
+        ])
       end
 
       if can?(current_user, :read_repository_graphs, @project)
         result.concat([
-                        { category: "In this project", label: _("Network"),        url: project_network_path(@project, ref) },
-                        { category: "In this project", label: _("Graph"),          url: project_graph_path(@project, ref) }
-                      ])
+          { category: "In this project", label: _("Network"),        url: project_network_path(@project, ref) },
+          { category: "In this project", label: _("Graph"),          url: project_graph_path(@project, ref) }
+        ])
       end
 
       result.concat([
-                      { category: "In this project", label: _("Issues"), url: project_issues_path(@project) },
-                      { category: "In this project", label: _("Merge requests"), url: project_merge_requests_path(@project) },
-                      { category: "In this project", label: _("Milestones"),     url: project_milestones_path(@project) },
-                      { category: "In this project", label: _("Snippets"),       url: project_snippets_path(@project) },
-                      { category: "In this project", label: _("Members"),        url: project_project_members_path(@project) },
-                      { category: "In this project", label: _("Wiki"),           url: project_wikis_path(@project) }
-                    ])
+        { category: "In this project", label: _("Issues"), url: project_issues_path(@project) },
+        { category: "In this project", label: _("Merge requests"), url: project_merge_requests_path(@project) },
+        { category: "In this project", label: _("Milestones"),     url: project_milestones_path(@project) },
+        { category: "In this project", label: _("Snippets"),       url: project_snippets_path(@project) },
+        { category: "In this project", label: _("Members"),        url: project_project_members_path(@project) },
+        { category: "In this project", label: _("Wiki"),           url: project_wikis_path(@project) }
+      ])
 
       if can?(current_user, :read_feature_flag, @project)
         result << { category: "In this project", label: _("Feature Flags"), url: project_feature_flags_path(@project) }

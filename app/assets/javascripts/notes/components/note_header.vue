@@ -217,7 +217,7 @@ export default {
           :href="authorHref"
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"
-          ><span class="note-headline-light">@{{ author.username }}</span>
+          ><span class="note-headline-light gl-hidden md:gl-inline">@{{ author.username }}</span>
         </a>
         <slot name="note-header-info"></slot>
       </span>

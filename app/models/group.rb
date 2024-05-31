@@ -767,8 +767,8 @@ class Group < Namespace
 
   def related_group_ids
     [id,
-     *ancestors.pluck(:id),
-     *shared_with_group_links.pluck(:shared_with_group_id)]
+      *ancestors.pluck(:id),
+      *shared_with_group_links.pluck(:shared_with_group_id)]
   end
 
   def hashed_storage?(_feature)
