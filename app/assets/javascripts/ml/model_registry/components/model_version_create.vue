@@ -13,6 +13,7 @@ import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { uploadModel } from '../services/upload_model';
 import createModelVersionMutation from '../graphql/mutations/create_model_version.mutation.graphql';
+import { emptyArtifactFile } from '../constants';
 
 export default {
   name: 'ModelVersionCreate',
@@ -39,50 +40,70 @@ export default {
       description: null,
       modalVisible: false,
       errorMessage: null,
-      selectedFile: { file: null, subfolder: '' },
+      selectedFile: emptyArtifactFile,
+      versionData: null,
     };
   },
   methods: {
-    async createModelVersion($event) {
+    async createModelVersion() {
+      const { data } = await this.$apollo.mutate({
+        mutation: createModelVersionMutation,
+        variables: {
+          projectPath: this.projectPath,
+          modelId: this.modelGid,
+          version: this.version,
+          description: this.description,
+        },
+      });
+
+      return data;
+    },
+    async create($event) {
       $event.preventDefault();
 
       this.errorMessage = '';
       try {
-        const { data } = await this.$apollo.mutate({
-          mutation: createModelVersionMutation,
-          variables: {
-            projectPath: this.projectPath,
-            modelId: this.modelGid,
-            version: this.version,
-            description: this.description,
-          },
-        });
-        const errors = data?.mlModelVersionCreate?.errors || [];
+        if (!this.versionData) {
+          this.versionData = await this.createModelVersion();
+        }
+        const errors = this.versionData?.mlModelVersionCreate?.errors || [];
 
         if (errors.length) {
           this.errorMessage = errors.join(', ');
+          this.versionData = null;
         } else {
-          const { importPath } = data.mlModelVersionCreate.modelVersion._links;
+          const { importPath } = this.versionData.mlModelVersionCreate.modelVersion._links;
 
           await uploadModel({
             importPath,
             file: this.selectedFile.file,
             subfolder: this.selectedFile.subfolder,
           });
-          const versionShowPath = data.mlModelVersionCreate.modelVersion._links.showPath;
-          visitUrl(versionShowPath);
+          const { showPath } = this.versionData.mlModelVersionCreate.modelVersion._links;
+          visitUrl(showPath);
         }
       } catch (error) {
         Sentry.captureException(error);
-        this.errorMessage = s__(
-          'MlModelRegistry|Error creating model version and uploading artifacts. Please try again.',
-        );
+        this.errorMessage = error;
+        this.selectedFile = emptyArtifactFile;
+        this.showModal();
       }
     },
-    showCreateModal() {
+    showModal() {
       this.modalVisible = true;
     },
+    resetModal() {
+      this.version = null;
+      this.description = null;
+      this.errorMessage = null;
+      this.selectedFile = emptyArtifactFile;
+      this.versionData = null;
+    },
     cancelModal() {
+      this.hideModal();
+      this.resetModal();
+    },
+    hideModal() {
       this.modalVisible = false;
     },
     hideAlert() {
@@ -110,7 +131,7 @@ export default {
 
 <template>
   <div>
-    <gl-button @click="showCreateModal">{{ $options.modal.buttonTitle }}</gl-button>
+    <gl-button @click="showModal">{{ $options.modal.buttonTitle }}</gl-button>
     <gl-modal
       v-model="modalVisible"
       modal-id="create-model-version-modal"
@@ -118,7 +139,7 @@ export default {
       :action-primary="$options.modal.actionPrimary"
       :action-cancel="$options.modal.actionCancel"
       size="sm"
-      @primary="createModelVersion"
+      @primary="create"
       @cancel="cancelModal"
     >
       <gl-form>
@@ -133,6 +154,7 @@ export default {
             data-testid="versionId"
             type="text"
             :placeholder="$options.modal.versionPlaceholder"
+            autocomplete="off"
           />
         </gl-form-group>
         <gl-form-group label="Description" label-for="descriptionId">

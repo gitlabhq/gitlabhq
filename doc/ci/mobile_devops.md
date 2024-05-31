@@ -293,7 +293,7 @@ For an overview, see [Google Play integration demo](https://youtu.be/Fxaj3hna4uk
 #### Enable Google Play Integration
 
 Use the [Google Play integration](../user/project/integrations/google_play.md),
-to configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console)
+to configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console/developers)
 to build and release Android apps. To enable the integration:
 
 1. On the left sidebar, select **Search or go to** and find your project.

@@ -12,7 +12,7 @@
 - show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
 - last_pipeline = last_pipeline_from_status_cache(project) if show_pipeline_status_icon
 - css_controls_class = "with-pipeline-status" if show_pipeline_status_icon && last_pipeline.present?
-- css_metadata_classes = "gl-display-flex gl-align-items-center gl-ml-0! gl-reset-color! icon-wrapper has-tooltip"
+- css_metadata_classes = "gl-display-flex gl-align-items-center gl-ml-0! !gl-text-inherit icon-wrapper has-tooltip"
 
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-justify-content-space-between gl-lg-w-25p gl-flex-grow-1 gl-shrink-0 gl-mt-0' }, header_options: { class: 'gl-new-card-header gl-flex-grow-1 gl-align-items-flex-start gl-border-b-0 gl-px-4 gl-gap-5' }, body_options: { class: 'gl-new-card-body gl-px-4 gl-py-4' }) do |c|
   - c.with_header do

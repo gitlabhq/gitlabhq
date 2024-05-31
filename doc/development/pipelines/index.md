@@ -20,6 +20,23 @@ unless they are mirrored on the `dev.gitlab.com` instance. CI/CD components do n
 and [cause failing pipelines](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/17683#note_1795756077)
 on the `dev.gitlab.com` mirror if they do not exist on that instance.
 
+## Pipeline tiers
+
+**under active development:** This section is likely to change in the next weeks.
+
+A merge request will typically run several CI/CD pipelines. Depending on where the merge request is at in the approval process, we will trigger different kinds of pipelines. We call those kinds of pipelines **pipeline tiers**.
+
+We currently have three tiers:
+
+1. `pipeline::tier-1`: The merge request has no approvals
+1. `pipeline::tier-2`: The merge request has at least one approval, but still requires more approvals
+1. `pipeline::tier-3`: The merge request has all the approvals it needs
+
+Typically, the lower the pipeline tier, the fastest the pipeline should be.
+The higher the pipeline tier, the more confidence the pipeline should give us by running more tests
+
+See the [Introduce "tiers" in MR pipelines](https://gitlab.com/groups/gitlab-org/quality/engineering-productivity/-/epics/58) epic for more information on the implementation.
+
 ## Predictive test jobs before a merge request is approved
 
 **To reduce the pipeline cost and shorten the job duration, before a merge request is approved, the pipeline will run a predictive set of RSpec & Jest tests that are likely to fail for the merge request changes.**

@@ -6,9 +6,13 @@ pre-merge-checks:
     # We use > instead of | because we want the files to be space-separated.
     FILES_TO_DOWNLOAD: >
       scripts/utils.sh
-      scripts/pipeline/merge-train-checks.rb
+      scripts/pipeline/pre_merge_checks.rb
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
   stage: pre-merge
+  needs: []
+  before_script:
+    - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
+    - !reference [".fast-no-clone-job", before_script]
   script:
     - install_gitlab_gem
-    - chmod u+x scripts/pipeline/merge-train-checks.rb && scripts/pipeline/merge-train-checks.rb
+    - chmod u+x scripts/pipeline/pre_merge_checks.rb && scripts/pipeline/pre_merge_checks.rb

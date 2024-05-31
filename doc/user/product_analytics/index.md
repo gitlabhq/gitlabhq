@@ -30,7 +30,7 @@ products that drive user engagement and business growth.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of the product analytics setup and functionality,
-watch the [Product Analytics walkthrough videos](https://youtube.com/playlist?list=PL05JrBw4t0Kqfb4oLOFKkXxNrBJzDQ3sL&feature=shared).
+watch the [Product Analytics walkthrough videos](https://www.youtube.com/playlist?list=PL05JrBw4t0Kqfb4oLOFKkXxNrBJzDQ3sL&feature=shared).
 
 For more information about the vision and development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
 To leave feedback about product analytics bugs or functionality:

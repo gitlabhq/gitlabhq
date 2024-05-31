@@ -282,7 +282,7 @@ describe('CiResourcesListItem', () => {
       });
 
       it('has the correct styling', () => {
-        expect(findFavorites().classes()).toEqual(['gl-reset-color!']);
+        expect(findFavorites().classes()).toEqual(['!gl-text-inherit']);
       });
     });
 

@@ -155,7 +155,7 @@ export default {
   >
     <template #title>
       <span data-testid="item-title">
-        <gl-link class="gl-reset-color gl-hover-text-blue-800" :href="activeItem.webUrl">
+        <gl-link class="gl-text-inherit gl-hover-text-blue-800" :href="activeItem.webUrl">
           {{ activeItem.title }}
         </gl-link>
       </span>

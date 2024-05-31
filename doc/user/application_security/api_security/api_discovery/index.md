@@ -46,7 +46,7 @@ Major version 3 is planned to be supported in the future. Support for major vers
 
 API Discovery is tested with and officially supports LTS versions of the Java runtime. Other versions may work also, and bug reports from non-LTS versions are welcome.
 
-Only applications that are built as Spring Boot [executable JARs](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html#appendix.executable-jar.nested-jars.jar-structure) are supported.
+Only applications that are built as Spring Boot [executable JARs](https://docs.spring.io/spring-boot/redirect.html?page=executable-jar#appendix.executable-jar.nested-jars.jar-structure) are supported.
 
 ### Configure as pipeline job
 

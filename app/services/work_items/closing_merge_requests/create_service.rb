@@ -5,7 +5,7 @@ module WorkItems
     class CreateService
       ResourceNotAvailable = Class.new(StandardError)
 
-      def initialize(current_user:, work_item:, merge_request_reference:, namespace_path:)
+      def initialize(current_user:, work_item:, merge_request_reference:, namespace_path: nil)
         @current_user = current_user
         @work_item = work_item
         @merge_request_reference = merge_request_reference
@@ -19,8 +19,7 @@ module WorkItems
           return ServiceResponse.error(message: _('Development widget is not enabled for this work item type'))
         end
 
-        project = Project.find_by_full_path(@namespace_path)
-        merge_request = merge_request_from_reference(project)
+        merge_request = merge_request_from_reference
         raise ResourceNotAvailable, 'Merge request not available' if merge_request.blank?
 
         mr_closing_issue = MergeRequestsClosingIssues.new(
@@ -38,11 +37,33 @@ module WorkItems
 
       private
 
-      def merge_request_from_reference(project)
-        extractor = ::Gitlab::ReferenceExtractor.new(project, @current_user)
-        extractor.analyze(@merge_request_reference, {})
+      def merge_request_from_reference
+        parent = parent_from_path
 
-        extractor.references(:merge_request).first # rubocop:disable CodeReuse/ActiveRecord -- references is not AR method
+        extractor = if parent.is_a?(Project)
+                      ::Gitlab::ReferenceExtractor.new(parent, @current_user)
+                    else
+                      ::Gitlab::ReferenceExtractor.new(nil, @current_user)
+                    end
+
+        extractor.analyze(@merge_request_reference, extractor_params_for(parent))
+        extractor.merge_requests.first
+      end
+
+      def parent_from_path
+        parent = Routable.find_by_full_path(@namespace_path)
+        return parent if parent.present?
+
+        # We fallback to the work item's parent as reference extractor always needs a parent to work
+        @work_item.project || @work_item.namespace
+      end
+
+      def extractor_params_for(parent)
+        if parent.is_a?(Group)
+          { group: parent }
+        else
+          {}
+        end
       end
     end
   end

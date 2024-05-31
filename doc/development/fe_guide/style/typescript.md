@@ -41,10 +41,10 @@ Consider copying the `tsconfig.json` and `.eslintrc.json` from there.
 
 For `tsconfig.json`:
 
-- Use [`"strict": true`](https://www.typescriptlang.org/tsconfig#strict).
+- Use [`"strict": true`](https://www.typescriptlang.org/tsconfig/#strict).
   This enforces the strongest type-checking capabilities in the project and
   prohibits overriding type-safety.
-- Use [`"skipLibCheck": true`](https://www.typescriptlang.org/tsconfig#skipLibCheck).
+- Use [`"skipLibCheck": true`](https://www.typescriptlang.org/tsconfig/#skipLibCheck).
   This improves compile time by only checking references `.d.ts`
   files as opposed to all `.d.ts` files in `node_modules`.
 

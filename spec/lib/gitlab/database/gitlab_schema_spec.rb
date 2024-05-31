@@ -224,9 +224,9 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         %i[gitlab_main_clusterwide gitlab_internal] | %w[users schema_migrations] | false
         %i[gitlab_main gitlab_ci] | %w[evidences ci_pipelines] | false
         %i[gitlab_main_clusterwide gitlab_shared] | %w[users detached_partitions] | false
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | false
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | true
         %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users agent_group_authorizations] | true
       end
 

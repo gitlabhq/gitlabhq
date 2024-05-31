@@ -26,6 +26,32 @@ RSpec.describe WorkItems::ClosingMergeRequests::CreateService, feature_category:
       ).execute
     end
 
+    shared_examples 'a service that works for full references and URLs' do
+      context 'when the merge request reference is a full reference' do
+        let(:mr_reference) { merge_request.to_reference(full: true) }
+
+        it 'adds the closing merge requests' do
+          expect do
+            create_result
+          end.to change { MergeRequestsClosingIssues.count }.by(1)
+
+          expect(create_result).to be_success
+        end
+      end
+
+      context 'when the merge request reference is a full URL' do
+        let(:mr_reference) { Gitlab::UrlBuilder.build(merge_request) }
+
+        it 'adds the closing merge requests' do
+          expect do
+            create_result
+          end.to change { MergeRequestsClosingIssues.count }.by(1)
+
+          expect(create_result).to be_success
+        end
+      end
+    end
+
     shared_examples 'a service that adds closing merge requests' do
       context 'when the user cannot update the work item' do
         let(:current_user) { unauthorized_user }
@@ -47,6 +73,8 @@ RSpec.describe WorkItems::ClosingMergeRequests::CreateService, feature_category:
         it 'sets from_mr_description to false' do
           expect(create_result.payload[:merge_request_closing_issue].from_mr_description).to be_falsey
         end
+
+        it_behaves_like 'a service that works for full references and URLs'
 
         context 'when the merge request was already associated with the work item' do
           before do
@@ -101,6 +129,14 @@ RSpec.describe WorkItems::ClosingMergeRequests::CreateService, feature_category:
           it 'raises a resource not available error' do
             expect { create_result }.to raise_error(described_class::ResourceNotAvailable)
           end
+
+          it_behaves_like 'a service that works for full references and URLs'
+        end
+
+        context 'when context path is nil' do
+          let(:namespace_path) { nil }
+
+          it_behaves_like 'a service that works for full references and URLs'
         end
       end
     end

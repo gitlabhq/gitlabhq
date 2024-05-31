@@ -39,7 +39,7 @@ module Gitlab
       end
 
       def instrumentation_class(config)
-        Gitlab::Instrumentation::Redis.storage_hash[config.custom[:instrumentation_class]]
+        ::Gitlab::Instrumentation::Redis.storage_hash[config.custom[:instrumentation_class]]
       end
     end
   end

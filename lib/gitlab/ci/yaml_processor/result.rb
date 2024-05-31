@@ -68,6 +68,10 @@ module Gitlab
           @ci_config&.metadata || {}
         end
 
+        def clear_jobs!
+          @jobs = {}
+        end
+
         private
 
         def assign_valid_attributes

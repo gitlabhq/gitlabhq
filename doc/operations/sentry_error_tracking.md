@@ -52,7 +52,7 @@ To view a list of Sentry errors, on your project's sidebar, go to **Monitor > Er
 ## Enable Sentry's integration with GitLab
 
 You might also want to enable Sentry's GitLab integration by following the steps
-in the [Sentry documentation](https://docs.sentry.io/product/integrations/source-code-mgmt/gitlab/).
+in the [Sentry documentation](https://docs.sentry.io/organization/integrations/source-code-mgmt/gitlab/).
 
 ## Troubleshooting
 

@@ -2109,7 +2109,7 @@ Payload example for project:
     "created_at": "2024-01-24 16:27:40 UTC",
     "id": 25,
     "name": "acd",
-    "expires_at": "2024-01-26",
+    "expires_at": "2024-01-26"
   },
   "event_name": "expiring_access_token"
 }
@@ -2130,7 +2130,7 @@ Payload example for group:
     "created_at": "2024-01-24 16:27:40 UTC",
     "id": 25,
     "name": "acd",
-    "expires_at": "2024-01-26",
+    "expires_at": "2024-01-26"
   },
   "event_name": "expiring_access_token"
 }

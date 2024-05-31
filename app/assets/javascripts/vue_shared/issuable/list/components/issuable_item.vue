@@ -401,7 +401,7 @@ export default {
           <div
             v-gl-tooltip.top
             :title="__('Comments')"
-            class="gl-reset-color! gl-display-flex gl-align-items-center"
+            class="!gl-text-inherit gl-display-flex gl-align-items-center"
           >
             <gl-icon name="comments" class="gl-mr-2" />
             {{ notesCount }}

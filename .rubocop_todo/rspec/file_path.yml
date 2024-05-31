@@ -20,6 +20,7 @@ RSpec/FilePath:
     - 'ee/spec/services/ci/create_pipeline_service/dast_configuration_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/needs_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/runnable_builds_spec.rb'
+    - 'ee/spec/services/ci/create_pipeline_service/pipeline_execution_policy_spec.rb'
     - 'spec/benchmarks/banzai_benchmark.rb'
     - 'spec/docs_screenshots/container_registry_docs.rb'
     - 'spec/docs_screenshots/wiki_docs.rb'

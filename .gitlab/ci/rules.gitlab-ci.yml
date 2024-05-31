@@ -2872,6 +2872,8 @@
 
 .setup:rules:clone-gitlab-repo:
   rules:
+    - <<: *if-dot-com-gitlab-org-and-subgroups-merge-train
+      when: never
     - if: '$CI_FETCH_REPO_GIT_STRATEGY == "none"'
 
 .setup:rules:gitlab_git_test:
@@ -3331,3 +3333,10 @@
 .pre-merge:rules:pre-merge-checks:
   rules:
     - <<: *if-dot-com-gitlab-org-and-subgroups-merge-train
+    # So that we can run the job when making change to it in non-merge train pipelines
+    - <<: *if-merge-request
+      changes:
+        - .gitlab/ci/pre-merge.gitlab-ci.yml
+        - scripts/pipeline/pre_merge_checks.rb
+      when: manual
+      allow_failure: true

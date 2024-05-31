@@ -65,7 +65,7 @@ module Gitlab
       def process_args!(payload)
         return unless payload['args']
 
-        payload['args'] = Gitlab::ErrorTracking::Processor::SidekiqProcessor
+        payload['args'] = ::Gitlab::ErrorTracking::Processor::SidekiqProcessor
                             .loggable_arguments(payload['args'], payload['class'])
       end
     end

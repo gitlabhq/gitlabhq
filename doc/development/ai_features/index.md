@@ -74,7 +74,7 @@ the feature must proxy requests through the [AI Gateway](../../architecture/blue
 1. Verify that it is working by calling the following in the rails console:
 
    ```ruby
-   Gitlab::Llm::AiGateway::Client.new(User.first).stream(prompt: [{role: "user", content: "Hi, how are you?"}])
+   Gitlab::Llm::Chain::Requests::AiGateway.new(User.first).request(prompt: [{role: "user", content: "Hi, how are you?"}])
    ```
 
 ### Verify the setup with GraphQL

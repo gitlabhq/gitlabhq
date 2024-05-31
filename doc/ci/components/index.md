@@ -134,14 +134,15 @@ for example:
 
 ```yaml
 include:
-  - component: gitlab.example.com/my-org/security-components/secret-detection@1.0.0
+  - component: $CI_SERVER_FQDN/my-org/security-components/secret-detection@1.0.0
     inputs:
       stage: build
 ```
 
 In this example:
 
-- `gitlab.example.com` is the Fully Qualified Domain Name (FQDN) matching the GitLab host.
+- `$CI_SERVER_FQDN` is a [predefined variable](../variables/predefined_variables.md)
+  for the fully qualified domain name (FQDN) matching the GitLab host.
   You can only reference components in the same GitLab instance as your project.
 - `my-org/security-components` is the full path of the project containing the component.
 - `secret-detection` is the component name that is defined as either a single file `templates/secret-detection.yml`

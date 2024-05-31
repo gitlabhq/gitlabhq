@@ -74,7 +74,7 @@ The following "hello world" example for the Rust programming language uses the `
    ```yaml
    include:
      # include the component located in the current project from the current SHA
-     - component: gitlab.com/$CI_PROJECT_PATH/build@$CI_COMMIT_SHA
+     - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/build@$CI_COMMIT_SHA
        inputs:
          stage: build
 
@@ -107,10 +107,10 @@ The following "hello world" example for the Rust programming language uses the `
    ```yaml
    include:
      # include the component located in the current project from the current SHA
-     - component: gitlab.com/$CI_PROJECT_PATH/build@$CI_COMMIT_SHA
+     - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/build@$CI_COMMIT_SHA
        inputs:
          stage: build
-     - component: gitlab.com/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
+     - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
        inputs:
          stage: test
 
@@ -281,12 +281,12 @@ The CI/CD template migration involves the following steps:
      stages: [format, build, test]
 
      include:
-       - component: example.gitlab.com/$CI_PROJECT_PATH/format@$CI_COMMIT_SHA
-       - component: example.gitlab.com/$CI_PROJECT_PATH/build@$CI_COMMIT_SHA
-       - component: example.gitlab.com/$CI_PROJECT_PATH/build@$CI_COMMIT_SHA
+       - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/format@$CI_COMMIT_SHA
+       - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/build@$CI_COMMIT_SHA
+       - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/build@$CI_COMMIT_SHA
          inputs:
            golang_version: "1.21"
-       - component: example.gitlab.com/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
+       - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/test@$CI_COMMIT_SHA
          inputs:
            golang_version: latest
      ```

@@ -173,7 +173,7 @@ export default {
           <gl-button
             v-gl-tooltip.top
             data-testid="stats-favorites"
-            class="gl-reset-color!"
+            class="!gl-text-inherit"
             icon="star-o"
             :title="starCountText"
             :href="starsHref"

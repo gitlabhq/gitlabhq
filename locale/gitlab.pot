@@ -33252,12 +33252,6 @@ msgstr ""
 msgid "MlModelRegistry|Enter some model description"
 msgstr ""
 
-msgid "MlModelRegistry|Error creating model version and uploading artifacts. Please try again."
-msgstr ""
-
-msgid "MlModelRegistry|Error creating model, version and uploading artifacts. Please try again."
-msgstr ""
-
 msgid "MlModelRegistry|Error importing artifact. Please try again."
 msgstr ""
 
@@ -62524,6 +62518,9 @@ msgstr ""
 msgid "mrWidget|If the last pipeline ran in the fork project, it may be inaccurate. Before merge, we advise running a pipeline in this project."
 msgstr ""
 
+msgid "mrWidget|Information"
+msgstr ""
+
 msgid "mrWidget|Loading deployment statistics"
 msgstr ""
 
@@ -62541,6 +62538,9 @@ msgstr ""
 msgid "mrWidget|Merge failed."
 msgstr ""
 
+msgid "mrWidget|Merge request was removed from the merge train."
+msgstr ""
+
 msgid "mrWidget|Merged by"
 msgstr ""
 
@@ -62548,6 +62548,9 @@ msgid "mrWidget|Merging immediately is not recommended. The merged changes could
 msgstr ""
 
 msgid "mrWidget|Merging immediately isn't recommended as it may negatively impact the existing merge train. Read the %{linkStart}documentation%{linkEnd} for more information."
+msgstr ""
+
+msgid "mrWidget|Migrate to GitLab CI/CD from Jenkins"
 msgstr ""
 
 msgid "mrWidget|Please restore it or use a different %{type} branch."
@@ -62590,6 +62593,12 @@ msgid "mrWidget|Set by %{merge_author} to be merged automatically when the pipel
 msgstr ""
 
 msgid "mrWidget|Set by %{merge_author} to start a merge train when the pipeline succeeds"
+msgstr ""
+
+msgid "mrWidget|Start with migration plan"
+msgstr ""
+
+msgid "mrWidget|Take advantage of simple, scalable pipelines and CI/CD enabled features. You can view integration results, security scans, tests, code coverage and more directly in merge requests!"
 msgstr ""
 
 msgid "mrWidget|The %{type} branch %{codeStart}%{name}%{codeEnd} does not exist."

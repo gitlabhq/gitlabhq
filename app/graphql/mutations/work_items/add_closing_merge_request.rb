@@ -9,15 +9,17 @@ module Mutations
       authorize :update_work_item
 
       argument :context_namespace_path, GraphQL::Types::ID,
-        required: true,
+        required: false,
         description: 'Full path of the context namespace (project or group). Only project full paths are used to ' \
-          'find a merge request using a short reference syntax like `!1`.'
+          'find a merge request using a short reference syntax like `!1`. Ignored for full references and URLs. ' \
+          'Defaults to the namespace of the work item if not provided.'
       argument :id, ::Types::GlobalIDType[::WorkItem],
         required: true,
         description: 'Global ID of the work item.'
       argument :merge_request_reference, GraphQL::Types::String,
         required: true,
-        description: 'Merge request short reference. Example: `!1`.'
+        description: 'Merge request reference (short, full or URL). Example: ' \
+          '`!1`, `project_full_path!1` or `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1`.'
 
       field :closing_merge_request,
         Types::WorkItems::ClosingMergeRequestType,
@@ -27,7 +29,7 @@ module Mutations
         null: true,
         description: 'Work item with new closing merge requests.'
 
-      def resolve(id:, merge_request_reference:, context_namespace_path:)
+      def resolve(id:, merge_request_reference:, context_namespace_path: nil)
         work_item = authorized_find!(id: id)
 
         result = ::WorkItems::ClosingMergeRequests::CreateService.new(

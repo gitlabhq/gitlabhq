@@ -149,6 +149,7 @@ export default class MergeRequestStore {
     this.exposedArtifactsPath = data.exposed_artifacts_path;
     this.cancelAutoMergePath = data.cancel_auto_merge_path;
     this.canCancelAutomaticMerge = Boolean(data.cancel_auto_merge_path);
+    this.ciIntegrationJenkins = data.jenkins_integration_active;
 
     this.newBlobPath = data.new_blob_path;
     this.sourceBranchPath = data.source_branch_path;
@@ -290,6 +291,7 @@ export default class MergeRequestStore {
     this.isDismissedSuggestPipeline = data.is_dismissed_suggest_pipeline;
     this.securityReportsDocsPath = data.security_reports_docs_path;
     this.securityConfigurationPath = data.security_configuration_path;
+    this.isIntegrationJenkinsDismissed = false;
 
     // code quality
     const blobPath = data.blob_path || {};

@@ -102,7 +102,7 @@ describe('ModelCreate', () => {
         );
       });
 
-      it('does not show modal', () => {
+      it('shows the modal', () => {
         expect(findGlModal().props('visible')).toBe(true);
       });
 
@@ -162,12 +162,6 @@ describe('ModelCreate', () => {
 
       it('clicking on cancel button triggers hide-create-model', async () => {
         await findGlModal().vm.$emit('cancel');
-
-        expect(wrapper.emitted('hide-create-model')).toHaveLength(1);
-      });
-
-      it('dismissing modal triggers hide-create-model', async () => {
-        await findGlModal().vm.$emit('hide');
 
         expect(wrapper.emitted('hide-create-model')).toHaveLength(1);
       });
@@ -278,7 +272,7 @@ describe('ModelCreate', () => {
       await submitForm();
     });
 
-    it('Displays an alert upon failed model  create mutation', async () => {
+    it('Displays an alert upon failed model create mutation', async () => {
       expect(findGlAlert().text()).toBe('Version is invalid');
 
       await submitForm();
@@ -294,6 +288,24 @@ describe('ModelCreate', () => {
           },
         }),
       );
+    });
+  });
+
+  describe('Failed flow with file upload retried', () => {
+    beforeEach(async () => {
+      createWrapper();
+      findNameInput().vm.$emit('input', 'gpt-alice-1');
+      findVersionInput().vm.$emit('input', '1.0.0');
+      findDescriptionInput().vm.$emit('input', 'My model description');
+      findVersionDescriptionInput().vm.$emit('input', 'My version description');
+      uploadModel.mockRejectedValueOnce('Artifact import error.');
+      await submitForm();
+    });
+
+    it('Visits the model versions page upon successful create mutation', async () => {
+      expect(findGlAlert().text()).toBe('Artifact import error.');
+      await submitForm(); // retry submit
+      expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
     });
   });
 

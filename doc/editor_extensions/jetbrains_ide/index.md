@@ -37,7 +37,7 @@ You can configure the editor extension to use 1Password secret references for au
 Prerequisites:
 
 - You have the [1Password](https://1password.com) desktop app installed.
-- You have the [1Password CLI](https://developer.1password.com/docs/cli/get-started) tool installed.
+- You have the [1Password CLI](https://developer.1password.com/docs/cli/get-started/) tool installed.
 
 To integrate GitLab for JetBrains with the 1Password CLI:
 

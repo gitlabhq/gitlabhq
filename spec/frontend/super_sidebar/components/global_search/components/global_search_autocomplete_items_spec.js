@@ -117,20 +117,6 @@ describe('GlobalSearchAutocompleteItems', () => {
           expect(findItems()).toHaveLength(MOCK_SORTED_AUTOCOMPLETE_OPTIONS.length);
         });
 
-        it('tracks click on project results', async () => {
-          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
-          await findGlDisclosureDropdownGroup().vm.$emit('action', {
-            category: PROJECTS_GROUP_TITLE,
-          });
-
-          expect(trackEventSpy).toHaveBeenCalledWith(
-            'click_project_result_in_command_palette',
-            {},
-            undefined,
-          );
-        });
-
         it('renders titles correctly', () => {
           const expectedTitles = MOCK_SORTED_AUTOCOMPLETE_OPTIONS.map((o) => o.value || o.text);
           expect(findItemTitles()).toStrictEqual(expectedTitles);
@@ -158,6 +144,22 @@ describe('GlobalSearchAutocompleteItems', () => {
 
         it('does not render no-results-found component', () => {
           expect(findNoResults().exists()).toBe(false);
+        });
+      });
+
+      describe.each`
+        event                                        | category
+        ${'click_project_result_in_command_palette'} | ${PROJECTS_GROUP_TITLE}
+        ${'click_user_result_in_command_palette'}    | ${undefined}
+      `('event tracking', ({ event, category }) => {
+        it(`tracks click for ${category} results`, async () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+          await findGlDisclosureDropdownGroup().vm.$emit('action', {
+            category,
+          });
+
+          expect(trackEventSpy).toHaveBeenCalledWith(event, {}, undefined);
         });
       });
 

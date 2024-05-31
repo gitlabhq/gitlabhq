@@ -6,6 +6,7 @@ require 'gitlab' unless Object.const_defined?(:Gitlab)
 
 class PreMergeChecks
   DEFAULT_API_ENDPOINT = "https://gitlab.com/api/v4"
+  MERGE_TRAIN_REF_REGEX = %r{\Arefs/merge-requests/\d+/train\z}
   TIER_IDENTIFIER_REGEX = /tier:\d/
   REQUIRED_TIER_IDENTIFIER = 'tier:3'
   PREDICTIVE_PIPELINE_IDENTIFIER = 'predictive'
@@ -14,20 +15,18 @@ class PreMergeChecks
   def initialize(
     api_endpoint: ENV.fetch('CI_API_V4_URL', DEFAULT_API_ENDPOINT),
     project_id: ENV['CI_PROJECT_ID'],
-    merge_request_iid: ENV['CI_MERGE_REQUEST_IID'],
-    current_pipeline_id: ENV['CI_PIPELINE_ID'])
+    merge_request_iid: ENV['CI_MERGE_REQUEST_IID'])
     @api_endpoint        = api_endpoint
     @project_id          = project_id
     @merge_request_iid   = merge_request_iid.to_i
-    @current_pipeline_id = current_pipeline_id.to_i
 
     check_required_ids!
   end
 
   def execute
+    # Find the first non merge-train pipeline
     latest_pipeline_id = api_client.merge_request_pipelines(project_id, merge_request_iid).auto_paginate do |pipeline|
-      # Skip the current merge train pipeline, as we want the latest merge request pipeline
-      next if pipeline.id == current_pipeline_id
+      next if pipeline.ref.match?(MERGE_TRAIN_REF_REGEX)
 
       break pipeline.id
     end
@@ -44,22 +43,21 @@ class PreMergeChecks
 
   private
 
-  attr_reader :api_endpoint, :project_id, :merge_request_iid, :current_pipeline_id
+  attr_reader :api_endpoint, :project_id, :merge_request_iid
 
   def api_client
     @api_client ||= begin
-      GitLab.configure do |config|
+      Gitlab.configure do |config|
         config.endpoint = api_endpoint
         config.private_token = ENV.fetch('GITLAB_API_PRIVATE_TOKEN', '')
       end
-      GitLab.client
+      Gitlab.client
     end
   end
 
   def check_required_ids!
     raise 'Missing project_id' unless project_id
     raise 'Missing merge_request_iid' if merge_request_iid == 0
-    raise 'Missing current_pipeline_id' if current_pipeline_id == 0
   end
 
   def check_pipeline_for_merged_results!(pipeline)
@@ -105,18 +103,12 @@ if $PROGRAM_NAME == __FILE__
       options[:merge_request_iid] = value
     end
 
-    opts.on("-c", "--current_pipeline_id [string]", String, "Current pipeline ID") do |value|
-      options[:current_pipeline_id] = value
-    end
-
     opts.on("-h", "--help") do
-      puts "Usage: merge-train-checks.rb [--project_id <PROJECT_ID>] [--merge_request_iid <MERGE_REQUEST_IID>] " \
-        "[--current_pipeline_id <CURRENT_PIPELINE_ID>]"
+      puts "Usage: #{File.basename(__FILE__)} [--project_id <PROJECT_ID>] [--merge_request_iid <MERGE_REQUEST_IID>]"
       puts
       puts "Examples:"
       puts
-      puts "merge-train-checks.rb --project_id \"gitlab-org/gitlab\" --merge_request_iid \"1\" " \
-        "--current_pipeline_id \"2\""
+      puts "#{File.basename(__FILE__)} --project_id \"gitlab-org/gitlab\" --merge_request_iid \"1\""
 
       exit
     end

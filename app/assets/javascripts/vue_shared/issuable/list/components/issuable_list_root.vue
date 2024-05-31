@@ -246,6 +246,9 @@ export default {
     gridViewFeatureEnabled() {
       return Boolean(this.glFeatures?.issuesGridView);
     },
+    hasItems() {
+      return this.issuables.length > 0;
+    },
   },
   watch: {
     urlParams: {
@@ -333,7 +336,15 @@ export default {
       @onFilter="$emit('filter', $event)"
       @onSort="$emit('sort', $event)"
     />
-    <gl-alert v-if="error" variant="danger" @dismiss="$emit('dismiss-alert')">{{ error }}</gl-alert>
+    <gl-alert
+      v-if="error"
+      variant="danger"
+      :class="{ 'gl-mt-5': !hasItems && !issuablesLoading }"
+      :dismissible="hasItems"
+      @dismiss="$emit('dismiss-alert')"
+    >
+      {{ error }}
+    </gl-alert>
     <issuable-bulk-edit-sidebar :expanded="showBulkEditSidebar">
       <template #bulk-edit-actions>
         <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
@@ -401,7 +412,7 @@ export default {
       <div v-else-if="issuables.length > 0 && isGridView">
         <issuable-grid />
       </div>
-      <slot v-else name="empty-state"></slot>
+      <slot v-else-if="!error" name="empty-state"></slot>
     </template>
 
     <div

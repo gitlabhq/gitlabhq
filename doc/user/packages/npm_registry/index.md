@@ -166,7 +166,7 @@ In these examples:
 - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
 
 NOTE:
-Starting with npm version 8, you can [use a URI fragment instead of a full URL](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc?v=true#auth-related-configuration)
+Starting with npm version 8, you can [use a URI fragment instead of a full URL](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc/?v=true#auth-related-configuration)
 in the `_authToken` parameter. However, [group-level endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/299834)
 are not supported.
 

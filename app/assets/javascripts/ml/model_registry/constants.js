@@ -22,3 +22,8 @@ export const MODEL_ENTITIES = {
   model: 'model',
   modelVersion: 'modelVersion',
 };
+
+export const emptyArtifactFile = {
+  file: null,
+  subfolder: '',
+};

@@ -22,25 +22,18 @@ module ClickHouseHelpers
   # rubocop:disable Metrics/PerceivedComplexity -- same
   def insert_ci_builds_to_click_house(builds)
     result = clickhouse_fixture(:ci_finished_builds, builds.map do |build|
-      {
-        id: build.id,
-        project_id: build.project_id,
-        pipeline_id: build.pipeline_id,
-        status: build.status,
-        finished_at: build.finished_at,
-        created_at: build.created_at,
-        started_at: build.started_at,
-        queued_at: build.queued_at,
-        runner_id: build.runner_id,
-        runner_manager_system_xid: build.runner_manager&.system_xid,
-        runner_run_untagged: build.runner&.run_untagged,
-        runner_type: Ci::Runner.runner_types[build.runner&.runner_type],
-        runner_owner_namespace_id: build.runner&.owner_runner_namespace&.namespace_id,
-        runner_manager_version: build.runner_manager&.version || '',
-        runner_manager_revision: build.runner_manager&.revision || '',
-        runner_manager_platform: build.runner_manager&.platform || '',
-        runner_manager_architecture: build.runner_manager&.architecture || ''
-      }
+      build.slice(
+        %i[id project_id pipeline_id status finished_at created_at started_at queued_at runner_id]).symbolize_keys
+          .merge(
+            runner_run_untagged: build.runner&.run_untagged,
+            runner_type: Ci::Runner.runner_types[build.runner&.runner_type],
+            runner_owner_namespace_id: build.runner&.owner_runner_namespace&.namespace_id,
+            runner_manager_system_xid: build.runner_manager&.system_xid,
+            runner_manager_version: build.runner_manager&.version || '',
+            runner_manager_revision: build.runner_manager&.revision || '',
+            runner_manager_platform: build.runner_manager&.platform || '',
+            runner_manager_architecture: build.runner_manager&.architecture || ''
+          )
     end)
 
     expect(result).to eq(true)

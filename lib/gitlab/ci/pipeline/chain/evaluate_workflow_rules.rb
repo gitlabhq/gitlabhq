@@ -13,6 +13,20 @@ module Gitlab
 
             return if workflow_passed?
 
+            if force_pipeline_creation_to_continue?
+              # Usually we exit early here, leaving the pipeline data structure
+              # from CI config untouched.
+              # Since we are forcing the process to continue, we need to ensure that
+              # we empty the data structure from the CI config, otherwise
+              # the seeding phase will populate the pipeline with jobs.
+              #
+              # Example: With Pipeline Execution Policies we want to inject policy
+              # jobs even if the project pipeline is filtered out by workflow:rules.
+              @command.yaml_processor_result&.clear_jobs!
+
+              return
+            end
+
             error(
               'Pipeline filtered out by workflow rules.',
               drop_reason: :filtered_by_workflow_rules
@@ -54,8 +68,19 @@ module Gitlab
               @command.yaml_processor_result.workflow_rules
             end
           end
+
+          # rubocop:disable Gitlab/NoCodeCoverageComment -- method is tested in EE
+          # :nocov:
+          # Overridden in EE
+          def force_pipeline_creation_to_continue?
+            false
+          end
+          # :nocov:
+          # rubocop:enable Gitlab/NoCodeCoverageComment
         end
       end
     end
   end
 end
+
+Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules.prepend_mod

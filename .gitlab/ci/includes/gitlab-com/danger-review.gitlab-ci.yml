@@ -1,5 +1,5 @@
 include:
-  - component: ${CI_SERVER_HOST}/gitlab-org/components/danger-review/danger-review@1.2.0
+  - component: ${CI_SERVER_FQDN}/gitlab-org/components/danger-review/danger-review@1.2.0
     inputs:
       job_image: "${DEFAULT_CI_IMAGE}"
       # By default DANGER_DANGERFILE_PREFIX is not defined but allows JiHu to
@@ -12,7 +12,8 @@ danger-review:
   extends:
     - .default-retry
     - .ruby-node-cache
-    - .review:rules:danger
+  # extending from .review:rules:danger doesn't work
+  rules: !reference [.review:rules:danger, rules]
   variables:
     BUNDLE_WITH: "danger"
   before_script:

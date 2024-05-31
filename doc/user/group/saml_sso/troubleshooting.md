@@ -21,7 +21,7 @@ This page contains possible solutions for problems you might encounter when usin
 SAML responses are base64 encoded, so we recommend the following browser plugins to decode them on the fly:
 
 - [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
-- [SAML Message Decoder](https://chrome.google.com/webstore/detail/saml-message-decoder/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
+- [SAML Message Decoder](https://chromewebstore.google.com/detail/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
 
 Pay specific attention to:
 

@@ -83,7 +83,7 @@ Keyword search operates on the principle of matching the query terms directly wi
 
 Hybrid search combines the depth of semantic search with the precision of keyword search, offering a comprehensive search solution that caters to both context-rich and specific queries. By running both semantic and keyword searches simultaneously, it integrates the strengths of both methods—semantic search's ability to understand the context and keyword search's precision in identifying exact matches.
 
-The results from both searches are then combined, with their relevance scores normalized to provide a unified set of results. This approach is particularly effective in scenarios where queries may not be fully served by either method alone, offering a balanced and nuanced response to complex search needs. The computational demands of kNN searches, which are part of semantic search, are contrasted with the relative efficiency of [BM25](https://medium.com/@evertongomede/understanding-the-bm25-ranking-algorithm-19f6d45c6ce) keyword searches, making hybrid search a strategic choice for optimizing performance across diverse datasets.
+The results from both searches are then combined, with their relevance scores normalized to provide a unified set of results. This approach is particularly effective in scenarios where queries may not be fully served by either method alone, offering a balanced and nuanced response to complex search needs. The computational demands of kNN searches, which are part of semantic search, are contrasted with the relative efficiency of [BM25](https://pub.aimind.so/understanding-the-bm25-ranking-algorithm-19f6d45c6ce) keyword searches, making hybrid search a strategic choice for optimizing performance across diverse datasets.
 
 ### Code Search
 

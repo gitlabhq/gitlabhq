@@ -1850,7 +1850,7 @@ This example links to `<wiki_root>/miscellaneous.md`:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322174) in GitLab 15.10.
 
-In wikis, you can use the [diagrams.net](https://www.diagrams.net/) editor to create diagrams. You
+In wikis, you can use the [diagrams.net](https://app.diagrams.net/) editor to create diagrams. You
 can also edit diagrams created with the diagrams.net editor. The diagram editor is available in both
 the plain text editor and the rich text editor.
 

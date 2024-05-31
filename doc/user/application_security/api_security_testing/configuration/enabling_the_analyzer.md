@@ -339,7 +339,7 @@ This is a minimal configuration for API security testing. From here you can:
 #### Variables in Postman Client
 
 Postman allows the developer to define placeholders that can be used in different parts of the
-requests. These placeholders are called variables, as explained in [using variables](https://learning.postman.com/docs/sending-requests/variables/variables/).
+requests. These placeholders are called variables, as explained in [using variables](https://learning.postman.com/docs/sending-requests/variables/variables/#using-variables).
 You can use variables to store and reuse values in your requests and scripts. For example, you can
 edit the collection to add variables to the document:
 
@@ -357,7 +357,7 @@ Postman has grown from a basic client tool with a nice UX experience to a more c
 
 Postman allows creating variables in different scopes. Each scope has a different level of visibility in the Postman tools. For example, you can create a variable in a _global environment_ scope that is seen by every operation definition and workspace. You can also create a variable in a specific _environment_ scope that is only visible and used when that specific environment is selected for use. Some scopes are not always available, for example in the Postman ecosystem you can create requests in the Postman Client, these requests do not have a _local_ scope, but test scripts do.
 
-Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. We strongly recommend that you read [Variable Scopes](https://learning.postman.com/docs/sending-requests/variables/#variable-scopes) from Postman documentation before moving forward.
+Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. We strongly recommend that you read [Variable Scopes](https://learning.postman.com/docs/sending-requests/variables/variables/#variable-scopes) from Postman documentation before moving forward.
 
 As mentioned above, there are different variable scopes, and each of them has a purpose and can be used to provide more flexibility to your Postman document. There is an important note on how values for variables are computed, as per Postman documentation:
 
@@ -391,9 +391,9 @@ Not all scopes are supported by API security testing and variables defined in sc
 
 For more details on how to define variables and export variables in different scopes, see:
 
-- [Defining collection variables](https://learning.postman.com/docs/sending-requests/variables/#defining-collection-variables)
-- [Defining environment variables](https://learning.postman.com/docs/sending-requests/variables/#defining-environment-variables)
-- [Defining global variables](https://learning.postman.com/docs/sending-requests/variables/#defining-global-variables)
+- [Defining collection variables](https://learning.postman.com/docs/sending-requests/variables/variables/#defining-collection-variables)
+- [Defining environment variables](https://learning.postman.com/docs/sending-requests/variables/variables/#defining-environment-variables)
+- [Defining global variables](https://learning.postman.com/docs/sending-requests/variables/variables/#defining-global-variables)
 
 ##### Exporting from Postman Client
 
@@ -406,7 +406,7 @@ For more details on exporting variables in different supported scopes, see:
 
 - [Exporting collections](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections)
 - [Exporting environments](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
-- [Downloading global environments](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments)
+- [Downloading global environments](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments)
 
 #### API security testing scope, custom JSON file format
 
@@ -442,7 +442,7 @@ Variables from other scopes are provided through the `DAST_API_POSTMAN_COLLECTIO
 
 The configuration variable `DAST_API_POSTMAN_COLLECTION_VARIABLES` can be set to:
 
-- [Exported Global environment](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments)
+- [Exported Global environment](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments)
 - [Exported environments](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
 - [API security testing Custom JSON format](#api-security-testing-scope-custom-json-file-format)
 
@@ -460,7 +460,7 @@ For example, if a request definition in the Postman Collection references the va
 
 #### Dynamic Postman variables
 
-In addition to variables that a user can define at various scope levels, Postman has a set of pre-defined variables called _dynamic_ variables. The [_dynamic_ variables](https://learning.postman.com/docs/writing-scripts/script-references/variables-list/) are already defined and their name is prefixed with a dollar sign (`$`), for instance, `$guid`. _Dynamic_ variables can be used like any other variable, and in the Postman Client, they produce random values during the request/collection run.
+In addition to variables that a user can define at various scope levels, Postman has a set of pre-defined variables called _dynamic_ variables. The [_dynamic_ variables](https://learning.postman.com/docs/tests-and-scripts/write-scripts/variables-list/) are already defined and their name is prefixed with a dollar sign (`$`), for instance, `$guid`. _Dynamic_ variables can be used like any other variable, and in the Postman Client, they produce random values during the request/collection run.
 
 An important difference between API security testing and Postman is that API security testing returns the same value for each usage of the same dynamic variables. This differs from the Postman Client behavior which returns a random value on each use of the same dynamic variable. In other words, API security testing uses static values for dynamic variables while Postman uses random values.
 
@@ -589,7 +589,7 @@ The supported dynamic variables during the scanning process are:
 
 #### Example: Global Scope
 
-In this example, [the _global_ scope is exported](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) from the Postman Client as `global-scope.json` and provided to API security testing through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable.
+In this example, [the _global_ scope is exported](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) from the Postman Client as `global-scope.json` and provided to API security testing through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable.
 
 Here is an example of using `DAST_API_POSTMAN_COLLECTION_VARIABLES`:
 
@@ -680,7 +680,7 @@ values. For example:
 
 In this example, a _global_ scope, _environment_ scope, and _collection_ scope are configured. The first step is to export our various scopes.
 
-- [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) as `global-scope.json`
+- [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
 - [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
 
@@ -738,7 +738,7 @@ When using exported scopes, it's often the case that the value of a variable mus
 
 In this example, a _global_ scope, _environment_ scope, _collection_ scope, and _API security testing_ scope are configured. The first step is to export and create our various scopes.
 
-- [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/#downloading-global-environments) as `global-scope.json`
+- [Export the _global_ scope](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) as `global-scope.json`
 - [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
 

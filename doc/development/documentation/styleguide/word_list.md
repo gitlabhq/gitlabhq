@@ -180,6 +180,21 @@ For example:
 
 - You can view merge request analytics for a project. They are displayed on the Merge Request Analytics dashboard.
 
+## ancestor
+
+To refer to a [parent item](#parent) that's one or more level above in the hierarchy,
+use **ancestor**.
+
+Do not use **grandparent**.
+
+Examples:
+
+- An ancestor group, a group in the project's hierarchy.
+- An ancestor epic, an epic in the issue's hierarchy.
+- A group and all its ancestors.
+
+See also: [child](#child), [descendant](#descendant), and [subgroup](#subgroup).
+
 ## and/or
 
 Instead of **and/or**, use **or** or rewrite the sentence to spell out both options.
@@ -349,6 +364,20 @@ You can omit **CI/CD** when the context is clear, especially after the first use
 ## CI/CD minutes
 
 Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#compute-minutes).
+
+## child
+
+Always use as a compound noun.
+
+Examples:
+
+- child issue
+- child epic
+- child objective
+- child key result
+- child pipeline
+
+See also: [descendant](#descendant), [parent](#parent) and [subgroup](#subgroup).
 
 ## click
 
@@ -524,6 +553,21 @@ Use title case for the GitLab Dependency Proxy.
 ## deploy board
 
 Use lowercase for **deploy board**.
+
+## descendant
+
+To refer to a [child item](#child) that's one or more level below in the hierarchy,
+use **descendant**.
+
+Do not use **grandchild**.
+
+Examples:
+
+- An descendant project, a project in the group's hierarchy.
+- An descendant issue, an issue in the epic's hierarchy.
+- A group and all its descendants.
+
+See also: [ancestor](#ancestor), [child](#child), and [subgroup](#subgroup).
 
 ## Developer
 
@@ -1472,6 +1516,26 @@ If it is not, you should be able to get the name from the breadcrumb.
 The docs should match the case in the UI, and the page name should be bold. For example:
 
 - On the **Test cases** page, ...
+
+## parent
+
+Always use as a compound noun.
+
+Do not use **direct [ancestor](#ancestor)** or **ascendant**.
+
+Examples:
+
+- parent directory
+- parent group
+- parent project
+- parent commit
+- parent issue
+- parent item
+- parent epic
+- parent objective
+- parent pipeline
+
+See also: [child](#child), and [subgroup](#subgroup).
 
 ## permissions
 

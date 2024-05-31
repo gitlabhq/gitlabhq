@@ -296,7 +296,7 @@ export default {
       <span v-else class="gl-display-flex gl-align-items-center gl-leading-normal">
         {{ __('None') }} -
         <gl-button
-          class="gl-ml-2 gl-reset-color!"
+          class="gl-ml-2 !gl-text-inherit"
           href="#"
           category="tertiary"
           variant="link"

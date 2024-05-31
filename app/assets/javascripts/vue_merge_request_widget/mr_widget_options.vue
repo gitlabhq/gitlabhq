@@ -17,6 +17,7 @@ import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
 import MrWidgetPipelineContainer from './components/mr_widget_pipeline_container.vue';
 import WidgetSuggestPipeline from './components/mr_widget_suggest_pipeline.vue';
+import MrWidgetMigrateJenkins from './components/mr_widget_migrate_jenkins.vue';
 import SourceBranchRemovalStatus from './components/source_branch_removal_status.vue';
 import ArchivedState from './components/states/mr_widget_archived.vue';
 import MrWidgetAutoMergeEnabled from './components/states/mr_widget_auto_merge_enabled.vue';
@@ -58,6 +59,7 @@ export default {
     Loading,
     WidgetContainer,
     MrWidgetSuggestPipeline: WidgetSuggestPipeline,
+    MrWidgetMigrateJenkins,
     MrWidgetPipelineContainer,
     MrWidgetAlertMessage,
     MrWidgetMerged: MergedState,
@@ -192,6 +194,11 @@ export default {
       const { hasCI, mergeRequestAddCiConfigPath, isDismissedSuggestPipeline } = this.mr;
 
       return !hasCI && mergeRequestAddCiConfigPath && !isDismissedSuggestPipeline;
+    },
+    showRenderMigrateFromJenkins() {
+      const { hasCI, isIntegrationJenkinsDismissed, ciIntegrationJenkins } = this.mr;
+
+      return hasCI && !isIntegrationJenkinsDismissed && ciIntegrationJenkins;
     },
     shouldRenderCollaborationStatus() {
       return this.mr.allowCollaboration && this.mr.isOpen;
@@ -495,6 +502,9 @@ export default {
     dismissSuggestPipelines() {
       this.mr.isDismissedSuggestPipeline = true;
     },
+    dismissMigrateFromJenkins() {
+      this.mr.isIntegrationJenkinsDismissed = true;
+    },
   },
 };
 </script>
@@ -517,6 +527,12 @@ export default {
       :user-callouts-path="mr.userCalloutsPath"
       :user-callout-feature-id="mr.suggestPipelineFeatureId"
       @dismiss="dismissSuggestPipelines"
+    />
+    <mr-widget-migrate-jenkins
+      v-if="showRenderMigrateFromJenkins"
+      class="mr-widget-workflow"
+      :human-access="formattedHumanAccess"
+      @dismiss="dismissMigrateFromJenkins"
     />
     <mr-widget-pipeline-container
       v-if="shouldRenderPipelines"

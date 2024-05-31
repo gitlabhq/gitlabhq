@@ -216,7 +216,7 @@ pipeline configuration.
 
 ```yaml
 include:
-  - component: gitlab.example.com/my-org/security-components/secret-detection@1.0
+  - component: $CI_SERVER_FQDN/my-org/security-components/secret-detection@1.0
 ```
 
 **Related topics**:

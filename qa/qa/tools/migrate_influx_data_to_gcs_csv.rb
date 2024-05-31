@@ -28,7 +28,12 @@ module QA
             end
 
             file_name = "#{bucket.end_with?('main') ? 'main' : 'all'}-#{stats_type}_#{Time.now.to_i}.csv"
-            influx_to_csv(bucket, stats_type, file_name)
+            rows = influx_to_csv(bucket, stats_type, file_name)
+
+            if rows.empty?
+              QA::Runtime::Logger.warn("No data to upload for bucket: '#{bucket}' and stats: '#{stats_type}'")
+              next
+            end
 
             # Upload to Google Cloud Storage
             upload_to_gcs(QA_METRICS_GCS_BUCKET_NAME, file_name)
@@ -56,6 +61,8 @@ module QA
           end
           QA::Runtime::Logger.info("File #{data_file_name} contains #{all_runs.count} rows")
         end
+
+        all_runs
       end
 
       # Upload file to GCS
@@ -75,8 +82,13 @@ module QA
         end
 
         # Upload new file
-        file = gcs_client.put_object(bucket, file_path, File.new(backup_file_path, "r"), force: true)
-        QA::Runtime::Logger.info("File #{file_path} uploaded to gs://#{bucket}/#{file.name}")
+        begin
+          file = gcs_client.put_object(bucket, file_path, File.new(backup_file_path, "r"), force: true)
+          QA::Runtime::Logger.info("File #{file_path} uploaded to gs://#{bucket}/#{file.name}")
+        rescue StandardError => e
+          QA::Runtime::Logger.error("Failed uploading '#{file_path}' to GCS. Error: #{e.message}.")
+          raise e
+        end
       end
     end
   end

@@ -60,7 +60,7 @@ export default {
             <img :src="newSubgroupIllustration" :alt="$options.i18n.withLinks.subgroup.title" />
           </div>
           <div>
-            <h4 class="gl-reset-color">{{ $options.i18n.withLinks.subgroup.title }}</h4>
+            <h4 class="gl-text-inherit">{{ $options.i18n.withLinks.subgroup.title }}</h4>
             <p class="gl-text-body">
               {{ $options.i18n.withLinks.subgroup.description }}
             </p>
@@ -73,7 +73,7 @@ export default {
             <img :src="newProjectIllustration" :alt="$options.i18n.withLinks.project.title" />
           </div>
           <div>
-            <h4 class="gl-reset-color">{{ $options.i18n.withLinks.project.title }}</h4>
+            <h4 class="gl-text-inherit">{{ $options.i18n.withLinks.project.title }}</h4>
             <p class="gl-text-body">
               {{ $options.i18n.withLinks.project.description }}
             </p>

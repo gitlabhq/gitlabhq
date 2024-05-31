@@ -65,16 +65,15 @@ support the following features:
 
 ## Post analyzers
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 Post analyzers enrich the report output by an analyzer. A post analyzer doesn't modify report
 content directly. Instead, it enhances the results with additional properties, including:
 
 - CWEs.
 - Location tracking fields.
-- A means of identifying false positives or insignificant findings.
-
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Transition to Semgrep-based scanning
 

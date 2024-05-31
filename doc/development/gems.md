@@ -280,7 +280,7 @@ The project for a new Gem should always be created in [`gitlab-org/ruby/gems` na
 
        ```yaml
        include:
-         - component: gitlab.com/gitlab-org/components/gem-release/gem-release@~latest
+         - component: $CI_SERVER_FQDN/gitlab-org/components/gem-release/gem-release@~latest
        ```
 
        This job will handle building and publishing the gem (it uses a `gitlab_rubygems` Rubygems.org

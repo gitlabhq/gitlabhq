@@ -150,40 +150,58 @@ describe('ModelVersionCreate', () => {
         subfolder: '',
       });
     });
+    it('Visits the model versions page upon successful create mutation', async () => {
+      createWrapper();
+
+      await submitForm();
+
+      expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
+    });
   });
 
-  it('Visits the model versions page upon successful create mutation', async () => {
-    createWrapper();
-    await submitForm();
-    expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
-  });
+  describe('Failed flow', () => {
+    it('Displays an alert upon failed create mutation', async () => {
+      const failedCreateResolver = jest.fn().mockResolvedValue(createModelVersionResponses.failure);
+      createWrapper(failedCreateResolver);
 
-  it('Displays an alert upon failed create mutation', async () => {
-    const failedCreateResolver = jest.fn().mockResolvedValue(createModelVersionResponses.failure);
-    createWrapper(failedCreateResolver);
+      await submitForm();
 
-    await submitForm();
+      expect(findGlAlert().text()).toBe('Version is invalid');
+    });
 
-    expect(findGlAlert().text()).toBe('Version is invalid');
-  });
+    it('Displays an alert upon an exception', async () => {
+      createWrapper();
+      uploadModel.mockRejectedValueOnce('Runtime error');
 
-  it('Displays an alert upon an exception', async () => {
-    createWrapper();
-    uploadModel.mockRejectedValue('Runtime error');
+      await submitForm();
 
-    await submitForm();
+      expect(findGlAlert().text()).toBe('Runtime error');
+    });
 
-    expect(findGlAlert().text()).toBe(
-      'Error creating model version and uploading artifacts. Please try again.',
-    );
-  });
+    it('Logs to sentry upon an exception', async () => {
+      createWrapper();
+      uploadModel.mockRejectedValueOnce('Runtime error');
 
-  it('Logs to sentry upon an exception', async () => {
-    createWrapper();
-    uploadModel.mockRejectedValue('Runtime error');
+      await submitForm();
 
-    await submitForm();
+      expect(Sentry.captureException).toHaveBeenCalledWith('Runtime error');
+    });
 
-    expect(Sentry.captureException).toHaveBeenCalledWith('Runtime error');
+    describe('Failed flow with file upload retried', () => {
+      beforeEach(async () => {
+        createWrapper();
+        uploadModel.mockRejectedValueOnce('Artifact import error.');
+
+        await submitForm();
+      });
+
+      it('Visits the model versions page upon successful create mutation', async () => {
+        expect(findGlAlert().text()).toBe('Artifact import error.');
+
+        await submitForm();
+
+        expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
+      });
+    });
   });
 });

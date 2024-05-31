@@ -368,7 +368,7 @@ However, this is deprecated and should no longer be used. We want to remove `res
 
 ## Testing GitLab Duo Chat in production-like environments
 
-GitLab Duo Chat is enabled in the [Staging](https://staging.gitlab.com) and
+GitLab Duo Chat is enabled in the [Staging](https://staging.gitlab.com/users/sign_in) and
 [Staging Ref](https://staging-ref.gitlab.com/) GitLab environments.
 
 Because GitLab Duo Chat is currently only available to members of groups in the

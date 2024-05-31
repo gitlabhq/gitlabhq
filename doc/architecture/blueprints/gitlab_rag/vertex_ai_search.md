@@ -18,7 +18,7 @@ Some of our data are public resources that don't require [data access check](ind
 These data are often identical across GitLab instances so it's redundant to ingest the same data into every single database.
 It'd be more efficient to serve the data from the single service.
 
-We can use [Vertex AI Search](https://cloud.google.com/vertex-ai-search-and-conversation?hl=en) in this case.
+We can use [Vertex AI Search](https://cloud.google.com/products/agent-builder?hl=en) in this case.
 It can search at scale, with high queries per second (QPS), high recall, low latency, and cost efficiency.
 
 This approach allows us to minimize code that we can't update on a customer's behalf, which means avoiding hard-coding AI-related logic in the GitLab monolith codebase. We can retain the flexibility to make changes in our product without asking customers to upgrade their GitLab version.
@@ -59,7 +59,7 @@ flowchart LR
 - Data **must be** [GREEN level](index.md#data-access-policy) and publicly shareable.
   - Examples:
   - GitLab documentations (`gitlab-org/gitlab/doc`, `gitlab-org/gitlab-runner/docs`, `gitlab-org/omnibus-gitlab/doc`, etc)
-  - Dynamically construct few-shot prompt templates with [Example selectors](https://python.langchain.com/docs/modules/model_io/prompts/example_selectors/).
+  - Dynamically construct few-shot prompt templates with [Example selectors](https://python.langchain.com/v0.1/docs/modules/model_io/prompts/example_selectors/).
 
 **IMPORTANT: We do NOT persist customer data into Vertex AI Search. See the other solutions for persisting customer data.**
 

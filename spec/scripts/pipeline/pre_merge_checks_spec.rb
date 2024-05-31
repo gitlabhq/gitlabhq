@@ -11,7 +11,6 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T08:00:00 U
   let(:instance)            { described_class.new }
   let(:project_id)          { '42' }
   let(:merge_request_iid)   { '1' }
-  let(:current_pipeline_id) { mr_pipelines[0][:id].to_s }
   let(:mr_pipelines_url)    { "https://gitlab.test/api/v4/projects/#{project_id}/merge_requests/#{merge_request_iid}/pipelines" }
 
   let(:latest_mr_pipeline_ref) { "refs/merge-requests/1/merge" }
@@ -34,11 +33,18 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T08:00:00 U
   let(:mr_pipelines) do
     [
       {
-        id: 1309903341,
+        id: 1309903340,
         ref: "refs/merge-requests/1/train",
         status: "success",
         source: "merge_request_event",
         created_at: "2024-05-29T07:30:00 UTC"
+      },
+      {
+        id: 1309903341,
+        ref: "refs/merge-requests/1/train",
+        status: "success",
+        source: "merge_request_event",
+        created_at: "2024-05-29T07:15:00 UTC"
       },
       latest_mr_pipeline_short,
       {
@@ -69,8 +75,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T08:00:00 U
     stub_env(
       'CI_API_V4_URL' => 'https://gitlab.test/api/v4',
       'CI_PROJECT_ID' => project_id,
-      'CI_MERGE_REQUEST_IID' => merge_request_iid,
-      'CI_PIPELINE_ID' => current_pipeline_id
+      'CI_MERGE_REQUEST_IID' => merge_request_iid
     )
   end
 
@@ -88,14 +93,6 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T08:00:00 U
 
       it 'raises an error' do
         expect { instance }.to raise_error("Missing merge_request_iid")
-      end
-    end
-
-    context 'when current_pipeline_id is missing' do
-      let(:current_pipeline_id) { nil }
-
-      it 'raises an error' do
-        expect { instance }.to raise_error("Missing current_pipeline_id")
       end
     end
   end
@@ -131,7 +128,7 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T08:00:00 U
     context 'when default arguments are present' do
       context 'when we have a latest pipeline' do
         before do
-          allow(api_client).to receive(:pipeline).with(project_id, mr_pipelines[1][:id]).and_return(latest_mr_pipeline)
+          allow(api_client).to receive(:pipeline).with(project_id, mr_pipelines[2][:id]).and_return(latest_mr_pipeline)
         end
 
         context 'and it passes all the checks' do

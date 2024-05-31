@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers, feature_category: :continuo
   subject(:helper) { helper_class.new(pipeline, command) }
 
   let(:pipeline) { build(:ci_empty_pipeline) }
-  let(:command) { double(save_incompleted: true) }
+  let(:command) { double(save_incompleted: true, dry_run?: false) }
   let(:message) { 'message' }
 
   describe '.warning' do
@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers, feature_category: :continuo
       end
 
       context 'when drop_reason is nil' do
-        let(:command) { double(project: nil) }
+        let(:command) { double(project: nil, dry_run?: false) }
 
         shared_examples "error function with no drop reason" do
           it 'drops with out failure reason' do
@@ -122,9 +122,25 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers, feature_category: :continuo
             expect(pipeline).to be_persisted
           end
 
+          context 'with readonly pipeline and dry run enabled' do
+            let(:command) { double(project: nil, save_incompleted: true, dry_run?: true) }
+
+            before do
+              pipeline.readonly!
+            end
+
+            specify do
+              subject.error(message, config_error: config_error, drop_reason: drop_reason)
+
+              expect(pipeline).to be_failed
+              expect(pipeline.failure_reason).to eq drop_reason.to_s
+              expect(pipeline).not_to be_persisted
+            end
+          end
+
           context 'when the drop reason is not persistable' do
             let(:drop_reason) { :filtered_by_rules }
-            let(:command) { double(project: nil) }
+            let(:command) { double(project: nil, dry_run?: false) }
 
             specify do
               expect(command).to receive(:increment_pipeline_failure_reason_counter)
@@ -138,7 +154,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Helpers, feature_category: :continuo
           end
 
           context 'when save_incompleted is false' do
-            let(:command) { double(save_incompleted: false, project: nil) }
+            let(:command) { double(save_incompleted: false, project: nil, dry_run?: false) }
 
             before do
               allow(command).to receive(:increment_pipeline_failure_reason_counter)

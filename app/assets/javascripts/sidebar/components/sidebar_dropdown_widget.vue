@@ -325,7 +325,7 @@ export default {
         >
           <gl-link
             v-gl-tooltip="tooltipText"
-            class="gl-reset-color gl-hover-text-blue-800"
+            class="gl-text-inherit gl-hover-text-blue-800"
             :href="attributeUrl"
             :data-testid="`${formatIssuableAttribute.kebab}-link`"
           >

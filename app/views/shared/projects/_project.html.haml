@@ -14,7 +14,7 @@
 - show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
 - last_pipeline = last_pipeline_from_status_cache(project) if show_pipeline_status_icon
 - css_controls_class = "with-pipeline-status" if show_pipeline_status_icon && last_pipeline.present?
-- css_metadata_classes = "gl-display-flex gl-align-items-center gl-reset-color! icon-wrapper has-tooltip"
+- css_metadata_classes = "gl-display-flex gl-align-items-center !gl-text-inherit icon-wrapper has-tooltip"
 
 %li.project-row
   - if avatar

@@ -244,7 +244,7 @@ For example:
 
 ```yaml
 include:
-  - component: gitlab.com/the-namespace/the-project/the-component@1.0
+  - component: $CI_SERVER_FQDN/the-namespace/the-project/the-component@1.0
     inputs:
       stage: my-stage
   - local: path/to/file.yml
@@ -317,10 +317,10 @@ For example, to reuse the same `rules` configuration with multiple components th
   - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 include:
-  - component: gitlab.com/project/path/component1@main
+  - component: $CI_SERVER_FQDN/project/path/component1@main
     inputs:
       job-rules: *my-job-rules
-  - component: gitlab.com/project/path/component2@main
+  - component: $CI_SERVER_FQDN/project/path/component2@main
     inputs:
       job-rules: *my-job-rules
 ```

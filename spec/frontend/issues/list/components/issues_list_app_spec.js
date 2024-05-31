@@ -603,7 +603,7 @@ describe('CE IssuesListApp component', () => {
           wrapper = mountComponent({
             provide: { hasAnyIssues: true },
             mountFn: mount,
-            issuesQueryResponse: getIssuesQueryEmptyResponse,
+            issuesQueryResponse: jest.fn().mockResolvedValue(getIssuesQueryEmptyResponse),
           });
           return waitForPromises();
         });
@@ -629,6 +629,21 @@ describe('CE IssuesListApp component', () => {
             showIssuableByEmail: false,
             showNewIssueDropdown: false,
           });
+        });
+      });
+
+      describe('when there are errors', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            provide: { hasAnyIssues: true },
+            mountFn: mount,
+            issuesQueryResponse: jest.fn().mockRejectedValue(getIssuesQueryEmptyResponse),
+          });
+          return waitForPromises();
+        });
+
+        it('does not show empty state', () => {
+          expect(wrapper.findComponent(EmptyStateWithAnyIssues).exists()).toBe(false);
         });
       });
     });

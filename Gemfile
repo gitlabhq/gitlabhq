@@ -446,7 +446,7 @@ group :development do
 
   gem 'ruby-lsp-rspec', "~> 0.1.10", require: false, feature_category: :tooling
 
-  gem 'gdk-toogle', '~> 0.9', require: 'toogle', feature_category: :tooling
+  gem 'gdk-toogle', '~> 0.9', '>= 0.9.5', require: 'toogle', feature_category: :tooling
 end
 
 group :development, :test do
@@ -588,7 +588,7 @@ gem 'ssh_data', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'spamcheck', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 17.0.0.pre.rc2', feature_category: :gitaly
+gem 'gitaly', '~> 17.0.1', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.5.0', feature_category: :deployment_management

@@ -344,7 +344,7 @@ payload looks like:
 ```
 
 If the requested file matches the requested SHA256 sum, then the Geo
-**primary** site sends data via the [X-Sendfile](https://www.nginx.com/resources/wiki/start/topics/examples/xsendfile/)
+**primary** site sends data via the X-Sendfile
 feature, which allows NGINX to handle the file transfer without tying
 up Rails or Workhorse.
 

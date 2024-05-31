@@ -361,7 +361,7 @@ When choosing a name for a new feature flag, consider the following guidelines:
   with double negatives. Consider starting the name with `hide_`, `remove_`, or `disallow_`.
 
   In software engineering this problem is known as
-  ["negative names for boolean variables"](https://www.serendipidata.com/posts/naming-guidelines-for-boolean-variables).
+  ["negative names for boolean variables"](https://www.serendipidata.com/posts/naming-guidelines-for-boolean-variables/).
   But we can't forbid negative words altogether, to be able to introduce flags as
   [disabled by default](#feature-flags-in-gitlab-development), use them to remove a feature by moving it behind a flag, or to [selectively disable a flag by actor](controls.md#selectively-disable-by-actor).
 

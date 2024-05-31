@@ -14,6 +14,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { uploadModel } from '../services/upload_model';
 import createModelVersionMutation from '../graphql/mutations/create_model_version.mutation.graphql';
 import createModelMutation from '../graphql/mutations/create_model.mutation.graphql';
+import { emptyArtifactFile } from '../constants';
 
 export default {
   name: 'ModelCreate',
@@ -41,8 +42,9 @@ export default {
       description: null,
       versionDescription: null,
       errorMessage: null,
-      selectedFile: { file: null, subfolder: '' },
+      selectedFile: emptyArtifactFile,
       modelData: null,
+      versionData: null,
     };
   },
   computed: {
@@ -79,29 +81,34 @@ export default {
 
       this.errorMessage = '';
       try {
-        // attempt creating a model
+        // Attempt creating a model if needed
         if (!this.modelData) {
           this.modelData = await this.createModel();
         }
         const modelErrors = this.modelData?.mlModelCreate?.errors || [];
         if (modelErrors.length) {
           this.errorMessage = modelErrors.join(', ');
+          this.modelData = null;
         } else if (this.version) {
-          // model creation is successful, attempt creating a version
-          const versionData = await this.createModelVersion(this.modelData.mlModelCreate.model.id);
-          const versionErrors = versionData?.mlModelVersionCreate?.errors || [];
+          // Attempt creating a version if needed
+          if (!this.versionData) {
+            this.versionData = await this.createModelVersion(this.modelData.mlModelCreate.model.id);
+          }
+          const versionErrors = this.versionData?.mlModelVersionCreate?.errors || [];
 
           if (versionErrors.length) {
             this.errorMessage = versionErrors.join(', ');
+            this.versionData = null;
           } else {
-            // attempt importing model artifacts
-            const { importPath } = versionData.mlModelVersionCreate.modelVersion._links;
+            // Attempt importing model artifacts
+            const { importPath } = this.versionData.mlModelVersionCreate.modelVersion._links;
             await uploadModel({
               importPath,
               file: this.selectedFile.file,
               subfolder: this.selectedFile.subfolder,
             });
-            const { showPath } = versionData.mlModelVersionCreate.modelVersion._links;
+
+            const { showPath } = this.versionData.mlModelVersionCreate.modelVersion._links;
             visitUrl(showPath);
           }
         } else {
@@ -110,16 +117,27 @@ export default {
         }
       } catch (error) {
         Sentry.captureException(error);
-        this.errorMessage = s__(
-          'MlModelRegistry|Error creating model, version and uploading artifacts. Please try again.',
-        );
+        this.errorMessage = error;
+        this.selectedFile = emptyArtifactFile;
+        this.showModal();
       }
     },
-    showCreateModal() {
+    showModal() {
       this.$emit('show-create-model');
+    },
+    resetModal() {
+      this.name = null;
+      this.modelData = null;
+      this.description = null;
+      this.version = null;
+      this.versionDescription = null;
+      this.errorMessage = null;
+      this.selectedFile = emptyArtifactFile;
+      this.versionData = null;
     },
     cancelModal() {
       this.$emit('hide-create-model');
+      this.resetModal();
     },
     hideAlert() {
       this.errorMessage = null;
@@ -165,7 +183,7 @@ export default {
 
 <template>
   <div>
-    <gl-button @click="showCreateModal">{{ $options.modal.buttonTitle }}</gl-button>
+    <gl-button @click="showModal">{{ $options.modal.buttonTitle }}</gl-button>
     <gl-modal
       modal-id="create-model-modal"
       :visible="createModelVisible"
@@ -174,7 +192,6 @@ export default {
       :action-cancel="$options.modal.actionCancel"
       size="sm"
       @primary="create"
-      @hide="cancelModal"
       @cancel="cancelModal"
     >
       <gl-form>
@@ -210,6 +227,7 @@ export default {
             data-testid="versionId"
             type="text"
             :placeholder="$options.modal.versionPlaceholder"
+            autocomplete="off"
           />
         </gl-form-group>
         <gl-form-group

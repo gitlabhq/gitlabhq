@@ -2,7 +2,7 @@
 name: wiki_redirection
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150727
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460097
-milestone: '17.0'
+milestone: '17.1'
 type: development
 group: group::knowledge
-default_enabled: false
+default_enabled: true

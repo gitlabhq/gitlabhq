@@ -268,7 +268,7 @@ makes sure that booleans are encoded and decoded consistently.
 
 ### `Gitlab::Redis::HLL`
 
-The Redis [`PFCOUNT`](https://redis.io/commands/pfcount/),
+The Redis [`PFCOUNT`](https://redis.io/docs/latest/commands/pfcount/),
 [`PFADD`](https://redis.io/docs/latest/commands/pfadd/), and
 [`PFMERGE`](https://redis.io/docs/latest/commands/pfmerge/) commands operate on
 HyperLogLogs, a data structure that allows estimating the number of unique

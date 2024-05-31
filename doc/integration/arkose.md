@@ -12,7 +12,7 @@ instances. The following documents the internal requirements for maintaining
 Arkose Protect on GitLab.com. While this feature is theoretically usable in self-managed instances, it
 is not recommended at the moment.
 
-GitLab integrates [Arkose Protect](https://www.arkoselabs.com/arkose-protect/) to guard against
+GitLab integrates [Arkose Protect](https://www.arkoselabs.com/arkose-bot-manager/) to guard against
 malicious users from creating accounts.
 
 ## How does it work?
