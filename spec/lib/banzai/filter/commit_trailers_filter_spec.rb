@@ -11,7 +11,7 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
   let(:user)                { create(:user, :public_email) }
   let(:email)               { FFaker::Internet.email }
 
-  let(:trailer)             { "#{FFaker::Lorem.word}-by:" }
+  let(:trailer)             { "#{generate(:short_text)}-by:" }
 
   let(:commit_message)      { trailer_line(trailer, user.name, user.public_email) }
   let(:commit_message_html) { commit_html(commit_message) }
@@ -89,8 +89,8 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
       end
     end
 
-    it 'multiple trailers in the same message', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444895' do
-      different_trailer = "#{FFaker::Lorem.word}-by:"
+    it 'multiple trailers in the same message' do
+      different_trailer = "#{generate(:short_text)}-by:"
       message = commit_html %(
         #{commit_message}
         #{trailer_line(different_trailer, FFaker::Name.name, email)}

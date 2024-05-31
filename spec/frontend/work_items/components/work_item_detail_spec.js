@@ -93,6 +93,7 @@ describe('WorkItemDetail component', () => {
   const findRightSidebar = () => wrapper.findByTestId('work-item-overview-right-sidebar');
   const findEditButton = () => wrapper.findByTestId('work-item-edit-form-button');
   const findWorkItemDesigns = () => wrapper.findComponent(DesignWidget);
+  const findDetailWrapper = () => wrapper.findByTestId('detail-wrapper');
 
   const createComponent = ({
     isGroup = false,
@@ -351,6 +352,10 @@ describe('WorkItemDetail component', () => {
       const errorHandler = jest.fn().mockRejectedValue('Oops');
       createComponent({ handler: errorHandler });
       return waitForPromises();
+    });
+
+    it('does not show the work item detail wrapper', () => {
+      expect(findDetailWrapper().exists()).toBe(false);
     });
 
     it('shows empty state with an error message', () => {

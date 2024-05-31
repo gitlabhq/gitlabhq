@@ -5,7 +5,7 @@ module Gitlab
     module Loggers
       class TokenLogger < ::GrapeLogging::Loggers::Base
         def parameters(request, _)
-          params = request.env[::API::Helpers::API_TOKEN_ENV]
+          params = request.env[::Gitlab::Auth::AuthFinders::API_TOKEN_ENV]
 
           return {} unless params
 

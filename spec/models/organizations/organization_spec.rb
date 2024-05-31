@@ -304,7 +304,7 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
       organization.add_owner(user)
     end
 
-    it 'adds user as an owner' do
+    it 'adds user as an owner', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463107' do
       expect(organization.owner?(user)).to eq(true)
     end
   end

@@ -30,7 +30,7 @@ export default {
       <gl-icon
         ref="userCreated"
         v-gl-tooltip.${userCreated}
-        class="gl-ml-2 gl-mr-n2 gl-text-gray-500"
+        class="gl-ml-2 -gl-mr-2 gl-text-gray-500"
         name="assignee"
         :title="s__('Members|User created')"
       />

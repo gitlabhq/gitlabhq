@@ -2,7 +2,7 @@
 
 /* eslint-disable import/extensions */
 
-import { mkdir, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 
@@ -25,6 +25,7 @@ const PATH_TO_FILE = path.resolve(fileURLToPath(import.meta.url));
 const ROOT_PATH = path.resolve(path.dirname(PATH_TO_FILE), '../../');
 const tempDir = path.join(ROOT_PATH, 'config', 'helpers', 'tailwind');
 const allUtilitiesFile = path.join(tempDir, './all_utilities.haml');
+const tailwindSource = path.join(ROOT_PATH, 'app/assets/stylesheets/tailwind.css');
 
 async function writeCssInJs(data) {
   const formatted = await prettier.format(data, {
@@ -227,7 +228,7 @@ export async function convertUtilsToCSSInJS({ buildOnlyUsed = false } = {}) {
         (plugin) => plugin.handler.name === 'gitLabUIUtilities',
       ),
     }),
-  ]).process('@tailwind utilities;', { map: false, from: undefined });
+  ]).process(await readFile(tailwindSource, 'utf-8'), { map: false, from: undefined });
 
   const stats = await toCompatibilityUtils(tailwindClasses, oldUtilityDefinitions);
 

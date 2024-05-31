@@ -464,13 +464,13 @@ export default {
       <section :class="workItemBodyClass">
         <work-item-loading v-if="workItemLoading" />
         <gl-empty-state
-          v-if="error"
+          v-else-if="error"
           :title="$options.i18n.fetchErrorTitle"
           :description="error"
           :svg-path="noAccessSvgPath"
           :svg-height="null"
         />
-        <template v-else>
+        <div v-else data-testid="detail-wrapper">
           <div class="gl-sm-display-none! gl-display-flex">
             <gl-button
               v-if="isModal"
@@ -652,7 +652,7 @@ export default {
               @openReportAbuse="openReportAbuseDrawer"
             />
           </div>
-        </template>
+        </div>
       </section>
     </section>
     <work-item-detail-modal

@@ -23,6 +23,7 @@ module Gitlab
       include ActionController::HttpAuthentication::Basic
       include ActionController::HttpAuthentication::Token
 
+      API_TOKEN_ENV = 'gitlab.api.token'
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'
       PRIVATE_TOKEN_PARAM = :private_token
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
@@ -104,7 +105,7 @@ module Gitlab
       def find_user_from_personal_access_token
         return unless access_token
 
-        validate_access_token!
+        validate_and_save_access_token!
 
         access_token&.user || raise(UnauthorizedError)
       end
@@ -118,7 +119,7 @@ module Gitlab
       def find_user_from_web_access_token(request_format, scopes: [:api])
         return unless access_token && valid_web_access_format?(request_format)
 
-        validate_access_token!(scopes: scopes)
+        validate_and_save_access_token!(scopes: scopes)
 
         ::PersonalAccessTokens::LastUsedService.new(access_token).execute
 
@@ -128,7 +129,7 @@ module Gitlab
       def find_user_from_access_token
         return unless access_token
 
-        validate_access_token!
+        validate_and_save_access_token!
 
         ::PersonalAccessTokens::LastUsedService.new(access_token).execute
 
@@ -173,7 +174,7 @@ module Gitlab
         ::Ci::Runner.find_by_token(token.to_s) || raise(UnauthorizedError)
       end
 
-      def validate_access_token!(scopes: [])
+      def validate_and_save_access_token!(scopes: [])
         # return early if we've already authenticated via a job token
         return if @current_authenticated_job.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -194,6 +195,8 @@ module Gitlab
         when AccessTokenValidationService::IMPERSONATION_DISABLED
           raise ImpersonationDisabled
         end
+
+        save_current_token_in_env
       end
 
       def authentication_token_present?
@@ -203,6 +206,10 @@ module Gitlab
       end
 
       private
+
+      def save_current_token_in_env
+        request.env[API_TOKEN_ENV] = { token_id: access_token.id, token_type: access_token.class.to_s }
+      end
 
       def find_user_from_job_bearer_token
         return unless route_authentication_setting[:job_token_allowed]

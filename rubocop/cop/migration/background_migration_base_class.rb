@@ -4,7 +4,14 @@ module RuboCop
   module Cop
     module Migration
       class BackgroundMigrationBaseClass < RuboCop::Cop::Base
-        MSG = 'Batched background migration jobs should inherit from Gitlab::BackgroundMigration::BatchedMigrationJob'
+        MSG = 'Batched background migration jobs should inherit from either ' \
+          'Gitlab::BackgroundMigration::BatchedMigrationJob ' \
+          'or one of its subclasses.'
+
+        BASE_CLASSES = %i[
+          BatchedMigrationJob
+          BackfillDesiredShardingKeyJob
+        ].to_set.freeze
 
         def_node_search :top_level_module?, <<~PATTERN
           (module (const nil? :Gitlab) (module (const nil? :BackgroundMigration) ...))
@@ -15,7 +22,7 @@ module RuboCop
         PATTERN
 
         def_node_search :inherits_batched_migration_job?, <<~PATTERN
-          (class _ (const #matching_parent_namespace? :BatchedMigrationJob) ...)
+          (class _ (const #matching_parent_namespace? %BASE_CLASSES) ...)
         PATTERN
 
         def on_module(module_node)

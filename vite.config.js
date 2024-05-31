@@ -104,6 +104,11 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     'process.env.SOURCEGRAPH_PUBLIC_PATH': JSON.stringify(SOURCEGRAPH_PUBLIC_PATH),
     'process.env.GITLAB_WEB_IDE_PUBLIC_PATH': JSON.stringify(GITLAB_WEB_IDE_PUBLIC_PATH),
+    'window.VUE_DEVTOOLS_CONFIG.openInEditorHost': JSON.stringify(
+      viteGDKConfig.hmr
+        ? `${process.env.VITE_HMR_HTTP_URL}/vite-dev/`
+        : `http://${viteGDKConfig.host}:${viteGDKConfig.port}/vite-dev/`,
+    ),
   },
   server: {
     warmup: {

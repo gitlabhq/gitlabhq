@@ -34,7 +34,7 @@ exports[`MemberActivity with a member that has all fields renders \`User created
   >
     <svg
       aria-hidden="true"
-      class="gl-icon gl-ml-2 gl-mr-n2 gl-text-gray-500 s16"
+      class="-gl-mr-2 gl-icon gl-ml-2 gl-text-gray-500 s16"
       data-testid="assignee-icon"
       role="img"
       title="User created"

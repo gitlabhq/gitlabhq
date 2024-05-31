@@ -14,12 +14,4 @@ allow_cross_transactions:
 - gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: merge_request_id
-        table: merge_requests
-        sharding_key: target_project_id
-        belongs_to: merge_request
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464719
