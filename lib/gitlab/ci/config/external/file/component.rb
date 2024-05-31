@@ -36,7 +36,9 @@ module Gitlab
                 blob: masked_blob,
                 raw: nil,
                 extra: {},
-                component: component_attrs
+                component: component_attrs # never expose this data in the response
+                # see https://gitlab.com/gitlab-org/gitlab/-/issues/455376
+                # and https://gitlab.com/gitlab-org/gitlab/-/issues/453955
               )
             end
 

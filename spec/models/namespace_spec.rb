@@ -1216,29 +1216,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '.with_statistics' do
     let_it_be(:namespace) { create(:namespace) }
-
-    let(:project1) do
-      create(:project,
-        namespace: namespace,
-        statistics: build(
-          :project_statistics,
-          namespace: namespace,
-          repository_size: 101,
-          wiki_size: 505,
-          lfs_objects_size: 202,
-          build_artifacts_size: 303,
-          pipeline_artifacts_size: 707,
-          packages_size: 404,
-          snippets_size: 605,
-          uploads_size: 808
-        )
-      )
-    end
-
-    let(:project2) do
+    let_it_be(:project_outside_namespace) do
       create(
         :project,
-        namespace: namespace,
         statistics: build(
           :project_statistics,
           namespace: namespace,
@@ -1254,35 +1234,85 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       )
     end
 
-    it "sums all project storage counters in the namespace" do
-      project1
-      project2
-      statistics = described_class.with_statistics.find(namespace.id)
-      expected_storage_size = project1.statistics.storage_size + project2.statistics.storage_size
+    subject(:statistics) { described_class.with_statistics.find(namespace.id) }
 
-      expect(statistics.storage_size).to eq expected_storage_size
-      expect(statistics.repository_size).to eq 111
-      expect(statistics.wiki_size).to eq 555
-      expect(statistics.lfs_objects_size).to eq 222
-      expect(statistics.build_artifacts_size).to eq 333
-      expect(statistics.pipeline_artifacts_size).to eq 777
-      expect(statistics.packages_size).to eq 444
-      expect(statistics.snippets_size).to eq 665
-      expect(statistics.uploads_size).to eq 888
+    context 'with projects' do
+      let_it_be(:project1) do
+        create(:project,
+          namespace: namespace,
+          statistics: build(
+            :project_statistics,
+            namespace: namespace,
+            repository_size: 101,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let_it_be(:project2) do
+        create(
+          :project,
+          namespace: namespace,
+          statistics: build(
+            :project_statistics,
+            namespace: namespace,
+            repository_size: 10,
+            wiki_size: 50,
+            lfs_objects_size: 20,
+            build_artifacts_size: 30,
+            pipeline_artifacts_size: 70,
+            packages_size: 40,
+            snippets_size: 60,
+            uploads_size: 80
+          )
+        )
+      end
+
+      shared_examples 'returns statistics' do
+        it "sums all project storage counters in the namespace" do
+          expected_storage_size = project1.statistics.storage_size + project2.statistics.storage_size
+
+          expect(statistics.storage_size).to eq expected_storage_size
+          expect(statistics.repository_size).to eq 111
+          expect(statistics.wiki_size).to eq 555
+          expect(statistics.lfs_objects_size).to eq 222
+          expect(statistics.build_artifacts_size).to eq 333
+          expect(statistics.pipeline_artifacts_size).to eq 777
+          expect(statistics.packages_size).to eq 444
+          expect(statistics.snippets_size).to eq 665
+          expect(statistics.uploads_size).to eq 888
+        end
+      end
+
+      it_behaves_like 'returns statistics'
+
+      context 'with relations having subquery' do
+        subject(:statistics) do
+          described_class.from(described_class.all, :namespaces).with_statistics.find(namespace.id)
+        end
+
+        it_behaves_like 'returns statistics'
+      end
     end
 
-    it "correctly handles namespaces without projects" do
-      statistics = described_class.with_statistics.find(namespace.id)
-
-      expect(statistics.storage_size).to eq 0
-      expect(statistics.repository_size).to eq 0
-      expect(statistics.wiki_size).to eq 0
-      expect(statistics.lfs_objects_size).to eq 0
-      expect(statistics.build_artifacts_size).to eq 0
-      expect(statistics.pipeline_artifacts_size).to eq 0
-      expect(statistics.packages_size).to eq 0
-      expect(statistics.snippets_size).to eq 0
-      expect(statistics.uploads_size).to eq 0
+    context 'without projects' do
+      it "returns correct statistics" do
+        expect(statistics.storage_size).to eq 0
+        expect(statistics.repository_size).to eq 0
+        expect(statistics.wiki_size).to eq 0
+        expect(statistics.lfs_objects_size).to eq 0
+        expect(statistics.build_artifacts_size).to eq 0
+        expect(statistics.pipeline_artifacts_size).to eq 0
+        expect(statistics.packages_size).to eq 0
+        expect(statistics.snippets_size).to eq 0
+        expect(statistics.uploads_size).to eq 0
+      end
     end
   end
 

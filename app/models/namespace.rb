@@ -42,6 +42,17 @@ class Namespace < ApplicationRecord
   SR_ENABLED = 'enabled'
   SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_AND_OVERRIDABLE, SR_ENABLED].freeze
   URL_MAX_LENGTH = 255
+  STATISTICS_COLUMNS = %i[
+    storage_size
+    repository_size
+    wiki_size
+    snippets_size
+    lfs_objects_size
+    build_artifacts_size
+    pipeline_artifacts_size
+    packages_size
+    uploads_size
+  ].freeze
 
   cache_markdown_field :description, pipeline: :description
 
@@ -195,20 +206,17 @@ class Namespace < ApplicationRecord
   scope :ordered_by_name, -> { order(:name) }
 
   scope :with_statistics, -> do
-    joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
-      .group('namespaces.id')
-      .select(
-        'namespaces.*',
-        'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
-        'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
-        'COALESCE(SUM(ps.wiki_size), 0) AS wiki_size',
-        'COALESCE(SUM(ps.snippets_size), 0) AS snippets_size',
-        'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
-        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
-        'COALESCE(SUM(ps.pipeline_artifacts_size), 0) AS pipeline_artifacts_size',
-        'COALESCE(SUM(ps.packages_size), 0) AS packages_size',
-        'COALESCE(SUM(ps.uploads_size), 0) AS uploads_size'
-      )
+    namespace_statistic_columns = STATISTICS_COLUMNS.map { |column| sum_project_statistics_column(column) }
+    subquery = Arel::Table.new(:statistics)
+    project_statistics = ProjectStatistics.arel_table
+
+    statistics = project_statistics
+      .project(namespace_statistic_columns)
+      .where(project_statistics[:namespace_id].eq(arel_table[:id]))
+      .lateral(subquery.name)
+
+    select(arel_table[Arel.star], subquery[Arel.star])
+      .from([arel.as('namespaces'), statistics])
   end
 
   scope :with_jira_installation, ->(installation_id) do
@@ -327,6 +335,13 @@ class Namespace < ApplicationRecord
 
     def reference_pattern
       User.reference_pattern
+    end
+
+    def sum_project_statistics_column(column)
+      sum = ProjectStatistics.arel_table[column].sum
+
+      coalesce = Arel::Nodes::NamedFunction.new('COALESCE', [sum, 0])
+      coalesce.as(column.to_s)
     end
   end
 

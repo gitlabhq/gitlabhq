@@ -39696,9 +39696,6 @@ msgstr ""
 msgid "ProductAnalytics|Set up Product Analytics to track how your product is performing. Combine analytics with your GitLab data to better understand where you can improve your product and development processes. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "ProductAnalytics|Set up to track how your product is performing and optimize your product and development processes."
-msgstr ""
-
 msgid "ProductAnalytics|Snowplow configurator connection string"
 msgstr ""
 
@@ -39754,6 +39751,9 @@ msgid "ProductAnalytics|To continue, you must agree to event storage and process
 msgstr ""
 
 msgid "ProductAnalytics|To instrument your application, select one of the options below. After an option has been instrumented and data is being collected, this page will progress to the next step."
+msgstr ""
+
+msgid "ProductAnalytics|Track the performance of your product, and optimize your product and development processes."
 msgstr ""
 
 msgid "ProductAnalytics|Track your product's performance, and optimize your product and development processes."

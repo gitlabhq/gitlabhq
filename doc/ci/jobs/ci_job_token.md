@@ -92,6 +92,10 @@ with a job token from any project. These resources can also be [limited to only 
 You can add groups or projects to your job token allowlist to allow access your project's resources
 with a job token for authentication. By default, the allowlist of any project only includes itself.
 
+Adding a project to the allowlist does not give additional [permissions](../../user/permissions.md)
+to the members of the allowlisted project. They must already have permissions to access the resources
+in your project to be able to use a job token from the allowlisted project to access your project.
+
 For example, project A can add project B to project A's allowlist. CI/CD jobs
 in project B (the "allowed project") can now use CI/CD job tokens to
 authenticate API calls to access project A.
