@@ -110,7 +110,7 @@ Prerequisites:
 - Ensure the Jira issue integration is [configured](#configure-the-integration)
   and the **View Jira issues** checkbox is selected.
 
-To view issues from one or more Jira projects in a GitLab project:
+While Jira issues can be configured at the group and project level, Jira issues can only be viewed from the project level in GitLab. To view issues from one or more Jira projects in a GitLab project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Jira issues**.
