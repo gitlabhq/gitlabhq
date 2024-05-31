@@ -1,9 +1,11 @@
 query getFluxHelmReleaseStatusQuery($configuration: LocalConfiguration, $fluxResourcePath: String) {
   fluxHelmReleaseStatus(configuration: $configuration, fluxResourcePath: $fluxResourcePath)
     @client {
-    message
-    reason
-    status
-    type
+    conditions {
+      message
+      reason
+      status
+      type
+    }
   }
 }

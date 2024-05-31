@@ -16,7 +16,7 @@
     = render 'shared/groups/group_name_and_path_fields', f: f
     .form-group
       = f.label :file, s_('GroupsNew|Upload file')
-      .gl-font-weight-normal
+      .gl-font-normal
         - import_export_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('user/project/settings/import_export', anchor: 'migrate-groups-by-uploading-an-export-file-deprecated') }
         = s_('GroupsNew|To import a group, navigate to the group settings for the GitLab source instance, %{link_start}generate an export file%{link_end}, and upload it here.').html_safe % { link_start: import_export_link_start, link_end: '</a>'.html_safe }
       .gl-mt-3

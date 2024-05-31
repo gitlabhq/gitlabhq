@@ -13,7 +13,6 @@ Layout/SpaceInsideParens:
     - 'spec/helpers/gitlab_script_tag_helper_spec.rb'
     - 'spec/helpers/tab_helper_spec.rb'
     - 'spec/initializers/carrierwave_s3_encryption_headers_patch_spec.rb'
-    - 'spec/initializers/rdoc_segfault_patch_spec.rb'
     - 'spec/lib/api/entities/snippet_spec.rb'
     - 'spec/lib/banzai/filter/references/alert_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/feature_flag_reference_filter_spec.rb'

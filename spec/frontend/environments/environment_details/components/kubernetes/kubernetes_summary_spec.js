@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlTab } from '@gitlab/ui';
 import KubernetesSummary from '~/environments/environment_details/components/kubernetes/kubernetes_summary.vue';
+import { fluxKustomization } from '../../../mock_data';
 
 describe('~/environments/environment_details/components/kubernetes/kubernetes_summary.vue', () => {
   let wrapper;
@@ -9,6 +10,9 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_su
 
   const createWrapper = () => {
     wrapper = shallowMount(KubernetesSummary, {
+      propsData: {
+        fluxKustomization,
+      },
       stubs: { GlTab },
     });
   };
@@ -23,7 +27,11 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_su
     });
 
     it('renders tree view title', () => {
-      expect(findTab().text()).toBe('Tree view');
+      expect(findTab().text()).toContain('Tree view');
+    });
+
+    it('renders kustomization resource data', () => {
+      expect(findTab().text()).toContain('Kustomization: my-kustomization');
     });
   });
 });

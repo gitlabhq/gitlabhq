@@ -559,6 +559,6 @@
 }
 
 .projects-list .description p {
-  @include gl-line-clamp-2;
+  @apply gl-line-clamp-2 gl-whitespace-normal;
   margin-bottom: 0;
 }

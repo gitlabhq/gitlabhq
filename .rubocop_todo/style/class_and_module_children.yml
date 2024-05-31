@@ -333,7 +333,6 @@ Style/ClassAndModuleChildren:
     - 'config/initializers/omniauth.rb'
     - 'config/initializers/postgres_cte_as_materialized.rb'
     - 'config/initializers/postgresql_cte.rb'
-    - 'config/initializers/rdoc_segfault_patch.rb'
     - 'config/initializers/zz_metrics.rb'
     - 'ee/app/controllers/admin/audit_log_reports_controller.rb'
     - 'ee/app/controllers/admin/audit_logs_controller.rb'

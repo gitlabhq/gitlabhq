@@ -8,7 +8,7 @@
 
   .gl-sm-display-flex.gl-justify-content-space-between.gl-align-items-center.gl-flex-grow-1
     %div
-      = link_to gitlab_snippet_path(snippet), class: "title gl-text-black-normal gl-font-weight-bold" do
+      = link_to gitlab_snippet_path(snippet), class: "title gl-text-black-normal gl-font-bold" do
         = snippet.title
       - if snippet.hidden_due_to_author_ban?
         %span{ class: 'has-tooltip gl-bg-orange-50 gl-text-orange-600 border-radius-default gl-p-2', title: s_("Snippets|This snippet is hidden because its author has been banned") }

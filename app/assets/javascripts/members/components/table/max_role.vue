@@ -134,7 +134,10 @@ export default {
         <div data-testid="access-level-link" :class="{ 'gl-font-weight-bold': item.memberRoleId }">
           {{ item.text }}
         </div>
-        <div v-if="item.description" class="gl-text-gray-700 gl-font-sm gl-pt-1 gl-line-clamp-2">
+        <div
+          v-if="item.description"
+          class="gl-text-gray-700 gl-font-sm gl-pt-1 gl-line-clamp-2 gl-whitespace-normal"
+        >
           {{ item.description }}
         </div>
       </template>

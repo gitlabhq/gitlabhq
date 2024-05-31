@@ -277,7 +277,7 @@ export default {
             data-testid="preview-toggle"
             :value="previewMarkdown ? 'preview' : 'edit'"
             :label="$options.i18n.previewTabTitle"
-            class="js-md-preview-button gl-flex-direction-row-reverse gl-align-items-center gl-font-weight-normal!"
+            class="js-md-preview-button gl-flex-direction-row-reverse gl-align-items-center !gl-font-normal"
             size="small"
             category="tertiary"
             @click="switchPreview"

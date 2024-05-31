@@ -4799,7 +4799,6 @@
 - './spec/initializers/pages_storage_check_spec.rb'
 - './spec/initializers/rack_multipart_patch_spec.rb'
 - './spec/initializers/rails_asset_host_spec.rb'
-- './spec/initializers/rdoc_segfault_patch_spec.rb'
 - './spec/initializers/remove_active_job_execute_callback_spec.rb'
 - './spec/initializers/rest-client-hostname_override_spec.rb'
 - './spec/initializers/secret_token_spec.rb'

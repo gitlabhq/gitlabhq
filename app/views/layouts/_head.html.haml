@@ -111,3 +111,7 @@
   = render_if_exists "layouts/frontend_monitor"
   %meta{ name: "description", content: page_description }
   %meta{ name: 'theme-color', content: user_theme_primary_color }
+
+  - if Gitlab.config.gitlab.respond_to?(:custom_html_header_tags)
+    - unless Gitlab.config.gitlab.custom_html_header_tags.empty?
+      = Gitlab.config.gitlab.custom_html_header_tags.html_safe

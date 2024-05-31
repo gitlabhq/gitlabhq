@@ -139,6 +139,15 @@ production: &base
     ##   11 - Dark Mode (alpha)
     # default_theme: 1 # default: 1
 
+    ## Custom html header tags
+    # In some cases some custom header tags are needed
+    # e.g., to add the EU cookie consent
+    # Tip: you must add the externals source to the content_security_policy as
+    #      well, typically the script_src and style_src.
+    # custom_html_header_tags: |
+    #   <script src="https://example.com/cookie-consent.js"></script>
+    #   <link rel="stylesheet" href="https://example.com/cookie-consent.css"/>
+
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.

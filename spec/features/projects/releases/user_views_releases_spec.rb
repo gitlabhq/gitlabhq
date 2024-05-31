@@ -26,7 +26,7 @@ RSpec.describe 'User views releases', :js, feature_category: :continuous_deliver
 
   shared_examples 'when the project does not have releases' do
     before do
-      project.releases.delete_all
+      project.releases.delete_all(:delete_all)
       visit project_releases_path(project)
     end
 

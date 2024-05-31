@@ -9,7 +9,7 @@ import k8sPodsQuery from './queries/k8s_pods.query.graphql';
 import k8sConnectionStatusQuery from './queries/k8s_connection_status.query.graphql';
 import k8sServicesQuery from './queries/k8s_services.query.graphql';
 import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
-import fluxKustomizationStatusQuery from './queries/flux_kustomization_status.query.graphql';
+import fluxKustomizationQuery from './queries/flux_kustomization.query.graphql';
 import fluxHelmReleaseStatusQuery from './queries/flux_helm_release_status.query.graphql';
 import { resolvers } from './resolvers';
 import typeDefs from './typedefs.graphql';
@@ -128,21 +128,29 @@ export const apolloProvider = (endpoint) => {
     },
   });
   cache.writeQuery({
-    query: fluxKustomizationStatusQuery,
+    query: fluxKustomizationQuery,
     data: {
-      message: '',
-      reason: '',
-      status: '',
-      type: '',
+      kind: '',
+      metadata: {
+        name: '',
+      },
+      conditions: {
+        message: '',
+        reason: '',
+        status: '',
+        type: '',
+      },
     },
   });
   cache.writeQuery({
     query: fluxHelmReleaseStatusQuery,
     data: {
-      message: '',
-      reason: '',
-      status: '',
-      type: '',
+      conditions: {
+        message: '',
+        reason: '',
+        status: '',
+        type: '',
+      },
     },
   });
 

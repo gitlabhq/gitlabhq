@@ -5,7 +5,7 @@
   .form-group.import-btn-container.clearfix
     %h5.gl-display-flex
       = _("Import project from")
-      = link_to _('History'), import_history_index_path, class: 'gl-link gl-ml-auto gl-font-weight-normal'
+      = link_to _('History'), import_history_index_path, class: 'gl-link gl-ml-auto gl-font-normal'
     %div
       = render Pajamas::AlertComponent.new(variant: :tip,
         alert_options: { class: 'gl-my-3' },

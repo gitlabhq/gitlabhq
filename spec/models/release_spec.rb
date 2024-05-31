@@ -178,7 +178,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
       context 'when there are no releases' do
         it 'returns nil' do
-          project.releases.delete_all
+          project.releases.delete_all(:delete_all)
 
           expect(latest).to eq(nil)
         end
@@ -214,8 +214,8 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
       context 'when there are no releases' do
         it 'returns empty response' do
-          project.releases.delete_all
-          project2.releases.delete_all
+          project.releases.delete_all(:delete_all)
+          project2.releases.delete_all(:delete_all)
 
           expect(latest_for_projects).to be_empty
         end

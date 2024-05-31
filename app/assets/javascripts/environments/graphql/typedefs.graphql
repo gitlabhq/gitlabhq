@@ -70,9 +70,24 @@ type LocalK8sNamespaces {
   metadata: k8sNamespaceMetadata
 }
 
-type LocalFluxResourceStatus {
+type LocalFluxResourceMetadata {
+  name: String
+}
+
+type LocalFluxResourceConditions {
+  message: String
+  reason: String
   status: String
   type: String
+}
+
+type LocalFluxKustomization {
+  kind: String
+  metadata: LocalFluxResourceMetadata
+  conditions: [LocalFluxResourceConditions]
+}
+type LocalFluxHelmReleaseStatus {
+  conditions: [LocalFluxResourceConditions]
 }
 
 type K8sResources {
@@ -95,14 +110,14 @@ extend type Query {
   k8sPods(configuration: LocalConfiguration, namespace: String): [LocalWorkloadItem]
   k8sServices(configuration: LocalConfiguration, namespace: String): [LocalWorkloadItem]
   k8sConnection(configuration: LocalConfiguration): K8sResources
-  fluxKustomizationStatus(
+  fluxKustomization(
     configuration: LocalConfiguration
     fluxResourcePath: String
-  ): LocalFluxResourceStatus
+  ): LocalFluxKustomization
   fluxHelmReleaseStatus(
     configuration: LocalConfiguration
     fluxResourcePath: String
-  ): LocalFluxResourceStatus
+  ): LocalFluxHelmReleaseStatus
 }
 
 input ResourceTypeParam {

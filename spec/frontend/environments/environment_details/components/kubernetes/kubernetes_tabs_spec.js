@@ -7,7 +7,7 @@ import KubernetesServices from '~/environments/environment_details/components/ku
 import KubernetesSummary from '~/environments/environment_details/components/kubernetes/kubernetes_summary.vue';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
-import { mockKasTunnelUrl } from 'jest/environments/mock_data';
+import { mockKasTunnelUrl, fluxKustomization } from 'jest/environments/mock_data';
 import { mockPodsTableItems } from 'jest/kubernetes_dashboard/graphql/mock_data';
 
 describe('~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue', () => {
@@ -20,6 +20,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
       headers: { 'GitLab-Agent-Id': '1' },
     },
   };
+
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findKubernetesPods = () => wrapper.findComponent(KubernetesPods);
   const findKubernetesServices = () => wrapper.findComponent(KubernetesServices);
@@ -35,15 +36,15 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
       provide: {
         glFeatures: { k8sTreeView: k8sTreeViewEnabled },
       },
-      propsData: { configuration, namespace, value: activeTab },
+      propsData: { configuration, namespace, fluxKustomization, value: activeTab },
       stubs: { GlDrawer },
     });
   };
 
   describe('mounted', () => {
-    describe('when `k8sTreeView feature flag is disabled', () => {
+    describe('when `k8sTreeView feature flag is enabled', () => {
       beforeEach(() => {
-        createWrapper();
+        createWrapper({ k8sTreeViewEnabled: true });
       });
 
       it('shows tabs', () => {
@@ -58,14 +59,15 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
         expect(findKubernetesServices().props()).toEqual({ namespace, configuration });
       });
 
-      it("doesn't render summary tab", () => {
-        expect(findKubernetesSummary().exists()).toBe(false);
+      it('renders summary tab', () => {
+        expect(findKubernetesSummary().props('fluxKustomization')).toEqual(fluxKustomization);
       });
     });
 
-    it('renders summary tab if the feature flag is enabled', () => {
-      createWrapper({ k8sTreeViewEnabled: true });
-      expect(findKubernetesSummary().exists()).toBe(true);
+    it('renders summary tab if the feature flag is disabled', () => {
+      createWrapper();
+
+      expect(findKubernetesSummary().exists()).toBe(false);
     });
   });
 

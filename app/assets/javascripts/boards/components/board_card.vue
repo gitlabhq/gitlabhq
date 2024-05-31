@@ -71,13 +71,7 @@ export default {
       return !this.isDisabled;
     },
     cardStyle() {
-      return this.isColorful && this.item.color ? { borderColor: this.item.color } : '';
-    },
-    isColorful() {
-      return gon?.features?.epicColorHighlight;
-    },
-    colorClass() {
-      return this.isColorful ? 'gl-pl-4 gl-border-l-solid gl-border-4' : '';
+      return this.item.color ? { borderColor: this.item.color } : '';
     },
     formattedItem() {
       return {
@@ -147,7 +141,7 @@ export default {
         'is-active gl-bg-blue-50': isActive,
         'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
       },
-      colorClass,
+      'gl-pl-4 gl-border-l-solid gl-border-4',
     ]"
     :index="index"
     :data-item-id="item.id"

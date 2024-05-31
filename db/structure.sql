@@ -799,6 +799,22 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_3691f9f6a69f() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "cluster_agents"
+  WHERE "cluster_agents"."id" = NEW."cluster_agent_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3857ca5ea4af() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -15584,7 +15600,8 @@ CREATE TABLE releases (
     name character varying,
     sha character varying,
     released_at timestamp with time zone NOT NULL,
-    release_published_at timestamp with time zone
+    release_published_at timestamp with time zone,
+    CONSTRAINT check_6bb9ce4925 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE releases_id_seq
@@ -15610,6 +15627,7 @@ CREATE TABLE remote_development_agent_configs (
     max_resources_per_workspace jsonb DEFAULT '{}'::jsonb NOT NULL,
     workspaces_quota bigint DEFAULT '-1'::integer NOT NULL,
     workspaces_per_user_quota bigint DEFAULT '-1'::integer NOT NULL,
+    project_id bigint,
     CONSTRAINT check_72947a4495 CHECK ((char_length(gitlab_workspaces_proxy_namespace) <= 63)),
     CONSTRAINT check_9f5cd54d1c CHECK ((char_length(dns_zone) <= 256))
 );
@@ -27596,6 +27614,8 @@ CREATE INDEX index_releases_on_released_at ON releases USING btree (released_at)
 
 CREATE INDEX index_remote_development_agent_configs_on_cluster_agent_id ON remote_development_agent_configs USING btree (cluster_agent_id);
 
+CREATE INDEX index_remote_development_agent_configs_on_project_id ON remote_development_agent_configs USING btree (project_id);
+
 CREATE INDEX index_remote_mirrors_on_last_successful_update_at ON remote_mirrors USING btree (last_successful_update_at);
 
 CREATE INDEX index_remote_mirrors_on_project_id ON remote_mirrors USING btree (project_id);
@@ -30346,6 +30366,8 @@ CREATE TRIGGER trigger_25c44c30884f BEFORE INSERT OR UPDATE ON work_item_parent_
 
 CREATE TRIGGER trigger_2ac3d66ed1d3 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_2ac3d66ed1d3();
 
+CREATE TRIGGER trigger_3691f9f6a69f BEFORE INSERT OR UPDATE ON remote_development_agent_configs FOR EACH ROW EXECUTE FUNCTION trigger_3691f9f6a69f();
+
 CREATE TRIGGER trigger_3857ca5ea4af BEFORE INSERT OR UPDATE ON merge_trains FOR EACH ROW EXECUTE FUNCTION trigger_3857ca5ea4af();
 
 CREATE TRIGGER trigger_388e93f88fdd BEFORE INSERT OR UPDATE ON packages_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_388e93f88fdd();
@@ -30909,6 +30931,9 @@ ALTER TABLE ONLY cluster_agent_tokens
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY remote_development_agent_configs
+    ADD CONSTRAINT fk_6a09894a0f FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;

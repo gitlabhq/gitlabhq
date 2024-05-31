@@ -30,13 +30,16 @@ RSpec.describe 'Projects > Members > Tabs', :js, feature_category: :groups_and_p
       'Members'             | 3
       'Pending invitations' | 2
       'Groups'              | 2
-      'Access requests'     | 2
     end
 
     with_them do
       it "renders #{params[:tab]} tab" do
         expect(page).to have_selector('.nav-link', text: "#{tab} #{count}")
       end
+    end
+
+    it "renders Access requests tab", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448572' do
+      expect(page).to have_selector('.nav-link', text: "Access requests 2")
     end
 
     context 'displays "Members" tab by default' do

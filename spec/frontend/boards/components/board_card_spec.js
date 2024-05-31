@@ -188,9 +188,8 @@ describe('Board card', () => {
     });
   });
 
-  describe('when Epic colors are enabled', () => {
+  describe('epic colors', () => {
     it('applies the correct color', () => {
-      window.gon.features = { epicColorHighlight: true };
       mountComponent({
         item: {
           ...mockIssue,
@@ -202,23 +201,6 @@ describe('Board card', () => {
         expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-4']),
       );
       expect(wrapper.attributes('style')).toContain(`border-color: ${DEFAULT_COLOR}`);
-    });
-  });
-
-  describe('when Epic colors are not enabled', () => {
-    it('applies the correct color', () => {
-      window.gon.features = { epicColorHighlight: false };
-      mountComponent({
-        item: {
-          ...mockIssue,
-          color: DEFAULT_COLOR,
-        },
-      });
-
-      expect(wrapper.classes()).not.toEqual(
-        expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-4']),
-      );
-      expect(wrapper.attributes('style')).toBeUndefined();
     });
   });
 });

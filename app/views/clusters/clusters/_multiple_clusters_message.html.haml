@@ -2,5 +2,5 @@
 - help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
 - help_link_end = '</a>'.html_safe
 
-%p.gl-font-weight-bold
+%p.gl-font-bold
   = s_('ClusterIntegration|Using AutoDevOps with multiple clusters? %{help_link_start}Read this first.%{help_link_end}').html_safe % { help_link_start: help_link_start % { url: autodevops_help_url }, help_link_end: help_link_end }

@@ -101,7 +101,7 @@ export default {
           variant="confirm"
           data-testid="diff-stats-dropdown"
           class="gl-align-baseline"
-          toggle-class="gl-px-0! gl-font-weight-bold!"
+          toggle-class="gl-px-0! !gl-font-bold"
           fluid-width
           @shown="focusInput"
         >

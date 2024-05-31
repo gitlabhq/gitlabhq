@@ -252,7 +252,7 @@ export default {
           class="gl-m-0"
           :label="$options.i18n.startDate"
           :label-for="$options.startDateInputId"
-          label-class="gl-font-weight-normal! gl-pb-2!"
+          label-class="!gl-font-normal gl-pb-2!"
         >
           <gl-datepicker
             ref="startDatePicker"
@@ -272,7 +272,7 @@ export default {
           class="gl-m-0 gl-pl-3 gl-pr-2"
           :label="$options.i18n.dueDate"
           :label-for="$options.dueDateInputId"
-          label-class="gl-font-weight-normal! gl-pb-2!"
+          label-class="!gl-font-normal gl-pb-2!"
         >
           <gl-datepicker
             v-model="dirtyDueDate"

@@ -7,8 +7,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   include GoogleApi::CloudPlatformHelpers
 
   let_it_be(:group) { create(:group) }
-
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   before do
     group.add_maintainer(user)
@@ -22,13 +21,11 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
 
     describe 'functionality' do
       context 'when group has one or more clusters' do
-        let(:group) { create(:group) }
-
-        let!(:enabled_cluster) do
+        let_it_be(:enabled_cluster) do
           create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group])
         end
 
-        let!(:disabled_cluster) do
+        let_it_be(:disabled_cluster) do
           create(:cluster, :disabled, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group])
         end
 
@@ -89,8 +86,6 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
       end
 
       context 'when group does not have a cluster' do
-        let(:group) { create(:group) }
-
         it 'returns an empty state page' do
           go
 
@@ -102,7 +97,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
     end
 
     describe 'security' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
+      let_it_be(:cluster) { create(:cluster, :provided_by_gcp, cluster_type: :group_type, groups: [group]) }
 
       it('is allowed for admin when admin mode is enabled', :enable_admin_mode) { expect { go }.to be_allowed_for(:admin) }
       it('is denied for admin when admin mode is disabled') { expect { go }.to be_denied_for(:admin) }
@@ -220,13 +215,8 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   end
 
   describe 'DELETE clear cluster cache' do
-    let(:cluster) { create(:cluster, :group, groups: [group]) }
-    let!(:kubernetes_namespace) do
-      create(:cluster_kubernetes_namespace,
-        cluster: cluster,
-        project: create(:project)
-      )
-    end
+    let_it_be(:cluster) { create(:cluster, :group, groups: [group]) }
+    let_it_be(:kubernetes_namespace) { create(:cluster_kubernetes_namespace, cluster: cluster, project: create(:project)) }
 
     def go
       delete :clear_cache,
@@ -441,7 +431,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
   end
 
   describe 'DELETE destroy' do
-    let!(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
+    let_it_be(:cluster) { create(:cluster, :provided_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
 
     def go
       delete :destroy,
@@ -470,7 +460,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
         end
 
         context 'when cluster is being created' do
-          let!(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
+          let_it_be(:cluster) { create(:cluster, :providing_by_gcp, :production_environment, cluster_type: :group_type, groups: [group]) }
 
           it 'destroys and redirects back to clusters list' do
             expect { go }
@@ -484,7 +474,7 @@ RSpec.describe Groups::ClustersController, feature_category: :deployment_managem
       end
 
       context 'when cluster is provided by user' do
-        let!(:cluster) { create(:cluster, :provided_by_user, :production_environment, cluster_type: :group_type, groups: [group]) }
+        let_it_be(:cluster) { create(:cluster, :provided_by_user, :production_environment, cluster_type: :group_type, groups: [group]) }
 
         it 'destroys and redirects back to clusters list' do
           expect { go }

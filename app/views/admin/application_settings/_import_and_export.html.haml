@@ -15,12 +15,12 @@
       = f.label :project_export, s_('AdminSettings|Project export'), class: 'label-bold'
       = f.gitlab_ui_checkbox_component :project_export_enabled, s_('AdminSettings|Enabled')
     .form-group{ data: { testid: 'bulk-import' } }
-      = f.label :bulk_import, s_('AdminSettings|Allow migrating GitLab groups and projects by direct transfer'), class: 'gl-font-weight-bold'
+      = f.label :bulk_import, s_('AdminSettings|Allow migrating GitLab groups and projects by direct transfer'), class: 'gl-font-bold'
       = f.gitlab_ui_checkbox_component :bulk_import_enabled, s_('AdminSettings|Enabled')
     .form-group{ data: { testid: 'silent-admin-exports' } }
       - tag_pair_silent_admin_exports = tag_pair(link_to('', help_page_path('administration/settings/import_and_export_settings', anchor: 'enable-silent-admin-exports'), target: '_blank', rel: 'noopener noreferrer'), :silent_admin_exports_link_start, :silent_admin_exports_link_end)
       - silent_admin_exports_label_text = safe_format(s_('AdminSettings|Silent exports by admins %{silent_admin_exports_link_start}%{icon}%{silent_admin_exports_link_end}'), tag_pair_silent_admin_exports, icon: sprite_icon('question-o'))
-      = f.label :silent_admin_exports_enabled, silent_admin_exports_label_text, class: 'gl-font-weight-bold'
+      = f.label :silent_admin_exports_enabled, silent_admin_exports_label_text, class: 'gl-font-bold'
       = f.gitlab_ui_checkbox_component :silent_admin_exports_enabled, s_('AdminSettings|Enabled')
     .form-group
       = f.label :max_export_size, _('Maximum export size (MiB)'), class: 'label-light'

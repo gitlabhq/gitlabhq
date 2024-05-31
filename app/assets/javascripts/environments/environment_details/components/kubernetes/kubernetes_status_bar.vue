@@ -14,8 +14,6 @@ import {
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
 } from '~/environments/constants';
-import fluxKustomizationStatusQuery from '~/environments/graphql/queries/flux_kustomization_status.query.graphql';
-import fluxHelmReleaseStatusQuery from '~/environments/graphql/queries/flux_helm_release_status.query.graphql';
 import KubernetesConnectionStatus from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status.vue';
 import KubernetesConnectionStatusBadge from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status_badge.vue';
 import {
@@ -64,46 +62,19 @@ export default {
       type: String,
       required: true,
     },
-  },
-  apollo: {
-    fluxKustomizationStatus: {
-      query: fluxKustomizationStatusQuery,
-      variables() {
-        return {
-          configuration: this.configuration,
-          fluxResourcePath: this.fluxResourcePath,
-        };
-      },
-      skip() {
-        return Boolean(
-          !this.fluxResourcePath || this.fluxResourcePath?.includes(HELM_RELEASES_RESOURCE_TYPE),
-        );
-      },
-      error(err) {
-        this.fluxApiError = err.message;
-      },
+    fluxResourceStatus: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
-    fluxHelmReleaseStatus: {
-      query: fluxHelmReleaseStatusQuery,
-      variables() {
-        return {
-          configuration: this.configuration,
-          fluxResourcePath: this.fluxResourcePath,
-        };
-      },
-      skip() {
-        return Boolean(
-          !this.fluxResourcePath || this.fluxResourcePath?.includes(KUSTOMIZATIONS_RESOURCE_TYPE),
-        );
-      },
-      error(err) {
-        this.fluxApiError = err.message;
-      },
+    fluxApiError: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
     return {
-      fluxApiError: '',
       clusterResourceTypeParams: {
         [k8sResourceType.k8sServices]: {
           resourceType: k8sResourceType.k8sServices,
@@ -157,35 +128,16 @@ export default {
     healthBadge() {
       return HEALTH_BADGES[this.clusterHealthStatus];
     },
-    hasKustomizations() {
-      return this.fluxKustomizationStatus?.length;
-    },
-    hasHelmReleases() {
-      return this.fluxHelmReleaseStatus?.length;
-    },
-    isLoading() {
-      return (
-        this.$apollo.queries.fluxKustomizationStatus.loading ||
-        this.$apollo.queries.fluxHelmReleaseStatus.loading
-      );
-    },
     fluxBadgeId() {
       return `${this.environmentName}-flux-sync-badge`;
     },
-    fluxCRD() {
-      if (!this.hasKustomizations && !this.hasHelmReleases) {
-        return [];
-      }
-
-      return this.hasKustomizations ? this.fluxKustomizationStatus : this.fluxHelmReleaseStatus;
-    },
     fluxAnyStalled() {
-      return this.fluxCRD.find((condition) => {
+      return this.fluxResourceStatus.find((condition) => {
         return condition.status === STATUS_TRUE && condition.type === 'Stalled';
       });
     },
     fluxAnyReconcilingWithBadConfig() {
-      return this.fluxCRD.find((condition) => {
+      return this.fluxResourceStatus.find((condition) => {
         return (
           condition.status === STATUS_UNKNOWN &&
           condition.type === 'Ready' &&
@@ -194,25 +146,25 @@ export default {
       });
     },
     fluxAnyReconciling() {
-      return this.fluxCRD.find((condition) => {
+      return this.fluxResourceStatus.find((condition) => {
         return condition.status === STATUS_TRUE && condition.type === 'Reconciling';
       });
     },
     fluxAnyReconciled() {
-      return this.fluxCRD.find((condition) => {
+      return this.fluxResourceStatus.find((condition) => {
         return condition.status === STATUS_TRUE && condition.type === 'Ready';
       });
     },
     fluxAnyFailed() {
-      return this.fluxCRD.find((condition) => {
+      return this.fluxResourceStatus.find((condition) => {
         return condition.status === STATUS_FALSE && condition.type === 'Ready';
       });
     },
     syncStatusBadge() {
-      if (!this.fluxCRD.length && this.fluxApiError) {
+      if (!this.fluxResourceStatus.length && this.fluxApiError) {
         return { ...SYNC_STATUS_BADGES.unavailable, popoverText: this.fluxApiError };
       }
-      if (!this.fluxCRD.length) {
+      if (!this.fluxResourceStatus.length) {
         return SYNC_STATUS_BADGES.unavailable;
       }
       if (this.fluxAnyFailed) {

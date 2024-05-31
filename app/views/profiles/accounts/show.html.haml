@@ -24,7 +24,7 @@
     = s_("Profiles|Increase your account's security by enabling two-factor authentication (2FA).")
   %div
     %p
-      %span.gl-font-weight-bold
+      %span.gl-font-bold
         #{_('Status')}:
       #{current_user.two_factor_enabled? ? _('Enabled') : _('Disabled')}
     - if current_user.two_factor_enabled?

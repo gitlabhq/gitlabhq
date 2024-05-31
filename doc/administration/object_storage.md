@@ -53,6 +53,9 @@ Most types of objects, such as CI artifacts, LFS files, and upload attachments
 can be saved in object storage by specifying a single credential for object
 storage with multiple buckets.
 
+NOTE:
+For GitLab Helm Charts, see how to [configure the consolidated form](https://docs.gitlab.com/charts/charts/globals.html#consolidated-object-storage).
+
 Configuring the object storage using the consolidated form has a number of advantages:
 
 - It can simplify your GitLab configuration since the connection details are shared
@@ -148,7 +151,7 @@ gitlab_rails['artifacts_enabled'] = false
 
 With the storage-specific form, every object defines its own object
 storage connection and configuration. You should [use the consolidated form](#transition-to-consolidated-form) instead,
-except for the storage types not supported by the consolidated form.
+except for the storage types not supported by the consolidated form. When working with the GitLab Helm charts, refer to how the charts handle [consolidated form for object storage](https://docs.gitlab.com/charts/charts/globals.html#consolidated-object-storage).
 
 The use of [encrypted S3 buckets](#encrypted-s3-buckets) with non-consolidated form is not supported.
 You may get [ETag mismatch errors](#etag-mismatch) if you use it.

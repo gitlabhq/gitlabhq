@@ -61,7 +61,7 @@
           .gl-display-flex.gl-flex-wrap.gl-align-items-center.gl-gap-2
             = link_to(s_('AdminArea|View latest users'), admin_users_path({ sort: 'created_desc' }))
             %span.gl-text-secondary= "/"
-            = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "gl-font-base gl-font-weight-normal gl-text-capitalize")
+            = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "gl-font-base gl-font-normal gl-text-capitalize")
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new(**component_params) do |c|
         - c.with_body do

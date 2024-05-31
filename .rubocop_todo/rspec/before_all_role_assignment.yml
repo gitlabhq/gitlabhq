@@ -731,6 +731,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/controllers/groups/group_members_controller_spec.rb'
     - 'spec/controllers/groups/imports_controller_spec.rb'
     - 'spec/controllers/groups/labels_controller_spec.rb'
+    - 'spec/controllers/groups/milestones_controller_spec.rb'
     - 'spec/controllers/groups/settings/applications_controller_spec.rb'
     - 'spec/controllers/groups/settings/ci_cd_controller_spec.rb'
     - 'spec/controllers/groups/settings/integrations_controller_spec.rb'

@@ -73,7 +73,6 @@ set-pipeline-name:
     - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
     - !reference [".fast-no-clone-job", before_script]
   script:
-    - source scripts/utils.sh
     - install_gitlab_gem
     - chmod u+x scripts/pipeline/set_pipeline_name.rb && scripts/pipeline/set_pipeline_name.rb
   allow_failure:

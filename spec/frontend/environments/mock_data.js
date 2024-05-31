@@ -315,6 +315,13 @@ const createEnvironment = (data = {}) => ({
 
 const mockKasTunnelUrl = 'https://kas.gitlab.com/k8s-proxy';
 
+const fluxResourceStatus = [{ status: 'True', type: 'Ready', message: '', reason: '' }];
+const fluxKustomization = {
+  kind: 'Kustomization',
+  metadata: { name: 'my-kustomization' },
+  conditions: fluxResourceStatus,
+};
+
 export {
   environment,
   environmentsList,
@@ -324,4 +331,6 @@ export {
   deployBoardMockData,
   createEnvironment,
   mockKasTunnelUrl,
+  fluxResourceStatus,
+  fluxKustomization,
 };

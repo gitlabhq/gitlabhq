@@ -65,10 +65,6 @@ module.exports = {
      */
     backgroundImage: false,
     /*
-    Our lineClamp also sets white-space: normal, which tailwind doesn't do, maybe we are okay?
-     */
-    lineClamp: false,
-    /*
     outline-none in tailwind is 2px solid transparent, we have outline: none
 
     I assume that tailwind has it's reasons, and we probably could enable it

@@ -95,6 +95,17 @@ RSpec.describe 'layouts/_head' do
     end
   end
 
+  context 'when custom_html_header_tags are set' do
+    before do
+      allow(Gitlab.config.gitlab).to receive(:custom_html_header_tags).and_return('<script src="https://example.com/cookie-consent.js"></script>')
+    end
+
+    it 'adds the custom html header tag' do
+      render
+      expect(rendered).to match('<script src="https://example.com/cookie-consent.js"></script>')
+    end
+  end
+
   context 'when an asset_host is set and snowplow url is set', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/346542' do
     let(:asset_host) { 'http://test.host' }
     let(:snowplow_collector_hostname) { 'www.snow.plow' }

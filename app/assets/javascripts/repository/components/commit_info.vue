@@ -94,7 +94,7 @@ export default {
             v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
             :href="commit.webPath"
             :class="{ 'gl-italic': !commit.message }"
-            class="commit-row-message item-title gl-line-clamp-1 !gl-break-all"
+            class="commit-row-message item-title gl-line-clamp-1 gl-whitespace-normal !gl-break-all"
           />
           <gl-button
             v-if="commit.descriptionHtml"

@@ -9925,7 +9925,10 @@ msgstr ""
 msgid "CICD|Add an existing project to the scope"
 msgstr ""
 
-msgid "CICD|Allow access to this project from authorized groups or projects by adding them to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
+msgid "CICD|Allow CI/CD job token access"
+msgstr ""
+
+msgid "CICD|Authorized groups and projects"
 msgstr ""
 
 msgid "CICD|Auto DevOps"
@@ -9958,7 +9961,7 @@ msgstr ""
 msgid "CICD|Enable feature to limit job token access to the following projects."
 msgstr ""
 
-msgid "CICD|Groups and projects with access"
+msgid "CICD|Ensure only groups and projects with members authorized to access sensitive project data are added to the allowlist."
 msgstr ""
 
 msgid "CICD|Jobs"
@@ -9968,9 +9971,6 @@ msgid "CICD|Limit"
 msgstr ""
 
 msgid "CICD|Limit access %{italicStart}from%{italicEnd} this project (Deprecated)"
-msgstr ""
-
-msgid "CICD|Limit access %{italicStart}to%{italicEnd} this project"
 msgstr ""
 
 msgid "CICD|Maintainer"
@@ -9985,7 +9985,7 @@ msgstr ""
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and will be removed in the 18.0 milestone. Use the %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}to%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
+msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and will be removed in the 18.0 milestone. Use the %{boldStart}Allow CI/CD job token access%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file. %{link_start}What is Auto DevOps?%{link_end}"
@@ -10001,6 +10001,9 @@ msgid "CICD|Unprotected branches will not have access to the cache from protecte
 msgstr ""
 
 msgid "CICD|Use separate caches for protected branches"
+msgstr ""
+
+msgid "CICD|When enabled, groups and projects listed in the allowlist are authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -12583,6 +12586,12 @@ msgstr ""
 msgid "Code block"
 msgstr ""
 
+msgid "Code completion test failed: %{error}"
+msgstr ""
+
+msgid "Code completion test was successful"
+msgstr ""
+
 msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
 msgstr ""
 
@@ -14734,7 +14743,7 @@ msgstr ""
 msgid "Contributor analytics"
 msgstr ""
 
-msgid "Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects."
+msgid "Control whether CI/CD job tokens can be used to authenticate with this project."
 msgstr ""
 
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
@@ -29451,6 +29460,9 @@ msgid "Job is stuck. Check runners."
 msgstr ""
 
 msgid "Job logs and artifacts"
+msgstr ""
+
+msgid "Job token permissions"
 msgstr ""
 
 msgid "Job was retried"
@@ -54859,9 +54871,6 @@ msgid "Toggles :%{name}: emoji reaction."
 msgstr ""
 
 msgid "Token"
-msgstr ""
-
-msgid "Token Access"
 msgstr ""
 
 msgid "Token name"

@@ -34,6 +34,11 @@ export default {
       required: true,
       type: String,
     },
+    fluxKustomization: {
+      required: false,
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -70,7 +75,7 @@ export default {
 <template>
   <div>
     <gl-tabs v-model="activeTabIndex">
-      <kubernetes-summary v-if="renderTreeView" />
+      <kubernetes-summary v-if="renderTreeView" :flux-kustomization="fluxKustomization" />
 
       <kubernetes-pods
         :namespace="namespace"

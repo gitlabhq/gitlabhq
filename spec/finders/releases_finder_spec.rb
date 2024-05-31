@@ -267,7 +267,7 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
 
       context 'when one project does not have releases' do
         it 'returns the latest release of only the project with releases' do
-          project.releases.delete_all
+          project.releases.delete_all(:delete_all)
 
           is_expected.to eq([v2_1_0])
         end
@@ -275,8 +275,8 @@ RSpec.describe ReleasesFinder, feature_category: :release_orchestration do
 
       context 'when all projects do not have releases' do
         it 'returns empty response' do
-          project.releases.delete_all
-          project2.releases.delete_all
+          project.releases.delete_all(:delete_all)
+          project2.releases.delete_all(:delete_all)
 
           is_expected.to be_empty
         end

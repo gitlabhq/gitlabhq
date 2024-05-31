@@ -8,7 +8,11 @@ import {
   connectionStatus,
   k8sResourceType,
 } from '~/environments/graphql/resolvers/kubernetes/constants';
-import { fluxKustomizationsMock } from '../mock_data';
+import {
+  fluxKustomizationMock,
+  fluxKustomizationMapped,
+  fluxHelmReleaseMapped,
+} from '../mock_data';
 
 jest.mock('~/environments/graphql/resolvers/kubernetes/k8s_connection_status');
 
@@ -32,7 +36,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     mock.reset();
   });
 
-  describe('fluxKustomizationStatus', () => {
+  describe('fluxKustomization', () => {
     const client = { writeQuery: jest.fn() };
     const fluxResourcePath =
       'kustomize.toolkit.fluxcd.io/v1/namespaces/my-namespace/kustomizations/app';
@@ -44,7 +48,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
     const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
       if (eventName === 'data') {
-        callback(fluxKustomizationsMock);
+        callback([fluxKustomizationMock]);
       }
     });
     const resourceName = 'custom-resource';
@@ -62,12 +66,11 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
           .reply(HTTP_STATUS_OK, {
             apiVersion,
-            metadata: { name: resourceName, namespace: resourceNamespace },
-            status: { conditions: fluxKustomizationsMock },
+            ...fluxKustomizationMock,
           });
       });
       it('should watch Kustomization by the metadata name from the cluster_client library when the data is present', async () => {
-        await mockResolvers.Query.fluxKustomizationStatus(
+        await mockResolvers.Query.fluxKustomization(
           null,
           {
             configuration,
@@ -92,7 +95,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should return data when received from the library', async () => {
-        const kustomizationStatus = await mockResolvers.Query.fluxKustomizationStatus(
+        const kustomizationStatus = await mockResolvers.Query.fluxKustomization(
           null,
           {
             configuration,
@@ -101,7 +104,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           { client },
         );
 
-        expect(kustomizationStatus).toEqual(fluxKustomizationsMock);
+        expect(kustomizationStatus).toEqual(fluxKustomizationMapped);
       });
     });
 
@@ -110,7 +113,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
         .reply(HTTP_STATUS_OK, {});
 
-      await mockResolvers.Query.fluxKustomizationStatus(
+      await mockResolvers.Query.fluxKustomization(
         null,
         {
           configuration,
@@ -128,7 +131,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .onGet(endpoint, { withCredentials: true, headers: configuration.base })
         .reply(HTTP_STATUS_UNAUTHORIZED, { message: apiError });
 
-      const fluxKustomizationsError = mockResolvers.Query.fluxKustomizationStatus(
+      const fluxKustomizationsError = mockResolvers.Query.fluxKustomization(
         null,
         {
           configuration,
@@ -153,7 +156,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
     const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
       if (eventName === 'data') {
-        callback(fluxKustomizationsMock);
+        callback([fluxKustomizationMock]);
       }
     });
     const resourceName = 'custom-resource';
@@ -171,8 +174,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
           .reply(HTTP_STATUS_OK, {
             apiVersion,
-            metadata: { name: resourceName, namespace: resourceNamespace },
-            status: { conditions: fluxKustomizationsMock },
+            ...fluxKustomizationMock,
           });
       });
       it('should watch HelmRelease by the metadata name from the cluster_client library when the data is present', async () => {
@@ -204,7 +206,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           { client },
         );
 
-        expect(fluxHelmReleaseStatus).toEqual(fluxKustomizationsMock);
+        expect(fluxHelmReleaseStatus).toEqual(fluxHelmReleaseMapped);
       });
     });
 
