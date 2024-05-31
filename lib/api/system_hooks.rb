@@ -32,11 +32,13 @@ module API
         optional :repository_update_events, type: Boolean, desc: 'Trigger hook on repository update events'
         optional :enable_ssl_verification, type: Boolean, desc: 'Do SSL verification when triggering the hook'
         use :url_variables
+        use :custom_headers
       end
     end
 
     resource :hooks do
       mount ::API::Hooks::UrlVariables
+      mount ::API::Hooks::CustomHeaders
 
       desc 'List system hooks' do
         detail 'Get a list of all system hooks'

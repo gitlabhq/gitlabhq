@@ -44,6 +44,10 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       url_variables: [
         { key: 'token', value: 'very-secret' },
         { key: 'abc', value: 'other value' }
+      ],
+      custom_headers: [
+        { key: 'X-Custom-Header', value: 'custom value' },
+        { key: 'abc', value: 'other value' }
       ]
     )
   end
@@ -98,6 +102,23 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
         expect(json_response).to contain_exactly(
           a_hash_including(
             'url_variables' => [{ 'key' => 'token' }]
+          )
+        )
+      end
+    end
+
+    context 'the hook has custom headers', if: prefix != '/projects/:id' do
+      before do
+        hook.update!(custom_headers: { 'Custom-Header' => 'supers3cret' })
+      end
+
+      it 'returns the names of the custom headers' do
+        get api(collection_uri, user, admin_mode: user.admin?)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to contain_exactly(
+          a_hash_including(
+            'custom_headers' => [{ 'key' => 'Custom-Header' }]
           )
         )
       end
@@ -195,6 +216,10 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
         { 'key' => 'token' },
         { 'key' => 'abc' }
       ]
+      expect(json_response['custom_headers']).to match_array [
+        { 'key' => 'X-Custom-Header' },
+        { 'key' => 'abc' }
+      ]
       expect(json_response).not_to include('token')
     end
 
@@ -272,6 +297,19 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['url_variables']).to match_array [
+        { 'key' => 'abc' },
+        { 'key' => 'def' }
+      ]
+    end
+
+    it 'updates the custom headers' do
+      hook.update!(custom_headers: { 'abc' => 'some value' })
+
+      put api(hook_uri, user, admin_mode: user.admin?),
+        params: { custom_headers: [{ key: 'def', value: 'other value' }] }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['custom_headers']).to match_array [
         { 'key' => 'abc' },
         { 'key' => 'def' }
       ]
@@ -413,6 +451,76 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
     it "returns a 404 error when deleting a variable from a non existent hook" do
       delete api(hook_uri(non_existing_record_id) + "/url_variables/abc", user, admin_mode: user.admin?)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
+  describe "PUT #{prefix}/hooks/:hook_id/custom_headers/:key", :aggregate_failures do
+    it 'sets the custom header' do
+      expect do
+        put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+          params: { value: 'some secret value' }
+      end.to change { hook.reload.custom_headers }.to(eq('abc' => 'some secret value'))
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    it 'overwrites existing values' do
+      hook.update!(custom_headers: { 'abc' => 'xyz', 'def' => 'other value' })
+
+      put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: 'some secret value' }
+
+      expect(response).to have_gitlab_http_status(:no_content)
+      expect(hook.reload.custom_headers).to eq('abc' => 'some secret value', 'def' => 'other value')
+    end
+
+    it "returns a 404 error when editing non existent hook" do
+      put api("#{hook_uri(non_existing_record_id)}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: 'xyz' }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it "returns a 422 error when the key is illegal" do
+      put api("#{hook_uri}/custom_headers/abc%20def", user, admin_mode: user.admin?),
+        params: { value: 'xyz' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 422 error when the value is illegal" do
+      put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: '' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+  end
+
+  describe "DELETE #{prefix}/hooks/:hook_id/custom_headers/:key", :aggregate_failures do
+    before do
+      hook.update!(custom_headers: { 'abc' => 'prior value', 'def' => 'other value' })
+    end
+
+    it 'unsets the custom header' do
+      expect do
+        delete api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?)
+      end.to change { hook.reload.custom_headers }.to(eq({ 'def' => 'other value' }))
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    it 'returns 404 for keys that do not exist' do
+      hook.update!(custom_headers: { 'def' => 'other value' })
+
+      delete api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it "returns a 404 error when deleting a custom header from a non existent hook" do
+      delete api(hook_uri(non_existing_record_id) + "/custom_headers/abc", user, admin_mode: user.admin?)
 
       expect(response).to have_gitlab_http_status(:not_found)
     end

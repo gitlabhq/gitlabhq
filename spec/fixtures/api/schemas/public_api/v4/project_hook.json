@@ -28,6 +28,7 @@
   ],
   "optional": [
     "url_variables",
+    "custom_headers",
     "name",
     "description"
   ],
@@ -151,6 +152,21 @@
         "string",
         "null"
       ]
+    },
+    "custom_headers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "additionalProperties": false

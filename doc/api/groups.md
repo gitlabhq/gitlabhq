@@ -1616,7 +1616,12 @@ GET /groups/:id/hooks/:hook_id
   "url_variables": [ ],
   "created_at": "2012-10-12T17:04:47Z",
   "resource_access_token_events": true,
-  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}"
+  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
+  "custom_headers": [
+    {
+      "key": "Authorization"
+    }
+  ]
 }
 ```
 
@@ -1653,6 +1658,7 @@ POST /groups/:id/hooks
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
 | `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events |
 | `custom_webhook_template`    | string         | no       | Custom webhook template for the hook |
+| `custom_headers`             | array             | No       | Custom headers for the hook. |
 
 ### Edit group hook
 
@@ -1689,6 +1695,7 @@ PUT /groups/:id/hooks/:hook_id
 | `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `resource_access_token_events` | boolean      | no       | Trigger hook on project access token expiry events. |
 | `custom_webhook_template`    | string         | no       | Custom webhook template for the hook. |
+| `custom_headers`             | array             | no       | Custom headers for the hook. |
 
 ### Delete group hook
 
@@ -1728,6 +1735,39 @@ POST /groups/:id/hooks/:hook_id/test/:trigger
 ```json
 {"message":"201 Created"}
 ```
+
+### Set a custom header
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+```plaintext
+PUT /groups/:id/hooks/:hook_id/custom_headers/:key
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `hook_id` | integer           | Yes      | The ID of the group hook. |
+| `key`     | string            | Yes      | The key of the custom header. |
+| `value`   | string            | Yes      | The value of the custom header. |
+
+On success, this endpoint returns the response code `204 No Content`.
+
+### Delete a custom header
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+```plaintext
+DELETE /groups/:id/hooks/:hook_id/custom_headers/:key
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `hook_id` | integer           | Yes      | The ID of the group hook. |
+| `key`     | string            | Yes      | The key of the custom header. |
+
+On success, this endpoint returns the response code `204 No Content`.
 
 ## Group Audit Events
 

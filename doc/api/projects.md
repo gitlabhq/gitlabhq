@@ -2833,7 +2833,12 @@ GET /projects/:id/hooks/:hook_id
   "url_variables": [ ],
   "created_at": "2012-10-12T17:04:47Z",
   "resource_access_token_events": true,
-  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}"
+  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
+  "custom_headers": [
+    {
+      "key": "Authorization"
+    }
+  ]
 }
 ```
 
@@ -2868,6 +2873,7 @@ POST /projects/:id/hooks
 | `wiki_page_events`           | boolean           | No       | Trigger hook on wiki events. |
 | `resource_access_token_events` | boolean         | No       | Trigger hook on project access token expiry events. |
 | `custom_webhook_template`    | string            | No       | Custom webhook template for the hook. |
+| `custom_headers`             | array             | No       | Custom headers for the hook. |
 
 ### Edit project hook
 
@@ -2901,6 +2907,7 @@ PUT /projects/:id/hooks/:hook_id
 | `wiki_page_events`           | boolean           | No       | Trigger hook on wiki page events. |
 | `resource_access_token_events` | boolean         | No       | Trigger hook on project access token expiry events. |
 | `custom_webhook_template`    | string            | No       | Custom webhook template for the hook. |
+| `custom_headers`             | array             | No       | Custom headers for the hook. |
 
 ### Delete project hook
 
@@ -2945,6 +2952,39 @@ POST /projects/:id/hooks/:hook_id/test/:trigger
 ```json
 {"message":"201 Created"}
 ```
+
+### Set a custom header
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+```plaintext
+PUT /projects/:id/hooks/:hook_id/custom_headers/:key
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `hook_id` | integer           | Yes      | The ID of the project hook. |
+| `key`     | string            | Yes      | The key of the custom header. |
+| `value`   | string            | Yes      | The value of the custom header. |
+
+On success, this endpoint returns the response code `204 No Content`.
+
+### Delete a custom header
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+```plaintext
+DELETE /projects/:id/hooks/:hook_id/custom_headers/:key
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `hook_id` | integer           | Yes      | The ID of the project hook. |
+| `key`     | string            | Yes      | The key of the custom header. |
+
+On success, this endpoint returns the response code `204 No Content`.
 
 ## Fork relationship
 

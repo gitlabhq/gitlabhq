@@ -43,6 +43,7 @@ module API
         optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
         optional :custom_webhook_template, type: String, desc: "Custom template for the request payload"
         use :url_variables
+        use :custom_headers
       end
     end
 
@@ -52,6 +53,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/hooks' do
         mount ::API::Hooks::UrlVariables
+        mount ::API::Hooks::CustomHeaders
       end
 
       desc 'List project hooks' do
@@ -64,7 +66,7 @@ module API
         use :pagination
       end
       get ":id/hooks" do
-        present paginate(user_project.hooks), with: Entities::ProjectHook, with_url_variables: false
+        present paginate(user_project.hooks), with: Entities::ProjectHook, with_url_variables: false, with_custom_headers: false
       end
 
       desc 'Get project hook' do

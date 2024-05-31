@@ -134,6 +134,17 @@ RSpec.describe ::Packages::Detail::PackagePresenter, feature_category: :package_
       end
     end
 
+    context 'with terraform module metadata' do
+      let(:package) { build_stubbed(:terraform_module_package, without_package_files: true, project: project) }
+      let(:terraform_module_metadatum) { build_stubbed(:terraform_module_metadatum, package: package) }
+
+      let(:expected_package_details) { super().merge(terraform_module_metadatum: terraform_module_metadatum) }
+
+      it 'returns terraform_module_metadatum' do
+        expect(presenter.detail_view).to eq expected_package_details
+      end
+    end
+
     context 'with dependency_links' do
       let_it_be(:package) { create(:nuget_package, project: project) }
       let_it_be(:dependency_link) { create(:packages_dependency_link, package: package) }

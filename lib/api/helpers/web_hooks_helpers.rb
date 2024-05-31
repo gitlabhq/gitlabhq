@@ -20,6 +20,13 @@ module API
         end
       end
 
+      params :custom_headers do
+        optional :custom_headers, type: Array, desc: 'Custom headers' do
+          requires :key, type: String, desc: 'Name of the header', documentation: { example: 'X-Custom-Header' }
+          requires :value, type: String, desc: 'Value of the header', documentation: { example: 'value' }
+        end
+      end
+
       def find_hook
         hook_scope.find(params.delete(:hook_id))
       end
@@ -30,6 +37,12 @@ module API
 
         if url_variables.present?
           hook_params[:url_variables] = url_variables.to_h { [_1[:key], _1[:value]] }
+        end
+
+        custom_headers = hook_params.delete(:custom_headers)
+
+        if custom_headers.present?
+          hook_params[:custom_headers] = custom_headers.to_h { [_1[:key], _1[:value]] }
         end
 
         hook_params
@@ -49,6 +62,10 @@ module API
         url_variables = update_params.delete(:url_variables) || []
         url_variables = url_variables.to_h { [_1[:key], _1[:value]] }
         update_params[:url_variables] = hook.url_variables.merge(url_variables) if url_variables.present?
+
+        custom_headers = update_params.delete(:custom_headers) || []
+        custom_headers = custom_headers.to_h { [_1[:key], _1[:value]] }
+        update_params[:custom_headers] = hook.custom_headers.merge(custom_headers) if custom_headers.present?
 
         error!('No parameters provided', :bad_request) if update_params.empty?
 
