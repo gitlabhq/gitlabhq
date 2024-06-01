@@ -5,6 +5,10 @@ require 'spec_helper'
 RSpec.describe Ci::Partitions::SetupDefaultService, feature_category: :ci_scaling do
   let(:service) { described_class.new }
 
+  before do
+    FactoryBot.rewind_sequences
+  end
+
   describe '.execute' do
     subject(:execute) { service.execute }
 
