@@ -33252,9 +33252,6 @@ msgstr ""
 msgid "MlModelRegistry|Enter some model description"
 msgstr ""
 
-msgid "MlModelRegistry|Error importing artifact. Please try again."
-msgstr ""
-
 msgid "MlModelRegistry|Experiment"
 msgstr ""
 
@@ -33349,9 +33346,6 @@ msgid "MlModelRegistry|No models registered"
 msgstr ""
 
 msgid "MlModelRegistry|No registered versions"
-msgstr ""
-
-msgid "MlModelRegistry|Nothing to submit. Please try again."
 msgstr ""
 
 msgid "MlModelRegistry|Parameters"

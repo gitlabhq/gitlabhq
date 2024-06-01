@@ -24,6 +24,7 @@ import {
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_DESIGNS,
   LINKED_ITEMS_ANCHOR,
+  WORK_ITEM_REFERENCE_CHAR,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -152,7 +153,7 @@ export default {
             ? ` · ${this.workItem.namespace.fullPath}`
             : '';
 
-          document.title = `${this.workItem.title} · ${this.workItem?.workItemType?.name}${path}`;
+          document.title = `${this.workItem.title} (${WORK_ITEM_REFERENCE_CHAR}${this.workItem.iid}) · ${this.workItem?.workItemType?.name}${path}`;
         }
       },
       subscribeToMore: {

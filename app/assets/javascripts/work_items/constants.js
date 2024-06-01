@@ -351,3 +351,5 @@ export const DEFAULT_EPIC_COLORS = '#1068bf';
 
 export const MAX_FREQUENT_PROJECTS = 3;
 export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';
+
+export const WORK_ITEM_REFERENCE_CHAR = '#';

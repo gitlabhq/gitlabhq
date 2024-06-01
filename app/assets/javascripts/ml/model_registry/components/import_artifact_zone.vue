@@ -1,26 +1,23 @@
 <script>
 import {
+  GlAlert,
   GlLoadingIcon,
   GlFormGroup,
   GlFormInput,
   GlFormInputGroup,
   GlInputGroupText,
 } from '@gitlab/ui';
-import { createAlert } from '~/alert';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import { uploadModel } from '../services/upload_model';
-
-const emptyValue = {
-  file: null,
-  subfolder: '',
-};
+import { emptyArtifactFile } from '../constants';
 
 export default {
   name: 'ImportArtifactZone',
   components: {
+    GlAlert,
     GlFormGroup,
     GlFormInput,
     GlFormInputGroup,
@@ -42,7 +39,7 @@ export default {
     value: {
       type: Object,
       required: false,
-      default: () => emptyValue,
+      default: () => emptyArtifactFile,
     },
   },
   data() {
@@ -50,6 +47,7 @@ export default {
       file: this.value.file,
       subfolder: this.value.subfolder,
       loading: false,
+      error: null,
     };
   },
   computed: {
@@ -62,30 +60,43 @@ export default {
   },
   methods: {
     resetFile() {
-      this.file = null;
       this.loading = false;
-      this.$emit('input', null);
+      this.discardFile();
     },
     submitRequest(importPath) {
       this.loading = true;
       uploadModel({ importPath, file: this.file, subfolder: this.subfolder })
         .then(() => {
+          this.resetFile();
           this.$emit('change');
-          this.resetFile();
         })
-        .catch(() => {
+        .catch((error) => {
           this.resetFile();
-          createAlert({ message: this.$options.i18n.errorMessage });
+          this.error = error;
         });
+    },
+    emitInput(value) {
+      this.$emit('input', { ...value });
+    },
+    changeSubfolder(subfolder) {
+      this.subfolder = subfolder;
+      this.emitInput({ file: this.file, subfolder });
     },
     uploadFile(file) {
       this.file = file;
+      this.emitInput({ file, subfolder: this.subfolder });
 
       if (this.submitOnSelect && this.path) {
         this.submitRequest(this.path);
       }
-
-      this.$emit('input', { file, subfolder: this.subfolder });
+    },
+    hideAlert() {
+      this.error = null;
+    },
+    discardFile() {
+      this.file = null;
+      this.subfolder = '';
+      this.emitInput(emptyArtifactFile);
     },
   },
   i18n: {
@@ -93,8 +104,6 @@ export default {
     uploadSingleMessage: s__(
       'MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifact to attach',
     ),
-    errorMessage: s__('MlModelRegistry|Error importing artifact. Please try again.'),
-    submitErrorMessage: s__('MlModelRegistry|Nothing to submit. Please try again.'),
     subfolderPrependText: s__('MlModelRegistry|Upload files under path: '),
   },
   validFileMimetypes: [],
@@ -104,21 +113,20 @@ export default {
   <div class="gl-p-5">
     <upload-dropzone
       single-file-selection
-      display-as-card
       :valid-file-mimetypes="$options.validFileMimetypes"
       :upload-single-message="$options.i18n.uploadSingleMessage"
       :drop-to-start-message="$options.i18n.dropToStartMessage"
       :is-file-valid="() => true"
       @change="uploadFile"
     >
-      <div
-        v-if="file"
-        class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
-      >
+      <gl-alert v-if="file" variant="success" :dismissible="!loading" @dismiss="discardFile">
         <gl-loading-icon v-if="loading" class="gl-p-5" size="sm" />
         <div data-testid="formatted-file-size">{{ formattedFileSize }}</div>
         <div data-testid="file-name">{{ fileFullpath }}</div>
-      </div>
+      </gl-alert>
+      <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="hideAlert">
+        {{ error }}
+      </gl-alert>
     </upload-dropzone>
     <gl-form-group label-for="subfolderId">
       <div>
@@ -129,6 +137,7 @@ export default {
             data-testid="subfolderId"
             autocomplete="off"
             class="gl-mb-5"
+            @input="changeSubfolder"
           />
 
           <template #prepend>

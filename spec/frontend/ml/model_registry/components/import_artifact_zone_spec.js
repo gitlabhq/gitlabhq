@@ -1,7 +1,6 @@
-import { GlFormInputGroup, GlLoadingIcon, GlInputGroupText } from '@gitlab/ui';
+import { GlAlert, GlFormInputGroup, GlLoadingIcon, GlInputGroupText } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/alert';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
 import ImportArtifactZone from '~/ml/model_registry/components/import_artifact_zone.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
@@ -25,6 +24,7 @@ describe('ImportArtifactZone', () => {
   const emulateFileDrop = () => zone().vm.$emit('change', file);
   const subfolderInput = () => wrapper.findByTestId('subfolderId');
   const subfolderInputPrependText = () => wrapper.findComponent(GlInputGroupText);
+  const alert = () => wrapper.findComponent(GlAlert);
 
   describe('Successful upload', () => {
     beforeEach(() => {
@@ -134,14 +134,12 @@ describe('ImportArtifactZone', () => {
     });
 
     it('displays an error on failure', async () => {
-      uploadModel.mockRejectedValue('Internal server error.');
+      uploadModel.mockRejectedValue('File is too big.');
 
       await emulateFileDrop();
       await waitForPromises();
 
-      expect(createAlert).toHaveBeenCalledWith({
-        message: 'Error importing artifact. Please try again.',
-      });
+      expect(alert().text()).toBe('File is too big.');
     });
 
     it('resets the state on failure', async () => {
