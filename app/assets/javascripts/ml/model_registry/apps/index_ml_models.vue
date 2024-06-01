@@ -121,7 +121,7 @@ export default {
       <template #title>
         <div class="gl-flex-grow-1 gl-display-flex gl-align-items-center">
           <span>{{ $options.i18n.TITLE_LABEL }}</span>
-          <gl-experiment-badge :help-page-url="$options.docHref" />
+          <gl-experiment-badge :help-page-url="$options.docHref" type="beta" />
         </div>
       </template>
       <template #metadata-models-count>

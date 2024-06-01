@@ -11,7 +11,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-By self-hosting the model, AI gateway, and GitLab instance, there are no calls to external architecture, ensuring maximum levels of security.
+By self-hosting the model, AI Gateway, and GitLab instance, there are no calls to external architecture, ensuring maximum levels of security.
 
 To set up your self-hosted model deployment infrastructure:
 
@@ -40,7 +40,12 @@ For Mistral, you should use one of the following architectures:
 
 ## Step 2: Install the GitLab AI Gateway
 
-### Install using Docker
+### Install by using Docker
+
+Prerequisites:
+
+- You must [install Docker](https://docs.docker.com/engine/install/#server).
+- Use a valid hostname accessible within your network. Do not use `localhost`.
 
 The GitLab AI Gateway Docker image contains all necessary code and dependencies in a single container.
 
@@ -67,16 +72,16 @@ sudo mkdir -p /srv/gitlab-agw
 If you're running Docker with a user other than `root`, ensure appropriate
 permissions have been granted to that directory.
 
-#### Find the AI Gateway Release
+#### Find the AI Gateway release
 
-In a production environment, you should pin your deployment to a specific
-GitLab AI Gateway release. Find the release to use in [GitLab AI Gateway Releases](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/releases), for example:
+In a production environment, you should set your deployment to a specific
+GitLab AI Gateway release. Find the release to use in [GitLab AI Gateway releases](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/releases), for example:
 
 ```shell
 docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:v1.4.0`
 ```
 
-To pin your deployment to the latest stable release, use the `latest` tag to run the latest stable release:
+To set your deployment to the latest stable release, use the `latest` tag to run the latest stable release:
 
 ```shell
 docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest`
@@ -85,31 +90,23 @@ docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/g
 NOTE:
 We do not yet support multi-arch image, only `linux/amd64`. If you try to run this on Apple chip, adding `--platform linux/amd64` to the `docker run` command will help.
 
-#### Prerequisites
+### Install by using Docker Engine
 
-To use the GitLab Docker images:
-
-- You must [install Docker](https://docs.docker.com/engine/install/#server).
-- You should use a valid hostname accessible within your network. Do not use `localhost`.
-
-#### Install using Docker Engine
-
-1. For the AI Gateway to know where the GitLab instance is located so it can access the API, set the environment variables `AIGW_GITLAB_URL` and `AIGW_GITLAB_API_URL`.
-
-   For example, run:
+1. For the AI Gateway to access the API, it must know where the GitLab instance
+   is located. To do this, set the environment variables `AIGW_GITLAB_URL` and
+   `AIGW_GITLAB_API_URL`:
 
    ```shell
-   AIGW_GITLAB_URL=https://YOUR_GITLAB_DOMAIN
-   AIGW_GITLAB_API_URL=https://YOUR_GITLAB_DOMAIN/api/v4/
+   AIGW_GITLAB_URL=https://<your_gitlab_domain>
+   AIGW_GITLAB_API_URL=https://<your_gitlab_domain>/api/v4/
    ```
 
-1. For the GitLab instance to know where AI Gateway is located so it can access the gateway, set the environment variable `AI_GATEWAY_URL`
-   inside your GitLab instance environment variables.
-
-   For example, run:
+1. For the GitLab instance to know where AI Gateway is located so it can access
+   the gateway, set the environment variable `AI_GATEWAY_URL` inside your GitLab
+   instance environment variables:
 
    ```shell
-   AI_GATEWAY_URL=https://YOUR_AI_GATEWAY_DOMAIN
+   AI_GATEWAY_URL=https://<your_ai_gitlab_domain>
    ```
 
 1. After you've set up the environment variables, run the image. For example:
@@ -131,7 +128,7 @@ To use the GitLab Docker images:
 After starting the container, visit `gitlab-aigw.example.com`. It might take
 a while before the Docker container starts to respond to queries.
 
-#### Upgrade
+## Upgrade the AI Gateway
 
 To upgrade the AI Gateway, download the newest Docker image tag.
 
@@ -155,6 +152,6 @@ To upgrade the AI Gateway, download the newest Docker image tag.
 
 1. Ensure that the environment variables are all set correctly
 
-### Alternative installation methods
+## Alternative installation methods
 
 For information on alternative ways to install the AI Gateway, see [issue 463773](https://gitlab.com/gitlab-org/gitlab/-/issues/463773).

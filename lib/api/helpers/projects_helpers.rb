@@ -73,7 +73,6 @@ module API
         optional :merge_commit_template, type: String, desc: 'Template used to create merge commit message'
         optional :squash_commit_template, type: String, desc: 'Template used to create squash commit message'
         optional :issue_branch_template, type: String, desc: 'Template used to create a branch from an issue'
-        optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
         optional :auto_devops_enabled, type: Boolean, desc: 'Flag indication if Auto DevOps is enabled'
         optional :auto_devops_deploy_strategy, type: String, values: %w[continuous manual timed_incremental], desc: 'Auto Deploy strategy'
         optional :autoclose_referenced_issues, type: Boolean, desc: 'Flag indication if referenced issues auto-closing is enabled'
@@ -94,6 +93,7 @@ module API
 
       params :optional_create_project_params_ce do
         optional :repository_object_format, type: String, values: %w[sha1 sha256], desc: 'The object format of the project repository'
+        optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
       end
 
       params :optional_create_project_params_ee do

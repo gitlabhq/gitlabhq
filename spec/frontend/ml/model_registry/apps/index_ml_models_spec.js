@@ -71,9 +71,10 @@ describe('ml/model_registry/apps/index_ml_models', () => {
     });
 
     it('displays the experiment badge', () => {
-      expect(findBadge().props('helpPageUrl')).toBe(
-        '/help/user/project/ml/model_registry/index.md',
-      );
+      expect(findBadge().props()).toMatchObject({
+        helpPageUrl: '/help/user/project/ml/model_registry/index.md',
+        type: 'beta',
+      });
     });
 
     it('renders the extra actions button', () => {

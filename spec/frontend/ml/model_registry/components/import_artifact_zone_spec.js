@@ -1,5 +1,5 @@
-import { GlLoadingIcon, GlInputGroupText } from '@gitlab/ui';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { GlFormInputGroup, GlLoadingIcon, GlInputGroupText } from '@gitlab/ui';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
@@ -84,9 +84,12 @@ describe('ImportArtifactZone', () => {
 
   describe('Subfolder path', () => {
     beforeEach(() => {
-      wrapper = mountExtended(ImportArtifactZone, {
+      wrapper = shallowMountExtended(ImportArtifactZone, {
         propsData: {
           ...initialProps,
+        },
+        stubs: {
+          GlFormInputGroup,
         },
       });
     });

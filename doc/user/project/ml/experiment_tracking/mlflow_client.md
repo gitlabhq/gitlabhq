@@ -59,6 +59,7 @@ Runs are registered as candidates, which can be explored by selecting an experim
 ### Associating a candidate to a CI/CD job
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
 
 If your training code is being run from a CI/CD job, GitLab can use that information to enhance
 candidate metadata. To associate a candidate to a CI/CD job:

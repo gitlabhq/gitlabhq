@@ -11,23 +11,41 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Deploying a self-hosted large language model (LLM) allows customers to:
+When you deploy a self-hosted large language model (LLM), you can:
 
 - Manage the end-to-end transmission of requests to enterprise-hosted LLM backends for GitLab Duo features.
 - Keep all of these requests within their enterprise network, ensuring no calls to external architecture.
+- Isolate the GitLab instance, AI Gateway, and self-hosted AI model within their own
+  environment, ensuring complete privacy and high security for using AI features, with
+  no reliance on public services.
 
-Self-hosted models serve sophisticated customers capable of managing their own LLM infrastructure. GitLab provides the option to connect supported models to LLM features. Model-specific prompts and GitLab Duo feature support is provided by the self-hosted models feature. For more information about this offering, see the [subscription page](../../subscriptions/self_managed/index.md).
+When you use self-hosted models, you:
 
-## Advantages
+- Can choose any GitLab-approved LLM model.
+- Can keep all data and request/response logs in your own domain.
+- Can select specific GitLab Duo features for your users.
+- Do not have to rely on the GitLab shared AI Gateway.
 
-- Choice of GitLab-approved LLM models.
-- Ability to keep all data and request/response logs within their own domain.
-- Ability to select specific GitLab Duo Features for their users.
-- Non-reliance on the GitLab shared AI Gateway.
+You can connect supported models to LLM features. Model-specific prompts
+and GitLab Duo feature support is provided by the self-hosted models feature. For
+more information about this offering, see [subscriptions](../../subscriptions/self_managed/index.md).
 
-## Self Hosted models vs the default GitLab AI Vendor architecture
+## Prerequisites
+
+- You must be able to manage your own LLM infrastructure.
+- You must have the [GitLab Enterprise Edition](../../administration/license.md).
+
+## Deploy a self-hosted model
+
+To deploy a self-hosted large language model:
+
+1. [Set up your self-hosted model deployment infrastructure](../../administration/self_hosted_models/install_infrastructure.md) and connect it to your GitLab instance.
+1. [Configure your GitLab instance to access self-hosted models](../../administration/self_hosted_models/configure_duo_features.md) using instance and group level settings.
+
+## Self-hosted models compared to the default GitLab AI vendor architecture
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
     actor User
     participant GitLab
@@ -50,12 +68,3 @@ sequenceDiagram
     end
     GitLab -->> User: Forward AI response
 ```
-
-With AI self-hosted models, your GitLab instance, AI Gateway, and self-hosted AI model are fully isolated within your own environment. This setup ensures complete privacy and high security for using AI features, with no reliance on public services.
-
-## Get started
-
-To deploy a self-hosted large language model:
-
-1. [Install your self-hosted model deployment infrastructure](../../administration/self_hosted_models/install_infrastructure.md) and connect it to your GitLab instance.
-1. [Configure your self-hosted model deployment](../../administration/self_hosted_models/configure_duo_features.md) using instance and group level settings.

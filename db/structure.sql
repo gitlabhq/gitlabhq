@@ -25062,8 +25062,6 @@ CREATE INDEX index_board_project_recent_visits_on_board_id ON board_project_rece
 
 CREATE INDEX index_board_project_recent_visits_on_project_id ON board_project_recent_visits USING btree (project_id);
 
-CREATE INDEX index_board_project_recent_visits_on_user_id ON board_project_recent_visits USING btree (user_id);
-
 CREATE UNIQUE INDEX index_board_project_recent_visits_on_user_project_and_board ON board_project_recent_visits USING btree (user_id, project_id, board_id);
 
 CREATE INDEX index_board_user_preferences_on_board_id ON board_user_preferences USING btree (board_id);

@@ -20,8 +20,8 @@ To use Code Suggestions, use one of these editor extensions:
 
 | IDE              | Extension              |
 |------------------|------------------------|
-| VS Code           | [VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)|
-| [GitLab WebIDE (VS Code in the Cloud)](../../../project/web_ide/index.md)  | No configuration required. |
+| Visual Studio Code (VS Code)          | [VS Code GitLab Workflow extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow)|
+| [GitLab Web IDE (VS Code in the Cloud)](../../../project/web_ide/index.md)  | No configuration required. |
 | Microsoft Visual Studio | [Visual Studio GitLab extension](https://marketplace.visualstudio.com/items?itemName=GitLab.GitLabExtensionForVisualStudio) |
 | JetBrains IDEs  | [GitLab Duo Plugin for JetBrains](https://plugins.jetbrains.com/plugin/22325-gitlab-duo) |
 | Neovim           | [`gitlab.vim` plugin](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim) |
@@ -36,7 +36,7 @@ Code Suggestions is aware of common popular programming languages, concepts, and
 infrastructure-as-code interfaces, like Kubernetes Resource Model (KRM),
 Google Cloud CLI, and Terraform.
 
-The following languages are supported:
+Code Suggestions supports these languages:
 
 | Language         | VS Code                | JetBrains IDEs         | Visual Studio          | Neovim |
 |------------------|------------------------|------------------------|------------------------|--------|
@@ -66,3 +66,32 @@ Some languages are not supported in all JetBrains IDEs, or might require additio
 plugin support. Refer to the JetBrains documentation for specifics on your IDE.
 
 For languages not listed in the table, Code Suggestions might not function as expected.
+
+## Experimental features
+
+### Add support for more languages for Code Suggestions in VS Code
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1318) as an [experiment](../../../../policy/experiment-beta-support.md) in GitLab 17.0.
+
+If your desired language isn't a [supported language](#supported-languages) for Code Suggestions,
+you can add support for it locally.
+
+Prerequisites:
+
+- You have installed and enabled the
+  [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/index.md#download-the-extension).
+- You have completed the [extension setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup)
+  instructions, and authorized the extension to access your GitLab account.
+
+To do this:
+
+1. Find your desired language in the list of
+   [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers)
+   for VS Code. You need the **Identifier** for a later step.
+1. In VS Code, open the extension settings for **GitLab Workflow**:
+   1. On the top bar, go to **Code > Settings > Extensions**.
+   1. Search for **GitLab Workflow** in the list, and select **Manage** (**{settings}**).
+   1. Select **Extension Settings**.
+   1. In your **User** settings, find
+      **GitLab › Ai Assisted Code Suggestions: Additional Languages** and select **Add Item**.
+1. In **Item**, add the language identifier, and select **OK**.

@@ -101,7 +101,7 @@ export default {
 };
 </script>
 <template>
-  <div class="p-4">
+  <div class="gl-p-5">
     <upload-dropzone
       single-file-selection
       display-as-card
@@ -113,7 +113,7 @@ export default {
     >
       <div
         v-if="file"
-        class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full align-items-center justify-content-center gl-p-3"
+        class="card upload-dropzone-card upload-dropzone-border gl-w-full gl-h-full gl-align-items-center gl-justify-content-center gl-p-3"
       >
         <gl-loading-icon v-if="loading" class="gl-p-5" size="sm" />
         <div data-testid="formatted-file-size">{{ formattedFileSize }}</div>
