@@ -26,58 +26,10 @@ RSpec.describe Gitlab::Cng::Commands::Create do
       expect(kind_cluster).to have_received(:create)
       expect(Gitlab::Cng::Kind::Cluster).to have_received(:new).with({
         ci: true,
-        name: "test-cluster"
+        name: "test-cluster",
+        host_http_port: 80,
+        host_ssh_port: 22
       })
-    end
-  end
-
-  describe "deployment command" do
-    let(:command_name) { "deployment" }
-    let(:deployment_install) { instance_double(Gitlab::Cng::Deployment::Installation, create: nil) }
-
-    before do
-      allow(Gitlab::Cng::Deployment::Installation).to receive(:new).and_return(deployment_install)
-    end
-
-    it "defines deployment command" do
-      expect_command_to_include_attributes(command_name, {
-        description: "Create CNG deployment from official GitLab Helm chart",
-        name: command_name,
-        usage: "#{command_name} [NAME]"
-      })
-    end
-
-    it "invokes kind cluster creation with correct arguments" do
-      invoke_command(command_name, [], {
-        configuration: "kind",
-        ci: true,
-        namespace: "gitlab",
-        gitlab_domain: "127.0.0.1.nip.io"
-      })
-
-      expect(deployment_install).to have_received(:create)
-      expect(Gitlab::Cng::Deployment::Installation).to have_received(:new).with(
-        "gitlab",
-        configuration: "kind",
-        ci: true,
-        namespace: "gitlab",
-        gitlab_domain: "127.0.0.1.nip.io"
-      )
-    end
-
-    it "invokes kind cluster creation when --with-cluster argument is passed" do
-      invoke_command(command_name, [], {
-        configuration: "kind",
-        ci: true,
-        with_cluster: true
-      })
-
-      expect(kind_cluster).to have_received(:create)
-      expect(Gitlab::Cng::Kind::Cluster).to have_received(:new).with({
-        ci: true,
-        name: "gitlab"
-      })
-      expect(deployment_install).to have_received(:create)
     end
   end
 end

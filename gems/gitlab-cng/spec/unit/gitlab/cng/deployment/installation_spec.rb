@@ -4,16 +4,17 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
   subject(:installation) do
     described_class.new(
       "gitlab",
-      configuration: "kind",
+      configuration: configuration,
       namespace: "gitlab",
-      ci: ci
+      ci: ci,
+      gitlab_domain: gitlab_domain,
+      timeout: "10m"
     )
   end
 
-  let(:stdin) { StringIO.new }
   let(:config_values) { { configuration_specific: true } }
-
   let(:ip) { instance_double(Addrinfo, ipv4_private?: true, ip_address: "127.0.0.1") }
+  let(:gitlab_domain) { "#{ip.ip_address}.nip.io" }
 
   let(:kubeclient) do
     instance_double(Gitlab::Cng::Kubectl::Client, create_namespace: "", create_resource: "", execute: "")
@@ -25,7 +26,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       run_pre_deployment_setup: nil,
       run_post_deployment_setup: nil,
       values: config_values,
-      gitlab_url: "http://gitlab.#{ip.ip_address}.nip.io"
+      gitlab_url: "http://gitlab.#{gitlab_domain}"
     )
   end
 
@@ -42,7 +43,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     {
       global: {
         hosts: {
-          domain: "#{ip.ip_address}.nip.io",
+          domain: gitlab_domain,
           https: false
         },
         ingress: {
@@ -77,7 +78,6 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     allow(Gitlab::Cng::Deployment::Configurations::Kind).to receive(:new).and_return(configuration)
 
     allow(installation).to receive(:execute_shell)
-    allow(Socket).to receive(:ip_address_list).and_return([ip])
   end
 
   around do |example|
@@ -88,14 +88,8 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     let(:ci) { false }
 
     it "runs setup and helm deployment" do
-      expect { installation.create }.to output(/Creating CNG deployment 'gitlab' using 'kind' configuration/).to_stdout
+      expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
 
-      expect(Gitlab::Cng::Deployment::Configurations::Kind).to have_received(:new).with(
-        "gitlab",
-        kubeclient,
-        ci,
-        "#{ip.ip_address}.nip.io"
-      )
       expect(installation).to have_received(:execute_shell).with(
         %w[helm repo add gitlab https://charts.gitlab.io],
         stdin_data: nil
@@ -113,7 +107,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
           helm upgrade
           --install gitlab gitlab/gitlab
           --namespace gitlab
-          --timeout 5m
+          --timeout 10m
           --wait
           --values -
         ],
@@ -133,14 +127,14 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     let(:ci) { true }
 
     it "runs helm install with correctly merged values and component versions" do
-      expect { installation.create }.to output(/Creating CNG deployment 'gitlab' using 'kind' configuration/).to_stdout
+      expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
 
       expect(installation).to have_received(:execute_shell).with(
         %W[
           helm upgrade
           --install gitlab gitlab/gitlab
           --namespace gitlab
-          --timeout 5m
+          --timeout 10m
           --wait
           --set gitlab.gitaly.image.repository=registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly
           --set gitlab.gitaly.image.tag=7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f

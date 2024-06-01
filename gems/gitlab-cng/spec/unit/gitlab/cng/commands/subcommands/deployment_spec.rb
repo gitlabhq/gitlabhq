@@ -1,0 +1,66 @@
+# frozen_string_literal: true
+
+RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
+  include_context "with command testing helper"
+
+  describe "kind deployment command" do
+    let(:command_name) { "kind" }
+
+    let(:installation_instance) { instance_double(Gitlab::Cng::Deployment::Installation, create: nil) }
+    let(:configuration_instance) { instance_double(Gitlab::Cng::Deployment::Configurations::Kind) }
+    let(:cluster_instance) { instance_double(Gitlab::Cng::Kind::Cluster, create: nil) }
+    let(:ip) { instance_double(Addrinfo, ipv4_private?: true, ip_address: "127.0.0.1") }
+
+    before do
+      allow(Gitlab::Cng::Deployment::Installation).to receive(:new).and_return(installation_instance)
+      allow(Gitlab::Cng::Deployment::Configurations::Kind).to receive(:new).and_return(configuration_instance)
+      allow(Gitlab::Cng::Kind::Cluster).to receive(:new).and_return(cluster_instance)
+      allow(Socket).to receive(:ip_address_list).and_return([ip])
+    end
+
+    it "defines kind deployment" do
+      expect_command_to_include_attributes(command_name, {
+        description: "Create CNG deployment against local kind k8s cluster where NAME is deployment name",
+        name: command_name,
+        usage: "#{command_name} [NAME]"
+      })
+    end
+
+    it "invokes kind cluster creation with correct arguments" do
+      invoke_command(command_name, [], {
+        namespace: "gitlab",
+        ci: false
+      })
+
+      expect(Gitlab::Cng::Deployment::Installation).to have_received(:new).with(
+        "gitlab",
+        configuration: configuration_instance,
+        namespace: "gitlab",
+        ci: false,
+        gitlab_domain: "127.0.0.1.nip.io",
+        timeout: "10m"
+      )
+      expect(Gitlab::Cng::Deployment::Configurations::Kind).to have_received(:new).with(
+        namespace: "gitlab",
+        ci: false,
+        gitlab_domain: "127.0.0.1.nip.io",
+        admin_password: "5iveL!fe",
+        admin_token: "ypCa3Dzb23o5nvsixwPA",
+        host_http_port: 80,
+        host_ssh_port: 22
+      )
+      expect(installation_instance).to have_received(:create)
+    end
+
+    it "create kind cluster before deployment" do
+      invoke_command(command_name, [], {
+        namespace: "gitlab",
+        ci: true
+      })
+
+      expect(Gitlab::Cng::Kind::Cluster).to have_received(:new)
+        .with(name: "gitlab", ci: true, host_http_port: 80, host_ssh_port: 22)
+      expect(cluster_instance).to have_received(:create)
+    end
+  end
+end

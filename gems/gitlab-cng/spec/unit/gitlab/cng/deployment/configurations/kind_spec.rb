@@ -1,19 +1,22 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::Cng::Deployment::Configurations::Kind do
-  subject(:configuration) { described_class.new("gitlab", kubeclient, true, "127.0.0.1.nip.io") }
+  subject(:configuration) do
+    described_class.new(
+      namespace: "gitlab",
+      ci: true,
+      gitlab_domain: "127.0.0.1.nip.io",
+      admin_password: "password",
+      admin_token: "token",
+      host_http_port: 80,
+      host_ssh_port: 22
+    )
+  end
 
   let(:kubeclient) { instance_double(Gitlab::Cng::Kubectl::Client, create_resource: "", execute: "") }
 
-  let(:env) do
-    {
-      "GITLAB_ADMIN_PASSWORD" => "password",
-      "GITLAB_ADMIN_ACCESS_TOKEN" => "token"
-    }
-  end
-
-  around do |example|
-    ClimateControl.modify(env) { example.run }
+  before do
+    allow(Gitlab::Cng::Kubectl::Client).to receive(:new).and_return(kubeclient)
   end
 
   it "runs pre-deployment setup", :aggregate_failures do
@@ -69,6 +72,12 @@ RSpec.describe Gitlab::Cng::Deployment::Configurations::Kind do
   it "returns configuration specific values" do
     expect(configuration.values).to eq({
       global: {
+        shell: {
+          port: 22
+        },
+        pages: {
+          port: 80
+        },
         initialRootPassword: {
           secret: "gitlab-initial-root-password"
         },

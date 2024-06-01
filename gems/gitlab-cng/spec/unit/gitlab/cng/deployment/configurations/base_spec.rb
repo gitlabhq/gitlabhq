@@ -4,7 +4,11 @@ RSpec.describe Gitlab::Cng::Deployment::Configurations::Base do
   subject(:configuration) { Class.new(described_class) }
 
   let(:config) do
-    configuration.new("gitlab", Gitlab::Cng::Kubectl::Client.new("gitlab"), false, "domain")
+    configuration.new(
+      namespace: "gitlab",
+      ci: false,
+      gitlab_domain: "domain"
+    )
   end
 
   it "returns empty values by default" do

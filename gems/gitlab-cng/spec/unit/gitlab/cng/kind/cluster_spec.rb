@@ -1,7 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.describe Gitlab::Cng::Kind::Cluster do
-  subject(:cluster) { described_class.new(ci: ci, name: name, docker_hostname: docker_hostname) }
+  subject(:cluster) do
+    described_class.new(
+      ci: ci,
+      name: name,
+      docker_hostname: docker_hostname,
+      host_http_port: 32080,
+      host_ssh_port: 32022
+    )
+  end
 
   let(:ci) { false }
   let(:name) { "gitlab" }
@@ -51,15 +59,11 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
                   certSANs:
                     - "#{docker_hostname}"
             extraPortMappings:
-                # containerPort below must match the values file:
-                #   nginx-ingress.controller.service.nodePorts.http
               - containerPort: 32080
-                hostPort: 80
+                hostPort: 32080
                 listenAddress: "0.0.0.0"
-                # containerPort below must match the values file:
-                #   nginx-ingress.controller.service.nodePorts.gitlab-shell
               - containerPort: 32022
-                hostPort: 22
+                hostPort: 32022
                 listenAddress: "0.0.0.0"
       YML
     end
@@ -97,16 +101,12 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
                 kubeletExtraArgs:
                   node-labels: "ingress-ready=true"
           extraPortMappings:
-            # containerPort below must match the values file:
-            #   nginx-ingress.controller.service.nodePorts.http
-          - containerPort: 32080
-            hostPort: 32080
-            listenAddress: "0.0.0.0"
-            # containerPort below must match the values file:
-            #   nginx-ingress.controller.service.nodePorts.ssh
-          - containerPort: 32022
-            hostPort: 32022
-            listenAddress: "0.0.0.0"
+            - containerPort: 32080
+              hostPort: 32080
+              listenAddress: "0.0.0.0"
+            - containerPort: 32022
+              hostPort: 32022
+              listenAddress: "0.0.0.0"
       YML
     end
 

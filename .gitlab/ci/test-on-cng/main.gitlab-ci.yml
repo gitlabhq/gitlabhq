@@ -51,7 +51,14 @@ workflow:
     - source scripts/utils.sh
     - source scripts/rspec_helpers.sh
     - cd qa && bundle install
-    - bundle exec cng create deployment --gitlab-domain "${GITLAB_DOMAIN}" --ci --with-cluster ${EXTRA_DEPLOY_VALUES}
+    - |
+      bundle exec cng create deployment kind \
+        --gitlab-domain "${GITLAB_DOMAIN}" \
+        --timeout 5m \
+        --admin-password "${GITLAB_ADMIN_PASSWORD}" \
+        --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
+        --ci \
+        ${EXTRA_DEPLOY_VALUES}
   script:
     - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $QA_GITLAB_URL -- --force-color --order random --format documentation"
     - echo "Running - '$QA_COMMAND'"

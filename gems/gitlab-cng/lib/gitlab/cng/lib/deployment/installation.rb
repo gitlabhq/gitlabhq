@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "socket"
 require "yaml"
 require "active_support/core_ext/hash"
 
@@ -15,12 +14,13 @@ module Gitlab
 
         LICENSE_SECRET = "gitlab-license"
 
-        def initialize(name, configuration:, namespace:, ci:, gitlab_domain: nil, set: [])
+        def initialize(name, configuration:, namespace:, ci:, gitlab_domain:, timeout:, set: [])
           @name = name
           @configuration = configuration
           @namespace = namespace
           @ci = ci
           @gitlab_domain = gitlab_domain
+          @timeout = timeout
           @set = set
         end
 
@@ -28,7 +28,7 @@ module Gitlab
         #
         # @return [void]
         def create
-          log("Creating CNG deployment '#{name}' using '#{configuration}' configuration", :info, bright: true)
+          log("Creating CNG deployment '#{name}'", :info, bright: true)
           run_pre_deploy_setup
           run_deploy
           run_post_deploy_setup
@@ -36,9 +36,16 @@ module Gitlab
           exit(1)
         end
 
+        # Specific component version values used in CI
+        #
+        # @return [String]
+        def component_version_values
+          @component_version_values ||= DefaultValues.component_ci_versions.map { |k, v| "#{k}=#{v}" }
+        end
+
         private
 
-        attr_reader :name, :configuration, :namespace, :ci, :set
+        attr_reader :name, :configuration, :namespace, :ci, :set, :gitlab_domain, :timeout
         alias_method :cli_values, :set
 
         # Kubectl client instance
@@ -46,25 +53,6 @@ module Gitlab
         # @return [Kubectl::Client]
         def kubeclient
           @kubeclient ||= Kubectl::Client.new(namespace)
-        end
-
-        # Gitlab app domain
-        #
-        # @return [String]
-        def gitlab_domain
-          @gitlab_domain ||= "#{Socket.ip_address_list.detect(&:ipv4_private?).ip_address}.nip.io"
-        end
-
-        # Configuration class instance
-        #
-        # @return [Configuration::Base]
-        def config_instance
-          @config_instance ||= Configurations.const_get(configuration.capitalize, false).new(
-            namespace,
-            kubeclient,
-            ci,
-            gitlab_domain
-          )
         end
 
         # Gitlab license
@@ -105,7 +93,7 @@ module Gitlab
             create_namespace
             create_license
 
-            config_instance.run_pre_deployment_setup
+            configuration.run_pre_deployment_setup
           end
         end
 
@@ -117,26 +105,26 @@ module Gitlab
             "upgrade",
             "--install", name, "gitlab/gitlab",
             "--namespace", namespace,
-            "--timeout", "5m",
+            "--timeout", timeout,
             "--wait"
           ]
-          cmd.push(*DefaultValues.component_ci_versions.flat_map { |k, v| ["--set", "gitlab.#{k}=#{v}"] }) if ci
-          cmd.push(*cli_values.flat_map { |v| ["--set", v] })
+          cmd.push(*component_version_values.flat_map { |v| ["--set", v] }) if ci
+          cmd.push("--set", cli_values.join(",")) unless cli_values.empty?
           cmd.push("--values", "-")
           values = DefaultValues.common_values(gitlab_domain)
             .deep_merge(license_values)
-            .deep_merge(config_instance.values)
+            .deep_merge(configuration.values)
             .deep_stringify_keys
 
           Helpers::Spinner.spin("running helm deployment") { puts run_helm_cmd(cmd, values.to_yaml) }
-          log("Deployment successfull and app is available via: #{config_instance.gitlab_url}", :success, bright: true)
+          log("Deployment successful and app is available via: #{configuration.gitlab_url}", :success, bright: true)
         end
 
         # Execute post-deployment setup
         #
         # @return [void]
         def run_post_deploy_setup
-          Helpers::Spinner.spin("running post-deployment setup") { config_instance.run_post_deployment_setup }
+          Helpers::Spinner.spin("running post-deployment setup") { configuration.run_post_deployment_setup }
         end
 
         # Add helm chart repo

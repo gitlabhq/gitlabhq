@@ -47,22 +47,22 @@ module Gitlab
           # @return [Hash]
           def component_ci_versions
             {
-              "gitaly.image.repository" => "#{IMAGE_REPOSITORY}/gitaly",
-              "gitaly.image.tag" => gitaly_version,
-              "gitlab-shell.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-shell",
-              "gitlab-shell.image.tag" => "v#{gitlab_shell_version}",
-              "migrations.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-toolbox-ee",
-              "migrations.image.tag" => commit_sha,
-              "toolbox.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-toolbox-ee",
-              "toolbox.image.tag" => commit_sha,
-              "sidekiq.annotations.commit" => commit_short_sha,
-              "sidekiq.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-sidekiq-ee",
-              "sidekiq.image.tag" => commit_sha,
-              "webservice.annotations.commit" => commit_short_sha,
-              "webservice.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-webservice-ee",
-              "webservice.image.tag" => commit_sha,
-              "webservice.workhorse.image" => "#{IMAGE_REPOSITORY}/gitlab-workhorse-ee",
-              "webservice.workhorse.tag" => commit_sha
+              "gitlab.gitaly.image.repository" => "#{IMAGE_REPOSITORY}/gitaly",
+              "gitlab.gitaly.image.tag" => gitaly_version,
+              "gitlab.gitlab-shell.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-shell",
+              "gitlab.gitlab-shell.image.tag" => "v#{gitlab_shell_version}",
+              "gitlab.migrations.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-toolbox-ee",
+              "gitlab.migrations.image.tag" => commit_sha,
+              "gitlab.toolbox.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-toolbox-ee",
+              "gitlab.toolbox.image.tag" => commit_sha,
+              "gitlab.sidekiq.annotations.commit" => commit_short_sha,
+              "gitlab.sidekiq.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-sidekiq-ee",
+              "gitlab.sidekiq.image.tag" => commit_sha,
+              "gitlab.webservice.annotations.commit" => commit_short_sha,
+              "gitlab.webservice.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-webservice-ee",
+              "gitlab.webservice.image.tag" => commit_sha,
+              "gitlab.webservice.workhorse.image" => "#{IMAGE_REPOSITORY}/gitlab-workhorse-ee",
+              "gitlab.webservice.workhorse.tag" => commit_sha
             }
           end
         end

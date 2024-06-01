@@ -29,15 +29,15 @@ function save_install_logs() {
   log_with_header "Events of namespace ${NAMESPACE}"
   kubectl get events --output wide --namespace ${NAMESPACE}
 
-  for pod in $(kubectl get pods --no-headers --namespace ${NAMESPACE} --output jsonpath={.items[*].metadata.name}); do
+  for pod in $(kubectl get pods --no-headers --namespace ${NAMESPACE} --output 'jsonpath={.items[*].metadata.name}'); do
     log_with_header "Description of pod ${pod}"
     kubectl describe pod ${pod} --namespace ${NAMESPACE}
 
-    for container in $(kubectl get pods ${pod} --no-headers --namespace ${NAMESPACE} --output jsonpath={.spec.initContainers[*].name}); do
+    for container in $(kubectl get pods ${pod} --no-headers --namespace ${NAMESPACE} --output 'jsonpath={.spec.initContainers[*].name}'); do
       kubectl logs ${pod} --namespace ${NAMESPACE} --container ${container} >"${container}.log"
     done
 
-    for container in $(kubectl get pods ${pod} --no-headers --namespace ${NAMESPACE} --output jsonpath={.spec.containers[*].name}); do
+    for container in $(kubectl get pods ${pod} --no-headers --namespace ${NAMESPACE} --output 'jsonpath={.spec.containers[*].name}'); do
       kubectl logs ${pod} --namespace ${NAMESPACE} --container ${container} >"${container}.log"
     done
   done

@@ -21,6 +21,23 @@ module Gitlab
             fi
           SH
 
+          def initialize(
+            namespace:,
+            ci:,
+            gitlab_domain:,
+            admin_password:,
+            admin_token:,
+            host_http_port:,
+            host_ssh_port:
+          )
+            super(namespace: namespace, ci: ci, gitlab_domain: gitlab_domain)
+
+            @admin_password = admin_password
+            @admin_token = admin_token
+            @host_http_port = host_http_port
+            @host_ssh_port = host_ssh_port
+          end
+
           # Run pre-deployment setup
           #
           # @return [void]
@@ -42,6 +59,12 @@ module Gitlab
           def values
             {
               global: {
+                shell: {
+                  port: host_ssh_port
+                },
+                pages: {
+                  port: host_http_port
+                },
                 initialRootPassword: {
                   secret: ADMIN_PASSWORD_SECRET
                 },
@@ -60,8 +83,8 @@ module Gitlab
                   service: {
                     type: "NodePort",
                     nodePorts: {
-                      "gitlab-shell": 32022,
-                      http: 32080
+                      "gitlab-shell": Cng::Kind::Cluster::SSH_PORT,
+                      http: Cng::Kind::Cluster::HTTP_PORT
                     }
                   }
                 }
@@ -73,24 +96,12 @@ module Gitlab
           #
           # @return [String]
           def gitlab_url
-            "http://gitlab.#{gitlab_domain}#{ci ? '' : ':32080'}"
+            @gitlab_url ||= URI("http://gitlab.#{gitlab_domain}:#{host_http_port}").to_s
           end
 
           private
 
-          # Gitlab initial admin password, defaults to commonly used password across development environments
-          #
-          # @return [String]
-          def admin_password
-            @admin_password ||= ENV["GITLAB_ADMIN_PASSWORD"] || "5iveL!fe"
-          end
-
-          # Gitlab admin user personal access token, defaults to value used in development seed data
-          #
-          # @return [String]
-          def admin_token
-            @admin_token ||= ENV["GITLAB_ADMIN_ACCESS_TOKEN"] || "ypCa3Dzb23o5nvsixwPA"
-          end
+          attr_reader :admin_password, :admin_token, :host_http_port, :host_ssh_port
 
           # Token seed script for root user
           #

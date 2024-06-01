@@ -20,9 +20,8 @@ module Gitlab
         class Base
           include Helpers::Output
 
-          def initialize(namespace, kubeclient, ci, gitlab_domain)
+          def initialize(namespace:, ci:, gitlab_domain:)
             @namespace = namespace
-            @kubeclient = kubeclient
             @ci = ci
             @gitlab_domain = gitlab_domain
           end
@@ -81,7 +80,14 @@ module Gitlab
 
           private
 
-          attr_reader :namespace, :kubeclient, :ci, :gitlab_domain
+          attr_reader :namespace, :ci, :gitlab_domain
+
+          # Instance of {Kubectl::Client}
+          #
+          # @return [Kubectl::Client]
+          def kubeclient
+            @kubeclient ||= Kubectl::Client.new(namespace)
+          end
         end
       end
     end
