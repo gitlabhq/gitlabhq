@@ -35,6 +35,9 @@ function gitLabUIUtilities({ addUtilities }) {
       'overflow-wrap': 'anywhere',
       'word-break': 'normal',
     },
+    '.wrap-anywhere': {
+      'overflow-wrap': 'anywhere',
+    },
   });
 }
 

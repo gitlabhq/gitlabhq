@@ -28,7 +28,7 @@
   .project-cell{ class: css_class }
     .project-details.gl-pr-9.gl-sm-pr-0.gl-w-full.gl-display-flex.gl-flex-direction-column{ data: { testid: 'project-content', qa_project_name: project.name } }
       .gl-display-flex.gl-align-items-baseline.gl-flex-wrap
-        %h2.gl-font-base.gl-leading-20.gl-my-0.gl-overflow-wrap-anywhere
+        %h2.gl-font-base.gl-leading-20.gl-my-0.gl-wrap-anywhere
           = link_to project_path(project), class: 'text-plain gl-mr-3 js-prefetch-document', title: project.name do
             %span.namespace-name.gl-font-normal
               - if project.namespace && !skip_namespace
