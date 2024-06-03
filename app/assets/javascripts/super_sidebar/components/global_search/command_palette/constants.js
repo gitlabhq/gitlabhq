@@ -56,6 +56,10 @@ export const MODAL_CLOSE_ESC = 'esc';
 export const MODAL_CLOSE_BACKGROUND = 'backdrop';
 export const MODAL_CLOSE_HEADERCLOSE = 'headerclose';
 
+export const SCOPE_SEARCH_ALL = 'scoped-in-all';
+export const SCOPE_SEARCH_GROUP = 'scoped-in-group';
+export const SCOPE_SEARCH_PROJECT = 'scoped-in-project';
+
 export const GROUP_TITLES = {
   [USER_HANDLE]: USERS_GROUP_TITLE,
   [PROJECT_HANDLE]: PROJECTS_GROUP_TITLE,

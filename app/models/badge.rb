@@ -12,7 +12,10 @@ class Badge < ApplicationRecord
     'project_name' => :path,
     'project_id' => :id,
     'default_branch' => :default_branch,
-    'commit_sha' => ->(project) { project.commit&.sha }
+    'commit_sha' => ->(project) { project.commit&.sha },
+    'latest_tag' => ->(project) do
+      TagsFinder.new(project.repository, per_page: 1, sort: 'updated_desc').execute.first&.name if project.repository
+    end
   }.freeze
 
   # This regex is built dynamically using the keys from the PLACEHOLDER struct.

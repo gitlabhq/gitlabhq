@@ -8,3 +8,14 @@ export const EVENT_CLICK_MERGE_REQUESTS_THAT_IM_A_REVIEWER_IN_COMMAND_PALETTE =
   'click_merge_requests_that_im_a_reviewer_in_command_palette';
 export const EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE =
   'click_merge_requests_i_created_in_command_palette';
+export const EVENT_CLICK_YOUR_WORK_IN_COMMAND_PALETTE = 'click_your_work_in_command_palette';
+export const EVENT_CLICK_EXPLORE_IN_COMMAND_PALETTE = 'click_explore_in_command_palette';
+export const EVENT_CLICK_PROFILE_IN_COMMAND_PALETTE = 'click_profile_in_command_palette';
+export const EVENT_CLICK_PREFERENCES_IN_COMMAND_PALETTE = 'click_preferences_in_command_palette';
+
+export const EVENT_CLICK_ALL_GITLAB_SCOPED_SEARCH_TO_ADVANCED_SEARCH =
+  'click_all_gitlab_scoped_search_to_advanced_search';
+export const EVENT_CLICK_GROUP_SCOPED_SEARCH_TO_ADVANCED_SEARCH =
+  'click_group_scoped_search_to_advanced_search';
+export const EVENT_CLICK_PROJECT_SCOPED_SEARCH_TO_ADVANCED_SEARCH =
+  'click_project_scoped_search_to_advanced_search';

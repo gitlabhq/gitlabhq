@@ -961,6 +961,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_9259aae92378() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_packages"
+  WHERE "packages_packages"."id" = NEW."package_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_94514aeadc50() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12939,7 +12955,8 @@ CREATE TABLE packages_build_infos (
     id bigint NOT NULL,
     package_id integer NOT NULL,
     pipeline_id_convert_to_bigint integer,
-    pipeline_id bigint
+    pipeline_id bigint,
+    project_id bigint
 );
 
 CREATE SEQUENCE packages_build_infos_id_seq
@@ -27093,6 +27110,8 @@ CREATE INDEX index_p_ci_runner_machine_builds_on_runner_machine_id ON ONLY p_ci_
 
 CREATE INDEX index_packages_build_infos_on_pipeline_id ON packages_build_infos USING btree (pipeline_id);
 
+CREATE INDEX index_packages_build_infos_on_project_id ON packages_build_infos USING btree (project_id);
+
 CREATE INDEX index_packages_build_infos_package_id_id ON packages_build_infos USING btree (package_id, id);
 
 CREATE INDEX index_packages_build_infos_package_id_pipeline_id_id ON packages_build_infos USING btree (package_id, pipeline_id, id);
@@ -27154,6 +27173,8 @@ CREATE INDEX index_packages_package_files_on_file_name_file_sha256 ON packages_p
 CREATE INDEX index_packages_package_files_on_file_store ON packages_package_files USING btree (file_store);
 
 CREATE INDEX index_packages_package_files_on_id_for_cleanup ON packages_package_files USING btree (id) WHERE (status = 1);
+
+CREATE INDEX index_packages_package_files_on_package_file_extension_status ON packages_package_files USING btree (package_id) WHERE ((status = 0) AND (reverse(split_part(reverse((file_name)::text), '.'::text, 1)) = 'nupkg'::text));
 
 CREATE INDEX index_packages_package_files_on_package_id_and_created_at_desc ON packages_package_files USING btree (package_id, created_at DESC);
 
@@ -28072,6 +28093,8 @@ CREATE UNIQUE INDEX index_topics_on_slug ON topics USING btree (slug) WHERE (slu
 CREATE INDEX index_topics_total_projects_count ON topics USING btree (total_projects_count DESC, id);
 
 CREATE UNIQUE INDEX index_trending_projects_on_project_id ON trending_projects USING btree (project_id);
+
+CREATE INDEX index_unarchived_occurrences_for_aggregations_severity ON sbom_occurrences USING btree (traversal_ids, highest_severity, component_id, component_version_id) WHERE (archived = false);
 
 CREATE INDEX index_unarchived_occurrences_on_version_id_and_traversal_ids ON sbom_occurrences USING btree (component_version_id, traversal_ids) WHERE (archived = false);
 
@@ -30399,6 +30422,8 @@ CREATE TRIGGER trigger_8e66b994e8f0 BEFORE INSERT OR UPDATE ON audit_events_stre
 
 CREATE TRIGGER trigger_8fbb044c64ad BEFORE INSERT OR UPDATE ON design_management_designs FOR EACH ROW EXECUTE FUNCTION trigger_8fbb044c64ad();
 
+CREATE TRIGGER trigger_9259aae92378 BEFORE INSERT OR UPDATE ON packages_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_9259aae92378();
+
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
 
 CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management_versions FOR EACH ROW EXECUTE FUNCTION trigger_96a76ee9f147();
@@ -31385,6 +31410,9 @@ ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
 
 ALTER TABLE ONLY zoekt_indices
     ADD CONSTRAINT fk_bf205d4773 FOREIGN KEY (zoekt_enabled_namespace_id) REFERENCES zoekt_enabled_namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY packages_build_infos
+    ADD CONSTRAINT fk_c0bc6b19ff FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY design_management_versions
     ADD CONSTRAINT fk_c1440b4896 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL;

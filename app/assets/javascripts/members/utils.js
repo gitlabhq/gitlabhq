@@ -1,4 +1,4 @@
-import { isUndefined, uniqueId } from 'lodash';
+import { isUndefined } from 'lodash';
 import { s__ } from '~/locale';
 import showGlobalToast from '~/vue_shared/plugins/global_toast';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -44,11 +44,11 @@ export const generateBadges = ({ member, isCurrentUser, canManageMembers }) => [
  *   @param {Map<string, number>} member.validRoles
  */
 export const roleDropdownItems = ({ validRoles }) => {
-  const staticRoleDropdownItems = Object.entries(validRoles).map(([name, value]) => ({
-    accessLevel: value,
+  const staticRoleDropdownItems = Object.entries(validRoles).map(([text, accessLevel]) => ({
+    text,
+    accessLevel,
     memberRoleId: null, // The value `null` is need to downgrade from custom role to static role. See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133430#note_1595153555
-    text: name,
-    value: uniqueId('role-static-'),
+    value: `role-static-${accessLevel}`,
   }));
 
   return { flatten: staticRoleDropdownItems, formatted: staticRoleDropdownItems };

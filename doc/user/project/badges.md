@@ -301,6 +301,7 @@ The following placeholders are available:
 - `%{default_branch}`: Default branch name configured for a project's repository
 - `%{commit_sha}`: ID of the most recent commit to the default branch of a
   project's repository
+- `%{latest_tag}`: Latest tag added to the project's repository
 
 NOTE:
 Placeholders allow badges to expose otherwise-private information, such as the

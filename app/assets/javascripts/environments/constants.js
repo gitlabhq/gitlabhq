@@ -191,3 +191,38 @@ export const KUSTOMIZATIONS_RESOURCE_TYPE = 'kustomizations';
 
 export const KUSTOMIZATION = 'Kustomization';
 export const HELM_RELEASE = 'HelmRelease';
+
+export const TREE_ITEM_KIND_ICONS = {
+  [KUSTOMIZATION]: 'overview',
+};
+
+export const TREE_ITEM_STATUS_ICONS = {
+  reconciled: {
+    icon: 'status-success',
+    class: 'gl-text-green-500',
+  },
+  reconciling: {
+    icon: 'status-running',
+    class: 'gl-text-blue-500',
+  },
+  reconcilingWithBadConfig: {
+    icon: 'status-running',
+    class: 'gl-text-blue-500',
+  },
+  stalled: {
+    icon: 'status-paused',
+    class: 'gl-text-orange-500',
+  },
+  failed: {
+    icon: 'status-failed',
+    class: 'gl-text-red-500',
+  },
+  unknown: {
+    icon: 'status-waiting',
+    class: 'gl-text-gray-500',
+  },
+  unavailable: {
+    icon: 'status-waiting',
+    class: 'gl-text-gray-500',
+  },
+};

@@ -731,6 +731,11 @@ module Types
           description: 'Term by which to search deploy key titles'
       end
 
+    field :pages_deployments, Types::PagesDeploymentType.connection_type, null: true,
+      resolver: Resolvers::PagesDeploymentsResolver,
+      connection: true,
+      description: "List of the project's Pages Deployments."
+
     def protectable_branches
       ProtectableDropdown.new(project, :branches).protectable_ref_names
     end

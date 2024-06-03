@@ -23933,6 +23933,9 @@ msgstr ""
 msgid "GlobalSearch|Commands %{link1Start}⌘%{link1End} %{link2Start}k%{link2End}"
 msgstr ""
 
+msgid "GlobalSearch|Explore"
+msgstr ""
+
 msgid "GlobalSearch|Fetching aggregations error."
 msgstr ""
 
@@ -24024,6 +24027,12 @@ msgid "GlobalSearch|Pages or actions"
 msgstr ""
 
 msgid "GlobalSearch|Places"
+msgstr ""
+
+msgid "GlobalSearch|Preferences"
+msgstr ""
+
+msgid "GlobalSearch|Profile"
 msgstr ""
 
 msgid "GlobalSearch|Project"
@@ -24123,6 +24132,9 @@ msgid "GlobalSearch|View syntax options."
 msgstr ""
 
 msgid "GlobalSearch|What are you searching for?"
+msgstr ""
+
+msgid "GlobalSearch|Your work"
 msgstr ""
 
 msgid "GlobalSearch|all GitLab"
@@ -31783,7 +31795,13 @@ msgstr ""
 msgid "MemberRole|Cannot create a member role with no enabled permissions"
 msgstr ""
 
+msgid "MemberRole|Change role"
+msgstr ""
+
 msgid "MemberRole|Could not fetch available permissions."
+msgstr ""
+
+msgid "MemberRole|Could not update role."
 msgstr ""
 
 msgid "MemberRole|Create a custom role with specific abilities by starting with a base role and adding custom permissions. %{linkStart}Learn more about custom roles.%{linkEnd}"
@@ -31895,6 +31913,9 @@ msgid "MemberRole|Standard roles"
 msgstr ""
 
 msgid "MemberRole|To delete custom role, remove role from all group members."
+msgstr ""
+
+msgid "MemberRole|Update role"
 msgstr ""
 
 msgid "MemberRole|View permissions"
@@ -32111,6 +32132,9 @@ msgid "Members|Role change request was sent to the administrator."
 msgstr ""
 
 msgid "Members|Role updated successfully."
+msgstr ""
+
+msgid "Members|Role was successfully updated."
 msgstr ""
 
 msgid "Members|Search groups"
@@ -33140,15 +33164,6 @@ msgstr ""
 msgid "MlExperimentTracking|Version"
 msgstr ""
 
-msgid "MlModelRegistry|# Create a model"
-msgstr ""
-
-msgid "MlModelRegistry|# Create a version"
-msgstr ""
-
-msgid "MlModelRegistry|# Log artifacts"
-msgstr ""
-
 msgid "MlModelRegistry|%d model"
 msgid_plural "MlModelRegistry|%d models"
 msgstr[0] ""
@@ -33177,12 +33192,6 @@ msgstr ""
 msgid "MlModelRegistry|Candidate not linked to a CI build"
 msgstr ""
 
-msgid "MlModelRegistry|Copied MLflow tracking URL to clipboard"
-msgstr ""
-
-msgid "MlModelRegistry|Copy MLflow tracking URL"
-msgstr ""
-
 msgid "MlModelRegistry|Create & import"
 msgstr ""
 
@@ -33198,10 +33207,25 @@ msgstr ""
 msgid "MlModelRegistry|Create model version & import artifacts"
 msgstr ""
 
+msgid "MlModelRegistry|Create model with MLflow"
+msgstr ""
+
 msgid "MlModelRegistry|Create model, version & import artifacts"
 msgstr ""
 
+msgid "MlModelRegistry|Create your machine learning using GitLab directly or using the MLflow client"
+msgstr ""
+
+msgid "MlModelRegistry|Creating a model"
+msgstr ""
+
+msgid "MlModelRegistry|Creating a model version"
+msgstr ""
+
 msgid "MlModelRegistry|Creating models is also possible through the MLflow client. %{linkStart}Follow the documentation to learn more.%{linkEnd}"
+msgstr ""
+
+msgid "MlModelRegistry|Creating models, model versions and candidates is also possible using the MLflow client:"
 msgstr ""
 
 msgid "MlModelRegistry|Delete model"
@@ -33258,7 +33282,7 @@ msgstr ""
 msgid "MlModelRegistry|ID"
 msgstr ""
 
-msgid "MlModelRegistry|Import your machine learning using GitLab directly or using the MLflow client:"
+msgid "MlModelRegistry|Import your machine learning models"
 msgstr ""
 
 msgid "MlModelRegistry|Info"
@@ -33276,7 +33300,10 @@ msgstr ""
 msgid "MlModelRegistry|Leave empty to skip version creation."
 msgstr ""
 
-msgid "MlModelRegistry|MLflow compatibility"
+msgid "MlModelRegistry|Logging artifacts"
+msgstr ""
+
+msgid "MlModelRegistry|MLflow compatibility documentation"
 msgstr ""
 
 msgid "MlModelRegistry|MLflow run ID"
@@ -33324,13 +33351,13 @@ msgstr ""
 msgid "MlModelRegistry|No logged parameters"
 msgstr ""
 
-msgid "MlModelRegistry|No models registered"
-msgstr ""
-
 msgid "MlModelRegistry|No registered versions"
 msgstr ""
 
 msgid "MlModelRegistry|Parameters"
+msgstr ""
+
+msgid "MlModelRegistry|Setting up the client"
 msgstr ""
 
 msgid "MlModelRegistry|Start tracking your machine learning models"
@@ -33352,6 +33379,9 @@ msgid "MlModelRegistry|Upload files under path: "
 msgstr ""
 
 msgid "MlModelRegistry|Use versions to track performance, parameters, and metadata"
+msgstr ""
+
+msgid "MlModelRegistry|Using the MLflow client"
 msgstr ""
 
 msgid "MlModelRegistry|Version Description"

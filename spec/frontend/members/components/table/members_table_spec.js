@@ -1,4 +1,4 @@
-import { GlTable, GlLink, GlBadge } from '@gitlab/ui';
+import { GlTable, GlButton, GlBadge } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
@@ -46,6 +46,7 @@ describe('MembersTable', () => {
           namespaced: true,
           state: {
             members: [],
+            memberPath: 'invite/path/:id',
             tableFields: [],
             tableAttrs: {
               tr: { 'data-testid': 'member-row' },
@@ -78,13 +79,14 @@ describe('MembersTable', () => {
         RemoveMemberModal: true,
         MemberActions: true,
         MaxRole: true,
+        RoleDetailsDrawer: true,
       },
     });
   };
 
   const findTable = () => wrapper.findComponent(GlTable);
   const findRoleDetailsDrawer = () => wrapper.findComponent(RoleDetailsDrawer);
-  const findMaxRoleLink = () => wrapper.findByTestId('max-role').findComponent(GlLink);
+  const findRoleButton = () => wrapper.findComponent(GlButton);
   const findCustomRoleBadge = () => wrapper.findByTestId('max-role').findComponent(GlBadge);
   const findTableCellByMemberId = (tableCellLabel, memberId) =>
     wrapper
@@ -128,25 +130,41 @@ describe('MembersTable', () => {
         createComponent({ members: [member], tableFields: ['maxRole'] });
       };
 
-      it('shows the max role link', () => {
+      it('shows the role button', () => {
         createMaxRoleComponent();
 
-        expect(findMaxRoleLink().text()).toBe('Owner');
+        expect(findRoleButton().text()).toBe('Owner');
       });
 
-      it('does not show the "Custom role" badge', () => {
-        createMaxRoleComponent();
+      describe('custom role badge', () => {
+        it('shows the badge for a custom role', () => {
+          const member = cloneDeep(memberMock);
+          member.accessLevel.memberRoleId = 1;
+          createMaxRoleComponent(member);
 
-        expect(findCustomRoleBadge().exists()).toBe(false);
+          expect(findCustomRoleBadge().props('size')).toBe('sm');
+          expect(findCustomRoleBadge().text()).toBe('Custom role');
+        });
+
+        it('does not show badge for a standard role', () => {
+          createMaxRoleComponent();
+
+          expect(findCustomRoleBadge().exists()).toBe(false);
+        });
       });
 
-      it('shows the "Custom role" badge', () => {
-        const member = cloneDeep(memberMock);
-        member.accessLevel.memberRoleId = 1;
-        createMaxRoleComponent(member);
+      describe('disabled state', () => {
+        it.each`
+          phrase        | busy
+          ${'disables'} | ${true}
+          ${'enables'}  | ${false}
+        `('$phrase the button when the drawer busy state is $busy', async ({ busy }) => {
+          createMaxRoleComponent();
+          findRoleDetailsDrawer().vm.$emit('busy', busy);
+          await nextTick();
 
-        expect(findCustomRoleBadge().props('size')).toBe('sm');
-        expect(findCustomRoleBadge().text()).toBe('Custom role');
+          expect(findRoleButton().props('disabled')).toBe(busy);
+        });
       });
     });
 
@@ -294,13 +312,13 @@ describe('MembersTable', () => {
   });
 
   describe('role details drawer', () => {
-    it('shows role details drawer', () => {
+    it('creates role details drawer with no member selected', () => {
       createComponent();
-      // Drawer should start off with no member passed to it.
+
       expect(findRoleDetailsDrawer().props('member')).toBe(null);
     });
 
-    it('does not show role details drawer if showRoleDetailsInDrawer feature flag is off', () => {
+    it('does not show drawer if showRoleDetailsInDrawer feature flag is off', () => {
       createComponent(null, { showRoleDetailsInDrawer: false });
 
       expect(findRoleDetailsDrawer().exists()).toBe(false);
@@ -309,7 +327,7 @@ describe('MembersTable', () => {
     describe('with member selected', () => {
       beforeEach(() => {
         createComponent({ members: [memberMock], tableFields: ['maxRole'] });
-        return findMaxRoleLink().trigger('click');
+        return findRoleButton().trigger('click');
       });
 
       it('passes member to drawer', () => {
@@ -317,10 +335,17 @@ describe('MembersTable', () => {
       });
 
       it('clears member when drawer is closed', async () => {
-        await findRoleDetailsDrawer().vm.$emit('close');
+        findRoleDetailsDrawer().vm.$emit('close');
         await nextTick();
 
         expect(findRoleDetailsDrawer().props('member')).toBe(null);
+      });
+
+      it('disables role button when drawer is busy', async () => {
+        findRoleDetailsDrawer().vm.$emit('busy', true);
+        await nextTick();
+
+        expect(findRoleButton().props('disabled')).toBe(true);
       });
     });
   });

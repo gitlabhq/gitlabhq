@@ -32,6 +32,11 @@ export default {
       required: false,
       default: null,
     },
+    trackActionForErrors: {
+      type: String,
+      required: false,
+      default: null,
+    },
     autocomplete: {
       type: String,
       required: false,
@@ -70,12 +75,13 @@ export default {
   <div class="gl-field-error-anchor input-icon-wrapper">
     <gl-form-input
       :id="id"
-      class="js-password-complexity-validation gl-pr-8!"
+      class="js-password-complexity-validation js-track-error gl-pr-8!"
       required
       :autocomplete="autocomplete"
       :name="name"
       :minlength="minimumPasswordLength"
       :data-testid="testid"
+      :data-track-action-for-errors="trackActionForErrors"
       :title="title"
       :type="type"
     />

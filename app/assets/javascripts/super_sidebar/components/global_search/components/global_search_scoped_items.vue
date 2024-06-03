@@ -2,11 +2,24 @@
 import { GlIcon, GlDisclosureDropdownGroup } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters } from 'vuex';
+import { InternalEvents } from '~/tracking';
 import { s__, sprintf } from '~/locale';
 import { truncate } from '~/lib/utils/text_utility';
-import { OVERLAY_SEARCH } from '../command_palette/constants';
+import {
+  EVENT_CLICK_ALL_GITLAB_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
+  EVENT_CLICK_GROUP_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
+  EVENT_CLICK_PROJECT_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
+} from '~/super_sidebar/components/global_search/tracking_constants';
+import {
+  OVERLAY_SEARCH,
+  SCOPE_SEARCH_ALL,
+  SCOPE_SEARCH_GROUP,
+  SCOPE_SEARCH_PROJECT,
+} from '../command_palette/constants';
 import { SCOPE_TOKEN_MAX_LENGTH } from '../constants';
 import SearchResultHoverLayover from './global_search_hover_overlay.vue';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'GlobalSearchScopedItems',
@@ -15,6 +28,7 @@ export default {
     GlDisclosureDropdownGroup,
     SearchResultHoverLayover,
   },
+  mixins: [trackingMixin],
   i18n: {
     OVERLAY_SEARCH,
   },
@@ -44,14 +58,36 @@ export default {
     getTruncatedScope(scope) {
       return truncate(scope, SCOPE_TOKEN_MAX_LENGTH);
     },
+    trackingTypes({ text }) {
+      switch (text) {
+        case this.$options.SCOPE_SEARCH_ALL: {
+          this.trackEvent(EVENT_CLICK_ALL_GITLAB_SCOPED_SEARCH_TO_ADVANCED_SEARCH);
+          break;
+        }
+        case this.$options.SCOPE_SEARCH_GROUP: {
+          this.trackEvent(EVENT_CLICK_GROUP_SCOPED_SEARCH_TO_ADVANCED_SEARCH);
+          break;
+        }
+        case this.$options.SCOPE_SEARCH_PROJECT: {
+          this.trackEvent(EVENT_CLICK_PROJECT_SCOPED_SEARCH_TO_ADVANCED_SEARCH);
+          break;
+        }
+        default: {
+          /* empty */
+        }
+      }
+    },
   },
+  SCOPE_SEARCH_ALL,
+  SCOPE_SEARCH_GROUP,
+  SCOPE_SEARCH_PROJECT,
 };
 </script>
 
 <template>
   <div>
-    <ul class="gl-m-0 gl-p-0 gl-pb-2 gl-list-none" data-testid="scoped-items">
-      <gl-disclosure-dropdown-group :group="group" bordered>
+    <ul class="gl-m-0 gl-p-0 gl-pb-2 gl-list-style-none" data-testid="scoped-items">
+      <gl-disclosure-dropdown-group :group="group" bordered @action="trackingTypes">
         <template #list-item="{ item }">
           <search-result-hover-layover :text-message="$options.i18n.OVERLAY_SEARCH">
             <gl-icon

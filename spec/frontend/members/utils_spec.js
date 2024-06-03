@@ -347,7 +347,7 @@ describe('Members Utils', () => {
       expect(flatten).toEqual(formatted);
       expect(flatten[0]).toMatchObject({
         text: 'Guest',
-        value: 'role-static-0',
+        value: 'role-static-10',
         accessLevel: 10,
         memberRoleId: null,
       });

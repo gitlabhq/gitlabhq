@@ -63,8 +63,6 @@ RSpec.describe 'layouts/_head' do
   end
 
   context 'for apple touch icon' do
-    let_it_be(:appearance) { build_stubbed(:appearance, :with_pwa_icon) }
-
     context 'if no pwa icon is defined' do
       it 'link to the default icon' do
         render
@@ -76,11 +74,11 @@ RSpec.describe 'layouts/_head' do
     end
 
     context 'if pwa icon is defined' do
-      before do
-        allow(view).to receive(:current_appearance).and_return(appearance)
-      end
+      # rubocop:disable RSpec/FactoryBot/AvoidCreate -- will not work with build_stubbed
+      let_it_be(:appearance) { create(:appearance, :with_pwa_icon) }
+      # rubocop:enable RSpec/FactoryBot/AvoidCreate
 
-      it 'link to the pwa icons', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/457108' do
+      it 'link to the pwa icons' do
         render
 
         expect(rendered).to include(

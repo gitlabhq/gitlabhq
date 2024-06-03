@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Pages Deployments query', feature_category: :pages do
+RSpec.describe 'Namespace Pages Deployments query', feature_category: :pages do
   include GraphqlHelpers
 
   let(:project_maintainer) { create(:user) }

@@ -23,6 +23,8 @@ export const MODEL_ENTITIES = {
   modelVersion: 'modelVersion',
 };
 
+export const MLFLOW_USAGE_MODAL_ID = 'model-registry-mlflow-usage-modal';
+
 export const emptyArtifactFile = {
   file: null,
   subfolder: '',

@@ -7,13 +7,10 @@ import {
   CLUSTER_HEALTH_ERROR,
   HEALTH_BADGES,
   SYNC_STATUS_BADGES,
-  STATUS_TRUE,
-  STATUS_FALSE,
-  STATUS_UNKNOWN,
-  REASON_PROGRESSING,
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
 } from '~/environments/constants';
+import { fluxSyncStatus } from '~/environments/helpers/k8s_integration_helper';
 import KubernetesConnectionStatus from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status.vue';
 import KubernetesConnectionStatusBadge from '~/environments/environment_details/components/kubernetes/kubernetes_connection_status_badge.vue';
 import {
@@ -131,35 +128,6 @@ export default {
     fluxBadgeId() {
       return `${this.environmentName}-flux-sync-badge`;
     },
-    fluxAnyStalled() {
-      return this.fluxResourceStatus.find((condition) => {
-        return condition.status === STATUS_TRUE && condition.type === 'Stalled';
-      });
-    },
-    fluxAnyReconcilingWithBadConfig() {
-      return this.fluxResourceStatus.find((condition) => {
-        return (
-          condition.status === STATUS_UNKNOWN &&
-          condition.type === 'Ready' &&
-          condition.reason === REASON_PROGRESSING
-        );
-      });
-    },
-    fluxAnyReconciling() {
-      return this.fluxResourceStatus.find((condition) => {
-        return condition.status === STATUS_TRUE && condition.type === 'Reconciling';
-      });
-    },
-    fluxAnyReconciled() {
-      return this.fluxResourceStatus.find((condition) => {
-        return condition.status === STATUS_TRUE && condition.type === 'Ready';
-      });
-    },
-    fluxAnyFailed() {
-      return this.fluxResourceStatus.find((condition) => {
-        return condition.status === STATUS_FALSE && condition.type === 'Ready';
-      });
-    },
     syncStatusBadge() {
       if (!this.fluxResourceStatus.length && this.fluxApiError) {
         return { ...SYNC_STATUS_BADGES.unavailable, popoverText: this.fluxApiError };
@@ -167,25 +135,32 @@ export default {
       if (!this.fluxResourceStatus.length) {
         return SYNC_STATUS_BADGES.unavailable;
       }
-      if (this.fluxAnyFailed) {
-        return { ...SYNC_STATUS_BADGES.failed, popoverText: this.fluxAnyFailed.message };
+
+      const fluxStatus = fluxSyncStatus(this.fluxResourceStatus);
+
+      switch (fluxStatus.status) {
+        case 'failed':
+          return {
+            ...SYNC_STATUS_BADGES.failed,
+            popoverText: fluxStatus.message,
+          };
+        case 'stalled':
+          return {
+            ...SYNC_STATUS_BADGES.stalled,
+            popoverText: fluxStatus.message,
+          };
+        case 'reconcilingWithBadConfig':
+          return {
+            ...SYNC_STATUS_BADGES.reconciling,
+            popoverText: fluxStatus.message,
+          };
+        case 'reconciling':
+          return SYNC_STATUS_BADGES.reconciling;
+        case 'reconciled':
+          return SYNC_STATUS_BADGES.reconciled;
+        default:
+          return SYNC_STATUS_BADGES.unknown;
       }
-      if (this.fluxAnyStalled) {
-        return { ...SYNC_STATUS_BADGES.stalled, popoverText: this.fluxAnyStalled.message };
-      }
-      if (this.fluxAnyReconcilingWithBadConfig) {
-        return {
-          ...SYNC_STATUS_BADGES.reconciling,
-          popoverText: this.fluxAnyReconcilingWithBadConfig.message,
-        };
-      }
-      if (this.fluxAnyReconciling) {
-        return SYNC_STATUS_BADGES.reconciling;
-      }
-      if (this.fluxAnyReconciled) {
-        return SYNC_STATUS_BADGES.reconciled;
-      }
-      return SYNC_STATUS_BADGES.unknown;
     },
     isFluxConnectionStatus() {
       return Boolean(this.fluxConnectionParams.resourceType);

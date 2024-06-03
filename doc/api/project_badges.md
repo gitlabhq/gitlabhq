@@ -21,7 +21,8 @@ DETAILS:
 - **%{project_name}**: Replaced by the project name.
 - **%{project_id}**: Replaced by the project ID.
 - **%{default_branch}**: Replaced by the project default branch.
-- **%{commit_sha}**: Replaced by the last project's commit SHA.
+- **%{commit_sha}**: Replaced by the project's last commit SHA.
+- **%{latest_tag}**: Replaced by the project's last tag.
 
 <!-- vale gitlab.Spelling = YES -->
 

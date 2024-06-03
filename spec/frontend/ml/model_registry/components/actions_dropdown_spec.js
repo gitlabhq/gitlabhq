@@ -1,21 +1,20 @@
 import { mount } from '@vue/test-utils';
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import ActionsDropdown from '~/ml/model_registry/components/actions_dropdown.vue';
+import MlflowUsageModal from '~/ml/model_registry/components/mlflow_usage_modal.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { MLFLOW_USAGE_MODAL_ID } from '~/ml/model_registry/constants';
 
 describe('ml/model_registry/components/actions_dropdown', () => {
   let wrapper;
 
-  const showToast = jest.fn();
-
   const createWrapper = () => {
     wrapper = mount(ActionsDropdown, {
-      mocks: {
-        $toast: {
-          show: showToast,
-        },
-      },
       provide: {
         mlflowTrackingUrl: 'path/to/mlflow',
+      },
+      directives: {
+        GlModal: createMockDirective('gl-modal'),
       },
       slots: {
         default: 'Slot content',
@@ -23,26 +22,25 @@ describe('ml/model_registry/components/actions_dropdown', () => {
     });
   };
 
-  const findCopyLinkDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
+  const findUsageModalDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
+  const findModal = () => wrapper.findComponent(MlflowUsageModal);
 
-  it('has data-clipboard-text set to the correct url', () => {
+  beforeEach(() => {
     createWrapper();
-
-    expect(findCopyLinkDropdownItem().text()).toBe('Copy MLflow tracking URL');
-    expect(findCopyLinkDropdownItem().attributes()['data-clipboard-text']).toBe('path/to/mlflow');
   });
 
-  it('shows a success toast after copying the url to the clipboard', () => {
-    createWrapper();
+  it('renders open mlflow usage item', () => {
+    expect(findUsageModalDropdownItem().text()).toBe('Using the MLflow client');
+    expect(getBinding(findUsageModalDropdownItem().element, 'gl-modal').value).toBe(
+      MLFLOW_USAGE_MODAL_ID,
+    );
+  });
 
-    findCopyLinkDropdownItem().find('button').trigger('click');
-
-    expect(showToast).toHaveBeenCalledWith('Copied MLflow tracking URL to clipboard');
+  it('renders modal', () => {
+    expect(findModal().exists()).toBe(true);
   });
 
   it('renders slots', () => {
-    createWrapper();
-
     expect(wrapper.html()).toContain('Slot content');
   });
 });

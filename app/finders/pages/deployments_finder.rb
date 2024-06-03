@@ -4,14 +4,14 @@ module Pages
   class DeploymentsFinder
     attr_reader :params
 
-    def initialize(namespace, params = {})
-      @namespace = namespace
+    def initialize(parent, params = {})
+      @parent = parent
       @params = params
     end
 
     def execute
       deployments = PagesDeployment
-      deployments = by_namespace(deployments)
+      deployments = by_parent(deployments)
       deployments = by_active_status(deployments)
       deployments = find_versioned(deployments)
       sort(deployments)
@@ -19,8 +19,20 @@ module Pages
 
     private
 
+    def by_parent(deployments)
+      case @parent
+      when Namespace then by_namespace(deployments)
+      when Project then by_project(deployments)
+      else raise "Pages::DeploymentsFinder only supports Namespace or Projects as parent"
+      end
+    end
+
+    def by_project(deployments)
+      deployments.project_id_in(@parent.id)
+    end
+
     def by_namespace(deployments)
-      deployments.project_id_in(@namespace.projects.select(:id))
+      deployments.project_id_in(@parent.projects.select(:id))
     end
 
     def by_active_status(deployments)

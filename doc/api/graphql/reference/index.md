@@ -28388,6 +28388,24 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectpackagessort"></a>`sort` | [`PackageSort`](#packagesort) | Sort packages by this criteria. |
 | <a id="projectpackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
 
+##### `Project.pagesDeployments`
+
+List of the project's Pages Deployments.
+
+Returns [`PagesDeploymentConnection`](#pagesdeploymentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectpagesdeploymentsactive"></a>`active` | [`Boolean`](#boolean) | Filter by active or inactive state. |
+| <a id="projectpagesdeploymentssort"></a>`sort` | [`Sort`](#sort) | Sort results. |
+| <a id="projectpagesdeploymentsversioned"></a>`versioned` | [`Boolean`](#boolean) | Filter deployments that are versioned or unversioned. |
+
 ##### `Project.pipeline`
 
 Build pipeline of the project.

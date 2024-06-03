@@ -54,27 +54,6 @@ export const member = {
   customRoles: [],
 };
 
-export const memberWithCustomRole = {
-  ...member,
-  ...{
-    accessLevel: {
-      ...member.accessLevel,
-      memberRoleId: 1,
-      description: 'Custom role description',
-    },
-    customRoles: [
-      {
-        memberRoleId: 1,
-        baseAccessLevel: 50,
-        permissions: [
-          { name: 'Permission 0', description: 'Permission description 0' },
-          { name: 'Permission 1', description: 'Permission description 1' },
-        ],
-      },
-    ],
-  },
-};
-
 export const group = {
   accessLevel: { integerValue: 10, stringValue: 'Guest' },
   sharedWithGroup: {
@@ -136,6 +115,7 @@ export const members = [member];
 
 export const directMember = { ...member, isDirectMember: true };
 export const inheritedMember = { ...member, isDirectMember: false };
+export const updateableMember = { ...directMember, canUpdate: true };
 
 export const member2faEnabled = { ...member, user: { ...member.user, twoFactorEnabled: true } };
 

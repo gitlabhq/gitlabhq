@@ -4,6 +4,8 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import InputValidator from '~/validators/input_validator';
+import Tracking from '~/tracking';
+import FormErrorTracker from '~/pages/shared/form_error_tracker';
 
 const debounceTimeoutDuration = 1000;
 const rootUrl = gon.relative_url_root;
@@ -49,6 +51,13 @@ export default class UsernameValidator extends InputValidator {
             inputDomElement,
             usernameTaken ? unavailableMessageSelector : successMessageSelector,
           );
+
+          if (usernameTaken) {
+            const action = FormErrorTracker.action(inputDomElement);
+            const label = FormErrorTracker.label(inputDomElement, 'is_taken');
+
+            Tracking.event(undefined, action, { label });
+          }
         })
         .catch(() =>
           createAlert({

@@ -42,7 +42,7 @@ class RegistrationsController < Devise::RegistrationsController
       if new_user.persisted?
         after_successful_create_hook(new_user)
       else
-        track_weak_password_error(new_user, self.class.name, 'create')
+        track_error(new_user)
       end
     end
 
@@ -317,6 +317,11 @@ class RegistrationsController < Devise::RegistrationsController
 
   def preregistration_tracking_label
     # overridden by EE module
+  end
+
+  # overridden by EE module
+  def track_error(new_user)
+    track_weak_password_error(new_user, self.class.name, 'create')
   end
 end
 

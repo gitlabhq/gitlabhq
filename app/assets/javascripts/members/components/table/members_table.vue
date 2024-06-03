@@ -1,5 +1,5 @@
 <script>
-import { GlTable, GlBadge, GlTooltipDirective, GlLink } from '@gitlab/ui';
+import { GlTable, GlBadge, GlTooltipDirective, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
@@ -39,7 +39,7 @@ export default {
   components: {
     GlTable,
     GlBadge,
-    GlLink,
+    GlButton,
     MemberAvatar,
     CreatedAt,
     MembersTableCell,
@@ -72,6 +72,7 @@ export default {
   data() {
     return {
       selectedMember: null,
+      isRoleDrawerBusy: false,
     };
   },
   computed: {
@@ -87,6 +88,9 @@ export default {
       },
       pagination(state) {
         return state[this.namespace].pagination;
+      },
+      memberPath(state) {
+        return state[this.namespace].memberPath;
       },
     }),
     filteredAndModifiedFields() {
@@ -286,13 +290,15 @@ export default {
       <template #cell(maxRole)="{ item: member }">
         <members-table-cell #default="{ permissions }" :member="member" data-testid="max-role">
           <div v-if="glFeatures.showRoleDetailsInDrawer">
-            <gl-link
+            <gl-button
               v-gl-tooltip.d0.hover="member.accessLevel.description"
+              variant="link"
+              :disabled="isRoleDrawerBusy"
               class="gl-display-block"
               @click="selectedMember = member"
             >
               {{ member.accessLevel.stringValue }}
-            </gl-link>
+            </gl-button>
             <gl-badge v-if="member.accessLevel.memberRoleId" class="gl-mt-3" size="sm">
               {{ s__('MemberRole|Custom role') }}
             </gl-badge>
@@ -335,6 +341,8 @@ export default {
     <role-details-drawer
       v-if="glFeatures.showRoleDetailsInDrawer"
       :member="selectedMember"
+      :member-path="memberPath"
+      @busy="isRoleDrawerBusy = $event"
       @close="selectedMember = null"
     />
   </div>

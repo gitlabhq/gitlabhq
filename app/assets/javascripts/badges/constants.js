@@ -7,6 +7,7 @@ export const PLACEHOLDERS = [
   'project_id',
   'default_branch',
   'commit_sha',
+  'latest_tag',
 ];
 export const INITIAL_PAGE = 1;
 export const PAGE_SIZE = 10;
