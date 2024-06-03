@@ -19,7 +19,10 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_catego
       {
         'oid' => oid, 'size' => size,
         'actions' => {
-          'download' => { 'href' => "#{import_url}/gitlab-lfs/objects/#{oid}", header: headers }
+          'download' => {
+            'href' => "#{import_url}/gitlab-lfs/objects/#{oid}",
+            'header' => headers
+          }
         }
       }
     end

@@ -4,11 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::GithubImport::Importer::LfsObjectImporter do
   let(:project) { create(:project) }
+  let(:headers) { { 'Authorization' => 'RemoteAuth 12345' } }
   let(:lfs_attributes) do
     {
       oid: 'oid',
       size: 1,
-      link: 'http://www.gitlab.com/lfs_objects/oid'
+      link: 'http://www.gitlab.com/lfs_objects/oid',
+      headers: headers
     }
   end
 
@@ -26,6 +28,12 @@ RSpec.describe Gitlab::GithubImport::Importer::LfsObjectImporter do
       expect(service).to receive(:execute)
 
       importer.execute
+    end
+  end
+
+  describe '#lfs_download_object' do
+    it 'creates the download object with the correct attributes' do
+      expect(importer.lfs_download_object).to have_attributes(lfs_attributes)
     end
   end
 end
