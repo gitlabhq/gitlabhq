@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_unlock_weekly
 description: Count of WAU using the `/unlock` quick action
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active

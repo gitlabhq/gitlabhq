@@ -28,9 +28,8 @@ class NamespaceSetting < ApplicationRecord
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
   validates :remove_dormant_members, inclusion: { in: [false] }, if: :subgroup?
   validates :remove_dormant_members_period, numericality: { only_integer: true, greater_than_or_equal_to: 90 }
-
-  validate :allow_mfa_for_group
-  validate :allow_resource_access_token_creation_for_group
+  validates :allow_mfa_for_subgroups, presence: true, if: :subgroup?
+  validates :resource_access_token_creation_allowed, presence: true, if: :subgroup?
 
   sanitizes! :default_branch_name
 
@@ -125,18 +124,6 @@ class NamespaceSetting < ApplicationRecord
 
   def subgroup?
     !!namespace&.subgroup?
-  end
-
-  def allow_mfa_for_group
-    if subgroup? && allow_mfa_for_subgroups == false
-      errors.add(:allow_mfa_for_subgroups, _('is not allowed since the group is not top-level group.'))
-    end
-  end
-
-  def allow_resource_access_token_creation_for_group
-    if subgroup? && !resource_access_token_creation_allowed
-      errors.add(:resource_access_token_creation_allowed, _('is not allowed since the group is not top-level group.'))
-    end
   end
 end
 

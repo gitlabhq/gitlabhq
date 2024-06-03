@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_cluster_image_scanning_monthly
 description: ''
-product_section: ''
-product_stage: ''
 product_group: composition_analysis
 value_type: number
 status: removed

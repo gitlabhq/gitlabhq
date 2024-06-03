@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.design_management_designs_create
 description: Number of designs that were created
-product_section: dev
-product_stage: plan
 product_group: product_planning
 value_type: number
 status: active

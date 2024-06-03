@@ -2,8 +2,6 @@
 data_category: operational
 key_path: redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly
 description: Aggregate count of MAU taking an action related to an issue
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active

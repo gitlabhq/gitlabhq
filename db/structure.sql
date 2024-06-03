@@ -977,6 +977,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_96a76ee9f147() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."issue_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_a253cb3cacdf() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -8825,7 +8841,8 @@ CREATE TABLE design_management_versions (
     sha bytea NOT NULL,
     issue_id bigint,
     created_at timestamp with time zone NOT NULL,
-    author_id integer
+    author_id integer,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE design_management_versions_id_seq
@@ -25900,6 +25917,8 @@ CREATE INDEX index_design_management_versions_on_author_id ON design_management_
 
 CREATE INDEX index_design_management_versions_on_issue_id ON design_management_versions USING btree (issue_id);
 
+CREATE INDEX index_design_management_versions_on_namespace_id ON design_management_versions USING btree (namespace_id);
+
 CREATE UNIQUE INDEX index_design_management_versions_on_sha_and_issue_id ON design_management_versions USING btree (sha, issue_id);
 
 CREATE UNIQUE INDEX index_design_user_mentions_on_note_id ON design_user_mentions USING btree (note_id);
@@ -30382,6 +30401,8 @@ CREATE TRIGGER trigger_8fbb044c64ad BEFORE INSERT OR UPDATE ON design_management
 
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
 
+CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management_versions FOR EACH ROW EXECUTE FUNCTION trigger_96a76ee9f147();
+
 CREATE TRIGGER trigger_a253cb3cacdf BEFORE INSERT OR UPDATE ON dora_daily_metrics FOR EACH ROW EXECUTE FUNCTION trigger_a253cb3cacdf();
 
 CREATE TRIGGER trigger_b4520c29ea74 BEFORE INSERT OR UPDATE ON approval_merge_request_rule_sources FOR EACH ROW EXECUTE FUNCTION trigger_b4520c29ea74();
@@ -30587,6 +30608,9 @@ ALTER TABLE ONLY agent_project_authorizations
 
 ALTER TABLE ONLY ai_agent_version_attachments
     ADD CONSTRAINT fk_1d4253673b FOREIGN KEY (ai_vectorizable_file_id) REFERENCES ai_vectorizable_files(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY design_management_versions
+    ADD CONSTRAINT fk_1dccb304f8 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_1e9a074a35 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

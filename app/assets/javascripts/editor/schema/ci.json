@@ -1318,7 +1318,7 @@
           "type": "integer",
           "description": "Creates N instances of the job that run in parallel.",
           "default": 0,
-          "minimum": 2,
+          "minimum": 1,
           "maximum": 200
         },
         {

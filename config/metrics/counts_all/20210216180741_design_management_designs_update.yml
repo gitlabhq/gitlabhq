@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.design_management_designs_update
 description: Number of updates to designs
-product_section: dev
-product_stage: plan
 product_group: product_planning
 value_type: number
 status: active

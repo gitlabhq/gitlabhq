@@ -1,0 +1,12 @@
+# invalid parallel
+value as string:
+  script: exit 0
+  parallel: "5"
+
+smaller than minimum value:
+  script: exit 0
+  parallel: 0
+
+greater than maximum value:
+  script: exit 0
+  parallel: 201

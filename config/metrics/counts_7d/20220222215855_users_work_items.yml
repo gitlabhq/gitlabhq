@@ -1,8 +1,6 @@
 ---
 key_path: counts_weekly.aggregated_metrics.users_work_items
 description: Unique users interacting with work items
-product_section: dev
-product_stage: plan
 product_group: product_planning
 value_type: number
 status: active

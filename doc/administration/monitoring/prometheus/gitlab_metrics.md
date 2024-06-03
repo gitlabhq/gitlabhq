@@ -514,6 +514,19 @@ instance. For example, `cache` or `shared_state`.
 | `gitlab_redis_client_requests_pipelined_commands` | Histogram | 16.4 | Number of commands per pipeline sent to a single Redis server |
 | `gitlab_redis_client_pipeline_redirections_count` | Histogram | 17.0 | Number of Redis Cluster redirections in a pipeline |
 
+## Git LFS metrics
+
+Metrics to track various [Git LFS](https://git-lfs.com/) functionality.
+
+| Metric                                             | Type    | Since | Description |
+|:-------------------------------------------------- |:------- |:----- |:----------- |
+| `gitlab_sli_lfs_update_objects_total`              | Counter | 16.10 | Number of updated LFS objects in total |
+| `gitlab_sli_lfs_update_objects_error_total`        | Counter | 16.10 | Number of updated LFS object errors in total |
+| `gitlab_sli_lfs_check_objects_total`               | Counter | 16.10 | Number of check LFS objects in total |
+| `gitlab_sli_lfs_check_objects_error_total`         | Counter | 16.10 | Number of check LFS object errors in total |
+| `gitlab_sli_lfs_validate_link_objects_total`       | Counter | 16.10 | Number of validated LFS linked objects in total |
+| `gitlab_sli_lfs_validate_link_objects_error_total` | Counter | 16.10 | Number of validated LFS linked object errors in total |
+
 ## Metrics shared directory
 
 The GitLab Prometheus client requires a directory to store metrics data shared between multi-process services.

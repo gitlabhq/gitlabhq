@@ -14,7 +14,10 @@ module Gitlab
           lfs_check = Checks::LfsIntegrity.new(project, newrevs, logger.time_left)
 
           if lfs_check.objects_missing?
+            Gitlab::Metrics::Lfs.check_objects_error_rate.increment(error: true, labels: {})
             raise GitAccess::ForbiddenError, ERROR_MESSAGE
+          else
+            Gitlab::Metrics::Lfs.check_objects_error_rate.increment(error: false, labels: {})
           end
         end
       end

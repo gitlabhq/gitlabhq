@@ -1,15 +1,15 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
-import PipelineStages from '../pipeline_stages.vue';
-import LinkedPipelinesMiniList from '../linked_pipelines_mini_list.vue';
+import LegacyLinkedPipelinesMiniList from './legacy_linked_pipelines_mini_list.vue';
+import LegacyPipelineStages from './legacy_pipeline_stages.vue';
 /**
- * Renders the REST version of the pipeline mini graph.
+ * Renders the REST instance of the pipeline mini graph.
  */
 export default {
   components: {
     GlIcon,
-    LinkedPipelinesMiniList,
-    PipelineStages,
+    LegacyLinkedPipelinesMiniList,
+    LegacyPipelineStages,
   },
   arrowStyles: ['arrow-icon gl-display-inline-block gl-mx-1 gl-text-gray-500 !gl-align-middle'],
   props: {
@@ -17,11 +17,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    isGraphql: {
-      type: Boolean,
-      required: false,
-      default: false,
     },
     isMergeTrain: {
       type: Boolean,
@@ -58,7 +53,7 @@ export default {
 </script>
 <template>
   <div data-testid="pipeline-mini-graph">
-    <linked-pipelines-mini-list
+    <legacy-linked-pipelines-mini-list
       v-if="upstreamPipeline"
       :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
         upstreamPipeline,
@@ -71,8 +66,7 @@ export default {
       name="long-arrow"
       data-testid="upstream-arrow-icon"
     />
-    <pipeline-stages
-      :is-graphql="isGraphql"
+    <legacy-pipeline-stages
       :is-merge-train="isMergeTrain"
       :stages="stages"
       :update-dropdown="updateDropdown"
@@ -84,7 +78,7 @@ export default {
       name="long-arrow"
       data-testid="downstream-arrow-icon"
     />
-    <linked-pipelines-mini-list
+    <legacy-linked-pipelines-mini-list
       v-if="hasDownstreamPipelines"
       :triggered="downstreamPipelines"
       :pipeline-path="pipelinePath"

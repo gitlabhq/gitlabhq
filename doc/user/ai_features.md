@@ -62,8 +62,8 @@ DETAILS:
 ### Code explanation in the IDE
 
 DETAILS:
-**Tier:** For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
+**Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Helps you understand the selected code by explaining it more clearly.
 - LLM: Anthropic: [`claude-3-haiku-20240307`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)

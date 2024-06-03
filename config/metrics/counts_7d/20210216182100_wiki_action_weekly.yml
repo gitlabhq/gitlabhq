@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.source_code.wiki_action_weekly
 description: Count of unique actions done on a wiki (create, edit, delete)
-product_section: dev
-product_stage: plan
 product_group: knowledge
 value_type: number
 status: active

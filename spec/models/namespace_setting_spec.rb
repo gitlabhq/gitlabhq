@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :model do
   let_it_be(:group) { create(:group) }
-  let_it_be(:subgroup) { create(:group, parent: group) }
+  let_it_be(:subgroup, refind: true) { create(:group, parent: group) }
   let(:namespace_settings) { group.namespace_settings }
 
   it_behaves_like 'sanitizable', :namespace_settings, %i[default_branch_name]
@@ -69,7 +69,7 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       end
     end
 
-    describe '#allow_mfa_for_group' do
+    describe 'allow_mfa_for_subgroups' do
       context 'group is top-level group' do
         it 'is valid' do
           namespace_settings.allow_mfa_for_subgroups = false
@@ -81,15 +81,27 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       context 'group is a subgroup' do
         let(:namespace_settings) { subgroup.namespace_settings }
 
-        it 'is invalid' do
+        it 'is valid if true' do
+          namespace_settings.allow_mfa_for_subgroups = true
+
+          expect(namespace_settings).to be_valid
+        end
+
+        it 'is invalid if false' do
           namespace_settings.allow_mfa_for_subgroups = false
+
+          expect(namespace_settings).to be_invalid
+        end
+
+        it 'is invalid if nil' do
+          namespace_settings.allow_mfa_for_subgroups = nil
 
           expect(namespace_settings).to be_invalid
         end
       end
     end
 
-    describe '#allow_resource_access_token_creation_for_group' do
+    describe 'resource_access_token_creation_allowed' do
       context 'group is top-level group' do
         it 'is valid' do
           namespace_settings.resource_access_token_creation_allowed = false
@@ -99,19 +111,24 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       end
 
       context 'group is a subgroup' do
-        let(:group) { create(:group, parent: create(:group)) }
+        let(:namespace_settings) { subgroup.namespace_settings }
 
         it 'is invalid when resource access token creation is not enabled' do
           namespace_settings.resource_access_token_creation_allowed = false
 
           expect(namespace_settings).to be_invalid
-          expect(namespace_settings.errors.messages[:resource_access_token_creation_allowed]).to include("is not allowed since the group is not top-level group.")
         end
 
         it 'is valid when resource access tokens are enabled' do
           namespace_settings.resource_access_token_creation_allowed = true
 
           expect(namespace_settings).to be_valid
+        end
+
+        it 'is invalid if nil' do
+          namespace_settings.resource_access_token_creation_allowed = nil
+
+          expect(namespace_settings).to be_invalid
         end
       end
     end

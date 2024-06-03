@@ -70,17 +70,12 @@ exports[`packages_list_row renders 1`] = `
         <div
           class="gl-align-items-center gl-display-flex gl-font-sm gl-min-h-6"
         >
-          <span
-            data-testid="right-secondary"
-          >
-            Published
-            <time
-              datetime="2020-05-17T14:23:32Z"
-              title="May 17, 2020 at 2:23:32 PM GMT"
-            >
-              1 month ago
-            </time>
-          </span>
+          <publish-message-stub
+            author=""
+            projectname=""
+            projecturl=""
+            publishdate="2020-05-17T14:23:32Z"
+          />
         </div>
       </div>
     </div>

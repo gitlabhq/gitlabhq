@@ -2,8 +2,6 @@
 data_category: operational
 key_path: counts.todos
 description: Count of todos created
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active

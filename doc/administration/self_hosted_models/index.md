@@ -11,6 +11,8 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [behind the feature flag](../../administration/feature_flags.md) `ai_custom_model`. Disabled by default.
+
 Prerequisites:
 
 - You must have the [GitLab Enterprise Edition](../../administration/license.md).

@@ -4,9 +4,7 @@ import {
   GlDisclosureDropdownItem,
   GlFormCheckbox,
   GlIcon,
-  GlSprintf,
   GlTruncate,
-  GlLink,
   GlBadge,
   GlTooltipDirective,
 } from '@gitlab/ui';
@@ -22,9 +20,9 @@ import {
 } from '~/packages_and_registries/package_registry/constants';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
+import PublishMessage from '~/packages_and_registries/shared/components/publish_message.vue';
 import PublishMethod from '~/packages_and_registries/package_registry/components/list/publish_method.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
@@ -34,14 +32,12 @@ export default {
     GlDisclosureDropdownItem,
     GlFormCheckbox,
     GlIcon,
-    GlSprintf,
     GlTruncate,
-    GlLink,
     GlBadge,
     PackageTags,
+    PublishMessage,
     PublishMethod,
     ListItem,
-    TimeagoTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -73,27 +69,13 @@ export default {
       return this.packageEntity?.pipelines?.nodes[0];
     },
     projectName() {
-      return this.packageEntity.project.name;
+      return this.isGroupPage ? this.packageEntity.project?.name : '';
     },
-    projectLink() {
-      return this.packageEntity.project.webUrl;
+    projectUrl() {
+      return this.isGroupPage ? this.packageEntity.project?.webUrl : '';
     },
     pipelineUser() {
       return this.pipeline?.user?.name;
-    },
-    publishedMessage() {
-      if (this.isGroupPage) {
-        if (this.pipelineUser) {
-          return s__(`PackageRegistry|Published to %{projectName} by %{author}, %{date}`);
-        }
-        return s__(`PackageRegistry|Published to %{projectName}, %{date}`);
-      }
-
-      if (this.pipelineUser) {
-        return s__(`PackageRegistry|Published by %{author}, %{date}`);
-      }
-
-      return s__(`PackageRegistry|Published %{date}`);
     },
     errorStatusRow() {
       return this.packageEntity.status === PACKAGE_ERROR_STATUS;
@@ -209,22 +191,12 @@ export default {
     </template>
 
     <template v-if="!errorStatusRow" #right-secondary>
-      <span data-testid="right-secondary">
-        <gl-sprintf :message="publishedMessage">
-          <template v-if="isGroupPage" #projectName>
-            <gl-link
-              data-testid="root-link"
-              class="gl-text-decoration-underline"
-              :href="projectLink"
-              >{{ projectName }}</gl-link
-            >
-          </template>
-          <template #date>
-            <timeago-tooltip :time="packageEntity.createdAt" />
-          </template>
-          <template v-if="pipelineUser" #author>{{ pipelineUser }}</template>
-        </gl-sprintf>
-      </span>
+      <publish-message
+        :author="pipelineUser"
+        :project-name="projectName"
+        :project-url="projectUrl"
+        :publish-date="packageEntity.createdAt"
+      />
     </template>
 
     <template v-if="packageEntity.userPermissions.destroyPackage" #right-action>

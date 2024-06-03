@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_remove_time_spent_weekly
 description: Count of WAU using the `/remove_time_spent` quick action
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active

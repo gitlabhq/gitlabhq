@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.uploads
 description: Count of Uploads via Notes and Descriptions
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active

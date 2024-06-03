@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.work_items.users_updating_work_item_todo_weekly
 description: Unique users marking a work item as todo.
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active

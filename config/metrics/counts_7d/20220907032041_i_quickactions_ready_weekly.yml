@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.project_management.i_quickactions_ready_weekly
 description: Count of WAU using the `/ready` quick action
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 data_source: redis_hll

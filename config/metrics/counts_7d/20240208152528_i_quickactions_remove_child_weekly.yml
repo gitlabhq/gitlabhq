@@ -2,8 +2,6 @@
 key_path: redis_hll_counters.quickactions.i_quickactions_remove_child_weekly
 name: quickactions_remove_child_weekly
 description: Count of WAU using the `/remove_child` quick action
-product_section: dev
-product_stage: plan
 product_group: product_planning
 value_type: number
 status: active

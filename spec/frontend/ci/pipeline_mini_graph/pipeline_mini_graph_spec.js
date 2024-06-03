@@ -9,7 +9,6 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 
 import getLinkedPipelinesQuery from '~/ci/pipeline_details/graphql/queries/get_linked_pipelines.query.graphql';
 import getPipelineStagesQuery from '~/ci/pipeline_mini_graph/graphql/queries/get_pipeline_stages.query.graphql';
-import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import * as sharedGraphQlUtils from '~/graphql_shared/utils';
 
@@ -54,7 +53,7 @@ describe('PipelineMiniGraph', () => {
     return waitForPromises();
   };
 
-  const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
+  const findPipelineMiniGraph = () => wrapper.findComponent('[data-testid="pipeline-mini-graph"]');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   beforeEach(() => {
@@ -69,7 +68,7 @@ describe('PipelineMiniGraph', () => {
 
     it('shows a loading icon and no mini graph', () => {
       expect(findLoadingIcon().exists()).toBe(true);
-      expect(findLegacyPipelineMiniGraph().exists()).toBe(false);
+      expect(findPipelineMiniGraph().exists()).toBe(false);
     });
   });
 
@@ -83,7 +82,7 @@ describe('PipelineMiniGraph', () => {
     it('renders the Pipeline Mini Graph', async () => {
       await createComponent();
 
-      expect(findLegacyPipelineMiniGraph().exists()).toBe(true);
+      expect(findPipelineMiniGraph().exists()).toBe(true);
     });
 
     it('fires the queries', async () => {

@@ -34,6 +34,9 @@ RSpec.describe Gitlab::Checks::LfsCheck, feature_category: :source_code_manageme
       context 'with deletion' do
         shared_examples 'a skipped integrity check' do
           it 'skips integrity check' do
+            expect(Gitlab::Metrics::Lfs).to receive_message_chain(:check_objects_error_rate, :increment).with(
+              error: false, labels: {})
+
             expect(project.repository).not_to receive(:new_objects)
             expect_any_instance_of(Gitlab::Git::LfsChanges).not_to receive(:new_pointers)
 
@@ -55,12 +58,18 @@ RSpec.describe Gitlab::Checks::LfsCheck, feature_category: :source_code_manageme
       end
 
       it 'fails if any LFS blobs are missing' do
+        expect(Gitlab::Metrics::Lfs).to receive_message_chain(:check_objects_error_rate, :increment).with(error: true,
+          labels: {})
+
         expect { subject.validate! }.to raise_error(Gitlab::GitAccess::ForbiddenError, /LFS objects are missing/)
       end
 
       it 'succeeds if LFS objects have already been uploaded' do
         lfs_object = create(:lfs_object, oid: blob_object.lfs_oid)
         create(:lfs_objects_project, project: project, lfs_object: lfs_object)
+
+        expect(Gitlab::Metrics::Lfs).to receive_message_chain(:check_objects_error_rate, :increment).with(error: false,
+          labels: {})
 
         expect { subject.validate! }.not_to raise_error
       end
