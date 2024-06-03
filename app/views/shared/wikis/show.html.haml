@@ -2,50 +2,26 @@
 - add_page_specific_style 'page_bundles/wiki'
 - page_history = @page&.persisted? ? wiki_page_path(@wiki, @page, action: :history) : ''
 
-- if @page.historical?
-  = render Pajamas::AlertComponent.new(variant: :warning, alert_options: { class: 'gl-mt-5' }) do |c|
-    - c.with_body do
-      = s_("WikiHistoricalPage|This is an old version of this page.")
-    - c.with_actions do
-      .gl-display-flex.gl-gap-3
-        = render Pajamas::ButtonComponent.new(category: :primary, variant: :confirm, href: wiki_page_path(@wiki, @page)) do
-          = s_('WikiHistoricalPage|Go to most recent version')
-        = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :history)) do
-          = s_('WikiHistoricalPage|Browse history')
-
-.wiki-page-header.has-sidebar-toggle.detail-page-header.border-bottom-0.gl-block.gl-pt-5{ class: 'sm:!gl-flex' }
-  = wiki_sidebar_toggle_button
-
-  .detail-page-header-body
-    %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-inline-block.gl-grow.gl-break-anywhere{ data: { testid: 'wiki-page-title' } }= @page.human_title
-
-  .detail-page-header-actions.gl-self-start.gl-flex.gl-gap-3
-    - if can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding
-      - edit_action_description = @page.template? ? _('Edit template') : _('Edit page')
-      - edit_action_shortcut = 'e'
-      - edit_button_title = "#{edit_action_description} <kbd class='flat ml-1' aria-hidden=true>#{edit_action_shortcut}</kbd>"
-      = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, @page, action: :edit), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: 'has-tooltip js-wiki-edit', data: { html: 'true', testid: 'wiki-edit-button' }, title: edit_button_title }) do
-        = _('Edit')
-
-    #js-wiki-more-actions{ data: {
-      new_url: @page.template? ? wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true) : wiki_path(@wiki, action: :new),
-      wiki_path: @wiki.path,
-      clone_ssh_url: ssh_clone_url_to_repo(@wiki),
-      clone_http_url: http_clone_url_to_repo(@wiki),
-      history: page_history,
-      page_title: @page.human_title,
-      templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
-      clone_link_class: active_nav_link?(path: 'wikis#git_access') ? ' active' : '',
-      delete_wiki_url: wiki_page_path(@wiki, @page),
-      page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
-    } }
-
-.nav-text.flex-fill.gl-mb-6
-  .wiki-last-edit-by.gl-mt-2
-    - if @page.last_version
-      = wiki_page_version_author_header(@page.version)
-      = time_ago_with_tooltip(@page.version.authored_date)
-
-.js-async-wiki-page-content.md.gl-pt-2{ data: { testid: 'wiki-page-content', tracking_context: wiki_page_tracking_context(@page).to_json, get_wiki_content_url: wiki_page_render_api_endpoint(@page) } }
+#js-vue-wiki-content-app{ data: {
+  testid: 'wiki-page-content-app',
+  page_title: @page.human_title,
+  content_api: wiki_page_render_api_endpoint(@page),
+  show_edit_button: (can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding).to_s,
+  is_page_template: @page.template?.to_s,
+  is_page_historical: @page.historical?.to_s,
+  last_version: @page.last_version,
+  page_version: @page.version.to_json,
+  wiki_path: @wiki.path,
+  clone_ssh_url: ssh_clone_url_to_repo(@wiki),
+  clone_http_url: http_clone_url_to_repo(@wiki),
+  clone_link_class: active_nav_link?(path: 'wikis#git_access') ? ' active' : '',
+  page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
+  wiki_url: wiki_page_path(@wiki, @page),
+  edit_button_url: wiki_page_path(@wiki, @page, action: :edit),
+  new_url: @page.template? ? wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true) : wiki_path(@wiki, action: :new),
+  author_url: wiki_page_version_author_url(@page.version),
+  history_url: page_history,
+  templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+} }
 
 = render 'shared/wikis/sidebar'

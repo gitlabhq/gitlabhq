@@ -16,10 +16,10 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
       },
       provide: {
         newUrl: 'https://new.url/path',
-        history: 'https://history.url/path',
+        historyUrl: 'https://history.url/path',
         pageTitle: 'Wiki title',
         csrfToken: '',
-        deleteWikiUrl: 'https://delete.url/path',
+        wikiUrl: 'https://delete.url/path',
         wikiPath: '',
         cloneSshUrl: 'ssh://clone.url/path',
         cloneHttpUrl: 'http://clone.url/path',
@@ -98,7 +98,7 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
     });
 
     it('renders if `history` is set', () => {
-      createComponent({ history: false });
+      createComponent({ historyUrl: false });
 
       expect(findHistoryItem().exists()).toBe(false);
 

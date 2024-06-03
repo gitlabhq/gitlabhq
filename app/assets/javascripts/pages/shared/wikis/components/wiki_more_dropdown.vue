@@ -23,7 +23,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['newUrl', 'history', 'templatesUrl', 'cloneLinkClass', 'pagePersisted'],
+  inject: ['newUrl', 'historyUrl', 'templatesUrl', 'cloneLinkClass', 'pagePersisted'],
   i18n: {
     wikiActions: s__('Wiki|Wiki actions'),
   },
@@ -46,7 +46,7 @@ export default {
     historyItem() {
       return {
         text: this.isTemplate ? s__('Wiki|Template history') : s__('Wiki|Page history'),
-        href: this.history,
+        href: this.historyUrl,
         extraAttrs: {
           'data-testid': 'page-history-button',
         },
@@ -121,8 +121,8 @@ export default {
 
     <clone-wiki-modal show-as-dropdown-item />
 
-    <gl-disclosure-dropdown-group v-if="history || showPrintItem" bordered>
-      <gl-disclosure-dropdown-item v-if="history" :item="historyItem">
+    <gl-disclosure-dropdown-group v-if="historyUrl || showPrintItem" bordered>
+      <gl-disclosure-dropdown-item v-if="historyUrl" :item="historyItem">
         <template #list-item>
           <gl-icon name="history" class="gl-mr-2 gl-text-secondary" />
           {{ historyItem.text }}

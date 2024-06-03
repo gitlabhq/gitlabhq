@@ -1485,6 +1485,18 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    describe '.all_without_ghosts' do
+      let_it_be(:user1) { create(:user, :external) }
+      let_it_be(:user2) { create(:user, state: 'blocked') }
+      let_it_be(:user3) { create(:user, :ghost) }
+      let_it_be(:user4) { create(:user) }
+      let_it_be(:user5) { create(:user, :deactivated) }
+
+      it 'returns all users but ghost users' do
+        expect(described_class.all_without_ghosts).to match_array([user1, user2, user4, user5])
+      end
+    end
+
     describe '.without_ghosts' do
       let_it_be(:user1) { create(:user, :external) }
       let_it_be(:user2) { create(:user, state: 'blocked') }
@@ -3058,7 +3070,8 @@ RSpec.describe User, feature_category: :user_profile do
     let(:user) { double }
 
     where(:scope, :filter_name) do
-      :active_without_ghosts    | nil
+      :all_without_ghosts       | nil
+      :active_without_ghosts    | 'active'
       :admins                   | 'admins'
       :blocked                  | 'blocked'
       :banned                   | 'banned'

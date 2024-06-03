@@ -573,6 +573,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_note
     enable :admin_wiki
     enable :admin_project
+    enable :admin_integrations
     enable :admin_commit_status
     enable :admin_build
     enable :admin_container_image

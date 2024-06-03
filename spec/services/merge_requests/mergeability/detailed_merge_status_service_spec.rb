@@ -109,26 +109,6 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
       with_them do
         it { expect(detailed_merge_status).to eq(expected_detailed_merge_status) }
       end
-
-      context 'with FF auto_merge_when_incomplete_pipeline_succeeds disabled' do
-        before do
-          stub_feature_flags(auto_merge_when_incomplete_pipeline_succeeds: false)
-        end
-
-        where(:ci_status, :expected_detailed_merge_status) do
-          :created   | :ci_must_pass
-          :pending   | :ci_still_running
-          :running   | :ci_still_running
-          :manual    | :ci_must_pass
-          :scheduled | :ci_must_pass
-          :failed    | :ci_must_pass
-          :success   | :mergeable
-        end
-
-        with_them do
-          it { expect(detailed_merge_status).to eq(expected_detailed_merge_status) }
-        end
-      end
     end
   end
 end

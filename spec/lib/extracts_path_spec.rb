@@ -203,8 +203,6 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
     end
   end
 
-  it_behaves_like 'extracts refs'
-
   describe '#extract_ref_without_atom' do
     it 'ignores any matching refs suffixed with atom' do
       expect(extract_ref_without_atom('master.atom')).to eq('master')

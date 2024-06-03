@@ -5,7 +5,6 @@
    "execution_count": 1,
    "id": "3",
    "metadata": {},
-   "outputs": [],
    "source": [
     "import pandas as pd\n",
     "import numpy as np\n",

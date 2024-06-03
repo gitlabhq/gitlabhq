@@ -25,13 +25,6 @@ class Projects::RawController < Projects::ApplicationController
 
   private
 
-  def set_ref_and_path
-    # This bypasses assign_ref_vars to avoid a Gitaly FindCommit lookup.
-    # We don't need to find the commit to either rate limit or send the
-    # blob.
-    @ref, @path = extract_ref(get_id)
-  end
-
   def check_show_rate_limit!
     check_rate_limit!(:raw_blob, scope: [@project, @path]) do
       render plain: _('You cannot access the raw file. Please wait a minute.'), status: :too_many_requests

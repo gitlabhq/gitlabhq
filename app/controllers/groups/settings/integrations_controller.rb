@@ -5,7 +5,7 @@ module Groups
     class IntegrationsController < Groups::ApplicationController
       include ::Integrations::Actions
 
-      before_action :authorize_admin_group!
+      before_action :authorize_admin_integrations!
 
       feature_category :integrations
 

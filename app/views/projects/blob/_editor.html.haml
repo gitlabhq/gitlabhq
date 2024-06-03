@@ -1,6 +1,5 @@
 - action = current_action?(:edit, :update) ? 'edit' : 'create'
-- file_name = params[:id].split("/").last ||= ""
-- is_markdown = Gitlab::MarkupHelper.gitlab_markdown?(file_name)
+- is_markdown = Gitlab::MarkupHelper.gitlab_markdown?(local_assigns[:path])
 
 .file-holder.file.gl-mb-3
   .js-file-title.file-title.gl-display-flex.gl-align-items-center.gl-rounded-top-base{ data: { current_action: action } }

@@ -6,7 +6,7 @@
 #js-wiki-form{ data: { page_info: wiki_page_info(@page, uploads_path: uploads_path).to_json,
   templates: templates.to_json,
   format_options: wiki_markup_hash_by_name_id.to_json,
-  delete_wiki_url: wiki_page_path(@wiki, @page),
+  wiki_url: wiki_page_path(@wiki, @page),
   page_title: @page.human_title,
   page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
 } }

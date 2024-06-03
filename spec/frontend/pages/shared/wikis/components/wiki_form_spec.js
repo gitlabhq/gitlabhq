@@ -86,7 +86,7 @@ describe('WikiForm', () => {
             ...(persisted ? pageInfoPersisted : pageInfoNew),
             ...pageInfo,
           },
-          deleteWikiUrl: '',
+          wikiUrl: '',
           pageTitle: '',
           csrfToken: '',
           pagePersisted: false,

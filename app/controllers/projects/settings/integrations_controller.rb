@@ -6,7 +6,7 @@ module Projects
       include ::Integrations::Params
       include ::InternalRedirect
 
-      before_action :authorize_admin_project!
+      before_action :authorize_admin_integrations!
       before_action :ensure_integration_enabled, only: [:edit, :update, :test]
       before_action :integration, only: [:edit, :update, :test]
       before_action :default_integration, only: [:edit, :update]

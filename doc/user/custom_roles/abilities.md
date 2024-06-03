@@ -56,6 +56,12 @@ These requirements are documented in the `Required permission` column in the fol
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
 | [`admin_terraform_state`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140759) |  | Execute terraform commands, lock/unlock terraform state files, and remove file versions. | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/421789) |  |  |
 
+## Integrations
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`admin_integrations`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) |  | Create, read, update, and delete integrations with external applications. | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/460522) |  |  |
+
 ## Secrets management
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |

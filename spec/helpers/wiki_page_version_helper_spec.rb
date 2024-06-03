@@ -43,38 +43,4 @@ RSpec.describe WikiPageVersionHelper do
       expect(avatar.css('img')[0].attr('src')).not_to be_empty
     end
   end
-
-  describe '#wiki_page_version_author_header', :aggregate_failures do
-    let(:commit_with_xss) { create(:commit, project: project, author_email: "#' style=animation-name:blinking-dot onanimationstart=alert(document.domain) other", author_name: "<i>foo</i>") }
-    let(:header) { Nokogiri::HTML.parse(subject) }
-
-    subject { helper.wiki_page_version_author_header(wiki_page_version) }
-
-    context 'when user exists' do
-      let(:commit) { commit_with_user }
-
-      it 'renders commit header with user info' do
-        expect(header.css('a')[0].attr('href')).to eq("http://localhost/foo")
-        expect(header.css('a')[0].children[0].to_s).to eq("<span class=\"gl-font-bold gl-text-black-normal\">#{user.name}</span>")
-      end
-    end
-
-    context 'when user does not exist' do
-      let(:commit) { commit_without_user }
-
-      it 'renders commit header with info from commit' do
-        expect(header.css('a')[0].attr('href')).to eq("mailto:#{commit.author_email}")
-        expect(header.css('a')[0].children[0].to_s).to eq("<span class=\"gl-font-bold gl-text-black-normal\">#{wiki_page_version.author_name}</span>")
-      end
-    end
-
-    context 'when user info has XSS' do
-      let(:commit) { commit_with_xss }
-
-      it 'sets the right href and escapes HTML chars' do
-        expect(header.css('a')[0].attr('href')).to eq("mailto:#{commit.author_email}")
-        expect(header.css('a')[0].children[0].to_s).to eq("<span class=\"gl-font-bold gl-text-black-normal\">&lt;i&gt;foo&lt;/i&gt;</span>")
-      end
-    end
-  end
 end

@@ -14,7 +14,7 @@ export default {
   directives: {
     'gl-modal': GlModalDirective,
   },
-  inject: ['deleteWikiUrl', 'pageTitle', 'csrfToken', 'pagePersisted'],
+  inject: ['wikiUrl', 'pageTitle', 'csrfToken', 'pagePersisted'],
   props: {
     showAsDropdownItem: {
       type: Boolean,
@@ -120,7 +120,7 @@ export default {
       @ok="onSubmit"
     >
       {{ modalBody }}
-      <form ref="form" :action="deleteWikiUrl" method="post" class="js-requires-input">
+      <form ref="form" :action="wikiUrl" method="post" class="js-requires-input">
         <input ref="method" type="hidden" name="_method" value="delete" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />
       </form>

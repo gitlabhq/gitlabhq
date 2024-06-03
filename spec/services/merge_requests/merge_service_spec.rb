@@ -27,6 +27,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
 
     shared_examples 'with valid params' do
       before do
+        merge_request.update!(merge_jid: 'abc123')
         allow(service).to receive(:execute_hooks)
         expect(merge_request).to receive(:update_and_mark_in_progress_merge_commit_sha).twice.and_call_original
 
@@ -46,6 +47,10 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(merge_request.title)
+      end
+
+      it 'clears merge_jid' do
+        expect(merge_request.reload.merge_jid).to be_nil
       end
 
       context 'note creation' do

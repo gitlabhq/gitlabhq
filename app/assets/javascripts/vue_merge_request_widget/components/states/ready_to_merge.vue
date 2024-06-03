@@ -246,9 +246,6 @@ export default {
     squashIsSelected() {
       return this.isSquashReadOnly ? this.state.squashOnMerge : this.state.squash;
     },
-    isPipelineActive() {
-      return this.pipeline?.active || false;
-    },
     status() {
       const ciStatus = this.pipeline?.status?.toLowerCase();
 

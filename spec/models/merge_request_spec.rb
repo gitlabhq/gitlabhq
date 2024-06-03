@@ -6687,32 +6687,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       with_them do
         it { is_expected.to be expected }
       end
-
-      context 'when FF auto_merge_when_incomplete_pipeline_succeeds is disabled' do
-        before do
-          stub_feature_flags(auto_merge_when_incomplete_pipeline_succeeds: false)
-        end
-
-        let(:pipelines_must_succeed) { false }
-
-        where(:pipeline_status, :expected) do
-          # completed statuses
-          'success'   | false
-          'failed'    | false
-          'canceled'  | false
-          'skipped'   | false
-          # not completed statuses
-          'created'   | false
-          'pending'   | true
-          'running'   | true
-          'scheduled' | false
-          'manual'    | false
-        end
-
-        with_them do
-          it { is_expected.to be expected }
-        end
-      end
     end
   end
 end

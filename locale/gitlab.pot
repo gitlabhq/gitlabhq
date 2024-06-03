@@ -4118,6 +4118,9 @@ msgstr ""
 msgid "AdminUsers|Activate user %{username}?"
 msgstr ""
 
+msgid "AdminUsers|Active"
+msgstr ""
+
 msgid "AdminUsers|Adjust the user cap setting on your instance"
 msgstr ""
 
@@ -46739,6 +46742,9 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
+msgid "Security policy project is already assigned."
+msgstr ""
+
 msgid "Security reports last updated"
 msgstr ""
 
@@ -59090,7 +59096,7 @@ msgstr ""
 msgid "Wiki|Edit wiki sidebar"
 msgstr ""
 
-msgid "Wiki|Last edited by %{link_start}%{span_start}%{name}%{span_end}%{link_end}"
+msgid "Wiki|Last edited by %{author} %{timeago}"
 msgstr ""
 
 msgid "Wiki|New page"

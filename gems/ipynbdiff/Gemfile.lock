@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ipynbdiff (0.4.7)
+    ipynbdiff (0.4.8)
       diffy (~> 3.4)
       oj (~> 3.13.16)
 

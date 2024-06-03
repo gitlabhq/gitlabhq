@@ -480,7 +480,7 @@ group :development, :test do
   gem 'benchmark-memory', '~> 0.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
   # Profiling data from CI/CD pipelines
-  gem 'influxdb-client', '~> 2.9', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+  gem 'influxdb-client', '~> 3.1', require: false, feature_category: :tooling
 
   gem 'knapsack', '~> 1.22.0', feature_category: :tooling
   gem 'crystalball', '~> 0.7.0', require: false, feature_category: :tooling
@@ -553,7 +553,7 @@ group :test do
   # Moved in `test` because https://gitlab.com/gitlab-org/gitlab/-/issues/217527
   gem 'derailed_benchmarks', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 
-  gem 'gitlab_quality-test_tooling', '~> 1.26.0', require: false, feature_category: :tooling
+  gem 'gitlab_quality-test_tooling', '~> 1.27.1', require: false, feature_category: :tooling
 end
 
 gem 'octokit', '~> 8.1', feature_category: :importers

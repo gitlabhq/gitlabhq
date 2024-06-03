@@ -112,18 +112,18 @@ module ExtractsRef
       ]
     end
 
+    def ref_type
+      self.class.ref_type(params[:ref_type])
+    end
+
+    private
+
     def extract_ref_path
       id = extract_id_from_params
       ref, path = extract_ref(id)
 
       [id, ref, path]
     end
-
-    def ref_type
-      self.class.ref_type(params[:ref_type])
-    end
-
-    private
 
     def extract_raw_ref(id)
       return ['', ''] unless repository_container

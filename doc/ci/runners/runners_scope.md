@@ -249,18 +249,20 @@ To create a group runner:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
 1. Select **New group runner**.
-1. Select the operating system where GitLab Runner is installed.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
    If there are no job tags for this runner, select **Run untagged**.
 1. Optional. In the **Runner description** field, add a runner description
    that displays in GitLab.
 1. Optional. In the **Configuration** section, add additional configurations.
 1. Select **Create runner**.
-1. Follow the on-screen instructions to register the runner from the command line. When prompted by the command line:
-   - For the `GitLab instance URL`, use the URL for your GitLab instance. For example, if your project
+1. Select the platform where GitLab Runner is installed.
+1. Complete the onscreen instructions:
+   - For Linux, macOS, and Windows, when prompted by the command line:
+     - For the `GitLab instance URL`, use the URL for your GitLab instance. For example, if your project
      is hosted on `gitlab.example.com/yourname/yourproject`, your GitLab instance URL is `https://gitlab.example.com`.
-   - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
+     - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
      environment where the runner executes the job.
+   - For Google Cloud, see [Provisioning runners in Google Cloud](provision_runners_google_cloud.md).
 
 You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 
@@ -457,11 +459,14 @@ To create a project runner:
    that displays in GitLab.
 1. Optional. In the **Configuration** section, add additional configurations.
 1. Select **Create runner**.
-1. Follow the on-screen instructions to register the runner from the command line. When prompted by the command line:
-   - For the `GitLab instance URL`, use the URL for your GitLab instance. For example, if your project
+1. Select the platform where GitLab Runner is installed.
+1. Complete the onscreen instructions:
+   - For Linux, macOS, and Windows, when prompted by the command line:
+     - For the `GitLab instance URL`, use the URL for your GitLab instance. For example, if your project
      is hosted on `gitlab.example.com/yourname/yourproject`, your GitLab instance URL is `https://gitlab.example.com`.
-   - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
+     - For the `executor`, enter the type of [executor](https://docs.gitlab.com/runner/executors/). The executor is the
      environment where the runner executes the job.
+   - For Google Cloud, see [Provisioning runners in Google Cloud](provision_runners_google_cloud.md).
 
 You can also [use the API](../../api/users.md#create-a-runner-linked-to-a-user) to create a runner.
 

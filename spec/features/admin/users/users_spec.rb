@@ -17,7 +17,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
   describe 'GET /admin/users', :js do
     before do
-      visit admin_users_path
+      visit admin_users_path(filter: 'active')
     end
 
     it "is ok" do

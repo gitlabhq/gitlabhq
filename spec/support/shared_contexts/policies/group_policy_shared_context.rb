@@ -92,6 +92,7 @@ RSpec.shared_context 'GroupPolicy context' do
       remove_group
       view_edit_page
       manage_merge_request_settings
+      admin_integrations
     ]
   end
 

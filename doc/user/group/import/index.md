@@ -125,6 +125,62 @@ Though it's difficult to predict migration duration, we've seen:
 
 If you are migrating large projects and encounter problems with timeouts or duration of the migration, see [Reducing migration duration](#reducing-migration-duration).
 
+## Reducing migration duration
+
+These are some strategies for reducing the duration of migrations that use direct transfer.
+
+### Add Sidekiq workers to the destination instance
+
+A single direct transfer migration runs 5 entities (groups or projects) per import at a time, independent of the number of workers available on the destination instance.
+That said, adding more Sidekiq worker processes on the destination instance speeds up migration by decreasing the time it takes to import each entity.
+
+To add more Sidekiq workers on the destination instance, you can either:
+
+1. [Use routing rules](../../../administration/sidekiq/processing_specific_job_classes.md#routing-rules). This approach creates additional Sidekiq
+   workers that are dedicated to direct transfer operations.
+1. [Start multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md#start-multiple-processes). This approach allows all
+   queues in GitLab to make use of the additional Sidekiq worker processes.
+
+An example of how to use the routing rules is below. This example:
+
+- Can be added to the `/etc/gitlab/gitlab.rb` file on a destination instance, with a subsequent [reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
+  to apply the changes.
+- Creates four Sidekiq worker processes. Three of the processes are used exclusively for the direct transfer importer queues, and the last process is used for all other queues.
+- Should have a number of processes set that, at most, equal (and not exceed) the number of CPU cores you want to dedicate to Sidekiq. The Sidekiq worker process uses no more than one CPU core.
+
+```ruby
+sidekiq['routing_rules'] = [
+  ['feature_category=importers', 'importers'],
+  ['*', 'default']
+]
+
+sidekiq['queue_selector'] = false
+sidekiq['queue_groups'] = [
+  # Run two processes just for importers
+  'importers',
+  'importers',
+  'importers',
+
+  # Run one 'catchall' process on the default and mailers queues
+  'default,mailers'
+]
+```
+
+Increasing the number of workers on the destination instance helps reduce the migration duration until the source instance hardware resources are saturated. Exporting and importing relations in batches, available by default from GitLab 16.8, makes having enough available workers on
+the destination instance even more useful.
+
+### Redistribute large projects or start separate migrations
+
+The number of workers on the source instance should be enough to export the 5 concurrent entities in parallel (for each running import). Otherwise, there can be
+delays and potential timeouts as the destination is waiting for exported data to become available.
+
+Distributing projects in different groups helps to avoid timeouts. If several large projects are in the same group, you can:
+
+1. Move large projects to different groups or subgroups.
+1. Start separate migrations each group and subgroup.
+
+The GitLab UI can only migrate top-level groups. Using the API, you can also migrate subgroups.
+
 ## Limits
 
 > - Eight hour time limit on migrations [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/429867) in GitLab 16.7.
@@ -345,6 +401,15 @@ destination instance from:
 
 - Asking the source instance for more projects to be exported.
 - Making other API calls to the source instance for various checks and information.
+
+## Retry failed or partially successful migrations
+
+If your migrations fail, or partially succeed but are missing items, you can retry the migration. To retry a migration
+of a:
+
+- Top-level group and all of its subgroups and projects, use either the GitLab UI or the
+  [GitLab REST API](../../../api/bulk_imports.md).
+- Specific subgroups or projects, use the [GitLab REST API](../../../api/bulk_imports.md).
 
 ## Migrated group items
 
@@ -594,59 +659,3 @@ instance.
 
 If a source group or project path doesn't conform to naming [limitations](../../reserved_names.md#limitations-on-usernames-project-and-group-names), the path is normalized to
 ensure it is valid. For example, `Destination-Project-Path` is normalized to `destination-project-path`.
-
-### Reducing migration duration
-
-These are some strategies for reducing the duration of migrations that use direct transfer.
-
-#### Add Sidekiq workers to the destination instance
-
-A single direct transfer migration runs 5 entities (groups or projects) per import at a time, independent of the number of workers available on the destination instance.
-That said, adding more Sidekiq worker processes on the destination instance speeds up migration by decreasing the time it takes to import each entity.
-
-To add more Sidekiq workers on the destination instance, you can either:
-
-1. [Use routing rules](../../../administration/sidekiq/processing_specific_job_classes.md#routing-rules). This approach creates additional Sidekiq
-   workers that are dedicated to direct transfer operations.
-1. [Start multiple Sidekiq processes](../../../administration/sidekiq/extra_sidekiq_processes.md#start-multiple-processes). This approach allows all
-   queues in GitLab to make use of the additional Sidekiq worker processes.
-
-An example of how to use the routing rules is below. This example:
-
-- Can be added to the `/etc/gitlab/gitlab.rb` file on a destination instance, with a subsequent [reconfigure](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation)
-  to apply the changes.
-- Creates four Sidekiq worker processes. Three of the processes are used exclusively for the direct transfer importer queues, and the last process is used for all other queues.
-- Should have a number of processes set that, at most, equal (and not exceed) the number of CPU cores you want to dedicate to Sidekiq. The Sidekiq worker process uses no more than one CPU core.
-
-```ruby
-sidekiq['routing_rules'] = [
-  ['feature_category=importers', 'importers'],
-  ['*', 'default']
-]
-
-sidekiq['queue_selector'] = false
-sidekiq['queue_groups'] = [
-  # Run two processes just for importers
-  'importers',
-  'importers',
-  'importers',
-
-  # Run one 'catchall' process on the default and mailers queues
-  'default,mailers'
-]
-```
-
-Increasing the number of workers on the destination instance helps reduce the migration duration until the source instance hardware resources are saturated. Exporting and importing relations in batches, available by default from GitLab 16.8, makes having enough available workers on
-the destination instance even more useful.
-
-#### Redistribute large projects or start separate migrations
-
-The number of workers on the source instance should be enough to export the 5 concurrent entities in parallel (for each running import). Otherwise, there can be
-delays and potential timeouts as the destination is waiting for exported data to become available.
-
-Distributing projects in different groups helps to avoid timeouts. If several large projects are in the same group, you can:
-
-1. Move large projects to different groups or subgroups.
-1. Start separate migrations each group and subgroup.
-
-The GitLab UI can only migrate top-level groups. Using the API, you can also migrate subgroups.

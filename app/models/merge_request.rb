@@ -194,7 +194,7 @@ class MergeRequest < ApplicationRecord
       transition locked: :opened
     end
 
-    before_transition any => :opened do |merge_request|
+    before_transition any => [:opened, :merged] do |merge_request|
       merge_request.merge_jid = nil
     end
 
@@ -2272,23 +2272,11 @@ class MergeRequest < ApplicationRecord
     # "Pipelines must succeed" is disabled, immediate merges are neither blocked
     # nor discouraged on blocked pipelines, so auto merge should not wait for
     # the pipeline to finish.
-    if auto_merge_when_incomplete_pipeline_succeeds_enabled?
-      if only_allow_merge_if_pipeline_succeeds?
-        !pipeline.complete?
-      else
-        pipeline.active? || pipeline.created?
-      end
+    if only_allow_merge_if_pipeline_succeeds?
+      !pipeline.complete?
     else
-      pipeline.active?
+      pipeline.active? || pipeline.created?
     end
-  end
-
-  def auto_merge_when_incomplete_pipeline_succeeds_enabled?
-    Feature.enabled?(
-      :auto_merge_when_incomplete_pipeline_succeeds,
-      Project.actor_from_id(target_project_id),
-      type: :beta
-    )
   end
 
   def temporarily_unapproved?

@@ -41,6 +41,7 @@ export const TOKENS = [
     operators: OPERATORS_IS,
     unique: true,
     options: [
+      { value: 'active', title: s__('AdminUsers|Active') },
       { value: 'banned', title: s__('AdminUsers|Banned') },
       { value: 'blocked', title: s__('AdminUsers|Blocked') },
       { value: 'deactivated', title: s__('AdminUsers|Deactivated') },

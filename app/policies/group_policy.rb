@@ -267,6 +267,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_namespace
     enable :admin_group_member
     enable :admin_package
+    enable :admin_integrations
     enable :change_visibility_level
 
     enable :read_usage_quotas

@@ -125,6 +125,7 @@ module UsersHelper
       badges << blocked_user_badge(user) if user.blocked?
       badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin? # rubocop:disable Cop/UserAdmin
       badges << { text: s_('AdminUsers|Bot'), variant: 'muted' } if user.bot?
+      badges << { text: s_('AdminUsers|Deactivated'), variant: 'danger' } if user.deactivated?
       badges << { text: s_('AdminUsers|External'), variant: 'secondary' } if user.external?
       badges << { text: s_("AdminUsers|It's you!"), variant: 'muted' } if current_user == user
       badges << { text: s_("AdminUsers|Locked"), variant: 'warning' } if user.access_locked?

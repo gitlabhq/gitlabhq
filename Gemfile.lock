@@ -100,7 +100,7 @@ PATH
 PATH
   remote: gems/ipynbdiff
   specs:
-    ipynbdiff (0.4.7)
+    ipynbdiff (0.4.8)
       diffy (~> 3.4)
       oj (~> 3.13.16)
 
@@ -739,11 +739,12 @@ GEM
       omniauth (>= 1.3, < 3)
       pyu-ruby-sasl (>= 0.0.3.3, < 0.1)
       rubyntlm (~> 0.5)
-    gitlab_quality-test_tooling (1.26.0)
-      activesupport (>= 6.1, < 7.2)
+    gitlab_quality-test_tooling (1.27.1)
+      activesupport (>= 7.0, < 7.2)
       amatch (~> 0.4.1)
       gitlab (~> 4.19)
       http (~> 5.0)
+      influxdb-client (~> 3.1)
       nokogiri (~> 1.10)
       parallel (>= 1, < 2)
       rainbow (>= 3, < 4)
@@ -958,7 +959,7 @@ GEM
     ice_nine (0.11.2)
     imagen (0.1.8)
       parser (>= 2.5, != 2.5.1.1)
-    influxdb-client (2.9.0)
+    influxdb-client (3.1.0)
     invisible_captcha (2.1.0)
       rails (>= 5.2)
     ipaddr (1.2.5)
@@ -2019,7 +2020,7 @@ DEPENDENCIES
   gitlab-utils!
   gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.2.0)
-  gitlab_quality-test_tooling (~> 1.26.0)
+  gitlab_quality-test_tooling (~> 1.27.1)
   gon (~> 6.4.0)
   google-apis-androidpublisher_v3 (~> 0.34.0)
   google-apis-cloudbilling_v1 (~> 0.21.0)
@@ -2060,7 +2061,7 @@ DEPENDENCIES
   html2text
   httparty (~> 0.21.0)
   icalendar
-  influxdb-client (~> 2.9)
+  influxdb-client (~> 3.1)
   invisible_captcha (~> 2.1.0)
   ipaddr (~> 1.2.5)
   ipaddress (~> 0.8.3)

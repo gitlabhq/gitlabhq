@@ -34,14 +34,7 @@ const createWikiFormApp = () => {
   const el = document.getElementById('js-wiki-form');
 
   if (el) {
-    const {
-      pageInfo,
-      formatOptions,
-      templates,
-      deleteWikiUrl,
-      pageTitle,
-      pagePersisted,
-    } = el.dataset;
+    const { pageInfo, formatOptions, templates, wikiUrl, pageTitle, pagePersisted } = el.dataset;
 
     Vue.use(VueApollo);
 
@@ -57,7 +50,7 @@ const createWikiFormApp = () => {
         drawioUrl: gon.diagramsnet_url,
         templates: JSON.parse(templates),
         pageTitle,
-        deleteWikiUrl,
+        wikiUrl,
         csrfToken: csrf.token,
         pagePersisted: parseBoolean(pagePersisted),
       },
