@@ -1,0 +1,10 @@
+export const EVENT_CLICK_ISSUES_ASSIGNED_TO_ME_IN_COMMAND_PALETTE =
+  'click_issues_assigned_to_me_in_command_palette';
+export const EVENT_CLICK_ISSUES_I_CREATED_IN_COMMAND_PALETTE =
+  'click_issues_i_created_in_command_palette';
+export const EVENT_CLICK_MERGE_REQUESTS_ASSIGNED_TO_ME_IN_COMMAND_PALETTE =
+  'click_merge_requests_assigned_to_me_in_command_palette';
+export const EVENT_CLICK_MERGE_REQUESTS_THAT_IM_A_REVIEWER_IN_COMMAND_PALETTE =
+  'click_merge_requests_that_im_a_reviewer_in_command_palette';
+export const EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE =
+  'click_merge_requests_i_created_in_command_palette';

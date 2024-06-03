@@ -18,6 +18,7 @@ module Users
 
     def execute
       return unless user
+      return if user.last_activity_on == Date.today
 
       ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes { record_activity }
     end
@@ -29,15 +30,12 @@ module Users
     def record_activity
       return if Gitlab::Database.read_only?
 
-      today = Date.today
-      return if user.last_activity_on == today
-
       lease = Gitlab::ExclusiveLease.new("activity_service:#{user.id}", timeout: LEASE_TIMEOUT)
       # Skip transaction checks for exclusive lease as it is breaking system specs.
       # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441536
       return unless Gitlab::ExclusiveLease.skipping_transaction_check { lease.try_obtain }
 
-      user.update_attribute(:last_activity_on, today)
+      user.update_attribute(:last_activity_on, Date.today)
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event('unique_active_user', values: user.id)
 

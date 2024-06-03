@@ -23933,12 +23933,6 @@ msgstr ""
 msgid "GlobalSearch|Commands %{link1Start}⌘%{link1End} %{link2Start}k%{link2End}"
 msgstr ""
 
-msgid "GlobalSearch|Create in %{namespace} %{kbdStart}↵%{kbdEnd}"
-msgstr ""
-
-msgid "GlobalSearch|Explore"
-msgstr ""
-
 msgid "GlobalSearch|Fetching aggregations error."
 msgstr ""
 
@@ -24005,9 +23999,6 @@ msgstr ""
 msgid "GlobalSearch|List of filtered labels."
 msgstr ""
 
-msgid "GlobalSearch|Merge Requests"
-msgstr ""
-
 msgid "GlobalSearch|Merge requests I've created"
 msgstr ""
 
@@ -24033,12 +24024,6 @@ msgid "GlobalSearch|Pages or actions"
 msgstr ""
 
 msgid "GlobalSearch|Places"
-msgstr ""
-
-msgid "GlobalSearch|Preferences"
-msgstr ""
-
-msgid "GlobalSearch|Profile"
 msgstr ""
 
 msgid "GlobalSearch|Project"
@@ -24138,9 +24123,6 @@ msgid "GlobalSearch|View syntax options."
 msgstr ""
 
 msgid "GlobalSearch|What are you searching for?"
-msgstr ""
-
-msgid "GlobalSearch|Your work"
 msgstr ""
 
 msgid "GlobalSearch|all GitLab"

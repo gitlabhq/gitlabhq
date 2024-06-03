@@ -126,7 +126,7 @@ module Banzai
     end
 
     def self.render_result(text, context = {})
-      instrument_filters(context) do
+      instrument_filters do
         text = Pipeline[:pre_process].to_html(text, context) if text
         Pipeline[context[:pipeline]].call(text, context)
       end
@@ -191,28 +191,22 @@ module Banzai
     # Example usage:
     #   Banzai.render(markdown, project: nil, debug_timing: true)
     #   Banzai.render(markdown, project: Project.first, debug: true)
-    def self.instrument_filters(context)
-      if context[:debug] || context[:debug_timing]
-        service = ActiveSupport::Notifications
-        HTML::Pipeline.default_instrumentation_service = service
+    def self.instrument_filters
+      service = ActiveSupport::Notifications
+      HTML::Pipeline.default_instrumentation_service = service
 
-        service.monotonic_subscribe(HTML_PIPELINE_SUBSCRIPTION) do |_event, start, ending, _transaction_id, payload|
-          duration = ending - start
+      service.monotonic_subscribe(HTML_PIPELINE_SUBSCRIPTION) do |_event, start, ending, _transaction_id, payload|
+        duration = ending - start
+        payload[:result][:pipeline_timing] = payload[:result][:pipeline_timing].to_f + duration
 
-          duration_color = if duration < 1
-                             :green
-                           elsif duration > 1 && duration < 2
-                             :orange
-                           else
-                             :red
-                           end
-
-          duration_str = Rainbow.new.wrap(format('%10f_s', duration)).color(duration_color)
+        if payload[:context][:debug] || payload[:context][:debug_timing]
+          duration_str = formatted_duration(duration)
+          pipeline_timing_str = formatted_duration(payload[:result][:pipeline_timing])
           filter_name = payload[:filter].delete_prefix('Banzai::Filter::')
           pipeline_name = payload[:pipeline].delete_prefix('Banzai::Pipeline::')
-          logger = Logger.new($stdout)
 
-          logger.debug "#{duration_str} : #{filter_name} [#{pipeline_name}]"
+          logger = Logger.new($stdout)
+          logger.debug "#{duration_str} (#{pipeline_timing_str}): #{filter_name} [#{pipeline_name}]"
 
           if payload[:context][:debug]
             logger.debug(payload)
@@ -223,6 +217,21 @@ module Banzai
       yield
     ensure
       service.unsubscribe(HTML_PIPELINE_SUBSCRIPTION) if service
+    end
+
+    def self.formatted_duration(duration)
+      color = color_for_duration(duration)
+      Rainbow.new.wrap(format('%5f_s', duration)).color(color)
+    end
+
+    def self.color_for_duration(duration, min: 1, max: 2)
+      if duration < min
+        :green
+      elsif duration >= min && duration < max
+        :orange
+      else
+        :red
+      end
     end
   end
 end

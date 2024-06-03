@@ -27,7 +27,7 @@ RSpec.shared_examples 'issuable participants endpoint' do
     # Make sure other issues don't exist with a matching id or iid to avoid flakyness
     max_id = [entity.class.maximum(:iid), entity.class.maximum(:id)].max + 10
     new_entity = entity.dup.tap { |e| e.id = max_id }
-    entity.destroy!
+    entity.class.where(id: entity.id).delete_all
     new_entity.save!
 
     # make sure it does work with iid

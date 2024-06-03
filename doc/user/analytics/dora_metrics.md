@@ -161,7 +161,17 @@ This feature supports only project-level propagation.
 To do this, in the Rails console run the following command:
 
 ```ruby
+my_project = Project.find_by_full_path('group/subgroup/project')
 Dora::Configuration.create!(project: my_project, branches_for_lead_time_for_changes: ['master', 'main'])
+```
+
+To update an existing configuration, run the following command:
+
+```ruby
+my_project = Project.find_by_full_path('group/subgroup/project')
+record = Dora::Configuration.where(project: my_project).first
+record.branches_for_lead_time_for_changes = ['development', 'staging', 'master', 'main']
+record.save!
 ```
 
 ## Retrieve DORA metrics data

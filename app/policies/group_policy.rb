@@ -259,6 +259,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :maintainer_access
     enable :read_upload
     enable :destroy_upload
+    enable :admin_push_rules
   end
 
   rule { owner }.policy do

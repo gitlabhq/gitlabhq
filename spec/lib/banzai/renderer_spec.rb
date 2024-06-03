@@ -151,26 +151,48 @@ RSpec.describe Banzai::Renderer, feature_category: :team_planning do
     end
   end
 
-  describe 'debug instrumentation in render_result' do
-    it 'enables debug instrumentation' do
+  describe 'instrumentation in render_result' do
+    it 'calculates pipeline timing' do
       expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
-      expect(ActiveSupport::Notifications).to receive(:unsubscribe)
+                                                                           .and_call_original.at_least(:once)
+      expect(ActiveSupport::Notifications).to receive(:unsubscribe).and_call_original.at_least(:once)
+      expect(Rainbow).not_to receive(:new)
 
-      renderer.render_result('test', project: nil, debug: true)
+      result = renderer.render_result('test', pipeline: :plain_markdown, project: nil)
+
+      expect(result[:pipeline_timing]).not_to be_nil
     end
 
-    it 'enables debug_timing instrumentation' do
+    it 'enables debug output' do
       expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
-      expect(ActiveSupport::Notifications).to receive(:unsubscribe)
+                                                                           .and_call_original.at_least(:once)
+      expect(ActiveSupport::Notifications).to receive(:unsubscribe).and_call_original.at_least(:once)
+      expect(Rainbow).to receive(:new).and_call_original.at_least(:once)
+      expect(described_class).to receive(:color_for_duration).and_call_original.at_least(:twice)
 
-      renderer.render_result('test', project: nil, debug_timing: true)
+      renderer.render_result('test', pipeline: :plain_markdown, project: nil, debug: true)
     end
 
-    it 'does not enable debug_timing instrumentation by default' do
-      expect(ActiveSupport::Notifications).not_to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
-      expect(ActiveSupport::Notifications).not_to receive(:unsubscribe)
+    it 'enables debug_timing output' do
+      expect(ActiveSupport::Notifications).to receive(:monotonic_subscribe).with('call_filter.html_pipeline')
+                                                                           .and_call_original.at_least(:once)
+      expect(ActiveSupport::Notifications).to receive(:unsubscribe).and_call_original.at_least(:once)
+      expect(Rainbow).to receive(:new).and_call_original.at_least(:once)
+      expect(described_class).to receive(:color_for_duration).and_call_original.at_least(:twice)
 
-      renderer.render_result('test', project: nil)
+      renderer.render_result('test', pipeline: :plain_markdown, project: nil, debug_timing: true)
+    end
+
+    it 'generates a color for the duration' do
+      expect(described_class.color_for_duration(0.5)).to eq :green
+      expect(described_class.color_for_duration(1.5)).to eq :orange
+      expect(described_class.color_for_duration(2.5)).to eq :red
+    end
+
+    it 'formats duration' do
+      expect(described_class.formatted_duration(0.5)).to eq '0.500000_s'
+      expect(described_class.formatted_duration(1.5)).to eq '1.500000_s'
+      expect(described_class.formatted_duration(2.5)).to eq '2.500000_s'
     end
   end
 end

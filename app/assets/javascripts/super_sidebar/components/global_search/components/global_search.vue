@@ -1,11 +1,21 @@
 <script>
-import { GlSearchBoxByType, GlOutsideDirective as Outside, GlModal } from '@gitlab/ui';
+import { GlSearchBoxByType, GlModal } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { debounce } from 'lodash';
+import { InternalEvents } from '~/tracking';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { sprintf } from '~/locale';
+import {
+  ARROW_DOWN_KEY,
+  ARROW_UP_KEY,
+  END_KEY,
+  HOME_KEY,
+  ESC_KEY,
+  NUMPAD_ENTER_KEY,
+  ENTER_KEY,
+} from '~/lib/utils/keys';
 import {
   COMMAND_PALETTE,
   MIN_SEARCH_TERM,
@@ -19,21 +29,46 @@ import modalKeyboardNavigationMixin from '~/vue_shared/mixins/modal_keyboard_nav
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
 import {
+  EVENT_PRESS_ENTER_TO_ADVANCED_SEARCH,
+  EVENT_PRESS_ESCAPE_IN_COMMAND_PALETTE,
+  EVENT_CLICK_OUTSIDE_OF_COMMAND_PALETTE,
+  EVENT_PRESS_GREATER_THAN_IN_COMMAND_PALETTE,
+  EVENT_PRESS_AT_SYMBOL_IN_COMMAND_PALETTE,
+  EVENT_PRESS_COLON_IN_COMMAND_PALETTE,
+  EVENT_PRESS_FORWARD_SLASH_IN_COMMAND_PALETTE,
+  LABEL_COMMAND_PALETTE,
+} from '~/super_sidebar/tracking_constants';
+import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
   SEARCH_MODAL_ID,
   KEY_K,
+  SEARCH_INPUT_SELECTOR,
+  SEARCH_RESULTS_ITEM_SELECTOR,
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
-import { COMMON_HANDLES, SEARCH_OR_COMMAND_MODE_PLACEHOLDER } from '../command_palette/constants';
+import {
+  COMMON_HANDLES,
+  SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
+  COMMAND_HANDLE,
+  USER_HANDLE,
+  PROJECT_HANDLE,
+  ISSUE_HANDLE,
+  PATH_HANDLE,
+  MODAL_CLOSE_ESC,
+  MODAL_CLOSE_BACKGROUND,
+  MODAL_CLOSE_HEADERCLOSE,
+} from '../command_palette/constants';
 import CommandPaletteLottery from '../command_palette/command_palette_lottery.vue';
 import CommandsOverviewDropdown from '../command_palette/command_overview_dropdown.vue';
 import { commandPaletteDropdownItems } from '../utils';
 import GlobalSearchAutocompleteItems from './global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from './global_search_default_items.vue';
 import GlobalSearchScopedItems from './global_search_scoped_items.vue';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'GlobalSearchModal',
@@ -49,7 +84,6 @@ export default {
     COMMAND_PALETTE_TIP,
     COMMON_HANDLES,
   },
-  directives: { Outside },
   components: {
     GlSearchBoxByType,
     GlobalSearchDefaultItems,
@@ -62,7 +96,7 @@ export default {
     ScrollScrim,
     CommandsOverviewDropdown,
   },
-  mixins: [modalKeyboardNavigationMixin],
+  mixins: [trackingMixin, modalKeyboardNavigationMixin],
   data() {
     return {
       nextFocusedItemIndex: null,
@@ -144,6 +178,63 @@ export default {
         this.fetchAutocompleteOptions();
       }
     }, DEFAULT_DEBOUNCE_AND_THROTTLE_MS),
+    getFocusableOptions() {
+      return Array.from(
+        this.$refs.resultsList?.querySelectorAll(SEARCH_RESULTS_ITEM_SELECTOR) || [],
+      );
+    },
+    handleSubmitSearch(event) {
+      this.submitSearch();
+      this.trackEvent(EVENT_PRESS_ENTER_TO_ADVANCED_SEARCH, { label: LABEL_COMMAND_PALETTE });
+      event.stopPropagation();
+      event.preventDefault();
+    },
+    onKeydown(event) {
+      const { code, target } = event;
+
+      let stop = true;
+
+      if (code === ENTER_KEY) {
+        this.handleSubmitSearch(event);
+        return;
+      }
+
+      const elements = this.getFocusableOptions();
+
+      if (elements.length < 1) return;
+
+      const isSearchInput = target?.matches(SEARCH_INPUT_SELECTOR);
+
+      if (code === HOME_KEY) {
+        if (isSearchInput) return;
+
+        this.focusItem(0, elements);
+      } else if (code === END_KEY) {
+        if (isSearchInput) return;
+
+        this.focusItem(elements.length - 1, elements);
+      } else if (code === ARROW_UP_KEY) {
+        if (isSearchInput) return;
+
+        if (elements.indexOf(target) === 0) {
+          this.focusSearchInput();
+        } else {
+          this.focusNextItem(event, elements, -1);
+        }
+      } else if (code === ARROW_DOWN_KEY) {
+        this.focusNextItem(event, elements, 1);
+      } else if (code === ESC_KEY) {
+        this.$refs.searchModal.close();
+      } else if (code === NUMPAD_ENTER_KEY) {
+        event.target?.firstChild.click();
+      } else {
+        stop = false;
+      }
+
+      if (stop) {
+        event.preventDefault();
+      }
+    },
     onKeyComboDown(event) {
       const { code, metaKey } = event;
 
@@ -174,11 +265,28 @@ export default {
 
       window.addEventListener('keydown', this.onKeyComboDown);
     },
-    onSearchModalHidden() {
+    onSearchModalHidden({ trigger } = {}) {
       this.searchText = '';
       this.$emit('hidden');
 
       window.removeEventListener('keydown', this.onKeyComboDown);
+
+      switch (trigger) {
+        case this.$options.MODAL_CLOSE_ESC:
+        case this.$options.MODAL_CLOSE_HEADERCLOSE: {
+          // when esc is pressed with focus
+          // in the input field modal issues headerclose
+          this.trackEvent(EVENT_PRESS_ESCAPE_IN_COMMAND_PALETTE);
+          break;
+        }
+        case this.$options.MODAL_CLOSE_BACKGROUND: {
+          this.trackEvent(EVENT_CLICK_OUTSIDE_OF_COMMAND_PALETTE);
+          break;
+        }
+        default: {
+          /* empty */
+        }
+      }
     },
     highlightFirstCommand() {
       if (this.isCommandMode) {
@@ -195,6 +303,28 @@ export default {
         : `${selected}${this.searchText}`;
 
       this.focusSearchInput();
+
+      switch (selected) {
+        case this.$options.COMMAND_HANDLE: {
+          this.trackEvent(EVENT_PRESS_GREATER_THAN_IN_COMMAND_PALETTE);
+          break;
+        }
+        case this.$options.USER_HANDLE: {
+          this.trackEvent(EVENT_PRESS_AT_SYMBOL_IN_COMMAND_PALETTE);
+          break;
+        }
+        case this.$options.PROJECT_HANDLE: {
+          this.trackEvent(EVENT_PRESS_COLON_IN_COMMAND_PALETTE);
+          break;
+        }
+        case this.$options.PATH_HANDLE: {
+          this.trackEvent(EVENT_PRESS_FORWARD_SLASH_IN_COMMAND_PALETTE);
+          break;
+        }
+        default: {
+          /* empty */
+        }
+      }
     },
     stringHasCommand(string) {
       const isHandle = (handle) => handle === string?.trim().charAt(0);
@@ -210,6 +340,14 @@ export default {
   },
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
+  COMMAND_HANDLE,
+  USER_HANDLE,
+  PROJECT_HANDLE,
+  ISSUE_HANDLE,
+  PATH_HANDLE,
+  MODAL_CLOSE_ESC,
+  MODAL_CLOSE_BACKGROUND,
+  MODAL_CLOSE_HEADERCLOSE,
 };
 </script>
 
@@ -244,7 +382,6 @@ export default {
           :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
           borderless
           @input="getAutocompleteOptions"
-          @keydown.enter.stop.prevent="submitSearch"
           @keydown="onKeydown"
         />
         <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">

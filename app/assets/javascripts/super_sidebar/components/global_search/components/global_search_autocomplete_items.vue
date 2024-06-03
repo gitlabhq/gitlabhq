@@ -17,8 +17,8 @@ import {
   OVERLAY_FILE,
   USERS_GROUP_TITLE,
   PROJECTS_GROUP_TITLE,
-  PAGES_GROUP_TITLE,
   ISSUES_GROUP_TITLE,
+  PAGES_GROUP_TITLE,
 } from '../command_palette/constants';
 import SearchResultHoverLayover from './global_search_hover_overlay.vue';
 import GlobalSearchNoResults from './global_search_no_results.vue';
@@ -36,8 +36,8 @@ export default {
     OVERLAY_FILE,
     USERS_GROUP_TITLE,
     PROJECTS_GROUP_TITLE,
-    PAGES_GROUP_TITLE,
     ISSUES_GROUP_TITLE,
+    PAGES_GROUP_TITLE,
   },
   components: {
     GlAvatar,

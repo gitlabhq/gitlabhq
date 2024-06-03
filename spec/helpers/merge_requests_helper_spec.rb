@@ -362,4 +362,21 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       expect(subject).to eq(expected_data)
     end
   end
+
+  describe '#identity_verification_alert_data' do
+    let_it_be(:current_user) { build_stubbed(:user) }
+    let(:merge_request) { build_stubbed(:merge_request, author: current_user) }
+
+    subject { helper.identity_verification_alert_data(merge_request) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    it 'returns the correct data' do
+      expected_data = { identity_verification_required: 'false' }
+
+      expect(subject).to include(expected_data)
+    end
+  end
 end

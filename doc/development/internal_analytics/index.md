@@ -65,6 +65,9 @@ It can either be accessed directly via SQL in Snowflake for [ad-hoc analyses](ht
 [Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/), which has access to Snowflake.
 Both platforms need an access request ([Snowflake](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/#warehouse-access), [Tableau](https://handbook.gitlab.com/handbook/business-technology/data-team/platform/tableau/#tableau-online-access)).
 
+NOTE:
+To track user interactions in the browser, Do-Not-Track (“DNT”) needs to be disabled. DNT is disabled by default for most browsers.
+
 ### Tableau
 
 Tableau is a data visualization platform and allows building dashboards and GUI based discovery of events and metrics.

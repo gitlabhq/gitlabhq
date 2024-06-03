@@ -11,6 +11,10 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
+Prerequisites:
+
+- You must have the [GitLab Enterprise Edition](../../administration/license.md).
+
 When you deploy a self-hosted large language model (LLM), you can:
 
 - Manage the end-to-end transmission of requests to enterprise-hosted LLM backends for GitLab Duo features.

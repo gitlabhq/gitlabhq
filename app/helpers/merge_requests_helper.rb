@@ -258,6 +258,10 @@ module MergeRequestsHelper
     }
   end
 
+  def identity_verification_alert_data(_)
+    { identity_verification_required: 'false' }
+  end
+
   private
 
   def review_requested_merge_requests_count

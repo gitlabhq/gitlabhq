@@ -66,6 +66,7 @@ RSpec.shared_context 'GroupPolicy context' do
       admin_achievement
       award_achievement
       read_group_runners
+      admin_push_rules
     ]
   end
 

@@ -7,12 +7,12 @@ import GlobalSearchDefaultIssuables from '~/super_sidebar/components/global_sear
 import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
-  ISSUES_ASSIGNED_TO_ME_TITLE,
-  ISSUES_I_HAVE_CREATED_TITLE,
-  MERGE_REQUESTS_THAT_I_AM_A_REVIEWER,
-  MERGE_REQUESTS_I_HAVE_CREATED_TITLE,
-  MERGE_REQUESTS_ASSIGNED_TO_ME_TITLE,
-} from '~/super_sidebar/components/global_search/command_palette/constants';
+  EVENT_CLICK_ISSUES_ASSIGNED_TO_ME_IN_COMMAND_PALETTE,
+  EVENT_CLICK_ISSUES_I_CREATED_IN_COMMAND_PALETTE,
+  EVENT_CLICK_MERGE_REQUESTS_ASSIGNED_TO_ME_IN_COMMAND_PALETTE,
+  EVENT_CLICK_MERGE_REQUESTS_THAT_IM_A_REVIEWER_IN_COMMAND_PALETTE,
+  EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE,
+} from '~/super_sidebar/components/global_search/tracking_constants';
 import {
   MOCK_SEARCH_CONTEXT,
   MOCK_PROJECT_SEARCH_CONTEXT,
@@ -178,16 +178,15 @@ describe('GlobalSearchDefaultPlaces', () => {
     const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     it.each`
-      eventTrigger                           | event
-      ${ISSUES_ASSIGNED_TO_ME_TITLE}         | ${'click_issues_assigned_to_me_in_command_palette'}
-      ${ISSUES_I_HAVE_CREATED_TITLE}         | ${'click_issues_i_created_in_command_palette'}
-      ${MERGE_REQUESTS_ASSIGNED_TO_ME_TITLE} | ${'click_merge_requests_assigned_to_me_in_command_palette'}
-      ${MERGE_REQUESTS_THAT_I_AM_A_REVIEWER} | ${'click_merge_requests_that_im_a_reviewer_in_command_palette'}
-      ${MERGE_REQUESTS_I_HAVE_CREATED_TITLE} | ${'click_merge_requests_i_created_in_command_palette'}
+      eventTrigger                            | event
+      ${'Issues assigned to me'}              | ${EVENT_CLICK_ISSUES_ASSIGNED_TO_ME_IN_COMMAND_PALETTE}
+      ${"Issues I've created"}                | ${EVENT_CLICK_ISSUES_I_CREATED_IN_COMMAND_PALETTE}
+      ${'Merge requests assigned to me'}      | ${EVENT_CLICK_MERGE_REQUESTS_ASSIGNED_TO_ME_IN_COMMAND_PALETTE}
+      ${"Merge requests that I'm a reviewer"} | ${EVENT_CLICK_MERGE_REQUESTS_THAT_IM_A_REVIEWER_IN_COMMAND_PALETTE}
+      ${"Merge requests I've created"}        | ${EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE}
     `('triggers and tracks command dropdown $event', ({ eventTrigger, event }) => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
       findGroup().vm.$emit('action', { text: eventTrigger });
-
       expect(trackEventSpy).toHaveBeenCalledWith(event, {}, undefined);
     });
   });

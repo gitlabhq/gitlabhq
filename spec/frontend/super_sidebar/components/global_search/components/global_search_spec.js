@@ -12,9 +12,17 @@ import FakeSearchInput from '~/super_sidebar/components/global_search/command_pa
 import CommandPaletteItems from '~/super_sidebar/components/global_search/command_palette/command_palette_items.vue';
 import CommandsOverviewDropdown from '~/super_sidebar/components/global_search/command_palette/command_overview_dropdown.vue';
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
   SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
   COMMON_HANDLES,
+  COMMAND_HANDLE,
+  USER_HANDLE,
+  PROJECT_HANDLE,
+  PATH_HANDLE,
+  MODAL_CLOSE_ESC,
+  MODAL_CLOSE_BACKGROUND,
+  MODAL_CLOSE_HEADERCLOSE,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   SEARCH_INPUT_DESCRIPTION,
@@ -317,7 +325,7 @@ describe('GlobalSearchModal', () => {
         const submitSearch = () =>
           findGlobalSearchInput().vm.$emit(
             'keydown',
-            new KeyboardEvent('keydown', { key: ENTER_KEY }),
+            new KeyboardEvent('keydown', { code: ENTER_KEY }),
           );
 
         describe.each`
@@ -370,6 +378,7 @@ describe('GlobalSearchModal', () => {
 
           it('will submit a search with the sufficient number of characters', () => {
             createComponent();
+            findGlobalSearchInput().vm.$emit('input', MOCK_SEARCH);
             submitSearch();
             expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
           });
@@ -428,6 +437,69 @@ describe('GlobalSearchModal', () => {
         expect(wrapper.emitted('hidden')).toHaveLength(1);
         expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), '');
       });
+    });
+  });
+
+  describe('Track events', () => {
+    beforeEach(() => {
+      createComponent({
+        initialState: { search: '', commandChar: '' },
+        mockGetters: {
+          ...defaultMockGetters,
+          isCommandMode: () => Boolean(''),
+        },
+        stubs: {
+          GlModal,
+          GlSearchBoxByType,
+        },
+      });
+    });
+
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it.each`
+      dropdownEvent     | trackingEvent
+      ${COMMAND_HANDLE} | ${'press_greater_than_in_command_palette'}
+      ${USER_HANDLE}    | ${'press_at_symbol_in_command_palette'}
+      ${PROJECT_HANDLE} | ${'press_colon_in_command_palette'}
+      ${PATH_HANDLE}    | ${'press_forward_slash_in_command_palette'}
+    `('triggers and tracks command dropdown $dropdownEvent', ({ dropdownEvent, trackingEvent }) => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findCommandPaletteDropdown().vm.$emit('selected', dropdownEvent);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(trackingEvent, {}, undefined);
+    });
+
+    it.each`
+      modalEvent                 | trackingEvent
+      ${MODAL_CLOSE_ESC}         | ${'press_escape_in_command_palette'}
+      ${MODAL_CLOSE_BACKGROUND}  | ${'click_outside_of_command_palette'}
+      ${MODAL_CLOSE_HEADERCLOSE} | ${'press_escape_in_command_palette'}
+    `('triggers and tracks modal event $modalEvent', async ({ modalEvent, trackingEvent }) => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await findGlobalSearchModal().vm.$emit('hide', { trigger: modalEvent });
+
+      expect(trackEventSpy).toHaveBeenCalledWith(trackingEvent, {}, undefined);
+    });
+
+    it('triggers and tracks key event', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const event = {
+        code: ENTER_KEY,
+        target: '',
+        stopPropagation: jest.fn(),
+        preventDefault: jest.fn(),
+      };
+
+      findGlobalSearchInput().vm.$emit('keydown', event);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'press_enter_to_advanced_search',
+        { label: 'command_palette' },
+        undefined,
+      );
     });
   });
 

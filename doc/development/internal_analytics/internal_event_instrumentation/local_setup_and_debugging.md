@@ -6,6 +6,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Local setup and debugging
 
+NOTE:
+To track user interactions in the browser, Do-Not-Track (“DNT”) needs to be disabled. DNT is disabled by default for most browsers.
+
 Internal events are using a tool called Snowplow under the hood. To develop and test internal events, there are several tools related to Snowplow to test frontend and backend events:
 
 | Testing Tool                                 | Frontend Tracking  | Backend Tracking    | Local Development Environment | Production Environment | Production Environment |

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AddTextLimitOnRunnerName < Gitlab::Database::Migration[2.2]
-  milestone '17.0'
+  milestone '17.1'
 
   disable_ddl_transaction!
 

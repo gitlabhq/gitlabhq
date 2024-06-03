@@ -957,7 +957,7 @@ RSpec.describe API::Issues, feature_category: :team_planning do
       end
 
       context 'when user cannot see a confidential note' do
-        it 'returns a limited list of participants', :aggregate_failures, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/461933' do
+        it 'returns a limited list of participants', :aggregate_failures do
           get api("/projects/#{project.id}/issues/#{issue.iid}/participants", create(:user))
 
           expect(response).to have_gitlab_http_status(:ok)
