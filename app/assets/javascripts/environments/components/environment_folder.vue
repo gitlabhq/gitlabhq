@@ -66,7 +66,7 @@ export default {
       return this.folder?.[count] ?? 0;
     },
     folderClass() {
-      return { 'gl-font-weight-bold': this.visible };
+      return { 'gl-font-bold': this.visible };
     },
     folderPath() {
       return this.nestedEnvironment.latest.folderPath;

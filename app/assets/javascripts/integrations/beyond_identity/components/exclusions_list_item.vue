@@ -33,7 +33,7 @@ export default {
       fallback-on-error
     />
     <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
-      <span class="gl-font-weight-bold">{{ exclusion.name }}</span>
+      <span class="gl-font-bold">{{ exclusion.name }}</span>
     </span>
 
     <gl-button

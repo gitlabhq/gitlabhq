@@ -31,7 +31,7 @@ export default {
   <div class="gl-display-flex gl-flex-direction-column gl-gap-2 gl-text-left!">
     <gl-link
       :href="subject.webUrl"
-      class="gl-text-gray-900 gl-hover-text-gray-900 gl-font-weight-bold"
+      class="gl-text-gray-900 gl-hover-text-gray-900 gl-font-bold"
       data-testid="title-container"
     >
       {{ subject.title }}

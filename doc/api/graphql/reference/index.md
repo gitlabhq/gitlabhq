@@ -460,6 +460,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="querygroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
 | <a id="querygroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="querygroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 
@@ -910,7 +911,8 @@ Returns [`[CiRunnerUsageByProject!]`](#cirunnerusagebyproject).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryrunnerusagebyprojectfromdate"></a>`fromDate` | [`Date`](#date) | Start of the requested date frame. Defaults to the start of the previous calendar month. |
-| <a id="queryrunnerusagebyprojectprojectslimit"></a>`projectsLimit` | [`Int`](#int) | Maximum number of projects to return.Other projects will be aggregated to a `project: null` entry. Defaults to 5 if unspecified. Maximum of 500. |
+| <a id="queryrunnerusagebyprojectfullpath"></a>`fullPath` | [`String`](#string) | Filter jobs based on the full path of the group or project they belong to. For example, `gitlab-org` or `gitlab-org/gitlab`. Available only to admins, group maintainers (when a group is specified), or project maintainers (when a project is specified). Limited to runners from 5000 child projects. |
+| <a id="queryrunnerusagebyprojectprojectslimit"></a>`projectsLimit` | [`Int`](#int) | Maximum number of projects to return. Other projects will be aggregated to a `project: null` entry. Defaults to 5 if unspecified. Maximum of 500. |
 | <a id="queryrunnerusagebyprojectrunnertype"></a>`runnerType` | [`CiRunnerType`](#cirunnertype) | Filter jobs by the type of runner that executed them. |
 | <a id="queryrunnerusagebyprojecttodate"></a>`toDate` | [`Date`](#date) | End of the requested date frame. Defaults to the end of the previous calendar month. |
 
@@ -26191,6 +26193,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="organizationgroupsmarkedfordeletionon"></a>`markedForDeletionOn` | [`Date`](#date) | Date when the group was marked for deletion. |
 | <a id="organizationgroupssearch"></a>`search` | [`String`](#string) | Search query for group name or group full path. |
 | <a id="organizationgroupssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
 
@@ -35368,7 +35371,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumgke_cluster_integration"></a>`GKE_CLUSTER_INTEGRATION` | Callout feature name for gke_cluster_integration. |
 | <a id="usercalloutfeaturenameenumgold_trial_billings"></a>`GOLD_TRIAL_BILLINGS` | Callout feature name for gold_trial_billings. |
 | <a id="usercalloutfeaturenameenumjoining_a_project_alert"></a>`JOINING_A_PROJECT_ALERT` | Callout feature name for joining_a_project_alert. |
-| <a id="usercalloutfeaturenameenummerge_request_settings_moved_callout"></a>`MERGE_REQUEST_SETTINGS_MOVED_CALLOUT` | Callout feature name for merge_request_settings_moved_callout. |
 | <a id="usercalloutfeaturenameenummr_experience_survey"></a>`MR_EXPERIENCE_SURVEY` | Callout feature name for mr_experience_survey. |
 | <a id="usercalloutfeaturenameenumnamespace_over_storage_users_combined_alert"></a>`NAMESPACE_OVER_STORAGE_USERS_COMBINED_ALERT` | Callout feature name for namespace_over_storage_users_combined_alert. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_alert_alert_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_ALERT_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_alert_threshold. |

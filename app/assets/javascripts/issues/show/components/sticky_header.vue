@@ -99,7 +99,7 @@ export default {
           <imported-badge v-if="isImported" :importable-type="issuableType" />
 
           <gl-link
-            class="gl-font-weight-bold gl-text-black-normal gl-text-truncate"
+            class="gl-font-bold gl-text-black-normal gl-text-truncate"
             href="#top"
             :title="title"
           >

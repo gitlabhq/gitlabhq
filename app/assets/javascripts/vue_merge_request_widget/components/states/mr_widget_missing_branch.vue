@@ -64,7 +64,7 @@ export default {
 
     <div class="media-body space-children">
       <span class="js-branch-text" data-testid="widget-content">
-        <span class="gl-font-weight-bold">
+        <span class="gl-font-bold">
           <gl-sprintf :message="warning">
             <template #code="{ content }">
               <code>{{ content }}</code>

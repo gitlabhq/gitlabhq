@@ -36,7 +36,7 @@ exports[`Design management list item component with notes renders item with mult
       data-testid="design-file-name"
     >
       <span
-        class="gl-font-weight-semibold str-truncated-100"
+        class="gl-font-semibold str-truncated-100"
         data-testid="design-img-filename-1"
         title="test"
       >
@@ -101,7 +101,7 @@ exports[`Design management list item component with notes renders item with sing
       data-testid="design-file-name"
     >
       <span
-        class="gl-font-weight-semibold str-truncated-100"
+        class="gl-font-semibold str-truncated-100"
         data-testid="design-img-filename-1"
         title="test"
       >

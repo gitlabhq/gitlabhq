@@ -104,7 +104,7 @@ export default {
           @change="onChange"
         />
 
-        <p class="gl-font-weight-bold gl-mb-0">{{ title }}</p>
+        <p class="gl-font-bold gl-mb-0">{{ title }}</p>
       </div>
 
       <gl-button

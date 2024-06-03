@@ -40,7 +40,7 @@ exports[`Alert integration settings form default state should match the default 
           target="_blank"
         >
           <span
-            class="gl-font-weight-normal gl-pl-2"
+            class="gl-font-normal gl-pl-2"
           >
             Learn more.
           </span>

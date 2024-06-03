@@ -116,7 +116,7 @@ export default {
         </template>
         <template #author>
           <gl-avatar-link
-            class="js-user-link gl-text-body gl-font-weight-bold"
+            class="js-user-link gl-text-body gl-font-bold"
             :title="author.name"
             :data-user-id="authorId"
             :href="author.webUrl"

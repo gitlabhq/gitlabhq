@@ -64,6 +64,14 @@ export const autocompleteDataSources = ({ fullPath, iid, isGroup = false }) => (
   labels: autocompleteSourcesPath({ autocompleteType: 'labels', fullPath, iid, isGroup }),
   members: autocompleteSourcesPath({ autocompleteType: 'members', fullPath, iid, isGroup }),
   commands: autocompleteSourcesPath({ autocompleteType: 'commands', fullPath, iid, isGroup }),
+  issues: autocompleteSourcesPath({ autocompleteType: 'issues', fullPath, iid, isGroup }),
+  mergeRequests: autocompleteSourcesPath({
+    autocompleteType: 'merge_requests',
+    fullPath,
+    iid,
+    isGroup,
+  }),
+  epics: autocompleteSourcesPath({ autocompleteType: 'epics', fullPath, iid, isGroup }),
 });
 
 export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {

@@ -120,7 +120,7 @@ export default {
         <div class="gl-display-flex gl-align-items-center gl-mb-2">
           <gl-avatar :size="32" :src="reporter && reporter.avatarUrl" />
           <div class="gl-display-flex gl-flex-wrap">
-            <span class="gl-ml-3 gl-font-weight-bold">
+            <span class="gl-ml-3 gl-font-bold">
               {{ reporterName }}
             </span>
             <gl-link v-if="reporter" :href="reporter.path" class="gl-ml-3">

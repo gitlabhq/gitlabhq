@@ -132,7 +132,7 @@ export default {
       }}</gl-alert>
     </template>
     <template #list-item="{ item }">
-      <div class="gl-font-weight-bold">
+      <div class="gl-font-bold">
         {{ item.full_name }}
       </div>
       <div class="gl-text-gray-300">{{ item.full_path }}</div>

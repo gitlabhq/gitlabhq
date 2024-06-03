@@ -52,7 +52,7 @@ export default {
         fallback-on-error
       />
       <span class="gl-display-flex gl-flex-direction-column">
-        <span class="gl-font-weight-bold">{{ fullName }}</span>
+        <span class="gl-font-bold">{{ fullName }}</span>
         <span class="gl-text-gray-600">@{{ name }}</span>
       </span>
     </div>

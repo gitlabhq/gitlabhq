@@ -293,7 +293,7 @@ export default {
           :data-user-id="authorId"
           :data-username="author.username"
         >
-          <span class="note-header-author-name gl-font-weight-bold">{{ author.name }}</span>
+          <span class="note-header-author-name gl-font-bold">{{ author.name }}</span>
           <span v-if="author.status_tooltip_html" v-safe-html="author.status_tooltip_html"></span>
           <span class="note-headline-light">@{{ author.username }}</span>
         </gl-link>

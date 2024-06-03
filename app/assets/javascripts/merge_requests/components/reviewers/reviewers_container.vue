@@ -69,7 +69,7 @@ export default {
         <div class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-w-20"></div>
         <div class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-w-2 gl-ml-auto"></div>
       </template>
-      <div v-else class="gl-leading-20 gl-text-gray-900 gl-font-weight-bold">
+      <div v-else class="gl-leading-20 gl-text-gray-900 gl-font-bold">
         {{ reviewersTitle }}
       </div>
     </div>
@@ -86,7 +86,7 @@ export default {
     />
     <gl-empty-state v-else :svg-path="$options.noReviewersAssignedSvg" :svg-height="70">
       <template #description>
-        <p class="gl-font-weight-normal gl-mb-3">{{ __('No reviewers assigned') }}</p>
+        <p class="gl-font-normal gl-mb-3">{{ __('No reviewers assigned') }}</p>
         <update-reviewers
           v-if="userPermissions.adminMergeRequest"
           :selected-reviewers="currentUser"

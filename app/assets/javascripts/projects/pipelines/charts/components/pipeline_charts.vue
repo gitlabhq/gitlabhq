@@ -344,7 +344,7 @@ export default {
           <gl-chart-series-label class="gl-font-sm gl-mr-7" :color="color">
             {{ name }}
           </gl-chart-series-label>
-          <div class="gl-font-weight-bold">{{ value }}</div>
+          <div class="gl-font-bold">{{ value }}</div>
         </div>
       </template>
     </ci-cd-analytics-charts>

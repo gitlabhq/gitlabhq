@@ -216,7 +216,7 @@ export default {
       class="gl-display-flex gl-flex-direction-column"
     >
       <div v-if="report.length" class="gl-display-flex gl-gap-2 gl-border-t gl-py-4">
-        <span class="gl-font-weight-bold">{{ $options.i18n.totalTimeSpentText }}</span>
+        <span class="gl-font-bold">{{ $options.i18n.totalTimeSpentText }}</span>
         <span data-testid="total-time-spent-container">{{ formattedTotalSpentTime }}</span>
       </div>
 

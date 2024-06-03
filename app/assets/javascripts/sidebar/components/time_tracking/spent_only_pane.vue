@@ -23,7 +23,7 @@ export default {
   <div data-testid="spentOnlyPane">
     <gl-sprintf :message="$options.timeSpent">
       <template #spent="{ content }">
-        <span class="gl-font-weight-bold">{{ content }}</span
+        <span class="gl-font-bold">{{ content }}</span
         >{{ timeSpentHumanReadable }}
       </template>
     </gl-sprintf>

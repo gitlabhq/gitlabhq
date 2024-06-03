@@ -213,7 +213,7 @@ export default {
           :placeholder="inputPlaceholder"
           :aria-label="inputPlaceholder"
           type="text"
-          class="gl-w-full gl-border-none gl-outline-0"
+          class="gl-w-full gl-border-none gl-outline-none"
           data-testid="add-issue-field"
           autocomplete="off"
           @input="onInput"

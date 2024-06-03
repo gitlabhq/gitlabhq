@@ -12,18 +12,26 @@ describe('autocompleteDataSources', () => {
   });
 
   it('returns correct data sources', () => {
-    expect(autocompleteDataSources({ fullPath: 'project/group', iid: '2' })).toMatchObject({
+    expect(autocompleteDataSources({ fullPath: 'project/group', iid: '2' })).toEqual({
       commands: '/foobar/project/group/-/autocomplete_sources/commands?type=WorkItem&type_id=2',
       labels: '/foobar/project/group/-/autocomplete_sources/labels?type=WorkItem&type_id=2',
       members: '/foobar/project/group/-/autocomplete_sources/members?type=WorkItem&type_id=2',
+      issues: '/foobar/project/group/-/autocomplete_sources/issues?type=WorkItem&type_id=2',
+      mergeRequests:
+        '/foobar/project/group/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=2',
+      epics: '/foobar/project/group/-/autocomplete_sources/epics?type=WorkItem&type_id=2',
     });
   });
 
   it('returns correct data sources with group context', () => {
-    expect(autocompleteDataSources({ fullPath: 'group', iid: '2', isGroup: true })).toMatchObject({
+    expect(autocompleteDataSources({ fullPath: 'group', iid: '2', isGroup: true })).toEqual({
       commands: '/foobar/groups/group/-/autocomplete_sources/commands?type=WorkItem&type_id=2',
       labels: '/foobar/groups/group/-/autocomplete_sources/labels?type=WorkItem&type_id=2',
       members: '/foobar/groups/group/-/autocomplete_sources/members?type=WorkItem&type_id=2',
+      issues: '/foobar/groups/group/-/autocomplete_sources/issues?type=WorkItem&type_id=2',
+      mergeRequests:
+        '/foobar/groups/group/-/autocomplete_sources/merge_requests?type=WorkItem&type_id=2',
+      epics: '/foobar/groups/group/-/autocomplete_sources/epics?type=WorkItem&type_id=2',
     });
   });
 });

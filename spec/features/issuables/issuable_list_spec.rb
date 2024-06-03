@@ -31,7 +31,7 @@ RSpec.describe 'issuable list', :js, feature_category: :team_planning do
       expect(first('[data-testid="issuable-comments"]')).to have_content(2)
     end
 
-    it 'sorts labels alphabetically' do
+    it 'sorts labels alphabetically', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446203' do
       label1 = create(:label, project: project, title: 'a')
       label2 = create(:label, project: project, title: 'z')
       label3 = create(:label, project: project, title: 'x')

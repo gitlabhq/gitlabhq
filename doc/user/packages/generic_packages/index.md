@@ -59,13 +59,13 @@ Provide the file context in the request body.
 Example request using a personal access token:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 
 <!-- Or with a full path file -->
 
-curl --user "user:<your_access_token>" \
+curl --fail-with-body --user "user:<your_access_token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/path/to/file.txt"
 ```
@@ -81,7 +81,7 @@ Example response without attribute `select`:
 Example request with attribute `select = package_file`:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
      --user "<username>:<Project Access Token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?select=package_file"
@@ -176,11 +176,11 @@ Example request that uses a personal access token:
 
 ```shell
 # Header authentication
-curl --output file.txt --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --fail-with-body --output file.txt --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 
 # Basic authentication
-curl --output file.txt --user "user:<your_access_token>" \
+curl --fail-with-body --output file.txt --user "user:<your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 ```
 
@@ -190,11 +190,11 @@ Example request that uses a `CI_JOB_TOKEN`:
 
 ```shell
 # Header authentication
-curl --output file.txt --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+curl --fail-with-body --output file.txt --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 
 # Basic authentication
-curl --output file.txt --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
+curl --fail-with-body --output file.txt --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 ```
 
@@ -217,7 +217,7 @@ stages:
 upload:
   stage: upload
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file path/to/file.txt "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt"'
+    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file path/to/file.txt "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt"'
 
 download:
   stage: download

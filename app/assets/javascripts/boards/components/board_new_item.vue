@@ -65,7 +65,7 @@ export default {
   <div class="board-new-issue-form gl-z-3 gl-m-3">
     <div class="board-card position-relative gl-p-5 rounded">
       <gl-form @submit.prevent="handleFormSubmit" @reset="handleFormCancel">
-        <label :for="inputFieldId" class="gl-font-weight-bold">{{ __('Title') }}</label>
+        <label :for="inputFieldId" class="gl-font-bold">{{ __('Title') }}</label>
         <gl-form-input
           :id="inputFieldId"
           v-model="title"

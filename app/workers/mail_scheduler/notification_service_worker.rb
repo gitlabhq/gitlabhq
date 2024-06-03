@@ -16,6 +16,8 @@ module MailScheduler
     loggable_arguments 0
 
     def perform(meth, *args)
+      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464670')
+
       check_arguments!(args)
 
       if NotificationService.permitted_actions.exclude?(meth.to_sym)

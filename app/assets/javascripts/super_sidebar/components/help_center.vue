@@ -234,7 +234,7 @@ export default {
     >
       <template #list-item="{ item }">
         <span class="gl-display-flex gl-flex-direction-column gl-leading-24">
-          <span class="gl-font-sm gl-font-weight-bold">
+          <span class="gl-font-sm gl-font-bold">
             {{ item.text }}
             <gl-emoji data-name="rocket" />
           </span>

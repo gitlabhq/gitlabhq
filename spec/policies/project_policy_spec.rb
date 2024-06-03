@@ -3780,6 +3780,69 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'build_push_code' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:policy) { :build_push_code }
+
+    where(:user_role, :project_visibility, :push_repository_for_job_token_allowed, :self_referential_project, :allowed) do
+      :maintainer | :public   | true  | true  | true
+      :owner      | :public   | true  | true  | true
+      :maintainer | :private  | true  | true  | true
+      :developer  | :public   | true  | true  | true
+      :reporter   | :public   | true  | true  | false
+      :guest      | :public   | true  | true  | false
+      :guest      | :private  | true  | true  | false
+      :guest      | :internal | true  | true  | false
+      :anonymous  | :public   | true  | true  | false
+      :maintainer | :public   | false | true  | false
+      :maintainer | :public   | true  | false | false
+      :maintainer | :public   | false | false | false
+    end
+
+    with_them do
+      let(:current_user) do
+        public_send(user_role)
+      end
+
+      let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
+      let(:project) { public_send("#{project_visibility}_project") }
+      let(:self_referential_job) { build_stubbed(:ci_build, project: project, user: current_user) }
+      let(:scope_project) { public_send(:private_project) }
+
+      before do
+        project.add_guest(guest)
+        project.add_reporter(reporter)
+        project.add_developer(developer)
+        project.add_maintainer(maintainer)
+        project.add_maintainer(owner)
+
+        project.ci_inbound_job_token_scope_enabled = true
+        project.save!
+
+        ci_cd_settings = project.ci_cd_settings
+        ci_cd_settings.push_repository_for_job_token_allowed = push_repository_for_job_token_allowed
+        ci_cd_settings.save!
+
+        if user_role != :anonymous
+          if self_referential_project
+            allow(current_user).to receive(:ci_job_token_scope).and_return(current_user.set_ci_job_token_scope!(self_referential_job))
+          else
+            allow(current_user).to receive(:ci_job_token_scope).and_return(current_user.set_ci_job_token_scope!(job))
+          end
+        end
+      end
+
+      it 'allows/disallows build_push_code' do
+        if allowed
+          is_expected.to be_allowed(:build_push_code)
+        else
+          is_expected.to be_disallowed(:build_push_code)
+        end
+      end
+    end
+  end
+
   private
 
   def project_subject(project_type)

@@ -19,7 +19,7 @@ export default {
   <span>
     <gl-sprintf :message="message">
       <template #bold="{ content }">
-        <span class="gl-font-weight-bold" v-text="content"></span>
+        <span class="gl-font-bold" v-text="content"></span>
       </template>
     </gl-sprintf>
   </span>

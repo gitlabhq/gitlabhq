@@ -55,7 +55,7 @@ export default {
 </script>
 <template>
   <state-container status="failed" :actions="actions" is-collapsible>
-    <span class="gl-font-weight-bold">
+    <span class="gl-font-bold">
       <template v-if="mergeError">{{ mergeError }}</template>
       {{ s__('mrWidget|This merge request failed to be merged automatically') }}
     </span>

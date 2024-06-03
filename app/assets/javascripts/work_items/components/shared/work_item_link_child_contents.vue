@@ -171,7 +171,7 @@ export default {
           </span>
           <gl-link
             :href="childItem.webUrl"
-            class="gl-break-words gl-hyphens-auto gl-font-weight-semibold"
+            class="gl-break-words gl-hyphens-auto gl-font-semibold"
             @click="$emit('click', $event)"
             @mouseover="$emit('mouseover')"
             @mouseout="$emit('mouseout')"

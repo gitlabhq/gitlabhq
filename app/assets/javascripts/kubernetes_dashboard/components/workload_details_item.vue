@@ -51,7 +51,7 @@ export default {
       }"
     >
       <slot name="label">
-        <label class="gl-font-weight-bold gl-mb-0"> {{ label }} </label>
+        <label class="gl-font-bold gl-mb-0"> {{ label }} </label>
       </slot>
 
       <gl-button

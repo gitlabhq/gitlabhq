@@ -138,7 +138,7 @@ export default {
 
 <template>
   <div class="md-suggestion-header border-bottom-0 gl-px-4 gl-py-3">
-    <div class="js-suggestion-diff-header gl-font-weight-bold">
+    <div class="js-suggestion-diff-header gl-font-bold">
       {{ __('Suggested change') }}
       <a v-if="helpPagePath" :href="helpPagePath" :aria-label="__('Help')" class="js-help-btn">
         <gl-icon name="question-o" css-classes="link-highlight" />

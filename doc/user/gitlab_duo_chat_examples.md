@@ -4,7 +4,7 @@ group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# GitLab Duo Chat examples
+# Ask GitLab Duo Chat
 
 GitLab Duo Chat can help with a variety of questions. The following examples
 represent some of the areas where GitLab Duo Chat can be the most helpful.

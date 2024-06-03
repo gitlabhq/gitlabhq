@@ -75,7 +75,7 @@ export default {
       class="gl-border-b-solid gl-border-gray-100 gl-border-b-1 gl-w-full gl-py-4 gl-display-flex gl-justify-content-space-between"
     >
       <div class="gl-display-flex gl-flex-direction-column gl-overflow-hidden gl-flex-grow-1">
-        <span data-testid="ffUserListName" class="gl-font-weight-bold gl-mb-2">
+        <span data-testid="ffUserListName" class="gl-font-bold gl-mb-2">
           {{ list.name }}
         </span>
         <span

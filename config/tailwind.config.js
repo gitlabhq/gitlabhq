@@ -68,18 +68,6 @@ module.exports = {
      */
     backgroundImage: false,
     /*
-    outline-none in tailwind is 2px solid transparent, we have outline: none
-
-    I assume that tailwind has it's reasons, and we probably could enable it
-    after a UX check
-     */
-    outlineStyle: false,
-    /*
-    Our outline-0 removes the complete outline, while tailwind just sets the width to 0.
-    Maybe compatible?
-     */
-    outlineWidth: false,
-    /*
     Disable preflight styles so that `@tailwind base` compiles to CSS vars declarations without
     any of the resets which we don't need.
     More on this at https://tailwindcss.com/docs/preflight.

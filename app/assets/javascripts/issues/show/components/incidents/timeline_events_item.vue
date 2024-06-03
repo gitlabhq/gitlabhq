@@ -79,7 +79,7 @@ export default {
     <div class="timeline-event-note timeline-event-border">
       <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-3 gl-mb-2">
         <h3
-          class="timeline-event-note-date gl-font-weight-bold gl-font-sm gl-my-0"
+          class="timeline-event-note-date gl-font-bold gl-font-sm gl-my-0"
           data-testid="event-time"
         >
           <gl-sprintf :message="$options.i18n.timeUTC">

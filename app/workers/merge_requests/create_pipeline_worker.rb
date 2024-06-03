@@ -16,6 +16,8 @@ module MergeRequests
     idempotent!
 
     def perform(project_id, user_id, merge_request_id, params = {})
+      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464679')
+
       project = Project.find_by_id(project_id)
       return unless project
 

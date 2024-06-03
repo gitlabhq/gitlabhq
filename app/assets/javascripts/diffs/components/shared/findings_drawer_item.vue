@@ -19,7 +19,7 @@ export default {
     <p class="gl-leading-20">
       <span
         data-testid="findings-drawer-item-description"
-        class="gl-font-weight-bold gl-display-block gl-mb-1"
+        class="gl-font-bold gl-display-block gl-mb-1"
         >{{ description }}</span
       >
       <slot name="value">

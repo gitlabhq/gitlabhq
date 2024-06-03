@@ -100,7 +100,7 @@ export default {
     :collapsed="mr.mergeDetailsCollapsed"
     @toggle="() => mr.toggleMergeDetails()"
   >
-    <span class="gl-font-weight-bold">
+    <span class="gl-font-bold">
       {{ s__('mrWidget|Refreshing now') }}
     </span>
   </state-container>
@@ -112,14 +112,10 @@ export default {
     :collapsed="mr.mergeDetailsCollapsed"
     @toggle="() => mr.toggleMergeDetails()"
   >
-    <span
-      v-if="mr.mergeError"
-      class="has-error-message gl-font-weight-bold"
-      data-testid="merge-error"
-    >
+    <span v-if="mr.mergeError" class="has-error-message gl-font-bold" data-testid="merge-error">
       {{ mergeError }}
     </span>
-    <span v-else class="gl-font-weight-bold"> {{ s__('mrWidget|Merge failed.') }} </span>
+    <span v-else class="gl-font-bold"> {{ s__('mrWidget|Merge failed.') }} </span>
     <span :class="{ 'has-custom-error': mr.mergeError }"> {{ timerText }} </span>
   </state-container>
 </template>

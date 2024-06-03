@@ -1246,6 +1246,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
           'separated_caches' => 'ci_',
           'allow_fork_pipelines_to_run_in_parent_project' => 'ci_',
           'inbound_job_token_scope_enabled' => 'ci_',
+          'push_repository_for_job_token_allowed' => 'ci_',
           'job_token_scope_enabled' => 'ci_outbound_'
         }
       end
@@ -1295,6 +1296,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     describe '#restrict_user_defined_variables?' do
       it_behaves_like 'a ci_cd_settings predicate method' do
         let(:delegated_method) { :restrict_user_defined_variables? }
+      end
+    end
+
+    describe '#ci_push_repository_for_job_token_allowed?' do
+      it_behaves_like 'a ci_cd_settings predicate method', prefix: 'ci_' do
+        let(:delegated_method) { :push_repository_for_job_token_allowed? }
       end
     end
 

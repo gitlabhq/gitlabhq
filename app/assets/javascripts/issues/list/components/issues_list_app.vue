@@ -6,8 +6,6 @@ import {
   GlDisclosureDropdownGroup,
   GlFilteredSearchToken,
   GlTooltipDirective,
-  GlDrawer,
-  GlLink,
 } from '@gitlab/ui';
 
 import produce from 'immer';
@@ -72,9 +70,9 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
-import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
+import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import {
   CREATED_DESC,
@@ -145,16 +143,14 @@ export default {
     EmptyStateWithoutAnyIssues,
     GlButton,
     GlButtonGroup,
-    GlDrawer,
     IssuableByEmail,
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
     NewResourceDropdown,
     LocalStorageSync,
-    WorkItemDetail,
-    GlLink,
     GitlabExperiment,
+    WorkItemDrawer,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -905,32 +901,17 @@ export default {
 
 <template>
   <div>
-    <gl-drawer
+    <work-item-drawer
       v-if="issuesDrawerEnabled"
       :open="isIssuableSelected"
-      header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
-      class="gl-w-full gl-sm-w-40p gl-leading-reset"
+      :active-item="activeIssuable"
       @close="activeIssuable = null"
-    >
-      <template #title>
-        <gl-link :href="activeIssuable.webUrl" class="gl-text-black-normal">{{
-          __('Open full view')
-        }}</gl-link>
-      </template>
-      <template #default>
-        <work-item-detail
-          :key="activeIssuable.iid"
-          :work-item-iid="activeIssuable.iid"
-          is-drawer
-          class="gl-pt-0! work-item-drawer"
-          @work-item-updated="updateIssuablesCache"
-          @work-item-emoji-updated="updateIssuableEmojis"
-          @addChild="refetchIssuables"
-          @deleteWorkItem="deleteIssuable"
-          @promotedToObjective="promoteToObjective"
-        />
-      </template>
-    </gl-drawer>
+      @work-item-updated="updateIssuablesCache"
+      @work-item-emoji-updated="updateIssuableEmojis"
+      @addChild="refetchIssuables"
+      @deleteWorkItem="deleteIssuable"
+      @promotedToObjective="promoteToObjective"
+    />
     <issuable-list
       v-if="hasAnyIssues"
       :namespace="fullPath"

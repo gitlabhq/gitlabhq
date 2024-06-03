@@ -141,7 +141,7 @@ export default {
       </div>
       <div
         v-if="showSearchErrorMessage"
-        class="gl-text-red-500 gl-font-weight-bold gl-ml-3 js-search-error-message"
+        class="gl-text-red-500 gl-font-bold gl-ml-3 js-search-error-message"
       >
         {{ __('Something went wrong, unable to search projects') }}
       </div>

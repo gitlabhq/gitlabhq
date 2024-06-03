@@ -36,6 +36,18 @@ RSpec.describe Gitlab::QueryLimiting::Transaction, feature_category: :database d
 
       expect(Thread.current[described_class::THREAD_KEY]).to be_nil
     end
+
+    it 'restores the previous transaction upon completion' do
+      original_transaction = described_class.new
+      Thread.current[described_class::THREAD_KEY] = original_transaction
+
+      new_transaction, _ret = described_class.run do
+        10
+      end
+
+      expect(new_transaction).not_to eq(original_transaction)
+      expect(Thread.current[described_class::THREAD_KEY]).to eq(original_transaction)
+    end
   end
 
   describe '#act_upon_results' do

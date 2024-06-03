@@ -91,6 +91,7 @@
 
   .wiki-list {
     min-height: 30px;
+    padding: 0 $gl-padding-8;
 
     &:hover,
     &.active {
@@ -113,6 +114,8 @@
   .wiki-list-expand-button,
   .wiki-list-collapse-button {
     color: $gray-400;
+    position: absolute;
+    right: $gl-spacing-scale-2;
   }
 
   ul.wiki-pages,
@@ -138,8 +141,21 @@ ul.wiki-pages-list.content-list {
     padding-left: 15px;
 
     li {
-      padding: 5px 0;
+      margin-top: $gl-spacing-scale-2;
     }
+  }
+}
+
+.wiki-pages-list:not(.wiki-templates-list) {
+  margin-top: $gl-spacing-scale-4;
+
+  li {
+    border-bottom: 0 !important;
+    padding: 0 !important;
+  }
+
+  li, ul, .wiki-list {
+    margin-bottom: $gl-spacing-scale-3;
   }
 }
 
@@ -179,8 +195,7 @@ ul.wiki-pages-list.content-list {
     padding-right: $gl-spacing-scale-4 !important;
 
     li {
-      padding-left: $gl-spacing-scale-2 !important;
-      padding-right: 0 !important;
+      padding: 0 !important;
     }
   }
 }

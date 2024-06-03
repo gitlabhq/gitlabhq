@@ -313,7 +313,7 @@ export default {
     </p>
     <gl-form v-else data-testid="board-form-wrapper" @submit.prevent="submit">
       <div v-if="!readonly" class="gl-mb-5" data-testid="board-form">
-        <label class="gl-font-weight-bold gl-font-lg" for="board-new-name">
+        <label class="gl-font-bold gl-font-lg" for="board-new-name">
           {{ $options.i18n.titleFieldLabel }}
         </label>
         <input

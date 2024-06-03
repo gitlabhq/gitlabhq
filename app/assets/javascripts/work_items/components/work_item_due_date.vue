@@ -235,7 +235,7 @@ export default {
     </div>
     <fieldset v-if="isEditing" data-testid="datepicker-wrapper">
       <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-        <legend class="gl-mb-0 gl-border-b-0 gl-font-weight-bold gl-font-base">
+        <legend class="gl-mb-0 gl-border-b-0 gl-font-bold gl-font-base">
           {{ $options.i18n.dates }}
         </legend>
         <gl-button

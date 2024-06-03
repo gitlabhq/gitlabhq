@@ -110,7 +110,7 @@ export default {
         ><gl-icon name="question-o" class="gl-text-blue-600"
       /></gl-link>
     </div>
-    <div class="hide-collapsed gl-leading-20 gl-font-weight-bold">
+    <div class="hide-collapsed gl-leading-20 gl-font-bold">
       {{ contactsLabel }}
     </div>
     <div v-if="shouldShowContacts" class="hide-collapsed gl-display-flex gl-flex-wrap gl-mt-2">

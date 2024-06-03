@@ -1856,7 +1856,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/quality/seeders/vulnerabilities.rb'
     - 'ee/lib/system_check/geo/authorized_keys_check.rb'
     - 'ee/lib/tasks/geo.rake'
-    - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/locale/unfound_translations.rb'
     - 'ee/spec/controllers/concerns/gitlab_subscriptions/seat_count_alert_spec.rb'
     - 'ee/spec/controllers/concerns/routable_actions_spec.rb'

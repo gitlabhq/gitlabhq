@@ -2348,6 +2348,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/graphql/ee/resolvers/project_pipeline_resolver.rb'
     - 'ee/app/graphql/ee/resolvers/project_pipelines_resolver.rb'
     - 'ee/app/graphql/ee/resolvers/projects_resolver.rb'
+    - 'ee/app/graphql/ee/resolvers/groups_resolver.rb'
     - 'ee/app/graphql/ee/resolvers/validate_codeowner_file_resolver.rb'
     - 'ee/app/graphql/ee/resolvers/work_items_resolver.rb'
     - 'ee/app/graphql/ee/types/access_level_enum.rb'

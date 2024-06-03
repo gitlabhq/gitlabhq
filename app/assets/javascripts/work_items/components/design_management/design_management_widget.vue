@@ -92,7 +92,7 @@ export default {
 <template>
   <widget-wrapper v-if="hasDesigns" data-testid="designs-root" :error="error">
     <template #header>
-      <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
+      <span class="gl-font-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
     </template>
     <template #header-suffix>
       <design-version-dropdown :all-versions="allVersions" />

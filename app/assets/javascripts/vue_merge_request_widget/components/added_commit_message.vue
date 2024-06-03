@@ -108,25 +108,25 @@ export default {
       <template #commitCount>
         <gl-sprintf :message="commitsCountMessage">
           <template #strong="{ content }">
-            <span class="gl-font-weight-bold">{{ content }}</span>
+            <span class="gl-font-bold">{{ content }}</span>
           </template>
         </gl-sprintf>
       </template>
       <template #mergeCommitCount>
         <gl-sprintf :message="$options.mergeCommitCount">
           <template #strong="{ content }">
-            <span class="gl-font-weight-bold">{{ content }}</span>
+            <span class="gl-font-bold">{{ content }}</span>
           </template>
         </gl-sprintf>
       </template>
       <template #targetBranch>
-        <span class="label-branch gl-font-weight-bold">{{ targetBranchEscaped }}</span>
+        <span class="label-branch gl-font-bold">{{ targetBranchEscaped }}</span>
       </template>
       <template #squashedCommits>
         <template v-if="isSquashEnabled">
           <gl-sprintf :message="squashCommitMessage">
             <template #strong="{ content }">
-              <span class="gl-font-weight-bold">{{ content }}</span>
+              <span class="gl-font-bold">{{ content }}</span>
             </template>
           </gl-sprintf>
         </template>

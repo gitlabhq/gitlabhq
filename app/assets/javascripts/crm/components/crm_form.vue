@@ -285,7 +285,7 @@ export default {
             :options="field.values"
           />
           <gl-form-checkbox v-else-if="field.bool" :id="field.name" v-model="model[field.name]"
-            ><span class="gl-font-weight-bold">{{ field.label }}</span></gl-form-checkbox
+            ><span class="gl-font-bold">{{ field.label }}</span></gl-form-checkbox
           >
           <gl-form-input v-else :id="field.name" v-bind="field.input" v-model="model[field.name]" />
         </gl-form-group>

@@ -14606,7 +14606,8 @@ CREATE TABLE project_ci_cd_settings (
     forward_deployment_rollback_allowed boolean DEFAULT true NOT NULL,
     merge_trains_skip_train_allowed boolean DEFAULT false NOT NULL,
     restrict_pipeline_cancellation_role smallint DEFAULT 0 NOT NULL,
-    pipeline_variables_minimum_override_role smallint DEFAULT 3 NOT NULL
+    pipeline_variables_minimum_override_role smallint DEFAULT 3 NOT NULL,
+    push_repository_for_job_token_allowed boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq

@@ -356,7 +356,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
     it('is collapsed by default', () => {
       expect(collapse.props('visible')).toBe(false);
       expect(icon.props('name')).toBe('chevron-lg-right');
-      expect(environmentName.classes('gl-font-weight-bold')).toBe(false);
+      expect(environmentName.classes('gl-font-bold')).toBe(false);
     });
 
     it('opens on click', async () => {
@@ -368,7 +368,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
       expect(button.props('category')).toBe('secondary');
       expect(collapse.props('visible')).toBe(true);
       expect(icon.props('name')).toBe('chevron-lg-down');
-      expect(environmentName.classes('gl-font-weight-bold')).toBe(true);
+      expect(environmentName.classes('gl-font-bold')).toBe(true);
       expect(findDeployment().isVisible()).toBe(true);
     });
   });

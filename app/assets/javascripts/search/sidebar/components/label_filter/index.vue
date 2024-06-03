@@ -148,7 +148,7 @@ export default {
 
 <template>
   <div class="gl-pb-0 gl-md-pt-0 label-filter gl-relative">
-    <div class="gl-mb-2 gl-font-weight-bold gl-font-sm" data-testid="label-filter-title">
+    <div class="gl-mb-2 gl-font-bold gl-font-sm" data-testid="label-filter-title">
       {{ $options.labelFilterData.header }}
     </div>
     <div>

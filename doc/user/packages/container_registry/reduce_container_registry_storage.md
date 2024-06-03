@@ -287,7 +287,8 @@ Examples:
   any images with the name `main`, and the policy is enabled:
 
   ```shell
-  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" \
+  curl --fail-with-body --request PUT --header 'Content-Type: application/json;charset=UTF-8'
+       --header "PRIVATE-TOKEN: <your_access_token>" \
        --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":".*","name_regex_keep":".*-main"}}' \
        "https://gitlab.example.com/api/v4/projects/2"
   ```
@@ -373,7 +374,7 @@ the tags. To create the list and delete the tags:
 
    ```shell
    # Get a list of all tags in a certain container repository while considering [pagination](../../../api/rest/index.md#pagination)
-   echo -n "" > list_o_tags.out; for i in {1..N}; do curl --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
+   echo -n "" > list_o_tags.out; for i in {1..N}; do curl --fail-with-body --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
    ```
 
    If you have Rails console access, you can enter the following commands to retrieve a list of tags limited by date:
@@ -434,5 +435,5 @@ the tags. To create the list and delete the tags:
 
    ```shell
    # loop over list_o_tags.out to delete a single tag at a time
-   while read -r LINE || [[ -n $LINE ]]; do echo ${LINE}; curl --request DELETE --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags/${LINE}"; sleep 0.1; echo; done < list_o_tags.out > delete.logs
+   while read -r LINE || [[ -n $LINE ]]; do echo ${LINE}; curl --fail-with-body --request DELETE --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags/${LINE}"; sleep 0.1; echo; done < list_o_tags.out > delete.logs
    ```

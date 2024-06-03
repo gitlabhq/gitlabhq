@@ -105,14 +105,14 @@ export default {
     <p>
       <gl-sprintf :message="$options.WARNING_PARAGRAPH_1">
         <template #bold="{ content }">
-          <span class="gl-font-weight-bold">{{ content }}</span>
+          <span class="gl-font-bold">{{ content }}</span>
         </template>
       </gl-sprintf>
     </p>
     <p>
       <gl-sprintf :message="$options.WARNING_PARAGRAPH_2">
         <template #bold="{ content }">
-          <span class="gl-font-weight-bold">{{ content }}</span>
+          <span class="gl-font-bold">{{ content }}</span>
         </template>
       </gl-sprintf>
     </p>

@@ -131,7 +131,7 @@ export default {
       @select="handleSelect"
     >
       <template #list-item="{ item }">
-        <div data-testid="access-level-link" :class="{ 'gl-font-weight-bold': item.memberRoleId }">
+        <div data-testid="access-level-link" :class="{ 'gl-font-bold': item.memberRoleId }">
           {{ item.text }}
         </div>
         <div

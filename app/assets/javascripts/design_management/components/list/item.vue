@@ -180,7 +180,7 @@ export default {
       >
         <span
           v-gl-tooltip
-          class="gl-font-weight-semibold str-truncated-100"
+          class="gl-font-semibold str-truncated-100"
           :data-testid="`design-img-filename-${id}`"
           :title="filename"
           >{{ filename }}</span

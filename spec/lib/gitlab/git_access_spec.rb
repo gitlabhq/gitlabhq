@@ -6,6 +6,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
   include TermsHelper
   include AdminModeHelper
   include ExternalAuthorizationServiceHelpers
+  include Ci::JobTokenScopeHelpers
 
   let(:user) { create(:user) }
   let(:actor) { user }
@@ -1279,6 +1280,54 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
         end
       end
     end
+
+    describe 'when request is made from CI' do
+      let(:auth_result_type) { :build }
+      let(:job) { build_stubbed(:ci_build, project: project, user: user) }
+
+      before do
+        accept_terms(user)
+        project.add_maintainer(user)
+        project.ci_push_repository_for_job_token_allowed = ci_push_repository_for_job_token_allowed
+        project.save!
+
+        allow(user).to receive(:ci_job_token_scope).and_return(user.set_ci_job_token_scope!(job))
+      end
+
+      context 'when push to repositry is allowed by project settings' do
+        let(:ci_push_repository_for_job_token_allowed) { true }
+
+        it "doesn't block push" do
+          expect { push_access_check_build(project, changes) }.not_to raise_error
+        end
+
+        context 'when push is requested to a different project' do
+          let(:another_project) do
+            create(:project, :repository, :public).tap do |accessible_project|
+              add_inbound_accessible_linkage(project, accessible_project)
+            end
+          end
+
+          before do
+            another_project.add_maintainer(user)
+            another_project.ci_push_repository_for_job_token_allowed = ci_push_repository_for_job_token_allowed
+            another_project.save!
+          end
+
+          it 'raises forbidden exception on push' do
+            expect { push_access_check_build(another_project, changes) }.to raise_error(Gitlab::GitAccess::ForbiddenError)
+          end
+        end
+      end
+
+      context 'when push to repositry is not allowed by project settings' do
+        let(:ci_push_repository_for_job_token_allowed) { false }
+
+        it 'raises forbidden exception on push' do
+          expect { push_access_check_build(project, changes) }.to raise_error(Gitlab::GitAccess::ForbiddenError)
+        end
+      end
+    end
   end
 
   private
@@ -1288,6 +1337,14 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
       authentication_abilities: authentication_abilities,
       repository_path: repository_path,
       redirected_path: redirected_path, auth_result_type: auth_result_type)
+  end
+
+  def push_access_check_build(access_project, changes)
+    access_class.new(actor, access_project, protocol,
+      authentication_abilities: build_authentication_abilities_allowed_push,
+      repository_path: "#{access_project.full_path}.git",
+      redirected_path: redirected_path, auth_result_type: auth_result_type)
+    .check('git-receive-pack', changes)
   end
 
   def push_changes(changes)
@@ -1306,6 +1363,14 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures, feature_category: :system
     [
       :read_project,
       :build_download_code
+    ]
+  end
+
+  def build_authentication_abilities_allowed_push
+    [
+      :read_project,
+      :build_download_code,
+      :build_push_code
     ]
   end
 

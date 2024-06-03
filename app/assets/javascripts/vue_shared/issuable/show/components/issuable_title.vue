@@ -107,7 +107,7 @@ export default {
               :workspace-type="workspaceType"
             />
             <p
-              class="gl-font-weight-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0"
+              class="gl-font-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0"
               :title="issuable.title"
             >
               {{ issuable.title }}

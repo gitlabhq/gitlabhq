@@ -82,11 +82,7 @@ export default {
   <list-item v-bind="$attrs">
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center">
-        <router-link
-          class="gl-text-body gl-font-weight-bold gl-break-all"
-          data-testid="name"
-          :to="linkTo"
-        >
+        <router-link class="gl-text-body gl-font-bold gl-break-all" data-testid="name" :to="linkTo">
           {{ artifact.digest }}
         </router-link>
         <clipboard-button

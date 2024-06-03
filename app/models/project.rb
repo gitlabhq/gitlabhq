@@ -543,6 +543,7 @@ class Project < ApplicationRecord
 
     with_options prefix: :ci do
       delegate :pipeline_variables_minimum_override_role, :pipeline_variables_minimum_override_role=
+      delegate :push_repository_for_job_token_allowed, :push_repository_for_job_token_allowed=
       delegate :default_git_depth, :default_git_depth=
       delegate :forward_deployment_enabled, :forward_deployment_enabled=
       delegate :forward_deployment_rollback_allowed, :forward_deployment_rollback_allowed=
@@ -3106,6 +3107,12 @@ class Project < ApplicationRecord
     return false unless ci_cd_settings
 
     ci_cd_settings.override_pipeline_variables_allowed?(access_level)
+  end
+
+  def ci_push_repository_for_job_token_allowed?
+    return false unless ci_cd_settings
+
+    ci_cd_settings.push_repository_for_job_token_allowed?
   end
 
   def keep_latest_artifacts_available?

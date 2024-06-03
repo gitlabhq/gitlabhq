@@ -43,7 +43,7 @@ describe('notebook/cells/output/dataframe_utils', () => {
 
       const output = {
         fields: [
-          { key: 'index0', label: '', sortable: true, class: 'gl-font-weight-bold' },
+          { key: 'index0', label: '', sortable: true, class: 'gl-font-bold' },
           { key: 'column0', label: 'column_1', sortable: true, class: '' },
           { key: 'column1', label: 'column_2', sortable: true, class: '' },
         ],
@@ -61,8 +61,8 @@ describe('notebook/cells/output/dataframe_utils', () => {
 
       const output = {
         fields: [
-          { key: 'index0', label: 'first', sortable: true, class: 'gl-font-weight-bold' },
-          { key: 'index1', label: 'second', sortable: true, class: 'gl-font-weight-bold' },
+          { key: 'index0', label: 'first', sortable: true, class: 'gl-font-bold' },
+          { key: 'index1', label: 'second', sortable: true, class: 'gl-font-bold' },
           { key: 'column0', label: '0', sortable: true, class: '' },
         ],
         items: [

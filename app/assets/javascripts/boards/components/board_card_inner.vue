@@ -303,7 +303,7 @@ export default {
               v-gl-tooltip
               :title="itemReferencePath"
               data-placement="bottom"
-              class="board-item-path gl-text-truncate gl-font-weight-bold gl-cursor-help"
+              class="board-item-path gl-text-truncate gl-font-bold gl-cursor-help"
             >
               {{ directNamespaceReference }}
             </span>
@@ -359,7 +359,7 @@ export default {
           tooltip-placement="bottom"
         >
           <span class="js-assignee-tooltip">
-            <span class="gl-font-weight-bold gl-display-block">{{ __('Assignee') }}</span>
+            <span class="gl-font-bold gl-display-block">{{ __('Assignee') }}</span>
             {{ assignee.name }}
             <span class="text-white-50">@{{ assignee.username }}</span>
           </span>
@@ -368,7 +368,7 @@ export default {
           v-if="shouldRenderCounter"
           v-gl-tooltip
           :title="assigneeCounterTooltip"
-          class="avatar-counter gl-bg-gray-100 gl-text-gray-900 gl-cursor-help gl-font-weight-bold gl-border-0 gl-leading-24 -gl-ml-3"
+          class="avatar-counter gl-bg-gray-100 gl-text-gray-900 gl-cursor-help gl-font-bold gl-border-0 gl-leading-24 -gl-ml-3"
           data-placement="bottom"
           >{{ assigneeCounterLabel }}</span
         >

@@ -113,7 +113,7 @@
 .if-merge-request-labels-run-praefect-with-db: &if-merge-request-labels-run-praefect-with-db
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
 
-.if-merge-request-labels-run-run-without-gitaly-transactions: &if-merge-request-labels-run-run-without-gitaly-transactions
+.if-merge-request-labels-run-without-gitaly-transactions: &if-merge-request-labels-run-without-gitaly-transactions
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /run-without-gitaly-transactions/'
 
 .if-security-merge-request: &if-security-merge-request
@@ -2010,7 +2010,7 @@
 .rails:rules:gitaly-without-transactions:
   rules:
     - <<: *if-schedule-maintenance
-    - <<: *if-merge-request-labels-run-run-without-gitaly-transactions
+    - <<: *if-merge-request-labels-run-without-gitaly-transactions
 
 .rails:rules:ee-and-foss-migration:
   rules:

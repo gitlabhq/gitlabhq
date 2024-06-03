@@ -53,7 +53,7 @@ To publish the package with a personal access token:
   For example, you can use `curl`:
 
   ```shell
-  curl --data tag=<tag> "https://__token__:<personal-access-token>@gitlab.example.com/api/v4/projects/<project_id>/packages/composer"
+  curl --fail-with-body --data tag=<tag> "https://__token__:<personal-access-token>@gitlab.example.com/api/v4/projects/<project_id>/packages/composer"
   ```
 
   - `<personal-access-token>` is your personal access token.
@@ -68,7 +68,7 @@ To publish the package with a deploy token:
   For example, you can use `curl`:
 
   ```shell
-  curl --data tag=<tag> --header "Deploy-Token: <deploy-token>" "https://gitlab.example.com/api/v4/projects/<project_id>/packages/composer"
+  curl --fail-with-body --data tag=<tag> --header "Deploy-Token: <deploy-token>" "https://gitlab.example.com/api/v4/projects/<project_id>/packages/composer"
   ```
 
   - `<deploy-token>` is your deploy token
@@ -93,7 +93,7 @@ You can publish a Composer package to the package registry as part of your CI/CD
      stage: deploy
      script:
        - apk add curl
-       - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data tag=<tag> "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
+       - 'curl --fail-with-body --header "Job-Token: $CI_JOB_TOKEN" --data tag=<tag> "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
      environment: production
    ```
 

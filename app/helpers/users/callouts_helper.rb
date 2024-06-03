@@ -10,7 +10,6 @@ module Users
     REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
     SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
-    MERGE_REQUEST_SETTINGS_MOVED_CALLOUT = 'merge_request_settings_moved_callout'
     PAGES_MOVED_CALLOUT = 'pages_moved_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     WEB_HOOK_DISABLED = 'web_hook_disabled'
@@ -67,10 +66,6 @@ module Users
       return false unless object.is_a?(::WebHooks::HasWebHooks)
 
       user_dismissed?(WEB_HOOK_DISABLED, object.last_webhook_failure, object: object)
-    end
-
-    def show_merge_request_settings_callout?(project)
-      !user_dismissed?(MERGE_REQUEST_SETTINGS_MOVED_CALLOUT) && project.merge_requests_enabled?
     end
 
     def show_branch_rules_info?

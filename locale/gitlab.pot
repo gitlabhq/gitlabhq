@@ -30279,9 +30279,6 @@ msgstr ""
 msgid "Last contact"
 msgstr ""
 
-msgid "Last edited %{date}"
-msgstr ""
-
 msgid "Last event"
 msgstr ""
 
@@ -32305,9 +32302,6 @@ msgid "Merge request was set to auto-merge"
 msgstr ""
 
 msgid "Merge requests"
-msgstr ""
-
-msgid "Merge requests and approvals settings have moved."
 msgstr ""
 
 msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
@@ -35647,9 +35641,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "On the left sidebar, select %{compliance_center_link} to view them."
-msgstr ""
-
-msgid "On the left sidebar, select %{merge_requests_link} to view them."
 msgstr ""
 
 msgid "On track"

@@ -46,13 +46,14 @@ export const mismatchAllowList = [
   '.border-l\\!',
   '.border-r\\!',
   '.border-t\\!',
-   // Tailwind's line-clamp utils don't set `white-space: normal`, while our custom utils did.
-   // We have added `gl-whitespace-normal` wherever line-clamp utils were being used, so these
-   // mismatches can be ignored.
-   '.line-clamp-1',
-   '.line-clamp-2',
-   '.line-clamp-3',
-   
+  // Tailwind's line-clamp utils don't set `white-space: normal`, while our custom utils did.
+  // We have added `gl-whitespace-normal` wherever line-clamp utils were being used, so these
+  // mismatches can be ignored.
+  '.line-clamp-1',
+  '.line-clamp-2',
+  '.line-clamp-3',
+  '.outline-none',
+  '.outline-0',
 ];
 
 export function loadCSSFromFile(filePath) {

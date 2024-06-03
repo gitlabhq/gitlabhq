@@ -106,7 +106,7 @@ delete_image:
   script:
     - apk update
     - apk add curl
-    - curl --location "https://github.com/regclient/regclient/releases/download/${REGCTL_VERSION}/regctl-linux-amd64" > /usr/bin/regctl
+    - curl --fail-with-body --location "https://github.com/regclient/regclient/releases/download/${REGCTL_VERSION}/regctl-linux-amd64" > /usr/bin/regctl
     - chmod 755 /usr/bin/regctl
     - regctl registry login ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}
     - regctl tag rm $IMAGE

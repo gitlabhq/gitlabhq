@@ -409,6 +409,14 @@ output encoding in the appropriate context. You should also invalidate the
 existing Markdown cached HTML to mitigate the effects of already-stored
 vulnerable XSS content. For an example, see ([issue 357930](https://gitlab.com/gitlab-org/gitlab/-/issues/357930)).
 
+If the fix is in JavaScript assets hosted by GitLab, then you should take these
+actions when security fixes are published:
+
+1. Delete the old, vulnerable versions of old assets.
+1. Invalidate any caches (like CloudFlare) of the old assets.
+
+For more information, see ([issue 463408](https://gitlab.com/gitlab-org/gitlab/-/issues/463408)).
+
 #### Input validation
 
 - [Input Validation](https://youtu.be/2VFavqfDS6w?t=7489)

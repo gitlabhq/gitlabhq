@@ -193,7 +193,7 @@ export default {
         <div
           class="md-suggestion-header gl-flex-wrap gl-z-1 gl-w-full gl-border-none! gl-font-regular gl-px-4 gl-py-3 gl-border-b-1! gl-border-b-solid!"
         >
-          <div class="gl-font-weight-bold gl-pr-3">
+          <div class="gl-font-bold gl-pr-3">
             {{ __('Suggested change') }}
           </div>
 

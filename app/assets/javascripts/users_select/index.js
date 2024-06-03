@@ -257,7 +257,7 @@ function UsersSelect(currentUser, els, options = {}) {
         )} <% } %>`,
       );
       assigneeTemplate = template(
-        `<% if (username) { %> <a class="author-link gl-font-weight-bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself">
+        `<% if (username) { %> <a class="author-link gl-font-bold" href="/<%- username %>"> <% if( avatar ) { %> <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>"> <% } %> <span class="author"><%- name %></span> <span class="username"> @<%- username %> </span> </a> <% } else { %> <span class="no-value assign-yourself">
       ${sprintf(s__('UsersSelect|No assignee - %{openingTag} assign yourself %{closingTag}'), {
         openingTag: '<a href="#" class="js-assign-yourself">',
         closingTag: '</a>',
@@ -721,7 +721,7 @@ UsersSelect.prototype.renderRow = function (
       <a href="#" class="dropdown-menu-user-link gl-display-flex! gl-align-items-center ${linkClasses}" ${tooltipAttributes}>
         ${this.renderRowAvatar(issuableType, user, img)}
         <span class="gl-display-flex gl-flex-direction-column gl-overflow-hidden">
-          <strong class="dropdown-menu-user-full-name gl-font-weight-bold">
+          <strong class="dropdown-menu-user-full-name gl-font-bold">
             ${escape(user.name)}
             ${busyBadge}
           </strong>

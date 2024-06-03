@@ -262,7 +262,7 @@ However, you might encounter one of the following responses:
 :::TabTitle Maven
 
 ```shell
-curl --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/<group id and artifact id>/<version>/<file_name>"
+curl --fail-with-body --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/<group id and artifact id>/<version>/<file_name>"
 ```
 
 - `<username>` and `<personal access token>` are the credentials to access the dependency proxy of the GitLab instance.
@@ -280,7 +280,7 @@ For example, given a package with:
 The request to manually pull a package is:
 
 ```shell
-curl --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/com/my_company/my_package/1.2.3/my_package-1.2.3.pom"
+curl --fail-with-body --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/com/my_company/my_package/1.2.3/my_package-1.2.3.pom"
 ```
 
 ::EndTabs

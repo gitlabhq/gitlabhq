@@ -51,6 +51,10 @@ module Ci
         groups.count
       end
 
+      def self_referential?(accessed_project)
+        current_project.id == accessed_project.id
+      end
+
       private
 
       def outbound_accessible?(accessed_project)
@@ -93,10 +97,6 @@ module Ci
       # User created list of projects that can be accessed from the current project
       def outbound_allowlist
         Ci::JobToken::Allowlist.new(current_project, direction: :outbound)
-      end
-
-      def self_referential?(accessed_project)
-        current_project.id == accessed_project.id
       end
     end
   end

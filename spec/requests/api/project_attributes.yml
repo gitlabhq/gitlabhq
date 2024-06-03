@@ -100,6 +100,7 @@ ci_cd_settings:
     - auto_rollback_enabled
     - inbound_job_token_scope_enabled
     - restrict_pipeline_cancellation_role
+    - push_repository_for_job_token_allowed
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
     default_git_depth: ci_default_git_depth

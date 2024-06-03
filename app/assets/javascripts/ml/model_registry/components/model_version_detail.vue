@@ -67,7 +67,7 @@ export default {
     </template>
 
     <div class="gl-mt-5">
-      <span class="gl-font-weight-bold">{{ $options.i18n.MLFLOW_ID_LABEL }}:</span>
+      <span class="gl-font-bold">{{ $options.i18n.MLFLOW_ID_LABEL }}:</span>
       {{ candidate.info.eid }}
     </div>
 

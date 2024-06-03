@@ -123,7 +123,7 @@ export default {
               <div class="gl-flex-grow-1 gl-overflow-hidden">
                 <div class="gl-display-flex">
                   <span
-                    class="gl-font-weight-bold gl-mr-3 gl-flex-grow-1"
+                    class="gl-font-bold gl-mr-3 gl-flex-grow-1"
                     :class="item.name ? 'gl-text-truncate' : 'gl-italic gl-gray-400'"
                     >{{ item.text }}</span
                   >
@@ -150,10 +150,10 @@ export default {
     >
       <gl-sprintf :message="$options.i18n.messageAdditionsDeletions">
         <template #additions>
-          <span class="gl-text-green-600 gl-font-weight-bold">{{ additionsText() }}</span>
+          <span class="gl-text-green-600 gl-font-bold">{{ additionsText() }}</span>
         </template>
         <template #deletions>
-          <span class="gl-text-red-500 gl-font-weight-bold">{{ deletionsText() }}</span>
+          <span class="gl-text-red-500 gl-font-bold">{{ deletionsText() }}</span>
         </template>
       </gl-sprintf>
     </span>

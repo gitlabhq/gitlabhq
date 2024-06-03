@@ -160,7 +160,7 @@ export default {
     <fieldset>
       <div class="gl-display-flex gl-flex-wrap -gl-mx-5">
         <div class="gl-mb-5 gl-px-5 gl-w-full md:gl-basis-1/3">
-          <label for="feature-flag-name" class="gl-font-weight-bold"
+          <label for="feature-flag-name" class="gl-font-bold"
             >{{ s__('FeatureFlags|Name') }} *</label
           >
           <input id="feature-flag-name" v-model="formName" class="form-control" />
@@ -169,7 +169,7 @@ export default {
 
       <div class="gl-display-flex gl-flex-wrap -gl-mx-5">
         <div class="gl-mb-5 gl-px-5 gl-w-full md:gl-basis-1/3">
-          <label for="feature-flag-description" class="gl-font-weight-bold">
+          <label for="feature-flag-description" class="gl-font-bold">
             {{ s__('FeatureFlags|Description') }}
           </label>
           <textarea

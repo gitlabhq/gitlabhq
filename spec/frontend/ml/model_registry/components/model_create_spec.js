@@ -106,6 +106,12 @@ describe('ModelCreate', () => {
         expect(findGlModal().props('visible')).toBe(true);
       });
 
+      it('hides the modal', async () => {
+        await findGlModal().vm.$emit('hide');
+
+        expect(wrapper.emitted('hide-create-model')).toHaveLength(1);
+      });
+
       it('renders the name input', () => {
         expect(findNameInput().exists()).toBe(true);
       });

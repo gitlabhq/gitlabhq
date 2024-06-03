@@ -74,7 +74,7 @@ export default {
         :disabled="!canUpdate || isLoading"
         class="gl-pr-2"
       >
-        <span :class="dateIsFixed ? 'gl-text-gray-900 gl-font-weight-bold' : 'gl-text-gray-500'">
+        <span :class="dateIsFixed ? 'gl-text-gray-900 gl-font-bold' : 'gl-text-gray-500'">
           {{ $options.i18n.fixed }}
         </span>
       </gl-form-radio>
@@ -95,7 +95,7 @@ export default {
         :disabled="!canUpdate || isLoading"
         class="gl-pr-2"
       >
-        <span :class="!dateIsFixed ? 'gl-text-gray-900 gl-font-weight-bold' : 'gl-text-gray-500'">
+        <span :class="!dateIsFixed ? 'gl-text-gray-900 gl-font-bold' : 'gl-text-gray-500'">
           {{ $options.i18n.inherited }}
         </span>
       </gl-form-radio>

@@ -436,7 +436,8 @@ RSpec.configure do |config|
         arguments_logger: false, # We're not logging the regular messages for inline jobs
         skip_jobs: false # We're not skipping jobs for inline tests
       ).call(chain)
-      chain.add DisableQueryLimit
+
+      chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, ::Gitlab::QueryLimiting::SidekiqMiddleware
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
 
       example.run

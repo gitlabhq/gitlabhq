@@ -25,3 +25,5 @@ module Resolvers
     end
   end
 end
+
+Resolvers::GroupsResolver.prepend_mod_with('Resolvers::GroupsResolver')

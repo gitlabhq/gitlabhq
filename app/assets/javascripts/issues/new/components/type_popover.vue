@@ -29,11 +29,11 @@ export default {
     >
       <ul class="gl-list-none gl-p-0 gl-m-0">
         <li class="gl-mb-3">
-          <div class="gl-font-weight-bold">{{ $options.i18n.issue }}</div>
+          <div class="gl-font-bold">{{ $options.i18n.issue }}</div>
           <span>{{ $options.i18n.issueHelpText }}</span>
         </li>
         <li>
-          <div class="gl-font-weight-bold">{{ $options.i18n.incident }}</div>
+          <div class="gl-font-bold">{{ $options.i18n.incident }}</div>
           <span>{{ $options.i18n.incidentHelpText }}</span>
         </li>
       </ul>

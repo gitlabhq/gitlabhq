@@ -207,7 +207,7 @@ export default {
     <template v-if="userCannotMerge" #title>
       <div class="gl-pb-3 gl-display-flex gl-align-items-center" data-testid="cannot-merge">
         <gl-icon name="warning-solid" class="gl-mr-2 gl-text-orange-400" />
-        <span class="gl-font-weight-normal">{{ __('Cannot merge') }}</span>
+        <span class="gl-font-normal">{{ __('Cannot merge') }}</span>
       </div>
     </template>
     <div class="gl-mb-3">
@@ -245,7 +245,7 @@ export default {
         <template #meta>
           <span
             v-if="hasPronouns"
-            class="gl-text-gray-500 gl-font-sm gl-font-weight-normal gl-p-1"
+            class="gl-text-gray-500 gl-font-sm gl-font-normal gl-p-1"
             data-testid="user-popover-pronouns"
             >({{ user.pronouns }})</span
           >

@@ -141,10 +141,10 @@ export default {
     class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-2"
     data-testid="approvals-summary-content"
   >
-    <span class="gl-font-weight-bold">{{ approvalLeftMessage }}</span>
+    <span class="gl-font-bold">{{ approvalLeftMessage }}</span>
     <template v-if="hasApprovers">
       <span v-if="approvalLeftMessage">{{ message }}</span>
-      <span v-else class="gl-font-weight-bold">{{ message }}</span>
+      <span v-else class="gl-font-bold">{{ message }}</span>
       <user-avatar-list
         class="gl-display-inline-block"
         :class="{ 'gl-pt-1': isUserAvatarListExpanded }"

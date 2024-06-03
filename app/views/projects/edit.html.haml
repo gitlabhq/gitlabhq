@@ -26,13 +26,6 @@
         %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
         %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
         .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
-  - if show_merge_request_settings_callout?(@project)
-    %section.settings.expanded
-      = render Pajamas::AlertComponent.new(variant: :info,
-        title: _('Merge requests and approvals settings have moved.'),
-        alert_options: { class: 'js-merge-request-settings-callout gl-my-5', data: { feature_id: Users::CalloutsHelper::MERGE_REQUEST_SETTINGS_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-        - c.with_body do
-          = _('On the left sidebar, select %{merge_requests_link} to view them.').html_safe % { merge_requests_link: link_to('Settings > Merge requests', project_settings_merge_requests_path(@project)).html_safe }
 
   %section.settings.no-animate{ class: ('expanded' if expanded), data: { testid: 'badges-settings-content' } }
     .settings-header

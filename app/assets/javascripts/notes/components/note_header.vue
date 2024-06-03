@@ -189,7 +189,7 @@ export default {
     <template v-if="hasAuthor">
       <span
         v-if="emailParticipant"
-        class="note-header-author-name gl-font-weight-bold"
+        class="note-header-author-name gl-font-bold"
         data-testid="author-name"
         v-text="authorName"
       ></span>
@@ -202,7 +202,7 @@ export default {
         :data-username="author.username"
       >
         <span
-          class="note-header-author-name gl-font-weight-bold"
+          class="note-header-author-name gl-font-bold"
           data-testid="author-name"
           v-text="authorName"
         ></span>

@@ -136,8 +136,11 @@ export default {
       this.versionData = null;
     },
     cancelModal() {
-      this.$emit('hide-create-model');
+      this.hideModal();
       this.resetModal();
+    },
+    hideModal() {
+      this.$emit('hide-create-model');
     },
     hideAlert() {
       this.errorMessage = null;
@@ -193,6 +196,7 @@ export default {
       size="sm"
       @primary="create"
       @cancel="cancelModal"
+      @hide="hideModal"
     >
       <gl-form>
         <gl-form-group

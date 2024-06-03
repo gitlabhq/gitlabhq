@@ -48,7 +48,7 @@ export default {
       data-testid="signature-badge"
       role="button"
       variant="link"
-      class="gl-border-0 gl-outline-0! gl-p-0 gl-bg-transparent"
+      class="gl-border-0 gl-outline-none gl-p-0 gl-bg-transparent"
       :aria-label="statusConfig.label"
     >
       <gl-badge :variant="statusConfig.variant" size="md">

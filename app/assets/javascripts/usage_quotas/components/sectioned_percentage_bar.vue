@@ -73,7 +73,7 @@ export default {
             data-testid="legend-section-color"
           ></div>
           <p class="gl-m-0 gl-font-sm">
-            <span class="gl-mr-2 gl-font-weight-bold">
+            <span class="gl-mr-2 gl-font-bold">
               {{ label }}
             </span>
             <span class="gl-text-gray-500">

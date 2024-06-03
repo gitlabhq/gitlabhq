@@ -79,7 +79,7 @@ export default {
             v-if="
               $slots['left-primary'] /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */
             "
-            class="gl-display-flex gl-align-items-center gl-text-body gl-font-weight-semibold gl-min-h-6 gl-min-w-0"
+            class="gl-display-flex gl-align-items-center gl-text-body gl-font-semibold gl-min-h-6 gl-min-w-0"
           >
             <slot name="left-primary"></slot>
             <gl-button

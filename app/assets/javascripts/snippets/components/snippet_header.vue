@@ -376,7 +376,7 @@ export default {
               />
             </template>
             <template #author>
-              <a :href="snippet.author.webUrl" class="gl-font-weight-bold">
+              <a :href="snippet.author.webUrl" class="gl-font-bold">
                 {{ snippet.author.name }}
               </a>
             </template>

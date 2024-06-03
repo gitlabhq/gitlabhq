@@ -260,7 +260,7 @@ export default {
         <table v-if="hasMetadata">
           <tbody>
             <tr v-for="item in experiment.metadata" :key="item.name">
-              <td class="gl-font-weight-bold">{{ item.name }}</td>
+              <td class="gl-font-bold">{{ item.name }}</td>
               <td>{{ item.value }}</td>
             </tr>
           </tbody>

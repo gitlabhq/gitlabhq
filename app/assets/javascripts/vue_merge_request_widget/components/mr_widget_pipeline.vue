@@ -203,7 +203,7 @@ export default {
               class="gl-display-flex gl-flex-wrap gl-align-items-center gl-justify-content-space-between"
             >
               <p
-                class="mr-pipeline-title gl-align-self-start gl-m-0! gl-mr-3! gl-font-weight-bold gl-text-gray-900"
+                class="mr-pipeline-title gl-align-self-start gl-m-0! gl-mr-3! gl-font-bold gl-text-gray-900"
               >
                 {{ pipeline.details.event_type_name }}
                 <gl-link :href="pipeline.path" class="pipeline-id" data-testid="pipeline-id"

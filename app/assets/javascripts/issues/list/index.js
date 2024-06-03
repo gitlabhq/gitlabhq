@@ -104,6 +104,7 @@ export async function mountIssuesListApp() {
     groupId = '',
     reportAbusePath,
     registerPath,
+    issuesListPath,
   } = el.dataset;
 
   return new Vue({
@@ -171,6 +172,7 @@ export async function mountIssuesListApp() {
       quickActionsHelpPath,
       resetPath,
       groupId,
+      issuesListPath,
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

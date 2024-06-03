@@ -116,7 +116,7 @@ panels:
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439737) in GitLab 16.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/440694) in GitLab 16.11. Feature flag `dora_performers_score_panel` removed.
 
-The [DORA metrics](dora_metrics.md) Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
+The [DORA metrics](dora_metrics.md) Performers score panel is a group-level bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
 
 The chart is a breakdown of your project's DORA scores, [categorized](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out) as high, medium, or low.
 The chart aggregates all the child projects in the group.

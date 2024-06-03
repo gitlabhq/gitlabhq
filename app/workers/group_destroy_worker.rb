@@ -14,6 +14,8 @@ class GroupDestroyWorker
   deduplicate :until_executed, ttl: 2.hours
 
   def perform(group_id, user_id)
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464673')
+
     begin
       group = Group.find(group_id)
     rescue ActiveRecord::RecordNotFound

@@ -157,7 +157,7 @@ export default {
             </template>
           </gl-empty-state>
           <hr />
-          <p class="gl-text-center gl-font-weight-bold gl-mb-0">
+          <p class="gl-text-center gl-font-bold gl-mb-0">
             {{ s__('JiraService|Using Jira for issue tracking?') }}
           </p>
           <p class="gl-text-center gl-mb-0">

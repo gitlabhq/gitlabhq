@@ -2763,7 +2763,6 @@
 - './ee/spec/services/work_items/widgets/weight_service/update_service_spec.rb'
 - './ee/spec/tasks/geo_rake_spec.rb'
 - './ee/spec/tasks/gitlab/check_rake_spec.rb'
-- './ee/spec/tasks/gitlab/elastic_rake_spec.rb'
 - './ee/spec/tasks/gitlab/geo_rake_spec.rb'
 - './ee/spec/tasks/gitlab/license_rake_spec.rb'
 - './ee/spec/tasks/gitlab/seed/group_seed_rake_spec.rb'

@@ -85,9 +85,7 @@ export default {
     >
       <template #meta>
         <div v-if="isUserBusy" class="gl-p-1">
-          <span class="gl-text-gray-500 gl-font-sm gl-font-weight-normal"
-            >({{ $options.i18n.busy }})</span
-          >
+          <span class="gl-text-gray-500 gl-font-sm gl-font-normal">({{ $options.i18n.busy }})</span>
         </div>
         <div v-if="statusEmoji" class="gl-p-1">
           <span

@@ -248,7 +248,7 @@ export default {
           <div
             v-if="sidebarData.current_context_header"
             id="super-sidebar-context-header"
-            class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-leading-reset gl-font-weight-bold gl-font-sm super-sidebar-context-header"
+            class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-leading-reset gl-font-bold gl-font-sm super-sidebar-context-header"
           >
             {{ sidebarData.current_context_header }}
           </div>

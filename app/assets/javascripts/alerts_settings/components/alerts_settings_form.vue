@@ -463,7 +463,7 @@ export default {
                 :is-loading="loading"
                 :label="$options.i18n.integrationFormSteps.nameIntegration.activeToggle"
                 data-testid="active-toggle-container"
-                class="gl-mt-4 gl-font-weight-normal"
+                class="gl-mt-4 gl-font-normal"
               />
             </gl-form-group>
             <template v-if="showMappingBuilder">
@@ -579,7 +579,7 @@ export default {
 
           <gl-form-group id="integration-webhook">
             <div class="gl-my-4">
-              <span class="gl-font-weight-bold">
+              <span class="gl-font-bold">
                 {{ $options.i18n.integrationFormSteps.setupCredentials.webhookUrl }}
               </span>
 
@@ -595,7 +595,7 @@ export default {
             </div>
 
             <div class="gl-my-4">
-              <span class="gl-font-weight-bold">
+              <span class="gl-font-bold">
                 {{ $options.i18n.integrationFormSteps.setupCredentials.authorizationKey }}
               </span>
 

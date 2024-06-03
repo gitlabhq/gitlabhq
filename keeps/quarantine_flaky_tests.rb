@@ -31,7 +31,8 @@ module Keeps
   class QuarantineFlakyTests < ::Gitlab::Housekeeper::Keep
     MINIMUM_REMAINING_RATE = 25
     QUERY_URL_TEMPLATE = "https://gitlab.com/api/v4/projects/278964/issues/?order_by=updated_at&state=opened&labels[]=test&labels[]=failure::flaky-test&labels[]=%<flakiness_label>s&not[labels][]=QA&not[labels][]=quarantine&per_page=20"
-    EXAMPLE_LINE_REGEX = /([\w'",])? do$/
+    # https://rubular.com/r/WnMxnDPvGGjoGE
+    EXAMPLE_LINE_REGEX = /\bit (?<description_and_metadata>[\w'",: ]*(?:,\n)?[\w\'",: ]+?) do$/m
     FLAKINESS_LABELS = %w[flakiness::1 flakiness::2].freeze
 
     def each_change
@@ -61,7 +62,7 @@ module Keeps
       return unless match
 
       filename = match[:filename]
-      line_number = match[:line_number].to_i
+      line_number = match[:line_number].to_i - 1
 
       match = flaky_issue['description'].match(%r{\| Description \| (?<description>.+) \|})
       return unless match
@@ -72,9 +73,23 @@ module Keeps
       full_file_content = File.read(file)
 
       file_lines = full_file_content.lines
-      return unless file_lines[line_number - 1].match?(EXAMPLE_LINE_REGEX)
+      test_line = file_lines[line_number]
 
-      file_lines[line_number - 1].sub!(EXAMPLE_LINE_REGEX, "\\1, quarantine: '#{flaky_issue['web_url']}' do")
+      unless test_line
+        puts "#{file} doesn't have a line #{line_number}! Skipping."
+        return
+      end
+
+      unless test_line.match?(EXAMPLE_LINE_REGEX)
+        puts "Line #{line_number} of #{file} doesn't match #{EXAMPLE_LINE_REGEX}! See the line content:"
+        puts "```\n#{test_line}\n```"
+        puts "Skipping."
+        return
+      end
+
+      puts "Quarantining #{flaky_issue['web_url']} (#{description})"
+
+      file_lines[line_number].sub!(EXAMPLE_LINE_REGEX, "it \\1, quarantine: '#{flaky_issue['web_url']}' do")
 
       File.write(file, file_lines.join)
 

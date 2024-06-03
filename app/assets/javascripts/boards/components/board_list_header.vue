@@ -405,7 +405,7 @@ export default {
         <span
           v-if="listType === 'assignee'"
           v-show="!list.collapsed"
-          class="gl-ml-2 gl-font-weight-normal gl-text-secondary"
+          class="gl-ml-2 gl-font-normal gl-text-secondary"
         >
           @{{ listAssignee }}
         </span>
@@ -430,7 +430,7 @@ export default {
         <gl-icon name="information" />
       </span>
       <gl-tooltip v-if="isSwimlanesHeader && list.collapsed" :target="() => $refs.collapsedInfo">
-        <div class="gl-font-weight-bold gl-pb-2">{{ collapsedTooltipTitle }}</div>
+        <div class="gl-font-bold gl-pb-2">{{ collapsedTooltipTitle }}</div>
         <div v-if="list.maxIssueCount !== 0">
           •
           <gl-sprintf :message="__('%{issuesSize} with a limit of %{maxIssueCount}')">

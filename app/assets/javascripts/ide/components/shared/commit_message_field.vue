@@ -72,7 +72,7 @@ export default {
   <fieldset
     class="gl-rounded-base gl-shadow-inner-1-gray-400 gl-py-4 gl-px-5"
     :class="{
-      'gl-outline-none! gl-focus-ring-border-1-gray-900!': isFocused,
+      'gl-outline-none gl-focus-ring-border-1-gray-900!': isFocused,
     }"
   >
     <div
@@ -120,7 +120,7 @@ export default {
         ref="textarea"
         :placeholder="placeholder"
         :value="text"
-        class="gl-absolute gl-w-full gl-h-full gl-z-2 gl-font-monospace p-0 gl-outline-0 gl-bg-transparent gl-border-0"
+        class="gl-absolute gl-w-full gl-h-full gl-z-2 gl-font-monospace p-0 gl-outline-none gl-bg-transparent gl-border-0"
         dir="auto"
         name="commit-message"
         @scroll="handleScroll"

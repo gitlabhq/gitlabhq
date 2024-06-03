@@ -15,6 +15,8 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
   worker_resource_boundary :memory
 
   def perform(project_id)
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464677')
+
     @project = Project.find_by_id(project_id)
     return if project.nil? || !start_import?
 

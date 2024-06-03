@@ -39,12 +39,14 @@ module Gitlab
       #
       #     retval # => 10
       def self.run
+        previous_transaction = current
+
         transaction = new
         Thread.current[THREAD_KEY] = transaction
 
         [transaction, yield]
       ensure
-        Thread.current[THREAD_KEY] = nil
+        Thread.current[THREAD_KEY] = previous_transaction
       end
 
       def initialize

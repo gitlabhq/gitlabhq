@@ -154,7 +154,7 @@ export default {
 <template>
   <div>
     <div
-      class="gl-display-flex gl-align-items-center gl-leading-20 gl-text-gray-900 gl-font-weight-bold"
+      class="gl-display-flex gl-align-items-center gl-leading-20 gl-text-gray-900 gl-font-bold"
       @click.self="collapse"
     >
       <span class="hide-collapsed" data-testid="title" @click="collapse">

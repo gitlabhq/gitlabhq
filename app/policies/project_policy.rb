@@ -250,6 +250,10 @@ class ProjectPolicy < BasePolicy
     end
   end
 
+  condition(:push_repository_for_job_token_allowed) do
+    @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
+  end
+
   condition(:packages_disabled, scope: :subject) { !@subject.packages_enabled }
 
   condition(:runner_registration_token_enabled, scope: :subject) { @subject.namespace.allow_runner_registration_token? }
@@ -707,6 +711,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { repository_disabled }.policy do
+    prevent :build_push_code
     prevent :push_code
     prevent :download_code
     prevent :build_download_code
@@ -745,6 +750,10 @@ class ProjectPolicy < BasePolicy
 
   rule { public_project & ~project_allowed_for_job_token }.policy do
     prevent :public_user_access
+  end
+
+  rule { can?(:developer_access) & push_repository_for_job_token_allowed }.policy do
+    enable :build_push_code
   end
 
   rule { public_or_internal & job_token_container_registry }.policy do

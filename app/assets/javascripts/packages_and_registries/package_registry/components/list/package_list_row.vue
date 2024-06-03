@@ -100,7 +100,7 @@ export default {
     errorPackageStyle() {
       return {
         'gl-text-red-500': this.errorStatusRow,
-        'gl-font-weight-normal': this.errorStatusRow,
+        'gl-font-normal': this.errorStatusRow,
       };
     },
   },

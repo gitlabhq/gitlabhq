@@ -17,6 +17,8 @@ class NewMergeRequestWorker # rubocop:disable Scalability/IdempotentWorker
   weight 2
 
   def perform(merge_request_id, user_id)
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/337182')
+
     return unless objects_found?(merge_request_id, user_id)
     return if issuable.prepared?
 

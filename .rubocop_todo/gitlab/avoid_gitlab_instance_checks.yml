@@ -117,7 +117,6 @@ Gitlab/AvoidGitlabInstanceChecks:
     - 'ee/lib/gitlab/manual_quarterly_co_term_banner.rb'
     - 'ee/lib/gitlab/sitemaps/generator.rb'
     - 'ee/lib/sidebars/user_settings/menus/profile_billing_menu.rb'
-    - 'ee/lib/tasks/gitlab/elastic.rake'
     - 'ee/spec/factories/gitlab_subscriptions.rb'
     - 'lib/container_registry/client.rb'
     - 'lib/container_registry/gitlab_api_client.rb'

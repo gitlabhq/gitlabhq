@@ -368,7 +368,7 @@ export default {
               <span
                 class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-mb-2"
               >
-                <span data-testid="action-primary-text" class="gl-font-weight-bold">{{
+                <span data-testid="action-primary-text" class="gl-font-bold">{{
                   action.text
                 }}</span>
                 <kbd v-if="action.shortcut && !shortcutsDisabled" class="flat">{{

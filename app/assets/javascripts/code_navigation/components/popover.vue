@@ -110,7 +110,7 @@ export default {
           </div>
         </div>
         <div v-if="definitionPath || isCurrentDefinition" class="popover-body border-top">
-          <span v-if="isCurrentDefinition" class="gl-font-weight-bold gl-font-base">
+          <span v-if="isCurrentDefinition" class="gl-font-bold gl-font-base">
             {{ s__('CodeIntelligence|This is the definition') }}
           </span>
           <gl-button

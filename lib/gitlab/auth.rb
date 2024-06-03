@@ -366,6 +366,7 @@ module Gitlab
         [
           :read_project,
           :build_download_code,
+          :build_push_code,
           :build_read_container_image,
           :build_create_container_image,
           :build_destroy_container_image

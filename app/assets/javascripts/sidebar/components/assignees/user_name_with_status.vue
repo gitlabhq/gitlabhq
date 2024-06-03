@@ -44,7 +44,7 @@ export default {
     <gl-sprintf :message="s__('UserAvailability|%{author}%{badgeStart}Busy%{badgeEnd}')">
       <template #author
         ><span>{{ name }}</span
-        ><span v-if="hasPronouns" class="gl-text-gray-500 gl-font-sm gl-font-weight-normal gl-ml-1"
+        ><span v-if="hasPronouns" class="gl-text-gray-500 gl-font-sm gl-font-normal gl-ml-1"
           >({{ pronouns }})</span
         ></template
       >

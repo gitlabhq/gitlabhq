@@ -216,7 +216,7 @@ export default {
       @close="close(false)"
     >
       <template #title>
-        <div class="gl-font-weight-bold gl-font-size-h2">
+        <div class="gl-font-bold gl-font-size-h2">
           {{ s__('Achievements|New achievement') }}
         </div>
       </template>

@@ -183,7 +183,8 @@ module IssuesHelper
       reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
       show_new_issue_link: show_new_issue_link?(project).to_s,
       report_abuse_path: add_category_abuse_reports_path,
-      register_path: new_user_registration_path(redirect_to_referer: 'yes')
+      register_path: new_user_registration_path(redirect_to_referer: 'yes'),
+      issues_list_path: project_issues_path(project)
     )
   end
 
@@ -195,7 +196,8 @@ module IssuesHelper
       has_any_issues: @has_issues.to_s,
       has_any_projects: @has_projects.to_s,
       new_project_path: new_project_path(namespace_id: group.id),
-      group_id: group.id
+      group_id: group.id,
+      issues_list_path: issues_group_path(group)
     )
   end
 
