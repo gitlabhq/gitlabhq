@@ -7946,17 +7946,11 @@ CREATE TABLE container_repositories (
     migration_import_done_at timestamp with time zone,
     migration_aborted_at timestamp with time zone,
     migration_skipped_at timestamp with time zone,
-    migration_retries_count integer DEFAULT 0 NOT NULL,
-    migration_skipped_reason smallint,
-    migration_state text DEFAULT 'default'::text NOT NULL,
-    migration_aborted_in_state text,
     migration_plan text,
     last_cleanup_deleted_tags_count integer,
     delete_started_at timestamp with time zone,
     status_updated_at timestamp with time zone,
-    CONSTRAINT check_05e9012f36 CHECK ((char_length(migration_plan) <= 255)),
-    CONSTRAINT check_13c58fe73a CHECK ((char_length(migration_state) <= 255)),
-    CONSTRAINT check_97f0249439 CHECK ((char_length(migration_aborted_in_state) <= 255))
+    CONSTRAINT check_05e9012f36 CHECK ((char_length(migration_plan) <= 255))
 );
 
 CREATE SEQUENCE container_repositories_id_seq

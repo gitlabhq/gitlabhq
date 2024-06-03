@@ -5,15 +5,13 @@ module QA
     module Project
       module Settings
         module Services
-          class Slack < Chemlab::Page
-            strong :slack_text, visible_text: /install/i
-
-            def start_slack_install
-              slack_link.click
+          class Slack < Page::Base
+            view 'app/views/shared/integrations/gitlab_slack_application/_slack_integration_form.html.haml' do
+              element 'install-slack-app-button'
             end
 
-            def slack_link
-              slack_text_element.parent
+            def install_slack
+              click_element('install-slack-app-button')
             end
           end
         end

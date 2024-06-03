@@ -221,7 +221,6 @@ Lint/AssignmentInCondition:
     - 'lib/gitlab/wiki_pages/front_matter_parser.rb'
     - 'lib/prometheus/pid_provider.rb'
     - 'lib/tasks/gitlab/banzai.rake'
-    - 'qa/lib/slack/page/chat.rb'
     - 'qa/qa/resource/registry_repository.rb'
     - 'qa/qa/scenario/template.rb'
     - 'qa/qa/vendor/jenkins/helpers.rb'

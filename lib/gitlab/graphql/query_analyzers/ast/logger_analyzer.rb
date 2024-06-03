@@ -22,13 +22,34 @@ module Gitlab
           end
 
           def result
-            complexity, depth, field_usages =
+            # In its most general form, .analyze_query returns one of the
+            # following:
+            #
+            # - An array with one result per analyzer, in the order they were
+            #   provided, but only the ones where #analyze? returned true prior
+            #   to analysis.
+            #
+            # - [GraphQL::AnalysisError] if the analysis times out
+            #
+            # - [] if an authorization error is raised
+            #
+            # For our analyzers, #analyze? is always true, so we can assume that
+            # there are always three valid results, one error, no results at all
+            # (we probably always have results, but we might as well be robust
+            # to that case).
+            complexity_or_error, depth, field_usages =
               GraphQL::Analysis::AST.analyze_query(@subject, ALL_ANALYZERS, multiplex_analyzers: [])
 
-            field_usages ||= {} # in various edge cases, #analyze_query returns []
+            case complexity_or_error
+            when Integer
+              results[:complexity] = complexity_or_error
+            when GraphQL::AnalysisError
+              results[:analysis_error] = complexity_or_error.message
+            end
+
+            field_usages ||= {} # in the zero or one result case, field_usages needs a sensible default
 
             results[:depth] = depth
-            results[:complexity] = complexity
             # This duration is not the execution time of the
             # query but the execution time of the analyzer.
             results[:duration_s] = duration(results[:time_started])
