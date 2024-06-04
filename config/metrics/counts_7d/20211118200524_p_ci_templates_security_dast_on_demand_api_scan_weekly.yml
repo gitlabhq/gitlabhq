@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_dast_on_demand_api_scan_weekly
 description: Count of pipelines using the latest DAST API template
-product_section: sec
-product_stage: secure
 product_group: "dynamic_analysis"
 value_type: number
 status: active

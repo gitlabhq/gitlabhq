@@ -170,7 +170,7 @@ describe('ide/init_gitlab_web_ide', () => {
 
       // why: Snapshot to test that the element was cleaned including `test-class`
       expect(rootEl.outerHTML).toBe(
-        '<div id="ide" class="gl--flex-center gl-relative gl-h-full"></div>',
+        '<div id="ide" class="gl-flex gl-justify-center gl-items-center gl-relative gl-h-full"></div>',
       );
     });
 

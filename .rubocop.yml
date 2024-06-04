@@ -1023,7 +1023,7 @@ Performance/ActiveRecordSubtransactionMethods:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
-Migration/BackgroundMigrationBaseClass:
+Migration/BatchedMigrationBaseClass:
   Enabled: false
 
 BackgroundMigration/AvoidSilentRescueExceptions:

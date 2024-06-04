@@ -141,7 +141,7 @@ export default {
         class="description-more gl-display-block gl-w-full"
         data-test-id="description-read-more"
       >
-        <div class="show-all-btn gl-w-full gl--flex-center">
+        <div class="show-all-btn gl-w-full gl-flex gl-justify-center gl-items-center">
           <gl-button
             variant="confirm"
             category="tertiary"

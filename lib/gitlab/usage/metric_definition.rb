@@ -28,12 +28,12 @@ module Gitlab
       def event_selection_rules
         return [] unless @attributes[:events]
 
-        @attributes[:events].map do |event|
-          {
+        @event_selection_rules ||= @attributes[:events].map do |event|
+          EventSelectionRule.new(
             name: event[:name],
-            time_framed?: time_framed?,
-            filter: event[:filter] || {}
-          }
+            time_framed: time_framed?,
+            filter: event[:filter]
+          )
         end
       end
 

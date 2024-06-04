@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GroupTree do
+RSpec.describe GroupTree, feature_category: :groups_and_projects do
   let(:group) { create(:group, :public) }
   let(:user) { create(:user) }
 

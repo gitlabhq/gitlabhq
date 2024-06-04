@@ -1,8 +1,6 @@
 ---
 key_path: deactivate_dormant_users_enabled
 description: Whether Dormant User Deactivation is enabled
-product_section: fulfillment
-product_stage: fulfillment
 product_group: utilization
 value_type: boolean
 status: active

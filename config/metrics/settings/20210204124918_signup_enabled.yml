@@ -2,8 +2,6 @@
 data_category: optional
 key_path: signup_enabled
 description: Whether public signup is enabled
-product_section: sec
-product_stage: govern
 product_group: authentication
 value_type: boolean
 status: active

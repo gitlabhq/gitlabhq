@@ -9,34 +9,36 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric, :clea
 
     event_definition = instance_double(
       Gitlab::Tracking::EventDefinition,
-      event_selection_rules: [{ name: 'my_event', time_framed?: false, filter: {} }]
+      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event', time_framed: false)]
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event').and_return(event_definition)
 
     event_definition1 = instance_double(
       Gitlab::Tracking::EventDefinition,
-      event_selection_rules: [{ name: 'my_event1', time_framed?: false, filter: {} }]
+      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event1', time_framed: false)]
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event1').and_return(event_definition1)
 
     event_definition2 = instance_double(
       Gitlab::Tracking::EventDefinition,
-      event_selection_rules: [{ name: 'my_event2', time_framed?: false, filter: {} }]
+      event_selection_rules: [Gitlab::Usage::EventSelectionRule.new(name: 'my_event2', time_framed: false)]
     )
     allow(Gitlab::Tracking::EventDefinition).to receive(:find).with('my_event2').and_return(event_definition2)
   end
 
   context 'with multiple similar events' do
+    let(:event_selection_rule) { Gitlab::Usage::EventSelectionRule.new(name: 'my_event', time_framed: true) }
+
     before do
       last_week = Date.today - 7.days
       two_weeks_ago = last_week - 1.week
 
-      redis_counter_key = described_class.redis_key('my_event', last_week)
+      redis_counter_key = event_selection_rule.redis_key_for_date(last_week)
       2.times do
         Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
       end
 
-      redis_counter_key = described_class.redis_key('my_event', two_weeks_ago)
+      redis_counter_key = event_selection_rule.redis_key_for_date(two_weeks_ago)
       3.times do
         Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
       end
@@ -67,26 +69,25 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric, :clea
 
   context 'with multiple different events' do
     let(:expected_value) { 2 }
+    let(:event_selection_rule1) { Gitlab::Usage::EventSelectionRule.new(name: 'my_event1', time_framed: true) }
+    let(:event_selection_rule2) { Gitlab::Usage::EventSelectionRule.new(name: 'my_event2', time_framed: true) }
 
     before do
       last_week = Date.today - 7.days
       two_weeks_ago = last_week - 1.week
 
       2.times do
-        redis_counter_key =
-          Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key('my_event1', last_week)
+        redis_counter_key = event_selection_rule1.redis_key_for_date(last_week)
         Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
       end
 
       3.times do
-        redis_counter_key =
-          Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key('my_event1', two_weeks_ago)
+        redis_counter_key = event_selection_rule1.redis_key_for_date(two_weeks_ago)
         Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
       end
 
       4.times do
-        redis_counter_key =
-          Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key('my_event2', last_week)
+        redis_counter_key = event_selection_rule2.redis_key_for_date(last_week)
         Gitlab::Redis::SharedState.with { |redis| redis.incr(redis_counter_key) }
       end
 
@@ -121,18 +122,6 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric, :clea
 
     it 'raises an exception' do
       expect { metric.value }.to raise_error(/Unknown time frame/)
-    end
-  end
-
-  describe '.redis_key' do
-    it 'adds the key prefix to the event name' do
-      expect(described_class.redis_key('my_event')).to eq('{event_counters}_my_event')
-    end
-
-    context "with a date" do
-      it 'adds the key prefix and suffix to the event name' do
-        expect(described_class.redis_key('my_event', Date.new(2023, 10, 19))).to eq("{event_counters}_my_event-2023-42")
-      end
     end
   end
 end

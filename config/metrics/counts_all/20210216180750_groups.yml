@@ -2,8 +2,6 @@
 data_category: operational
 key_path: counts.groups
 description: Total count of groups as of usage ping snapshot
-product_section: sec
-product_stage: govern
 product_group: authentication
 value_type: number
 status: active

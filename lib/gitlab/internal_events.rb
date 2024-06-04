@@ -56,19 +56,6 @@ module Gitlab
         nil
       end
 
-      def convert_event_selection_rule_to_path_part(event_selection_rule)
-        path = event_selection_rule[:name]
-
-        if event_selection_rule[:filter].present?
-          filter = event_selection_rule[:filter]
-          sorted_filter_keys = filter.keys.sort
-          serialized_filter = sorted_filter_keys.map { |key| "#{key}:#{filter[key]}" }.join(',')
-          path = "#{path}-filter:[#{serialized_filter}]"
-        end
-
-        path
-      end
-
       private
 
       def validate_properties!(additional_properties, kwargs)
@@ -108,23 +95,14 @@ module Gitlab
         return unless event_definition
 
         event_definition.event_selection_rules.each do |event_selection_rule|
-          matches_filter = event_selection_rule[:filter].all? do |property_name, value|
+          matches_filter = event_selection_rule.filter.all? do |property_name, value|
             additional_properties[property_name] == value
           end
 
           next unless matches_filter
 
-          event_specific_part_of_path = convert_event_selection_rule_to_path_part(event_selection_rule)
-
-          if event_selection_rule[:time_framed?]
-            redis_key = Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(
-              event_specific_part_of_path,
-              Date.today
-            )
-            increment(redis_key, expiry: 6.weeks)
-          else
-            increment(Gitlab::Usage::Metrics::Instrumentations::TotalCountMetric.redis_key(event_specific_part_of_path))
-          end
+          expiry = event_selection_rule.time_framed? ? 6.weeks : nil
+          increment(event_selection_rule.redis_key_for_date, expiry: expiry)
         end
       end
 

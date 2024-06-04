@@ -86,12 +86,12 @@ module Gitlab
 
       def find_event_selection_rules
         result = [
-          { name: attributes[:action], time_framed?: false, filter: {} },
-          { name: attributes[:action], time_framed?: true, filter: {} }
+          Gitlab::Usage::EventSelectionRule.new(name: attributes[:action], time_framed: false),
+          Gitlab::Usage::EventSelectionRule.new(name: attributes[:action], time_framed: true)
         ]
         Gitlab::Usage::MetricDefinition.definitions.each_value do |metric_definition|
           matching_event_selection_rules = metric_definition.event_selection_rules.select do |event_selection_rule|
-            event_selection_rule[:name] == attributes[:action]
+            event_selection_rule.name == attributes[:action]
           end
           result.concat(matching_event_selection_rules)
         end

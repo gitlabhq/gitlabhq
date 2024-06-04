@@ -20,31 +20,12 @@ afterEach(() => {
 });
 
 describe('GroupsExploreEmptyState', () => {
-  describe('when on gitlab.com', () => {
-    beforeEach(() => {
-      window.gon = {
-        dot_com: true,
-      };
-    });
+  it('renders empty state', () => {
+    createComponent();
 
-    it('renders empty state', () => {
-      createComponent();
-
-      expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
-        title: 'No public groups',
-        svgPath: defaultProvide.groupsEmptyStateIllustration,
-      });
-    });
-  });
-
-  describe('when on self-managed', () => {
-    it('renders empty state', () => {
-      createComponent();
-
-      expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
-        title: 'No public or internal groups',
-        svgPath: defaultProvide.groupsEmptyStateIllustration,
-      });
+    expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
+      title: 'No public or internal groups',
+      svgPath: defaultProvide.groupsEmptyStateIllustration,
     });
   });
 });

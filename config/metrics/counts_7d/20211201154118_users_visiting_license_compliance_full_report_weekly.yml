@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.testing.users_visiting_testing_license_compliance_full_report_weekly
 description: Count of visiting the license compliance full report
-product_section: sec
-product_stage: secure
 product_group: static_analysis
 value_type: number
 status: removed

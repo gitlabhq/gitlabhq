@@ -1,8 +1,6 @@
 ---
 key_path: counts_monthly.promoted_issues
 description: Count of issues promoted to epics
-product_section: analytics
-product_stage: analytics
 product_group: analytics_instrumentation
 value_type: number
 status: removed

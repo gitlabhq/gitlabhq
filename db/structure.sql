@@ -6652,7 +6652,7 @@ CREATE TABLE ci_daily_build_group_report_results (
     data jsonb NOT NULL,
     default_branch boolean DEFAULT false NOT NULL,
     group_id bigint,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_daily_build_group_report_results_id_seq

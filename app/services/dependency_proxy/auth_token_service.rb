@@ -36,10 +36,10 @@ module DependencyProxy
       elsif token_payload['group_access_token']
         # a group access token is a personal access token in disguise
         get_personal_access_token(token_payload['group_access_token'])
-      elsif token_payload['deploy_token']
-        get_deploy_token(token_payload['deploy_token'])
       elsif token_payload['user_id']
         get_user(token_payload['user_id'])
+      elsif token_payload['deploy_token']
+        get_deploy_token(token_payload['deploy_token'])
       end
     rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature
       nil

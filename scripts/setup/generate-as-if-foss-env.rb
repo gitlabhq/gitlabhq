@@ -6,7 +6,7 @@ require 'gitlab' unless Object.const_defined?(:Gitlab)
 require 'set' # rubocop:disable Lint/RedundantRequireStatement -- Ruby 3.1 and earlier needs this. Drop this line after Ruby 3.2+ is only supported.
 
 class GenerateAsIfFossEnv
-  PARALLEL = %r{(?: \d+/\d+)?}
+  PARALLEL = %r{(?: \d+/\d+)}
   PG_JOB = %r{\S+ pg\d+}
 
   # Map job names to environment variables. One job can match multiple variables.
@@ -32,7 +32,7 @@ class GenerateAsIfFossEnv
     /^cache-assets\b/ => 'ENABLE_CACHE_ASSETS',
     # Jest
     /^jest#{PARALLEL}/ => 'ENABLE_JEST',
-    /^jest-integration#{PARALLEL}/ => 'ENABLE_JEST_INTEGRATION',
+    /^jest-integration/ => 'ENABLE_JEST_INTEGRATION',
     /^jest predictive#{PARALLEL}/ => 'ENABLE_JEST_PREDICTIVE',
     # RSpec
     /^rspec/ => 'ENABLE_RSPEC',

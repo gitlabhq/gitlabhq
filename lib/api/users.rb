@@ -200,6 +200,13 @@ module API
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
       get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :user_profile, urgency: :default do
+        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
+          check_rate_limit!(
+            :user_status,
+            scope: request.ip
+          )
+        end
+
         user = find_user(params[:user_id])
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -260,6 +267,15 @@ module API
       get ':id/following', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
 
+        unless current_user.can_read_all_resources?
+          if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
+            check_rate_limit!(
+              :user_following,
+              scope: request.ip
+            )
+          end
+        end
+
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user_profile, user)
 
@@ -275,6 +291,15 @@ module API
       end
       get ':id/followers', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
+
+        unless current_user.can_read_all_resources?
+          if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
+            check_rate_limit!(
+              :user_followers,
+              scope: request.ip
+            )
+          end
+        end
 
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user_profile, user)
@@ -484,6 +509,13 @@ module API
         use :pagination
       end
       get ':user_id/keys', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
+        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
+          check_rate_limit!(
+            :user_keys,
+            scope: request.ip
+          )
+        end
+
         user = find_user(params[:user_id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
@@ -499,6 +531,13 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
       end
       get ':id/keys/:key_id', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
+        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
+          check_rate_limit!(
+            :user_specific_key,
+            scope: request.ip
+          )
+        end
+
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
@@ -567,6 +606,13 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys', feature_category: :system_access do
+        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
+          check_rate_limit!(
+            :user_gpg_keys,
+            scope: request.ip
+          )
+        end
+
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 
@@ -584,6 +630,13 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys/:key_id', feature_category: :system_access do
+        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
+          check_rate_limit!(
+            :user_specific_gpg_key,
+            scope: request.ip
+          )
+        end
+
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
 

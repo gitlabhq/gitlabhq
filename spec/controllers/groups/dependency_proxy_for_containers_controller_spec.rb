@@ -181,7 +181,9 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       group.add_guest(user)
     end
 
-    context 'with a valid user' do
+    # When authenticating with a job token, the encoded token is the same as
+    # that built when authenticating with a user
+    context 'with a valid user or a job token' do
       it_behaves_like 'sends Workhorse instructions'
     end
 
@@ -297,7 +299,9 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
         end
       end
 
-      context 'a valid user' do
+      # When authenticating with a job token, the encoded token is the same as
+      # that built when authenticating with a user
+      context 'a valid user or a job token' do
         before do
           group.add_guest(user)
         end

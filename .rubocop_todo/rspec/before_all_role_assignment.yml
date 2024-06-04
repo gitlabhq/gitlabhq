@@ -793,6 +793,7 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/features/dashboard/issues_filter_spec.rb'
     - 'spec/features/dashboard/todos/todos_spec.rb'
     - 'spec/features/emails/issues_spec.rb'
+    - 'spec/features/explore/groups_list_spec.rb'
     - 'spec/features/global_search_spec.rb'
     - 'spec/features/groups/board_spec.rb'
     - 'spec/features/groups/dependency_proxy_for_containers_spec.rb'

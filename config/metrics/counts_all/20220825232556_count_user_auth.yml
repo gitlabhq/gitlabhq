@@ -1,8 +1,6 @@
 ---
 key_path: usage_activity_by_stage.manage.count_user_auth
 description: Number of unique user logins
-product_section: sec
-product_stage: govern
 product_group: authentication
 value_type: number
 status: active

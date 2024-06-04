@@ -3,8 +3,6 @@ data_category: optional
 key_path: object_store.external_diffs.object_store.background_upload
 description: Whether Background Upload for Object Storage is enabled for External
   Diffs
-product_section: enablement
-product_stage: enablement
 product_group: cloud_connector
 value_type: boolean
 status: broken

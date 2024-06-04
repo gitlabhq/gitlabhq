@@ -252,24 +252,22 @@ Your Jira project key must not have [restricted words and characters](https://co
 
 ### Errors with Jira credentials
 
-When you try to view the Jira issue list in GitLab, you might see one of the following errors related to credentials:
+When you try to view the Jira issue list in GitLab, you might see one of the following errors.
 
-- `An error occurred while requesting data from Jira: The value '<project>' does not exist for the field 'project'. Check your Jira integration configuration and try again.`
-- `The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.`
+#### `An error occurred while requesting data from Jira: The value '<project>' does not exist for the field 'project'. Check your Jira integration configuration and try again.`
 
-#### Error: `An error occurred while requesting data from Jira: The value '<project>' does not exist for the field 'project'. Check your Jira integration configuration and try again.`
+This error occurs when you use the wrong authentication credentials for your Jira installation:
 
-This error occurs when using the wrong authentication credential type based on the type of Jira installation:
+- **For Jira Cloud**, you must have a Jira Cloud API token
+  and the email address you used to create the token.
+- **For Jira Data Center or Jira Server**, you must have a Jira username and password,
+  or, in GitLab 16.0 and later, a Jira personal access token.
 
-- Jira Cloud requires an email and API token.
-- Jira Data Center and Server require a username and password combination.
+For more information, see [Jira issue integration](configure.md#configure-the-integration).
 
-For more information, see the [integration guide](configure.md#configure-the-integration).
+To resolve this issue, update the authentication credentials to match your Jira installation.
 
-To resolve this issue, update the authentication credentials to match the required authentication details for your type
-of Jira.
-
-#### Error: `The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.`
+#### `The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.`
 
 This error occurs when the Jira credentials cannot access the Jira project key you specified in the
 [Jira issue integration](configure.md#configure-the-integration).

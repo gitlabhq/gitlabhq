@@ -44,6 +44,7 @@ Parameters:
 | `intent`           | string  | no       | The intent of the completion request. This can be either `completion` or `generation`. |
 | `stream`           | boolean | no       | Whether to stream the response as smaller chunks as they are ready (if applicable). Default: `false`. |
 | `project_path`     | string  | no       | The path of the project. |
+| `generation_type`  | string  | no       | The type of event for generation requests. This can be `comment`, `empty_function`, or `small_file`. |
 | `context`          | array   | no       | Additional context to be used for Code Suggestions. See [Context attributes](#context-attributes) for a list of parameters this attribute accepts. |
 | `user_instruction` | string  | no       | A user's instructions for Code Suggestions. |
 

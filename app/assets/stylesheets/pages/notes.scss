@@ -1122,7 +1122,9 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
   position: relative;
 
   .system-note-image {
-    @include gl--flex-center;
+    @apply gl-flex;
+    @apply gl-justify-center;
+    @apply gl-items-center;
     top: 14px;
     width: 22px;
     height: 22px;

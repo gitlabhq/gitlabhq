@@ -101,8 +101,8 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
   let(:event_definition) { instance_double(Gitlab::Tracking::EventDefinition) }
   let(:event_selection_rules) do
     [
-      { name: event_name, time_framed?: false, filter: {} },
-      { name: event_name, time_framed?: true, filter: {} }
+      Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: false),
+      Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: true)
     ]
   end
 
@@ -188,10 +188,22 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       let(:time_framed) { true }
       let(:event_selection_rules) do
         [
-          { name: event_name, time_framed?: time_framed, filter: {} },
-          { name: event_name, time_framed?: time_framed, filter: { label: 'label_name' } },
-          { name: event_name, time_framed?: time_framed, filter: { label: 'another_label_value' } },
-          { name: event_name, time_framed?: time_framed, filter: { label: 'label_name', value: 16.17 } }
+          Gitlab::Usage::EventSelectionRule.new(name: event_name, time_framed: time_framed),
+          Gitlab::Usage::EventSelectionRule.new(
+            name: event_name,
+            time_framed: time_framed,
+            filter: { label: 'label_name' }
+          ),
+          Gitlab::Usage::EventSelectionRule.new(
+            name: event_name,
+            time_framed: time_framed,
+            filter: { label: 'another_label_value' }
+          ),
+          Gitlab::Usage::EventSelectionRule.new(
+            name: event_name,
+            time_framed: time_framed,
+            filter: { label: 'label_name', value: 16.17 }
+          )
         ]
       end
 
@@ -205,6 +217,42 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
         end
 
         it 'updates the correct redis keys' do
+          described_class.track_event(
+            event_name,
+            additional_properties: additional_properties,
+            user: user,
+            project: project
+          )
+
+          expect_redis_tracking
+        end
+      end
+
+      context 'when redis key is overridden in total_counter_redis_key_overrides.yml' do
+        let(:time_framed) { false }
+        let(:redis_arguments) { %w[SOME_LEGACY_KEY ANOTHER_LEGACY_KEY A_THIRD_LEGACY_KEY] }
+
+        let(:override_yaml) do
+          <<~YAML
+            '{event_counters}_#{event_name}-filter:[label:label_name]': #{redis_arguments[0]}
+            '{event_counters}_#{event_name}-filter:[label:label_name,value:16.17]': #{redis_arguments[1]}
+            '{event_counters}_#{event_name}': #{redis_arguments[2]}
+          YAML
+        end
+
+        before do
+          described_class.clear_memoization(:key_overrides)
+          allow(File).to receive(:read).and_call_original
+          allow(File).to receive(:read)
+            .with(Gitlab::UsageDataCounters::RedisCounter::KEY_OVERRIDES_PATH)
+            .and_return(override_yaml)
+        end
+
+        after do
+          described_class.clear_memoization(:key_overrides)
+        end
+
+        it 'updates the matching redis keys' do
           described_class.track_event(
             event_name,
             additional_properties: additional_properties,
@@ -456,34 +504,6 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
       expect_redis_tracking
       expect_snowplow_tracking(project.namespace)
       expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to have_received(:track_event)
-    end
-  end
-
-  describe '#convert_event_selection_rule_to_path_part' do
-    context 'without a filter' do
-      let(:event_selection_rule) { { name: 'example_event' } }
-
-      it 'returns the event name' do
-        expect(described_class.convert_event_selection_rule_to_path_part(event_selection_rule)).to eq('example_event')
-      end
-    end
-
-    context 'with a single property filter' do
-      let(:event_selection_rule) { { name: 'example_event', filter: { label: 'npm' } } }
-
-      it 'returns the correct path with filter' do
-        expect(described_class.convert_event_selection_rule_to_path_part(event_selection_rule))
-          .to eq('example_event-filter:[label:npm]')
-      end
-    end
-
-    context 'with a multi property filter that are unordered' do
-      let(:event_selection_rule) { { name: 'example_event', filter: { property: 'deploy_token', label: 'npm' } } }
-
-      it 'returns the correct path with filter' do
-        expect(described_class.convert_event_selection_rule_to_path_part(event_selection_rule))
-          .to eq('example_event-filter:[label:npm,property:deploy_token]')
-      end
     end
   end
 

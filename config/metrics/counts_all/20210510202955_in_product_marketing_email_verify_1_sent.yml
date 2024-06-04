@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.in_product_marketing_email_verify_1_sent
 description: Total sent emails of the verify track's second email
-product_section: 'TBD'
-product_stage: growth
 product_group: activation
 value_type: number
 status: removed

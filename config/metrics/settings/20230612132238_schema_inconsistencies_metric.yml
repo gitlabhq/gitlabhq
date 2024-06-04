@@ -2,8 +2,6 @@
 key_path: schema_inconsistencies_metric
 name: "schema_inconsistencies"
 description: "List the schema inconsistencies in the database"
-product_section: enablement
-product_stage: enablement
 product_group: database
 value_type: boolean
 status: active

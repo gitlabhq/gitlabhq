@@ -5,7 +5,7 @@ module Gitlab
     # Backfill draft column on open merge requests based on regex parsing of
     #   their titles.
     #
-    class BackfillDraftStatusOnMergeRequestsWithCorrectedRegex # rubocop:disable Migration/BackgroundMigrationBaseClass
+    class BackfillDraftStatusOnMergeRequestsWithCorrectedRegex # rubocop:disable Migration/BatchedMigrationBaseClass
       # Migration only version of MergeRequest table
       class MergeRequest < ::ApplicationRecord
         include EachBatch

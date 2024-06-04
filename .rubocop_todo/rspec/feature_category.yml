@@ -4829,7 +4829,6 @@ RSpec/FeatureCategory:
     - 'spec/rubocop/cop/migration/add_index_spec.rb'
     - 'spec/rubocop/cop/migration/add_reference_spec.rb'
     - 'spec/rubocop/cop/migration/add_timestamps_spec.rb'
-    - 'spec/rubocop/cop/migration/background_migration_base_class_spec.rb'
     - 'spec/rubocop/cop/migration/background_migration_missing_active_concern_spec.rb'
     - 'spec/rubocop/cop/migration/background_migration_record_spec.rb'
     - 'spec/rubocop/cop/migration/background_migrations_spec.rb'

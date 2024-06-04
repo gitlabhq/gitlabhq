@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_jobs_dependency_scanning_weekly
 description: Weekly counts for implicit use of Dependency Scanning CI template (Jobs folder)
-product_section: sec
-product_stage: secure
 product_group: composition_analysis
 value_type: number
 status: active

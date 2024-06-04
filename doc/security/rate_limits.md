@@ -87,6 +87,13 @@ For configuration information, see
 
 ## Non-configurable limits
 
+> - Rate limit on the `:user_id/status`, `:id/following`, `:id/followers`, `:user_id/keys`, `id/keys/:key_id`, `:id/gpg_keys`, and `:id/gpg_keys/:key_id` endpoints [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452349) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limiting_user_endpoints`. Disabled by default.
+
+FLAG:
+The availability of multiple endpoints in this feature is controlled by a feature flag.
+For more information, see the history.
+These endpoints are available for testing, but not ready for production use.
+
 ### Repository archives
 
 A rate limit for [downloading repository archives](../api/repositories.md#get-file-archive) is
@@ -107,6 +114,48 @@ There is a rate limit per IP address on the `/users/sign_up` endpoint. This is t
 discover usernames or email addresses in use.
 
 The **rate limit** is 20 calls per minute per IP address.
+
+### User status
+
+There is a rate limit per IP address on the `:user_id/status` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 240 calls per minute per IP address.
+
+### User following
+
+There is a rate limit per IP address on the `:id/following` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 100 calls per minute per IP address.
+
+### User followers
+
+There is a rate limit per IP address on the `:id/followers` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 100 calls per minute per IP address.
+
+### User keys
+
+There is a rate limit per IP address on the `:user_id/keys` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 120 calls per minute per IP address.
+
+### User specific key
+
+There is a rate limit per IP address on the `id/keys/:key_id` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 120 calls per minute per IP address.
+
+### User GPG keys
+
+There is a rate limit per IP address on the `:id/gpg_keys` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 120 calls per minute per IP address.
+
+### User specific GPG keys
+
+There is a rate limit per IP address on the `:id/gpg_keys/:key_id` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 120 calls per minute per IP address.
 
 ### Update username
 

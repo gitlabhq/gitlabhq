@@ -8018,9 +8018,6 @@ msgstr ""
 msgid "Below you will find all the groups that are public or internal. Contribute by requesting to join a group."
 msgstr ""
 
-msgid "Below you will find all the groups that are public. Contribute by requesting to join a group."
-msgstr ""
-
 msgid "Beta"
 msgstr ""
 
@@ -25499,9 +25496,6 @@ msgid "GroupsEmptyState|No groups found"
 msgstr ""
 
 msgid "GroupsEmptyState|No inactive projects."
-msgstr ""
-
-msgid "GroupsEmptyState|No public groups"
 msgstr ""
 
 msgid "GroupsEmptyState|No public or internal groups"
@@ -54780,10 +54774,10 @@ msgstr ""
 msgid "Todos|added a to-do item"
 msgstr ""
 
-msgid "Todos|has requested access to %{what} %{which}"
+msgid "Todos|has added you as an approver"
 msgstr ""
 
-msgid "Todos|have been added as an approver"
+msgid "Todos|has requested access to %{what} %{which}"
 msgstr ""
 
 msgid "Todos|mentioned %{who}"

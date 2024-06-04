@@ -128,18 +128,13 @@ Custom headers appear in [**Recent events**](#view-webhook-request-history) with
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_template`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439610) in GitLab 17.0. Feature flag `custom_webhook_template` removed.
 
-You can set a custom payload template in the webhook configuration. The request body is rendered from the template
-with the data for the current event. The template must render as valid JSON.
+You can set a custom payload template in the webhook configuration.
+The request body is rendered from the template with data for the current event.
+The template must render as valid JSON.
 
-You can use any field from the [payload of any event](webhook_events.md), such as `{{build_name}}` for a job event and `{{deployable_url}}`
-for a deployment event. To access properties nested in objects, specify the path segments separated with `.`. For example:
-
-#### Known issue
-
-Custom webhook templates can't access properties in arrays. Support for accessing properties in arrays is proposed in
-[issue 463332](https://gitlab.com/gitlab-org/gitlab/-/issues/463332).
-
-#### Example
+You can use any field from the [payload of an event](webhook_events.md), such as
+`{{build_name}}` for a job event or `{{deployable_url}}` for a deployment event.
+To access properties nested in objects, specify the path segments separated by periods.
 
 Given this custom payload template:
 
@@ -150,7 +145,7 @@ Given this custom payload template:
 }
 ```
 
-You'll have this request payload that combines the template with a `push` event:
+The request payload combines the template with a `push` event:
 
 ```json
 {
@@ -158,6 +153,9 @@ You'll have this request payload that combines the template with a `push` event:
   "project_name": "Example"
 }
 ```
+
+Custom webhook templates cannot access properties in arrays.
+Support for this feature is proposed in [issue 463332](https://gitlab.com/gitlab-org/gitlab/-/issues/463332).
 
 ### Filter push events by branch
 

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module Migration
-      class BackgroundMigrationBaseClass < RuboCop::Cop::Base
+      class BatchedMigrationBaseClass < RuboCop::Cop::Base
         MSG = 'Batched background migration jobs should inherit from either ' \
           'Gitlab::BackgroundMigration::BatchedMigrationJob ' \
           'or one of its subclasses.'

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
-require_relative '../../../../rubocop/cop/migration/background_migration_base_class'
+require_relative '../../../../rubocop/cop/migration/batched_migration_base_class'
 
-RSpec.describe RuboCop::Cop::Migration::BackgroundMigrationBaseClass, feature_category: :database do
+RSpec.describe RuboCop::Cop::Migration::BatchedMigrationBaseClass, feature_category: :database do
   shared_examples_for 'inheritance from the right base class does not register an offense' do |base_class|
     context "when the migration class inherits from #{base_class}" do
       it 'does not register any offenses' do

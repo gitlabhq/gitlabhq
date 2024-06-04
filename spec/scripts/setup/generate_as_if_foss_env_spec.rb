@@ -126,6 +126,29 @@ RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
         ENABLE_RSPEC_PREDICTIVE_TRIGGER_SINGLE_DB_CI_CONNECTION: 'true'
       })
     end
+
+    context 'when there are only predictive frontend jobs' do
+      let(:jobs) do
+        [
+          'jest-integration',
+          'jest predictive 1/5',
+          'jest-with-fixtures predictive 1/2'
+        ]
+      end
+
+      let(:bridges) { [] }
+
+      it 'returns correct variables without ENABLE_JEST' do
+        expect(generate.variables).to eq({
+          START_AS_IF_FOSS: 'true',
+          RUBY_VERSION: ENV['RUBY_VERSION'],
+          FIND_CHANGES_MERGE_REQUEST_PROJECT_PATH: ENV['CI_MERGE_REQUEST_PROJECT_PATH'],
+          FIND_CHANGES_MERGE_REQUEST_IID: ENV['CI_MERGE_REQUEST_IID'],
+          ENABLE_JEST_INTEGRATION: 'true',
+          ENABLE_JEST_PREDICTIVE: 'true'
+        })
+      end
+    end
   end
 
   describe '#display' do

@@ -7,7 +7,7 @@ module Gitlab
       # Gitlab::Cache::Ci::ProjectPipelineStatus by adding a minimum 8-hour ttl
       # to all keys. This either sets or extends the ttl of matching keys.
       #
-      class BackfillProjectPipelineStatusTtl # rubocop:disable Migration/BackgroundMigrationBaseClass
+      class BackfillProjectPipelineStatusTtl # rubocop:disable Migration/BatchedMigrationBaseClass
         def perform(keys)
           # spread out deletes over a 4 hour period starting in 8 hours time
           ttl_duration = 10.hours.to_i

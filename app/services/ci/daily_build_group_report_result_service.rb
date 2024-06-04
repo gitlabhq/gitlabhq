@@ -21,7 +21,8 @@ module Ci
         date: pipeline.created_at.to_date,
         last_pipeline_id: pipeline.id,
         default_branch: pipeline.default_branch?,
-        group_id: pipeline.project&.group&.id
+        group_id: pipeline.project&.group&.id,
+        partition_id: pipeline.partition_id
       }
 
       aggregate(pipeline.builds.with_coverage).map do |group_name, group|

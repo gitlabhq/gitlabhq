@@ -11,6 +11,12 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12972) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `ai_custom_model`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
 By self-hosting the model, AI Gateway, and GitLab instance, there are no calls to external architecture, ensuring maximum levels of security.
 
 To set up your self-hosted model deployment infrastructure:

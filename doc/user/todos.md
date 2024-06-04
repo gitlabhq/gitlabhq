@@ -60,6 +60,8 @@ To change this behavior, enable
 [multiple to-do items per object](#multiple-to-do-items-per-object).
 
 To-do items aren't affected by [GitLab notification email settings](profile/notifications.md).
+The only exception: If your notification setting is set to **Custom** and **Added as approver** is
+selected, you get a to-do item when you are eligible to approve a merge request.
 
 ### Multiple to-do items per object
 
