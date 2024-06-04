@@ -70,7 +70,7 @@ RSpec.describe Gitlab::ImportExport::MergeRequestParser, feature_category: :impo
         it 'logs the error' do
           allow(project.repository).to receive(:create_branch).and_raise(StandardError, 'Error!')
 
-          expect(Gitlab::Import::Logger).to receive(:warn).with(
+          expect(::Import::Framework::Logger).to receive(:warn).with(
             message: 'Import warning: Failed to create target branch',
             target_branch: merge_request.target_branch,
             diff_head_sha: anything,

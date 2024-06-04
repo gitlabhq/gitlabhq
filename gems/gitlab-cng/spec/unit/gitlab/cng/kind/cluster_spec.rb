@@ -14,11 +14,12 @@ RSpec.describe Gitlab::Cng::Kind::Cluster do
   let(:ci) { false }
   let(:name) { "gitlab" }
   let(:docker_hostname) { nil }
-  let(:tmp_config_path) { File.join(Dir.tmpdir, "kind-config.yml") }
+  let(:tmp_config_path) { File.join("/tmp", "kind-config.yml") }
   let(:command_status) { instance_double(Process::Status, success?: true) }
   let(:clusters) { "kind" }
 
   before do
+    allow(Gitlab::Cng::Helpers::Utils).to receive(:tmp_dir).and_return("/tmp")
     allow(Gitlab::Cng::Helpers::Spinner).to receive(:spin).and_yield
     allow(File).to receive(:write).with(tmp_config_path, kind_config_content)
 

@@ -121,7 +121,7 @@ class ProjectImportState < ApplicationRecord
 
     update_column(:last_error, sanitized_message)
   rescue ActiveRecord::ActiveRecordError => e
-    Gitlab::Import::Logger.error(
+    ::Import::Framework::Logger.error(
       message: 'Error setting import status to failed',
       error: e.message,
       original_error: sanitized_message

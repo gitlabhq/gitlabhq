@@ -40,7 +40,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
       end
 
       it 'logs error message returns false' do
-        expect(Gitlab::Import::Logger)
+        expect(::Import::Framework::Logger)
           .to receive(:info)
           .with(
             import_upload_archive_path: filepath,
@@ -59,7 +59,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
       end
 
       it 'is valid and does not log error message' do
-        expect(Gitlab::Import::Logger)
+        expect(::Import::Framework::Logger)
           .not_to receive(:info)
           .with(
             import_upload_archive_path: filepath,
@@ -84,7 +84,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
         end
 
         it 'logs raised exception and terminates validator process group' do
-          expect(Gitlab::Import::Logger)
+          expect(::Import::Framework::Logger)
             .to receive(:info)
             .with(
               import_upload_archive_path: filepath,
@@ -115,7 +115,7 @@ RSpec.describe Gitlab::ImportExport::DecompressedArchiveSizeValidator, feature_c
       let(:filesize) { nil }
 
       before do
-        expect(Gitlab::Import::Logger)
+        expect(::Import::Framework::Logger)
           .to receive(:info)
           .with(
             import_upload_archive_path: filepath,

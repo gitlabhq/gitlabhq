@@ -94,7 +94,7 @@ module Gitlab
           nil
         end
 
-        Gitlab::Import::Logger.info(
+        ::Import::Framework::Logger.info(
           message: error,
           import_upload_archive_path: @archive_path,
           import_upload_archive_size: archive_size

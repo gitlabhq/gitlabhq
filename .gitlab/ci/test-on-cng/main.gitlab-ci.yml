@@ -57,6 +57,7 @@ workflow:
         --timeout 5m \
         --admin-password "${GITLAB_ADMIN_PASSWORD}" \
         --admin-token "${GITLAB_QA_ADMIN_ACCESS_TOKEN}" \
+        --chart-sha "${GITLAB_HELM_CHART_REF}" \
         --ci \
         ${EXTRA_DEPLOY_VALUES}
   script:

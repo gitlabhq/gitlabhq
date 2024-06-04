@@ -9,4 +9,6 @@ description: Information about package dependencies for a set of supported packa
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20549
 milestone: '12.6'
 gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true # this table lacks customer specific data, but it is still unique in every cell
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465276

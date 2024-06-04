@@ -14,7 +14,7 @@ module Gitlab
 
         LICENSE_SECRET = "gitlab-license"
 
-        def initialize(name, configuration:, namespace:, ci:, gitlab_domain:, timeout:, set: [])
+        def initialize(name, configuration:, namespace:, ci:, gitlab_domain:, timeout:, set: [], chart_sha: nil)
           @name = name
           @configuration = configuration
           @namespace = namespace
@@ -22,6 +22,7 @@ module Gitlab
           @gitlab_domain = gitlab_domain
           @timeout = timeout
           @set = set
+          @chart_sha = chart_sha
         end
 
         # Perform deployment with all the additional setup
@@ -29,8 +30,8 @@ module Gitlab
         # @return [void]
         def create
           log("Creating CNG deployment '#{name}'", :info, bright: true)
-          run_pre_deploy_setup
-          run_deploy
+          chart_reference = run_pre_deploy_setup
+          run_deploy(chart_reference)
           run_post_deploy_setup
         rescue Helpers::Shell::CommandFailure
           exit(1)
@@ -45,7 +46,15 @@ module Gitlab
 
         private
 
-        attr_reader :name, :configuration, :namespace, :ci, :set, :gitlab_domain, :timeout
+        attr_reader :name,
+          :configuration,
+          :namespace,
+          :ci,
+          :set,
+          :gitlab_domain,
+          :timeout,
+          :chart_sha
+
         alias_method :cli_values, :set
 
         # Kubectl client instance
@@ -53,6 +62,13 @@ module Gitlab
         # @return [Kubectl::Client]
         def kubeclient
           @kubeclient ||= Kubectl::Client.new(namespace)
+        end
+
+        # Helm client instance
+        #
+        # @return [Helm::Client]
+        def helm
+          @helm ||= Helm::Client.new
         end
 
         # Gitlab license
@@ -83,40 +99,41 @@ module Gitlab
           }
         end
 
-        # Execute pre-deployment setup
+        # Execute pre-deployment setup which consists of:
+        #   * chart setup
+        #   * namespace and license creation
+        #   * optional configuration specific pre-deploy setup
         #
-        # @return [void]
+        # @return [String] chart reference
         def run_pre_deploy_setup
           Helpers::Spinner.spin("running pre-deployment setup") do
-            add_helm_chart
-            update_helm_chart_repo
+            chart_reference = helm.add_helm_chart(chart_sha)
             create_namespace
             create_license
 
             configuration.run_pre_deployment_setup
+
+            chart_reference
           end
         end
 
         # Run helm deployment
         #
+        # @param [String] chart_reference
         # @return [void]
-        def run_deploy
-          cmd = [
-            "upgrade",
-            "--install", name, "gitlab/gitlab",
-            "--namespace", namespace,
-            "--timeout", timeout,
-            "--wait"
-          ]
-          cmd.push(*component_version_values.flat_map { |v| ["--set", v] }) if ci
-          cmd.push("--set", cli_values.join(",")) unless cli_values.empty?
-          cmd.push("--values", "-")
+        def run_deploy(chart_reference)
+          args = []
+          args.push(*component_version_values.flat_map { |v| ["--set", v] }) if ci
+          args.push("--set", cli_values.join(",")) unless cli_values.empty?
           values = DefaultValues.common_values(gitlab_domain)
             .deep_merge(license_values)
             .deep_merge(configuration.values)
             .deep_stringify_keys
+            .to_yaml
 
-          Helpers::Spinner.spin("running helm deployment") { puts run_helm_cmd(cmd, values.to_yaml) }
+          Helpers::Spinner.spin("running helm deployment") do
+            helm.upgrade(name, chart_reference, namespace: namespace, timeout: timeout, values: values, args: args)
+          end
           log("Deployment successful and app is available via: #{configuration.gitlab_url}", :success, bright: true)
         end
 
@@ -125,26 +142,6 @@ module Gitlab
         # @return [void]
         def run_post_deploy_setup
           Helpers::Spinner.spin("running post-deployment setup") { configuration.run_post_deployment_setup }
-        end
-
-        # Add helm chart repo
-        #
-        # @return [void]
-        def add_helm_chart
-          log("Adding gitlab helm chart", :info)
-          puts run_helm_cmd(%w[repo add gitlab https://charts.gitlab.io])
-        rescue Helpers::Shell::CommandFailure => e
-          return log("helm repo already exists, skipping", :warn) if e.message.include?("already exists")
-
-          raise(e)
-        end
-
-        # Update helm chart repo
-        #
-        # @return [void]
-        def update_helm_chart_repo
-          log("Updating gitlab helm chart repo", :info)
-          puts run_helm_cmd(%w[repo update gitlab])
         end
 
         # Create namespace

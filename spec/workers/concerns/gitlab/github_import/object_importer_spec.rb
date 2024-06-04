@@ -154,7 +154,7 @@ RSpec.describe Gitlab::GithubImport::ObjectImporter, :aggregate_failures, featur
           }
         )
 
-      expect(Gitlab::Import::Logger)
+      expect(::Import::Framework::Logger)
         .to receive(:error)
         .with(
           {

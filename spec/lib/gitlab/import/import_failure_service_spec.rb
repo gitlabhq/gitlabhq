@@ -76,7 +76,7 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
             }
           )
 
-        expect(Gitlab::Import::Logger)
+        expect(::Import::Framework::Logger)
           .to receive(:error)
           .with(
             {
@@ -120,7 +120,7 @@ RSpec.describe Gitlab::Import::ImportFailureService, :aggregate_failures, featur
             }
           )
 
-        expect(Gitlab::Import::Logger)
+        expect(::Import::Framework::Logger)
           .to receive(:error)
           .with(
             {

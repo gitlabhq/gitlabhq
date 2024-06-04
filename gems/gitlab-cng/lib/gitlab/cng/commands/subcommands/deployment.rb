@@ -37,6 +37,10 @@ module Gitlab
                 desc: "Timeout for deployment",
                 default: "10m",
                 type: :string
+              option :chart_sha,
+                desc: "Specific sha of GitLab chart repository, latest release version is used by default. " \
+                      "Requires 'tar' executable to be installed.",
+                type: :string
 
               super(name)
             end
@@ -100,7 +104,7 @@ module Gitlab
           def installation(name, configuration)
             Cng::Deployment::Installation.new(
               name, configuration: configuration,
-              **symbolized_options.slice(:namespace, :set, :ci, :gitlab_domain, :timeout)
+              **symbolized_options.slice(:namespace, :set, :ci, :gitlab_domain, :timeout, :chart_sha)
             )
           end
 

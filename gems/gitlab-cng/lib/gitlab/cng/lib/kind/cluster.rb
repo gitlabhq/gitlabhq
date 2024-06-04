@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require "uri"
 require "tmpdir"
 require "erb"
 
@@ -85,7 +84,7 @@ module Gitlab
         # @param [String] config_yml
         # @return [String]
         def tmp_config_file(config_yml)
-          File.join(Dir.tmpdir, "kind-config.yml").tap do |path|
+          File.join(Helpers::Utils.tmp_dir, "kind-config.yml").tap do |path|
             File.write(path, config_yml)
           end
         end

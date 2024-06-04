@@ -71,7 +71,7 @@ module Gitlab
           # instead of `allow_object_storage`.
           Gitlab::HTTP.get(url, stream_body: true, allow_object_storage: true) do |fragment|
             if [301, 302, 303, 307].include?(fragment.code)
-              Gitlab::Import::Logger.warn(message: "received redirect fragment", fragment_code: fragment.code)
+              ::Import::Framework::Logger.warn(message: "received redirect fragment", fragment_code: fragment.code)
             elsif fragment.code == 200
               current_size += fragment.bytesize
 

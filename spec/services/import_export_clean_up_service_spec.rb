@@ -9,7 +9,7 @@ RSpec.describe ImportExportCleanUpService, feature_category: :importers do
     let(:tmp_import_export_folder) { 'tmp/gitlab_exports' }
 
     before do
-      allow_next_instance_of(Gitlab::Import::Logger) do |logger|
+      allow_next_instance_of(::Import::Framework::Logger) do |logger|
         allow(logger).to receive(:info)
       end
     end
@@ -28,7 +28,7 @@ RSpec.describe ImportExportCleanUpService, feature_category: :importers do
     context 'when the import/export tmp storage directory exists' do
       shared_examples 'removes old tmp files' do |subdir|
         it 'removes old files and logs' do
-          expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+          expect_next_instance_of(::Import::Framework::Logger) do |logger|
             expect(logger)
               .to receive(:info)
               .with(
@@ -41,7 +41,7 @@ RSpec.describe ImportExportCleanUpService, feature_category: :importers do
         end
 
         it 'does not remove new files or logs' do
-          expect(Gitlab::Import::Logger).not_to receive(:new)
+          expect(::Import::Framework::Logger).not_to receive(:new)
 
           validate_cleanup(subdir: subdir, mtime: 2.hours.ago, expected: true)
         end
@@ -59,7 +59,7 @@ RSpec.describe ImportExportCleanUpService, feature_category: :importers do
           export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz')
         )
 
-        expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+        expect_next_instance_of(::Import::Framework::Logger) do |logger|
           expect(logger)
             .to receive(:info)
             .with(
@@ -81,7 +81,7 @@ RSpec.describe ImportExportCleanUpService, feature_category: :importers do
           export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz')
         )
 
-        expect(Gitlab::Import::Logger).not_to receive(:new)
+        expect(::Import::Framework::Logger).not_to receive(:new)
 
         expect { service.execute }.not_to change { upload.reload.export_file.file.nil? }
 

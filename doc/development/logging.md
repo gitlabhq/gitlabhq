@@ -115,7 +115,7 @@ importer progresses. Here's what to do:
       attr_accessor :logger
 
       def initialize
-        @logger = Gitlab::Import::Logger.build
+        @logger = ::Import::Framework::Logger.build
       end
       ```
 

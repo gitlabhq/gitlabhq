@@ -60,7 +60,7 @@ module Projects
       end
 
       def log_lfs_link_results(lfs_objects_linked_count, iterations)
-        Gitlab::Import::Logger.info(
+        ::Import::Framework::Logger.info(
           class: self.class.name,
           project_id: project.id,
           project_path: project.full_path,

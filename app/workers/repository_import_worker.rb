@@ -43,7 +43,7 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
   def start_import?
     return true if start(project.import_state)
 
-    Gitlab::Import::Logger.info(
+    ::Import::Framework::Logger.info(
       message: 'Project was in inconsistent state while importing',
       project_full_path: project.full_path,
       project_import_status: project.import_status

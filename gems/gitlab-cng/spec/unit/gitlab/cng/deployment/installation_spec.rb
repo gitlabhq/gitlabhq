@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers -- allows to reuse many of the mock definitions, with less helpers a lot more value duplication would occur
 RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
   subject(:installation) do
     described_class.new(
@@ -8,16 +9,22 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       namespace: "gitlab",
       ci: ci,
       gitlab_domain: gitlab_domain,
-      timeout: "10m"
+      timeout: "10m",
+      chart_sha: chart_sha
     )
   end
 
   let(:config_values) { { configuration_specific: true } }
-  let(:ip) { instance_double(Addrinfo, ipv4_private?: true, ip_address: "127.0.0.1") }
-  let(:gitlab_domain) { "#{ip.ip_address}.nip.io" }
+  let(:gitlab_domain) { "127.0.0.1.nip.io" }
+  let(:chart_sha) { nil }
+  let(:chart_reference) { "chart-reference" }
 
   let(:kubeclient) do
     instance_double(Gitlab::Cng::Kubectl::Client, create_namespace: "", create_resource: "", execute: "")
+  end
+
+  let(:helmclient) do
+    instance_double(Gitlab::Cng::Helm::Client, add_helm_chart: chart_reference, upgrade: nil)
   end
 
   let(:configuration) do
@@ -75,6 +82,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
   before do
     allow(Gitlab::Cng::Helpers::Spinner).to receive(:spin).and_yield
     allow(Gitlab::Cng::Kubectl::Client).to receive(:new).with("gitlab").and_return(kubeclient)
+    allow(Gitlab::Cng::Helm::Client).to receive(:new).and_return(helmclient)
     allow(Gitlab::Cng::Deployment::Configurations::Kind).to receive(:new).and_return(configuration)
 
     allow(installation).to receive(:execute_shell)
@@ -90,28 +98,14 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     it "runs setup and helm deployment" do
       expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
 
-      expect(installation).to have_received(:execute_shell).with(
-        %w[helm repo add gitlab https://charts.gitlab.io],
-        stdin_data: nil
-      )
-      expect(installation).to have_received(:execute_shell).with(
-        %w[helm repo add gitlab https://charts.gitlab.io],
-        stdin_data: nil
-      )
-      expect(installation).to have_received(:execute_shell).with(
-        %w[helm repo update gitlab],
-        stdin_data: nil
-      )
-      expect(installation).to have_received(:execute_shell).with(
-        %w[
-          helm upgrade
-          --install gitlab gitlab/gitlab
-          --namespace gitlab
-          --timeout 10m
-          --wait
-          --values -
-        ],
-        stdin_data: values_yml
+      expect(helmclient).to have_received(:add_helm_chart).with(nil)
+      expect(helmclient).to have_received(:upgrade).with(
+        "gitlab",
+        chart_reference,
+        namespace: "gitlab",
+        timeout: "10m",
+        values: values_yml,
+        args: []
       )
 
       expect(kubeclient).to have_received(:create_namespace)
@@ -123,19 +117,21 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     end
   end
 
-  context "with ci" do
+  context "with ci and specific sha" do
     let(:ci) { true }
+    let(:chart_sha) { "sha" }
 
     it "runs helm install with correctly merged values and component versions" do
       expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
 
-      expect(installation).to have_received(:execute_shell).with(
-        %W[
-          helm upgrade
-          --install gitlab gitlab/gitlab
-          --namespace gitlab
-          --timeout 10m
-          --wait
+      expect(helmclient).to have_received(:add_helm_chart).with(chart_sha)
+      expect(helmclient).to have_received(:upgrade).with(
+        "gitlab",
+        chart_reference,
+        namespace: "gitlab",
+        timeout: "10m",
+        values: values_yml,
+        args: %W[
           --set gitlab.gitaly.image.repository=registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly
           --set gitlab.gitaly.image.tag=7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f
           --set gitlab.gitlab-shell.image.repository=registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell
@@ -152,10 +148,9 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
           --set gitlab.webservice.image.tag=#{env['CI_COMMIT_SHA']}
           --set gitlab.webservice.workhorse.image=registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ee
           --set gitlab.webservice.workhorse.tag=#{env['CI_COMMIT_SHA']}
-          --values -
-        ],
-        stdin_data: values_yml
+        ]
       )
     end
   end
 end
+# rubocop:enable RSpec/MultipleMemoizedHelpers

@@ -43,7 +43,7 @@ module Gitlab
           @project.repository.create_branch(@merge_request.source_branch, @diff_head_sha)
         end
       rescue StandardError => err
-        Gitlab::Import::Logger.warn(
+        ::Import::Framework::Logger.warn(
           message: 'Import warning: Failed to create source branch',
           source_branch: @merge_request.source_branch,
           diff_head_sha: @diff_head_sha,
@@ -56,7 +56,7 @@ module Gitlab
       def create_target_branch
         @project.repository.create_branch(@merge_request.target_branch, @merge_request.target_branch_sha)
       rescue StandardError => err
-        Gitlab::Import::Logger.warn(
+        ::Import::Framework::Logger.warn(
           message: 'Import warning: Failed to create target branch',
           target_branch: @merge_request.target_branch,
           diff_head_sha: @diff_head_sha,

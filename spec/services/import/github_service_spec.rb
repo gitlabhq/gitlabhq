@@ -46,7 +46,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
     end
 
     it 'logs the original error' do
-      expect(Gitlab::Import::Logger).to receive(:error).with({
+      expect(::Import::Framework::Logger).to receive(:error).with({
         message: 'Import failed because of a GitHub error',
         status: 404,
         error: 'Not Found'
@@ -71,7 +71,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
 
     expect(client).to receive_message_chain(:octokit, :repository).and_raise(exception)
 
-    expect(Gitlab::Import::Logger).not_to receive(:error)
+    expect(::Import::Framework::Logger).not_to receive(:error)
 
     expect { subject.execute(access_params, :github) }.to raise_error(exception)
   end
@@ -278,7 +278,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
 
       it 'rescues and logs the error' do
         allow(client).to receive_message_chain(:octokit, :repository).and_raise(exception)
-        expect(Gitlab::Import::Logger).to receive(:error).with({
+        expect(::Import::Framework::Logger).to receive(:error).with({
           message: 'Import failed because of a GitHub error',
           status: 500,
           error: 'Internal Server Error'
@@ -355,7 +355,7 @@ RSpec.describe Import::GithubService, feature_category: :importers do
       it 'returns and logs an error' do
         allow(github_importer).to receive(:url).and_return(url)
 
-        expect(Gitlab::Import::Logger).to receive(:error).with({
+        expect(::Import::Framework::Logger).to receive(:error).with({
           message: message,
           error: error
         }).and_call_original

@@ -2,6 +2,7 @@
 
 require "thor"
 require "require_all"
+require "uri"
 
 # make sure helpers are required first
 require_rel "lib/helpers/**/*.rb"

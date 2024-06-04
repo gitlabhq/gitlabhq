@@ -530,6 +530,7 @@ lib/gitlab/checks/**
 /doc/administration/configure.md @axil
 /doc/administration/consul.md @axil
 /doc/administration/credentials_inventory.md @jglassman1
+/doc/administration/custom_html_header_tags.md @eread
 /doc/administration/custom_project_templates.md @msedlakjakubowski
 /doc/administration/dedicated/ @lyspin
 /doc/administration/diff_limits.md @msedlakjakubowski
@@ -597,7 +598,7 @@ lib/gitlab/checks/**
 /doc/administration/repository_checks.md @eread
 /doc/administration/repository_storage_paths.md @eread
 /doc/administration/restart_gitlab.md @axil
-/doc/administration/self_hosted_models/ @sselhorn
+/doc/administration/self_hosted_models/ @sselhorn @jglassman1
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @msedlakjakubowski
 /doc/administration/settings/continuous_integration.md @marcel.amirault @lyspin
@@ -754,6 +755,7 @@ lib/gitlab/checks/**
 /doc/api/project_import_export.md @eread @ashrafkhamis
 /doc/api/project_job_token_scopes.md @marcel.amirault
 /doc/api/project_level_variables.md @marcel.amirault
+/doc/api/project_packages_protection_rules.md @phillipwells
 /doc/api/project_relations_export.md @eread @ashrafkhamis
 /doc/api/project_repository_storage_moves.md @eread
 /doc/api/project_snippets.md @msedlakjakubowski
@@ -839,7 +841,6 @@ lib/gitlab/checks/**
 /doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
-/doc/development/cascading_settings.md @gitlab-org/govern/authentication/approvers
 /doc/development/cells/ @abdwdd @alexpooley @manojmj
 /doc/development/cicd/ @gitlab-org/maintainers/cicd-verify
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
@@ -925,10 +926,10 @@ lib/gitlab/checks/**
 /doc/tutorials/update_commit_messages/ @msedlakjakubowski
 /doc/tutorials/website_project_with_analytics/ @lciutacu
 /doc/update/ @axil
-/doc/user/ai_data_usage.md @sselhorn
-/doc/user/ai_experiments.md @sselhorn
-/doc/user/ai_features.md @sselhorn
-/doc/user/ai_features_enable.md @sselhorn
+/doc/user/ai_data_usage.md @sselhorn @jglassman1
+/doc/user/ai_experiments.md @sselhorn @jglassman1
+/doc/user/ai_features.md @sselhorn @jglassman1
+/doc/user/ai_features_enable.md @sselhorn @jglassman1
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson @phillipwells
@@ -944,8 +945,6 @@ lib/gitlab/checks/**
 /doc/user/compliance/license_approval_policies.md @rdickenson
 /doc/user/compliance/license_list.md @rdickenson
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson @phillipwells
-/doc/user/custom_roles.md @jglassman1
-/doc/user/custom_roles/ @jglassman1
 /doc/user/discussions/ @aqualls
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
@@ -953,11 +952,11 @@ lib/gitlab/checks/**
 /doc/user/get_started/get_started_managing_infrastructure.md @phillipwells
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
 /doc/user/get_started/get_started_projects.md @lciutacu
-/doc/user/gitlab_duo_chat.md @sselhorn
-/doc/user/gitlab_duo_chat_enable.md @sselhorn
-/doc/user/gitlab_duo_chat_examples.md @sselhorn
-/doc/user/gitlab_duo_chat_troubleshooting.md @sselhorn
-/doc/user/gitlab_duo_examples.md @sselhorn
+/doc/user/gitlab_duo_chat.md @sselhorn @jglassman1
+/doc/user/gitlab_duo_chat_enable.md @sselhorn @jglassman1
+/doc/user/gitlab_duo_chat_examples.md @sselhorn @jglassman1
+/doc/user/gitlab_duo_chat_troubleshooting.md @sselhorn @jglassman1
+/doc/user/gitlab_duo_examples.md @sselhorn @jglassman1
 /doc/user/group/access_and_permissions.md @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
@@ -992,7 +991,6 @@ lib/gitlab/checks/**
 /doc/user/packages/container_registry/ @marcel.amirault
 /doc/user/packages/dependency_proxy/ @marcel.amirault
 /doc/user/packages/harbor_container_registry/ @marcel.amirault
-/doc/user/permissions.md @jglassman1
 /doc/user/product_analytics/ @lciutacu
 /doc/user/profile/account/ @jglassman1
 /doc/user/profile/achievements.md @lciutacu
@@ -1028,17 +1026,17 @@ lib/gitlab/checks/**
 /doc/user/project/merge_requests/cherry_pick_changes.md @msedlakjakubowski
 /doc/user/project/merge_requests/csv_export.md @eread
 /doc/user/project/merge_requests/methods/ @msedlakjakubowski
-/doc/user/project/merge_requests/reviews/data_usage.md @sselhorn
+/doc/user/project/merge_requests/reviews/data_usage.md @sselhorn @jglassman1
 /doc/user/project/merge_requests/squash_and_merge.md @msedlakjakubowski
 /doc/user/project/merge_requests/status_checks.md @rdickenson
-/doc/user/project/ml/experiment_tracking/ @sselhorn
-/doc/user/project/ml/model_registry/ @sselhorn
+/doc/user/project/ml/experiment_tracking/ @sselhorn @jglassman1
+/doc/user/project/ml/model_registry/ @sselhorn @jglassman1
 /doc/user/project/organize_work_with_projects.md @lciutacu
 /doc/user/project/project_topics.md @lciutacu
 /doc/user/project/releases/ @phillipwells
 /doc/user/project/releases/release_evidence.md @eread
 /doc/user/project/remote_development/ @ashrafkhamis
-/doc/user/project/repository/code_explain.md @sselhorn
+/doc/user/project/repository/code_explain.md @sselhorn @jglassman1
 /doc/user/project/repository/code_suggestions/ @jglassman1
 /doc/user/project/repository/file_finder.md @ashrafkhamis
 /doc/user/project/repository/monorepos/ @eread

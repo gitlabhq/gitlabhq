@@ -2,7 +2,7 @@
 
 module Gitlab
   module BitbucketServerImport
-    class Logger < ::Gitlab::Import::Logger
+    class Logger < ::Import::Framework::Logger
       def default_attributes
         super.merge(import_type: :bitbucket_server)
       end

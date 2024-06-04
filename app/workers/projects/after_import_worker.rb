@@ -27,7 +27,7 @@ module Projects
       # causing GC to run every time.
       service.increment!
     rescue Repositories::HousekeepingService::LeaseTaken => e
-      Gitlab::Import::Logger.info(
+      ::Import::Framework::Logger.info(
         message: 'Project housekeeping failed',
         project_full_path: @project.full_path,
         project_id: @project.id,

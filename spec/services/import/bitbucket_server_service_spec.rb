@@ -143,7 +143,7 @@ RSpec.describe Import::BitbucketServerService, feature_category: :importers do
 
     allow(client).to receive(:repo).and_raise(exception)
 
-    expect(Gitlab::Import::Logger).not_to receive(:error)
+    expect(::Import::Framework::Logger).not_to receive(:error)
 
     expect { subject.execute(credentials) }.to raise_error(exception)
   end

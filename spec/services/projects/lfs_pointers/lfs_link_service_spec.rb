@@ -66,7 +66,7 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
       expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
         error: false, labels: {})
 
-      expect(Gitlab::Import::Logger).to receive(:info).with(
+      expect(::Import::Framework::Logger).to receive(:info).with(
         class: described_class.name,
         project_id: project.id,
         project_path: project.full_path,

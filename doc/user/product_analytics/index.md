@@ -167,6 +167,8 @@ Prerequisites:
 
 ## Onboard a GitLab project
 
+> - Minimum required role [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154089/) in GitLab 17.1.
+
 Prerequisites:
 
 - You must have at least the Maintainer role for the project or group the project belongs to.

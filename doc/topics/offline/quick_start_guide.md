@@ -151,13 +151,14 @@ Updating CA certificates...
 Runtime platform                                    arch=amd64 os=linux pid=7 revision=1b659122 version=12.8.0
 Running in system-mode.
 
-Please enter the gitlab-ci coordinator URL (for example, https://gitlab.com/):
+Enter the GitLab instance URL (for example, https://gitlab.com/):
 https://my-host.internal
-Please enter the gitlab-ci token for this runner:
+Enter the registration token:
 XXXXXXXXXXX
-Please enter the gitlab-ci description for this runner:
+Enter a description for the runner:
 [eb18856e13c0]:
-Please enter the gitlab-ci tags for this runner (comma separated):
+Enter tags for the runner (comma-separated):
+Enter optional maintenance note for the runner:
 
 Registering runner... succeeded                     runner=FSMwkvLZ
 Please enter the executor: custom, docker, virtualbox, kubernetes, docker+machine, docker-ssh+machine, docker-ssh, parallels, shell, ssh:
