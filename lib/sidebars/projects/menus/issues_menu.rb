@@ -97,7 +97,7 @@ module Sidebars
           title = if context.is_super_sidebar
                     multi_issue_boards? ? s_('Issue boards') : s_('Issue board')
                   else
-                    multi_issue_boards? ? s_('IssueBoards|Boards') : s_('IssueBoards|Board')
+                    multi_issue_boards? ? s_('Boards|Boards') : s_('Boards|Board')
                   end
 
           ::Sidebars::MenuItem.new(

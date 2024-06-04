@@ -25,7 +25,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                      worker: 'MergeWorker',
                                      urgency: 'high',
                                      external_dependencies: 'no',
-                                     feature_category: 'source_code_management',
+                                     feature_category: 'code_review_workflow',
                                      boundary: '',
                                      job_status: 'done',
                                      destination_shard_redis: 'main' })
@@ -35,7 +35,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
                                      worker: 'MergeWorker',
                                      urgency: 'high',
                                      external_dependencies: 'no',
-                                     feature_category: 'source_code_management',
+                                     feature_category: 'code_review_workflow',
                                      boundary: '',
                                      job_status: 'fail',
                                      destination_shard_redis: 'main' })
@@ -103,7 +103,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::ServerMetrics, feature_category: :shar
               {
                 worker: 'MergeWorker',
                 urgency: 'high',
-                feature_category: 'source_code_management',
+                feature_category: 'code_review_workflow',
                 external_dependencies: 'no',
                 queue: 'merge',
                 destination_shard_redis: 'main'

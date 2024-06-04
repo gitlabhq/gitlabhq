@@ -3998,6 +3998,7 @@ Input type: `DeletePagesDeploymentInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdeletepagesdeploymentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdeletepagesdeploymenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationdeletepagesdeploymentpagesdeployment"></a>`pagesDeployment` | [`PagesDeployment!`](#pagesdeployment) | Deleted Pages Deployment. |
 
 ### `Mutation.designManagementDelete`
 

@@ -137,6 +137,7 @@ describe('WorkItemDetail component', () => {
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         fullPath: 'group/project',
+        groupPath: 'group',
         isGroup,
         reportAbusePath: '/report/abuse/path',
       },

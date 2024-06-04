@@ -2,17 +2,15 @@
   = content_for :flash_message do
     = render 'shared/project_limit'
 
-.page-title-holder.gl-display-flex.gl-align-items-center
-  %h1.page-title.gl-font-size-h-display= _('Projects')
-
-  .page-title-controls.gl-display-flex.gl-align-items-center.gl-gap-5
+= render ::Layouts::PageHeadingComponent.new(_('Projects')) do |c|
+  - c.with_actions do
     = link_to _("Explore projects"), starred_explore_projects_path
     - if current_user.can_create_project?
       = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { testid: 'new-project-button' } }) do
         = _("New project")
 
 .top-area
-  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-flex-basis-0.gl-min-w-0
+  .scrolling-tabs-container.inner-page-scroll-tabs.gl-grow.gl-basis-0.gl-min-w-0
     %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
       = sprite_icon('chevron-lg-left', size: 12)
     %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }

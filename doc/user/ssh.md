@@ -542,7 +542,7 @@ The GitLab SSH folder and files must have the following permissions:
 - The `authorized_keys` file must have permissions set to `600`.
 - The `authorized_keys.lock` file must have permissions set to `644`.
 
-To verify that these permissions are correct, run the following: 
+To verify that these permissions are correct, run the following:
 
 ```shell
 stat -c "%a %n" /var/opt/gitlab/.ssh/.
@@ -550,11 +550,11 @@ stat -c "%a %n" /var/opt/gitlab/.ssh/.
 
 ### Set permissions
 
-If the permissions are wrong, sign in to the application server and run: 
+If the permissions are wrong, sign in to the application server and run:
 
 ```shell
 cd /var/opt/gitlab/
-chown git:git /var/opt/gitlab/.ssh/ 
+chown git:git /var/opt/gitlab/.ssh/
 chmod 700  /var/opt/gitlab/.ssh/
 chmod 600  /var/opt/gitlab/.ssh/authorized_keys
 chmod 644  /var/opt/gitlab/.ssh/authorized_keys.lock
@@ -584,7 +584,7 @@ This indicates that something is wrong with your SSH setup.
 - Try to debug the connection by running `ssh -Tv git@example.com`.
   Replace `example.com` with your GitLab URL.
 - Ensure you followed all the instructions in [Use SSH on Microsoft Windows](#use-ssh-on-microsoft-windows).
-- Ensure that you have [Verify GitLab SSH ownership and permissions](#verify-gitlab-ssh-ownership-and-permissions). If you have several hosts ensure that permissions are correct in all hosts. 
+- Ensure that you have [Verify GitLab SSH ownership and permissions](#verify-gitlab-ssh-ownership-and-permissions). If you have several hosts ensure that permissions are correct in all hosts.
 
 ### `Could not resolve hostname` error
 

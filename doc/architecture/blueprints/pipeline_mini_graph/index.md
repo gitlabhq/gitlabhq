@@ -32,7 +32,7 @@ While the Pipeline Mini Graph primarily functions via REST, we are updating the 
 
 ## Proposal
 
-To break down implementation, we are taking the following steps: 
+To break down implementation, we are taking the following steps:
 
 1. Separate the REST version and the GraphQL version of the component into 2 directories called `pipeline_mini_graph` and `legacy_pipeline_mini_graph`. This way, developers can contribute with more ease and we can easily remove the REST version once all apps are using GraphQL.
 1. Finish updating the newer component to fully support GraphQL by adding a query for the stage dropdown.

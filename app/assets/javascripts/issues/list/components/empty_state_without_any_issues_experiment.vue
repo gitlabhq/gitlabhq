@@ -8,6 +8,7 @@ import GlCardEmptyStateExperiment from './gl_card_empty_state_experiment.vue';
 
 export default {
   issuesHelpPagePath: helpPagePath('user/project/issues/index'),
+  jiraIntegrationPath: helpPagePath('integration/jira/issues', { anchor: 'view-jira-issues' }),
   components: {
     GlCardEmptyStateExperiment,
     GlButton,
@@ -19,9 +20,6 @@ export default {
     GlModal: GlModalDirective,
   },
   inject: {
-    jiraIntegrationPath: {
-      default: null,
-    },
     newIssuePath: {
       default: null,
     },
@@ -176,7 +174,7 @@ export default {
       >
         <a
           class="gl-text-decoration-none!"
-          :href="jiraIntegrationPath"
+          :href="$options.jiraIntegrationPath"
           data-testid="empty-state-jira-int-link"
           data-track-action="click_jira_int_project_issues_empty_list_page"
           data-track-label="jira_int_project_issues_empty_list"

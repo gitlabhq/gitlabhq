@@ -96,38 +96,58 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
 
         subject(:value) { partitioning_strategy.next_partition_if.call(active_partition) }
 
-        context 'without any existing partitions' do
-          it { is_expected.to eq(true) }
-        end
-
-        context 'with initial partition attached' do
+        context 'when not using ci partitioning automation' do
           before do
-            ci_model.connection.execute(<<~SQL)
-              CREATE TABLE IF NOT EXISTS _test_table_name_100 PARTITION OF _test_table_name FOR VALUES IN (100);
-            SQL
+            stub_feature_flags(ci_partitioning_automation: false)
           end
 
-          it { is_expected.to eq(true) }
-        end
-
-        context 'with an existing partition for partition_id = 101' do
-          before do
-            ci_model.connection.execute(<<~SQL)
-              CREATE TABLE IF NOT EXISTS _test_table_name_101 PARTITION OF _test_table_name FOR VALUES IN (101);
-            SQL
+          context 'without any existing partitions' do
+            it { is_expected.to eq(true) }
           end
 
-          it { is_expected.to eq(false) }
-        end
+          context 'with initial partition attached' do
+            before do
+              ci_model.connection.execute(<<~SQL)
+                CREATE TABLE IF NOT EXISTS _test_table_name_100 PARTITION OF _test_table_name FOR VALUES IN (100);
+              SQL
+            end
 
-        context 'with an existing partition for partition_id in 100, 101' do
-          before do
-            ci_model.connection.execute(<<~SQL)
-              CREATE TABLE IF NOT EXISTS _test_table_name_101 PARTITION OF _test_table_name FOR VALUES IN (100, 101);
-            SQL
+            it { is_expected.to eq(true) }
           end
 
-          it { is_expected.to eq(false) }
+          context 'with an existing partition for partition_id = 101' do
+            before do
+              ci_model.connection.execute(<<~SQL)
+                CREATE TABLE IF NOT EXISTS _test_table_name_101 PARTITION OF _test_table_name FOR VALUES IN (101);
+              SQL
+            end
+
+            it { is_expected.to eq(false) }
+          end
+
+          context 'with an existing partition for partition_id in 100, 101' do
+            before do
+              ci_model.connection.execute(<<~SQL)
+                CREATE TABLE IF NOT EXISTS _test_table_name_101 PARTITION OF _test_table_name FOR VALUES IN (100, 101);
+              SQL
+            end
+
+            it { is_expected.to eq(false) }
+          end
+        end
+
+        context 'when using ci partitioning automation' do
+          context 'when current ci_partition exists' do
+            before do
+              create_list(:ci_partition, 2)
+            end
+
+            it { is_expected.to eq(true) }
+          end
+
+          context 'when current ci_partition does not exist' do
+            it { is_expected.to eq(false) }
+          end
         end
       end
     end

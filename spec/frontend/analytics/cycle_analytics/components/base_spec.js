@@ -180,10 +180,10 @@ describe('Value stream analytics component', () => {
       });
     });
 
-    it('renders a link to the value streams dashboard', () => {
+    it('renders a link to the value streams dashboard using the namespace path', () => {
       expect(findOverviewMetrics().props('dashboardsPath')).toBeDefined();
       expect(findOverviewMetrics().props('dashboardsPath')).toBe(
-        '/groups/foo/-/analytics/dashboards/value_streams_dashboard',
+        '/full/path/to/foo/-/analytics/dashboards/value_streams_dashboard',
       );
     });
   });

@@ -1,5 +1,5 @@
 <script>
-import { GlFilteredSearchToken } from '@gitlab/ui';
+import { GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -34,15 +34,25 @@ export default {
   issuableListTabs,
   sortOptions,
   components: {
+    GlLoadingIcon,
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
   },
   inject: ['fullPath', 'initialSort', 'isSignedIn', 'workItemType'],
+  props: {
+    eeCreatedWorkItemsCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+  },
   data() {
     return {
       error: undefined,
       filterTokens: [],
+      hasAnyIssues: false,
+      isInitialAllCountSet: false,
       pageInfo: {},
       pageParams: getInitialPageParams(),
       sortKey: deriveSortKey({ sort: this.initialSort, sortMap: urlSortParams }),
@@ -77,6 +87,11 @@ export default {
           [STATUS_CLOSED]: closed,
           [STATUS_ALL]: all,
         };
+
+        if (!this.isInitialAllCountSet) {
+          this.hasAnyIssues = Boolean(all);
+          this.isInitialAllCountSet = true;
+        }
       },
       error(error) {
         this.error = s__(
@@ -89,6 +104,12 @@ export default {
   computed: {
     apiFilterParams() {
       return convertToApiParams(this.filterTokens);
+    },
+    hasSearch() {
+      return Boolean(this.searchQuery);
+    },
+    isOpenTab() {
+      return this.state === STATUS_OPEN;
     },
     searchQuery() {
       return convertToSearchQuery(this.filterTokens);
@@ -135,6 +156,15 @@ export default {
     },
     showPaginationControls() {
       return this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage;
+    },
+  },
+  watch: {
+    eeCreatedWorkItemsCount() {
+      // Only reset isInitialAllCountSet when there's no issues to minimize unmounting IssuableList
+      if (!this.hasAnyIssues) {
+        this.isInitialAllCountSet = false;
+      }
+      this.$apollo.queries.workItems.refetch();
     },
   },
   methods: {
@@ -199,7 +229,10 @@ export default {
 </script>
 
 <template>
+  <gl-loading-icon v-if="!isInitialAllCountSet && !error" class="gl-mt-5" size="lg" />
+
   <issuable-list
+    v-else-if="hasAnyIssues || error"
     :current-tab="state"
     :error="error"
     :has-next-page="pageInfo.hasNextPage"
@@ -239,8 +272,16 @@ export default {
       <issue-card-statistics :issue="issuable" />
     </template>
 
+    <template #empty-state>
+      <slot name="list-empty-state" :has-search="hasSearch" :is-open-tab="isOpenTab"></slot>
+    </template>
+
     <template #list-body>
       <slot name="list-body"></slot>
     </template>
   </issuable-list>
+
+  <div v-else>
+    <slot name="page-empty-state"></slot>
+  </div>
 </template>

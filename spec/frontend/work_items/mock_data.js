@@ -3970,6 +3970,29 @@ export const groupWorkItemsQueryResponse = {
   },
 };
 
+export const emptyGroupWorkItemsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/3',
+      workItemStateCounts: {
+        all: 0,
+        closed: 0,
+        opened: 0,
+      },
+      workItems: {
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: 'startCursor',
+          endCursor: 'endCursor',
+          __typename: 'PageInfo',
+        },
+        nodes: [],
+      },
+    },
+  },
+};
+
 export const updateWorkItemMutationResponseFactory = (options) => {
   const response = workItemResponseFactory(options);
   return {

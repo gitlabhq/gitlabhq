@@ -25,6 +25,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
 
   const {
     fullPath,
+    groupPath,
     hasIssueWeightsFeature,
     iid,
     issuesListPath,
@@ -57,6 +58,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       newCommentTemplatePaths: JSON.parse(newCommentTemplatePaths),
       reportAbusePath,
+      groupPath,
     },
     mounted() {
       performanceMarkAndMeasure({

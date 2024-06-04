@@ -95,6 +95,26 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
         end
       end
     end
+
+    describe '.provisioning' do
+      subject(:provisioning) { described_class.provisioning(ci_partition.id) }
+
+      let!(:next_ci_partition) { create(:ci_partition) }
+
+      context 'when one partition is preparing' do
+        it { is_expected.to eq(next_ci_partition) }
+      end
+
+      context 'when multiple partitions are preparing' do
+        before do
+          create_list(:ci_partition, 2)
+        end
+
+        it 'returns the first ci_partition with status preparing' do
+          expect(provisioning).to eq(next_ci_partition)
+        end
+      end
+    end
   end
 
   describe 'state machine' do

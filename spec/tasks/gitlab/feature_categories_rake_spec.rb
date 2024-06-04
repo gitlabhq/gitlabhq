@@ -21,7 +21,7 @@ RSpec.describe 'gitlab:feature_categories:index', :silence_stdout, feature_categ
         )
       ),
       'sidekiq_workers' => a_hash_including(
-        'source_code_management' => a_collection_including(
+        'code_review_workflow' => a_collection_including(
           klass: 'MergeWorker',
           source_location: [
             'app/workers/merge_worker.rb',

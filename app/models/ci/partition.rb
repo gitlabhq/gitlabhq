@@ -48,6 +48,14 @@ module Ci
           .order(id: :asc)
           .first
       end
+
+      def provisioning(partition_id)
+        Ci::Partition
+          .with_status(:preparing)
+          .id_after(partition_id)
+          .order(id: :asc)
+          .first
+      end
     end
 
     def above_threshold?(threshold)

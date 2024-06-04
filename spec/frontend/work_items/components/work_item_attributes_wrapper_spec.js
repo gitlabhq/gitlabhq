@@ -9,14 +9,7 @@ import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
-import {
-  workItemResponseFactory,
-  taskType,
-  objectiveType,
-  keyResultType,
-  issueType,
-  epicType,
-} from '../mock_data';
+import { workItemResponseFactory } from '../mock_data';
 
 describe('WorkItemAttributesWrapper component', () => {
   let wrapper;
@@ -34,11 +27,13 @@ describe('WorkItemAttributesWrapper component', () => {
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
     workItemsBeta = true,
+    groupPath = '',
   } = {}) => {
     wrapper = shallowMount(WorkItemAttributesWrapper, {
       propsData: {
         fullPath: 'group/project',
         workItem,
+        groupPath,
       },
       provide: {
         hasIssueWeightsFeature: true,
@@ -140,26 +135,9 @@ describe('WorkItemAttributesWrapper component', () => {
   });
 
   describe('parent widget', () => {
-    describe.each`
-      description                            | workItemType     | exists
-      ${'when work item type is task'}       | ${taskType}      | ${true}
-      ${'when work item type is objective'}  | ${objectiveType} | ${true}
-      ${'when work item type is key result'} | ${keyResultType} | ${true}
-      ${'when work item type is issue'}      | ${issueType}     | ${true}
-      ${'when work item type is epic'}       | ${epicType}      | ${true}
-    `('$description', ({ workItemType, exists }) => {
-      it(`${exists ? 'renders' : 'does not render'} parent component`, async () => {
-        const response = workItemResponseFactory({ workItemType });
-        createComponent({ workItem: response.data.workItem });
-
-        await waitForPromises();
-
-        expect(findWorkItemParent().exists()).toBe(exists);
-      });
-    });
-
-    it('renders WorkItemParent when workItemsBeta enabled', async () => {
-      createComponent();
+    it(`renders parent component with proper data`, async () => {
+      const response = workItemResponseFactory();
+      createComponent({ workItem: response.data.workItem });
 
       await waitForPromises();
 

@@ -41,6 +41,7 @@ describe('Work items router', () => {
       router,
       provide: {
         fullPath: 'full-path',
+        groupPath: '',
         isGroup: false,
         issuesListPath: 'full-path/-/issues',
         hasIssueWeightsFeature: false,

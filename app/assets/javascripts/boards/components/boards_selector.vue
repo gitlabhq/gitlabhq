@@ -25,10 +25,10 @@ export default {
   name: 'BoardsSelector',
   i18n: {
     fetchBoardsError: s__('Boards|An error occurred while fetching boards. Please try again.'),
-    headerText: s__('IssueBoards|Switch board'),
-    noResultsText: s__('IssueBoards|No matching boards found'),
+    headerText: s__('Boards|Switch board'),
+    noResultsText: s__('Boards|No matching boards found'),
     hiddenBoardsText: s__(
-      'IssueBoards|Some of your boards are hidden, add a license to see them again.',
+      'Boards|Some of your boards are hidden, add a license to see them again.',
     ),
   },
   components: {
@@ -81,7 +81,7 @@ export default {
 
   computed: {
     boardName() {
-      return this.board?.name || s__('IssueBoards|Select board');
+      return this.board?.name || s__('Boards|Select board');
     },
     boardId() {
       return getIdFromGraphQLId(this.board.id) || '';
@@ -283,9 +283,7 @@ export default {
 
         <template #footer>
           <div v-if="hasMissingBoards" class="gl-border-t gl-font-sm gl-px-4 gl-pt-4 gl-pb-3">
-            {{
-              s__('IssueBoards|Some of your boards are hidden, add a license to see them again.')
-            }}
+            {{ s__('Boards|Some of your boards are hidden, add a license to see them again.') }}
           </div>
           <div v-if="canAdminBoard" class="gl-border-t gl-py-2 gl-px-2">
             <gl-button
@@ -300,7 +298,7 @@ export default {
               data-track-property="dropdown"
               @click="$emit('showBoardModal', $options.formType.new)"
             >
-              {{ s__('IssueBoards|Create new board') }}
+              {{ s__('Boards|Create new board') }}
             </gl-button>
           </div>
         </template>

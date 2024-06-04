@@ -52,6 +52,11 @@ export default {
       type: Object,
       required: true,
     },
+    groupPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     workItemType() {
@@ -247,6 +252,7 @@ export default {
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
         :parent="workItemParent"
+        :group-path="groupPath"
         @error="$emit('error', $event)"
       />
     </template>

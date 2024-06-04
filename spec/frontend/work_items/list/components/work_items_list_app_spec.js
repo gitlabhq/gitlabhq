@@ -1,3 +1,4 @@
+import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import Vue, { nextTick } from 'vue';
@@ -33,6 +34,7 @@ jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('WorkItemsListApp component', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
   Vue.use(VueApollo);
@@ -63,44 +65,62 @@ describe('WorkItemsListApp component', () => {
     });
   };
 
-  it('renders IssuableList component', () => {
+  it('renders loading icon when initially fetching work items', () => {
     mountComponent();
 
-    expect(findIssuableList().props()).toMatchObject({
-      currentTab: STATUS_OPEN,
-      error: '',
-      initialSortBy: CREATED_DESC,
-      issuables: [],
-      issuablesLoading: true,
-      namespace: 'work-items',
-      recentSearchesStorageKey: 'issues',
-      showWorkItemTypeIcon: true,
-      sortOptions,
-      tabs: WorkItemsListApp.issuableListTabs,
+    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
+  });
+
+  describe('when work items are fetched', () => {
+    beforeEach(async () => {
+      mountComponent();
+      await waitForPromises();
     });
-  });
 
-  it('renders tab counts', async () => {
-    mountComponent();
-    await waitForPromises();
-
-    expect(cloneDeep(findIssuableList().props('tabCounts'))).toEqual({
-      all: 3,
-      closed: 1,
-      opened: 2,
+    it('renders IssuableList component', () => {
+      expect(findIssuableList().props()).toMatchObject({
+        currentTab: STATUS_OPEN,
+        error: '',
+        initialSortBy: CREATED_DESC,
+        namespace: 'work-items',
+        recentSearchesStorageKey: 'issues',
+        showWorkItemTypeIcon: true,
+        sortOptions,
+        tabs: WorkItemsListApp.issuableListTabs,
+      });
     });
-  });
 
-  it('renders IssueCardStatistics component', () => {
-    mountComponent();
+    it('renders tab counts', () => {
+      expect(cloneDeep(findIssuableList().props('tabCounts'))).toEqual({
+        all: 3,
+        closed: 1,
+        opened: 2,
+      });
+    });
 
-    expect(findIssueCardStatistics().exists()).toBe(true);
-  });
+    it('renders IssueCardStatistics component', () => {
+      expect(findIssueCardStatistics().exists()).toBe(true);
+    });
 
-  it('renders IssueCardTimeInfo component', () => {
-    mountComponent();
+    it('renders IssueCardTimeInfo component', () => {
+      expect(findIssueCardTimeInfo().exists()).toBe(true);
+    });
 
-    expect(findIssueCardTimeInfo().exists()).toBe(true);
+    it('renders work items', () => {
+      expect(findIssuableList().props('issuables')).toEqual(
+        groupWorkItemsQueryResponse.data.group.workItems.nodes,
+      );
+    });
+
+    it('calls query to fetch work items', () => {
+      expect(defaultQueryHandler).toHaveBeenCalledWith({
+        fullPath: 'full/path',
+        sort: CREATED_DESC,
+        state: STATUS_OPEN,
+        firstPageSize: 20,
+        types: [null],
+      });
+    });
   });
 
   describe('pagination controls', () => {
@@ -122,53 +142,30 @@ describe('WorkItemsListApp component', () => {
     });
   });
 
-  it('renders work items', async () => {
-    mountComponent();
-    await waitForPromises();
+  describe('when workItemType is provided', () => {
+    it('filters work items by workItemType', () => {
+      const type = 'EPIC';
+      mountComponent({ provide: { workItemType: type } });
 
-    expect(findIssuableList().props('issuables')).toEqual(
-      groupWorkItemsQueryResponse.data.group.workItems.nodes,
-    );
-  });
-
-  it('fetches work items', () => {
-    mountComponent();
-
-    expect(defaultQueryHandler).toHaveBeenCalledWith({
-      fullPath: 'full/path',
-      sort: CREATED_DESC,
-      state: STATUS_OPEN,
-      firstPageSize: 20,
-      types: [null],
-    });
-  });
-
-  it('filters work items by workItemType', () => {
-    const type = 'EPIC';
-    mountComponent({
-      provide: {
-        workItemType: type,
-      },
-    });
-
-    expect(defaultQueryHandler).toHaveBeenCalledWith({
-      fullPath: 'full/path',
-      sort: CREATED_DESC,
-      state: STATUS_OPEN,
-      firstPageSize: 20,
-      types: [type],
+      expect(defaultQueryHandler).toHaveBeenCalledWith({
+        fullPath: 'full/path',
+        sort: CREATED_DESC,
+        state: STATUS_OPEN,
+        firstPageSize: 20,
+        types: [type],
+      });
     });
   });
 
   describe('when there is an error fetching work items', () => {
+    const message = 'Something went wrong when fetching work items. Please try again.';
+
     beforeEach(async () => {
       mountComponent({ queryHandler: jest.fn().mockRejectedValue(new Error('ERROR')) });
       await waitForPromises();
     });
 
     it('renders an error message', () => {
-      const message = 'Something went wrong when fetching work items. Please try again.';
-
       expect(findIssuableList().props('error')).toBe(message);
       expect(Sentry.captureException).toHaveBeenCalledWith(new Error('ERROR'));
     });
@@ -177,7 +174,22 @@ describe('WorkItemsListApp component', () => {
       findIssuableList().vm.$emit('dismiss-alert');
       await nextTick();
 
-      expect(findIssuableList().props('error')).toBe('');
+      expect(wrapper.text()).not.toContain(message);
+    });
+  });
+
+  describe('watcher', () => {
+    describe('when eeCreatedWorkItemsCount is updated', () => {
+      it('refetches work items', async () => {
+        mountComponent();
+        await waitForPromises();
+
+        expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
+
+        await wrapper.setProps({ eeCreatedWorkItemsCount: 1 });
+
+        expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
+      });
     });
   });
 
@@ -189,7 +201,7 @@ describe('WorkItemsListApp component', () => {
       avatar_url: 'avatar/url',
     };
 
-    beforeEach(() => {
+    beforeEach(async () => {
       window.gon = {
         current_user_id: mockCurrentUser.id,
         current_user_fullname: mockCurrentUser.name,
@@ -197,6 +209,7 @@ describe('WorkItemsListApp component', () => {
         current_user_avatar_url: mockCurrentUser.avatar_url,
       };
       mountComponent();
+      await waitForPromises();
     });
 
     it('renders all tokens', () => {
@@ -228,6 +241,7 @@ describe('WorkItemsListApp component', () => {
     describe('when "filter" event is emitted by IssuableList', () => {
       it('fetches filtered work items', async () => {
         mountComponent();
+        await waitForPromises();
 
         findIssuableList().vm.$emit('filter', [
           { type: FILTERED_SEARCH_TERM, value: { data: 'find issues', operator: 'undefined' } },
@@ -280,6 +294,7 @@ describe('WorkItemsListApp component', () => {
           } else {
             mountComponent();
           }
+          await waitForPromises();
 
           findIssuableList().vm.$emit('sort', sortKey);
           await waitForPromises();
@@ -291,9 +306,10 @@ describe('WorkItemsListApp component', () => {
       );
 
       describe('when user is signed in', () => {
-        it('calls mutation to save sort preference', () => {
+        it('calls mutation to save sort preference', async () => {
           const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
           mountComponent({ sortPreferenceMutationResponse: mutationMock });
+          await waitForPromises();
 
           findIssuableList().vm.$emit('sort', UPDATED_DESC);
 
@@ -305,6 +321,7 @@ describe('WorkItemsListApp component', () => {
             .fn()
             .mockResolvedValue(setSortPreferenceMutationResponseWithErrors);
           mountComponent({ sortPreferenceMutationResponse: mutationMock });
+          await waitForPromises();
 
           findIssuableList().vm.$emit('sort', UPDATED_DESC);
           await waitForPromises();
@@ -314,12 +331,13 @@ describe('WorkItemsListApp component', () => {
       });
 
       describe('when user is signed out', () => {
-        it('does not call mutation to save sort preference', () => {
+        it('does not call mutation to save sort preference', async () => {
           const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
           mountComponent({
             provide: { isSignedIn: false },
             sortPreferenceMutationResponse: mutationMock,
           });
+          await waitForPromises();
 
           findIssuableList().vm.$emit('sort', CREATED_DESC);
 

@@ -1,7 +1,5 @@
-.page-title-holder.d-flex.gl-align-items-center
-  %h1.page-title.gl-font-size-h-display= _('Snippets')
-
-  .page-title-controls.gl-display-flex.gl-align-items-center.gl-gap-5
+= render ::Layouts::PageHeadingComponent.new(_('Snippets')) do |c|
+  - c.with_actions do
     = link_to _("Explore snippets"), explore_snippets_path
     - if can?(current_user, :create_snippet)
       = render Pajamas::ButtonComponent.new(href: new_snippet_path, variant: :confirm, button_options: { title: _("New snippet") }) do

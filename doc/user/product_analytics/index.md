@@ -169,7 +169,7 @@ Prerequisites:
 
 Prerequisites:
 
-- You must have at least the Developer role for the project or group the project belongs to.
+- You must have at least the Maintainer role for the project or group the project belongs to.
 
 Onboarding a GitLab project means preparing it to receive events that are used for product analytics.
 

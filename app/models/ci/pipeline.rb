@@ -576,7 +576,9 @@ module Ci
 
     def self.current_partition_value(project = nil)
       Gitlab::SafeRequestStore.fetch(:ci_current_partition_value) do
-        if Feature.enabled?(:ci_current_partition_value_102, project)
+        if Feature.enabled?(:ci_partitioning_automation, project)
+          Ci::Partition.current&.id || NEXT_PARTITION_VALUE
+        elsif Feature.enabled?(:ci_current_partition_value_102, project)
           NEXT_PARTITION_VALUE
         elsif Feature.enabled?(:ci_current_partition_value_101, project)
           SECOND_PARTITION_VALUE

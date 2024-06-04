@@ -27,17 +27,17 @@ const boardDefaults = {
 
 export default {
   i18n: {
-    [formType.new]: { title: s__('Board|Create new board'), btnText: s__('Board|Create board') },
-    [formType.delete]: { title: s__('Board|Delete board'), btnText: __('Delete') },
-    [formType.edit]: { title: s__('Board|Configure board'), btnText: __('Save changes') },
-    scopeModalTitle: s__('Board|Board configuration'),
+    [formType.new]: { title: s__('Boards|Create new board'), btnText: s__('Boards|Create board') },
+    [formType.delete]: { title: s__('Boards|Delete board'), btnText: __('Delete') },
+    [formType.edit]: { title: s__('Boards|Configure board'), btnText: __('Save changes') },
+    scopeModalTitle: s__('Boards|Board configuration'),
     cancelButtonText: __('Cancel'),
-    deleteButtonText: s__('Board|Delete board'),
-    deleteErrorMessage: s__('Board|Failed to delete board. Please try again.'),
+    deleteButtonText: s__('Boards|Delete board'),
+    deleteErrorMessage: s__('Boards|Failed to delete board. Please try again.'),
     saveErrorMessage: __('Unable to save your changes. Please try again.'),
-    deleteConfirmationMessage: s__('Board|Are you sure you want to delete this board?'),
+    deleteConfirmationMessage: s__('Boards|Are you sure you want to delete this board?'),
     titleFieldLabel: __('Title'),
-    titleFieldPlaceholder: s__('Board|Enter board name'),
+    titleFieldPlaceholder: s__('Boards|Enter board name'),
   },
   components: {
     BoardScope: () => import('ee_component/boards/components/board_scope.vue'),

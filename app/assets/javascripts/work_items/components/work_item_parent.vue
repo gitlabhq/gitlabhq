@@ -14,6 +14,7 @@ import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
   SUPPORTED_PARENT_TYPE_MAP,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
 } from '../constants';
 
 export default {
@@ -57,6 +58,11 @@ export default {
       required: false,
       default: false,
     },
+    groupPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -72,6 +78,9 @@ export default {
   computed: {
     hasParent() {
       return this.parent !== null;
+    },
+    isIssue() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE;
     },
     isLoading() {
       return this.$apollo.queries.availableWorkItems.loading;
@@ -105,16 +114,19 @@ export default {
   apollo: {
     availableWorkItems: {
       query() {
-        return this.isGroup ? groupWorkItemsQuery : projectWorkItemsQuery;
+        // TODO: Remove the this.isIssue check once issues are migrated to work items
+        return this.isGroup || this.isIssue ? groupWorkItemsQuery : projectWorkItemsQuery;
       },
       variables() {
+        // TODO: Remove the this.isIssue check once issues are migrated to work items
         return {
-          fullPath: this.fullPath,
+          fullPath: this.isIssue ? this.groupPath : this.fullPath,
           searchTerm: this.search,
           types: this.parentType,
           in: this.search ? 'TITLE' : undefined,
           iid: null,
           isNumber: false,
+          includeAncestors: true,
         };
       },
       skip() {

@@ -20,6 +20,7 @@ export const mountWorkItemsListApp = () => {
     hasIssueWeightsFeature,
     initialSort,
     isSignedIn,
+    showNewIssueLink,
     workItemType,
   } = el.dataset;
 
@@ -37,6 +38,7 @@ export const mountWorkItemsListApp = () => {
       initialSort,
       isSignedIn: parseBoolean(isSignedIn),
       isGroup: true,
+      showNewIssueLink: parseBoolean(showNewIssueLink),
       workItemType,
     },
     render: (createComponent) => createComponent(WorkItemsListApp),

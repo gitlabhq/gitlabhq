@@ -211,6 +211,21 @@ Layout components can be used to create common layout patterns used in GitLab.
 
 ### Available components
 
+#### Page heading
+
+A standard page header with a page title and optional actions.
+
+**Example:**
+
+```haml
+= render ::Layouts::PageHeadingComponent.new(_('Page title')) do |c|
+  - c.with_actions do
+    = buttons
+```
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/page_heading_component.rb).
+
 #### Horizontal section
 
 Many of the settings pages use a layout where the title and description are on the left and the settings fields are on the right. The `Layouts::HorizontalSectionComponent` can be used to create this layout.

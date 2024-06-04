@@ -15,8 +15,7 @@
 - show_header = @allowed_todos.any? || user_have_todos
 
 - if show_header
-  .page-title-holder.d-flex.gl-align-items-center
-    %h1.page-title.gl-font-size-h-display= _("To-Do List")
+  = render ::Layouts::PageHeadingComponent.new(_('To-Do List'))
 
 .js-todos-all
   - if user_have_todos

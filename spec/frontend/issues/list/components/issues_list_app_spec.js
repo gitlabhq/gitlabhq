@@ -112,7 +112,6 @@ describe('CE IssuesListApp component', () => {
     canCreateProjects: false,
     canReadCrmContact: false,
     canReadCrmOrganization: false,
-    emptyStateSvgPath: 'empty-state.svg',
     exportCsvPath: 'export/csv/path',
     fullPath: 'path/to/project',
     hasAnyIssues: true,
@@ -129,7 +128,6 @@ describe('CE IssuesListApp component', () => {
     isProject: true,
     isPublicVisibilityRestricted: false,
     isSignedIn: true,
-    jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
     newProjectPath: 'new/project/path',
     releasesPath: 'releases/path',
@@ -610,6 +608,7 @@ describe('CE IssuesListApp component', () => {
         it('shows EmptyStateWithAnyIssues empty state', () => {
           expect(wrapper.findComponent(EmptyStateWithAnyIssues).props()).toEqual({
             hasSearch: false,
+            isEpic: false,
             isOpenTab: true,
           });
         });

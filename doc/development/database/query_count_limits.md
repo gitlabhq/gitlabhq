@@ -6,8 +6,9 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Query Count Limits
 
-Each controller or API endpoint is allowed to execute up to 100 SQL queries and
-in test environments we raise an error when this threshold is exceeded.
+Each controller, API endpoint and Sidekide worker is allowed to execute up to
+100 SQL queries and in test environments we raise an error when this threshold
+is exceeded.
 
 ## Solving Failing Tests
 
@@ -20,9 +21,7 @@ solutions to this problem:
 You should only resort to disabling query limits when an existing controller or endpoint
 is to blame as in this case reducing the number of SQL queries can take a lot of
 effort. Newly added controllers and endpoints are not allowed to execute more
-than 100 SQL queries and no exceptions are made for this rule. _If_ a large
-number of SQL queries is necessary to perform certain work it's best to have
-this work performed by Sidekiq instead of doing this directly in a web request.
+than 100 SQL queries and no exceptions are made for this rule.
 
 ## Disable query limiting
 
@@ -68,3 +67,12 @@ get '/projects/:id/foo' do
   # ...
 end
 ```
+
+For Sidekiq workers, you will need to add the allowlist directly as well:
+
+```ruby
+def perform(args)
+  Gitlab::QueryLimiting.disable!('...')
+
+  # ...
+end

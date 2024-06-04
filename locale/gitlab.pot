@@ -8859,15 +8859,36 @@ msgstr ""
 msgid "Boards|An error occurred while updating the list. Please try again."
 msgstr ""
 
+msgid "Boards|Are you sure you want to delete this board?"
+msgstr ""
+
 msgid "Boards|Blocked by %{blockedByCount} %{issuableType}"
 msgid_plural "Boards|Blocked by %{blockedByCount} %{issuableType}s"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Boards|Board"
+msgstr ""
+
+msgid "Boards|Board configuration"
+msgstr ""
+
+msgid "Boards|Boards"
+msgstr ""
+
 msgid "Boards|Card options"
 msgstr ""
 
 msgid "Boards|Collapse"
+msgstr ""
+
+msgid "Boards|Configure board"
+msgstr ""
+
+msgid "Boards|Create board"
+msgstr ""
+
+msgid "Boards|Create new board"
 msgstr ""
 
 msgid "Boards|Create new epic"
@@ -8876,13 +8897,31 @@ msgstr ""
 msgid "Boards|Create new issue"
 msgstr ""
 
+msgid "Boards|Delete board"
+msgstr ""
+
 msgid "Boards|Edit list settings"
+msgstr ""
+
+msgid "Boards|Enter board name"
 msgstr ""
 
 msgid "Boards|Expand"
 msgstr ""
 
+msgid "Boards|Failed to delete board. Please try again."
+msgstr ""
+
 msgid "Boards|Failed to fetch blocking %{issuableType}s"
+msgstr ""
+
+msgid "Boards|Load more epics"
+msgstr ""
+
+msgid "Boards|Load more issues"
+msgstr ""
+
+msgid "Boards|Loading epics"
 msgstr ""
 
 msgid "Boards|Move to end of list"
@@ -8897,43 +8936,22 @@ msgstr ""
 msgid "Boards|No cadence matches current iteration filter"
 msgstr ""
 
+msgid "Boards|No matching boards found"
+msgstr ""
+
 msgid "Boards|Retrieving blocking %{issuableType}s"
 msgstr ""
 
+msgid "Boards|Select board"
+msgstr ""
+
+msgid "Boards|Some of your boards are hidden, add a license to see them again."
+msgstr ""
+
+msgid "Boards|Switch board"
+msgstr ""
+
 msgid "Boards|View all blocking %{issuableType}s"
-msgstr ""
-
-msgid "Board|Are you sure you want to delete this board?"
-msgstr ""
-
-msgid "Board|Board configuration"
-msgstr ""
-
-msgid "Board|Configure board"
-msgstr ""
-
-msgid "Board|Create board"
-msgstr ""
-
-msgid "Board|Create new board"
-msgstr ""
-
-msgid "Board|Delete board"
-msgstr ""
-
-msgid "Board|Enter board name"
-msgstr ""
-
-msgid "Board|Failed to delete board. Please try again."
-msgstr ""
-
-msgid "Board|Load more epics"
-msgstr ""
-
-msgid "Board|Load more issues"
-msgstr ""
-
-msgid "Board|Loading epics"
 msgstr ""
 
 msgid "Bold (%{modifierKey}B)"
@@ -28575,27 +28593,6 @@ msgstr ""
 msgid "IssueAnalytics|Weight"
 msgstr ""
 
-msgid "IssueBoards|Board"
-msgstr ""
-
-msgid "IssueBoards|Boards"
-msgstr ""
-
-msgid "IssueBoards|Create new board"
-msgstr ""
-
-msgid "IssueBoards|No matching boards found"
-msgstr ""
-
-msgid "IssueBoards|Select board"
-msgstr ""
-
-msgid "IssueBoards|Some of your boards are hidden, add a license to see them again."
-msgstr ""
-
-msgid "IssueBoards|Switch board"
-msgstr ""
-
 msgid "IssueList|created %{timeAgoString} by %{user}"
 msgstr ""
 
@@ -39456,6 +39453,9 @@ msgstr ""
 msgid "ProductAnalytics|Add the script to the page and assign the client SDK to window:"
 msgstr ""
 
+msgid "ProductAnalytics|Additional permissions required"
+msgstr ""
+
 msgid "ProductAnalytics|After your application has been instrumented and data is being collected, you can visualize and monitor behaviors in your %{linkStart}analytics dashboards%{linkEnd}."
 msgstr ""
 
@@ -39526,6 +39526,9 @@ msgid "ProductAnalytics|Connect your own provider"
 msgstr ""
 
 msgid "ProductAnalytics|Contact our sales team"
+msgstr ""
+
+msgid "ProductAnalytics|Contact the GitLab administrator or project maintainer to onboard this project with product analytics. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "ProductAnalytics|Continue set up"

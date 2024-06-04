@@ -7,7 +7,7 @@ class MergeWorker # rubocop:disable Scalability/IdempotentWorker
 
   sidekiq_options retry: 3
 
-  feature_category :source_code_management
+  feature_category :code_review_workflow
   urgency :high
   weight 5
   loggable_arguments 2

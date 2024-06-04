@@ -40,7 +40,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'app/models/ci/runner.rb'
     - 'app/models/ci/secure_file.rb'
     - 'app/models/clusters/instance.rb'
-    - 'app/models/concerns/ci/partitionable/organizer.rb'
     - 'app/models/concerns/counter_attribute.rb'
     - 'app/models/concerns/protected_ref_access.rb'
     - 'app/models/concerns/reset_on_column_errors.rb'

@@ -419,7 +419,7 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`skip_pre_receive_secret_detection`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147855) | Triggered when secret push protection is skipped by the user| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441185) | Project |
+| [`skip_secret_push_protection`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147855) | Triggered when secret push protection is skipped by the user| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.11](https://gitlab.com/gitlab-org/gitlab/-/issues/441185) | Project |
 
 ### Security policy management
 

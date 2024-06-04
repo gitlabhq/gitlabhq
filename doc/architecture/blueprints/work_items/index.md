@@ -137,6 +137,16 @@ Parent-child relationships form the basis of **hierarchy** in work items. Each w
 
 As types expand, and parent items have their own parent items, the hierarchy capability can grow exponentially.
 
+Currently, following are the allowed Parent-child relationships:
+
+| Type       | Can be parent of | Can be child of  | 
+|------------|------------------|------------------|
+| Epic       | Epic             | Epic             |
+| Issue      | Task             | Epic             |
+| Task       | None             | Issue            |
+| Objective  | Objective        | Objective        |
+| Key result | None             | Objective        |
+
 ### Work Item view
 
 The new frontend view that renders Work Items of any type using global Work Item `id` as an identifier.

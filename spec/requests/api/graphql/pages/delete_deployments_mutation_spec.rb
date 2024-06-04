@@ -15,6 +15,11 @@ RSpec.describe 'DeletePagesDeployment mutation', feature_category: :pages do
     <<~GRAPHQL
       mutation DeletePagesDeployment {
         deletePagesDeployment(input: { id: "#{pages_deployment_id}" }) {
+          pagesDeployment {
+            id
+            active
+            deletedAt
+          }
           errors
         }
       }
@@ -35,6 +40,22 @@ RSpec.describe 'DeletePagesDeployment mutation', feature_category: :pages do
 
     it 'does not throw an error' do
       expect(graphql_errors).to be_nil
+    end
+
+    describe 'returned pages deployment', :freeze_time do
+      let(:returned_pages_deployment) { graphql_data_at(:deletePagesDeployment, :pages_deployment) }
+
+      it 'has the correct ID' do
+        expect(returned_pages_deployment["id"]).to eq(pages_deployment.to_global_id.to_s)
+      end
+
+      it 'has attribute active:false' do
+        expect(returned_pages_deployment["active"]).to be(false)
+      end
+
+      it 'has deleted_at set to the deletion time' do
+        expect(returned_pages_deployment["deletedAt"]).to eq(Time.now.utc.iso8601)
+      end
     end
   end
 
