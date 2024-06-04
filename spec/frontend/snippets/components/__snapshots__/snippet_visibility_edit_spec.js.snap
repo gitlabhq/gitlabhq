@@ -13,6 +13,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
       <gl-icon-stub
         name="question-o"
         size="12"
+        variant="current"
       />
     </gl-link-stub>
   </label>
@@ -41,6 +42,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
           <gl-icon-stub
             name="lock"
             size="16"
+            variant="current"
           />
           <span
             class="gl-font-semibold gl-ml-2 js-visibility-option"
@@ -61,6 +63,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
           <gl-icon-stub
             name="shield"
             size="16"
+            variant="current"
           />
           <span
             class="gl-font-semibold gl-ml-2 js-visibility-option"
@@ -81,6 +84,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
           <gl-icon-stub
             name="earth"
             size="16"
+            variant="current"
           />
           <span
             class="gl-font-semibold gl-ml-2 js-visibility-option"

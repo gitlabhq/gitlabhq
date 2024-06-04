@@ -62,6 +62,7 @@ exports[`Snippet Description Edit component rendering matches the snapshot 1`] =
           <gl-icon-stub
             name="minimize"
             size="16"
+            variant="current"
           />
         </a>
         <markdown-toolbar-stub

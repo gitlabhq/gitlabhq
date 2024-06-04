@@ -14,7 +14,7 @@ RSpec.shared_examples 'set up an integration' do |endpoint:, integration:|
     expect(response).to have_gitlab_http_status(:ok)
     expect(json_response['slug']).to eq(dashed_integration)
 
-    current_integration = project.integrations.first
+    current_integration = project.integrations.by_name(integration).first
     expect(current_integration).to have_attributes(integration_attrs)
     expect(json_response['properties'].keys).to match_array(current_integration.api_field_names)
     expect(json_response['properties'].keys).not_to include(*current_integration.secret_fields)
@@ -29,7 +29,7 @@ RSpec.shared_examples 'set up an integration' do |endpoint:, integration:|
       put url, params: flipped_attrs
 
       expect(response).to have_gitlab_http_status(:ok)
-      expect(project.integrations.first).to have_attributes(flipped_attrs)
+      expect(project.integrations.by_name(integration).first).to have_attributes(flipped_attrs)
     end
   end
 
@@ -84,12 +84,8 @@ end
 RSpec.shared_examples 'disable an integration' do |endpoint:, integration:|
   include_context 'with integration'
 
-  let_it_be(:project2) do
-    create(:project, creator_id: user.id, namespace: user.namespace)
-  end
-
   before do
-    create(integration_factory, project: project)
+    project_integrations_map[integration].activate!
   end
 
   it "deletes #{integration}" do
@@ -111,45 +107,57 @@ end
 RSpec.shared_examples 'get an integration settings' do |endpoint:, integration:|
   include_context 'with integration'
 
-  let!(:initialized_integration) { create(integration_factory, project: project) }
-
-  let_it_be(:project2) do
-    create(:project, creator_id: user.id, namespace: user.namespace)
-  end
+  let(:initialized_integration) { project_integrations_map[integration] }
 
   def deactive_integration!
-    unless initialized_integration.is_a?(::Integrations::Prometheus)
-      return initialized_integration.update!(active: false)
-    end
+    return initialized_integration.deactivate! unless initialized_integration.is_a?(::Integrations::Prometheus)
 
     # Integrations::Prometheus sets `#active` itself within a `before_save`:
     initialized_integration.manual_configuration = false
     initialized_integration.save!
   end
 
+  def activate_integration!
+    return initialized_integration.activate! unless initialized_integration.is_a?(::Integrations::Prometheus)
+
+    # Integrations::Prometheus sets `#active` itself within a `before_save`:
+    initialized_integration.manual_configuration = true
+    initialized_integration.save!
+  end
+
+  context 'when the integration is not active' do
+    before do
+      deactive_integration!
+    end
+
+    it "returns all properties of inactive integration #{integration}, except password fields" do
+      get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
+
+      expect(initialized_integration).not_to be_active
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
+      expect(json_response['properties'].keys).not_to include(*integration_instance.secret_fields)
+    end
+  end
+
+  context 'when the integration is active' do
+    before do
+      activate_integration!
+    end
+
+    it "returns all properties of active integration #{integration}, except password fields" do
+      get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
+
+      expect(initialized_integration).to be_active
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
+      expect(json_response['properties'].keys).not_to include(*integration_instance.secret_fields)
+    end
+  end
+
   it 'returns authentication error when unauthenticated' do
     get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}")
     expect(response).to have_gitlab_http_status(:unauthorized)
-  end
-
-  it "returns all properties of active integration #{integration}, except password fields" do
-    get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
-
-    expect(initialized_integration).to be_active
-    expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
-    expect(json_response['properties'].keys).not_to include(*integration_instance.secret_fields)
-  end
-
-  it "returns all properties of inactive integration #{integration}, except password fields" do
-    deactive_integration!
-
-    get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)
-
-    expect(initialized_integration).not_to be_active
-    expect(response).to have_gitlab_http_status(:ok)
-    expect(json_response['properties'].keys).to match_array(integration_instance.api_field_names)
-    expect(json_response['properties'].keys).not_to include(*integration_instance.secret_fields)
   end
 
   it "returns not found if integration does not exist" do
@@ -160,8 +168,8 @@ RSpec.shared_examples 'get an integration settings' do |endpoint:, integration:|
   end
 
   it "returns not found if integration exists but is in `Project#disabled_integrations`" do
-    expect_next_found_instance_of(Project) do |project|
-      expect(project).to receive(:disabled_integrations).at_least(:once).and_return([integration])
+    allow_next_found_instance_of(Project) do |project|
+      allow(project).to receive(:disabled_integrations).and_return([integration])
     end
 
     get api("/projects/#{project.id}/#{endpoint}/#{dashed_integration}", user)

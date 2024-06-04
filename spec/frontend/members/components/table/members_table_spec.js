@@ -258,8 +258,8 @@ describe('MembersTable', () => {
 
           expect(findTableCellByMemberId('Actions', members[0].id).classes()).toStrictEqual([
             'col-actions',
-            'gl-display-none!',
-            'gl-lg-display-table-cell!',
+            '!gl-hidden',
+            'lg:!gl-table-cell',
             '!gl-align-middle',
           ]);
           expect(findTableCellByMemberId('Actions', members[1].id).classes()).toStrictEqual([

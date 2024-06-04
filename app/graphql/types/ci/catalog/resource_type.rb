@@ -74,11 +74,6 @@ module Types
           ::Gitlab::Routing.url_helpers.project_path(object.project)
         end
 
-        def readme_html_resolver
-          markdown_context = context.to_h.dup.merge(project: object.project)
-          ::MarkupHelper.markdown(object.project.repository.readme&.data, markdown_context)
-        end
-
         def starrers_path
           Gitlab::Routing.url_helpers.project_starrers_path(object.project)
         end

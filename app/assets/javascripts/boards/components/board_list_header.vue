@@ -452,7 +452,7 @@ export default {
         class="gl-font-sm issue-count-badge gl-display-inline-flex gl-pr-2 no-drag gl-text-secondary"
         data-testid="issue-count-badge"
         :class="{
-          'gl-display-none!': list.collapsed && isSwimlanesHeader,
+          '!gl-hidden': list.collapsed && isSwimlanesHeader,
           'gl-p-0': list.collapsed,
         }"
       >

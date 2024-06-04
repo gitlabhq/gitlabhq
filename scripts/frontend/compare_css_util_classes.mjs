@@ -44,6 +44,7 @@ function compareApplicationUtilsToTailwind(appUtils, tailWind, colorResolver) {
     } catch (e) {
       fail += 1;
       console.warn(`Not equal ${selector}`);
+      console.warn(`Compared: [legacy util => tailwind util]`);
       console.warn(e.message.replace(/\n/g, '\n\t'));
     }
   });
@@ -75,5 +76,7 @@ const applicationUtilsDark = extractRules(
 );
 const tailwind = loadCSSFromFile('app/assets/builds/tailwind.css');
 
+console.log('## Comparing tailwind light mode');
 compareApplicationUtilsToTailwind(applicationUtilsLight, tailwind);
+console.log('## Comparing tailwind dark mode');
 compareApplicationUtilsToTailwind(applicationUtilsDark, tailwind, darkModeResolver);

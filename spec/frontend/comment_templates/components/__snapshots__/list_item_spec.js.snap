@@ -30,7 +30,7 @@ exports[`Comment templates list item component renders list item 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="gl-button-icon gl-icon s16"
+            class="gl-button-icon gl-fill-current gl-icon s16"
             data-testid="ellipsis_v-icon"
             role="img"
           >

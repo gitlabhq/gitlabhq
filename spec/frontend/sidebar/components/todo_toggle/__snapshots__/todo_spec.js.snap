@@ -18,6 +18,7 @@ exports[`SidebarTodo template renders component container element with proper da
     name="todo-done"
     size="16"
     style="display: none;"
+    variant="current"
   />
   <span
     class="issuable-todo-inner"

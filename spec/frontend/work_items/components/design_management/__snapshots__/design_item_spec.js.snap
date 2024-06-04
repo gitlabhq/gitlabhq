@@ -5,6 +5,7 @@ exports[`Design item component when item appears in view after image is loaded r
   class="text-secondary"
   name="media-broken"
   size="32"
+  variant="current"
 />
 `;
 
@@ -60,6 +61,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
         class="gl-ml-2"
         name="comments"
         size="16"
+        variant="current"
       />
       <span
         aria-label="2 comments"
@@ -124,6 +126,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
         class="gl-ml-2"
         name="comments"
         size="16"
+        variant="current"
       />
       <span
         aria-label="1 comment"

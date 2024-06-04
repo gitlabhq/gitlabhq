@@ -332,9 +332,7 @@ export default class MergeRequestTabs {
           });
       }
 
-      this.expandSidebar?.forEach((el) =>
-        el.classList.toggle('gl-display-none!', action !== 'show'),
-      );
+      this.expandSidebar?.forEach((el) => el.classList.toggle('!gl-hidden', action !== 'show'));
 
       if (action === 'commits') {
         if (!this.commitsLoaded) {

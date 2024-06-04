@@ -20,7 +20,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
         >
           <svg
             aria-hidden="true"
-            class="!gl-align-baseline gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
+            class="!gl-align-baseline gl-fill-current gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
             data-testid="severity-low-icon"
             role="img"
           >
@@ -42,7 +42,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
         >
           <svg
             aria-hidden="true"
-            class="gl-button-icon gl-icon s16"
+            class="gl-button-icon gl-fill-current gl-icon s16"
             data-testid="close-icon"
             role="img"
           >
@@ -240,7 +240,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
         >
           <svg
             aria-hidden="true"
-            class="!gl-align-baseline gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
+            class="!gl-align-baseline gl-fill-current gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
             data-testid="severity-low-icon"
             role="img"
           >
@@ -262,7 +262,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
         >
           <svg
             aria-hidden="true"
-            class="gl-button-icon gl-icon s16"
+            class="gl-button-icon gl-fill-current gl-icon s16"
             data-testid="close-icon"
             role="img"
           >

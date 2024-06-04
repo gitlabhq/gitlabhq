@@ -12,10 +12,8 @@ DETAILS:
 
 Badges are a unified way to present condensed pieces of information about your projects.
 A badge consists of a small image and a URL that the image points to.
-In GitLab, badges are displayed below the project description.
+In GitLab, badges are displayed on the project overview page, below the project description.
 You can use badges at the [project](#project-badges) and [group](#group-badges) level.
-
-![Badges on Project information page](img/project_overview_badges_v13_10.png)
 
 ## Available badges
 
@@ -190,8 +188,6 @@ Then you can use the link to embed the badge in your HTML or Markdown pages.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.
-
-![Pipelines badges](img/pipelines_settings_badges.png)
 
 ## Customize badges
 

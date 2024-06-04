@@ -7,6 +7,7 @@ exports[`IssueStatusIcon renders "failed" state correctly 1`] = `
   <gl-icon-stub
     name="status_failed_borderless"
     size="24"
+    variant="current"
   />
 </div>
 `;
@@ -18,6 +19,7 @@ exports[`IssueStatusIcon renders "neutral" state correctly 1`] = `
   <gl-icon-stub
     name="dash"
     size="24"
+    variant="current"
   />
 </div>
 `;
@@ -29,6 +31,7 @@ exports[`IssueStatusIcon renders "success" state correctly 1`] = `
   <gl-icon-stub
     name="status_success_borderless"
     size="24"
+    variant="current"
   />
 </div>
 `;

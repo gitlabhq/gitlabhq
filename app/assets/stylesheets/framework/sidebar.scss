@@ -228,24 +228,24 @@
       }
     }
 
-    $line-height: map-get($spacers, 4) + px-to-rem(2px);
+    $line-height: map-get($spacers, 4);
 
     &-icon {
-      /**
-      * 2px extra is to give a little more height than needed
-      * to hide timeline line before/after the element starts/ends
-      */
       height: $line-height;
       z-index: 1;
       position: relative;
       padding: $gl-padding-4 0;
-
+      
       &.opened {
         color: $green-500;
       }
 
       &.closed {
         color: $blue-500;
+      }
+      
+      svg {
+        vertical-align: baseline;
       }
     }
 

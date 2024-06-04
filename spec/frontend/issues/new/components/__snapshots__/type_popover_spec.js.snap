@@ -10,6 +10,7 @@ exports[`Issue type info popover renders 1`] = `
     id="reference-1"
     name="question-o"
     size="16"
+    variant="current"
   />
   <gl-popover-stub
     container="popovercontainer"

@@ -155,6 +155,12 @@ the pipeline's configuration.
 To use GitLab.com components in a self-managed instance, you must
 [mirror the component project](#use-a-gitlabcom-component-in-a-self-managed-instance).
 
+WARNING:
+If a component requires the use of tokens, passwords, or other sensitive data to function,
+be sure to audit the component's source code to verify that the data is only used to
+perform actions that you expect and authorize. You should also use tokens and secrets
+with the minimum permissions, access, or scope required to complete the action.
+
 ### Component versions
 
 In order of highest priority first, the component version can be:

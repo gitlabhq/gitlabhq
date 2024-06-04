@@ -39,6 +39,8 @@ module Danger
         end
 
       files_with_legacy_utils = @helper.all_changed_files.flat_map do |file|
+        next [] if file.end_with?('tailwind_equivalents.json')
+
         diff = @git.diff_for_file(file)
 
         # When a file is just moved around it appears in the changed files list
@@ -75,8 +77,7 @@ module Danger
       We are in the process of migrating our CSS utility classes to [Tailwind CSS](https://tailwindcss.com/).
       The above CSS utility classes do not comply with Tailwind CSS naming conventions.
       Please use the Tailwind CSS equivalent if it is available.
-      For more information on how to determine what CSS utility classes to use see
-      our [Tailwind CSS developer documentation](https://docs.gitlab.com/ee/development/fe_guide/style/scss.html#tailwind-css).
+      For more information see [Tailwind CSS developer documentation](https://docs.gitlab.com/ee/development/fe_guide/style/scss.html#tailwind-css).
 
       If the Tailwind CSS equivalent is not available, it is okay to use the legacy CSS utility class for now.
       The Tailwind CSS equivalent will be made available when the corresponding migration issue
@@ -123,8 +124,21 @@ module Danger
     end
 
     def format_files_with_legacy_utils_list(files)
+      # rubocop:disable Gitlab/Json -- we are outside of the GitLab Rails context
+      # and therefore do not have access to the dependencies required for
+      # Gitlab::Json.parse to work.
+      tailwind_equivalents = JSON.parse(
+        File.read("./scripts/frontend/tailwind_equivalents.json")
+      )
+      # rubocop:enable Gitlab/Json
+
       files.map do |file, legacy_utils|
-        "- `#{file}`\n" + legacy_utils.map { |legacy_util| "  - `#{legacy_util}`" }.join("\n")
+        legacy_utils_bullet_points = legacy_utils.map do |legacy_util|
+          tailwind_equivalent = tailwind_equivalents[legacy_util] || "Not available"
+          "  - `#{legacy_util}` - Tailwind CSS equivalent: `#{tailwind_equivalent}`"
+        end.join("\n")
+
+        "- `#{file}`\n" + legacy_utils_bullet_points
       end.join("\n")
     end
   end

@@ -26,17 +26,19 @@ For more information about:
 ## Merge train workflow
 
 A merge train starts when there are no merge requests waiting to merge and you
-select [**Merge**](#start-a-merge-train). GitLab starts a merge train pipeline
-that verifies that the changes can merge into the default branch. This first pipeline
-is the same as a [merged results pipeline](merged_results_pipelines.md), which runs on
-the changes of the source and target branches combined together. The author of the
-internal merged result commit is the user that initiated the merge.
+select [**Merge** or **Set to auto-merge**](#start-a-merge-train). GitLab starts a merge
+train pipeline that verifies that the changes can merge into the default branch.
+This first pipeline is the same as a [merged results pipeline](merged_results_pipelines.md),
+which runs on the changes of the source and target branches combined together.
+The author of the internal merged result commit is the user that initiated the
+merge.
 
-To queue a second merge request to merge immediately after the first pipeline completes, select
-[**Set to auto-merge**](#add-a-merge-request-to-a-merge-train) to add it to the train.
-This second merge train pipeline runs on the changes of _both_ merge requests combined with the
-target branch. Similarly, if you add a third merge request, that pipeline runs on the changes
-of all three merge requests merged with the target branch. The pipelines all run in parallel.
+To queue a second merge request to merge immediately after the first pipeline
+completes, select [**Merge** or **Set to auto-merge**](#add-a-merge-request-to-a-merge-train)
+to add it to the train. This second merge train pipeline runs on the changes of
+_both_ merge requests combined with the target branch. Similarly, if you add a
+third merge request, that pipeline runs on the changes of all three merge
+requests merged with the target branch. The pipelines all run in parallel.
 
 Each merge request merges into the target branch only after:
 
@@ -119,7 +121,7 @@ To start a merge train:
 1. Visit a merge request.
 1. Select:
    - When no pipeline is running, **Merge**.
-   - When a pipeline is running, **Set to auto-merge**.
+   - When a pipeline is running, [**Set to auto-merge**](../../user/project/merge_requests/auto_merge.md).
 
 The merge request's merge train status displays under the pipeline widget with a
 message similar to `A new merge train has started and this merge request is the first of the queue.`
@@ -137,7 +139,7 @@ To add a merge request to a merge train:
 1. Visit a merge request.
 1. Select:
    - When no pipeline is running, **Merge**.
-   - When a pipeline is running, **Set to auto-merge**.
+   - When a pipeline is running, [**Set to auto-merge**](../../user/project/merge_requests/auto_merge.md).
 
 The merge request's merge train status displays under the pipeline widget with a
 message similar to `Added to the merge train. There are 2 merge requests waiting to be merged.`

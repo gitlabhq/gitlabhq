@@ -145,7 +145,7 @@ export default {
         return ['col-actions', '!gl-align-middle'];
       }
 
-      return ['col-actions', 'gl-display-none!', 'gl-lg-display-table-cell!', '!gl-align-middle'];
+      return ['col-actions', '!gl-hidden', 'lg:!gl-table-cell', '!gl-align-middle'];
     },
     tbodyTrAttr(member) {
       return {

@@ -22,6 +22,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
           class="gl-flex-shrink-0 gl-text-gray-200"
           name="chevron-right"
           size="16"
+          variant="current"
         />
         <span
           class="gl-font-normal gl-text-truncate"

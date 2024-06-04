@@ -214,7 +214,7 @@ export default {
         :filters="filterParams"
         :highlighted-lists="highlightedLists"
         :data-draggable-item-type="$options.draggableItemTypes.list"
-        :class="{ 'gl-display-none! gl-sm-display-inline-block!': addColumnFormVisible }"
+        :class="{ '!gl-hidden sm:!gl-inline-block': addColumnFormVisible }"
         @setActiveList="$emit('setActiveList', $event)"
         @setFilters="$emit('setFilters', $event)"
       />

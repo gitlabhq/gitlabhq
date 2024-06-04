@@ -77,7 +77,7 @@ export default {
           <gl-icon class="dropdown-chevron" name="chevron-down" />
         </gl-button>
         <gl-button
-          class="gl-display-none! gl-md-display-flex!"
+          class="!gl-hidden md:!gl-flex"
           category="tertiary"
           icon="ellipsis_v"
           :aria-label="$options.i18n.toggleText"

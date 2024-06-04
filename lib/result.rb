@@ -102,8 +102,8 @@ class Result
 
     unless result.is_a?(Result)
       err_msg = "'Result##{__method__}' expects a lambda or singleton method object which returns a 'Result' type " \
-                ", but instead received '#{lambda_or_singleton_method.inspect}' which returned '#{result.class}'. " \
-                "Check that the previous method calls in the '#and_then' chain are correct."
+        ", but instead received '#{lambda_or_singleton_method.inspect}' which returned '#{result.class}'. " \
+        "Check that the previous method calls in the '#and_then' chain are correct."
       raise(TypeError, err_msg)
     end
 
@@ -137,8 +137,8 @@ class Result
 
     if mapped_value.is_a?(Result)
       err_msg = "'Result##{__method__}' expects a lambda or singleton method object which returns an unwrapped " \
-                "value, not a 'Result', but instead received '#{lambda_or_singleton_method.inspect}' which returned " \
-                "a 'Result'."
+        "value, not a 'Result', but instead received '#{lambda_or_singleton_method.inspect}' which returned " \
+        "a 'Result'."
       raise(TypeError, err_msg)
     end
 
@@ -192,16 +192,17 @@ class Result
     is_singleton_method = lambda_or_singleton_method.is_a?(Method) && lambda_or_singleton_method.owner.singleton_class?
     unless is_lambda || is_singleton_method
       err_msg = "'Result##{__method__}' expects a lambda or singleton method object, " \
-                "but instead received '#{lambda_or_singleton_method.inspect}'."
+        "but instead received '#{lambda_or_singleton_method.inspect}'."
       raise(TypeError, err_msg)
     end
 
     arity = lambda_or_singleton_method.arity
 
     return if arity == 1
+    return if arity == -1 && lambda_or_singleton_method.source_location[0].include?('rspec')
 
     err_msg = "'Result##{__method__}' expects a lambda or singleton method object with a single argument " \
-              "(arity of 1), but instead received '#{lambda_or_singleton_method.inspect}' with an arity of #{arity}."
+      "(arity of 1), but instead received '#{lambda_or_singleton_method.inspect}' with an arity of #{arity}."
     raise(ArgumentError, err_msg)
   end
 end

@@ -70,8 +70,11 @@ export default {
     isDraggable() {
       return !this.isDisabled;
     },
+    itemColor() {
+      return this.item.color;
+    },
     cardStyle() {
-      return this.item.color ? { borderColor: this.item.color } : '';
+      return this.itemColor ? { borderColor: this.itemColor } : '';
     },
     formattedItem() {
       return {
@@ -140,8 +143,8 @@ export default {
         'is-disabled': isDisabled,
         'is-active gl-bg-blue-50': isActive,
         'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
+        'gl-pl-4 gl-border-l-solid gl-border-4': itemColor,
       },
-      'gl-pl-4 gl-border-l-solid gl-border-4',
     ]"
     :index="index"
     :data-item-id="item.id"

@@ -7605,6 +7605,29 @@ Input type: `ProjectSyncForkInput`
 | <a id="mutationprojectsyncforkdetails"></a>`details` | [`ForkDetails`](#forkdetails) | Updated fork details. |
 | <a id="mutationprojectsyncforkerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.projectTextReplace`
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Input type: `projectTextReplaceInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojecttextreplaceclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojecttextreplaceprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project to replace. |
+| <a id="mutationprojecttextreplacereplacements"></a>`replacements` | [`[String!]!`](#string) | List of text patterns to replace project-wide. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprojecttextreplaceclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprojecttextreplaceerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.prometheusIntegrationCreate`
 
 Input type: `PrometheusIntegrationCreateInput`
@@ -17480,8 +17503,9 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="cicatalogresourceversioncreatedat"></a>`createdAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.7. **Status**: Experiment. Timestamp of when the version was created. |
 | <a id="cicatalogresourceversionid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesVersionID!`](#cicatalogresourcesversionid) | **Introduced** in GitLab 16.7. **Status**: Experiment. Global ID of the version. |
 | <a id="cicatalogresourceversionname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. Name that uniquely identifies the version within the catalog resource. |
-| <a id="cicatalogresourceversionpath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. Relative web path to the version. |
-| <a id="cicatalogresourceversionreadmehtml"></a>`readmeHtml` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. GitLab Flavored Markdown rendering of README.md. This field can only be resolved for one version in any single request. |
+| <a id="cicatalogresourceversionpath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. Relative web path to the version's readme. |
+| <a id="cicatalogresourceversionreadme"></a>`readme` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. Readme data. |
+| <a id="cicatalogresourceversionreadmehtml"></a>`readmeHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `readme`. |
 | <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.7. **Status**: Experiment. Timestamp of when the version was released. |
 
 ### `CiConfig`

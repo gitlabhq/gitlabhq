@@ -213,7 +213,7 @@ describe('BoardContent', () => {
 
     it('hides other columns on mobile viewports', () => {
       findBoardColumns().wrappers.forEach((column) => {
-        expect(column.classes()).toEqual(['gl-display-none!', 'gl-sm-display-inline-block!']);
+        expect(column.classes()).toEqual(['!gl-hidden', 'sm:!gl-inline-block']);
       });
     });
   });

@@ -5,6 +5,7 @@ exports[`Design management list item component when item appears in view after i
   class="text-secondary"
   name="media-broken"
   size="32"
+  variant="current"
 />
 `;
 
@@ -61,6 +62,7 @@ exports[`Design management list item component with notes renders item with mult
         class="gl-ml-2"
         name="comments"
         size="16"
+        variant="current"
       />
       <span
         aria-label="2 comments"
@@ -126,6 +128,7 @@ exports[`Design management list item component with notes renders item with sing
         class="gl-ml-2"
         name="comments"
         size="16"
+        variant="current"
       />
       <span
         aria-label="1 comment"

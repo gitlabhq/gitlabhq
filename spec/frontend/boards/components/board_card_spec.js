@@ -189,7 +189,7 @@ describe('Board card', () => {
   });
 
   describe('epic colors', () => {
-    it('applies the correct color', () => {
+    it('applies the correct color and border', () => {
       mountComponent({
         item: {
           ...mockIssue,
@@ -201,6 +201,20 @@ describe('Board card', () => {
         expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-4']),
       );
       expect(wrapper.attributes('style')).toContain(`border-color: ${DEFAULT_COLOR}`);
+    });
+
+    it('does not render border if color is not present', () => {
+      mountComponent({
+        item: {
+          ...mockIssue,
+          color: null,
+        },
+      });
+
+      expect(wrapper.classes()).not.toEqual(
+        expect.arrayContaining(['gl-pl-4', 'gl-border-l-solid', 'gl-border-4']),
+      );
+      expect(wrapper.attributes('style')).toBe(undefined);
     });
   });
 });

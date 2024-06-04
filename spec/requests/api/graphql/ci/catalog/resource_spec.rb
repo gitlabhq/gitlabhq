@@ -155,7 +155,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
 
   describe 'version fields' do
     before_all do
-      # To test the readme_html field, we need to create versions with real commit shas
       project.repository.create_branch('branch_v2', project.default_branch)
       project.repository.update_file(
         user, 'README.md', 'Readme v2', message: 'Update readme', branch_name: 'branch_v2')
@@ -165,29 +164,25 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
     end
 
     let_it_be(:version1) do
-      version = create(:release, :with_catalog_resource_version,
+      release = create(:release,
         project: project,
         tag: '1.0.0',
         sha: project.commit('1.0.0').sha,
         released_at: Date.yesterday
-      ).catalog_resource_version
+      )
 
-      version.update!(semver: '1.0.0')
-
-      version
+      create(:ci_catalog_resource_version, semver: '1.0.0', catalog_resource: resource, release: release)
     end
 
     let_it_be(:version2) do
-      version = create(:release, :with_catalog_resource_version,
+      release = create(:release,
         project: project,
         tag: '2.0.0',
         sha: project.commit('2.0.0').sha,
         released_at: Date.today
-      ).catalog_resource_version
+      )
 
-      version.update!(semver: '2.0.0')
-
-      version
+      create(:ci_catalog_resource_version, semver: '2.0.0', catalog_resource: resource, release: release)
     end
 
     describe 'versions' do
@@ -232,14 +227,14 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         )
       end
 
-      context 'when the readmeHtml field is requested on more than one version' do
+      context 'when the readme field is requested on more than one version' do
         let(:query) do
           <<~GQL
             query {
               ciCatalogResource(fullPath: "#{resource.project.full_path}") {
                 versions {
                   nodes {
-                    readmeHtml
+                    readme
                   }
                 }
               }
@@ -251,7 +246,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           post_query
 
           expect_graphql_errors_to_include \
-            [/"readmeHtml" field can be requested only for 1 CiCatalogResourceVersion\(s\) at a time./]
+            [/"readme" field can be requested only for 1 CiCatalogResourceVersion\(s\) at a time./]
         end
       end
 
@@ -269,6 +264,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
                     path
                     releasedAt
                     readmeHtml
+                    readme
                   }
                 }
               }
@@ -277,10 +273,6 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         end
 
         it 'returns the version that matches the name' do
-          expect(::MarkupHelper).to receive(:markdown).with(
-            version1.readme.data, anything, { requested_path: version1.readme.path }
-          ).and_call_original
-
           post_query
 
           expect(graphql_data_at(:ciCatalogResource, :versions, :nodes)).to contain_exactly(
@@ -289,9 +281,9 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
               name: version1.name,
               path: project_tag_path(project, version1.name),
               releasedAt: version1.released_at,
-              readmeHtml: a_string_including(
-                "#{project.full_path}/-/blob/#{project.default_branch}/README.md"
-              )
+              readme: version1.readme,
+              readmeHtml: "<p data-sourcepos=\"1:1-1:17\" dir=\"auto\"><a data-sourcepos=\"1:1-1:17\" " \
+                "href=\"/group1/project-1/-/blob/master/README.md\" class=\"gfm\">link</a></p>"
             )
           )
         end

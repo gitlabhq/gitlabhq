@@ -28,7 +28,7 @@ module Lfs
       elsif forced
         error(_('You must have maintainer access to force delete a lock'), 403)
       else
-        error(_("%{lock_path} is locked by GitLab User %{lock_user_id}") % { lock_path: lock.path, lock_user_id: lock.user_id }, 403)
+        error(_("%{lock_path} is locked by @%{lock_user_name}") % { lock_path: lock.path, lock_user_name: lock.user.username }, 403)
       end
     end
 

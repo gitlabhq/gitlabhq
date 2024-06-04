@@ -627,6 +627,7 @@ Nanoc
 NAT
 navigations
 negatable
+Neovim
 Netlify
 NGINX
 ngrok

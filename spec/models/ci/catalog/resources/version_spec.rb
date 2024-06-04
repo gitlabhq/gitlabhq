@@ -191,13 +191,13 @@ RSpec.describe Ci::Catalog::Resources::Version, type: :model, feature_category: 
       v1_2_3 = create(:release, :with_catalog_resource_version, project: project, tag: '1.2.3',
         sha: project.commit('1.2.3').sha)
 
-      expect(v1_1_0.readme.data).to include('testme')
-      expect(v1_2_3.catalog_resource_version.readme.data).to include('Patch v1.2.3')
+      expect(v1_1_0.readme).to include('testme')
+      expect(v1_2_3.catalog_resource_version.readme).to include('Patch v1.2.3')
     end
   end
 
   describe 'synchronizing released_at with `releases` table using model callbacks' do
-    let_it_be(:project) { create(:project) }
+    let_it_be(:project) { create(:project, :repository) }
     let_it_be(:resource) { create(:ci_catalog_resource, project: project) }
 
     let_it_be_with_reload(:release) do

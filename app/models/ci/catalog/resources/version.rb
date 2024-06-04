@@ -7,6 +7,7 @@ module Ci
       # Only versions which contain valid CI components are included in this table.
       class Version < ::ApplicationRecord
         include BulkInsertableAssociations
+        include CacheMarkdownField
         include SemanticVersionable
 
         self.table_name = 'catalog_resource_versions'
@@ -26,6 +27,8 @@ module Ci
         scope :without_prerelease, -> { where(semver_prerelease: nil) }
 
         delegate :sha, :author_id, to: :release
+
+        cache_markdown_field :readme
 
         before_create :sync_with_release
         after_destroy :update_catalog_resource
@@ -64,7 +67,9 @@ module Ci
         end
 
         def readme
-          project.repository.tree(sha).readme
+          return unless project.repo_exists?
+
+          project.repository.tree(sha).readme&.data
         end
 
         def sync_with_release!

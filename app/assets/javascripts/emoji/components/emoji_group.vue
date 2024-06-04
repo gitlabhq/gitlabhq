@@ -34,7 +34,7 @@ export default {
         class="emoji-picker-emoji"
         :aria-label="emoji"
         data-testid="emoji-button"
-        button-text-classes="gl-display-none!"
+        button-text-classes="!gl-hidden"
         @click="clickEmoji(emoji)"
         @keydown.enter="clickEmoji(emoji)"
       >

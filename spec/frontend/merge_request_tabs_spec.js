@@ -376,7 +376,7 @@ describe('MergeRequestTabs', () => {
       testContext.class.tabShown(tab, 'foobar');
 
       testContext.class.expandSidebar.forEach((el) => {
-        expect(el.classList.contains('gl-display-none!')).toBe(hides);
+        expect(el.classList.contains('!gl-hidden')).toBe(hides);
       });
     });
 

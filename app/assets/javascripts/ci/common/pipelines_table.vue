@@ -12,7 +12,7 @@ import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.v
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
 import PipelineStatusBadge from '../pipelines_page/components/pipeline_status_badge.vue';
 
-const HIDE_TD_ON_MOBILE = 'gl-display-none! gl-lg-display-table-cell!';
+const HIDE_TD_ON_MOBILE = '!gl-hidden lg:!gl-table-cell';
 
 /**
  * Pipelines Table

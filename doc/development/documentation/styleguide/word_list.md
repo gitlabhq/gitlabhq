@@ -1612,6 +1612,8 @@ we would talk to a colleague, and to avoid differentiation between `we` and `the
 - Set the variable. (It's required.)
 - You can set the variable. (It's optional.)
 
+See also [recommended steps](index.md#recommended-steps).
+
 ## register
 
 Use **register** instead of **sign up** when talking about creating an account.

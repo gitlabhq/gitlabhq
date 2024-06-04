@@ -91,3 +91,26 @@ qa:selectors:
     - .qa:rules:selectors
   script:
     - bundle exec bin/qa Test::Sanity::Selectors
+
+.pipeline-tier-base:
+  extends:
+    - .preflight-job-base
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - echo "${CI_JOB_NAME}"
+
+pipeline-tier-1:
+  extends:
+    - .pipeline-tier-base
+    - .preflight:rules:pipeline-tier-1
+
+pipeline-tier-2:
+  extends:
+    - .pipeline-tier-base
+    - .preflight:rules:pipeline-tier-2
+
+pipeline-tier-3:
+  extends:
+    - .pipeline-tier-base
+    - .preflight:rules:pipeline-tier-3

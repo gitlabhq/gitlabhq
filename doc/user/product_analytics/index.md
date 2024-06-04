@@ -79,6 +79,7 @@ accDescr: How data is collected, processed, and visualized in dashboards.
 > - Feature flag `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - Feature flag `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 > - Feature flag `product_analytics_admin_settings` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385602) by default in GitLab 16.11.
+> - Feature flag `product_analytics_admin_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454342) in GitLab 17.1.
 
 To track events in your project's applications,
 you must enable and configure product analytics.

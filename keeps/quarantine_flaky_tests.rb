@@ -89,7 +89,10 @@ module Keeps
 
       puts "Quarantining #{flaky_issue['web_url']} (#{description})"
 
-      file_lines[line_number].sub!(EXAMPLE_LINE_REGEX, "it \\1, quarantine: '#{flaky_issue['web_url']}' do")
+      file_lines[line_number].sub!(
+        EXAMPLE_LINE_REGEX,
+        "it \\k<description_and_metadata>, quarantine: '#{flaky_issue['web_url']}' do"
+      )
 
       File.write(file, file_lines.join)
 

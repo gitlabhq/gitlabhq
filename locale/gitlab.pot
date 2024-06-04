@@ -986,7 +986,7 @@ msgstr ""
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
-msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
+msgid "%{lock_path} is locked by @%{lock_user_name}"
 msgstr ""
 
 msgid "%{mergeLength}/%{usersLength} can merge"
@@ -40143,6 +40143,9 @@ msgstr ""
 msgid "Profiles|Profile was successfully updated"
 msgstr ""
 
+msgid "Profiles|Profiles are required to be public in this instance."
+msgstr ""
+
 msgid "Profiles|Pronouns"
 msgstr ""
 
@@ -40180,6 +40183,9 @@ msgid "Profiles|Set new profile picture"
 msgstr ""
 
 msgid "Profiles|Set your local time zone."
+msgstr ""
+
+msgid "Profiles|Setting locked"
 msgstr ""
 
 msgid "Profiles|Some options are unavailable for LDAP accounts"
@@ -49140,9 +49146,6 @@ msgid "Setting"
 msgstr ""
 
 msgid "Setting enforced"
-msgstr ""
-
-msgid "Setting locked. Profiles are required to be public in this instance."
 msgstr ""
 
 msgid "Settings"

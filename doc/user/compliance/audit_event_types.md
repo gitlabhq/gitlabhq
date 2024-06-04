@@ -457,6 +457,7 @@ Audit event types belong to the following product categories.
 | [`repository_git_operation`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76719) | Triggered when authenticated users push, pull, or clone a project using SSH, HTTP(S), or the UI| **{dotted-circle}** No | **{check-circle}** Yes | GitLab [14.9](https://gitlab.com/gitlab-org/gitlab/-/issues/373950) | Project |
 | [`manually_trigger_housekeeping`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112095) | Triggered when manually triggering housekeeping via API or admin UI| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/390761) | Project |
 | [`project_blobs_removal`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Triggered when removing blobs via the GraphQL API or project settings UI| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
+| [`project_text_replacement`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152522) | Triggered when replacing text via the GraphQL API or project settings UI| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) | Project |
 
 ### Subgroup
 

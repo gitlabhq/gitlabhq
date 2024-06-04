@@ -136,7 +136,6 @@ const hardcodedColorsToCSSVarsMap = {
  * @param tokens
  */
 export function getColorTokens(tokens) {
-  // Get
   if (tokens.$type === 'color') {
     return [
       [
@@ -154,6 +153,29 @@ export function getColorTokens(tokens) {
 }
 
 /**
+ * Returns a reverse mapping of hex values to tokens, e.g.
+ *
+ * {
+ *   '#333238': [ 'color-neutral-900', 'icon-color-strong', 'gray-900' ]
+ * }
+ *
+ * @param rawTokens
+ */
+function buildColorToTokenMap(rawTokens) {
+  const res = {};
+  for (const [hex, token] of getColorTokens(rawTokens)) {
+    res[hex] ||= [];
+    res[hex].push(token);
+    // Sort the token names by length because a shorter token name might be part
+    // of a longer token name. e.g. `something-gray-900` contains `gray-900`.
+    // But we want to resolve `gl-text-something-gray-900` to something-gray-900
+    // and not `gray-900`
+    res[hex].sort((a, b) => b.length - a.length);
+  }
+  return res;
+}
+
+/**
  * We get all tokens, but ignore the `text` tokens,
  * because the text tokens are correct, semantic tokens, but the values are
  * from our gray scale
@@ -161,7 +183,7 @@ export function getColorTokens(tokens) {
 const { text, ...lightModeTokensRaw } = JSON.parse(
   fs.readFileSync(path.join(GITLAB_UI_DIR, 'src/tokens/build/json/tokens.json'), 'utf-8'),
 );
-const lightModeHexToToken = Object.fromEntries(getColorTokens(lightModeTokensRaw));
+const lightModeHexToToken = buildColorToTokenMap(lightModeTokensRaw);
 
 export const darkModeTokenToHex = Object.fromEntries(
   getColorTokens(
@@ -212,12 +234,14 @@ function normalizeColors(value, cleanSelector) {
         if (hexColor === '#0000' || hexColor === '#00000000') {
           return 'transparent';
         }
-        // We only want to match a color, if the selector contains the color name
-        if (
-          lightModeHexToToken[hexColor] &&
-          cleanSelector.includes(lightModeHexToToken[hexColor])
-        ) {
-          return `var(--${lightModeHexToToken[hexColor]}, ${hexColor})`;
+
+        // We only want to match a color,
+        // if the selector contains the color name
+        const tokenMatch = lightModeHexToToken[hexColor]?.find?.((tokenName) =>
+          cleanSelector.includes(tokenName),
+        );
+        if (tokenMatch) {
+          return `var(--${tokenMatch}, ${hexColor})`;
         }
         const utilName = selectorToBaseUtilName(cleanSelector);
         const cssVar = hardcodedColorsToCSSVarsMap[utilName]?.[hexColor];

@@ -7,15 +7,16 @@ RSpec.describe Types::Ci::Catalog::Resources::VersionType, feature_category: :pi
 
   it 'exposes the expected fields' do
     expected_fields = %i[
-      id
-      created_at
-      released_at
-      name
-      path
       author
       commit
       components
+      created_at
+      id
+      name
+      path
+      readme
       readme_html
+      released_at
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

@@ -22,7 +22,7 @@
         - if notifications_todos_buttons_enabled?
           .js-sidebar-subscriptions-widget-root
 
-    = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: "issuable-context-form inline-update js-issuable-update #{'gl-pr-0!' if is_merge_request}" } do |f|
+    = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: "issuable-context-form inline-update js-issuable-update #{'gl-pr-2!' if is_merge_request}" } do |f|
       .block.assignee{ class: "#{'gl-mt-3' if !signed_in}", data: { testid: 'assignee-block-container' } }
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 

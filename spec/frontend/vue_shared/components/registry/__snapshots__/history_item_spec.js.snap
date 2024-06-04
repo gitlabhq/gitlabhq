@@ -13,6 +13,7 @@ exports[`History Item renders the correct markup 1`] = `
       <gl-icon-stub
         name="pencil"
         size="16"
+        variant="current"
       />
     </div>
     <div

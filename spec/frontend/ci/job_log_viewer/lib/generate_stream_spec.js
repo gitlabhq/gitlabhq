@@ -34,7 +34,7 @@ describe('generate stream', () => {
     expect(global.fetch).toHaveBeenCalledWith('/jobs/1/raw');
   });
 
-  it('fetches lines in chunk', async () => {
+  it('fetches lines', async () => {
     mockFetchResponse(['line 1\nline 2']);
 
     expect(await fetchLogLines()).toEqual([
@@ -54,11 +54,26 @@ describe('generate stream', () => {
     ]);
   });
 
+  it.each`
+    case                          | chunks
+    ${'chunks'}                   | ${['line 1\nli', 'ne 2\nline 3']}
+    ${'empty chunks'}             | ${['line 1\nli', '', 'ne 2\nline 3']}
+    ${'empty chunks with spaces'} | ${['line 1\nli', 'ne', '', ' ', '', '2\nline 3']}
+  `('fetches lines split across $case', async ({ chunks }) => {
+    mockFetchResponse(chunks);
+
+    expect(await fetchLogLines()).toEqual([
+      { content: [{ style: [], text: 'line 1' }], sections: [] },
+      { content: [{ style: [], text: 'line 2' }], sections: [] },
+      { content: [{ style: [], text: 'line 3' }], sections: [] },
+    ]);
+  });
+
   it('decodes using utf-8', async () => {
-    mockFetchResponse(['🐤🐤🐤🐤']);
+    mockFetchResponse(['🦊🦊🦊🦊']);
 
     expect(await fetchLogLines('/raw')).toEqual([
-      { content: [{ style: [], text: '🐤🐤🐤🐤' }], sections: [] },
+      { content: [{ style: [], text: '🦊🦊🦊🦊' }], sections: [] },
     ]);
   });
 

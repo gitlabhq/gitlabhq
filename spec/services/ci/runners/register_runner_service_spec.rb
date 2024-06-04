@@ -63,7 +63,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'when registering instance runners is disallowed' do
         before do
-          stub_application_setting(allow_runner_registration_token: false)
+          stub_application_setting(
+            allow_runner_registration_token: false,
+            runners_registration_token: nil
+          )
         end
 
         it_behaves_like 'runner registration is disallowed'
@@ -141,7 +144,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'with runner registration disabled at instance level' do
         before do
-          stub_application_setting(allow_runner_registration_token: false)
+          stub_application_setting(
+            allow_runner_registration_token: false,
+            runners_registration_token: nil
+          )
         end
 
         it_behaves_like 'runner registration is disallowed'
@@ -223,7 +229,10 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'with runner registration disabled at instance level' do
         before do
-          stub_application_setting(allow_runner_registration_token: false)
+          stub_application_setting(
+            allow_runner_registration_token: false,
+            runners_registration_token: nil
+          )
         end
 
         it_behaves_like 'runner registration is disallowed'

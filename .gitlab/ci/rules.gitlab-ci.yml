@@ -122,6 +122,15 @@
 .if-fork-merge-request: &if-fork-merge-request
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
+.if-merge-request-tier-1: &if-merge-request-tier-1
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-1/'
+
+.if-merge-request-tier-2: &if-merge-request-tier-2
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-2/'
+
+.if-merge-request-tier-3: &if-merge-request-tier-3
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-3/'
+
 .if-schedule-pipeline: &if-schedule-pipeline
   if: '$CI_PIPELINE_SOURCE == "schedule"'
 
@@ -2951,6 +2960,28 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+.preflight:rules:pipeline-tier-1:
+  rules:
+    - <<: *if-merge-request-tier-1
+      allow_failure: true
+    - !reference [".prevent-tier-2-and-above", rules]
+    # If we cannot find a tier label, run this job
+    #
+    # This could be the very first pipeline of a merge request if no
+    # pipeline tier label was added when creating the merge request.
+    - <<: *if-dot-com-gitlab-org-merge-request
+      allow_failure: true
+
+.preflight:rules:pipeline-tier-2:
+  rules:
+    - <<: *if-merge-request-tier-2
+      allow_failure: true
+
+.preflight:rules:pipeline-tier-3:
+  rules:
+    - <<: *if-merge-request-tier-3
+      allow_failure: true
+
 #######################
 # Test metadata rules #
 #######################
@@ -3346,3 +3377,34 @@
         - scripts/pipeline/pre_merge_checks.rb
       when: manual
       allow_failure: true
+
+########################
+# Pipeline tiers rules #
+########################
+.prevent-tier-1:
+  rules:
+    - <<: *if-merge-request-tier-1
+      when: never
+
+.prevent-tier-2-and-below:
+  rules:
+    - !reference [".prevent-tier-1", rules]
+    - <<: *if-merge-request-tier-2
+      when: never
+
+.prevent-tier-3-and-below:
+  rules:
+    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-merge-request-tier-3
+      when: never
+
+.prevent-tier-2-and-above:
+  rules:
+    - <<: *if-merge-request-tier-2
+      when: never
+    - !reference [".prevent-tier-3-and-above", rules]
+
+.prevent-tier-3-and-above:
+  rules:
+    - <<: *if-merge-request-tier-3
+      when: never
