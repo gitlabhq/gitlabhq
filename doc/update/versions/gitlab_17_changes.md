@@ -18,6 +18,11 @@ Ensure you review these instructions for:
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 8.0](https://docs.gitlab.com/charts/releases/8_0.html).
 
+## 17.1.0
+
+- Bitbucket identities with untrusted `extern_uid` are deleted.
+  For more information, see [issue 452426](https://gitlab.com/gitlab-org/gitlab/-/issues/452426).
+
 ## 17.0.0
 
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.

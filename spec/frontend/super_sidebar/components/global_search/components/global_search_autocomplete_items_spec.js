@@ -14,7 +14,10 @@ import SearchResultHoverLayover from '~/super_sidebar/components/global_search/c
 import GlobalSearchNoResults from '~/super_sidebar/components/global_search/components/global_search_no_results.vue';
 
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
-import { PROJECTS_GROUP_TITLE } from '~/super_sidebar/components/global_search/command_palette/constants';
+import {
+  PROJECTS_GROUP_TITLE,
+  GROUPS_GROUP_TITLE,
+} from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
@@ -150,11 +153,10 @@ describe('GlobalSearchAutocompleteItems', () => {
       describe.each`
         event                                        | category
         ${'click_project_result_in_command_palette'} | ${PROJECTS_GROUP_TITLE}
-        ${'click_user_result_in_command_palette'}    | ${undefined}
+        ${'click_group_result_in_command_palette'}   | ${GROUPS_GROUP_TITLE}
       `('event tracking', ({ event, category }) => {
         it(`tracks click for ${category} results`, async () => {
           const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-
           await findGlDisclosureDropdownGroup().vm.$emit('action', {
             category,
           });

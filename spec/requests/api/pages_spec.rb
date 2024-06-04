@@ -107,6 +107,24 @@ RSpec.describe API::Pages, feature_category: :pages do
           expect(json_response['is_unique_domain_enabled']).to eq(true)
         end
       end
+
+      context 'when the service returns any kind of error' do
+        let(:service_response) { ServiceResponse.error(message: service_error_message) }
+        let(:service_error_message) { 'the reason it stopped' }
+
+        before do
+          allow_next_instance_of(Pages::UpdateService) do |service|
+            allow(service).to receive(:execute).and_return(service_response)
+          end
+        end
+
+        it 'returns 403 forbidden with the passed along error message' do
+          patch api(path, admin, admin_mode: true), params: params
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(response.body).to include(service_error_message)
+        end
+      end
     end
 
     context 'when the user is unauthorized' do

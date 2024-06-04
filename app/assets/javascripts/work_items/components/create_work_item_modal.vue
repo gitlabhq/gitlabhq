@@ -2,11 +2,15 @@
 import { GlButton, GlModal, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import {
   I18N_NEW_WORK_ITEM_BUTTON_LABEL,
   I18N_WORK_ITEM_CREATED,
   sprintfWorkItem,
+  I18N_WORK_ITEM_ERROR_FETCHING_TYPES,
 } from '../constants';
+import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
+import groupWorkItemTypesQuery from '../graphql/group_work_item_types.query.graphql';
 import CreateWorkItem from './create_work_item.vue';
 
 export default {
@@ -16,6 +20,7 @@ export default {
     GlModal,
     GlDisclosureDropdownItem,
   },
+  inject: ['fullPath', 'isGroup'],
   props: {
     workItemTypeName: {
       type: String,
@@ -31,7 +36,38 @@ export default {
   data() {
     return {
       visible: false,
+      workItemTypes: [],
     };
+  },
+  apollo: {
+    workItemTypes: {
+      query() {
+        return this.isGroup ? groupWorkItemTypesQuery : projectWorkItemTypesQuery;
+      },
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          name: this.workItemTypeName,
+        };
+      },
+      update(data) {
+        return data.workspace?.workItemTypes?.nodes ?? [];
+      },
+      async result() {
+        if (!this.workItemTypes || this.workItemTypes.length === 0) {
+          return;
+        }
+        await setNewWorkItemCache(
+          this.isGroup,
+          this.fullPath,
+          this.workItemTypes[0]?.widgetDefinitions,
+          this.workItemTypeName,
+        );
+      },
+      error() {
+        this.error = I18N_WORK_ITEM_ERROR_FETCHING_TYPES;
+      },
+    },
   },
   computed: {
     newWorkItemText() {
@@ -50,6 +86,14 @@ export default {
   methods: {
     hideModal() {
       this.visible = false;
+      if (this.workItemTypes && this.workItemTypes[0]) {
+        setNewWorkItemCache(
+          this.isGroup,
+          this.fullPath,
+          this.workItemTypes[0]?.widgetDefinitions,
+          this.workItemTypeName,
+        );
+      }
     },
     showModal() {
       this.visible = true;
@@ -79,8 +123,8 @@ export default {
       variant="confirm"
       data-testid="new-epic-button"
       @click="showModal"
-      >{{ newWorkItemText }}</gl-button
-    >
+      >{{ newWorkItemText }}
+    </gl-button>
     <gl-modal
       modal-id="create-work-item-modal"
       :visible="visible"

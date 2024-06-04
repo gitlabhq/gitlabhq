@@ -1,4 +1,4 @@
-import { WIDGET_TYPE_LINKED_ITEMS } from '~/work_items/constants';
+import { WIDGET_TYPE_LINKED_ITEMS, NEW_WORK_ITEM_IID } from '~/work_items/constants';
 
 export const mockAssignees = [
   {
@@ -4121,3 +4121,181 @@ export const mockFrequentlyUsedProjects = [
     frequency: 3,
   },
 ];
+
+export const createWorkItemQueryResponse = {
+  data: {
+    workspace: {
+      id: 'new-workspace-workitem-id',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/new',
+        iid: NEW_WORK_ITEM_IID,
+        archived: false,
+        title: '',
+        state: 'OPEN',
+        description: '',
+        confidential: false,
+        createdAt: '2024-05-09T05:57:05Z',
+        updatedAt: '2024-05-09T09:35:32Z',
+        closedAt: null,
+        webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/new',
+        reference: 'gitlab-org#56',
+        createNoteEmail: null,
+        namespace: {
+          id: 'gid://gitlab/Group/24',
+          fullPath: 'full-path',
+          name: 'Gitlab Org',
+          __typename: 'Namespace',
+        },
+        author: {
+          id: 'gid://gitlab/User/1',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+          name: 'Administrator',
+          username: 'root',
+          webUrl: 'http://127.0.0.1:3000/root',
+          webPath: '/root',
+          __typename: 'UserCore',
+        },
+        workItemType: {
+          id: 'gid://gitlab/WorkItems::Type/8',
+          name: 'Epic',
+          iconName: 'issue-type-epic',
+          __typename: 'WorkItemType',
+        },
+        userPermissions: {
+          deleteWorkItem: true,
+          updateWorkItem: true,
+          adminParentLink: true,
+          setWorkItemMetadata: true,
+          createNote: true,
+          adminWorkItemLink: true,
+          __typename: 'WorkItemPermissions',
+        },
+        widgets: [
+          {
+            type: 'ASSIGNEES',
+            allowsMultipleAssignees: true,
+            canInviteMembers: false,
+            assignees: {
+              nodes: [],
+              __typename: 'UserCoreConnection',
+            },
+            __typename: 'WorkItemWidgetAssignees',
+          },
+          {
+            type: 'DESCRIPTION',
+            description: '',
+            descriptionHtml: '',
+            lastEditedAt: '2024-05-09T05:57:04Z',
+            lastEditedBy: {
+              name: 'Administrator',
+              webPath: '/root',
+              __typename: 'UserCore',
+            },
+            __typename: 'WorkItemWidgetDescription',
+          },
+          {
+            type: 'HIERARCHY',
+            hasChildren: false,
+            parent: null,
+            children: {
+              nodes: [],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'WorkItemWidgetHierarchy',
+          },
+          {
+            type: 'LABELS',
+            allowsScopedLabels: true,
+            labels: {
+              nodes: [],
+              __typename: 'LabelConnection',
+            },
+            __typename: 'WorkItemWidgetLabels',
+          },
+          {
+            type: 'NOTES',
+            discussionLocked: null,
+            __typename: 'WorkItemWidgetNotes',
+          },
+          {
+            type: 'START_AND_DUE_DATE',
+            dueDate: null,
+            startDate: null,
+            __typename: 'WorkItemWidgetStartAndDueDate',
+          },
+          {
+            type: 'HEALTH_STATUS',
+            healthStatus: 'needsAttention',
+            __typename: 'WorkItemWidgetHealthStatus',
+          },
+          {
+            type: 'STATUS',
+            __typename: 'WorkItemWidgetStatus',
+          },
+          {
+            type: 'NOTIFICATIONS',
+            subscribed: true,
+            __typename: 'WorkItemWidgetNotifications',
+          },
+          {
+            type: 'AWARD_EMOJI',
+            __typename: 'WorkItemWidgetAwardEmoji',
+          },
+          {
+            type: 'LINKED_ITEMS',
+            linkedItems: {
+              nodes: [],
+              __typename: 'LinkedWorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetLinkedItems',
+          },
+          {
+            type: 'CURRENT_USER_TODOS',
+            currentUserTodos: {
+              nodes: [],
+              __typename: 'TodoConnection',
+            },
+            __typename: 'WorkItemWidgetCurrentUserTodos',
+          },
+          {
+            type: 'COLOR',
+            color: '#b7a0fd',
+            textColor: '#1F1E24',
+            __typename: 'WorkItemWidgetColor',
+          },
+          {
+            type: 'ROLLEDUP_DATES',
+            dueDate: null,
+            dueDateFixed: null,
+            dueDateIsFixed: null,
+            startDate: null,
+            startDateFixed: null,
+            startDateIsFixed: null,
+            __typename: 'WorkItemWidgetRolledupDates',
+          },
+          {
+            type: 'PARTICIPANTS',
+            participants: {
+              nodes: [],
+              __typename: 'UserCoreConnection',
+            },
+            __typename: 'WorkItemWidgetParticipants',
+          },
+          {
+            type: 'TIME_TRACKING',
+            timeEstimate: 0,
+            timelogs: {
+              nodes: [],
+              __typename: 'WorkItemTimelogConnection',
+            },
+            totalTimeSpent: 0,
+            __typename: 'WorkItemWidgetTimeTracking',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+      __typename: 'Namespace',
+    },
+  },
+};

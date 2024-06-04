@@ -36,3 +36,18 @@ type LocalWorkItemPayload {
 extend type Mutation {
   localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
 }
+
+input LocalUpdateNewWorkItemInput {
+  fullPath: String!
+  isGroup: Boolean!
+  healthStatus: String
+  assignees: [LocalUserInput]
+  color: String
+  title: String
+  description: String
+  confidential: Boolean
+}
+
+extend type Mutation {
+  updateNewWorkItem(input: LocalUpdateNewWorkItemInput!): LocalWorkItemPayload
+}

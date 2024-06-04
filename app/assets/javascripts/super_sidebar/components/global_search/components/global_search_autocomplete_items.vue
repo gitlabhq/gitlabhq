@@ -19,6 +19,7 @@ import {
   PROJECTS_GROUP_TITLE,
   ISSUES_GROUP_TITLE,
   PAGES_GROUP_TITLE,
+  GROUPS_GROUP_TITLE,
 } from '../command_palette/constants';
 import SearchResultHoverLayover from './global_search_hover_overlay.vue';
 import GlobalSearchNoResults from './global_search_no_results.vue';
@@ -38,6 +39,7 @@ export default {
     PROJECTS_GROUP_TITLE,
     ISSUES_GROUP_TITLE,
     PAGES_GROUP_TITLE,
+    GROUPS_GROUP_TITLE,
   },
   components: {
     GlAvatar,
@@ -103,13 +105,18 @@ export default {
     },
     trackingTypes({ category }) {
       switch (category) {
+        case this.$options.i18n.GROUPS_GROUP_TITLE: {
+          this.trackEvent('click_group_result_in_command_palette');
+          break;
+        }
+
         case this.$options.i18n.PROJECTS_GROUP_TITLE: {
           this.trackEvent('click_project_result_in_command_palette');
           break;
         }
 
         default: {
-          this.trackEvent('click_user_result_in_command_palette');
+          /* empty */
         }
       }
     },

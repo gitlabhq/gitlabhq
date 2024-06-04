@@ -1,8 +1,6 @@
 ---
 key_path: count_total_model_registry_ml_model_created_7d
 description: Tracks the creation of Machine learning models (Ml::Model) through Ml::CreateModelService in the last 7 days.
-product_section: data-science
-product_stage: modelops
 product_group: mlops
 performance_indicator_type: []
 value_type: number

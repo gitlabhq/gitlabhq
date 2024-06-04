@@ -168,6 +168,38 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
         )
       end
     end
+
+    context 'gitlab_main_clusterwide and gitlab_main_cell allows' do
+      let!(:gitlab_schemas) { %w[gitlab_main_clusterwide gitlab_main_cell] }
+
+      it 'forbids explicit allows on cross joins on individual tables' do
+        # Because we allow cross joins and cross database modifications across
+        # via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145669
+        # on both of these schemas, we should not allow them explicitly on tables anymore
+
+        tables = ::Gitlab::Database::Dictionary.entries.select do |entry|
+          gitlab_schemas.include?(entry.gitlab_schema) &&
+            (entry.allow_cross_to_schemas('joins') & gitlab_schemas.map(&:to_sym)).any?
+        end
+
+        expect(tables).to be_empty,
+          "Cross join queries are allowed for all gitlab_main_clusterwide and gitlab_main_cell by default"
+      end
+
+      it 'forbids explicit allows on cross database modification on individual tables' do
+        # Because we allow cross joins and cross database modifications across
+        # via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145669
+        # on both of these schemas, we should not allow them explicitly on tables anymore
+
+        tables = ::Gitlab::Database::Dictionary.entries.select do |entry|
+          gitlab_schemas.include?(entry.gitlab_schema) &&
+            (entry.allow_cross_to_schemas('transactions') & gitlab_schemas.map(&:to_sym)).any?
+        end
+
+        expect(tables).to be_empty,
+          "Cross database modifications are allowed for all gitlab_main_clusterwide and gitlab_main_cell by default"
+      end
+    end
   end
 
   context 'when testing cross schema access' do

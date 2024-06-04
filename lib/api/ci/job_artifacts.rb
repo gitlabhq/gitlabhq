@@ -32,16 +32,16 @@ module API
         end
         params do
           requires :ref_name, type: String,
-                              desc: 'Branch or tag name in repository. `HEAD` or `SHA` references are not supported.'
+            desc: 'Branch or tag name in repository. `HEAD` or `SHA` references are not supported.'
           requires :job,      type: String, desc: 'The name of the job.'
           optional :job_token, type: String,
-                               desc: 'To be used with triggers for multi-project pipelines, ' \
-                                     'available only on Premium and Ultimate tiers.'
+            desc: 'To be used with triggers for multi-project pipelines, ' \
+                  'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
         get ':id/jobs/artifacts/:ref_name/download',
-            urgency: :low,
-            requirements: { ref_name: /.+/ } do
+          urgency: :low,
+          requirements: { ref_name: /.+/ } do
           authorize_download_artifacts!
 
           latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
@@ -61,18 +61,18 @@ module API
         end
         params do
           requires :ref_name, type: String,
-                              desc: 'Branch or tag name in repository. `HEAD` or `SHA` references are not supported.'
+            desc: 'Branch or tag name in repository. `HEAD` or `SHA` references are not supported.'
           requires :job, type: String, desc: 'The name of the job.'
           requires :artifact_path, type: String, desc: 'Path to a file inside the artifacts archive.'
           optional :job_token, type: String,
-                               desc: 'To be used with triggers for multi-project pipelines, ' \
-                                     'available only on Premium and Ultimate tiers.'
+            desc: 'To be used with triggers for multi-project pipelines, ' \
+                  'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
         get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
-            urgency: :low,
-            format: false,
-            requirements: { ref_name: /.+/ } do
+          urgency: :low,
+          format: false,
+          requirements: { ref_name: /.+/ } do
           authorize_download_artifacts!
 
           build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
@@ -97,8 +97,8 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
           optional :job_token, type: String,
-                               desc: 'To be used with triggers for multi-project pipelines, ' \
-                                     'available only on Premium and Ultimate tiers.'
+            desc: 'To be used with triggers for multi-project pipelines, ' \
+                  'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
         get ':id/jobs/:job_id/artifacts', urgency: :low do
@@ -123,8 +123,8 @@ module API
           requires :job_id, type: Integer, desc: 'The ID of a job'
           requires :artifact_path, type: String, desc: 'Path to a file inside the artifacts archive.'
           optional :job_token, type: String,
-                               desc: 'To be used with triggers for multi-project pipelines, ' \
-                                     'available only on Premium and Ultimate tiers.'
+            desc: 'To be used with triggers for multi-project pipelines, ' \
+                  'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
         get ':id/jobs/:job_id/artifacts/*artifact_path', urgency: :low, format: false do

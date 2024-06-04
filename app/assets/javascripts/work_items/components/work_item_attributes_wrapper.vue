@@ -212,6 +212,7 @@ export default {
         :due-date="workItemDueDate.dueDate"
         :start-date="workItemDueDate.startDate"
         :work-item-type="workItemType"
+        :full-path="fullPath"
         :work-item="workItem"
         @error="$emit('error', $event)"
       />
@@ -234,6 +235,7 @@ export default {
         :work-item-id="workItem.id"
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
+        :full-path="fullPath"
         @error="$emit('error', $event)"
       />
     </template>
@@ -241,6 +243,7 @@ export default {
       <work-item-color
         class="gl-mb-5"
         :work-item="workItem"
+        :full-path="fullPath"
         :can-update="canUpdate"
         @error="$emit('error', $event)"
       />

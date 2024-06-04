@@ -566,6 +566,9 @@ sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_SERVER_SIDE=tr
 kubectl exec <Toolbox pod name> -it -- backup-utility --repositories-server-side
 ```
 
+When you are using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),
+add the `--repositories-server-side` flag to the extra arguments.
+
 ::EndTabs
 
 #### Back up Git repositories concurrently

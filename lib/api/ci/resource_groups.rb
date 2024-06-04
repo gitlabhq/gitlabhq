@@ -17,8 +17,8 @@ module API
 
       params do
         requires :id,
-                 types: [String, Integer],
-                 desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
+          types: [String, Integer],
+          desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
       end
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Get all resource groups for a project' do
@@ -95,9 +95,9 @@ module API
           requires :key, type: String, desc: 'The key of the resource group'
 
           optional :process_mode,
-                   type: String,
-                   desc: 'The process mode of the resource group',
-                   values: ::Ci::ResourceGroup.process_modes.keys
+            type: String,
+            desc: 'The process mode of the resource group',
+            values: ::Ci::ResourceGroup.process_modes.keys
         end
         put ':id/resource_groups/:key', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :update_resource_group, resource_group

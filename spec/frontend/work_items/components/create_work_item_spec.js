@@ -12,7 +12,10 @@ import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
 import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
-import { createWorkItemMutationResponse } from '../mock_data';
+import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import { resolvers } from '~/graphql_shared/issuable_client';
+import { createWorkItemMutationResponse, createWorkItemQueryResponse } from '../mock_data';
 
 const projectSingleWorkItemTypeQueryResponse = {
   data: {
@@ -29,15 +32,14 @@ Vue.use(VueApollo);
 
 describe('Create work item component', () => {
   let wrapper;
-  let fakeApollo;
+  let mockApollo;
 
-  const querySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
-  const groupQuerySuccessHandler = jest.fn().mockResolvedValue(groupWorkItemTypesQueryResponse);
-  const singleWorkItemTypeSuccessHandler = jest
-    .fn()
-    .mockResolvedValue(projectSingleWorkItemTypeQueryResponse);
   const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
+  const projectWorkItemQuerySuccessHandler = jest
+    .fn()
+    .mockResolvedValue(createWorkItemQueryResponse);
+  const groupWorkItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse);
 
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -47,50 +49,71 @@ describe('Create work item component', () => {
 
   const findCreateButton = () => wrapper.find('[data-testid="create-button"]');
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
-  const findLoadingTypesIcon = () => wrapper.find('[data-testid="loading-types"]');
 
   const createComponent = ({
     data = {},
     props = {},
     isGroup = false,
-    query = projectWorkItemTypesQuery,
-    queryHandler = querySuccessHandler,
     mutationHandler = createWorkItemSuccessHandler,
+    singleWorkItemType = false,
   } = {}) => {
-    fakeApollo = createMockApollo(
+    mockApollo = createMockApollo(
       [
-        [query, queryHandler],
         [createWorkItemMutation, mutationHandler],
+        [groupWorkItemByIidQuery, groupWorkItemQuerySuccessHandler],
+        [workItemByIidQuery, projectWorkItemQuerySuccessHandler],
       ],
-      {},
+      resolvers,
       { typePolicies: { Project: { merge: true } } },
     );
+
+    const projectWorkItemTypeResponse = singleWorkItemType
+      ? projectSingleWorkItemTypeQueryResponse
+      : projectWorkItemTypesQueryResponse;
+    mockApollo.clients.defaultClient.cache.writeQuery({
+      query: isGroup ? groupWorkItemTypesQuery : projectWorkItemTypesQuery,
+      variables: { fullPath: 'full-path', name: 'EPIC' },
+      data: isGroup
+        ? {
+            ...groupWorkItemTypesQueryResponse.data,
+          }
+        : {
+            ...projectWorkItemTypeResponse.data,
+          },
+    });
+
     wrapper = shallowMount(CreateWorkItem, {
-      apolloProvider: fakeApollo,
+      apolloProvider: mockApollo,
       data() {
         return {
           ...data,
         };
       },
       propsData: {
+        workItemTypeName: WORK_ITEM_TYPE_ENUM_EPIC,
         ...props,
       },
       provide: {
         fullPath: 'full-path',
         isGroup,
+        hasIssuableHealthStatusFeature: false,
       },
     });
   };
 
-  it('does not render error by default', () => {
+  it('does not render error by default', async () => {
     createComponent();
+
+    await waitForPromises();
 
     expect(findTitleInput().props('isValid')).toBe(true);
     expect(findAlert().exists()).toBe(false);
   });
 
-  it('emits event on Cancel button click', () => {
+  it('emits event on Cancel button click', async () => {
     createComponent();
+
+    await waitForPromises();
 
     findCancelButton().vm.$emit('click');
 
@@ -100,11 +123,15 @@ describe('Create work item component', () => {
   it('emits workItemCreated on successful mutation', async () => {
     createComponent();
 
+    await waitForPromises();
+
     findTitleInput().vm.$emit('updateDraft', 'Test title');
+    await waitForPromises();
 
     wrapper.find('form').trigger('submit');
     await waitForPromises();
 
+    await waitForPromises();
     expect(wrapper.emitted('workItemCreated')).toEqual([
       [createWorkItemMutationResponse.data.workItemCreate.workItem],
     ]);
@@ -113,10 +140,15 @@ describe('Create work item component', () => {
   it('emits workItemCreated for confidential work item', async () => {
     createComponent();
 
+    await waitForPromises();
+
     findTitleInput().vm.$emit('updateDraft', 'Test title');
     findConfidentialCheckbox().vm.$emit('change', true);
+    await waitForPromises();
 
     wrapper.find('form').trigger('submit');
+    await waitForPromises();
+
     await waitForPromises();
 
     expect(createWorkItemSuccessHandler).toHaveBeenCalledWith({
@@ -130,6 +162,8 @@ describe('Create work item component', () => {
   it('does not commit when title is empty', async () => {
     createComponent();
 
+    await waitForPromises();
+
     findTitleInput().vm.$emit('updateDraft', ' ');
 
     wrapper.find('form').trigger('submit');
@@ -139,24 +173,8 @@ describe('Create work item component', () => {
     expect(wrapper.emitted('workItemCreated')).toEqual(undefined);
   });
 
-  it('displays a loading icon inside dropdown when work items query is loading', () => {
-    createComponent();
-
-    expect(findLoadingTypesIcon().exists()).toBe(true);
-  });
-
-  it('displays an alert when work items query is rejected', async () => {
-    createComponent({ queryHandler: jest.fn().mockRejectedValue('Houston, we have a problem') });
-    await waitForPromises();
-
-    expect(findAlert().exists()).toBe(true);
-    expect(findAlert().text()).toContain('fetching work item types');
-  });
-
   it('displays a list of project work item types', async () => {
-    createComponent({
-      queryHandler: querySuccessHandler,
-    });
+    createComponent();
     await waitForPromises();
 
     // +1 for the "None" option
@@ -169,37 +187,23 @@ describe('Create work item component', () => {
   it('fetches group work item types when isGroup is true', async () => {
     createComponent({
       isGroup: true,
-      query: groupWorkItemTypesQuery,
-      queryHandler: groupQuerySuccessHandler,
     });
 
     await waitForPromises();
 
-    expect(groupQuerySuccessHandler).toHaveBeenCalled();
+    const expectedOptions =
+      groupWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.length + 1;
+
+    expect(findSelect().attributes('options').split(',')).toHaveLength(expectedOptions);
   });
 
   it('hides the select field if there is only a single type', async () => {
     createComponent({
-      queryHandler: singleWorkItemTypeSuccessHandler,
+      singleWorkItemType: true,
     });
     await waitForPromises();
 
     expect(findSelect().exists()).toBe(false);
-  });
-
-  it('filters types by workItemType', async () => {
-    createComponent({
-      props: {
-        workItemTypeName: WORK_ITEM_TYPE_ENUM_EPIC,
-      },
-    });
-
-    await waitForPromises();
-
-    expect(querySuccessHandler).toHaveBeenCalledWith({
-      fullPath: 'full-path',
-      name: WORK_ITEM_TYPE_ENUM_EPIC,
-    });
   });
 
   it('selects a work item type on click', async () => {
@@ -213,31 +217,26 @@ describe('Create work item component', () => {
     expect(findSelect().attributes('value')).toBe(mockId);
   });
 
-  it('hides the alert on dismissing the error', async () => {
-    createComponent({ data: { error: true } });
-
-    expect(findAlert().exists()).toBe(true);
-
-    findAlert().vm.$emit('dismiss');
-    await nextTick();
-
-    expect(findAlert().exists()).toBe(false);
-  });
-
-  it('displays an initial title if passed', () => {
-    const initialTitle = 'Initial Title';
-    createComponent({
-      props: { initialTitle },
-    });
-    expect(findTitleInput().props('title')).toBe(initialTitle);
-  });
-
-  it('hides title if set', () => {
+  it('hides title if set', async () => {
     createComponent({
       props: { hideFormTitle: true },
     });
 
+    await waitForPromises();
+
     expect(findFormTitle().exists()).toBe(false);
+  });
+
+  it('updates work item title on update mutation', async () => {
+    createComponent();
+
+    await waitForPromises();
+
+    findTitleInput().vm.$emit('updateDraft', 'Test title');
+    await waitForPromises();
+    await nextTick();
+
+    expect(findTitleInput().props('title')).toBe('Test title');
   });
 
   describe('when title input field has a text', () => {
@@ -260,6 +259,8 @@ describe('Create work item component', () => {
     await waitForPromises();
     findTitleInput().vm.$emit('updateDraft', 'some title');
     findSelect().vm.$emit('input', 'work-item-1');
+    await waitForPromises();
+
     wrapper.find('form').trigger('submit');
     await waitForPromises();
 

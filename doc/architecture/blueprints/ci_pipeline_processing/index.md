@@ -373,7 +373,7 @@ test:
 #### An idea on using `canceled` instead of `failed` for some cases
 
 There is another aspect. We often drop jobs with a `failure_reason` before they get executed,
-for example when the namespace ran out of Compute Credits (CI minutes) or when limits are exceeded.
+for example when the namespace ran out of compute minutes or when limits are exceeded.
 Dropping jobs in the `failed` state has been handy because we could communicate to the user the `failure_reason`
 for better feedback. When canceling jobs for various reasons we don't have a way to indicate that.
 We cancel jobs because the user ran out of Compute Credits while the pipeline was running,

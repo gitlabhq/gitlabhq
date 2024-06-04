@@ -1,8 +1,6 @@
 ---
 key_path: count_distinct_user_id_from_i_quickactions_remove_email_single_28d
 description: Unique users using the /remove_email quick action to remove a single email participant from an issue within 28 days
-product_section: seg
-product_stage: service
 product_group: respond
 performance_indicator_type: []
 value_type: number

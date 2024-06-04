@@ -11,19 +11,7 @@ RSpec.describe 'Project > User views empty wiki', feature_category: :wiki do
     context 'when project is public' do
       let(:project) { create(:project, :public) }
 
-      it_behaves_like 'empty wiki message', issuable: true
-
-      context 'when issue tracker is private' do
-        let(:project) { create(:project, :public, :issues_private) }
-
-        it_behaves_like 'empty wiki message', issuable: false
-      end
-
-      context 'when issue tracker is disabled' do
-        let(:project) { create(:project, :public, :issues_disabled) }
-
-        it_behaves_like 'empty wiki message', issuable: false
-      end
+      it_behaves_like 'empty wiki message', writable: false
 
       context 'and user is logged in' do
         before do
@@ -31,7 +19,7 @@ RSpec.describe 'Project > User views empty wiki', feature_category: :wiki do
         end
 
         context 'and user is not a member' do
-          it_behaves_like 'empty wiki message', issuable: true
+          it_behaves_like 'empty wiki message', writable: false
         end
 
         context 'and user is a member' do
@@ -39,7 +27,7 @@ RSpec.describe 'Project > User views empty wiki', feature_category: :wiki do
             project.add_developer(user)
           end
 
-          it_behaves_like 'empty wiki message', writable: true, issuable: true
+          it_behaves_like 'empty wiki message', writable: true
         end
       end
     end
@@ -63,7 +51,7 @@ RSpec.describe 'Project > User views empty wiki', feature_category: :wiki do
             project.add_developer(user)
           end
 
-          it_behaves_like 'empty wiki message', writable: true, issuable: true
+          it_behaves_like 'empty wiki message', writable: true
         end
 
         context 'and user is a maintainer' do
@@ -71,14 +59,14 @@ RSpec.describe 'Project > User views empty wiki', feature_category: :wiki do
             project.add_maintainer(user)
           end
 
-          it_behaves_like 'empty wiki message', writable: true, issuable: true, confluence: true
+          it_behaves_like 'empty wiki message', writable: true, confluence: true
 
           context 'and Confluence is already enabled' do
             before do
               create(:confluence_integration, project: project)
             end
 
-            it_behaves_like 'empty wiki message', writable: true, issuable: true, confluence: false
+            it_behaves_like 'empty wiki message', writable: true, confluence: false
           end
         end
       end

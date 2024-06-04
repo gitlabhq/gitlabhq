@@ -176,7 +176,7 @@ There are two ways of marking builds as "stuck" and drop them.
 
 #### The reason behind this difference
 
-CI Minutes quota mechanism is handled early when the job is created because it is a constant decision for most of the time.
+Compute minutes quota mechanism is handled early when the job is created because it is a constant decision for most of the time.
 Once a project exceeds the limit, every next job matching it will be applicable for it until next month starts.
 Of course, the project owner can buy additional minutes, but that is a manual action that the project need to take.
 

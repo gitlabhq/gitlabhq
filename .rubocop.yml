@@ -1013,6 +1013,11 @@ QA/SelectorUsage:
   Exclude:
     - 'spec/rubocop/**/*_spec.rb'
 
+QA/FeatureFlags:
+  Enabled: true
+  Include:
+    - 'qa/qa/specs/features/**/*.rb'
+
 Performance/ActiveRecordSubtransactions:
   Exclude:
     - 'spec/**/*.rb'

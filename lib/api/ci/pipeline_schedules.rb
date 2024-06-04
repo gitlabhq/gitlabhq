@@ -12,7 +12,7 @@ module API
 
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
-                      documentation: { example: 18 }
+          documentation: { example: 18 }
       end
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Get all pipeline schedules' do
@@ -26,9 +26,9 @@ module API
         end
         params do
           use :pagination
-          optional :scope,    type: String, values: %w[active inactive],
-                              desc: 'The scope of pipeline schedules',
-                              documentation: { example: 'active' }
+          optional :scope, type: String, values: %w[active inactive],
+            desc: 'The scope of pipeline schedules',
+            documentation: { example: 'active' }
         end
         # rubocop: disable CodeReuse/ActiveRecord
         get ':id/pipeline_schedules' do
@@ -216,7 +216,7 @@ module API
           requires :key, type: String, desc: 'The key of the variable', documentation: { example: 'NEW_VARIABLE' }
           requires :value, type: String, desc: 'The value of the variable', documentation: { example: 'new value' }
           optional :variable_type, type: String, values: ::Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file. Defaults to env_var',
-                                   documentation: { default: 'env_var' }
+            documentation: { default: 'env_var' }
         end
         post ':id/pipeline_schedules/:pipeline_schedule_id/variables' do
           authorize! :set_pipeline_variables, user_project
@@ -249,7 +249,7 @@ module API
           requires :key, type: String, desc: 'The key of the variable', documentation: { example: 'NEW_VARIABLE' }
           optional :value, type: String, desc: 'The value of the variable', documentation: { example: 'new value' }
           optional :variable_type, type: String, values: ::Ci::PipelineScheduleVariable.variable_types.keys, desc: 'The type of variable, must be one of env_var or file',
-                                   documentation: { default: 'env_var' }
+            documentation: { default: 'env_var' }
         end
         put ':id/pipeline_schedules/:pipeline_schedule_id/variables/:key' do
           authorize! :set_pipeline_variables, user_project

@@ -59,33 +59,33 @@ module API
         end
         requires :entities, type: Array, desc: 'List of entities to import' do
           requires :source_type,
-                   type: String,
-                   desc: 'Source entity type',
-                   values: %w[group_entity project_entity]
+            type: String,
+            desc: 'Source entity type',
+            values: %w[group_entity project_entity]
           requires :source_full_path,
-                   type: String,
-                   desc: 'Relative path of the source entity to import',
-                   source_full_path: true,
-                   documentation: { example: "'source/full/path' not 'https://example.com/source/full/path'" }
+            type: String,
+            desc: 'Relative path of the source entity to import',
+            source_full_path: true,
+            documentation: { example: "'source/full/path' not 'https://example.com/source/full/path'" }
           requires :destination_namespace,
-                   type: String,
-                   desc: 'Destination namespace for the entity',
-                   destination_namespace_path: true,
-                   documentation: { example: "'destination_namespace' or 'destination/namespace'" }
+            type: String,
+            desc: 'Destination namespace for the entity',
+            destination_namespace_path: true,
+            documentation: { example: "'destination_namespace' or 'destination/namespace'" }
           optional :destination_slug,
-                   type: String,
-                   desc: 'Destination slug for the entity',
-                   destination_slug_path: true,
-                   documentation: { example: "'destination_slug' not 'destination/slug'" }
+            type: String,
+            desc: 'Destination slug for the entity',
+            destination_slug_path: true,
+            documentation: { example: "'destination_slug' not 'destination/slug'" }
           optional :destination_name,
-                   type: String,
-                   desc: 'Deprecated: Use :destination_slug instead. Destination slug for the entity',
-                   destination_slug_path: true,
-                   documentation: { example: "'destination_slug' not 'destination/slug'" }
+            type: String,
+            desc: 'Deprecated: Use :destination_slug instead. Destination slug for the entity',
+            destination_slug_path: true,
+            documentation: { example: "'destination_slug' not 'destination/slug'" }
           optional :migrate_projects,
-                   type: Boolean,
-                   default: true,
-                   desc: 'Indicates group migration should include nested projects'
+            type: Boolean,
+            default: true,
+            desc: 'Indicates group migration should include nested projects'
 
           mutually_exclusive :destination_slug, :destination_name
           at_least_one_of :destination_slug, :destination_name
@@ -128,9 +128,9 @@ module API
       params do
         use :pagination
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
+          desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
         optional :status, type: String, values: BulkImport.all_human_statuses,
-                          desc: 'Return GitLab Migrations with specified status'
+          desc: 'Return GitLab Migrations with specified status'
       end
       get do
         present paginate(bulk_imports), with: Entities::BulkImport
@@ -149,9 +149,9 @@ module API
       params do
         use :pagination
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
+          desc: 'Return GitLab Migrations sorted in created by `asc` or `desc` order.'
         optional :status, type: String, values: ::BulkImports::Entity.all_human_statuses,
-                          desc: "Return all GitLab Migrations' entities with specified status"
+          desc: "Return all GitLab Migrations' entities with specified status"
       end
       get :entities do
         entities = ::BulkImports::EntitiesFinder.new(
@@ -191,7 +191,7 @@ module API
       params do
         requires :import_id, type: Integer, desc: "The ID of user's GitLab Migration"
         optional :status, type: String, values: ::BulkImports::Entity.all_human_statuses,
-                          desc: 'Return import entities with specified status'
+          desc: 'Return import entities with specified status'
         use :pagination
       end
       get ':import_id/entities' do

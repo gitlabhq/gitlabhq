@@ -18,6 +18,7 @@ import {
 } from '../constants';
 
 export default {
+  name: 'WorkItemParent',
   inputId: 'work-item-parent-listbox-value',
   noWorkItemId: 'no-work-item-id',
   i18n: {

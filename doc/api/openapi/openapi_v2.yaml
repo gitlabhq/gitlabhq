@@ -40191,11 +40191,11 @@ definitions:
       shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: "(admin-only) Pipeline minutes quota for this group"
+        description: "(admin-only) Compute minutes quota for this group"
       extra_shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: "(admin-only) Extra pipeline minutes quota for this group"
+        description: "(admin-only) Extra compute minutes quota for this group"
       wiki_access_level:
         type: string
         description: Wiki access level. One of `disabled`, `private` or `enabled`
@@ -40359,11 +40359,11 @@ definitions:
       shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: "(admin-only) Pipeline minutes quota for this group"
+        description: "(admin-only) Compute minutes quota for this group"
       extra_shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: "(admin-only) Extra pipeline minutes quota for this group"
+        description: "(admin-only) Extra compute minutes quota for this group"
       wiki_access_level:
         type: string
         description: Wiki access level. One of `disabled`, `private` or `enabled`
@@ -56393,11 +56393,11 @@ definitions:
       shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: Pipeline minutes quota for this user
+        description: Compute minutes quota for this user
       extra_shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: "(admin-only) Extra pipeline minutes quota for this user"
+        description: "(admin-only) Extra compute minutes quota for this user"
       group_id_for_saml:
         type: integer
         format: int32
@@ -56646,11 +56646,11 @@ definitions:
       shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: Pipeline minutes quota for this user
+        description: Compute minutes quota for this user
       extra_shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: "(admin-only) Extra pipeline minutes quota for this user"
+        description: "(admin-only) Extra compute minutes quota for this user"
       group_id_for_saml:
         type: integer
         format: int32
@@ -58362,11 +58362,11 @@ definitions:
       shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: Pipeline minutes quota for this namespace
+        description: Compute minutes quota for this namespace
       extra_shared_runners_minutes_limit:
         type: integer
         format: int32
-        description: Extra pipeline minutes for this namespace
+        description: Extra compute minutes for this namespace
       additional_purchased_storage_size:
         type: integer
         format: int32

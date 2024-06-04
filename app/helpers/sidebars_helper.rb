@@ -120,7 +120,12 @@ module SidebarsHelper
   end
 
   def work_items_modal_data(group)
-    { full_path: group.full_path } if group
+    return unless group
+
+    {
+      full_path: group.full_path,
+      has_issuable_health_status_feature: group.licensed_feature_available?(:issuable_health_status).to_s
+    }
   end
 
   def super_sidebar_nav_panel(

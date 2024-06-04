@@ -106,3 +106,8 @@ export const workItemRoadmapPath = (fullPath, iid) => {
   const domain = gon.relative_url_root || '';
   return `${domain}/groups/${fullPath}/-/roadmap?epic_iid=${iid}`;
 };
+
+export const newWorkItemFullPath = (fullPath) => {
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  return `${fullPath}-id`;
+};

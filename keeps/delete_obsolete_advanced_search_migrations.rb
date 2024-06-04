@@ -107,8 +107,10 @@ module Keeps
         FileUtils.rm_f(migration_data[:file])
         change.changed_files << migration_data[:file]
 
-        FileUtils.rm_f(migration_data[:spec_file])
-        change.changed_files << migration_data[:spec_file]
+        if File.exist?(migration_data[:spec_file])
+          FileUtils.rm_f(migration_data[:spec_file])
+          change.changed_files << migration_data[:spec_file]
+        end
       rescue StandardError => e
         warn "Error deleting #{version} migration and spec: #{e}"
         nil

@@ -865,6 +865,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_57ad2742ac16() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "achievements"
+  WHERE "achievements"."id" = NEW."achievement_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_7a8b08eed782() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -17402,7 +17418,8 @@ CREATE TABLE user_achievements (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     revoked_at timestamp with time zone,
-    priority integer
+    priority integer,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE user_achievements_id_seq
@@ -28151,6 +28168,8 @@ CREATE INDEX index_user_achievements_on_achievement_id_revoked_by_is_null ON use
 
 CREATE INDEX index_user_achievements_on_awarded_by_revoked_by_is_null ON user_achievements USING btree (awarded_by_user_id, ((revoked_by_user_id IS NULL)));
 
+CREATE INDEX index_user_achievements_on_namespace_id ON user_achievements USING btree (namespace_id);
+
 CREATE INDEX index_user_achievements_on_revoked_by_user_id ON user_achievements USING btree (revoked_by_user_id);
 
 CREATE INDEX index_user_achievements_on_user_id_revoked_by_is_null ON user_achievements USING btree (user_id, ((revoked_by_user_id IS NULL)));
@@ -30411,6 +30430,8 @@ CREATE TRIGGER trigger_43484cb41aca BEFORE INSERT OR UPDATE ON wiki_repository_s
 
 CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variables FOR EACH ROW EXECUTE FUNCTION trigger_56d49f4ed623();
 
+CREATE TRIGGER trigger_57ad2742ac16 BEFORE INSERT OR UPDATE ON user_achievements FOR EACH ROW EXECUTE FUNCTION trigger_57ad2742ac16();
+
 CREATE TRIGGER trigger_7a8b08eed782 BEFORE INSERT OR UPDATE ON boards_epic_board_positions FOR EACH ROW EXECUTE FUNCTION trigger_7a8b08eed782();
 
 CREATE TRIGGER trigger_84d67ad63e93 BEFORE INSERT OR UPDATE ON wiki_page_slugs FOR EACH ROW EXECUTE FUNCTION trigger_84d67ad63e93();
@@ -30601,6 +30622,9 @@ ALTER TABLE ONLY sbom_occurrences
 
 ALTER TABLE ONLY protected_branch_push_access_levels
     ADD CONSTRAINT fk_15d2a7a4ae FOREIGN KEY (deploy_key_id) REFERENCES keys(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_achievements
+    ADD CONSTRAINT fk_15d6451a81 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY internal_ids
     ADD CONSTRAINT fk_162941d509 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

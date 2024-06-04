@@ -26,51 +26,51 @@ module API
         helpers do
           params :optional_scope do
             optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
-                             values: ::CommitStatus::AVAILABLE_STATUSES,
-                             coerce_with: ->(scope) {
-                                            case scope
-                                            when String
-                                              [scope]
-                                            when ::Array
-                                              scope
-                                            else
-                                              ['unknown']
-                                            end
-                                          },
-                             documentation: { example: %w[pending running] }
+              values: ::CommitStatus::AVAILABLE_STATUSES,
+              coerce_with: ->(scope) {
+                             case scope
+                             when String
+                               [scope]
+                             when ::Array
+                               scope
+                             else
+                               ['unknown']
+                             end
+                           },
+              documentation: { example: %w[pending running] }
           end
         end
 
         params do
           use :pagination
           optional :scope,    type: String, values: %w[running pending finished branches tags],
-                              desc: 'The scope of pipelines',
-                              documentation: { example: 'pending' }
+            desc: 'The scope of pipelines',
+            documentation: { example: 'pending' }
           optional :status,   type: String, values: ::Ci::HasStatus::AVAILABLE_STATUSES,
-                              desc: 'The status of pipelines',
-                              documentation: { example: 'pending' }
+            desc: 'The status of pipelines',
+            documentation: { example: 'pending' }
           optional :ref,      type: String, desc: 'The ref of pipelines',
-                              documentation: { example: 'develop' }
+            documentation: { example: 'develop' }
           optional :sha,      type: String, desc: 'The sha of pipelines',
-                              documentation: { example: 'a91957a858320c0e17f3a0eca7cfacbff50ea29a' }
+            documentation: { example: 'a91957a858320c0e17f3a0eca7cfacbff50ea29a' }
           optional :yaml_errors, type: Boolean, desc: 'Returns pipelines with invalid configurations',
-                                 documentation: { example: false }
+            documentation: { example: false }
           optional :username, type: String, desc: 'The username of the user who triggered pipelines',
-                              documentation: { example: 'root' }
+            documentation: { example: 'root' }
           optional :updated_before, type: DateTime, desc: 'Return pipelines updated before the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
-                                    documentation: { example: '2015-12-24T15:51:21.880Z' }
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :updated_after, type: DateTime, desc: 'Return pipelines updated after the specified datetime. Format: ISO 8601 YYYY-MM-DDTHH:MM:SSZ',
-                                   documentation: { example: '2015-12-24T15:51:21.880Z' }
+            documentation: { example: '2015-12-24T15:51:21.880Z' }
           optional :order_by, type: String, values: ::Ci::PipelinesFinder::ALLOWED_INDEXED_COLUMNS, default: 'id',
-                              desc: 'Order pipelines',
-                              documentation: { example: 'status' }
+            desc: 'Order pipelines',
+            documentation: { example: 'status' }
           optional :sort,     type: String, values: %w[asc desc], default: 'desc',
-                              desc: 'Sort pipelines',
-                              documentation: { example: 'asc' }
+            desc: 'Sort pipelines',
+            documentation: { example: 'asc' }
           optional :source,   type: String, values: ::Ci::Pipeline.sources.keys,
-                              documentation: { example: 'push' }
+            documentation: { example: 'push' }
           optional :name,     types: String, desc: 'Filter pipelines by name',
-                              documentation: { example: 'Build pipeline' }
+            documentation: { example: 'Build pipeline' }
         end
         get ':id/pipelines', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, user_project
@@ -94,7 +94,7 @@ module API
         end
         params do
           requires :ref, type: String, desc: 'Reference',
-                         documentation: { example: 'develop' }
+            documentation: { example: 'develop' }
           optional :variables, type: Array, desc: 'Array of variables available in the pipeline' do
             optional :key, type: String, desc: 'The key of the variable', documentation: { example: 'UPLOAD_TO_S3' }
             optional :value, type: String, desc: 'The value of the variable', documentation: { example: 'true' }
@@ -132,7 +132,7 @@ module API
         end
         params do
           optional :ref, type: String, desc: 'Branch ref of pipeline. Uses project default branch if not specified.',
-                         documentation: { example: 'develop' }
+            documentation: { example: 'develop' }
         end
         get ':id/pipelines/latest', urgency: :low, feature_category: :continuous_integration do
           authorize! :read_pipeline, latest_pipeline

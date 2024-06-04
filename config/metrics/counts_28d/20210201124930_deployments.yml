@@ -2,8 +2,6 @@
 data_category: operational
 key_path: counts_monthly.deployments
 description: Total deployments count for recent 28 days
-product_section: ops
-product_stage: deploy
 product_group: environments
 value_type: number
 status: active

@@ -130,6 +130,7 @@ const CrmOrganizationToken = () =>
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 
 export default {
+  name: 'IssuesListAppCE',
   i18n,
   issuableListTabs,
   ISSUES_VIEW_TYPE_KEY,

@@ -1,8 +1,6 @@
 ---
 key_path: counts_weekly.batched_background_migration_count_failed_jobs_metric
 description: Count the number of failed jobs per batched background migration
-product_section: enablement
-product_stage: data_stores
 product_group: database
 value_type: number
 status: active

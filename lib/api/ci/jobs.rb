@@ -17,20 +17,20 @@ module API
         helpers do
           params :optional_scope do
             optional :scope, type: Array[String], desc: 'The scope of builds to show',
-                             values: ::CommitStatus::AVAILABLE_STATUSES,
-                             coerce_with: ->(scope) {
-                               case scope
-                               when String
-                                 [scope]
-                               when ::Hash
-                                 scope.values
-                               when ::Array
-                                 scope
-                               else
-                                 ['unknown']
-                               end
-                             },
-                             documentation: { example: %w[pending running] }
+              values: ::CommitStatus::AVAILABLE_STATUSES,
+              coerce_with: ->(scope) {
+                case scope
+                when String
+                  [scope]
+                when ::Hash
+                  scope.values
+                when ::Array
+                  scope
+                else
+                  ['unknown']
+                end
+              },
+              documentation: { example: %w[pending running] }
           end
         end
 
@@ -198,7 +198,7 @@ module API
         params do
           requires :job_id, type: Integer, desc: 'The ID of a Job', documentation: { example: 88 }
           optional :job_variables_attributes,
-                   type: Array, desc: 'User defined variables that will be included when running the job' do
+            type: Array, desc: 'User defined variables that will be included when running the job' do
             requires :key, type: String, desc: 'The name of the variable', documentation: { example: 'foo' }
             requires :value, type: String, desc: 'The value of the variable', documentation: { example: 'bar' }
           end

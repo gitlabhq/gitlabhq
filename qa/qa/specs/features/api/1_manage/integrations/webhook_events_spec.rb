@@ -7,7 +7,8 @@ module QA
       :requires_admin,
       :integrations,
       :orchestrated,
-      product_group: :import_and_integrate
+      product_group: :import_and_integrate,
+      feature_flag: { name: :auto_disabling_web_hooks }
     ) do
       before(:context) do
         toggle_local_requests(true)

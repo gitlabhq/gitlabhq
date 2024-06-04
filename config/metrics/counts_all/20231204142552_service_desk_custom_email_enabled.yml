@@ -1,8 +1,6 @@
 ---
 key_path: counts.service_desk_custom_email_enabled
 description: "Number of projects that have Service Desk custom email enabled"
-product_section: seg
-product_stage: service management
 product_group: respond
 value_type: number
 status: active

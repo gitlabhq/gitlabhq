@@ -54,7 +54,7 @@ export default {
     <template #list-item="{ item }">
       <div
         class="gl-line-clamp-2"
-        :class="{ 'gl-font-weight-bold': item.memberRoleId }"
+        :class="{ 'gl-font-bold': item.memberRoleId }"
         data-testid="role-name"
       >
         {{ item.text }}

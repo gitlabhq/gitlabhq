@@ -16,7 +16,7 @@ module Gitlab
           link :buy_compute_minutes
           div :plan_compute_minutes
           div :additional_compute_minutes
-          div :ci_purchase_successful_alert, text: /You have successfully purchased CI minutes/
+          div :ci_purchase_successful_alert, text: /You have successfully purchased compute minutes/
 
           # Storage section
           link :storage_tab

@@ -423,7 +423,7 @@ export const convertToSearchQuery = (filterTokens) =>
     .map((token) => token.value.data)
     .join(' ') || undefined;
 
-function findWidget(type, workItem) {
+export function findWidget(type, workItem) {
   return workItem?.widgets?.find((widget) => widget.type === type);
 }
 

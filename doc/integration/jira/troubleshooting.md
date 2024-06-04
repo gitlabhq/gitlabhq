@@ -260,10 +260,10 @@ This error occurs when you use the wrong authentication credentials for your Jir
 
 - **For Jira Cloud**, you must have a Jira Cloud API token
   and the email address you used to create the token.
-- **For Jira Data Center or Jira Server**, you must have a Jira username and password,
+- **For Jira Data Center or Jira Server**, you must have a Jira username and password
   or, in GitLab 16.0 and later, a Jira personal access token.
 
-For more information, see [Jira issue integration](configure.md#configure-the-integration).
+For more information, see [Jira issue integration](configure.md).
 
 To resolve this issue, update the authentication credentials to match your Jira installation.
 

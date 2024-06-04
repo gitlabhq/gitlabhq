@@ -104,7 +104,7 @@ RSpec.describe 'User Settings > Personal Access Tokens', :js, feature_category: 
     end
 
     context "when revocation fails" do
-      it "displays an error message" do
+      it "displays an error message", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/451668' do
         allow_next_instance_of(PersonalAccessTokens::RevokeService) do |instance|
           allow(instance).to receive(:revocation_permitted?).and_return(false)
         end

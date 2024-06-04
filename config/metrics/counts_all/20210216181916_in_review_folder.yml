@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.in_review_folder
 description: A number of environments with name review/*
-product_section: ops
-product_stage: deploy
 product_group: environments
 value_type: number
 status: active

@@ -186,9 +186,9 @@ module API
 
         if result[:status] == :success
           present result[:branch],
-                  with: Entities::Branch,
-                  current_user: current_user,
-                  project: user_project
+            with: Entities::Branch,
+            current_user: current_user,
+            project: user_project
         else
           render_api_error!(result[:message], 400)
         end

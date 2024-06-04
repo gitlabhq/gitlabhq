@@ -354,3 +354,7 @@ export const MAX_FREQUENT_PROJECTS = 3;
 export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';
 
 export const WORK_ITEM_REFERENCE_CHAR = '#';
+
+export const NEW_WORK_ITEM_IID = 'new-work-item-iid';
+
+export const NEW_WORK_ITEM_GID = 'gid://gitlab/WorkItem/new';

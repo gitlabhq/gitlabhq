@@ -28,24 +28,24 @@ module API
     end
 
     insert_before Grape::Middleware::Error,
-                  GrapeLogging::Middleware::RequestLogger,
-                  logger: LOGGER,
-                  formatter: LOG_FORMATTER,
-                  include: [
-                    Gitlab::GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
-                    Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
-                    Gitlab::GrapeLogging::Loggers::RouteLogger.new,
-                    Gitlab::GrapeLogging::Loggers::UserLogger.new,
-                    Gitlab::GrapeLogging::Loggers::TokenLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ExceptionLogger.new,
-                    Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
-                    Gitlab::GrapeLogging::Loggers::PerfLogger.new,
-                    Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ContextLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ContentLogger.new,
-                    Gitlab::GrapeLogging::Loggers::UrgencyLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ResponseLogger.new
-                  ]
+      GrapeLogging::Middleware::RequestLogger,
+      logger: LOGGER,
+      formatter: LOG_FORMATTER,
+      include: [
+        Gitlab::GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
+        Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
+        Gitlab::GrapeLogging::Loggers::RouteLogger.new,
+        Gitlab::GrapeLogging::Loggers::UserLogger.new,
+        Gitlab::GrapeLogging::Loggers::TokenLogger.new,
+        Gitlab::GrapeLogging::Loggers::ExceptionLogger.new,
+        Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
+        Gitlab::GrapeLogging::Loggers::PerfLogger.new,
+        Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
+        Gitlab::GrapeLogging::Loggers::ContextLogger.new,
+        Gitlab::GrapeLogging::Loggers::ContentLogger.new,
+        Gitlab::GrapeLogging::Loggers::UrgencyLogger.new,
+        Gitlab::GrapeLogging::Loggers::ResponseLogger.new
+      ]
 
     allow_access_with_scope :api
     allow_access_with_scope :read_api, if: ->(request) { request.get? || request.head? }

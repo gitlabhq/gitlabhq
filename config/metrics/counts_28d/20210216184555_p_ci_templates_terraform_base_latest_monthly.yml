@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_terraform_base_latest_monthly
 description: Count of pipelines that include the terraform base template from GitLab
-product_section: ops
-product_stage: deploy
 product_group: environments
 value_type: number
 status: active

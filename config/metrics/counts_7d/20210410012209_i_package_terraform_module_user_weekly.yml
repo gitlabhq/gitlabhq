@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.user_packages.i_package_terraform_module_user_weekly
 description: Number of distinct users creating Terraform Module packages in recent 7 days
-product_section: ops
-product_stage: configure
 product_group: environments
 value_type: number
 status: active

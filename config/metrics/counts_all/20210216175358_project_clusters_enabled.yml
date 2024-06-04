@@ -2,8 +2,6 @@
 data_category: optional
 key_path: usage_activity_by_stage.configure.project_clusters_enabled
 description: Total GitLab Managed enabled clusters attached to projects
-product_section: ops
-product_stage: configure
 product_group: environments
 product_category: deployment_management
 value_type: number

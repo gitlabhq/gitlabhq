@@ -11,7 +11,8 @@ import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_i
 import { s__, sprintf, __ } from '~/locale';
 import Tracking from '~/tracking';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
+import { i18n, TRACKING_CATEGORY_SHOW, NEW_WORK_ITEM_GID } from '../constants';
 
 export default {
   components: {
@@ -234,6 +235,22 @@ export default {
     async setAssignees() {
       this.updateInProgress = true;
       const { localAssigneeIds } = this;
+
+      if (this.workItemId === NEW_WORK_ITEM_GID) {
+        this.$apollo.mutate({
+          mutation: updateNewWorkItemMutation,
+          variables: {
+            input: {
+              isGroup: this.isGroup,
+              fullPath: this.fullPath,
+              assignees: this.localAssignees,
+            },
+          },
+        });
+
+        this.updateInProgress = false;
+        return;
+      }
 
       try {
         const {

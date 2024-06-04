@@ -14,19 +14,19 @@ module API
       helpers do
         params :deprecated_filter_params do
           optional :scope, type: String, values: ::Ci::Runner::AVAILABLE_SCOPES,
-                           desc: 'Deprecated: Use `type` or `status` instead. The scope of runners to return'
+            desc: 'Deprecated: Use `type` or `status` instead. The scope of runners to return'
         end
 
         params :filter_params do
           optional :type, type: String, values: ::Ci::Runner::AVAILABLE_TYPES, desc: 'The type of runners to return'
           optional :paused, type: Boolean,
-                            desc: 'Whether to include only runners that are accepting or ignoring new jobs'
+            desc: 'Whether to include only runners that are accepting or ignoring new jobs'
           optional :status, type: String, values: ::Ci::Runner::AVAILABLE_STATUSES,
-                            desc: 'The status of runners to return'
+            desc: 'The status of runners to return'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-                              desc: 'A list of runner tags', documentation: { example: "['macos', 'shell']" }
+            desc: 'A list of runner tags', documentation: { example: "['macos', 'shell']" }
           optional :version_prefix, type: String, desc: 'The version prefix of runners to return', documentation: { example: "'15.1.' or '16.'" },
-                                    regexp: /^[\d+.]+/
+            regexp: /^[\d+.]+/
 
           use :pagination
         end
@@ -177,16 +177,16 @@ module API
           optional :active, type: Boolean, desc: 'Deprecated: Use `paused` instead. Flag indicating whether the runner is allowed to receive jobs'
           optional :paused, type: Boolean, desc: 'Specifies if the runner should ignore new jobs'
           optional :tag_list, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-                              desc: 'The list of tags for a runner', documentation: { example: "['macos', 'shell']" }
+            desc: 'The list of tags for a runner', documentation: { example: "['macos', 'shell']" }
           optional :run_untagged, type: Boolean, desc: 'Specifies if the runner can execute untagged jobs'
           optional :locked, type: Boolean, desc: 'Specifies if the runner is locked'
           optional :access_level, type: String, values: ::Ci::Runner.access_levels.keys,
-                                  desc: 'The access level of the runner'
+            desc: 'The access level of the runner'
           optional :maximum_timeout, type: Integer,
-                                     desc: 'Maximum timeout that limits the amount of time (in seconds) ' \
-                                           'that runners can run jobs'
+            desc: 'Maximum timeout that limits the amount of time (in seconds) ' \
+                  'that runners can run jobs'
           optional :maintenance_note, type: String,
-                                      desc: %q(Free-form maintenance notes for the runner (1024 characters))
+            desc: %q(Free-form maintenance notes for the runner (1024 characters))
           at_least_one_of :description, :active, :paused, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout, :maintenance_note
           mutually_exclusive :active, :paused
         end

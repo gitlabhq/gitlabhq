@@ -7,7 +7,11 @@ import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
-import { autocompleteDataSources, markdownPreviewPath } from '../utils';
+import {
+  newWorkItemFullPath,
+  autocompleteDataSources,
+  markdownPreviewPath,
+} from '~/work_items/utils';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
@@ -61,6 +65,11 @@ export default {
       required: false,
       default: true,
     },
+    createFlow: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -90,12 +99,12 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: this.createFlow ? newWorkItemFullPath(this.fullPath) : this.fullPath,
           iid: this.workItemIid,
         };
       },
       update(data) {
-        return data.workspace.workItem || {};
+        return data?.workspace?.workItem || {};
       },
       result() {
         if (this.isEditing) {

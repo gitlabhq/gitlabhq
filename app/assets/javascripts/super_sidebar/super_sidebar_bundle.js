@@ -2,7 +2,7 @@ import Vue from 'vue';
 import { GlBreadcrumb, GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
-import createDefaultClient from '~/lib/graphql';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { staticBreadcrumbs } from '~/lib/utils/breadcrumbs';
 import { JS_TOGGLE_EXPAND_CLASS, CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
@@ -15,10 +15,6 @@ import SuperSidebarToggle from './components/super_sidebar_toggle.vue';
 
 Vue.use(GlToast);
 Vue.use(VueApollo);
-
-const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(),
-});
 
 const getTrialStatusWidgetData = (sidebarData) => {
   if (sidebarData.trial_status_widget_data_attrs && sidebarData.trial_status_popover_data_attrs) {
@@ -135,6 +131,7 @@ export const initSuperSidebar = () => {
       projectsPath,
       groupsPath,
       fullPath: sidebarData.work_items?.full_path,
+      hasIssuableHealthStatusFeature: sidebarData.work_items?.has_issuable_health_status_feature,
       isGroup,
     },
     store: createStore({

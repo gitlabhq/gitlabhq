@@ -2,8 +2,6 @@
 key_path: batched_background_migrations_metric
 name: "batched_background_migrations"
 description: "Tracks the execution time of batched background migrations"
-product_section: enablement
-product_stage: data_stores
 product_group: database
 value_type: object
 status: active

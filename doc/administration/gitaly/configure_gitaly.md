@@ -20,6 +20,11 @@ Configure Gitaly in one of two ways:
    [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/-/blob/master/config.toml.example).
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
+:::TabTitle Helm chart (Kubernetes)
+
+1. Configure the [Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/).
+1. [Upgrade your Helm release](https://docs.gitlab.com/charts/installation/deployment.html).
+
 :::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitaly/config.toml` and add or change the [Gitaly settings](https://gitlab.com/gitlab-org/gitaly/blob/master/config.toml.example).
@@ -1285,6 +1290,7 @@ Gitaly fails to start up if either:
 > - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in GitLab 16.3.
 > - Server-side support for restoring a specified backup instead of the latest backup [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132188) in GitLab 16.6.
 > - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475) in GitLab 16.6.
+> - Server-side support added to Helm chart installations in GitLab 17.0.
 
 Repository backups can be configured so that the Gitaly node that hosts each
 repository is responsible for creating the backup and streaming it to
@@ -1318,6 +1324,11 @@ gitaly['configuration'] = {
     }
 }
 ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+For Helm-based deployments, see the
+[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html#server-side-backups).
 
 :::TabTitle Self-compiled (source)
 
@@ -1358,6 +1369,11 @@ gitaly['configuration'] = {
     }
 }
 ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+For Helm-based deployments, see the
+[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html#server-side-backups).
 
 :::TabTitle Self-compiled (source)
 
@@ -1400,6 +1416,11 @@ gitaly['configuration'] = {
 }
 ```
 
+:::TabTitle Helm chart (Kubernetes)
+
+For Helm-based deployments, see the
+[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html#server-side-backups).
+
 :::TabTitle Self-compiled (source)
 
 Edit `/home/git/gitaly/config.toml` and configure `go_cloud_url`:
@@ -1423,6 +1444,11 @@ The following parameters are supported:
 - `s3ForcePathStyle`: A value of `true` forces path-style addressing.
 
 ::Tabs
+
+:::TabTitle Helm chart (Kubernetes)
+
+For Helm-based deployments, see the
+[server-side backup documentation for Gitaly chart](https://docs.gitlab.com/charts/charts/gitlab/gitaly/index.html#server-side-backups).
 
 :::TabTitle Linux package (Omnibus)
 

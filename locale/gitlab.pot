@@ -1007,10 +1007,10 @@ msgstr ""
 msgid "%{mrText}, this issue will be closed automatically."
 msgstr ""
 
-msgid "%{name_with_link} namespace has %{percent} or less Shared Runner Pipeline minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
+msgid "%{name_with_link} namespace has %{percent} or less Shared Runner compute minutes remaining. Once it runs out, no new jobs or pipelines in its projects will run."
 msgstr ""
 
-msgid "%{name_with_link} namespace has run out of Shared Runner Pipeline minutes. No new jobs or pipelines in its projects will run."
+msgid "%{name_with_link} namespace has run out of Shared Runner compute minutes. No new jobs or pipelines in its projects will run."
 msgstr ""
 
 msgid "%{name} (Busy)"
@@ -1028,10 +1028,10 @@ msgstr ""
 msgid "%{name}'s avatar"
 msgstr ""
 
-msgid "%{name}(%{url}) namespace has %{percent} or less Shared Runner Pipeline minutes remaining. After it runs out, no new jobs or pipelines in its projects will run."
+msgid "%{name}(%{url}) namespace has %{percent} or less Shared Runner compute minutes remaining. After it runs out, no new jobs or pipelines in its projects will run."
 msgstr ""
 
-msgid "%{name}(%{url}) namespace has run out of Shared Runner Pipeline minutes so no new jobs or pipelines in its projects will run."
+msgid "%{name}(%{url}) namespace has run out of compute minutes so no new jobs or pipelines in its projects will run."
 msgstr ""
 
 msgid "%{name}, confirm your email address now!"
@@ -1514,7 +1514,7 @@ msgstr ""
 msgid "(+%{count}&nbsp;rules)"
 msgstr ""
 
-msgid "(Limited to %{quota} pipeline minutes per month)"
+msgid "(Limited to %{quota} compute minutes per month)"
 msgstr ""
 
 msgid "(No changes)"
@@ -1523,7 +1523,7 @@ msgstr ""
 msgid "(UTC %{offset})"
 msgstr ""
 
-msgid "(Unlimited pipeline minutes)"
+msgid "(Unlimited compute minutes)"
 msgstr ""
 
 msgid "(banned)"
@@ -4097,7 +4097,7 @@ msgstr ""
 msgid "AdminStatistics|Snippets"
 msgstr ""
 
-msgid "AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free CI minutes on instance runners."
+msgid "AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free compute minutes on instance runners."
 msgstr ""
 
 msgid "AdminUsers|Access"
@@ -9806,13 +9806,13 @@ msgstr ""
 msgid "Busy"
 msgstr ""
 
-msgid "Buy CI Minutes"
-msgstr ""
-
 msgid "Buy Storage"
 msgstr ""
 
-msgid "Buy more Pipeline minutes"
+msgid "Buy compute minutes"
+msgstr ""
+
+msgid "Buy more compute minutes"
 msgstr ""
 
 msgid "Buy more seats %{url}"
@@ -10689,9 +10689,6 @@ msgid "Checkout|Billing address"
 msgstr ""
 
 msgid "Checkout|Billing contact"
-msgstr ""
-
-msgid "Checkout|CI minutes"
 msgstr ""
 
 msgid "Checkout|Calculating your subscription..."
@@ -15838,7 +15835,7 @@ msgstr ""
 msgid "Current vulnerabilities count"
 msgstr ""
 
-msgid "CurrentUser|Buy Pipeline minutes"
+msgid "CurrentUser|Buy compute minutes"
 msgstr ""
 
 msgid "CurrentUser|Edit profile"
@@ -24796,6 +24793,9 @@ msgstr ""
 msgid "Group comment templates"
 msgstr ""
 
+msgid "Group compute minutes were successfully reset."
+msgstr ""
+
 msgid "Group description (optional)"
 msgstr ""
 
@@ -24869,9 +24869,6 @@ msgid "Group path is already taken. We've suggested one that is available."
 msgstr ""
 
 msgid "Group path is available."
-msgstr ""
-
-msgid "Group pipeline minutes were successfully reset."
 msgstr ""
 
 msgid "Group project URLs are prefixed with the group namespace"
@@ -38385,10 +38382,10 @@ msgstr ""
 msgid "Pipelines|Take advantage of simple, scalable pipelines and CI/CD-enabled features. You can view integration results, security scans, tests, code coverage and more directly in merge requests!"
 msgstr ""
 
-msgid "Pipelines|The %{namespace_name} namespace has %{percentage}%% or less Shared Runner Pipeline minutes remaining. After it runs out, no new jobs or pipelines in its projects will run."
+msgid "Pipelines|The %{namespace_name} namespace has %{percentage}%% or less Shared Runner compute minutes remaining. After it runs out, no new jobs or pipelines in its projects will run."
 msgstr ""
 
-msgid "Pipelines|The %{namespace_name} namespace has exceeded its pipeline minutes quota. Buy additional pipeline minutes, or no new jobs or pipelines in its projects will run."
+msgid "Pipelines|The %{namespace_name} namespace has exceeded its compute minutes quota. Buy additional compute minutes, or no new jobs or pipelines in its projects will run."
 msgstr ""
 
 msgid "Pipelines|The CI configuration was not loaded, please try again."
@@ -45550,7 +45547,7 @@ msgstr ""
 msgid "Runners|You can set up a project runner to be used by multiple projects but you cannot make this an instance or group runner."
 msgstr ""
 
-msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your instance runners pipeline minutes."
+msgid "Runners|You have used %{quotaUsed} out of %{quotaLimit} of your instance runners compute minutes."
 msgstr ""
 
 msgid "Runners|You may lose access to the runner token if you leave this page."
@@ -56733,6 +56730,9 @@ msgstr ""
 msgid "User caps is enabled for this group. You can manage members on the %{pending_members_link_start}pending members%{pending_members_link_end} page."
 msgstr ""
 
+msgid "User compute minutes were successfully reset."
+msgstr ""
+
 msgid "User created at"
 msgstr ""
 
@@ -56782,9 +56782,6 @@ msgid "User list %{name} will be removed. Are you sure?"
 msgstr ""
 
 msgid "User map"
-msgstr ""
-
-msgid "User pipeline minutes were successfully reset."
 msgstr ""
 
 msgid "User restrictions"
@@ -58349,10 +58346,10 @@ msgstr ""
 msgid "We recommend a work email address."
 msgstr ""
 
-msgid "We recommend that you buy additional Pipeline minutes to avoid any interruption of service."
+msgid "We recommend that you buy additional compute minutes to avoid any interruption of service."
 msgstr ""
 
-msgid "We recommend that you buy additional Pipeline minutes to resume normal service."
+msgid "We recommend that you buy additional compute minutes to resume normal service."
 msgstr ""
 
 msgid "We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device."
@@ -58846,7 +58843,7 @@ msgstr ""
 msgid "When you open a merge request, you can visualize and collaborate on the changes before merge."
 msgstr ""
 
-msgid "When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, pipeline minutes, and users, and start a trial or upgrade to a paid tier."
+msgid "When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, compute minutes, and users, and start a trial or upgrade to a paid tier."
 msgstr ""
 
 msgid "When your trial ends, you'll have a maximum of %d member on the Free tier, or you can get more by upgrading to a paid tier."
@@ -58937,22 +58934,7 @@ msgstr ""
 msgid "WikiEdit|There is already a page with the same title in that path."
 msgstr ""
 
-msgid "WikiEmptyIssueMessage|You must be a group member in order to add wiki pages. If you have suggestions for how to improve the wiki for this group, consider opening an issue in the %{issues_link}."
-msgstr ""
-
-msgid "WikiEmptyIssueMessage|You must be a project member in order to add wiki pages. If you have suggestions for how to improve the wiki for this project, consider opening an issue in the %{issues_link}."
-msgstr ""
-
-msgid "WikiEmptyIssueMessage|issue tracker"
-msgstr ""
-
 msgid "WikiEmpty| Have a Confluence wiki already? Use that instead."
-msgstr ""
-
-msgid "WikiEmpty|A wiki is where you can store all the details about your group. This can include why you've created it, its principles, how to use it, and so on."
-msgstr ""
-
-msgid "WikiEmpty|A wiki is where you can store all the details about your project. This can include why you've created it, its principles, how to use it, and so on."
 msgstr ""
 
 msgid "WikiEmpty|Confluence is enabled"
@@ -58964,28 +58946,19 @@ msgstr ""
 msgid "WikiEmpty|Enable the Confluence Wiki integration"
 msgstr ""
 
+msgid "WikiEmpty|Get started with wikis"
+msgstr ""
+
 msgid "WikiEmpty|Go to Confluence"
 msgstr ""
 
-msgid "WikiEmpty|Suggest wiki improvement"
+msgid "WikiEmpty|This wiki doesn't have any content yet"
 msgstr ""
 
-msgid "WikiEmpty|The wiki lets you write documentation for your group"
+msgid "WikiEmpty|Use GitLab Wiki to collaborate on documentation in a project or group. You can store wiki pages written in markup formats like Markdown or AsciiDoc in a separate Git repository, and access the wiki through Git, the GitLab web interface, or the API."
 msgstr ""
 
-msgid "WikiEmpty|The wiki lets you write documentation for your project"
-msgstr ""
-
-msgid "WikiEmpty|This group has no wiki pages"
-msgstr ""
-
-msgid "WikiEmpty|This project has no wiki pages"
-msgstr ""
-
-msgid "WikiEmpty|You must be a group member in order to add wiki pages."
-msgstr ""
-
-msgid "WikiEmpty|You must be a project member in order to add wiki pages."
+msgid "WikiEmpty|You can use GitLab Wiki to collaborate on documentation in a project or group. You can store wiki pages written in markup formats like Markdown or AsciiDoc in a separate Git repository, and access the wiki through Git, the GitLab web interface, or the API."
 msgstr ""
 
 msgid "WikiEmpty|You've enabled the Confluence Workspace integration. Your wiki will be viewable directly within Confluence. We are hard at work integrating Confluence more seamlessly into GitLab. If you'd like to stay up to date, follow our %{wiki_confluence_epic_link_start}Confluence epic%{wiki_confluence_epic_link_end}."

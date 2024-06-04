@@ -7,9 +7,9 @@ module API
 
     params do
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
-                    documentation: { example: 17 }
+        documentation: { example: 17 }
       requires :alert_iid, type: Integer, desc: 'The IID of the Alert',
-                           documentation: { example: 23 }
+        documentation: { example: 23 }
     end
 
     resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -47,11 +47,11 @@ module API
         end
         params do
           requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The image file to be uploaded',
-                          documentation: { type: 'file' }
+            documentation: { type: 'file' }
           optional :url, type: String, desc: 'The url to view more metric info',
-                         documentation: { example: 'https://example.com/metric' }
+            documentation: { example: 'https://example.com/metric' }
           optional :url_text, type: String, desc: 'A description of the image or URL',
-                              documentation: { example: 'An example metric' }
+            documentation: { example: 'An example metric' }
         end
         post do
           require_gitlab_workhorse!
@@ -106,11 +106,11 @@ module API
         end
         params do
           requires :metric_image_id, type: Integer, desc: 'The ID of metric image',
-                                     documentation: { example: 42 }
+            documentation: { example: 42 }
           optional :url, type: String, desc: 'The url to view more metric info',
-                         documentation: { example: 'https://example.com/metric' }
+            documentation: { example: 'https://example.com/metric' }
           optional :url_text, type: String, desc: 'A description of the image or URL',
-                              documentation: { example: 'An example metric' }
+            documentation: { example: 'An example metric' }
         end
         put ':metric_image_id' do
           alert = find_project_alert(params[:alert_iid])
@@ -138,7 +138,7 @@ module API
         end
         params do
           requires :metric_image_id, type: Integer, desc: 'The ID of metric image',
-                                     documentation: { example: 42 }
+            documentation: { example: 42 }
         end
         delete ':metric_image_id' do
           alert = find_project_alert(params[:alert_iid])
