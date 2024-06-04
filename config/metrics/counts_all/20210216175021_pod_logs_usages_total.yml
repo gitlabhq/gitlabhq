@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.pod_logs_usages_total
 description: Count the total number of log views
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: removed

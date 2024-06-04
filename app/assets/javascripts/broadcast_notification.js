@@ -19,9 +19,11 @@ const handleOnDismiss = ({ currentTarget }) => {
   setCookie(cookieKey, true, { expires: new Date(expireDate) });
 
   // Create db record to persist dismissal
-  dismissUserBroadcastMessage(id, expireDate, dismissalPath).catch((e) =>
-    Sentry.captureException(e),
-  );
+  if (dismissalPath) {
+    dismissUserBroadcastMessage(id, expireDate, dismissalPath).catch((e) =>
+      Sentry.captureException(e),
+    );
+  }
 
   const notification = document.querySelector(`.js-broadcast-notification-${id}`);
   notification.parentNode.removeChild(notification);

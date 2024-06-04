@@ -1,8 +1,6 @@
 ---
 key_path: counts.count_total_i_quickactions_add_email_multiple_weekly
 description: Weekly count of external participants being added using the add_email quick action (multiple arguments)
-product_section: analytics
-product_stage: monitor
 product_group: respond
 performance_indicator_type: []
 value_type: number

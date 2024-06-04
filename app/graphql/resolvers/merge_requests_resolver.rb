@@ -52,7 +52,7 @@ module Resolvers
 
     argument :state, ::Types::MergeRequestStateEnum,
       required: false,
-      description: 'Merge request state. If provided, all resolved merge requests will have this state.'
+      description: 'Merge request state. If provided, all resolved merge requests will have the state.'
 
     argument :draft, GraphQL::Types::Boolean,
       required: false,
@@ -67,25 +67,25 @@ module Resolvers
 
     argument :created_after, Types::TimeType,
       required: false,
-      description: 'Merge requests created after this timestamp.'
+      description: 'Merge requests created after the timestamp.'
     argument :created_before, Types::TimeType,
       required: false,
-      description: 'Merge requests created before this timestamp.'
+      description: 'Merge requests created before the timestamp.'
     argument :deployed_after, Types::TimeType,
       required: false,
-      description: 'Merge requests deployed after this timestamp.'
+      description: 'Merge requests deployed after the timestamp.'
     argument :deployed_before, Types::TimeType,
       required: false,
-      description: 'Merge requests deployed before this timestamp.'
+      description: 'Merge requests deployed before the timestamp.'
     argument :deployment_id, GraphQL::Types::String,
       required: false,
       description: 'ID of the deployment.'
     argument :updated_after, Types::TimeType,
       required: false,
-      description: 'Merge requests updated after this timestamp.'
+      description: 'Merge requests updated after the timestamp.'
     argument :updated_before, Types::TimeType,
       required: false,
-      description: 'Merge requests updated before this timestamp.'
+      description: 'Merge requests updated before the timestamp.'
 
     argument :labels, [GraphQL::Types::String],
       required: false,
@@ -93,10 +93,10 @@ module Resolvers
       description: 'Array of label names. All resolved merge requests will have all of these labels.'
     argument :merged_after, Types::TimeType,
       required: false,
-      description: 'Merge requests merged after this date.'
+      description: 'Merge requests merged after the date.'
     argument :merged_before, Types::TimeType,
       required: false,
-      description: 'Merge requests merged before this date.'
+      description: 'Merge requests merged before the date.'
     argument :milestone_title, GraphQL::Types::String,
       required: false,
       description: 'Title of the milestone.'
@@ -109,7 +109,7 @@ module Resolvers
       description: 'Reviewer states of the merge request.',
       alpha: { milestone: '17.0' }
     argument :sort, Types::MergeRequestSortEnum,
-      description: 'Sort merge requests by this criteria.',
+      description: 'Sort merge requests by the criteria.',
       required: false,
       default_value: :created_desc
 

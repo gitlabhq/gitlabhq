@@ -12,7 +12,7 @@ module Issues
 
     included do
       argument :sort, Types::IssueSortEnum,
-        description: 'Sort issues by this criteria.',
+        description: 'Sort issues by the criteria.',
         required: false,
         default_value: :created_desc
     end

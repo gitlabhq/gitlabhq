@@ -66,9 +66,7 @@
   = webpack_bundle_tag 'super_sidebar'
 
   - if vite_enabled?
-    - if Rails.env.development?
-      = vite_client_tag
-    = vite_javascript_tag "main", *vite_page_entrypoint_paths
+    = render 'layouts/vite_main'
   - else
     = webpack_controller_bundle_tags
 

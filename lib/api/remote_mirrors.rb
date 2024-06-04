@@ -133,33 +133,17 @@ module API
       put ':id/remote_mirrors/:mirror_id' do
         mirror = find_remote_mirror
 
-        if Feature.enabled?(:use_remote_service_update_service, user_project)
-          service = ::RemoteMirrors::UpdateService.new(
-            user_project,
-            current_user,
-            declared_params(include_missing: false)
-          )
+        service = ::RemoteMirrors::UpdateService.new(
+          user_project,
+          current_user,
+          declared_params(include_missing: false)
+        )
 
-          result = service.execute(mirror)
+        result = service.execute(mirror)
 
-          render_api_error!(result.message, 400) if result.error?
+        render_api_error!(result.message, 400) if result.error?
 
-          present result.payload[:remote_mirror], with: Entities::RemoteMirror
-        else
-          mirror_params = declared_params(include_missing: false)
-          mirror_params[:id] = mirror_params.delete(:mirror_id)
-
-          verify_mirror_branches_setting(mirror_params)
-          update_params = { remote_mirrors_attributes: mirror_params }
-
-          result = ::Projects::UpdateService
-                     .new(user_project, current_user, update_params)
-                     .execute
-
-          render_api_error!(result[:message], 400) unless result[:status] == :success
-
-          present mirror.reset, with: Entities::RemoteMirror
-        end
+        present result.payload[:remote_mirror], with: Entities::RemoteMirror
       end
 
       desc 'Delete a single remote mirror' do

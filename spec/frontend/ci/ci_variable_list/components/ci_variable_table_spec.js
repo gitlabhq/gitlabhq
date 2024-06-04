@@ -160,9 +160,8 @@ describe('Ci variable table', () => {
       it.each`
         index | text
         ${0}  | ${'Key'}
-        ${1}  | ${'Attributes'}
-        ${2}  | ${'Environments'}
-        ${3}  | ${'Group'}
+        ${1}  | ${'Environments'}
+        ${2}  | ${'Group'}
       `('renders the $text column', ({ index, text }) => {
         expect(findTableColumnText(index)).toEqual(text);
       });

@@ -543,11 +543,11 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryissuesassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="queryissuesassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="queryissuesauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="queryissuesclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after this date. |
-| <a id="queryissuesclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before this date. |
+| <a id="queryissuesclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after the date. |
+| <a id="queryissuesclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before the date. |
 | <a id="queryissuesconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues. |
-| <a id="queryissuescreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after this date. |
-| <a id="queryissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before this date. |
+| <a id="queryissuescreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after the date. |
+| <a id="queryissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="queryissuescrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="queryissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="queryissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
@@ -562,18 +562,18 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryissuesiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
 | <a id="queryissuesiterationtitle"></a>`iterationTitle` | [`String`](#string) | Filter by iteration title. |
 | <a id="queryissuesiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
-| <a id="queryissueslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
-| <a id="queryissuesmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to this issue. |
+| <a id="queryissueslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to the issue. |
+| <a id="queryissuesmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to the issue. |
 | <a id="queryissuesmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="queryissuesmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="queryissuesnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
 | <a id="queryissuesor"></a>`or` | [`UnionedIssueFilterInput`](#unionedissuefilterinput) | List of arguments with inclusive OR. |
 | <a id="queryissuessearch"></a>`search` | [`String`](#string) | Search query for title or description. |
-| <a id="queryissuessort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by this criteria. |
-| <a id="queryissuesstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of this issue. |
+| <a id="queryissuessort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by the criteria. |
+| <a id="queryissuesstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the issue. |
 | <a id="queryissuestypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter issues by the given issue types. |
-| <a id="queryissuesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after this date. |
-| <a id="queryissuesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before this date. |
+| <a id="queryissuesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after the date. |
+| <a id="queryissuesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before the date. |
 | <a id="queryissuesweight"></a>`weight` | [`String`](#string) | Weight applied to the issue, "none" and "any" values are supported. |
 | <a id="queryissuesweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -1091,8 +1091,8 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryusagetrendsmeasurementsidentifier"></a>`identifier` | [`MeasurementIdentifier!`](#measurementidentifier) | Type of measurement or statistics to retrieve. |
-| <a id="queryusagetrendsmeasurementsrecordedafter"></a>`recordedAfter` | [`Time`](#time) | Measurement recorded after this date. |
-| <a id="queryusagetrendsmeasurementsrecordedbefore"></a>`recordedBefore` | [`Time`](#time) | Measurement recorded before this date. |
+| <a id="queryusagetrendsmeasurementsrecordedafter"></a>`recordedAfter` | [`Time`](#time) | Measurement recorded after the date. |
+| <a id="queryusagetrendsmeasurementsrecordedbefore"></a>`recordedBefore` | [`Time`](#time) | Measurement recorded before the date. |
 
 ### `Query.user`
 
@@ -1125,7 +1125,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryusersgroupid"></a>`groupId` | [`GroupID`](#groupid) | Return users member of a given group. |
 | <a id="queryusersids"></a>`ids` | [`[ID!]`](#id) | List of user Global IDs. |
 | <a id="queryuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or primary email. |
-| <a id="queryuserssort"></a>`sort` | [`Sort`](#sort) | Sort users by this criteria. |
+| <a id="queryuserssort"></a>`sort` | [`Sort`](#sort) | Sort users by the criteria. |
 | <a id="queryusersusernames"></a>`usernames` | [`[String!]`](#string) | List of usernames. |
 
 ### `Query.vulnerabilities`
@@ -15885,17 +15885,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="addonuserassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="addonuserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="addonuserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="addonuserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="addonuserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="addonuserassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="addonuserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="addonuserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="addonuserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="addonuserassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="addonuserassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="addonuserassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="addonuserassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="addonuserassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="addonuserassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="addonuserassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="addonuserassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="addonuserassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="addonuserassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="addonuserassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="addonuserassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="addonuserassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -15904,12 +15904,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="addonuserassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="addonuserassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="addonuserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="addonuserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="addonuserassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="addonuserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="addonuserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="addonuserassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="addonuserassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="addonuserassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="addonuserassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="addonuserassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `AddOnUser.authoredMergeRequests`
 
@@ -15927,17 +15927,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="addonuserauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="addonuserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
-| <a id="addonuserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="addonuserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="addonuserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="addonuserauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="addonuserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="addonuserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="addonuserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="addonuserauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="addonuserauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="addonuserauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="addonuserauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="addonuserauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="addonuserauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="addonuserauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="addonuserauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="addonuserauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="addonuserauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="addonuserauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="addonuserauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="addonuserauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -15946,12 +15946,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="addonuserauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="addonuserauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="addonuserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="addonuserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="addonuserauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="addonuserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="addonuserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="addonuserauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="addonuserauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="addonuserauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="addonuserauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="addonuserauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `AddOnUser.contributedProjects`
 
@@ -16023,29 +16023,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="addonuserreviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="addonuserreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="addonuserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="addonuserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="addonuserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="addonuserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="addonuserreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="addonuserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="addonuserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="addonuserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="addonuserreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="addonuserreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="addonuserreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="addonuserreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="addonuserreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="addonuserreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="addonuserreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="addonuserreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="addonuserreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="addonuserreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="addonuserreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="addonuserreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="addonuserreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
 | <a id="addonuserreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
 | <a id="addonuserreviewrequestedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="addonuserreviewrequestedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="addonuserreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="addonuserreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="addonuserreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="addonuserreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="addonuserreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="addonuserreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="addonuserreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="addonuserreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="addonuserreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="addonuserreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `AddOnUser.savedReply`
 
@@ -16674,17 +16674,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="autocompleteduserassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="autocompleteduserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="autocompleteduserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="autocompleteduserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="autocompleteduserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="autocompleteduserassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="autocompleteduserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="autocompleteduserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="autocompleteduserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="autocompleteduserassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="autocompleteduserassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="autocompleteduserassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="autocompleteduserassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="autocompleteduserassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="autocompleteduserassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="autocompleteduserassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="autocompleteduserassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="autocompleteduserassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="autocompleteduserassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="autocompleteduserassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="autocompleteduserassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="autocompleteduserassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -16693,12 +16693,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="autocompleteduserassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="autocompleteduserassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="autocompleteduserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="autocompleteduserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="autocompleteduserassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="autocompleteduserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="autocompleteduserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="autocompleteduserassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="autocompleteduserassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="autocompleteduserassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="autocompleteduserassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="autocompleteduserassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `AutocompletedUser.authoredMergeRequests`
 
@@ -16716,17 +16716,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="autocompleteduserauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="autocompleteduserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
-| <a id="autocompleteduserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="autocompleteduserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="autocompleteduserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="autocompleteduserauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="autocompleteduserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="autocompleteduserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="autocompleteduserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="autocompleteduserauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="autocompleteduserauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="autocompleteduserauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="autocompleteduserauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="autocompleteduserauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="autocompleteduserauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="autocompleteduserauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="autocompleteduserauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="autocompleteduserauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="autocompleteduserauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="autocompleteduserauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="autocompleteduserauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="autocompleteduserauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -16735,12 +16735,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="autocompleteduserauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="autocompleteduserauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="autocompleteduserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="autocompleteduserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="autocompleteduserauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="autocompleteduserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="autocompleteduserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="autocompleteduserauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="autocompleteduserauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="autocompleteduserauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="autocompleteduserauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="autocompleteduserauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `AutocompletedUser.contributedProjects`
 
@@ -16824,29 +16824,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="autocompleteduserreviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="autocompleteduserreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="autocompleteduserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="autocompleteduserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="autocompleteduserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="autocompleteduserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="autocompleteduserreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="autocompleteduserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="autocompleteduserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="autocompleteduserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="autocompleteduserreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="autocompleteduserreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="autocompleteduserreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="autocompleteduserreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="autocompleteduserreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="autocompleteduserreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="autocompleteduserreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="autocompleteduserreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="autocompleteduserreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="autocompleteduserreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="autocompleteduserreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="autocompleteduserreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="autocompleteduserreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
 | <a id="autocompleteduserreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
 | <a id="autocompleteduserreviewrequestedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="autocompleteduserreviewrequestedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="autocompleteduserreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="autocompleteduserreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="autocompleteduserreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="autocompleteduserreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="autocompleteduserreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="autocompleteduserreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="autocompleteduserreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="autocompleteduserreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="autocompleteduserreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="autocompleteduserreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `AutocompletedUser.savedReply`
 
@@ -18331,8 +18331,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="commitpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
 | <a id="commitpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. |
 | <a id="commitpipelinesstatus"></a>`status` | [`PipelineStatusEnum`](#pipelinestatusenum) | Filter pipelines by their status. |
-| <a id="commitpipelinesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Pipelines updated after this date. |
-| <a id="commitpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before this date. |
+| <a id="commitpipelinesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Pipelines updated after the date. |
+| <a id="commitpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before the date. |
 | <a id="commitpipelinesusername"></a>`username` | [`String`](#string) | Filter pipelines by the user that triggered the pipeline. |
 
 ### `CommitData`
@@ -18871,17 +18871,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="currentuserassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="currentuserassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="currentuserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="currentuserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="currentuserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="currentuserassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="currentuserassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="currentuserassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="currentuserassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="currentuserassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="currentuserassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="currentuserassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="currentuserassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="currentuserassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="currentuserassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="currentuserassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="currentuserassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="currentuserassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="currentuserassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="currentuserassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="currentuserassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="currentuserassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -18890,12 +18890,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="currentuserassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="currentuserassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="currentuserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="currentuserassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="currentuserassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="currentuserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="currentuserassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="currentuserassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="currentuserassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="currentuserassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="currentuserassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="currentuserassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `CurrentUser.authoredMergeRequests`
 
@@ -18913,17 +18913,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="currentuserauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="currentuserauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
-| <a id="currentuserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="currentuserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="currentuserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="currentuserauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="currentuserauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="currentuserauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="currentuserauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="currentuserauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="currentuserauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="currentuserauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="currentuserauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="currentuserauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="currentuserauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="currentuserauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="currentuserauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="currentuserauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="currentuserauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="currentuserauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="currentuserauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="currentuserauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -18932,12 +18932,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="currentuserauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="currentuserauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="currentuserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="currentuserauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="currentuserauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="currentuserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="currentuserauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="currentuserauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="currentuserauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="currentuserauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="currentuserauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="currentuserauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `CurrentUser.contributedProjects`
 
@@ -19009,29 +19009,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="currentuserreviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="currentuserreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="currentuserreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="currentuserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="currentuserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="currentuserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="currentuserreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="currentuserreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="currentuserreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="currentuserreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="currentuserreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="currentuserreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="currentuserreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="currentuserreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="currentuserreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="currentuserreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="currentuserreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="currentuserreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="currentuserreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="currentuserreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="currentuserreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="currentuserreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="currentuserreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
 | <a id="currentuserreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
 | <a id="currentuserreviewrequestedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="currentuserreviewrequestedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="currentuserreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="currentuserreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="currentuserreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="currentuserreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="currentuserreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="currentuserreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="currentuserreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="currentuserreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="currentuserreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="currentuserreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `CurrentUser.savedReply`
 
@@ -19826,7 +19826,7 @@ Returns [`DesignAtVersion`](#designatversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designcollectiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | Global ID of the design at this version. |
+| <a id="designcollectiondesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | Global ID of the design at the version. |
 
 ##### `DesignCollection.designs`
 
@@ -19890,7 +19890,7 @@ Returns [`DesignAtVersion`](#designatversion).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="designmanagementdesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | Global ID of the design at this version. |
+| <a id="designmanagementdesignatversionid"></a>`id` | [`DesignManagementDesignAtVersionID!`](#designmanagementdesignatversionid) | Global ID of the design at the version. |
 
 ##### `DesignManagement.version`
 
@@ -20648,7 +20648,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="epicissuealertmanagementalertsdomain"></a>`domain` | [`AlertManagementDomainFilter!`](#alertmanagementdomainfilter) | Filter query for given domain. |
 | <a id="epicissuealertmanagementalertsiid"></a>`iid` | [`String`](#string) | IID of the alert. For example, "1". |
 | <a id="epicissuealertmanagementalertssearch"></a>`search` | [`String`](#string) | Search query for title, description, service, or monitoring_tool. |
-| <a id="epicissuealertmanagementalertssort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by this criteria. |
+| <a id="epicissuealertmanagementalertssort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by the criteria. |
 | <a id="epicissuealertmanagementalertsstatuses"></a>`statuses` | [`[AlertManagementStatus!]`](#alertmanagementstatus) | Alerts with the specified statues. For example, `[TRIGGERED]`. |
 
 ##### `EpicIssue.currentUserTodos`
@@ -21772,7 +21772,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupcontainerrepositoriesname"></a>`name` | [`String`](#string) | Filter the container repositories by their name. |
-| <a id="groupcontainerrepositoriessort"></a>`sort` | [`ContainerRepositorySort`](#containerrepositorysort) | Sort container repositories by this criteria. |
+| <a id="groupcontainerrepositoriessort"></a>`sort` | [`ContainerRepositorySort`](#containerrepositorysort) | Sort container repositories by the criteria. |
 
 ##### `Group.contributions`
 
@@ -22041,11 +22041,11 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupissuesassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="groupissuesassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="groupissuesauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="groupissuesclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after this date. |
-| <a id="groupissuesclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before this date. |
+| <a id="groupissuesclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after the date. |
+| <a id="groupissuesclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before the date. |
 | <a id="groupissuesconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues. |
-| <a id="groupissuescreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after this date. |
-| <a id="groupissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before this date. |
+| <a id="groupissuescreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after the date. |
+| <a id="groupissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="groupissuescrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="groupissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="groupissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
@@ -22062,18 +22062,18 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupissuesiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
 | <a id="groupissuesiterationtitle"></a>`iterationTitle` | [`String`](#string) | Filter by iteration title. |
 | <a id="groupissuesiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
-| <a id="groupissueslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
-| <a id="groupissuesmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to this issue. |
+| <a id="groupissueslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to the issue. |
+| <a id="groupissuesmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to the issue. |
 | <a id="groupissuesmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="groupissuesmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="groupissuesnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
 | <a id="groupissuesor"></a>`or` | [`UnionedIssueFilterInput`](#unionedissuefilterinput) | List of arguments with inclusive OR. |
 | <a id="groupissuessearch"></a>`search` | [`String`](#string) | Search query for title or description. |
-| <a id="groupissuessort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by this criteria. |
-| <a id="groupissuesstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of this issue. |
+| <a id="groupissuessort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by the criteria. |
+| <a id="groupissuesstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the issue. |
 | <a id="groupissuestypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter issues by the given issue types. |
-| <a id="groupissuesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after this date. |
-| <a id="groupissuesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before this date. |
+| <a id="groupissuesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after the date. |
+| <a id="groupissuesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before the date. |
 | <a id="groupissuesweight"></a>`weight` | [`String`](#string) | Weight applied to the issue, "none" and "any" values are supported. |
 | <a id="groupissuesweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -22212,28 +22212,28 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="groupmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="groupmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="groupmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="groupmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="groupmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="groupmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="groupmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="groupmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="groupmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="groupmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="groupmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="groupmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="groupmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="groupmergerequestsincludearchived"></a>`includeArchived` | [`Boolean`](#boolean) | Return merge requests from archived projects. |
 | <a id="groupmergerequestsincludesubgroups"></a>`includeSubgroups` | [`Boolean`](#boolean) | Include merge requests belonging to subgroups. |
 | <a id="groupmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="groupmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="groupmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="groupmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="groupmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="groupmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="groupmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="groupmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="groupmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="groupmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="groupmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="groupmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="groupmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="groupmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="groupmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="groupmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="groupmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="groupmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="groupmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `Group.milestones`
 
@@ -22254,7 +22254,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupmilestonesincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Include milestones from all parent groups. |
 | <a id="groupmilestonesincludedescendants"></a>`includeDescendants` | [`Boolean`](#boolean) | Include milestones from all subgroups and subprojects. |
 | <a id="groupmilestonessearchtitle"></a>`searchTitle` | [`String`](#string) | Search string for the title. |
-| <a id="groupmilestonessort"></a>`sort` | [`MilestoneSort`](#milestonesort) | Sort milestones by this criteria. |
+| <a id="groupmilestonessort"></a>`sort` | [`MilestoneSort`](#milestonesort) | Sort milestones by the criteria. |
 | <a id="groupmilestonesstate"></a>`state` | [`MilestoneStateEnum`](#milestonestateenum) | Filter milestones by state. |
 | <a id="groupmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="groupmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |
@@ -22309,7 +22309,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="grouppackagespackagename"></a>`packageName` | [`String`](#string) | Search a package by name. |
 | <a id="grouppackagespackagetype"></a>`packageType` | [`PackageTypeEnum`](#packagetypeenum) | Filter a package by type. |
 | <a id="grouppackagespackageversion"></a>`packageVersion` | [`String`](#string) | Filter a package by version. If used in combination with `include_versionless`, then no versionless packages are returned. |
-| <a id="grouppackagessort"></a>`sort` | [`PackageGroupSort`](#packagegroupsort) | Sort packages by this criteria. |
+| <a id="grouppackagessort"></a>`sort` | [`PackageGroupSort`](#packagegroupsort) | Sort packages by the criteria. |
 | <a id="grouppackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
 
 ##### `Group.pagesDeployments`
@@ -22385,7 +22385,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupprojectsnotaimedfordeletion"></a>`notAimedForDeletion` | [`Boolean`](#boolean) | Include projects that are not aimed for deletion. |
 | <a id="groupprojectssbomcomponentid"></a>`sbomComponentId` | [`ID`](#id) | Return only the projects related to the specified SBOM component. |
 | <a id="groupprojectssearch"></a>`search` | [`String`](#string) | Search project with most similar names or paths. |
-| <a id="groupprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by this criteria. |
+| <a id="groupprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by the criteria. |
 | <a id="groupprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="groupprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
@@ -23452,7 +23452,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="issuealertmanagementalertsdomain"></a>`domain` | [`AlertManagementDomainFilter!`](#alertmanagementdomainfilter) | Filter query for given domain. |
 | <a id="issuealertmanagementalertsiid"></a>`iid` | [`String`](#string) | IID of the alert. For example, "1". |
 | <a id="issuealertmanagementalertssearch"></a>`search` | [`String`](#string) | Search query for title, description, service, or monitoring_tool. |
-| <a id="issuealertmanagementalertssort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by this criteria. |
+| <a id="issuealertmanagementalertssort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by the criteria. |
 | <a id="issuealertmanagementalertsstatuses"></a>`statuses` | [`[AlertManagementStatus!]`](#alertmanagementstatus) | Alerts with the specified statues. For example, `[TRIGGERED]`. |
 
 ##### `Issue.currentUserTodos`
@@ -24085,8 +24085,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
 | <a id="mergerequestpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. |
 | <a id="mergerequestpipelinesstatus"></a>`status` | [`PipelineStatusEnum`](#pipelinestatusenum) | Filter pipelines by their status. |
-| <a id="mergerequestpipelinesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Pipelines updated after this date. |
-| <a id="mergerequestpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before this date. |
+| <a id="mergerequestpipelinesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Pipelines updated after the date. |
+| <a id="mergerequestpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before the date. |
 | <a id="mergerequestpipelinesusername"></a>`username` | [`String`](#string) | Filter pipelines by the user that triggered the pipeline. |
 
 ##### `MergeRequest.reference`
@@ -24178,17 +24178,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneeassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestassigneeassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestassigneeassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestassigneeassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestassigneeassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestassigneeassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestassigneeassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestassigneeassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestassigneeassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestassigneeassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestassigneeassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestassigneeassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestassigneeassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestassigneeassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestassigneeassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestassigneeassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestassigneeassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestassigneeassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -24197,12 +24197,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestassigneeassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="mergerequestassigneeassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="mergerequestassigneeassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestassigneeassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestassigneeassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestassigneeassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestassigneeassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestassigneeassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestassigneeassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestassigneeassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestassigneeassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestAssignee.authoredMergeRequests`
 
@@ -24220,17 +24220,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestassigneeauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestassigneeauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
-| <a id="mergerequestassigneeauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestassigneeauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestassigneeauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestassigneeauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestassigneeauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestassigneeauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestassigneeauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestassigneeauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestassigneeauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestassigneeauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestassigneeauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestassigneeauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestassigneeauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestassigneeauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestassigneeauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestassigneeauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -24239,12 +24239,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneeauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestassigneeauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="mergerequestassigneeauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="mergerequestassigneeauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestassigneeauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestassigneeauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestassigneeauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestassigneeauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestassigneeauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestassigneeauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestassigneeauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestassigneeauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestAssignee.contributedProjects`
 
@@ -24316,29 +24316,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestassigneereviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestassigneereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestassigneereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestassigneereviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestassigneereviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestassigneereviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestassigneereviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestassigneereviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestassigneereviewrequestedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="mergerequestassigneereviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestassigneereviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestassigneereviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestassigneereviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestassigneereviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestassigneereviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestassigneereviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestassigneereviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestAssignee.savedReply`
 
@@ -24515,17 +24515,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthorassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestauthorassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestauthorassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestauthorassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestauthorassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestauthorassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestauthorassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestauthorassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestauthorassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestauthorassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestauthorassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestauthorassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestauthorassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestauthorassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestauthorassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestauthorassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestauthorassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestauthorassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestauthorassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestauthorassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestauthorassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestauthorassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -24534,12 +24534,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestauthorassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="mergerequestauthorassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="mergerequestauthorassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestauthorassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestauthorassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestauthorassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestauthorassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestauthorassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestauthorassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestauthorassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestauthorassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestauthorassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestAuthor.authoredMergeRequests`
 
@@ -24557,17 +24557,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestauthorauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestauthorauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
-| <a id="mergerequestauthorauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestauthorauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestauthorauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestauthorauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestauthorauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestauthorauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestauthorauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestauthorauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestauthorauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestauthorauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestauthorauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestauthorauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestauthorauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestauthorauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestauthorauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestauthorauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -24576,12 +24576,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestauthorauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="mergerequestauthorauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="mergerequestauthorauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestauthorauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestauthorauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestauthorauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestauthorauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestauthorauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestauthorauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestauthorauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestauthorauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestAuthor.contributedProjects`
 
@@ -24653,29 +24653,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestauthorreviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestauthorreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestauthorreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestauthorreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestauthorreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestauthorreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestauthorreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestauthorreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestauthorreviewrequestedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="mergerequestauthorreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestauthorreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestauthorreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestauthorreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestauthorreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestauthorreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestauthorreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestauthorreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestAuthor.savedReply`
 
@@ -24899,17 +24899,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestparticipantassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestparticipantassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestparticipantassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestparticipantassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestparticipantassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestparticipantassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestparticipantassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestparticipantassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestparticipantassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestparticipantassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestparticipantassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestparticipantassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestparticipantassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestparticipantassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestparticipantassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestparticipantassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestparticipantassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -24918,12 +24918,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestparticipantassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="mergerequestparticipantassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="mergerequestparticipantassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestparticipantassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestparticipantassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestparticipantassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestparticipantassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestparticipantassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestparticipantassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestparticipantassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestparticipantassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestParticipant.authoredMergeRequests`
 
@@ -24941,17 +24941,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestparticipantauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestparticipantauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
-| <a id="mergerequestparticipantauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestparticipantauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestparticipantauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestparticipantauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestparticipantauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestparticipantauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestparticipantauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestparticipantauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestparticipantauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestparticipantauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestparticipantauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestparticipantauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestparticipantauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestparticipantauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestparticipantauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestparticipantauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -24960,12 +24960,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestparticipantauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="mergerequestparticipantauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="mergerequestparticipantauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestparticipantauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestparticipantauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestparticipantauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestparticipantauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestparticipantauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestparticipantauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestparticipantauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestparticipantauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestParticipant.contributedProjects`
 
@@ -25037,29 +25037,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestparticipantreviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestparticipantreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestparticipantreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestparticipantreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestparticipantreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestParticipant.savedReply`
 
@@ -25272,17 +25272,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestreviewerassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestreviewerassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestreviewerassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestreviewerassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestreviewerassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestreviewerassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestreviewerassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestreviewerassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestreviewerassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestreviewerassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestreviewerassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestreviewerassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestreviewerassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestreviewerassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestreviewerassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestreviewerassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestreviewerassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -25291,12 +25291,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestreviewerassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="mergerequestreviewerassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="mergerequestreviewerassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestreviewerassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestreviewerassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestreviewerassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestreviewerassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestreviewerassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestreviewerassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestreviewerassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestreviewerassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestReviewer.authoredMergeRequests`
 
@@ -25314,17 +25314,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="mergerequestreviewerauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestreviewerauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
-| <a id="mergerequestreviewerauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestreviewerauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestreviewerauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestreviewerauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestreviewerauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestreviewerauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestreviewerauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestreviewerauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestreviewerauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestreviewerauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestreviewerauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestreviewerauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestreviewerauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestreviewerauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestreviewerauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestreviewerauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -25333,12 +25333,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="mergerequestreviewerauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="mergerequestreviewerauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="mergerequestreviewerauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestreviewerauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestreviewerauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestreviewerauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestreviewerauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestreviewerauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestreviewerauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestreviewerauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestreviewerauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestReviewer.contributedProjects`
 
@@ -25410,29 +25410,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerreviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="mergerequestreviewerreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="mergerequestreviewerreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="mergerequestreviewerreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="mergerequestreviewerreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `MergeRequestReviewer.savedReply`
 
@@ -25949,7 +25949,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceprojectsnotaimedfordeletion"></a>`notAimedForDeletion` | [`Boolean`](#boolean) | Include projects that are not aimed for deletion. |
 | <a id="namespaceprojectssbomcomponentid"></a>`sbomComponentId` | [`ID`](#id) | Return only the projects related to the specified SBOM component. |
 | <a id="namespaceprojectssearch"></a>`search` | [`String`](#string) | Search project with most similar names or paths. |
-| <a id="namespaceprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by this criteria. |
+| <a id="namespaceprojectssort"></a>`sort` | [`NamespaceProjectSort`](#namespaceprojectsort) | Sort projects by the criteria. |
 | <a id="namespaceprojectswithissuesenabled"></a>`withIssuesEnabled` | [`Boolean`](#boolean) | Return only projects with issues enabled. |
 | <a id="namespaceprojectswithmergerequestsenabled"></a>`withMergeRequestsEnabled` | [`Boolean`](#boolean) | Return only projects with merge requests enabled. |
 
@@ -27373,7 +27373,7 @@ Returns [`AlertManagementAlert`](#alertmanagementalert).
 | <a id="projectalertmanagementalertdomain"></a>`domain` | [`AlertManagementDomainFilter!`](#alertmanagementdomainfilter) | Filter query for given domain. |
 | <a id="projectalertmanagementalertiid"></a>`iid` | [`String`](#string) | IID of the alert. For example, "1". |
 | <a id="projectalertmanagementalertsearch"></a>`search` | [`String`](#string) | Search query for title, description, service, or monitoring_tool. |
-| <a id="projectalertmanagementalertsort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by this criteria. |
+| <a id="projectalertmanagementalertsort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by the criteria. |
 | <a id="projectalertmanagementalertstatuses"></a>`statuses` | [`[AlertManagementStatus!]`](#alertmanagementstatus) | Alerts with the specified statues. For example, `[TRIGGERED]`. |
 
 ##### `Project.alertManagementAlertStatusCounts`
@@ -27407,7 +27407,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectalertmanagementalertsdomain"></a>`domain` | [`AlertManagementDomainFilter!`](#alertmanagementdomainfilter) | Filter query for given domain. |
 | <a id="projectalertmanagementalertsiid"></a>`iid` | [`String`](#string) | IID of the alert. For example, "1". |
 | <a id="projectalertmanagementalertssearch"></a>`search` | [`String`](#string) | Search query for title, description, service, or monitoring_tool. |
-| <a id="projectalertmanagementalertssort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by this criteria. |
+| <a id="projectalertmanagementalertssort"></a>`sort` | [`AlertManagementAlertSort`](#alertmanagementalertsort) | Sort alerts by the criteria. |
 | <a id="projectalertmanagementalertsstatuses"></a>`statuses` | [`[AlertManagementStatus!]`](#alertmanagementstatus) | Alerts with the specified statues. For example, `[TRIGGERED]`. |
 
 ##### `Project.alertManagementHttpIntegrations`
@@ -27650,7 +27650,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectcontainerrepositoriesname"></a>`name` | [`String`](#string) | Filter the container repositories by their name. |
-| <a id="projectcontainerrepositoriessort"></a>`sort` | [`ContainerRepositorySort`](#containerrepositorysort) | Sort container repositories by this criteria. |
+| <a id="projectcontainerrepositoriessort"></a>`sort` | [`ContainerRepositorySort`](#containerrepositorysort) | Sort container repositories by the criteria. |
 
 ##### `Project.customizableDashboardVisualizations`
 
@@ -27986,11 +27986,11 @@ Returns [`Issue`](#issue).
 | <a id="projectissueassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectissueassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="projectissueauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="projectissueclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after this date. |
-| <a id="projectissueclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before this date. |
+| <a id="projectissueclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after the date. |
+| <a id="projectissueclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before the date. |
 | <a id="projectissueconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues. |
-| <a id="projectissuecreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after this date. |
-| <a id="projectissuecreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before this date. |
+| <a id="projectissuecreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after the date. |
+| <a id="projectissuecreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="projectissuecrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="projectissuecrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="projectissueepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
@@ -28005,8 +28005,8 @@ Returns [`Issue`](#issue).
 | <a id="projectissueiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
 | <a id="projectissueiterationtitle"></a>`iterationTitle` | [`String`](#string) | Filter by iteration title. |
 | <a id="projectissueiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
-| <a id="projectissuelabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
-| <a id="projectissuemilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to this issue. |
+| <a id="projectissuelabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to the issue. |
+| <a id="projectissuemilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to the issue. |
 | <a id="projectissuemilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="projectissuemyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="projectissuenot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
@@ -28014,11 +28014,11 @@ Returns [`Issue`](#issue).
 | <a id="projectissuereleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the issue's milestone. |
 | <a id="projectissuereleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter issues by release tag ID wildcard. |
 | <a id="projectissuesearch"></a>`search` | [`String`](#string) | Search query for title or description. |
-| <a id="projectissuesort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by this criteria. |
-| <a id="projectissuestate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of this issue. |
+| <a id="projectissuesort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by the criteria. |
+| <a id="projectissuestate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the issue. |
 | <a id="projectissuetypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter issues by the given issue types. |
-| <a id="projectissueupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after this date. |
-| <a id="projectissueupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before this date. |
+| <a id="projectissueupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after the date. |
+| <a id="projectissueupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before the date. |
 | <a id="projectissueweight"></a>`weight` | [`String`](#string) | Weight applied to the issue, "none" and "any" values are supported. |
 | <a id="projectissueweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -28037,11 +28037,11 @@ Returns [`IssueStatusCountsType`](#issuestatuscountstype).
 | <a id="projectissuestatuscountsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectissuestatuscountsassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="projectissuestatuscountsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="projectissuestatuscountsclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after this date. |
-| <a id="projectissuestatuscountsclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before this date. |
+| <a id="projectissuestatuscountsclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after the date. |
+| <a id="projectissuestatuscountsclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before the date. |
 | <a id="projectissuestatuscountsconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues. |
-| <a id="projectissuestatuscountscreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after this date. |
-| <a id="projectissuestatuscountscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before this date. |
+| <a id="projectissuestatuscountscreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after the date. |
+| <a id="projectissuestatuscountscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="projectissuestatuscountscrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="projectissuestatuscountscrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="projectissuestatuscountsepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
@@ -28055,8 +28055,8 @@ Returns [`IssueStatusCountsType`](#issuestatuscountstype).
 | <a id="projectissuestatuscountsiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
 | <a id="projectissuestatuscountsiterationtitle"></a>`iterationTitle` | [`String`](#string) | Filter by iteration title. |
 | <a id="projectissuestatuscountsiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
-| <a id="projectissuestatuscountslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
-| <a id="projectissuestatuscountsmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to this issue. |
+| <a id="projectissuestatuscountslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to the issue. |
+| <a id="projectissuestatuscountsmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to the issue. |
 | <a id="projectissuestatuscountsmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="projectissuestatuscountsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="projectissuestatuscountsnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
@@ -28065,8 +28065,8 @@ Returns [`IssueStatusCountsType`](#issuestatuscountstype).
 | <a id="projectissuestatuscountsreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter issues by release tag ID wildcard. |
 | <a id="projectissuestatuscountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="projectissuestatuscountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter issues by the given issue types. |
-| <a id="projectissuestatuscountsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after this date. |
-| <a id="projectissuestatuscountsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before this date. |
+| <a id="projectissuestatuscountsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after the date. |
+| <a id="projectissuestatuscountsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before the date. |
 | <a id="projectissuestatuscountsweight"></a>`weight` | [`String`](#string) | Weight applied to the issue, "none" and "any" values are supported. |
 | <a id="projectissuestatuscountsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -28089,11 +28089,11 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectissuesassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users assigned to the issue. |
 | <a id="projectissuesassigneewildcardid"></a>`assigneeWildcardId` | [`AssigneeWildcardId`](#assigneewildcardid) | Filter by assignee wildcard. Incompatible with assigneeUsername and assigneeUsernames. |
 | <a id="projectissuesauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author of the issue. |
-| <a id="projectissuesclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after this date. |
-| <a id="projectissuesclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before this date. |
+| <a id="projectissuesclosedafter"></a>`closedAfter` | [`Time`](#time) | Issues closed after the date. |
+| <a id="projectissuesclosedbefore"></a>`closedBefore` | [`Time`](#time) | Issues closed before the date. |
 | <a id="projectissuesconfidential"></a>`confidential` | [`Boolean`](#boolean) | Filter for confidential issues. If "false", excludes confidential issues. If "true", returns only confidential issues. |
-| <a id="projectissuescreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after this date. |
-| <a id="projectissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before this date. |
+| <a id="projectissuescreatedafter"></a>`createdAfter` | [`Time`](#time) | Issues created after the date. |
+| <a id="projectissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="projectissuescrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="projectissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
 | <a id="projectissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
@@ -28108,8 +28108,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectissuesiterationid"></a>`iterationId` | [`[ID]`](#id) | List of iteration Global IDs applied to the issue. |
 | <a id="projectissuesiterationtitle"></a>`iterationTitle` | [`String`](#string) | Filter by iteration title. |
 | <a id="projectissuesiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by iteration ID wildcard. |
-| <a id="projectissueslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to this issue. |
-| <a id="projectissuesmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to this issue. |
+| <a id="projectissueslabelname"></a>`labelName` | [`[String]`](#string) | Labels applied to the issue. |
+| <a id="projectissuesmilestonetitle"></a>`milestoneTitle` | [`[String]`](#string) | Milestone applied to the issue. |
 | <a id="projectissuesmilestonewildcardid"></a>`milestoneWildcardId` | [`MilestoneWildcardId`](#milestonewildcardid) | Filter issues by milestone ID wildcard. |
 | <a id="projectissuesmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. Wildcard values "NONE" and "ANY" are supported. |
 | <a id="projectissuesnot"></a>`not` | [`NegatedIssueFilterInput`](#negatedissuefilterinput) | Negated arguments. |
@@ -28117,11 +28117,11 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectissuesreleasetag"></a>`releaseTag` | [`[String!]`](#string) | Release tag associated with the issue's milestone. |
 | <a id="projectissuesreleasetagwildcardid"></a>`releaseTagWildcardId` | [`ReleaseTagWildcardId`](#releasetagwildcardid) | Filter issues by release tag ID wildcard. |
 | <a id="projectissuessearch"></a>`search` | [`String`](#string) | Search query for title or description. |
-| <a id="projectissuessort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by this criteria. |
-| <a id="projectissuesstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of this issue. |
+| <a id="projectissuessort"></a>`sort` | [`IssueSort`](#issuesort) | Sort issues by the criteria. |
+| <a id="projectissuesstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the issue. |
 | <a id="projectissuestypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter issues by the given issue types. |
-| <a id="projectissuesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after this date. |
-| <a id="projectissuesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before this date. |
+| <a id="projectissuesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Issues updated after the date. |
+| <a id="projectissuesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Issues updated before the date. |
 | <a id="projectissuesweight"></a>`weight` | [`String`](#string) | Weight applied to the issue, "none" and "any" values are supported. |
 | <a id="projectissuesweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
@@ -28283,28 +28283,28 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="projectmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="projectmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="projectmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="projectmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="projectmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="projectmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="projectmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="projectmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="projectmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="projectmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="projectmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="projectmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="projectmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="projectmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="projectmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="projectmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="projectmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="projectmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="projectmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="projectmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="projectmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="projectmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="projectmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="projectmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="projectmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="projectmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="projectmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="projectmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="projectmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="projectmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="projectmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="projectmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="projectmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="projectmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `Project.milestones`
 
@@ -28324,7 +28324,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectmilestonesids"></a>`ids` | [`[ID!]`](#id) | Array of global milestone IDs, e.g., `"gid://gitlab/Milestone/1"`. |
 | <a id="projectmilestonesincludeancestors"></a>`includeAncestors` | [`Boolean`](#boolean) | Also return milestones in the project's parent group and its ancestors. |
 | <a id="projectmilestonessearchtitle"></a>`searchTitle` | [`String`](#string) | Search string for the title. |
-| <a id="projectmilestonessort"></a>`sort` | [`MilestoneSort`](#milestonesort) | Sort milestones by this criteria. |
+| <a id="projectmilestonessort"></a>`sort` | [`MilestoneSort`](#milestonesort) | Sort milestones by the criteria. |
 | <a id="projectmilestonesstate"></a>`state` | [`MilestoneStateEnum`](#milestonestateenum) | Filter milestones by state. |
 | <a id="projectmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="projectmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |
@@ -28388,7 +28388,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectpackagespackagename"></a>`packageName` | [`String`](#string) | Search a package by name. |
 | <a id="projectpackagespackagetype"></a>`packageType` | [`PackageTypeEnum`](#packagetypeenum) | Filter a package by type. |
 | <a id="projectpackagespackageversion"></a>`packageVersion` | [`String`](#string) | Filter a package by version. If used in combination with `include_versionless`, then no versionless packages are returned. |
-| <a id="projectpackagessort"></a>`sort` | [`PackageSort`](#packagesort) | Sort packages by this criteria. |
+| <a id="projectpackagessort"></a>`sort` | [`PackageSort`](#packagesort) | Sort packages by the criteria. |
 | <a id="projectpackagesstatus"></a>`status` | [`PackageStatus`](#packagestatus) | Filter a package by status. |
 
 ##### `Project.pagesDeployments`
@@ -28488,8 +28488,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectpipelinessha"></a>`sha` | [`String`](#string) | Filter pipelines by the sha of the commit they are run for. |
 | <a id="projectpipelinessource"></a>`source` | [`String`](#string) | Filter pipelines by their source. |
 | <a id="projectpipelinesstatus"></a>`status` | [`PipelineStatusEnum`](#pipelinestatusenum) | Filter pipelines by their status. |
-| <a id="projectpipelinesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Pipelines updated after this date. |
-| <a id="projectpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before this date. |
+| <a id="projectpipelinesupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Pipelines updated after the date. |
+| <a id="projectpipelinesupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Pipelines updated before the date. |
 | <a id="projectpipelinesusername"></a>`username` | [`String`](#string) | Filter pipelines by the user that triggered the pipeline. |
 
 ##### `Project.productAnalyticsEventsStored`
@@ -31043,17 +31043,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usercoreassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="usercoreassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="usercoreassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="usercoreassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="usercoreassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="usercoreassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="usercoreassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="usercoreassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="usercoreassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="usercoreassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="usercoreassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="usercoreassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="usercoreassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="usercoreassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="usercoreassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="usercoreassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="usercoreassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="usercoreassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="usercoreassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="usercoreassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="usercoreassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="usercoreassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -31062,12 +31062,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="usercoreassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="usercoreassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="usercoreassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="usercoreassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="usercoreassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="usercoreassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="usercoreassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="usercoreassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="usercoreassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="usercoreassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="usercoreassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="usercoreassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `UserCore.authoredMergeRequests`
 
@@ -31085,17 +31085,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="usercoreauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="usercoreauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
-| <a id="usercoreauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="usercoreauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="usercoreauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="usercoreauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="usercoreauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="usercoreauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="usercoreauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="usercoreauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="usercoreauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="usercoreauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="usercoreauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="usercoreauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="usercoreauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="usercoreauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="usercoreauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="usercoreauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="usercoreauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="usercoreauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="usercoreauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="usercoreauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -31104,12 +31104,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercoreauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="usercoreauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="usercoreauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="usercoreauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="usercoreauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="usercoreauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="usercoreauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="usercoreauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="usercoreauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="usercoreauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="usercoreauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="usercoreauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="usercoreauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `UserCore.contributedProjects`
 
@@ -31181,29 +31181,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="usercorereviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="usercorereviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="usercorereviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="usercorereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="usercorereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="usercorereviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="usercorereviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="usercorereviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="usercorereviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="usercorereviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="usercorereviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="usercorereviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="usercorereviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="usercorereviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="usercorereviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="usercorereviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="usercorereviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="usercorereviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="usercorereviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="usercorereviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="usercorereviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="usercorereviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="usercorereviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
 | <a id="usercorereviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
 | <a id="usercorereviewrequestedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="usercorereviewrequestedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="usercorereviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="usercorereviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="usercorereviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="usercorereviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="usercorereviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="usercorereviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="usercorereviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="usercorereviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="usercorereviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="usercorereviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ##### `UserCore.savedReply`
 
@@ -37397,17 +37397,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="userassignedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="userassignedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="userassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="userassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="userassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="userassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="userassignedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="userassignedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="userassignedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="userassignedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="userassignedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="userassignedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="userassignedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="userassignedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="userassignedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="userassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="userassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="userassignedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="userassignedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="userassignedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="userassignedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="userassignedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -37416,12 +37416,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userassignedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="userassignedmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="userassignedmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="userassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="userassignedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="userassignedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="userassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="userassignedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="userassignedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="userassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="userassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="userassignedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="userassignedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ###### `User.authoredMergeRequests`
 
@@ -37439,17 +37439,17 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="userauthoredmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="userauthoredmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
-| <a id="userauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="userauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="userauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="userauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="userauthoredmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="userauthoredmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="userauthoredmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="userauthoredmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="userauthoredmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="userauthoredmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="userauthoredmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="userauthoredmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="userauthoredmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="userauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="userauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="userauthoredmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="userauthoredmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="userauthoredmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="userauthoredmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="userauthoredmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
@@ -37458,12 +37458,12 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userauthoredmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
 | <a id="userauthoredmergerequestsreviewerusername"></a>`reviewerUsername` | [`String`](#string) | Username of the reviewer. |
 | <a id="userauthoredmergerequestsreviewerwildcardid"></a>`reviewerWildcardId` | [`ReviewerWildcardId`](#reviewerwildcardid) | Filter by reviewer presence. Incompatible with reviewerUsername. |
-| <a id="userauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="userauthoredmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="userauthoredmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="userauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="userauthoredmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="userauthoredmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="userauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="userauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="userauthoredmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="userauthoredmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ###### `User.contributedProjects`
 
@@ -37535,29 +37535,29 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="userreviewrequestedmergerequestsapproved"></a>`approved` | [`Boolean`](#boolean) | Limit results to approved merge requests. Available only when the feature flag `mr_approved_filter` is enabled. |
 | <a id="userreviewrequestedmergerequestsassigneeusername"></a>`assigneeUsername` | [`String`](#string) | Username of the assignee. |
 | <a id="userreviewrequestedmergerequestsauthorusername"></a>`authorUsername` | [`String`](#string) | Username of the author. |
-| <a id="userreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after this timestamp. |
-| <a id="userreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before this timestamp. |
-| <a id="userreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after this timestamp. |
-| <a id="userreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before this timestamp. |
+| <a id="userreviewrequestedmergerequestscreatedafter"></a>`createdAfter` | [`Time`](#time) | Merge requests created after the timestamp. |
+| <a id="userreviewrequestedmergerequestscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Merge requests created before the timestamp. |
+| <a id="userreviewrequestedmergerequestsdeployedafter"></a>`deployedAfter` | [`Time`](#time) | Merge requests deployed after the timestamp. |
+| <a id="userreviewrequestedmergerequestsdeployedbefore"></a>`deployedBefore` | [`Time`](#time) | Merge requests deployed before the timestamp. |
 | <a id="userreviewrequestedmergerequestsdeploymentid"></a>`deploymentId` | [`String`](#string) | ID of the deployment. |
 | <a id="userreviewrequestedmergerequestsdraft"></a>`draft` | [`Boolean`](#boolean) | Limit result to draft merge requests. |
 | <a id="userreviewrequestedmergerequestsgroupid"></a>`groupId` | [`GroupID`](#groupid) | The global ID of the group the authored merge requests should be in. Merge requests in subgroups are included. |
 | <a id="userreviewrequestedmergerequestsiids"></a>`iids` | [`[String!]`](#string) | Array of IIDs of merge requests, for example `[1, 2]`. |
 | <a id="userreviewrequestedmergerequestslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will have all of these labels. |
-| <a id="userreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after this date. |
-| <a id="userreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before this date. |
+| <a id="userreviewrequestedmergerequestsmergedafter"></a>`mergedAfter` | [`Time`](#time) | Merge requests merged after the date. |
+| <a id="userreviewrequestedmergerequestsmergedbefore"></a>`mergedBefore` | [`Time`](#time) | Merge requests merged before the date. |
 | <a id="userreviewrequestedmergerequestsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 | <a id="userreviewrequestedmergerequestsnot"></a>`not` | [`MergeRequestsResolverNegatedParams`](#mergerequestsresolvernegatedparams) | List of negated arguments. Warning: this argument is experimental and a subject to change in future. |
 | <a id="userreviewrequestedmergerequestsprojectid"></a>`projectId` | [`ProjectID`](#projectid) | The global ID of the project the authored merge requests should be in. Incompatible with projectPath. |
 | <a id="userreviewrequestedmergerequestsprojectpath"></a>`projectPath` | [`String`](#string) | The full-path of the project the authored merge requests should be in. Incompatible with projectId. |
 | <a id="userreviewrequestedmergerequestsreviewstate"></a>`reviewState` **{warning-solid}** | [`MergeRequestReviewState`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer state of the merge request. |
 | <a id="userreviewrequestedmergerequestsreviewstates"></a>`reviewStates` **{warning-solid}** | [`[MergeRequestReviewState!]`](#mergerequestreviewstate) | **Introduced** in GitLab 17.0. **Status**: Experiment. Reviewer states of the merge request. |
-| <a id="userreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by this criteria. |
+| <a id="userreviewrequestedmergerequestssort"></a>`sort` | [`MergeRequestSort`](#mergerequestsort) | Sort merge requests by the criteria. |
 | <a id="userreviewrequestedmergerequestssourcebranches"></a>`sourceBranches` | [`[String!]`](#string) | Array of source branch names. All resolved merge requests will have one of these branches as their source. |
-| <a id="userreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have this state. |
+| <a id="userreviewrequestedmergerequestsstate"></a>`state` | [`MergeRequestState`](#mergerequeststate) | Merge request state. If provided, all resolved merge requests will have the state. |
 | <a id="userreviewrequestedmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
-| <a id="userreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after this timestamp. |
-| <a id="userreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before this timestamp. |
+| <a id="userreviewrequestedmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
+| <a id="userreviewrequestedmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
 
 ###### `User.savedReply`
 

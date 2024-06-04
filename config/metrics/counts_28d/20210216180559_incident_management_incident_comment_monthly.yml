@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.incident_management.incident_management_incident_comment_monthly
 description: Count of unique users adding comments per month on incidents
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

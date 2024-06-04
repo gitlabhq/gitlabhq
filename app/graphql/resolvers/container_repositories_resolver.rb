@@ -11,7 +11,7 @@ module Resolvers
       description: 'Filter the container repositories by their name.'
 
     argument :sort, Types::ContainerRepositorySortEnum,
-      description: 'Sort container repositories by this criteria.',
+      description: 'Sort container repositories by the criteria.',
       required: false,
       default_value: :created_desc
 

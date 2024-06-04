@@ -58,16 +58,34 @@ describe('broadcast message on dismiss', () => {
     });
   });
 
-  it('calls broadcast_message_dismissal endpoint with message id', async () => {
-    jest.spyOn(axios, 'post');
+  describe('when data-dismissal-path is set', () => {
+    it('calls broadcast_message_dismissal endpoint with message id', async () => {
+      jest.spyOn(axios, 'post');
 
-    dismiss();
-    await waitForPromises();
+      dismiss();
+      await waitForPromises();
 
-    expect(axios.post).toHaveBeenCalledTimes(1);
-    expect(axios.post).toHaveBeenCalledWith(dismissalPath, {
-      broadcast_message_id: messageId,
-      expires_at: endsAt,
+      expect(axios.post).toHaveBeenCalledTimes(1);
+      expect(axios.post).toHaveBeenCalledWith(dismissalPath, {
+        broadcast_message_id: messageId,
+        expires_at: endsAt,
+      });
+    });
+  });
+
+  describe('when data-dismissal-path is not set', () => {
+    beforeEach(() => {
+      const button = document.querySelector('button');
+      delete button.dataset.dismissalPath;
+    });
+
+    it('does not call broadcast_message_dismissal endpoint', async () => {
+      jest.spyOn(axios, 'post');
+
+      dismiss();
+      await waitForPromises();
+
+      expect(axios.post).toHaveBeenCalledTimes(0);
     });
   });
 

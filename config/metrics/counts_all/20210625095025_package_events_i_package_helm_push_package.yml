@@ -1,8 +1,6 @@
 ---
 key_path: counts.package_events_i_package_helm_push_package
 description: The total count of Helm packages that have been published.
-product_section: ops
-product_stage: package
 product_group: package_registry
 value_type: number
 status: active

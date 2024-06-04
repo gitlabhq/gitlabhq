@@ -2,8 +2,6 @@
 data_category: optional
 key_path: grafana_link_enabled
 description: Whether Grafana is enabled
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: boolean
 status: active

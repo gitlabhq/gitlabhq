@@ -8,7 +8,7 @@ module Resolvers
     extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
 
     argument :sort, Types::Packages::PackageGroupSortEnum,
-      description: 'Sort packages by this criteria.',
+      description: 'Sort packages by the criteria.',
       required: false,
       default_value: :created_desc
 

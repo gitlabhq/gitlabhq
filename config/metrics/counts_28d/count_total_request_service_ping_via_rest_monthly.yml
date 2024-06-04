@@ -1,8 +1,6 @@
 ---
 key_path: counts.count_total_request_service_ping_via_rest_monthly
 description: Monthly count of requests for Service Ping payload via REST API
-product_section: analytics
-product_stage: monitor
 product_group: analytics_instrumentation
 performance_indicator_type: []
 value_type: number

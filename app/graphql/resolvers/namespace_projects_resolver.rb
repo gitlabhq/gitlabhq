@@ -25,7 +25,7 @@ module Resolvers
     argument :sort, Types::Projects::NamespaceProjectSortEnum,
       required: false,
       default_value: nil,
-      description: 'Sort projects by this criteria.'
+      description: 'Sort projects by the criteria.'
 
     argument :ids, [GraphQL::Types::ID],
       required: false,

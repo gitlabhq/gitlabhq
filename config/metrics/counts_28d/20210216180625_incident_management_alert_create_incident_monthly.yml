@@ -3,8 +3,6 @@ data_category: optional
 key_path: redis_hll_counters.incident_management_alerts.incident_management_alert_create_incident_monthly
 description: Count of unique users per month to create an incident corresponding to
   an alert
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

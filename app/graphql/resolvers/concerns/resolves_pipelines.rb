@@ -27,10 +27,10 @@ module ResolvesPipelines
 
     argument :updated_after, Types::TimeType,
       required: false,
-      description: 'Pipelines updated after this date.'
+      description: 'Pipelines updated after the date.'
     argument :updated_before, Types::TimeType,
       required: false,
-      description: 'Pipelines updated before this date.'
+      description: 'Pipelines updated before the date.'
 
     argument :username,
       GraphQL::Types::String,

@@ -2,21 +2,6 @@
 # Cop supports --autocorrect.
 Graphql/Descriptions:
   Exclude:
-    - 'app/graphql/resolvers/admin/analytics/usage_trends/measurements_resolver.rb'
-    - 'app/graphql/resolvers/alert_management/alert_resolver.rb'
-    - 'app/graphql/resolvers/concerns/issues/sort_arguments.rb'
-    - 'app/graphql/resolvers/concerns/resolves_pipelines.rb'
-    - 'app/graphql/resolvers/container_repositories_resolver.rb'
-    - 'app/graphql/resolvers/design_management/design_at_version_resolver.rb'
-    - 'app/graphql/resolvers/group_packages_resolver.rb'
-    - 'app/graphql/resolvers/issues/base_parent_resolver.rb'
-    - 'app/graphql/resolvers/issues/base_resolver.rb'
-    - 'app/graphql/resolvers/issues_resolver.rb'
-    - 'app/graphql/resolvers/merge_requests_resolver.rb'
-    - 'app/graphql/resolvers/milestones_resolver.rb'
-    - 'app/graphql/resolvers/namespace_projects_resolver.rb'
-    - 'app/graphql/resolvers/packages_base_resolver.rb'
-    - 'app/graphql/resolvers/users_resolver.rb'
     - 'app/graphql/resolvers/work_items_resolver.rb'
     - 'app/graphql/types/alert_management/alert_type.rb'
     - 'app/graphql/types/award_emojis/award_emoji_type.rb'

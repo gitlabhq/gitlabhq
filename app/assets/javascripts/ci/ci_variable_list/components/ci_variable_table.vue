@@ -53,10 +53,6 @@ export default {
       tdClass: 'text-plain',
     },
     {
-      key: 'Attributes',
-      label: s__('CiVariables|Attributes'),
-    },
-    {
       key: 'environmentScope',
       label: s__('CiVariables|Environments'),
     },

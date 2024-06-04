@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.user_container_registry.i_container_registry_push_tag_deploy_token_monthly
 description: A monthly count of deploy tokens that have pushed a tag to the registry
-product_section: ops
-product_stage: package
 product_group: container_registry
 value_type: number
 status: active

@@ -1,0 +1,37 @@
+- if Rails.env.development?
+  = vite_client_tag
+
+- entrypoints = ['main.js', *vite_page_entrypoint_paths]
+-# Vite can oversaturate browser networking during development due to the sheer amount of network requests
+-# To resolve this we'll try to reload the page when this happens for the first time
+-# If you encounter this bug again you will see 'net:ERR_FAILED' in the console
+-# Refreshing the page again should help with this
+- if Rails.env.development? || Rails.env.test? || ViteRuby.instance.dev_server_running?
+  - assets = entrypoints.map { |entrypoint| vite_asset_url(entrypoint) }
+  = javascript_tag nonce: content_security_policy_nonce do
+    :plain
+      const pageAccessedByReload = () => (
+        (window.performance.navigation && window.performance.navigation.type === 1) ||
+          window.performance
+          .getEntriesByType('navigation')
+          .map((nav) => nav.type)
+          .includes('reload')
+      );
+      #{assets}.forEach(entry => {
+        const script = document.createElement('script');
+        script.nonce = "#{content_security_policy_nonce}"
+        script.type = "module"
+        script.src = entry;
+        const handler = (error) => {
+          console.log('Failed to load JavaScript module', error);
+          if (pageAccessedByReload()) {
+            console.log('Skipping page reload, already reloaded');
+            return;
+          }
+          window.location.reload();
+        }
+        script.addEventListener('error', handler);
+        document.head.appendChild(script)
+      })
+- else
+  = vite_javascript_tag(*entrypoints)

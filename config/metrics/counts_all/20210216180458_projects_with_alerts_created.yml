@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.projects_with_alerts_created
 description: Count of projects with alerts created in given time period
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active
