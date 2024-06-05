@@ -21,7 +21,6 @@ RSpec.describe Integrations::BeyondIdentity, feature_category: :integrations do
 
   describe 'attributes' do
     it 'configures attributes' do
-      is_expected.not_to be_inheritable
       expect(integration.supported_events).to be_blank
       expect(integration.to_param).to eq('beyond_identity')
       expect(integration.title).to eq('Beyond Identity')

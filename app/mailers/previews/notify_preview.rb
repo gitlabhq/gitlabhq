@@ -470,10 +470,9 @@ class NotifyPreview < ActionMailer::Preview
 
   def note_email(method)
     ensure_visual_review_bot_exists
-    # TODO: Investigate enqueue_diff_file_creation_job in app/models/diff_note.rb
-    # for preview note_merge_request_email_for_diff_discussion because
-    # it obtains an exclusive lease.
-    # See issue: https://gitlab.com/gitlab-org/gitlab/-/issues/441523
+    # NOTE: This code path is only accessible in development mode so
+    # using Gitlab::ExclusiveLease.skipping_transaction_check doesn't cause
+    # production issues.
     Gitlab::ExclusiveLease.skipping_transaction_check do
       cleanup do
         note = yield

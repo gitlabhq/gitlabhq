@@ -77,7 +77,8 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
       verify_linked_item_added(task.iid)
     end
 
-    it 'links a new item with work item wildcard iid', :aggregate_failures do
+    it 'links a new item with work item wildcard iid', :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444914' do
       verify_linked_item_added("##{task.iid}")
     end
 

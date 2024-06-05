@@ -9362,6 +9362,7 @@ CREATE TABLE epics (
     issue_id integer,
     imported smallint DEFAULT 0 NOT NULL,
     imported_from smallint DEFAULT 0 NOT NULL,
+    CONSTRAINT check_450724d1bb CHECK ((issue_id IS NOT NULL)),
     CONSTRAINT check_ca608c40b3 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_fcfb4a93ff CHECK ((lock_version IS NOT NULL))
 );
@@ -21461,9 +21462,6 @@ ALTER TABLE workspaces
 
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
-
-ALTER TABLE epics
-    ADD CONSTRAINT check_450724d1bb CHECK ((issue_id IS NOT NULL)) NOT VALID;
 
 ALTER TABLE ci_runners
     ADD CONSTRAINT check_46c685e76f CHECK ((char_length((description)::text) <= 1024)) NOT VALID;

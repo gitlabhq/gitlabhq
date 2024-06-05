@@ -731,6 +731,25 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
+  describe '.descendants_from_self_or_ancestors_from' do
+    let_it_be(:project) { create(:project, :in_subgroup) }
+    let(:group) { project.root_namespace }
+    let(:subgroup) { project.group }
+    let!(:group_integration) { create(:prometheus_integration, :group, group: group) }
+    let!(:subgroup_integration) do
+      create(:prometheus_integration, :group, group: subgroup, inherit_from_id: group_integration.id)
+    end
+
+    let!(:project_custom_settings_integration) do
+      create(:prometheus_integration, project: project, inherit_from_id: nil)
+    end
+
+    it 'returns integrations for descendants of the group of the integration' do
+      expect(described_class.descendants_from_self_or_ancestors_from(group_integration))
+        .to contain_exactly(subgroup_integration, project_custom_settings_integration)
+    end
+  end
+
   describe '.integration_name_to_type' do
     it 'handles a simple case' do
       expect(described_class.integration_name_to_type(:asana)).to eq 'Integrations::Asana'

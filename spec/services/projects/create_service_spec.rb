@@ -717,7 +717,15 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
         before do
           allow(Digest::SHA2).to receive(:hexdigest) { hash }
-          raw_fake_repo.create_repository
+
+          begin
+            raw_fake_repo.create_repository
+          rescue Gitlab::Git::Repository::RepositoryExists
+            # Likely, a previous project record with id=1 had its repository created,
+            # but the repository was not cleaned up properly.
+            #
+            # So we can do nothing for now.
+          end
         end
 
         after do

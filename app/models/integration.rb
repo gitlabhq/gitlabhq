@@ -466,6 +466,14 @@ class Integration < ApplicationRecord
       .count { |_type, parents| build_from_integration(parents.first, association => owner.id).save }
   end
 
+  def self.descendants_from_self_or_ancestors_from(integration)
+    scope = where(type: integration.type)
+    from_union([
+      scope.where(group: integration.group.descendants),
+      scope.where(project: Project.in_namespace(integration.group.self_and_descendants))
+    ])
+  end
+
   def self.inherited_descendants_from_self_or_ancestors_from(integration)
     inherit_from_ids =
       where(type: integration.type, group: integration.group.self_and_ancestors)
@@ -589,6 +597,10 @@ class Integration < ApplicationRecord
         desc: field.description
       }
     end
+  end
+
+  def self.instance_specific?
+    false
   end
 
   def form_fields

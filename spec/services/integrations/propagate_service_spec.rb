@@ -79,6 +79,27 @@ RSpec.describe Integrations::PropagateService, feature_category: :integrations d
         end
       end
 
+      context 'and the integration is instance specific' do
+        let(:group_integration) { create(:beyond_identity_integration, :group, group: group, instance: false) }
+
+        context 'with a subgroup with integration' do
+          let(:subgroup) { create(:group, parent: group) }
+          let(:subgroup_integration) do
+            create(:beyond_identity_integration, :group,
+              group: subgroup,
+              inherit_from_id: group_integration.id,
+              instance: false)
+          end
+
+          it 'calls to PropagateIntegrationInheritDescendantWorker' do
+            expect(Integrations::PropagateIntegrationDescendantWorker).to receive(:perform_async)
+              .with(group_integration.id, subgroup_integration.id, subgroup_integration.id)
+
+            described_class.new(group_integration).execute
+          end
+        end
+      end
+
       context 'with a subgroup with integration' do
         let(:subgroup) { create(:group, parent: group) }
         let(:subgroup_integration) { create(:jira_integration, :group, group: subgroup, inherit_from_id: group_integration.id) }

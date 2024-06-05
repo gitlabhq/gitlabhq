@@ -419,6 +419,8 @@
   - 1
 - - integrations_irker
   - 1
+- - integrations_propagate_integration_descendant
+  - 1
 - - integrations_slack_event
   - 1
 - - invalid_gpg_signature_update

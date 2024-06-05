@@ -64,8 +64,8 @@ module Integrations
       !!::Integrations::BeyondIdentity.for_instance.first&.activated?
     end
 
-    def inheritable?
-      false
+    def self.instance_specific?
+      true
     end
 
     def execute(params)
