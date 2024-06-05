@@ -58,7 +58,7 @@ module Organizations
 
     def organization_groups_edit_app_data(organization, group)
       {
-        group: group.slice(:id, :full_name, :name, :visibility_level, :path)
+        group: group.slice(:id, :full_name, :name, :visibility_level, :path, :full_path)
       }.merge(shared_organization_groups_app_data(organization)).to_json
     end
 

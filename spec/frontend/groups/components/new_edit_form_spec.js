@@ -136,6 +136,10 @@ describe('NewEditForm', () => {
 
       expect(findPathField().props('value')).toBe('foo-bar');
     });
+
+    it('sets `isEditing` prop to `true`', () => {
+      expect(findPathField().props('isEditing')).toBe(true);
+    });
   });
 
   describe('when form is submitted without filling in required fields', () => {

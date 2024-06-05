@@ -329,10 +329,20 @@ jest predictive:
     - jest
     - .frontend:rules:jest:predictive
   needs:
+    - !reference [jest, needs]
+    - "detect-tests"
+  script:
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive-without-fixtures"; fi
+
+jest-with-fixtures predictive:
+  extends:
+    - jest-with-fixtures
+    - .frontend:rules:jest:predictive
+  needs:
     - !reference [jest-with-fixtures, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive-with-fixtures"; fi
 
 jest-integration:
   extends:

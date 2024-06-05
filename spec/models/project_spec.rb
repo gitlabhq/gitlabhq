@@ -7890,6 +7890,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       it { expect(project.export_status).to eq :queued }
     end
 
+    context 'when project export is failed' do
+      before do
+        project_export_job.fail_op!
+      end
+
+      it { expect(project.export_status).to eq :failed }
+    end
+
     context 'when project export is in progress' do
       before do
         project_export_job.start!

@@ -36,6 +36,11 @@ export default {
       required: false,
       default: null,
     },
+    isEditing: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -61,7 +66,7 @@ export default {
   },
   created() {
     const validatePath = async () => {
-      if (this.isEditingGroup && this.value === this.initialValue) return;
+      if (this.isEditing && this.value === this.initialValue) return;
 
       this.suggestedPath = '';
 

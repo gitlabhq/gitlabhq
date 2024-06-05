@@ -93,6 +93,49 @@ RSpec.describe 'Organizations (GraphQL fixtures)', feature_category: :cell do
       end
     end
 
+    describe 'organization update group' do
+      base_input_path = 'organizations/groups/edit/graphql/mutations/'
+      base_output_path = 'graphql/organizations/'
+      mutation_name = 'group_update.mutation.graphql'
+
+      it "#{base_output_path}#{mutation_name}.json" do
+        mutation = get_graphql_query_as_string("#{base_input_path}#{mutation_name}")
+
+        post_graphql(
+          mutation,
+          current_user: current_user,
+          variables: {
+            input: {
+              full_path: group.full_path,
+              name: "#{group.name} updated",
+              path: "#{group.path}-updated"
+            }
+          }
+        )
+
+        expect_graphql_errors_to_be_empty
+      end
+
+      it "#{base_output_path}#{mutation_name}_with_errors.json" do
+        mutation = get_graphql_query_as_string("#{base_input_path}#{mutation_name}")
+
+        post_graphql(
+          mutation,
+          current_user: current_user,
+          variables: {
+            input: {
+              full_path: group.full_path,
+              name: "#{group.name} updated",
+              path: "#{group.path}-updated",
+              visibility: 'private'
+            }
+          }
+        )
+
+        expect_graphql_errors_to_be_empty
+      end
+    end
+
     describe 'organization projects' do
       base_input_path = 'organizations/shared/graphql/queries/'
       base_output_path = 'graphql/organizations/'

@@ -294,7 +294,7 @@ RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category:
       with_them do
         let(:params) { { sort: sort } }
 
-        it 'returns ordered tokens' do
+        it 'returns ordered tokens', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446283' do
           expect(subject.map(&:id)).to eq(tokens.values_at(*expected_tokens).map(&:id))
         end
       end

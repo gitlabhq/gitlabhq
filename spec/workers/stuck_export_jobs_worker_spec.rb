@@ -38,6 +38,30 @@ RSpec.describe StuckExportJobsWorker, feature_category: :importers do
 
           expect(project_export_job.reload.failed?).to be true
         end
+
+        context 'when export job has relation exports' do
+          before do
+            create(:project_relation_export, project_export_job: project_export_job)
+          end
+
+          context 'when export job updated at is less than expiration time' do
+            it 'does not mark export job as failed' do
+              worker.perform
+
+              expect(project_export_job.reload.failed?).to be false
+            end
+          end
+
+          context 'when export job updated at is greater than expiration time' do
+            it 'marks export job as failed' do
+              project_export_job.update!(created_at: 12.hours.ago)
+
+              worker.perform
+
+              expect(project_export_job.reload.failed?).to be true
+            end
+          end
+        end
       end
 
       context 'when the job is not in queue and db record in queued state' do

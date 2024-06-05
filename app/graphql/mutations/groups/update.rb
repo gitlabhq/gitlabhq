@@ -22,9 +22,18 @@ module Mutations
       argument :math_rendering_limits_enabled, GraphQL::Types::Boolean,
         required: false,
         description: copy_field_description(Types::GroupType, :math_rendering_limits_enabled)
+      argument :name, GraphQL::Types::String,
+        required: false,
+        description: copy_field_description(Types::GroupType, :name)
+      argument :path, GraphQL::Types::String,
+        required: false,
+        description: copy_field_description(Types::GroupType, :path)
       argument :shared_runners_setting, Types::Namespace::SharedRunnersSettingEnum,
         required: false,
         description: copy_field_description(Types::GroupType, :shared_runners_setting)
+      argument :visibility, Types::VisibilityLevelsEnum,
+        required: false,
+        description: copy_field_description(Types::GroupType, :visibility)
 
       def resolve(full_path:, **args)
         group = authorized_find!(full_path: full_path)

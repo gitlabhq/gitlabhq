@@ -25636,6 +25636,9 @@ msgstr ""
 msgid "GroupsTree|Search by name"
 msgstr ""
 
+msgid "Groups|An error occurred updating this group. Please try again."
+msgstr ""
+
 msgid "Groups|Avatar will be removed. Are you sure?"
 msgstr ""
 

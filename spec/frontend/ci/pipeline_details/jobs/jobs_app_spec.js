@@ -8,6 +8,7 @@ import { createAlert } from '~/alert';
 import JobsApp from '~/ci/pipeline_details/jobs/jobs_app.vue';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import getPipelineJobsQuery from '~/ci/pipeline_details/jobs/graphql/queries/get_pipeline_jobs.query.graphql';
+import { POLL_INTERVAL } from '~/ci/pipeline_details/graph/constants';
 import { mockPipelineJobsQueryResponse } from '../mock_data';
 
 Vue.use(VueApollo);
@@ -31,11 +32,14 @@ describe('Jobs app', () => {
     return createMockApollo(requestHandlers);
   };
 
+  const graphqlResourceEtag = '/api/graphql:pipelines/id/1';
+
   const createComponent = (resolver) => {
     wrapper = shallowMount(JobsApp, {
       provide: {
         projectPath: 'root/ci-project',
         pipelineIid: 1,
+        graphqlResourceEtag,
       },
       apolloProvider: createMockApolloProvider(resolver),
     });
@@ -123,5 +127,19 @@ describe('Jobs app', () => {
     await waitForPromises();
 
     expect(findSkeletonLoader().exists()).toBe(false);
+  });
+
+  describe('polling', () => {
+    beforeEach(() => {
+      createComponent(resolverSpy);
+    });
+
+    it('polls for query data', () => {
+      expect(resolverSpy).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(POLL_INTERVAL);
+
+      expect(resolverSpy).toHaveBeenCalledTimes(2);
+    });
   });
 });

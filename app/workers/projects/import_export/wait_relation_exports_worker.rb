@@ -62,7 +62,7 @@ module Projects
           next if Gitlab::SidekiqStatus.running?(relation_export.jid)
           next if relation_export.reset.finished?
 
-          relation_export.mark_as_failed("Exausted number of retries to export: #{relation_export.relation}")
+          relation_export.mark_as_failed("Exhausted number of retries to export: #{relation_export.relation}")
         end
       end
 

@@ -1,0 +1,9 @@
+mutation groupUpdate($input: GroupUpdateInput!) {
+  groupUpdate(input: $input) {
+    group {
+      id
+      organizationEditPath
+    }
+    errors
+  }
+}

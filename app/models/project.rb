@@ -2392,6 +2392,8 @@ class Project < ApplicationRecord
       :started
     elsif export_file_exists?
       :finished
+    elsif export_failed?
+      :failed
     else
       :none
     end
@@ -2406,6 +2408,12 @@ class Project < ApplicationRecord
   def export_enqueued?
     strong_memoize(:export_enqueued) do
       ::Projects::ExportJobFinder.new(self, { status: :queued }).execute.present?
+    end
+  end
+
+  def export_failed?
+    strong_memoize(:export_failed) do
+      ::Projects::ExportJobFinder.new(self, { status: :failed }).execute.present?
     end
   end
 

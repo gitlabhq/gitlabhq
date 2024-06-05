@@ -8,6 +8,7 @@ import { createAlert } from '~/alert';
 import FailedJobsApp from '~/ci/pipeline_details/jobs/failed_jobs_app.vue';
 import FailedJobsTable from '~/ci/pipeline_details/jobs/components/failed_jobs_table.vue';
 import GetFailedJobsQuery from '~/ci/pipeline_details/jobs/graphql/queries/get_failed_jobs.query.graphql';
+import { POLL_INTERVAL } from '~/ci/pipeline_details/graph/constants';
 import { mockFailedJobsQueryResponse } from 'jest/ci/pipeline_details/mock_data';
 
 Vue.use(VueApollo);
@@ -27,11 +28,14 @@ describe('Failed Jobs App', () => {
     return createMockApollo(requestHandlers);
   };
 
+  const graphqlResourceEtag = '/api/graphql:pipelines/id/1';
+
   const createComponent = (resolver) => {
     wrapper = shallowMount(FailedJobsApp, {
       provide: {
         fullPath: 'root/ci-project',
         pipelineIid: 1,
+        graphqlResourceEtag,
       },
       apolloProvider: createMockApolloProvider(resolver),
     });
@@ -75,6 +79,20 @@ describe('Failed Jobs App', () => {
 
     expect(createAlert).toHaveBeenCalledWith({
       message: 'There was a problem fetching the failed jobs.',
+    });
+  });
+
+  describe('polling', () => {
+    beforeEach(() => {
+      createComponent(resolverSpy);
+    });
+
+    it('polls for query data', () => {
+      expect(resolverSpy).toHaveBeenCalledTimes(1);
+
+      jest.advanceTimersByTime(POLL_INTERVAL);
+
+      expect(resolverSpy).toHaveBeenCalledTimes(2);
     });
   });
 });

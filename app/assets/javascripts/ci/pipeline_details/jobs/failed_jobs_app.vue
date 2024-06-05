@@ -2,6 +2,8 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { getQueryHeaders } from '../graph/utils';
+import { POLL_INTERVAL } from '../graph/constants';
 import GetFailedJobsQuery from './graphql/queries/get_failed_jobs.query.graphql';
 import FailedJobsTable from './components/failed_jobs_table.vue';
 
@@ -17,10 +19,17 @@ export default {
     pipelineIid: {
       default: '',
     },
+    graphqlResourceEtag: {
+      default: '',
+    },
   },
   apollo: {
     failedJobs: {
+      context() {
+        return getQueryHeaders(this.graphqlResourceEtag);
+      },
       query: GetFailedJobsQuery,
+      pollInterval: POLL_INTERVAL,
       variables() {
         return {
           fullPath: this.projectPath,

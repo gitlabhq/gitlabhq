@@ -326,6 +326,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
             'full_name' => group.full_name,
             'name' => group.name,
             'path' => group.path,
+            'full_path' => group.full_path,
             "visibility_level" => group.visibility_level
           },
           'base_path' => root_url,

@@ -26,6 +26,8 @@ A deploy token is a pair of values:
   `gitlab+deploy-token-{n}`. You can specify a custom username when you create the deploy token.
 - **token**: `password` in the HTTP authentication framework.
 
+Deploy tokens do not support [SSH authentication](../../ssh.md).
+
 You can use a deploy token for [HTTP authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication)
 to the following endpoints:
 

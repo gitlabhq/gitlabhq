@@ -162,7 +162,7 @@ export default {
       };
     },
     isEditing() {
-      return this.initialFormValues[FORM_FIELD_ID];
+      return Boolean(this.initialFormValues[FORM_FIELD_ID]);
     },
   },
   watch: {
@@ -210,6 +210,7 @@ export default {
           :value="value"
           :state="validation.state"
           :base-path="basePath"
+          :is-editing="isEditing"
           @input="onPathInput($event, input)"
           @input-suggested-path="input"
           @blur="blur"

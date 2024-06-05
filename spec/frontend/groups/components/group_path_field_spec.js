@@ -62,6 +62,21 @@ describe('GroupPathField', () => {
       });
     });
 
+    describe('when editing a group and path is set to initial path', () => {
+      beforeEach(async () => {
+        apiMockUnavailablePath();
+
+        createComponent({ propsData: { isEditing: true, value: 'foo' } });
+        await wrapper.setProps({ value: 'foo bar' });
+        await waitForPromises();
+        await wrapper.setProps({ value: 'foo' });
+      });
+
+      it('does not call API', () => {
+        expect(getGroupPathAvailability).toHaveBeenCalledTimes(1);
+      });
+    });
+
     describe('when value is not the suggested path', () => {
       describe('when value is an unavailable path', () => {
         beforeEach(async () => {

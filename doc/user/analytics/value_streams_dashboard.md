@@ -174,7 +174,7 @@ The month-over-month comparison of the AI Usage unique users rate gives a more a
 The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members.
 
 NOTE:
-Usage rate for Code Suggestions is calculated with data starting on 2024-04-04.
+Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
 For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
 
 ## Enable or disable overview background aggregation
