@@ -6,8 +6,6 @@ property_description:
 value_description:
 extra_properties:
 identifiers:
-product_section: growth
-product_stage:
 product_group: group::conversion
 milestone: "15.0"
 introduced_by_url:

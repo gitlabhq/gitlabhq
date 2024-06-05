@@ -6,8 +6,6 @@ property_description: "Slugged option category"
 value_description: "Option index"
 extra_properties:
 identifiers:
-product_section: enablement
-product_stage: enablement
 product_group: global_search
 milestone: "13.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40822

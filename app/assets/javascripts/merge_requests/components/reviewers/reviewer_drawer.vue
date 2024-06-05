@@ -68,6 +68,6 @@ export default {
       <approval-summary />
     </template>
     <reviewers-container :reviewers="reviewers" :loading-reviewers="loadingReviewers" />
-    <approval-rules-wrapper />
+    <approval-rules-wrapper :reviewers="reviewers" />
   </gl-drawer>
 </template>

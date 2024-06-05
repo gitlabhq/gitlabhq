@@ -320,7 +320,7 @@ export default {
       />
     </gl-form-group>
 
-    <div class="gl-md-display-flex">
+    <div class="md:gl-flex">
       <div class="gl-flex-basis-half">
         <gl-form-group
           :label="__('Project URL')"

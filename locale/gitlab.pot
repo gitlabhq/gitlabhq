@@ -15877,6 +15877,9 @@ msgstr ""
 msgid "Custom analyzers: language support"
 msgstr ""
 
+msgid "Custom confirmation message: %{message}"
+msgstr ""
+
 msgid "Custom emoji"
 msgstr ""
 
@@ -37935,6 +37938,15 @@ msgstr ""
 msgid "PipelineGraph|Are you sure you want to retry %{jobName}?"
 msgstr ""
 
+msgid "PipelineGraph|Are you sure you want to run %{jobName}?"
+msgstr ""
+
+msgid "PipelineGraph|Are you sure you want to run %{stageName}?"
+msgstr ""
+
+msgid "PipelineGraph|Do you want to continue?"
+msgstr ""
+
 msgid "PipelineGraph|Downstream pipeline might not display in the graph while the new downstream pipeline is being created."
 msgstr ""
 
@@ -42757,6 +42769,9 @@ msgid "Quick actions can be used in description and comment boxes."
 msgstr ""
 
 msgid "Quick assign"
+msgstr ""
+
+msgid "Quick assign a reviewer"
 msgstr ""
 
 msgid "Quick help"
@@ -48432,6 +48447,9 @@ msgid "Select protected branches"
 msgstr ""
 
 msgid "Select report"
+msgstr ""
+
+msgid "Select reviewer"
 msgstr ""
 
 msgid "Select reviewers"
@@ -59871,6 +59889,12 @@ msgid "Yes, close issue"
 msgstr ""
 
 msgid "Yes, delete project"
+msgstr ""
+
+msgid "Yes, run %{jobName}"
+msgstr ""
+
+msgid "Yes, run all manual"
 msgstr ""
 
 msgid "Yesterday"

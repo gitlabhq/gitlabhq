@@ -24,3 +24,4 @@ export const ACTION_FAILURE = 'action_failure';
 export const IID_FAILURE = 'missing_iid';
 
 export const RETRY_ACTION_TITLE = 'Retry';
+export const MANUAL_ACTION_TITLE = 'Run';

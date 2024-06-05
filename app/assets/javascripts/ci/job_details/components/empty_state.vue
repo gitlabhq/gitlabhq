@@ -56,6 +56,15 @@ export default {
         );
       },
     },
+    jobName: {
+      type: String,
+      required: true,
+    },
+    confirmationMessage: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     shouldRenderManualVariables() {
@@ -84,6 +93,8 @@ export default {
         v-if="shouldRenderManualVariables"
         :is-retryable="isRetryable"
         :job-id="jobId"
+        :job-name="jobName"
+        :confirmation-message="confirmationMessage"
         @hideManualVariablesForm="$emit('hideManualVariablesForm')"
       />
       <div

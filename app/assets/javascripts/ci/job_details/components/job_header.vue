@@ -89,7 +89,7 @@ export default {
 
 <template>
   <header
-    class="page-content-header gl-md-display-flex gl-flex-wrap gl-min-h-7 gl-pb-2! gl-w-full"
+    class="page-content-header md:gl-flex gl-flex-wrap gl-min-h-7 gl-pb-2! gl-w-full"
     data-testid="job-header-content"
   >
     <div

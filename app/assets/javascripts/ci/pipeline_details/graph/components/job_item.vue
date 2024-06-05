@@ -43,6 +43,10 @@ export default {
       'PipelineGraph|Downstream pipeline might not display in the graph while the new downstream pipeline is being created.',
     ),
     unauthorizedTooltip: __('You are not authorized to run this manual job'),
+    manualConfirmationModal: {
+      title: s__('PipelineGraph|Are you sure you want to run %{jobName}?'),
+      confirmationText: s__('PipelineGraph|Do you want to continue?'),
+    },
     confirmationModal: {
       title: s__('PipelineGraph|Are you sure you want to retry %{jobName}?'),
       description: s__(
@@ -50,8 +54,8 @@ export default {
       ),
       linkText: s__('PipelineGraph|What is a downstream pipeline?'),
       footer: __("Don't show this again"),
-      actionPrimary: { text: __('Retry') },
       actionCancel: { text: __('Cancel') },
+      actionPrimary: { text: __('Retry') },
     },
     runAgainTooltipText: __('Run again'),
   },
@@ -170,10 +174,25 @@ export default {
     nameComponent() {
       return this.shouldRenderLink ? 'gl-link' : 'div';
     },
-    retryTriggerJobWarningText() {
-      return sprintf(this.$options.i18n.confirmationModal.title, {
+    confirmationTitle() {
+      const modal = this.hasManualConfirmationMessage
+        ? this.$options.i18n.manualConfirmationModal
+        : this.$options.i18n.confirmationModal;
+      return sprintf(modal.title, {
         jobName: this.job.name,
       });
+    },
+    confirmationPrimaryText() {
+      const modal = this.hasManualConfirmationMessage
+        ? {
+            actionPrimary: {
+              text: sprintf(__('Yes, run %{jobName}'), {
+                jobName: this.job.name,
+              }),
+            },
+          }
+        : this.$options.i18n.confirmationModal;
+      return modal.actionPrimary;
     },
     showStageName() {
       return Boolean(this.stageName);
@@ -204,6 +223,9 @@ export default {
      */
     hasAction() {
       return this.job.status && this.job.status.action && this.job.status.action.path;
+    },
+    hasManualConfirmationMessage() {
+      return this.job.status.action.confirmationMessage !== null;
     },
     hasUnauthorizedManualAction() {
       return (
@@ -240,7 +262,12 @@ export default {
       ];
     },
     withConfirmationModal() {
-      return this.isRetryableBridge && !this.skipRetryModal;
+      return (this.isRetryableBridge && !this.skipRetryModal) || this.hasManualConfirmationMessage;
+    },
+    manualConfirmationMessage() {
+      return sprintf(__('Custom confirmation message: %{message}'), {
+        message: this.job.status.action.confirmationMessage,
+      });
     },
     jobActionTooltipText() {
       const { group } = this.status;
@@ -372,22 +399,28 @@ export default {
       ref="modal"
       v-model="showConfirmationModal"
       modal-id="action-confirmation-modal"
-      :title="retryTriggerJobWarningText"
+      :title="confirmationTitle"
       :action-cancel="$options.i18n.confirmationModal.actionCancel"
-      :action-primary="$options.i18n.confirmationModal.actionPrimary"
+      :action-primary="confirmationPrimaryText"
       @primary="executePendingAction"
       @close="handleConfirmationModalPreferences"
       @hide="handleConfirmationModalPreferences"
     >
-      <p class="gl-mb-1">{{ $options.i18n.confirmationModal.description }}</p>
-      <gl-link :href="$options.confirmationModalDocLink" target="_blank">{{
-        $options.i18n.confirmationModal.linkText
-      }}</gl-link>
-      <div class="gl-mt-4 gl-display-flex">
-        <gl-form>
-          <gl-form-checkbox class="gl-min-h-0" @input="toggleSkipRetryModalCheckbox" />
-        </gl-form>
-        <p class="gl-m-0">{{ $options.i18n.confirmationModal.footer }}</p>
+      <div v-if="job.status.action.confirmationMessage">
+        <p>{{ manualConfirmationMessage }}</p>
+        <p>{{ $options.i18n.manualConfirmationModal.confirmationText }}</p>
+      </div>
+      <div v-else>
+        <p class="gl-mb-1">{{ $options.i18n.confirmationModal.description }}</p>
+        <gl-link :href="$options.confirmationModalDocLink" target="_blank"
+          >{{ $options.i18n.confirmationModal.linkText }}
+        </gl-link>
+        <div class="gl-mt-4 gl-display-flex">
+          <gl-form>
+            <gl-form-checkbox class="gl-min-h-0" @input="toggleSkipRetryModalCheckbox" />
+          </gl-form>
+          <p class="gl-m-0">{{ $options.i18n.confirmationModal.footer }}</p>
+        </div>
       </div>
     </gl-modal>
   </div>

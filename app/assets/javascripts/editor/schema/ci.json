@@ -1879,6 +1879,10 @@
         "start_in": {
           "$ref": "#/definitions/start_in"
         },
+        "manual_confirmation": {
+          "markdownDescription": "Describes the Custom confirmation message for a manual job [Learn More](https://docs.gitlab.com/ee/ci/yaml/#when).",
+          "type": "string"
+        },
         "dependencies": {
           "type": "array",
           "description": "Specify a list of job names from earlier stages from which artifacts should be loaded. By default, all previous artifacts are passed. Use an empty array to skip downloading artifacts.",

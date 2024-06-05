@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'rspec-parameterized'
 
-RSpec.describe Gitlab::Ci::Ansi2json::Style do
+RSpec.describe Gitlab::Ci::Ansi2json::Style, feature_category: :continuous_integration do
   describe '#set?' do
     subject { described_class.new(**params).set? }
 

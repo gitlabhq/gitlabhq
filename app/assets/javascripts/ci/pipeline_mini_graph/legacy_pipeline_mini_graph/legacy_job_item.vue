@@ -1,10 +1,10 @@
 <script>
-import { GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
+import { GlDisclosureDropdownItem, GlModal, GlTooltipDirective } from '@gitlab/ui';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
 import JobNameComponent from '~/ci/common/private/job_name_component.vue';
 import { ICONS } from '~/ci/constants';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
-import { s__, sprintf } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
 
 /**
@@ -35,9 +35,15 @@ import { reportToSentry } from '~/ci/utils';
 export default {
   i18n: {
     runAgainTooltipText: s__('Pipeline|Run again'),
+    confirmationModal: {
+      title: s__('PipelineGraph|Are you sure you want to run %{jobName}?'),
+      confirmationText: s__('PipelineGraph|Do you want to continue?'),
+      actionCancel: { text: __('Cancel') },
+    },
   },
   components: {
     ActionComponent,
+    GlModal,
     JobNameComponent,
     GlDisclosureDropdownItem,
   },
@@ -65,6 +71,12 @@ export default {
       required: false,
       default: -1,
     },
+  },
+  data() {
+    return {
+      showConfirmationModal: false,
+      shouldTriggerActionClick: false,
+    };
   },
   computed: {
     detailsPath() {
@@ -119,9 +131,37 @@ export default {
     testid() {
       return this.hasDetails ? 'job-with-link' : 'job-without-link';
     },
+    withConfirmationModal() {
+      return this.status?.action?.confirmation_message !== null;
+    },
+    confirmationTitle() {
+      return sprintf(this.$options.i18n.confirmationModal.title, {
+        jobName: this.job.name,
+      });
+    },
+    confirmationActionPrimary() {
+      return {
+        text: sprintf(__('Yes, run %{jobName}'), {
+          jobName: this.job.name,
+        }),
+      };
+    },
+    confirmationMessage() {
+      return sprintf(__('Custom confirmation message: %{message}'), {
+        message: this.status?.action?.confirmation_message,
+      });
+    },
   },
   errorCaptured(err, _vm, info) {
     reportToSentry('pipelines_job_item', `pipelines_job_item error: ${err}, info: ${info}`);
+  },
+  methods: {
+    executePendingAction() {
+      this.shouldTriggerActionClick = true;
+    },
+    showActionConfirmationModal() {
+      this.showConfirmationModal = true;
+    },
   },
 };
 </script>
@@ -155,8 +195,26 @@ export default {
           :tooltip-text="jobActionTooltipText"
           :link="status.action.path"
           :action-icon="status.action.icon"
+          :should-trigger-click="shouldTriggerActionClick"
+          :with-confirmation-modal="withConfirmationModal"
           class="-gl-mt-2 -gl-mr-2"
+          @showActionConfirmationModal="showActionConfirmationModal"
         />
+        <gl-modal
+          v-if="showConfirmationModal"
+          ref="modal"
+          v-model="showConfirmationModal"
+          modal-id="action-confirmation-modal"
+          :title="confirmationTitle"
+          :action-cancel="$options.i18n.confirmationModal.actionCancel"
+          :action-primary="confirmationActionPrimary"
+          @primary="executePendingAction"
+        >
+          <div>
+            <p>{{ confirmationMessage }}</p>
+            <p>{{ $options.i18n.confirmationModal.confirmationText }}</p>
+          </div>
+        </gl-modal>
       </div>
     </template>
   </gl-disclosure-dropdown-item>

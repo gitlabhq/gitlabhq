@@ -10,7 +10,7 @@
 
 .js-diff-files-changed.gl-py-3
   .files-changed-inner
-    .inline-parallel-buttons.gl-display-none.gl-md-display-flex.gl-relative
+    .inline-parallel-buttons.gl-hidden.md:gl-flex.gl-relative
       - if !diffs_expanded? && diff_files.any?(&:collapsed?)
         = link_button_to _('Expand all'), url_for(safe_params.merge(expanded: 1, format: nil))
       - if show_whitespace_toggle

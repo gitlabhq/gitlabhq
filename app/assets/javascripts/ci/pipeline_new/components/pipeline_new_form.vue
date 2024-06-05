@@ -512,12 +512,12 @@ export default {
               :aria-label="$options.i18n.removeVariableLabel"
               @click="removeVariable(index)"
             >
-              <gl-icon class="gl-mr-0! gl-display-none gl-md-display-block" name="clear" />
-              <span class="gl-md-display-none">{{ $options.i18n.removeVariableLabel }}</span>
+              <gl-icon class="gl-mr-0! gl-hidden md:gl-block" name="clear" />
+              <span class="md:gl-hidden">{{ $options.i18n.removeVariableLabel }}</span>
             </gl-button>
             <gl-button
               v-else
-              class="gl-md-ml-3 gl-mb-3 gl-display-none gl-md-display-block gl-invisible"
+              class="gl-md-ml-3 gl-mb-3 gl-hidden md:gl-block gl-invisible"
               icon="clear"
               :aria-label="$options.i18n.removeVariableLabel"
             />

@@ -17,6 +17,13 @@ query getPipelineActions($fullPath: ID!, $iid: ID!, $limit: Int) {
           scheduledAt
           scheduled
           playPath
+          detailedStatus {
+            id
+            action {
+              id
+              confirmationMessage
+            }
+          }
         }
       }
     }

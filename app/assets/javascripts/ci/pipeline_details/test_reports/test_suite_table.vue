@@ -146,7 +146,7 @@ export default {
 
         <div class="table-section section-10 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Status') }}</div>
-          <div class="table-mobile-content gl-md-display-flex gl-justify-content-center">
+          <div class="table-mobile-content md:gl-flex gl-justify-content-center">
             <div class="ci-status-icon" :class="`ci-status-icon-${testCase.status}`">
               <gl-icon :size="24" :name="testCase.icon" />
             </div>

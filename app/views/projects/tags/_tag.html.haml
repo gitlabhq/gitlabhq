@@ -2,7 +2,7 @@
 - release = @releases.find { |release| release.tag == tag.name }
 - commit_status = @tag_pipeline_statuses[tag.name] unless @tag_pipeline_statuses.nil?
 
-%li.gl-justify-content-space-between{ class: "gl-md-display-flex! gl-align-items-flex-start!", data: { testid: 'tag-row' } }
+%li.gl-justify-content-space-between{ class: "md:!gl-flex gl-align-items-flex-start!", data: { testid: 'tag-row' } }
   .row-main-content
     = sprite_icon('tag', css_class: "gl-text-secondary")
     = link_to tag.name, project_tag_path(@project, tag.name), class: 'item-title ref-name'

@@ -81,6 +81,9 @@ module Gitlab
                        .map { |author_email, author_name| "Co-authored-by: #{author_name} <#{author_email}>" }
                        .join("\n")
         end,
+        'merge_request_author' => ->(merge_request, _, _) {
+          "#{merge_request.author&.name} <#{merge_request.author&.commit_email_or_default}>"
+        },
         'all_commits' => ->(merge_request, _, _) do
           merge_request
             .recent_commits

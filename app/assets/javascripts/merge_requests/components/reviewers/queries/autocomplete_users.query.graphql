@@ -1,0 +1,13 @@
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+
+query fetchAutocompleteUsers($search: String!, $fullPath: ID!, $issuableId: MergeRequestID!) {
+  project(fullPath: $fullPath) {
+    id
+    autocompleteUsers(search: $search) {
+      ...User
+      mergeRequestInteraction(id: $issuableId) {
+        canMerge
+      }
+    }
+  }
+}

@@ -47,38 +47,39 @@ A GitLab CI/CD pipeline configuration includes:
 
 - [Jobs](../jobs/index.md) configured with [job keywords](#job-keywords):
 
-  | Keyword                                     | Description |
-  | :-------------------------------------------|:------------|
-  | [`after_script`](#after_script)             | Override a set of commands that are executed after job. |
-  | [`allow_failure`](#allow_failure)           | Allow job to fail. A failed job does not cause the pipeline to fail. |
-  | [`artifacts`](#artifacts)                   | List of files and directories to attach to a job on success. |
-  | [`before_script`](#before_script)           | Override a set of commands that are executed before job. |
-  | [`cache`](#cache)                           | List of files that should be cached between subsequent runs. |
-  | [`coverage`](#coverage)                     | Code coverage settings for a given job. |
-  | [`dast_configuration`](#dast_configuration) | Use configuration from DAST profiles on a job level. |
-  | [`dependencies`](#dependencies)             | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
-  | [`environment`](#environment)               | Name of an environment to which the job deploys. |
-  | [`extends`](#extends)                       | Configuration entries that this job inherits from. |
-  | [`identity`](#identity)                     | Authenticate with third party services using identity federation. |
-  | [`image`](#image)                           | Use Docker images. |
-  | [`inherit`](#inherit)                       | Select which global defaults all jobs inherit. |
-  | [`interruptible`](#interruptible)           | Defines if a job can be canceled when made redundant by a newer run. |
-  | [`needs`](#needs)                           | Execute jobs earlier than the stage ordering. |
-  | [`pages`](#pages)                           | Upload the result of a job to use with GitLab Pages. |
-  | [`parallel`](#parallel)                     | How many instances of a job should be run in parallel. |
-  | [`release`](#release)                       | Instructs the runner to generate a [release](../../user/project/releases/index.md) object. |
-  | [`resource_group`](#resource_group)         | Limit job concurrency. |
-  | [`retry`](#retry)                           | When and how many times a job can be auto-retried in case of a failure. |
-  | [`rules`](#rules)                           | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. |
-  | [`script`](#script)                         | Shell script that is executed by a runner. |
-  | [`secrets`](#secrets)                       | The CI/CD secrets the job needs. |
-  | [`services`](#services)                     | Use Docker services images. |
-  | [`stage`](#stage)                           | Defines a job stage. |
-  | [`tags`](#tags)                             | List of tags that are used to select a runner. |
-  | [`timeout`](#timeout)                       | Define a custom job-level timeout that takes precedence over the project-wide setting. |
-  | [`trigger`](#trigger)                       | Defines a downstream pipeline trigger. |
-  | [`variables`](#variables)                   | Define job variables on a job level. |
-  | [`when`](#when)                             | When to run job. |
+  | Keyword                                       | Description                                                                                                 |
+  |:----------------------------------------------|:------------------------------------------------------------------------------------------------------------|
+  | [`after_script`](#after_script)               | Override a set of commands that are executed after job.                                                     |
+  | [`allow_failure`](#allow_failure)             | Allow job to fail. A failed job does not cause the pipeline to fail.                                        |
+  | [`artifacts`](#artifacts)                     | List of files and directories to attach to a job on success.                                                |
+  | [`before_script`](#before_script)             | Override a set of commands that are executed before job.                                                    |
+  | [`cache`](#cache)                             | List of files that should be cached between subsequent runs.                                                |
+  | [`coverage`](#coverage)                       | Code coverage settings for a given job.                                                                     |
+  | [`dast_configuration`](#dast_configuration)   | Use configuration from DAST profiles on a job level.                                                        |
+  | [`dependencies`](#dependencies)               | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.  |
+  | [`environment`](#environment)                 | Name of an environment to which the job deploys.                                                            |
+  | [`extends`](#extends)                         | Configuration entries that this job inherits from.                                                          |
+  | [`identity`](#identity)                       | Authenticate with third party services using identity federation.                                           |
+  | [`image`](#image)                             | Use Docker images.                                                                                          |
+  | [`inherit`](#inherit)                         | Select which global defaults all jobs inherit.                                                              |
+  | [`interruptible`](#interruptible)             | Defines if a job can be canceled when made redundant by a newer run.                                        |
+  | [`manual_confirmation`](#manual_confirmation) | Define a custom confirmation message for a manual job. |
+  | [`needs`](#needs)                             | Execute jobs earlier than the stage ordering.                                                               |
+  | [`pages`](#pages)                             | Upload the result of a job to use with GitLab Pages.                                                        |
+  | [`parallel`](#parallel)                       | How many instances of a job should be run in parallel.                                                      |
+  | [`release`](#release)                         | Instructs the runner to generate a [release](../../user/project/releases/index.md) object.                  |
+  | [`resource_group`](#resource_group)           | Limit job concurrency.                                                                                      |
+  | [`retry`](#retry)                             | When and how many times a job can be auto-retried in case of a failure.                                     |
+  | [`rules`](#rules)                             | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. |
+  | [`script`](#script)                           | Shell script that is executed by a runner.                                                                  |
+  | [`secrets`](#secrets)                         | The CI/CD secrets the job needs.                                                                            |
+  | [`services`](#services)                       | Use Docker services images.                                                                                 |
+  | [`stage`](#stage)                             | Defines a job stage.                                                                                        |
+  | [`tags`](#tags)                               | List of tags that are used to select a runner.                                                              |
+  | [`timeout`](#timeout)                         | Define a custom job-level timeout that takes precedence over the project-wide setting.                      |
+  | [`trigger`](#trigger)                         | Defines a downstream pipeline trigger.                                                                      |
+  | [`variables`](#variables)                     | Define job variables on a job level.                                                                        |
+  | [`when`](#when)                               | When to run job.                                                                                            |
 
 ## Global keywords
 
@@ -5538,6 +5539,29 @@ In this example, the script:
 
 - `when` can be used with [`rules`](#rules) for more dynamic job control.
 - `when` can be used with [`workflow`](#workflow) to control when a pipeline can start.
+
+### `manual_confirmation`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18906) in GitLab 17.1.
+
+Use `manual_confirmation` with [`when: manual`](#when) to define a custom confirmation message for manual jobs. If there is no manual job defined with `when: manual`, this keyword has no effect.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- A string with the confirmation message.
+
+**Example of `manual_confirmation`**:
+
+```yaml
+delete_job:
+  stage: post-deployment
+  script:
+    - make delete
+  when: manual
+  manual_confirmation: 'Are you sure you want to delete $CI_ENVIRONMENT_SLUG?'
+```
 
 ## Deprecated keywords
 

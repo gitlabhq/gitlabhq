@@ -129,6 +129,9 @@ export default {
     jobName() {
       return sprintf(__('%{jobName}'), { jobName: this.job.name });
     },
+    jobConfirmationMessage() {
+      return this.job.status?.action?.confirmation_message;
+    },
   },
   watch: {
     // Once the job log is loaded,
@@ -321,7 +324,9 @@ export default {
           :illustration-size-class="emptyStateIllustration.size"
           :is-retryable="isJobRetryable"
           :job-id="job.id"
+          :job-name="jobName"
           :title="emptyStateTitle"
+          :confirmation-message="jobConfirmationMessage"
           :content="emptyStateIllustration.content"
           :action="emptyStateAction"
           :playable="job.playable"

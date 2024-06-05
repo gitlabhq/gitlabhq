@@ -37,6 +37,7 @@ query getJobs($fullPath: ID!, $after: String, $first: Int = 30, $statuses: [CiJo
             method
             path
             title
+            confirmationMessage
           }
         }
         id

@@ -190,7 +190,7 @@ export default {
     <template #cell(pipeline)="{ item }">
       <div
         data-testid="terraform-states-table-pipeline"
-        class="gl-md-display-flex gl-align-items-center gl-gap-3"
+        class="md:gl-flex gl-align-items-center gl-gap-3"
       >
         <gl-link v-if="pipelineID(item)" :href="pipelinePath(item)">
           #{{ pipelineID(item) }}

@@ -774,15 +774,14 @@
   }
 }
 
-.assignee,
-.reviewer {
-  .merge-icon {
-    color: $orange-400;
-    position: absolute;
-    bottom: -3px;
-    right: -3px;
-    filter: drop-shadow(0 0 0.5px $white) drop-shadow(0 0 1px $white) drop-shadow(0 0 2px $white);
-  }
+.reviewer-merge-icon,
+.assignee .merge-icon,
+.reviewer .merge-icon {
+  color: $orange-400;
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  filter: drop-shadow(0 0 0.5px $white) drop-shadow(0 0 1px $white) drop-shadow(0 0 2px $white);
 }
 
 .sidebar-help-wrap {

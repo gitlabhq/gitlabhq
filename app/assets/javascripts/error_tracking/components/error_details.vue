@@ -315,7 +315,7 @@ export default {
           </gl-sprintf>
         </div>
         <div>
-          <div class="gl-display-none gl-md-display-inline-flex">
+          <div class="gl-hidden md:gl-inline-flex">
             <gl-button
               :loading="updatingIgnoreStatus"
               data-testid="update-ignore-status-btn"
@@ -371,7 +371,7 @@ export default {
           <gl-disclosure-dropdown
             block
             :toggle-text="__('Options')"
-            toggle-class="gl-md-display-none"
+            toggle-class="md:gl-hidden"
             placement="right"
             :disabled="issueUpdateInProgress"
             :items="dropdownItems"

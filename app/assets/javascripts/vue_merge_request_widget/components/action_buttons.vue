@@ -107,7 +107,7 @@ export default {
           :disabled="btn.disabled || btn.loading"
           category="tertiary"
           size="small"
-          class="gl-md-display-block gl-float-left"
+          class="md:gl-block gl-float-left"
           @click="onClickAction(btn)"
         >
           {{ btn.text }}
@@ -140,7 +140,7 @@ export default {
         category="tertiary"
         text-sr-only
         size="small"
-        class="gl-display-block gl-md-display-none!"
+        class="gl-block md:!gl-hidden"
         @action="onClickAction"
       />
       <span v-for="(btn, index) in tertiaryButtons" :key="index">
@@ -160,7 +160,7 @@ export default {
           :disabled="btn.disabled || btn.loading"
           category="tertiary"
           size="small"
-          class="gl-display-none gl-md-display-block gl-float-left"
+          class="gl-hidden md:gl-block gl-float-left"
           @click="onClickAction(btn)"
         >
           {{ btn.text }}

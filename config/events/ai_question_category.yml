@@ -10,8 +10,6 @@ property_description: Request ID to link to other events of the same AI request.
 value_description:
 identifiers:
   - user
-product_section: data-science
-product_stage: ai-powered
 product_group: duo_chat
 milestone: '16.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132803

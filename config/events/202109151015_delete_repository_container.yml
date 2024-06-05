@@ -6,8 +6,6 @@ property_description:
 value_description:
 extra_properties:
 identifiers:
-product_section: ops
-product_stage: package
 product_group: group::package
 milestone: "13.6"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47175

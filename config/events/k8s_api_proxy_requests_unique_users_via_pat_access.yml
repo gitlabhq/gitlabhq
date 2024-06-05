@@ -10,8 +10,6 @@ identifiers:
 - user
 - project
 - namespace
-product_section: ops
-product_stage: deploy
 product_group: environments
 milestone: "16.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137488

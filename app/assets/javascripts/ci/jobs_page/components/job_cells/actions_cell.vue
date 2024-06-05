@@ -10,6 +10,8 @@ import {
 import { reportToSentry } from '~/ci/utils';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import { visitUrl } from '~/lib/utils/url_utility';
+import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
+
 import {
   ACTIONS_DOWNLOAD_ARTIFACTS,
   ACTIONS_START_NOW,
@@ -165,12 +167,33 @@ export default {
 
       this.postJobAction(this.$options.jobCancel, cancelJobMutation);
     },
-    retryJob() {
+    async retryJob() {
+      if (this.job.detailedStatus.action.confirmationMessage !== null) {
+        const confirmed = await confirmJobConfirmationMessage(
+          this.job.name,
+          this.job.detailedStatus.action.confirmationMessage,
+        );
+        if (!confirmed) {
+          return;
+        }
+      }
+
       this.retryBtnDisabled = true;
 
       this.postJobAction(this.$options.jobRetry, retryJobMutation, true);
     },
-    playJob() {
+    async playJob() {
+      if (this.job.detailedStatus.action.confirmationMessage !== null) {
+        const confirmed = await confirmJobConfirmationMessage(
+          this.job.name,
+          this.job.detailedStatus.action.confirmationMessage,
+        );
+
+        if (!confirmed) {
+          return;
+        }
+      }
+
       this.playManualBtnDisabled = true;
 
       this.postJobAction(this.$options.jobPlay, playJobMutation, true);

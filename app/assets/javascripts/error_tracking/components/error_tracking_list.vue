@@ -37,7 +37,7 @@ import TimelineChart from './timeline_chart.vue';
 const isValidErrorId = (errorId) => {
   return /^[0-9]+$/.test(errorId);
 };
-export const tableDataClass = 'gl-display-flex gl-md-display-table-cell gl-align-items-center';
+export const tableDataClass = 'gl-flex md:gl-table-cell gl-align-items-center';
 export default {
   FIRST_PAGE: 1,
   PREV_PAGE: 1,
@@ -415,7 +415,7 @@ export default {
 
       <!-- Results Table -->
       <template v-else>
-        <h4 class="gl-display-block gl-md-display-none! gl-my-5">{{ __('Open errors') }}</h4>
+        <h4 class="gl-block md:!gl-hidden gl-my-5">{{ __('Open errors') }}</h4>
 
         <gl-table
           class="error-list-table gl-mt-5"
@@ -428,7 +428,7 @@ export default {
         >
           <!-- table head -->
           <template #head(error)>
-            <div class="gl-display-none gl-md-display-block">{{ __('Open errors') }}</div>
+            <div class="gl-hidden md:gl-block">{{ __('Open errors') }}</div>
           </template>
           <template #head(events)="data">
             {{ data.label }}

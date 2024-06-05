@@ -98,7 +98,7 @@ export default {
         <div
           :class="{
             'gl-display-flex gl-align-items-center': actions.length,
-            'gl-md-display-flex gl-align-items-center gl-flex-wrap gl-gap-3': !actions.length,
+            'md:gl-flex gl-align-items-center gl-flex-wrap gl-gap-3': !actions.length,
           }"
           class="media-body gl-leading-normal"
         >
@@ -117,7 +117,7 @@ export default {
         </div>
         <div
           v-if="isCollapsible"
-          :class="{ 'gl-md-display-none': !collapseOnDesktop }"
+          :class="{ 'md:gl-hidden': !collapseOnDesktop }"
           class="gl-border-l-1 gl-border-l-solid gl-border-gray-100 gl-ml-3 gl-pl-3 gl-h-6"
         >
           <gl-button

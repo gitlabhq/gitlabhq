@@ -9,7 +9,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
   let(:project) { create(:project, :repository) }
   let(:source_project) { nil }
   let(:target_project) { nil }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, name: "John Doe", email: "jdoe@gitlab.com") }
   let(:issue_confidential) { false }
   let(:issue) { create(:issue, project: project, title: 'A bug', confidential: issue_confidential) }
   let(:issue_iid) { nil }
@@ -784,6 +784,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
         approved_by:%{approved_by}
         merged_by:%{merged_by}
         co_authored_by:%{co_authored_by}
+        merge_request_author:%{merge_request_author}
         all_commits:%{all_commits}
       MSG
 
@@ -811,6 +812,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
             co_authored_by:Co-authored-by: Jo Example <jo@example.com>
             Co-authored-by: Alice Example <alice@example.com>
             Co-authored-by: Tom Example <tom@example.com>
+            merge_request_author:
             all_commits:* This is a bad commit message!
 
             * Closes #1234 Second commit
@@ -842,6 +844,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
             approved_by:
             merged_by:
             co_authored_by:
+            merge_request_author:
             all_commits:
           MSG
         end

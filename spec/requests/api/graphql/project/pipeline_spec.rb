@@ -421,6 +421,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
                       buttonTitle
                       path
                       title
+                      confirmationMessage
                     }
                   }
                 }

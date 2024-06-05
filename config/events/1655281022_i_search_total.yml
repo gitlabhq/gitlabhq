@@ -10,8 +10,6 @@ identifiers:
   - project
   - user
   - namespace
-product_section: enablement
-product_stage: enablement
 product_group: global_search
 milestone: "15.1"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90224

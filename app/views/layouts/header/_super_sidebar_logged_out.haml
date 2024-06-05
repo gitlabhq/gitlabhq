@@ -12,7 +12,7 @@
 
       %ul.gl-list-none.gl-p-0.gl-m-0.gl-display-flex.gl-gap-3.gl-align-items-center.gl-flex-grow-1
         - if Gitlab.com?
-          %li.header-logged-out-nav-item.header-logged-out-dropdown.gl-md-display-none
+          %li.header-logged-out-nav-item.header-logged-out-dropdown.md:gl-hidden
             %button.header-logged-out-toggle{ type: "button", data: { toggle: "dropdown" } }
               %span.gl-sr-only
                 = _('Menu')
@@ -30,16 +30,16 @@
                     = s_('LoggedOutMarketingHeader|Contact Sales')
                 %li
                   = link_to _("Explore"), explore_root_path
-          %li.header-logged-out-nav-item.gl-display-none.gl-md-display-inline-block
+          %li.header-logged-out-nav-item.gl-hidden.md:gl-inline-block
             = link_to Gitlab::Utils.append_path(promo_url, 'why-gitlab') do
               = s_('LoggedOutMarketingHeader|Why GitLab')
-          %li.header-logged-out-nav-item.gl-display-none.gl-md-display-inline-block
+          %li.header-logged-out-nav-item.gl-hidden.md:gl-inline-block
             = link_to Gitlab::Utils.append_path(promo_url, 'pricing') do
               = s_('LoggedOutMarketingHeader|Pricing')
-          %li.header-logged-out-nav-item.gl-display-none.gl-md-display-inline-block
+          %li.header-logged-out-nav-item.gl-hidden.gl-inline-block
             = link_to Gitlab::Utils.append_path(promo_url, 'sales') do
               = s_('LoggedOutMarketingHeader|Contact Sales')
-        %li.header-logged-out-nav-item{ class: ('gl-display-none gl-md-display-inline-block' if Gitlab.com?) }
+        %li.header-logged-out-nav-item{ class: ('gl-hidden md:gl-inline-block' if Gitlab.com?) }
           = link_to _("Explore"), explore_root_path, class: ''
 
       - if header_link?(:sign_in)

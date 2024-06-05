@@ -106,7 +106,7 @@ export default {
             @showBoardModal="setCurrentForm"
           />
           <new-board-button @showBoardModal="setCurrentForm" />
-          <div class="gl-display-flex gl-gap-2 gl-md-display-none! gl-align-items-center">
+          <div class="gl-flex md:!gl-hidden gl-gap-2 gl-align-items-center">
             <board-options
               :show-epic-lane-option="swimlanesFeatureAvailable && isSignedIn"
               :is-swimlanes-on="isSwimlanesOn"
@@ -130,7 +130,7 @@ export default {
           @setFilters="$emit('setFilters', $event)"
         />
       </div>
-      <div class="gl-gap-2 gl-display-none gl-md-display-flex">
+      <div class="gl-gap-2 gl-hidden md:gl-flex">
         <board-options
           :show-epic-lane-option="swimlanesFeatureAvailable && isSignedIn"
           :is-swimlanes-on="isSwimlanesOn"

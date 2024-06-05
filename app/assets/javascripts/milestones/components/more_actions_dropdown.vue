@@ -177,7 +177,7 @@ export default {
     <template v-if="isDetailPage" #toggle>
       <div class="gl-min-h-7">
         <gl-button
-          class="gl-md-display-none! gl-new-dropdown-toggle gl-absolute gl-top-0 gl-left-0 gl-w-full gl-sm-w-auto"
+          class="md:!gl-hidden gl-new-dropdown-toggle gl-absolute gl-top-0 gl-left-0 gl-w-full gl-sm-w-auto"
           button-text-classes="gl-w-full"
           category="secondary"
           :aria-label="$options.i18n.actionsLabel"
@@ -187,7 +187,7 @@ export default {
           <gl-icon class="dropdown-chevron" name="chevron-down" />
         </gl-button>
         <gl-button
-          class="gl-display-none gl-md-display-flex! gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
+          class="gl-hidden md:!gl-flex gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
           category="tertiary"
           icon="ellipsis_v"
           :aria-label="$options.i18n.actionsLabel"

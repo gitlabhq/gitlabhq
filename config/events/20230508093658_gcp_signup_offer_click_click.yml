@@ -7,8 +7,6 @@ property_description:
 value_description:
 extra_properties:
 identifiers:
-product_section: ops
-product_stage: deploy
 product_group: environments
 milestone: '16.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119940

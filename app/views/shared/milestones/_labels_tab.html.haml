@@ -7,7 +7,7 @@
           - open_issues = milestone_issues_by_label_count(@milestone, label, state: :opened)
           - closed_issues = milestone_issues_by_label_count(@milestone, label, state: :closed)
 
-          %li.gl-list-style-none.gl-border-b.gl-last-of-type-border-b-0.gl-md-display-flex.gl-px-5.gl-py-4.gl-gap-5.gl-align-items-baseline
+          %li.gl-list-style-none.gl-border-b.gl-last-of-type-border-b-0.md:gl-flex.gl-px-5.gl-py-4.gl-gap-5.gl-align-items-baseline
             .gl-md-w-20.gl-flex-shrink-0.gl-flex-grow-1.gl-mb-4.gl-md-mb-0
               = render_label(label, tooltip: false, link: milestones_issues_path(options))
             - if markdown_field(label, :description).present?

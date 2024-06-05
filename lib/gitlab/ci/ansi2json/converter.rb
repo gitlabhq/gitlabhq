@@ -4,9 +4,20 @@ module Gitlab
   module Ci
     module Ansi2json
       class Converter
+        # Timestamp line prefix format:
+        # <timestamp> <stream number><stream type><full line type>
+        # - timestamp: UTC RFC3339 timestamp
+        # - stream number: 1 byte (2 hex chars) stream number
+        # - stream type: E/O (Err or Out)
+        # - full line type: `+` if line is continuation of previous line, ` ` otherwise
+        TIMESTAMP_REGEX = /(\d{4}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]\.[0-9]{6}Z) [0-9a-f]{2}[EO][+ ]/
+        RFC3339_DATETIME_LENGTH = 27
+        TIMESTAMP_PREFIX_LENGTH = RFC3339_DATETIME_LENGTH + 5
+
         def convert(stream, new_state)
           @lines = []
           @state = State.new(new_state, stream.size)
+          @has_timestamps = nil
 
           append = false
           truncated = false
@@ -24,12 +35,14 @@ module Gitlab
 
           @state.new_line!(style: Style.new(**@state.inherited_style))
 
-          stream.each_line do |line|
-            consume_line(line)
+          if Feature.disabled?(:parse_ci_job_timestamps, Feature.current_request)
+            process_stream(stream)
+          else
+            process_stream_with_lookahead(stream)
           end
 
           # This must be assigned before flushing the current line
-          # or the @current_line.offset will advance to the very end
+          # or the @state.offset will advance to the very end
           # of the trace. Instead we want @last_line_offset to always
           # point to the beginning of last line.
           @state.set_last_line_offset
@@ -48,6 +61,53 @@ module Gitlab
 
         private
 
+        def process_stream(stream)
+          stream.each_line do |line|
+            consume_line(line)
+          end
+        end
+
+        def process_stream_with_lookahead(stream)
+          # We process lines with 1-line look-back, so that we can process line continuations
+          previous_line = nil
+          current_line_buffer = nil
+
+          stream.each_line do |line|
+            current_line_buffer = handle_line(previous_line, line, current_line_buffer)
+            previous_line = line
+          end
+
+          handle_line(previous_line, nil, current_line_buffer) if previous_line
+        end
+
+        def handle_line(line, next_line, current_line_buffer)
+          if line.nil?
+            # First line, initialize check for timestamps
+            @has_timestamps = next_line.match?(TIMESTAMP_REGEX)
+            return
+          end
+
+          is_continued = @has_timestamps && next_line&.at(TIMESTAMP_PREFIX_LENGTH - 1) == '+'
+
+          # Continued lines contain an ignored \n character at the end, so we can chop it off
+          line.delete_suffix!("\n") if is_continued
+
+          if current_line_buffer.nil?
+            current_line_buffer = line
+          else
+            # Store timestamp from continued line
+            @state.current_line.add_timestamp(line[0..RFC3339_DATETIME_LENGTH - 1])
+
+            current_line_buffer << line[TIMESTAMP_PREFIX_LENGTH..]
+          end
+
+          return current_line_buffer if is_continued
+
+          consume_line(current_line_buffer)
+
+          nil
+        end
+
         def consume_line(line)
           scanner = StringScanner.new(line)
 
@@ -55,16 +115,21 @@ module Gitlab
         end
 
         def consume_token(scanner)
+          if @state.current_line.at_line_start?
+            timestamp = get_timestamp(scanner) # Avoid regex on timestamps
+            return handle_timestamp(timestamp) if timestamp
+          end
+
           if scan_token(scanner, Gitlab::Regex.build_trace_section_regex, consume: false)
             handle_section(scanner)
           elsif scan_token(scanner, /\e([@-_])(.*?)([@-~])/)
             handle_sequence(scanner)
-          elsif scan_token(scanner, /\e(([@-_])(.*?)?)?$/)
+          elsif scan_token(scanner, /\e(?:[@-_].*?)?$/)
             # stop scanning
             scanner.terminate
           elsif scan_token(scanner, /\r?\n/)
             flush_current_line
-          elsif scan_token(scanner, /\r/)
+          elsif scan_token(scanner, "\r")
             # drop last line
             @state.current_line.clear!
           elsif scan_token(scanner, /.[^\e\r\ns]*/m)
@@ -78,6 +143,24 @@ module Gitlab
           end
         end
 
+        def has_timestamp_prefix?(line)
+          # Avoid regex on timestamps for performance
+          return unless @has_timestamps && line && line.length >= TIMESTAMP_PREFIX_LENGTH
+
+          line[RFC3339_DATETIME_LENGTH - 1] == 'Z' &&
+            line[4] == '-' && line[7] == '-' && line[10] == 'T' && line[13] == ':'
+        end
+
+        def get_timestamp(scanner)
+          return unless @has_timestamps
+
+          line = scanner.peek(TIMESTAMP_PREFIX_LENGTH + 1)
+          return unless has_timestamp_prefix?(line)
+
+          scanner.pos += TIMESTAMP_PREFIX_LENGTH
+          line[0..RFC3339_DATETIME_LENGTH - 1]
+        end
+
         def scan_token(scanner, match, consume: true)
           scanner.scan(match).tap do |result|
             # we need to move offset as soon
@@ -88,7 +171,6 @@ module Gitlab
 
         def handle_sequence(scanner)
           indicator = scanner[1]
-          commands = scanner[2].split ';'
           terminator = scanner[3]
 
           # We are only interested in color and text style changes - triggered by
@@ -96,19 +178,25 @@ module Gitlab
           # sequence gets stripped (including stuff like "delete last line")
           return unless indicator == '[' && terminator == 'm'
 
+          commands = scanner[2].split ';'
           @state.update_style(commands)
+        end
+
+        def handle_timestamp(timestamp)
+          @state.current_line.add_timestamp(timestamp)
+          @state.offset += TIMESTAMP_PREFIX_LENGTH
         end
 
         def handle_section(scanner)
           action = scanner[1]
           timestamp = scanner[2]
           section = scanner[3]
-          options = parse_section_options(scanner[4])
 
           section_name = sanitize_section_name(section)
 
           case action
           when 'start'
+            options = parse_section_options(scanner[4])
             handle_section_start(scanner, section_name, timestamp, options)
           when 'end'
             handle_section_end(scanner, section_name, timestamp)
@@ -117,11 +205,11 @@ module Gitlab
           end
         end
 
-        def handle_section_start(scanner, section, timestamp, options)
+        def handle_section_start(scanner, section, section_timestamp, options)
           # We make a new line for new section
-          flush_current_line
+          flush_current_line(false)
 
-          @state.open_section(section, timestamp, options)
+          @state.open_section(section, section_timestamp, options)
 
           # we need to consume match after handling
           # the open of section, as we want the section
@@ -129,7 +217,7 @@ module Gitlab
           @state.offset += scanner.matched_size
         end
 
-        def handle_section_end(scanner, section, timestamp)
+        def handle_section_end(scanner, section, section_timestamp)
           unless @state.section_open?(section)
             @state.offset += scanner.matched_size
             return
@@ -137,9 +225,9 @@ module Gitlab
 
           # We flush the content to make the end
           # of section to be a new line
-          flush_current_line
+          flush_current_line(false)
 
-          @state.close_section(section, timestamp)
+          @state.close_section(section, section_timestamp)
 
           # we need to consume match before handling
           # as we want the section close marker
@@ -147,15 +235,28 @@ module Gitlab
           @state.offset += scanner.matched_size
 
           # this flushes an empty line with `section_duration`
-          flush_current_line
+          flush_current_line(false)
         end
 
-        def flush_current_line
-          unless @state.current_line.empty?
-            @lines << @state.current_line.to_h
+        def flush_current_line(hard_flush = true)
+          current_line = @state.current_line
+
+          unless current_line.empty?
+            @lines << current_line.to_h
           end
 
-          @state.new_line!
+          if hard_flush
+            # Account for timestamps in line continuations plus the chopped \n at each preceding continued line
+            continuation_line_count = current_line.timestamps.count - 1
+            @state.offset += (TIMESTAMP_PREFIX_LENGTH + 1) * continuation_line_count if continuation_line_count > 0
+            @state.new_line!
+          else
+            new_line_offset = @state.offset
+            # Discount offset from timestamp content if we're still at the beginning of the line
+            new_line_offset -= TIMESTAMP_PREFIX_LENGTH if current_line.empty? && current_line.timestamps.any?
+            # Preserve timestamps from current line, since this is a soft flush
+            @state.new_line!(offset: new_line_offset, timestamps: @state.current_line.timestamps)
+          end
         end
 
         def sanitize_section_name(section)

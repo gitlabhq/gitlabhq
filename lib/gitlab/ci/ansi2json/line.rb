@@ -34,25 +34,29 @@ module Gitlab
           end
         end
 
-        attr_reader :offset, :sections, :segments, :current_segment,
+        attr_reader :offset, :timestamps, :sections, :segments, :current_segment,
           :section_header, :section_footer, :section_duration,
           :section_options
 
-        def initialize(offset:, style:, sections: [])
+        def initialize(offset:, style:, sections: [], timestamps: [])
           @offset = offset
           @segments = []
           @sections = sections
           @section_header = false
           @section_footer = false
+          @timestamps = timestamps
           @duration = nil
+          @at_line_start = true
           @current_segment = Segment.new(style: style)
         end
 
         def <<(data)
           @current_segment.text << data
+          @at_line_start = false
         end
 
         def clear!
+          @at_line_start = true
           @segments.clear
           @current_segment = Segment.new(style: style)
         end
@@ -65,11 +69,24 @@ module Gitlab
           @segments.empty? && @current_segment.empty? && @section_duration.nil?
         end
 
+        def at_line_start?
+          @at_line_start
+        end
+
         def update_style(ansi_commands)
           @current_segment.style.update(ansi_commands)
         end
 
+        def timestamp
+          @timestamps.last
+        end
+
+        def add_timestamp(value)
+          @timestamps << value if value
+        end
+
         def add_section(section)
+          @at_line_start = false
           @sections << section
         end
 
@@ -107,6 +124,7 @@ module Gitlab
           flush_current_segment!
 
           { offset: offset, content: @segments }.tap do |result|
+            result[:timestamp] = timestamp if timestamp
             result[:section] = sections.last if sections.any?
             result[:section_header] = true if @section_header
             result[:section_footer] = true if @section_footer

@@ -426,7 +426,7 @@ export default {
               />
               <gl-button
                 v-else
-                class="gl-md-ml-3 gl-mb-3 gl-display-none gl-md-display-block gl-invisible"
+                class="gl-md-ml-3 gl-mb-3 gl-hidden md:gl-block gl-invisible"
                 icon="clear"
                 :aria-label="$options.i18n.removeVariableLabel"
               />

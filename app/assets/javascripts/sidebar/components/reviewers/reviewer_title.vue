@@ -62,6 +62,7 @@ export default {
       <gl-button
         v-tooltip.hover
         :title="glFeatures.reviewerAssignDrawer ? __('Quick assign') : __('Change reviewer')"
+        :aria-label="glFeatures.reviewerAssignDrawer ? __('Quick assign a reviewer') : null"
         class="js-sidebar-dropdown-toggle edit-link gl-ml-auto hide-collapsed gl-float-right"
         data-track-action="click_edit_button"
         data-track-label="right_sidebar"

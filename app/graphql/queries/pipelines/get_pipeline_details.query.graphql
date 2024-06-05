@@ -82,6 +82,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
               icon
               path
               title
+              confirmationMessage
             }
           }
           groups {
@@ -135,6 +136,7 @@ query getPipelineDetails($projectPath: ID!, $iid: ID!) {
                       __typename
                       id
                       buttonTitle
+                      confirmationMessage
                       icon
                       path
                       title

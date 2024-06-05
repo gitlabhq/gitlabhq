@@ -1,6 +1,11 @@
 import mockPipelineResponse from 'test_fixtures/pipelines/pipeline_details.json';
 import { unwrapPipelineData } from '~/ci/pipeline_details/graph/utils';
-import { BUILD_KIND, BRIDGE_KIND, RETRY_ACTION_TITLE } from '~/ci/pipeline_details/graph/constants';
+import {
+  BUILD_KIND,
+  BRIDGE_KIND,
+  RETRY_ACTION_TITLE,
+  MANUAL_ACTION_TITLE,
+} from '~/ci/pipeline_details/graph/constants';
 
 // We mock this instead of using fixtures for performance reason.
 const mockPipelineResponseCopy = JSON.parse(JSON.stringify(mockPipelineResponse));
@@ -224,6 +229,7 @@ export const wrappedPipelineReturn = {
                               icon: 'retry',
                               path: '/root/elemenohpee/-/jobs/1662/retry',
                               title: 'Retry',
+                              confirmationMessage: null,
                             },
                           },
                         },
@@ -354,6 +360,20 @@ export const triggerJob = {
   },
 };
 
+export const triggerManualJob = {
+  ...triggerJob,
+  status: {
+    ...triggerJob.status,
+    action: {
+      icon: 'play',
+      title: MANUAL_ACTION_TITLE,
+      path: '/root/ci-mock/builds/4259/play',
+      method: 'post',
+      confirmationMessage: null,
+    },
+  },
+};
+
 export const triggerJobWithRetryAction = {
   ...triggerJob,
   status: {
@@ -363,6 +383,7 @@ export const triggerJobWithRetryAction = {
       title: RETRY_ACTION_TITLE,
       path: '/root/ci-mock/builds/4259/retry',
       method: 'post',
+      confirmationMessage: null,
     },
   },
 };

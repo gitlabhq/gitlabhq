@@ -76,6 +76,9 @@ export default {
     canShowJobRetryButton() {
       return this.restJob.retry_path && !this.$apollo.queries.job.loading;
     },
+    jobConfirmationMessage() {
+      return this.restJob.status.action.confirmation_message;
+    },
     isManualJob() {
       return this.job?.manualJob;
     },
@@ -144,6 +147,8 @@ export default {
             :is-manual-job="isManualJob"
             :category="retryButtonCategory"
             :href="restJob.retry_path"
+            :confirmation-message="jobConfirmationMessage"
+            :job-name="restJob.name"
             :modal-id="$options.forwardDeploymentFailureModalId"
             variant="confirm"
             data-testid="retry-button"

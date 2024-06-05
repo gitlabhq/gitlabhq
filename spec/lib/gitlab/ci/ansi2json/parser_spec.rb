@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 
 # The rest of the specs for this class are covered in style_spec.rb
-RSpec.describe Gitlab::Ci::Ansi2json::Parser do
+RSpec.describe Gitlab::Ci::Ansi2json::Parser, feature_category: :continuous_integration do
   subject { described_class }
 
   describe 'bold?' do

@@ -10,8 +10,6 @@ identifiers:
 - user
 - namespace
 description: "Event migrated form Service Ping metric. Count of unique users edited timeline events"
-product_section: ops
-product_stage: monitor
 product_group: respond
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105223

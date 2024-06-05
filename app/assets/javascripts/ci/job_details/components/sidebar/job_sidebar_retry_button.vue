@@ -2,7 +2,11 @@
 import { GlButton, GlDisclosureDropdown, GlModalDirective } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
-import { s__ } from '~/locale';
+import { createAlert } from '~/alert';
+import { s__, __ } from '~/locale';
+import axios from '~/lib/utils/axios_utils';
+import { visitUrl } from '~/lib/utils/url_utility';
+import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
 
 export default {
   name: 'JobSidebarRetryButton',
@@ -31,6 +35,15 @@ export default {
       type: Boolean,
       required: true,
     },
+    confirmationMessage: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    jobName: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
     ...mapGetters(['hasForwardDeploymentFailure']),
@@ -38,9 +51,26 @@ export default {
       return [
         {
           text: this.$options.i18n.runAgainJobButtonLabel,
-          href: this.href,
-          extraAttrs: {
-            'data-method': 'post',
+          action: async () => {
+            if (this.confirmationMessage !== null) {
+              const confirmed = await confirmJobConfirmationMessage(
+                this.jobName,
+                this.confirmationMessage,
+              );
+              if (!confirmed) {
+                return;
+              }
+            }
+            axios
+              .post(this.href)
+              .then((response) => {
+                visitUrl(response.request.responseURL);
+              })
+              .catch(() => {
+                createAlert({
+                  message: __('An error occurred while making the request.'),
+                });
+              });
           },
         },
         {

@@ -22,7 +22,14 @@ describe('Sidebar Header', () => {
       propsData: {
         ...props,
         jobId: mockId,
-        restJob,
+        restJob: {
+          status: {
+            action: {
+              confirmation_message: null,
+            },
+          },
+          ...restJob,
+        },
       },
       provide: {
         ...defaultProvide,

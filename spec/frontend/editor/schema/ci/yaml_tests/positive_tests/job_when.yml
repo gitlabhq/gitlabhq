@@ -8,3 +8,13 @@ job_with_when_always:
 job_with_when_on_failure:
   script: exit 0
   when: on_failure
+
+job_with_when_manual:
+  script: exit 0
+  when: manual
+
+job_with_when_manual_and_confirmation_message:
+  script: exit 0
+  when: manual
+  manual_confirmation: 'here is my confirmation message'
+

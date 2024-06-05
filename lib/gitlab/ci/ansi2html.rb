@@ -119,8 +119,7 @@ module Gitlab
             return
           end
 
-          is_continued =
-            @has_timestamps && next_line&.at(TIMESTAMP_PREFIX_LENGTH - 1) == '+' && has_timestamp_prefix?(next_line)
+          is_continued = @has_timestamps && next_line&.at(TIMESTAMP_PREFIX_LENGTH - 1) == '+'
 
           # Continued lines contain an ignored \n character at the end, so we can chop it off
           line.delete_suffix!("\n") if is_continued

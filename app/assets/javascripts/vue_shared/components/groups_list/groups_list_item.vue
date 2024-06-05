@@ -137,7 +137,7 @@ export default {
 
 <template>
   <li class="groups-list-item gl-py-5 gl-border-b gl-display-flex">
-    <div class="gl-md-display-flex gl-flex-grow-1">
+    <div class="md:gl-flex gl-flex-grow-1">
       <div class="gl-flex gl-grow gl-items-start">
         <div
           v-if="showGroupIcon"

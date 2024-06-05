@@ -8,6 +8,7 @@ import ActionComponent from '~/ci/common/private/job_action_component.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import {
   delayedJob,
   mockJob,
@@ -16,6 +17,7 @@ import {
   mockFailedJob,
   triggerJob,
   triggerJobWithRetryAction,
+  triggerManualJob,
 } from '../mock_data';
 
 describe('pipeline graph job item', () => {
@@ -47,6 +49,7 @@ describe('pipeline graph job item', () => {
       },
       stubs: {
         CiIcon,
+        GlModal: stubComponent(GlModal),
       },
       ...options,
     });
@@ -429,6 +432,25 @@ describe('pipeline graph job item', () => {
           expect(findModal().exists()).toBe(exists);
         },
       );
+      it.each`
+        confirmationMessage | exists   | visibilityText
+        ${'exist'}          | ${true}  | ${'shows'}
+        ${null}             | ${false} | ${'hides'}
+      `(
+        '$visibilityText the modal when `confirmationMessage` is $confirmationMessage',
+        async ({ exists, confirmationMessage }) => {
+          const triggerJobWithConfirmationMessage = JSON.parse(JSON.stringify(triggerManualJob));
+          triggerJobWithConfirmationMessage.status.action.confirmationMessage = confirmationMessage;
+          createWrapper({
+            props: {
+              job: triggerJobWithConfirmationMessage,
+            },
+          });
+          await findActionComponent().trigger('click');
+
+          expect(findModal().exists()).toBe(exists);
+        },
+      );
     });
 
     describe('when showing the modal', () => {
@@ -453,6 +475,28 @@ describe('pipeline graph job item', () => {
           expect(findActionComponent().props().shouldTriggerClick).toBe(shouldTriggerActionClick);
         },
       );
+
+      it('show manual confirmation message when job is manual and manual confirmation message is presented', async () => {
+        const triggerJobWithConfirmationMessage = {
+          ...triggerManualJob,
+        };
+        const confirmationMessage = 'Are you sure you want to run this job?';
+        triggerJobWithConfirmationMessage.status.action.confirmationMessage = confirmationMessage;
+
+        createWrapper({
+          props: {
+            job: triggerJobWithConfirmationMessage,
+          },
+        });
+        await findActionComponent().trigger('click');
+
+        const modal = findModal();
+        expect(modal.props().title).toBe(
+          `Are you sure you want to run ${triggerJobWithConfirmationMessage.name}?`,
+        );
+        expect(modal.props().actionPrimary.text).toBe('Yes, run trigger');
+        expect(modal.html()).toContain(confirmationMessage);
+      });
     });
 
     describe('when not checking the "do not show this again" checkbox', () => {

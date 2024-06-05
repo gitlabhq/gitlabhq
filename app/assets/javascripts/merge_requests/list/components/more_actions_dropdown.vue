@@ -68,7 +68,7 @@ export default {
     <template #toggle>
       <div class="gl-min-h-7">
         <gl-button
-          class="gl-md-display-none! gl-w-full"
+          class="md:!gl-hidden gl-w-full"
           button-text-classes="gl-display-flex gl-justify-content-space-between gl-w-full"
           category="secondary"
           :aria-label="$options.i18n.toggleText"

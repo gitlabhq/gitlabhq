@@ -6,8 +6,6 @@ property_description: ""
 value_description: ""
 extra_properties:
 identifiers:
-product_section: dev
-product_stage: plan
 product_group: product_planning
 milestone: "13.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53753

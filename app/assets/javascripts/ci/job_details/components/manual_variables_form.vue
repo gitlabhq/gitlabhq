@@ -19,6 +19,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { reportToSentry } from '~/ci/utils';
+import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
 import GetJob from '../graphql/queries/get_job.query.graphql';
 import playJobWithVariablesMutation from '../graphql/mutations/job_play_with_variables.mutation.graphql';
 import retryJobWithVariablesMutation from '../graphql/mutations/job_retry_with_variables.mutation.graphql';
@@ -74,6 +75,15 @@ export default {
     jobId: {
       type: Number,
       required: true,
+    },
+    jobName: {
+      type: String,
+      required: true,
+    },
+    confirmationMessage: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   clearBtnSharedClasses: ['gl-flex-grow-0 gl-flex-basis-0 gl-m-0! gl-ml-3!'],
@@ -193,8 +203,19 @@ export default {
     navigateToJob(path) {
       visitUrl(path);
     },
-    runJob() {
+    async runJob() {
       this.runBtnDisabled = true;
+      if (this.confirmationMessage !== null) {
+        const confirmed = await confirmJobConfirmationMessage(
+          this.jobName,
+          this.confirmationMessage,
+        );
+
+        if (!confirmed) {
+          this.runBtnDisabled = false;
+          return;
+        }
+      }
 
       if (this.isRetryable) {
         this.retryJob();
@@ -291,8 +312,8 @@ export default {
           v-if="isRetryable"
           data-testid="cancel-btn"
           @click="$emit('hideManualVariablesForm')"
-          >{{ $options.i18n.cancel }}</gl-button
-        >
+          >{{ $options.i18n.cancel }}
+        </gl-button>
         <gl-button
           variant="confirm"
           category="primary"

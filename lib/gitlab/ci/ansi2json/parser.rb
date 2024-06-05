@@ -34,7 +34,7 @@ module Gitlab
         def self.matching_formats(mask)
           formats = []
           STYLE_SWITCHES.each do |text_format, flag|
-            formats << "term-#{text_format}" if mask & flag != 0
+            formats << "term-#{text_format}" if (mask & flag) != 0
           end
 
           formats
@@ -46,9 +46,9 @@ module Gitlab
         end
 
         def changes
-          if self.respond_to?("on_#{@command}")
-            send("on_#{@command}", @ansi_stack) # rubocop:disable GitlabSecurity/PublicSend
-          end
+          # rubocop:disable GitlabSecurity/PublicSend -- we want to call dynamic methods based on ANSI codes
+          try("on_#{@command}", @ansi_stack)
+          # rubocop:enable GitlabSecurity/PublicSend
         end
 
         # rubocop:disable Style/SingleLineMethods
