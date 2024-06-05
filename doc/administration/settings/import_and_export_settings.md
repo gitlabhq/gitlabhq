@@ -193,3 +193,14 @@ To modify this setting:
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Maximum number of simultaneous import jobs** for the desired importer.
+
+## Troubleshooting
+
+## Error: `Help page documentation base url is blocked: execution expired`
+
+While enabling application settings like [import source](#configure-allowed-import-sources), you might get a `Help page documentation base url is blocked: execution expired`
+error. To work around this error:
+
+1. Add `docs.gitlab.com`, or [the redirect help documentation pages URL](help_page.md#redirect-help-pages), to the
+   [allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+1. Select **Save Changes**.

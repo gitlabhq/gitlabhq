@@ -17,6 +17,7 @@ describe('DesignToolbar', () => {
         isLoading,
         design,
         isSidebarOpen: true,
+        designFilename: design.filename,
       },
     });
   }

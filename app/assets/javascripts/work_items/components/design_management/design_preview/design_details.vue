@@ -52,6 +52,11 @@ export default {
       type: String,
       required: true,
     },
+    allDesigns: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -163,8 +168,10 @@ export default {
       <design-toolbar
         :work-item-title="workItemTitle"
         :design="design"
+        :design-filename="$route.params.id"
         :is-loading="isLoading"
         :is-sidebar-open="isSidebarOpen"
+        :all-designs="allDesigns"
         @toggle-sidebar="toggleSidebar"
       />
       <div

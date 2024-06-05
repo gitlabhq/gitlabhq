@@ -107,7 +107,7 @@ export default {
           <design v-bind="design" class="gl-bg-white" :is-uploading="false" />
         </li>
       </ol>
-      <router-view :key="$route.fullPath" />
+      <router-view :key="$route.fullPath" :all-designs="designs" />
     </template>
   </widget-wrapper>
 </template>

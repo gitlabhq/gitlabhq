@@ -200,15 +200,47 @@ RSpec.describe Projects::MirrorsController, feature_category: :source_code_manag
     end
 
     context 'when user deletes the remote mirror' do
-      let(:remote_mirror_attributes) do
-        { id: project.remote_mirrors.first.id, _destroy: 1 }
-      end
+      let(:remote_mirror_attributes) { { id: mirror_id, _destroy: 1 } }
+      let(:mirror_id) { project.remote_mirrors.first.id }
 
       it 'processes a successful delete' do
         expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.to change(RemoteMirror, :count).by(-1)
 
         expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
         expect(flash[:notice]).to match(/successfully updated/)
+      end
+
+      context 'when mirror id is not found' do
+        let(:mirror_id) { non_existing_record_id }
+
+        it 'processes a successful delete' do
+          expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.not_to change(RemoteMirror, :count)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'when feature flag "use_remote_mirror_destroy_service" is disabled' do
+        before do
+          stub_feature_flags(use_remote_mirror_destroy_service: false)
+        end
+
+        it 'processes a successful delete' do
+          expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.to change(RemoteMirror, :count).by(-1)
+
+          expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
+          expect(flash[:notice]).to match(/successfully updated/)
+        end
+
+        context 'when mirror id is not found' do
+          let(:mirror_id) { non_existing_record_id }
+
+          it 'processes a successful delete' do
+            expect { do_put(project, remote_mirrors_attributes: remote_mirror_attributes) }.not_to change(RemoteMirror, :count)
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
       end
     end
   end

@@ -3,6 +3,18 @@
 require "optparse"
 require 'gitlab/housekeeper'
 
+REQUIRED_CONFIG_KEYS = [
+  'HOUSEKEEPER_GITLAB_API_TOKEN',
+  'HOUSEKEEPER_TARGET_PROJECT_ID'
+].freeze
+
+def validate_configuration!
+  REQUIRED_CONFIG_KEYS.each do |required_key|
+    # fetch will fail with an error if the key isn't found.
+    ENV.fetch(required_key)
+  end
+end
+
 options = {}
 
 OptionParser.new do |opts|
@@ -32,5 +44,8 @@ OptionParser.new do |opts|
     abort opts.to_s
   end
 end.parse!
+
+# We do not want to validate configuration on dry runs
+validate_configuration! unless options[:dry_run]
 
 Gitlab::Housekeeper::Runner.new(**options).run

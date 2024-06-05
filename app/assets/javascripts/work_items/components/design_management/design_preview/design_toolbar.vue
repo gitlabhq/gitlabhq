@@ -4,6 +4,7 @@ import { TYPE_DESIGN } from '~/import/constants';
 import { s__ } from '~/locale';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import CloseButton from './close_button.vue';
+import DesignNavigation from './design_navigation.vue';
 
 export default {
   i18n: {
@@ -16,6 +17,7 @@ export default {
     GlSkeletonLoader,
     ImportedBadge,
     CloseButton,
+    DesignNavigation,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -29,6 +31,10 @@ export default {
       type: Object,
       required: true,
     },
+    designFilename: {
+      type: String,
+      required: true,
+    },
     isLoading: {
       type: Boolean,
       required: true,
@@ -36,6 +42,11 @@ export default {
     isSidebarOpen: {
       type: Boolean,
       required: true,
+    },
+    allDesigns: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   computed: {
@@ -72,17 +83,18 @@ export default {
       </div>
       <close-button class="md:gl-hidden gl-ml-auto" />
     </div>
-    <div class="gl-flex md:gl-flex-row gl-flex-shrink-0 gl-md-ml-auto">
+    <div class="gl-flex md:gl-flex-row gl-flex-shrink-0 gl-md-ml-auto gl-mr-5">
       <gl-button
         v-gl-tooltip.bottom
         category="tertiary"
         icon="comments"
         :title="toggleCommentsButtonLabel"
         :aria-label="toggleCommentsButtonLabel"
-        class="gl-ml-2 gl-mr-6"
+        class="gl-ml-2 gl-mr-5"
         data-testid="toggle-design-sidebar"
         @click="$emit('toggle-sidebar')"
       />
+      <design-navigation :filename="designFilename" :all-designs="allDesigns" class="gl-ml-auto" />
     </div>
     <close-button class="gl-hidden md:gl-flex" />
   </header>

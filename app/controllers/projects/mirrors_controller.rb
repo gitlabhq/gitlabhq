@@ -17,9 +17,8 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def update
-    if push_mirror_create?
-      service = ::RemoteMirrors::CreateService.new(project, current_user, push_mirror_attributes)
-      result = service.execute
+    if push_mirror_create_or_destroy?
+      result = execute_push_mirror_service
 
       if result.success?
         flash[:notice] = notice_message
@@ -38,7 +37,7 @@ class Projects::MirrorsController < Projects::ApplicationController
         end
       end
     else
-      deprecated_update_procedure
+      deprecated_pull_mirror_procedure
     end
   end
 
@@ -69,6 +68,33 @@ class Projects::MirrorsController < Projects::ApplicationController
 
   private
 
+  def push_mirror_create_or_destroy?
+    push_mirror_create? || push_mirror_destroy?
+  end
+
+  def push_mirror_create?
+    push_mirror_attributes.present?
+  end
+
+  def push_mirror_destroy?
+    mirror_params.dig(:remote_mirrors_attributes, '_destroy') == '1' &&
+      Feature.enabled?(:use_remote_mirror_destroy_service, project)
+  end
+
+  def push_mirror_attributes
+    mirror_params.dig(:remote_mirrors_attributes, '0')
+  end
+
+  def execute_push_mirror_service
+    if push_mirror_create?
+      return ::RemoteMirrors::CreateService.new(project, current_user, push_mirror_attributes).execute
+    end
+
+    return unless push_mirror_destroy?
+
+    ::RemoteMirrors::DestroyService.new(project, current_user).execute(push_mirror_to_destroy)
+  end
+
   def safe_mirror_params
     mirror_params
   end
@@ -77,15 +103,13 @@ class Projects::MirrorsController < Projects::ApplicationController
     _('Mirroring settings were successfully updated.')
   end
 
-  def push_mirror_create?
-    push_mirror_attributes.present?
+  def push_mirror_to_destroy
+    push_mirror_to_destroy_id = safe_mirror_params.dig(:remote_mirrors_attributes, 'id')
+
+    project.remote_mirrors.find(push_mirror_to_destroy_id)
   end
 
-  def push_mirror_attributes
-    mirror_params.dig(:remote_mirrors_attributes, '0')
-  end
-
-  def deprecated_update_procedure
+  def deprecated_pull_mirror_procedure
     result = ::Projects::UpdateService.new(project, current_user, safe_mirror_params).execute
 
     if result[:status] == :success

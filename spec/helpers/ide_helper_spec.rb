@@ -49,7 +49,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           'file-path' => params[:path],
           'merge-request' => params[:merge_request_id],
           'project' => serialized_project,
-          'preview-markdown-path' => Gitlab::Routing.url_helpers.preview_markdown_project_path(project)
+          'preview-markdown-path' => Gitlab::Routing.url_helpers.project_preview_markdown_path(project)
         ))
       end
 

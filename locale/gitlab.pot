@@ -18437,6 +18437,9 @@ msgstr ""
 msgid "DesignManagement|Your designs are being copied and are on their way… Please refresh to update."
 msgstr ""
 
+msgid "DesignManagement|of %{designs_count}"
+msgstr ""
+
 msgid "Designs"
 msgstr ""
 

@@ -17,7 +17,7 @@ RSpec.describe 'project routing' do
   #                  project GET    /:id(.:format)          projects#show
   #                          PUT    /:id(.:format)          projects#update
   #                          DELETE /:id(.:format)          projects#destroy
-  # preview_markdown_project POST   /:id/preview_markdown(.:format) projects#preview_markdown
+  # preview_markdown_project POST   /:id/-/preview_markdown(.:format) projects#preview_markdown
   describe ProjectsController, 'routing' do
     it 'to #index' do
       expect(get('/projects')).to route_to('projects#index')
@@ -66,8 +66,8 @@ RSpec.describe 'project routing' do
     end
 
     it 'to #preview_markdown' do
-      expect(post('/gitlab/gitlabhq/preview_markdown')).to(
-        route_to('projects#preview_markdown', namespace_id: 'gitlab', id: 'gitlabhq')
+      expect(post('/gitlab/gitlabhq/-/preview_markdown')).to(
+        route_to('projects#preview_markdown', namespace_id: 'gitlab', project_id: 'gitlabhq')
       )
     end
   end

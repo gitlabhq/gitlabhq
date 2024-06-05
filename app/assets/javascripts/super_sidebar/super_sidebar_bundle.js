@@ -35,6 +35,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
 
     return {
       showTrialStatusWidget: true,
+      showDuoProTrialStatusWidget: false,
       containerId,
       trialDaysUsed: Number(trialDaysUsed),
       trialDuration: Number(trialDuration),
@@ -48,10 +49,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trialDiscoverPagePath,
     };
   }
-  return { showTrialStatusWidget: false };
-};
 
-const getDuoProdTrialStatusWidgetData = (sidebarData) => {
   if (
     sidebarData.duo_pro_trial_status_widget_data_attrs &&
     sidebarData.duo_pro_trial_status_popover_data_attrs
@@ -70,6 +68,7 @@ const getDuoProdTrialStatusWidgetData = (sidebarData) => {
 
     return {
       showDuoProTrialStatusWidget: true,
+      showTrialStatusWidget: false,
       containerId,
       trialDaysUsed: Number(trialDaysUsed),
       trialDuration: Number(trialDuration),
@@ -81,7 +80,8 @@ const getDuoProdTrialStatusWidgetData = (sidebarData) => {
       purchaseNowUrl,
     };
   }
-  return { showDuoProTrialStatusWidget: false };
+
+  return { showTrialStatusWidget: false, showDuoProTrialStatusWidget: false };
 };
 
 export const initSuperSidebar = () => {
@@ -120,7 +120,6 @@ export const initSuperSidebar = () => {
       rootPath,
       isImpersonating,
       ...getTrialStatusWidgetData(sidebarData),
-      ...getDuoProdTrialStatusWidgetData(sidebarData),
       commandPaletteCommands,
       commandPaletteLinks,
       contextSwitcherLinks,
