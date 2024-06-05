@@ -26,7 +26,7 @@ RSpec.describe 'Admin Mode Logout', :js, feature_category: :system_access do
     expect(page).to have_link(href: new_admin_session_path)
   end
 
-  it 'disable shows flash notice' do
+  it 'disable shows flash notice', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444621' do
     gitlab_disable_admin_mode
 
     expect(page).to have_selector('[data-testid="alert-info"]')

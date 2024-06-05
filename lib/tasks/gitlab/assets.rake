@@ -9,12 +9,11 @@ module Tasks
       # In the new caching strategy, we check the assets hash sum *before* compiling
       # the app/assets/javascripts/locale/**/app.js files. That means the hash sum
       # must depend on locale/**/gitlab.po.
-      JS_ASSET_PATTERNS = %w[*.js config/**/*.js locale/**/gitlab.po].freeze
+      JS_ASSET_PATTERNS = %w[*.js config/**/*.js scripts/frontend/*.{mjs,js} locale/**/gitlab.po].freeze
       JS_ASSET_FILES = %w[
         package.json
         yarn.lock
         babel.config.js
-        config/webpack.config.js
         .nvmrc
       ].freeze
       # Ruby gems might emit assets which have an impact on compilation

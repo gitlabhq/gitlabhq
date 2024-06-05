@@ -831,6 +831,8 @@
   - 1
 - - work_items_import_work_items_csv
   - 1
+- - work_items_rolledup_dates_bulk_update_handler
+  - 1
 - - work_items_rolledup_dates_update_milestone_related_work_item_dates_event_handler
   - 1
 - - work_items_rolledup_dates_update_multiple_rolledup_dates

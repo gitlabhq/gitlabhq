@@ -79,6 +79,17 @@ export default {
             path,
           },
         }),
+        ...(line.time
+          ? [
+              h(
+                'span',
+                {
+                  class: 'job-log-time',
+                },
+                line.time,
+              ),
+            ]
+          : []),
         ...chars,
       ],
     );

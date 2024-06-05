@@ -80,6 +80,14 @@ describe('ImportArtifactZone', () => {
 
       expect(wrapper.emitted('change')).toStrictEqual([[]]);
     });
+
+    it('shows and success alert', async () => {
+      await emulateFileDrop();
+      await waitForPromises();
+
+      expect(alert().text()).toBe('Uploaded files successfully');
+      expect(alert().props().variant).toBe('success');
+    });
   });
 
   describe('Subfolder path', () => {
@@ -140,6 +148,7 @@ describe('ImportArtifactZone', () => {
       await waitForPromises();
 
       expect(alert().text()).toBe('File is too big.');
+      expect(alert().props().variant).toBe('danger');
     });
 
     it('resets the state on failure', async () => {

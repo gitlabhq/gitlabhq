@@ -11,6 +11,7 @@ class Milestone < ApplicationRecord
   include UpdatedAtFilterable
   include EachBatch
   include Spammable
+  include AfterCommitQueue
 
   prepend_mod_with('Milestone') # rubocop: disable Cop/InjectEnterpriseEditionModule
 

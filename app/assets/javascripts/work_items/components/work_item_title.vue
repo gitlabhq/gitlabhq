@@ -59,7 +59,7 @@ export default {
   <h1
     v-else
     data-testid="work-item-title"
-    class="gl-w-full gl-font-normal gl-sm-font-weight-bold gl-mb-1 gl-mt-0 gl-font-size-h-display"
+    class="gl-w-full gl-font-normal sm:gl-font-bold gl-mb-1 gl-mt-0 gl-font-size-h-display"
   >
     {{ title }}
   </h1>

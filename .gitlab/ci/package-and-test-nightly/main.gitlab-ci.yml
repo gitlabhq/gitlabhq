@@ -109,6 +109,63 @@ relative-url:
     QA_SCENARIO: Test::Instance::RelativeUrl
 
 # ------------------------------------------
+# Registry with CDN
+# ------------------------------------------
+
+registry-with-cdn:
+  extends:
+    - .qa
+    - .ee
+  variables:
+    QA_SCENARIO: Test::Integration::RegistryWithCDN
+    GCS_CDN_BUCKET_NAME: $QA_GCS_CDN_BUCKET_NAME
+    GOOGLE_CDN_LB: $QA_GOOGLE_CDN_LB
+    GOOGLE_CDN_JSON_KEY: $QA_GOOGLE_CDN_JSON_KEY
+    GOOGLE_CDN_SIGNURL_KEY: $QA_GOOGLE_CDN_SIGNURL_KEY
+    GOOGLE_CDN_SIGNURL_KEY_NAME: $QA_GOOGLE_CDN_SIGNURL_KEY_NAME
+
+# ------------------------------------------
+# Object Storage with MiniO
+# ------------------------------------------
+
+object-storage:
+  extends:
+    - .qa
+    - ee
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag object_storage
+    GITLAB_QA_OPTS: --omnibus-config object_storage
+
+# ------------------------------------------
+# Object Storage with AWS
+# ------------------------------------------
+
+object-storage-aws:
+  extends:
+    - object-storage
+  variables:
+    AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
+    AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
+    AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
+    AWS_S3_REGION: $QA_AWS_S3_REGION
+    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
+
+# ------------------------------------------
+# Object Storage with GCS
+# ------------------------------------------
+
+object-storage-gcs:
+  extends:
+    - object-storage
+  variables:
+    GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
+    GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
+    GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
+    GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
+    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
+
+# ------------------------------------------
 # Decomposition jobs
 # ------------------------------------------
 decomposition-single-db:
@@ -129,6 +186,17 @@ decomposition-multiple-db:
     QA_SCENARIO: Test::Instance::Image
     GITLAB_ALLOW_SEPARATE_CI_DATABASE: "true"
     GITLAB_QA_OPTS: --omnibus-config decomposition_multiple_db
+
+gitlab-pages:
+  extends:
+    - .qa
+    - .ee
+  variables:
+    QA_SCENARIO: Test::Integration::GitlabPages
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Instance::GitlabPages/
+    - !reference [.rules:test:manual, rules]
 
 # ==========================================
 # Post test stage

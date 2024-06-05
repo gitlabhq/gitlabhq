@@ -12,6 +12,9 @@ module RSpec
         allow(Gitlab::EventStore).to receive(:publish) do |published_event|
           @events << published_event
         end
+        allow(Gitlab::EventStore).to receive(:publish_group) do |published_event|
+          @events += published_event
+        end
       end
     end
 
@@ -69,9 +72,9 @@ module RSpec
     private
 
     def match_data?(actual, expected)
-      return if actual.blank? || expected.blank?
+      return false if actual.blank? || expected.blank?
 
-      values_match?(actual.keys, expected.keys) &&
+      values_match?(expected.keys.sort, actual.keys.sort) &&
         actual.keys.all? do |key|
           case expected[key]
           when Array

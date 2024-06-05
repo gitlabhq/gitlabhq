@@ -47,7 +47,7 @@ export default {
       file: this.value.file,
       subfolder: this.value.subfolder,
       loading: false,
-      error: null,
+      alert: null,
     };
   },
   computed: {
@@ -68,11 +68,12 @@ export default {
       uploadModel({ importPath, file: this.file, subfolder: this.subfolder })
         .then(() => {
           this.resetFile();
+          this.alert = { message: this.$options.i18n.successfulUpload, variant: 'success' };
           this.$emit('change');
         })
         .catch((error) => {
           this.resetFile();
-          this.error = error;
+          this.alert = { message: error, variant: 'danger' };
         });
     },
     emitInput(value) {
@@ -91,7 +92,7 @@ export default {
       }
     },
     hideAlert() {
-      this.error = null;
+      this.alert = null;
     },
     discardFile() {
       this.file = null;
@@ -105,6 +106,7 @@ export default {
       'MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifact to attach',
     ),
     subfolderPrependText: s__('MlModelRegistry|Upload files under path: '),
+    successfulUpload: s__('MlModelRegistry|Uploaded files successfully'),
   },
   validFileMimetypes: [],
 };
@@ -124,8 +126,8 @@ export default {
         <div data-testid="formatted-file-size">{{ formattedFileSize }}</div>
         <div data-testid="file-name">{{ fileFullpath }}</div>
       </gl-alert>
-      <gl-alert v-if="error" variant="danger" :dismissible="true" @dismiss="hideAlert">
-        {{ error }}
+      <gl-alert v-if="alert" :variant="alert.variant" :dismissible="true" @dismiss="hideAlert">
+        {{ alert.message }}
       </gl-alert>
     </upload-dropzone>
     <gl-form-group label-for="subfolderId">

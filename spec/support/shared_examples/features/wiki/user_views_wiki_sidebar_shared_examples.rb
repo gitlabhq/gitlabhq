@@ -26,11 +26,12 @@ RSpec.shared_examples 'User views wiki sidebar' do
         within('.right-sidebar') do
           expect(page).to have_content('another')
           expect(page).to have_link('View all')
+          expect(page).not_to have_css("[data-testid='expand-pages-list']")
         end
       end
 
       it 'can create a custom sidebar', :js do
-        click_on 'Edit wiki sidebar'
+        click_on 'Add custom sidebar'
         fill_in :wiki_content, with: 'My custom sidebar'
         click_on 'Create page'
 
@@ -48,15 +49,23 @@ RSpec.shared_examples 'User views wiki sidebar' do
         visit wiki_path(wiki)
       end
 
-      it 'renders the custom sidebar instead of the default one' do
+      it 'renders both the custom sidebar and the default one' do
         within('.right-sidebar') do
+          expect(page).to have_css("[data-testid='expand-pages-list']")
           expect(page).to have_content('My custom sidebar')
-          expect(page).not_to have_content('another')
+        end
+      end
+
+      it 'can expand list of pages in sidebar', :js do
+        find("[data-testid='expand-pages-list']").click
+
+        within('.right-sidebar') do
+          expect(page).to have_content('another')
         end
       end
 
       it 'can edit the custom sidebar', :js do
-        click_on 'Edit wiki sidebar'
+        click_on 'Edit custom sidebar'
 
         expect(page).to have_field(:wiki_content, with: 'My custom sidebar')
 

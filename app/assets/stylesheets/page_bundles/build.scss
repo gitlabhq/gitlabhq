@@ -193,6 +193,7 @@
 .job-log-line-number {
   color: $gray-500;
   padding-right: $gl-padding-8;
+  margin-right: $gl-padding-8;
   min-width: $job-line-number-width;
   user-select: none;
   text-align: right;
@@ -203,6 +204,14 @@
     text-decoration: underline;
     color: $gray-500;
   }
+}
+
+.job-log-time {
+  padding-right: $gl-padding-8;
+  margin-right: $gl-padding-8;
+  color: $gray-500;
+  user-select: none;
+  flex-shrink: 0;
 }
 
 .job-log-line-header {

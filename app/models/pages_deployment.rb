@@ -96,6 +96,10 @@ class PagesDeployment < ApplicationRecord
     update_attribute(:deleted_at, Time.now.utc)
   end
 
+  def restore
+    update_attribute(:deleted_at, nil)
+  end
+
   private
 
   def set_size

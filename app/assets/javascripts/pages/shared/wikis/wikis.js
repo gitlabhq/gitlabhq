@@ -24,11 +24,7 @@ export default class Wikis {
       });
 
       listToggle.addEventListener('click', (e) => {
-        if (listToggle.classList.contains('collapsed')) {
-          listToggle.classList.remove('collapsed');
-        } else {
-          listToggle.classList.add('collapsed');
-        }
+        listToggle.classList.toggle('collapsed');
 
         e.stopImmediatePropagation();
       });

@@ -218,6 +218,7 @@ module Types
     mount_mutation Mutations::Ml::ModelVersions::Delete, alpha: { milestone: '17.0' }
     mount_mutation Mutations::BranchRules::Delete, alpha: { milestone: '16.9' }
     mount_mutation Mutations::Pages::Deployment::Delete, alpha: { milestone: '17.1' }
+    mount_mutation Mutations::Pages::Deployment::Restore, alpha: { milestone: '17.1' }
   end
 end
 

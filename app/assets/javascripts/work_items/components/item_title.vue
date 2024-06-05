@@ -28,7 +28,7 @@ export default {
     headerClasses() {
       return this.useH1
         ? 'gl-w-full gl-font-size-h-display gl-m-0!'
-        : 'gl-font-normal gl-sm-font-weight-bold gl-mb-1 gl-mt-0 gl-w-full';
+        : 'gl-font-normal sm:gl-font-bold gl-mb-1 gl-mt-0 gl-w-full';
     },
   },
   methods: {

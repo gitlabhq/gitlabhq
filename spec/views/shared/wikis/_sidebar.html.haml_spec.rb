@@ -76,7 +76,7 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
       let(:can_edit) { true }
 
       it 'renders the link' do
-        expect(rendered).to have_link('Edit wiki sidebar', href: wiki_page_path(wiki, Wiki::SIDEBAR, action: :edit))
+        expect(rendered).to have_link('Add custom sidebar', href: wiki_page_path(wiki, Wiki::SIDEBAR, action: :edit))
       end
     end
 
@@ -84,7 +84,7 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
       let(:can_edit) { false }
 
       it 'does not render the link' do
-        expect(rendered).not_to have_link('Edit wiki sidebar')
+        expect(rendered).not_to have_link('Add custom sidebar')
       end
     end
   end

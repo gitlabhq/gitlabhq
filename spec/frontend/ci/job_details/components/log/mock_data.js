@@ -79,6 +79,24 @@ export const mockJobLog = [
   ...mockJobLogEnd,
 ];
 
+export const mockJobLogWithTimestamp = [
+  {
+    offset: 0,
+    timestamp: '2024-05-22T12:43:46.962646Z',
+    content: [
+      {
+        text: 'Running with gitlab-runner 12.1.0 (de7731dd)',
+        style: 'term-fg-l-cyan term-bold',
+      },
+    ],
+  },
+  {
+    offset: 1001,
+    timestamp: 'ANOTHER_TIMESTAMP_FORMAT',
+    content: [{ text: ' on docker-auto-scale-com 8a6210b8' }],
+  },
+];
+
 export const mockJobLogLineCount = 7; // `text` entries in mockJobLog
 
 export const mockContentSectionClosed = [

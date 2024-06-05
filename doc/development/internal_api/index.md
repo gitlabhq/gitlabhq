@@ -904,6 +904,7 @@ POST /namespaces/:id/subscription_add_on_purchase/:add_on_name
 | Attribute   | Type    | Required | Description |
 |:------------|:--------|:---------|:------------|
 | `quantity` | integer | yes | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
+| `started_on` | date | yes | Date the subscription add-on purchase became available |
 | `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
 | `purchase_xid` | string | yes | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
 | `trial` | boolean | no | Whether the add-on is a trial |
@@ -911,7 +912,7 @@ POST /namespaces/:id/subscription_add_on_purchase/:add_on_name
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=10&expires_on="2024-07-15"&purchase_xid="A-S12345678"&trial=true"
+curl --request POST --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=10&started_on="2024-06-15"&expires_on="2024-07-15"&purchase_xid="A-S12345678"&trial=true"
 ```
 
 Example response:
@@ -922,6 +923,7 @@ Example response:
   "namespace_name":"A Namespace Name",
   "add_on":"Code Suggestions",
   "quantity":10,
+  "started_on":"2024-06-15",
   "expires_on":"2024-07-15",
   "purchase_xid":"A-S12345678",
   "trial":true
@@ -939,6 +941,7 @@ PUT /namespaces/:id/subscription_add_on_purchase/:add_on_name
 | Attribute   | Type    | Required | Description |
 |:------------|:--------|:---------|:------------|
 | `quantity` | integer | no | Amount of units in the subscription add-on purchase (Example: Number of seats for a Code Suggestions add-on) |
+| `started_on` | date | yes | Date the subscription add-on purchase became available |
 | `expires_on` | date | yes | Expiration date of the subscription add-on purchase |
 | `purchase_xid` | string | no | Identifier for the subscription add-on purchase (Example: Subscription name for a Code Suggestions add-on) |
 | `trial` | boolean | no | Whether the add-on is a trial |
@@ -946,7 +949,7 @@ PUT /namespaces/:id/subscription_add_on_purchase/:add_on_name
 Example request:
 
 ```shell
-curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=15&expires_on="2024-07-15"&purchase_xid="A-S12345678"&trial=true"
+curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/namespaces/1234/subscription_add_on_purchase/code_suggestions?&quantity=15&started_on="2024-06-15"&expires_on="2024-07-15"&purchase_xid="A-S12345678"&trial=true"
 ```
 
 Example response:
@@ -957,6 +960,7 @@ Example response:
   "namespace_name":"A Namespace Name",
   "add_on":"Code Suggestions",
   "quantity":15,
+  "started_on":"2024-06-15",
   "expires_on":"2024-07-15",
   "purchase_xid":"A-S12345678",
   "trial":true
@@ -985,6 +989,7 @@ Example response:
   "namespace_name":"A Namespace Name",
   "add_on":"Code Suggestions",
   "quantity":15,
+  "started_on":"2024-06-15",
   "expires_on":"2024-07-15",
   "purchase_xid":"A-S12345678",
   "trial":true

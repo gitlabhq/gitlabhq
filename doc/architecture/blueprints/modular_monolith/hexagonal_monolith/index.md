@@ -9,6 +9,14 @@ owning-stage: ""
 
 # Hexagonal Rails Monolith
 
+## Background
+
+This design document supersedes the previous [Composable GitLab Codebase](../composable_codebase_using_rails_engines/index.md)
+where we explored the idea of separating the codebase into technical runtime profiles:
+for example, run the monolith solely as a Sidekiq node.
+With a modular monolith and the use of an Hexagonal Architecture, we can achieve both
+separation of domains as well as separation of application adapters, which may include the usage of engines and/or different runtime profiles.
+
 ## Summary
 
 **TL;DR:** Change the Rails monolith from a [big ball of mud](https://en.wikipedia.org/wiki/Big_ball_of_mud) state to

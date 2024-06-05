@@ -327,9 +327,7 @@ module WikiActions
   def load_sidebar
     @sidebar_page = wiki.find_sidebar(params[:version_id])
 
-    unless @sidebar_page # Fallback to default sidebar
-      @sidebar_wiki_entries, @sidebar_limited = wiki.sidebar_entries(load_content: Feature.enabled?(:wiki_front_matter_title, container))
-    end
+    @sidebar_wiki_entries, @sidebar_limited = wiki.sidebar_entries(load_content: Feature.enabled?(:wiki_front_matter_title, container))
   rescue ::Gitlab::Git::CommandTimedOut => e
     @sidebar_error = e
   end

@@ -94,6 +94,25 @@ describe('Job Log Header Line', () => {
     });
   });
 
+  describe('with time', () => {
+    it('renders the time', () => {
+      const lineNumber = 1;
+      const time = '00:00:01Z';
+      const text = 'text';
+
+      createComponent({
+        line: {
+          time,
+          content: [{ text }],
+          lineNumber,
+        },
+        path: '/',
+      });
+
+      expect(wrapper.text()).toBe(`${lineNumber} ${time} ${text}`);
+    });
+  });
+
   describe('with duration', () => {
     it('renders the duration badge', () => {
       createComponent({ ...defaultProps, duration: '00:10' });

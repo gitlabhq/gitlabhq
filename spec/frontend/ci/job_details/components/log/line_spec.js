@@ -191,6 +191,25 @@ describe('Job Log Line', () => {
     });
   });
 
+  describe('job line time', () => {
+    it('shows a time', () => {
+      const lineNumber = 1;
+      const time = '00:00:01Z';
+      const text = 'text';
+
+      createComponent({
+        line: {
+          time,
+          content: [{ text }],
+          lineNumber,
+        },
+        path: '/',
+      });
+
+      expect(wrapper.text()).toBe(`${lineNumber}${time}${text}`);
+    });
+  });
+
   describe('job log search', () => {
     it('applies highlight class to search result elements', () => {
       createComponent({

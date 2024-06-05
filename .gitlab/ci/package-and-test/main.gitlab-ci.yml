@@ -191,118 +191,9 @@ gitaly-transactions-selective-parallel:
       variables:
         QA_TESTS: ""
 
-# ========== object-storage ===========
-
-object-storage:
-  extends:
-    - .qa
-    - .failure-videos
-  parallel: 2
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_RSPEC_TAGS: --tag object_storage
-    GITLAB_QA_OPTS: --omnibus-config object_storage
-  rules:
-    - !reference [.rules:test:qa-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
-
-object-storage-selective:
-  extends: .qa
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_RSPEC_TAGS: --tag object_storage
-    GITLAB_QA_OPTS: --omnibus-config object_storage
-  rules:
-    - !reference [.rules:test:qa-selective, rules]
-    - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
-
-object-storage-selective-parallel:
-  extends: .qa
-  parallel: 2
-  variables:
-    QA_SCENARIO: Test::Instance::Image
-    QA_RSPEC_TAGS: --tag object_storage
-    GITLAB_QA_OPTS: --omnibus-config object_storage
-  rules:
-    - !reference [.rules:test:qa-selective-parallel, rules]
-    - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
-      variables:
-        QA_TESTS: ""
-
-# ========== object-storage-aws ===========
-
-object-storage-aws:
-  extends:
-    - object-storage
-    - .failure-videos
-  variables:
-    AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
-    AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
-    AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
-    AWS_S3_REGION: $QA_AWS_S3_REGION
-    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
-
-object-storage-aws-selective:
-  extends: object-storage-selective
-  variables:
-    AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
-    AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
-    AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
-    AWS_S3_REGION: $QA_AWS_S3_REGION
-    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
-
-object-storage-aws-selective-parallel:
-  extends: object-storage-selective-parallel
-  variables:
-    AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
-    AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
-    AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
-    AWS_S3_REGION: $QA_AWS_S3_REGION
-    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
-
-
-# ========== object-storage-gcs ===========
-
-object-storage-gcs:
-  extends:
-    - object-storage
-    - .failure-videos
-  variables:
-    GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
-    GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
-    GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
-    GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
-    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
-
-object-storage-gcs-selective:
-  extends: object-storage-selective
-  variables:
-    GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
-    GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
-    GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
-    GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
-    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
-
-object-storage-gcs-selective-parallel:
-  extends: object-storage-selective-parallel
-  variables:
-    GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
-    GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
-    GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
-    GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
-    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
-
 # ------------------------------------------
 # Non parallel jobs
 # ------------------------------------------
-gitlab-pages:
-  extends: .qa
-  variables:
-    QA_SCENARIO: Test::Integration::GitlabPages
-  rules:
-    - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Instance::GitlabPages/
-    - !reference [.rules:test:manual, rules]
 
 gitaly-cluster:
   extends: .qa
@@ -425,24 +316,6 @@ registry:
     - if: $QA_SUITES =~ /Test::Integration::Registry/
     - !reference [.rules:test:manual, rules]
 
-registry-with-cdn:
-  extends:
-    - .qa
-    - .failure-videos
-  variables:
-    QA_SCENARIO: Test::Integration::RegistryWithCDN
-    GCS_CDN_BUCKET_NAME: $QA_GCS_CDN_BUCKET_NAME
-    GOOGLE_CDN_LB: $QA_GOOGLE_CDN_LB
-    GOOGLE_CDN_JSON_KEY: $QA_GOOGLE_CDN_JSON_KEY
-    GOOGLE_CDN_SIGNURL_KEY: $QA_GOOGLE_CDN_SIGNURL_KEY
-    GOOGLE_CDN_SIGNURL_KEY_NAME: $QA_GOOGLE_CDN_SIGNURL_KEY_NAME
-  before_script:
-    - unset GITLAB_QA_ADMIN_ACCESS_TOKEN
-    - !reference [.qa, before_script]
-  rules:
-    - !reference [.rules:test:qa, rules]
-    - if: $QA_SUITES =~ /Test::Integration::RegistryWithCDN/
-    - !reference [.rules:test:manual, rules]
 
 repository-storage:
   extends:
@@ -521,14 +394,6 @@ elasticsearch:
     - !reference [.rules:test:qa, rules]
     - if: $QA_SUITES =~ /Test::Integration::Elasticsearch/
     - !reference [.rules:test:manual, rules]
-
-registry-object-storage-tls:
-  extends: object-storage-aws-selective-parallel
-  variables:
-    QA_SCENARIO: Test::Integration::RegistryTLS
-    QA_RSPEC_TAGS: ""
-    GITLAB_TLS_CERTIFICATE: $QA_GITLAB_TLS_CERTIFICATE
-    GITLAB_QA_OPTS: --omnibus-config registry_object_storage
 
 importers:
   extends:

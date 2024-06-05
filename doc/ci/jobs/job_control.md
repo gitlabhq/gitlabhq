@@ -67,6 +67,12 @@ To run a manual job, you must have permission to merge to the assigned branch:
 
 You can also [add custom CI/CD variables when running a manual job](index.md#specifying-variables-when-running-manual-jobs).
 
+### Add a confirmation dialog for manual jobs
+
+Use [`manual_confirmation`](../yaml/index.md#manual_confirmation) with `when: manual` to add a confirmation dialog for manual jobs. The confirmation dialog helps to prevent accidental deployments or deletions, especially for sensitive jobs like those that deploy to production.
+
+Users are prompted to confirm the action before the manual job runs, which provides an additional layer of safety and control.
+
 ### Protect manual jobs
 
 DETAILS:

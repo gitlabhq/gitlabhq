@@ -1,4 +1,5 @@
 - editing ||= false
+- edit_sidebar_text = @sidebar_page ? s_('Wiki|Edit custom sidebar') : s_('Wiki|Add custom sidebar')
 
 %aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
   .sidebar-container
@@ -10,8 +11,11 @@
       = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')
 
     .blocks-container{ class: '!gl-px-3' }
-      .gl-flex.gl-place-content-between.gl-items-center.gl-pb-3.gl-pl-3.gl-pr-1
+      .gl-flex.gl-place-content-between.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-list-toggle wiki-list collapsed gl-pl-0' : 'gl-pl-3') }
         .gl-flex.gl-items-center
+          - if @sidebar_page
+            = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: "js-wiki-list-expand-button wiki-list-expand-button !gl-static gl-mr-2", data: { testid: 'expand-pages-list' } })
+            = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: "js-wiki-list-collapse-button wiki-list-collapse-button !gl-static gl-mr-2", data: { testid: 'expand-pages-list' } })
           %h2.gl-text-lg.gl-my-0 Pages
           %span.gl-px-2 &middot;
           = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, variant: :link, href: wiki_path(@wiki, action: :pages), button_options: { data: { testid: 'view-all-pages-button' }, class: '' }) do
@@ -20,14 +24,12 @@
         - if can?(current_user, :create_wiki, @wiki)
           - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
           - sidebar_link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
-          = render Pajamas::ButtonComponent.new(href: edit_sidebar_url, category: :tertiary, size: :small, icon: 'pencil', button_options: { class: "gl-border-l gl-pl-3 has-tooltip #{sidebar_link_class}", title: s_('Wiki|Edit wiki sidebar'), aria: { label: s_('Wiki|Edit wiki sidebar') }})
+          = render Pajamas::ButtonComponent.new(href: edit_sidebar_url, category: :tertiary, size: :small, icon: 'pencil', button_options: { class: "gl-border-l gl-pl-3 has-tooltip #{sidebar_link_class}", title: edit_sidebar_text, aria: { label: edit_sidebar_text }})
 
-
-      .block{ class: '!gl-py-0 !gl-border-none !gl-w-full' }
-        - if @sidebar_page
-          .gl-px-3.gl-py-2
-            = render_wiki_content(@sidebar_page)
-        - elsif @sidebar_wiki_entries
-          %ul.wiki-pages
-            - @sidebar_wiki_entries.each do |entry|
-              = render partial: entry.to_partial_path, object: entry, locals: { context: 'sidebar' }
+      - if @sidebar_wiki_entries
+        %ul.wiki-pages{ class: (@sidebar_page ? 'gl-border-b !gl-pb-3' : '' ) }
+          - @sidebar_wiki_entries.each do |entry|
+            = render partial: entry.to_partial_path, object: entry, locals: { context: 'sidebar' }
+      - if @sidebar_page
+        .gl-px-3.gl-pt-4.gl-pb-2
+          = render_wiki_content(@sidebar_page)
