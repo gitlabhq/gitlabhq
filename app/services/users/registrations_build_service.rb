@@ -8,8 +8,9 @@ module Users
 
     override :build_user_detail
     def build_user_detail
-      return unless Feature.enabled?(:create_user_details_with_user_creation, Feature.current_request)
-
+      # This will ensure we either load an existing record or create it.
+      # TODO: Eventually we should specifically build here once we get away from the lazy loading in
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/462919.
       user.user_detail
     end
 

@@ -892,6 +892,7 @@ Returns [`[CiRunnerUsage!]`](#cirunnerusage).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryrunnerusagefromdate"></a>`fromDate` | [`Date`](#date) | Start of the requested date frame. Defaults to the start of the previous calendar month. |
+| <a id="queryrunnerusagefullpath"></a>`fullPath` | [`ID`](#id) | Filter jobs by the full path of the group or project they belong to. For example, `gitlab-org` or `gitlab-org/gitlab`. Available only to admins, group maintainers (when a group is specified), or project maintainers (when a project is specified). Limited to runners from 5000 child projects. |
 | <a id="queryrunnerusagerunnertype"></a>`runnerType` | [`CiRunnerType`](#cirunnertype) | Filter runners by the type. |
 | <a id="queryrunnerusagerunnerslimit"></a>`runnersLimit` | [`Int`](#int) | Maximum number of runners to return. Other runners will be aggregated to a `runner: null` entry. Defaults to 5 if unspecified. Maximum of 500. |
 | <a id="queryrunnerusagetodate"></a>`toDate` | [`Date`](#date) | End of the requested date frame. Defaults to the end of the previous calendar month. |

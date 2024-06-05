@@ -116,6 +116,172 @@ Example:
 - Searches can have their own analyzers. Remember to check when editing analyzers.
 - `Character` filters (as opposed to token filters) always replace the original character. These filters can hinder exact searches.
 
+## Add a new document type to Elasticsearch
+
+If data cannot be added to one of the [existing indices in Elasticsearch](../integration/advanced_search/elasticsearch.md#advanced-search-index-scopes), follow these instructions to set up a new index and populate it.
+
+### Recommendations
+
+- Ensure [Elasticsearch is running](#setting-up-development-environment):
+
+  ```shell
+  curl "http://localhost:9200s"
+  ```
+
+- [Run Kibana](https://www.elastic.co/guide/en/kibana/current/install.html#_install_kibana_yourself) to interact
+  with your local Elasticsearch cluster.
+- To tally the logs for Elasticsearch, run this command:
+
+  ```shell
+  tail -f log/elasticsearch.log`
+  ```
+
+See [Recommended process for adding a new document type](#recommended-process-for-adding-a-new-document-type) for how to structure the rollout.
+
+### Create the index
+
+1. Create a `Search::Elastic::Types::` class in `ee/lib/search/elastic/types/`.
+1. Define the following class methods:
+   - `index_name`: in the format `gitlab-<env>-<type>` (for example, `gitlab-production-work_items`).
+   - `mappings`: a hash containing the index schema such as fields, data types, and analyzers.
+   - `settings`: a hash containing the index settings such as replicas and tokenizers.
+     The default is good enough for most cases.
+1. Add a new [advanced search migration](search/advanced_search_migration_styleguide.md) to create the index
+   by executing `scripts/elastic-migration` and following the instructions.
+   The migration name must be in the format `Create<Name>Index`.
+1. Use the [`Elastic::MigrationCreateIndex`](search/advanced_search_migration_styleguide.md#elasticmigrationcreateindex)
+   helper and the `'migration creates a new index'` shared example for the specification file created.
+1. Add the target class to `Gitlab::Elastic::Helper::ES_SEPARATE_CLASSES`.
+1. To test the index creation, run `Elastic::MigrationWorker.new.perform` in a console and check that the index
+   has been created with the correct mappings and settings:
+
+   ```shell
+   curl "http://localhost:9200/gitlab-development-<type>/_mappings"
+   ```
+
+   ```shell
+   curl "http://localhost:9200/gitlab-development-<type>/_settings"
+   ```
+
+### Create a new Elastic Reference
+
+Create a `Search::Elastic::References::` class in `ee/lib/search/elastic/references/`.
+
+The reference is used to perform bulk operations in Elasticsearch.
+The file must inherit from `Search::Elastic::Reference` and define the following methods:
+
+```ruby
+include Search::Elastic::Concerns::DatabaseReference # if there is a corresponding database record for every document
+
+override :serialize
+def self.serialize(record)
+   # a string representation of the reference
+end
+
+override :instantiate
+def self.instantiate(string)
+   # deserialize the string and call initialize
+end
+
+override :preload_indexing_data
+def self.preload_indexing_data(refs)
+   # remove this method if `Search::Elastic::Concerns::DatabaseReference` is included
+   # otherwise return refs
+end
+
+def initialize
+   # initialize with instance variables
+end
+
+override :identifier
+def identifier
+   # a way to identify the reference
+end
+
+override :routing
+def routing
+   # Optional: an identifier to route the document in Elasticsearch
+end
+
+override :operation
+def operation
+   # one of `:index`, `:upsert` or `:delete`
+end
+
+override :serialize
+def serialize
+   # a string representation of the reference
+end
+
+override :as_indexed_json
+def as_indexed_json
+   # a hash containing the document represenation for this reference
+end
+
+override :index_name
+def index_name
+   # index name
+end
+
+def model_klass
+   # set to the model class if `Search::Elastic::Concerns::DatabaseReference` is included
+end
+```
+
+To add data to the index, an instance of the new reference class is called in
+`Elastic::ProcessBookkeepingService.track!()` to add the data to a queue of
+references for indexing.
+A cron worker pulls queued references and bulk-indexes the items into Elasticsearch.
+
+To test that the indexing operation works, call `Elastic::ProcessBookkeepingService.track!()`
+with an instance of the reference class and run `Elastic::ProcessBookkeepingService.new.execute`.
+The logs show the updates. To check the document in the index, run this command:
+
+```shell
+curl "http://localhost:9200/gitlab-development-<type>/_search"
+```
+
+### Data consistency
+
+Now that we have an index and a way to bulk index the new document type into Elasticsearch, we need to add data into the index. This consists of doing a backfill and doing continuous updates to ensure the index data is up to date.
+
+The backfill is done by calling `Elastic::ProcessInitialBookkeepingService.track!()` with an instance of `Search::Elastic::Reference` for every document that should be indexed.
+
+The continuous update is done by calling `Elastic::ProcessBookkeepingService.track!()` with an instance of `Search::Elastic::Reference` for every document that should be created/updated/deleted.
+
+#### Backfilling data
+
+Add a new [Advanced Search migration](search/advanced_search_migration_styleguide.md) to backfill data by executing `scripts/elastic-migration` and following the instructions.
+
+The backfill should execute `Elastic::ProcessInitialBookkeepingService.track!()` with an instance of the `Search::Elastic::Reference` created before for every document that should be indexed. The `BackfillEpics` migration can be used as an example.
+
+To test the backfill, run `Elastic::MigrationWorker.new.perform` in a console a couple of times and see that the index was populated.
+
+Tail the logs to see the progress of the migration:
+
+```shell
+tail -f log/elasticsearch.log
+```
+
+#### Continuous updates
+
+For `ActiveRecord` objects, the `ApplicationVersionedSearch` concern can be included on the model to index data based on callbacks. If that's not suitable, call `Elastic::ProcessBookkeepingService.track!()` with an instance of `Search::Elastic::Reference` whenever a document should be indexed.
+
+Always check for `Gitlab::CurrentSettings.elasticsearch_indexing?` and `use_elasticsearch?` because some self-managed instances do not have Elasticsearch enabled and [namespace limiting](../integration/advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index) can be enabled.
+
+Also check that the index is able to handle the index request. For example, check that the index exists if it was added in the current major release by verifying that the migration to add the index was completed: `Elastic::DataMigrationService.migration_has_finished?`.
+
+### Recommended process for adding a new document type
+
+Create the following MRs and have them reviewed by a member of the Global Search team:
+
+1. [Create the index](#create-the-index).
+1. [Create a new Elasticsearch reference](#create-a-new-elastic-reference).
+1. Perform [continuous updates](#continuous-updates) behind a feature flag. Enable the flag fully before the backfill.
+1. [Backfill the data](#backfilling-data).
+
+After indexing is done, the index is ready for search.
+
 ## Zero-downtime reindexing with multiple indices
 
 NOTE:

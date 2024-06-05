@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.testing.users_expanding_testing_accessibility_report_monthly
 description: Count of expanding the accessibility report widget
-product_section: ops
-product_stage: verify
 product_group: pipeline_execution
 value_type: number
 status: active

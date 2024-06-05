@@ -6,8 +6,6 @@ identifiers:
 - project
 - namespace
 - user
-product_section: core_platform
-product_stage: manage
 product_group: personal_productivity
 milestone: '16.11'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/451458

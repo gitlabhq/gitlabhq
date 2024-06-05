@@ -128,7 +128,6 @@ To set up embeddings locally:
 
 1. Ensure you have access to the `ai-enablement-dev-69497ba7` [Google Cloud project](#google-cloud-vertex).
 1. Login to Google Cloud: `gcloud auth application-default login`
-1. Enable the [`ai_gateway_docs_search` feature flag](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152581/diffs).
 1. Follow the instructions to [set up the AI Gateway locally](#set-up-the-ai-gateway-locally)
    using GDK
 

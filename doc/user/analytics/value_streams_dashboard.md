@@ -367,7 +367,7 @@ Filters for the `dora_chart` visualization.
 |Filter|Description|Supported values|
 |---|---|---|
 |`excludeMetrics`| Hides rows by metric ID from the chart panel | `deployment_frequency`, `lead_time_for_changes`,`time_to_restore_service`, `change_failure_rate`, `lead_time`, `cycle_time`, `issues`, `issues_completed`, `deploys`, `merge_request_throughput`, `median_time_to_merge`, `contributor_count`, `vulnerability_critical`, `vulnerability_high`|
-| `labels` | Filters data by labels | Any available group label |
+| `labels` | Filters data by labels | Any available group label. Label filtering is supported by the following metrics: `lead_time`, `cycle_time`, `issues`, `issues_completed`, `merge_request_throughput`, `median_time_to_merge`. |
 
 #### DORA Performers score panel filters
 

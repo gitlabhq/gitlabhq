@@ -6,9 +6,7 @@ identifiers:
   - project
   - user
   - namespace
-product_stage: create
 product_group: code_review
-product_section: 'TBD'
 milestone: "15.7"
 introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104670"
 distributions:

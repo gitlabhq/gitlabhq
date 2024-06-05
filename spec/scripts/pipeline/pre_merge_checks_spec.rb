@@ -5,7 +5,7 @@ require 'fast_spec_helper'
 require_relative '../../support/webmock'
 require_relative '../../../scripts/pipeline/pre_merge_checks'
 
-RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T08:00:00 UTC'), feature_category: :tooling do
+RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 UTC'), feature_category: :tooling do
   include StubENV
 
   let(:instance)            { described_class.new }
@@ -83,16 +83,20 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T08:00:00 U
     context 'when project_id is missing' do
       let(:project_id) { nil }
 
-      it 'raises an error' do
-        expect { instance }.to raise_error("Missing project_id")
+      it 'returns a failed PreMergeChecksStatus' do
+        expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+        expect(instance.execute).not_to be_success
+        expect(instance.execute.message).to include("Missing project_id")
       end
     end
 
     context 'when merge_request_iid is missing' do
       let(:merge_request_iid) { nil }
 
-      it 'raises an error' do
-        expect { instance }.to raise_error("Missing merge_request_iid")
+      it 'returns a failed PreMergeChecksStatus' do
+        expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+        expect(instance.execute).not_to be_success
+        expect(instance.execute.message).to include("Missing merge_request_iid")
       end
     end
   end
@@ -132,55 +136,62 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T08:00:00 U
         end
 
         context 'and it passes all the checks' do
-          it 'does not raise an error' do
-            expect { instance.execute }.not_to raise_error
+          it 'returns a successful PreMergeChecksStatus' do
+            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+            expect(instance.execute).to be_success
           end
         end
 
         context 'and it is not a merged results pipeline' do
           let(:latest_mr_pipeline_ref) { "refs/merge-requests/1/head" }
 
-          it 'raises an error' do
-            expect { instance.execute }.to raise_error(
-              "Expected to have a Merged Results pipeline but got #{latest_mr_pipeline_ref}!"
-            )
+          it 'returns a failed PreMergeChecksStatus' do
+            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+            expect(instance.execute).not_to be_success
+            expect(instance.execute.message)
+              .to include("Expected to have a Merged Results pipeline but got #{latest_mr_pipeline_ref}")
           end
         end
 
         context 'and it is not fresh enough' do
-          let(:latest_mr_pipeline_created_at) { "2024-05-29T03:30:00 UTC" }
+          let(:latest_mr_pipeline_created_at) { "2024-05-29T01:30:00 UTC" }
 
-          it 'raises an error' do
-            expect { instance.execute }.to raise_error(
-              "Expected latest pipeline to be created within the last 4 hours (it was created 4.5 hours ago)!"
-            )
+          it 'returns a failed PreMergeChecksStatus' do
+            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+            expect(instance.execute).not_to be_success
+            expect(instance.execute.message)
+              .to include(
+                "Expected latest pipeline to be created within the last 8 hours (it was created 8.5 hours ago)!"
+              )
           end
         end
 
         context 'and it is a predictive pipeline' do
           let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [predictive]" }
 
-          it 'raises an error' do
-            expect { instance.execute }
-              .to raise_error(/\AExpected latest pipeline not to be a predictive pipeline!/)
+          it 'returns a failed PreMergeChecksStatus' do
+            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+            expect(instance.execute).not_to be_success
+            expect(instance.execute.message).to include("Expected latest pipeline not to be a predictive pipeline!")
           end
         end
 
         context 'and it is not a tier-3 pipeline' do
           let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [tier:2]" }
 
-          it 'raises an error' do
-            expect { instance.execute }
-              .to raise_error(/\AExpected latest pipeline to be a tier-3 pipeline!/)
+          it 'returns a failed PreMergeChecksStatus' do
+            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+            expect(instance.execute).not_to be_success
+            expect(instance.execute.message).to include("Expected latest pipeline to be a tier-3 pipeline")
           end
         end
 
         context 'and it is qa-only pipeline' do
           let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [types:qa,qa-gdk]" }
 
-          it 'does not raise an error' do
-            expect { instance.execute }
-              .not_to raise_error
+          it 'returns a successful PreMergeChecksStatus' do
+            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+            expect(instance.execute).to be_success
           end
         end
       end
@@ -198,8 +209,10 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T08:00:00 U
           ]
         end
 
-        it 'raises an error' do
-          expect { instance.execute }.to raise_error("Expected to have a latest pipeline but got none!")
+        it 'returns a failed PreMergeChecksStatus' do
+          expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+          expect(instance.execute).not_to be_success
+          expect(instance.execute.message).to include("Expected to have a latest pipeline but got none")
         end
       end
     end

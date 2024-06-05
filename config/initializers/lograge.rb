@@ -12,7 +12,8 @@ unless Gitlab::Runtime.sidekiq?
       # Don't use the Logstash formatter since this requires logstash-event, an
       # unmaintained gem that monkey patches `Time`
       config.lograge.formatter = Lograge::Formatters::Json.new
-      config.lograge.logger = ActiveSupport::Logger.new(filename)
+      config.lograge.logger = ActiveSupport::Logger.new(filename,
+        level: Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :info))
       config.lograge.before_format = lambda do |data, payload|
         data.delete(:error)
         data[:db_duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:db)) if data[:db]

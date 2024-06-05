@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.pipeline_authoring.ci_interpolation_users_weekly
 description: Weekly count of unique users who are using interpolation in their CI
-product_section: ops
-product_stage: verify
 product_group: pipeline_authoring
 value_type: number
 status: active

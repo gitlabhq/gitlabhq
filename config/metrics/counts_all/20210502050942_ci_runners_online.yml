@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.ci_runners_online
 description: Total online Runners of all types
-product_section: ops
-product_stage: verify
 product_group: pipeline_execution
 value_type: number
 status: active

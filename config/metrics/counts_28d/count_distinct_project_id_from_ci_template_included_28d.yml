@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.count_distinct_project_id_from_ci_template_included_28d
 description: Monthly count of unique projects that created a pipeline with a CI Template included.
-product_section: ops
-product_stage: verify
 product_group: pipeline_authoring
 performance_indicator_type: []
 value_type: number

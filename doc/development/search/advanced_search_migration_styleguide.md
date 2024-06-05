@@ -206,7 +206,7 @@ Creates a new index.
 Requires:
 
 - The `target_class` and `document_type` methods
-- Mappings and index settings for the class in `ee/lib/elastic/latest/` and `ee/lib/elastic/v12p1/`
+- Mappings and index settings for the class
 
 WARNING:
 You must perform a follow-up migration to populate the index in the same milestone.

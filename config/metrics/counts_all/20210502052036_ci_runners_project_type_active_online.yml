@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.ci_runners_project_type_active_online
 description: Total active and online Specific (Project) Runners
-product_section: ops
-product_stage: verify
 product_group: pipeline_execution
 value_type: number
 status: active

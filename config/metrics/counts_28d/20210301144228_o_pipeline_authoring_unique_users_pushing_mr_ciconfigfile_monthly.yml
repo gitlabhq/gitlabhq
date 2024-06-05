@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.pipeline_authoring.o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile_monthly
 description: Monthly unique user count having merge requests which contains the CI config file
-product_section: ops
-product_stage: verify
 product_group: pipeline_authoring
 value_type: number
 status: active

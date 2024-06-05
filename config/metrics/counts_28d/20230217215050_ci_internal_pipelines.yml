@@ -1,8 +1,6 @@
 ---
 key_path: counts_monthly.ci_internal_pipelines
 description: Total monthly (28D) pipelines in Gitlab repositories for all project and project types
-product_section: ops
-product_stage: verify
 product_group: pipeline_execution
 value_type: number
 status: active

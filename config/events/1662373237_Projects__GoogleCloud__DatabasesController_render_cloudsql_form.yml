@@ -10,8 +10,6 @@ identifiers:
 - project
 - user
 - namespace
-product_section: google_cloud
-product_stage: configure
 product_group: 5-min-app
 milestone: "15.4"
 introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96683"

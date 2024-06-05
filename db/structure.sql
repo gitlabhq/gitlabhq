@@ -765,6 +765,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_207005e8e995() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "operations_feature_flags"
+  WHERE "operations_feature_flags"."id" = NEW."feature_flag_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_2428b5519042() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12856,7 +12872,8 @@ CREATE TABLE operations_strategies (
     id bigint NOT NULL,
     feature_flag_id bigint NOT NULL,
     name character varying(255) NOT NULL,
-    parameters jsonb DEFAULT '{}'::jsonb NOT NULL
+    parameters jsonb DEFAULT '{}'::jsonb NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE operations_strategies_id_seq
@@ -27121,6 +27138,8 @@ CREATE UNIQUE INDEX index_operations_scopes_on_strategy_id_and_environment_scope
 
 CREATE INDEX index_operations_strategies_on_feature_flag_id ON operations_strategies USING btree (feature_flag_id);
 
+CREATE INDEX index_operations_strategies_on_project_id ON operations_strategies USING btree (project_id);
+
 CREATE INDEX index_operations_strategies_user_lists_on_user_list_id ON operations_strategies_user_lists USING btree (user_list_id);
 
 CREATE UNIQUE INDEX index_operations_user_lists_on_project_id_and_iid ON operations_user_lists USING btree (project_id, iid);
@@ -30451,6 +30470,8 @@ CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR E
 
 CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_174b23fa3dfb();
 
+CREATE TRIGGER trigger_207005e8e995 BEFORE INSERT OR UPDATE ON operations_strategies FOR EACH ROW EXECUTE FUNCTION trigger_207005e8e995();
+
 CREATE TRIGGER trigger_2428b5519042 BEFORE INSERT OR UPDATE ON vulnerability_feedback FOR EACH ROW EXECUTE FUNCTION trigger_2428b5519042();
 
 CREATE TRIGGER trigger_25c44c30884f BEFORE INSERT OR UPDATE ON work_item_parent_links FOR EACH ROW EXECUTE FUNCTION trigger_25c44c30884f();
@@ -31326,6 +31347,9 @@ ALTER TABLE ONLY abuse_report_user_mentions
 
 ALTER TABLE ONLY security_orchestration_policy_configurations
     ADD CONSTRAINT fk_a50430b375 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY operations_strategies
+    ADD CONSTRAINT fk_a542e10c31 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY lfs_objects_projects
     ADD CONSTRAINT fk_a56e02279c FOREIGN KEY (lfs_object_id) REFERENCES lfs_objects(id) ON DELETE RESTRICT NOT VALID;
