@@ -101,6 +101,23 @@ In GitLab 16.11, PostgreSQL will automatically be upgraded to 14.x except for th
 Fault-tolerant and Geo installations support manual upgrades to PostgreSQL 14,
 see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/omnibus/settings/database.html#packaged-postgresql-deployed-in-an-hageo-cluster).
 
+### Geo installations
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  All                    | None     |
+  | 16.11                   |  All                    | None     |
+
 ## 16.10.0
 
 You might encounter the following error while upgrading to GitLab 16.10 or later:
@@ -150,6 +167,23 @@ If this is your case, read [Multi-node upgrades with downtime](../../update/with
 
 For more information on the changes introduced between version 2.1.0 and version 3.0.1, see the [Patroni release notes](https://patroni.readthedocs.io/en/latest/releases.html).
 
+### Geo installations
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  All                    | None     |
+  | 16.11                   |  All                    | None     |
+
 ## 16.9.0
 
 You might encounter the following error while upgrading to GitLab 16.9.0:
@@ -192,6 +226,21 @@ planned for release in 16.9.1.
   | ----------------------- | ----------------------- | -------- |
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  All                    | None     |
+  | 16.11                   |  All                    | None     |
 
 ### Linux package installations
 
@@ -255,6 +304,21 @@ you must take one of the following actions based on your configuration:
   | ----------------------- | ----------------------- | -------- |
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  All                    | None     |
+  | 16.11                   |  All                    | None     |
 
 ## 16.7.0
 
@@ -331,6 +395,21 @@ take one of the following actions based on your configuration:
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  All                    | None     |
+  | 16.11                   |  All                    | None     |
+
 ## 16.6.0
 
 - GitLab 16.6 introduces a background migration that re-writes every row in the
@@ -404,6 +483,21 @@ take one of the following actions based on your configuration:
   | 16.7                    |  All                    | None     |
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  All                    | None     |
+  | 16.11                   |  All                    | None     |
 
 ## 16.5.0
 
@@ -545,6 +639,21 @@ Specific information applies to installations using Geo:
   | 16.7                    |  All                    | None     |
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  All                    | None     |
+  | 16.11                   |  All                    | None     |
 
 ## 16.4.0
 

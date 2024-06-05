@@ -12,6 +12,7 @@ import {
   TOKEN_TYPE_DRAFT,
   TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TYPE_TARGET_BRANCH,
+  TOKEN_TYPE_MR_ASSIGNEE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
 import { getSortOptions } from '~/issues/list/utils';
@@ -107,6 +108,7 @@ describe('Merge requests list app', () => {
 
       it('does not have preloaded users when gon.current_user_id does not exist', () => {
         expect(findIssuableList().props('searchTokens')).toMatchObject([
+          { type: TOKEN_TYPE_MR_ASSIGNEE },
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [] },
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_TARGET_BRANCH },
@@ -116,8 +118,18 @@ describe('Merge requests list app', () => {
     });
 
     describe('when all tokens are available', () => {
+      const urlParams = {
+        mr_assignee_username: 'bob',
+        draft: 'yes',
+        'target_branches[]': 'branch-a',
+        'source_branches[]': 'branch-b',
+      };
+      const paramString = Object.entries(urlParams)
+        .map(([k, v]) => `${k}=${v}`)
+        .join('&');
+
       beforeEach(async () => {
-        setWindowLocation('?draft=yes&target_branches[]=branch-a&source_branches[]=branch-b');
+        setWindowLocation(`?${paramString}`);
         window.gon = {
           current_user_id: mockCurrentUser.id,
           current_user_fullname: mockCurrentUser.name,
@@ -141,6 +153,7 @@ describe('Merge requests list app', () => {
         ];
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([
+          { type: TOKEN_TYPE_MR_ASSIGNEE },
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_TARGET_BRANCH },
@@ -150,6 +163,7 @@ describe('Merge requests list app', () => {
 
       it('pre-displays tokens that are in the url search parameters', () => {
         expect(findIssuableList().props('initialFilterValue')).toMatchObject([
+          { type: TOKEN_TYPE_MR_ASSIGNEE },
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },

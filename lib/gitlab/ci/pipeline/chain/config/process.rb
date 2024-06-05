@@ -33,7 +33,7 @@ module Gitlab
               if result.valid?
                 @command.yaml_processor_result = result
               else
-                error(result.errors.first, config_error: true)
+                error(result.errors.first, failure_reason: :config_error)
               end
 
               @pipeline.config_metadata = result.config_metadata
@@ -45,7 +45,7 @@ module Gitlab
               )
 
               error("Undefined error (#{Labkit::Correlation::CorrelationId.current_id})",
-                config_error: true)
+                failure_reason: :config_error)
             end
 
             def break?

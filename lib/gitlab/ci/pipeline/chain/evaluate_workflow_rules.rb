@@ -29,7 +29,7 @@ module Gitlab
 
             error(
               'Pipeline filtered out by workflow rules.',
-              drop_reason: :filtered_by_workflow_rules
+              failure_reason: :filtered_by_workflow_rules
             )
           end
 
@@ -44,10 +44,9 @@ module Gitlab
           end
 
           def workflow_rules_result
-            strong_memoize(:workflow_rules_result) do
-              workflow_rules.evaluate(@pipeline, global_context)
-            end
+            workflow_rules.evaluate(@pipeline, global_context)
           end
+          strong_memoize_attr :workflow_rules_result
 
           def workflow_rules
             Gitlab::Ci::Build::Rules.new(
@@ -64,10 +63,9 @@ module Gitlab
           end
 
           def workflow_rules_config
-            strong_memoize(:workflow_rules_config) do
-              @command.yaml_processor_result.workflow_rules
-            end
+            @command.yaml_processor_result.workflow_rules
           end
+          strong_memoize_attr :workflow_rules_config
 
           # rubocop:disable Gitlab/NoCodeCoverageComment -- method is tested in EE
           # :nocov:

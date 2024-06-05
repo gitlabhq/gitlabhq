@@ -38,15 +38,8 @@ class SetPipelineName
   #
   # See https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html for more info.
   def initialize(api_endpoint:, gitlab_access_token:)
-    @api_endpoint          = api_endpoint
-    @gitlab_access_token   = gitlab_access_token
-  end
-
-  def gitlab
-    @gitlab ||= Gitlab.client(
-      endpoint: @api_endpoint,
-      private_token: @gitlab_access_token
-    )
+    @api_endpoint        = api_endpoint
+    @gitlab_access_token = gitlab_access_token
   end
 
   def execute
@@ -72,17 +65,18 @@ class SetPipelineName
 
   private
 
+  attr_reader :api_endpoint, :gitlab_access_token
+
+  def api_client
+    @api_client ||= Gitlab.client(
+      endpoint: api_endpoint,
+      private_token: gitlab_access_token
+    )
+  end
+
   def pipeline_tier
     return unless ENV['CI_MERGE_REQUEST_LABELS']
-
-    # The first pipeline of any MR won't have any tier label, unless the label was added in the MR description
-    # before creating the MR. This is a known limitation.
-    #
-    # Fetching the labels from the API instead of relying on ENV['CI_MERGE_REQUEST_LABELS']
-    # would solve this problem, but it would also mean that we would update the tier information
-    # based on the merge request labels at the time of retrying the job, which isn't what we want.
-    merge_request_labels = ENV['CI_MERGE_REQUEST_LABELS'].split(',')
-    puts "Labels from the MR: #{merge_request_labels}"
+    return if expedited_pipeline?
 
     tier_label = merge_request_labels.find { |label| label.start_with?('pipeline::tier-') }
     return if tier_label.nil?
@@ -90,14 +84,34 @@ class SetPipelineName
     tier_label[/\d+\z/]
   end
 
+  def merge_request_labels
+    # The first pipeline of any MR won't have any tier label, unless the label was added in the MR description
+    # before creating the MR. This is a known limitation.
+    #
+    # Fetching the labels from the API instead of relying on ENV['CI_MERGE_REQUEST_LABELS']
+    # would solve this problem, but it would also mean that we would update the tier information
+    # based on the merge request labels at the time of retrying the job, which isn't what we want.
+    @merge_request_labels ||= ENV.fetch('CI_MERGE_REQUEST_LABELS', '').split(',').tap do |labels|
+      puts "Labels from the MR: #{labels}"
+    end
+  end
+
+  def expedited_pipeline?
+    merge_request_labels.any?('pipeline::expedited') ||
+      # TODO: Remove once the label is renamed to be scoped
+      merge_request_labels.any?('pipeline:expedite')
+  end
+
   def pipeline_types
+    return ['expedited'] if expedited_pipeline?
+
     types = Set.new
 
-    gitlab.pipeline_bridges(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
+    api_client.pipeline_bridges(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
       types.merge(pipeline_types_for(job))
     end
 
-    gitlab.pipeline_jobs(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
+    api_client.pipeline_jobs(ENV['CI_PROJECT_ID'], ENV['CI_PIPELINE_ID']).auto_paginate do |job|
       types.merge(pipeline_types_for(job))
     end
 

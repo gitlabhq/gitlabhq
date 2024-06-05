@@ -3884,7 +3884,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     context 'when the pipeline is failed' do
       using RSpec::Parameterized::TableSyntax
 
-      where(:drop_reason, :expected) do
+      where(:failure_reason, :expected) do
         :unknown_failure            | false
         :filtered_by_rules          | true
         :filtered_by_workflow_rules | true
@@ -3892,7 +3892,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
 
       with_them do
         before do
-          pipeline.set_failed(drop_reason)
+          pipeline.set_failed(failure_reason)
         end
 
         it { is_expected.to eq expected }

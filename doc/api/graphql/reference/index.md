@@ -111,6 +111,20 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryaimessagesrequestids"></a>`requestIds` | [`[ID!]`](#id) | Array of request IDs to fetch. |
 | <a id="queryaimessagesroles"></a>`roles` | [`[AiMessageRole!]`](#aimessagerole) | Array of roles to fetch. |
 
+### `Query.aiSelfHostedModels`
+
+List of Self-Hosted LLM servers.
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Returns [`AiSelfHostedModelConnection`](#aiselfhostedmodelconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.auditEventDefinitions`
 
 Definitions for all audit events available on the instance.
@@ -10259,6 +10273,29 @@ The edge type for [`AiMessage`](#aimessage).
 | <a id="aimessageedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aimessageedgenode"></a>`node` | [`AiMessage`](#aimessage) | The item at the end of the edge. |
 
+#### `AiSelfHostedModelConnection`
+
+The connection type for [`AiSelfHostedModel`](#aiselfhostedmodel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiselfhostedmodelconnectionedges"></a>`edges` | [`[AiSelfHostedModelEdge]`](#aiselfhostedmodeledge) | A list of edges. |
+| <a id="aiselfhostedmodelconnectionnodes"></a>`nodes` | [`[AiSelfHostedModel]`](#aiselfhostedmodel) | A list of nodes. |
+| <a id="aiselfhostedmodelconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiSelfHostedModelEdge`
+
+The edge type for [`AiSelfHostedModel`](#aiselfhostedmodel).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiselfhostedmodeledgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aiselfhostedmodeledgenode"></a>`node` | [`AiSelfHostedModel`](#aiselfhostedmodel) | The item at the end of the edge. |
+
 #### `AlertManagementAlertConnection`
 
 The connection type for [`AlertManagementAlert`](#alertmanagementalert).
@@ -16284,6 +16321,22 @@ Extra metadata for AI message.
 | <a id="aimetricscodecontributorscount"></a>`codeContributorsCount` | [`Int!`](#int) | Number of code contributors. |
 | <a id="aimetricscodesuggestionscontributorscount"></a>`codeSuggestionsContributorsCount` | [`Int!`](#int) | Number of code contributors who used GitLab Duo Code Suggestions features. |
 | <a id="aimetricscodesuggestionsusagerate"></a>`codeSuggestionsUsageRate` | [`Float!`](#float) | Percentage of contributors who used GitLab Duo Code Suggestions features. |
+
+### `AiSelfHostedModel`
+
+Self-hosted LLM servers.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aiselfhostedmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="aiselfhostedmodelendpoint"></a>`endpoint` | [`String!`](#string) | Endpoint of the Self-Hosted model server. |
+| <a id="aiselfhostedmodelhasapitoken"></a>`hasApiToken` | [`Boolean!`](#boolean) | Indicates if an API key is set for the Self-Hosted model server. |
+| <a id="aiselfhostedmodelid"></a>`id` | [`AiSelfHostedModelID!`](#aiselfhostedmodelid) | ID of the Self-Hosted model server. |
+| <a id="aiselfhostedmodelmodel"></a>`model` | [`String!`](#string) | Model running the Self-Hosted model server. |
+| <a id="aiselfhostedmodelmodifiedat"></a>`modifiedAt` | [`Time!`](#time) | Date of last modification. |
+| <a id="aiselfhostedmodelname"></a>`name` | [`String!`](#string) | Given name of the Self-Hosted model server. |
 
 ### `AlertManagementAlert`
 
@@ -35835,6 +35888,12 @@ An example `AiAgentVersionID` is: `"gid://gitlab/Ai::AgentVersion/1"`.
 A `AiModelID` is a global ID. It is encoded as a string.
 
 An example `AiModelID` is: `"gid://gitlab/Ai::Model/1"`.
+
+### `AiSelfHostedModelID`
+
+A `AiSelfHostedModelID` is a global ID. It is encoded as a string.
+
+An example `AiSelfHostedModelID` is: `"gid://gitlab/Ai::SelfHostedModel/1"`.
 
 ### `AlertManagementAlertID`
 

@@ -28,20 +28,18 @@ module Gitlab
         Epics.transaction do
           # prevent an epic being updated while we sync its data to work_item_parent_links table.
           # Wrap the locking into a transaction so that locks are kept for the duration of transaction.
-          cte = Gitlab::SQL::CTE.new(:batched_relation, sub_batch)
-
           parents_and_children_batch =
-            cte.apply_to(Epics.all)
-            .joins("INNER JOIN epics parent_epics ON epics.parent_id = parent_epics.id")
-            .joins("INNER JOIN issues ON parent_epics.issue_id = issues.id")
-            .select(
-              <<-SQL
-                epics.issue_id AS child_id,
-                epics.relative_position,
-                parent_epics.issue_id AS parent_id,
-                issues.namespace_id as namespace_id
-              SQL
-            ).lock!('FOR UPDATE').load
+            sub_batch
+              .joins("INNER JOIN epics parent_epics ON epics.parent_id = parent_epics.id")
+              .joins("INNER JOIN issues ON parent_epics.issue_id = issues.id")
+              .select(
+                <<-SQL
+                  epics.issue_id AS child_id,
+                  epics.relative_position,
+                  parent_epics.issue_id AS parent_id,
+                  issues.namespace_id as namespace_id
+                SQL
+              ).lock!('FOR UPDATE').load
 
           parent_links = build_relationship(parents_and_children_batch)
           WorkItemParentLinks.upsert_all(parent_links, unique_by: :work_item_id) unless parent_links.blank?

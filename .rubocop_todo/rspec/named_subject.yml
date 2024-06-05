@@ -1876,7 +1876,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/ci/pipeline/chain/config/content_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/ensure_environments_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/ensure_resource_groups_spec.rb'
-    - 'spec/lib/gitlab/ci/pipeline/chain/helpers_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/limit/active_jobs_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/remove_unwanted_chat_jobs_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/sequence_spec.rb'

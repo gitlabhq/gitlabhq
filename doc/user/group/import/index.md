@@ -448,6 +448,8 @@ Group items that are migrated to the destination GitLab instance include:
 | Subgroups            | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
 | Uploads              | [GitLab 13.7](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18938)  |
 
+**Footnotes:**
+
 1. Epic resource state events [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4, label
    associations [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62074) in GitLab 13.12, state and
    state ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28203) in GitLab 13.7, and system note

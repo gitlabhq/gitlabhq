@@ -25,6 +25,8 @@ RSpec.describe SetPipelineName, feature_category: :tooling do
   # See https://docs.gitlab.com/ee/development/pipelines/internals.html#using-the-gitlab-ruby-gem-in-the-canonical-project.
   #
   # rubocop:disable RSpec/VerifiedDoubles -- See the disclaimer above
+  let(:api_client) { double('Gitlab::Client') }
+
   before do
     stub_env(
       'CI_API_V4_URL' => 'https://gitlab.test/api/v4',
@@ -39,10 +41,10 @@ RSpec.describe SetPipelineName, feature_category: :tooling do
     stub_request(:put, put_url).to_return(status: 200, body: 'OK')
 
     # Gitlab client stubbing
-    client = double('GitLab')
-    allow(instance).to receive(:gitlab).and_return(client)
-    allow(client).to yield_jobs(:pipeline_jobs, jobs)
-    allow(client).to yield_jobs(:pipeline_bridges, bridges)
+    stub_const('Gitlab::Error::Error', Class.new)
+    allow(instance).to receive(:api_client).and_return(api_client)
+    allow(api_client).to yield_jobs(:pipeline_jobs, jobs)
+    allow(api_client).to yield_jobs(:pipeline_bridges, bridges)
 
     # Ensure we don't output to stdout while running tests
     allow(instance).to receive(:puts)
@@ -101,6 +103,26 @@ RSpec.describe SetPipelineName, feature_category: :tooling do
           instance.execute
 
           expect(WebMock).to have_requested(:put, put_url).with { |req| req.body.include?('tier:N/A') }
+        end
+      end
+
+      context 'when the merge request has the `pipeline::expedited` label' do
+        let(:merge_request_labels) { ['pipeline::expedited'] }
+
+        it 'adds the expedited pipeline type' do
+          instance.execute
+
+          expect(WebMock).to have_requested(:put, put_url).with { |req| req.body.include?('types:expedited') }
+        end
+      end
+
+      context 'when the merge request has the `pipeline:expedite` label' do
+        let(:merge_request_labels) { ['pipeline:expedite'] }
+
+        it 'adds the expedited pipeline type' do
+          instance.execute
+
+          expect(WebMock).to have_requested(:put, put_url).with { |req| req.body.include?('types:expedited') }
         end
       end
     end

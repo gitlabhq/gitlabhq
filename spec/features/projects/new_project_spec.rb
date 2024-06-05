@@ -96,7 +96,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
   end
 
   context 'as an admin' do
-    let(:user) { create(:admin, :without_default_org) }
+    let(:user) { create(:admin) }
 
     it_behaves_like 'shows correct navigation'
 

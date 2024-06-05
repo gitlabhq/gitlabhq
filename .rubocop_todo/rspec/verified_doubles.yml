@@ -373,7 +373,6 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/ci/config/external/rules_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/test/junit_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/evaluate_workflow_rules_spec.rb'
-    - 'spec/lib/gitlab/ci/pipeline/chain/helpers_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/limit/deployments_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/remove_unwanted_chat_jobs_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/sequence_spec.rb'

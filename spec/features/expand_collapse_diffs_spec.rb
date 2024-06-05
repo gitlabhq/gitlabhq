@@ -248,7 +248,8 @@ RSpec.describe 'Expand and collapse diffs', :js, feature_category: :source_code_
     let(:branch) { 'expand-collapse-lines' }
 
     # safe-files -> 100 | safe-lines -> 5000 | commit_files -> 8 (each 1250 lines)
-    it 'does collapsing from the safe number of lines to the end' do
+    it 'does collapsing from the safe number of lines to the end',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/436532' do
       expect(page).to have_link('Expand all')
 
       expect(page).to have_selector('.diff-content', count: 6)

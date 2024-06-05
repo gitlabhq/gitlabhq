@@ -167,7 +167,7 @@ export default {
               />
             </div>
             <span class="gl-display-flex gl-flex-direction-column">
-              <span class="gl-font-weight-bold gl-white-space-nowrap">{{ item.text }}</span>
+              <span class="gl-font-bold gl-white-space-nowrap">{{ item.text }}</span>
               <span class="gl-text-gray-400"> {{ item.secondaryText }}</span>
             </span>
           </span>

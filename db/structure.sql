@@ -815,6 +815,22 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION trigger_2b8fdc9b4a4e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "ml_experiments"
+  WHERE "ml_experiments"."id" = NEW."experiment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_3691f9f6a69f() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12153,6 +12169,7 @@ CREATE TABLE ml_experiment_metadata (
     experiment_id bigint NOT NULL,
     name text NOT NULL,
     value text NOT NULL,
+    project_id bigint,
     CONSTRAINT check_112fe5002d CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_a91c633d68 CHECK ((char_length(value) <= 5000))
 );
@@ -16986,6 +17003,7 @@ CREATE TABLE subscription_add_on_purchases (
     last_assigned_users_refreshed_at timestamp with time zone,
     trial boolean DEFAULT false NOT NULL,
     started_at date,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT check_3313c4d200 CHECK ((char_length(purchase_xid) <= 255))
 );
 
@@ -24926,6 +24944,8 @@ CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_inbox_url ON a
 
 CREATE UNIQUE INDEX index_activity_pub_releases_sub_on_project_id_sub_url ON activity_pub_releases_subscriptions USING btree (project_id, lower(subscriber_url));
 
+CREATE INDEX index_add_on_purchases_on_organization_id ON subscription_add_on_purchases USING btree (organization_id);
+
 CREATE INDEX index_agent_activity_events_on_agent_id_and_recorded_at_and_id ON agent_activity_events USING btree (agent_id, recorded_at, id);
 
 CREATE INDEX index_agent_activity_events_on_agent_project_id ON agent_activity_events USING btree (agent_project_id);
@@ -26905,6 +26925,8 @@ CREATE INDEX index_ml_candidates_on_project_id_on_internal_id ON ml_candidates U
 CREATE INDEX index_ml_candidates_on_user_id ON ml_candidates USING btree (user_id);
 
 CREATE UNIQUE INDEX index_ml_experiment_metadata_on_experiment_id_and_name ON ml_experiment_metadata USING btree (experiment_id, name);
+
+CREATE INDEX index_ml_experiment_metadata_on_project_id ON ml_experiment_metadata USING btree (project_id);
 
 CREATE INDEX index_ml_experiments_on_model_id ON ml_experiments USING btree (model_id);
 
@@ -30478,6 +30500,8 @@ CREATE TRIGGER trigger_25c44c30884f BEFORE INSERT OR UPDATE ON work_item_parent_
 
 CREATE TRIGGER trigger_2ac3d66ed1d3 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_2ac3d66ed1d3();
 
+CREATE TRIGGER trigger_2b8fdc9b4a4e BEFORE INSERT OR UPDATE ON ml_experiment_metadata FOR EACH ROW EXECUTE FUNCTION trigger_2b8fdc9b4a4e();
+
 CREATE TRIGGER trigger_3691f9f6a69f BEFORE INSERT OR UPDATE ON remote_development_agent_configs FOR EACH ROW EXECUTE FUNCTION trigger_3691f9f6a69f();
 
 CREATE TRIGGER trigger_3857ca5ea4af BEFORE INSERT OR UPDATE ON merge_trains FOR EACH ROW EXECUTE FUNCTION trigger_3857ca5ea4af();
@@ -31441,6 +31465,9 @@ ALTER TABLE ONLY bulk_import_entities
 ALTER TABLE ONLY compliance_management_frameworks
     ADD CONSTRAINT fk_b74c45b71f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ml_experiment_metadata
+    ADD CONSTRAINT fk_b764e76c6c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY external_status_checks_protected_branches
     ADD CONSTRAINT fk_b7d788e813 FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
@@ -31557,6 +31584,9 @@ ALTER TABLE ONLY personal_access_tokens
 
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_c98abcd54c FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY subscription_add_on_purchases
+    ADD CONSTRAINT fk_caed789645 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_board_labels
     ADD CONSTRAINT fk_cb8ded70e2 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

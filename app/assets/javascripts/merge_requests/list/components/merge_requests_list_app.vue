@@ -23,6 +23,8 @@ import {
   TOKEN_TYPE_TARGET_BRANCH,
   TOKEN_TITLE_SOURCE_BRANCH,
   TOKEN_TYPE_SOURCE_BRANCH,
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TYPE_MR_ASSIGNEE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -171,6 +173,20 @@ export default {
       }
 
       return [
+        {
+          type: TOKEN_TYPE_MR_ASSIGNEE,
+          title: TOKEN_TITLE_ASSIGNEE,
+          icon: 'user',
+          token: UserToken,
+          dataType: 'user',
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+          isProject: true,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-assignee`,
+          preloadedUsers,
+          multiSelect: false,
+          unique: true,
+        },
         {
           type: TOKEN_TYPE_AUTHOR,
           title: TOKEN_TITLE_AUTHOR,

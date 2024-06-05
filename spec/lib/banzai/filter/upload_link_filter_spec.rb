@@ -116,28 +116,6 @@ RSpec.describe Banzai::Filter::UploadLinkFilter, feature_category: :team_plannin
       expect(doc.at_css('img').classes).to include('gfm')
       expect(doc.at_css('img')['data-link']).not_to eq('true')
     end
-
-    context 'when use_ids_for_markdown_upload_urls is disabled' do
-      let(:relative_path) { "/#{project.full_path}#{upload_path}" }
-
-      before do
-        stub_feature_flags(use_ids_for_markdown_upload_urls: false)
-      end
-
-      it 'prepends project path to the URL' do
-        doc = filter(link(upload_path))
-
-        expect(doc.at_css('a')['href']).to eq(relative_path)
-        expect(doc.at_css('a').classes).to include('gfm')
-        expect(doc.at_css('a')['data-link']).to eq('true')
-
-        doc = filter(nested(link(upload_path)))
-
-        expect(doc.at_css('a')['href']).to eq(relative_path)
-        expect(doc.at_css('a').classes).to include('gfm')
-        expect(doc.at_css('a')['data-link']).to eq('true')
-      end
-    end
   end
 
   context 'to a group upload' do
@@ -184,22 +162,6 @@ RSpec.describe Banzai::Filter::UploadLinkFilter, feature_category: :team_plannin
       expect(doc.at_css('a')['href']).to eq 'http://example.com'
       expect(doc.at_css('a').classes).not_to include('gfm')
       expect(doc.at_css('a')['data-link']).not_to eq('true')
-    end
-
-    context 'when use_ids_for_markdown_upload_urls is disabled' do
-      let(:relative_path) { "/groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
-
-      before do
-        stub_feature_flags(use_ids_for_markdown_upload_urls: false)
-      end
-
-      it 'prepends group path to the URL' do
-        doc = filter(upload_link)
-
-        expect(doc.at_css('a')['href']).to eq(relative_path)
-        expect(doc.at_css('a').classes).to include('gfm')
-        expect(doc.at_css('a')['data-link']).to eq('true')
-      end
     end
   end
 

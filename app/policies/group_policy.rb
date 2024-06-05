@@ -34,12 +34,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   desc "User owns the group's organization"
   condition(:organization_owner) do
-    if @user.is_a?(User)
-      @user.owns_organization?(@subject.organization_id)
-    else
-      false
-    end
+    owns_group_organization?
   end
+
+  rule { admin | organization_owner }.enable :admin_organization
 
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
@@ -458,6 +456,21 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   def valid_dependency_proxy_deploy_token
     @user.is_a?(DeployToken) && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
   end
+
+  # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
+  def owns_group_organization?
+    return false unless @user
+    return false unless user_is_user?
+    return false unless @subject.organization
+    # Ensure admins can't bypass admin mode.
+    return false if @user.admin? && !can?(:admin)
+
+    # Load the owners with a single query.
+    @subject.organization
+            .owner_user_ids
+            .include?(@user.id)
+  end
+  # rubocop:enable Cop/UserAdmin
 end
 
 GroupPolicy.prepend_mod_with('GroupPolicy')

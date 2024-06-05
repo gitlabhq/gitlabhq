@@ -13,6 +13,19 @@ DETAILS:
 
 When working with GitLab Duo Code Suggestions, you might encounter the following issues.
 
+## Verify Code Suggestions status in Admin Area
+
+Prerequisites:
+
+- You must be an administrator of the instance.
+
+You can verify that Code Suggestions is set up correctly on the server. Because you are checking this on the server side and not for a specific user, it does not guarantee that Code Suggestions will work for a specific user on client side.
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **GitLab Duo Pro**.
+
+A flash message with Code Suggestions check status is displayed at the top of the page.
+
 ## Code Suggestions are not displayed
 
 If Code Suggestions are not displayed:

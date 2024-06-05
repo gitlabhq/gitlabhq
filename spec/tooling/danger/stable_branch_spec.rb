@@ -136,6 +136,8 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         allow(fake_helper).to receive(:mr_target_project_id).and_return(1)
         allow(fake_helper).to receive(:mr_has_labels?).with('type::feature').and_return(feature_label_present)
         allow(fake_helper).to receive(:mr_has_labels?).with('type::bug').and_return(bug_label_present)
+        allow(fake_helper).to receive(:mr_has_labels?).with('pipeline::expedited')
+          .and_return(pipeline_expedite_label_present)
         allow(fake_helper).to receive(:mr_has_labels?).with('pipeline:expedite')
           .and_return(pipeline_expedite_label_present)
         allow(fake_helper).to receive(:mr_has_labels?).with('failure::flaky-test')
@@ -172,10 +174,10 @@ RSpec.describe Tooling::Danger::StableBranch, feature_category: :delivery do
         it_behaves_like 'without a failure'
       end
 
-      context 'with a pipeline:expedite label' do
+      context 'with a pipeline::expedited label' do
         let(:pipeline_expedite_label_present) { true }
 
-        it_behaves_like 'with a failure', described_class::PIPELINE_EXPEDITE_ERROR_MESSAGE
+        it_behaves_like 'with a failure', described_class::PIPELINE_EXPEDITED_ERROR_MESSAGE
         it_behaves_like 'bypassing when flaky test or docs only'
       end
 

@@ -1597,7 +1597,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/ci/parsers/test/junit_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/command_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/create_spec.rb'
-    - 'spec/lib/gitlab/ci/pipeline/chain/helpers_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/seed_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/validate/abilities_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/duration_spec.rb'

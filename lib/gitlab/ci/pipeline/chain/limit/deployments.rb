@@ -24,7 +24,7 @@ module Gitlab
               return unless limit.exceeded?
 
               limit.log_error!(project_id: project.id, plan: project.actual_plan_name)
-              error(limit.message, drop_reason: :deployments_limit_exceeded)
+              error(limit.message, failure_reason: :deployments_limit_exceeded)
             end
 
             override :break?

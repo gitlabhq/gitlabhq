@@ -21,13 +21,11 @@ module Gitlab
               return error(
                 'Pipeline will not run for the selected trigger. ' \
                   'The rules configuration prevented any jobs from being added to the pipeline.',
-                drop_reason: :filtered_by_rules
+                failure_reason: :filtered_by_rules
               )
             end
 
-            if pipeline.invalid?
-              return error('Failed to build the pipeline!')
-            end
+            return error('Failed to build the pipeline!') if pipeline.invalid?
 
             raise Populate::PopulateError if pipeline.persisted?
           end

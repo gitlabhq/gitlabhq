@@ -32,17 +32,9 @@ module Banzai
         path_parts = [unescape_and_scrub_uri(html_attr.value)]
 
         if project
-          if Feature.enabled?(:use_ids_for_markdown_upload_urls, project)
-            path_parts.unshift(relative_url_root, '-', 'project', project.id.to_s)
-          else
-            path_parts.unshift(relative_url_root, project.full_path)
-          end
+          path_parts.unshift(relative_url_root, '-', 'project', project.id.to_s)
         elsif group
-          if Feature.enabled?(:use_ids_for_markdown_upload_urls, group)
-            path_parts.unshift(relative_url_root, '-', 'group', group.id.to_s)
-          else
-            path_parts.unshift(relative_url_root, 'groups', group.full_path, '-')
-          end
+          path_parts.unshift(relative_url_root, '-', 'group', group.id.to_s)
         else
           path_parts.unshift(relative_url_root)
         end

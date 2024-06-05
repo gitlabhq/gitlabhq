@@ -620,8 +620,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/ci/config/normalizer.rb'
     - 'lib/gitlab/ci/parsers/coverage/sax_document.rb'
     - 'lib/gitlab/ci/parsers/security/common.rb'
-    - 'lib/gitlab/ci/pipeline/chain/populate.rb'
-    - 'lib/gitlab/ci/pipeline/chain/seed.rb'
     - 'lib/gitlab/ci/pipeline/chain/validate/abilities.rb'
     - 'lib/gitlab/ci/pipeline/chain/validate/repository.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/base.rb'

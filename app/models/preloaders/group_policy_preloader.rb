@@ -8,6 +8,11 @@ module Preloaders
     end
 
     def execute
+      ActiveRecord::Associations::Preloader.new(
+        records: groups,
+        associations: [:organization]
+      ).call
+
       Preloaders::UserMaxAccessLevelInGroupsPreloader.new(groups, current_user).execute
     end
 

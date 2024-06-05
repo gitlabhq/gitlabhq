@@ -7,6 +7,7 @@ query getMergeRequests(
   $fullPath: ID!
   $sort: MergeRequestSort
   $state: MergeRequestState
+  $assigneeUsername: String
   $authorUsername: String
   $draft: Boolean
   $sourceBranches: [String!]
@@ -21,6 +22,7 @@ query getMergeRequests(
     mergeRequests(
       sort: $sort
       state: $state
+      assigneeUsername: $assigneeUsername
       authorUsername: $authorUsername
       draft: $draft
       sourceBranches: $sourceBranches

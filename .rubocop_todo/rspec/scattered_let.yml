@@ -126,7 +126,6 @@ RSpec/ScatteredLet:
     - 'spec/lib/gitlab/checks/matching_merge_request_spec.rb'
     - 'spec/lib/gitlab/ci/config/external/file/artifact_spec.rb'
     - 'spec/lib/gitlab/ci/config_spec.rb'
-    - 'spec/lib/gitlab/ci/pipeline/chain/helpers_spec.rb'
     - 'spec/lib/gitlab/ci/status/stage/factory_spec.rb'
     - 'spec/lib/gitlab/ci/yaml_processor_spec.rb'
     - 'spec/lib/gitlab/cycle_analytics/stage_summary_spec.rb'

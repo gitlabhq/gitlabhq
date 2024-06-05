@@ -40,7 +40,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'pages_domains.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/442178,
       'remote_mirrors.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
       'sprints.group_id',
-      'subscription_add_on_purchases.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444338
       *['todos.project_id', 'todos.group_id']
     ]
   end

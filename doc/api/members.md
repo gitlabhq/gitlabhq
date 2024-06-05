@@ -329,6 +329,10 @@ Example response:
 
 ## List all billable members of a group
 
+Prerequisites:
+
+- You must have the Owner role to access the API endpoint for billing permissions, as shown in [billing permissions](../user/free_user_limit.md).
+
 Gets a list of group members that count as billable. The list includes members in subgroups and projects.
 
 This API endpoint works on top-level groups only. It does not work on subgroups.

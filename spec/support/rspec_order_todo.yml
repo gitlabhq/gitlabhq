@@ -5427,7 +5427,6 @@
 - './spec/lib/gitlab/ci/pipeline/chain/ensure_environments_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/ensure_resource_groups_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/evaluate_workflow_rules_spec.rb'
-- './spec/lib/gitlab/ci/pipeline/chain/helpers_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/limit/deployments_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/limit/rate_limit_spec.rb'
 - './spec/lib/gitlab/ci/pipeline/chain/pipeline/process_spec.rb'

@@ -37470,7 +37470,7 @@ msgstr ""
 msgid "Paste project path (i.e. gitlab-org/gitlab)"
 msgstr ""
 
-msgid "Paste this DSN into your Sentry SDK"
+msgid "Paste this Data Source Name (DSN) into your Sentry SDK."
 msgstr ""
 
 msgid "Patch to apply"

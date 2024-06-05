@@ -186,7 +186,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
             click_button('Expand')
           end
 
-          expect(page).to have_content('Paste this DSN into your Sentry SDK')
+          expect(page).to have_content('Paste this Data Source Name (DSN) into your Sentry SDK')
         end
       end
     end

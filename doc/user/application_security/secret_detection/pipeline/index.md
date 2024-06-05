@@ -321,7 +321,7 @@ You can customize which [secrets are reported in the GitLab UI](#pipeline-secret
 However, the `secret_detection` job logs always include the number
 of secrets detected by the default Pipeline Secret Detection rules.
 
-The following customization options can be used separately, or in combination (except for disabling or overriding rules when using a remote configuration file):
+The following customization options can be used separately, or in combination (except for synthesizing a custom configuration with a remote configuration file):
 
 - [Disable predefined rules](#disable-predefined-analyzer-rules).
 - [Override predefined rules](#override-predefined-analyzer-rules).
@@ -333,8 +333,12 @@ The following customization options can be used separately, or in combination (e
 You can use passthroughs to override the default Pipeline Secret Detection ruleset. The
 following passthrough types are supported by the `secrets` analyzer:
 
-- `raw`
-- `file`
+- `raw`: Include custom rules directly in the `secret-detection-ruleset.toml` file.
+- `file`: Include custom rules in a separate file in the project's repository.
+
+NOTE:
+The `file` option can only be used to synthesize a custom configuration from
+a file in the project's repository, not [a remote configuration file](#specify-a-remote-configuration-file).
 
 To define a passthrough, add _one_ of the following to the
 `secret-detection-ruleset.toml` file:
@@ -356,9 +360,6 @@ To define a passthrough, add _one_ of the following to the
   regex = '''Custom Raw Ruleset T[est]{3}'''
   """
   ```
-
-NOTE:
-The `file` passthrough only works with an external file that is committed to the current repository. It cannot be used to synthesize a custom configuration from [a remote configuration file](#specify-a-remote-configuration-file).
 
 - Using an external `file` committed to the current repository:
 

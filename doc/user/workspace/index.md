@@ -22,6 +22,8 @@ These environments ensure that different projects don't interfere with each othe
 Each workspace includes its own set of dependencies, libraries, and tools,
 which you can customize to meet the specific needs of each project.
 
+For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.io/static-demos/workspaces/ws_html.html).
+
 ## Workspaces and projects
 
 Workspaces are scoped to a project.
@@ -221,7 +223,3 @@ see [Create a custom workspace image that supports arbitrary user IDs](../worksp
 
 For more information, see the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
-
-## Related topics
-
-- [GitLab workspaces demo](https://go.gitlab.com/qtu66q)

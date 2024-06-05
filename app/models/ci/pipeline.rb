@@ -833,8 +833,8 @@ module Ci
 
     # Like #drop!, but does not persist the pipeline nor trigger any state
     # machine callbacks.
-    def set_failed(drop_reason)
-      self.failure_reason = drop_reason.to_s
+    def set_failed(failure_reason)
+      self.failure_reason = failure_reason.to_s
       self.status = 'failed'
     end
 

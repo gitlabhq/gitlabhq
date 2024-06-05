@@ -5,17 +5,14 @@ module Gitlab
     module Pipeline
       module Chain
         module Helpers
-          def error(message, config_error: false, drop_reason: nil)
+          def error(message, failure_reason: nil)
             sanitized_message = ActionController::Base.helpers.sanitize(message, tags: [])
 
-            if config_error
-              drop_reason = :config_error
-              pipeline.yaml_errors = sanitized_message
-            end
+            pipeline.yaml_errors = sanitized_message if failure_reason == :config_error
 
             pipeline.add_error_message(sanitized_message)
 
-            drop_pipeline!(drop_reason)
+            drop_pipeline!(failure_reason)
 
             # TODO: consider not to rely on AR errors directly as they can be
             # polluted with other unrelated errors (e.g. state machine)
@@ -32,21 +29,21 @@ module Gitlab
 
           private
 
-          def drop_pipeline!(drop_reason)
+          def drop_pipeline!(failure_reason)
             if pipeline.readonly?
               # Only set the status and reason without tracking failures
-              pipeline.set_failed(drop_reason)
-            elsif Enums::Ci::Pipeline.persistable_failure_reason?(drop_reason) && command.save_incompleted
+              pipeline.set_failed(failure_reason)
+            elsif Enums::Ci::Pipeline.persistable_failure_reason?(failure_reason) && command.save_incompleted
               # Project iid must be called outside a transaction, so we ensure it is set here
               # otherwise it may be set within the state transition transaction of the drop! call
               # which it will lock the InternalId row for the whole transaction
               pipeline.ensure_project_iid!
 
-              pipeline.drop!(drop_reason)
+              pipeline.drop!(failure_reason)
             else
-              command.increment_pipeline_failure_reason_counter(drop_reason)
+              command.increment_pipeline_failure_reason_counter(failure_reason)
 
-              pipeline.set_failed(drop_reason)
+              pipeline.set_failed(failure_reason)
             end
           end
         end

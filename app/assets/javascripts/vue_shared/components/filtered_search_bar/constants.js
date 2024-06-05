@@ -90,6 +90,7 @@ export const TOKEN_TITLE_CLOSED = __('Closed date');
 export const TOKEN_TYPE_APPROVED_BY = 'approved-by';
 export const TOKEN_TYPE_MERGE_USER = 'merge-user';
 export const TOKEN_TYPE_ASSIGNEE = 'assignee';
+export const TOKEN_TYPE_MR_ASSIGNEE = 'mr-assignee';
 export const TOKEN_TYPE_AUTHOR = 'author';
 export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
 export const TOKEN_TYPE_CONTACT = 'contact';

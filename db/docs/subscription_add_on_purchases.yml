@@ -9,4 +9,4 @@ classes:
 - GitlabSubscriptions::AddOnPurchase
 gitlab_schema: gitlab_main_cell
 sharding_key:
-  namespace_id: namespaces
+  organization_id: organizations
