@@ -82,7 +82,7 @@ module Gitlab
           service_request_check(login, password, project) ||
           build_access_token_check(login, password) ||
           lfs_token_check(login, password, project) ||
-          oauth_access_token_check(login, password) ||
+          oauth_access_token_check(password) ||
           personal_access_token_check(password, project) ||
           deploy_token_check(login, password, project) ||
           user_with_password_for_git(login, password) ||
@@ -222,8 +222,8 @@ module Gitlab
         Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
 
-      def oauth_access_token_check(login, password)
-        if login == "oauth2" && password.present?
+      def oauth_access_token_check(password)
+        if password.present?
           token = Doorkeeper::AccessToken.by_token(password)
 
           if valid_oauth_token?(token)

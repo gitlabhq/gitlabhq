@@ -45,6 +45,10 @@
   top: $calc-system-headers-height;
 }
 
+.gl-top-app-header {
+  top: $calc-application-header-height;
+}
+
 .gl-children-ml-sm-3 > * {
   @include media-breakpoint-up(sm) {
     margin-left: $gl-spacing-scale-3;

@@ -10,5 +10,8 @@ query getFluxKustomizationQuery($configuration: LocalConfiguration, $fluxResourc
       status
       type
     }
+    inventory {
+      id
+    }
   }
 }

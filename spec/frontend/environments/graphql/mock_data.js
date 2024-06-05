@@ -819,12 +819,13 @@ const fluxResourceStatusMock = [{ status: 'True', type: 'Ready', message: '', re
 export const fluxKustomizationMock = {
   kind: 'Kustomization',
   metadata: { name: 'custom-resource', namespace: 'custom-namespace' },
-  status: { conditions: fluxResourceStatusMock },
+  status: { conditions: fluxResourceStatusMock, inventory: { entries: [{ id: 'test_resource' }] } },
 };
 export const fluxKustomizationMapped = {
   kind: 'Kustomization',
   metadata: { name: 'custom-resource' },
   conditions: fluxResourceStatusMock,
+  inventory: [{ id: 'test_resource' }],
 };
 export const fluxHelmReleaseMapped = {
   conditions: fluxResourceStatusMock,

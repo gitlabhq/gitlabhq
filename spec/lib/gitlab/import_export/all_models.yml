@@ -19,7 +19,10 @@ issues:
 - sentry_issue
 - issuable_severity
 - label_links
+- own_label_links
 - labels
+- own_labels
+- sync_object
 - last_edited_by
 - todos
 - user_agent_detail
@@ -128,6 +131,7 @@ commit_notes:
 label_links:
 - target
 - label
+- own_label
 label:
 - subscriptions
 - project
@@ -1014,7 +1018,10 @@ epic:
 - milestone
 - notes
 - label_links
+- own_label_links
 - labels
+- own_labels
+- sync_object
 - todos
 - metrics
 - group

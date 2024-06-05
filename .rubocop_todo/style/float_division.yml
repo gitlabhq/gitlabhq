@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/FloatDivision:
-  Exclude:
-    - 'ee/app/models/geo_node_status.rb'
-    - 'ee/app/models/namespaces/storage/root_size.rb'

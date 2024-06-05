@@ -31,7 +31,7 @@ class StateNote < SyntheticNote
     return "merged manually" if event.state == 'merged' && event_source.is_a?(Commit)
 
     body = event.state.dup
-    body << " via #{event_source.gfm_reference(project)}" if event_source
+    body << " with #{event_source.gfm_reference(project)}" if event_source
     body
   end
 

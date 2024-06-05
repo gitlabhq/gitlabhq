@@ -71,7 +71,7 @@ class Label < ApplicationRecord
   scope :for_targets, ->(target_relation) do
     joins(:label_links)
       .merge(LabelLink.where(target: target_relation))
-      .select(arel_table[Arel.star], LabelLink.arel_table[:target_id])
+      .select(arel_table[Arel.star], LabelLink.arel_table[:target_id], LabelLink.arel_table[:target_type])
       .with_preloaded_container
   end
 

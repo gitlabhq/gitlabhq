@@ -1,4 +1,4 @@
-<!-- This issue template can be used as a great starting point for feature requests. The section "Release notes" can be used as a summary of the feature and is also required if you want to have your release post blog MR auto generated using the release post item generator:  https://about.gitlab.com/handbook/marketing/blog/release-posts/#release-post-item-generator. The remaining sections are the backbone for every feature in GitLab.
+<!-- This issue template can be used as a great starting point for feature requests. Learn more about the process: https://handbook.gitlab.com/handbook/product/how-to-engage/#customer-feature-requests. The section "Release notes" can be used as a summary of the feature and is also required if you want to have your release post blog MR auto generated using the release post item generator:  https://about.gitlab.com/handbook/marketing/blog/release-posts/#release-post-item-generator. The remaining sections are the backbone for every feature in GitLab.
 
 The goal of this template is brevity for quick/smaller iterations. For a more thorough list of considerations for larger features or feature sets, you can leverage the detailed [feature proposal](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20proposal%20-%20detailed.md). -->
 
@@ -55,12 +55,17 @@ https://docs.gitlab.com/ee/administration/audit_events.html
 --->
 
 <!-- Label reminders
+
+Make sure to add the appropriate labels for the product stage and/or group (e.g ~"devops::plan") if known and add a comment tagging the appropriate Product Manager.
+
 Use the following resources to find the appropriate labels:
 - Use only one tier label choosing the lowest tier this is intended for
 - https://gitlab.com/gitlab-org/gitlab/-/labels
 - https://about.gitlab.com/handbook/product/categories/features/
--->
 
+Examples: 
 /label ~group:: ~section:: ~Category:
 /label ~"GitLab Free" ~"GitLab Premium" ~"GitLab Ultimate"
-/label ~"type::feature" ~documentation ~direction
+
+-->
+/label ~"type::feature" 

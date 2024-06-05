@@ -14,6 +14,7 @@ import { humanizeClusterErrors } from '../../../helpers/k8s_integration_helper';
 import k8sPodsQuery from '../../queries/k8s_pods.query.graphql';
 import k8sServicesQuery from '../../queries/k8s_services.query.graphql';
 import { k8sResourceType } from './constants';
+import { k8sLogs } from './k8s_logs';
 
 const watchServices = ({ configuration, namespace, client }) => {
   const query = k8sServicesQuery;
@@ -99,4 +100,5 @@ export const kubernetesQueries = {
         }
       });
   },
+  k8sLogs,
 };

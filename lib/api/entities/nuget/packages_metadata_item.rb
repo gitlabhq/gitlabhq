@@ -9,7 +9,7 @@ module API
         expose :upper_version, as: :upper, documentation: { type: 'string', example: '1.3.0.17' }
         expose :packages_count, as: :count, documentation: { type: 'integer', example: 1 }
         expose :packages, as: :items, using: ::API::Entities::Nuget::PackageMetadata,
-                          documentation: { is_array: true, type: 'API::Entities::Nuget::PackageMetadata' }
+          documentation: { is_array: true, type: 'API::Entities::Nuget::PackageMetadata' }
       end
     end
   end

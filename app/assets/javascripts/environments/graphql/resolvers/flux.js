@@ -36,6 +36,7 @@ const mapFluxItems = (fluxItem, resourceType) => {
         name: fluxItem?.metadata?.name || '',
       },
       conditions: fluxItem?.status?.conditions || [],
+      inventory: fluxItem?.status?.inventory?.entries || [],
     };
   }
   return {

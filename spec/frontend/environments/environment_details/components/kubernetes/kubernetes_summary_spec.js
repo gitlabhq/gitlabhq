@@ -1,7 +1,7 @@
-import { shallowMount } from '@vue/test-utils';
 import { GlTab } from '@gitlab/ui';
 import KubernetesSummary from '~/environments/environment_details/components/kubernetes/kubernetes_summary.vue';
 import KubernetesTreeItem from '~/environments/environment_details/components/kubernetes/kubernetes_tree_item.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { fluxKustomization } from '../../../mock_data';
 
 describe('~/environments/environment_details/components/kubernetes/kubernetes_summary.vue', () => {
@@ -9,9 +9,13 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_su
 
   const findTab = () => wrapper.findComponent(GlTab);
   const findTreeItem = () => wrapper.findComponent(KubernetesTreeItem);
+  const findRelatedDeployments = () => wrapper.findByTestId('related-deployments');
+  const findAllDeploymentItems = () =>
+    findRelatedDeployments().findAllComponents(KubernetesTreeItem);
+  const findDeploymentItem = (at) => findAllDeploymentItems().at(at);
 
   const createWrapper = () => {
-    wrapper = shallowMount(KubernetesSummary, {
+    wrapper = shallowMountExtended(KubernetesSummary, {
       propsData: {
         fluxKustomization,
       },
@@ -37,6 +41,19 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_su
         kind: 'Kustomization',
         name: 'my-kustomization',
         status: 'reconciled',
+      });
+    });
+
+    describe('related deployments', () => {
+      it('renders a tree item for each related deployment', () => {
+        expect(findAllDeploymentItems()).toHaveLength(2);
+      });
+
+      it.each([
+        ['notification-controller', 0],
+        ['source-controller', 1],
+      ])('renders a tree item with name %s at %d', (name, index) => {
+        expect(findDeploymentItem(index).props()).toEqual({ kind: 'Deployment', status: '', name });
       });
     });
   });

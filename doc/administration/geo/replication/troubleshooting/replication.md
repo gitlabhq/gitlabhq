@@ -489,13 +489,55 @@ to start again from scratch, there are a few steps that can help you:
    gitlab-ctl tail sidekiq
    ```
 
-1. Rename repository storage folders and create new ones. If you are not concerned about possible orphaned directories and files, you can skip this step.
+1. Clear Gitaly/Gitaly Cluster data.
+
+   ::Tabs
+
+   :::TabTitle Gitaly
 
    ```shell
    mv /var/opt/gitlab/git-data/repositories /var/opt/gitlab/git-data/repositories.old
-   mkdir -p /var/opt/gitlab/git-data/repositories
-   chown git:git /var/opt/gitlab/git-data/repositories
+   sudo gitlab-ctl reconfigure
    ```
+
+   :::TabTitle Gitaly Cluster
+
+   1. Optional. Disable the Praefect internal load balancer.
+   1. Stop Praefect on each Praefect server:
+
+      ```shell
+      sudo gitlab-ctl stop praefect
+      ```
+
+   1. Reset the Praefect database:
+
+      ```shell
+      sudo /opt/gitlab/embedded/bin/psql -U praefect -d template1 -h localhost -c "DROP DATABASE praefect_production WITH (FORCE);"
+      sudo /opt/gitlab/embedded/bin/psql -U praefect -d template1 -h localhost -c "CREATE DATABASE praefect_production WITH OWNER=praefect ENCODING=UTF8;"
+      ```
+
+   1. Rename/delete repository data from each Gitaly node:
+
+      ```shell
+      sudo mv /var/opt/gitlab/git-data/repositories /var/opt/gitlab/git-data/repositories.old
+      sudo gitlab-ctl reconfigure
+      ```
+
+   1. On your Praefect deploy node run reconfigure to set up the database:
+
+      ```shell
+      sudo gitlab-ctl reconfigure
+      ```
+
+   1. Start Praefect on each Praefect server:
+
+      ```shell
+      sudo gitlab-ctl start praefect
+      ```
+
+   1. Optional. If you disabled it, reactivate the Praefect internal load balancer.
+
+   ::EndTabs
 
    NOTE:
    You may want to remove the `/var/opt/gitlab/git-data/repositories.old` in the future

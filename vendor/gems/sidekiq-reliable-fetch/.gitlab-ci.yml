@@ -9,7 +9,7 @@ rspec:
     - .with_redis
   parallel:
     matrix:
-      - RUBY_VERSION: ["3.1"] # 3.2 isn't supported yet
+      - RUBY_VERSION: ["3.1.5"] # 3.2 isn't supported yet
 
 .with_redis:
   services:

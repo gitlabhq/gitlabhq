@@ -364,10 +364,10 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/ap
 
 A token with [scope](../integration/oauth_provider.md#view-all-authorized-applications)
 `read_repository` or `write_repository` can access Git over HTTPS. Use the token as the password.
-The username must be `oauth2`, not your username:
+The username should be your GitLab username or `oauth2`:
 
 ```plaintext
-https://oauth2:<your_access_token>@gitlab.example.com/project_path/project_name.git
+https://<your_gitlab_username>:<your_access_token>@gitlab.example.com/project_path/project_name.git
 ```
 
 Alternatively, you can use a [Git credential helper](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)

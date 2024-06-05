@@ -3,9 +3,13 @@
 class LabelLink < ApplicationRecord
   include BulkInsertSafe
   include Importable
+  include FromUnion
 
   belongs_to :target, polymorphic: true, inverse_of: :label_links # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :label
+  # rubocop:disable Rails/InverseOf -- needed for unified association
+  belongs_to :own_label, foreign_key: :label_id, class_name: 'Label'
+  # rubocop:enable Rails/InverseOf
 
   validates :target, presence: true, unless: :importing?
   validates :label, presence: true, unless: :importing?
@@ -18,7 +22,7 @@ class LabelLink < ApplicationRecord
   scope :by_target_for_exists_query, ->(target_type, arel_join_column, label_ids = nil) do
     relation = LabelLink
       .where(target_type: target_type)
-      .where(arel_table['target_id'].eq(arel_join_column))
+      .where(arel_table['target_id'].eq(arel_join_column)).select("1")
 
     relation = relation.where(label_id: label_ids) if label_ids
     relation

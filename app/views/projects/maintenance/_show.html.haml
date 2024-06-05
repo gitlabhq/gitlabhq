@@ -17,5 +17,6 @@
 
     - if current_user.can?(:owner_access, @project) && Feature.enabled?(:rewrite_history_ui, @project)
       = render "projects/maintenance/remove_blobs"
+      = render "projects/maintenance/redact_text"
 
     = render "projects/maintenance/cleanup"

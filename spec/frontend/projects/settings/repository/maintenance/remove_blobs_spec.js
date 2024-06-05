@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlDrawer, GlFormTextarea, GlModal } from '@gitlab/ui';
+import { GlDrawer, GlFormTextarea, GlModal, GlFormInput } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -44,6 +44,7 @@ describe('Remove blobs', () => {
   const findDrawerTrigger = () => wrapper.findByTestId('drawer-trigger');
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findModal = () => wrapper.findComponent(GlModal);
+  const findModalInput = () => findModal().findComponent(GlFormInput);
   const removeBlobsButton = () => wrapper.findByTestId('remove-blobs');
   const findTextarea = () => wrapper.findComponent(GlFormTextarea);
 
@@ -75,9 +76,11 @@ describe('Remove blobs', () => {
         actionPrimary: { text: 'Yes, remove blobs' },
       });
 
-      expect(findModal().text()).toBe(
-        'Removing blobs by ID cannot be undone. Are you sure you want to continue? Enter the following to confirm: project/path',
+      expect(findModal().text()).toContain(
+        'Removing blobs by ID cannot be undone. Are you sure you want to continue?',
       );
+
+      expect(findModal().text()).toContain('Enter the following to confirm: project/path');
     });
   });
 
@@ -118,7 +121,10 @@ describe('Remove blobs', () => {
         });
 
         describe('removal confirmed (success)', () => {
-          beforeEach(() => findModal().vm.$emit('primary'));
+          beforeEach(() => {
+            findModalInput().vm.$emit('input', TEST_PROJECT_PATH);
+            findModal().vm.$emit('primary');
+          });
 
           it('disables user input while loading', () => {
             expect(findTextarea().attributes('disabled')).toBe('true');
@@ -136,6 +142,13 @@ describe('Remove blobs', () => {
             await waitForPromises();
 
             expect(findDrawer().props('open')).toBe(false);
+          });
+
+          it('clears the input on the modal when the hide event is emitted', async () => {
+            findModal().vm.$emit('hide');
+            await nextTick();
+
+            expect(findModalInput().attributes('value')).toBe(undefined);
           });
 
           it('generates a housekeeping alert', async () => {

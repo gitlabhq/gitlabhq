@@ -120,7 +120,7 @@ export default {
     actionCancel: {
       text: __('Cancel'),
     },
-    versionDescription: s__('MlModelRegistry|Leave empty to auto increment.'),
+    versionDescription: s__('MlModelRegistry|Enter a semver version.'),
     versionPlaceholder: s__('MlModelRegistry|For example 1.0.0'),
     descriptionPlaceholder: s__('MlModelRegistry|Enter some description'),
     buttonTitle: s__('MlModelRegistry|Create model version'),

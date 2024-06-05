@@ -101,10 +101,10 @@ module EmailsHelper
       case format
       when :html
         merge_request_link = link_to(merge_request.to_reference, merge_request.web_url)
-        safe_format(_("Issue was closed by %{name} via merge request %{link}"), name: name, link: merge_request_link)
+        safe_format(_("Issue was closed by %{name} with merge request %{link}"), name: name, link: merge_request_link)
       else
         # If it's not HTML nor text then assume it's text to be safe
-        _("Issue was closed by %{name} via merge request %{link}") % { name: name, link: "#{merge_request.to_reference} (#{merge_request.web_url})" }
+        _("Issue was closed by %{name} with merge request %{link}") % { name: name, link: "#{merge_request.to_reference} (#{merge_request.web_url})" }
       end
     when String
       # Technically speaking this should be Commit but per
@@ -112,7 +112,7 @@ module EmailsHelper
       # we can't deserialize Commit without custom serializer for ActiveJob
       return "" unless Ability.allowed?(@recipient, :download_code, @project)
 
-      _("Issue was closed by %{name} via %{closed_via}") % { name: name, closed_via: closed_via }
+      _("Issue was closed by %{name} with %{closed_via}") % { name: name, closed_via: closed_via }
     else
       if name
         _("Issue was closed by %{name}") % { name: name }

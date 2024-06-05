@@ -218,3 +218,25 @@
     padding-right: 10px;
   }
 }
+
+/**
+* Kubernetes Tree view
+**/
+
+.kubernetes-tree-view {
+  .connector {
+    width: calc(100% + #{$gl-spacing-scale-6});
+    height: calc(100% + #{$gl-spacing-scale-4});
+
+    &::after {
+      content: '';
+      left: calc(50% + #{$gl-spacing-scale-2});
+      top: -4.5px;
+      position: absolute;
+      border-style: solid;
+      border-color: transparent;
+      border-width: $gl-spacing-scale-2 $gl-spacing-scale-3;
+      border-left-color: var(--gray-200, $gray-200);
+    }
+  }
+}

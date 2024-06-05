@@ -82,6 +82,10 @@ describe('ModelVersionCreate', () => {
         expect(findVersionInput().exists()).toBe(true);
       });
 
+      it('renders the version input label', () => {
+        expect(wrapper.find('[description="Enter a semver version."]').exists()).toBe(true);
+      });
+
       it('renders the description input', () => {
         expect(findDescriptionInput().exists()).toBe(true);
       });

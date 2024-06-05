@@ -191,9 +191,11 @@ export const KUSTOMIZATIONS_RESOURCE_TYPE = 'kustomizations';
 
 export const KUSTOMIZATION = 'Kustomization';
 export const HELM_RELEASE = 'HelmRelease';
+export const DEPLOYMENT_KIND = 'Deployment';
 
 export const TREE_ITEM_KIND_ICONS = {
   [KUSTOMIZATION]: 'overview',
+  [DEPLOYMENT_KIND]: 'deployments',
 };
 
 export const TREE_ITEM_STATUS_ICONS = {

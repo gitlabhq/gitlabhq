@@ -218,7 +218,7 @@ RSpec.describe 'Admin Groups', feature_category: :groups_and_projects do
 
   describe 'add user into a group', :js do
     context 'when membership is set to expire' do
-      it 'renders relative time' do
+      it 'renders relative time', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/460029' do
         expire_time = Time.current + 2.days
         current_user.update!(time_display_relative: true)
         group.add_member(user, Gitlab::Access::REPORTER, expires_at: expire_time)

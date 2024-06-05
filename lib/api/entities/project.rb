@@ -48,8 +48,8 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :resolve_outdated_diff_discussions, documentation: { type: 'boolean' }
       expose :container_expiration_policy,
-             using: Entities::ContainerExpirationPolicy,
-             if: ->(project, _) { project.container_expiration_policy }
+        using: Entities::ContainerExpirationPolicy,
+        if: ->(project, _) { project.container_expiration_policy }
       expose :repository_object_format, documentation: { type: 'string', example: 'sha1' }
 
       # Expose old field names with the new permissions methods to keep API compatible
@@ -183,9 +183,9 @@ module API
                                 .preload(:project_repository)
                                 .preload(:service_desk_setting)
                                 .preload(project_group_links: { group: :route },
-                                         fork_network: :root_project,
-                                         fork_network_member: :forked_from_project,
-                                         forked_from_project: [:route, :topics, :group, :project_feature, { namespace: [:route, :owner] }])
+                                  fork_network: :root_project,
+                                  fork_network_member: :forked_from_project,
+                                  forked_from_project: [:route, :topics, :group, :project_feature, { namespace: [:route, :owner] }])
       end
       # rubocop: enable CodeReuse/ActiveRecord
 

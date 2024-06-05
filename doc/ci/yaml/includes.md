@@ -375,9 +375,6 @@ In `include` sections in your `.gitlab-ci.yml` file, you can use:
 - The `CI_PIPELINE_SOURCE` and `CI_PIPELINE_TRIGGERED` [predefined variables](../variables/predefined_variables.md).
 - The `$CI_COMMIT_REF_NAME` [predefined variable](../variables/predefined_variables.md).
 
-  When used in `include`, the `CI_COMMIT_REF_NAME` variable returns the full
-  ref path, like `refs/heads/branch-name`.
-
 For example:
 
 ```yaml

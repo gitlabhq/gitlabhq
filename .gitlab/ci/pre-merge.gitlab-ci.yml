@@ -7,7 +7,7 @@ pre-merge-checks:
     FILES_TO_DOWNLOAD: >
       scripts/utils.sh
       scripts/pipeline/pre_merge_checks.rb
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
   stage: pre-merge
   needs: []
   before_script:

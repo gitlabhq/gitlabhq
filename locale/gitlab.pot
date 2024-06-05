@@ -28551,10 +28551,10 @@ msgstr ""
 msgid "Issue was closed by %{name}"
 msgstr ""
 
-msgid "Issue was closed by %{name} via %{closed_via}"
+msgid "Issue was closed by %{name} with %{closed_via}"
 msgstr ""
 
-msgid "Issue was closed by %{name} via merge request %{link}"
+msgid "Issue was closed by %{name} with merge request %{link}"
 msgstr ""
 
 msgid "Issue weight"
@@ -30092,6 +30092,9 @@ msgstr ""
 msgid "KubernetesDashboard|You can select an agent from a project's environment page."
 msgstr ""
 
+msgid "KubernetesLogs|No logs available for pod %{podName}"
+msgstr ""
+
 msgid "LDAP"
 msgstr ""
 
@@ -31091,6 +31094,18 @@ msgid "Logo will be removed. Are you sure?"
 msgstr ""
 
 msgid "Logs"
+msgstr ""
+
+msgid "LogsViewer|Enter full screen"
+msgstr ""
+
+msgid "LogsViewer|Exit full screen"
+msgstr ""
+
+msgid "LogsViewer|Scroll to bottom"
+msgstr ""
+
+msgid "LogsViewer|Scroll to top"
 msgstr ""
 
 msgid "Low - S4"
@@ -33243,6 +33258,9 @@ msgstr ""
 msgid "MlModelRegistry|Drop to start upload"
 msgstr ""
 
+msgid "MlModelRegistry|Enter a semver version."
+msgstr ""
+
 msgid "MlModelRegistry|Enter some description"
 msgstr ""
 
@@ -33283,9 +33301,6 @@ msgid "MlModelRegistry|Initial version name. Must be a semantic version."
 msgstr ""
 
 msgid "MlModelRegistry|Latest version"
-msgstr ""
-
-msgid "MlModelRegistry|Leave empty to auto increment."
 msgstr ""
 
 msgid "MlModelRegistry|Leave empty to skip version creation."
@@ -40581,6 +40596,12 @@ msgstr ""
 msgid "ProjectList|Yours"
 msgstr ""
 
+msgid "ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the file from Git history."
+msgstr ""
+
+msgid "ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the string from Git history."
+msgstr ""
+
 msgid "ProjectMaintenance|Blob IDs to remove"
 msgstr ""
 
@@ -40602,9 +40623,6 @@ msgstr ""
 msgid "ProjectMaintenance|Go to housekeeping"
 msgstr ""
 
-msgid "ProjectMaintenance|Housekeeping will need to be triggered manually afterwards to remove old versions of the file."
-msgstr ""
-
 msgid "ProjectMaintenance|How do I get a list of object IDs?"
 msgstr ""
 
@@ -40612,6 +40630,27 @@ msgid "ProjectMaintenance|Manage repository storage and cleanup."
 msgstr ""
 
 msgid "ProjectMaintenance|Provide a list of blob object IDs to be removed."
+msgstr ""
+
+msgid "ProjectMaintenance|REMOVED"
+msgstr ""
+
+msgid "ProjectMaintenance|Redact known instances of text in the repository. The provided strings will be replaced with %{code_open}***REMOVED***%{code_close}."
+msgstr ""
+
+msgid "ProjectMaintenance|Redact matching instances of text in the repository. Strings will be replaced with %{removed}."
+msgstr ""
+
+msgid "ProjectMaintenance|Redact matching strings"
+msgstr ""
+
+msgid "ProjectMaintenance|Redact text"
+msgstr ""
+
+msgid "ProjectMaintenance|Redacting strings does not produce a preview and cannot be undone. Are you sure you want to continue?"
+msgstr ""
+
+msgid "ProjectMaintenance|Regex and glob patterns supported. Enter multiple entries on separate lines."
 msgstr ""
 
 msgid "ProjectMaintenance|Remove blobs"
@@ -40623,10 +40662,28 @@ msgstr ""
 msgid "ProjectMaintenance|Run housekeeping to remove old versions from repository."
 msgstr ""
 
+msgid "ProjectMaintenance|Something went wrong while redacting text."
+msgstr ""
+
 msgid "ProjectMaintenance|Something went wrong while removing blobs."
 msgstr ""
 
+msgid "ProjectMaintenance|Strings to redact"
+msgstr ""
+
+msgid "ProjectMaintenance|Text redacted"
+msgstr ""
+
+msgid "ProjectMaintenance|To confirm, enter the following:"
+msgstr ""
+
 msgid "ProjectMaintenance|To ensure that a full backup is available in case changes need to be restored, you should make an %{docs_link_start}export of the project%{docs_link_end}."
+msgstr ""
+
+msgid "ProjectMaintenance|To remove old versions from the repository, run housekeeping."
+msgstr ""
+
+msgid "ProjectMaintenance|Yes, redact matching strings"
 msgstr ""
 
 msgid "ProjectMaintenance|Yes, remove blobs"

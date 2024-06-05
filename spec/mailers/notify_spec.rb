@@ -361,8 +361,8 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
           it 'has the correct subject and body' do
             aggregate_failures do
               is_expected.to have_referable_subject(issue, reply: true)
-              is_expected.to have_body_text("Issue was closed by #{current_user_sanitized} via #{closing_commit.id}")
-              is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized} via #{closing_commit.id}")
+              is_expected.to have_body_text("Issue was closed by #{current_user_sanitized} with #{closing_commit.id}")
+              is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized} with #{closing_commit.id}")
             end
           end
         end
@@ -385,9 +385,9 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
             aggregate_failures do
               url = project_merge_request_url(project, closing_merge_request)
               is_expected.to have_referable_subject(issue, reply: true)
-              is_expected.to have_body_text("Issue was closed by #{current_user_sanitized} via merge request " +
+              is_expected.to have_body_text("Issue was closed by #{current_user_sanitized} with merge request " +
                                             %(<a href="#{url}">#{closing_merge_request.to_reference}</a>))
-              is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized} via merge request " \
+              is_expected.to have_plain_text_content("Issue was closed by #{current_user_sanitized} with merge request " \
                                                      "#{closing_merge_request.to_reference} (#{url})")
             end
           end

@@ -7,6 +7,7 @@ import environmentToRollbackQuery from './queries/environment_to_rollback.query.
 import environmentToStopQuery from './queries/environment_to_stop.query.graphql';
 import k8sPodsQuery from './queries/k8s_pods.query.graphql';
 import k8sConnectionStatusQuery from './queries/k8s_connection_status.query.graphql';
+import k8sLogsQuery from './queries/k8s_logs.query.graphql';
 import k8sServicesQuery from './queries/k8s_services.query.graphql';
 import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
 import fluxKustomizationQuery from './queries/flux_kustomization.query.graphql';
@@ -140,6 +141,7 @@ export const apolloProvider = (endpoint) => {
         status: '',
         type: '',
       },
+      inventory: [],
     },
   });
   cache.writeQuery({
@@ -152,6 +154,10 @@ export const apolloProvider = (endpoint) => {
         type: '',
       },
     },
+  });
+  cache.writeQuery({
+    query: k8sLogsQuery,
+    data: { logs: [] },
   });
 
   return new VueApollo({

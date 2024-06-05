@@ -13,7 +13,7 @@ module API
         expose :versions, using: ::API::Entities::Nuget::SearchResultVersion
         expose :tags, documentation: { type: 'string', example: 'tag#1 tag#2' }
         expose :metadatum, using: ::API::Entities::Nuget::Metadatum, merge: true,
-                           documentation: { is_array: true, type: 'API::Entities::Nuget::Metadatum' }
+          documentation: { is_array: true, type: 'API::Entities::Nuget::Metadatum' }
       end
     end
   end

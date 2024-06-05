@@ -16,7 +16,7 @@ module API
 
           expose :component_names, as: :components, documentation: { is_array: true, type: 'string', example: 'main' }
           expose :architecture_names, as: :architectures,
-                                      documentation: { is_array: true, type: 'string', example: 'amd64' }
+            documentation: { is_array: true, type: 'string', example: 'amd64' }
         end
       end
     end

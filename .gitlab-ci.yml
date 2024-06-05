@@ -29,11 +29,11 @@ default:
   timeout: 90m
 
 .default-ruby-variables: &default-ruby-variables
-  RUBY_VERSION: "3.1"
+  RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_1"
 
 .next-ruby-variables: &next-ruby-variables
-  RUBY_VERSION: "3.2"
+  RUBY_VERSION: "${RUBY_VERSION_NEXT}"
   OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3_2"
 
 .default-branch-pipeline-failure-variables: &default-branch-pipeline-failure-variables
@@ -158,7 +158,7 @@ workflow:
 
 variables:
   PG_VERSION: "14"
-  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}.patched-golang-${GO_VERSION}-rust-${RUST_VERSION}-node-${NODE_VERSION}-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-yarn-1.22-graphicsmagick-1.3.36"
+  DEFAULT_CI_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}-node-${NODE_VERSION}-postgresql-${PG_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-yarn-1.22-graphicsmagick-1.3.36"
   # We set $GITLAB_DEPENDENCY_PROXY to another variable (since it's set at the group level and has higher precedence than .gitlab-ci.yml)
   # so that we can override $GITLAB_DEPENDENCY_PROXY_ADDRESS in workflow rules.
   GITLAB_DEPENDENCY_PROXY_ADDRESS: "${GITLAB_DEPENDENCY_PROXY}"
@@ -186,6 +186,8 @@ variables:
   GO_VERSION: "1.22"
   NODE_VERSION: "20.12"
   RUST_VERSION: "1.73"
+  RUBY_VERSION_DEFAULT: "3.1.5"
+  RUBY_VERSION_NEXT: "3.2.4"
 
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
@@ -221,7 +223,7 @@ variables:
   DOCS_REVIEW_APPS_DOMAIN: "docs.gitlab-review.app"
   DOCS_GITLAB_REPO_SUFFIX: "ee"
 
-  REVIEW_APPS_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bookworm-ruby-3.0:gcloud-383-kubectl-1.27-helm-3.9"
+  REVIEW_APPS_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}:gcloud-383-kubectl-1.27-helm-3.9"
   REVIEW_APPS_DOMAIN: "gitlab-review.app"
   REVIEW_APPS_GCP_PROJECT: "gitlab-review-apps"
   REVIEW_APPS_GCP_REGION: "us-central1"

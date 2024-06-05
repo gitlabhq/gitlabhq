@@ -31,7 +31,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_tr
     it('renders correct kind and name', () => {
       createWrapper();
 
-      expect(wrapper.text()).toBe(`${kind}:${name}`);
+      expect(wrapper.text()).toBe(`${kind}: ${name}`);
     });
 
     it('renders correct status icon when the status is provided', () => {
@@ -40,7 +40,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_tr
       const iconData = TREE_ITEM_STATUS_ICONS.reconciled;
 
       expect(findStatusIcon().props('name')).toBe(iconData.icon);
-      expect(findStatusIcon().attributes('class')).toBe(iconData.class);
+      expect(findStatusIcon().attributes('class')).toContain(iconData.class);
     });
 
     it("doesn't render status icon when the status is not provided", () => {

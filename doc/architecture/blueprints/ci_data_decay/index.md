@@ -23,10 +23,13 @@ posing scalability challenges due to the vast volume of data stored in PostgreSQ
 
 The proposed strategies involves:
 
-1. Partitioning CI/CD data tables.
-1. Reducing the growth rate of metadata.
-1. Moving less accessed data to other storage solutions like object storage.
-1. Introducing configurable data retention policies.
+1. [Partitioning CI/CD data tables](pipeline_partitioning.md) to efficiently support large scale
+   of data and reduce the risk of databae performance degradation.
+1. [Reducing the growth rate of metadata](reduce_data_growth_rate.md) by being efficient in the 
+   data to store at any given stage of the pipeline lifecycle.
+1. [Archiving pipeline data](pipeline_archival.md) to consistently move less accessed data to other
+   storage solutions like object storage and enforce a different access pattern.
+1. [Introducing configurable data retention policies](retention_policies.md).
 
 This architectural overhaul aims to enhance reliability, scalability, and performance while maintaining
 data accessibility and compliance.
@@ -76,91 +79,6 @@ we might want to follow these three tracks described below.
 3. Reduce the rate of builds metadata table growth
 
 <!-- markdownlint-enable MD029 -->
-
-### Reduce the rate of builds metadata table growth
-
-Once a build (or a pipeline) gets archived, it is no longer possible to resume
-pipeline processing in such pipeline. It means that all the metadata, we store
-in PostgreSQL, that is needed to efficiently and reliably process builds can be
-safely moved to a different data store.
-
-Storing pipeline processing data is expensive as this kind of CI/CD
-data represents a significant portion of data stored in CI/CD tables. Once we
-restrict access to processing archived pipelines, we can move this metadata to
-a different place - preferably object storage - and make it accessible on
-demand, when it is really needed again (for example for compliance or auditing purposes).
-
-We need to evaluate whether moving data is the most optimal solution. We might
-be able to use de-duplication of metadata entries and other normalization
-strategies to consume less storage while retaining ability to query this
-dataset. Technical evaluation will be required to find the best solution here.
-
-Epic: [Reduce the rate of builds metadata table growth](https://gitlab.com/groups/gitlab-org/-/epics/7434).
-
-### Partition CI/CD pipelines database tables
-
-Even if we move CI/CD metadata to a different store, or reduce the rate of
-metadata growth in a different way, the problem of having billions of rows
-describing pipelines, builds and artifacts, remains. We still may need to keep
-reference to the metadata we might store in object storage and we still do need
-to be able to retrieve this information reliably in bulk (or search through
-it).
-
-It means that by moving data to object storage we might not be able to reduce
-the number of rows in CI/CD tables. Moving data to object storage should help
-with reducing the data size, but not the quantity of entries describing this
-data. Because of this limitation, we still want to partition CI/CD data to
-reduce the impact on the database (indices size, auto-vacuum time and
-frequency).
-
-Our intent here is not to move this data out of our primary database elsewhere.
-What want to divide very large database tables, that store CI/CD data, into
-multiple smaller ones, using PostgreSQL partitioning features.
-
-There are a few approaches we can take to partition CI/CD data. A promising one
-is using list-based partitioning where a partition number is assigned a
-pipeline, and gets propagated to all resources that are related to this
-pipeline. We will assign a partition number using a
-[uniform logical partition ID](pipeline_partitioning.md#why-do-we-want-to-use-explicit-logical-partition-ids)
-This is very flexible because we can extend this partitioning strategy at will;
-for example with this strategy we can assign an arbitrary partition number
-based on multiple partitioning keys, combining time-decay-based partitioning
-with tenant-based partitioning on the application level if desired.
-
-Partitioning rarely accessed data should also follow the policy defined for
-builds archival, to make it consistent and reliable.
-
-Epic: [Partition CI/CD pipelines database tables](https://gitlab.com/groups/gitlab-org/-/epics/5417).
-
-For more technical details about this topic see
-[pipeline data partitioning design](pipeline_partitioning.md).
-
-### Partition CI/CD builds queuing database tables
-
-While working on the [CI/CD Scale](../ci_scale/index.md) blueprint, we have
-introduced a [new architecture for queuing CI/CD builds](https://gitlab.com/groups/gitlab-org/-/epics/5909#note_680407908)
-for execution.
-
-This allowed us to significantly improve performance. We still consider the new
-solution as an intermediate mechanism, needed before we start working on the
-next iteration. The following iteration that should improve the architecture of
-builds queuing even more (it might require moving off the PostgreSQL fully or
-partially).
-
-In the meantime we want to ship another iteration, an intermediate step towards
-more flexible and reliable solution. We want to partition the new queuing
-tables, to reduce the impact on the database, to improve reliability and
-database health.
-
-Partitioning of CI/CD queuing tables does not need to follow the policy defined
-for builds archival. Instead we should leverage a long-standing policy saying
-that builds created more 24 hours ago need to be removed from the queue. This
-business rule is present in the product since the inception of GitLab CI.
-
-Epic: [Partition CI/CD builds queuing database tables](https://gitlab.com/groups/gitlab-org/-/epics/7438).
-
-For more technical details about this topic see
-[pipeline data partitioning design](pipeline_partitioning.md).
 
 ## Principles
 
@@ -214,6 +132,35 @@ spanning the duration that equals to the builds archival policy.
 
 It is possible to still allow users to use the old API to access archived
 pipelines data, although a user provided partition identifier may be required.
+
+### Other strategies considered
+
+#### Partition CI/CD builds queuing database tables
+
+While working on the [CI/CD Scale](../ci_scale/index.md) blueprint, we have
+introduced a [new architecture for queuing CI/CD builds](https://gitlab.com/groups/gitlab-org/-/epics/5909#note_680407908)
+for execution.
+
+This allowed us to significantly improve performance. We still consider the new
+solution as an intermediate mechanism, needed before we start working on the
+next iteration. The following iteration that should improve the architecture of
+builds queuing even more (it might require moving off the PostgreSQL fully or
+partially).
+
+In the meantime we want to ship another iteration, an intermediate step towards
+more flexible and reliable solution. We want to partition the new queuing
+tables, to reduce the impact on the database, to improve reliability and
+database health.
+
+Partitioning of CI/CD queuing tables does not need to follow the policy defined
+for builds archival. Instead we should leverage a long-standing policy saying
+that builds created more 24 hours ago need to be removed from the queue. This
+business rule is present in the product since the inception of GitLab CI.
+
+Epic: [Partition CI/CD builds queuing database tables](https://gitlab.com/groups/gitlab-org/-/epics/7438).
+
+For more technical details about this topic see
+[pipeline data partitioning design](pipeline_partitioning.md).
 
 ## Iterations
 

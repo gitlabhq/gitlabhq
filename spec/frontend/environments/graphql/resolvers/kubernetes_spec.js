@@ -18,6 +18,7 @@ import {
 } from '~/environments/graphql/resolvers/kubernetes/constants';
 import { k8sPodsMock, k8sServicesMock } from 'jest/kubernetes_dashboard/graphql/mock_data';
 import { k8sNamespacesMock } from '../mock_data';
+import { bootstrapWatcherMock } from '../watcher_mock_helper';
 
 jest.mock('~/environments/graphql/resolvers/kubernetes/k8s_connection_status');
 
@@ -58,41 +59,16 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       return Promise.resolve(mockWatcher);
     });
 
-    const MockWatchStream = () => {
-      const callbacks = {};
-
-      const registerCallback = (eventName, callback) => {
-        if (callbacks[eventName]) {
-          callbacks[eventName].push(callback);
-        } else {
-          callbacks[eventName] = [callback];
-        }
-      };
-
-      const triggerEvent = (eventName, data) => {
-        if (callbacks[eventName]) {
-          callbacks[eventName].forEach((callback) => callback(data));
-        }
-      };
-
-      return {
-        registerCallback,
-        triggerEvent,
-      };
-    };
-
     describe('when the pods data is present', () => {
-      let watchStream;
+      let watcherMock;
       beforeEach(() => {
-        watchStream = new MockWatchStream();
+        watcherMock = bootstrapWatcherMock();
         jest
           .spyOn(CoreV1Api.prototype, 'listCoreV1NamespacedPod')
           .mockImplementation(mockNamespacedPodsListFn);
         jest
           .spyOn(CoreV1Api.prototype, 'listCoreV1PodForAllNamespaces')
           .mockImplementation(mockAllPodsListFn);
-        jest.spyOn(mockWatcher, 'subscribeToStream').mockImplementation(mockPodsListWatcherFn);
-        jest.spyOn(mockWatcher, 'on').mockImplementation(watchStream.registerCallback);
       });
 
       it.each([
@@ -106,7 +82,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           await mockResolvers.Query.k8sPods(null, { configuration, namespace }, { client });
 
           if (eventName) {
-            watchStream.triggerEvent(eventName, []);
+            watcherMock.triggerEvent(eventName, []);
           }
 
           expect(updateConnectionStatus).toHaveBeenCalledWith(expect.anything(), {
@@ -121,19 +97,24 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       it('should request namespaced pods from the cluster_client library if namespace is specified', async () => {
         await mockResolvers.Query.k8sPods(null, { configuration, namespace }, { client });
 
-        expect(mockPodsListWatcherFn).toHaveBeenCalledWith(`/api/v1/namespaces/${namespace}/pods`, {
-          watch: true,
-        });
+        expect(watcherMock.subscribeToStreamMock).toHaveBeenCalledWith(
+          `/api/v1/namespaces/${namespace}/pods`,
+          {
+            watch: true,
+          },
+        );
       });
       it('should request all pods from the cluster_client library if namespace is not specified', async () => {
         await mockResolvers.Query.k8sPods(null, { configuration, namespace: '' }, { client });
 
-        expect(mockPodsListWatcherFn).toHaveBeenCalledWith(`/api/v1/pods`, { watch: true });
+        expect(watcherMock.subscribeToStreamMock).toHaveBeenCalledWith(`/api/v1/pods`, {
+          watch: true,
+        });
       });
       it('should update cache with the new data when received from the library', async () => {
         await mockResolvers.Query.k8sPods(null, { configuration, namespace: '' }, { client });
 
-        watchStream.triggerEvent(EVENT_DATA, []);
+        watcherMock.triggerEvent(EVENT_DATA, []);
 
         expect(client.writeQuery).toHaveBeenCalledWith({
           query: k8sPodsQuery,

@@ -24,6 +24,8 @@ module Issuables
 
     private
 
+    attr_reader :project, :group
+
     # rubocop: disable CodeReuse/ActiveRecord
     def by_label(issuables)
       return issuables unless label_names_from_params.present?
@@ -145,12 +147,16 @@ module Issuables
     def label_link_query(issuables, label_ids: nil, label_names: nil)
       target_model = issuables.base_class
 
-      relation = LabelLink.by_target_for_exists_query(target_model.name, target_model.arel_table['id'], label_ids)
+      relation = target_label_links_query(target_model, label_ids)
       relation = relation.joins(:label).where(labels: { name: label_names }) if label_names
 
       relation
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def target_label_links_query(target_model, label_ids)
+      LabelLink.by_target_for_exists_query(target_model.name, target_model.arel_table['id'], label_ids)
+    end
 
     def label_names_from_params
       return if params[:label_name].blank?

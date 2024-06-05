@@ -82,6 +82,8 @@ export const initPage = async () => {
         props: (route) => ({
           podName: route.params.podName,
           namespace: route.params.namespace,
+          environmentName: dataSet.name,
+          highlightedLineHash: (route.hash || '').replace('#', ''),
         }),
       },
       {

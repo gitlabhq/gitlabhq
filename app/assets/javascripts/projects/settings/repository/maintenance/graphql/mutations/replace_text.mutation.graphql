@@ -1,0 +1,5 @@
+mutation replaceText($projectPath: ID!, $replacements: [String!]!) {
+  projectTextReplace(input: { projectPath: $projectPath, replacements: $replacements }) {
+    errors
+  }
+}

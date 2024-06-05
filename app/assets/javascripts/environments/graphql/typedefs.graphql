@@ -81,10 +81,15 @@ type LocalFluxResourceConditions {
   type: String
 }
 
+type LocalFluxResourceInventoryItem {
+  id: String
+}
+
 type LocalFluxKustomization {
   kind: String
   metadata: LocalFluxResourceMetadata
   conditions: [LocalFluxResourceConditions]
+  inventory: [LocalFluxResourceInventoryItem]
 }
 type LocalFluxHelmReleaseStatus {
   conditions: [LocalFluxResourceConditions]
@@ -96,6 +101,11 @@ type K8sResources {
 }
 type K8sResource {
   connectionStatus: String
+}
+
+type K8sLogsData {
+  logs: [String]
+  error: JSON
 }
 
 extend type Query {
@@ -118,6 +128,7 @@ extend type Query {
     configuration: LocalConfiguration
     fluxResourcePath: String
   ): LocalFluxHelmReleaseStatus
+  k8sLogs(configuration: LocalConfiguration, namespace: String, podName: String): [K8sLogsData]
 }
 
 input ResourceTypeParam {

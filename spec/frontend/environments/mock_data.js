@@ -320,6 +320,10 @@ const fluxKustomization = {
   kind: 'Kustomization',
   metadata: { name: 'my-kustomization' },
   conditions: fluxResourceStatus,
+  inventory: [
+    { id: 'flux-system_notification-controller_apps_Deployment' },
+    { id: 'flux-system_source-controller_apps_Deployment' },
+  ],
 };
 
 export {

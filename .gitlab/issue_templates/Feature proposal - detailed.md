@@ -1,4 +1,4 @@
-<!-- The first section "Release notes" is required if you want to have your release post blog MR auto generated. Currently in BETA, details on the **release post item generator** can be found in the handbook:  https://about.gitlab.com/handbook/marketing/blog/release-posts/#release-post-item-generator and this video: https://www.youtube.com/watch?v=rfn9ebgTwKg. The next four sections: "Problem to solve", "Intended users", "User experience goal", and "Proposal", are strongly recommended in your first draft, while the rest of the sections can be filled out during the problem validation or breakdown phase. However, keep in mind that providing complete and relevant information early helps our product team validate the problem and start working on a solution. -->
+<!-- This issue template can be used as a great starting point for feature requests. Learn more about the process: https://handbook.gitlab.com/handbook/product/how-to-engage/#customer-feature-requests. The first section "Release notes" is required if you want to have your release post blog MR auto generated. Currently in BETA, details on the **release post item generator** can be found in the handbook:  https://about.gitlab.com/handbook/marketing/blog/release-posts/#release-post-item-generator and this video: https://www.youtube.com/watch?v=rfn9ebgTwKg. The next four sections: "Problem to solve", "Intended users", "User experience goal", and "Proposal", are strongly recommended in your first draft, while the rest of the sections can be filled out during the problem validation or breakdown phase. However, keep in mind that providing complete and relevant information early helps our product team validate the problem and start working on a solution. -->
 
 ### Release notes
 
@@ -121,12 +121,17 @@ In which enterprise tier should this feature go? See https://handbook.gitlab.com
 
 ### Links / references
 
-<!-- Label reminders - you should have one of each of the following labels.
+<!-- Label reminders
+Make sure to add the appropriate labels for the product stage and/or group (e.g ~"devops::plan") if known and add a comment tagging the appropriate Product Manager.
+
 Use the following resources to find the appropriate labels:
 - Use only one tier label choosing the lowest tier this is intended for
 - https://gitlab.com/gitlab-org/gitlab/-/labels
 - https://about.gitlab.com/handbook/product/categories/features/
--->
+
+Examples: 
 /label ~group:: ~section:: ~Category:
 /label ~"GitLab Free" ~"GitLab Premium" ~"GitLab Ultimate"
-/label ~"type::feature" ~documentation ~direction
+
+-->
+/label ~"type::feature"

@@ -489,6 +489,13 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
             expect(gl_auth.find_for_git_client("oauth2", access_token.token, project: nil, request: request))
               .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
           end
+
+          it 'authenticates with correct abilities without special username' do
+            access_token = Doorkeeper::AccessToken.create!(application_id: application.id, resource_owner_id: user.id, scopes: scopes)
+
+            expect(gl_auth.find_for_git_client(user.username, access_token.token, project: nil, request: request))
+              .to have_attributes(actor: user, project: nil, type: :oauth, authentication_abilities: abilities)
+          end
         end
       end
 

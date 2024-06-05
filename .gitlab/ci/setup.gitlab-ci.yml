@@ -67,7 +67,7 @@ set-pipeline-name:
     FILES_TO_DOWNLOAD: >
       scripts/utils.sh
       scripts/pipeline/set_pipeline_name.rb
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
   stage: prepare
   before_script:
     - apk add --no-cache --update curl  # Not present in ruby-alpine, so we add it manually
@@ -90,7 +90,7 @@ gitlab_git_test:
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
   stage: test
   needs: []
   script:

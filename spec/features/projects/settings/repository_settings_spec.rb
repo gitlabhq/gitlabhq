@@ -41,9 +41,16 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
     end
 
     context 'Repository maintenance', :js do
-      it 'does not render remove blobs section' do
+      before do
         visit project_settings_repository_path(project)
+      end
+
+      it 'does not render remove blobs section' do
         expect(page).not_to have_content('Remove blobs')
+      end
+
+      it 'does not render redact text section' do
+        expect(page).not_to have_content('Redact text')
       end
     end
 
@@ -358,6 +365,10 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
 
       it 'renders remove blobs section' do
         expect(page).to have_content('Remove blobs')
+      end
+
+      it 'renders redact text section' do
+        expect(page).to have_content('Redact text')
       end
     end
   end
