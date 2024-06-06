@@ -15,6 +15,6 @@ RSpec.shared_examples 'User uses wiki shortcuts' do
   it 'visit edit wiki page using "e" keyboard shortcut', :js do
     find('body').native.send_key('e')
 
-    expect(find('.page-title')).to have_content('Edit page')
+    expect(find('#wiki_title').value).to eq('home')
   end
 end

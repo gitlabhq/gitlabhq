@@ -8,7 +8,7 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/h
 import LegacyPipelineStage from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_stage.vue';
 import eventHub from '~/ci/event_hub';
 import waitForPromises from 'helpers/wait_for_promises';
-import { stageReply } from '../mock_data';
+import { legacyStageReply } from '../mock_data';
 
 const dropdownPath = 'path.json';
 
@@ -73,7 +73,7 @@ describe('Pipelines stage component', () => {
     beforeEach(async () => {
       createComponent({ updateDropdown: true });
 
-      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, legacyStageReply);
 
       await openStageDropdown();
     });
@@ -112,7 +112,7 @@ describe('Pipelines stage component', () => {
 
   describe('when user opens dropdown and stage request is successful', () => {
     beforeEach(async () => {
-      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, legacyStageReply);
       createComponent();
 
       await openStageDropdown();
@@ -121,8 +121,8 @@ describe('Pipelines stage component', () => {
     });
 
     it('renders the received data and emits the correct events', () => {
-      expect(findDropdownMenu().text()).toContain(stageReply.latest_statuses[0].name);
-      expect(findDropdownMenuTitle().text()).toContain(stageReply.name);
+      expect(findDropdownMenu().text()).toContain(legacyStageReply.latest_statuses[0].name);
+      expect(findDropdownMenuTitle().text()).toContain(legacyStageReply.name);
       expect(eventHub.$emit).toHaveBeenCalledWith('clickedDropdown');
       expect(wrapper.emitted('miniGraphStageClick')).toEqual([[]]);
     });
@@ -152,7 +152,7 @@ describe('Pipelines stage component', () => {
 
   describe('update endpoint correctly', () => {
     beforeEach(async () => {
-      const copyStage = { ...stageReply };
+      const copyStage = { ...legacyStageReply };
       copyStage.latest_statuses[0].name = 'this is the updated content';
       mock.onGet('bar.json').reply(HTTP_STATUS_OK, copyStage);
       createComponent({
@@ -179,8 +179,10 @@ describe('Pipelines stage component', () => {
 
   describe('job update in dropdown', () => {
     beforeEach(async () => {
-      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
-      mock.onPost(`${stageReply.latest_statuses[0].status.action.path}.json`).reply(HTTP_STATUS_OK);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, legacyStageReply);
+      mock
+        .onPost(`${legacyStageReply.latest_statuses[0].status.action.path}.json`)
+        .reply(HTTP_STATUS_OK);
 
       createComponent();
       await waitForPromises();
@@ -205,7 +207,7 @@ describe('Pipelines stage component', () => {
 
   describe('With merge trains enabled', () => {
     it('shows a warning on the dropdown', async () => {
-      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, legacyStageReply);
       createComponent({
         isMergeTrain: true,
       });
@@ -222,7 +224,7 @@ describe('Pipelines stage component', () => {
 
   describe('With merge trains disabled', () => {
     beforeEach(async () => {
-      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, stageReply);
+      mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, legacyStageReply);
       createComponent();
 
       await openStageDropdown();

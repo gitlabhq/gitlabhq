@@ -198,10 +198,10 @@ export const filtersMap = {
         [NORMAL_FILTER]: 'author_username',
       },
       [OPERATOR_NOT]: {
-        [NORMAL_FILTER]: 'not[author_username]',
+        [NORMAL_FILTER]: 'not[author_username][]',
       },
       [OPERATOR_OR]: {
-        [ALTERNATIVE_FILTER]: 'or[author_username]',
+        [ALTERNATIVE_FILTER]: 'or[author_username][]',
       },
     },
   },

@@ -1,12 +1,18 @@
 - wiki_page_title @page
 - add_page_specific_style 'page_bundles/wiki'
 - page_history = @page&.persisted? ? wiki_page_path(@wiki, @page, action: :history) : ''
+- @gfm_form = true
+- @noteable_type = 'Wiki'
+- templates = @templates.map { |t| wiki_page_basic_info(t) }
+
+= form_errors(@page, truncate: :title)
 
 #js-vue-wiki-content-app{ data: {
   testid: 'wiki-page-content-app',
-  page_title: @page.human_title,
+  page_heading: @page.human_title,
   content_api: wiki_page_render_api_endpoint(@page),
   show_edit_button: (can?(current_user, :create_wiki, @wiki.container) && @page.latest? && @valid_encoding).to_s,
+  page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
   is_page_template: @page.template?.to_s,
   is_page_historical: @page.historical?.to_s,
   last_version: @page.last_version,
@@ -22,6 +28,8 @@
   author_url: wiki_page_version_author_url(@page.version),
   history_url: page_history,
   templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+  format_options: wiki_markup_hash_by_name_id.to_json,
+  templates: templates.to_json,
 } }
 
 = render 'shared/wikis/sidebar'

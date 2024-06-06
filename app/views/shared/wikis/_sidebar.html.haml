@@ -24,7 +24,7 @@
         - if can?(current_user, :create_wiki, @wiki)
           - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
           - sidebar_link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
-          = render Pajamas::ButtonComponent.new(href: edit_sidebar_url, category: :tertiary, size: :small, icon: 'pencil', button_options: { class: "gl-border-l gl-pl-3 has-tooltip #{sidebar_link_class}", title: edit_sidebar_text, aria: { label: edit_sidebar_text }})
+          = render Pajamas::ButtonComponent.new(href: edit_sidebar_url, category: :tertiary, size: :small, icon: 'settings', button_options: { class: "gl-border-l gl-pl-3 has-tooltip #{sidebar_link_class}", title: edit_sidebar_text, aria: { label: edit_sidebar_text }})
 
       - if @sidebar_wiki_entries
         %ul.wiki-pages{ class: (@sidebar_page ? 'gl-border-b !gl-pb-3' : '' ) }

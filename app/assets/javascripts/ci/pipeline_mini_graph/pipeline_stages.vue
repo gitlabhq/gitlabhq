@@ -34,11 +34,11 @@ export default {
   <div class="gl-display-inline gl-align-middle">
     <div
       v-for="stage in stages"
-      :key="stage.name"
+      :key="stage.id"
       class="pipeline-mini-graph-stage-container dropdown gl-display-inline-flex gl-mr-2 gl-my-2 gl-align-middle"
     >
       <pipeline-stage
-        :stage-id="stage.id"
+        :stage="stage"
         :is-merge-train="isMergeTrain"
         :pipeline-etag="pipelineEtag"
         @miniGraphStageClick="$emit('miniGraphStageClick')"

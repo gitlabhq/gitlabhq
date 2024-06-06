@@ -1,4 +1,4 @@
-export const mockDownstreamPipelinesGraphql = ({ includeSourceJobRetried = true } = {}) => ({
+export const mockDownstreamPipelinesGraphql = () => ({
   nodes: [
     {
       id: 'gid://gitlab/Ci::Pipeline/612',
@@ -14,10 +14,6 @@ export const mockDownstreamPipelinesGraphql = ({ includeSourceJobRetried = true 
         icon: 'status_success',
         label: 'passed',
         __typename: 'DetailedStatus',
-      },
-      sourceJob: {
-        id: 'gid://gitlab/Ci::Bridge/532',
-        retried: includeSourceJobRetried ? false : null,
       },
       __typename: 'Pipeline',
     },
@@ -36,10 +32,6 @@ export const mockDownstreamPipelinesGraphql = ({ includeSourceJobRetried = true 
         label: 'passed',
         __typename: 'DetailedStatus',
       },
-      sourceJob: {
-        id: 'gid://gitlab/Ci::Bridge/531',
-        retried: includeSourceJobRetried ? true : null,
-      },
       __typename: 'Pipeline',
     },
     {
@@ -57,15 +49,23 @@ export const mockDownstreamPipelinesGraphql = ({ includeSourceJobRetried = true 
         label: 'passed',
         __typename: 'DetailedStatus',
       },
-      sourceJob: {
-        id: 'gid://gitlab/Ci::Bridge/530',
-        retried: includeSourceJobRetried ? true : null,
-      },
       __typename: 'Pipeline',
     },
   ],
   __typename: 'PipelineConnection',
 });
+
+export const pipelineStage = {
+  __typename: 'CiStage',
+  id: 'gid://gitlab/Ci::Stage/409',
+  name: 'build',
+  detailedStatus: {
+    __typename: 'DetailedStatus',
+    id: 'success-409-409',
+    icon: 'status_success',
+    group: 'success',
+  },
+};
 
 const upstream = {
   id: 'gid://gitlab/Ci::Pipeline/610',
@@ -85,26 +85,16 @@ const upstream = {
   __typename: 'Pipeline',
 };
 
-export const mockPipelineStagesQueryResponse = {
+export const mockPipelineMiniGraphQueryResponse = {
   data: {
     project: {
       id: 'gid://gitlab/Project/20',
       pipeline: {
         id: 'gid://gitlab/Ci::Pipeline/320',
+        downstream: mockDownstreamPipelinesGraphql(),
+        upstream,
         stages: {
-          nodes: [
-            {
-              __typename: 'CiStage',
-              id: 'gid://gitlab/Ci::Stage/409',
-              name: 'build',
-              detailedStatus: {
-                __typename: 'DetailedStatus',
-                id: 'success-409-409',
-                icon: 'status_success',
-                group: 'success',
-              },
-            },
-          ],
+          nodes: [pipelineStage],
         },
       },
     },
@@ -146,10 +136,9 @@ export const mockUpstreamDownstreamQueryResponse = {
   },
 };
 
-export const linkedPipelinesFetchError = 'There was a problem fetching linked pipelines.';
-export const stagesFetchError = 'There was a problem fetching the pipeline stages.';
+export const pipelineMiniGraphFetchError = 'There was a problem fetching the pipeline mini graph.';
 
-export const stageReply = {
+export const legacyStageReply = {
   name: 'deploy',
   title: 'deploy: running',
   latest_statuses: [

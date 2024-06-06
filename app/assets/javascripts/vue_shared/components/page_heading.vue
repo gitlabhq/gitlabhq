@@ -19,7 +19,7 @@ export default {
     </h1>
     <div
       v-if="$scopedSlots.actions"
-      class="gl-flex gl-items-center gl-gap-5"
+      class="gl-flex gl-items-center gl-gap-3"
       data-testid="page-heading-actions"
     >
       <slot name="actions"></slot>

@@ -175,9 +175,9 @@ export const setIdTypePreferenceMutationResponseWithErrors = {
 export const locationSearch = [
   '?search=find+issues',
   'author_username=homer',
-  'not[author_username]=marge',
-  'or[author_username]=burns',
-  'or[author_username]=smithers',
+  'not[author_username][]=marge',
+  'or[author_username][]=burns',
+  'or[author_username][]=smithers',
   'assignee_username[]=bart',
   'assignee_username[]=lisa',
   'assignee_username[]=5',
@@ -376,8 +376,8 @@ export const apiParamsWithSpecialValues = {
 export const urlParams = {
   search: 'find issues',
   author_username: 'homer',
-  'not[author_username]': 'marge',
-  'or[author_username]': ['burns', 'smithers'],
+  'not[author_username][]': 'marge',
+  'or[author_username][]': ['burns', 'smithers'],
   'assignee_username[]': ['bart', 'lisa', '5'],
   'not[assignee_username][]': ['patty', 'selma'],
   'or[assignee_username][]': ['carl', 'lenny'],

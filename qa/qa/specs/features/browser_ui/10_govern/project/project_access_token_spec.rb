@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Govern' do
-    describe 'Project access tokens', :smoke, product_group: :authentication do
+    describe 'Project access tokens', :smoke, :health_check, product_group: :authentication do
       let(:project_access_token) { QA::Resource::ProjectAccessToken.fabricate_via_browser_ui! }
 
       after do

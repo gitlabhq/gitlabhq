@@ -67,6 +67,21 @@ plugin support. Refer to the JetBrains documentation for specifics on your IDE.
 
 For languages not listed in the table, Code Suggestions might not function as expected.
 
+## View Multiple Code Suggestions
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1325) in GitLab 17.1.
+
+For a code completion suggestion in VS Code, multiple suggestion options
+might be available. To view all available suggestions:
+
+1. Hover over the code completion suggestion.
+1. Scroll through the alternatives. Either:
+   - Use keyboard shortcuts. Press <kbd>Option</kbd> + <kbd>`]`</kbd> to view the 
+     next suggestion, and <kbd>Option</kbd> + <kbd>`[`</kbd> to view the previous
+     suggestions.
+   - Select the right or left arrow to see next or previous options.
+1. Press <kbd>Tab</kbd> to apply the suggestion you prefer. 
+
 ## Experimental features
 
 ### Add support for more languages for Code Suggestions in VS Code

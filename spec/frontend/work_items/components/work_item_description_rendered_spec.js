@@ -103,6 +103,7 @@ describe('WorkItemDescription', () => {
 
       const updatedDescription = `- [x] todo 1\n- [x] todo 2`;
       expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
+      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
     });
 
     it('disables checkbox while updating', async () => {
@@ -120,6 +121,7 @@ describe('WorkItemDescription', () => {
 
       const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
       expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
+      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
     });
   });
 });

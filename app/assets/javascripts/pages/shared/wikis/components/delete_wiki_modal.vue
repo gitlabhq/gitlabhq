@@ -14,7 +14,7 @@ export default {
   directives: {
     'gl-modal': GlModalDirective,
   },
-  inject: ['wikiUrl', 'pageTitle', 'csrfToken', 'pagePersisted'],
+  inject: ['wikiUrl', 'pageHeading', 'csrfToken', 'pagePersisted'],
   props: {
     showAsDropdownItem: {
       type: Boolean,
@@ -30,7 +30,7 @@ export default {
           ? this.$options.i18n.deleteTemplateTitle
           : this.$options.i18n.deletePageTitle,
         {
-          pageTitle: escape(this.pageTitle),
+          pageTitle: escape(this.pageHeading),
         },
         false,
       );

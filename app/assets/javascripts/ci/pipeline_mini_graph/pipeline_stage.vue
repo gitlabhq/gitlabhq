@@ -2,17 +2,18 @@
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import getPipelineStageQuery from './graphql/queries/get_pipeline_stage.query.graphql';
-import JobItem from './job_item.vue';
+// import JobItem from './job_item.vue';
 
 export default {
   i18n: {
     stageFetchError: __('There was a problem fetching the pipeline stage.'),
   },
-
   components: {
-    JobItem,
+    // JobItem,
+    CiIcon,
   },
   props: {
     isMergeTrain: {
@@ -29,15 +30,14 @@ export default {
       required: false,
       default: PIPELINE_MINI_GRAPH_POLL_INTERVAL,
     },
-    stageId: {
-      type: String,
+    stage: {
+      type: Object,
       required: true,
     },
   },
   data() {
     return {
       jobs: [],
-      stage: null,
     };
   },
   apollo: {
@@ -51,11 +51,12 @@ export default {
       },
       variables() {
         return {
-          id: this.stageId,
+          id: this.stage.id,
         };
       },
       skip() {
-        return !this.stageId;
+        // TODO: This query should occur on click
+        return true;
       },
       update(data) {
         this.jobs = data?.ciPipelineStage?.jobs.nodes;
@@ -74,8 +75,14 @@ export default {
 
 <template>
   <div data-testid="pipeline-stage">
-    <ul v-for="job in jobs" :key="job.id">
+    <ci-icon
+      :status="stage.detailedStatus"
+      :show-tooltip="false"
+      :use-link="false"
+      class="gl-mb-0!"
+    />
+    <!-- <ul v-for="job in jobs" :key="job.id">
       <job-item :job="job" />
-    </ul>
+    </ul> -->
   </div>
 </template>

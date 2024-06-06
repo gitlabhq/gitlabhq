@@ -1,70 +1,60 @@
-import $ from 'jquery';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createApolloClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
-import GLForm from '~/gl_form';
 import ZenMode from '~/zen_mode';
+import WikiContentApp from './app.vue';
 
-import wikiAlert from './components/wiki_alert.vue';
-import wikiForm from './components/wiki_form.vue';
+const mountWikiEditApp = () => {
+  const el = document.querySelector('#js-vue-wiki-edit-app');
 
-const createAlertVueApp = () => {
-  const el = document.getElementById('js-wiki-error');
-  if (el) {
-    const { error, wikiPagePath } = el.dataset;
+  if (!el) return false;
+  const {
+    pageHeading,
+    pageInfo,
+    isPageTemplate,
+    wikiUrl,
+    pagePersisted,
+    templates,
+    formatOptions,
+    error,
+  } = el.dataset;
 
-    // eslint-disable-next-line no-new
-    new Vue({
-      el,
-      render(createElement) {
-        return createElement(wikiAlert, {
-          props: {
-            error,
-            wikiPagePath,
-          },
-        });
-      },
-    });
-  }
-};
+  Vue.use(VueApollo);
+  const apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
 
-const createWikiFormApp = () => {
-  const el = document.getElementById('js-wiki-form');
-
-  if (el) {
-    const { pageInfo, formatOptions, templates, wikiUrl, pageTitle, pagePersisted } = el.dataset;
-
-    Vue.use(VueApollo);
-
-    const apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
-
-    // eslint-disable-next-line no-new
-    new Vue({
-      el,
-      apolloProvider,
-      provide: {
-        formatOptions: JSON.parse(formatOptions),
-        pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
-        drawioUrl: gon.diagramsnet_url,
-        templates: JSON.parse(templates),
-        pageTitle,
-        wikiUrl,
-        csrfToken: csrf.token,
-        pagePersisted: parseBoolean(pagePersisted),
-      },
-      render(createElement) {
-        return createElement(wikiForm);
-      },
-    });
-  }
+  return new Vue({
+    el,
+    apolloProvider,
+    provide: {
+      isEditingPath: true,
+      pageHeading,
+      contentApi: null,
+      showEditButton: null,
+      editButtonUrl: null,
+      lastVersion: null,
+      pageVersion: null,
+      authorUrl: null,
+      pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+      isPageTemplate: parseBoolean(isPageTemplate),
+      isPageHistorical: false,
+      formatOptions: JSON.parse(formatOptions),
+      csrfToken: csrf.token,
+      templates: JSON.parse(templates),
+      drawioUrl: gon.diagramsnet_url,
+      historyUrl: '',
+      wikiUrl,
+      pagePersisted: parseBoolean(pagePersisted),
+      error,
+    },
+    render(createElement) {
+      return createElement(WikiContentApp);
+    },
+  });
 };
 
 export const mountApplications = () => {
   new ZenMode(); // eslint-disable-line no-new
-  new GLForm($('.wiki-form')); // eslint-disable-line no-new
-
-  createAlertVueApp();
-  createWikiFormApp();
+  mountWikiEditApp();
 };

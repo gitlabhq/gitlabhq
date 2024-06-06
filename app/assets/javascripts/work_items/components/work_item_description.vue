@@ -247,6 +247,7 @@ export default {
       updateDraft(this.autosaveKey, this.descriptionText);
     },
     handleDescriptionTextUpdated(newText) {
+      this.disableTruncation = true;
       this.descriptionText = newText;
       this.$emit('updateDraft', this.descriptionText);
       this.updateWorkItem();

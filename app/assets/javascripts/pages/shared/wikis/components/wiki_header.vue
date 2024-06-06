@@ -2,6 +2,7 @@
 import { GlButton, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import WikiMoreDropdown from './wiki_more_dropdown.vue';
 
 export default {
@@ -11,18 +12,20 @@ export default {
     GlSprintf,
     WikiMoreDropdown,
     TimeAgo,
+    PageHeading,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   inject: [
-    'pageTitle',
+    'pageHeading',
     'showEditButton',
     'isPageTemplate',
     'editButtonUrl',
     'lastVersion',
     'pageVersion',
     'authorUrl',
+    'isEditingPath',
   ],
   computed: {
     editTooltipText() {
@@ -43,10 +46,13 @@ export default {
   methods: {
     onKeyUp(event) {
       if (event.key === 'e') {
-        window.location.href = this.editButtonUrl;
+        this.$emit('is-editing', true);
       }
 
       return false;
+    },
+    setEditingMode() {
+      this.$emit('is-editing', true);
     },
   },
   i18n: {
@@ -60,22 +66,16 @@ export default {
 
 <template>
   <div
-    class="wiki-page-header has-sidebar-toggle detail-page-header border-bottom-0 gl-pt-5 gl-flex gl-flex-wrap"
+    class="wiki-page-header has-sidebar-toggle detail-page-header border-bottom-0 !gl-pt-0 gl-flex gl-flex-wrap"
   >
-    <div class="gl-flex gl-w-full">
-      <h1
-        class="gl-heading-1 !gl-my-0 gl-inline-block gl-grow gl-break-anywhere"
-        data-testid="wiki-page-title"
-      >
-        {{ pageTitle }}
-      </h1>
-      <div class="detail-page-header-actions gl-self-start gl-flex gl-gap-3">
+    <page-heading :heading="pageHeading" class="gl-w-full">
+      <template v-if="!isEditingPath" #actions>
         <gl-button
           v-if="showEditButton"
           v-gl-tooltip.html
           :title="editTooltip"
-          :href="editButtonUrl"
           data-testid="wiki-edit-button"
+          @click="setEditingMode"
         >
           {{ $options.i18n.edit }}
         </gl-button>
@@ -85,8 +85,8 @@ export default {
           class="js-sidebar-wiki-toggle md:gl-hidden"
         />
         <wiki-more-dropdown />
-      </div>
-    </div>
+      </template>
+    </page-heading>
     <div
       v-if="lastVersion"
       class="wiki-last-version gl-leading-20 gl-text-secondary gl-mt-3 gl-mb-5"

@@ -3,19 +3,25 @@
 - add_page_specific_style 'page_bundles/wiki'
 - @gfm_form = true
 - @noteable_type = 'Wiki'
+- templates = @templates.map { |t| wiki_page_basic_info(t) }
 
-- if @error
-  #js-wiki-error{ data: { error: @error, wiki_page_path: wiki_page_path(@wiki, @page) } }
+- if @page.persisted?
+  - page_title = @page.template? ? s_("Wiki|Edit template") : s_("Wiki|Edit page")
+- else
+  - page_title = @page.template? ? s_("Wiki|New template") : s_("Wiki|New page")
 
-.js-wiki-edit-page.wiki-page-header.has-sidebar-toggle.flex-column.flex-lg-row
-  = wiki_sidebar_toggle_button
+= form_errors(@page, truncate: :title)
 
-  %h1.page-title.gl-font-size-h-display
-    - if @page.persisted?
-      = @page.template? ? s_("Wiki|Edit template") : s_("Wiki|Edit page")
-    - else
-      = @page.template? ? s_("Wiki|New template") : s_("Wiki|New page")
-
-= render 'shared/wikis/form', uploads_path: wiki_attachment_upload_url
+#js-vue-wiki-edit-app{ data: {
+  testid: 'wiki-page-edit-app',
+  error: @error,
+  page_heading: page_title,
+  page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
+  is_page_template: @page.template?.to_s,
+  page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
+  wiki_url: wiki_page_path(@wiki, @page),
+  format_options: wiki_markup_hash_by_name_id.to_json,
+  templates: templates.to_json,
+} }
 
 = render 'shared/wikis/sidebar', editing: true

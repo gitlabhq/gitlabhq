@@ -41,7 +41,7 @@ module QA
         end
 
         def has_title?(title)
-          has_element?('wiki-page-title', title)
+          has_element?('page-heading', title)
         end
 
         def has_content?(content)

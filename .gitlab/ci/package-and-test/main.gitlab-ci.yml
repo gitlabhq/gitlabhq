@@ -469,7 +469,7 @@ update-minor:
     - .update-script
   variables:
     UPDATE_TYPE: minor
-    QA_RSPEC_TAGS: --tag smoke
+    QA_RSPEC_TAGS: --tag health_check
   rules:
     - !reference [.rules:test:update, rules]
     - !reference [.rules:test:manual, rules]
@@ -480,7 +480,7 @@ update-major:
     - .update-script
   variables:
     UPDATE_TYPE: major
-    QA_RSPEC_TAGS: --tag smoke
+    QA_RSPEC_TAGS: --tag health_check
   rules:
     - !reference [.rules:test:update, rules]
     - !reference [.rules:test:manual, rules]
@@ -492,7 +492,7 @@ update-ee-to-ce:
   variables:
     UPDATE_TYPE: minor
     UPDATE_FROM_EDITION: ee
-    QA_RSPEC_TAGS: --tag smoke
+    QA_RSPEC_TAGS: --tag health_check
   rules:
     - !reference [.rules:test:ce-only, rules]
     - !reference [.rules:test:update, rules]

@@ -119,7 +119,7 @@ export default {
     DeleteWikiModal,
   },
   mixins: [trackingMixin],
-  inject: ['formatOptions', 'pageInfo', 'drawioUrl', 'templates'],
+  inject: ['isEditingPath', 'formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'pageHeading'],
   data() {
     const title = window.location.href.includes('random_title=true') ? '' : getTitle(this.pageInfo);
     return {
@@ -206,6 +206,13 @@ export default {
     },
     drawioEnabled() {
       return typeof this.drawioUrl === 'string' && this.drawioUrl.length > 0;
+    },
+    cancelFormHref() {
+      if (this.isEditingPath) {
+        return this.cancelFormPath;
+      }
+
+      return null;
     },
   },
   watch: {
@@ -312,6 +319,13 @@ export default {
     setTemplate(template) {
       this.$refs.markdownEditor.setTemplate(template);
     },
+    cancelFormAction() {
+      this.isFormDirty = false;
+
+      if (!this.isEditingPath) {
+        this.$emit('is-editing', false);
+      }
+    },
   },
 };
 </script>
@@ -321,7 +335,8 @@ export default {
     ref="form"
     :action="formAction"
     method="post"
-    class="wiki-form common-note-form gl-mt-3 js-quick-submit"
+    class="wiki-form common-note-form js-quick-submit gl-mt-4"
+    :class="{ 'gl-mt-5': !isEditingPath }"
     @submit="handleFormSubmit"
     @input="isFormDirty = true"
   >
@@ -336,7 +351,11 @@ export default {
 
     <div class="row">
       <div class="col-12">
-        <gl-form-group :label="$options.i18n.title.label" label-for="wiki_title">
+        <gl-form-group
+          :label="$options.i18n.title.label"
+          label-for="wiki_title"
+          label-class="gl-sr-only"
+        >
           <template v-if="!isTemplate" #description>
             <gl-icon name="bulb" />
             {{ titleHelpText }}
@@ -456,8 +475,8 @@ export default {
         >
         <gl-button
           data-testid="wiki-cancel-button"
-          :href="cancelFormPath"
-          @click="isFormDirty = false"
+          :href="cancelFormHref"
+          @click="cancelFormAction"
         >
           {{ $options.i18n.cancel }}</gl-button
         >

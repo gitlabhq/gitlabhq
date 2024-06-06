@@ -61,12 +61,12 @@ RSpec.shared_examples 'User views a wiki page' do
 
       first(:link, text: 'three').click
 
-      expect(find('[data-testid="wiki-page-title"]')).to have_content('three')
+      expect(find('[data-testid="page-heading"]')).to have_content('three')
 
       click_on('Edit')
 
       expect(page).to have_current_path(%r{one/two/three-test})
-      expect(page).to have_content('Edit page')
+      expect(page).to have_css('#wiki_title')
 
       fill_in('Content', with: 'Updated Wiki Content')
       click_on('Save changes')
@@ -215,7 +215,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'preserves the special characters' do
       visit(wiki_page_path(wiki, wiki_page))
 
-      expect(page).to have_css('[data-testid="wiki-page-title"]', text: title)
+      expect(page).to have_css('[data-testid="page-heading"]', text: title)
       expect(page).to have_css('.wiki-pages li', text: title)
     end
   end
@@ -230,7 +230,7 @@ RSpec.shared_examples 'User views a wiki page' do
     it 'safely displays the page' do
       visit(wiki_page_path(wiki, wiki_page))
 
-      expect(page).to have_selector('[data-testid="wiki-page-title"]', text: title)
+      expect(page).to have_selector('[data-testid="page-heading"]', text: title)
       expect(page).to have_content('foo bar')
     end
   end

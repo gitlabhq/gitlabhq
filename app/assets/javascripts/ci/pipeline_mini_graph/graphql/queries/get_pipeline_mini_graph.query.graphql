@@ -1,0 +1,50 @@
+query getPipelineMiniGraph($fullPath: ID!, $iid: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    pipeline(iid: $iid) {
+      id
+      path
+      stages {
+        nodes {
+          id
+          name
+          detailedStatus {
+            id
+            icon
+            group
+          }
+        }
+      }
+      upstream {
+        id
+        path
+        project {
+          id
+          name
+        }
+        detailedStatus {
+          id
+          group
+          icon
+          label
+        }
+      }
+      downstream {
+        nodes {
+          id
+          path
+          project {
+            id
+            name
+          }
+          detailedStatus {
+            id
+            group
+            icon
+            label
+          }
+        }
+      }
+    }
+  }
+}

@@ -24,6 +24,11 @@ Our suite consists of this basic functionality coverage:
 
 Smoke tests have the `:smoke` RSpec metadata.
 
+## Health Check suite
+
+This is a very small subset smoke tests with the `:health_check` RSpec metadata.
+Its function is to monitor the status and health of the application. 
+
 See [End-to-end Testing](end_to_end/index.md) for more details about
 end-to-end tests.
 

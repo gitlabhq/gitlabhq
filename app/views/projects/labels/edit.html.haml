@@ -4,6 +4,6 @@
 - show_lock_on_merge = @project.supports_lock_on_merge?
 
 %h1.page-title.gl-font-size-h-display
-  = _('Edit Label')
+  = _('Edit label')
 
 = render 'shared/labels/form', url: project_label_path(@project, @label), back_path: project_labels_path(@project), show_lock_on_merge: show_lock_on_merge

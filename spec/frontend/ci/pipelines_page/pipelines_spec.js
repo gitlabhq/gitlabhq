@@ -42,7 +42,7 @@ import {
   setIdTypePreferenceMutationResponse,
   setIdTypePreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
-import { stageReply } from 'jest/ci/pipeline_mini_graph/mock_data';
+import { legacyStageReply } from 'jest/ci/pipeline_mini_graph/mock_data';
 import { users, mockSearch, branches } from '../pipeline_details/mock_data';
 
 Vue.use(VueApollo);
@@ -769,7 +769,7 @@ describe('Pipelines', () => {
 
         mock
           .onGet(mockPipelineWithStages.details.stages[0].dropdown_path)
-          .reply(HTTP_STATUS_OK, stageReply);
+          .reply(HTTP_STATUS_OK, legacyStageReply);
 
         // cancelMock is getting overwritten in pipelines_service.js#L29
         // so we have to spy on it again here

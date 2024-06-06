@@ -30,21 +30,6 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
           expect(::Gitlab::Database::LoadBalancing::Session.current).to be_performed_write
           expect(::Gitlab::Database::LoadBalancing::Session.current).not_to be_using_primary
         end
-
-        context 'with disable_sticky_writes_for_pat_last_used disabled' do
-          before do
-            stub_feature_flags(disable_sticky_writes_for_pat_last_used: false)
-          end
-
-          it 'does stick to primary' do
-            ::Gitlab::Database::LoadBalancing::Session.clear_session
-
-            expect(::Gitlab::Database::LoadBalancing::Session.current).not_to be_performed_write
-            expect { service.execute }.to change { personal_access_token.last_used_at }
-            expect(::Gitlab::Database::LoadBalancing::Session.current).to be_performed_write
-            expect(::Gitlab::Database::LoadBalancing::Session.current).to be_using_primary
-          end
-        end
       end
     end
 

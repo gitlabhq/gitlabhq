@@ -220,14 +220,14 @@ The following GitLab application features are not available:
   - View the [list of AI features to see which ones are supported](../../user/ai_features.md).
   - Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information.
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
-- Interacting with GitLab [Feature Flags](../../administration/feature_flags.md)
-- Any functionality or feature behind a Feature Flag that is toggled `off` by default
+- Any functionality or feature behind a Feature Flag that is toggled `off` by default. 
 
 The following features will not be supported:
 
 - Mattermost
 - [Server-side Git hooks](../../administration/server_hooks.md).
   GitLab Dedicated is a SaaS service, and access to the underlying infrastructure is only available to GitLab Inc. team members. Due to the nature of server side configuration, there is a possible security concern of running arbitrary code on Dedicated services, as well as the possible impact that can have on the service SLA. Use the alternative [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) instead.
+- Interacting with GitLab [Feature Flags](../../administration/feature_flags.md). [Feature flags support the development and rollout of new or experimental features](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) on GitLab.com. Features behind feature flags are not considered ready for production use, are experimental and therefore unsafe for GitLab Dedicated. Stability and SLAs may be affected by changing default settings.
 
 ### GitLab Dedicated service features
 

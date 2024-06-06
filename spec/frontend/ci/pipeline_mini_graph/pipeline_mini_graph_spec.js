@@ -7,38 +7,25 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
-import getLinkedPipelinesQuery from '~/ci/pipeline_details/graphql/queries/get_linked_pipelines.query.graphql';
-import getPipelineStagesQuery from '~/ci/pipeline_mini_graph/graphql/queries/get_pipeline_stages.query.graphql';
+import getPipelineMiniGraphQuery from '~/ci/pipeline_mini_graph/graphql/queries/get_pipeline_mini_graph.query.graphql';
 import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import * as sharedGraphQlUtils from '~/graphql_shared/utils';
 
-import {
-  linkedPipelinesFetchError,
-  stagesFetchError,
-  mockPipelineStagesQueryResponse,
-  mockUpstreamDownstreamQueryResponse,
-} from './mock_data';
+import { pipelineMiniGraphFetchError, mockPipelineMiniGraphQueryResponse } from './mock_data';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');
 
 describe('PipelineMiniGraph', () => {
   let wrapper;
-  let linkedPipelinesResponse;
-  let pipelineStagesResponse;
+  let pipelineMiniGraphResponse;
 
   const fullPath = 'gitlab-org/gitlab';
   const iid = '315';
   const pipelineEtag = '/api/graphql:pipelines/id/315';
 
-  const createComponent = ({
-    pipelineStagesHandler = pipelineStagesResponse,
-    linkedPipelinesHandler = linkedPipelinesResponse,
-  } = {}) => {
-    const handlers = [
-      [getLinkedPipelinesQuery, linkedPipelinesHandler],
-      [getPipelineStagesQuery, pipelineStagesHandler],
-    ];
+  const createComponent = ({ pipelineMiniGraphHandler = pipelineMiniGraphResponse } = {}) => {
+    const handlers = [[getPipelineMiniGraphQuery, pipelineMiniGraphHandler]];
     const mockApollo = createMockApollo(handlers);
 
     wrapper = shallowMountExtended(PipelineMiniGraph, {
@@ -57,11 +44,10 @@ describe('PipelineMiniGraph', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
 
   beforeEach(() => {
-    linkedPipelinesResponse = jest.fn().mockResolvedValue(mockUpstreamDownstreamQueryResponse);
-    pipelineStagesResponse = jest.fn().mockResolvedValue(mockPipelineStagesQueryResponse);
+    pipelineMiniGraphResponse = jest.fn().mockResolvedValue(mockPipelineMiniGraphQueryResponse);
   });
 
-  describe('when initial queries are loading', () => {
+  describe('when initial query is loading', () => {
     beforeEach(() => {
       createComponent();
     });
@@ -72,7 +58,7 @@ describe('PipelineMiniGraph', () => {
     });
   });
 
-  describe('when queries have loaded', () => {
+  describe('when query has loaded', () => {
     it('does not show a loading icon', async () => {
       await createComponent();
 
@@ -85,11 +71,10 @@ describe('PipelineMiniGraph', () => {
       expect(findPipelineMiniGraph().exists()).toBe(true);
     });
 
-    it('fires the queries', async () => {
+    it('fires the query', async () => {
       await createComponent();
 
-      expect(linkedPipelinesResponse).toHaveBeenCalledWith({ iid, fullPath });
-      expect(pipelineStagesResponse).toHaveBeenCalledWith({ iid, fullPath });
+      expect(pipelineMiniGraphResponse).toHaveBeenCalledWith({ iid, fullPath });
     });
   });
 
@@ -101,22 +86,19 @@ describe('PipelineMiniGraph', () => {
 
       await waitForPromises();
 
-      expect(sharedGraphQlUtils.toggleQueryPollingByVisibility).toHaveBeenCalledTimes(2);
+      expect(sharedGraphQlUtils.toggleQueryPollingByVisibility).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('when pipeline queries are unsuccessful', () => {
+  describe('when the pipeline query is unsuccessful', () => {
     const failedHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
-    it.each`
-      query                 | handlerName                 | errorMessage
-      ${'pipeline stages'}  | ${'pipelineStagesHandler'}  | ${stagesFetchError}
-      ${'linked pipelines'} | ${'linkedPipelinesHandler'} | ${linkedPipelinesFetchError}
-    `('throws an error for the $query query', async ({ errorMessage, handlerName }) => {
-      await createComponent({ [handlerName]: failedHandler });
+
+    it('throws an error for the pipeline query', async () => {
+      await createComponent({ pipelineMiniGraphHandler: failedHandler });
 
       await waitForPromises();
 
-      expect(createAlert).toHaveBeenCalledWith({ message: errorMessage });
+      expect(createAlert).toHaveBeenCalledWith({ message: pipelineMiniGraphFetchError });
     });
   });
 });

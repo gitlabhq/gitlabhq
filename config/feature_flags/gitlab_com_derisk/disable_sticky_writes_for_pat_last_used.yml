@@ -1,9 +1,0 @@
----
-name: disable_sticky_writes_for_pat_last_used
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462379
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153707
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462823
-milestone: '17.1'
-group: group::package registry
-type: gitlab_com_derisk
-default_enabled: false

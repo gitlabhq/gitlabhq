@@ -79,6 +79,7 @@ describe('WikiForm', () => {
     wrapper = extendedWrapper(
       mountFn(WikiForm, {
         provide: {
+          isEditingPath: true,
           templates,
           formatOptions,
           glFeatures,
@@ -87,7 +88,7 @@ describe('WikiForm', () => {
             ...pageInfo,
           },
           wikiUrl: '',
-          pageTitle: '',
+          pageHeading: '',
           csrfToken: '',
           pagePersisted: false,
           ...provide,

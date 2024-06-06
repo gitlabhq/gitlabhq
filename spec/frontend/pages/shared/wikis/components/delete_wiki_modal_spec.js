@@ -20,7 +20,7 @@ describe('DeleteWikiModal', () => {
       },
       provide: {
         wikiUrl: 'delete-wiki-url',
-        pageTitle: 'Page title',
+        pageHeading: 'Page title',
         csrfToken: 'csrf-token',
         pagePersisted: true,
       },

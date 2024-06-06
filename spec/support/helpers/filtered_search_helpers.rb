@@ -227,6 +227,14 @@ module FilteredSearchHelpers
     end
   end
 
+  def change_sort_by(value)
+    within_element '.sort-dropdown-container' do
+      find_by_testid('base-dropdown-toggle').click
+      find('li', text: value).click
+      wait_for_requests
+    end
+  end
+
   def expect_visible_suggestions_list
     expect(page).to have_css('.gl-filtered-search-suggestion-list')
   end

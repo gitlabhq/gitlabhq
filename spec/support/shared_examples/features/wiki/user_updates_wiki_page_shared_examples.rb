@@ -43,12 +43,11 @@ RSpec.shared_examples 'User updates wiki page' do
 
       first(:link, text: 'three').click
 
-      expect(find('[data-testid="wiki-page-title"]')).to have_content('three')
+      expect(find('[data-testid="page-heading"]')).to have_content('three')
 
       click_on('Edit')
 
       expect(page).to have_current_path(%r{one/two/three-test}, ignore_query: true)
-      expect(page).to have_content('Edit page')
 
       fill_in('Content', with: 'Updated Wiki Content')
       click_on('Save changes')
@@ -65,7 +64,7 @@ RSpec.shared_examples 'User updates wiki page' do
     before do
       visit(wiki_path(wiki))
 
-      click_link('Edit')
+      click_on('Edit')
     end
 
     it 'updates a page', :js do

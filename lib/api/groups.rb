@@ -34,15 +34,7 @@ module API
 
       # rubocop: disable CodeReuse/ActiveRecord
       def find_groups(params, parent_id = nil)
-        find_params = params.slice(
-          :all_available,
-          :custom_attributes,
-          :owned, :min_access_level,
-          :include_parent_descendants,
-          :repository_storage,
-          :marked_for_deletion_on,
-          :search, :visibility
-        )
+        find_params = params.slice(*allowable_find_params)
 
         find_params[:parent] = if params[:top_level_only]
                                  [nil]
@@ -59,6 +51,13 @@ module API
         order_groups(groups).with_api_scopes
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      def allowable_find_params
+        [:all_available,
+          :custom_attributes,
+          :owned, :min_access_level,
+          :include_parent_descendants, :search, :visibility]
+      end
 
       # This is a separate method so that EE can extend its behaviour, without
       # having to modify this code directly.

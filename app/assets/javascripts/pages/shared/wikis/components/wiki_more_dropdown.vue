@@ -99,7 +99,7 @@ export default {
     v-gl-tooltip="showDropdownTooltip"
     icon="ellipsis_v"
     category="tertiary"
-    placement="right"
+    placement="bottom-end"
     no-caret
     data-testid="wiki-more-dropdown"
     @shown="showDropdown"

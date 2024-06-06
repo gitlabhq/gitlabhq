@@ -302,7 +302,7 @@ because they can't follow redirects:
 - [GitLab Workflow VS Code extension](../../../editor_extensions/visual_studio_code/index.md)
 - [Lock files and prevent change conflicts](../file_lock.md)
 - [Repository API](../../../api/repositories.md)
-- [Find files](file_finder.md)
+- [Files](files/index.md)
 - [Branches](branches/index.md)
 - [Create a directory](web_editor.md#create-a-directory)
 - [Find file history](git_history.md)

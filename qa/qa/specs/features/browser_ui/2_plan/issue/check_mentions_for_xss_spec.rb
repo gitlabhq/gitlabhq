@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :smoke, product_group: :project_management do
+  RSpec.describe 'Plan', :smoke, :health_check, product_group: :project_management do
     let!(:user) do
       create(:user,
         name: "QA User <img src=x onerror=alert(2)&lt;img src=x onerror=alert(1)&gt;",

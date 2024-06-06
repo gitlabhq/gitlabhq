@@ -211,6 +211,13 @@ environments so that they do not attempt and fail to reach out to GitLab service
 
 For more information, see [Enable or disable service ping](../../administration/settings/usage_statistics.md#enable-or-disable-service-ping).
 
+### Disable runner version management
+
+Runner version management retrieves the latest runner versions from GitLab to
+[determine which runners in your environment are out of date](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
+You must [disable runner version management](../../administration/settings/continuous_integration.md#disable-runner-version-management)
+for offline environments.
+
 ### Configure NTP
 
 In GitLab 15.4 and 15.5, Gitaly Cluster assumes `pool.ntp.org` is accessible. If `pool.ntp.org` is not accessible, [customize the time server setting](../../administration/gitaly/praefect.md#customize-time-server-setting) on the Gitaly

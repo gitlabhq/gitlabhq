@@ -1,0 +1,72 @@
+---
+- major: 8
+  minor: 11
+
+- major: 8
+  minor: 12
+
+- major: 8
+  minor: 17
+
+- major: 9
+  minor: 5
+
+- major: 10
+  minor: 8
+
+- major: 11
+  minor: 11
+
+- major: 12
+  minor: 0
+
+- major: 12
+  minor: 1
+
+- major: 12
+  minor: 10
+
+- major: 13
+  minor: 0
+
+- major: 13
+  minor: 1
+
+- major: 13
+  minor: 8
+
+- major: 13
+  minor: 12
+
+- major: 14
+  minor: 0
+  comments: "**Migrations can take a long time!**"
+
+- major: 14
+  minor: 3
+  comments: "See [GitLab Issue #354211](https://gitlab.com/gitlab-org/gitlab/-/issues/354211#note_962223568)"
+
+- major: 14
+  minor: 9
+  comments: "See [GitLab Issue #354211](https://gitlab.com/gitlab-org/gitlab/-/issues/354211#note_962223568)"
+
+- major: 14
+  minor: 10
+
+- major: 15
+  minor: 0
+
+- major: 15
+  minor: 4
+
+- major: 15
+  minor: 11
+
+- major: 16
+  minor: 3
+
+- major: 16
+  minor: 7
+
+- major: 16
+  minor: 11

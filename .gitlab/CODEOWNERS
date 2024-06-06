@@ -158,6 +158,9 @@ Dangerfile
 ^[Distribution] @gitlab-org/distribution
 /lib/support/
 
+[Upgrade path] @gitlab-org/distribution
+/config/upgrade_path.yml
+
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
 ^[Threat Insights backend] @gitlab-org/govern/threat-insights-backend-team

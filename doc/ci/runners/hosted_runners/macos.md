@@ -156,3 +156,5 @@ but it does increase the overall size of your project's repository.
 - If the VM image does not include the specific software version you need for your job, the required software must be fetched and installed. This causes an increase in job execution time.
 - It is not possible to bring your own OS image.
 - The keychain for user `gitlab` is not publicly available. You must create a keychain instead.
+- Hosted runners on macOS run in headless mode.
+  Any workloads that require UI interactions such as `testmanagerd` are not supported.

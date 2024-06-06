@@ -17,7 +17,7 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
       provide: {
         newUrl: 'https://new.url/path',
         historyUrl: 'https://history.url/path',
-        pageTitle: 'Wiki title',
+        pageHeading: 'Wiki title',
         csrfToken: '',
         wikiUrl: 'https://delete.url/path',
         wikiPath: '',

@@ -157,12 +157,10 @@ Slack channel.
 Before releasing a known required stop, complete these steps. If the required stop
 is identified after release, the following steps must still be completed:
 
-1. Update [upgrade paths](../update/index.md#upgrade-paths) documentation to include the new
-   required stop.
+1. In the same MR, update the [upgrade paths](../update/index.md#upgrade-paths) documentation to include the new
+   required stop, and the [`upgrade_path.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/upgrade_path.yml).
+   The `upgrade_path.yml` is the single source of truth (SSoT) for all our required stops.
 1. Communicate the changes with the customer Support and Release management teams.
-1. Update the [`upgrade-path.yml`](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path/-/blob/main/upgrade-path.yml).
-   GitLab Release Tools uses this file to update Omnibus GitLab with the required stop, as well as to feed the
-   the Upgrade Path tool.
 1. If the required stops is database related, file an issue with the Database group to
    squash migrations to that version in the next release. Use this template for your issue:
 
@@ -187,6 +185,18 @@ is identified after release, the following steps must still be completed:
    [upgrade check hook](https://gitlab.com/gitlab-org/charts/gitlab/-/blame/master/templates/_runcheck.tpl#L32)
    to the required stop version.
 
+## GitLab-maintained projects which depend on `upgrade_path.yml`
+
+We have multiple projects depending on the `upgrade_path.yml` SSoT. Therefore,
+any change to the structure of this file needs to take into consideration that
+it might affect one of the following projects:
+
+- [Release Tools](https://gitlab.com/gitlab-org/release-tools)
+- [Support Upgrade Path](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path)
+- [Upgrade Tester](https://gitlab.com/gitlab-org/quality/upgrade-tester)
+- [GitLab QA](https://gitlab.com/gitlab-org/gitlab-qa)
+- [PostgreSQL Dump Generator](https://gitlab.com/gitlab-org/quality/pg-dump-generator)
+
 ## Further reading
 
 - [Documentation: Database required stops](database/required_stops.md)
@@ -198,4 +208,5 @@ is identified after release, the following steps must still be completed:
 - [Issue: Put in place measures to avoid addition/proliferation of GitLab upgrade path stops](https://gitlab.com/gitlab-org/gitlab/-/issues/375553)
 - [Issue: Brainstorm ways for background migrations to be finalized without introducing a required upgrade step](https://gitlab.com/gitlab-org/gitlab/-/issues/357561)
 - [Issue: Scheduled required paths for GitLab upgrades to improve UX](https://gitlab.com/gitlab-org/gitlab/-/issues/358417)
+- [Issue: Automate upgrade stop planning process](https://gitlab.com/gitlab-org/gitlab/-/issues/438921)
 - [Epic: GitLab Releases and Maintenance policies](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/988)

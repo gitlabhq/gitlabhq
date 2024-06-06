@@ -123,6 +123,7 @@ module WikiActions
       # Assign vars expected by MarkupHelper
       @ref = params[:version_id]
       @path = page.path
+      @templates = templates_list
 
       render 'shared/wikis/show'
     elsif file_blob
@@ -398,7 +399,7 @@ module WikiActions
   end
 
   def load_content?
-    skip_actions = Feature.enabled?(:wiki_front_matter_title, container) ? %w[history destroy diff] : %w[history destroy diff show]
+    skip_actions = %w[history destroy diff]
 
     return false if skip_actions.include?(params[:action])
 
