@@ -62,6 +62,12 @@ These requirements are documented in the `Required permission` column in the fol
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
 | [`admin_integrations`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154601) |  | Create, read, update, and delete integrations with external applications. | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/460522) |  |  |
 
+## Runner
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`admin_runners`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151825) |  | Create, view, edit, and delete group or project Runners. Includes configuring Runner settings. | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/442851) | `custom_ability_admin_runners` |  |
+
 ## Secrets management
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |

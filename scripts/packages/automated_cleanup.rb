@@ -39,9 +39,9 @@ module Packages
       puts "Checking for '#{package_name}' packages created at least #{days_for_delete} days ago..."
 
       gitlab.project_packages(project_path,
-                              package_type: 'generic',
-                              package_name: package_name,
-                              per_page: PACKAGES_PER_PAGE).auto_paginate do |package|
+        package_type: 'generic',
+        package_name: package_name,
+        per_page: PACKAGES_PER_PAGE).auto_paginate do |package|
         next unless package.name == package_name # the search is fuzzy, so we better check the actual package name
 
         if old_enough(package, days_for_delete) && not_recently_downloaded(package, days_for_delete)

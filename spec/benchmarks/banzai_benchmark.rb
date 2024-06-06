@@ -122,15 +122,15 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
 
         x.report('Markdown-glfm') do
           filter = filter_klass.new(filter_source[filter_klass][:input_text],
-                                    context.merge(markdown_engine: glfm_engine),
-                                    filter_source[filter_klass][:input_result])
+            context.merge(markdown_engine: glfm_engine),
+            filter_source[filter_klass][:input_result])
           filter.call
         end
 
         x.report('Markdown-cmark') do
           filter = filter_klass.new(filter_source[filter_klass][:input_text],
-                                    context.merge(markdown_engine: cmark_engine),
-                                    filter_source[filter_klass][:input_result])
+            context.merge(markdown_engine: cmark_engine),
+            filter_source[filter_klass][:input_result])
           filter.call
         end
 
@@ -197,8 +197,8 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
 
         x.report(label) do
           filter = filter_klass.new(filter_source[filter_klass][:input_text],
-                                    context,
-                                    filter_source[filter_klass][:input_result])
+            context,
+            filter_source[filter_klass][:input_result])
           filter.call
         end
       end

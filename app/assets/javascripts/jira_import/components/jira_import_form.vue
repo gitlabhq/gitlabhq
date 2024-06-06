@@ -342,7 +342,7 @@ export default {
         {{ __('Load more users') }}
       </gl-button>
 
-      <div class="footer-block row-content-block d-flex justify-content-between">
+      <div class="footer-block row-content-block gl-flex justify-content-between">
         <gl-button
           type="submit"
           category="primary"

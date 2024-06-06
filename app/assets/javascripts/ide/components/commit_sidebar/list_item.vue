@@ -86,15 +86,15 @@ export default {
       role="button"
       @click="openFileInEditor"
     >
-      <span class="multi-file-commit-list-file-path d-flex gl-align-items-center">
+      <span class="multi-file-commit-list-file-path !gl-flex gl-items-center">
         <file-icon :file-name="file.name" class="gl-mr-3" />
         <template v-if="file.prevName && file.prevName !== file.name">
           {{ file.prevName }} &#x2192;
         </template>
         {{ file.name }}
       </span>
-      <div class="ml-auto d-flex gl-align-items-center">
-        <div class="d-flex gl-align-items-center ide-commit-list-changed-icon">
+      <div class="ml-auto gl-flex gl-items-center">
+        <div class="gl-flex gl-items-center ide-commit-list-changed-icon">
           <gl-icon :name="iconName" :size="16" :class="iconClass" />
         </div>
       </div>

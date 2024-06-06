@@ -100,7 +100,7 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex flex-column release-assets-links-form">
+  <div class="gl-flex flex-column release-assets-links-form">
     <h2 class="text-4">{{ __('Release assets') }}</h2>
     <p class="m-0">
       <gl-sprintf
@@ -132,7 +132,7 @@ export default {
     <div
       v-for="(link, index) in release.assets.links"
       :key="link.id"
-      class="gl-sm-display-flex flex-column flex-sm-row gl-gap-5 align-items-stretch align-items-sm-start no-gutters"
+      class="sm:gl-flex flex-column flex-sm-row gl-gap-5 align-items-stretch align-items-sm-start no-gutters"
     >
       <gl-form-group
         class="url-field form-group col"
@@ -224,7 +224,7 @@ export default {
           :title="__('Remove asset link')"
           @click="onRemoveClicked(link.id)"
         >
-          <div class="d-flex">
+          <div class="gl-flex">
             <gl-icon class="mr-1 mr-sm-0" :size="16" name="remove" />
             <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
           </div>

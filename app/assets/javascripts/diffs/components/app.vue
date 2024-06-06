@@ -754,7 +754,7 @@ export default {
 
       <div
         :data-can-create-note="getNoteableData.current_user.can_create_note"
-        class="files d-flex gl-mt-2"
+        class="files gl-flex gl-mt-2"
       >
         <diffs-file-tree :visible="renderFileTree" @toggled="fileTreeToggled" />
         <div class="col-12 col-md-auto diff-files-holder">

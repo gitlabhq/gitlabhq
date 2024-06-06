@@ -53,7 +53,7 @@ export default {
           :value="option.value"
           class="gl-mb-3"
         >
-          <div class="gl-display-flex gl-align-items-center">
+          <div class="gl-flex gl-items-center">
             <gl-icon :size="16" :name="option.icon" />
             <span
               class="gl-font-semibold gl-ml-2 js-visibility-option"

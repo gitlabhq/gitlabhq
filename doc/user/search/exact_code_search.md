@@ -19,15 +19,18 @@ WARNING:
 This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
-Prerequisites:
-
-- You must [enable exact code search](../profile/preferences.md#enable-exact-code-search) in user preferences.
-
 With exact code search, you can use regular expression and exact match modes
 to search for code in all GitLab or in a specific project.
 
 Exact code search is powered by [Zoekt](https://github.com/sourcegraph/zoekt)
 and is used by default in groups where the feature is enabled.
+
+## Enable exact code search
+
+- For [GitLab.com](../../subscriptions/gitlab_com/index.md),
+  exact code search is enabled in paid subscriptions.
+- For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
+  [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 
 ## Zoekt search API
 

@@ -117,7 +117,7 @@ export default {
         </gl-button-group>
       </div>
       <div>
-        <div class="d-flex float-left gl-align-items-center align-self-start">
+        <div class="gl-flex float-left gl-items-center align-self-start">
           <gl-form-checkbox
             v-if="isSelectable"
             :checked="checked"

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::RunnersController < Projects::ApplicationController
-  before_action :authorize_admin_build!
+  before_action :authorize_admin_runner!
   before_action :authorize_create_runner!, only: [:new, :register]
   before_action :runner, only: [:edit, :update, :destroy, :pause, :resume, :show, :register]
 

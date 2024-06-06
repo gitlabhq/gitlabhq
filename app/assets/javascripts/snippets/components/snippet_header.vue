@@ -255,7 +255,7 @@ export default {
 <template>
   <div>
     <div
-      class="gl-display-flex gl-align-items-flex-start gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3 gl-pt-3"
+      class="gl-flex gl-align-items-flex-start gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3 gl-pt-3"
     >
       <span
         v-if="snippet.hidden"
@@ -278,7 +278,7 @@ export default {
 
       <div
         v-if="hasPersonalSnippetActions"
-        class="gl-display-flex gl-align-self-center gl-gap-3 gl-w-full gl-sm-w-auto gl-flex-direction-column gl-sm-flex-direction-row"
+        class="gl-flex gl-align-self-center gl-gap-3 gl-w-full gl-sm-w-auto gl-flex-direction-column gl-sm-flex-direction-row"
       >
         <gl-button
           v-if="snippet.userPermissions.updateSnippet"
@@ -312,7 +312,7 @@ export default {
             <div class="gl-w-full gl-min-h-7">
               <gl-button
                 class="gl-sm-display-none! gl-new-dropdown-toggle gl-w-full"
-                button-text-classes="gl-display-flex gl-justify-content-space-between gl-w-full"
+                button-text-classes="gl-flex gl-justify-content-space-between gl-w-full"
                 category="secondary"
                 tabindex="0"
               >
@@ -321,7 +321,7 @@ export default {
               </gl-button>
               <gl-button
                 v-gl-tooltip="showDropdownTooltip"
-                class="gl-display-none gl-sm-display-flex! gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
+                class="gl-hidden sm:gl-flex gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
                 category="tertiary"
                 icon="ellipsis_v"
                 :aria-label="$options.i18n.snippetAction"
@@ -349,9 +349,9 @@ export default {
     <div
       class="detail-page-header gl-flex-direction-column gl-md-flex-direction-row gl-p-0 gl-mb-5"
     >
-      <div class="gl-display-flex gl-align-items-baseline">
+      <div class="gl-flex gl-items-baseline">
         <div
-          class="has-tooltip gl-display-flex gl-align-self-baseline gl-mt-3 gl-mr-2"
+          class="has-tooltip gl-flex gl-align-self-baseline gl-mt-3 gl-mr-2"
           data-testid="snippet-container"
           :title="snippetVisibilityLevelDescription"
           data-container="body"

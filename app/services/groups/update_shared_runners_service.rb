@@ -3,7 +3,7 @@
 module Groups
   class UpdateSharedRunnersService < Groups::BaseService
     def execute
-      return error('Operation not allowed', 403) unless can?(current_user, :admin_group, group)
+      return error('Operation not allowed', 403) unless can?(current_user, :admin_runner, group)
 
       validate_params
 

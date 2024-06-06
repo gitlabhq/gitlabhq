@@ -93,8 +93,8 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex flex-column flex-fill min-height-0 pr-3">
-    <div class="top-bar d-flex border-left-0 gl-align-items-center">
+  <div class="gl-flex flex-column flex-fill min-height-0 pr-3">
+    <div class="top-bar gl-flex border-left-0 gl-items-center">
       <div v-if="loadingText">
         <gl-loading-icon size="sm" :inline="true" />
         <span>{{ loadingText }}</span>
@@ -108,7 +108,7 @@ export default {
         @scroll-down="glterminal.scrollToBottom()"
       />
     </div>
-    <div class="terminal-wrapper d-flex flex-fill min-height-0">
+    <div class="terminal-wrapper gl-flex flex-fill min-height-0">
       <div
         ref="terminal"
         class="ide-terminal-trace flex-fill min-height-0 gl-w-full"

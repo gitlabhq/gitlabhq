@@ -24,7 +24,7 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex gl-align-items-center">
+  <div class="gl-flex gl-items-center">
     <span class="text-muted">{{ s__('mrWidget|Approval is optional') }}</span>
     <gl-link
       v-if="canApprove && helpPath"

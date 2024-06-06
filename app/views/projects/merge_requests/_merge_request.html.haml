@@ -38,29 +38,29 @@
               = sprite_icon('branch', size: 12, css_class: 'fork-sprite')
               = merge_request.target_branch
         - if merge_request.labels.any?
-          .gl-mt-2.gl-display-flex.gl-flex-wrap.gl-gap-2{ role: 'group', 'aria-label': _('Labels') }
+          .gl-mt-2.gl-flex.gl-flex-wrap.gl-gap-2{ role: 'group', 'aria-label': _('Labels') }
             - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
               = link_to_label(label, type: :merge_request)
 
-    .gl-font-sm.gl-display-flex.gl-flex-shrink-0.gl-align-self-start.gl-gap-1.gl-flex-direction-row.gl-justify-content-space-between.gl-w-full.gl-md-w-auto{ class: 'gl-md-flex-direction-column!' }
+    .gl-font-sm.gl-flex.gl-flex-shrink-0.gl-align-self-start.gl-gap-1.gl-flex-direction-row.gl-justify-content-space-between.gl-w-full.gl-md-w-auto{ class: 'gl-md-flex-direction-column!' }
       %ul.controls.gl-gap-3.gl-pl-0.gl-align-self-end
         - if merge_request.merged?
           - merged_at = merge_request.merged_at ? l(merge_request.merged_at.to_time) : _("Merge date & time could not be determined")
-          %li.gl-display-flex{ class: 'gl-mr-0!' }
+          %li.gl-flex{ class: 'gl-mr-0!' }
             %a.has-tooltip{ href: "#{merge_request_path(merge_request)}#widget-state", title: merged_at }
               = render Pajamas::BadgeComponent.new(_('Merged'), size: 'sm', variant: 'info')
         - elsif merge_request.closed?
-          %li.gl-display-flex{ class: 'gl-mr-0!' }
+          %li.gl-flex{ class: 'gl-mr-0!' }
             = render Pajamas::BadgeComponent.new(_('Closed'), size: 'sm', variant: 'danger')
         - if merge_request.open? && merge_request.broken?
-          %li.issuable-pipeline-broken.gl-display-flex{ class: 'gl-mr-0!' }
+          %li.issuable-pipeline-broken.gl-flex{ class: 'gl-mr-0!' }
             = link_to merge_request_path(merge_request), class: "has-tooltip", title: _('Cannot be merged automatically') do
               = sprite_icon('warning-solid')
         - if merge_request.assignees.any?
-          %li.gl-display-flex{ class: 'gl-mr-0!' }
+          %li.gl-flex{ class: 'gl-mr-0!' }
             = render 'shared/issuable/assignees', project: merge_request.project, issuable: merge_request
         - if merge_request.reviewers.any?
-          %li.gl-display-flex.issuable-reviewers{ class: 'gl-mr-0!' }
+          %li.gl-flex.issuable-reviewers{ class: 'gl-mr-0!' }
             = render 'shared/issuable/reviewers', project: merge_request.project, issuable: merge_request
         = render 'shared/issuable_meta_data', issuable: merge_request
         = render 'projects/merge_requests/approvals_count', merge_request: merge_request

@@ -29,9 +29,7 @@ export default {
 <template>
   <li>
     <div class="commit-message-editor">
-      <div
-        class="gl-display-flex gl-flex-wrap gl-align-items-center justify-content-between gl-mb-3"
-      >
+      <div class="gl-flex gl-flex-wrap gl-align-items-center justify-content-between gl-mb-3">
         <label class="col-form-label" :for="inputId">
           <strong>{{ label }}</strong>
         </label>

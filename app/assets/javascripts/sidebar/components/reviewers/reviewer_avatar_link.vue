@@ -55,7 +55,7 @@ export default {
     data-placement="left"
     class="gl-inline-block js-user-link !gl-text-inherit gl-hover-text-blue-800!"
   >
-    <!-- use d-flex so that slot can be appropriately styled -->
+    <!-- use gl-flex so that slot can be appropriately styled -->
     <span class="gl-flex">
       <reviewer-avatar :user="user" :img-size="24" :issuable-type="issuableType" />
       <slot :user="user"></slot>

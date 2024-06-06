@@ -96,7 +96,7 @@ export default {
           :key="user.username"
           :value="user.username"
         >
-          <div class="d-flex">
+          <div class="gl-flex">
             <gl-avatar :size="32" :src="user.avatar_url" />
             <div>
               <div>{{ user.name }}</div>

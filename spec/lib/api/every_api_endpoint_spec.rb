@@ -65,7 +65,7 @@ RSpec.describe 'Every API endpoint', feature_category: :scalability do
         non_existing_used_paths = used_paths - existing_paths
 
         expect(non_existing_used_paths).to be_empty,
-                                           "#{klass} used #{non_existing_used_paths} to define feature category, but the route does not exist"
+          "#{klass} used #{non_existing_used_paths} to define feature category, but the route does not exist"
       end
     end
   end

@@ -37,7 +37,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         value="private"
       >
         <div
-          class="gl-align-items-center gl-display-flex"
+          class="gl-flex gl-items-center"
         >
           <gl-icon-stub
             name="lock"
@@ -58,7 +58,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         value="internal"
       >
         <div
-          class="gl-align-items-center gl-display-flex"
+          class="gl-flex gl-items-center"
         >
           <gl-icon-stub
             name="shield"
@@ -79,7 +79,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         value="public"
       >
         <div
-          class="gl-align-items-center gl-display-flex"
+          class="gl-flex gl-items-center"
         >
           <gl-icon-stub
             name="earth"

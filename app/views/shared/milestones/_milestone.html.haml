@@ -50,7 +50,7 @@
     - if can_admin_milestone
       - show_delete = @project.present? || @group.present?
       .col-1.order-2.order-md-3
-        .gl-display-flex.gl-justify-content-end
+        .gl-flex.gl-justify-content-end
           .js-vue-milestone-actions{ data: { id: milestone.id,
             title: milestone.title,
             is_active: milestone.active?.to_s,

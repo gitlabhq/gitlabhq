@@ -22,6 +22,9 @@
     "admin_push_rules": {
       "type": "boolean"
     },
+    "admin_runners": {
+      "type": "boolean"
+    },
     "admin_terraform_state": {
       "type": "boolean"
     },

@@ -161,11 +161,11 @@ export default {
                 <gl-icon class="gl-text-blue-500 gl-ml-2" name="question-o" />
               </span>
               <gl-tooltip :target="() => $refs['legend-icon']" boundary="#content-body">
-                <div class="deploy-board-legend gl-display-flex gl-flex-direction-column">
+                <div class="deploy-board-legend gl-flex gl-flex-direction-column">
                   <div
                     v-for="status in statuses"
                     :key="status.text"
-                    class="gl-display-flex gl-align-items-center"
+                    class="gl-flex gl-items-center"
                   >
                     <instance-component :status="status.class" :stable="status.stable" />
                     <span class="legend-text gl-ml-3">{{ status.text }}</span>
@@ -174,7 +174,7 @@ export default {
               </gl-tooltip>
             </div>
 
-            <div class="deploy-board-instances-container d-flex flex-wrap flex-row">
+            <div class="deploy-board-instances-container gl-flex flex-wrap flex-row">
               <template v-for="(instance, i) in deployBoardData.instances">
                 <instance-component
                   :key="i"
@@ -220,7 +220,7 @@ export default {
         <section v-safe-html="deployBoardSvg" class="deploy-board-empty-state-svg"></section>
 
         <section class="deploy-board-empty-state-text">
-          <span class="deploy-board-empty-state-title d-flex">{{
+          <span class="deploy-board-empty-state-title gl-flex">{{
             __('Kubernetes deployment not found')
           }}</span>
           <span>

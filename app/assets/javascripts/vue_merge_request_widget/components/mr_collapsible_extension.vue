@@ -45,7 +45,7 @@ export default {
 </script>
 <template>
   <div class="mr-widget-extension">
-    <div class="d-flex gl-align-items-center pl-3 gl-py-3">
+    <div class="gl-flex gl-items-center pl-3 gl-py-3">
       <div v-if="hasError" class="ci-widget media">
         <div class="media-body">
           <span class="gl-font-sm gl-ml-7 gl-leading-24 js-error-state">

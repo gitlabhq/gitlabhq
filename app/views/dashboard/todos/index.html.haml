@@ -41,7 +41,7 @@
     .todos-filters
       .issues-details-filters.row-content-block.second-block
         = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row' do
-          .filter-categories.gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-flex-grow-1.gl-flex-wrap.-gl-mx-2
+          .filter-categories.gl-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-flex-grow-1.gl-flex-wrap.-gl-mx-2
             .filter-item.gl-m-2
               - if params[:group_id].present?
                 = hidden_field_tag(:group_id, params[:group_id])

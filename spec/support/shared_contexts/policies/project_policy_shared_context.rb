@@ -67,7 +67,7 @@ RSpec.shared_context 'ProjectPolicy context' do
     %i[
       add_cluster admin_build admin_commit_status admin_container_image
       admin_cicd_variables admin_deployment admin_environment admin_note admin_pipeline
-      admin_project admin_project_member admin_push_rules admin_snippet admin_terraform_state
+      admin_project admin_project_member admin_push_rules admin_runner admin_snippet admin_terraform_state
       admin_wiki create_deploy_token destroy_deploy_token manage_deploy_tokens
       push_to_delete_protected_branch read_deploy_token update_snippet
       destroy_upload admin_member_access_request rename_project manage_merge_request_settings

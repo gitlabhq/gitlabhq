@@ -21,10 +21,15 @@ For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epi
 
 Zoekt is an open-source search engine designed specifically to search for code.
 
-With this integration, you can search for code faster and more efficiently.
+With this integration, you can use [exact code search](../../user/search/exact_code_search.md)
+instead of [advanced search](../../user/search/advanced_search.md) to search for code in GitLab.
 You can use regular expression and exact match modes to search for code in a group or repository.
 
 ## Enable exact code search
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 
@@ -35,6 +40,10 @@ To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 1. Select **Save changes**.
 
 ## Pause indexing
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 To pause indexing for [exact code search](../../user/search/exact_code_search.md):
 

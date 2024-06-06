@@ -64,7 +64,7 @@ Add a "Is master broken?" quick option that scans the last x pipelines on the ma
 
 ### Color scheme
 
-Rethink our current color schemes for data visuliaztion when it comes to pipelines statuses. We currently use the default visualization colors, but they don't actually match with that colors user have grown accustomed to for pipeline/jobs statuses. There is an opportunity here to help user better understand their data through more relevant color schemes and better visualization.
+Rethink our current color schemes for data visualization when it comes to pipelines statuses. We currently use the default visualization colors, but they don't actually match with that colors user have grown accustomed to for pipeline/jobs statuses. There is an opportunity here to help user better understand their data through more relevant color schemes and better visualization.
 
 ### Routing
 

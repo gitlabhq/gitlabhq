@@ -131,7 +131,7 @@ export default {
                   category="tertiary"
                 />
               </div>
-              <div class="file-actions d-flex gl-align-items-center gl-ml-auto gl-align-self-start">
+              <div class="file-actions gl-flex gl-items-center gl-ml-auto gl-align-self-start">
                 <gl-button-group v-if="file.type === 'text'" class="gl-mr-3">
                   <gl-button
                     :selected="file.resolveMode === 'interactive'"

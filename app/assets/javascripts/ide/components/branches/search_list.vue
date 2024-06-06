@@ -72,7 +72,7 @@ export default {
       />
       <gl-icon name="search" class="gl-ml-5 gl-mt-1 input-icon" />
     </label>
-    <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
+    <div class="dropdown-content ide-merge-requests-dropdown-content !gl-flex">
       <gl-loading-icon
         v-if="isLoading"
         size="lg"
@@ -84,10 +84,7 @@ export default {
             <item :item="item" :project-id="currentProjectId" :is-active="isActiveBranch(item)" />
           </li>
         </template>
-        <li
-          v-else
-          class="ide-search-list-empty d-flex gl-align-items-center justify-content-center"
-        >
+        <li v-else class="ide-search-list-empty !gl-flex gl-items-center gl-justify-center">
           <template v-if="hasNoSearchResults">
             {{ __('No branches found') }}
           </template>

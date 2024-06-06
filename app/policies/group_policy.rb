@@ -265,6 +265,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_namespace
     enable :admin_group_member
     enable :admin_package
+    enable :admin_runner
     enable :admin_integrations
     enable :change_visibility_level
 

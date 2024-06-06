@@ -157,9 +157,9 @@ export default {
             {{ s__('FeatureFlags|Feature flag') }}
           </div>
           <div
-            class="table-mobile-content gl-text-left gl-display-flex flex-column js-feature-flag-title gl-mr-5"
+            class="table-mobile-content gl-text-left gl-flex flex-column js-feature-flag-title gl-mr-5"
           >
-            <div class="gl-display-flex gl-align-items-center">
+            <div class="gl-flex gl-align-items-center">
               <div class="feature-flag-name text-monospace text-wrap gl-break-anywhere">
                 {{ featureFlag.name }}
               </div>
@@ -180,7 +180,7 @@ export default {
             {{ s__('FeatureFlags|Environment Specs') }}
           </div>
           <div
-            class="table-mobile-content gl-text-left d-flex gl-flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
+            class="table-mobile-content gl-text-left gl-flex gl-flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
           >
             <strategy-label
               v-for="strategy in featureFlag.strategies"

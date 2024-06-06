@@ -381,7 +381,7 @@ export default {
 
     <div
       v-if="!diffFile.submodule && addMergeRequestButtons"
-      class="file-actions d-flex gl-align-items-center gl-ml-auto gl-align-self-start"
+      class="file-actions gl-flex gl-items-center gl-ml-auto gl-align-self-start"
     >
       <diff-stats
         :diff-file="diffFile"
@@ -392,7 +392,7 @@ export default {
         v-if="isReviewable && showLocalFileReviews"
         v-gl-tooltip.hover.focus.left
         data-testid="fileReviewCheckbox"
-        class="gl-mr-5 -gl-mb-3 gl-display-flex gl-align-items-center"
+        class="gl-mr-5 -gl-mb-3 gl-flex gl-items-center"
         :title="$options.i18n.fileReviewTooltip"
         :checked="reviewed"
         @change="toggleReview"

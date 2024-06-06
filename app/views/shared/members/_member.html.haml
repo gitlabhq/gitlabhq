@@ -9,7 +9,7 @@
 
 -# Note this is just for individual members. For groups please see shared/members/_group
 
-%li.member.js-member.py-2.px-3.d-flex.flex-column{ class: [dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member) }
+%li.member.js-member.py-2.px-3.gl-flex.flex-column{ class: [dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member) }
   %span.list-item-name.mb-2.m-md-0
     - if user
       = render Pajamas::AvatarComponent.new(user, size: 32, class: 'gl-mr-3 flex-shrink-0 flex-grow-0')

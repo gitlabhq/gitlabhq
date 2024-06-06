@@ -91,7 +91,7 @@ export default {
       />
       <gl-icon :size="16" name="search" class="ml-3 input-icon" />
     </label>
-    <div class="dropdown-content ide-merge-requests-dropdown-content d-flex">
+    <div class="dropdown-content ide-merge-requests-dropdown-content gl-flex">
       <gl-loading-icon
         v-if="isLoading"
         size="lg"
@@ -103,10 +103,10 @@ export default {
             <li v-for="searchType in $options.searchTypes" :key="searchType.type">
               <button
                 type="button"
-                class="btn-link d-flex gl-align-items-center"
+                class="btn-link gl-flex gl-items-center"
                 @click.stop="setSearchType(searchType)"
               >
-                <span class="d-flex gl-mr-3 ide-search-list-current-icon">
+                <span class="gl-flex gl-mr-3 ide-search-list-current-icon">
                   <gl-icon :size="16" name="search" />
                 </span>
                 <span>{{ searchType.label }}</span>
@@ -122,10 +122,7 @@ export default {
               />
             </li>
           </template>
-          <li
-            v-else
-            class="ide-search-list-empty d-flex gl-align-items-center justify-content-center"
-          >
+          <li v-else class="ide-search-list-empty gl-flex gl-items-center justify-content-center">
             {{ __('No merge requests found') }}
           </li>
         </ul>

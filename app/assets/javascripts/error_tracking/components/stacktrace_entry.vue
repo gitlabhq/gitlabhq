@@ -81,7 +81,7 @@ export default {
 <template>
   <div class="file-holder">
     <div ref="header" class="file-title file-title-flex-parent">
-      <div class="file-header-content d-flex align-content-center gl-flex-wrap overflow-hidden">
+      <div class="file-header-content gl-flex align-content-center gl-flex-wrap overflow-hidden">
         <div v-if="hasCode" class="gl-inline-block cursor-pointer" @click="toggle()">
           <gl-icon :name="collapseIcon" :size="16" class="gl-mr-2" />
         </div>

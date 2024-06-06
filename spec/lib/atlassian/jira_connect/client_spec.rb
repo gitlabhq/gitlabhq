@@ -441,7 +441,7 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
 
       expect do
         subject.send(:store_dev_info, project: project,
-                                      merge_requests: merge_requests)
+          merge_requests: merge_requests)
       end.not_to exceed_query_limit(control)
     end
   end

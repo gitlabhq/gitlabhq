@@ -27,7 +27,7 @@ export default {
 </script>
 
 <template>
-  <div class="ide-status-list d-flex">
+  <div class="ide-status-list gl-flex">
     <template v-if="activeFile">
       <div>
         <gl-link v-gl-tooltip.hover :href="activeFile.permalink" :title="__('Open in file view')">

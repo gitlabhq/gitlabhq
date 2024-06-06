@@ -357,7 +357,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
       label = icon + _('Add LICENSE')
       AnchorData.new(
         false,
-        content_tag(:span, label, class: 'add-license-link d-flex'),
+        content_tag(:span, label, class: 'add-license-link gl-flex'),
         empty_repo? ? add_license_ide_path : add_license_path
       )
     end

@@ -18,7 +18,7 @@ For information about other tiers, see [Customer Product Usage Information](http
 
 ## Service Ping
 
-Service Ping is a process that collects and sends a weekly payload to GitLab Inc.
+Service Ping is a process that collects and sends a weekly payload to GitLab Inc. 
 For more information, see the [Service Ping guide](../../development/internal_analytics/service_ping/index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../../user/analytics/index.md)
 that are dependent on Service Ping.
 

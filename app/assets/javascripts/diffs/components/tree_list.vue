@@ -150,8 +150,8 @@ export default {
 </script>
 
 <template>
-  <div class="tree-list-holder d-flex flex-column" data-testid="file-tree-container">
-    <div class="gl-display-flex gl-align-items-center gl-mb-3">
+  <div class="tree-list-holder gl-flex flex-column" data-testid="file-tree-container">
+    <div class="gl-flex gl-items-center gl-mb-3">
       <h5 class="gl-display-inline-block gl-my-0">{{ __('Files') }}</h5>
       <gl-badge size="sm" class="gl-ml-2" data-testid="file-count">{{ realSize }}</gl-badge>
       <gl-button-group class="gl-ml-auto">

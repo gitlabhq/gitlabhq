@@ -41,7 +41,7 @@ If your version of Elasticsearch or OpenSearch is incompatible, to prevent data 
 a message is logged in the
 [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog) file.
 
-If you are using a compatible version and after connecting to OpenSearch, you get the message `Elasticsearch version not compatible`, [unpause indexing](#unpause-indexing).
+If you are using a compatible version and after connecting to OpenSearch, you get the message `Elasticsearch version not compatible`, [resume indexing](#resume-indexing).
 
 ## System requirements
 
@@ -82,7 +82,7 @@ During an Elasticsearch upgrade, you must:
 - Pause indexing so changes can still be tracked.
 - Disable advanced search so searches do not fail with an `HTTP 500` error.
 
-When the Elasticsearch cluster is fully upgraded and active, [resume indexing](#unpause-indexing) and enable advanced search.
+When the Elasticsearch cluster is fully upgraded and active, [resume indexing](#resume-indexing) and enable advanced search.
 
 When you upgrade to GitLab 15.0 and later, you must use Elasticsearch 7.x and later.
 
@@ -212,9 +212,16 @@ you might have problems updating documents such as issues because your
 instance queues a job to index the change, but cannot find a valid
 Elasticsearch cluster.
 
-For GitLab instances with more than 50 GB of repository data, see [How to index large instances efficiently](#how-to-index-large-instances-efficiently).
+For GitLab instances with more than 50 GB of repository data, see [Index large instances efficiently](#index-large-instances-efficiently).
 
-### Enable with the **Index all projects** setting
+### Index all projects
+
+DETAILS:
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 You can only use the **Index all projects** setting to perform
 initial indexing, not to re-create an index from scratch.
@@ -412,9 +419,16 @@ If you do not specify any namespace or project, only project records are indexed
 
 ## Enable custom language analyzers
 
+DETAILS:
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
 You can improve the language support for Chinese and Japanese languages by utilizing [`smartcn`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-smartcn.html) and/or [`kuromoji`](https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-kuromoji.html) analysis plugins from Elastic.
 
-To enable languages support:
+To enable language support:
 
 1. Install the desired plugins, refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
 1. On the left sidebar, at the bottom, select **Admin Area**.
@@ -436,7 +450,14 @@ For guidance on what to install, see the following Elasticsearch language plugin
 
 ## Disable advanced search
 
-To disable the Elasticsearch integration:
+DETAILS:
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To disable advanced search in GitLab:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Search**.
@@ -452,7 +473,16 @@ To disable the Elasticsearch integration:
    bundle exec rake gitlab:elastic:delete_index RAILS_ENV=production
    ```
 
-## Unpause Indexing
+## Resume indexing
+
+DETAILS:
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To resume indexing:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Search**.
@@ -472,7 +502,14 @@ index alias to it which becomes the new `primary` index. At the end, we resume t
 
 You can use zero-downtime reindexing to configure index settings or mappings that cannot be changed without creating a new index and copying existing data. You should not use zero-downtime reindexing to fix missing data. Zero-downtime reindexing does not add data to the search cluster if the data is not already indexed. You must complete all [advanced search migrations](#advanced-search-migrations) before you start reindexing.
 
-### Trigger the reindex via the advanced search administration
+### Trigger reindexing
+
+DETAILS:
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 To trigger the reindexing process:
 
@@ -491,6 +528,13 @@ page you triggered the reindexing process.
 While the reindexing is running, you can follow its progress under that same section.
 
 #### Elasticsearch zero-downtime reindexing
+
+DETAILS:
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Search**.
@@ -526,11 +570,18 @@ The best value for this depends on your cluster size, whether you're willing
 to accept some degraded search performance during reindexing, and how important
 it is for the reindex to finish quickly and resume indexing.
 
-### Mark the most recent reindex job as failed and resume the indexing
+### Mark the most recent reindexing job as failed and resume indexing
 
-Sometimes, you might want to abandon the unfinished reindex job and resume the indexing. You can achieve this via the following steps:
+DETAILS:
+**Offering:** Self-managed
 
-1. Mark the most recent reindex job as failed:
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To abandon the unfinished reindexing job and resume indexing:
+
+1. Mark the most recent reindexing job as failed:
 
    ```shell
    # Omnibus installations
@@ -804,17 +855,23 @@ For single-node clusters, set the number of Elasticsearch replicas per index to 
 For multi-node clusters, set the number of Elasticsearch replicas per index to `1` (each shard has one replica).
 The number must not be `0` because losing one node corrupts the index.
 
-### How to index large instances efficiently
+### Index large instances efficiently
 
-This section may be helpful in the event that the other
-[basic instructions](#enable-advanced-search) cause problems
-due to large volumes of data being indexed.
+DETAILS:
+**Offering:** Self-managed
+
+Prerequisites:
+
+- You must have administrator access to the instance.
 
 WARNING:
 Indexing a large instance generates a lot of Sidekiq jobs.
 Make sure to prepare for this task by having a
-[scalable setup](../../administration/reference_architectures/index.md) or creating
+[scalable setup](../../administration/reference_architectures/index.md) or by creating
 [extra Sidekiq processes](../../administration/sidekiq/extra_sidekiq_processes.md).
+
+If [enabling advanced search](#enable-advanced-search) causes problems
+due to large volumes of data being indexed, follow these steps:
 
 1. [Configure your Elasticsearch host and port](#enable-advanced-search).
 1. Create empty indices:

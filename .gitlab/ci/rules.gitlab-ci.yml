@@ -2962,6 +2962,8 @@
 
 .preflight:rules:pipeline-tier-1:
   rules:
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
     - <<: *if-merge-request-tier-1
       allow_failure: true
     - !reference [".prevent-tier-2-and-above", rules]

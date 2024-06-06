@@ -309,7 +309,7 @@ To customize the time format:
 1. Under **Time format**, select either the **System**, **12-hour**, or **24-hour** option.
 1. Select **Save changes**.
 
-## Enable exact code search
+## Disable exact code search
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -324,15 +324,17 @@ WARNING:
 This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 For more information, see [epic 9404](https://gitlab.com/groups/gitlab-org/-/epics/9404).
 
-You can use [exact code search](../search/exact_code_search.md) instead of
-[advanced search](../search/advanced_search.md) to search for code in GitLab.
+Prerequisites:
 
-To enable exact code search:
+- For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
+  [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
+
+To disable [exact code search](../../user/search/exact_code_search.md) in user preferences:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Go to the **Exact code search** section.
-1. Select the **Enable exact code search** checkbox.
+1. Clear the **Enable exact code search** checkbox.
 1. Select **Save changes**.
 
 ## User identities in CI job JSON web tokens

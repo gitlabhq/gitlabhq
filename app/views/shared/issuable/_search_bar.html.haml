@@ -7,8 +7,8 @@
 - block_css_class = type != :productivity_analytics ? 'row-content-block second-block' : ''
 
 .issues-filters
-  .issues-details-filters.filtered-search-block.gl-display-flex.gl-flex-direction-column.gl-lg-flex-direction-row.gl-gap-3{ class: block_css_class }
-    .gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-flex-grow-1.gl-w-full
+  .issues-details-filters.filtered-search-block.gl-flex.gl-flex-direction-column.gl-lg-flex-direction-row.gl-gap-3{ class: block_css_class }
+    .gl-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-flex-grow-1.gl-w-full
       = form_tag page_filter_path, method: :get, class: 'filter-form js-filter-form gl-w-full' do
         - if params[:search].present?
           = hidden_field_tag :search, params[:search]
@@ -18,7 +18,7 @@
               - c.with_label do
                 %span.gl-sr-only
                   = _('Select all')
-        .issues-other-filters.filtered-search-wrapper.gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row
+        .issues-other-filters.filtered-search-wrapper.gl-flex.gl-flex-direction-column.gl-md-flex-direction-row
           .filtered-search-box
             - if type != :boards
               - text = tag.span(sprite_icon('history')) + tag.span(_('Recent searches'), class: "gl-sr-only")
@@ -206,6 +206,6 @@
               = render_if_exists 'shared/issuable/filter_epic', type: type
 
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'clear', icon_classes: "clear-search-icon", button_options: { class: 'clear-search hidden gl-align-self-center gl-mr-1 has-tooltip', title: _('Clear') })
-    .filter-dropdown-container.gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-align-items-flex-start
+    .filter-dropdown-container.gl-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-align-items-flex-start
       - if type != :productivity_analytics && show_sorting_dropdown
         = render 'shared/issuable/sort_dropdown'

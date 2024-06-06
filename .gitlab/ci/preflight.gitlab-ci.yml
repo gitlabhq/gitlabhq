@@ -95,6 +95,7 @@ qa:selectors:
 .pipeline-tier-base:
   extends:
     - .preflight-job-base
+  image: alpine:latest
   variables:
     GIT_STRATEGY: none
   script:

@@ -619,6 +619,7 @@ class ProjectPolicy < BasePolicy
     enable :read_import_error
     enable :admin_cicd_variables
     enable :admin_push_rules
+    enable :admin_runner
     enable :manage_deploy_tokens
     enable :manage_merge_request_settings
     enable :change_restrict_user_defined_variables

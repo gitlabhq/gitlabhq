@@ -36,12 +36,12 @@ RSpec.describe 'create_tokens' do
         new_secrets = secrets.keys - acknowledged_secrets
 
         expect(new_secrets).to be_empty,
-         <<~EOS
+          <<~EOS
            CAUTION:
            It looks like you have just added new secret(s) #{new_secrets.inspect} to the secrets.yml.
            Please read the development guide for GitLab secrets at doc/development/application_secrets.md before you proceed this change.
            If you're absolutely sure that the change is safe, please add the new secrets to the 'acknowledged_secrets' in order to silence this warning.
-         EOS
+          EOS
       end
     end
   end

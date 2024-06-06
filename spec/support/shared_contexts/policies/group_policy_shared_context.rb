@@ -78,6 +78,7 @@ RSpec.shared_context 'GroupPolicy context' do
       admin_namespace
       admin_group_member
       admin_package
+      admin_runner
       change_visibility_level
       set_note_created_at
       create_subgroup

@@ -103,7 +103,7 @@ export default {
       data-testid="project-search-field"
       @input="onInput"
     />
-    <div class="d-flex flex-column">
+    <div class="gl-flex flex-column">
       <gl-loading-icon v-if="showLoadingIndicator" size="sm" class="py-2 px-4" />
       <gl-infinite-scroll
         :max-list-height="maxListHeight"
@@ -112,7 +112,7 @@ export default {
         @bottomReached="bottomReached"
       >
         <template v-if="!showLoadingIndicator" #items>
-          <div class="gl-display-flex gl-flex-direction-column gl-p-3">
+          <div class="gl-flex gl-flex-col gl-p-3">
             <project-list-item
               v-for="project in projectSearchResults"
               :key="project.id"
