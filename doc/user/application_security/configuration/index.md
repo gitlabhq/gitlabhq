@@ -60,6 +60,8 @@ You can configure the following security controls:
   - Select **Configure with a merge request** to create a merge request with the changes required to
     enable Container Scanning. For more details, see
     [Enable Container Scanning through an automatic merge request](../container_scanning/index.md#enable-container-scanning-through-an-automatic-merge-request).
+- [Continuous Container Scanning](../container_scanning/index.md)
+  - Continuous container scanning runs in the registry when any image or database is updated. For more details, read [Continuous container scanning](../../../user/application_security/continuous_vulnerability_scanning/index.md#continuous-vulnerability-scanning-for-container-registry).
 - [Operational Container Scanning](../../clusters/agent/vulnerabilities.md)
   - Can be configured by adding a configuration block to your agent configuration. For more details, read [Operational Container Scanning](../../clusters/agent/vulnerabilities.md#enable-operational-container-scanning).
 - [Secret Detection](../secret_detection/pipeline/index.md)

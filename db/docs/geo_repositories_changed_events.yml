@@ -1,7 +1,6 @@
 ---
 table_name: geo_repositories_changed_events
-classes:
-- Geo::RepositoriesChangedEvent
+classes: []
 feature_categories:
 - geo_replication
 description: Geo event for when the repositories for selective sync of a specific

@@ -1561,7 +1561,7 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/frontend/remote_development/
 /ee/spec/frontend/**/remote_development/
 
-[Govern::Anti-abuse] @gitlab-org/modelops/anti-abuse
+[Identity Verification] @gitlab-org/modelops/anti-abuse/identity-verification-approvers
 /ee/app/controllers/users/registrations_identity_verification_controller.rb
 /ee/app/controllers/users/base_identity_verification_controller.rb
 /ee/app/controllers/users/identity_verification_controller.rb

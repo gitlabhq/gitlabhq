@@ -252,7 +252,7 @@ See [issue 12267](https://gitlab.com/gitlab-org/gitlab/-/issues/12267) for more 
 
 ### Cannot retry merge train pipeline
 
-When a merge train pipeline fails, the merge request is dropped from the train and the pipeline can't be retried.
+When a merge train pipeline fails, the merge request is dropped from the train so the pipeline can't be retried after it fails.
 Merge train pipelines run on the merged result of the changes in the merge request and
 changes from other merge requests already on the train. If the merge request is dropped from the train,
 the merged result is out of date and the pipeline can't be retried.
