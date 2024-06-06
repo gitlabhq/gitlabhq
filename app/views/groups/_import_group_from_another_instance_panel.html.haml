@@ -24,11 +24,11 @@
       = render Pajamas::AlertComponent.new(dismissible: false,
         variant: :warning) do |c|
         - c.with_body do
-          - docs_link = link_to('', help_page_path('user/group/import/index', anchor: 'migrated-group-items'), target: '_blank', rel: 'noopener noreferrer')
+          - docs_link = link_to('', help_page_path('user/group/import/migrated_items', anchor: 'migrated-group-items'), target: '_blank', rel: 'noopener noreferrer')
           = safe_format(s_('GroupsNew|Not all group items are migrated. %{docs_link_start}What items are migrated%{docs_link_end}?'), tag_pair(docs_link, :docs_link_start, :docs_link_end))
 
     %p.gl-mt-5.gl-mb-3
-      - url_link = link_to('', help_page_path('user/group/import/index', anchor: 'connect-the-source-gitlab-instance'), target: '_blank', rel: 'noopener noreferrer')
+      - url_link = link_to('', help_page_path('user/group/import/direct_transfer_migrations', anchor: 'connect-the-source-gitlab-instance'), target: '_blank', rel: 'noopener noreferrer')
       = safe_format(s_('GroupsNew|Provide credentials for the %{url_link_start}source instance%{url_link_end} to import from. You can provide this instance as a source to move groups within this instance.'), tag_pair(url_link, :url_link_start, :url_link_end))
     .form-group.gl-form-group.gl-display-flex.gl-flex-direction-column
       = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source instance base URL'), for: 'import_gitlab_url'

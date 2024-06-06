@@ -8065,8 +8065,8 @@ Input type: `RunnersExportUsageInput`
 | <a id="mutationrunnersexportusageclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnersexportusagefromdate"></a>`fromDate` | [`ISO8601Date`](#iso8601date) | UTC start date of the period to report on. Defaults to the start of last full month. |
 | <a id="mutationrunnersexportusagemaxprojectcount"></a>`maxProjectCount` | [`Int`](#int) | Maximum number of projects to return. All other runner usage will be attributed to an `<Other projects>` entry. Defaults to 1000 projects. |
+| <a id="mutationrunnersexportusagerunnertype"></a>`runnerType` | [`CiRunnerType`](#cirunnertype) | Scope of the runners to include in the report. |
 | <a id="mutationrunnersexportusagetodate"></a>`toDate` | [`ISO8601Date`](#iso8601date) | UTC end date of the period to report on. " \ "Defaults to the end of the month specified by `fromDate`. |
-| <a id="mutationrunnersexportusagetype"></a>`type` | [`CiRunnerType`](#cirunnertype) | Scope of the runners to include in the report. |
 
 #### Fields
 

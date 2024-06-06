@@ -18,7 +18,7 @@ With the group migration by direct transfer API, you can start and view the prog
 ## Prerequisites
 
 For information on prerequisites for group migration by direct transfer API, see
-prerequisites for [migrating groups by direct transfer](../user/group/import/index.md#prerequisites).
+prerequisites for [migrating groups by direct transfer](../user/group/import/direct_transfer_migrations.md#prerequisites).
 
 ## Start a new group or project migration
 

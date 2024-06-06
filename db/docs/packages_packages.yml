@@ -1,6 +1,7 @@
 ---
 table_name: packages_packages
 classes:
+- Packages::Composer::Package
 - Packages::Conan::Package
 - Packages::Debian::Package
 - Packages::Go::Package

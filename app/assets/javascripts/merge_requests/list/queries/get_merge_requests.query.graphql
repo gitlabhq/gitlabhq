@@ -10,6 +10,7 @@ query getMergeRequests(
   $assigneeUsername: String
   $authorUsername: String
   $draft: Boolean
+  $milestoneTitle: String
   $sourceBranches: [String!]
   $targetBranches: [String!]
   $beforeCursor: String
@@ -25,6 +26,7 @@ query getMergeRequests(
       assigneeUsername: $assigneeUsername
       authorUsername: $authorUsername
       draft: $draft
+      milestoneTitle: $milestoneTitle
       sourceBranches: $sourceBranches
       targetBranches: $targetBranches
       before: $beforeCursor

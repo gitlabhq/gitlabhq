@@ -41,8 +41,8 @@ module Gitlab
 
         {
           'type' => 'zip',
-          'url' => expose_url(archive_api_path) + "?sha=#{package.composer_target_sha}",
-          'reference' => package.composer_target_sha,
+          'url' => expose_url(archive_api_path) + "?sha=#{package.target_sha}",
+          'reference' => package.target_sha,
           'shasum' => ''
         }
       end
@@ -53,7 +53,7 @@ module Gitlab
         {
           'type' => 'git',
           'url' => git_url,
-          'reference' => package.composer_target_sha
+          'reference' => package.target_sha
         }
       end
     end

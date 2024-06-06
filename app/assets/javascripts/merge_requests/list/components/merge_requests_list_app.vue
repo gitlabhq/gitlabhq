@@ -25,6 +25,8 @@ import {
   TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TYPE_MR_ASSIGNEE,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TYPE_MILESTONE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -55,6 +57,8 @@ import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const BranchToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue');
+const MilestoneToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 
 export default {
   i18n,
@@ -214,6 +218,19 @@ export default {
             { value: 'yes', title: this.$options.i18n.yes },
             { value: 'no', title: this.$options.i18n.no },
           ],
+          unique: true,
+        },
+        {
+          type: TOKEN_TYPE_MILESTONE,
+          title: TOKEN_TITLE_MILESTONE,
+          icon: 'milestone',
+          token: MilestoneToken,
+          operators: OPERATORS_IS,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-milestone`,
+          shouldSkipSort: true,
+          fullPath: this.fullPath,
+          isProject: true,
+          multiselect: false,
           unique: true,
         },
         {

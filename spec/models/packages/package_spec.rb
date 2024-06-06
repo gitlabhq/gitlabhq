@@ -25,20 +25,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_many(:matching_package_protection_rules).through(:project).source(:package_protection_rules) }
   end
 
-  describe '.with_composer_target' do
-    let!(:package1) { create(:composer_package, :with_metadatum, sha: '123') }
-    let!(:package2) { create(:composer_package, :with_metadatum, sha: '123') }
-    let!(:package3) { create(:composer_package, :with_metadatum, sha: '234') }
-
-    subject { described_class.with_composer_target('123').to_a }
-
-    it 'selects packages with the specified sha' do
-      expect(subject).to include(package1)
-      expect(subject).to include(package2)
-      expect(subject).not_to include(package3)
-    end
-  end
-
   describe '.sort_by_attribute' do
     let_it_be(:group) { create(:group, :public) }
     let_it_be(:project) { create(:project, :public, namespace: group, name: 'project A', path: 'project-a') }
@@ -190,28 +176,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
 
     describe '#version' do
-      RSpec.shared_examples 'validating version to be SemVer compliant for' do |factory_name|
-        context "for #{factory_name}" do
-          subject { build_stubbed(factory_name) }
-
-          it { is_expected.to allow_value('1.2.3').for(:version) }
-          it { is_expected.to allow_value('1.2.3-beta').for(:version) }
-          it { is_expected.to allow_value('1.2.3-alpha.3').for(:version) }
-          it { is_expected.not_to allow_value('1').for(:version) }
-          it { is_expected.not_to allow_value('1.2').for(:version) }
-          it { is_expected.not_to allow_value('1./2.3').for(:version) }
-          it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
-          it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
-        end
-      end
-
-      context 'composer package' do
-        it_behaves_like 'validating version to be SemVer compliant for', :composer_package
-
-        it { is_expected.to allow_value('dev-master').for(:version) }
-        it { is_expected.to allow_value('2.x-dev').for(:version) }
-      end
-
       context 'maven package' do
         subject { build_stubbed(:maven_package) }
 
@@ -540,31 +504,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
               it_behaves_like 'validating both if the first package is pending destruction'
             end
           end
-        end
-      end
-    end
-
-    describe '#valid_composer_global_name' do
-      let_it_be(:package) { create(:composer_package) }
-
-      context 'with different name and different project' do
-        let(:new_package) { build(:composer_package, name: 'different_name') }
-
-        it { expect(new_package).to be_valid }
-      end
-
-      context 'with same name and different project' do
-        let(:new_package) { build(:composer_package, name: package.name) }
-
-        it 'will not validate second package' do
-          expect(new_package).not_to be_valid
-          expect(new_package.errors.to_a).to include('Name is already taken by another project')
-        end
-
-        context 'with pending destruction package' do
-          let_it_be(:package) { create(:composer_package, :pending_destruction) }
-
-          it { expect(new_package).to be_valid }
         end
       end
     end

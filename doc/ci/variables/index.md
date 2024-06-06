@@ -305,6 +305,10 @@ the value can contain only:
 - Characters from the Base64 alphabet (RFC4648).
 - The `@`, `:`, `.`, or `~` characters.
 
+Masking a variable automatically masks the value anywhere in a job log. If another
+variable has the same value, that value is also masked, including when a variable
+references a masked variable.
+
 Different versions of [GitLab Runner](../runners/index.md) have different masking limitations:
 
 | Version             | Limitations |

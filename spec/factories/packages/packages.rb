@@ -155,23 +155,6 @@ FactoryBot.define do
       end
     end
 
-    factory :composer_package do
-      sequence(:name) { |n| "composer-package-#{n}" }
-      sequence(:version) { |n| "1.0.#{n}" }
-      package_type { :composer }
-
-      transient do
-        sha { project.repository.find_branch('master').target }
-        json { { name: name, version: version } }
-      end
-
-      trait(:with_metadatum) do
-        after :create do |package, evaluator|
-          create :composer_metadatum, package: package, target_sha: evaluator.sha, composer_json: evaluator.json
-        end
-      end
-    end
-
     factory :generic_package do
       sequence(:name) { |n| "generic-package-#{n}" }
       version { '1.0.0' }

@@ -16189,6 +16189,9 @@ msgstr ""
 msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
+msgid "DORA4Metrics|Background aggregation not enabled"
+msgstr ""
+
 msgid "DORA4Metrics|By enabling this feature, you accept the %{url}"
 msgstr ""
 
@@ -36701,9 +36704,6 @@ msgid "Package registry types for which metadata is stored, required for License
 msgstr ""
 
 msgid "Package type"
-msgstr ""
-
-msgid "Package type must be Composer"
 msgstr ""
 
 msgid "Package type must be Conan"

@@ -49,7 +49,6 @@ class Packages::Package < ApplicationRecord
   has_one :maven_metadatum, inverse_of: :package, class_name: 'Packages::Maven::Metadatum'
   has_one :nuget_metadatum, inverse_of: :package, class_name: 'Packages::Nuget::Metadatum'
   has_many :nuget_symbols, inverse_of: :package, class_name: 'Packages::Nuget::Symbol'
-  has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
   has_one :npm_metadatum, inverse_of: :package, class_name: 'Packages::Npm::Metadatum'
   has_one :terraform_module_metadatum, inverse_of: :package, class_name: 'Packages::TerraformModule::Metadatum'
   has_many :build_infos, inverse_of: :package
@@ -57,8 +56,6 @@ class Packages::Package < ApplicationRecord
   has_many :matching_package_protection_rules, ->(package) { where(package_type: package.package_type).for_package_name(package.name) }, through: :project, source: :package_protection_rules
 
   accepts_nested_attributes_for :maven_metadatum
-
-  delegate :target_sha, to: :composer_metadatum, prefix: :composer
 
   validates :project, presence: true
   validates :name, presence: true
@@ -72,7 +69,6 @@ class Packages::Package < ApplicationRecord
     },
     unless: -> { pending_destruction? || conan? }
 
-  validate :valid_composer_global_name, if: :composer?
   validate :npm_package_already_taken, if: :npm?
 
   validates :name, format: { with: Gitlab::Regex.generic_package_name_regex }, if: :generic?
@@ -85,7 +81,7 @@ class Packages::Package < ApplicationRecord
   validates :version, format: { with: Gitlab::Regex.pypi_version_regex }, if: :pypi?
   validates :version, format: { with: Gitlab::Regex.helm_version_regex }, if: :helm?
   validates :version, format: { with: Gitlab::Regex.semver_regex, message: Gitlab::Regex.semver_regex_message },
-    if: -> { composer_tag_version? || npm? || terraform_module? }
+    if: -> { npm? || terraform_module? }
 
   validates :version,
     presence: true,
@@ -136,12 +132,6 @@ class Packages::Package < ApplicationRecord
   scope :including_dependency_links, -> { includes(dependency_links: :dependency) }
   scope :including_dependency_links_with_nuget_metadatum, -> { includes(dependency_links: [:dependency, :nuget_metadatum]) }
 
-  scope :with_composer_target, ->(target) do
-    includes(:composer_metadatum)
-      .joins(:composer_metadatum)
-      .where(Packages::Composer::Metadatum.table_name => { target_sha: target })
-  end
-  scope :preload_composer, -> { preload(:composer_metadatum) }
   scope :preload_npm_metadatum, -> { preload(:npm_metadatum) }
   scope :preload_nuget_metadatum, -> { preload(:nuget_metadatum) }
   scope :preload_pypi_metadatum, -> { preload(:pypi_metadatum) }
@@ -201,7 +191,8 @@ class Packages::Package < ApplicationRecord
     rubygems: 'Packages::Rubygems::Package',
     conan: 'Packages::Conan::Package',
     rpm: 'Packages::Rpm::Package',
-    debian: 'Packages::Debian::Package'
+    debian: 'Packages::Debian::Package',
+    composer: 'Packages::Composer::Package'
   }.freeze
 
   def self.only_maven_packages_with_path(path, use_cte: false)
@@ -347,24 +338,6 @@ class Packages::Package < ApplicationRecord
   end
 
   private
-
-  def composer_tag_version?
-    composer? && !Gitlab::Regex.composer_dev_version_regex.match(version.to_s)
-  end
-
-  def valid_composer_global_name
-    # .default_scoped is required here due to a bug in rails that leaks
-    # the scope and adds `self` to the query incorrectly
-    # See https://github.com/rails/rails/pull/35186
-    package_exists = Packages::Package.default_scoped
-                                      .composer
-                                      .not_pending_destruction
-                                      .with_name(name)
-                                      .where.not(project_id: project_id)
-                                      .exists?
-
-    errors.add(:name, 'is already taken by another project') if package_exists
-  end
 
   def npm_package_already_taken
     return unless project

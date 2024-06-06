@@ -10,6 +10,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_DRAFT,
+  TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TYPE_TARGET_BRANCH,
   TOKEN_TYPE_MR_ASSIGNEE,
@@ -111,6 +112,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_MR_ASSIGNEE },
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [] },
           { type: TOKEN_TYPE_DRAFT },
+          { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
         ]);
@@ -121,15 +123,13 @@ describe('Merge requests list app', () => {
       const urlParams = {
         mr_assignee_username: 'bob',
         draft: 'yes',
+        milestone_title: 'milestone',
         'target_branches[]': 'branch-a',
         'source_branches[]': 'branch-b',
       };
-      const paramString = Object.entries(urlParams)
-        .map(([k, v]) => `${k}=${v}`)
-        .join('&');
 
       beforeEach(async () => {
-        setWindowLocation(`?${paramString}`);
+        setWindowLocation(`?${new URLSearchParams(urlParams).toString()}`);
         window.gon = {
           current_user_id: mockCurrentUser.id,
           current_user_fullname: mockCurrentUser.name,
@@ -156,6 +156,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_MR_ASSIGNEE },
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
           { type: TOKEN_TYPE_DRAFT },
+          { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
         ]);
@@ -165,6 +166,7 @@ describe('Merge requests list app', () => {
         expect(findIssuableList().props('initialFilterValue')).toMatchObject([
           { type: TOKEN_TYPE_MR_ASSIGNEE },
           { type: TOKEN_TYPE_DRAFT },
+          { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
         ]);
