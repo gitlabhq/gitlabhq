@@ -142,7 +142,7 @@ You need at least the Developer role to edit a wiki page:
 1. Select **Plan > Wiki**.
 1. Go to the page you want to edit, and either:
    - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
-   - Select the edit icon (**{pencil}**).
+   - Select **Edit**.
 1. Edit the content.
 1. Select **Save changes**.
 
@@ -162,11 +162,13 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to delete.
-1. Select the edit icon (**{pencil}**).
+1. Select **Edit**.
 1. Select **Delete page**.
 1. Confirm the deletion.
 
-## Move a wiki page
+## Move or rename a wiki page
+
+> - [Support for redirecting pages on move or rename](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) added in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `wiki_redirection`. Enabled by default.
 
 Prerequisites:
 
@@ -174,12 +176,17 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Go to the page you want to move.
-1. Select the edit icon (**{pencil}**).
-1. Add the new path to the **Title** field. For example, if you have a wiki page
-   called `about` under `company` and you want to move it to the wiki's root,
-   change the **Title** from `about` to `/about`.
+1. Go to the page you want to move or rename.
+1. Select **Edit**.
+1. To move the page, add the new path to the **Title** field. For example,
+   if you have a wiki page called `About` under `Company` and you want to
+   move it to the wiki's root, change the **Title** from `About` to `/About`.
+1. To rename the page, change the **Title**.
 1. Select **Save changes**.
+
+In GitLab 17.1 and later, when you move or rename a page, a redirect is
+automatically set up from the old page to the new page. A list of redirects
+is stored in the `.gitlab/redirects.yml` file in the Wiki repository.
 
 ## Export a wiki page
 

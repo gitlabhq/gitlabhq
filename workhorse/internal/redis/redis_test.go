@@ -112,8 +112,10 @@ func TestConnectToSentinel(t *testing.T) {
 func TestSentinelOptions(t *testing.T) {
 	testCases := []struct {
 		description           string
+		inputSentinelUsername string
 		inputSentinelPassword string
 		inputSentinel         []string
+		username              string
 		password              string
 		sentinels             []string
 	}{
@@ -142,6 +144,38 @@ func TestSentinelOptions(t *testing.T) {
 			inputSentinelPassword: "password1",
 			password:              "password1",
 		},
+		{
+			description:           "specific sentinel username defined",
+			inputSentinel:         []string{"redis://localhost:26480"},
+			inputSentinelUsername: "username1",
+			inputSentinelPassword: "password1",
+			sentinels:             []string{"localhost:26480"},
+			username:              "username1",
+			password:              "password1",
+		},
+		{
+			description:   "specific sentinel username defined in url",
+			inputSentinel: []string{"redis://username2:password2@localhost:26480", "redis://username3:password3@localhost:26481"},
+			sentinels:     []string{"localhost:26480", "localhost:26481"},
+			username:      "username2",
+			password:      "password2",
+		},
+		{
+			description:           "usernames and passwords defined specifically and in url",
+			inputSentinel:         []string{"tcp://someuser2:password2@localhost:26480", "tcp://someuser3:password3@localhost:26481"},
+			sentinels:             []string{"localhost:26480", "localhost:26481"},
+			inputSentinelUsername: "someuser1",
+			inputSentinelPassword: "password1",
+			username:              "someuser1",
+			password:              "password1",
+		},
+		{
+			description:   "username set for first sentinel",
+			inputSentinel: []string{"tcp://someuser2@localhost:26480", "tcp://someuser3:password3@localhost:26481"},
+			sentinels:     []string{"localhost:26480", "localhost:26481"},
+			username:      "someuser3",
+			password:      "password3",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -153,13 +187,15 @@ func TestSentinelOptions(t *testing.T) {
 				sentinelUrls[i] = config.TomlURL{URL: *parsedURL}
 			}
 
-			outputPw, outputSentinels := sentinelOptions(&config.RedisConfig{
+			options := sentinelOptions(&config.RedisConfig{
 				Sentinel:         sentinelUrls,
+				SentinelUsername: tc.inputSentinelUsername,
 				SentinelPassword: tc.inputSentinelPassword,
 			})
 
-			require.Equal(t, tc.password, outputPw)
-			require.Equal(t, tc.sentinels, outputSentinels)
+			require.Equal(t, tc.username, options.SentinelUsername)
+			require.Equal(t, tc.password, options.SentinelPassword)
+			require.Equal(t, tc.sentinels, options.Sentinels)
 		})
 	}
 }

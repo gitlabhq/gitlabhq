@@ -19,3 +19,4 @@ desired_sharding_key:
         table: dast_profiles
         sharding_key: project_id
         belongs_to: dast_profile
+desired_sharding_key_migration_job_name: BackfillDastPreScanVerificationsProjectId

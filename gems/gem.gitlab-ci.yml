@@ -27,10 +27,11 @@ variables:
   GIT_STRATEGY: "clone"
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
-  RUBY_VERSION_DEFAULT: "3.1.5"
-  RUBY_VERSION_NEXT: "3.2.4"
   # Default Ruby version for jobs that don't use .ruby_matrix
   RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
+
+include:
+  - local: .gitlab/ci/version.yml
 
 default:
   tags:

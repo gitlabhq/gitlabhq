@@ -25,10 +25,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
 - Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
   - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
-  - The second database connection can be disabled:
-    - [Linux package and Docker installations](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
-    - [Helm chart and GitLab Operator installations](https://docs.gitlab.com/charts/charts/globals.html#configure-multiple-database-connections).
-    - [Self-compiled installations](../../install/installation.md#configure-gitlab-db-settings).
+  - [The second database connection can be disabled](#disable-the-second-database-connection).
 - Most installations can skip 16.0, 16.1, and 16.2, as the first required stop on the upgrade path is 16.3.
   In all cases, you should review the notes for those intermediate versions.
 
@@ -1574,6 +1571,53 @@ praefect['configuration'] = {
   ]
 }
 ```
+
+### Disable the second database connection
+
+In GitLab 16.0, GitLab defaults to using two database connections that point to the same PostgreSQL database.
+
+PostgreSQL might need to be configured with a larger value for `max_connections`.
+[There is a Rake task for checking if this is necessary](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+
+If you have PgBouncer deployed:
+
+- The frontend pools (including file handle limits and `max_client_conn`) on your PgBouncer servers [might need to be larger](../../administration/postgresql/pgbouncer.md#fine-tuning).
+- PgBouncer is single threaded. The extra connections might fully saturate a single PgBouncer daemon.
+  [We recommend running three load-balanced PgBouncer servers](../../administration/reference_architectures/5k_users.md#configure-pgbouncer) for all
+  scaled GitLab deployments, in part to address this issue.
+
+Follow the instructions for your installation type to switch back to a single database connection:
+
+::Tabs
+
+:::TabTitle Linux package and Docker
+
+1. Add this setting to `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['databases']['ci']['enable'] = false
+   ```
+
+1. Run `gitlab-ctl reconfigure`.
+
+In a multi-node environment, this setting should be updated on all Rails and Sidekiq nodes.
+
+:::TabTitle Helm chart (Kubernetes)
+
+Set the `ci.enabled` key to `false`:
+
+```yaml
+global:
+  psql:
+    ci:
+      enabled: false
+```
+
+:::TabTitle Self-compiled (source)
+
+Remove the `ci:` section from `config/database.yml`.
+
+::EndTabs
 
 ## Long-running user type data change
 

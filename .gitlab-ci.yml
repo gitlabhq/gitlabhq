@@ -176,18 +176,6 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
   # CI_FETCH_REPO_GIT_STRATEGY: "none" is from artifacts. "clone" is from cloning
   CI_FETCH_REPO_GIT_STRATEGY: "none"
-  BUILD_OS: "debian"
-  OS_VERSION: "bookworm"
-  UBI_VERSION: "8.6"
-  CHROME_VERSION: "123"
-  DOCKER_VERSION: "24.0.5"
-  RUBYGEMS_VERSION: "3.4"
-  BUNDLER_VERSION: "2.5"
-  GO_VERSION: "1.22"
-  NODE_VERSION: "20.12"
-  RUST_VERSION: "1.73"
-  RUBY_VERSION_DEFAULT: "3.1.5"
-  RUBY_VERSION_NEXT: "3.2.4"
 
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
@@ -254,6 +242,7 @@ include:
   - local: .gitlab/ci/_skip.yml
     rules:
       - <<: *if-merge-request-security-canonical-sync
+  - local: .gitlab/ci/version.yml
   - local: .gitlab/ci/*.gitlab-ci.yml
     rules:
       - <<: *if-not-security-canonical-sync

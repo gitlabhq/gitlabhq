@@ -136,7 +136,7 @@ const hardCodedColors = ${JSON.stringify(hardcodedColors, null, 2)};
 /**
  * Writes only the style definitions we actually need.
  */
-async function toMinimalUtilities() {
+export async function toMinimalUtilities() {
   // We re-import the config with a `?minimal` query in order to cache-bust
   // the previously loaded config, which doesn't have the latest css_in_js
   const { default: tailwindConfig } = await import('../../config/tailwind.config.js?minimal');
@@ -166,7 +166,7 @@ async function toMinimalUtilities() {
        */
       module.exports = ${JSON.stringify(rules)}`);
 
-  return { minimalUtils };
+  return { minimalUtils, rules };
 }
 
 /**

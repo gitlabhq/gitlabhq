@@ -100,6 +100,7 @@ type RedisConfig struct {
 	URL              TomlURL
 	Sentinel         []TomlURL
 	SentinelMaster   string
+	SentinelUsername string
 	SentinelPassword string
 	Password         string
 	DB               *int

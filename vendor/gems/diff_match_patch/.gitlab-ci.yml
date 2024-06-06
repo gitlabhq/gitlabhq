@@ -9,4 +9,4 @@ rspec:
     - rake test
   parallel:
     matrix:
-      - RUBY_VERSION: ["3.1.5", "3.2.4"]
+      - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]

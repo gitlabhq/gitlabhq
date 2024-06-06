@@ -4,7 +4,7 @@ classes:
 - NamespaceStatistics
 feature_categories:
 - consumables_cost_management
-description: Stores usage statistics for both CI minutes and a limited set of storage types for a given namespace. This should not be confused with namespace_root_storage_statistics table which holds statistics across more storage types for a group.
+description: Stores usage statistics for both compute minutes and a limited set of storage types for a given namespace. This should not be confused with namespace_root_storage_statistics table which holds statistics across more storage types for a group.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/965
 milestone: '9.0'
 gitlab_schema: gitlab_main_cell

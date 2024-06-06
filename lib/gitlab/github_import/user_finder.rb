@@ -130,7 +130,7 @@ module Gitlab
         email = read_email_from_cache(username)
 
         if email.blank? && !email_fetched_for_project?(username)
-          feature_flag_in_lock(lease_key(username), sleep_sec: 0.2.seconds, retries: 30) do |retried|
+          in_lock(lease_key(username), sleep_sec: 0.2.seconds, retries: 30) do |retried|
             # when retried, check the cache again as the other process that had the lease may have fetched the email
             if retried
               email = read_email_from_cache(username)
@@ -305,14 +305,6 @@ module Gitlab
           username: username,
           message: message
         )
-      end
-
-      def feature_flag_in_lock(lease_key, sleep_sec:, retries:)
-        return yield(false) if Feature.disabled?(:github_import_lock_user_finder, project.creator)
-
-        in_lock(lease_key, sleep_sec: sleep_sec, retries: retries) do |retried|
-          yield(retried)
-        end
       end
     end
   end

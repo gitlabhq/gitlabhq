@@ -41,6 +41,7 @@ databases. Some examples:
 
 - Once data is migrated to the `ci` database, you cannot migrate it back.
 - Significant downtime is expected for larger installations (database sizes of more 100 GB).
+- Running two databases [is not yet supported with Geo](https://gitlab.com/groups/gitlab-org/-/epics/8631).
 
 ## Migrate existing installations using a script
 
