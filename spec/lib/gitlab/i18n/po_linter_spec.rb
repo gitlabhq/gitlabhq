@@ -193,7 +193,7 @@ RSpec.describe Gitlab::I18n::PoLinter do
   describe '#validate_entries' do
     it 'keeps track of errors for entries' do
       fake_invalid_entry = fake_translation(msgid: "Hello %{world}",
-                                            translation: "Bonjour %{monde}")
+        translation: "Bonjour %{monde}")
       allow(linter).to receive(:translation_entries) { [fake_invalid_entry] }
 
       expect(linter).to receive(:validate_entry)
@@ -320,8 +320,8 @@ RSpec.describe Gitlab::I18n::PoLinter do
       errors = []
 
       linter.validate_variables_in_message(errors,
-                                           '%{type} detected %d vulnerability',
-                                           '%{type} detecteerde %d kwetsbaarheid')
+        '%{type} detected %d vulnerability',
+        '%{type} detecteerde %d kwetsbaarheid')
 
       expect(errors).not_to be_empty
     end

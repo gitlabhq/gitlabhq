@@ -474,9 +474,9 @@ variables:
 
 ### Pass an environment variable to another job
 
-You can create a new environment variables in a job, and pass it to another job
-in a later stage. These variables cannot be used as CI/CD variables to configure a pipeline,
-but they can be used in job scripts.
+You can create a new environment variable in a job, and pass it to another job
+in a later stage. These variables cannot be used as CI/CD variables to configure a pipeline
+(for example with the [`rules` keyword](../yaml/index.md#rules)), but they can be used in job scripts.
 
 To pass a job-created environment variable to other jobs:
 

@@ -6,8 +6,8 @@ RSpec.describe Gitlab::PaginationDelegate do
   context 'when there is no data' do
     let(:delegate) do
       described_class.new(page: 1,
-                          per_page: 10,
-                          count: 0)
+        per_page: 10,
+        count: 0)
     end
 
     it 'shows the correct total count' do
@@ -50,8 +50,8 @@ RSpec.describe Gitlab::PaginationDelegate do
   context 'with data' do
     let(:delegate) do
       described_class.new(page: 5,
-                          per_page: 100,
-                          count: 1000)
+        per_page: 100,
+        count: 1000)
     end
 
     it 'shows the correct total count' do
@@ -94,8 +94,8 @@ RSpec.describe Gitlab::PaginationDelegate do
   context 'for last page' do
     let(:delegate) do
       described_class.new(page: 10,
-                          per_page: 100,
-                          count: 1000)
+        per_page: 100,
+        count: 1000)
     end
 
     it 'shows the correct total count' do
@@ -138,28 +138,28 @@ RSpec.describe Gitlab::PaginationDelegate do
   context 'with limits and defaults' do
     it 'has a maximum limit per page' do
       expect(described_class.new(page: nil,
-                                 per_page: 1000,
-                                 count: 0).limit_value).to eq(described_class::MAX_PER_PAGE)
+        per_page: 1000,
+        count: 0).limit_value).to eq(described_class::MAX_PER_PAGE)
     end
 
     it 'has a default per page' do
       expect(described_class.new(page: nil,
-                                 per_page: nil,
-                                 count: 0).limit_value).to eq(described_class::DEFAULT_PER_PAGE)
+        per_page: nil,
+        count: 0).limit_value).to eq(described_class::DEFAULT_PER_PAGE)
     end
 
     it 'has a maximum page' do
       expect(described_class.new(page: 100,
-                                 per_page: 10,
-                                 count: 1).current_page).to eq(1)
+        per_page: 10,
+        count: 1).current_page).to eq(1)
     end
   end
 
   context 'with an invalid per_page value' do
     it 'has a default per page' do
       expect(described_class.new(page: nil,
-                                 per_page: { wrong: :value },
-                                 count: 0).limit_value).to eq(described_class::DEFAULT_PER_PAGE)
+        per_page: { wrong: :value },
+        count: 0).limit_value).to eq(described_class::DEFAULT_PER_PAGE)
     end
   end
 end

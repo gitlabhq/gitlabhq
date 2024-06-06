@@ -202,11 +202,11 @@ module MergeRequests
     end
 
     def source_branch_exists?
-      source_branch.blank? || source_project.commit(source_branch)
+      source_branch.blank? || source_project.branch_exists?(source_branch)
     end
 
     def target_branch_exists?
-      target_branch.blank? || target_project.commit(target_branch)
+      target_branch.blank? || target_project.branch_exists?(target_branch)
     end
 
     def set_draft_title_if_needed

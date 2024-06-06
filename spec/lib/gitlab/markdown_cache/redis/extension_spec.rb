@@ -40,9 +40,9 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cach
   it 'correctly loads the markdown if it was stored in redis' do
     Gitlab::Redis::Cache.with do |r|
       r.mapped_hmset(expected_cache_key,
-                     title_html: 'hello',
-                     description_html: 'world',
-                     cached_markdown_version: cache_version)
+        title_html: 'hello',
+        description_html: 'world',
+        cached_markdown_version: cache_version)
     end
 
     expect(thing.title_html).to eq('hello')
@@ -54,9 +54,9 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cach
     before do
       Gitlab::Redis::Cache.with do |r|
         r.mapped_hmset(expected_cache_key,
-                       title_html: 'hello',
-                       description_html: 'world',
-                       cached_markdown_version: cache_version)
+          title_html: 'hello',
+          description_html: 'world',
+          cached_markdown_version: cache_version)
       end
     end
 
@@ -95,7 +95,7 @@ RSpec.describe Gitlab::MarkdownCache::Redis::Extension, :clean_gitlab_redis_cach
 
       results = Gitlab::Redis::Cache.with do |r|
         r.mapped_hmget(expected_cache_key,
-                       "title_html", "description_html", "cached_markdown_version")
+          "title_html", "description_html", "cached_markdown_version")
       end
 
       expect(results).to eq(expected_results)

@@ -89,10 +89,10 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator, feature_category: :cloud_
     end
 
     it_behaves_like 'as configurator',
-                    Gitlab::Memory::Watchdog::Handlers::PumaHandler,
-                    Gitlab::Memory::Watchdog::EventReporter,
-                    'GITLAB_MEMWD_SLEEP_TIME_SEC',
-                    described_class::DEFAULT_SLEEP_INTERVAL_S
+      Gitlab::Memory::Watchdog::Handlers::PumaHandler,
+      Gitlab::Memory::Watchdog::EventReporter,
+      'GITLAB_MEMWD_SLEEP_TIME_SEC',
+      described_class::DEFAULT_SLEEP_INTERVAL_S
 
     context 'with DISABLE_PUMA_WORKER_KILLER set to true' do
       let(:primary_memory_bytes) { 2_097_152_000 }
@@ -197,10 +197,10 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator, feature_category: :cloud_
     subject(:configurator) { described_class.configure_for_sidekiq }
 
     it_behaves_like 'as configurator',
-                    Gitlab::Memory::Watchdog::Handlers::SidekiqHandler,
-                    Gitlab::Memory::Watchdog::SidekiqEventReporter,
-                    'SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL',
-                    described_class::DEFAULT_SIDEKIQ_SLEEP_INTERVAL_S
+      Gitlab::Memory::Watchdog::Handlers::SidekiqHandler,
+      Gitlab::Memory::Watchdog::SidekiqEventReporter,
+      'SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL',
+      described_class::DEFAULT_SIDEKIQ_SLEEP_INTERVAL_S
 
     context 'when sleep_time_seconds is less than MIN_SIDEKIQ_SLEEP_INTERVAL_S seconds' do
       before do

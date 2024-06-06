@@ -66,8 +66,8 @@ RSpec.describe Gitlab::Metrics::WebTransaction do
       before do
         route = double(:route, request_method: 'GET', path: '/:version/projects/:id/archive(.:format)', origin: '/:version/projects/:id/archive')
         endpoint = double(:endpoint, route: route,
-                                     options: { for: API::Projects, path: [":id/archive"] },
-                                     namespace: "/projects")
+          options: { for: API::Projects, path: [":id/archive"] },
+          namespace: "/projects")
 
         env['api.endpoint'] = endpoint
 

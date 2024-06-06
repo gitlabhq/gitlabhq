@@ -133,33 +133,33 @@ RSpec.describe Gitlab::Middleware::Multipart do
         end
 
         it_behaves_like 'rejecting the invalid key',
-                        key_in_header: 'file',
-                        key_in_upload_params: 'wrong_key',
-                        error_message: 'Empty JWT param: file.gitlab-workhorse-upload'
+          key_in_header: 'file',
+          key_in_upload_params: 'wrong_key',
+          error_message: 'Empty JWT param: file.gitlab-workhorse-upload'
         it_behaves_like 'rejecting the invalid key',
-                        key_in_header: 'user[avatar',
-                        key_in_upload_params: 'user[avatar]',
-                        error_message: 'invalid field: "user[avatar"'
+          key_in_header: 'user[avatar',
+          key_in_upload_params: 'user[avatar]',
+          error_message: 'invalid field: "user[avatar"'
         it_behaves_like 'rejecting the invalid key',
-                        key_in_header: '[user]avatar',
-                        key_in_upload_params: 'user[avatar]',
-                        error_message: 'invalid field: "[user]avatar"'
+          key_in_header: '[user]avatar',
+          key_in_upload_params: 'user[avatar]',
+          error_message: 'invalid field: "[user]avatar"'
         it_behaves_like 'rejecting the invalid key',
-                        key_in_header: 'user[]avatar',
-                        key_in_upload_params: 'user[avatar]',
-                        error_message: 'invalid field: "user[]avatar"'
+          key_in_header: 'user[]avatar',
+          key_in_upload_params: 'user[avatar]',
+          error_message: 'invalid field: "user[]avatar"'
         it_behaves_like 'rejecting the invalid key',
-                        key_in_header: 'user[avatar[image[url]]]',
-                        key_in_upload_params: 'user[avatar]',
-                        error_message: 'invalid field: "user[avatar[image[url]]]"'
+          key_in_header: 'user[avatar[image[url]]]',
+          key_in_upload_params: 'user[avatar]',
+          error_message: 'invalid field: "user[avatar[image[url]]]"'
         it_behaves_like 'rejecting the invalid key',
-                        key_in_header: '[]',
-                        key_in_upload_params: 'user[avatar]',
-                        error_message: 'invalid field: "[]"'
+          key_in_header: '[]',
+          key_in_upload_params: 'user[avatar]',
+          error_message: 'invalid field: "[]"'
         it_behaves_like 'rejecting the invalid key',
-                        key_in_header: 'x' * 11000,
-                        key_in_upload_params: 'user[avatar]',
-                        error_message: "invalid field: \"#{'x' * 11000}\""
+          key_in_header: 'x' * 11000,
+          key_in_upload_params: 'user[avatar]',
+          error_message: "invalid field: \"#{'x' * 11000}\""
       end
 
       context 'with a modified JWT payload' do
