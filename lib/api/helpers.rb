@@ -364,6 +364,10 @@ module API
       authorize! :admin_project, user_project
     end
 
+    def authorize_admin_integrations
+      authorize! :admin_integrations, user_project
+    end
+
     def authorize_admin_group
       authorize! :admin_group, user_group
     end

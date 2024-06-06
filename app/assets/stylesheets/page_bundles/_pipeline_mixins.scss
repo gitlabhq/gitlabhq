@@ -84,7 +84,7 @@
       .pipeline-job-item:focus {
         outline: none;
         text-decoration: none;
-        background-color: var(--gray-100, $gray-50);
+        background-color: var(--gl-background-color-strong);
       }
     }
   }

@@ -27,6 +27,20 @@ RSpec.describe 'Blob shortcuts', :js, feature_category: :groups_and_projects do
         expect(page).to have_current_path(get_absolute_url(project_blob_path(project, tree_join(sha, path))), url: true)
       end
 
+      it 'redirects to permalink of a currently viewed file' do
+        visit project_path(project)
+        wait_for_requests
+        click_link 'VERSION'
+        wait_for_requests
+        page.driver.go_back
+        click_link path
+        wait_for_requests
+
+        find('body').native.send_key('y')
+
+        expect(page).to have_current_path(get_absolute_url(project_blob_path(project, tree_join(sha, path))), url: true)
+      end
+
       it 'maintains fragment hash when redirecting' do
         fragment = "L1"
         visit_blob(fragment)

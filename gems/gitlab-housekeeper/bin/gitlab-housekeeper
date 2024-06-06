@@ -9,9 +9,10 @@ REQUIRED_CONFIG_KEYS = [
 ].freeze
 
 def validate_configuration!
-  REQUIRED_CONFIG_KEYS.each do |required_key|
-    # fetch will fail with an error if the key isn't found.
-    ENV.fetch(required_key)
+  missing_keys = REQUIRED_CONFIG_KEYS.select { |required_key| !ENV.key?(required_key) }
+
+  if missing_keys.any?
+    raise "Missing required environment variables: #{missing_keys.join(', ')}"
   end
 end
 

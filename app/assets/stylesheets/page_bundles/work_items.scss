@@ -258,7 +258,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   border-left-style: none;
   line-height: $gl-line-height-16;
   padding-right: $grid-size;
-  background: var(--gray-10, $white);
+  background: var(--gl-background-color-default);
 
   &::before,
   &::after {
@@ -272,7 +272,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 
   &::before {
-    background: var(--gray-10, $white);
+    background: var(--gl-background-color-default);
     left: -10px;
     z-index: 1;
   }

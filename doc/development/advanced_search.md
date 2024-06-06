@@ -125,12 +125,12 @@ If data cannot be added to one of the [existing indices in Elasticsearch](../int
 - Ensure [Elasticsearch is running](#setting-up-development-environment):
 
   ```shell
-  curl "http://localhost:9200s"
+  curl "http://localhost:9200"
   ```
 
 - [Run Kibana](https://www.elastic.co/guide/en/kibana/current/install.html#_install_kibana_yourself) to interact
-  with your local Elasticsearch cluster.
-- To tally the logs for Elasticsearch, run this command:
+  with your local Elasticsearch cluster. Alternatively, you can use [Cerebro](https://github.com/lmenezes/cerebro) or a similar tool.
+- To tail the logs for Elasticsearch, run this command:
 
   ```shell
   tail -f log/elasticsearch.log`
@@ -156,11 +156,11 @@ See [Recommended process for adding a new document type](#recommended-process-fo
    has been created with the correct mappings and settings:
 
    ```shell
-   curl "http://localhost:9200/gitlab-development-<type>/_mappings"
+   curl "http://localhost:9200/gitlab-development-<type>/_mappings" | jq .`
    ```
 
    ```shell
-   curl "http://localhost:9200/gitlab-development-<type>/_settings"
+   curl "http://localhost:9200/gitlab-development-<type>/_settings" | jq .`
    ```
 
 ### Create a new Elastic Reference

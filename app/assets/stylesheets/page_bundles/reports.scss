@@ -10,7 +10,7 @@
 .report-block-container {
   border-top: 1px solid var(--border-color, $border-color);
   padding: $gl-padding - 2;
-  background-color: var(--gray-50, $gray-10);
+  background-color: var(--gl-background-color-subtle);
 
   // Clean MR widget CSS
   line-height: 20px;

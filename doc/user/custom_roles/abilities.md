@@ -60,7 +60,7 @@ These requirements are documented in the `Required permission` column in the fol
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
 |:-----|:------------|:------------------|:---------|:--------------|:---------|
-| [`admin_integrations`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) |  | Create, read, update, and delete integrations with external applications. | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/460522) |  |  |
+| [`admin_integrations`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154601) |  | Create, read, update, and delete integrations with external applications. | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/460522) |  |  |
 
 ## Secrets management
 

@@ -11,7 +11,7 @@ owning-stage: ""
 
 ## Background
 
-This design document supersedes the previous [Composable GitLab Codebase](../composable_codebase_using_rails_engines/index.md)
+This design document supersedes the previous [Composable GitLab Codebase](../../composable_codebase_using_rails_engines/index.md)
 where we explored the idea of separating the codebase into technical runtime profiles:
 for example, run the monolith solely as a Sidekiq node.
 With a modular monolith and the use of an Hexagonal Architecture, we can achieve both

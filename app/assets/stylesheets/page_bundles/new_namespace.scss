@@ -17,7 +17,7 @@ $new-namespace-panel-height: 240px;
 
 .new-namespace-panel {
   &:hover {
-    background-color: var(--gray-50, $gray-10);
+    background-color: var(--gl-background-color-subtle);
   }
 
   color: var(--purple-700, $purple-700);

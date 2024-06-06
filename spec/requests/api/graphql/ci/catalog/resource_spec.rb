@@ -272,7 +272,8 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           GQL
         end
 
-        it 'returns the version that matches the name' do
+        it 'returns the version that matches the name',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/465564' do
           post_query
 
           expect(graphql_data_at(:ciCatalogResource, :versions, :nodes)).to contain_exactly(

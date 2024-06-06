@@ -51,7 +51,7 @@ module API
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         before { authenticate! }
-        before { authorize_admin_project }
+        before { authorize_admin_integrations }
 
         desc 'List all active integrations' do
           detail 'Get a list of all active project integrations.'
