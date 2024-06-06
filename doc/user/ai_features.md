@@ -21,9 +21,6 @@ GitLab is [transparent](https://handbook.gitlab.com/handbook/values/#transparenc
 As GitLab Duo features mature, the documentation will be updated to clearly state
 how and where you can access these features.
 
-Each feature uses the large language models (LLMs) listed in this page. However, you can
-[use your own self-hosted models instead](../administration/self_hosted_models/index.md).
-
 ## Generally available features
 
 ### GitLab Duo Chat

@@ -34,6 +34,8 @@ export const I18N = {
   forcePushDescriptionWithDocs: s__(
     'BranchRules|Allow all users with push access to %{linkStart}force push%{linkEnd}.',
   ),
+  allowForcePushEnabled: s__('BranchRules|Allowed force push enabled'),
+  allowForcePushDisabled: s__('BranchRules|Allowed force push disabled'),
   requiresCodeOwnerApprovalLabel: s__('BranchRules|Require code owner approval'),
   requiresCodeOwnerApprovalTitle: s__('BranchRules|Requires code owner approval'),
   doesNotRequireCodeOwnerApprovalTitle: s__(
@@ -48,6 +50,8 @@ export const I18N = {
   codeOwnerApprovalDescription: s__(
     'BranchRules|Changed files listed in %{linkStart}CODEOWNERS%{linkEnd} require an approval for merge requests and will be rejected for code pushes.',
   ),
+  codeOwnerApprovalEnabled: s__('BranchRules|Require code owner approval enabled'),
+  codeOwnerApprovalDisabled: s__('BranchRules|Require code owner approval disabled'),
   noData: s__('BranchRules|No data to display'),
   deleteRuleModalTitle: s__('BranchRules|Delete branch rule?'),
   deleteRuleModalText: s__(

@@ -1,9 +1,0 @@
----
-name: vue_page_breadcrumbs
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/358113
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149813
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461784
-milestone: '17.1'
-group: group::personal productivity
-type: beta
-default_enabled: false

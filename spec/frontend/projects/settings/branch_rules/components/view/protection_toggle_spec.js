@@ -26,6 +26,7 @@ describe('ProtectionToggle', () => {
         label: 'Force Push',
         iconTitle: 'icon title',
         isProtected: false,
+        isLoading: false,
         ...props,
       },
     });

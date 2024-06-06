@@ -48,6 +48,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    isLoading: {
+      type: Boolean,
+      required: true,
+    },
   },
   computed: {
     iconName() {
@@ -73,7 +77,14 @@ export default {
 
 <template>
   <div v-if="glFeatures.editBranchRules">
-    <gl-toggle :label="label" :help="help" :value="isProtected" class="gl-mb-5">
+    <gl-toggle
+      :label="label"
+      :help="help"
+      :value="isProtected"
+      :is-loading="isLoading"
+      class="gl-mb-5"
+      @change="$emit('toggle', $event)"
+    >
       <template v-if="hasDescription" #description>
         <gl-sprintf :message="description">
           <template #link="{ content }">

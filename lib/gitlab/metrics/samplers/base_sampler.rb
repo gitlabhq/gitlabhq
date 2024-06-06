@@ -77,9 +77,16 @@ module Gitlab
         def run_thread
           sleep(sleep_interval)
           while running
-            safe_sample
+            wrap_sampler { safe_sample }
             sleep(sleep_interval)
           end
+        end
+
+        def wrap_sampler
+          # If a separate exporter is run, Rails.application may not be available.
+          return yield unless defined?(Rails) && defined?(Rails.application) && Rails.application
+
+          Rails.application.executor.wrap { yield }
         end
 
         def stop_working

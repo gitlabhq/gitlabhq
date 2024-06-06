@@ -24,7 +24,7 @@ import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
-import { getAccessLevels } from '../../../utils';
+import { getAccessLevels, getAccessLevelInputFromEdges } from '../../../utils';
 import BranchRuleModal from '../../../components/branch_rule_modal.vue';
 import Protection from './protection.vue';
 import RuleDrawer from './rule_drawer.vue';
@@ -123,6 +123,8 @@ export default {
       matchingBranchesCount: null,
       isAllowedToMergeDrawerOpen: false,
       isRuleUpdating: false,
+      isAllowForcePushLoading: false,
+      isCodeOwnersLoading: false,
     };
   },
   computed: {
@@ -206,6 +208,7 @@ export default {
   methods: {
     ...mapActions(['setRulesFilter', 'fetchRules']),
     getAccessLevels,
+    getAccessLevelInputFromEdges,
     deleteBranchRule() {
       this.$apollo
         .mutate({
@@ -242,8 +245,36 @@ export default {
     closeAllowedToMergeDrawer() {
       this.isAllowedToMergeDrawerOpen = false;
     },
-    editBranchRule({ name = this.branchRule.name, branchProtection = null, toastMessage = '' }) {
+    onEnableForcePushToggle(isChecked) {
+      this.isAllowForcePushLoading = true;
+      const toastMessage = isChecked
+        ? this.$options.i18n.allowForcePushEnabled
+        : this.$options.i18n.allowForcePushDisabled;
+
+      this.editBranchRule({
+        branchProtection: { allowForcePush: isChecked },
+        toastMessage,
+      });
+    },
+    onEnableCodeOwnersToggle(isChecked) {
+      this.isCodeOwnersLoading = true;
+      const toastMessage = isChecked
+        ? this.$options.i18n.codeOwnerApprovalEnabled
+        : this.$options.i18n.codeOwnerApprovalDisabled;
+
+      this.editBranchRule({
+        branchProtection: { codeOwnerApprovalRequired: isChecked },
+        toastMessage,
+      });
+    },
+    onEditAllowedToMerge(allowedToMerge) {
       this.isRuleUpdating = true;
+      this.editBranchRule({
+        branchProtection: { mergeAccessLevels: allowedToMerge },
+        toastMessage: s__('BranchRules|Allowed to merge updated'),
+      });
+    },
+    editBranchRule({ name = this.branchRule.name, branchProtection = null, toastMessage = '' }) {
       this.$apollo
         .mutate({
           mutation: editBranchRuleMutation,
@@ -251,7 +282,17 @@ export default {
             input: {
               id: this.branchRule.id,
               name,
-              ...(branchProtection && { branchProtection }),
+              branchProtection: {
+                allowForcePush: this.branchProtection.allowForcePush,
+                codeOwnerApprovalRequired: this.branchProtection.codeOwnerApprovalRequired,
+                pushAccessLevels: this.getAccessLevelInputFromEdges(
+                  this.branchProtection.pushAccessLevels.edges,
+                ),
+                mergeAccessLevels: this.getAccessLevelInputFromEdges(
+                  this.branchProtection.mergeAccessLevels.edges,
+                ),
+                ...(branchProtection || {}),
+              },
             },
           },
         })
@@ -269,6 +310,8 @@ export default {
         })
         .finally(() => {
           this.isRuleUpdating = false;
+          this.isAllowForcePushLoading = false;
+          this.isCodeOwnersLoading = false;
         });
     },
   },
@@ -349,12 +392,7 @@ export default {
           :is-loading="isRuleUpdating"
           :group-id="groupId"
           :title="s__('BranchRules|Edit allowed to merge')"
-          @editRule="
-            editBranchRule({
-              branchProtection: { mergeAccessLevels: $event },
-              toastMessage: s__('BranchRules|Allowed to merge updated'),
-            })
-          "
+          @editRule="onEditAllowedToMerge"
           @close="closeAllowedToMergeDrawer"
         />
 
@@ -382,6 +420,8 @@ export default {
           :icon-title="forcePushAttributes.title"
           :description="forcePushAttributes.description"
           :description-link="$options.pushRulesHelpDocLink"
+          :is-loading="isAllowForcePushLoading"
+          @toggle="onEnableForcePushToggle"
         />
 
         <!-- EE start -->
@@ -395,6 +435,8 @@ export default {
           :icon-title="codeOwnersApprovalAttributes.title"
           :description="codeOwnersApprovalAttributes.description"
           :description-link="$options.codeOwnersHelpDocLink"
+          :is-loading="isCodeOwnersLoading"
+          @toggle="onEnableCodeOwnersToggle"
         />
       </section>
 

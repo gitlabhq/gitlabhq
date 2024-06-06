@@ -135,7 +135,7 @@ module API
 
             track_package_event('pull_package', :generic, project: project, namespace: project.namespace)
 
-            present_package_file!(package_file)
+            present_package_file!(package_file, content_disposition: :attachment)
           end
         end
       end

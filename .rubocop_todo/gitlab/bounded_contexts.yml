@@ -1325,7 +1325,6 @@ Gitlab/BoundedContexts:
     - 'app/models/time_tracking/timelog_category.rb'
     - 'app/models/timelog.rb'
     - 'app/models/todo.rb'
-    - 'app/models/token_with_iv.rb'
     - 'app/models/tree.rb'
     - 'app/models/trending_project.rb'
     - 'app/models/upload.rb'

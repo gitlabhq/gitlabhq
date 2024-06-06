@@ -553,7 +553,6 @@ Lint/UnusedMethodArgument:
     - 'spec/lib/gitlab/auth_spec.rb'
     - 'spec/lib/gitlab/background_migration/batched_migration_job_spec.rb'
     - 'spec/lib/gitlab/background_migration/set_correct_vulnerability_state_spec.rb'
-    - 'spec/lib/gitlab/background_migration/truncate_overlong_vulnerability_html_titles_spec.rb'
     - 'spec/lib/gitlab/cache/request_cache_spec.rb'
     - 'spec/lib/gitlab/middleware/same_site_cookies_spec.rb'
     - 'spec/lib/gitlab/otp_key_rotator_spec.rb'

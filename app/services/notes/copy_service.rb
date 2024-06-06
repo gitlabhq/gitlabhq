@@ -37,7 +37,7 @@ module Notes
     end
 
     def params_from_note(note, new_note)
-      new_discussion_ids[note.discussion_id] ||= Discussion.discussion_id(new_note)
+      new_discussion_ids[note.discussion_id] ||= ::Discussion.discussion_id(new_note)
 
       new_params = sanitized_note_params(note)
       new_params.merge!(

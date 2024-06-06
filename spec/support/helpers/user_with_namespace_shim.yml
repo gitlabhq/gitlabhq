@@ -131,7 +131,6 @@
 - ee/spec/helpers/subscriptions_helper_spec.rb
 - ee/spec/lib/ee/api/entities/user_with_admin_spec.rb
 - ee/spec/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules_spec.rb
-- ee/spec/lib/ee/gitlab/background_migration/migrate_vulnerabilities_feedback_to_vulnerabilities_state_transition_spec.rb
 - ee/spec/lib/ee/gitlab/ci/pipeline/chain/validate/external_spec.rb
 - ee/spec/lib/ee/gitlab/import_export/project/tree_restorer_spec.rb
 - ee/spec/lib/ee/gitlab/issuable_metadata_spec.rb
@@ -652,7 +651,6 @@
 - spec/lib/feature_spec.rb
 - spec/lib/generators/gitlab/partitioning/foreign_keys_generator_spec.rb
 - spec/lib/gitlab/analytics/usage_trends/workers_argument_builder_spec.rb
-- spec/lib/gitlab/background_migration/backfill_environment_tiers_spec.rb
 - spec/lib/gitlab/background_migration/backfill_root_storage_statistics_fork_storage_sizes_spec.rb
 - spec/lib/gitlab/background_migration/backfill_user_details_fields_spec.rb
 - spec/lib/gitlab/background_migration/job_coordinator_spec.rb

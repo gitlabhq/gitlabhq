@@ -8,6 +8,7 @@ module Ci
     sidekiq_options retry: 3
     feature_category :continuous_integration
     idempotent!
+    deduplicate :until_executing
 
     def perform(pipeline_id)
       Ci::Pipeline.find_by_id(pipeline_id).try do |pipeline|

@@ -92,9 +92,15 @@ module Gitlab
             return enqueue_comment_import(merge_request, 'standalone_notes', activity.comment)
           end
 
-          return enqueue_comment_import(merge_request, 'merge_event', activity) if activity.merge_event?
+          comment_type = if activity.approved_event?
+                           'approved_event'
+                         elsif activity.declined_event?
+                           'declined_event'
+                         elsif activity.merge_event?
+                           'merge_event'
+                         end
 
-          enqueue_comment_import(merge_request, 'approved_event', activity) if activity.approved_event?
+          enqueue_comment_import(merge_request, comment_type, activity) if comment_type
         end
 
         def enqueue_comment_import(merge_request, comment_type, comment)
@@ -131,7 +137,7 @@ module Gitlab
 
         def generate_activity_key(object)
           # we need to add key prefix to avoid `id` collision between `activity` and `comment`
-          key_prefix = if object.try(:approved_event?) || object.try(:merge_event?)
+          key_prefix = if object.try(:approved_event?) || object.try(:merge_event?) || object.try(:declined_event?)
                          "activity"
                        else
                          "comment"

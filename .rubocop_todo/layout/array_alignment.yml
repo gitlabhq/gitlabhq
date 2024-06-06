@@ -211,7 +211,6 @@ Layout/ArrayAlignment:
     - 'spec/lib/banzai/reference_parser/design_parser_spec.rb'
     - 'spec/lib/container_registry/path_spec.rb'
     - 'spec/lib/gitlab/auth/saml/user_spec.rb'
-    - 'spec/lib/gitlab/background_migration/delete_orphaned_operational_vulnerabilities_spec.rb'
     - 'spec/lib/gitlab/background_migration/job_coordinator_spec.rb'
     - 'spec/lib/gitlab/backtrace_cleaner_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/bridge_spec.rb'

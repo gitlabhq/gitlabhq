@@ -176,7 +176,33 @@ To disable email notifications:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Select **Email notifications are disabled**.
+1. Clear the **Enable email notifications** checkbox.
+
+### Disable diff previews in email notifications
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with the flag](../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
+> - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) the flag `diff_preview_in_email` on GitLab.com in GitLab 17.1.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+When you review code in a merge request and comment on a line of code, GitLab
+includes a few lines of the diff in the email notification to participants.
+Some organizational policies treat email as a less secure system, or might not
+control their own infrastructure for email. This can present risks to IP or
+access control of source code.
+
+Prerequisites:
+
+- You must have the Owner role for the group.
+
+To disable diff previews for all projects in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > General**.
+1. Expand the **Permissions and group features** section.
+1. Clear **Include diff previews**.
 1. Select **Save changes**.
 
 ## Disable group mentions

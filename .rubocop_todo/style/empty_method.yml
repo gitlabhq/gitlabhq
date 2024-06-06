@@ -93,7 +93,6 @@ Style/EmptyMethod:
     - 'lib/gitlab/alert_management/payload/base.rb'
     - 'lib/gitlab/background_migration/backfill_iteration_cadence_id_for_boards.rb'
     - 'lib/gitlab/background_migration/create_security_setting.rb'
-    - 'lib/gitlab/background_migration/delete_approval_rules_with_vulnerability.rb'
     - 'lib/gitlab/background_migration/delete_invalid_epic_issues.rb'
     - 'lib/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
     - 'lib/gitlab/background_migration/migrate_approver_to_approval_rules_check_progress.rb'

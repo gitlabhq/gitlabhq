@@ -4,10 +4,6 @@ require 'spec_helper'
 
 RSpec.describe 'layouts/nav/breadcrumbs/_breadcrumbs', feature_category: :navigation do
   describe 'element for Vue page breadcrumbs' do
-    before do
-      stub_feature_flags(vue_page_breadcrumbs: true)
-    end
-
     context 'when the page has breadcrumbs' do
       let(:expected_json) do
         [

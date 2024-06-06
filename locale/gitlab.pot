@@ -9056,6 +9056,12 @@ msgstr ""
 msgid "BranchRules|Allow force push"
 msgstr ""
 
+msgid "BranchRules|Allowed force push disabled"
+msgstr ""
+
+msgid "BranchRules|Allowed force push enabled"
+msgstr ""
+
 msgid "BranchRules|Allowed to force push"
 msgstr ""
 
@@ -9198,6 +9204,12 @@ msgid "BranchRules|Require approval from code owners."
 msgstr ""
 
 msgid "BranchRules|Require code owner approval"
+msgstr ""
+
+msgid "BranchRules|Require code owner approval disabled"
+msgstr ""
+
+msgid "BranchRules|Require code owner approval enabled"
 msgstr ""
 
 msgid "BranchRules|Requires CODEOWNERS approval"

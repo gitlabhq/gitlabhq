@@ -192,6 +192,14 @@ domains:
     feature_categories:
       - navigation
 
+  Notes:
+    description: Notes, discussions on issuables and abuse reports
+    feature_categories:
+      - team_planning
+      - portfolio_management
+      - code_review_workflow
+      - insider_threat
+
   Observability:
     description:
     feature_categories:

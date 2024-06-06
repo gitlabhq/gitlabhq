@@ -11,7 +11,6 @@ Rails/FindEach:
     - 'app/views/issues/_issues_calendar.ics.ruby'
     - 'db/post_migrate/20231003045342_migrate_sidekiq_namespaced_jobs.rb'
     - 'ee/app/workers/compliance_management/merge_requests/compliance_violations_consistency_worker.rb'
-    - 'ee/lib/ee/gitlab/background_migration/backfill_compliance_violations.rb'
     - 'ee/lib/ee/gitlab/background_migration/create_compliance_standards_adherence.rb'
     - 'ee/spec/elastic/migrate/20230901120542_force_reindex_commits_from_main_index_spec.rb'
     - 'ee/spec/elastic/migrate/20231004124852_reindex_and_remove_leftover_notes_from_main_index_spec.rb'

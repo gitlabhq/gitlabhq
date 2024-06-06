@@ -36,3 +36,23 @@ export const getAccessLevels = (accessLevels = {}) => {
 
   return accessLevelTypes;
 };
+
+export const getAccessLevelInputFromEdges = (edges) => {
+  return edges.flatMap(({ node }) => {
+    const result = {};
+
+    if (node.accessLevel !== undefined) {
+      result.accessLevel = node.accessLevel;
+    }
+
+    if (node.group?.id !== undefined) {
+      result.groupId = node.group.id;
+    }
+
+    if (node.user?.id !== undefined) {
+      result.userId = node.user.id;
+    }
+
+    return Object.keys(result).length > 0 ? [result] : [];
+  });
+};

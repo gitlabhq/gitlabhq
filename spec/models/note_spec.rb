@@ -5,13 +5,26 @@ require 'spec_helper'
 RSpec.describe Note, feature_category: :team_planning do
   include RepoHelpers
 
+  describe 'Concerns' do
+    let_it_be(:factory) { :note }
+    let_it_be(:discussion_factory) { :discussion_note_on_issue }
+
+    let_it_be(:note1) { create(:note_on_issue) }
+    let_it_be(:note2) { create(:note_on_issue) }
+    let_it_be(:reply) { create(:note_on_issue, in_reply_to: note1) }
+
+    let_it_be(:discussion_note) { create(:discussion_note_on_issue) }
+    let_it_be(:discussion_reply) { create(:discussion_note_on_issue, in_reply_to: discussion_note) }
+
+    it_behaves_like 'Notes::ActiveRecord'
+    it_behaves_like 'Notes::Discussion'
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:noteable).touch(false) }
-    it { is_expected.to belong_to(:author).class_name('User') }
 
-    it { is_expected.to have_many(:todos) }
     it { is_expected.to have_one(:note_metadata).inverse_of(:note).class_name('Notes::NoteMetadata') }
     it { is_expected.to belong_to(:review).inverse_of(:notes) }
   end
@@ -19,9 +32,6 @@ RSpec.describe Note, feature_category: :team_planning do
   describe 'modules' do
     subject { described_class }
 
-    it { is_expected.to include_module(Participable) }
-    it { is_expected.to include_module(Mentionable) }
-    it { is_expected.to include_module(Awardable) }
     it { is_expected.to include_module(Sortable) }
   end
 
@@ -30,8 +40,6 @@ RSpec.describe Note, feature_category: :team_planning do
   end
 
   describe 'validation' do
-    it { is_expected.to validate_length_of(:note).is_at_most(1_000_000) }
-    it { is_expected.to validate_presence_of(:note) }
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:namespace) }
 
@@ -77,14 +85,6 @@ RSpec.describe Note, feature_category: :team_planning do
       subject { build(:note_on_personal_snippet, noteable: create(:personal_snippet)) }
 
       it 'is valid without project' do
-        is_expected.to be_valid
-      end
-    end
-
-    context 'when noteable is an abuse report' do
-      subject { build(:note, noteable: build_stubbed(:abuse_report), project: nil, namespace: nil) }
-
-      it 'is valid without project or namespace' do
         is_expected.to be_valid
       end
     end
@@ -524,30 +524,30 @@ RSpec.describe Note, feature_category: :team_planning do
 
     it "reads the rendered note body from the cache" do
       expect(Banzai::Renderer).to receive(:cache_collection_render)
-        .with([{
-          text: note1.note,
-          context: {
-            skip_project_check: false,
-            pipeline: :note,
-            cache_key: [note1, "note"],
-            project: note1.project,
-            rendered: note1.note_html,
-            author: note1.author
-          }
-        }]).and_call_original
+                                    .with([{
+                                      text: note1.note,
+                                      context: {
+                                        skip_project_check: false,
+                                        pipeline: :note,
+                                        cache_key: [note1, "note"],
+                                        project: note1.project,
+                                        rendered: note1.note_html,
+                                        author: note1.author
+                                      }
+                                    }]).and_call_original
 
       expect(Banzai::Renderer).to receive(:cache_collection_render)
-        .with([{
-          text: note2.note,
-          context: {
-            skip_project_check: false,
-            pipeline: :note,
-            cache_key: [note2, "note"],
-            project: note2.project,
-            rendered: note2.note_html,
-            author: note2.author
-          }
-        }]).and_call_original
+                                    .with([{
+                                      text: note2.note,
+                                      context: {
+                                        skip_project_check: false,
+                                        pipeline: :note,
+                                        cache_key: [note2, "note"],
+                                        project: note2.project,
+                                        rendered: note2.note_html,
+                                        author: note2.author
+                                      }
+                                    }]).and_call_original
 
       note1.all_references.users
       note2.all_references.users
@@ -1030,33 +1030,6 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
-  describe '#start_of_discussion?' do
-    let_it_be(:note) { create(:discussion_note_on_merge_request) }
-    let_it_be(:reply) { create(:discussion_note_on_merge_request, in_reply_to: note) }
-
-    it 'returns true when note is the start of a discussion' do
-      expect(note).to be_start_of_discussion
-    end
-
-    it 'returns false when note is a reply' do
-      expect(reply).not_to be_start_of_discussion
-    end
-  end
-
-  describe '.find_discussion' do
-    let!(:note) { create(:discussion_note_on_merge_request) }
-    let!(:note2) { create(:discussion_note_on_merge_request, in_reply_to: note) }
-    let(:merge_request) { note.noteable }
-
-    it 'returns a discussion with multiple notes' do
-      discussion = merge_request.notes.find_discussion(note.discussion_id)
-
-      expect(discussion).not_to be_nil
-      expect(discussion.notes).to match_array([note, note2])
-      expect(discussion.first_note.discussion_id).to eq(note.discussion_id)
-    end
-  end
-
   describe '#check_for_spam' do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:group)   { create(:group, :public) }
@@ -1366,20 +1339,6 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
-  describe '#for_abuse_report' do
-    it 'is true when the noteable is an abuse report' do
-      note = build(:note, noteable: build(:abuse_report))
-
-      expect(note).to be_for_abuse_report
-    end
-
-    it 'is not true when the noteable is not an abuse report' do
-      note = build(:note, noteable: build(:design))
-
-      expect(note).not_to be_for_abuse_report
-    end
-  end
-
   describe '#to_ability_name' do
     it 'returns note' do
       expect(build(:note).to_ability_name).to eq('note')
@@ -1519,176 +1478,12 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
-  describe "#discussion_id" do
-    let(:note) { create(:note_on_commit) }
-
-    context "when it is newly created" do
-      it "has a discussion id" do
-        expect(note.discussion_id).not_to be_nil
-        expect(note.discussion_id).to match(/\A\h{40}\z/)
-      end
-    end
-
-    context "when it didn't store a discussion id before" do
-      before do
-        note.update_column(:discussion_id, nil)
-      end
-
-      it "has a discussion id" do
-        # The discussion_id is set in `after_initialize`, so `reload` won't work
-        reloaded_note = described_class.find(note.id)
-
-        expect(reloaded_note.discussion_id).not_to be_nil
-        expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
-      end
-    end
-
-    context 'when the note is displayed out of context' do
-      let(:merge_request) { create(:merge_request) }
-
-      it 'overrides the discussion id' do
-        expect(note.discussion_id(merge_request)).not_to eq(note.discussion_id)
-      end
-    end
-  end
-
-  describe '#to_discussion' do
-    subject { create(:discussion_note_on_merge_request) }
-
-    let!(:note2) { create(:discussion_note_on_merge_request, project: subject.project, noteable: subject.noteable, in_reply_to: subject) }
-
-    it "returns a discussion with just this note" do
-      discussion = subject.to_discussion
-
-      expect(discussion.id).to eq(subject.discussion_id)
-      expect(discussion.notes).to eq([subject])
-    end
-  end
-
-  describe "#discussion" do
-    let_it_be(:note1) { create(:discussion_note_on_merge_request) }
-    let_it_be(:note2) { create(:diff_note_on_merge_request, project: note1.project, noteable: note1.noteable) }
-
-    context 'when the note is part of a discussion' do
-      subject { create(:discussion_note_on_merge_request, project: note1.project, noteable: note1.noteable, in_reply_to: note1) }
-
-      it "returns the discussion this note is in" do
-        discussion = subject.discussion
-
-        expect(discussion.id).to eq(subject.discussion_id)
-        expect(discussion.notes).to eq([note1, subject])
-      end
-    end
-
-    context 'when the note is not part of a discussion' do
-      subject { create(:note) }
-
-      it "returns a discussion with just this note" do
-        discussion = subject.discussion
-
-        expect(discussion.id).to eq(subject.discussion_id)
-        expect(discussion.notes).to eq([subject])
-      end
-    end
-  end
-
-  describe "#part_of_discussion?" do
-    context 'for a regular note' do
-      let(:note) { build(:note) }
-
-      it 'returns false' do
-        expect(note.part_of_discussion?).to be_falsey
-      end
-    end
-
+  describe '#part_of_discussion?' do
     context 'for a diff note' do
       let(:note) { build(:diff_note_on_commit) }
 
       it 'returns true' do
         expect(note.part_of_discussion?).to be_truthy
-      end
-    end
-
-    context 'for a discussion note' do
-      let(:note) { build(:discussion_note_on_merge_request) }
-
-      it 'returns true' do
-        expect(note.part_of_discussion?).to be_truthy
-      end
-    end
-  end
-
-  describe '#in_reply_to?' do
-    context 'for a note' do
-      context 'when part of a discussion' do
-        subject { create(:discussion_note_on_issue) }
-
-        let(:note) { create(:discussion_note_on_issue, in_reply_to: subject) }
-
-        it 'checks if the note is in reply to the other discussion' do
-          expect(subject).to receive(:in_reply_to?).with(note).and_call_original
-          expect(subject).to receive(:in_reply_to?).with(note.noteable).and_call_original
-          expect(subject).to receive(:in_reply_to?).with(note.to_discussion).and_call_original
-
-          subject.in_reply_to?(note)
-        end
-      end
-
-      context 'when not part of a discussion' do
-        subject { create(:note) }
-
-        let(:note) { create(:note, in_reply_to: subject) }
-
-        it 'checks if the note is in reply to the other noteable' do
-          expect(subject).to receive(:in_reply_to?).with(note).and_call_original
-          expect(subject).to receive(:in_reply_to?).with(note.noteable).and_call_original
-
-          subject.in_reply_to?(note)
-        end
-      end
-    end
-
-    context 'for a discussion' do
-      context 'when part of the same discussion' do
-        subject { create(:diff_note_on_merge_request) }
-
-        let(:note) { create(:diff_note_on_merge_request, in_reply_to: subject) }
-
-        it 'returns true' do
-          expect(subject.in_reply_to?(note.to_discussion)).to be_truthy
-        end
-      end
-
-      context 'when not part of the same discussion' do
-        subject { create(:diff_note_on_merge_request) }
-
-        let(:note) { create(:diff_note_on_merge_request) }
-
-        it 'returns false' do
-          expect(subject.in_reply_to?(note.to_discussion)).to be_falsey
-        end
-      end
-    end
-
-    context 'for a noteable' do
-      context 'when a comment on the same noteable' do
-        subject { create(:note) }
-
-        let(:note) { create(:note, in_reply_to: subject) }
-
-        it 'returns true' do
-          expect(subject.in_reply_to?(note.noteable)).to be_truthy
-        end
-      end
-
-      context 'when not a comment on the same noteable' do
-        subject { create(:note) }
-
-        let(:note) { create(:note) }
-
-        it 'returns false' do
-          expect(subject.in_reply_to?(note.noteable)).to be_falsey
-        end
       end
     end
   end

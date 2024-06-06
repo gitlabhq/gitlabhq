@@ -488,6 +488,19 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.group_namespaces' do
+      let_it_be(:user_namespace) { create(:user_namespace) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project_namespace) { project.project_namespace }
+      let_it_be(:group_namespace) { create(:group) }
+
+      it 'only returns group namespaces' do
+        group_namespaces = described_class.group_namespaces
+        expect(group_namespaces).to include(group_namespace)
+        expect(group_namespaces).not_to include(project_namespace, user_namespace)
+      end
+    end
+
     describe '.without_project_namespaces' do
       let_it_be(:user_namespace) { create(:user_namespace) }
       let_it_be(:project) { create(:project) }

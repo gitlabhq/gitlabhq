@@ -8,6 +8,7 @@ RSpec.describe BitbucketServer::Representation::Activity, feature_category: :imp
   let(:comment) { activities[3] }
   let(:merge_event) { activities[4] }
   let(:approved_event) { activities[8] }
+  let(:declined_event) { activities[9] }
 
   describe 'regular comment' do
     subject { described_class.new(comment) }
@@ -86,6 +87,31 @@ RSpec.describe BitbucketServer::Representation::Activity, feature_category: :imp
             id: 15,
             approver_username: 'slug',
             approver_email: 'test.user@example.com'
+          )
+        )
+      end
+    end
+  end
+
+  describe 'declined event' do
+    subject { described_class.new(declined_event) }
+
+    it { expect(subject.id).to eq(18) }
+    it { expect(subject.comment?).to be_falsey }
+    it { expect(subject.inline_comment?).to be_falsey }
+    it { expect(subject.merge_event?).to be_falsey }
+    it { expect(subject.declined_event?).to be_truthy }
+    it { expect(subject.decliner_username).to eq('slug') }
+    it { expect(subject.decliner_email).to eq('test.user@example.com') }
+    it { expect(subject.created_at).to be_a(Time) }
+
+    describe '#to_hash' do
+      it do
+        expect(subject.to_hash).to match(
+          a_hash_including(
+            id: 18,
+            decliner_username: 'slug',
+            decliner_email: 'test.user@example.com'
           )
         )
       end

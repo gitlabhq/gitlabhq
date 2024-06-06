@@ -1143,7 +1143,6 @@ lib/gitlab/checks/**
 /app/models/oauth_access_token.rb
 /app/models/personal_access_token.rb
 /app/models/project_authorization.rb
-/app/models/token_with_iv.rb
 /app/models/webauthn_registration.rb
 /app/policies/personal_access_token_policy.rb
 /app/serializers/access_token_entity_base.rb

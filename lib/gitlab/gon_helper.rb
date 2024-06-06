@@ -78,7 +78,6 @@ module Gitlab
       push_frontend_feature_flag(:organization_switching, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:vue_page_breadcrumbs)
     end
 
     # Exposes the state of a feature flag to the frontend code.

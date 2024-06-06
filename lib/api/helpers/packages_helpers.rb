@@ -118,9 +118,13 @@ module API
         end
       end
 
-      def present_package_file!(package_file, supports_direct_download: true)
+      def present_package_file!(package_file, supports_direct_download: true, content_disposition: nil)
         package_file.package.touch_last_downloaded_at
-        present_carrierwave_file!(package_file.file, supports_direct_download: supports_direct_download)
+        present_carrierwave_file!(
+          package_file.file,
+          supports_direct_download: supports_direct_download,
+          content_disposition: content_disposition
+        )
       end
 
       private

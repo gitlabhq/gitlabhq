@@ -799,6 +799,22 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
     end
 
+    context 'when object storage is enabled' do
+      let(:package_file) { create(:package_file, :generic, :object_storage, package: package) }
+
+      before do
+        stub_package_file_object_storage(enabled: true)
+        project.add_developer(user)
+      end
+
+      it 'includes response-content-disposition and filename in the redirect file URL' do
+        download_file(personal_access_token_header)
+
+        expect(response.parsed_body).to include("response-content-disposition=attachment%3B%20filename%3D%22#{package_file.file_name}")
+        expect(response).to have_gitlab_http_status(:redirect)
+      end
+    end
+
     def download_file(request_headers, package_name: nil, file_name: nil)
       package_name ||= package.name
       file_name ||= package_file.file_name

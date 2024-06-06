@@ -50,7 +50,6 @@ Lint/MissingCopEnableDirective:
     - 'app/models/commit_collection.rb'
     - 'app/models/concerns/batch_destroy_dependent_associations.rb'
     - 'app/models/concerns/deployment_platform.rb'
-    - 'app/models/token_with_iv.rb'
     - 'app/models/wiki_page.rb'
     - 'app/services/ci/queue/build_queue_service.rb'
     - 'app/services/commits/change_service.rb'

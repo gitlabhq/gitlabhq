@@ -357,7 +357,6 @@ Layout/ClassStructure:
     - 'lib/gitlab/background_migration/backfill_branch_protection_namespace_setting.rb'
     - 'lib/gitlab/background_migration/backfill_default_branch_protection_namespace_setting.rb'
     - 'lib/gitlab/background_migration/job_coordinator.rb'
-    - 'lib/gitlab/background_migration/migrate_remediations_for_vulnerability_findings.rb'
     - 'lib/gitlab/background_migration/project_namespaces/backfill_project_namespaces.rb'
     - 'lib/gitlab/background_task.rb'
     - 'lib/gitlab/backup_logger.rb'

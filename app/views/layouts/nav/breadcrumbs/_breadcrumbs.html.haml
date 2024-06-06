@@ -10,22 +10,8 @@
   :plain
     #{schema_breadcrumb_json}
 
-- if Feature.enabled?(:vue_page_breadcrumbs)
-  #js-vue-page-breadcrumbs-wrapper{ data: { testid: 'breadcrumb-links' } }
-    #js-vue-page-breadcrumbs{ data: { breadcrumbs_json: breadcrumbs_as_json } }
-    #js-injected-page-breadcrumbs
-
-- else
-  %nav.breadcrumbs.gl-breadcrumbs.tmp-breadcrumbs-fix{ 'aria-label': _('Breadcrumbs'), data: { testid: 'breadcrumb-links' } }
-    %ul.breadcrumb.gl-breadcrumb-list.js-breadcrumbs-list.gl-flex-grow-1
-      - unless hide_top_links
-        = header_title
-      - if @breadcrumbs_extra_links
-        - @breadcrumbs_extra_links.each do |extra|
-          = breadcrumb_list_item link_to(extra[:text], extra[:link])
-      = render "layouts/nav/breadcrumbs/collapsed_inline_list", location: :after
-      - unless @skip_current_level_breadcrumb
-        %li.gl-breadcrumb-item{ data: { testid: 'breadcrumb-current-link' } }
-          = link_to(@breadcrumb_title, breadcrumb_title_link)
+#js-vue-page-breadcrumbs-wrapper{ data: { testid: 'breadcrumb-links' } }
+  #js-vue-page-breadcrumbs{ data: { breadcrumbs_json: breadcrumbs_as_json } }
+  #js-injected-page-breadcrumbs
 
 = yield :header_content

@@ -131,6 +131,30 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNoteImporter
           end
         end
 
+        context 'when comment type is declined_event' do
+          let_it_be(:object) do
+            {
+              iid: merge_request_iid,
+              comment_type: 'declined_event',
+              comment_id: 123,
+              comment: {}
+            }
+          end
+
+          it 'imports the declined_event' do
+            expect_next(
+              Gitlab::BitbucketServerImport::Importers::PullRequestNotes::DeclinedEvent,
+              project,
+              merge_request
+            ).to receive(:execute).with(object[:comment])
+
+            expect_log(stage: 'import_pull_request_note', message: 'starting', iid: merge_request_iid)
+            expect_log(stage: 'import_pull_request_note', message: 'finished', iid: merge_request_iid)
+
+            importer.execute
+          end
+        end
+
         context 'when comment type is inline' do
           let_it_be(:object) do
             {

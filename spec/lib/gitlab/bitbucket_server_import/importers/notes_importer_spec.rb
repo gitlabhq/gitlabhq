@@ -30,6 +30,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       comment?: false,
       merge_event?: true,
       approved_event?: false,
+      declined_event?: false,
       to_hash: {
         id: 3
       }
@@ -43,8 +44,23 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       comment?: false,
       merge_event?: false,
       approved_event?: true,
+      declined_event?: false,
       to_hash: {
         id: 4
+      }
+    )
+  end
+
+  let(:declined_event) do
+    instance_double(
+      BitbucketServer::Representation::Activity,
+      id: 7,
+      comment?: false,
+      merge_event?: false,
+      approved_event?: false,
+      declined_event?: true,
+      to_hash: {
+        id: 7
       }
     )
   end
@@ -290,6 +306,39 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
         expect(Gitlab::Cache::Import::Caching.read(importer.job_waiter_remaining_cache_key)).to eq('1')
         expect(Gitlab::Cache::Import::Caching.values_from_set(importer.already_processed_cache_key))
           .to match_array(%w[activity-4])
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
+          .to match_array(%w[100 101])
+      end
+    end
+
+    context 'when PR has a declined event' do
+      before do
+        allow_next_instance_of(BitbucketServer::Client) do |instance|
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_return([declined_event])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_2).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
+        end
+      end
+
+      it 'imports the declined event' do
+        expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker).to receive(:perform_in).with(
+          anything,
+          project.id,
+          hash_including(
+            iid: 100,
+            comment_type: 'declined_event',
+            comment: hash_including('id' => 7)
+          ),
+          anything
+        )
+
+        waiter = importer.execute
+
+        expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
+        expect(waiter.jobs_remaining).to eq(1)
+        expect(Gitlab::Cache::Import::Caching.read(importer.job_waiter_remaining_cache_key)).to eq('1')
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.already_processed_cache_key))
+          .to match_array(%w[activity-7])
         expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
           .to match_array(%w[100 101])
       end

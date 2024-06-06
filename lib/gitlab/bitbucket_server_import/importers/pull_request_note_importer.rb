@@ -46,14 +46,16 @@ module Gitlab
 
         def notes_importer_class(comment_type)
           case comment_type
-          when 'merge_event'
-            Gitlab::BitbucketServerImport::Importers::PullRequestNotes::MergeEvent
-          when 'inline'
-            Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inline
-          when 'standalone_notes'
-            Gitlab::BitbucketServerImport::Importers::PullRequestNotes::StandaloneNotes
           when 'approved_event'
             Gitlab::BitbucketServerImport::Importers::PullRequestNotes::ApprovedEvent
+          when 'declined_event'
+            Gitlab::BitbucketServerImport::Importers::PullRequestNotes::DeclinedEvent
+          when 'inline'
+            Gitlab::BitbucketServerImport::Importers::PullRequestNotes::Inline
+          when 'merge_event'
+            Gitlab::BitbucketServerImport::Importers::PullRequestNotes::MergeEvent
+          when 'standalone_notes'
+            Gitlab::BitbucketServerImport::Importers::PullRequestNotes::StandaloneNotes
           end
         end
 
