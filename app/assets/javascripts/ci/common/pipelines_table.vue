@@ -162,7 +162,7 @@ export default {
       fixed
     >
       <template #head(actions)>
-        <span class="gl-display-block gl-lg-display-none!">{{ s__('Pipeline|Actions') }}</span>
+        <span class="gl-block lg:!gl-hidden">{{ s__('Pipeline|Actions') }}</span>
         <slot name="table-header-actions"></slot>
       </template>
 

@@ -37,7 +37,7 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     before do
       allow(User).to receive(:find).and_return(user)
       allow(BulkImport).to receive(:find).and_return(bulk_import)
-      allow(bulk_import.entities).to receive(:find_by).and_return(bulk_import_entity)
+      allow(bulk_import).to receive(:parent_group_entity).and_return(bulk_import_entity)
     end
 
     it 'sends complete email' do

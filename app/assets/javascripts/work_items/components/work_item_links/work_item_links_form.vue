@@ -16,6 +16,7 @@ import {
   I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
+  WORK_ITEM_TYPE_VALUE_EPIC,
   sprintfWorkItem,
 } from '../../constants';
 import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
@@ -109,6 +110,9 @@ export default {
     };
   },
   computed: {
+    workItemChildIsEpic() {
+      return this.childrenTypeName === WORK_ITEM_TYPE_VALUE_EPIC;
+    },
     workItemInput() {
       let workItemInput = {
         title: this.search?.title || this.search,
@@ -199,7 +203,7 @@ export default {
     },
     canSubmitForm() {
       if (this.isCreateForm) {
-        if (this.isGroup) {
+        if (this.isGroup && !this.workItemChildIsEpic) {
           return this.search.length > 0 && this.selectedProject !== null;
         }
         return this.search.length > 0;
@@ -342,7 +346,7 @@ export default {
           />
         </gl-form-group>
         <gl-form-group
-          v-if="isGroup"
+          v-if="!workItemChildIsEpic"
           class="gl-w-full"
           :label="$options.i18n.projectInputLabel"
           :description="$options.i18n.projectValidationMessage"
@@ -356,7 +360,6 @@ export default {
         </gl-form-group>
       </div>
       <gl-form-checkbox
-        v-if="isCreateForm"
         ref="confidentialityCheckbox"
         v-model="confidential"
         name="isConfidential"

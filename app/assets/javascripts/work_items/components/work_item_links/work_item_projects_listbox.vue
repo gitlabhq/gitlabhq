@@ -7,6 +7,7 @@ import { STORAGE_KEY } from '~/super_sidebar/constants';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { getTopFrequentItems } from '~/super_sidebar/utils';
 import groupProjectsForLinksWidgetQuery from '../../graphql/group_projects_for_links_widget.query.graphql';
+import relatedProjectsForLinksWidgetQuery from '../../graphql/related_projects_for_links_widget.query.graphql';
 import { SEARCH_DEBOUNCE, MAX_FREQUENT_PROJECTS } from '../../constants';
 
 export default {
@@ -45,7 +46,7 @@ export default {
   apollo: {
     projects: {
       query() {
-        return groupProjectsForLinksWidgetQuery;
+        return this.isGroup ? groupProjectsForLinksWidgetQuery : relatedProjectsForLinksWidgetQuery;
       },
       variables() {
         return {
@@ -54,10 +55,7 @@ export default {
         };
       },
       update(data) {
-        return data.group?.projects?.nodes;
-      },
-      skip() {
-        return !this.isGroup;
+        return this.isGroup ? data.group?.projects?.nodes : data.project?.group?.projects?.nodes;
       },
       debounce: SEARCH_DEBOUNCE,
     },

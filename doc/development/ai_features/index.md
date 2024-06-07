@@ -6,42 +6,56 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # AI features based on 3rd-party integrations
 
-## Get started
+## Local setup
 
 ### Access
+
+Access to both Google Cloud Vertex and Anthropic are recommended for setup. 
 
 #### Google Cloud Vertex
 
 To obtain a Google Cloud service key for local development, follow the steps below:
 
-- Create a sandbox Google Cloud project by visiting [this page](https://handbook.gitlab.com/handbook/infrastructure-standards/#individual-environment)
-  and following the instructions, or by requesting access to our existing group
-  Google Cloud project by using [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request).
-- If you are using an individual Google Cloud project, you may also need to
-  enable the Vertex AI API:
-  1. Visit [welcome page](https://console.cloud.google.com/welcome), choose
-     your project (e.g. jdoe-5d23dpe).
-  1. Go to **APIs & Services > Enabled APIs & services**.
-  1. Select **Enable APIs and Services**.
-  1. Search for `Vertex AI API`.
-  1. Select **Vertex AI API**, then select **Enable**.
-- Install the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install)
-- Authenticate locally with Google Cloud using the
+1. Set up a Google Cloud project
+   1. Option 1 (recommended for GitLab team members): request access to our
+      existing group Google Cloud project by using
+      [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request)
+      This project has Vertex APIs and Vertex AI Search (for Duo Chat
+      documentaton questions) already enabled
+   1. Option 2: Create a sandbox Google Cloud project by following the instructions
+      in [the handbook](https://handbook.gitlab.com/handbook/infrastructure-standards/#individual-environment).
+      If you are using an individual Google Cloud project, you may also need to
+      enable the Vertex AI API:
+      1. Visit [welcome page](https://console.cloud.google.com/welcome), choose
+         your project (for example: `jdoe-5d23dpe`).
+      1. Go to **APIs & Services > Enabled APIs & services**.
+      1. Select **Enable APIs and Services**.
+      1. Search for `Vertex AI API`.
+      1. Select **Vertex AI API**, then select **Enable**.
+1. Install the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install)
+   1. If you already use [`asdf`](https://asdf-vm.com/) for runtime version
+    management, you can install `gcloud` with the
+    [`asdf gcloud` plugin](https://github.com/jthegedus/asdf-gcloud)
+1. Authenticate locally with Google Cloud using the
   [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login)
   command.
-- Open the Rails console. Update the settings to:
+1. Open a Rails console. Update the settings to:
 
-```ruby
-# PROJECT_ID = "your-google-cloud-project-name"
+   ```ruby
+   # PROJECT_ID = "ai-enablement-dev-69497ba7" for GitLab team members with access
+   # to the group using the access request method described above
 
-Gitlab::CurrentSettings.update(vertex_ai_project: "PROJECT_ID")
-```
+   # PROJECT_ID = "your-google-cloud-project-name" for those with their own sandbox
+   # Google Cloud project.
+
+   Gitlab::CurrentSettings.update!(vertex_ai_project: "PROJECT_ID")
+   ```
 
 #### Anthropic
 
 After filling out an
 [access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=AI_Access_Request),
-you can sign up for an Anthropic account and create an API key.
+you can sign up for an Anthropic account and [create an API key](https://docs.anthropic.com/en/docs/getting-access-to-claude).
 
 Run the following in a Rails console locally:
 
@@ -49,23 +63,36 @@ Run the following in a Rails console locally:
 Gitlab::CurrentSettings.update!(anthropic_api_key: "<insert API key>")
 ```
 
-### Licenses and feature flags
+### Configure GDK
 
-1. Ensure you have followed [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
-   for your local instance and you applied Ultimate license.
+#### Licenses and feature flags
+
+1. Follow [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
+   for your local instance and [upload the license](../../administration/license_file.md).
    1. To verify that the license is applied go to **Admin Area** > **Subscription**
       and check the subscription plan.
-1. Run `rake gitlab:duo:enable_feature_flags` to enable all feature flags that
-   are assigned to AI Framework.
-1. If you are running GDK in SaaS mode, you need to enable Duo features for a
-   specific group. To do this, run
-   `GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'`
-   Replace`<test-group-name>` with the group name you want to enable GitLab Duo
-   features. If the group doesn't exist, it creates a new one. You might need to
+1. Enable all AI-related feature flags:
+
+   ```shell
+   rake gitlab:duo:enable_feature_flags
+   ```
+
+1. If you are running GDK in SaaS mode (recommended), you need to enable Duo
+   features for at least one group. To do this, run:
+
+   ```shell
+    GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'
+   ```
+
+   Replace `<test-group-name>` with the name of any top-level group. If the
+   group doesn't exist, it creates a new one. You might need to
    re-run the script multiple times; it prints error messages with links
    on how to resolve the error.
+   Membership to a group with Duo features enabled is what enables many AI
+   features. To enable AI feature access locally, make sure that your test user is
+   a member of the group with Duo features enabled.
 
-## Set up the AI Gateway locally
+#### Set up the AI Gateway
 
 To develop AI features that are compatible with all GitLab instances,
 the feature must proxy requests through the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md).
@@ -77,90 +104,41 @@ the feature must proxy requests through the [AI Gateway](../../architecture/blue
    Gitlab::Llm::Chain::Requests::AiGateway.new(User.first).request(prompt: [{role: "user", content: "Hi, how are you?"}])
    ```
 
-### Verify the setup with GraphQL
+#### Environment variables
 
-1. Visit [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
-1. Execute the `aiAction` mutation. Here is an example:
+The following variables should be set in the `env.runit` file in your GDK root:
 
-   ```graphql
-   mutation {
-     aiAction(
-       input: {
-         chat: {
-           resourceId: "gid://gitlab/User/1",
-           content: "Hello"
-         }
-       }
-     ){
-       requestId
-       errors
-     }
-   }
-   ```
+```shell
+# <GDK-root>/env.runit
 
-1. (GitLab Duo Chat only) Execute the following query to fetch the response:
+# for running in SaaS mode so that you can skip CustomersDot local setup
+# if you need to test something specific to self-managed, unset this and follow the
+# section below on CustomersDot setup
+export GITLAB_SIMULATE_SAAS=1
 
-   ```graphql
-   query {
-     aiMessages {
-       nodes {
-         requestId
-         content
-         role
-         timestamp
-         chunkId
-         errors
-       }
-     }
-   }
-   ```
-
-If you can't fetch the response, check `graphql_json.log`,
-`sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error
-information.
-
-### Optional: Embeddings
-
-[Embeddings](glossary.md) are necessary for working with Duo Chat documentation
-questions locally. They are not necessary for other AI Features.
-
-To set up embeddings locally:
-
-1. Ensure you have access to the `ai-enablement-dev-69497ba7` [Google Cloud project](#google-cloud-vertex).
-1. Login to Google Cloud: `gcloud auth application-default login`
-1. Follow the instructions to [set up the AI Gateway locally](#set-up-the-ai-gateway-locally)
-   using GDK
-
-#### Use embeddings in specs
-
-The `extract_embeddings` Rake Task populates a fixture file with a subset
-of embeddings.
-
-The set of questions listed in the Rake Task determines which embeddings are
-pulled into the fixture file. For example, one of the questions is "How can I
-reset my password?"
-
-The `extract_embeddings` Task pulls the most relevant
-embeddings for this question from the development database (which has data from
-the `seed` Rake Task) and saves those embeddings in
-`ee/spec/fixtures/vertex_embeddings`. This fixture is used in tests related to
-embeddings.
-
-If you would like to change any of the questions supported in embeddings specs,
-update and re-run the `extract_embeddings` Rake Task.
-
-In the specs where you need to use the embeddings,
-use the RSpec `:ai_embedding_fixtures` metadata.
-
-```ruby
-context 'when asking about how to use GitLab', :ai_embedding_fixtures do
-  # ...examples
-end
+# point your GDK-hosed GitLab Rails to your GDK-hosted AI Gateway
+AI_GATEWAY_URL=http://0.0.0.0:5052
 ```
 
-### Working with GitLab Duo Chat
+The following variables should be set in the `.env` file in your AI Gateway
+directory:
 
-View [guidelines](duo_chat.md) for working with GitLab Duo Chat.
+```shell
+# <GDK-root>/gitlab-ai-gateway/.env
+
+# for AI Gateway requests to Anthropic
+ANTHROPIC_API_KEY=$SEKRET_KEY
+
+# for AI Gateway documentation search
+# You must have access to this Google Cloud project to perform documentation
+# search questions locally
+# Issue for documenting how to set up Vertex AI search for a different project:
+# https://gitlab.com/gitlab-org/gitlab/-/issues/461393#note_1935931455
+AIGW_VERTEX_SEARCH__PROJECT="ai-enablement-dev-69497ba7"
+
+# skip OIDC auth for AI Gateway
+AIGW_AUTH__BYPASS_EXTERNAL=true
+```
 
 ### Optional: Test with OIDC authentication
 
@@ -169,19 +147,14 @@ request is signed by the authentic OIDC provider. To test this authentication
 and authorization flow with scopes/unit-primitives, you can take the following
 optional step.
 
-Apply the following configuration to AI Gateway:
-
-```shell
-# <AI-Gateway-root>/.env
-AIGW_AUTH__BYPASS_EXTERNAL=false
-AIGW_GITLAB_URL=<your-gdk-url> # e.g. http://gdk.test:3000/
-```
-
-Apply the following configuration to GDK:
+Assuming that you are running the [AI Gateway with GDK](#set-up-the-ai-gateway),
+apply the following configuration to GDK:
 
 ```shell
 # <GDK-root>/env.runit
-GITLAB_SIMULATE_SAAS=1
+export AIGW_AUTH__BYPASS_EXTERNAL=false
+export AIGW_GITLAB_URL=<your-gdk-url>
+export GITLAB_SIMULATE_SAAS=1
 ```
 
 and `gdk restart`.
@@ -190,6 +163,7 @@ Try requests from GitLab-Rails to AI Gateway. Example:
 
 ```ruby
 gdk rails console
+
 # allow the local requests since your AI Gateway is running in localhost.
 Gitlab::CurrentSettings.update(allow_local_requests_from_web_hooks_and_services: true)
 
@@ -207,15 +181,15 @@ Here is the underlying process happening per request:
    Required scope varies per endpoint (e.g. `/v1/chat/agent` requires `duo_chat`, `/v2/code/suggestions` requires `code_suggestions`).
 
 If you want to test OIDC auth as a self-managed GitLab instance, you need to set
-up Customer Dot as described in the below section.
+up CustomerDot as described below.
 
 ### Optional: Set up CustomersDot
 
 CustomersDot setup is helpful when you want to test or update functionality
-related to [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
-Otherwise, it can be skipped as long as your local AI Gateway has
-`AIGW_AUTH__BYPASS_EXTERNAL=true` set in the `.env` file so that licensing
-checks are skipped locally.
+related to [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/)
+or if you are running GDK in non-SaaS mode.
+Otherwise, it can be skipped as long as your GDK has
+`AIGW_AUTH__BYPASS_EXTERNAL=true` set so that auth checks are skipped locally.
 
 [Internal video tutorial](https://youtu.be/rudS6KeQHcA)
 
@@ -231,6 +205,7 @@ checks are skipped locally.
 ### Help
 
 - [Here's how to reach us!](https://handbook.gitlab.com/handbook/engineering/development/data-science/ai-powered/ai-framework/#-how-to-reach-us)
+- View [guidelines](duo_chat.md) for working with GitLab Duo Chat.
 
 ## Tips for local development
 
@@ -553,85 +528,6 @@ Gitlab::Llm::Anthropic::Client.new(user)
 ### Add AI Action to GraphQL
 
 TODO
-
-## Embeddings database
-
-Embeddings are required to be generated for chat documentation tool to work. Documentation tool works on Saas only at this point.
-
-Embeddings are generated through the [VertexAI text embeddings API](https://cloud.google.com/vertex-ai/generative-ai/docs/embeddings/get-text-embeddings).
-
-Embeddings for GitLab documentation are updated based on the latest changes
-Monday through Friday at 05:00 UTC when the
-[embeddings cron job](https://gitlab.com/gitlab-org/gitlab/-/blob/6742f6bd3970c56a9d5bcd31e3d3dff180c97088/config/initializers/1_settings.rb#L817) runs.
-
-The sections below explain how to populate embeddings in the DB or extract
-embeddings to be used in specs.
-
-### Set up
-
-1. Enable [`pgvector`](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/pgvector.md#enable-pgvector-in-the-gdk) in GDK
-1. Enable the embedding database in GDK
-
-    ```shell
-    gdk config set gitlab.rails.databases.embedding.enabled true
-    ```
-
-1. Run `gdk reconfigure`
-1. Run database migrations to create the embedding database in the `gitlab` folder of the GDK
-
-    ```shell
-    RAILS_ENV=development bin/rails db:migrate
-    ```
-
-### Populate
-
-Seed your development database with the embeddings for GitLab Documentation
-using this Rake task:
-
-```shell
-RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:seed
-```
-
-This Rake Task populates the embeddings database with a vectorized
-representation of all GitLab Documentation. The file the Rake Task uses as a
-source is a snapshot of GitLab Documentation at some point in the past and is
-not updated regularly. As a result, it is helpful to know that this seed task
-creates embeddings based on GitLab Documentation that is out of date. Slightly
-outdated documentation embeddings are sufficient for the development
-environment, which is the use-case for the seed task.
-
-When writing or updating tests related to embeddings, you may want to update the
-embeddings fixture file:
-
-```shell
-RAILS_ENV=development bundle exec rake gitlab:llm:embeddings:vertex:extract_embeddings
-```
-
-### Using in specs
-
-The `seed` Rake Task populates the development database with embeddings for all GitLab
-Documentation. The `extract_embeddings` Rake Task populates a fixture file with a subset
-of embeddings.
-
-The set of questions listed in the Rake Task itself determines
-which embeddings are pulled into the fixture file. For example, one of the
-questions is "How can I reset my password?" The `extract_embeddings` Task
-pulls the most relevant embeddings for this question from the development
-database (which has data from the `seed` Rake Task) and saves those embeddings
-in `ee/spec/fixtures/vertex_embeddings`. This fixture is used in tests related
-to embeddings.
-
-If you would like to change any of the questions supported in embeddings specs,
-update and re-run the `extract_embeddings` Rake Task.
-
-In the specs where you need to use the embeddings,
-use the RSpec `:ai_embedding_fixtures` metadata.
-
-```ruby
-context 'when asking about how to use GitLab', :ai_embedding_fixtures do
-  # ...examples
-end
-```
 
 ## Monitoring
 

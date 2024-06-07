@@ -1,4 +1,4 @@
-.search-results-status.gl-sm-display-flex.gl-items-start.gl-justify-content-space-between.gl-my-4{ class: ('gl-lg-display-none' if @search_objects.to_a.empty?) }
+.search-results-status.gl-sm-display-flex.gl-items-start.gl-justify-content-space-between.gl-my-4{ class: ('lg:gl-hidden' if @search_objects.to_a.empty?) }
   - unless @search_objects.to_a.empty?
     %div
       - unless @search_service_presenter.without_count?
@@ -17,7 +17,7 @@
           - link_to_group = link_to(@group.name, @group, class: 'ml-md-1')
           = safe_format(_("in group %{link_to_group}"), link_to_group: link_to_group)
   .gl-flex.gl-gap-3.gl-mt-3.gl-sm-mt-0
-    = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: 'gl-lg-display-none gl-flex-grow-1 gl-md-flex-grow-0'}) do
+    = render Pajamas::ButtonComponent.new(category: 'primary', icon: 'filter', button_options: {id: 'js-open-mobile-filters', class: 'lg:gl-hidden gl-flex-grow-1 gl-md-flex-grow-0'}) do
       = s_('GlobalSearch|Filters')
     - if @search_service_presenter.show_sort_dropdown? && !@search_objects.to_a.empty?
       #js-search-sort{ data: { "search-sort-options" => search_sort_options.to_json }, class: "gl-flex-grow-1 gl-md-flex-grow-0" }

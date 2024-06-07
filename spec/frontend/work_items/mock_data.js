@@ -4101,6 +4101,50 @@ export const groupProjectsList = {
   },
 };
 
+export const relatedProjectsList = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      group: {
+        id: 'gid://gitlab/Group/33',
+        projects: {
+          nodes: [
+            {
+              id: 'gid://gitlab/Project/1',
+              name: 'Example project A',
+              avatarUrl: null,
+              nameWithNamespace: 'Group A / Example project A',
+              fullPath: 'group-a/example-project-a',
+              namespace: {
+                id: 'gid://gitlab/Group/1',
+                name: 'Group A',
+                __typename: 'Namespace',
+              },
+              __typename: 'Project',
+            },
+            {
+              id: 'gid://gitlab/Project/2',
+              name: 'Example project B',
+              avatarUrl: null,
+              nameWithNamespace: 'Group A / Example project B',
+              fullPath: 'group-a/example-project-b',
+              namespace: {
+                id: 'gid://gitlab/Group/1',
+                name: 'Group A',
+                __typename: 'Namespace',
+              },
+              __typename: 'Project',
+            },
+          ],
+          __typename: 'ProjectConnection',
+        },
+        __typename: 'Group',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
 export const mockFrequentlyUsedProjects = [
   {
     id: 1,

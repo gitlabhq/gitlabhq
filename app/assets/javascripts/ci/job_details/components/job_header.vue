@@ -105,7 +105,7 @@ export default {
           <gl-button
             :aria-label="__('Toggle sidebar')"
             category="secondary"
-            class="gl-lg-display-none gl-ml-2"
+            class="lg:gl-hidden gl-ml-2"
             icon="chevron-double-lg-left"
             @click="onClickSidebarButton"
           />

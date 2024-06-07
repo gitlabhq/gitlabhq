@@ -227,7 +227,7 @@ export default {
     </gl-tab>
     <template #tabs-end>
       <li class="gl-flex-grow-1 gl-align-self-center gl-w-full gl-lg-w-auto gl-py-2">
-        <div class="gl-lg-display-flex gl-justify-content-end -gl-mx-2 -gl-my-2">
+        <div class="lg:gl-flex gl-justify-content-end -gl-mx-2 -gl-my-2">
           <div class="gl-p-2 gl-lg-form-input-md gl-w-full">
             <gl-search-box-by-type
               :value="search"

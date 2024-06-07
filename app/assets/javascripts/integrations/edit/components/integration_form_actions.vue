@@ -70,7 +70,7 @@ export default {
 };
 </script>
 <template>
-  <section class="gl-lg-display-flex gl-justify-content-space-between">
+  <section class="lg:gl-flex gl-justify-content-space-between">
     <div>
       <template v-if="isInstanceOrGroupLevel">
         <gl-button

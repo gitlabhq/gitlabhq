@@ -49,6 +49,8 @@ the task opens in a full-page view.
 
 ## Create a task
 
+> - Ability to select which project to create the task in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436255) in GitLab 17.1.
+
 Prerequisites:
 
 - You must have at least the Reporter role for the project, or the project must be public.
@@ -60,6 +62,7 @@ To create a task:
 1. In the issue description, in the **Tasks** section, select **Add**.
 1. Select **New task**.
 1. Enter the task title.
+1. Select the [project](project/organize_work_with_projects.md) to create the new task in.
 1. Select **Create task**.
 
 ### From a task list item

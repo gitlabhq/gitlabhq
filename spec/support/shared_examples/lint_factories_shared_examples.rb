@@ -34,7 +34,7 @@ module Support
 
       return if without_factory_defaults.empty? && with_factory_defaults.empty?
 
-      RSpec.describe "Lint factories for #{described_class}" do
+      RSpec.describe "Lint factories for #{described_class}", feature_category: :shared do
         include_examples 'Lint factories', with_factory_defaults, without_factory_defaults
       end
     end

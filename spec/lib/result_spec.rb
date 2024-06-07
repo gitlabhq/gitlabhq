@@ -160,7 +160,7 @@ RSpec.describe Result, feature_category: :remote_development do
         it 'raises TypeError if passed anything other than a lambda or singleton method object' do
           ex = TypeError
           msg = /expects a lambda or singleton method object/
-          # noinspection RubyMismatchedArgumentType
+          # noinspection RubyMismatchedArgumentType -- intentionally passing invalid types
           expect { Result.ok(1).and_then('string') }.to raise_error(ex, msg)
           expect { Result.ok(1).and_then(proc { Result.ok(1) }) }.to raise_error(ex, msg)
           expect { Result.ok(1).and_then(1.method(:to_s)) }.to raise_error(ex, msg)

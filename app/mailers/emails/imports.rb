@@ -15,7 +15,7 @@ module Emails
     def bulk_import_complete(user_id, bulk_import_id)
       user = User.find(user_id)
       @bulk_import = BulkImport.find(bulk_import_id)
-      @bulk_import_entity = @bulk_import.entities.find_by(source_type: 'group_entity') # rubocop:disable CodeReuse/ActiveRecord -- Move this to BulkImport model
+      @bulk_import_entity = @bulk_import.parent_group_entity
       @hostname = @bulk_import.configuration.url
       @source_group = @bulk_import_entity.source_full_path
       title = safe_format(

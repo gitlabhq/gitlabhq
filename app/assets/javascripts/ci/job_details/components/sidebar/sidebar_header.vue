@@ -171,7 +171,7 @@ export default {
       <gl-button
         :aria-label="$options.i18n.toggleSidebar"
         category="secondary"
-        class="gl-lg-display-none"
+        class="lg:gl-hidden"
         icon="chevron-double-lg-right"
         @click="toggleSidebar"
       />

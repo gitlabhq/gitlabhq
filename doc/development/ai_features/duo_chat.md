@@ -47,7 +47,7 @@ you find a solution.
 | Problem                                                               | Solution                                                                                                                                                                                                                                                                              |
 |-----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | There is no Chat button in the GitLab UI.                             | Make sure your user is a part of a group with enabled experimental and beta features.                                                                                                                                                                                                 |
-| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI Gateway](index.md#set-up) is set up correctly.                                                                                                                                                                                      |
+| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI Gateway](index.md#set-up-the-ai-gateway) is set up correctly.                                                                                                                                                                                      |
 | Requests take too long to appear in UI                               | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
 | There is no chat button in GitLab UI when GDK is running on non-SaaS mode | You do not have cloud connector access token record or seat assigned. To create cloud connector access record, in rails console put following code: `CloudConnector::Access.new(data: { available_services: [{ name: "duo_chat", serviceStartTime: ":date_in_the_future" }] }).save`. |
 
@@ -246,17 +246,12 @@ To run the QA Evaluation test locally, the following environment variables
 must be exported:
 
 ```ruby
-export VERTEX_AI_EMBEDDINGS='true' # if using Vertex embeddings
 export ANTHROPIC_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings
 export VERTEX_AI_CREDENTIALS='<vertex-ai-credentials>' # can set as dev value of Gitlab::CurrentSettings.vertex_ai_credentials
 export VERTEX_AI_PROJECT='<vertex-project-name>' # can use dev value of Gitlab::CurrentSettings.vertex_ai_project
 
 REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
 ```
-
-When you update the test questions that require documentation embeddings,
-make sure you [generate a new fixture](index.md#using-in-specs) and
-commit it together with the change.
 
 ## Testing with CI
 
@@ -363,8 +358,107 @@ We therefore need to broadcast messages to multiple clients to keep them in sync
 1. All complete Chat messages (including messages from the user) are broadcasted with the `userId`, `aiAction: "chat"` as identifier.
 1. Chunks from streamed Chat messages and currently used tools are broadcasted with the `userId`, `resourceId`, and the `clientSubscriptionId` from the mutation as identifier.
 
+Examples of GraphQL Subscriptions in a Vue component:
+
+1. Complete Chat message
+
+   ```javascript
+   import aiResponseSubscription from 'ee/graphql_shared/subscriptions/ai_completion_response.subscription.graphql';
+   [...]
+
+   apollo: {
+    $subscribe: {
+      aiCompletionResponse: {
+        query: aiResponseSubscription,
+        variables() {
+          return {
+            userId, // for example "gid://gitlab/User/1"
+            aiAction: 'CHAT',
+          };
+        },
+        result({ data }) {
+          // handle data.aiCompletionResponse
+        },
+        error(err) {
+          // handle error
+        },
+      },
+    },
+   ```
+
+1. Streamed Chat message
+
+   ```javascript
+   import aiResponseSubscription from 'ee/graphql_shared/subscriptions/ai_completion_response.subscription.graphql';
+   [...]
+
+   apollo: {
+    $subscribe: {
+      aiCompletionResponseStream: {
+        query: aiResponseSubscription,
+        variables() {
+          return {
+            userId, // for example "gid://gitlab/User/1"
+            resourceId, // can be either a resourceId (on Issue, Epic, etc. items), or userId
+            clientSubscriptionId // randomly generated identifier for every message
+            htmlResponse: false, // important to bypass HTML processing on every chunk
+          };
+        },
+        result({ data }) {
+          // handle data.aiCompletionResponse
+        },
+        error(err) {
+          // handle error
+        },
+      },
+    },
+   ```
+
 Note that we still broadcast chat messages and currently used tools using the `userId` and `resourceId` as identifier.
 However, this is deprecated and should no longer be used. We want to remove `resourceId` on the subscription as part of [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).
+
+### Duo Chat GraphQL queries
+
+1. [Set up GitLab Duo Chat](#set-up-gitlab-duo-chat)
+1. Visit [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
+1. Execute the `aiAction` mutation. Here is an example:
+
+   ```graphql
+   mutation {
+     aiAction(
+       input: {
+         chat: {
+           resourceId: "gid://gitlab/User/1",
+           content: "Hello"
+         }
+       }
+     ){
+       requestId
+       errors
+     }
+   }
+   ```
+
+1. Execute the following query to fetch the response:
+
+   ```graphql
+   query {
+     aiMessages {
+       nodes {
+         requestId
+         content
+         role
+         timestamp
+         chunkId
+         errors
+       }
+     }
+   }
+   ```
+
+If you can't fetch the response, check `graphql_json.log`,
+`sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error
+information.
 
 ## Testing GitLab Duo Chat in production-like environments
 

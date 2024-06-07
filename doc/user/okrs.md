@@ -301,6 +301,8 @@ below an objective's description.
 
 ### Add a child objective
 
+> - Ability to select which project to create the objective in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436255) in GitLab 17.1.
+
 Prerequisites:
 
 - You must have at least the Guest role for the project.
@@ -310,6 +312,7 @@ To add a new objective to an objective:
 1. In an objective, in the **Child objectives and key results** section, select **Add** and then
    select **New objective**.
 1. Enter a title for the new objective.
+1. Select a [project](project/organize_work_with_projects.md) to create the new objective in.
 1. Select **Create objective**.
 
 To add an existing objective to an objective:
@@ -324,6 +327,8 @@ To add an existing objective to an objective:
 
 ### Add a child key result
 
+> - Ability to select which project to create the key result in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436255) in GitLab 17.1.
+
 Prerequisites:
 
 - You must have at least the Guest role for the project.
@@ -333,6 +338,7 @@ To add a new key result to an objective:
 1. In an objective, in the **Child objectives and key results** section, select **Add** and then
    select **New key result**.
 1. Enter a title for the new key result.
+1. Select a [project](project/organize_work_with_projects.md) to create the new key result in.
 1. Select **Create key result**.
 
 To add an existing key result to an objective:

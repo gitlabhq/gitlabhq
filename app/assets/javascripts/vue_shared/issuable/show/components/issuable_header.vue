@@ -216,7 +216,7 @@ export default {
       />
       <span
         v-if="taskCompletionStatus && hasTasks"
-        class="gl-hidden md:gl-block gl-lg-display-inline-block"
+        class="gl-hidden md:gl-block lg:gl-inline-block"
         >{{ taskStatusString }}</span
       >
       <gl-button

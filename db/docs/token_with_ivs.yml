@@ -1,7 +1,6 @@
 ---
 table_name: token_with_ivs
-classes:
-- TokenWithIv
+classes: []
 feature_categories:
 - system_access
 description: TODO

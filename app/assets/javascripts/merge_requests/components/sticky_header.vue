@@ -173,7 +173,7 @@ export default {
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"
-            class="gl-display-none gl-lg-display-block gl-font-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0 gl-ml-1 gl-mr-2 gl-text-black-normal"
+            class="gl-hidden lg:gl-block gl-font-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0 gl-ml-1 gl-mr-2 gl-text-black-normal"
           ></a>
           <div class="gl-display-flex gl-align-items-center">
             <gl-sprintf :message="__('%{source} %{copyButton} into %{target}')">
@@ -243,7 +243,7 @@ export default {
               </gl-link>
             </li>
           </ul>
-          <div class="gl-display-none gl-lg-display-flex gl-align-items-center gl-ml-auto">
+          <div class="gl-hidden lg:gl-flex gl-align-items-center gl-ml-auto">
             <discussion-counter :blocks-merge="blocksMerge" hide-options />
             <div
               v-if="isSignedIn"

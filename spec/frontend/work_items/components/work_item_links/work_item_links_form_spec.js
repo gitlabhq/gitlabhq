@@ -26,12 +26,14 @@ import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_ty
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import groupProjectsForLinksWidgetQuery from '~/work_items/graphql/group_projects_for_links_widget.query.graphql';
+import relatedProjectsForLinksWidgetQuery from '~/work_items/graphql/related_projects_for_links_widget.query.graphql';
 import {
   availableWorkItemsResponse,
   createWorkItemMutationResponse,
   updateWorkItemMutationResponse,
   mockIterationWidgetResponse,
   groupProjectsList,
+  relatedProjectsList,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -61,6 +63,7 @@ describe('WorkItemLinksForm', () => {
     .mockResolvedValue(projectWorkItemTypesQueryResponse);
   const groupWorkItemTypesResolver = jest.fn().mockResolvedValue(groupWorkItemTypesQueryResponse);
   const groupProjectsFormLinksWidgetResolver = jest.fn().mockResolvedValue(groupProjectsList);
+  const relatedProjectsForLinksWidgetResolver = jest.fn().mockResolvedValue(relatedProjectsList);
 
   const mockParentIteration = mockIterationWidgetResponse;
 
@@ -79,6 +82,7 @@ describe('WorkItemLinksForm', () => {
         [projectWorkItemTypesQuery, projectWorkItemTypesResolver],
         [groupWorkItemTypesQuery, groupWorkItemTypesResolver],
         [groupProjectsForLinksWidgetQuery, groupProjectsFormLinksWidgetResolver],
+        [relatedProjectsForLinksWidgetQuery, relatedProjectsForLinksWidgetResolver],
         [updateWorkItemMutation, updateMutationResolver],
         [createWorkItemMutation, createMutationResolver],
       ]),

@@ -139,7 +139,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (1.27.1)
+    gitlab_quality-test_tooling (1.28.0)
       activesupport (>= 7.0, < 7.2)
       amatch (~> 0.4.1)
       gitlab (~> 4.19)
@@ -380,7 +380,7 @@ DEPENDENCIES
   gitlab-cng!
   gitlab-qa (~> 14, >= 14.10.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 1.27.1)
+  gitlab_quality-test_tooling (~> 1.28.0)
   influxdb-client (~> 3.1)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)

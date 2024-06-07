@@ -213,6 +213,7 @@ RSpec::Matchers.define :invoke_rop_steps do |rop_steps|
       value_passed_along_steps: value_passed_along_steps
     )
 
+    # noinspection RubyNilAnalysis -- We ensure this is not nil
     expected_return_value_matcher.call(block)
   end
 
@@ -249,6 +250,7 @@ RSpec::Matchers.define :invoke_rop_steps do |rop_steps|
   chain :and_return_expected_value do |value|
     validate_expected_return_value(value)
     expected_return_value = value
+    # noinspection RubyUnusedLocalVariable -- TODO: open issue and add to https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/tracked-jetbrains-issues
     expected_return_value_matcher = if value.is_a?(Hash) || value.is_a?(Result)
                                       ->(main) { expect(main.call).to eq(value) }
                                     else
