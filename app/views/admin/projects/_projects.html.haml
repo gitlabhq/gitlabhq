@@ -19,7 +19,7 @@
               .description
                 = markdown_field(project, :description)
           = render_if_exists 'shared/projects/badges', project: project, css_class: 'gl-mr-3'
-          .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex
+          .stats.gl-text-gray-500.gl-flex-shrink-0.gl-hidden.sm:gl-flex
             = gl_badge_tag storage_counter(project.statistics&.storage_size)
 
           .controls.gl-flex-shrink-0.gl-ml-5

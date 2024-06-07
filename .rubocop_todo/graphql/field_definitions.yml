@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-GraphQL/FieldDefinitions:
-  Exclude:
-    - 'app/graphql/types/resolvable_interface.rb'
-    - 'ee/app/graphql/types/vulnerability_type.rb'

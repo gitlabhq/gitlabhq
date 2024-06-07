@@ -8,7 +8,7 @@
           = _('Milestone')
       - if milestone.due_date || milestone.start_date
         = milestone_date_range(milestone)
-      = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left', button_options: { 'aria-label' => _('Toggle sidebar'), class: 'btn-grouped !gl-float-right gl-sm-display-none js-sidebar-toggle' })
+      = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left', button_options: { 'aria-label' => _('Toggle sidebar'), class: 'btn-grouped !gl-float-right sm:gl-hidden js-sidebar-toggle' })
 
   - if can?(current_user, :admin_milestone, @group || @project)
     - can_promote = @project && can_admin_group_milestones? && milestone.project

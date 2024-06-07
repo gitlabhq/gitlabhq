@@ -87,6 +87,7 @@ GET /projects
 | `with_issues_enabled`                          | boolean  | No       | Limit by enabled issues feature. |
 | `with_merge_requests_enabled`                  | boolean  | No       | Limit by enabled merge requests feature. |
 | `with_programming_language`                    | string   | No       | Limit by projects which use the given programming language. |
+| `marked_for_deletion_on`                       | date     | No       | Filter by date when project was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463939) in GitLab 17.1. Premium and Ultimate only. |
 
 This endpoint supports [keyset pagination](rest/index.md#keyset-based-pagination)
 for selected `order_by` options.

@@ -77,7 +77,7 @@ export default {
         text: this.$options.i18n.close,
         href: this.closeUrl,
         extraAttrs: {
-          class: { 'gl-sm-display-none!': this.isDetailPage },
+          class: { 'sm:!gl-hidden': this.isDetailPage },
           'data-testid': 'milestone-close-item',
           'data-method': 'put',
           rel: 'nofollow',
@@ -89,7 +89,7 @@ export default {
         text: this.$options.i18n.reopen,
         href: this.reopenUrl,
         extraAttrs: {
-          class: { 'gl-sm-display-none!': this.isDetailPage },
+          class: { 'sm:!gl-hidden': this.isDetailPage },
           'data-testid': 'milestone-reopen-item',
           'data-method': 'put',
           rel: 'nofollow',

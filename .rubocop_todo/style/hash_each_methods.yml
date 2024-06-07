@@ -58,7 +58,6 @@ Style/HashEachMethods:
     - 'ee/lib/gitlab/checks/secrets_check.rb'
     - 'ee/lib/gitlab/code_owners/file.rb'
     - 'ee/lib/gitlab/graphql/aggregations/epics/lazy_epic_aggregate.rb'
-    - 'ee/lib/remote_development/workspaces/create/post_flatten_devfile_validator.rb'
     - 'ee/spec/controllers/projects_controller_spec.rb'
     - 'ee/spec/factories/vulnerabilities.rb'
     - 'ee/spec/factories/vulnerabilities/findings.rb'

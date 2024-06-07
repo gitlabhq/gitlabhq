@@ -153,7 +153,7 @@ export default {
       data-testid="bullet-list"
       content-type="bulletList"
       icon-name="list-bulleted"
-      class="gl-display-none gl-sm-display-inline"
+      class="gl-hidden sm:gl-inline"
       editor-command="toggleBulletList"
       :label="i18n.bulletList"
       @execute="trackToolbarControlExecution"
@@ -162,7 +162,7 @@ export default {
       data-testid="ordered-list"
       content-type="orderedList"
       icon-name="list-numbered"
-      class="gl-display-none gl-sm-display-inline"
+      class="gl-hidden sm:gl-inline"
       editor-command="toggleOrderedList"
       :label="i18n.numberedList"
       @execute="trackToolbarControlExecution"
@@ -172,12 +172,12 @@ export default {
         data-testid="task-list"
         content-type="taskList"
         icon-name="list-task"
-        class="gl-display-none gl-sm-display-inline"
+        class="gl-hidden sm:gl-inline"
         editor-command="toggleTaskList"
         :label="i18n.taskList"
         @execute="trackToolbarControlExecution"
       />
-      <div class="gl-display-none gl-sm-display-flex">
+      <div class="gl-hidden sm:gl-flex">
         <header-divider />
       </div>
     </div>
@@ -194,7 +194,7 @@ export default {
         data-testid="quick-actions"
         content-type="quickAction"
         icon-name="quick-actions"
-        class="gl-display-none gl-sm-display-inline"
+        class="gl-hidden sm:gl-inline"
         editor-command="insertQuickAction"
         :label="__('Add a quick action')"
         @execute="trackToolbarControlExecution"

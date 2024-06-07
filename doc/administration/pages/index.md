@@ -397,6 +397,9 @@ control over how the Pages daemon runs and serves content in your environment.
 | `artifacts_server_url`                  | API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`. When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server), this URL must point to the main GitLab server's API.                                    |
 | `auth_redirect_uri`                     | Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`, for example `https://projects.example.io/auth`. When `namespace_in_path` is enabled, defaults to `pages_external_url` + `/projects/auth`, for example `https://example.io/projects/auth`.   |
 | `auth_secret`                           | Secret key for signing authentication requests. Leave blank to pull automatically from GitLab during OAuth registration.                                                                                                                                                                                   |
+| `client_cert`                           | Client certificate used for mutual TLS with the GitLab API. See [Support mutual TLS when calling the GitLab API](#support-mutual-tls-when-calling-the-gitlab-api) for details.                                                                                                                             |
+| `client_key`                            | Client key used for mutual TLS with the GitLab API. See [Support mutual TLS when calling the GitLab API](#support-mutual-tls-when-calling-the-gitlab-api) for details.                                                                                                                                     |
+| `client_ca_certs`                       | Root CA certificates used to sign client certificate used for mutual TLS with the GitLab API. See [Support mutual TLS when calling the GitLab API](#support-mutual-tls-when-calling-the-gitlab-api) for details.                                                                                           |
 | `dir`                                   | Working directory for configuration and secrets files.                                                                                                                                                                                                                                                     |
 | `enable`                                | Enable or disable GitLab Pages on the current system.                                                                                                                                                                                                                                                      |
 | `external_http`                         | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`.                                                                        |
@@ -682,6 +685,55 @@ For Linux package installations, this is fixed by [installing a custom CA](https
 
 For self-compiled installations, this can be fixed by installing the custom Certificate
 Authority (CA) in the system certificate store.
+
+### Support mutual TLS when calling the GitLab API
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/548) in GitLab 17.1.
+
+Prerequisites:
+
+- Your instance must use the Linux package installation method.
+
+If GitLab is [configured to require mutual TLS](https://docs.gitlab.com/omnibus/settings/ssl/#enable-2-way-ssl-client-authentication),
+you must add client certificates to your GitLab Pages configuration.
+
+Certificates have these requirements:
+
+- The certificate must specify the hostname or IP address as a Subject Alternative Name.
+- The full certificate chain is required, including the end-user certificate, intermediate certificates,
+  and the root certificate, in that order.
+
+The certificate's Common Name field is ignored.
+
+To configure the certificates in your GitLab Pages server:
+
+1. On the GitLab Pages nodes, create the `/etc/gitlab/ssl` directory and copy your key and full certificate chain there:
+
+   ```shell
+   sudo mkdir -p /etc/gitlab/ssl
+   sudo chmod 755 /etc/gitlab/ssl
+   sudo cp key.pem cert.pem /etc/gitlab/ssl/
+   sudo chmod 644 key.pem cert.pem
+   ```
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['client_cert'] = ['/etc/gitlab/ssl/cert.pem']
+   gitlab_pages['client_key'] = ['/etc/gitlab/ssl/key.pem']
+   ```
+
+1. If you used a custom Certificate Authority (CA), you must copy the root CA certificate to `/etc/gitlab/ssl`
+   and edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_pages['client_ca_certs'] = ['/etc/gitlab/ssl/ca.pem']
+   ```
+
+   File paths for multiple custom Certificate Authority (CA)s are separated by commas.
+
+1. If you have a multi-node GitLab Pages installation, repeat these steps in all the nodes.
+1. Save a copy of the full certificate chain files in the `/etc/gitlab/trusted-certs` directory on all your GitLab Nodes.
 
 ### ZIP serving and cache configuration
 

@@ -18,7 +18,7 @@
     .gl-ml-0
       = render Pajamas::ButtonComponent.new(category: :tertiary,
         icon: 'pencil',
-        button_options: { class: 'gl-display-none gl-sm-display-inline-block note-action-button js-note-edit has-tooltip', data: { testid: 'edit-comment-button' }, title: _('Edit comment'), 'aria-label': _('Edit comment') })
+        button_options: { class: 'gl-hidden sm:gl-inline-block note-action-button js-note-edit has-tooltip', data: { testid: 'edit-comment-button' }, title: _('Edit comment'), 'aria-label': _('Edit comment') })
 
   = render 'projects/notes/more_actions_dropdown', note: note, note_editable: note_editable
 

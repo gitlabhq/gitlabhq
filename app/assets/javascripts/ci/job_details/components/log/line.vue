@@ -24,11 +24,11 @@ export default {
   render(h, { props }) {
     const { line, path, isHighlighted } = props;
 
-    const chars = line.content.map((content) => {
+    const parts = line.content.map((content) => {
       return h(
         'span',
         {
-          class: ['gl-white-space-pre-wrap', content.style],
+          class: [content.style],
         },
         // Simple "tokenization": Split text in chunks of text
         // which alternate between text and urls.
@@ -90,7 +90,13 @@ export default {
               ),
             ]
           : []),
-        ...chars,
+        h(
+          'span',
+          {
+            class: 'gl-flex-grow-1 gl-white-space-pre-wrap',
+          },
+          parts,
+        ),
       ],
     );
   },

@@ -57012,10 +57012,55 @@ msgstr ""
 msgid "UserMapping|Awaiting reassignment"
 msgstr ""
 
+msgid "UserMapping|Kept as placeholder"
+msgstr ""
+
+msgid "UserMapping|Pending approval"
+msgstr ""
+
+msgid "UserMapping|Placeholder user"
+msgstr ""
+
+msgid "UserMapping|Placeholder user was made permanent."
+msgstr ""
+
 msgid "UserMapping|Placeholders"
 msgstr ""
 
+msgid "UserMapping|Reassign placeholder to"
+msgstr ""
+
 msgid "UserMapping|Reassigned"
+msgstr ""
+
+msgid "UserMapping|Reassigned to"
+msgstr ""
+
+msgid "UserMapping|Reassigning"
+msgstr ""
+
+msgid "UserMapping|Reassignment failed."
+msgstr ""
+
+msgid "UserMapping|Reassignment has not started."
+msgstr ""
+
+msgid "UserMapping|Reassignment in progress."
+msgstr ""
+
+msgid "UserMapping|Reassignment status"
+msgstr ""
+
+msgid "UserMapping|Reassignment succeeded."
+msgstr ""
+
+msgid "UserMapping|Reassignment waiting on user approval."
+msgstr ""
+
+msgid "UserMapping|Reassignment was rejected by user."
+msgstr ""
+
+msgid "UserMapping|Rejected"
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"

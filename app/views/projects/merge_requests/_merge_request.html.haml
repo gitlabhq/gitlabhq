@@ -67,6 +67,6 @@
         = render 'shared/merge_request_pipeline_status', merge_request: merge_request
 
       - if merge_request.updated_at != merge_request.created_at
-        .issuable-updated-at.gl-align-self-end.gl-display-none.gl-sm-display-inline-block.gl-text-gray-500
+        .issuable-updated-at.gl-align-self-end.gl-hidden.sm:gl-inline-block.gl-text-gray-500
           %span
             = _('updated %{time_ago}').html_safe % { time_ago: time_ago_with_tooltip(merge_request.updated_at, placement: 'bottom', html_class: 'merge_request_updated_ago') }

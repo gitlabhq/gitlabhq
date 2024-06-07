@@ -38,7 +38,7 @@ export default {
 <template>
   <div class="gl-border-b gl-pb-3 gl-display-flex gl-align-items-flex-start">
     <!-- eslint-disable @gitlab/vue-require-i18n-attribute-strings -->
-    <img :src="serviceDeskCalloutSvgPath" alt="" class="gl-hidden gl-sm-display-block gl-p-5" />
+    <img :src="serviceDeskCalloutSvgPath" alt="" class="gl-hidden sm:gl-block gl-p-5" />
     <!-- eslint-enable @gitlab/vue-require-i18n-attribute-strings -->
     <div class="gl-mt-3 gl-ml-3">
       <h5>{{ $options.i18n.infoBannerTitle }}</h5>

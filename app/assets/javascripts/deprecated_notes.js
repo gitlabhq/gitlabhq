@@ -1572,7 +1572,7 @@ export default class Notes {
                <div class="note-header">
                   <div class="note-header-info">
                      <a href="/${escape(currentUsername)}">
-                       <span class="gl-display-none gl-sm-display-inline-block bold">${escape(
+                       <span class="gl-hidden sm:gl-inline-block bold">${escape(
                          currentUsername,
                        )}</span>
                        <span class="note-headline-light">${escape(currentUsername)}</span>
@@ -1589,7 +1589,7 @@ export default class Notes {
       </li>`,
     );
 
-    $tempNote.find('.gl-display-none.gl-sm-display-inline-block').text(escape(currentUserFullname));
+    $tempNote.find('.gl-hidden.sm:gl-inline-block').text(escape(currentUserFullname));
     $tempNote.find('.note-headline-light').text(`@${escape(currentUsername)}`);
 
     return $tempNote;

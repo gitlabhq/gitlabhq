@@ -1,6 +1,6 @@
 <script>
 import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import PlaceholdersTable from './placeholders_table.vue';
 
 export default {
   name: 'PlaceholdersTabApp',
@@ -8,22 +8,18 @@ export default {
     GlBadge,
     GlTab,
     GlTabs,
+    PlaceholdersTable,
   },
-  TABS: [
-    {
-      title: s__('UserMapping|Awaiting reassignment'),
-    },
-    {
-      title: s__('UserMapping|Reassigned'),
-    },
-  ],
+
   data() {
     return {
       selectedTabIndex: 0,
     };
   },
-  methods: {
+
+  computed: {
     tabCount() {
+      // WIP: https://gitlab.com/groups/gitlab-org/-/epics/12378
       return 0;
     },
   },
@@ -32,11 +28,22 @@ export default {
 
 <template>
   <gl-tabs v-model="selectedTabIndex" class="gl-mt-3">
-    <gl-tab v-for="(tab, index) in $options.TABS" :key="index">
+    <gl-tab>
       <template #title>
-        <span>{{ tab.title }}</span>
-        <gl-badge size="sm" class="gl-tab-counter-badge">{{ tabCount() }}</gl-badge>
+        <span>{{ s__('UserMapping|Awaiting reassignment') }}</span>
+        <gl-badge size="sm" class="gl-tab-counter-badge">{{ tabCount }}</gl-badge>
       </template>
+
+      <placeholders-table key="unassigned" />
+    </gl-tab>
+
+    <gl-tab>
+      <template #title>
+        <span>{{ s__('UserMapping|Reassigned') }}</span>
+        <gl-badge size="sm" class="gl-tab-counter-badge">{{ tabCount }}</gl-badge>
+      </template>
+
+      <placeholders-table key="assigned" reassigned />
     </gl-tab>
   </gl-tabs>
 </template>

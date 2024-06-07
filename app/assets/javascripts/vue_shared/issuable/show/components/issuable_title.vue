@@ -95,8 +95,8 @@ export default {
               class="gl-whitespace-nowrap gl-mr-3 gl-align-self-center"
               :variant="badgeVariant"
             >
-              <gl-icon v-if="statusIcon" class="gl-sm-display-none" :name="statusIcon" />
-              <span class="gl-display-none gl-sm-display-block">
+              <gl-icon v-if="statusIcon" class="sm:gl-hidden" :name="statusIcon" />
+              <span class="gl-hidden sm:gl-block">
                 <slot name="status-badge"></slot>
               </span>
             </gl-badge>

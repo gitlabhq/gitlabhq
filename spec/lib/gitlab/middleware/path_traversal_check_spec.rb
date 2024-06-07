@@ -24,11 +24,8 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
     end
 
     let(:env) do
-      Rack::MockRequest.env_for(
-        path,
-        method: method,
-        params: query_params
-      )
+      path_with_query_params = [path, query_params.to_query.presence].compact.join('?')
+      Rack::MockRequest.env_for(path_with_query_params, method: method)
     end
 
     subject { middleware.call(env) }
@@ -73,76 +70,39 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
       end
     end
 
-    # we use Rack request.full_path, this will dump the accessed path and
-    # the query string. The query string is only for GETs requests.
-    # Hence different expectation (when params are set) for GETs and
-    # the other methods (see below)
-    context 'when using get' do
-      let(:method) { 'get' }
-
-      where(:path, :query_params, :shared_example_name) do
-        '/foo/bar'            | {}                                   | 'no issue'
-        '/foo/../bar'         | {}                                   | 'path traversal'
-        '/foo%2Fbar'          | {}                                   | 'no issue'
-        '/foo%2F..%2Fbar'     | {}                                   | 'path traversal'
-        '/foo%252F..%252Fbar' | {}                                   | 'no issue'
-
-        '/foo/bar'            | { x: 'foo' }                         | 'no issue'
-        '/foo/bar'            | { x: 'foo/../bar' }                  | 'path traversal'
-        '/foo/bar'            | { x: 'foo%2Fbar' }                   | 'no issue'
-        '/foo/bar'            | { x: 'foo%2F..%2Fbar' }              | 'no issue'
-        '/foo/bar'            | { x: 'foo%252F..%252Fbar' }          | 'no issue'
-        '/foo%2F..%2Fbar'     | { x: 'foo%252F..%252Fbar' }          | 'path traversal'
-
-        '/api/graphql'        | { query: CGI.escape(graphql_query) } | 'no issue'
-      end
-
-      with_them do
-        it_behaves_like params[:shared_example_name]
-      end
-
-      described_class::EXCLUDED_QUERY_PARAM_NAMES.each do |param_name|
-        context "with the excluded query parameter #{param_name}" do
-          let(:path) { '/foo/bar' }
-          let(:query_params) { { param_name => 'an%2F..%2Fattempt', :x => 'test' } }
-          let(:decoded_fullpath) { '/foo/bar?x=test' }
-
-          it_behaves_like 'no issue'
-        end
-      end
-
-      context 'with a issues search path' do
-        let(:query_params) { {} }
-        let(:decoded_fullpath) { '/project/-/issues/?sort=updated_desc&milestone_title=16.0&first_page_size=20' }
-        let(:path) do
-          'project/-/issues/?sort=updated_desc&milestone_title=16.0&search=Release%20%252525&first_page_size=20'
-        end
-
-        it_behaves_like 'no issue'
-      end
-    end
-
-    %w[post put post delete patch].each do |http_method|
+    %w[get post put patch delete].each do |http_method|
       context "when using #{http_method}" do
         let(:method) { http_method }
 
         where(:path, :query_params, :shared_example_name) do
-          '/foo/bar'            | {}                          | 'no issue'
-          '/foo/../bar'         | {}                          | 'path traversal'
-          '/foo%2Fbar'          | {}                          | 'no issue'
-          '/foo%2F..%2Fbar'     | {}                          | 'path traversal'
-          '/foo%252F..%252Fbar' | {}                          | 'no issue'
+          '/foo/bar'            | {}                                   | 'no issue'
+          '/foo/../bar'         | {}                                   | 'path traversal'
+          '/foo%2Fbar'          | {}                                   | 'no issue'
+          '/foo%2F..%2Fbar'     | {}                                   | 'path traversal'
+          '/foo%252F..%252Fbar' | {}                                   | 'no issue'
 
-          '/foo/bar'            | { x: 'foo' }                | 'no issue'
-          '/foo/bar'            | { x: 'foo/../bar' }         | 'no issue'
-          '/foo/bar'            | { x: 'foo%2Fbar' }          | 'no issue'
-          '/foo/bar'            | { x: 'foo%2F..%2Fbar' }     | 'no issue'
-          '/foo/bar'            | { x: 'foo%252F..%252Fbar' } | 'no issue'
-          '/foo%2F..%2Fbar'     | { x: 'foo%252F..%252Fbar' } | 'path traversal'
+          '/foo/bar'            | { x: 'foo' }                         | 'no issue'
+          '/foo/bar'            | { x: 'foo/../bar' }                  | 'path traversal'
+          '/foo/bar'            | { x: 'foo%2Fbar' }                   | 'no issue'
+          '/foo/bar'            | { x: 'foo%2F..%2Fbar' }              | 'no issue'
+          '/foo/bar'            | { x: 'foo%252F..%252Fbar' }          | 'no issue'
+          '/foo%2F..%2Fbar'     | { x: 'foo%252F..%252Fbar' }          | 'path traversal'
+
+          '/api/graphql'        | { query: CGI.escape(graphql_query) } | 'no issue'
         end
 
         with_them do
           it_behaves_like params[:shared_example_name]
+        end
+
+        described_class::EXCLUDED_QUERY_PARAM_NAMES.each do |param_name|
+          context "with the excluded query parameter #{param_name}" do
+            let(:path) { '/foo/bar' }
+            let(:query_params) { { param_name => 'an%2F..%2Fattempt', :x => 'test' } }
+            let(:decoded_fullpath) { '/foo/bar?x=test' }
+
+            it_behaves_like 'no issue'
+          end
         end
       end
     end
@@ -172,7 +132,7 @@ RSpec.describe ::Gitlab::Middleware::PathTraversalCheck, feature_category: :shar
       end
 
       with_them do
-        %w[get post put post delete patch].each do |http_method|
+        %w[get post put patch delete].each do |http_method|
           context "when using #{http_method}" do
             let(:method) { http_method }
 

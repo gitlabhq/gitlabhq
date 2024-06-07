@@ -29,20 +29,18 @@ This should enable everyone to see locally any change in an IDE being sent to th
         1. Inside the new window, in the built in terminal select the "Output" tab then "GitLab Language Server" from the drop down menu on the right.
         1. Open a new file inside of this VS Code window and begin typing to see code suggestions in action.
         1. You will see completion request URLs being fetched that match the Git remote URL for your GDK.
+
 1. Main Application (GDK):
    1. Install the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#one-line-installation).
    1. Enable Feature Flag ```ai_duo_code_suggestions_switch```:
       1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
       1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the code suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
-   1. Set the AI Gateway URL environmental variable by running `export AI_GATEWAY_URL=http://localhost:5052`.
-   1. Run your GDK server with `gdk start` if it's not already running.
-1. [Setup AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist):
-   1. Run the AI Gateway as part of your GDK
-      1. Follow the "How to set up and validate locally" steps in [this MR](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/3646#how-to-set-up-and-validate-locally)
-      1. Be sure to add your `ANTHROPIC_API_KEY` to your GDK's `gitlab-ai-gateway/.env` file
-   1. Run the AI Gateway externally
-      1. Complete the steps to [run the server locally](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
+
+1. [Set up AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist). You can do this in two ways:
+   - [Run the AI Gateway as part of your GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md).
+   - Run the AI Gateway externally:
+      1. [Run the server locally](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
       1. Uncomment or add the following variables in the `.env` file for all debugging insights.
          You may need to adjust the filepath (remove `..`) for this log to show in the `ai-assist` root directory.
 
@@ -57,6 +55,12 @@ This should enable everyone to see locally any change in an IDE being sent to th
          ```shell
          tail -f modelgateway_debug.log | fblog -a prefix -a suffix -a current_file_name -a suggestion -a language -a input -a parameters -a score -a exception
          ```
+
+1. Update the main application (GDK) to reference the AI Gateway URL.
+   1. Set the `AI_GATEWAY_URL` environment variable.
+      - If you set up the AI Gateway externally, run `export AI_GATEWAY_URL=http://localhost:5052`.
+      - If you set up the AI Gateway through GDK, you can get the AI Gateway URL by running `gdk status`, afterwards run `export AI_GATEWAY_URL=<the address set by gdk>`.
+   1. Start or restart GDK (`gdk start` or `gdk restart`).
 
 ### Setup instructions to use staging AI Gateway
 

@@ -1,7 +1,7 @@
 ---
 table_name: project_audit_events
 classes:
-- ProjectAuditEvent
+- AuditEvents::ProjectAuditEvent
 feature_categories:
 - audit_events
 description: Stores audit events scoped to project

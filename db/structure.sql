@@ -1656,6 +1656,34 @@ CREATE TABLE p_ci_stages (
 )
 PARTITION BY LIST (partition_id);
 
+CREATE SEQUENCE shared_audit_event_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+CREATE TABLE group_audit_events (
+    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    group_id bigint NOT NULL,
+    author_id bigint NOT NULL,
+    target_id bigint,
+    event_name text,
+    details text,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    target_type text,
+    CONSTRAINT group_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT group_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT group_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT group_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
+    CONSTRAINT group_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
+)
+PARTITION BY RANGE (created_at);
+
 CREATE TABLE groups_visits (
     id bigint NOT NULL,
     entity_id bigint NOT NULL,
@@ -1683,6 +1711,26 @@ CREATE TABLE incident_management_pending_issue_escalations (
     updated_at timestamp with time zone NOT NULL
 )
 PARTITION BY RANGE (process_at);
+
+CREATE TABLE instance_audit_events (
+    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    author_id bigint NOT NULL,
+    target_id bigint,
+    event_name text,
+    details text,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    target_type text,
+    CONSTRAINT instance_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT instance_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT instance_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT instance_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
+    CONSTRAINT instance_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
+)
+PARTITION BY RANGE (created_at);
 
 CREATE TABLE loose_foreign_keys_deleted_records (
     id bigint NOT NULL,
@@ -1770,6 +1818,27 @@ CREATE TABLE p_ci_finished_build_ch_sync_events (
 )
 PARTITION BY LIST (partition);
 
+CREATE TABLE project_audit_events (
+    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    author_id bigint NOT NULL,
+    target_id bigint,
+    event_name text,
+    details text,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    target_type text,
+    CONSTRAINT project_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT project_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT project_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT project_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
+    CONSTRAINT project_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
+)
+PARTITION BY RANGE (created_at);
+
 CREATE TABLE projects_visits (
     id bigint NOT NULL,
     entity_id bigint NOT NULL,
@@ -1794,6 +1863,27 @@ CREATE TABLE security_findings (
     CONSTRAINT check_b9508c6df8 CHECK ((char_length(project_fingerprint) <= 40))
 )
 PARTITION BY LIST (partition_number);
+
+CREATE TABLE user_audit_events (
+    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    author_id bigint NOT NULL,
+    target_id bigint,
+    event_name text,
+    details text,
+    ip_address inet,
+    author_name text,
+    entity_path text,
+    target_details text,
+    target_type text,
+    CONSTRAINT user_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
+    CONSTRAINT user_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
+    CONSTRAINT user_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
+    CONSTRAINT user_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
+    CONSTRAINT user_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
+)
+PARTITION BY RANGE (created_at);
 
 CREATE TABLE value_stream_dashboard_counts (
     id bigint NOT NULL,
@@ -10051,34 +10141,6 @@ CREATE SEQUENCE grafana_integrations_id_seq
 
 ALTER SEQUENCE grafana_integrations_id_seq OWNED BY grafana_integrations.id;
 
-CREATE SEQUENCE shared_audit_event_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-CREATE TABLE group_audit_events (
-    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    group_id bigint NOT NULL,
-    author_id bigint NOT NULL,
-    target_id bigint,
-    event_name text,
-    details text,
-    ip_address inet,
-    author_name text,
-    entity_path text,
-    target_details text,
-    target_type text,
-    CONSTRAINT group_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
-    CONSTRAINT group_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
-    CONSTRAINT group_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
-    CONSTRAINT group_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
-    CONSTRAINT group_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
-)
-PARTITION BY RANGE (created_at);
-
 CREATE TABLE group_crm_settings (
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -10711,26 +10773,6 @@ CREATE SEQUENCE insights_id_seq
     CACHE 1;
 
 ALTER SEQUENCE insights_id_seq OWNED BY insights.id;
-
-CREATE TABLE instance_audit_events (
-    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    author_id bigint NOT NULL,
-    target_id bigint,
-    event_name text,
-    details text,
-    ip_address inet,
-    author_name text,
-    entity_path text,
-    target_details text,
-    target_type text,
-    CONSTRAINT instance_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
-    CONSTRAINT instance_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
-    CONSTRAINT instance_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
-    CONSTRAINT instance_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
-    CONSTRAINT instance_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
-)
-PARTITION BY RANGE (created_at);
 
 CREATE TABLE instance_audit_events_streaming_headers (
     id bigint NOT NULL,
@@ -14692,27 +14734,6 @@ CREATE SEQUENCE project_aliases_id_seq
 
 ALTER SEQUENCE project_aliases_id_seq OWNED BY project_aliases.id;
 
-CREATE TABLE project_audit_events (
-    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    project_id bigint NOT NULL,
-    author_id bigint NOT NULL,
-    target_id bigint,
-    event_name text,
-    details text,
-    ip_address inet,
-    author_name text,
-    entity_path text,
-    target_details text,
-    target_type text,
-    CONSTRAINT project_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
-    CONSTRAINT project_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
-    CONSTRAINT project_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
-    CONSTRAINT project_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
-    CONSTRAINT project_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
-)
-PARTITION BY RANGE (created_at);
-
 CREATE TABLE project_authorizations (
     user_id integer NOT NULL,
     project_id integer NOT NULL,
@@ -17621,27 +17642,6 @@ CREATE SEQUENCE user_agent_details_id_seq
     CACHE 1;
 
 ALTER SEQUENCE user_agent_details_id_seq OWNED BY user_agent_details.id;
-
-CREATE TABLE user_audit_events (
-    id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    user_id bigint NOT NULL,
-    author_id bigint NOT NULL,
-    target_id bigint,
-    event_name text,
-    details text,
-    ip_address inet,
-    author_name text,
-    entity_path text,
-    target_details text,
-    target_type text,
-    CONSTRAINT user_audit_events_author_name_check CHECK ((char_length(author_name) <= 255)),
-    CONSTRAINT user_audit_events_entity_path_check CHECK ((char_length(entity_path) <= 5500)),
-    CONSTRAINT user_audit_events_event_name_check CHECK ((char_length(event_name) <= 255)),
-    CONSTRAINT user_audit_events_target_details_check CHECK ((char_length(target_details) <= 5500)),
-    CONSTRAINT user_audit_events_target_type_check CHECK ((char_length(target_type) <= 255))
-)
-PARTITION BY RANGE (created_at);
 
 CREATE TABLE user_broadcast_message_dismissals (
     id bigint NOT NULL,

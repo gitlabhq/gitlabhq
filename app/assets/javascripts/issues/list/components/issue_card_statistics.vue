@@ -24,7 +24,7 @@ export default {
     <li
       v-if="issue.upvotes"
       v-gl-tooltip
-      class="gl-hidden gl-sm-display-block"
+      class="gl-hidden sm:gl-block"
       :title="$options.i18n.upvotes"
       data-testid="issuable-upvotes"
     >
@@ -34,7 +34,7 @@ export default {
     <li
       v-if="issue.downvotes"
       v-gl-tooltip
-      class="gl-hidden gl-sm-display-block"
+      class="gl-hidden sm:gl-block"
       :title="$options.i18n.downvotes"
       data-testid="issuable-downvotes"
     >
@@ -44,7 +44,7 @@ export default {
     <li
       v-if="issue.mergeRequestsCount"
       v-gl-tooltip
-      class="gl-hidden gl-sm-display-block"
+      class="gl-hidden sm:gl-block"
       :title="__('Related merge requests')"
       data-testid="merge-requests"
     >

@@ -51,21 +51,15 @@ describe('ConfidentialityBadge', () => {
     },
   );
 
-  it('does not have `gl-sm-display-block` and `gl-display-none` when `hideTextInSmallScreens` is false', () => {
+  it('does not have `sm:gl-block` and `gl-display-none` when `hideTextInSmallScreens` is false', () => {
     wrapper = createComponent({ hideTextInSmallScreens: false });
 
-    expect(findConfidentialityBadgeText().classes()).not.toContain(
-      'gl-display-none',
-      'gl-sm-display-block',
-    );
+    expect(findConfidentialityBadgeText().classes()).not.toContain('gl-hidden', 'sm:gl-block');
   });
 
-  it('has `gl-sm-display-block` and `gl-display-none` when `hideTextInSmallScreens` is true', () => {
+  it('has `sm:gl-block` and `gl-hidden` when `hideTextInSmallScreens` is true', () => {
     wrapper = createComponent({ hideTextInSmallScreens: true });
 
-    expect(findConfidentialityBadgeText().classes()).toContain(
-      'gl-display-none',
-      'gl-sm-display-block',
-    );
+    expect(findConfidentialityBadgeText().classes()).toContain('gl-hidden', 'sm:gl-block');
   });
 });

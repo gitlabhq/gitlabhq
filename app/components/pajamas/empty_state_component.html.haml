@@ -2,7 +2,7 @@
 
 %section.gl-display-flex.gl-empty-state{ **@empty_state_options, class: empty_state_class }
   - if @svg_path.present?
-    - image_class = @compact ? 'gl-display-none gl-sm-display-block gl-px-4' : 'gl-max-w-full'
+    - image_class = @compact ? 'gl-hidden sm:gl-block gl-px-4' : 'gl-max-w-full'
     %div{ class: image_class }
       = image_tag @svg_path, alt: "", class: 'gl-dark-invert-keep-hue'
 

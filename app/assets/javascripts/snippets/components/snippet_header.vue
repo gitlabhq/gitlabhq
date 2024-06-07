@@ -106,7 +106,7 @@ export default {
           ? __('Snippets with non-text files can only be edited via Git.')
           : undefined,
         extraAttrs: {
-          class: 'gl-sm-display-none!',
+          class: 'sm:!gl-hidden',
         },
       };
     },
@@ -285,7 +285,7 @@ export default {
           :href="editItem.href"
           :title="editItem.title"
           :disabled="editItem.disabled"
-          class="gl-display-none gl-sm-display-inline-block"
+          class="gl-hidden sm:gl-inline-block"
           data-testid="snippet-action-button"
           :data-qa-action="editItem.text"
         >
@@ -311,7 +311,7 @@ export default {
           <template #toggle>
             <div class="gl-w-full gl-min-h-7">
               <gl-button
-                class="gl-sm-display-none! gl-new-dropdown-toggle gl-w-full"
+                class="sm:!gl-hidden gl-new-dropdown-toggle gl-w-full"
                 button-text-classes="gl-flex gl-justify-content-space-between gl-w-full"
                 category="secondary"
                 tabindex="0"
@@ -321,7 +321,7 @@ export default {
               </gl-button>
               <gl-button
                 v-gl-tooltip="showDropdownTooltip"
-                class="gl-hidden sm:gl-flex gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
+                class="gl-hidden sm:!gl-flex gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret"
                 category="tertiary"
                 icon="ellipsis_v"
                 :aria-label="$options.i18n.snippetAction"

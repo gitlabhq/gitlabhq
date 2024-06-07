@@ -22,7 +22,7 @@ module CommitsHelper
       user: committer,
       user_name: committer.name,
       user_email: committer.email,
-      css_class: 'gl-display-none gl-sm-display-inline-block float-none gl-mr-0! gl-vertical-align-text-bottom'
+      css_class: 'gl-hidden sm:gl-inline-block float-none gl-mr-0! gl-vertical-align-text-bottom'
     }))
   end
 

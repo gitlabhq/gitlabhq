@@ -88,7 +88,7 @@ export default {
               :selected="isDetailsShown"
               icon="ellipsis_h"
               size="small"
-              class="gl-ml-2 gl-display-none gl-sm-display-block"
+              class="gl-ml-2 gl-hidden sm:gl-block"
               :title="$options.i18n.toggleDetailsLabel"
               :aria-label="$options.i18n.toggleDetailsLabel"
               :aria-expanded="isDetailsShown"

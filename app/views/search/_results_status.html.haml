@@ -1,4 +1,4 @@
-.search-results-status.gl-sm-display-flex.gl-items-start.gl-justify-content-space-between.gl-my-4{ class: ('lg:gl-hidden' if @search_objects.to_a.empty?) }
+.search-results-status.sm:gl-flex.gl-items-start.gl-justify-content-space-between.gl-my-4{ class: ('lg:gl-hidden' if @search_objects.to_a.empty?) }
   - unless @search_objects.to_a.empty?
     %div
       - unless @search_service_presenter.without_count?

@@ -13,7 +13,7 @@
         - if params[:search].present?
           = hidden_field_tag :search, params[:search]
         - if @can_bulk_update
-          .check-all-holder.gl-display-none.gl-sm-display-block.hidden.gl-float-left.gl-mr-3.gl-leading-36
+          .check-all-holder.gl-hidden.sm:gl-block.hidden.gl-float-left.gl-mr-3.gl-leading-36
             = render Pajamas::CheckboxTagComponent.new(name: 'check-all-issues', value: nil) do |c|
               - c.with_label do
                 %span.gl-sr-only

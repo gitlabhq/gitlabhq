@@ -12,21 +12,21 @@
       - c.with_body do
         = _('The source project of this merge request has been removed.')
 
-  .detail-page-header.border-bottom-0.gl-display-block.gl-pt-5{ class: "gl-sm-display-flex! #{'is-merge-request' if !fluid_layout}" }
+  .detail-page-header.border-bottom-0.gl-display-block.gl-pt-5{ class: "sm:!gl-flex #{'is-merge-request' if !fluid_layout}" }
     .detail-page-header-body
       %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-display-inline-block.gl-flex-grow-1.gl-break-anywhere{ data: { testid: 'title-content' } }
         = markdown_field(@merge_request, :title)
 
       - unless hide_gutter_toggle
         %div
-          = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-float-right gl-display-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle gl-sm-display-none!" })
+          = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-float-right gl-display-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle sm:!gl-hidden" })
 
     .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions.gl-display-flex
       - if can_update_merge_request
         - edit_action_description = _('Edit merge request')
         - edit_action_shortcut = 'e'
         - edit_button_title = "#{edit_action_description} <kbd class='flat ml-1' aria-hidden=true>#{edit_action_shortcut}</kbd>"
-        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: "gl-display-none gl-sm-display-block gl-align-self-start has-tooltip js-issuable-edit", data: { html: "true", testid: "edit-title-button" }, title: edit_button_title }) do
+        = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: "gl-hidden sm:gl-block gl-align-self-start has-tooltip js-issuable-edit", data: { html: "true", testid: "edit-title-button" }, title: edit_button_title }) do
           = _('Edit')
 
       .gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-gap-3.gl-w-full.gl-sm-w-auto.gl-mt-2.gl-sm-mt-0

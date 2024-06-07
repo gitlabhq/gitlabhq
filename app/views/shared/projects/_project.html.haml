@@ -9,7 +9,7 @@
 - use_creator_avatar = local_assigns[:use_creator_avatar]
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
 - access = max_project_member_access(project)
-- css_class = "gl-sm-display-flex gl-align-items-center !gl-align-middle" if project.description.blank? && !show_last_commit_as_description
+- css_class = "sm:gl-flex gl-align-items-center !gl-align-middle" if project.description.blank? && !show_last_commit_as_description
 - updated_tooltip = time_ago_with_tooltip(project.last_activity_at || project.updated_at)
 - show_pipeline_status_icon = pipeline_status && can?(current_user, :read_cross_project) && project.pipeline_status.has_status? && can?(current_user, :read_build, project)
 - last_pipeline = last_pipeline_from_status_cache(project) if show_pipeline_status_icon
@@ -59,10 +59,10 @@
           = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project, additional_classes: 'gl-ml-2!'
 
       - if show_last_commit_as_description
-        .description.gl-display-none.gl-sm-display-block.gl-overflow-hidden.gl-mr-3.gl-mt-2.gl-font-sm
+        .description.gl-hidden.sm:gl-block.gl-overflow-hidden.gl-mr-3.gl-mt-2.gl-font-sm
           = link_to_markdown(project.commit.title, project_commit_path(project, project.commit), class: "commit-row-message")
       - elsif project.description.present?
-        .description.gl-display-none.gl-sm-display-block.gl-overflow-hidden.gl-mr-3.gl-mt-2.gl-font-sm
+        .description.gl-hidden.sm:gl-block.gl-overflow-hidden.gl-mr-3.gl-mt-2.gl-font-sm
           = markdown_field(project, :description)
 
       - if project.topics.any?
@@ -71,7 +71,7 @@
 
       = render_if_exists 'shared/projects/removed', project: project
 
-      .gl-display-flex.gl-align-items-center.gl-mt-3{ class: "#{css_class} gl-sm-display-none!" }
+      .gl-display-flex.gl-align-items-center.gl-mt-3{ class: "#{css_class} sm:!gl-hidden" }
         .controls.gl-display-flex.gl-align-items-center
           - if show_pipeline_status_icon && last_pipeline.present?
             - pipeline_path = pipelines_project_commit_path(project.pipeline_status.project, project.pipeline_status.sha, ref: project.pipeline_status.ref)

@@ -5,7 +5,7 @@
     = render Pajamas::ButtonComponent.new(icon: 'ellipsis_v', category: :tertiary, button_options: { class: 'note-action-button more-actions-toggle', data: { title: 'More actions', toggle: 'dropdown', container: 'body', testid: 'more-actions-dropdown' }})
     %ul.dropdown-menu.more-actions-dropdown.dropdown-menu-right
       - if note_editable
-        %li{ class: "gl-sm-display-none!" }
+        %li{ class: "sm:!gl-hidden" }
           = render Pajamas::ButtonComponent.new(category: :tertiary, button_options: { class: 'menu-item note-action-button js-note-edit', data: { container: 'body', testid: 'edit-comment-button' } }) do
             = _("Edit comment")
       %li

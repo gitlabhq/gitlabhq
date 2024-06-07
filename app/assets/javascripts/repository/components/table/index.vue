@@ -158,7 +158,7 @@ export default {
           <template v-if="isLoading">
             <tr v-for="i in 5" :key="i" aria-hidden="true">
               <td><gl-skeleton-loader :lines="1" /></td>
-              <td class="gl-display-none gl-sm-display-block">
+              <td class="gl-hidden sm:gl-block">
                 <gl-skeleton-loader :lines="1" />
               </td>
               <td>

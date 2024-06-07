@@ -54,7 +54,7 @@ export default {
     class="diff-stats"
     :class="{
       'is-compare-versions-header gl-hidden lg:gl-inline-flex': isCompareVersionsHeader,
-      'gl-display-none gl-sm-display-inline-flex': !isCompareVersionsHeader,
+      'gl-hidden sm:!gl-inline-flex': !isCompareVersionsHeader,
     }"
   >
     <div v-if="notDiffable" :class="fileStats.classes">

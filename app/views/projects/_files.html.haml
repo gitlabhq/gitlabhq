@@ -9,7 +9,7 @@
   .nav-block.gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-align-items-stretch
     = render 'projects/tree/tree_header', tree: @tree
 
-  .info-well.gl-display-none.gl-sm-display-flex.project-last-commit.gl-flex-direction-column.gl-mt-5
+  .info-well.gl-hidden.sm:gl-flex.project-last-commit.gl-flex-direction-column.gl-mt-5
     #js-last-commit.gl-m-auto{ data: {ref_type: @ref_type.to_s} }
       = gl_loading_icon(size: 'md')
     - if project.licensed_feature_available?(:code_owners)

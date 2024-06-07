@@ -38,7 +38,7 @@
 
           = render 'shared/projects/badges', project: project, css_class: 'gl-mr-3'
 
-          .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex.gl-gap-3
+          .stats.gl-text-gray-500.gl-flex-shrink-0.gl-hidden.sm:gl-flex.gl-gap-3
             = gl_badge_tag storage_counter(project.statistics&.storage_size)
           .controls.gl-flex-shrink-0.gl-ml-5
             = render Pajamas::ButtonComponent.new(href: project_project_members_path(project),

@@ -328,8 +328,6 @@ Layout/ClassStructure:
     - 'ee/lib/gitlab/vulnerability_scanning/possibly_affected_component.rb'
     - 'ee/lib/langsmith/client.rb'
     - 'ee/lib/omni_auth/strategies/group_saml.rb'
-    - 'ee/lib/remote_development/workspaces/reconcile/output/devfile_parser.rb'
-    - 'ee/lib/remote_development/workspaces/reconcile/output/devfile_parser_v2.rb'
     - 'ee/lib/system_check/app/advanced_search_migrations_check.rb'
     - 'ee/lib/system_check/geo/license_check.rb'
     - 'lib/api/support/git_access_actor.rb'

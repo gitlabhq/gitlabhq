@@ -269,16 +269,16 @@ export default {
     },
     titleClassHeader() {
       return {
-        'gl-sm-display-none! gl-mt-3': this.parentWorkItem,
-        'gl-sm-display-block!': !this.parentWorkItem,
+        'sm:!gl-hidden gl-mt-3': this.parentWorkItem,
+        'sm:!gl-block': !this.parentWorkItem,
         'gl-w-full': !this.parentWorkItem && !this.editMode,
         'editable-wi-title': this.editMode && !this.parentWorkItem,
       };
     },
     titleClassComponent() {
       return {
-        'gl-sm-display-block!': !this.parentWorkItem,
-        'gl-display-none gl-sm-display-block! gl-mt-3': this.parentWorkItem,
+        'sm:!gl-block': !this.parentWorkItem,
+        'gl-display-none sm:!gl-block gl-mt-3': this.parentWorkItem,
         'editable-wi-title': this.workItemsMvc2Enabled,
       };
     },
@@ -494,7 +494,7 @@ export default {
         />
         <div v-else data-testid="detail-wrapper">
           <div
-            class="gl-display-block gl-sm-display-flex! gl-align-items-flex-start gl-flex-direction-row gl-gap-3 gl-pt-3"
+            class="gl-block sm:!gl-flex gl-align-items-flex-start gl-flex-direction-row gl-gap-3 gl-pt-3"
           >
             <work-item-ancestors v-if="parentWorkItem" :work-item="workItem" class="gl-mb-1" />
             <div v-if="!error" :class="titleClassHeader" data-testid="work-item-type">
@@ -560,7 +560,7 @@ export default {
             </div>
             <gl-button
               v-if="isModal"
-              class="gl-display-none gl-sm-display-block!"
+              class="gl-display-none sm:!gl-block"
               category="tertiary"
               data-testid="work-item-close"
               icon="close"

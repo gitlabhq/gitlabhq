@@ -294,7 +294,7 @@ describe('Design note component', () => {
       expect(findEditDropdownItem().exists()).toBe(true);
       expect(findCopyLinkDropdownItem().exists()).toBe(true);
       expect(findDeleteDropdownItem().exists()).toBe(true);
-      expect(findDropdown().props('items')[0].extraAttrs.class).toBe('gl-sm-display-none!');
+      expect(findDropdown().props('items')[0].extraAttrs.class).toBe('sm:!gl-hidden');
     });
   });
 

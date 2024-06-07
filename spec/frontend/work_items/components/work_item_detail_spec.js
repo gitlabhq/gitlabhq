@@ -327,7 +327,7 @@ describe('WorkItemDetail component', () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
-      expect(findWorkItemType().classes()).toEqual(['gl-sm-display-block!', 'gl-w-full']);
+      expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
     });
 
     describe('with parent', () => {
@@ -343,7 +343,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('does not show title in the header when parent exists', () => {
-        expect(findWorkItemType().classes()).toEqual(['gl-sm-display-none!', 'gl-mt-3']);
+        expect(findWorkItemType().classes()).toEqual(['sm:!gl-hidden', 'gl-mt-3']);
       });
     });
   });

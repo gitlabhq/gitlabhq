@@ -97,7 +97,6 @@ GraphQL/ExtractType:
     - 'ee/app/graphql/types/member_roles/customizable_permission_type.rb'
     - 'ee/app/graphql/types/metric_image_type.rb'
     - 'ee/app/graphql/types/pipeline_security_report_finding_type.rb'
-    - 'ee/app/graphql/types/remote_development/workspace_type.rb'
     - 'ee/app/graphql/types/requirements_management/requirement_type.rb'
     - 'ee/app/graphql/types/security/finding_reports_comparer/report_type.rb'
     - 'ee/app/graphql/types/security_report_summary_section_type.rb'

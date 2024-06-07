@@ -198,8 +198,8 @@ describe('Snippet header component', () => {
     createComponent();
 
     expect(findEditButton().attributes('href')).toEqual(`${snippet.webUrl}/edit`);
-    expect(findEditButton().attributes('class')).toContain('gl-display-none');
-    expect(findEditButton().attributes('class')).toContain('gl-sm-display-inline-block');
+    expect(findEditButton().attributes('class')).toContain('gl-hidden');
+    expect(findEditButton().attributes('class')).toContain('sm:gl-inline-block');
   });
 
   it('renders dropdown for action buttons', () => {

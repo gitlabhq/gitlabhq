@@ -28,3 +28,49 @@ export const NEW_NAME_FIELD = 'newName';
 export const TARGET_NAMESPACE_FIELD = 'targetNamespace';
 
 export const ROOT_NAMESPACE = { fullPath: '', id: null };
+
+const PLACEHOLDER_STATUS_PENDING_ASSIGNMENT = 'pending_assignment';
+const PLACEHOLDER_STATUS_AWAITING_APPROVAL = 'awaiting_approval';
+const PLACEHOLDER_STATUS_REJECTED = 'rejected';
+const PLACEHOLDER_STATUS_REASSIGNING = 'reassigning'; // backend state still pending
+const PLACEHOLDER_STATUS_FAILED = 'failed';
+const PLACEHOLDER_STATUS_SAVED = 'saved'; // backend state still pending
+const PLACEHOLDER_STATUS_COMPLETED = 'completed';
+
+export const placeholderUserBadges = {
+  [PLACEHOLDER_STATUS_PENDING_ASSIGNMENT]: {
+    text: __('Not started'),
+    variant: 'muted',
+    tooltip: s__('UserMapping|Reassignment has not started.'),
+  },
+  [PLACEHOLDER_STATUS_AWAITING_APPROVAL]: {
+    text: s__('UserMapping|Pending approval'),
+    variant: 'warning',
+    tooltip: s__('UserMapping|Reassignment waiting on user approval.'),
+  },
+  [PLACEHOLDER_STATUS_REJECTED]: {
+    text: s__('UserMapping|Rejected'),
+    variant: 'danger',
+    tooltip: s__('UserMapping|Reassignment was rejected by user.'),
+  },
+  [PLACEHOLDER_STATUS_REASSIGNING]: {
+    text: s__('UserMapping|Reassigning'),
+    variant: 'info',
+    tooltip: s__('UserMapping|Reassignment in progress.'),
+  },
+  [PLACEHOLDER_STATUS_FAILED]: {
+    text: __('Failed'),
+    variant: 'danger',
+    tooltip: s__('UserMapping|Reassignment failed.'),
+  },
+  [PLACEHOLDER_STATUS_SAVED]: {
+    text: s__('UserMapping|Kept as placeholder'),
+    variant: 'success',
+    tooltip: s__('UserMapping|Placeholder user was made permanent.'),
+  },
+  [PLACEHOLDER_STATUS_COMPLETED]: {
+    text: __('Success'),
+    variant: 'success',
+    tooltip: s__('UserMapping|Reassignment succeeded.'),
+  },
+};

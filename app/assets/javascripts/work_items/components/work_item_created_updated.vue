@@ -134,7 +134,7 @@ export default {
 
     <span
       v-if="updatedAt"
-      class="gl-ml-5 gl-display-none gl-sm-display-inline-block gl-align-middle"
+      class="gl-ml-5 gl-hidden sm:gl-inline-block gl-align-middle"
       data-testid="work-item-updated"
     >
       <gl-sprintf :message="__('Updated %{timeAgo}')">

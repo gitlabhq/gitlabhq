@@ -52,14 +52,14 @@ export default {
 <template>
   <div v-if="canUpdate || canDelete">
     <!-- sm and up screens -->
-    <div class="gl-display-none gl-sm-display-flex gl-gap-3">
+    <div class="gl-hidden sm:gl-flex gl-gap-3">
       <runner-edit-button v-if="canUpdate" :href="editPath" />
       <runner-pause-button v-if="canUpdate" :runner="runner" />
       <runner-delete-button v-if="canDelete" :runner="runner" @deleted="onDeleted" />
     </div>
 
     <!-- xs screens -->
-    <div class="gl-sm-display-none">
+    <div class="sm:gl-hidden">
       <gl-disclosure-dropdown
         icon="ellipsis_v"
         :toggle-text="s__('Runner|Runner actions')"
