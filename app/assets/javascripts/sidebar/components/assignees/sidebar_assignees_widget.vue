@@ -101,6 +101,9 @@ export default {
       update(data) {
         return data.workspace?.issuable;
       },
+      skip() {
+        return !this.iid;
+      },
       result({ data }) {
         if (!data) {
           return;

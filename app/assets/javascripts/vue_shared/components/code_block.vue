@@ -33,5 +33,5 @@ export default {
     class="code-block rounded code"
     :class="$options.userColorScheme"
     :style="styleObject"
-  ><slot><code class="d-block">{{ code }}</code></slot></pre>
+  ><slot><code class="gl-block">{{ code }}</code></slot></pre>
 </template>

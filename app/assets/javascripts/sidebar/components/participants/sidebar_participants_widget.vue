@@ -43,6 +43,9 @@ export default {
       update(data) {
         return data.workspace?.issuable?.participants.nodes || [];
       },
+      skip() {
+        return !this.iid;
+      },
       error(error) {
         this.$emit('fetch-error', {
           message: this.$options.i18n.fetchingError,

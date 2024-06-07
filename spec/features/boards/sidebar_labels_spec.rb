@@ -14,10 +14,16 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
   let_it_be(:stretch)     { create(:label, project: project, name: 'Stretch') }
   let_it_be(:issue1)      { create(:labeled_issue, project: project, labels: [development], relative_position: 2) }
   let_it_be(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
+  let_it_be(:issue3)      { create(:issue, project: project) }
   let_it_be(:board)       { create(:board, project: project) }
-  let_it_be(:list)        { create(:list, board: board, label: development, position: 0) }
+  let_it_be(:list1)       { create(:list, board: board, label: development, position: 0) }
+  let_it_be(:list2)       { create(:list, board: board, label: bug, position: 1) }
 
-  let(:card)              { find('.board:nth-child(2)').first('.board-card') }
+  let(:backlog_list)      { find('.board:nth-child(1)') }
+  let(:development_list)  { find('.board:nth-child(2)') }
+  let(:bug_list)          { find('.board:nth-child(3)') }
+  let(:card)              { development_list.first('.board-card') }
+  let(:backlog_card)      { backlog_list.first('.board-card') }
 
   before do
     project.add_maintainer(user)
@@ -65,9 +71,20 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
         end
       end
 
+      click_button 'Close drawer'
+
+      wait_for_requests
+
       # 'Development' label does not show since the card is in a 'Development' list label
       expect(card).to have_selector('.gl-label', count: 2)
       expect(card).to have_content(bug.title)
+
+      # Card is duplicated in the 'Bug' list
+      page.within(bug_list) do
+        expect(page).to have_selector('.board-card', count: 1)
+        expect(page).to have_content(issue2.title)
+        expect(find('.board-card')).to have_content(development.title)
+      end
     end
 
     it 'adds a multiple labels' do
@@ -97,6 +114,69 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
       expect(card).to have_selector('.gl-label', count: 3)
       expect(card).to have_content(bug.title)
       expect(card).to have_content(regression.title)
+    end
+
+    it 'removes a label and moves card to backlog' do
+      click_card(card)
+
+      page.within('.labels') do
+        click_button 'Edit'
+
+        wait_for_requests
+
+        click_button development.title
+
+        click_button 'Close'
+
+        wait_for_requests
+      end
+
+      click_button 'Close drawer'
+
+      wait_for_requests
+
+      # Card is moved to the 'Backlog' list
+      page.within(backlog_list) do
+        expect(page).to have_selector('.board-card', count: 2)
+        expect(page).to have_content(issue2.title)
+      end
+
+      # Card is moved away from the 'Development' list
+      page.within(development_list) do
+        expect(page).to have_selector('.board-card', count: 1)
+        expect(page).not_to have_content(issue2.title)
+      end
+    end
+
+    it 'adds a label to backlog card and moves the card to the list' do
+      click_card(backlog_card)
+
+      page.within('.labels') do
+        click_button 'Edit'
+
+        wait_for_requests
+
+        click_on development.title
+
+        click_button 'Close'
+
+        wait_for_requests
+      end
+
+      click_button 'Close drawer'
+
+      wait_for_requests
+
+      # Card is removed from backlog
+      page.within(backlog_list) do
+        expect(page).to have_selector('.board-card', count: 0)
+      end
+
+      # Card is shown in the 'Development' list
+      page.within(development_list) do
+        expect(page).to have_selector('.board-card', count: 3)
+        expect(page).to have_content(issue3.title)
+      end
     end
 
     it 'removes a label' do
@@ -139,7 +219,7 @@ RSpec.describe 'Project issue boards sidebar labels', :js, feature_category: :po
 
         expect(page).to have_button 'test label'
       end
-      expect(page).to have_selector('.board', count: 3)
+      expect(page).to have_selector('.board', count: 4)
     end
   end
 end

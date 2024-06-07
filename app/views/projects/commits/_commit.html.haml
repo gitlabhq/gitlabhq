@@ -54,7 +54,7 @@
       = render_if_exists 'projects/commits/project_namespace', show_project_name: show_project_name, project: project
 
       - if commit.description?
-        %pre{ class: ["commit-row-description gl-mb-3 gl-white-space-pre-wrap", (collapsible ? "js-toggle-content" : "d-block")] }
+        %pre{ class: ["commit-row-description gl-mb-3 gl-white-space-pre-wrap", (collapsible ? "js-toggle-content" : "!gl-block")] }
           = preserve(markdown_field(commit, :description))
 
     .commit-actions.flex-row

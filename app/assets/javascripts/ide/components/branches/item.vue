@@ -39,7 +39,7 @@ export default {
     </span>
     <span>
       <strong> {{ item.name }} </strong>
-      <span class="ide-merge-request-project-path d-block mt-1">
+      <span class="ide-merge-request-project-path gl-block mt-1">
         Updated <timeago :time="item.committedDate || ''" />
       </span>
     </span>

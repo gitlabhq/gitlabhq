@@ -46,6 +46,12 @@ export const mismatchAllowList = [
   '.border-l\\!',
   '.border-r\\!',
   '.border-t\\!',
+  // Tailwindy transparent border utils now leverage design tokens, the mismatches are expected.
+  '.border-transparent',
+  '.border-t-transparent',
+  '.border-r-transparent',
+  '.border-b-transparent',
+  '.border-l-transparent',
   // Tailwind's line-clamp utils don't set `white-space: normal`, while our custom utils did.
   // We have added `gl-whitespace-normal` wherever line-clamp utils were being used, so these
   // mismatches can be ignored.

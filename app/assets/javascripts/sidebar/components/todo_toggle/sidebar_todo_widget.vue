@@ -62,6 +62,9 @@ export default {
           iid: String(this.issuableIid),
         };
       },
+      skip() {
+        return !this.issuableIid;
+      },
       update(data) {
         return data.workspace?.issuable?.currentUserTodos.nodes[0]?.id;
       },

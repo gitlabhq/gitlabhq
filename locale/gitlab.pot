@@ -18722,6 +18722,9 @@ msgstr ""
 msgid "Didn't receive unlock instructions?"
 msgstr ""
 
+msgid "Diff"
+msgstr ""
+
 msgid "Diff files surpassing this limit will be presented as 'too large' and won't be expandable."
 msgstr ""
 
@@ -57715,6 +57718,9 @@ msgstr ""
 msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly recommend upgrading your GitLab installation to one of the following versions immediately: %{latestStableVersions}."
 msgstr ""
 
+msgid "Versions"
+msgstr ""
+
 msgid "View File Metadata"
 msgstr ""
 
@@ -59255,16 +59261,10 @@ msgstr ""
 msgid "Wiki|Page history"
 msgstr ""
 
-msgid "Wiki|Page version"
-msgstr ""
-
 msgid "Wiki|Pages"
 msgstr ""
 
 msgid "Wiki|Template history"
-msgstr ""
-
-msgid "Wiki|Template version"
 msgstr ""
 
 msgid "Wiki|Templates"

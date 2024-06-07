@@ -69,6 +69,7 @@ export default {
       </gl-tab>
     </gl-tabs>
 
+    <!-- eslint-disable-next-line vue/no-undef-components -->
     <container
       :is-loading="isLoading"
       :environments="state.environments"

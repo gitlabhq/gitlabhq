@@ -87,6 +87,9 @@ export default {
           iid: String(this.iid),
         };
       },
+      skip() {
+        return !this.iid;
+      },
       update(data) {
         return data.workspace?.issuable || {};
       },

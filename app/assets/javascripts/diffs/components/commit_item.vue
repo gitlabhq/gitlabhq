@@ -91,7 +91,7 @@ export default {
 <template>
   <li :class="{ 'js-toggle-container': collapsible }" class="commit">
     <div
-      class="d-block d-sm-flex flex-row-reverse justify-content-between align-items-start flex-lg-row-reverse"
+      class="gl-block sm:gl-flex flex-row-reverse justify-content-between align-items-start flex-lg-row-reverse"
     >
       <div
         class="commit-actions flex-row gl-hidden sm:gl-flex gl-align-items-center gl-flex-wrap justify-content-end"
@@ -142,7 +142,9 @@ export default {
               class="commit-row-message item-title"
             ></a>
 
-            <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
+            <span class="commit-row-message !gl-block sm:!gl-hidden"
+              >&middot; {{ commit.short_id }}</span
+            >
 
             <gl-button
               v-if="commit.description_html && collapsible"
@@ -172,7 +174,7 @@ export default {
       <pre
         v-if="commit.description_html"
         v-safe-html:[$options.safeHtmlConfig]="commitDescription"
-        :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
+        :class="{ 'js-toggle-content': collapsible, '!gl-block': !collapsible }"
         class="commit-row-description gl-mb-3 gl-text-body gl-white-space-pre-wrap"
       ></pre>
     </div>

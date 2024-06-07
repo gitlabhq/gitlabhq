@@ -10,7 +10,7 @@ module API
             expose :project_id, documentation: { type: 'integer', example: 1 }
             expose :package_name_pattern, documentation: { type: 'string', example: 'flightjs/flight' }
             expose :package_type, documentation: { type: 'string', example: 'npm' }
-            expose :push_protected_up_to_access_level, documentation: { type: 'string', example: 'maintainer' }
+            expose :minimum_access_level_for_push, documentation: { type: 'string', example: 'maintainer' }
           end
         end
       end

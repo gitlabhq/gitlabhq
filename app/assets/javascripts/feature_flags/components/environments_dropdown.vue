@@ -156,7 +156,7 @@ export default {
       />
       <div
         v-if="showSuggestions"
-        class="dropdown-menu d-block dropdown-menu-selectable dropdown-menu-full-width"
+        class="dropdown-menu !gl-block dropdown-menu-selectable dropdown-menu-full-width"
       >
         <div class="dropdown-content">
           <ul v-if="results.length">

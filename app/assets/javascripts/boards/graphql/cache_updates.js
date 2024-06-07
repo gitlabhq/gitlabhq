@@ -1,9 +1,11 @@
 import produce from 'immer';
-import { toNumber } from 'lodash';
+import { toNumber, uniq } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { defaultClient } from '~/graphql_shared/issuable_client';
 import listQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { listsDeferredQuery } from 'ee_else_ce/boards/constants';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { TYPE_ISSUE } from '~/issues/constants';
 
 import setErrorMutation from './client/set_error.mutation.graphql';
 
@@ -165,4 +167,49 @@ export function setError({ message, error, captureError = true }) {
   if (captureError) {
     Sentry.captureException(error);
   }
+}
+
+export function identifyAffectedLists({
+  client,
+  item,
+  issuableType,
+  affectedListTypes,
+  updatedAttributeIds,
+}) {
+  const allCache = client.cache.extract();
+  const listIdsToRefetch = [];
+  const type = capitalizeFirstCharacter(issuableType);
+  const typename = issuableType === TYPE_ISSUE ? 'BoardList' : 'EpicList';
+
+  Object.values(allCache).forEach((value) => {
+    const issuablesField = Object.keys(value).find((key) => key.includes(`${issuableType}s:`));
+    const issuables = value[issuablesField]?.nodes ?? [];
+
+    /* eslint-disable no-underscore-dangle */
+    if (value.__typename === typename) {
+      // We identify the id of the attribute that was updated. In Apollo Cache, entries are stored in the following format:
+      // UserCore:gid://gitlab/UserCore/1 (<type>:<global id>). We extract the id from the __ref field.
+      const attributeId =
+        value.assignee?.__ref.match(/UserCore:(.*)/)[1] ||
+        value.label?.__ref.match(/Label:(.*)/)[1] ||
+        value.milestone?.__ref.match(/Milestone:(.*)/)[1] ||
+        value.iteration?.__ref.match(/Iteration:(.*)/)[1];
+
+      // If the item is in the list, and lists of this type are affected, we need to refetch the list
+      if (issuables.length > 0) {
+        const issueExistsInList = issuables.some((i) => i.__ref === `${type}:${item.id}`);
+        if (issueExistsInList && affectedListTypes.includes(value.listType)) {
+          listIdsToRefetch.push(value.id);
+        }
+      }
+      // If the item is not in the list, but the list has the attribute from affected attributes list
+      // we need to refetch the list
+      if (updatedAttributeIds.includes(attributeId)) {
+        listIdsToRefetch.push(value.id);
+      }
+    }
+    /* eslint-enable no-underscore-dangle */
+  });
+
+  return uniq(listIdsToRefetch);
 }

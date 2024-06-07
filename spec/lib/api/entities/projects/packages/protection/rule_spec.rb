@@ -13,7 +13,7 @@ RSpec.describe API::Entities::Projects::Packages::Protection::Rule, feature_cate
       :project_id,
       :package_name_pattern,
       :package_type,
-      :push_protected_up_to_access_level
+      :minimum_access_level_for_push
     ]
   end
 end

@@ -436,6 +436,17 @@ To determine if there are any differences:
    Select the branch that matches your GitLab version. For example, the file for GitLab 16.2: <https://gitlab.com/gitlab-org/gitlab/-/blob/16-2-stable-ee/db/structure.sql>.
 1. Compare `/tmp/structure.sql` with the `db/structure.sql` file for your version.
 
+## Check the database for schema inconsistencies
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390719) in GitLab 15.11. 
+
+This Rake task checks the database schema for any inconsistencies
+and prints them in the terminal.
+
+```shell
+gitlab-rake gitlab:db:schema_checker:run
+```
+
 ## Import common metrics
 
 Sometimes you may need to re-import the common metrics that power the Metrics dashboards.

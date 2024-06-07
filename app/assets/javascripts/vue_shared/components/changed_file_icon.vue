@@ -45,7 +45,7 @@ export default {
       return `${getCommitIconMap(this.file).icon}${suffix}`;
     },
     changedIconClass() {
-      return `${this.changedIcon} float-left d-block`;
+      return `${this.changedIcon} float-left gl-block`;
     },
     tooltipTitle() {
       if (!this.showTooltip) {

@@ -2,7 +2,7 @@
 - wiki_page_title @page, _('History')
 - add_page_specific_style 'page_bundles/wiki'
 
-.wiki-page-header.top-area.has-sidebar-toggle.flex-column.flex-lg-row
+.wiki-page-header.top-area.has-sidebar-toggle.flex-column.flex-lg-row.gl-border-b-0
   = wiki_sidebar_toggle_button
 
   %h1.page-title.gl-font-size-h-display
@@ -12,28 +12,38 @@
       = _('History')
 
 .prepend-top-default.gl-mb-3
-  .table-holder{ data: { testid: 'wiki-history-table' } }
-    %table.table.wiki-history
-      %thead
-        %tr
-          %th= @page.template? ? s_('Wiki|Template version') : s_('Wiki|Page version')
-          %th= _('Author')
-          %th= _('Changes')
-          %th= _('Last updated')
-      %tbody
-        - @commits.each do |commit|
-          %tr
-            %td
-              = link_to wiki_page_path(@wiki, @page, version_id: commit.id) do
-                = truncate_sha(commit.id)
-            %td
-              = commit.author_name
-            %td
-              .commit-content
-                = link_to wiki_page_path(@wiki, @page, action: :diff, version_id: commit.id), { title: commit.message } do
-                  = commit.message
-            %td
-              = time_ago_with_tooltip(commit.authored_date)
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-mt-0 gl-mb-5' }, header_options: { class: 'gl-new-card-header gl-border-b-0' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+    - c.with_header do
+      .gl-new-card-title-wrapper.gl-flex-col
+        %h3.gl-new-card-title
+          = _('Versions')
+          .gl-new-card-count
+            = sprite_icon('history', css_class: 'gl-mr-2')
+            = @commits_count
+    - c.with_body do
+      .table-holder{ data: { testid: 'wiki-history-table' } }
+        %table.table.wiki-history{ class: '!gl-mb-0' }
+          %thead
+            %tr
+              %th= _('Version')
+              %th= _('Author')
+              %th= _('Diff')
+              %th= _('Last updated')
+          %tbody
+            - @commits.each_with_index do |commit, i|
+              %tr
+                %td
+                  = link_to wiki_page_path(@wiki, @page, version_id: commit.id) do
+                    v#{@commits_count - i}
+                %td
+                  = commit.author_name
+                %td
+                  .commit-content
+                    = link_to wiki_page_path(@wiki, @page, action: :diff, version_id: commit.id), { title: commit.message } do
+                      = commit.message
+                %td
+                  = time_ago_with_tooltip(commit.authored_date)
+
   = paginate @commits, theme: 'gitlab'
 
 = render 'shared/wikis/sidebar'

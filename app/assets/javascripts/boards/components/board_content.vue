@@ -12,6 +12,7 @@ import {
   flashAnimationDuration,
   listsQuery,
   updateListQueries,
+  ListType,
 } from 'ee_else_ce/boards/constants';
 import { calculateNewPosition } from 'ee_else_ce/boards/boards_util';
 import { setError } from '../graphql/cache_updates';
@@ -98,6 +99,14 @@ export default {
       };
 
       return this.canDragColumns ? options : {};
+    },
+    backlogListId() {
+      const backlogList = this.boardListsToUse.find((list) => list.listType === ListType.backlog);
+      return backlogList?.id || '';
+    },
+    closedListId() {
+      const closedList = this.boardListsToUse.find((list) => list.listType === ListType.closed);
+      return closedList?.id || '';
     },
   },
   methods: {
@@ -275,8 +284,18 @@ export default {
       </div>
     </epics-swimlanes>
 
-    <board-content-sidebar v-if="isIssueBoard" data-testid="issue-boards-sidebar" />
+    <board-content-sidebar
+      v-if="isIssueBoard"
+      :backlog-list-id="backlogListId"
+      :closed-list-id="closedListId"
+      data-testid="issue-boards-sidebar"
+    />
 
-    <epic-board-content-sidebar v-else-if="isEpicBoard" data-testid="epic-boards-sidebar" />
+    <epic-board-content-sidebar
+      v-else-if="isEpicBoard"
+      :backlog-list-id="backlogListId"
+      :closed-list-id="closedListId"
+      data-testid="epic-boards-sidebar"
+    />
   </div>
 </template>

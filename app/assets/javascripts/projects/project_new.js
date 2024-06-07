@@ -262,7 +262,7 @@ const bindEvents = () => {
     const selectedTemplate = DEFAULT_PROJECT_TEMPLATES[value];
     $selectedTemplateText.textContent = selectedTemplate.text;
     const clone = document.querySelector(selectedTemplate.icon).cloneNode(true);
-    clone.classList.add('d-block');
+    clone.classList.add('gl-block');
 
     $selectedIcon.append(clone);
 

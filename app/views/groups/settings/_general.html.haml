@@ -29,7 +29,7 @@
 
   .form-group.gl-mt-3.gl-mb-6
     = render Pajamas::AvatarComponent.new(@group, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
-    = f.label :avatar, s_('Groups|Group avatar'), class: 'label-bold d-block'
+    = f.label :avatar, s_('Groups|Group avatar'), class: 'label-bold gl-block'
     = render 'shared/choose_avatar_button', f: f
     - if @group.avatar?
       %hr

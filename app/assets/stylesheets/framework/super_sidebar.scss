@@ -44,7 +44,7 @@ $command-palette-spacing: px-to-rem(14px);
   --super-sidebar-nav-item-current-bg: #{$t-gray-a-08};
   --super-sidebar-nav-item-icon-color: #{$gray-500};
 
-  --super-sidebar-hr-mix-blend-mode: normal;
+  --super-sidebar-hr-mix-blend-mode: multiply;
 
   .gl-dark & {
     --super-sidebar-border-color: #{$t-white-a-08};
@@ -61,6 +61,8 @@ $command-palette-spacing: px-to-rem(14px);
     --super-sidebar-nav-item-active-bg: #{$t-white-a-16};
     --super-sidebar-nav-item-current-bg: #{$t-white-a-08};
     --super-sidebar-nav-item-icon-color: #{$gray-600};
+
+    --super-sidebar-hr-mix-blend-mode: screen;
   }
 }
 
@@ -90,8 +92,6 @@ $command-palette-spacing: px-to-rem(14px);
     --super-sidebar-user-bar-button-icon-color: #{$user-bar-button-icon-color};
     --super-sidebar-user-bar-button-icon-hover-color: #{$user-bar-button-icon-color};
     --super-sidebar-user-bar-button-icon-mix-blend-mode: screen;
-
-    --super-sidebar-hr-mix-blend-mode: multiply;
   }
 }
 

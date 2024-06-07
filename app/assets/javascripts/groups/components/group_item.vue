@@ -281,6 +281,7 @@ export default {
         </div>
       </div>
     </div>
+    <!-- eslint-disable-next-line vue/no-undef-components -->
     <group-folder
       v-if="group.isOpen && hasChildren"
       :parent-group="group"

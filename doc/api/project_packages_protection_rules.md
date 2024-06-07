@@ -60,14 +60,14 @@ Example response:
   "project_id": 7,
   "package_name_pattern": "@flightjs/flight-package-0",
   "package_type": "npm",
-  "push_protected_up_to_access_level": "maintainer"
+  "minimum_access_level_for_push": "maintainer"
  },
  {
   "id": 2,
   "project_id": 7,
   "package_name_pattern": "@flightjs/flight-package-1",
   "package_type": "npm",
-  "push_protected_up_to_access_level": "maintainer"
+  "minimum_access_level_for_push": "maintainer"
  }
 ]
 ```

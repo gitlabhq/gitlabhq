@@ -451,12 +451,14 @@ export default {
           </template>
         </gl-sprintf>
 
+        <!-- eslint-disable-next-line vue/no-undef-components -->
         <approval-rules-app
           :is-mr-edit="false"
           :is-branch-rules-edit="true"
           @submitted="$apollo.queries.project.refetch()"
         >
           <template #rules>
+            <!-- eslint-disable-next-line vue/no-undef-components -->
             <project-rules :is-branch-rules-edit="true" />
           </template>
         </approval-rules-app>

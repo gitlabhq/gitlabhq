@@ -1331,10 +1331,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.101.0.tgz#a8769490eecd03b8cc2403f5b7faab34a4ad0d82"
   integrity sha512-X/3oLr969A9dzVaTD2JfG6EmxadEQwCPXcfn1A6Y+AAI0PLkBgjDXUz0yo1tXJOF6nqOmYpBiUM6uOon3i5N4A==
 
-"@gitlab/ui@80.16.1":
-  version "80.16.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-80.16.1.tgz#87ed3cf6dd6a1da123422dfa339734440ad35d1f"
-  integrity sha512-j7yYTvdIXQsznIKmrIwX7G3e67b3s2qt4KbIR+fq78Yko+9FO38t4bceVZo33cpHu26Sx0wqbjq3xAVnE9D/ug==
+"@gitlab/ui@80.19.0":
+  version "80.19.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-80.19.0.tgz#b6e6018d27939a7ac2451b6a41cf49071977aa95"
+  integrity sha512-aswSSLDkHzjvWdHDKZH5ZPZYiX821+fZ2yPLoN+0OYyA75XzAr5daaV2os4y6PLPtWJHiHF3nWbZSF80wMF68A==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     bootstrap-vue "2.23.1"
@@ -14156,10 +14156,10 @@ vite-plugin-ruby@^5.0.0:
     debug "^4.3.4"
     fast-glob "^3.3.2"
 
-vite@^5.2.12:
-  version "5.2.12"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-5.2.12.tgz#3536c93c58ba18edea4915a2ac573e6537409d97"
-  integrity sha512-/gC8GxzxMK5ntBwb48pR32GGhENnjtY30G4A0jemunsBkiEZFw60s8InGpN8gkhHEkjnRK1aSAxeQgwvFhUHAA==
+vite@^5.2.13:
+  version "5.2.13"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-5.2.13.tgz#945ababcbe3d837ae2479c29f661cd20bc5e1a80"
+  integrity sha512-SSq1noJfY9pR3I1TUENL3rQYDQCFqgD+lM6fTRAM8Nv6Lsg5hDLaXkjETVeBt+7vZBCMoibD+6IWnT2mJ+Zb/A==
   dependencies:
     esbuild "^0.20.1"
     postcss "^8.4.38"

@@ -31,7 +31,7 @@
 
   .form-group.gl-mt-3.gl-mb-3
     = render Pajamas::AvatarComponent.new(@project, size: 96, alt: '', class: 'gl-float-left gl-mr-5')
-    = f.label :avatar, _('Project avatar'), class: 'label-bold d-block'
+    = f.label :avatar, _('Project avatar'), class: 'label-bold gl-block'
     = render 'shared/choose_avatar_button', f: f
     - if @project.avatar?
       %hr

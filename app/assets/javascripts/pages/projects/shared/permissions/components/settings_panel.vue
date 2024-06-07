@@ -765,7 +765,7 @@ export default {
               "
             >
               <template #link="{ content }">
-                <span class="d-block">
+                <span class="gl-display-block">
                   <gl-link :href="lfsObjectsRemovalHelpPath" target="_blank">
                     {{ content }}
                   </gl-link>

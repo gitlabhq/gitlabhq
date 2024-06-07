@@ -118,6 +118,9 @@ export default {
           this.hasCurrentAttribute = data?.workspace?.issuable.hasEpic;
         }
       },
+      skip() {
+        return !this.iid;
+      },
       error(error) {
         createAlert({
           message: this.i18n.currentFetchError,
