@@ -5,12 +5,14 @@ class AddNotesNamespaceIdForeignKey < Gitlab::Database::Migration[2.1]
 
   INDEX_NAME = 'index_notes_on_namespace_id'
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     add_concurrent_index :notes, :namespace_id, name: INDEX_NAME
     add_concurrent_foreign_key :notes, :namespaces,
       column: :namespace_id,
       on_delete: :cascade
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_foreign_key_if_exists :notes, column: :namespace_id

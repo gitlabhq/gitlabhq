@@ -6,10 +6,12 @@ class ReplaceSbomOccurrencesComponentIdIndex < Gitlab::Database::Migration[2.1]
 
   disable_ddl_transaction!
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     add_concurrent_index :sbom_occurrences, %i[component_id id], name: ADDED_INDEX_NAME
     remove_concurrent_index_by_name :sbom_occurrences, name: REMOVED_INDEX_NAME
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     add_concurrent_index :sbom_occurrences, :component_id, name: REMOVED_INDEX_NAME

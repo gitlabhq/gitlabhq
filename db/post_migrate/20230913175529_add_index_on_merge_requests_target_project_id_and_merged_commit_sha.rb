@@ -6,9 +6,11 @@ class AddIndexOnMergeRequestsTargetProjectIdAndMergedCommitSha < Gitlab::Databas
 
   disable_ddl_transaction!
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     add_concurrent_index :merge_requests, INDEX_COLUMNS, name: INDEX_NAME
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :merge_requests, name: INDEX_NAME

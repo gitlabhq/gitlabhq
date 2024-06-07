@@ -285,6 +285,12 @@ export default {
     shouldShowEditButton() {
       return !this.editMode && this.canUpdate;
     },
+    modalCloseButtonClass() {
+      return {
+        'sm:gl-hidden': !this.error,
+        'gl-display-flex': true,
+      };
+    },
   },
   mounted() {
     if (this.modalWorkItemIid) {
@@ -364,9 +370,13 @@ export default {
         this.$emit('update-modal', event, modalWorkItem);
         return;
       }
+
       this.modalWorkItemId = modalWorkItem.id;
       this.modalWorkItemIid = modalWorkItem.iid;
-      this.modalWorkItemNamespaceFullPath = modalWorkItem.namespace?.fullPath;
+      this.modalWorkItemNamespaceFullPath = modalWorkItem?.reference?.replace(
+        `#${modalWorkItem.iid}`,
+        '',
+      );
       this.$refs.modal.show();
     },
     openReportAbuseDrawer(reply) {
@@ -463,6 +473,17 @@ export default {
         </gl-alert>
       </section>
       <section :class="workItemBodyClass">
+        <div :class="modalCloseButtonClass">
+          <gl-button
+            v-if="isModal"
+            class="gl-ml-auto"
+            category="tertiary"
+            data-testid="work-item-close"
+            icon="close"
+            :aria-label="__('Close')"
+            @click="$emit('close')"
+          />
+        </div>
         <work-item-loading v-if="workItemLoading" />
         <gl-empty-state
           v-else-if="error"
@@ -472,17 +493,6 @@ export default {
           :svg-height="null"
         />
         <div v-else data-testid="detail-wrapper">
-          <div class="gl-sm-display-none! gl-display-flex">
-            <gl-button
-              v-if="isModal"
-              class="gl-ml-auto"
-              category="tertiary"
-              data-testid="work-item-close"
-              icon="close"
-              :aria-label="__('Close')"
-              @click="$emit('close')"
-            />
-          </div>
           <div
             class="gl-display-block gl-sm-display-flex! gl-align-items-flex-start gl-flex-direction-row gl-gap-3 gl-pt-3"
           >

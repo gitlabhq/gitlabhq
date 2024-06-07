@@ -349,27 +349,45 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('when the work item query is unsuccessful', () => {
-    beforeEach(() => {
-      const errorHandler = jest.fn().mockRejectedValue('Oops');
-      createComponent({ handler: errorHandler });
-      return waitForPromises();
+    describe('full view', () => {
+      beforeEach(() => {
+        const errorHandler = jest.fn().mockRejectedValue('Oops');
+        createComponent({ handler: errorHandler });
+        return waitForPromises();
+      });
+
+      it('does not show the work item detail wrapper', () => {
+        expect(findDetailWrapper().exists()).toBe(false);
+      });
+
+      it('shows empty state with an error message', () => {
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().props('description')).toBe(i18n.fetchError);
+      });
+
+      it('does not render work item UI elements', () => {
+        expect(findWorkItemType().exists()).toBe(false);
+        expect(findWorkItemTitle().exists()).toBe(false);
+        expect(findCreatedUpdated().exists()).toBe(false);
+        expect(findWorkItemActions().exists()).toBe(false);
+        expect(findWorkItemTwoColumnViewContainer().exists()).toBe(false);
+      });
     });
 
-    it('does not show the work item detail wrapper', () => {
-      expect(findDetailWrapper().exists()).toBe(false);
-    });
+    describe('modal view', () => {
+      it('shows the modal close button', async () => {
+        createComponent({
+          isModal: true,
+          handler: jest.fn().mockRejectedValue('Oops, problemo'),
+          workItemsMvc2Enabled: true,
+        });
 
-    it('shows empty state with an error message', () => {
-      expect(findEmptyState().exists()).toBe(true);
-      expect(findEmptyState().props('description')).toBe(i18n.fetchError);
-    });
+        await waitForPromises();
 
-    it('does not render work item UI elements', () => {
-      expect(findWorkItemType().exists()).toBe(false);
-      expect(findWorkItemTitle().exists()).toBe(false);
-      expect(findCreatedUpdated().exists()).toBe(false);
-      expect(findWorkItemActions().exists()).toBe(false);
-      expect(findWorkItemTwoColumnViewContainer().exists()).toBe(false);
+        expect(findCloseButton().exists()).toBe(true);
+        expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().props('description')).toBe(i18n.fetchError);
+      });
     });
   });
 

@@ -5,6 +5,7 @@ class AddTempIndexForProjectStatisticsPipelineArtifactsSizeMigration < Gitlab::D
 
   disable_ddl_transaction!
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     # Temporary index is to be used to trigger a refresh of project_statistics with
     # pipeline_artifacts_size != 0
@@ -12,6 +13,7 @@ class AddTempIndexForProjectStatisticsPipelineArtifactsSizeMigration < Gitlab::D
       name: INDEX_PROJECT_STATSISTICS_PIPELINE_ARTIFACTS_SIZE,
       where: "pipeline_artifacts_size != 0"
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :project_statistics, INDEX_PROJECT_STATSISTICS_PIPELINE_ARTIFACTS_SIZE

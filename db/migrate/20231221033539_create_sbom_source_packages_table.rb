@@ -10,6 +10,7 @@ class CreateSbomSourcePackagesTable < Gitlab::Database::Migration[2.2]
   SBOM_SOURCE_PACKAGES_INDEX_NAME = 'idx_sbom_source_packages_on_name_and_purl_type'
   SBOM_OCCURRENCES_SOURCE_PACKAGE_ID_AND_ID_INDEX_NAME = 'index_sbom_source_packages_on_source_package_id_and_id'
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     with_lock_retries do
       add_column :sbom_occurrences, :source_package_id, :bigint, if_not_exists: true
@@ -27,6 +28,7 @@ class CreateSbomSourcePackagesTable < Gitlab::Database::Migration[2.2]
     add_concurrent_foreign_key :sbom_occurrences, :sbom_source_packages,
       column: :source_package_id, on_delete: :cascade
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     with_lock_retries do

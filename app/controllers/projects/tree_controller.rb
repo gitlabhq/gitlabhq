@@ -52,6 +52,10 @@ class Projects::TreeController < Projects::ApplicationController
 
   private
 
+  def tree
+    @tree ||= @repo.tree(@commit.id, @path)
+  end
+
   def redirect_renamed_default_branch?
     action_name == 'show'
   end

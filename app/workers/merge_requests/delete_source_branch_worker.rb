@@ -7,7 +7,7 @@ class MergeRequests::DeleteSourceBranchWorker
 
   sidekiq_options retry: 3
 
-  feature_category :source_code_management
+  feature_category :code_review_workflow
   urgency :high
   idempotent!
 

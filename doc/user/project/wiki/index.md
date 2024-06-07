@@ -168,7 +168,11 @@ Prerequisites:
 
 ## Move or rename a wiki page
 
-> - [Support for redirecting pages on move or rename](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) added in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `wiki_redirection`. Enabled by default.
+> - Redirects for moved or renamed wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `wiki_redirection`. Enabled by default.
+
+In GitLab 17.1 and later, when you move or rename a page, a redirect is
+automatically set up from the old page to the new page. A list of redirects
+is stored in the `.gitlab/redirects.yml` file in the Wiki repository.
 
 Prerequisites:
 
@@ -183,10 +187,6 @@ Prerequisites:
    move it to the wiki's root, change the **Title** from `About` to `/About`.
 1. To rename the page, change the **Title**.
 1. Select **Save changes**.
-
-In GitLab 17.1 and later, when you move or rename a page, a redirect is
-automatically set up from the old page to the new page. A list of redirects
-is stored in the `.gitlab/redirects.yml` file in the Wiki repository.
 
 ## Export a wiki page
 

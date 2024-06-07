@@ -7,11 +7,13 @@ class IndexSbomOccurrencesOnComponentVersionIdAndTraversalIds < Gitlab::Database
 
   disable_ddl_transaction!
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     add_concurrent_index :sbom_occurrences, [:component_version_id, :traversal_ids],
       where: 'archived = false',
       name: INDEX_NAME
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :sbom_occurrences, INDEX_NAME
