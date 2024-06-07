@@ -60,7 +60,11 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
       });
 
       it('renders summary tab', () => {
-        expect(findKubernetesSummary().props('fluxKustomization')).toEqual(fluxKustomization);
+        expect(findKubernetesSummary().props()).toEqual({
+          namespace,
+          configuration,
+          fluxKustomization,
+        });
       });
     });
 
@@ -72,9 +76,11 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
   });
 
   describe('active tab tracking', () => {
+    const summaryTab = 'summary';
     it.each([
-      [k8sResourceType.k8sPods, 0, 1, k8sResourceType.k8sServices],
-      [k8sResourceType.k8sServices, 1, 0, k8sResourceType.k8sPods],
+      [k8sResourceType.k8sPods, 1, 2, k8sResourceType.k8sServices],
+      [k8sResourceType.k8sServices, 2, 1, k8sResourceType.k8sPods],
+      [summaryTab, 0, 2, k8sResourceType.k8sServices],
     ])(
       'when activeTab is %s, it activates the right tab and emit the correct tab name when switching',
       async (activeTab, tabIndex, newTabIndex, newActiveTab) => {

@@ -18,8 +18,8 @@ const PACKAGES_PROTECTION_RULES_SAVED_ERROR_MESSAGE = s__(
 );
 
 const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
-const GRAPHQL_ACCESS_LEVEL_VALUE_DEVELOPER = 'DEVELOPER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
+const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
 
 export default {
   components: {
@@ -45,7 +45,7 @@ export default {
       packageProtectionRuleFormData: {
         packageNamePattern: '',
         packageType: 'NPM',
-        pushProtectedUpToAccessLevel: GRAPHQL_ACCESS_LEVEL_VALUE_DEVELOPER,
+        minimumAccessLevelForPush: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
       updateInProgress: false,
       alertErrorMessage: '',
@@ -69,18 +69,17 @@ export default {
         projectPath: this.projectPath,
         packageNamePattern: this.packageProtectionRuleFormData.packageNamePattern,
         packageType: this.packageProtectionRuleFormData.packageType,
-        pushProtectedUpToAccessLevel: this.packageProtectionRuleFormData
-          .pushProtectedUpToAccessLevel,
+        minimumAccessLevelForPush: this.packageProtectionRuleFormData.minimumAccessLevelForPush,
       };
     },
     packageTypeOptions() {
       return [{ value: 'NPM', text: s__('PackageRegistry|Npm') }];
     },
-    pushProtectedUpToAccessLevelOptions() {
+    minimumAccessLevelForPushOptions() {
       return [
-        { value: GRAPHQL_ACCESS_LEVEL_VALUE_DEVELOPER, text: __('Developer') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
+        { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: s__('AdminUsers|Administrator') },
       ];
     },
   },
@@ -174,14 +173,14 @@ export default {
       </gl-form-group>
 
       <gl-form-group
-        :label="s__('PackageRegistry|Push protected up to access level')"
-        label-for="input-push-protected-up-to-access-level"
+        :label="s__('PackageRegistry|Minimum access level for push')"
+        label-for="input-minimum-access-level-for-push"
         :disabled="isFieldDisabled"
       >
         <gl-form-select
-          id="input-push-protected-up-to-access-level"
-          v-model="packageProtectionRuleFormData.pushProtectedUpToAccessLevel"
-          :options="pushProtectedUpToAccessLevelOptions"
+          id="input-minimum-access-level-for-push"
+          v-model="packageProtectionRuleFormData.minimumAccessLevelForPush"
+          :options="minimumAccessLevelForPushOptions"
           :disabled="isFieldDisabled"
           required
         />

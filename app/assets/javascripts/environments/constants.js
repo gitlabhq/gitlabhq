@@ -1,6 +1,7 @@
 import { __, s__ } from '~/locale';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { STATUS_READY, STATUS_PENDING, STATUS_FAILED } from '~/kubernetes_dashboard/constants';
 
 // These statuses are based on how the backend defines pod phases here
 // lib/gitlab/kubernetes/pod.rb
@@ -198,33 +199,21 @@ export const TREE_ITEM_KIND_ICONS = {
   [DEPLOYMENT_KIND]: 'deployments',
 };
 
+const RUNNING_STATUS_ICON = { icon: 'status-running', class: 'gl-text-blue-500' };
+const SUCCESS_STATUS_ICON = { icon: 'status-success', class: 'gl-text-green-500' };
+const WAITING_STATUS_ICON = { icon: 'status-waiting', class: 'gl-text-gray-500' };
+const FAILED_STATUS_ICON = { icon: 'status-failed', class: 'gl-text-red-500' };
+const PAUSED_STATUS_ICON = { icon: 'status-paused', class: 'gl-text-orange-500' };
+
 export const TREE_ITEM_STATUS_ICONS = {
-  reconciled: {
-    icon: 'status-success',
-    class: 'gl-text-green-500',
-  },
-  reconciling: {
-    icon: 'status-running',
-    class: 'gl-text-blue-500',
-  },
-  reconcilingWithBadConfig: {
-    icon: 'status-running',
-    class: 'gl-text-blue-500',
-  },
-  stalled: {
-    icon: 'status-paused',
-    class: 'gl-text-orange-500',
-  },
-  failed: {
-    icon: 'status-failed',
-    class: 'gl-text-red-500',
-  },
-  unknown: {
-    icon: 'status-waiting',
-    class: 'gl-text-gray-500',
-  },
-  unavailable: {
-    icon: 'status-waiting',
-    class: 'gl-text-gray-500',
-  },
+  reconciled: SUCCESS_STATUS_ICON,
+  reconciling: RUNNING_STATUS_ICON,
+  reconcilingWithBadConfig: RUNNING_STATUS_ICON,
+  stalled: PAUSED_STATUS_ICON,
+  failed: FAILED_STATUS_ICON,
+  unknown: WAITING_STATUS_ICON,
+  unavailable: WAITING_STATUS_ICON,
+  [STATUS_PENDING]: PAUSED_STATUS_ICON,
+  [STATUS_READY]: SUCCESS_STATUS_ICON,
+  [STATUS_FAILED]: FAILED_STATUS_ICON,
 };

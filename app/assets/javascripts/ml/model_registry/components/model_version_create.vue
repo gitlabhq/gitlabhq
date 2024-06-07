@@ -7,13 +7,14 @@ import {
   GlFormInput,
   GlFormTextarea,
   GlModal,
+  GlModalDirective,
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { uploadModel } from '../services/upload_model';
 import createModelVersionMutation from '../graphql/mutations/create_model_version.mutation.graphql';
-import { emptyArtifactFile } from '../constants';
+import { emptyArtifactFile, MODEL_VERSION_CREATION_MODAL_ID } from '../constants';
 
 export default {
   name: 'ModelVersionCreate',
@@ -27,6 +28,9 @@ export default {
     GlFormTextarea,
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
+  directives: {
+    GlModal: GlModalDirective,
+  },
   inject: ['projectPath', 'maxAllowedFileSize'],
   props: {
     modelGid: {
@@ -38,7 +42,6 @@ export default {
     return {
       version: null,
       description: null,
-      modalVisible: false,
       errorMessage: null,
       selectedFile: emptyArtifactFile,
       versionData: null,
@@ -86,11 +89,8 @@ export default {
       } catch (error) {
         Sentry.captureException(error);
         this.errorMessage = error;
-        this.showModal();
+        this.selectedFile = emptyArtifactFile;
       }
-    },
-    showModal() {
-      this.modalVisible = true;
     },
     resetModal() {
       this.version = null;
@@ -99,25 +99,18 @@ export default {
       this.selectedFile = emptyArtifactFile;
       this.versionData = null;
     },
-    cancelModal() {
-      this.hideModal();
-      this.resetModal();
-    },
-    hideModal() {
-      this.modalVisible = false;
-    },
     hideAlert() {
       this.errorMessage = null;
     },
   },
   i18n: {},
   modal: {
-    id: 'ml-experiments-delete-modal',
+    id: MODEL_VERSION_CREATION_MODAL_ID,
     actionPrimary: {
       text: s__('MlModelRegistry|Create & import'),
       attributes: { variant: 'confirm' },
     },
-    actionCancel: {
+    actionSecondary: {
       text: __('Cancel'),
     },
     versionDescription: s__('MlModelRegistry|Enter a semver version.'),
@@ -131,16 +124,15 @@ export default {
 
 <template>
   <div>
-    <gl-button @click="showModal">{{ $options.modal.buttonTitle }}</gl-button>
+    <gl-button v-gl-modal="$options.modal.id">{{ $options.modal.buttonTitle }}</gl-button>
     <gl-modal
-      v-model="modalVisible"
-      modal-id="create-model-version-modal"
+      :modal-id="$options.modal.id"
       :title="$options.modal.title"
       :action-primary="$options.modal.actionPrimary"
-      :action-cancel="$options.modal.actionCancel"
+      :action-secondary="$options.modal.actionSecondary"
       size="sm"
       @primary="create"
-      @cancel="cancelModal"
+      @secondary="resetModal"
     >
       <gl-form>
         <gl-form-group

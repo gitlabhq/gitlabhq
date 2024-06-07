@@ -260,10 +260,10 @@ describe('Packages protection rules project settings', () => {
       });
     });
 
-    describe('column "Push protected up to access level" with selectbox (combobox)', () => {
+    describe('column "Minimum access level for push" with selectbox (combobox)', () => {
       const findComboboxInTableRow = (i) =>
         extendedWrapper(
-          findTableRow(i).findByRole('combobox', { name: /push protected up to access level/i }),
+          findTableRow(i).findByRole('combobox', { name: /minimum access level for push/i }),
         );
 
       it('contains combobox with respective access level', async () => {
@@ -274,7 +274,7 @@ describe('Packages protection rules project settings', () => {
         expect(findComboboxInTableRow(0).isVisible()).toBe(true);
         expect(findComboboxInTableRow(0).attributes('disabled')).toBeUndefined();
         expect(findComboboxInTableRow(0).element.value).toBe(
-          packagesProtectionRulesData[0].pushProtectedUpToAccessLevel,
+          packagesProtectionRulesData[0].minimumAccessLevelForPush,
         );
       });
 
@@ -283,7 +283,7 @@ describe('Packages protection rules project settings', () => {
 
         await waitForPromises();
 
-        ['Developer', 'Maintainer', 'Owner'].forEach((optionName) => {
+        ['Maintainer', 'Owner', 'Administrator'].forEach((optionName) => {
           const selectOption = findComboboxInTableRow(0).findByRole('option', { name: optionName });
           expect(selectOption.exists()).toBe(true);
         });
@@ -292,7 +292,7 @@ describe('Packages protection rules project settings', () => {
       describe('when value changes', () => {
         const accessLevelValueOwner = 'OWNER';
         const accessLevelValueMaintainer = 'MAINTAINER';
-        const accessLevelValueDeveloper = 'DEVELOPER';
+        const accessLevelValueAdmin = 'ADMIN';
 
         it('only changes the value of the selectbox in the same row', async () => {
           createComponent();
@@ -304,8 +304,8 @@ describe('Packages protection rules project settings', () => {
           expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueOwner);
 
           expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueMaintainer);
-          await findComboboxInTableRow(1).setValue(accessLevelValueDeveloper);
-          expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueDeveloper);
+          await findComboboxInTableRow(1).setValue(accessLevelValueAdmin);
+          expect(findComboboxInTableRow(1).props('value')).toBe(accessLevelValueAdmin);
 
           expect(findComboboxInTableRow(0).props('value')).toBe(accessLevelValueOwner);
         });
@@ -325,7 +325,7 @@ describe('Packages protection rules project settings', () => {
           expect(updatePackagesProtectionRuleMutationResolver).toHaveBeenCalledWith({
             input: {
               id: packagesProtectionRulesData[0].id,
-              pushProtectedUpToAccessLevel: accessLevelValueOwner,
+              minimumAccessLevelForPush: accessLevelValueOwner,
             },
           });
         });

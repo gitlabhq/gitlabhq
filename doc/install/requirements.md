@@ -296,7 +296,7 @@ The GitLab Runner server requirements depend on:
 
 Because the nature of the jobs varies for each use case, you must experiment by adjusting the job concurrency to get the optimum setting.
 
-For reference, the [SaaS runners on Linux](../ci/runners/saas/linux_saas_runner.md)
+For reference, the [SaaS runners on Linux](../ci/runners/hosted_runners/linux.md)
 are configured so that a **single job** runs in a **single instance** with:
 
 - 1 vCPU.

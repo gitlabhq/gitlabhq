@@ -3411,10 +3411,10 @@ Input type: `CreatePackagesProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
 | <a id="mutationcreatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="mutationcreatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example `NPM`. |
 | <a id="mutationcreatepackagesprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
-| <a id="mutationcreatepackagesprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Max GitLab access level unable to push a package. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
 
 #### Fields
 
@@ -9190,9 +9190,9 @@ Input type: `UpdatePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule to be updated. |
+| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
 | <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`. |
-| <a id="mutationupdatepackagesprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Maximum GitLab access level unable to push a package. For example, `DEVELOPER`, `MAINTAINER`, `OWNER`. |
 
 #### Fields
 
@@ -26697,9 +26697,9 @@ A packages protection rule designed to protect packages from being pushed by use
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="packagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | ID of the package protection rule. |
+| <a id="packagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
 | <a id="packagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="packagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example `NPM`. |
-| <a id="packagesprotectionrulepushprotecteduptoaccesslevel"></a>`pushProtectedUpToAccessLevel` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Max GitLab access level unable to push a package. For example `DEVELOPER`, `MAINTAINER`, `OWNER`. |
 
 ### `PageInfo`
 
@@ -34895,7 +34895,7 @@ Access level of a package protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="packagesprotectionruleaccessleveldeveloper"></a>`DEVELOPER` | Developer access. |
+| <a id="packagesprotectionruleaccessleveladmin"></a>`ADMIN` | Admin access. |
 | <a id="packagesprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
 | <a id="packagesprotectionruleaccesslevelowner"></a>`OWNER` | Owner access. |
 

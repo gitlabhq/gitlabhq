@@ -1,8 +1,0 @@
----
-name: allow_user_variables_by_minimum_role
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149343
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/456284
-milestone: '17.1'
-type: development
-group: group::pipeline security
-default_enabled: false

@@ -1,8 +1,9 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import EmptyState from '~/ml/model_registry/components/empty_state.vue';
-import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
+import { s__ } from '~/locale';
+import { MODEL_VERSION_CREATION_MODAL_ID } from '../constants';
+import EmptyState from './model_list_empty_state.vue';
 
 export default {
   name: 'ModelDetail',
@@ -27,7 +28,12 @@ export default {
       return this.model.versionCount || 0;
     },
   },
-  modelVersionEntity: MODEL_ENTITIES.modelVersion,
+  emptyState: {
+    title: s__('MlModelRegistry|Manage versions of your machine learning model'),
+    description: s__('MlModelRegistry|Use versions to track performance, parameters, and metadata'),
+    primaryText: s__('MlModelRegistry|Create model version'),
+    modalId: MODEL_VERSION_CREATION_MODAL_ID,
+  },
 };
 </script>
 
@@ -44,5 +50,11 @@ export default {
     <model-version-detail :model-version="model.latestVersion" />
   </div>
 
-  <empty-state v-else :entity-type="$options.modelVersionEntity" />
+  <empty-state
+    v-else
+    :title="$options.emptyState.title"
+    :description="$options.emptyState.description"
+    :primary-text="$options.emptyState.primaryText"
+    :modal-id="$options.emptyState.modalId"
+  />
 </template>

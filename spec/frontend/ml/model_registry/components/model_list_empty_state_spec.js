@@ -8,6 +8,12 @@ let wrapper;
 const createWrapper = () => {
   wrapper = shallowMount(EmptyState, {
     provide: { mlflowTrackingUrl: 'path/to/mlflow' },
+    propsData: {
+      modalId: 'modal-id',
+      primaryText: 'primary-text',
+      title: 'title',
+      description: 'description',
+    },
     directives: {
       GlModal: createMockDirective('gl-modal'),
     },
@@ -25,24 +31,19 @@ describe('ml/model_registry/components/model_list_empty_state.vue', () => {
 
   it('renders empty state', () => {
     expect(findEmptyState().props()).toMatchObject({
-      title: 'Import your machine learning models',
+      title: 'title',
       svgPath: 'file-mock',
-      description: 'Create your machine learning using GitLab directly or using the MLflow client',
+      description: 'description',
     });
   });
 
   it('creates button to open model creation', () => {
-    expect(findCreateButton().text()).toBe('Create model');
-  });
-
-  it('clicking creates triggers open-create-model', async () => {
-    await findCreateButton().vm.$emit('click');
-
-    expect(wrapper.emitted('open-create-model')).toHaveLength(1);
+    expect(findCreateButton().text()).toBe('primary-text');
+    expect(getBinding(findCreateButton().element, 'gl-modal').value).toBe('modal-id');
   });
 
   it('creates button to docs', () => {
-    expect(findDocsButton().text()).toBe('Create model with MLflow');
+    expect(findDocsButton().text()).toBe('Create using MLflow');
     expect(getBinding(findDocsButton().element, 'gl-modal').value).toBe(MLFLOW_USAGE_MODAL_ID);
   });
 });

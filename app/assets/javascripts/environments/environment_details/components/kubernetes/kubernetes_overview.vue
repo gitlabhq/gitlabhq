@@ -169,7 +169,6 @@ export default {
     <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-my-5">
       {{ error }}
     </gl-alert>
-
     <kubernetes-tabs
       v-model="activeTab"
       :configuration="k8sAccessConfiguration"

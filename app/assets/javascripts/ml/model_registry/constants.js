@@ -24,6 +24,8 @@ export const MODEL_ENTITIES = {
 };
 
 export const MLFLOW_USAGE_MODAL_ID = 'model-registry-mlflow-usage-modal';
+export const MODEL_VERSION_CREATION_MODAL_ID = 'create-model-version-modal';
+export const MODEL_CREATION_MODAL_ID = 'create-model-modal';
 
 export const emptyArtifactFile = {
   file: null,

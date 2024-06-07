@@ -288,8 +288,8 @@ Self-managed runners:
 GitLab.com instance runners:
 
 - Linux
-- [Windows](../runners/saas/windows_saas_runner.md) ([beta](../../policy/experiment-beta-support.md#beta)).
-- [macOS](../runners/saas/macos_saas_runner.md) ([beta](../../policy/experiment-beta-support.md#beta)).
+- [Windows](../runners/hosted_runners/windows.md) ([beta](../../policy/experiment-beta-support.md#beta)).
+- [macOS](../runners/hosted_runners/macos.md) ([beta](../../policy/experiment-beta-support.md#beta)).
 
 ### Machine and specific build environments
 

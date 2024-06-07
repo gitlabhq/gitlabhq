@@ -102,6 +102,14 @@ type K8sResources {
 type K8sResource {
   connectionStatus: String
 }
+type LocalK8sDeploymentMetadata {
+  name: String
+}
+
+type LocalK8sDeployment {
+  metadata: LocalK8sDeploymentMetadata
+  status: JSON
+}
 
 type K8sLogsData {
   logs: [String]
@@ -128,6 +136,7 @@ extend type Query {
     configuration: LocalConfiguration
     fluxResourcePath: String
   ): LocalFluxHelmReleaseStatus
+  k8sDeployments(configuration: LocalConfiguration, namespace: String): [LocalK8sDeployment]
   k8sLogs(configuration: LocalConfiguration, namespace: String, podName: String): [K8sLogsData]
 }
 

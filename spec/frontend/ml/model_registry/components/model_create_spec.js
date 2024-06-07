@@ -13,6 +13,8 @@ import createModelVersionMutation from '~/ml/model_registry/graphql/mutations/cr
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { MODEL_CREATION_MODAL_ID } from '~/ml/model_registry/constants';
 import { createModelResponses, createModelVersionResponses } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
@@ -59,6 +61,9 @@ describe('ModelCreate', () => {
         projectPath: 'some/project',
         maxAllowedFileSize: 99999,
       },
+      directives: {
+        GlModal: createMockDirective('gl-modal'),
+      },
       apolloProvider,
       stubs: {
         ImportArtifactZone,
@@ -92,12 +97,9 @@ describe('ModelCreate', () => {
 
       it('renders the modal button', () => {
         expect(findModalButton().text()).toBe('Create model');
-      });
-
-      it('clicking create button triggers show-create-model', async () => {
-        await findModalButton().vm.$emit('click');
-
-        expect(wrapper.emitted('show-create-model')).toHaveLength(1);
+        expect(getBinding(findModalButton().element, 'gl-modal').value).toBe(
+          MODEL_CREATION_MODAL_ID,
+        );
       });
     });
 
@@ -108,16 +110,6 @@ describe('ModelCreate', () => {
           jest.fn().mockResolvedValue(createModelVersionResponses.success),
           true,
         );
-      });
-
-      it('shows the modal', () => {
-        expect(findGlModal().props('visible')).toBe(true);
-      });
-
-      it('hides the modal', async () => {
-        await findGlModal().vm.$emit('hide');
-
-        expect(wrapper.emitted('hide-create-model')).toHaveLength(1);
       });
 
       it('renders the name input', () => {
@@ -159,10 +151,6 @@ describe('ModelCreate', () => {
         });
       });
 
-      it('renders the cancel button in the modal', () => {
-        expect(findGlModal().props('actionCancel')).toEqual({ text: 'Cancel' });
-      });
-
       it('renders the create button in the modal', () => {
         expect(findGlModal().props('actionPrimary')).toEqual({
           attributes: { variant: 'confirm' },
@@ -170,15 +158,25 @@ describe('ModelCreate', () => {
         });
       });
 
+      it('renders the cancel button in the modal', () => {
+        expect(findGlModal().props('actionSecondary')).toEqual({
+          text: 'Cancel',
+        });
+      });
+
       it('does not render the alert by default', () => {
         expect(findGlAlert().exists()).toBe(false);
       });
+    });
 
-      it('clicking on cancel button triggers hide-create-model', async () => {
-        await findGlModal().vm.$emit('cancel');
+    it('clicking on secondary button clears the form', async () => {
+      createWrapper();
 
-        expect(wrapper.emitted('hide-create-model')).toHaveLength(1);
-      });
+      await findNameInput().vm.$emit('input', 'my_model');
+
+      await findGlModal().vm.$emit('secondary');
+
+      expect(findVersionInput().attributes('value')).toBe(undefined);
     });
   });
 

@@ -70,7 +70,6 @@ module Projects
     end
 
     def validate_restrict_user_defined_variables_change
-      return if ::Feature.disabled?(:allow_user_variables_by_minimum_role, project)
       return unless changing_restrict_user_defined_variables? || changing_pipeline_variables_minimum_override_role?
 
       if changing_pipeline_variables_minimum_override_role? &&

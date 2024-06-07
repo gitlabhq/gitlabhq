@@ -9,6 +9,7 @@ import k8sPodsQuery from './queries/k8s_pods.query.graphql';
 import k8sConnectionStatusQuery from './queries/k8s_connection_status.query.graphql';
 import k8sLogsQuery from './queries/k8s_logs.query.graphql';
 import k8sServicesQuery from './queries/k8s_services.query.graphql';
+import k8sDeploymentsQuery from './queries/k8s_deployments.query.graphql';
 import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
 import fluxKustomizationQuery from './queries/flux_kustomization.query.graphql';
 import fluxHelmReleaseStatusQuery from './queries/flux_helm_release_status.query.graphql';
@@ -153,6 +154,15 @@ export const apolloProvider = (endpoint) => {
         status: '',
         type: '',
       },
+    },
+  });
+  cache.writeQuery({
+    query: k8sDeploymentsQuery,
+    data: {
+      metadata: {
+        name: null,
+      },
+      status: {},
     },
   });
   cache.writeQuery({

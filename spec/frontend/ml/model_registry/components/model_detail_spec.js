@@ -2,8 +2,8 @@ import { GlTab } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
-import EmptyState from '~/ml/model_registry/components/empty_state.vue';
-import { MODEL_ENTITIES } from '~/ml/model_registry/constants';
+import EmptyState from '~/ml/model_registry/components/model_list_empty_state.vue';
+import { MODEL_VERSION_CREATION_MODAL_ID } from '~/ml/model_registry/constants';
 import { model, modelWithoutVersion } from '../graphql_mock_data';
 
 let wrapper;
@@ -45,7 +45,12 @@ describe('ShowMlModel', () => {
     });
 
     it('shows empty state', () => {
-      expect(findEmptyState().props('entityType')).toBe(MODEL_ENTITIES.modelVersion);
+      expect(findEmptyState().props()).toMatchObject({
+        title: 'Manage versions of your machine learning model',
+        description: 'Use versions to track performance, parameters, and metadata',
+        primaryText: 'Create model version',
+        modalId: MODEL_VERSION_CREATION_MODAL_ID,
+      });
     });
 
     it('does not render model version detail', () => {

@@ -14,6 +14,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import getModelsQuery from '~/ml/model_registry/graphql/queries/get_models.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { MODEL_CREATION_MODAL_ID } from '~/ml/model_registry/constants';
 import { modelsQuery, modelWithOneVersion, modelWithoutVersion } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
@@ -28,7 +29,7 @@ describe('ml/model_registry/apps/index_ml_models', () => {
   let wrapper;
   let apolloProvider;
 
-  const createWrapper = ({
+  const createWrapper = async ({
     props = {},
     resolver = jest.fn().mockResolvedValue(modelsQuery()),
   } = {}) => {
@@ -44,6 +45,8 @@ describe('ml/model_registry/apps/index_ml_models', () => {
       apolloProvider,
       propsData,
     });
+
+    await waitForPromises();
   };
 
   beforeEach(() => {
@@ -85,31 +88,22 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
   describe('empty state', () => {
     it('shows empty state', async () => {
-      createWrapper({ resolver: emptyQueryResolver() });
+      await createWrapper({ resolver: emptyQueryResolver() });
 
-      await waitForPromises();
-
-      expect(findEmptyState().exists()).toBe(true);
-    });
-
-    it('opens model creation from empty state', async () => {
-      createWrapper({
-        props: { canWriteModelRegistry: true },
-        resolver: emptyQueryResolver(),
+      expect(findEmptyState().props()).toMatchObject({
+        title: 'Import your machine learning models',
+        description:
+          'Create your machine learning using GitLab directly or using the MLflow client',
+        primaryText: 'Create model',
+        modalId: MODEL_CREATION_MODAL_ID,
       });
-
-      await findEmptyState().vm.$emit('open-create-model');
-
-      expect(findModelCreate().props('createModelVisible')).toBe(true);
     });
   });
 
   describe('create button', () => {
     describe('when user has no permission to write model registry', () => {
       it('does not display create button', async () => {
-        createWrapper({ resolver: emptyQueryResolver() });
-
-        await waitForPromises();
+        await createWrapper({ resolver: emptyQueryResolver() });
 
         expect(findModelCreate().exists()).toBe(false);
       });
@@ -117,29 +111,12 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
     describe('when user has permission to write model registry', () => {
       it('displays create button', async () => {
-        createWrapper({
+        await createWrapper({
           props: { canWriteModelRegistry: true },
           resolver: emptyQueryResolver(),
         });
-
-        await waitForPromises();
 
         expect(findModelCreate().exists()).toBe(true);
-      });
-
-      it('opens and closes model creation', async () => {
-        createWrapper({
-          props: { canWriteModelRegistry: true },
-          resolver: emptyQueryResolver(),
-        });
-
-        await findModelCreate().vm.$emit('show-create-model');
-
-        expect(findModelCreate().props('createModelVisible')).toBe(true);
-
-        await findModelCreate().vm.$emit('hide-create-model');
-
-        expect(findModelCreate().props('createModelVisible')).toBe(false);
       });
     });
   });
@@ -148,9 +125,7 @@ describe('ml/model_registry/apps/index_ml_models', () => {
     beforeEach(async () => {
       const error = new Error('Failure!');
 
-      createWrapper({ resolver: jest.fn().mockRejectedValue(error) });
-
-      await waitForPromises();
+      await createWrapper({ resolver: jest.fn().mockRejectedValue(error) });
     });
 
     it('error message is displayed', () => {
@@ -166,16 +141,14 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
   describe('with data', () => {
     it('does not show empty state', async () => {
-      createWrapper();
-      await waitForPromises();
+      await createWrapper();
 
       expect(findEmptyState().exists()).toBe(false);
     });
 
     describe('header', () => {
       it('sets model metadata item to model count', async () => {
-        createWrapper();
-        await waitForPromises();
+        await createWrapper();
 
         expect(findModelCountMetadataItem().props('text')).toBe('2 models');
       });
@@ -186,9 +159,7 @@ describe('ml/model_registry/apps/index_ml_models', () => {
 
       beforeEach(async () => {
         resolver = jest.fn().mockResolvedValue(modelsQuery());
-        createWrapper({ resolver });
-
-        await waitForPromises();
+        await createWrapper({ resolver });
       });
 
       it('calls query only once on setup', () => {
@@ -220,9 +191,9 @@ describe('ml/model_registry/apps/index_ml_models', () => {
     describe('when query is updated', () => {
       let resolver;
 
-      beforeEach(() => {
+      beforeEach(async () => {
         resolver = jest.fn().mockResolvedValue(modelsQuery());
-        createWrapper({ resolver });
+        await createWrapper({ resolver });
       });
 
       it('when orderBy or sort are not present, use default value', async () => {

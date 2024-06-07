@@ -25,7 +25,8 @@ module Integrations
       server_info: "/rest/api/2/serverInfo",
       transition_issue: "/rest/api/2/issue/%s/transitions",
       issue_comments: "/rest/api/2/issue/%s/comment",
-      link_remote_issue: "/rest/api/2/issue/%s/remotelink"
+      link_remote_issue: "/rest/api/2/issue/%s/remotelink",
+      client_info: "/rest/api/2/myself"
     }.freeze
 
     SECTION_TYPE_JIRA_TRIGGER = 'jira_trigger'
@@ -398,10 +399,10 @@ module Integrations
     end
 
     def test(_)
-      result = server_info
-      success = result.present?
-      result = @error&.message unless success
+      result = {}.merge!(server_info, client_info) if server_info && client_info
 
+      success = server_info.present? && client_info.present?
+      result = @error&.message unless success
       { success: success, result: result }
     end
 
@@ -450,6 +451,11 @@ module Integrations
     def branch_name(commit)
       commit.first_ref_by_oid(project.repository)
     end
+
+    def client_info
+      client_url.present? ? jira_request(API_ENDPOINTS[:client_info]) { client.User.myself.attrs } : nil
+    end
+    strong_memoize_attr :client_info
 
     def server_info
       client_url.present? ? jira_request(API_ENDPOINTS[:server_info]) { client.ServerInfo.all.attrs } : nil

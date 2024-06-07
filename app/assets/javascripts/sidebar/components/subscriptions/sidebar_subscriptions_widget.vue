@@ -225,7 +225,7 @@ export default {
       :class="{ 'gl-ml-2': isIssuable, 'btn-icon': isNotificationsTodosButtons }"
       @click="toggleSubscribed"
     >
-      <gl-icon :name="notificationIcon" :size="16" :class="{ 'gl-fill-blue-500': subscribed }" />
+      <gl-icon :name="notificationIcon" :size="16" :class="{ '!gl-fill-blue-500': subscribed }" />
     </gl-button>
     <gl-button
       v-if="!isMergeRequest"
@@ -237,7 +237,7 @@ export default {
       class="sidebar-collapsed-icon sidebar-collapsed-container gl-rounded-0! !gl-shadow-none"
       @click="toggleSubscribed"
     >
-      <gl-icon :name="notificationIcon" :size="16" :class="{ 'gl-fill-blue-500': subscribed }" />
+      <gl-icon :name="notificationIcon" :size="16" :class="{ '!gl-fill-blue-500': subscribed }" />
     </gl-button>
   </div>
   <sidebar-editable-item

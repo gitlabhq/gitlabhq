@@ -12,6 +12,7 @@ DETAILS:
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416395) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default. This feature is an [experiment](../../../policy/experiment-beta-support.md).
+> - **Push protected up to access level** setting [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/416382) to **Minimum access level for push** in GitLab 17.1.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -22,15 +23,12 @@ By default, any user with at least the Developer role can create,
 edit, and delete packages. Add a package protection rule to restrict
 which users can make changes to your packages.
 
-## Who can modify a protected package
-
 When a package is protected, the default behavior enforces these restrictions on the package:
 
-| Action                   | Who can do it                           |
-|:-------------------------|:----------------------------------------|
-| Protect a package        | At least the Maintainer role.           |
-| Create a new package     | Anyone with a higher role than the role set by **Push protected up to access level**. |
-| Edit an existing package | Anyone with a higher role than the role set by **Push protected up to access level**. |
+| Action                   | Who can do it                                                                     |
+|:-------------------------|:----------------------------------------------------------------------------------|
+| Protect a package        | At least the Maintainer role.                                                     |
+| Push a new package       | At least the role set in [**Minimum access level for push**](#protect-a-package). |
 
 ## Protect a package
 
@@ -45,9 +43,10 @@ To protect a package:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Packages and registries**.
 1. Under **Protected packages**, select **Add protection rule**.
-1. Complete the fields.
-   **Name pattern** is a package name pattern you want to protect.
-   The pattern can include a wildcard (`*`).
+1. Complete the fields:
+   - **Name pattern** is a package name pattern you want to protect. The pattern can include a wildcard (`*`).
+   - **Package type** is the type of package to protect.
+   - **Minimum access level for push** is the minimum role required to push a package matching the name pattern.
 1. Select **Protect**.
 
 The package protection rule is created, and appears in the settings.

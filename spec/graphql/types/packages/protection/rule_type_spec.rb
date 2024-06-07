@@ -27,8 +27,8 @@ RSpec.describe GitlabSchema.types['PackagesProtectionRule'], feature_category: :
     it { is_expected.to have_non_null_graphql_type(Types::Packages::Protection::RulePackageTypeEnum) }
   end
 
-  describe 'push_protected_up_to_access_level' do
-    subject { described_class.fields['pushProtectedUpToAccessLevel'] }
+  describe 'minimum_access_level_for_push' do
+    subject { described_class.fields['minimumAccessLevelForPush'] }
 
     it { is_expected.to have_non_null_graphql_type(Types::Packages::Protection::RuleAccessLevelEnum) }
   end

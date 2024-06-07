@@ -148,11 +148,21 @@ To revoke a personal access token, use the [personal access tokens API](../../ap
 
 ### Delete a service account
 
+#### GitLab.com
+
+Prerequisites:
+
+- You must have the Owner role in a top-level group.
+
+To delete a service account, [use the groups API to delete the service account user](../../api/groups.md#delete-service-account-user).
+
+#### Self-managed GitLab
+
 Prerequisites:
 
 - You must be an administrator for the instance the service account is associated with.
 
-To delete a service account, [use the API to delete the service account user](../../api/users.md#user-deletion).
+To delete a service account, [use the users API to delete the service account user](../../api/users.md#user-deletion).
 
 ### Disable a service account
 

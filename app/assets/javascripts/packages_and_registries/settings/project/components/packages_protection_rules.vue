@@ -22,9 +22,7 @@ import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
 
-const I18N_PUSH_PROTECTED_UP_TO_ACCESS_LEVEL = s__(
-  'PackageRegistry|Push protected up to access level',
-);
+const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('PackageRegistry|Minimum access level for push');
 
 export default {
   components: {
@@ -59,7 +57,7 @@ export default {
         'PackageRegistry|Users with at least the Developer role for this project will be able to publish, edit, and delete packages with this package name.',
       ),
     },
-    pushProtectedUpToAccessLevel: I18N_PUSH_PROTECTED_UP_TO_ACCESS_LEVEL,
+    minimumAccessLevelForPush: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
   },
   data() {
     return {
@@ -77,7 +75,7 @@ export default {
       return this.packageProtectionRulesQueryResult.map((packagesProtectionRule) => {
         return {
           id: packagesProtectionRule.id,
-          pushProtectedUpToAccessLevel: packagesProtectionRule.pushProtectedUpToAccessLevel,
+          minimumAccessLevelForPush: packagesProtectionRule.minimumAccessLevelForPush,
           col_1_package_name_pattern: packagesProtectionRule.packageNamePattern,
           col_2_package_type: getPackageTypeLabel(packagesProtectionRule.packageType),
         };
@@ -108,11 +106,11 @@ export default {
         text: __('Cancel'),
       };
     },
-    pushProtectedUpToAccessLevelOptions() {
+    minimumAccessLevelOptions() {
       return [
-        { value: 'DEVELOPER', text: __('Developer') },
         { value: 'MAINTAINER', text: __('Maintainer') },
         { value: 'OWNER', text: __('Owner') },
+        { value: 'ADMIN', text: s__('AdminUsers|Administrator') },
       ];
     },
   },
@@ -197,7 +195,7 @@ export default {
           variables: {
             input: {
               id: packageProtectionRule.id,
-              pushProtectedUpToAccessLevel: packageProtectionRule.pushProtectedUpToAccessLevel,
+              minimumAccessLevelForPush: packageProtectionRule.minimumAccessLevelForPush,
             },
           },
         })
@@ -223,7 +221,7 @@ export default {
       this.protectionRuleMutationItem = null;
       this.protectionRuleMutationInProgress = false;
     },
-    isProtectionRulePushProtectedUpToAccessLevelFormSelectDisabled(item) {
+    isProtectionRuleMinimumAccessLevelFormSelectDisabled(item) {
       return this.isProtectionRuleMutationInProgress(item);
     },
     isProtectionRuleDeleteButtonDisabled(item) {
@@ -245,8 +243,8 @@ export default {
       tdClass: '!gl-align-middle',
     },
     {
-      key: 'col_3_push_protected_up_to_access_level',
-      label: I18N_PUSH_PROTECTED_UP_TO_ACCESS_LEVEL,
+      key: 'col_3_minimum_access_level_for_push',
+      label: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
       tdClass: '!gl-align-middle',
     },
     {
@@ -317,14 +315,14 @@ export default {
               <gl-loading-icon size="sm" class="gl-my-5" />
             </template>
 
-            <template #cell(col_3_push_protected_up_to_access_level)="{ item }">
+            <template #cell(col_3_minimum_access_level_for_push)="{ item }">
               <gl-form-select
-                v-model="item.pushProtectedUpToAccessLevel"
+                v-model="item.minimumAccessLevelForPush"
                 class="gl-max-w-34"
                 required
-                :aria-label="$options.i18n.pushProtectedUpToAccessLevel"
-                :options="pushProtectedUpToAccessLevelOptions"
-                :disabled="isProtectionRulePushProtectedUpToAccessLevelFormSelectDisabled(item)"
+                :aria-label="$options.i18n.minimumAccessLevelForPush"
+                :options="minimumAccessLevelOptions"
+                :disabled="isProtectionRuleMinimumAccessLevelFormSelectDisabled(item)"
                 @change="updatePackageProtectionRule(item)"
               />
             </template>

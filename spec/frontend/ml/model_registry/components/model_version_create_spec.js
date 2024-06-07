@@ -12,6 +12,8 @@ import createModelVersionMutation from '~/ml/model_registry/graphql/mutations/cr
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import { MODEL_VERSION_CREATION_MODAL_ID } from '~/ml/model_registry/constants';
 import { createModelVersionResponses } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
@@ -50,6 +52,9 @@ describe('ModelVersionCreate', () => {
         projectPath: 'some/project',
         maxAllowedFileSize: 99999,
       },
+      directives: {
+        GlModal: createMockDirective('gl-modal'),
+      },
       propsData: {
         modelGid: 'gid://gitlab/Ml::Model/1',
       },
@@ -79,13 +84,12 @@ describe('ModelVersionCreate', () => {
 
     it('renders the modal button', () => {
       expect(findModalButton().text()).toBe('Create model version');
+      expect(getBinding(findModalButton().element, 'gl-modal').value).toBe(
+        MODEL_VERSION_CREATION_MODAL_ID,
+      );
     });
 
     describe('Modal open', () => {
-      beforeEach(() => {
-        findModalButton().trigger('click');
-      });
-
       it('renders the version input', () => {
         expect(findVersionInput().exists()).toBe(true);
       });
@@ -114,14 +118,16 @@ describe('ModelVersionCreate', () => {
         });
       });
 
-      it('renders the cancel button in the modal', () => {
-        expect(findGlModal().props('actionCancel')).toEqual({ text: 'Cancel' });
-      });
-
       it('renders the create button in the modal', () => {
         expect(findGlModal().props('actionPrimary')).toEqual({
           attributes: { variant: 'confirm' },
           text: 'Create & import',
+        });
+      });
+
+      it('renders the cancel button in the modal', () => {
+        expect(findGlModal().props('actionSecondary')).toEqual({
+          text: 'Cancel',
         });
       });
 
@@ -171,6 +177,16 @@ describe('ModelVersionCreate', () => {
       await submitForm();
 
       expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
+    });
+
+    it('clicking on secondary button clears the form', async () => {
+      createWrapper();
+
+      await findVersionInput().vm.$emit('input', '1.0.0');
+
+      await findGlModal().vm.$emit('secondary');
+
+      expect(findVersionInput().attributes('value')).toBe(undefined);
     });
   });
 

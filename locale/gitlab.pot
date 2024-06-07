@@ -598,6 +598,9 @@ msgstr[1] ""
 msgid "%{chartTitle} no data series"
 msgstr ""
 
+msgid "%{client_name} is requesting access to your account on %{title}."
+msgstr ""
+
 msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
 msgstr ""
 
@@ -811,6 +814,9 @@ msgid "%{fork_icon} %{source_project_path}:%{source_branch}"
 msgstr ""
 
 msgid "%{global_id} is not a valid ID for %{expected_types}."
+msgstr ""
+
+msgid "%{group_link} added this OAuth application "
 msgstr ""
 
 msgid "%{group_name} activity"
@@ -1067,6 +1073,9 @@ msgid "%{openedIssues} open, %{closedIssues} closed"
 msgstr ""
 
 msgid "%{over_limit_message} To get more seats, %{link_start}upgrade to a paid tier%{link_end}."
+msgstr ""
+
+msgid "%{owner} %{created_date} ago."
 msgstr ""
 
 msgid "%{path} on %{ref}"
@@ -1399,6 +1408,9 @@ msgid "%{url} (optional)"
 msgstr ""
 
 msgid "%{userName}'s avatar"
+msgstr ""
+
+msgid "%{user_link} added this OAuth application "
 msgstr ""
 
 msgid "%{user_name} (%{user_username}) was removed from %{rotation} in %{schedule} in %{project}. "
@@ -5327,6 +5339,9 @@ msgstr ""
 msgid "An Administrator has set the maximum expiration date to %{maxDate}. %{helpLinkStart}Learn more%{helpLinkEnd}."
 msgstr ""
 
+msgid "An administrator added this OAuth application "
+msgstr ""
+
 msgid "An administrator changed the password for your GitLab account on %{link_to}."
 msgstr ""
 
@@ -5334,9 +5349,6 @@ msgid "An alert has been resolved in %{project_path}."
 msgstr ""
 
 msgid "An alert has been triggered in %{project_path}."
-msgstr ""
-
-msgid "An application called %{link_to_client} is requesting access to your GitLab account."
 msgstr ""
 
 msgid "An email notification was recently sent from the admin panel. Please wait %{wait_time_in_words} before attempting to send another message."
@@ -7577,7 +7589,7 @@ msgstr ""
 msgid "Authorize"
 msgstr ""
 
-msgid "Authorize %{link_to_client} to use your account?"
+msgid "Authorize %{client_name}"
 msgstr ""
 
 msgid "Authorize identity provider link"
@@ -31207,6 +31219,9 @@ msgstr ""
 msgid "Make sure you save it - you won't be able to access it again."
 msgstr ""
 
+msgid "Make sure you trust %{client_name} before authorizing."
+msgstr ""
+
 msgid "Makes this %{type} confidential."
 msgstr ""
 
@@ -33231,10 +33246,10 @@ msgstr ""
 msgid "MlModelRegistry|Create model version & import artifacts"
 msgstr ""
 
-msgid "MlModelRegistry|Create model with MLflow"
+msgid "MlModelRegistry|Create model, version & import artifacts"
 msgstr ""
 
-msgid "MlModelRegistry|Create model, version & import artifacts"
+msgid "MlModelRegistry|Create using MLflow"
 msgstr ""
 
 msgid "MlModelRegistry|Create your machine learning using GitLab directly or using the MLflow client"
@@ -33337,6 +33352,9 @@ msgid "MlModelRegistry|MLflow run ID"
 msgstr ""
 
 msgid "MlModelRegistry|Manage versions of your machine learning model"
+msgstr ""
+
+msgid "MlModelRegistry|Manage versions of your machine learning modelManage versions of your machine learning model"
 msgstr ""
 
 msgid "MlModelRegistry|Metadata"
@@ -37048,6 +37066,9 @@ msgstr ""
 msgid "PackageRegistry|Maven XML"
 msgstr ""
 
+msgid "PackageRegistry|Minimum access level for push"
+msgstr ""
+
 msgid "PackageRegistry|Name pattern"
 msgstr ""
 
@@ -37147,9 +37168,6 @@ msgid "PackageRegistry|Published to the %{project} Package Registry %{datetime}"
 msgstr ""
 
 msgid "PackageRegistry|Published to the %{project} Terraform Module Registry %{datetime}"
-msgstr ""
-
-msgid "PackageRegistry|Push protected up to access level"
 msgstr ""
 
 msgid "PackageRegistry|PyPI"
@@ -38938,9 +38956,6 @@ msgid "Please follow the %{link_start}Let's Encrypt troubleshooting instructions
 msgstr ""
 
 msgid "Please follow the Let's Encrypt troubleshooting instructions to re-obtain your Let's Encrypt certificate: %{docs_url}."
-msgstr ""
-
-msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
 msgstr ""
 
 msgid "Please provide a name"
@@ -48743,6 +48758,9 @@ msgstr ""
 msgid "ServiceAccount|User does not have permission to create a service account."
 msgstr ""
 
+msgid "ServiceAccount|User does not have permission to delete a service account."
+msgstr ""
+
 msgid "ServiceDesk|%{customEmail} with SMTP host %{smtpAddress} is %{badgeStart}verified%{badgeEnd}"
 msgstr ""
 
@@ -53468,12 +53486,6 @@ msgid "This also resolves all related threads"
 msgstr ""
 
 msgid "This also resolves this thread"
-msgstr ""
-
-msgid "This application was created by %{user_link}."
-msgstr ""
-
-msgid "This application was created for group %{group_link}."
 msgstr ""
 
 msgid "This application will be able to:"
@@ -60103,7 +60115,7 @@ msgstr ""
 msgid "You are already impersonating another user"
 msgstr ""
 
-msgid "You are an admin, which means granting access to %{client_name} will allow them to interact with GitLab as an admin as well. Proceed with caution."
+msgid "You are an administrator, which means authorizing access to %{client_name} will allow it to interact with GitLab as an administrator as well."
 msgstr ""
 
 msgid "You are attempting to delete a file that has been previously updated."
@@ -60707,6 +60719,9 @@ msgid "You successfully declined the invitation"
 msgstr ""
 
 msgid "You tried to fork %{link_to_the_project} but it failed for the following reason:"
+msgstr ""
+
+msgid "You will be redirected to %{domain} after authorizing."
 msgstr ""
 
 msgid "You will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."

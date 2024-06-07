@@ -7,7 +7,7 @@ module Types
         graphql_name 'PackagesProtectionRuleAccessLevel'
         description 'Access level of a package protection rule resource'
 
-        ::Packages::Protection::Rule.push_protected_up_to_access_levels.each_key do |access_level_key|
+        ::Packages::Protection::Rule.minimum_access_level_for_pushes.each_key do |access_level_key|
           value access_level_key.upcase, value: access_level_key.to_s,
             description: "#{access_level_key.capitalize} access."
         end

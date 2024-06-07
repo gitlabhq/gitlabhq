@@ -7,11 +7,12 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_tr
 
   const kind = 'Kustomization';
   const name = 'my-kustomization';
+  const statusReconciled = 'reconciled';
 
   const findKindIcon = () => wrapper.findByTestId('resource-kind-icon');
   const findStatusIcon = () => wrapper.findByTestId('resource-status-icon');
 
-  const createWrapper = ({ status = 'reconciled' } = {}) => {
+  const createWrapper = ({ status = statusReconciled } = {}) => {
     wrapper = shallowMountExtended(KubernetesTreeItem, {
       propsData: {
         kind,
@@ -41,6 +42,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_tr
 
       expect(findStatusIcon().props('name')).toBe(iconData.icon);
       expect(findStatusIcon().attributes('class')).toContain(iconData.class);
+      expect(findStatusIcon().attributes('title')).toBe(statusReconciled);
     });
 
     it("doesn't render status icon when the status is not provided", () => {

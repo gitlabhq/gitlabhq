@@ -27,11 +27,12 @@ module Types
           null: false,
           description: 'Package type protected by the protection rule. For example `NPM`.'
 
-        field :push_protected_up_to_access_level,
+        field :minimum_access_level_for_push,
           Types::Packages::Protection::RuleAccessLevelEnum,
           null: false,
           description:
-            'Max GitLab access level unable to push a package. For example `DEVELOPER`, `MAINTAINER`, `OWNER`.'
+            'Minimum GitLab access required to push packages to the package registry. ' \
+            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
       end
     end
   end

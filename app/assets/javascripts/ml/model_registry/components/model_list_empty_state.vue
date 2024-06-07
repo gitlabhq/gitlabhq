@@ -14,38 +14,46 @@ export default {
     GlModal: GlModalDirective,
   },
   inject: ['mlflowTrackingUrl'],
-  title: s__('MlModelRegistry|Import your machine learning models'),
-  description: s__(
-    'MlModelRegistry|Create your machine learning using GitLab directly or using the MLflow client',
-  ),
-  createNew: s__('MlModelRegistry|Create model'),
-  mlflowDocs: s__('MlModelRegistry|Create model with MLflow'),
+  props: {
+    modalId: {
+      type: String,
+      required: true,
+    },
+    primaryText: {
+      type: String,
+      required: true,
+    },
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+  },
+  mlflowDocs: s__('MlModelRegistry|Create using MLflow'),
   helpPath: helpPagePath('user/project/ml/model_registry/index', {
     anchor: 'creating-machine-learning-models-and-model-versions',
   }),
   emptySvgPath: emptySvgUrl,
-  methods: {
-    emitOpenCreateModel() {
-      this.$emit('open-create-model');
-    },
-  },
-  modalId: MLFLOW_USAGE_MODAL_ID,
+  mlflowModalId: MLFLOW_USAGE_MODAL_ID,
 };
 </script>
 
 <template>
   <gl-empty-state
-    :title="$options.title"
+    :title="title"
     :svg-path="$options.emptySvgPath"
     :svg-height="null"
     class="gl-py-8"
-    :description="$options.description"
+    :description="description"
   >
     <template #actions>
-      <gl-button variant="confirm" class="gl-mx-2 gl-mb-3" @click="emitOpenCreateModel">{{
-        $options.createNew
+      <gl-button v-gl-modal="modalId" variant="confirm" class="gl-mx-2 gl-mb-3">{{
+        primaryText
       }}</gl-button>
-      <gl-button v-gl-modal="$options.modalId" class="gl-mb-3 gl-mr-3 gl-mx-2">
+      <gl-button v-gl-modal="$options.mlflowModalId" class="gl-mb-3 gl-mr-3 gl-mx-2">
         {{ $options.mlflowDocs }}
       </gl-button>
     </template>

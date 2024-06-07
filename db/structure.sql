@@ -13781,9 +13781,10 @@ CREATE TABLE packages_protection_rules (
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    push_protected_up_to_access_level smallint NOT NULL,
     package_type smallint NOT NULL,
     package_name_pattern text NOT NULL,
+    minimum_access_level_for_push smallint,
+    CONSTRAINT check_12e13c202a CHECK ((minimum_access_level_for_push IS NOT NULL)),
     CONSTRAINT check_d2d75d206d CHECK ((char_length(package_name_pattern) <= 255))
 );
 

@@ -66,17 +66,6 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           result = update_project(project, current_user, restrict_user_defined_variables: to_value)
           expect(result[:status]).to eq(status)
         end
-
-        context 'when feature flag allow_user_variables_by_minimum_role is disabled`' do
-          before do
-            stub_feature_flags(allow_user_variables_by_minimum_role: false)
-          end
-
-          it 'allows to change restrict_user_defined_variables' do
-            result = update_project(project, current_user, restrict_user_defined_variables: to_value)
-            expect(result[:status]).to eq(:success)
-          end
-        end
       end
     end
 
@@ -114,17 +103,6 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
         it 'allows/disallows to change ci_pipeline_variables_minimum_override_role' do
           result = update_project(project, current_user, ci_pipeline_variables_minimum_override_role: to_value.to_s)
           expect(result[:status]).to eq(status)
-        end
-
-        context 'when feature flag allow_user_variables_by_minimum_role is disabled`' do
-          before do
-            stub_feature_flags(allow_user_variables_by_minimum_role: false)
-          end
-
-          it 'allows to change ci_pipeline_variables_minimum_override_role' do
-            result = update_project(project, current_user, ci_pipeline_variables_minimum_override_role: to_value.to_s)
-            expect(result[:status]).to eq(:success)
-          end
         end
       end
     end

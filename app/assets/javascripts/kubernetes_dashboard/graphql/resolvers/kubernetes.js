@@ -24,7 +24,7 @@ export default {
     return getK8sPods({ client, query, configuration, enableWatch, queryField });
   },
 
-  k8sDeployments(_, { configuration, namespace = '' }, { client }) {
+  k8sDashboardDeployments(_, { configuration, namespace = '' }, { client }) {
     const config = new Configuration(configuration);
 
     const appsV1api = new AppsV1Api(config);

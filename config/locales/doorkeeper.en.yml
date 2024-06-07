@@ -60,12 +60,12 @@ en:
           request_not_authorized: 'Request need to be authorized. Required parameter for authorizing request is missing or invalid.'
 
         invalid_token:
-          revoked: "The access token was revoked"
-          expired: "The access token expired"
-          unknown: "The access token is invalid"
+          revoked: 'The access token was revoked'
+          expired: 'The access token expired'
+          unknown: 'The access token is invalid'
     scopes:
-      api: Access the authenticated user's API
-      read_user: Read the authenticated user's personal information
+      api: Access the API on your behalf
+      read_user: Read your personal information
       read_repository: Allows read-only access to the repository
       write_repository: Allows read-write access to the repository
       read_registry: Grants permission to read container registry images
@@ -82,106 +82,57 @@ en:
       ai_features: Access to API endpoints needed for GitLab Duo features
       read_service_ping: Grant access to download Service Ping payload via API when authenticated as an admin user
     scope_desc:
-      api:
-        Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry.
-      read_api:
-        Grants read access to the API, including all groups and projects, the container registry, and the package registry.
-      read_user:
-        Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users.
-      read_repository:
-        Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API.
-      write_repository:
-        Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).
-      read_registry:
-        Grants read-only access to container registry images on private projects.
-      write_registry:
-        Grants write access to container registry images on private projects. You need both read and write access to push images.
-      read_observability:
-        Grants read-only access to GitLab Observability.
-      write_observability:
-        Grants write access to GitLab Observability.
-      ai_features:
-        Grants access to GitLab Duo related API endpoints.
-      openid:
-        Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
-      sudo:
-        Grants permission to perform API actions as any user in the system, when authenticated as an admin user.
-      profile:
-        Grants read-only access to the user's profile data using OpenID Connect.
-      email:
-        Grants read-only access to the user's primary email address using OpenID Connect.
-      admin_mode:
-        Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
-      create_runner:
-        Grants create access to the runners.
-      manage_runner:
-        Grants access to manage the runners.
-      k8s_proxy:
-        Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
-      read_service_ping:
-        Grant access to download Service Ping payload via API when authenticated as an admin user
+      api: Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry.
+      read_api: Grants read access to the API, including all groups and projects, the container registry, and the package registry.
+      read_user: Grants read-only access to your profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users.
+      read_repository: Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API.
+      write_repository: Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).
+      read_registry: Grants read-only access to container registry images on private projects.
+      write_registry: Grants write access to container registry images on private projects. You need both read and write access to push images.
+      read_observability: Grants read-only access to GitLab Observability.
+      write_observability: Grants write access to GitLab Observability.
+      ai_features: Grants access to GitLab Duo related API endpoints.
+      openid: Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
+      sudo: Grants permission to perform API actions as any user in the system, when authenticated as an admin user.
+      profile: Grants read-only access to the user's profile data using OpenID Connect.
+      email: Grants read-only access to the user's primary email address using OpenID Connect.
+      admin_mode: Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
+      create_runner: Grants create access to the runners.
+      manage_runner: Grants access to manage the runners.
+      k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+      read_service_ping: Grant access to download Service Ping payload via API when authenticated as an admin user
     group_access_token_scope_desc:
-      api:
-        Grants complete read and write access to the scoped group and related project API, including the container registry, the dependency proxy, and the package registry.
-      read_api:
-        Grants read access to the scoped group and related project API, including the package registry.
-      read_user:
-        Grants read-only access to the authenticated user's profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users.
-      read_repository:
-        Grants read access (pull) to all repositories within a group.
-      write_repository:
-        Grants read and write access (pull and push) to all repositories within a group.
-      read_registry:
-        Grants read access (pull) to the container registry images if any project within a group is private and authorization is required.
-      write_registry:
-        Grants write access (push) to the container registry. You need both read and write access to push images.
-      read_observability:
-        Grants read-only access to GitLab Observability.
-      write_observability:
-        Grants write access to GitLab Observability.
-      ai_features:
-        Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.
-      openid:
-        Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
-      sudo:
-        Grants permission to perform API actions as any user in the system, when authenticated as an admin user.
-      profile:
-        Grants read-only access to the user's profile data using OpenID Connect.
-      email:
-        Grants read-only access to the user's primary email address using OpenID Connect.
-      admin_mode:
-        Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
-      create_runner:
-        Grants permission to create runners in a group.
-      manage_runner:
-        Grants access to manage the runners in a group.
-      k8s_proxy:
-        Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.
+      api: Grants complete read and write access to the scoped group and related project API, including the container registry, the dependency proxy, and the package registry.
+      read_api: Grants read access to the scoped group and related project API, including the package registry.
+      read_user: Grants read-only access to your profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users.
+      read_repository: Grants read access (pull) to all repositories within a group.
+      write_repository: Grants read and write access (pull and push) to all repositories within a group.
+      read_registry: Grants read access (pull) to the container registry images if any project within a group is private and authorization is required.
+      write_registry: Grants write access (push) to the container registry. You need both read and write access to push images.
+      read_observability: Grants read-only access to GitLab Observability.
+      write_observability: Grants write access to GitLab Observability.
+      ai_features: Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.
+      openid: Grants permission to authenticate with GitLab using OpenID Connect. Also gives read-only access to the user's profile and group memberships.
+      sudo: Grants permission to perform API actions as any user in the system, when authenticated as an admin user.
+      profile: Grants read-only access to the user's profile data using OpenID Connect.
+      email: Grants read-only access to the user's primary email address using OpenID Connect.
+      admin_mode: Grants permission to perform API actions as an administrator, when Admin Mode is enabled.
+      create_runner: Grants permission to create runners in a group.
+      manage_runner: Grants access to manage the runners in a group.
+      k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes in a group.
     project_access_token_scope_desc:
-      api:
-        Grants complete read and write access to the scoped project API, including the container registry, the dependency proxy, and the package registry.
-      read_api:
-        Grants read access to the scoped project API, including the Package Registry.
-      read_repository:
-        Grants read access (pull) to the repository.
-      write_repository:
-        Grants read and write access (pull and push) to the repository.
-      read_registry:
-        Grants read access (pull) to the Container Registry images if a project is private and authorization is required.
-      write_registry:
-        Grants write access (push) to the Container Registry. You need both read and write access to push images.
-      read_observability:
-        Grants read-only access to GitLab Observability.
-      write_observability:
-        Grants write access to GitLab Observability.
-      create_runner:
-        Grants create access to the runners.
-      manage_runner:
-        Grants access to manage the runners.
-      k8s_proxy:
-        Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
-      ai_features:
-        Grants access to GitLab Duo related API endpoints.
+      api: Grants complete read and write access to the scoped project API, including the container registry, the dependency proxy, and the package registry.
+      read_api: Grants read access to the scoped project API, including the Package Registry.
+      read_repository: Grants read access (pull) to the repository.
+      write_repository: Grants read and write access (pull and push) to the repository.
+      read_registry: Grants read access (pull) to the Container Registry images if a project is private and authorization is required.
+      write_registry: Grants write access (push) to the Container Registry. You need both read and write access to push images.
+      read_observability: Grants read-only access to GitLab Observability.
+      write_observability: Grants write access to GitLab Observability.
+      create_runner: Grants create access to the runners.
+      manage_runner: Grants access to manage the runners.
+      k8s_proxy: Grants permission to perform Kubernetes API calls using the agent for Kubernetes.
+      ai_features: Grants access to GitLab Duo related API endpoints.
     flash:
       applications:
         create:

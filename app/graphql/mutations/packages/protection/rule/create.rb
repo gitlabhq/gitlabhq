@@ -30,11 +30,10 @@ module Mutations
             required: true,
             description: 'Package type protected by the protection rule. For example `NPM`.'
 
-          argument :push_protected_up_to_access_level,
+          argument :minimum_access_level_for_push,
             Types::Packages::Protection::RuleAccessLevelEnum,
             required: true,
-            description:
-            'Max GitLab access level unable to push a package. For example `DEVELOPER`, `MAINTAINER`, `OWNER`.'
+            description: copy_field_description(Types::Packages::Protection::RuleType, :minimum_access_level_for_push)
 
           field :package_protection_rule,
             Types::Packages::Protection::RuleType,

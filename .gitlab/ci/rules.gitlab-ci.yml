@@ -374,6 +374,8 @@
   - "{ee/,jh/}lib/gitlab/llm/**/*"
   - "{ee/,jh/}{,spec/}lib/gitlab/llm/**/*"
   - "{ee/,jh/}lib/gitlab/duo/**/*"
+  # For AI Gateway image update
+  - .gitlab/ci/global.gitlab-ci.yml
 
 # DB patterns + .ci-patterns
 .db-patterns: &db-patterns

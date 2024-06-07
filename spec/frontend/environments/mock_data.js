@@ -326,6 +326,27 @@ const fluxKustomization = {
   ],
 };
 
+const k8sDeploymentsMock = [
+  {
+    metadata: { name: 'notification-controller' },
+    status: {
+      conditions: [
+        { type: 'Available', status: 'True' },
+        { type: 'Progressing', status: 'False' },
+      ],
+    },
+  },
+  {
+    metadata: { name: 'source-controller' },
+    status: {
+      conditions: [
+        { type: 'Available', status: 'False' },
+        { type: 'Progressing', status: 'True' },
+      ],
+    },
+  },
+];
+
 export {
   environment,
   environmentsList,
@@ -337,4 +358,5 @@ export {
   mockKasTunnelUrl,
   fluxResourceStatus,
   fluxKustomization,
+  k8sDeploymentsMock,
 };

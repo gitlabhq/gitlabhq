@@ -2,7 +2,7 @@
 import { s__ } from '~/locale';
 import { getAge, calculateDeploymentStatus } from '../helpers/k8s_integration_helper';
 import WorkloadLayout from '../components/workload_layout.vue';
-import k8sDeploymentsQuery from '../graphql/queries/k8s_dashboard_deployments.query.graphql';
+import k8sDashboardDeploymentsQuery from '../graphql/queries/k8s_dashboard_deployments.query.graphql';
 import { STATUS_FAILED, STATUS_READY, STATUS_PENDING, STATUS_LABELS } from '../constants';
 
 export default {
@@ -11,8 +11,8 @@ export default {
   },
   inject: ['configuration'],
   apollo: {
-    k8sDeployments: {
-      query: k8sDeploymentsQuery,
+    k8sDashboardDeployments: {
+      query: k8sDashboardDeploymentsQuery,
       variables() {
         return {
           configuration: this.configuration,
@@ -20,7 +20,7 @@ export default {
       },
       update(data) {
         return (
-          data?.k8sDeployments?.map((deployment) => {
+          data?.k8sDashboardDeployments?.map((deployment) => {
             return {
               name: deployment.metadata.name,
               namespace: deployment.metadata.namespace,
@@ -42,7 +42,7 @@ export default {
   },
   data() {
     return {
-      k8sDeployments: [],
+      k8sDashboardDeployments: [],
       errorMessage: '',
     };
   },
@@ -64,12 +64,13 @@ export default {
       ];
     },
     loading() {
-      return this.$apollo.queries.k8sDeployments.loading;
+      return this.$apollo.queries.k8sDashboardDeployments.loading;
     },
   },
   methods: {
     countDeploymentsByStatus(phase) {
-      const filteredDeployments = this.k8sDeployments.filter((item) => item.status === phase) || [];
+      const filteredDeployments =
+        this.k8sDashboardDeployments.filter((item) => item.status === phase) || [];
 
       return filteredDeployments.length;
     },
@@ -81,6 +82,6 @@ export default {
     :loading="loading"
     :error-message="errorMessage"
     :stats="deploymentsStats"
-    :items="k8sDeployments"
+    :items="k8sDashboardDeployments"
   />
 </template>

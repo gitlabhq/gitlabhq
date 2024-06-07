@@ -765,7 +765,7 @@ use this setting for control over the environment the pipeline runs in.
 
 #### By minimum role
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `allow_user_variables_by_minimum_role`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1 
 
 When the `restrict_user_defined_variables` option is enabled, you can specify which
 [roles](../../user/permissions.md#roles) can override variables with the

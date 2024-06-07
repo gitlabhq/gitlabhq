@@ -307,7 +307,7 @@ RSpec.describe AuthHelper, feature_category: :system_access do
 
     context 'when the user is missing' do
       it 'returns nil' do
-        expect(helper.auth_app_owner_text(nil)).to be(nil)
+        expect(helper.auth_app_owner_text(nil)).to be('An administrator added this OAuth application ')
       end
     end
   end

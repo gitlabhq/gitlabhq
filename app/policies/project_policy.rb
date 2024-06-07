@@ -243,11 +243,7 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:user_defined_variables_allowed) do
-    if ::Feature.enabled?(:allow_user_variables_by_minimum_role, @subject)
-      @subject.override_pipeline_variables_allowed?(team_access_level)
-    else
-      !@subject.restrict_user_defined_variables? || can?(:maintainer_access)
-    end
+    @subject.override_pipeline_variables_allowed?(team_access_level)
   end
 
   condition(:push_repository_for_job_token_allowed) do

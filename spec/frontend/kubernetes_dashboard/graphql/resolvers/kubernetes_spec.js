@@ -133,7 +133,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
   });
 
-  describe('k8sDeployments', () => {
+  describe('k8sDashboardDeployments', () => {
     const mockWatcher = WatchApi.prototype;
     const mockDeploymentsListWatcherFn = jest.fn().mockImplementation(() => {
       return Promise.resolve(mockWatcher);
@@ -165,7 +165,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should request all deployments from the cluster_client library and watch the events', async () => {
-        const deployments = await mockResolvers.Query.k8sDeployments(
+        const deployments = await mockResolvers.Query.k8sDashboardDeployments(
           null,
           {
             configuration,
@@ -180,7 +180,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should update cache with the new data when received from the library', async () => {
-        await mockResolvers.Query.k8sDeployments(
+        await mockResolvers.Query.k8sDashboardDeployments(
           null,
           { configuration, namespace: '' },
           { client },
@@ -203,7 +203,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         }),
       );
 
-      await mockResolvers.Query.k8sDeployments(null, { configuration }, { client });
+      await mockResolvers.Query.k8sDashboardDeployments(null, { configuration }, { client });
 
       expect(mockDeploymentsListWatcherFn).not.toHaveBeenCalled();
     });
@@ -214,7 +214,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .mockRejectedValue(new Error('API error'));
 
       await expect(
-        mockResolvers.Query.k8sDeployments(null, { configuration }, { client }),
+        mockResolvers.Query.k8sDashboardDeployments(null, { configuration }, { client }),
       ).rejects.toThrow('API error');
     });
   });

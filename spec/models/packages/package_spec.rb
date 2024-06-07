@@ -922,12 +922,12 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
     let_it_be(:package_protection_rule) do
       create(:package_protection_rule, project: package.project, package_name_pattern: package.name, package_type: :npm,
-        push_protected_up_to_access_level: :maintainer)
+        minimum_access_level_for_push: :maintainer)
     end
 
     let_it_be(:package_protection_rule_no_match) do
       create(:package_protection_rule, project: package.project, package_name_pattern: "other-#{package.name}", package_type: :npm,
-        push_protected_up_to_access_level: :maintainer)
+        minimum_access_level_for_push: :maintainer)
     end
 
     subject { package.matching_package_protection_rules }

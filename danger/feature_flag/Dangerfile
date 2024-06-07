@@ -151,7 +151,7 @@ module Tooling
       if mr_line
         context.public_send(message_method, note, file: feature_flag.path, line: mr_line.succ)
       else
-        context.public_send(message_method, fallback_note)
+        context.public_send(message_method, "#{feature_flag.path}: #{fallback_note}")
       end
       # rubocop:enable GitlabSecurity/PublicSend
     end

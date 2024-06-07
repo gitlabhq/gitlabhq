@@ -30,7 +30,6 @@ module WikiActions
     before_action :wiki
     before_action :page, only: [:show, :edit, :update, :history, :destroy, :diff]
     before_action :load_sidebar, except: [:pages]
-    before_action :set_content_class
 
     before_action do
       push_frontend_feature_flag(:preserve_unchanged_markdown, @group)
@@ -371,10 +370,6 @@ module WikiActions
 
       wiki.repository.blob_at(commit.id, params[:id])
     end
-  end
-
-  def set_content_class
-    @content_class = 'limit-container-width' unless fluid_layout # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   # Override CommitsHelper#view_file_button

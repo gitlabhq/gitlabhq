@@ -1,10 +1,13 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlTooltipDirective as GlTooltip } from '@gitlab/ui';
 import { TREE_ITEM_KIND_ICONS, TREE_ITEM_STATUS_ICONS } from '~/environments/constants';
 
 export default {
   components: {
     GlIcon,
+  },
+  directives: {
+    GlTooltip,
   },
   props: {
     kind: {
@@ -42,6 +45,8 @@ export default {
         <span class="gl-line-clamp-1 gl-break-all" :title="name">{{ name }}</span>
         <gl-icon
           v-if="status"
+          v-gl-tooltip
+          :title="status"
           :name="statusBadge.icon"
           :size="12"
           :class="statusBadge.class"

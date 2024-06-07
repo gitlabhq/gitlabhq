@@ -1485,6 +1485,31 @@ Example response:
 }
 ```
 
+### Delete Service Account User
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+
+Deletes a service account user. You specify the ID of the service account user to be deleted.
+
+This API endpoint works on top-level groups only. It does not work on subgroups.
+
+```plaintext
+DELETE /groups/:id/service_accounts/:user_id
+```
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts/181"
+```
+
+Supported attributes:
+
+| Attribute                  | Type           | Required                  | Description                                                                    |
+|:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
+| `id`          | integer | yes      | ID of a service account user.                            |
+| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this service account user. |
+
 ### Create Personal Access Token for Service Account User
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.

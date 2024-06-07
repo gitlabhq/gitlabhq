@@ -54,7 +54,7 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
         {
           package_name_pattern: '',
           package_type: 'unknown_package_type',
-          push_protected_up_to_access_level: 1000
+          minimum_access_level_for_push: 1000
         }
       end
 
@@ -73,7 +73,7 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
           # The field `package_name_pattern` is unique; this is why we change the value in a minimum way
           package_name_pattern: "#{existing_package_protection_rule.package_name_pattern}-unique",
           package_type: existing_package_protection_rule.package_type,
-          push_protected_up_to_access_level: existing_package_protection_rule.push_protected_up_to_access_level
+          minimum_access_level_for_push: existing_package_protection_rule.minimum_access_level_for_push
         )
       end
 
@@ -88,7 +88,7 @@ RSpec.describe Packages::Protection::CreateRuleService, '#execute', feature_cate
           :package_protection_rule,
           package_name_pattern: existing_package_protection_rule.package_name_pattern,
           package_type: existing_package_protection_rule.package_type,
-          push_protected_up_to_access_level: existing_package_protection_rule.push_protected_up_to_access_level
+          minimum_access_level_for_push: existing_package_protection_rule.minimum_access_level_for_push
         )
       end
 

@@ -154,6 +154,6 @@ export default {
     :is-icon-button="true"
     @click.stop.prevent="toggleTodo"
   >
-    <gl-icon :class="{ 'gl-fill-blue-500': pendingTodo }" :name="buttonIcon" />
+    <gl-icon :class="{ '!gl-fill-blue-500': pendingTodo }" :name="buttonIcon" />
   </todo-button>
 </template>

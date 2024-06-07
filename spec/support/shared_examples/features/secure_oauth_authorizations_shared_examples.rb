@@ -5,7 +5,7 @@ RSpec.shared_examples 'Secure OAuth Authorizations' do
     let(:user) { create(:user) }
 
     it 'asks the user to authorize the application' do
-      expect(page).to have_text "Authorize #{application.name} to use your account?"
+      expect(page).to have_text "#{application.name} is requesting access to your account on"
     end
   end
 

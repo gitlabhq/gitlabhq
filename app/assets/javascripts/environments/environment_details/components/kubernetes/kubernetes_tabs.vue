@@ -9,7 +9,7 @@ import KubernetesPods from './kubernetes_pods.vue';
 import KubernetesServices from './kubernetes_services.vue';
 import KubernetesSummary from './kubernetes_summary.vue';
 
-const tabs = [k8sResourceType.k8sPods, k8sResourceType.k8sServices];
+const tabs = ['summary', k8sResourceType.k8sPods, k8sResourceType.k8sServices];
 
 export default {
   components: {
@@ -75,7 +75,12 @@ export default {
 <template>
   <div>
     <gl-tabs v-model="activeTabIndex">
-      <kubernetes-summary v-if="renderTreeView" :flux-kustomization="fluxKustomization" />
+      <kubernetes-summary
+        v-if="renderTreeView"
+        :flux-kustomization="fluxKustomization"
+        :namespace="namespace"
+        :configuration="configuration"
+      />
 
       <kubernetes-pods
         :namespace="namespace"

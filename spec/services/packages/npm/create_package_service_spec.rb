@@ -364,17 +364,17 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
         let(:package_name_pattern_no_match) { "#{package_name}_no_match" }
 
-        where(:package_name_pattern, :push_protected_up_to_access_level) do
-          ref(:package_name)                  | :developer
+        where(:package_name_pattern, :minimum_access_level_for_push) do
+          ref(:package_name)                  | :maintainer
           ref(:package_name)                  | :owner
-          ref(:package_name_pattern_no_match) | :developer
+          ref(:package_name_pattern_no_match) | :maintainer
           ref(:package_name_pattern_no_match) | :owner
         end
 
         with_them do
           before do
             package_protection_rule.update!(package_name_pattern: package_name_pattern,
-              push_protected_up_to_access_level: push_protected_up_to_access_level)
+              minimum_access_level_for_push: minimum_access_level_for_push)
           end
 
           it_behaves_like 'valid package'
@@ -411,19 +411,20 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         end
       end
 
-      where(:package_name_pattern, :push_protected_up_to_access_level, :current_user, :shared_examples_name) do
-        ref(:package_name)                  | :developer  | ref(:project_developer)  | 'protected package'
-        ref(:package_name)                  | :developer  | ref(:project_owner)      | 'valid package'
-        ref(:package_name)                  | :maintainer | ref(:project_maintainer) | 'protected package'
-        ref(:package_name)                  | :owner      | ref(:project_owner)      | 'protected package'
-        ref(:package_name_pattern_no_match) | :developer  | ref(:project_owner)      | 'valid package'
+      where(:package_name_pattern, :minimum_access_level_for_push, :current_user, :shared_examples_name) do
+        ref(:package_name)                  | :maintainer | ref(:project_developer)  | 'protected package'
+        ref(:package_name)                  | :maintainer | ref(:project_owner)      | 'valid package'
+        ref(:package_name)                  | :owner      | ref(:project_maintainer) | 'protected package'
+        ref(:package_name)                  | :owner      | ref(:project_owner)      | 'valid package'
+        ref(:package_name)                  | :admin      | ref(:project_owner)      | 'protected package'
         ref(:package_name_pattern_no_match) | :owner      | ref(:project_owner)      | 'valid package'
+        ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)      | 'valid package'
       end
 
       with_them do
         before do
           package_protection_rule.update!(package_name_pattern: package_name_pattern,
-            push_protected_up_to_access_level: push_protected_up_to_access_level)
+            minimum_access_level_for_push: minimum_access_level_for_push)
         end
 
         it_behaves_like params[:shared_examples_name]
