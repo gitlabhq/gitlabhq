@@ -27,7 +27,7 @@ export default {
     GlFormTextarea,
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'maxAllowedFileSize'],
   props: {
     modelGid: {
       type: String,
@@ -78,6 +78,7 @@ export default {
             importPath,
             file: this.selectedFile.file,
             subfolder: this.selectedFile.subfolder,
+            maxAllowedFileSize: this.maxAllowedFileSize,
           });
           const { showPath } = this.versionData.mlModelVersionCreate.modelVersion._links;
           visitUrl(showPath);
@@ -85,7 +86,6 @@ export default {
       } catch (error) {
         Sentry.captureException(error);
         this.errorMessage = error;
-        this.selectedFile = emptyArtifactFile;
         this.showModal();
       }
     },

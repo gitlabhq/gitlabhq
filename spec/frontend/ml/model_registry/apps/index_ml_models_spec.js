@@ -21,6 +21,7 @@ Vue.use(VueApollo);
 const defaultProps = {
   projectPath: 'path/to/project',
   canWriteModelRegistry: false,
+  maxAllowedFileSize: 99999,
 };
 
 describe('ml/model_registry/apps/index_ml_models', () => {

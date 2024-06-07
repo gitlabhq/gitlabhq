@@ -295,7 +295,7 @@ gitlab_rails['omniauth_providers'] = [
     name: "azure_oauth2",
     label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
     args: {
-      name: "azure_activedirectory_v2",
+      name: "azure_oauth2",
       strategy_class: "OmniAuth::Strategies::OpenIDConnect",
       scope: ["openid", "profile", "email"],
       response_type: "code",
@@ -319,7 +319,7 @@ gitlab_rails['omniauth_providers'] = [
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    name: "azure_oauth2",
+    name: "azure_activedirectory_v2",
     label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
     args: {
       name: "azure_activedirectory_v2",

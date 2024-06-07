@@ -735,13 +735,13 @@ RSpec.shared_examples 'work items time tracking' do
     click_button '3d'
 
     expect(page).to have_css 'h2', text: 'Time tracking report'
-    expect(page).to have_text '1d Sidney Jones1 First summary'
-    expect(page).to have_text '2d Sidney Jones1 Second summary'
+    expect(page).to have_text "1d #{user.name} First summary"
+    expect(page).to have_text "2d #{user.name} Second summary"
 
     click_button 'Delete time spent', match: :first
 
-    expect(page).to have_text '1d Sidney Jones1 First summary'
-    expect(page).not_to have_text '2d Sidney Jones1 Second summary'
+    expect(page).to have_text "1d #{user.name} First summary"
+    expect(page).not_to have_text "2d #{user.name} Second summary"
 
     click_button 'Close'
 

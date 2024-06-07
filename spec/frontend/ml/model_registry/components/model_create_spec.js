@@ -1,11 +1,12 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlAlert, GlModal } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import ModelCreate from '~/ml/model_registry/components/model_create.vue';
 import ImportArtifactZone from '~/ml/model_registry/components/import_artifact_zone.vue';
+import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
 import createModelMutation from '~/ml/model_registry/graphql/mutations/create_model.mutation.graphql';
 import createModelVersionMutation from '~/ml/model_registry/graphql/mutations/create_model_version.mutation.graphql';
@@ -28,6 +29,8 @@ jest.mock('~/ml/model_registry/services/upload_model', () => ({
 describe('ModelCreate', () => {
   let wrapper;
   let apolloProvider;
+
+  const file = { name: 'file.txt', size: 1024 };
 
   beforeEach(() => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
@@ -54,8 +57,12 @@ describe('ModelCreate', () => {
       },
       provide: {
         projectPath: 'some/project',
+        maxAllowedFileSize: 99999,
       },
       apolloProvider,
+      stubs: {
+        ImportArtifactZone,
+      },
     });
   };
 
@@ -65,8 +72,9 @@ describe('ModelCreate', () => {
   const findDescriptionInput = () => wrapper.findByTestId('descriptionId');
   const findVersionDescriptionInput = () => wrapper.findByTestId('versionDescriptionId');
   const findImportArtifactZone = () => wrapper.findComponent(ImportArtifactZone);
+  const zone = () => wrapper.findComponent(UploadDropzone);
   const findGlModal = () => wrapper.findComponent(GlModal);
-  const findGlAlert = () => wrapper.findComponent(GlAlert);
+  const findGlAlert = () => wrapper.findByTestId('modal-create-alert');
   const submitForm = async () => {
     findGlModal().vm.$emit('primary', new Event('primary'));
     await waitForPromises();
@@ -181,6 +189,8 @@ describe('ModelCreate', () => {
       findVersionInput().vm.$emit('input', '1.0.0');
       findDescriptionInput().vm.$emit('input', 'My model description');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
+      await Vue.nextTick();
+      zone().vm.$emit('change', file);
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
@@ -215,9 +225,10 @@ describe('ModelCreate', () => {
 
     it('Uploads a file mutation upon confirm', () => {
       expect(uploadModel).toHaveBeenCalledWith({
-        file: null,
+        file,
         importPath: '/api/v4/projects/1/packages/ml_models/1/files/',
         subfolder: '',
+        maxAllowedFileSize: 99999,
       });
     });
 
@@ -256,6 +267,8 @@ describe('ModelCreate', () => {
       findNameInput().vm.$emit('input', 'gpt-alice-1');
       findVersionInput().vm.$emit('input', '1.0.0');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
+      await Vue.nextTick();
+      zone().vm.$emit('change', file);
       await submitForm();
     });
 
@@ -304,6 +317,8 @@ describe('ModelCreate', () => {
       findVersionInput().vm.$emit('input', '1.0.0');
       findDescriptionInput().vm.$emit('input', 'My model description');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
+      await Vue.nextTick();
+      zone().vm.$emit('change', file);
       uploadModel.mockRejectedValueOnce('Artifact import error.');
       await submitForm();
     });
@@ -312,6 +327,16 @@ describe('ModelCreate', () => {
       expect(findGlAlert().text()).toBe('Artifact import error.');
       await submitForm(); // retry submit
       expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
+    });
+
+    it('Uploads a file mutation upon confirm', async () => {
+      await submitForm(); // retry submit
+      expect(uploadModel).toHaveBeenCalledWith({
+        file,
+        importPath: '/api/v4/projects/1/packages/ml_models/1/files/',
+        subfolder: '',
+        maxAllowedFileSize: 99999,
+      });
     });
   });
 

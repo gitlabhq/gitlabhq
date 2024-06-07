@@ -48,9 +48,22 @@ require_relative '../config/initializers/0_inject_enterprise_edition_module'
 require_relative '../config/initializers_before_autoloader/000_inflections'
 require_relative '../config/initializers_before_autoloader/004_zeitwerk'
 
-Rails.autoloaders.each do |autoloader|
-  autoloader.push_dir('lib')
-  autoloader.push_dir('ee/lib') if Gitlab.ee?
-  autoloader.push_dir('jh/lib') if Gitlab.jh?
-  autoloader.setup
+# We wrap this bit of logic in a module to avoid polluting the global namespace with a local variable and methods
+module AutoloadersSetup
+  def self.dir_already_autoloaded?(autoloaded_dirs, dir)
+    autoloaded_dirs.any? { File.expand_path(dir, __dir__) }
+  end
+
+  def self.setup_autoloaders
+    autoloaded_dirs = [] # NOTE: can't use Rails.autoloaders.each_with_object, it doesn't work, so we need a local var.
+    Rails.autoloaders.each do |autoloader|
+      autoloader.push_dir('lib') unless dir_already_autoloaded?(autoloaded_dirs, "../lib")
+      autoloader.push_dir('ee/lib') if Gitlab.ee? && !dir_already_autoloaded?(autoloaded_dirs, "../ee/lib")
+      autoloader.push_dir('jh/lib') if Gitlab.jh? && !dir_already_autoloaded?(autoloaded_dirs, "../jh/lib")
+      autoloader.setup
+      autoloaded_dirs += autoloader.dirs
+    end
+  end
 end
+
+AutoloadersSetup.setup_autoloaders

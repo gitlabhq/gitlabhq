@@ -36,7 +36,7 @@ RSpec.describe PreferencesHelper do
         { text: "Followed Users' Activity", value: 'followed_user_activity' },
         { text: "Your Groups", value: 'groups' },
         { text: "Your To-Do List", value: 'todos' },
-        { text: "Assigned Issues", value: 'issues' },
+        { text: "Assigned issues", value: 'issues' },
         { text: "Assigned merge requests", value: 'merge_requests' }
       ]
     end

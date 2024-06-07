@@ -7151,7 +7151,7 @@ msgstr ""
 msgid "Assigned %{reviewer_users_sentence} as %{reviewer_text}."
 msgstr ""
 
-msgid "Assigned Issues"
+msgid "Assigned issues"
 msgstr ""
 
 msgid "Assigned merge requests"
@@ -9669,6 +9669,9 @@ msgid "BulkImport|Import with projects"
 msgstr ""
 
 msgid "BulkImport|Import without projects"
+msgstr ""
+
+msgid "BulkImport|Importing projects is a %{docsLinkStart}Beta%{docsLinkEnd} feature."
 msgstr ""
 
 msgid "BulkImport|Importing the group failed."
@@ -33297,6 +33300,9 @@ msgstr ""
 msgid "MlModelRegistry|Failed to load model with error: %{message}"
 msgstr ""
 
+msgid "MlModelRegistry|File \"%{name}\" is %{size}. It is larger than max allowed size of %{maxAllowedFileSize}"
+msgstr ""
+
 msgid "MlModelRegistry|For example 1.0.0"
 msgstr ""
 
@@ -33421,6 +33427,9 @@ msgid "MlModelRegistry|· %d version"
 msgid_plural "MlModelRegistry|· %d versions"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Mlmodelregistry|Provide the max allowed file size"
+msgstr ""
 
 msgid "Mock an external CI integration."
 msgstr ""
@@ -60846,6 +60855,15 @@ msgstr ""
 msgid "Your CI runner usage CSV export containing the top %{exported_objects} has been added to this email as an attachment."
 msgstr ""
 
+msgid "Your CI runner usage CSV export containing the top %{exported_objects} in the \"%{full_path}\" group has been added to this email as an attachment."
+msgstr ""
+
+msgid "Your CI runner usage CSV export for the \"%{full_path}\" project has been added to this email as an attachment."
+msgstr ""
+
+msgid "Your CI runner usage CSV export of the top %{exported_objects} has been added to this email as an attachment."
+msgstr ""
+
 msgid "Your CI/CD configuration syntax is invalid. Select the Validate tab for more details."
 msgstr ""
 
@@ -60856,9 +60874,6 @@ msgid "Your CSV export of %{count} from project %{project_link} has been added t
 msgstr ""
 
 msgid "Your CSV export of %{exported_objects} from project %{project_name} (%{project_url}) has been added to this email as an attachment."
-msgstr ""
-
-msgid "Your CSV export of the top %{exported_objects} has been added to this email as an attachment."
 msgstr ""
 
 msgid "Your CSV export request has succeeded. The result will be emailed to %{email}."

@@ -44,7 +44,7 @@ export default {
       import(/* webpackChunkName: 'organization_switcher' */ './organization_switcher.vue'),
   },
   i18n: {
-    issues: __('Issues'),
+    issues: __('Assigned issues'),
     mergeRequests: __('Merge requests'),
     searchKbdHelp: sprintf(
       s__('GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search'),

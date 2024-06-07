@@ -460,7 +460,7 @@ To view all issues assigned to you:
 Or:
 
 - To use a [keyboard shortcut](../../shortcuts.md), press <kbd>Shift</kbd> + <kbd>i</kbd>.
-- On the left sidebar, at the top, select **Issues** (**{issues}**).
+- On the left sidebar, at the top, select **Assigned issues** (**{issues}**).
 
 ## Filter the list of issues
 

@@ -25,6 +25,7 @@ export default {
     GlInputGroupText,
     UploadDropzone,
   },
+  inject: ['maxAllowedFileSize'],
   props: {
     path: {
       type: String,
@@ -65,7 +66,12 @@ export default {
     },
     submitRequest(importPath) {
       this.loading = true;
-      uploadModel({ importPath, file: this.file, subfolder: this.subfolder })
+      uploadModel({
+        importPath,
+        file: this.file,
+        subfolder: this.subfolder,
+        maxAllowedFileSize: this.maxAllowedFileSize,
+      })
         .then(() => {
           this.resetFile();
           this.alert = { message: this.$options.i18n.successfulUpload, variant: 'success' };

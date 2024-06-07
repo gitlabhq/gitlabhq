@@ -16,7 +16,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
     it 'navigate to tabs' do
       find('body').send_keys([:shift, 'I'])
 
-      check_page_title('Issues')
+      check_page_title('Assigned issues')
 
       find('body').send_keys([:shift, 'M'])
 

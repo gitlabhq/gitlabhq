@@ -69,6 +69,7 @@ export default {
       mlflowTrackingUrl: this.mlflowTrackingUrl,
       projectPath: this.projectPath,
       canWriteModelRegistry: this.canWriteModelRegistry,
+      maxAllowedFileSize: this.maxAllowedFileSize,
     };
   },
   props: {
@@ -94,6 +95,10 @@ export default {
     },
     mlflowTrackingUrl: {
       type: String,
+      required: true,
+    },
+    maxAllowedFileSize: {
+      type: Number,
       required: true,
     },
   },

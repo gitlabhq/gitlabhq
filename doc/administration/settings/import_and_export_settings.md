@@ -39,11 +39,17 @@ To enable the export of
 
 ## Enable migration of groups and projects by direct transfer
 
+DETAILS:
+**Status:** Beta
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383268) in GitLab 15.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461326) in GitLab 17.1.
 
 WARNING:
 In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan-execution-policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
+
+WARNING:
+This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+This feature is not ready for production use.
 
 Migration of groups and projects by direct transfer is disabled by default.
 To enable migration of groups and projects by direct transfer:

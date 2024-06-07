@@ -10,7 +10,8 @@ module Projects
           projectPath: project.full_path,
           create_model_path: new_project_ml_model_path(project),
           can_write_model_registry: can_write_model_registry?(user, project),
-          mlflow_tracking_url: mlflow_tracking_url(project)
+          mlflow_tracking_url: mlflow_tracking_url(project),
+          max_allowed_file_size: max_allowed_file_size(project)
         }
 
         to_json(data)
@@ -25,7 +26,8 @@ module Projects
           can_write_model_registry: can_write_model_registry?(user, project),
           mlflow_tracking_url: mlflow_tracking_url(project),
           model_id: model.id,
-          model_name: model.name
+          model_name: model.name,
+          max_allowed_file_size: max_allowed_file_size(project)
         }
 
         to_json(data)
@@ -42,7 +44,8 @@ module Projects
           version_name: model_version.version,
           can_write_model_registry: can_write_model_registry?(user, project),
           import_path: model_version_artifact_import_path(project.id, model_version.id),
-          model_path: project_ml_model_path(project, model_version.model)
+          model_path: project_ml_model_path(project, model_version.model),
+          max_allowed_file_size: max_allowed_file_size(project)
         }
 
         to_json(data)
@@ -60,6 +63,10 @@ module Projects
 
       def can_write_model_registry?(user, project)
         user&.can?(:write_model_registry, project)
+      end
+
+      def max_allowed_file_size(project)
+        project.actual_limits.ml_model_max_file_size
       end
 
       def to_json(data)

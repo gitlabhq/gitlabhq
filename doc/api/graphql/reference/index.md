@@ -906,7 +906,7 @@ Returns [`[CiRunnerUsage!]`](#cirunnerusage).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryrunnerusagefromdate"></a>`fromDate` | [`Date`](#date) | Start of the requested date frame. Defaults to the start of the previous calendar month. |
-| <a id="queryrunnerusagefullpath"></a>`fullPath` | [`ID`](#id) | Filter jobs by the full path of the group or project they belong to. For example, `gitlab-org` or `gitlab-org/gitlab`. Available only to admins, group maintainers (when a group is specified), or project maintainers (when a project is specified). Limited to runners from 5000 child projects. |
+| <a id="queryrunnerusagefullpath"></a>`fullPath` | [`ID`](#id) | Filter jobs by the full path of the group or project they belong to. For example, `gitlab-org` or `gitlab-org/gitlab`. Available only to administrators and users with the Maintainer role for the group (when a group is specified), or project (when a project is specified). Limited to runners from 5000 child projects. |
 | <a id="queryrunnerusagerunnertype"></a>`runnerType` | [`CiRunnerType`](#cirunnertype) | Filter runners by the type. |
 | <a id="queryrunnerusagerunnerslimit"></a>`runnersLimit` | [`Int`](#int) | Maximum number of runners to return. Other runners will be aggregated to a `runner: null` entry. Defaults to 5 if unspecified. Maximum of 500. |
 | <a id="queryrunnerusagetodate"></a>`toDate` | [`Date`](#date) | End of the requested date frame. Defaults to the end of the previous calendar month. |
@@ -926,7 +926,7 @@ Returns [`[CiRunnerUsageByProject!]`](#cirunnerusagebyproject).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="queryrunnerusagebyprojectfromdate"></a>`fromDate` | [`Date`](#date) | Start of the requested date frame. Defaults to the start of the previous calendar month. |
-| <a id="queryrunnerusagebyprojectfullpath"></a>`fullPath` | [`ID`](#id) | Filter jobs based on the full path of the group or project they belong to. For example, `gitlab-org` or `gitlab-org/gitlab`. Available only to admins, group maintainers (when a group is specified), or project maintainers (when a project is specified). Limited to runners from 5000 child projects. |
+| <a id="queryrunnerusagebyprojectfullpath"></a>`fullPath` | [`ID`](#id) | Filter jobs based on the full path of the group or project they belong to. For example, `gitlab-org` or `gitlab-org/gitlab`. Available only to administrators and users with the Maintainer role for the group (when a group is specified), or project (when a project is specified). Limited to runners from 5000 child projects. |
 | <a id="queryrunnerusagebyprojectprojectslimit"></a>`projectsLimit` | [`Int`](#int) | Maximum number of projects to return. Other projects will be aggregated to a `project: null` entry. Defaults to 5 if unspecified. Maximum of 500. |
 | <a id="queryrunnerusagebyprojectrunnertype"></a>`runnerType` | [`CiRunnerType`](#cirunnertype) | Filter jobs by the type of runner that executed them. |
 | <a id="queryrunnerusagebyprojecttodate"></a>`toDate` | [`Date`](#date) | End of the requested date frame. Defaults to the end of the previous calendar month. |
@@ -8064,6 +8064,7 @@ Input type: `RunnersExportUsageInput`
 | ---- | ---- | ----------- |
 | <a id="mutationrunnersexportusageclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationrunnersexportusagefromdate"></a>`fromDate` | [`ISO8601Date`](#iso8601date) | UTC start date of the period to report on. Defaults to the start of last full month. |
+| <a id="mutationrunnersexportusagefullpath"></a>`fullPath` | [`ID`](#id) | Filter jobs by the full path of the group or project they belong to. For example, `gitlab-org` or `gitlab-org/gitlab`. Available only to administrators and users with the Maintainer role for the group (when a group is specified), or project (when a project is specified). Limited to runners from 5000 child projects. |
 | <a id="mutationrunnersexportusagemaxprojectcount"></a>`maxProjectCount` | [`Int`](#int) | Maximum number of projects to return. All other runner usage will be attributed to an `<Other projects>` entry. Defaults to 1000 projects. |
 | <a id="mutationrunnersexportusagerunnertype"></a>`runnerType` | [`CiRunnerType`](#cirunnertype) | Scope of the runners to include in the report. |
 | <a id="mutationrunnersexportusagetodate"></a>`toDate` | [`ISO8601Date`](#iso8601date) | UTC end date of the period to report on. " \ "Defaults to the end of the month specified by `fromDate`. |

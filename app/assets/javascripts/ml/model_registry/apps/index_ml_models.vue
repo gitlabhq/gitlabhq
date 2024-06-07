@@ -30,6 +30,7 @@ export default {
     return {
       mlflowTrackingUrl: this.mlflowTrackingUrl,
       projectPath: this.projectPath,
+      maxAllowedFileSize: this.maxAllowedFileSize,
     };
   },
   props: {
@@ -46,6 +47,10 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    maxAllowedFileSize: {
+      type: Number,
+      required: true,
     },
   },
   apollo: {

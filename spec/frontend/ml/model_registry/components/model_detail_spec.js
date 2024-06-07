@@ -11,6 +11,7 @@ let wrapper;
 const createWrapper = (modelProp = model) => {
   wrapper = shallowMountExtended(ModelDetail, {
     propsData: { model: modelProp },
+    provide: { maxAllowedFileSize: 99999 },
     stubs: { GlTab },
   });
 };

@@ -55,7 +55,7 @@ RSpec.describe 'Navigation bar counter', :use_clean_rails_memory_store_caching, 
     expect(dashboard_count).to have_content(count)
 
     within_testid('super-sidebar') do
-      expect(page).to have_link("Issues #{count}")
+      expect(page).to have_link("Assigned issues #{count}")
     end
   end
 

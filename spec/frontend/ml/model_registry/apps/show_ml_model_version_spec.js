@@ -60,6 +60,7 @@ describe('ml/model_registry/apps/show_model_version.vue', () => {
         canWriteModelRegistry: true,
         importPath: 'path/to/import',
         modelPath: 'path/to/model',
+        maxAllowedFileSize: 99999,
       },
       apolloProvider,
       stubs: {

@@ -26,6 +26,7 @@ export default {
       canWriteModelRegistry: this.canWriteModelRegistry,
       importPath: this.importPath,
       versionName: this.versionName,
+      maxAllowedFileSize: this.maxAllowedFileSize,
     };
   },
   props: {
@@ -59,6 +60,10 @@ export default {
     },
     modelPath: {
       type: String,
+      required: true,
+    },
+    maxAllowedFileSize: {
+      type: Number,
       required: true,
     },
   },

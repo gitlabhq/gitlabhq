@@ -637,6 +637,7 @@ export default {
   gitlabLogo: window.gon.gitlab_logo,
   PAGE_SIZES,
   permissionsHelpPath: helpPagePath('user/permissions', { anchor: 'group-members-permissions' }),
+  betaFeatureHelpPath: helpPagePath('policy/experiment-beta-support', { anchor: 'beta-features' }),
   popoverOptions: { title: __('What is listed here?') },
   i18n,
   LOCAL_STORAGE_KEY: 'gl-bulk-imports-status-page-size-v1',
@@ -801,6 +802,23 @@ export default {
               class="gl-text-orange-500"
               data-testid="import-projects-warning"
             />
+          </span>
+
+          <span class="gl-ml-3">
+            <gl-icon name="information-o" :size="12" class="gl-text-blue-600" />
+            <gl-sprintf
+              :message="
+                s__(
+                  'BulkImport|Importing projects is a %{docsLinkStart}Beta%{docsLinkEnd} feature.',
+                )
+              "
+            >
+              <template #docsLink="{ content }"
+                ><gl-link :href="$options.betaFeatureHelpPath" target="_blank">{{
+                  content
+                }}</gl-link></template
+              >
+            </gl-sprintf>
           </span>
         </div>
         <gl-table

@@ -17,6 +17,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'projectPath' => project.full_path,
         'createModelPath' => "/#{project.full_path}/-/ml/models/new",
         'canWriteModelRegistry' => true,
+        'maxAllowedFileSize' => 10737418240,
         'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/"
       })
     end
@@ -47,6 +48,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'projectPath' => project.full_path,
         'indexModelsPath' => "/#{project.full_path}/-/ml/models",
         'canWriteModelRegistry' => true,
+        'maxAllowedFileSize' => 10737418240,
         'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/",
         'modelId' => model.id,
         'modelName' => 'cool_model'
@@ -86,6 +88,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         "modelName" => model_version.name,
         "versionName" => model_version.version,
         "canWriteModelRegistry" => true,
+        'maxAllowedFileSize' => 10737418240,
         "importPath" => "/api/v4/projects/#{project.id}/packages/ml_models/#{model_version.id}/files/",
         "modelPath" => "/#{project.full_path}/-/ml/models/1"
       })

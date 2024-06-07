@@ -106,7 +106,7 @@ describe('UserBar component', () => {
       const isuesCounter = findIssuesCounter();
       expect(isuesCounter.props('count')).toBe(userCounts.assigned_issues);
       expect(isuesCounter.props('href')).toBe(mockSidebarData.issues_dashboard_path);
-      expect(isuesCounter.props('label')).toBe(__('Issues'));
+      expect(isuesCounter.props('label')).toBe(__('Assigned issues'));
       expect(isuesCounter.attributes('data-track-action')).toBe('click_link');
       expect(isuesCounter.attributes('data-track-label')).toBe('issues_link');
       expect(isuesCounter.attributes('data-track-property')).toBe('nav_core_menu');

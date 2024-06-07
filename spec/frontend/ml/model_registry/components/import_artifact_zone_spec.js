@@ -13,6 +13,8 @@ jest.mock('~/ml/model_registry/services/upload_model', () => ({
 describe('ImportArtifactZone', () => {
   let wrapper;
 
+  const provide = { maxAllowedFileSize: 99999 };
+
   const file = { name: 'file.txt', size: 1024 };
   const initialProps = {
     path: 'some/path',
@@ -32,6 +34,7 @@ describe('ImportArtifactZone', () => {
         propsData: {
           ...initialProps,
         },
+        provide,
       });
     });
 
@@ -71,6 +74,7 @@ describe('ImportArtifactZone', () => {
         },
         importPath: 'some/path',
         subfolder: '',
+        maxAllowedFileSize: 99999,
       });
     });
 
@@ -96,6 +100,7 @@ describe('ImportArtifactZone', () => {
         propsData: {
           ...initialProps,
         },
+        provide,
         stubs: {
           GlFormInputGroup,
         },
@@ -128,6 +133,7 @@ describe('ImportArtifactZone', () => {
         },
         importPath: 'some/path',
         subfolder: 'action',
+        maxAllowedFileSize: 99999,
       });
     });
   });
@@ -138,6 +144,7 @@ describe('ImportArtifactZone', () => {
         propsData: {
           ...initialProps,
         },
+        provide,
       });
     });
 
@@ -169,6 +176,7 @@ describe('ImportArtifactZone', () => {
           ...initialProps,
           submitOnSelect: false,
         },
+        provide,
       });
     });
 
@@ -188,6 +196,7 @@ describe('ImportArtifactZone', () => {
           ...initialProps,
           path: null,
         },
+        provide,
       });
     });
 

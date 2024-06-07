@@ -114,6 +114,10 @@ role.
 1. The **Status** column shows the import status of each group. If you leave the page open, it updates in real-time.
 1. After a group has been imported, select its GitLab path to open its GitLab URL.
 
+WARNING:
+Importing groups with projects is in [beta](../../../policy/experiment-beta-support.md#beta). This feature is not
+ready for production use.
+
 ## Group import history
 
 > - **Partially completed** status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/394727) in GitLab 16.7.

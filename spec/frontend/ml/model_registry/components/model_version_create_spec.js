@@ -6,6 +6,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import ModelVersionCreate from '~/ml/model_registry/components/model_version_create.vue';
 import ImportArtifactZone from '~/ml/model_registry/components/import_artifact_zone.vue';
+import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
 import createModelVersionMutation from '~/ml/model_registry/graphql/mutations/create_model_version.mutation.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -28,6 +29,8 @@ describe('ModelVersionCreate', () => {
   let wrapper;
   let apolloProvider;
 
+  const file = { name: 'file.txt', size: 1024 };
+
   beforeEach(() => {
     jest.spyOn(Sentry, 'captureException').mockImplementation();
   });
@@ -45,11 +48,15 @@ describe('ModelVersionCreate', () => {
     wrapper = shallowMountExtended(ModelVersionCreate, {
       provide: {
         projectPath: 'some/project',
+        maxAllowedFileSize: 99999,
       },
       propsData: {
         modelGid: 'gid://gitlab/Ml::Model/1',
       },
       apolloProvider,
+      stubs: {
+        UploadDropzone,
+      },
     });
   };
 
@@ -57,6 +64,7 @@ describe('ModelVersionCreate', () => {
   const findVersionInput = () => wrapper.findByTestId('versionId');
   const findDescriptionInput = () => wrapper.findByTestId('descriptionId');
   const findImportArtifactZone = () => wrapper.findComponent(ImportArtifactZone);
+  const zone = () => wrapper.findComponent(UploadDropzone);
   const findGlModal = () => wrapper.findComponent(GlModal);
   const findGlAlert = () => wrapper.findComponent(GlAlert);
   const submitForm = async () => {
@@ -128,6 +136,7 @@ describe('ModelVersionCreate', () => {
       createWrapper();
       findVersionInput().vm.$emit('input', '1.0.0');
       findDescriptionInput().vm.$emit('input', 'My model version description');
+      zone().vm.$emit('change', file);
       jest.spyOn(apolloProvider.defaultClient, 'mutate');
 
       await submitForm();
@@ -149,11 +158,13 @@ describe('ModelVersionCreate', () => {
 
     it('Uploads a file mutation upon confirm', () => {
       expect(uploadModel).toHaveBeenCalledWith({
-        file: null,
+        file,
         importPath: '/api/v4/projects/1/packages/ml_models/1/files/',
         subfolder: '',
+        maxAllowedFileSize: 99999,
       });
     });
+
     it('Visits the model versions page upon successful create mutation', async () => {
       createWrapper();
 
@@ -194,17 +205,28 @@ describe('ModelVersionCreate', () => {
     describe('Failed flow with file upload retried', () => {
       beforeEach(async () => {
         createWrapper();
+        findVersionInput().vm.$emit('input', '1.0.0');
+        zone().vm.$emit('change', file);
         uploadModel.mockRejectedValueOnce('Artifact import error.');
 
         await submitForm();
       });
 
       it('Visits the model versions page upon successful create mutation', async () => {
-        expect(findGlAlert().text()).toBe('Artifact import error.');
-
         await submitForm();
 
         expect(visitUrl).toHaveBeenCalledWith('/some/project/-/ml/models/1/versions/1');
+      });
+
+      it('Uploads the model upon retry', async () => {
+        await submitForm();
+
+        expect(uploadModel).toHaveBeenCalledWith({
+          file,
+          importPath: '/api/v4/projects/1/packages/ml_models/1/files/',
+          subfolder: '',
+          maxAllowedFileSize: 99999,
+        });
       });
     });
   });

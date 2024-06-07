@@ -35,6 +35,7 @@ const createWrapper = (modelVersion = modelVersionWithCandidate, props = {}, pro
       projectPath: 'path/to/project',
       canWriteModelRegistry: true,
       importPath: 'path/to/import',
+      maxAllowedFileSize: 99999,
       ...provide,
     },
   });

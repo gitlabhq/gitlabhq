@@ -28,7 +28,7 @@ export default {
     GlFormTextarea,
     ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'maxAllowedFileSize'],
   props: {
     createModelVisible: {
       type: Boolean,
@@ -106,6 +106,7 @@ export default {
               importPath,
               file: this.selectedFile.file,
               subfolder: this.selectedFile.subfolder,
+              maxAllowedFileSize: this.maxAllowedFileSize,
             });
 
             const { showPath } = this.versionData.mlModelVersionCreate.modelVersion._links;
@@ -118,7 +119,6 @@ export default {
       } catch (error) {
         Sentry.captureException(error);
         this.errorMessage = error;
-        this.selectedFile = emptyArtifactFile;
         this.showModal();
       }
     },
@@ -258,9 +258,13 @@ export default {
         </gl-form-group>
       </gl-form>
 
-      <gl-alert v-if="errorMessage" variant="danger" @dismiss="hideAlert">{{
-        errorMessage
-      }}</gl-alert>
+      <gl-alert
+        v-if="errorMessage"
+        data-testid="modal-create-alert"
+        variant="danger"
+        @dismiss="hideAlert"
+        >{{ errorMessage }}</gl-alert
+      >
     </gl-modal>
   </div>
 </template>

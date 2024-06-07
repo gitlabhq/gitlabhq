@@ -4,7 +4,8 @@ classes:
 - Terraform::StateVersion
 feature_categories:
 - infrastructure_as_code
-description: Represents a Terraform state file at a point in time, with a corresponding file stored in object storage
+description: Represents a Terraform state file at a point in time, with a corresponding
+  file stored in object storage
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35211
 milestone: '13.4'
 gitlab_schema: gitlab_main_cell
@@ -19,3 +20,4 @@ desired_sharding_key:
         table: terraform_states
         sharding_key: project_id
         belongs_to: terraform_state
+desired_sharding_key_migration_job_name: BackfillTerraformStateVersionsProjectId
