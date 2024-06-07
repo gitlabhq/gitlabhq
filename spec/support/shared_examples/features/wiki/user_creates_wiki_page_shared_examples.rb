@@ -147,7 +147,7 @@ RSpec.shared_examples 'User creates wiki page' do
         click_button("Create page")
       end
 
-      page.within ".md" do
+      page.within ".js-wiki-page-content" do
         expect(page).to have_selector(".katex", count: 3).and have_content("2+2 is 4")
       end
     end

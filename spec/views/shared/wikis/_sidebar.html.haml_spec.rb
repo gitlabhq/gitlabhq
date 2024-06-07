@@ -44,6 +44,8 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
 
   context 'The sidebar comes a list of wiki pages' do
     before do
+      create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page')
+      assign(:wiki_pages_count, 3)
       assign(:sidebar_wiki_entries, create_list(:wiki_page, 3, wiki: wiki))
       assign(:sidebar_limited, true)
       stub_template "shared/wikis/_wiki_pages.html.erb" => "Entries: <%= @sidebar_wiki_entries.size %>"
@@ -61,18 +63,20 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
       render
 
       expect(rendered).to include("A WIKI PAGE\n" * 3)
-      expect(rendered).to have_link('View all')
+      expect(rendered).to have_link('View all pages')
     end
   end
 
   describe 'link to edit the sidebar' do
-    before do
-      allow(view).to receive(:can?).with(anything, :create_wiki, anything).and_return(can_edit)
+    context 'when the user has edit permission and there are wiki pages' do
+      before do
+        create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page')
+        assign(:wiki_pages_count, 3)
+        allow(view).to receive(:can?).with(anything, :create_wiki, anything).and_return(can_edit)
 
-      render
-    end
+        render
+      end
 
-    context 'when the user has edit permission' do
       let(:can_edit) { true }
 
       it 'renders the link' do
@@ -80,7 +84,13 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
       end
     end
 
-    context 'when the user does not have edit permission' do
+    context 'when the user does not have edit permission and there are no wiki pages' do
+      before do
+        allow(view).to receive(:can?).with(anything, :create_wiki, anything).and_return(can_edit)
+
+        render
+      end
+
       let(:can_edit) { false }
 
       it 'does not render the link' do

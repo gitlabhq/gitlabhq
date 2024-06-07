@@ -1,6 +1,7 @@
 import * as pathUtils from 'path';
 import { commitActionTypes } from '~/ide/constants';
 import { decorateData } from '~/ide/stores/utils';
+import { WEB_IDE_OAUTH_CALLBACK_URL_PATH } from '~/ide/lib/gitlab_web_ide/get_oauth_config';
 
 export const file = (name = 'name', id = name, type = '', parent = null) =>
   decorateData({
@@ -48,3 +49,6 @@ export const createTriggerUpdatePayload = (path) => ({
 
 export const createTriggerRenameAction = (path, newPath) =>
   createTriggerChangeAction(createTriggerRenamePayload(path, newPath));
+
+export const getMockCallbackUrl = () =>
+  new URL(WEB_IDE_OAUTH_CALLBACK_URL_PATH, window.location.origin).toString();

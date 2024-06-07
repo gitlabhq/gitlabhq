@@ -4880,7 +4880,17 @@ RSpec.describe User, feature_category: :user_profile do
 
     subject { user.authorized_groups }
 
-    it { is_expected.to contain_exactly private_group, project_group }
+    it { is_expected.to contain_exactly private_group, child_group, project_group }
+
+    context 'when include_subgroups_in_authorized_groups is disabled' do
+      before do
+        stub_feature_flags(include_subgroups_in_authorized_groups: false)
+      end
+
+      it 'omits subgroups with inherited membership' do
+        is_expected.to contain_exactly private_group, project_group
+      end
+    end
 
     context 'with shared memberships' do
       let_it_be(:shared_group) { create(:group) }

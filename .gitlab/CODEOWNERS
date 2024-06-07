@@ -601,7 +601,7 @@ lib/gitlab/checks/**
 /doc/administration/repository_checks.md @eread
 /doc/administration/repository_storage_paths.md @eread
 /doc/administration/restart_gitlab.md @axil
-/doc/administration/self_hosted_models/ @sselhorn @jglassman1
+/doc/administration/self_hosted_models/ @sselhorn @jglassman1 @fneill
 /doc/administration/server_hooks.md @eread
 /doc/administration/settings/account_and_limit_settings.md @msedlakjakubowski
 /doc/administration/settings/continuous_integration.md @marcel.amirault @lyspin
@@ -922,10 +922,10 @@ lib/gitlab/checks/**
 /doc/tutorials/update_commit_messages/ @msedlakjakubowski
 /doc/tutorials/website_project_with_analytics/ @lciutacu
 /doc/update/ @axil
-/doc/user/ai_data_usage.md @sselhorn @jglassman1
-/doc/user/ai_experiments.md @sselhorn @jglassman1
-/doc/user/ai_features.md @sselhorn @jglassman1
-/doc/user/ai_features_enable.md @sselhorn @jglassman1
+/doc/user/ai_data_usage.md @sselhorn @jglassman1 @fneill
+/doc/user/ai_experiments.md @sselhorn @jglassman1 @fneill
+/doc/user/ai_features.md @sselhorn @jglassman1 @fneill
+/doc/user/ai_features_enable.md @sselhorn @jglassman1 @fneill
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson @phillipwells
@@ -948,12 +948,12 @@ lib/gitlab/checks/**
 /doc/user/get_started/get_started_managing_infrastructure.md @phillipwells
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
 /doc/user/get_started/get_started_projects.md @lciutacu
-/doc/user/gitlab_duo_chat.md @sselhorn @jglassman1
-/doc/user/gitlab_duo_chat/ @sselhorn @jglassman1
-/doc/user/gitlab_duo_chat_enable.md @sselhorn @jglassman1
-/doc/user/gitlab_duo_chat_examples.md @sselhorn @jglassman1
-/doc/user/gitlab_duo_chat_troubleshooting.md @sselhorn @jglassman1
-/doc/user/gitlab_duo_examples.md @sselhorn @jglassman1
+/doc/user/gitlab_duo_chat.md @sselhorn @jglassman1 @fneill
+/doc/user/gitlab_duo_chat/ @sselhorn @jglassman1 @fneill
+/doc/user/gitlab_duo_chat_enable.md @sselhorn @jglassman1 @fneill
+/doc/user/gitlab_duo_chat_examples.md @sselhorn @jglassman1 @fneill
+/doc/user/gitlab_duo_chat_troubleshooting.md @sselhorn @jglassman1 @fneill
+/doc/user/gitlab_duo_examples.md @sselhorn @jglassman1 @fneill
 /doc/user/group/access_and_permissions.md @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
@@ -1023,17 +1023,17 @@ lib/gitlab/checks/**
 /doc/user/project/merge_requests/cherry_pick_changes.md @msedlakjakubowski
 /doc/user/project/merge_requests/csv_export.md @eread
 /doc/user/project/merge_requests/methods/ @msedlakjakubowski
-/doc/user/project/merge_requests/reviews/data_usage.md @sselhorn @jglassman1
+/doc/user/project/merge_requests/reviews/data_usage.md @sselhorn @jglassman1 @fneill
 /doc/user/project/merge_requests/squash_and_merge.md @msedlakjakubowski
 /doc/user/project/merge_requests/status_checks.md @rdickenson
-/doc/user/project/ml/experiment_tracking/ @sselhorn @jglassman1
-/doc/user/project/ml/model_registry/ @sselhorn @jglassman1
+/doc/user/project/ml/experiment_tracking/ @sselhorn @jglassman1 @fneill
+/doc/user/project/ml/model_registry/ @sselhorn @jglassman1 @fneill
 /doc/user/project/organize_work_with_projects.md @lciutacu
 /doc/user/project/project_topics.md @lciutacu
 /doc/user/project/releases/ @phillipwells
 /doc/user/project/releases/release_evidence.md @eread
 /doc/user/project/remote_development/ @ashrafkhamis
-/doc/user/project/repository/code_explain.md @sselhorn @jglassman1
+/doc/user/project/repository/code_explain.md @sselhorn @jglassman1 @fneill
 /doc/user/project/repository/code_suggestions/ @jglassman1
 /doc/user/project/repository/file_finder.md @ashrafkhamis
 /doc/user/project/repository/monorepos/ @eread

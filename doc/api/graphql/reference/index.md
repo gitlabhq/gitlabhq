@@ -28577,6 +28577,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectpipelineschedulesids"></a>`ids` | [`[ID!]`](#id) | Filter pipeline schedules by IDs. |
+| <a id="projectpipelineschedulessort"></a>`sort` | [`PipelineScheduleSort`](#pipelineschedulesort) | List pipeline schedules by sort order. Default is `id_desc`. |
 | <a id="projectpipelineschedulesstatus"></a>`status` | [`PipelineScheduleStatus`](#pipelineschedulestatus) | Filter pipeline schedules by active status. |
 
 ##### `Project.pipelines`
@@ -34931,6 +34932,25 @@ Event type of the pipeline associated with a merge request.
 | <a id="pipelinemergerequesteventtypedetached"></a>`DETACHED` | Pipeline run on the changes in the merge request source branch. |
 | <a id="pipelinemergerequesteventtypemerged_result"></a>`MERGED_RESULT` | Pipeline run on the changes from the source branch combined with the target branch. |
 | <a id="pipelinemergerequesteventtypemerge_train"></a>`MERGE_TRAIN` | Pipeline ran as part of a merge train. |
+
+### `PipelineScheduleSort`
+
+Values for sorting pipeline schedules.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="pipelineschedulesortcreated_at_asc"></a>`CREATED_AT_ASC` | Sort pipeline schedules by created date in ascending order. |
+| <a id="pipelineschedulesortcreated_at_desc"></a>`CREATED_AT_DESC` | Sort pipeline schedules by created date in descending order. |
+| <a id="pipelineschedulesortdescription_asc"></a>`DESCRIPTION_ASC` | Sort pipeline schedules by description in ascending order. |
+| <a id="pipelineschedulesortdescription_desc"></a>`DESCRIPTION_DESC` | Sort pipeline schedules by description in descending order. |
+| <a id="pipelineschedulesortid_asc"></a>`ID_ASC` | Sort pipeline schedules by ID in ascending order. |
+| <a id="pipelineschedulesortid_desc"></a>`ID_DESC` | Sort pipeline schedules by ID in descending order. |
+| <a id="pipelineschedulesortnext_run_at_asc"></a>`NEXT_RUN_AT_ASC` | Sort pipeline schedules by next run in ascending order. |
+| <a id="pipelineschedulesortnext_run_at_desc"></a>`NEXT_RUN_AT_DESC` | Sort pipeline schedules by next run in descending order. |
+| <a id="pipelineschedulesortref_asc"></a>`REF_ASC` | Sort pipeline schedules by target in ascending order. |
+| <a id="pipelineschedulesortref_desc"></a>`REF_DESC` | Sort pipeline schedules by target in descending order. |
+| <a id="pipelineschedulesortupdated_at_asc"></a>`UPDATED_AT_ASC` | Sort pipeline schedules by updated date in ascending order. |
+| <a id="pipelineschedulesortupdated_at_desc"></a>`UPDATED_AT_DESC` | Sort pipeline schedules by updated date in descending order. |
 
 ### `PipelineScheduleStatus`
 

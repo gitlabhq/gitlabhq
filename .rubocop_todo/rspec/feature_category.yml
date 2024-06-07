@@ -3717,6 +3717,7 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/prometheus/adapter_spec.rb'
     - 'spec/lib/gitlab/prometheus/internal_spec.rb'
     - 'spec/lib/gitlab/prometheus_client_spec.rb'
+    - 'spec/lib/gitlab/mimir_client_spec.rb'
     - 'spec/lib/gitlab/protocol_access_spec.rb'
     - 'spec/lib/gitlab/puma_logging/json_formatter_spec.rb'
     - 'spec/lib/gitlab/push_options_spec.rb'

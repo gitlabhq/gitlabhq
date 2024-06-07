@@ -15,8 +15,12 @@ module Resolvers
       default_value: nil,
       description: 'Filter pipeline schedules by IDs.'
 
-    def resolve(status: nil, ids: nil)
-      ::Ci::PipelineSchedulesFinder.new(project).execute(scope: status, ids: ids)
+    argument :sort, ::Types::Ci::PipelineScheduleSortEnum,
+      required: false, default_value: :id_desc,
+      description: 'List pipeline schedules by sort order. Default is `id_desc`.'
+
+    def resolve(status: nil, ids: nil, sort: :id_desc)
+      ::Ci::PipelineSchedulesFinder.new(project, sort: sort).execute(scope: status, ids: ids)
     end
   end
 end

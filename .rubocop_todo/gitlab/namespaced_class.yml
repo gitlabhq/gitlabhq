@@ -1162,6 +1162,7 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/project_template.rb'
     - 'lib/gitlab/project_transfer.rb'
     - 'lib/gitlab/prometheus_client.rb'
+    - 'lib/gitlab/mimir_client.rb'
     - 'lib/gitlab/push_options.rb'
     - 'lib/gitlab/reactive_cache_set_cache.rb'
     - 'lib/gitlab/redacted_search_results_logger.rb'

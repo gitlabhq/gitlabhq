@@ -58,10 +58,12 @@ class GroupsFinder < UnionFinder
     return [Group.all] if current_user&.can_read_all_resources? && all_available?
 
     groups = [
-      membership_groups,
       authorized_groups,
       public_groups
-    ].compact
+    ]
+
+    groups << membership_groups if Feature.disabled?(:include_subgroups_in_authorized_groups, current_user)
+    groups = groups.compact
 
     groups << Group.none if groups.empty?
 

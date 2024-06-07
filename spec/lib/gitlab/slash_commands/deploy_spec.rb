@@ -169,14 +169,16 @@ RSpec.describe Gitlab::SlashCommands::Deploy, feature_category: :team_planning d
         Time.zone.now - start
       end
 
-      it 'has smaller than linear execution time growth with a malformed "to"',
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444789' do
-        Timeout.timeout(3.seconds) do
-          sample1 = duration_for { described_class.match("deploy abc t" + ("o" * 1000) + "X") }
-          sample2 = duration_for { described_class.match("deploy abc t" + ("o" * 4000) + "X") }
+      it 'has smaller than linear execution time growth with a malformed "to"', :aggregate_failures do
+        expect do
+          Timeout.timeout(3.seconds) do
+            sample1 = duration_for { described_class.match("deploy abc t" + ("o" * 100000) + "X") }
+            sample2 = duration_for { described_class.match("deploy abc t" + ("o" * 400000) + "X") }
 
-          expect((sample2 / sample1) < 4).to be_truthy
-        end
+            # Expectation uses 2x as linear function to allow for runtime variations and avoid flakyness
+            expect(sample2 / sample1).to be < 8
+          end
+        end.not_to raise_error
       end
     end
   end

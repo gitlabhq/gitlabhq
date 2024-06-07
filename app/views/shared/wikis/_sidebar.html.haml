@@ -1,5 +1,6 @@
 - editing ||= false
 - edit_sidebar_text = @sidebar_page ? s_('Wiki|Edit custom sidebar') : s_('Wiki|Add custom sidebar')
+- has_wiki_pages = @wiki_pages_count && @wiki_pages_count > 0
 
 %aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
   .sidebar-container
@@ -16,20 +17,27 @@
           - if @sidebar_page
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: "js-wiki-list-expand-button wiki-list-expand-button !gl-static gl-mr-2", data: { testid: 'expand-pages-list' } })
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: "js-wiki-list-collapse-button wiki-list-collapse-button !gl-static gl-mr-2", data: { testid: 'expand-pages-list' } })
-          %h2.gl-text-lg.gl-my-0 Pages
-          %span.gl-px-2 &middot;
-          = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, variant: :link, href: wiki_path(@wiki, action: :pages), button_options: { data: { testid: 'view-all-pages-button' }, class: '' }) do
-            = s_("Wiki|View all")
+          %h2.gl-text-lg.gl-my-0.gl-mr-3= s_('Wiki|Pages')
+          = gl_badge_tag @wiki_pages_count
 
-        - if can?(current_user, :create_wiki, @wiki)
+        - if has_wiki_pages && can?(current_user, :create_wiki, @wiki)
           - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
           - sidebar_link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
           = render Pajamas::ButtonComponent.new(href: edit_sidebar_url, category: :tertiary, size: :small, icon: 'settings', button_options: { class: "gl-border-l gl-pl-3 has-tooltip #{sidebar_link_class}", title: edit_sidebar_text, aria: { label: edit_sidebar_text }})
 
       - if @sidebar_wiki_entries
-        %ul.wiki-pages{ class: (@sidebar_page ? 'gl-border-b !gl-pb-3' : '' ) }
+        %ul.wiki-pages{ class: (@sidebar_page ? 'gl-border-b !gl-pb-4' : '' ) }
           - @sidebar_wiki_entries.each do |entry|
             = render partial: entry.to_partial_path, object: entry, locals: { context: 'sidebar' }
+          - if @wiki_pages_count && @wiki_pages_count > 15
+            .gl-text-secondary.gl-mt-3.gl-ml-3.gl-inline-block
+              %span= safe_format(s_('Wiki|+ %{count} more'), count: @wiki_pages_count - 15)
+              %span.gl-px-2 &middot;
+          - if has_wiki_pages
+            = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, variant: :link, href: wiki_path(@wiki, action: :pages), button_options: { data: { testid: 'view-all-pages-button' }, class: (@wiki_pages_count && @wiki_pages_count < 16 ? 'gl-ml-3 gl-mt-3' : 'gl-mt-n1 gl-inline-block') }) do
+              = s_("Wiki|View all pages")
+          - else
+            .gl-ml-3.gl-mt-3.gl-text-secondary= s_("Wiki|There are no pages in this wiki yet")
       - if @sidebar_page
         .gl-px-3.gl-pt-4.gl-pb-2
           = render_wiki_content(@sidebar_page)

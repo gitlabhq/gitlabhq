@@ -15,6 +15,7 @@ RSpec.describe Gitlab::Database::HealthStatus::Indicators::PatroniApdex, :aggreg
     let(:prometheus_alert_db_indicators_settings) do
       {
         prometheus_api_url: prometheus_url,
+        mimir_api_url: mimir_url,
         apdex_sli_query: {
           main: sli_query_main,
           ci: sli_query_ci

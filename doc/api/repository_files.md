@@ -17,27 +17,27 @@ for this API.
 
 ## Available scopes for personal access tokens
 
-The different scopes available using [personal access tokens](../user/profile/personal_access_tokens.md) are depicted
-in the following table.
+[Personal access tokens](../user/profile/personal_access_tokens.md) support these scopes:
 
-| Scope | Description |
-| ----- | ----------- |
-| `api` | Allows read-write access to the repository files. |
-| `read_api` | Allows read access to the repository files. |
+| Scope             | Description |
+|-------------------|-------------|
+| `api`             | Allows read-write access to the repository files. |
+| `read_api`        | Allows read access to the repository files. |
 | `read_repository` | Allows read-access to the repository files. |
 
 ## Get file from repository
 
 Allows you to receive information about file in repository like name, size, and
-content. File content is Base64 encoded. This endpoint can be accessed
-without authentication if the repository is publicly accessible.
+content. File content is Base64 encoded. You can access this endpoint
+without authentication, if the repository is publicly accessible.
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
 
 | Attribute   | Type           | Required | Description |
@@ -45,6 +45,11 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 | `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `file_path` | string         | yes      | URL encoded full path to new file, such as `lib%2Fclass%2Erb`. |
 | `ref`       | string         | yes      | The name of branch, tag or commit. |
+
+### Response
+
+In the response, `blob_id` is the blob SHA. See
+[Get a blob from repository](repositories.md#get-a-blob-from-repository) in the Repositories API.
 
 Example response:
 
@@ -64,18 +69,17 @@ Example response:
 }
 ```
 
-NOTE:
-`blob_id` is the blob SHA. Refer to [Get a blob from repository](repositories.md#get-a-blob-from-repository)
-in the Repositories API.
+### Get file metadata only
 
-In addition to the `GET` method, you can also use `HEAD` to get just file metadata.
+You can also use `HEAD` to fetch just file metadata.
 
 ```plaintext
 HEAD /projects/:id/repository/files/:file_path
 ```
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=main"
 ```
 
 Example response:
@@ -98,7 +102,7 @@ X-Gitlab-Execute-Filemode: false
 
 ## Get file blame from repository
 
-Allows you to receive blame information. Each blame range contains lines and corresponding commit information.
+Retrieve blame information. Each blame range contains lines and their corresponding commit information.
 
 ```plaintext
 GET /projects/:id/repository/files/:file_path/blame
@@ -106,15 +110,16 @@ GET /projects/:id/repository/files/:file_path/blame
 
 | Attribute       | Type              | Required | Description |
 |-----------------|-------------------|----------|-------------|
-| `id`            | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `file_path`     | string            | yes   | URL-encoded full path to new file, such as`lib%2Fclass%2Erb`. |
-| `ref`           | string            | yes   | The name of branch, tag or commit. |
+| `id`            | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `range[end]`    | integer           | yes   | The last line of the range to blame. |
 | `range[start]`  | integer           | yes   | The first line of the range to blame. |
+| `ref`           | string            | yes   | The name of branch, tag or commit. |
 | `range`         | hash              | no    | Blame range. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
 
 Example response:
@@ -145,12 +150,17 @@ Example response:
 ]
 ```
 
-NOTE:
-`HEAD` method returns just file metadata, as in [Get file from repository](repository_files.md#get-file-from-repository).
+### Get file metadata only
+
+Use the `HEAD` method to return just file metadata, as in
+[Get file from repository](repository_files.md#get-file-from-repository):
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main"
 ```
+
+#### Response
 
 Example response:
 
@@ -170,13 +180,14 @@ X-Gitlab-Execute-Filemode: false
 ...
 ```
 
-### Examples
+### Request a blame range
 
 To request a blame range, specify `range[start]` and `range[end]` parameters with
 the starting and ending line numbers of the file.
 
 ```shell
-curl --head --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main&range[start]=1&range[end]=2"
+curl --head --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/path%2Fto%2Ffile.rb/blame?ref=main&range[start]=1&range[end]=2"
 ```
 
 Example response:
@@ -214,13 +225,14 @@ GET /projects/:id/repository/files/:file_path/raw
 
 | Attribute   | Type           | Required | Description |
 |-------------|----------------|----------|------------|
-| `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `file_path` | string         | yes      | URL-encoded full path to new file, such as `lib%2Fclass%2Erb`. |
+| `id`        | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `lfs`       | boolean        | no       | Determines if the response should be Git LFS file contents, rather than the pointer. Ignored if the file is not tracked by Git LFS. Defaults to `false`. |
 | `ref`       | string         | no       | The name of branch, tag or commit. Default is the `HEAD` of the project. |
-| `lfs`       | boolean        | no       | Determines if the response should be Git LFS file contents, rather than the pointer. If the file is not tracked by Git LFS, ignored. Defaults to `false`. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=main"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb/raw?ref=main"
 ```
 
 NOTE:
@@ -229,31 +241,32 @@ Like [Get file from repository](repository_files.md#get-file-from-repository), y
 ## Create new file in repository
 
 Allows you to create a single file. For creating multiple files with a single request,
-refer to the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
+see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
 ```plaintext
 POST /projects/:id/repository/files/:file_path
 ```
 
-| Attribute        | Type           | Required | Description |
-| ---------------- | -------------- | -------- | ----------- |
-| `branch`         | string         | yes      | Name of the new branch to create. The commit is added to this branch. |
-| `commit_message` | string         | yes      | The commit message. |
-| `content`        | string         | yes      | The file's content. |
-| `file_path`      | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
-| `id`             | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `author_email`   | string         | no       | The commit author's email address. |
-| `author_name`    | string         | no       | The commit author's name. |
-| `encoding`       | string         | no       | Change encoding to `base64`. Default is `text`. |
-| `execute_filemode` | boolean      | no       | Enables or disables the `execute` flag on the file. Can be `true` or `false`. |
-| `start_branch`   | string         | no       | Name of the base branch to create the new branch from. |
+| Attribute          | Type           | Required | Description |
+| ------------------ | -------------- | -------- | ----------- |
+| `branch`           | string         | yes      | Name of the new branch to create. The commit is added to this branch. |
+| `commit_message`   | string         | yes      | The commit message. |
+| `content`          | string         | yes      | The file's content. |
+| `file_path`        | string         | yes      | URL-encoded full path to new file. For example: `lib%2Fclass%2Erb`. |
+| `id`               | integer or string | yes   | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `author_email`     | string         | no       | The commit author's email address. |
+| `author_name`      | string         | no       | The commit author's name. |
+| `encoding`         | string         | no       | Change encoding to `base64`. Default is `text`. |
+| `execute_filemode` | boolean        | no       | Enables or disables the `execute` flag on the file. Can be `true` or `false`. |
+| `start_branch`     | string         | no       | Name of the base branch to create the new branch from. |
 
 ```shell
-curl --request POST --header 'PRIVATE-TOKEN: <your_access_token>' \
-     --header "Content-Type: application/json" \
-     --data '{"branch": "main", "author_email": "author@example.com", "author_name": "Firstname Lastname",
-               "content": "some content", "commit_message": "create a new file"}' \
-     "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
+curl --request POST \
+  --header 'PRIVATE-TOKEN: <your_access_token>' \
+  --header "Content-Type: application/json" \
+  --data '{"branch": "main", "author_email": "author@example.com", "author_name": "Firstname Lastname",
+            "content": "some content", "commit_message": "create a new file"}' \
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
 
 Example response:
@@ -289,11 +302,12 @@ PUT /projects/:id/repository/files/:file_path
 | `start_branch`   | string         | no       | Name of the base branch to create the new branch from. |
 
 ```shell
-curl --request PUT --header 'PRIVATE-TOKEN: <your_access_token>' \
-     --header "Content-Type: application/json" \
-     --data '{"branch": "main", "author_email": "author@example.com", "author_name": "Firstname Lastname",
+curl --request PUT \
+  --header 'PRIVATE-TOKEN: <your_access_token>' \
+  --header "Content-Type: application/json" \
+  --data '{"branch": "main", "author_email": "author@example.com", "author_name": "Firstname Lastname",
        "content": "some content", "commit_message": "update file"}' \
-     "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```
 
 Example response:
@@ -310,14 +324,14 @@ error message. Possible causes for a failed commit include:
 
 - The `file_path` contained `/../` (attempted directory traversal).
 - The commit was empty: new file contents were identical to the current file contents.
-- The branch was updated by `git push` while the file edit was in progress.
+- Someone updated the branch with `git push` while the file edit was in progress.
 
-[GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/) has a boolean return code, preventing GitLab from specifying the error.
+[GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell/) has a Boolean return code, preventing GitLab from specifying the error.
 
 ## Delete existing file in repository
 
-This allows you to delete a single file. For deleting multiple files with a single request,
-refer to the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
+Deletes a single file. To delete multiple files with a single request,
+see the [commits API](commits.md#create-a-commit-with-multiple-files-and-actions).
 
 ```plaintext
 DELETE /projects/:id/repository/files/:file_path
@@ -335,9 +349,10 @@ DELETE /projects/:id/repository/files/:file_path
 | `start_branch`   | string         | no       | Name of the base branch to create the new branch from. |
 
 ```shell
-curl --request DELETE --header 'PRIVATE-TOKEN: <your_access_token>' \
-     --header "Content-Type: application/json" \
-     --data '{"branch": "main", "author_email": "author@example.com", "author_name": "Firstname Lastname",
+curl --request DELETE \
+  --header 'PRIVATE-TOKEN: <your_access_token>' \
+  --header "Content-Type: application/json" \
+  --data '{"branch": "main", "author_email": "author@example.com", "author_name": "Firstname Lastname",
        "commit_message": "delete file"}' \
-     "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
+  --url "https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fproject%2Erb"
 ```

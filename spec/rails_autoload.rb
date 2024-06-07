@@ -51,7 +51,7 @@ require_relative '../config/initializers_before_autoloader/004_zeitwerk'
 # We wrap this bit of logic in a module to avoid polluting the global namespace with a local variable and methods
 module AutoloadersSetup
   def self.dir_already_autoloaded?(autoloaded_dirs, dir)
-    autoloaded_dirs.any? { File.expand_path(dir, __dir__) }
+    autoloaded_dirs.any?(File.expand_path(dir, __dir__))
   end
 
   def self.setup_autoloaders

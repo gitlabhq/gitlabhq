@@ -1,4 +1,6 @@
-export const getOAuthConfig = ({ clientId, callbackUrl }) => {
+export const WEB_IDE_OAUTH_CALLBACK_URL_PATH = '/-/ide/oauth_redirect';
+
+export const getOAuthConfig = ({ clientId }) => {
   if (!clientId) {
     return undefined;
   }
@@ -6,7 +8,7 @@ export const getOAuthConfig = ({ clientId, callbackUrl }) => {
   return {
     type: 'oauth',
     clientId,
-    callbackUrl,
+    callbackUrl: new URL(WEB_IDE_OAUTH_CALLBACK_URL_PATH, window.location.origin).toString(),
     protectRefreshToken: true,
   };
 };

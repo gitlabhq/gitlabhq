@@ -8,6 +8,7 @@ import Tracking from '~/tracking';
 import { TEST_HOST } from 'helpers/test_constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { getMockCallbackUrl } from './helpers';
 
 jest.mock('@gitlab/web-ide');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_action');
@@ -48,7 +49,7 @@ const TEST_EDITOR_FONT_FORMAT = 'woff2';
 const TEST_EDITOR_FONT_FAMILY = 'GitLab Mono';
 
 const TEST_OAUTH_CLIENT_ID = 'oauth-client-id-123abc';
-const TEST_OAUTH_CALLBACK_URL = 'https://example.com/oauth_callback';
+const TEST_OAUTH_CALLBACK_URL = getMockCallbackUrl();
 
 describe('ide/init_gitlab_web_ide', () => {
   let resolveConfirm;
@@ -249,7 +250,7 @@ describe('ide/init_gitlab_web_ide', () => {
   describe('when oauth info is in dataset', () => {
     beforeEach(() => {
       findRootElement().dataset.clientId = TEST_OAUTH_CLIENT_ID;
-      findRootElement().dataset.callbackUrl = TEST_OAUTH_CALLBACK_URL;
+      findRootElement().dataset.callbackUrls = [TEST_OAUTH_CALLBACK_URL];
 
       createSubject();
     });

@@ -57,11 +57,11 @@ module IdeHelper
     return {} unless ::Gitlab::WebIde::DefaultOauthApplication.oauth_application
 
     client_id = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application.uid
-    callback_url = ::Gitlab::WebIde::DefaultOauthApplication.oauth_callback_url
+    callback_urls = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application_callback_urls
 
     {
       'client-id' => client_id,
-      'callback-url' => callback_url
+      'callback-urls' => callback_urls
     }
   end
 

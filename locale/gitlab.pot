@@ -26288,16 +26288,37 @@ msgstr ""
 msgid "IDE"
 msgstr ""
 
+msgid "IDE|Cannot open Web IDE"
+msgstr ""
+
 msgid "IDE|Commit"
 msgstr ""
 
 msgid "IDE|Commit to %{branchName} branch"
 msgstr ""
 
+msgid "IDE|Contact your administrator or try to open the Web IDE again with another domain."
+msgstr ""
+
 msgid "IDE|Edit"
 msgstr ""
 
+msgid "IDE|Error reloading page"
+msgstr ""
+
+msgid "IDE|GitLab logo"
+msgstr ""
+
 msgid "IDE|Go to project"
+msgstr ""
+
+msgid "IDE|OAuth Callback URLs"
+msgstr ""
+
+msgid "IDE|Reopen with %{domain}"
+msgstr ""
+
+msgid "IDE|Reopen with other domain"
 msgstr ""
 
 msgid "IDE|Review"
@@ -26307,6 +26328,9 @@ msgid "IDE|Start a new merge request"
 msgstr ""
 
 msgid "IDE|Successful commit"
+msgstr ""
+
+msgid "IDE|The URL you're using to access the Web IDE and the configured OAuth callback URL do not match. This issue often occurs when you're using a proxy."
 msgstr ""
 
 msgid "IDE|This option is disabled because you are not allowed to create merge requests in this project."
@@ -59228,6 +59252,9 @@ msgstr ""
 msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
+msgid "Wiki|+ %{count} more"
+msgstr ""
+
 msgid "Wiki|Add custom sidebar"
 msgstr ""
 
@@ -59282,7 +59309,10 @@ msgstr ""
 msgid "Wiki|The sidebar failed to load. You can reload the page to try again."
 msgstr ""
 
-msgid "Wiki|View all"
+msgid "Wiki|There are no pages in this wiki yet"
+msgstr ""
+
+msgid "Wiki|View all pages"
 msgstr ""
 
 msgid "Wiki|Wiki Pages"

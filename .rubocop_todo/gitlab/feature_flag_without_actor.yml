@@ -254,6 +254,7 @@ Gitlab/FeatureFlagWithoutActor:
     - 'lib/gitlab/ci/pipeline/chain/command.rb'
     - 'lib/gitlab/ci/queue/metrics.rb'
     - 'lib/gitlab/database/background_migration/batch_optimizer.rb'
+    - 'lib/gitlab/database/health_status/indicators/prometheus_alert_indicator.rb'
     - 'lib/gitlab/database/health_status/indicators/autovacuum_active_on_table.rb'
     - 'lib/gitlab/database/health_status/indicators/patroni_apdex.rb'
     - 'lib/gitlab/database/health_status/indicators/wal_rate.rb'

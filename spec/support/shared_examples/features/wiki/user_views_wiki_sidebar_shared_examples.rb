@@ -25,7 +25,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
       it 'renders a default sidebar' do
         within('.right-sidebar') do
           expect(page).to have_content('another')
-          expect(page).to have_link('View all')
+          expect(page).to have_link('View all pages')
           expect(page).not_to have_css("[data-testid='expand-pages-list']")
         end
       end
@@ -90,7 +90,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
       visit wiki_path(wiki)
 
       (1..15).each { |i| expect(page).to have_content("my page #{i}") }
-      expect(page).to have_link('View all')
+      expect(page).to have_link('View all pages')
     end
 
     it 'shows all collapse buttons in the sidebar' do
@@ -140,7 +140,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         visit wiki_path(wiki)
 
         expect(page).to have_text('my page', count: 15)
-        expect(page).to have_link('View all')
+        expect(page).to have_link('View all pages')
       end
     end
   end

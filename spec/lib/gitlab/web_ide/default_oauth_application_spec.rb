@@ -40,6 +40,35 @@ RSpec.describe Gitlab::WebIde::DefaultOauthApplication, feature_category: :web_i
     end
   end
 
+  describe '#oauth_application_callback_urls' do
+    it 'returns application callback URL' do
+      expected_result = [oauth_application.redirect_uri]
+
+      stub_application_setting({ web_ide_oauth_application: oauth_application })
+
+      expect(described_class.oauth_application_callback_urls).to match_array(expected_result)
+    end
+
+    context 'with multiple oauth callback URLs' do
+      let(:redirect_uri_1) { "http://example1.test/oauth-redirect" }
+      let(:redirect_uri_2) { "http://example2.test/oauth-redirect" }
+
+      it 'supports multiple OAuth callback URLs' do
+        oauth_application.redirect_uri = "#{redirect_uri_1}\n#{redirect_uri_2}"
+        expected_result = [redirect_uri_1, redirect_uri_2]
+        stub_application_setting({ web_ide_oauth_application: oauth_application })
+        expect(described_class.oauth_application_callback_urls).to match_array(expected_result)
+      end
+
+      it 'returns unique URL origins' do
+        oauth_application.redirect_uri = "#{redirect_uri_1}\n #{redirect_uri_1}"
+        expected_result = [redirect_uri_1]
+        stub_application_setting({ web_ide_oauth_application: oauth_application })
+        expect(described_class.oauth_application_callback_urls).to match_array(expected_result)
+      end
+    end
+  end
+
   describe '#ensure_oauth_application!' do
     it 'if web_ide_oauth_application already exists, does nothing' do
       expect(application_settings).not_to receive(:lock!)

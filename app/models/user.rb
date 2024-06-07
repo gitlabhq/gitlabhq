@@ -1253,16 +1253,22 @@ class User < MainClusterwide::ApplicationRecord
     gpg_keys.each(&:update_invalid_gpg_signatures)
   end
 
-  # Returns the groups a user has access to, either through a membership or a project authorization
+  # Returns the groups a user has access to, either through direct or inherited membership or a project authorization
   def authorized_groups
     Group.unscoped do
       direct_groups_cte = Gitlab::SQL::CTE.new(:direct_groups, groups)
       direct_groups_cte_alias = direct_groups_cte.table.alias(Group.table_name)
 
+      groups_from_membership = if Feature.enabled?(:include_subgroups_in_authorized_groups, self)
+                                 Group.from(direct_groups_cte_alias).self_and_descendants
+                               else
+                                 Group.from(direct_groups_cte_alias)
+                               end
+
       Group
         .with(direct_groups_cte.to_arel)
         .from_union([
-          Group.from(direct_groups_cte_alias),
+          groups_from_membership,
           Group.id_in(authorized_projects.select(:namespace_id)),
           Group.joins(:shared_with_group_links)
             .where(group_group_links: { shared_with_group_id: Group.from(direct_groups_cte_alias) })

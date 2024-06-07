@@ -25,7 +25,7 @@ RSpec.describe Groups::ParticipantsService, feature_category: :groups_and_projec
 
     it 'returns results in correct order' do
       expect(service_result.pluck(:username)).to eq([
-        'all', developer.username, parent_group.full_path, subgroup.full_path
+        'all', developer.username, parent_group.full_path, group.full_path, subgroup.full_path
       ])
     end
 
