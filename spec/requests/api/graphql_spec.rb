@@ -350,18 +350,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
             expect(graphql_data['currentUser']).to be_nil
           end
-
-          context 'when graphql_minimal_auth_methods FF is disabled' do
-            before do
-              stub_feature_flags(graphql_minimal_auth_methods: false)
-            end
-
-            it 'authenticates users with an LFS token' do
-              post '/api/graphql.git', params: { query: query }, headers: headers
-
-              expect(graphql_data['currentUser']['username']).to eq(user.username)
-            end
-          end
         end
 
         describe 'with job token' do
@@ -378,18 +366,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
             post '/api/graphql', params: { query: query, job_token: job_token }
 
             expect_graphql_errors_to_include(/Invalid token/)
-          end
-
-          context 'when graphql_minimal_auth_methods FF is disabled' do
-            before do
-              stub_feature_flags(graphql_minimal_auth_methods: false)
-            end
-
-            it 'authenticates as the user' do
-              post '/api/graphql', params: { query: query, job_token: job_token }
-
-              expect(graphql_data['currentUser']['username']).to eq(user.username)
-            end
           end
         end
 
@@ -408,25 +384,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
             post "/api/graphql?token=#{user.static_object_token}", params: { query: query }
 
             expect_graphql_errors_to_include(/Invalid token/)
-          end
-
-          # context is included to demonstrate that the FF code is not changing this behavior
-          context 'when graphql_minimal_auth_methods FF is disabled' do
-            before do
-              stub_feature_flags(graphql_minimal_auth_methods: false)
-            end
-
-            it 'does not authenticate user from header' do
-              post '/api/graphql', params: { query: query }, headers: headers
-
-              expect(graphql_data['currentUser']).to be_nil
-            end
-
-            it 'does not authenticate user from parameter' do
-              post "/api/graphql?token=#{user.static_object_token}", params: { query: query }
-
-              expect_graphql_errors_to_include(/Invalid token/)
-            end
           end
         end
 
@@ -447,25 +404,6 @@ RSpec.describe 'GraphQL', feature_category: :shared do
             post "/api/graphql?access_token=#{token}", params: { query: query }
 
             expect_graphql_errors_to_include(/Invalid token/)
-          end
-
-          # context is included to demonstrate that the FF code is not changing this behavior
-          context 'when graphql_minimal_auth_methods FF is disabled' do
-            before do
-              stub_feature_flags(graphql_minimal_auth_methods: false)
-            end
-
-            it 'does not authenticate user from dependency proxy token in headers' do
-              post '/api/graphql', params: { query: query }, headers: headers
-
-              expect_graphql_errors_to_include(/Invalid token/)
-            end
-
-            it 'does not authenticate user from dependency proxy token in parameter' do
-              post "/api/graphql?access_token=#{token}", params: { query: query }
-
-              expect_graphql_errors_to_include(/Invalid token/)
-            end
           end
         end
       end

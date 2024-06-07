@@ -1570,7 +1570,7 @@ If you do access the internal container registry API and use the original tag de
 - To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/221031).
 </div>
 
-With the [deprecation of old JSON web token versions](https://docs.gitlab.com/ee/update/deprecations.html?removal_milestone=17.0#old-versions-of-json-web-tokens-are-deprecated) in GitLab 17.0, the associated `/-/jwks` endpoint which is an alias for `/oauth/discovery/keys` is no longer necessary and will be removed. Please replace any uses of `/-/jwks` with `/oauth/discovery/keys`, for example change `https://gitlab.example.com/-/jwks` to `https://gitlab.example.com/oauth/discovery/keys`.
+With the [deprecation of old JSON web token versions](https://docs.gitlab.com/ee/update/deprecations.html?removal_milestone=17.0#old-versions-of-json-web-tokens-are-deprecated) in GitLab 17.0, the associated `/-/jwks` endpoint which is an alias for `/oauth/discovery/keys` is no longer necessary and will be removed. Please remove any uses of `/-/jwks`, for example change `https://gitlab.example.com/-/jwks` to `https://gitlab.example.com`.
 
 </div>
 

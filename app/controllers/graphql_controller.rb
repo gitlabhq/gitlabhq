@@ -30,13 +30,7 @@ class GraphqlController < ApplicationController
   protect_from_forgery with: :null_session, only: :execute
 
   # must come first: current_user is set up here
-  before_action(only: [:execute]) do
-    if Feature.enabled? :graphql_minimal_auth_methods
-      authenticate_graphql
-    else
-      authenticate_sessionless_user!(:api)
-    end
-  end
+  before_action :authenticate_graphql, only: :execute
 
   before_action :authorize_access_api!
   before_action :set_user_last_activity

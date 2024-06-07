@@ -14087,6 +14087,12 @@ msgstr ""
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
+msgid "ContainerRegistry|Container protection rule deleted."
+msgstr ""
+
+msgid "ContainerRegistry|Container protection rule updated."
+msgstr ""
+
 msgid "ContainerRegistry|Copy build command"
 msgstr ""
 
@@ -14211,9 +14217,6 @@ msgid "ContainerRegistry|Please try different search criteria"
 msgstr ""
 
 msgid "ContainerRegistry|Protected containers"
-msgstr ""
-
-msgid "ContainerRegistry|Protection rule deleted."
 msgstr ""
 
 msgid "ContainerRegistry|Published %{timeInfo}"

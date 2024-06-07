@@ -236,3 +236,18 @@ export const deleteContainerProtectionRuleMutationPayload = ({
     },
   },
 });
+
+export const updateContainerProtectionRuleMutationPayload = ({
+  containerRegistryProtectionRule = {
+    ...containerProtectionRulesData[0],
+    minimumAccessLevelForPush: 'OWNER',
+  },
+  errors = [],
+} = {}) => ({
+  data: {
+    updateContainerRegistryProtectionRule: {
+      containerRegistryProtectionRule,
+      errors,
+    },
+  },
+});

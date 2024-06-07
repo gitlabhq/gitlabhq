@@ -36,7 +36,7 @@ RSpec.describe DesignManagement::MoveDesignsService, feature_category: :design_m
       let(:current_design) { designs.first }
       let(:current_user) { build_stubbed(:user) }
 
-      it 'raises cannot_move' do
+      it 'raises cannot_move', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446179' do
         expect(subject).to be_error.and(have_attributes(message: :cannot_move))
       end
     end

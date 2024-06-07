@@ -3,6 +3,7 @@ import {
   GlAlert,
   GlButton,
   GlCard,
+  GlFormSelect,
   GlKeysetPagination,
   GlLoadingIcon,
   GlModal,
@@ -15,6 +16,7 @@ import protectionRulesQuery from '~/packages_and_registries/settings/project/gra
 import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
 import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
 import deleteContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_rule.mutation.graphql';
+import updateContainerRegistryProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_registry_protection_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 
 const PAGINATION_DEFAULT_PER_PAGE = 10;
@@ -24,18 +26,13 @@ const I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE = s__(
   'ContainerRegistry|Minimum access level for delete',
 );
 
-const ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL = {
-  MAINTAINER: __('Maintainer'),
-  OWNER: __('Owner'),
-  ADMIN: __('Admin'),
-};
-
 export default {
   components: {
     ContainerProtectionRuleForm,
     GlAlert,
     GlButton,
     GlCard,
+    GlFormSelect,
     GlKeysetPagination,
     GlLoadingIcon,
     GlModal,
@@ -62,6 +59,8 @@ export default {
         'ContainerRegistry|Users with at least the Developer role for this project will be able to push and delete container images to this repository path.',
       ),
     },
+    minimumAccessLevelForPush: I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH,
+    minimumAccessLevelForDelete: I18N_MINIMUM_ACCESS_LEVEL_FOR_DELETE,
   },
   apollo: {
     protectionRulesQueryPayload: {
@@ -96,10 +95,8 @@ export default {
       return this.protectionRulesQueryResult.map((protectionRule) => {
         return {
           id: protectionRule.id,
-          minimumAccessLevelForDelete:
-            ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL[protectionRule.minimumAccessLevelForDelete],
-          minimumAccessLevelForPush:
-            ACCESS_LEVEL_GRAPHQL_VALUE_TO_LABEL[protectionRule.minimumAccessLevelForPush],
+          minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete,
+          minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
           repositoryPathPattern: protectionRule.repositoryPathPattern,
         };
       });
@@ -134,6 +131,13 @@ export default {
       return {
         text: __('Cancel'),
       };
+    },
+    minimumAccessLevelOptions() {
+      return [
+        { value: 'MAINTAINER', text: __('Maintainer') },
+        { value: 'OWNER', text: __('Owner') },
+        { value: 'ADMIN', text: __('Admin') },
+      ];
     },
   },
   methods: {
@@ -195,10 +199,52 @@ export default {
             return;
           }
           this.refetchProtectionRules();
-          this.$toast.show(s__('ContainerRegistry|Protection rule deleted.'));
+          this.$toast.show(s__('ContainerRegistry|Container protection rule deleted.'));
         })
-        .catch((e) => {
-          this.alertErrorMessage = e.message;
+        .catch((error) => {
+          this.alertErrorMessage = error.message;
+        })
+        .finally(() => {
+          this.resetProtectionRuleMutation();
+        });
+    },
+    updateProtectionRuleMinimumAccessLevelForPush(protectionRule) {
+      this.updateProtectionRule(protectionRule, {
+        minimumAccessLevelForPush: protectionRule.minimumAccessLevelForPush,
+      });
+    },
+    updateProtectionRuleMinimumAccessLevelForDelete(protectionRule) {
+      this.updateProtectionRule(protectionRule, {
+        minimumAccessLevelForDelete: protectionRule.minimumAccessLevelForDelete,
+      });
+    },
+    updateProtectionRule(protectionRule, updateData) {
+      this.clearAlertMessage();
+
+      this.protectionRuleMutationItem = protectionRule;
+      this.protectionRuleMutationInProgress = true;
+
+      return this.$apollo
+        .mutate({
+          mutation: updateContainerRegistryProtectionRuleMutation,
+          variables: {
+            input: {
+              id: protectionRule.id,
+              ...updateData,
+            },
+          },
+        })
+        .then(({ data }) => {
+          const [errorMessage] = data?.updateContainerRegistryProtectionRule?.errors ?? [];
+          if (errorMessage) {
+            this.alertErrorMessage = errorMessage;
+            return;
+          }
+
+          this.$toast.show(s__('ContainerRegistry|Container protection rule updated.'));
+        })
+        .catch((error) => {
+          this.alertErrorMessage = error.message;
         })
         .finally(() => {
           this.resetProtectionRuleMutation();
@@ -287,6 +333,30 @@ export default {
           >
             <template #table-busy>
               <gl-loading-icon size="sm" class="gl-my-5" />
+            </template>
+
+            <template #cell(minimumAccessLevelForPush)="{ item }">
+              <gl-form-select
+                v-model="item.minimumAccessLevelForPush"
+                class="gl-max-w-34"
+                required
+                :aria-label="$options.i18n.minimumAccessLevelForPush"
+                :options="minimumAccessLevelOptions"
+                :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
+                @change="updateProtectionRuleMinimumAccessLevelForPush(item)"
+              />
+            </template>
+
+            <template #cell(minimumAccessLevelForDelete)="{ item }">
+              <gl-form-select
+                v-model="item.minimumAccessLevelForDelete"
+                class="gl-max-w-34"
+                required
+                :aria-label="$options.i18n.minimumAccessLevelForDelete"
+                :options="minimumAccessLevelOptions"
+                :disabled="isProtectionRuleMinimumAccessLevelForPushFormSelectDisabled(item)"
+                @change="updateProtectionRuleMinimumAccessLevelForDelete(item)"
+              />
             </template>
 
             <template #cell(rowActions)="{ item }">
