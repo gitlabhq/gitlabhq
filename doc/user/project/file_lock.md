@@ -42,7 +42,7 @@ Developer role in the repository.
 Only the user who locked the file or directory can edit locked files. Other
 users are prevented from modifying locked files by pushing, merging,
 or any other means, and are shown an error like:
-`The path '.gitignore' is locked by Administrator`.
+`'.gitignore' is locked by @Administrator`.
 
 ## Exclusive file locks
 

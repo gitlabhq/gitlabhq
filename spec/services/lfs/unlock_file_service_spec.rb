@@ -58,7 +58,7 @@ RSpec.describe Lfs::UnlockFileService, feature_category: :source_code_management
           result = subject.execute
 
           expect(result[:status]).to eq(:error)
-          expect(result[:message]).to match(/is locked by @#{lock_author.username}/)
+          expect(result[:message]).to match(/'README.md' is locked by @#{lock_author.username}/)
           expect(result[:http_status]).to eq(403)
         end
       end

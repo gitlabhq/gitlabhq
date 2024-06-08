@@ -992,9 +992,6 @@ msgstr ""
 msgid "%{listToShow}, and %{awardsListLength} more"
 msgstr ""
 
-msgid "%{lock_path} is locked by @%{lock_user_name}"
-msgstr ""
-
 msgid "%{mergeLength}/%{usersLength} can merge"
 msgstr ""
 
@@ -1474,6 +1471,12 @@ msgid "'%{data_pointer}' must be a valid '%{type}'"
 msgstr ""
 
 msgid "'%{level}' is not a valid visibility level"
+msgstr ""
+
+msgid "'%{lock_path}' is locked by @%{lock_user_name}"
+msgstr ""
+
+msgid "'%{lock_path}' is locked in Git LFS by @%{lock_user_name}"
 msgstr ""
 
 msgid "'%{source}' is not a import source"

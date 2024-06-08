@@ -28,7 +28,7 @@ module Lfs
       elsif forced
         error(_('You must have maintainer access to force delete a lock'), 403)
       else
-        error(_("%{lock_path} is locked by @%{lock_user_name}") % { lock_path: lock.path, lock_user_name: lock.user.username }, 403)
+        error(format(_("'%{lock_path}' is locked by @%{lock_user_name}"), lock_path: lock.path, lock_user_name: lock.user.username), 403)
       end
     end
 
