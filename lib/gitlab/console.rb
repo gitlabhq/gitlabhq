@@ -13,7 +13,7 @@ module Gitlab
         puts '-' * 80
         puts " Ruby:".ljust(justify) + RUBY_DESCRIPTION
         puts " GitLab:".ljust(justify) + "#{Gitlab::VERSION} (#{Gitlab.revision}) #{Gitlab.ee? ? 'EE' : 'FOSS'}"
-        puts " GitLab Shell:".ljust(justify) + "#{Gitlab::VersionInfo.parse(Gitlab::Shell.version)}"
+        puts " GitLab Shell:".ljust(justify) + Gitlab::VersionInfo.parse(Gitlab::Shell.version).to_s
 
         if ApplicationRecord.database.exists?
           puts " #{ApplicationRecord.database.human_adapter_name}:".ljust(justify) + ApplicationRecord.database.version

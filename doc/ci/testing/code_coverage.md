@@ -55,14 +55,14 @@ coverage in the tool's output:
 | Name         | Language     | Command      | Example      |
 |--------------|--------------|--------------|--------------|
 | Simplecov | Ruby | None | `/\(\d+.\d+\%\) covered/` |
-| pytest-cov | Python | None | `/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/` |
-| Scoverage | Scala | None | `/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/` |
+| pytest-cov | Python | None | `/TOTAL.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
+| Scoverage | Scala | None | `/(?i)total.*? (100(?:\.0+)?\%\|[1-9]?\d(?:\.\d+)?\%)$/` |
 | pest | PHP | `pest --coverage --colors=never` | `/Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)/` |
 | phpunit | PHP | `phpunit --coverage-text --colors=never` | `/^\s*Lines:\s*\d+.\d+\%/` |
 | gcovr | C/C++ | None | `/^TOTAL.*\s+(\d+\%)$/` |
 | tap | NodeJs | `tap --coverage-report=text-summary` | `/^Statements\s*:\s*([^%]+)/` |
-| nyc | NodeJs | `nyc npm test` | `/All files[^|]*\|[^|]*\s+([\d\.]+)/` |
-| jest | NodeJs | `jest --ci --coverage` | `/All files[^|]*\|[^|]*\s+([\d\.]+)/` |
+| nyc | NodeJs | `nyc npm test` | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
+| jest | NodeJs | `jest --ci --coverage` | `/All files[^\|]*\|[^\|]*\s+([\d\.]+)/` |
 | excoveralls | Elixir | None | `/\[TOTAL\]\s+(\d+\.\d+)%/` |
 | mix | Elixir | `mix test --cover` | `/\d+.\d+\%\s+\|\s+Total/` |
 | JaCoCo | Java/Kotlin | None | `/Total.*?([0-9]{1,3})%/` |

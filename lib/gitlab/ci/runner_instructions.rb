@@ -103,7 +103,7 @@ module Gitlab
       end
 
       def replace_variables(expression)
-        expression.sub('${GITLAB_CI_RUNNER_DOWNLOAD_LOCATION}', "#{environment[:download_locations][@arch.to_sym]}")
+        expression.sub('${GITLAB_CI_RUNNER_DOWNLOAD_LOCATION}', (environment[:download_locations][@arch.to_sym]).to_s)
       end
 
       def get_file(path)

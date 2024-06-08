@@ -243,7 +243,7 @@ module Gitlab
 
         serialized = composed_key.map do |obj|
           if obj.is_a?(String) || obj.is_a?(Symbol)
-            "#{obj}"
+            obj.to_s
           else
             "#{obj.class.model_name.to_s.underscore}:#{obj.id}"
           end

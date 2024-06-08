@@ -1,7 +1,7 @@
 import { GlTab } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { editor as monacoEditor, Range } from 'monaco-editor';
-import Vue, { nextTick } from 'vue';
+import { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
@@ -115,6 +115,7 @@ describe('RepoEditor', () => {
   let applyExtensionSpy;
   let removeExtensionSpy;
   let extensionsStore;
+  let store;
 
   const waitForEditorSetup = () =>
     new Promise((resolve) => {
@@ -122,7 +123,7 @@ describe('RepoEditor', () => {
     });
 
   const createComponent = async ({ state = {}, activeFile = dummyFile.text } = {}) => {
-    const store = prepareStore(state, activeFile);
+    store = prepareStore(state, activeFile);
     wrapper = shallowMount(RepoEditor, {
       store,
       propsData: {
@@ -562,7 +563,10 @@ describe('RepoEditor', () => {
     });
 
     it('does not call initEditor if the file did not change', async () => {
-      Vue.set(vm, 'file', vm.file);
+      const newFile = { ...store.state.openFiles[0] };
+      wrapper.setProps({
+        file: newFile,
+      });
       await nextTick();
 
       expect(vm.initEditor).not.toHaveBeenCalled();
@@ -596,8 +600,7 @@ describe('RepoEditor', () => {
 
     it('after switching viewer from edit to diff', async () => {
       const f = createRemoteFile('newFile');
-      Vue.set(vm.$store.state.entries, f.path, f);
-
+      store.state.entries[f.path] = f;
       jest.spyOn(service, 'getRawFileData').mockImplementation(() => {
         expect(vm.file.loading).toBe(true);
 
@@ -622,8 +625,8 @@ describe('RepoEditor', () => {
       const aContent = 'fileA-rawContent\n';
       const bContent = 'fileB-rawContent\n';
       const fileB = createRemoteFile('fileB');
-      Vue.set(vm.$store.state.entries, fileA.path, fileA);
-      Vue.set(vm.$store.state.entries, fileB.path, fileB);
+      store.state.entries[fileA.path] = fileA;
+      store.state.entries[fileB.path] = fileB;
 
       jest
         .spyOn(service, 'getRawFileData')

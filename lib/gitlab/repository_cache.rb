@@ -7,7 +7,7 @@ module Gitlab
 
     def initialize(repository, extra_namespace: nil, backend: self.class.store)
       @repository = repository
-      @namespace = "#{repository.full_path}"
+      @namespace = repository.full_path.to_s
       @namespace += ":#{repository.project.id}" if repository.project
       @namespace = "#{@namespace}:#{extra_namespace}" if extra_namespace
       @backend = backend

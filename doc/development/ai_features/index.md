@@ -18,7 +18,7 @@ To obtain a Google Cloud service key for local development, follow the steps bel
 
 1. Set up a Google Cloud project
    1. Option 1 (recommended for GitLab team members): request access to our
-      existing group Google Cloud project by using
+      existing group Google Cloud project (`ai-enablement-dev-69497ba7`) by using
       [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request)
       This project has Vertex APIs and Vertex AI Search (for Duo Chat
       documentaton questions) already enabled
