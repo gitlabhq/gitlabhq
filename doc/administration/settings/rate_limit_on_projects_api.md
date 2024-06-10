@@ -41,7 +41,7 @@ The rate limits:
 - Apply per user if the user is authenticated.
 - Apply per IP address if the user is unauthenticated.
 - Can be set to 0 to disable rate limiting.
-- Are behind the `rate_limit_groups_and_projects_api` except for the `GET /projects API`.
+- Are behind the `rate_limit_groups_and_projects_api` except for the unauthenticated requests to the `GET /projects` API.
 
 Requests over the rate limit are logged into the `auth.log` file.
 

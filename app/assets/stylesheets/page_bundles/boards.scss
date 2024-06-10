@@ -6,7 +6,7 @@
 }
 
 .boards-app {
-  height: calc(#{$calc-application-viewport-height} - var(--header-height, 48px));
+  height: calc(#{$calc-application-viewport-height} - var(--header-height, 48px) - var(--broadcast-message-height, 0px));
   display: flex;
   flex-direction: column;
 

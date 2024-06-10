@@ -327,8 +327,10 @@ RSpec.describe Import::GithubService, feature_category: :importers do
 
     before do
       stub_application_setting(import_sources: nil)
+      stub_feature_flags(override_github_disabled: false)
       allow(client).to receive_message_chain(:octokit, :repository).and_return({ status: 200 })
       allow(client).to receive(:repository).and_return(repository_double)
+      allow(Gitlab::GithubImport::Settings).to receive(:new).and_call_original
     end
 
     it 'returns forbidden' do
@@ -338,6 +340,18 @@ RSpec.describe Import::GithubService, feature_category: :importers do
         status: :error,
         http_status: :forbidden
       )
+    end
+
+    context 'when override_github_disabled ops flag is enabled for the user' do
+      before do
+        stub_feature_flags(override_github_disabled: user)
+      end
+
+      it 'succeeds' do
+        result = subject.execute(access_params, :github)
+
+        expect(result).to include(status: :success)
+      end
     end
   end
 

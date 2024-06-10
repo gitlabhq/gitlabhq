@@ -2,9 +2,15 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 
 describe('Pagination links component', () => {
-  const template = `
+  const actionsTemplate = `
     <template #actions>
       Actions go here
+    </template>
+  `;
+
+  const descriptionTemplate = `
+    <template #actions>
+      Description go here
     </template>
   `;
 
@@ -14,7 +20,8 @@ describe('Pagination links component', () => {
     const createWrapper = () => {
       wrapper = shallowMountExtended(PageHeading, {
         scopedSlots: {
-          actions: template,
+          actions: actionsTemplate,
+          description: descriptionTemplate,
         },
         propsData: {
           heading: 'Page heading',
@@ -24,6 +31,7 @@ describe('Pagination links component', () => {
 
     const heading = () => wrapper.findByTestId('page-heading');
     const actions = () => wrapper.findByTestId('page-heading-actions');
+    const description = () => wrapper.findByTestId('page-heading-description');
 
     beforeEach(() => {
       createWrapper();
@@ -38,6 +46,11 @@ describe('Pagination links component', () => {
 
       it('renders its action slot content', () => {
         expect(actions().text()).toBe('Actions go here');
+      });
+
+      it('renders its description slot content', () => {
+        expect(description().text()).toBe('Description go here');
+        expect(description().classes()).toEqual(['gl-w-full', 'gl-mt-2', 'gl-text-secondary']);
       });
     });
   });

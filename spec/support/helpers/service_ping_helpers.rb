@@ -5,10 +5,20 @@
 # created on the current date (rather than only completed days from the last week.)
 module ServicePingHelpers
   # Override metric timeframe from within specs
-  # @param metric [Gitlab::Usage::Metric]
-  def stub_metric_timeframe(metric)
-    metric.send(:instrumentation_object).extend(CurrentTimeFrame)
+  # rubocop:disable RSpec/AnyInstanceOf -- Gitlab::Usage::TimeFrame is initialized multiple times from many classes
+  def stub_metric_timeframes
+    [
+      :weekly_time_range,
+      :monthly_time_range,
+      :weekly_time_range_db_params,
+      :monthly_time_range_db_params
+    ].each do |method|
+      allow_any_instance_of(Gitlab::Usage::TimeFrame)
+        .to receive(method)
+        .and_wrap_original { |_, **args| ClassWithStubbedTimeframe.new.send(method, **args) }
+    end
   end
+  # rubocop:enable RSpec/AnyInstanceOf
 
   class << self
     # Generates a full service ping report from rails console
@@ -69,5 +79,10 @@ module ServicePingHelpers
     def weekly_time_range_db_params(column: nil)
       super.transform_values { 9.days.ago..1.week.from_now }
     end
+  end
+
+  class ClassWithStubbedTimeframe
+    include Gitlab::Usage::TimeFrame.dup
+    include ::ServicePingHelpers::CurrentTimeFrame
   end
 end

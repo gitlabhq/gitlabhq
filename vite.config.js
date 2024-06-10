@@ -14,12 +14,12 @@ import {
   copyFilesPatterns,
 } from './config/webpack.constants';
 /* eslint-disable import/extensions */
-import { viteCSSCompilerPlugin } from './scripts/frontend/lib/compile_css.mjs';
 import { viteTailwindCompilerPlugin } from './scripts/frontend/tailwindcss.mjs';
 import { CopyPlugin } from './config/helpers/vite_plugin_copy.mjs';
 import { AutoStopPlugin } from './config/helpers/vite_plugin_auto_stop.mjs';
 import { PageEntrypointsPlugin } from './config/helpers/vite_plugin_page_entrypoints.mjs';
 import { FixedRubyPlugin } from './config/helpers/vite_plugin_ruby_fixed.mjs';
+import { StylePlugin } from './config/helpers/vite_plugin_style.mjs';
 /* eslint-enable import/extensions */
 
 let viteGDKConfig;
@@ -70,11 +70,21 @@ export default defineConfig({
         find: '~katex',
         replacement: 'katex',
       },
+      /*
+       Alias for GitLab Fonts
+       If we were to import directly from node_modules,
+       we would get the files under `public/assets/@gitlab`
+       with the assets pipeline. That seems less than ideal
+       */
+      {
+        find: /^gitlab-(sans|mono)\//,
+        replacement: 'node_modules/@gitlab/fonts/gitlab-$1/',
+      },
     ],
   },
   plugins: [
     PageEntrypointsPlugin(),
-    viteCSSCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
+    StylePlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     CopyPlugin({
       patterns: copyFilesPatterns,

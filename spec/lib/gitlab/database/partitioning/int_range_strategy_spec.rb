@@ -233,11 +233,13 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
     let(:partitioning_key) { :partition }
     let(:table_name) { :_test_partitioned_test }
     let(:partition_size) { 5 }
+    let(:analyze_interval) { 1.week }
 
     subject(:strategy) do
       described_class.new(
         model, partitioning_key,
-        partition_size: partition_size
+        partition_size: partition_size,
+        analyze_interval: analyze_interval
       )
     end
 
@@ -245,7 +247,8 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
       expect(strategy).to have_attributes({
         model: model,
         partitioning_key: partitioning_key,
-        partition_size: partition_size
+        partition_size: partition_size,
+        analyze_interval: analyze_interval
       })
     end
   end

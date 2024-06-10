@@ -34,7 +34,7 @@ instructions sent to the LLM to perform certain tasks.
 The state of the prompts is the result of weeks of iteration. If you want to
 change any prompt in the current tool, you must put it behind a feature flag.
 
-If you have any new or updated prompts, ask members of AI Framework team to
+If you have any new or updated prompts, ask members of Duo Chat team or AI Framework team to
 review, because they have significant experience with them.
 
 ### Troubleshooting

@@ -1,5 +1,6 @@
 <script>
 import { GlModal, GlSprintf, GlLink, GlLoadingIcon, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
+import { sortBy } from 'lodash';
 import Api from '~/api';
 import { i18n } from '../constants';
 
@@ -51,12 +52,14 @@ export default {
       this.$refs.modal.show();
     },
     buildEvents(events) {
-      return Object.keys(events).map((key) => ({
+      const rawEvents = Object.keys(events).map((key) => ({
         id: key,
         enabled: Boolean(events[key]),
         name: this.$options.i18n.eventNames[key] || '',
         loading: false,
       }));
+
+      return sortBy(rawEvents, 'name');
     },
     async onOpen() {
       if (!this.events.length) {

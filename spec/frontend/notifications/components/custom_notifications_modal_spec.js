@@ -98,9 +98,9 @@ describe('CustomNotificationsModal', () => {
       });
 
       it.each`
-        index | eventId          | eventName        | enabled  | loading
-        ${0}  | ${'new_release'} | ${'New release'} | ${true}  | ${false}
-        ${1}  | ${'new_note'}    | ${'New note'}    | ${false} | ${false}
+        index | eventId          | eventName               | enabled  | loading
+        ${0}  | ${'new_note'}    | ${'Comment is added'}   | ${false} | ${false}
+        ${1}  | ${'new_release'} | ${'Release is created'} | ${true}  | ${false}
       `(
         'renders a checkbox for "$eventName" with checked=$enabled',
         ({ index, eventName, enabled, loading }) => {
@@ -163,8 +163,8 @@ describe('CustomNotificationsModal', () => {
         expect(axios.get).toHaveBeenCalledWith(endpointUrl);
         expect(wrapper.vm.isLoading).toBe(false);
         expect(wrapper.vm.events).toEqual([
-          { id: 'new_release', enabled: true, name: 'New release', loading: false },
-          { id: 'new_note', enabled: false, name: 'New note', loading: false },
+          { id: 'new_note', enabled: false, name: 'Comment is added', loading: false },
+          { id: 'new_release', enabled: true, name: 'Release is created', loading: false },
         ]);
       });
 
@@ -214,7 +214,7 @@ describe('CustomNotificationsModal', () => {
 
           await waitForPromises();
 
-          findCheckboxAt(1).vm.$emit('change', true);
+          findCheckboxAt(0).vm.$emit('change', true);
 
           await waitForPromises();
 
@@ -223,8 +223,8 @@ describe('CustomNotificationsModal', () => {
           });
 
           expect(wrapper.vm.events).toEqual([
-            { id: 'new_release', enabled: true, name: 'New release', loading: false },
-            { id: 'new_note', enabled: true, name: 'New note', loading: false },
+            { id: 'new_note', enabled: true, name: 'Comment is added', loading: false },
+            { id: 'new_release', enabled: true, name: 'Release is created', loading: false },
           ]);
         },
       );

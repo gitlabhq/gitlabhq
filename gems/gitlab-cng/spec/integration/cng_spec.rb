@@ -7,6 +7,7 @@ RSpec.describe "cng" do
         cng create [SUBCOMMAND]  # Manage deployment related object creation
         cng doctor               # Validate presence of all required system dependencies
         cng help [COMMAND]       # Describe available commands or one specific command
+        cng log [SUBCOMMAND]     # Manage deployment related logs
         cng version              # Print cng orchestrator version
     USAGE
   end

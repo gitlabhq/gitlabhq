@@ -77,9 +77,45 @@ describe('generate stream', () => {
     ]);
   });
 
+  it('decodes lines from a windows runner', async () => {
+    mockFetchResponse([
+      'Running with ru',
+      'nner 16.5.0\n',
+      'Very long line\r\n',
+      'Progress 1\rProgress 2\rDone\r\n',
+      'Separated\r',
+      '\n',
+    ]);
+
+    expect(await fetchLogLines('/raw')).toEqual([
+      { content: [{ style: [], text: 'Running with runner 16.5.0' }], sections: [] },
+      { content: [{ style: [], text: 'Very long line' }], sections: [] },
+      { content: [{ style: [], text: 'Done' }], sections: [] },
+      { content: [{ style: [], text: 'Separated' }], sections: [] },
+    ]);
+  });
+
   it('skips an empty log line', async () => {
     mockFetchResponse(['\n']);
 
     expect(await fetchLogLines('/raw')).toEqual([]);
+  });
+
+  describe('with a line that contains carriage returns', () => {
+    it('decodes the last content', async () => {
+      mockFetchResponse(['enumerating objects 50%\renumerating objects 100%\n']);
+
+      expect(await fetchLogLines()).toEqual([
+        { content: [{ style: [], text: 'enumerating objects 100%' }], sections: [] },
+      ]);
+    });
+
+    it('decodes the last content across chunks', async () => {
+      mockFetchResponse(['enumerating 50%\r', 'enumerating ', '80%\r', 'waiting\rdone\n']);
+
+      expect(await fetchLogLines()).toEqual([
+        { content: [{ style: [], text: 'done' }], sections: [] },
+      ]);
+    });
   });
 });

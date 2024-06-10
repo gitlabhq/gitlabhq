@@ -8,7 +8,7 @@ RSpec.shared_examples 'issuable supports timelog creation service' do
   let(:service) { described_class.new(issuable, time_spent, spent_at, summary, user) }
 
   shared_examples 'success_response' do
-    it 'sucessfully saves the timelog' do
+    it 'successfully saves the timelog' do
       expect(Projects::TriggeredHooks).to receive(:new).with(
         issuable.is_a?(Issue) ? :issue_hooks : :merge_request_hooks,
         a_hash_including(changes: a_hash_including(total_time_spent: { previous: 0, current: time_spent }))
@@ -91,7 +91,7 @@ RSpec.shared_examples 'issuable supports timelog creation service' do
       end
     end
 
-    context 'when the creation completes sucessfully' do
+    context 'when the creation completes successfully' do
       it_behaves_like 'success_response'
     end
   end

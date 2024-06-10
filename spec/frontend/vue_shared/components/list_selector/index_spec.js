@@ -15,7 +15,7 @@ import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplet
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { ACCESS_LEVEL_DEVELOPER_INTEGER } from '~/access_level/constants';
-import { USERS_RESPONSE_MOCK, GROUPS_RESPONSE_MOCK } from './mock_data';
+import { USERS_RESPONSE_MOCK, GROUPS_RESPONSE_MOCK, SUBGROUPS_RESPONSE_MOCK } from './mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/rest_api', () => ({
@@ -23,12 +23,6 @@ jest.mock('~/rest_api', () => ({
     data: [
       { name: 'Project 1', id: '1' },
       { name: 'Project 2', id: '2' },
-    ],
-  }),
-  getSubgroups: jest.fn().mockResolvedValue({
-    data: [
-      { name: 'Subgroup 1', id: '1' },
-      { name: 'Subgroup 2', id: '2' },
     ],
   }),
 }));
@@ -48,6 +42,13 @@ describe('List Selector spec', () => {
   const GROUPS_MOCK_PROPS = {
     projectPath: 'some/project/path',
     type: 'groups',
+  };
+
+  const GROUP_ID_MOCK_PROPS = {
+    projectPath: 'some/project/path',
+    type: 'groups',
+    groupId: 1,
+    isProjectOnlyNamespace: true,
   };
 
   const DEPLOY_KEYS_MOCK_PROPS = {
@@ -89,6 +90,7 @@ describe('List Selector spec', () => {
   beforeEach(() => {
     jest.spyOn(Api, 'projectUsers').mockResolvedValue(USERS_RESPONSE_MOCK);
     jest.spyOn(Api, 'projectGroups').mockResolvedValue(GROUPS_RESPONSE_MOCK.data.groups.nodes);
+    jest.spyOn(Api, 'groupSubgroups').mockResolvedValue(SUBGROUPS_RESPONSE_MOCK);
   });
 
   describe('empty state', () => {
@@ -278,6 +280,31 @@ describe('List Selector spec', () => {
         expect(wrapper.emitted('select')).toMatchObject([
           [{ ...firstSearchResult, value: 'Flightjs' }],
         ]);
+      });
+    });
+
+    describe('it calls subroups endpoint once group id is passed', () => {
+      const searchResponse = SUBGROUPS_RESPONSE_MOCK.data;
+
+      beforeEach(() => createComponent({ ...GROUP_ID_MOCK_PROPS }));
+
+      const emitSearchInput = async () => {
+        findSearchBox().vm.$emit('input', search);
+        await waitForPromises();
+        await waitForPromises();
+        await waitForPromises();
+      };
+
+      beforeEach(() => emitSearchInput());
+
+      it('calls query with correct variables when Search box receives an input', () => {
+        expect(Api.groupSubgroups).toHaveBeenCalledWith(1, search);
+      });
+
+      it('renders a dropdown for the search results', () => {
+        expect(findSearchResultsDropdown().props()).toMatchObject({
+          items: searchResponse,
+        });
       });
     });
 

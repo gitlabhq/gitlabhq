@@ -138,7 +138,7 @@ export default {
     },
     async fetchGroupsBySearchTerm(search) {
       let groups = [];
-      if (parseBoolean(this.groupId)) {
+      if (this.groupId) {
         groups = await this.fetchSubgroupsBySearchTerm(search);
         return groups;
       }

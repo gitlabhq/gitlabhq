@@ -140,7 +140,7 @@ RSpec.describe Groups::LabelsController, feature_category: :team_planning do
         expect(label.reload).to eq label
       end
 
-      context 'when label is succesfuly destroyed' do
+      context 'when label is successfully destroyed' do
         it 'redirects to the group labels page' do
           label = create(:group_label, group: group)
           delete :destroy, params: { group_id: group.to_param, id: label.to_param }

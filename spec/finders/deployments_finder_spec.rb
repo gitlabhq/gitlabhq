@@ -292,7 +292,7 @@ RSpec.describe DeploymentsFinder, feature_category: :deployment_management do
 
         let(:params) { { **base_params, status: 'success' } }
 
-        it 'successfuly fetches deployments' do
+        it 'successfully fetches deployments' do
           is_expected.to contain_exactly(deployment_1, deployment_2)
         end
       end

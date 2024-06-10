@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Items migrated when using direct transfer
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 Many items are migrated when using the direct transfer method, and some are excluded.
 
 ## Migrated group items
@@ -64,10 +68,12 @@ Some group items are excluded from migration because they either:
 
 ## Migrated project items
 
+DETAILS:
+**Status:** Beta
+
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 > - `bulk_import_projects` feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.10.
 > - Project-only migrations using API [added](https://gitlab.com/gitlab-org/gitlab/-/issues/390515) in GitLab 15.11.
-> - Migrating projects [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461326) in GitLab 17.1.
 
 If you choose to migrate projects when you [select groups to migrate](direct_transfer_migrations.md#select-the-groups-and-projects-to-import),
 project items are migrated with the projects.

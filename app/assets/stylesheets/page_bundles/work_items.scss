@@ -403,3 +403,8 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     }
   }
 }
+
+.is-ghost {
+  opacity: 0.3;
+  pointer-events: none;
+}

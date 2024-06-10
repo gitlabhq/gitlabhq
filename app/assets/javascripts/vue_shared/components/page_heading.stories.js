@@ -12,7 +12,10 @@ const Template = (args, { argTypes }) => ({
     <page-heading v-bind="$props">
       <template #actions>
         Actions go here
-      <template>
+      </template>
+      <template #description>
+        Description goes here
+      </template>
     </page-heading>
   `,
 });

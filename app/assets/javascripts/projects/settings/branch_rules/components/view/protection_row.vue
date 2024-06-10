@@ -1,6 +1,7 @@
 <script>
 import { GlAvatarsInline, GlAvatar, GlAvatarLink, GlTooltipDirective, GlBadge } from '@gitlab/ui';
 import { n__ } from '~/locale';
+import { accessLevelsConfig } from './constants';
 
 const AVATAR_TOOLTIP_MAX_CHARS = 100;
 export const MAX_VISIBLE_AVATARS = 4;
@@ -11,6 +12,7 @@ export default {
   AVATAR_TOOLTIP_MAX_CHARS,
   MAX_VISIBLE_AVATARS,
   AVATAR_SIZE,
+  accessLevelsConfig,
   components: { GlAvatarsInline, GlAvatar, GlAvatarLink, GlBadge },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -107,9 +109,9 @@ export default {
         :key="index"
         class="gl-mr-2"
         data-testid="access-level"
-        :data-qa-role="item.accessLevelDescription"
+        :data-qa-role="$options.accessLevelsConfig[item].accessLevelLabel"
       >
-        {{ item.accessLevelDescription }}
+        {{ $options.accessLevelsConfig[item].accessLevelLabel }}
       </gl-badge>
     </div>
   </div>

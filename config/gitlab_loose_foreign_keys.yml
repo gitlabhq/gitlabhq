@@ -293,6 +293,10 @@ p_ci_build_names:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_ci_build_sources:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 p_ci_builds:
   - table: users
     column: user_id

@@ -46,13 +46,15 @@ workflow:
     QA_DISABLE_RSPEC_RETRY: "true"
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
+    # save extra values to be available for after_script if created dynamically
+    - echo "${EXTRA_DEPLOY_VALUES}" > $CI_PROJECT_DIR/EXTRA_DEPLOY_VALUES
     - export GITLAB_DOMAIN="$(getent hosts docker | awk '{ print $1 }' | head -n1).nip.io"
     - export QA_GITLAB_URL="http://gitlab.${GITLAB_DOMAIN}"
     - source scripts/utils.sh
     - source scripts/rspec_helpers.sh
     - cd qa && bundle install
     - |
-      bundle exec cng create deployment kind \
+      bundle exec cng create deployment "${DEPLOYMENT_TYPE}" \
         --gitlab-domain "${GITLAB_DOMAIN}" \
         --timeout 5m \
         --admin-password "${GITLAB_ADMIN_PASSWORD}" \
@@ -70,10 +72,16 @@ workflow:
         retry_failed_e2e_rspec_examples
       fi
   after_script:
-    - source scripts/qa/cng_deploy/cng-kind.sh
-    - echo -e "\e[0Ksection_start:`date +%s`:log_deploy[collapsed=true]\r\e[0KDeployment info"
-    - save_install_logs
-    - echo -e "\e[0Ksection_end:`date +%s`:log_deploy\r\e[0K"
+    - cd qa
+    - bundle exec cng log events --save
+    - bundle exec cng log pods --save --containers all
+    # This command prints all the necessary arguments to be able to recreate the same deployment as on CI
+    - |
+      bundle exec cng create deployment "${DEPLOYMENT_TYPE}" \
+        --chart-sha "${GITLAB_HELM_CHART_REF}" \
+        --ci \
+        --print-deploy-args \
+        $(cat $CI_PROJECT_DIR/EXTRA_DEPLOY_VALUES)
   artifacts:
     expire_in: 1 day
     when: always
@@ -82,7 +90,7 @@ workflow:
       dotenv: $QA_SUITE_STATUS_ENV_FILE
     paths:
       - qa/tmp
-      - ${CI_PROJECT_DIR}/*.log
+      - ${CI_PROJECT_DIR}/qa/*.log
 
 # ==========================================
 # Pre stage
@@ -116,6 +124,7 @@ cng-instance:
   extends: .cng-base
   variables:
     QA_SCENARIO: Test::Instance::All
+    DEPLOYMENT_TYPE: kind
   parallel: 5
   allow_failure: true
 
@@ -124,6 +133,7 @@ cng-qa-min-redis-version:
   extends: .cng-base
   variables:
     QA_SCENARIO: Test::Instance::Smoke
+    DEPLOYMENT_TYPE: kind
   before_script:
     - |
       redis_version=$(awk -F "=" "/MIN_REDIS_VERSION =/ {print \$2}" $CI_PROJECT_DIR/lib/system_check/app/redis_version_check.rb | sed "s/['\" ]//g")

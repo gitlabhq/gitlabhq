@@ -244,14 +244,14 @@ export default {
       <div
         class="contextual-nav gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
       >
+        <div
+          v-if="sidebarData.current_context_header"
+          id="super-sidebar-context-header"
+          class="gl-px-4 gl-py-3 gl-m-0 gl-leading-reset gl-font-bold super-sidebar-context-header"
+        >
+          {{ sidebarData.current_context_header }}
+        </div>
         <scroll-scrim class="gl-flex-grow-1" data-testid="nav-container">
-          <div
-            v-if="sidebarData.current_context_header"
-            id="super-sidebar-context-header"
-            class="gl-px-5 gl-pt-3 gl-pb-2 gl-m-0 gl-leading-reset gl-font-bold gl-font-sm super-sidebar-context-header"
-          >
-            {{ sidebarData.current_context_header }}
-          </div>
           <sidebar-menu
             v-if="menuItems.length"
             :items="menuItems"

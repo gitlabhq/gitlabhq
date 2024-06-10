@@ -1,0 +1,9 @@
+---
+name: early_access_program_toggle
+feature_issue_url: https://gitlab.com/gitlab-org/developer-relations/contributor-success/team-task/-/issues/520
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154957
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465147
+milestone: '17.1'
+group: Contributor Success
+type: gitlab_com_derisk
+default_enabled: false

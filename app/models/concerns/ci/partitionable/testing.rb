@@ -13,6 +13,7 @@ module Ci
         Ci::BuildNeed
         Ci::BuildReportResult
         Ci::BuildRunnerSession
+        Ci::BuildSource
         Ci::BuildTraceChunk
         Ci::BuildTraceMetadata
         Ci::BuildPendingState

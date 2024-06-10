@@ -74,7 +74,14 @@ module Gitlab
             desc: "Host ssh port for gitlab",
             type: :numeric,
             default: 22
+          option :print_deploy_args,
+            desc: "Print all CI specific component helm values and deployment arguments." \
+                  "Useful for reproducing CI deployments. Only valid with --ci flag.",
+            type: :boolean,
+            default: false
           def kind(name = "gitlab")
+            return print_deploy_args("kind") if options[:print_deploy_args] && options[:ci]
+
             if options[:create_cluster]
               invoke(Commands::Create, :cluster, [], **symbolized_options.slice(
                 :docker_hostname, :ci, :host_http_port, :host_ssh_port
@@ -106,6 +113,23 @@ module Gitlab
               name, configuration: configuration,
               **symbolized_options.slice(:namespace, :set, :ci, :gitlab_domain, :timeout, :chart_sha)
             )
+          end
+
+          # Print example of deployment arguments and all CI component arguments
+          #
+          # @param [String] configuration deployment configuration name
+          # @return [void]
+          def print_deploy_args(configuration)
+            ci_components = Cng::Deployment::DefaultValues.component_ci_versions.flat_map do |component, version|
+              ["--set", "#{component}=#{version}"]
+            end
+            cmd = ["cng", "create", "deployment", configuration, *ci_components]
+            cmd.push(*options[:set].flat_map { |opt| ["--set", opt] }) if options[:set]
+            cmd.push("--chart-sha", options[:chart_sha]) if options[:chart_sha]
+
+            log("Received --print-deploy-args option, printing example of all deployment arguments!", :warn)
+            log("To reproduce CI deployment, run cng with following arguments:")
+            log("  #{cmd.join(' ')}")
           end
 
           # Populate options with default gitlab domain if missing

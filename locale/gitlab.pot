@@ -4730,7 +4730,7 @@ msgstr ""
 msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."
 msgstr ""
 
-msgid "AiImpactAnalytics|Usage rate for Code Suggestions is calculated with data starting on %{startDate}"
+msgid "AiImpactAnalytics|The usage data may be incomplete due to backend calculations starting after upgrade to GitLab 16.11. For more information, see %{linkStart}epic 12978%{linkEnd}."
 msgstr ""
 
 msgid "Akismet"
@@ -9056,6 +9056,9 @@ msgstr ""
 msgid "BranchRules|Add branch rule"
 msgstr ""
 
+msgid "BranchRules|Administrators"
+msgstr ""
+
 msgid "BranchRules|After a protected branch is created, it will show up in the list as a branch rule."
 msgstr ""
 
@@ -9158,6 +9161,9 @@ msgstr ""
 msgid "BranchRules|Delete rule"
 msgstr ""
 
+msgid "BranchRules|Developers and Maintainers"
+msgstr ""
+
 msgid "BranchRules|Does not allow force push"
 msgstr ""
 
@@ -9179,6 +9185,9 @@ msgstr ""
 msgid "BranchRules|Keep stable branches secure and force developers to use merge requests. %{linkStart}What are protected branches?%{linkEnd}"
 msgstr ""
 
+msgid "BranchRules|Maintainers"
+msgstr ""
+
 msgid "BranchRules|Manage in merge request approvals"
 msgstr ""
 
@@ -9195,6 +9204,9 @@ msgid "BranchRules|No data to display"
 msgstr ""
 
 msgid "BranchRules|No matching results"
+msgstr ""
+
+msgid "BranchRules|No one"
 msgstr ""
 
 msgid "BranchRules|No one is allowed to merge changes."
@@ -15917,9 +15929,6 @@ msgid "Custom metrics"
 msgstr ""
 
 msgid "Custom notification events"
-msgstr ""
-
-msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notificationLinkStart}notification emails%{notificationLinkEnd}."
 msgstr ""
 
 msgid "Custom project templates"
@@ -25376,6 +25385,9 @@ msgid "GroupSettings|Namespace setting"
 msgstr ""
 
 msgid "GroupSettings|Organizations and contacts can be created and associated with issues."
+msgstr ""
+
+msgid "GroupSettings|Participate in the %{link_start}GitLab Early Access Program%{link_end}."
 msgstr ""
 
 msgid "GroupSettings|Please choose a group URL with no special characters or spaces."
@@ -34936,9 +34948,6 @@ msgid_plural "NotificationEmail|Reviewers: %{users}"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "NotificationEvent|Added as approver"
-msgstr ""
-
 msgid "NotificationEvent|Change reviewer merge request"
 msgstr ""
 
@@ -34946,6 +34955,12 @@ msgid "NotificationEvent|Close issue"
 msgstr ""
 
 msgid "NotificationEvent|Close merge request"
+msgstr ""
+
+msgid "NotificationEvent|Comment is added"
+msgstr ""
+
+msgid "NotificationEvent|Epic is created"
 msgstr ""
 
 msgid "NotificationEvent|Failed pipeline"
@@ -34957,7 +34972,46 @@ msgstr ""
 msgid "NotificationEvent|Issue due"
 msgstr ""
 
+msgid "NotificationEvent|Issue is closed"
+msgstr ""
+
+msgid "NotificationEvent|Issue is created"
+msgstr ""
+
+msgid "NotificationEvent|Issue is due soon"
+msgstr ""
+
+msgid "NotificationEvent|Issue is reassigned"
+msgstr ""
+
+msgid "NotificationEvent|Issue is reopened"
+msgstr ""
+
 msgid "NotificationEvent|Merge merge request"
+msgstr ""
+
+msgid "NotificationEvent|Merge request is closed"
+msgstr ""
+
+msgid "NotificationEvent|Merge request is created"
+msgstr ""
+
+msgid "NotificationEvent|Merge request is merged"
+msgstr ""
+
+msgid "NotificationEvent|Merge request is reassigned"
+msgstr ""
+
+msgid "NotificationEvent|Merge request is reopened"
+msgstr ""
+
+msgid "NotificationEvent|Merge request is set to auto-merge"
+msgstr ""
+
+msgid "NotificationEvent|Merge request receives a push"
+msgstr ""
+
+msgid "NotificationEvent|Merge request reviewers are changed"
 msgstr ""
 
 msgid "NotificationEvent|Merge when pipeline succeeds"
@@ -34981,6 +35035,18 @@ msgstr ""
 msgid "NotificationEvent|New release"
 msgstr ""
 
+msgid "NotificationEvent|Pipeline fails"
+msgstr ""
+
+msgid "NotificationEvent|Pipeline is fixed"
+msgstr ""
+
+msgid "NotificationEvent|Pipeline is successful"
+msgstr ""
+
+msgid "NotificationEvent|Project is moved"
+msgstr ""
+
 msgid "NotificationEvent|Push to merge request"
 msgstr ""
 
@@ -34990,13 +35056,16 @@ msgstr ""
 msgid "NotificationEvent|Reassign merge request"
 msgstr ""
 
+msgid "NotificationEvent|Release is created"
+msgstr ""
+
 msgid "NotificationEvent|Reopen issue"
 msgstr ""
 
 msgid "NotificationEvent|Reopen merge request"
 msgstr ""
 
-msgid "NotificationEvent|Successful pipeline"
+msgid "NotificationEvent|You are added as an approver on a merge request"
 msgstr ""
 
 msgid "NotificationLevel|Custom"
@@ -35527,6 +35596,9 @@ msgstr ""
 msgid "ObservabilityLogs|Fingerprint"
 msgstr ""
 
+msgid "ObservabilityLogs|Learn more."
+msgstr ""
+
 msgid "ObservabilityLogs|Level"
 msgstr ""
 
@@ -35537,6 +35609,9 @@ msgid "ObservabilityLogs|Message"
 msgstr ""
 
 msgid "ObservabilityLogs|Metadata"
+msgstr ""
+
+msgid "ObservabilityLogs|Monitor log events captured from your systems. Send log data to this project using OpenTelemetry. %{docsLink}"
 msgstr ""
 
 msgid "ObservabilityLogs|No logs to display."
@@ -35608,6 +35683,9 @@ msgstr ""
 msgid "ObservabilityMetrics|Last ingested"
 msgstr ""
 
+msgid "ObservabilityMetrics|Learn more."
+msgstr ""
+
 msgid "ObservabilityMetrics|Metric Details"
 msgstr ""
 
@@ -35636,6 +35714,9 @@ msgid "ObservabilityMetrics|Select function"
 msgstr ""
 
 msgid "ObservabilityMetrics|Selected attributes"
+msgstr ""
+
+msgid "ObservabilityMetrics|Track health data from your systems. Send metric data to this project using OpenTelemetry. %{docsLink}"
 msgstr ""
 
 msgid "ObservabilityMetrics|Type"
@@ -55220,6 +55301,12 @@ msgstr ""
 msgid "Tracing|In progress"
 msgstr ""
 
+msgid "Tracing|Inspect application requests across services. Send trace data to this project using OpenTelemetry. %{docsLink}"
+msgstr ""
+
+msgid "Tracing|Learn more."
+msgstr ""
+
 msgid "Tracing|Metadata"
 msgstr ""
 
@@ -55263,6 +55350,9 @@ msgid "Tracing|Trace ID"
 msgstr ""
 
 msgid "Tracing|Traces"
+msgstr ""
+
+msgid "Tracing|Tracing"
 msgstr ""
 
 msgid "Tracing|You must select a Service and Operation first."
@@ -59351,6 +59441,9 @@ msgstr ""
 msgid "Wireframe"
 msgstr ""
 
+msgid "With custom notification levels you receive notifications for the same events as in the Participate level, with additional selected events. For more information, see %{notificationLinkStart}notification emails%{notificationLinkEnd}."
+msgstr ""
+
 msgid "With issues you can discuss the implementation of an idea, track tasks and work status, elaborate on code implementations, and accept feature proposals, questions, support requests, or bug reports."
 msgstr ""
 
@@ -60778,10 +60871,10 @@ msgstr ""
 msgid "You will not get any notifications via email"
 msgstr ""
 
-msgid "You will only receive notifications for the events you choose"
+msgid "You will only receive notifications for items you have participated in"
 msgstr ""
 
-msgid "You will only receive notifications for threads you have participated in"
+msgid "You will only receive notifications for items you have participated in and the events you choose"
 msgstr ""
 
 msgid "You will receive notifications for any activity"

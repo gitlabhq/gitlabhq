@@ -548,6 +548,10 @@ To set the project as a catalog project:
 
 The project only becomes findable in the catalog after you publish a new release.
 
+To use automation to enable this setting, you can use the [`mutationcatalogresourcescreate`](../../api/graphql/reference/index.md#mutationcatalogresourcescreate)
+GraphQL endpoint. [Issue 463043](https://gitlab.com/gitlab-org/gitlab/-/issues/463043)
+proposes to expose this in the REST API as well.
+
 #### Publish a new release
 
 CI/CD components can be [used](#use-a-component) without being listed in the CI/CD catalog.

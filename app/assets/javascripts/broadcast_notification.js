@@ -10,6 +10,18 @@ const dismissUserBroadcastMessage = (id, expireDate, dismissalPath) => {
   });
 };
 
+const setBroadcastMessageHeightOffset = () => {
+  const broadcastMessages = [...document.querySelectorAll('.gl-broadcast-message')];
+  const broadcastMessageHeight = broadcastMessages.reduce(
+    (acc, banner) => acc + banner.getBoundingClientRect().height,
+    0,
+  );
+  document.documentElement.style.setProperty(
+    '--broadcast-message-height',
+    `${broadcastMessageHeight}px`,
+  );
+};
+
 const handleOnDismiss = ({ currentTarget }) => {
   currentTarget.removeEventListener('click', handleOnDismiss);
   const {
@@ -27,10 +39,14 @@ const handleOnDismiss = ({ currentTarget }) => {
 
   const notification = document.querySelector(`.js-broadcast-notification-${id}`);
   notification.parentNode.removeChild(notification);
+
+  setBroadcastMessageHeightOffset();
 };
 
 export default () => {
   document
     .querySelectorAll('.js-dismiss-current-broadcast-notification')
     .forEach((dismissButton) => dismissButton.addEventListener('click', handleOnDismiss));
+
+  setBroadcastMessageHeightOffset();
 };

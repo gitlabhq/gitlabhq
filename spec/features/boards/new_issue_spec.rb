@@ -84,7 +84,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_manag
       expect(page).to have_selector('[data-testid="issue-boards-sidebar"]')
     end
 
-    it 'successfuly loads labels to be added to newly created issue' do
+    it 'successfully loads labels to be added to newly created issue' do
       page.within(first('.board')) do
         click_button 'Create new issue'
       end

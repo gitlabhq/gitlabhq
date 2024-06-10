@@ -45,6 +45,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
   <div>
     <form
       action="/namespace/project/-/merged_branches"
+      id="reference-1"
       method="post"
     >
       <p>
@@ -84,6 +85,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
           debounce="0"
           formatter="[Function]"
           nowheel="true"
+          required="true"
           type="text"
           value=""
         />
@@ -120,9 +122,10 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
         class="gl-button"
         data-testid="delete-merged-branches-confirmation-button"
         disabled="true"
+        form="delete-merged-branches-form"
         size="md"
         tag="button"
-        type="button"
+        type="submit"
         variant="danger"
       >
         <span

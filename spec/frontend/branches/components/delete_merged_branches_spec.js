@@ -44,7 +44,6 @@ const findConfirmationButton = () =>
 const findCancelButton = () => wrapper.findByTestId('delete-merged-branches-cancel-button');
 const findFormInput = () => wrapper.findComponent(GlFormInput);
 const findForm = () => wrapper.find('form');
-const submitFormSpy = () => jest.spyOn(findForm().element, 'submit');
 
 describe('Delete merged branches component', () => {
   beforeEach(() => {
@@ -82,10 +81,11 @@ describe('Delete merged branches component', () => {
       expect(findCancelButton().text()).toContain(i18n.cancelButtonText);
     });
 
-    it('renders form with correct attributes and hiden inputs', () => {
+    it('renders form with correct attributes and hidden inputs', () => {
       const form = findForm();
       expect(form.attributes()).toEqual({
         action: formPath,
+        id: 'delete-merged-branches-form',
         method: 'post',
       });
       expect(form.find('input[name="_method"]').attributes('value')).toBe('delete');
@@ -106,19 +106,12 @@ describe('Delete merged branches component', () => {
       findFormInput().vm.$emit('input', 'hello');
       await waitForPromises();
       expect(findConfirmationButton().props('disabled')).toBe(true);
-      findConfirmationButton().trigger('click');
-
-      expect(submitFormSpy()).not.toHaveBeenCalled();
-      findFormInput().trigger('keyup.enter');
-
-      expect(submitFormSpy()).not.toHaveBeenCalled();
     });
 
-    it('submits form when correct amount is provided and the confirm button is clicked', async () => {
+    it('enables the button when correct input is provided', async () => {
       findFormInput().vm.$emit('input', 'delete');
       await waitForPromises();
-      findConfirmationButton().trigger('click');
-      expect(submitFormSpy()).toHaveBeenCalled();
+      expect(findConfirmationButton().props('disabled')).toBe(false);
     });
 
     it('calls hide on the modal when cancel button is clicked', () => {

@@ -535,6 +535,17 @@ immediately. If the user:
 - Is signed out, they cannot access the group after being removed from the
   identity provider.
 
+## Migrate to a new identity provider
+
+To migrate to a new identity provider, use the [SAML API](../../../api/saml.md) to update all of your group member's identities.
+
+For example:
+
+1. Set a maintenance window to ensure that no users are active at that time.
+1. Use the SAML API [to update each user's identity](../../../api/saml.md#update-extern_uid-field-for-a-saml-identity).
+1. Configure the new identity provider.
+1. Test that sign in works.
+
 ## Related topics
 
 - [SAML SSO for self-managed GitLab instances](../../../integration/saml.md)

@@ -45,6 +45,7 @@ default:
   NO_SOURCEMAPS: "true"
   ADD_SLOW_TEST_NOTE_TO_MERGE_REQUEST: "true"
   FF_NETWORK_PER_BUILD: "true"
+  FF_TIMESTAMPS: "true"
 
 .if-merge-request-security-canonical-sync: &if-merge-request-security-canonical-sync
   if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'

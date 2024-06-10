@@ -40,7 +40,7 @@ export default {
 
 <template>
   <gl-form
-    class="issue-filters gl-px-5 gl-pt-0"
+    class="issue-filters gl-px-4 gl-pt-0"
     :aria-label="__('Search filters')"
     @submit.prevent="applyQueryWithTracking"
   >

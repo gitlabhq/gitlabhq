@@ -29,7 +29,7 @@ const SCSS_PARTIAL_GLOB = '**/_*.scss';
  * It ensures that the `ee/` and `jh/` directories take precedence, so that the
  * correct file is loaded.
  */
-function resolveLoadPaths() {
+export function resolveLoadPaths() {
   const loadPaths = {
     base: [BASE_PATH],
     vendor: [
@@ -158,12 +158,14 @@ function resolveCompilationTargets(filter) {
 
   for (const [sourcePath, options] of inputGlobs) {
     const sources = findSourceFiles(sourcePath, options);
-    console.log(`${sourcePath} resolved to:`, sources);
+    const log = [];
     for (const { source, dest } of sources) {
       if (filter(source, dest)) {
+        log.push({ source, dest });
         result.set(dest, source);
       }
     }
+    console.log(`${sourcePath} resolved to:`, log);
   }
 
   /*
@@ -171,6 +173,13 @@ function resolveCompilationTargets(filter) {
    * because for our further use cases we need the mapping this way.
    */
   return Object.fromEntries([...result.entries()].map((entry) => entry.reverse()));
+}
+
+export function resolveCompilationTargetsForVite() {
+  const targets = resolveCompilationTargets(() => true);
+  return Object.fromEntries(
+    Object.entries(targets).map(([source, dest]) => [dest.replace(OUTPUT_PATH, ''), source]),
+  );
 }
 
 function createPostCSSProcessors() {
@@ -261,19 +270,6 @@ export async function compileAllStyles({
   await Promise.all(initialCompile);
 
   return fileWatcher;
-}
-
-export function viteCSSCompilerPlugin({ shouldWatch = true }) {
-  let fileWatcher = null;
-  return {
-    name: 'gitlab-css-compiler',
-    async configureServer() {
-      fileWatcher = await compileAllStyles({ shouldWatch });
-    },
-    buildEnd() {
-      return fileWatcher?.close();
-    },
-  };
 }
 
 export function simplePluginForNodemon({ shouldWatch = true }) {

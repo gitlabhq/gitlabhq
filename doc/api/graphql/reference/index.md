@@ -26828,7 +26828,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelinecommittedat"></a>`committedAt` | [`Time`](#time) | Timestamp of the pipeline's commit. |
 | <a id="pipelinecomplete"></a>`complete` | [`Boolean!`](#boolean) | Indicates if a pipeline is complete. |
 | <a id="pipelinecomputeminutes"></a>`computeMinutes` | [`Float`](#float) | Total minutes consumed by the pipeline. |
-| <a id="pipelineconfigsource"></a>`configSource` | [`PipelineConfigSourceEnum`](#pipelineconfigsourceenum) | Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE, COMPLIANCE_SOURCE, SECURITY_POLICIES_DEFAULT_SOURCE). |
+| <a id="pipelineconfigsource"></a>`configSource` | [`PipelineConfigSourceEnum`](#pipelineconfigsourceenum) | Configuration source of the pipeline (UNKNOWN_SOURCE, REPOSITORY_SOURCE, AUTO_DEVOPS_SOURCE, WEBIDE_SOURCE, REMOTE_SOURCE, EXTERNAL_PROJECT_SOURCE, BRIDGE_SOURCE, PARAMETER_SOURCE, COMPLIANCE_SOURCE, SECURITY_POLICIES_DEFAULT_SOURCE, PIPELINE_EXECUTION_POLICY_FORCED). |
 | <a id="pipelinecoverage"></a>`coverage` | [`Float`](#float) | Coverage percentage. |
 | <a id="pipelinecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of the pipeline's creation. |
 | <a id="pipelinedastprofile"></a>`dastProfile` | [`DastProfile`](#dastprofile) | DAST profile associated with the pipeline. |
@@ -34917,6 +34917,7 @@ Package type of a package protection rule resource.
 | <a id="pipelineconfigsourceenumcompliance_source"></a>`COMPLIANCE_SOURCE` | Compliance source. |
 | <a id="pipelineconfigsourceenumexternal_project_source"></a>`EXTERNAL_PROJECT_SOURCE` | External project source. |
 | <a id="pipelineconfigsourceenumparameter_source"></a>`PARAMETER_SOURCE` | Parameter source. |
+| <a id="pipelineconfigsourceenumpipeline_execution_policy_forced"></a>`PIPELINE_EXECUTION_POLICY_FORCED` | Pipeline execution policy forced. |
 | <a id="pipelineconfigsourceenumremote_source"></a>`REMOTE_SOURCE` | Remote source. |
 | <a id="pipelineconfigsourceenumrepository_source"></a>`REPOSITORY_SOURCE` | Repository source. |
 | <a id="pipelineconfigsourceenumsecurity_policies_default_source"></a>`SECURITY_POLICIES_DEFAULT_SOURCE` | Security policies default source. |

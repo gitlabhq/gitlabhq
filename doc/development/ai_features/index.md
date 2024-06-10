@@ -176,7 +176,7 @@ Here is the underlying process happening per request:
 
 1. GitLab-Rails generates a new JWT with a given scope (e.g. `duo_chat`).
 1. GitLab-Rails requets to AI Gateway with the JWT (bearer token in `Authorization` HTTP header).
-1. AI Gateway decodes the JWT with the JWKS issued by the GitLab-Rails. If it's successfuly, the request is authenticated.
+1. AI Gateway decodes the JWT with the JWKS issued by the GitLab-Rails. If it's successful, the request is authenticated.
 1. AI Gateway verifies if the `scopes` claim in the JWT satisfies the target endpoint's scope requirement.
    Required scope varies per endpoint (e.g. `/v1/chat/agent` requires `duo_chat`, `/v2/code/suggestions` requires `code_suggestions`).
 

@@ -65,32 +65,36 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
       end
     end
 
-    describe 'event tracking', :snowplow do
-      let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
-
-      it 'does not track usage data when params is blank' do
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).not_to receive(:track_issue_comment_edited_action)
-        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).not_to receive(:track_edit_comment_action)
-
-        update_note({})
+    describe 'event tracking' do
+      it 'does not track usage data when params is blank', :clean_gitlab_redis_shared_state do
+        expect { update_note({}) }
+          .to not_trigger_internal_events(
+            Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED,
+            Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter::MR_EDIT_COMMENT_ACTION,
+            Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter::MR_EDIT_MULTILINE_COMMENT_ACTION
+          ).and not_increment_usage_metrics(
+            'redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_monthly',
+            'redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_weekly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_monthly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_weekly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_monthly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_weekly'
+          )
       end
 
-      it_behaves_like 'internal event tracking' do
-        let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED }
-        let(:namespace) { project.namespace }
-
-        subject(:service_action) { update_note(note: 'new text') }
-      end
-
-      it 'tracks issue usage data', :clean_gitlab_redis_shared_state do
-        counter = Gitlab::UsageDataCounters::HLLRedisCounter
-
-        expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_comment_edited_action)
-                                                                           .with(author: user, project: project)
-                                                                           .and_call_original
-        expect do
-          update_note(note: 'new text')
-        end.to change { counter.unique_events(event_names: event, property_name: :user, start_date: Date.today.beginning_of_week, end_date: 1.week.from_now) }.by(1)
+      it 'tracks internal events and increments usage metrics', :clean_gitlab_redis_shared_state do
+        expect { update_note(note: 'new text') }
+          .to trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_COMMENT_EDITED)
+            .with(project: project, user: user, category: 'InternalEventTracking')
+          .and increment_usage_metrics(
+            'redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_monthly',
+            'redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_weekly'
+          ).by(1)
+          .and increment_usage_metrics(
+            # Issue creation & update are performed by 2 different users
+            'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly',
+            'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly'
+          ).by(2)
       end
     end
 
@@ -164,10 +168,33 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
       let(:merge_request) { create(:merge_request, source_project: project) }
       let(:note) { create(:note, project: project, noteable: merge_request, author: user, note: "Old note #{user2.to_reference}") }
 
-      it 'tracks merge request usage data' do
-        expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter).to receive(:track_edit_comment_action).with(note: note)
+      it 'does not track usage data when params is blank', :clean_gitlab_redis_shared_state do
+        expect { update_note({}) }
+          .to not_increment_usage_metrics(
+            'redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_monthly',
+            'redis_hll_counters.issues_edit.g_project_management_issue_comment_edited_weekly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_monthly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_weekly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_monthly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_weekly'
+          )
+      end
 
-        update_note(note: 'new text')
+      it 'tracks merge request usage data', :clean_gitlab_redis_shared_state do
+        expect { update_note(note: 'new text') }
+          .to increment_usage_metrics(
+            'redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_monthly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_mr_comment_weekly',
+            'redis_hll_counters.code_review.code_review_total_unique_counts_monthly',
+            'redis_hll_counters.code_review.code_review_total_unique_counts_weekly',
+            'counts_monthly.aggregated_metrics.code_review_category_monthly_active_users',
+            'counts_weekly.aggregated_metrics.code_review_category_monthly_active_users',
+            'counts_monthly.aggregated_metrics.code_review_group_monthly_active_users',
+            'counts_weekly.aggregated_metrics.code_review_group_monthly_active_users'
+          ).and not_increment_usage_metrics(
+            'redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_monthly',
+            'redis_hll_counters.code_review.i_code_review_user_edit_multiline_mr_comment_weekly'
+          )
       end
     end
 

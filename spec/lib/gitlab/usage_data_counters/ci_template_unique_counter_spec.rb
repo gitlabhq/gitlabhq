@@ -4,11 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter, feature_category: :pipeline_composition do
   describe '.track_unique_project_event' do
-    using RSpec::Parameterized::TableSyntax
-    include SnowplowHelpers
-
-    let(:project) { build(:project) }
-    let(:user) { build(:user) }
+    let_it_be(:project) { create(:project) }
+    let_it_be(:user) { create(:user) }
 
     shared_examples 'tracks template' do
       let(:subject) { described_class.track_unique_project_event(project: project, template: template_path, config_source: config_source, user: user) }
@@ -23,18 +20,16 @@ RSpec.describe Gitlab::UsageDataCounters::CiTemplateUniqueCounter, feature_categ
         end.not_to raise_error
       end
 
-      it 'tracks template' do
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-          .to receive(:track_event).with(template_name, values: project.id).once
-        expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-          .to receive(:track_event).with('ci_template_included', values: project.id, property_name: :project).once
-
-        subject
-      end
-
-      it_behaves_like 'internal event tracking' do
-        let(:event) { 'ci_template_included' }
-        let(:namespace) { project.namespace }
+      it 'tracks internal events and increments usage metrics', :clean_gitlab_redis_shared_state do
+        expect { subject }
+          .to trigger_internal_events('ci_template_included')
+            .with(project: project, user: user, category: 'InternalEventTracking')
+          .and increment_usage_metrics(
+            'redis_hll_counters.ci_templates.count_distinct_project_id_from_ci_template_included_7d',
+            'redis_hll_counters.ci_templates.count_distinct_project_id_from_ci_template_included_28d',
+            "redis_hll_counters.ci_templates.#{template_name}_weekly",
+            "redis_hll_counters.ci_templates.#{template_name}_monthly"
+          )
       end
     end
 

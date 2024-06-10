@@ -5,7 +5,8 @@
     = link_to wiki_path, data: { testid: 'wiki-dir-page-link', qa_page_name: wiki_directory.title }, class: 'gl-str-truncated ' do
       = wiki_directory.title
     - plus_tooltip_title = safe_format(s_('Wiki|Create a new page under "%{page_title}"'), { page_title: wiki_directory.title })
-    = render Pajamas::ButtonComponent.new(icon: 'plus', size: :small, category: :tertiary, href: "#{wiki_path}/{new_page_title}", button_options: { class: 'wiki-list-create-child-button gl-ml-2 has-tooltip', title: plus_tooltip_title, aria: { label: plus_tooltip_title } })
+    - if can?(current_user, :create_wiki, @wiki)
+      = render Pajamas::ButtonComponent.new(icon: 'plus', size: :small, category: :tertiary, href: "#{wiki_path}/{new_page_title}", button_options: { class: 'wiki-list-create-child-button gl-ml-2 has-tooltip', title: plus_tooltip_title, aria: { label: plus_tooltip_title } })
     = sprite_icon('chevron-right', css_class: 'js-wiki-list-expand-button wiki-list-expand-button gl-ml-2')
     = sprite_icon('chevron-down', css_class: 'js-wiki-list-collapse-button wiki-list-collapse-button gl-ml-2')
   %ul{ class: '!gl-pl-5' }

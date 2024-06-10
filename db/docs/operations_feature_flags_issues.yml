@@ -19,3 +19,4 @@ desired_sharding_key:
         table: operations_feature_flags
         sharding_key: project_id
         belongs_to: feature_flag
+desired_sharding_key_migration_job_name: BackfillOperationsFeatureFlagsIssuesProjectId

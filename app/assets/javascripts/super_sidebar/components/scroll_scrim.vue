@@ -10,7 +10,7 @@ export default {
   computed: {
     scrimClasses() {
       return {
-        'top-scrim-visible': !this.topBoundaryVisible,
+        'top-scrim-visible gl-border-t': !this.topBoundaryVisible,
         'bottom-scrim-visible gl-border-b': !this.bottomBoundaryVisible,
       };
     },

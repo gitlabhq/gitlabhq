@@ -181,10 +181,10 @@ describe('NotificationsDropdown', () => {
         dropdownIndex | level              | title            | description
         ${0}          | ${'global'}        | ${'Global'}      | ${'Use your global notification setting'}
         ${1}          | ${'watch'}         | ${'Watch'}       | ${'You will receive notifications for any activity'}
-        ${2}          | ${'participating'} | ${'Participate'} | ${'You will only receive notifications for threads you have participated in'}
+        ${2}          | ${'participating'} | ${'Participate'} | ${'You will only receive notifications for items you have participated in'}
         ${3}          | ${'mention'}       | ${'On mention'}  | ${'You will receive notifications only for comments in which you were @mentioned'}
         ${4}          | ${'disabled'}      | ${'Disabled'}    | ${'You will not get any notifications via email'}
-        ${5}          | ${'custom'}        | ${'Custom'}      | ${'You will only receive notifications for the events you choose'}
+        ${5}          | ${'custom'}        | ${'Custom'}      | ${'You will only receive notifications for items you have participated in and the events you choose'}
       `('displays "$title" and "$description"', ({ dropdownIndex, title, description }) => {
         wrapper = createComponent();
 

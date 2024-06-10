@@ -301,7 +301,7 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
           }
       end
 
-      it "responds :no_content (204) without content body and updates milestone sucessfully" do
+      it "responds :no_content (204) without content body and updates milestone successfully" do
         subject
 
         expect(response).to have_gitlab_http_status(:no_content)

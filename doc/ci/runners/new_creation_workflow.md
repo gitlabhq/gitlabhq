@@ -116,7 +116,7 @@ gitlab-runner register \
     --run-untagged "false" \
     --locked "false" \
     --access-level "not_protected" \
-    --registration-token "GR1348941C6YcZVddc8kjtdU-yWYD"
+    --registration-token "REDACTED"
 ```
 
 In GitLab 15.10 and later, you create the runner and some of the attributes in the UI, like the
@@ -130,7 +130,7 @@ gitlab-runner register \
     --non-interactive \
     --executor "shell" \
     --url "https://gitlab.com/" \
-    --token "glrt-2CR8_eVxiioB1QmzPZwa"
+    --token "REDACTED"
 ```
 
 ## Impact on autoscaling
@@ -216,6 +216,16 @@ in the runner details page.
 For more information, see [issue 423523](https://gitlab.com/gitlab-org/gitlab/-/issues/423523).
 
 ### Runner authentication token does not update when rotated
+
+#### Token rotation with the same runner registered in multiple runner managers
+
+When you use the new workflow to register your runners on multiple host machines and
+the runner authentication token rotates automatically, only the first runner manager
+to handle the token renewal request receives the new token.
+The remaining runner managers continue to use the invalid token and become disconnected.
+You must update these managers manually to use the new token.
+
+#### Token rotation in GitLab Operator
 
 When you use the new registration workflow to register your runners with the GitLab Operator,
 the runner authentication token referenced by the Custom Resource Definition does not update when the token is rotated.

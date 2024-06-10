@@ -106,6 +106,26 @@ RSpec.describe Packages::TerraformModule::Metadata::ExtractFilesService, feature
             examples: parsed_content[:examples].transform_values { |v| v.except(:resources, :dependencies) }
           })
         end
+
+        context 'with missing attributes in submodules & examples' do
+          let(:parsed_content) { super().merge(submodules: { 'submodule1' => { readme: 'submodule1 README.md' } }) }
+
+          it 'aggregates metadata into root' do
+            expect(subject).to be_success
+            expect(subject.payload).to eq({
+              root: {
+                resources: ['local_file.file', 'local_file2.file'],
+                dependencies: {
+                  modules: [{ 'name' => 'mod' },
+                    { 'name' => 'mod2', 'source' => 'mod2/local', 'version' => '3.0.0' }],
+                  providers: [{ 'name' => 'goog', 'source' => 'hashicorp/goog', 'version' => '3.2' }]
+                }
+              },
+              submodules: { 'submodule1' => { readme: 'submodule1 README.md' } },
+              examples: parsed_content[:examples].transform_values { |v| v.except(:resources, :dependencies) }
+            })
+          end
+        end
       end
     end
 

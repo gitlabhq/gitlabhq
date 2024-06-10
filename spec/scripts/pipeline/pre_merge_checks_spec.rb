@@ -14,15 +14,18 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
   let(:mr_pipelines_url)    { "https://gitlab.test/api/v4/projects/#{project_id}/merge_requests/#{merge_request_iid}/pipelines" }
 
   let(:latest_mr_pipeline_ref) { "refs/merge-requests/1/merge" }
+  let(:latest_mr_pipeline_status) { "success" }
   let(:latest_mr_pipeline_created_at) { "2024-05-29T07:15:00 UTC" }
+  let(:latest_mr_pipeline_web_url) { "https://gitlab.com/gitlab-org/gitlab/-/pipelines/1310472835" }
   let(:latest_mr_pipeline_name) { "Ruby 3.2 MR [tier:3, gdk]" }
   let(:latest_mr_pipeline_short) do
     {
       id: 1309901620,
       ref: latest_mr_pipeline_ref,
-      status: "success",
+      status: latest_mr_pipeline_status,
       source: "merge_request_event",
-      created_at: latest_mr_pipeline_created_at
+      created_at: latest_mr_pipeline_created_at,
+      web_url: latest_mr_pipeline_web_url
     }
   end
 
@@ -153,6 +156,33 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
           end
         end
 
+        context 'and it is running' do
+          let(:latest_mr_pipeline_status) { "running" }
+
+          it 'returns a failed PreMergeChecksStatus' do
+            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+            expect(instance.execute).not_to be_success
+            expect(instance.execute.message).to include(
+              "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be successful!"
+            )
+            expect(instance.execute.message).to include("Pipeline status was \"#{latest_mr_pipeline_status}\".")
+            expect(instance.execute.message).to include("Please ensure the latest pipeline is finished and successful.")
+          end
+        end
+
+        context 'and it is not passing' do
+          let(:latest_mr_pipeline_status) { "failed" }
+
+          it 'returns a failed PreMergeChecksStatus' do
+            expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
+            expect(instance.execute).not_to be_success
+            expect(instance.execute.message).to include(
+              "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be successful!"
+            )
+            expect(instance.execute.message).to include("Pipeline status was \"#{latest_mr_pipeline_status}\".")
+          end
+        end
+
         context 'and it is not fresh enough' do
           let(:latest_mr_pipeline_created_at) { "2024-05-29T01:30:00 UTC" }
 
@@ -161,7 +191,8 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
             expect(instance.execute).not_to be_success
             expect(instance.execute.message)
               .to include(
-                "Expected latest pipeline to be created within the last 8 hours (it was created 8.5 hours ago)!"
+                "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be created within the last 8 hours " \
+                  "(it was created 8.5 hours ago)!"
               )
           end
         end
@@ -172,7 +203,10 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
           it 'returns a failed PreMergeChecksStatus' do
             expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
             expect(instance.execute).not_to be_success
-            expect(instance.execute.message).to include("Expected latest pipeline not to be a predictive pipeline!")
+            expect(instance.execute.message).to include(
+              "Expected latest pipeline (#{latest_mr_pipeline_web_url}) not to be a predictive pipeline!"
+            )
+            expect(instance.execute.message).to include("Pipeline name was \"#{latest_mr_pipeline_name}\".")
           end
         end
 
@@ -182,7 +216,10 @@ RSpec.describe PreMergeChecks, time_travel_to: Time.parse('2024-05-29T10:00:00 U
           it 'returns a failed PreMergeChecksStatus' do
             expect(instance.execute).to be_a(described_class::PreMergeChecksStatus)
             expect(instance.execute).not_to be_success
-            expect(instance.execute.message).to include("Expected latest pipeline to be a tier-3 pipeline")
+            expect(instance.execute.message).to include(
+              "Expected latest pipeline (#{latest_mr_pipeline_web_url}) to be a tier-3 pipeline"
+            )
+            expect(instance.execute.message).to include("Pipeline name was \"#{latest_mr_pipeline_name}\".")
           end
         end
 

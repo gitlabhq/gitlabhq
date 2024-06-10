@@ -103,6 +103,7 @@ RSpec.describe 'Container Registry', :js, feature_category: :container_registry 
       before do
         stub_container_registry_tags(repository: %r{my/image}, tags: ('1'..'20').to_a, with_manifest: true)
         visit_container_registry_details 'my/image'
+        click_sort_option('Name', true)
       end
 
       it 'shows the details breadcrumb' do

@@ -300,7 +300,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
       end
 
       context 'with reCAPTCHA' do
-        def unsuccesful_login(user_params, sesion_params: {})
+        def unsuccessful_login(user_params, sesion_params: {})
           # Without this, `verify_recaptcha` arbitrarily returns true in test env
           Recaptcha.configuration.skip_verify_env.delete('test')
           counter = double(:counter)
@@ -313,7 +313,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
           post(:create, params: { user: user_params }, session: sesion_params)
         end
 
-        def succesful_login(user_params, sesion_params: {})
+        def successful_login(user_params, sesion_params: {})
           # Avoid test ordering issue and ensure `verify_recaptcha` returns true
           Recaptcha.configuration.skip_verify_env << 'test'
           counter = double(:counter)
@@ -338,7 +338,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
           context 'when the reCAPTCHA is not solved' do
             it 'displays an error' do
-              unsuccesful_login(user_params)
+              unsuccessful_login(user_params)
 
               expect(response).to render_template(:new)
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
@@ -348,7 +348,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
             it 'sets gon variables' do
               Gon.clear
 
-              unsuccesful_login(user_params)
+              unsuccessful_login(user_params)
 
               expect(response).to render_template(:new)
               expect(Gon.all_variables).not_to be_empty
@@ -356,7 +356,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
           end
 
           it 'successfully logs in a user when reCAPTCHA is solved' do
-            succesful_login(user_params)
+            successful_login(user_params)
 
             expect(subject.current_user).to eq user
           end
@@ -372,7 +372,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
           context 'when user tried to login 5 times' do
             it 'displays an error when the reCAPTCHA is not solved' do
-              unsuccesful_login(user_params, sesion_params: { failed_login_attempts: 6 })
+              unsuccessful_login(user_params, sesion_params: { failed_login_attempts: 6 })
 
               expect(response).to render_template(:new)
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
@@ -380,7 +380,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
             end
 
             it 'successfully logs in a user when reCAPTCHA is solved' do
-              succesful_login(user_params, sesion_params: { failed_login_attempts: 6 })
+              successful_login(user_params, sesion_params: { failed_login_attempts: 6 })
 
               expect(subject.current_user).to eq user
             end
@@ -392,7 +392,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
             end
 
             it 'displays an error when the reCAPTCHA is not solved' do
-              unsuccesful_login(user_params)
+              unsuccessful_login(user_params)
 
               expect(response).to render_template(:new)
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
@@ -402,7 +402,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
             it 'successfully logs in a user when reCAPTCHA is solved' do
               expect(Gitlab::AnonymousSession).to receive_message_chain(:new, :cleanup_session_per_ip_count)
 
-              succesful_login(user_params)
+              successful_login(user_params)
 
               expect(subject.current_user).to eq user
             end

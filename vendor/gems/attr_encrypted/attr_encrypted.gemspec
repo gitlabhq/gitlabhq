@@ -29,7 +29,7 @@ Forked from https://github.com/attr-encrypted/attr_encrypted."
 
   s.add_dependency('encryptor', ['~> 3.0.0'])
 
-  activerecord_version = "~> 7.0.8.1"
+  activerecord_version = "~> 7.0.8.4"
   s.add_development_dependency('activerecord', activerecord_version)
   s.add_development_dependency('actionpack', activerecord_version)
   s.add_development_dependency('rake')

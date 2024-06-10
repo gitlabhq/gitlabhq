@@ -253,6 +253,14 @@ export default {
     getCleanMapping(mapping) {
       return mapping.map((mappingItem) => omit(mappingItem, '__typename'));
     },
+    setIntegrationName(value) {
+      this.integrationForm.name = value;
+      this.validateName();
+    },
+    setJSONPayload(value) {
+      this.testPayload.json = value;
+      this.validateJson(false);
+    },
     validateName() {
       this.validationState.name = Boolean(this.integrationForm.name?.length);
     },
@@ -354,7 +362,7 @@ export default {
             this.resetPayloadAndMappingConfirmed = false;
 
             this.$toast.show(
-              this.$options.i18n.integrationFormSteps.mapFields.payloadParsedSucessMsg,
+              this.$options.i18n.integrationFormSteps.mapFields.payloadParsedSuccessMsg,
             );
           },
         )
@@ -436,11 +444,11 @@ export default {
               <gl-form-input
                 id="name-integration"
                 ref="integrationName"
-                v-model="integrationForm.name"
+                :value="integrationForm.name"
                 type="text"
                 :placeholder="$options.i18n.integrationFormSteps.nameIntegration.placeholder"
                 data-testid="integration-name-field"
-                @input="validateName"
+                @input="setIntegrationName"
               />
             </gl-form-group>
 
@@ -650,7 +658,7 @@ export default {
 
             <gl-form-textarea
               id="test-payload"
-              v-model="testPayload.json"
+              :value="testPayload.json"
               :state="isTestPayloadValid"
               :placeholder="$options.i18n.integrationFormSteps.testPayload.placeholder"
               class="gl-my-3"
@@ -659,7 +667,7 @@ export default {
               max-rows="10"
               no-resize
               data-testid="test-payload-field"
-              @input="validateJson(false)"
+              @input="setJSONPayload"
             />
           </gl-form-group>
           <div class="gl-display-flex gl-justify-content-start gl-py-3">

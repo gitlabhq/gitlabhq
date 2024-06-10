@@ -10,7 +10,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
 
     subject(:response) { described_class.new(current_user, token, project).execute }
 
-    shared_examples_for 'rotates token succesfully' do
+    shared_examples_for 'rotates token successfully' do
       it "rotates user's own token", :freeze_time do
         expect(response).to be_success
 
@@ -32,7 +32,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
           project.add_owner(current_user)
         end
 
-        it_behaves_like "rotates token succesfully"
+        it_behaves_like "rotates token successfully"
 
         context 'when creating the new token fails' do
           let(:error_message) { 'boom!' }
@@ -63,7 +63,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
           end
 
           context 'when access level is not owner' do
-            it_behaves_like "rotates token succesfully"
+            it_behaves_like "rotates token successfully"
           end
 
           context 'when access level is owner' do
@@ -98,7 +98,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
         let(:current_user) { create(:admin) }
 
         context 'when admin mode enabled', :enable_admin_mode do
-          it_behaves_like "rotates token succesfully"
+          it_behaves_like "rotates token successfully"
         end
 
         context 'when admin mode not enabled' do
@@ -127,7 +127,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
             project.add_owner(current_user)
           end
 
-          it_behaves_like "rotates token succesfully"
+          it_behaves_like "rotates token successfully"
 
           context 'when its a bot user' do
             let_it_be(:bot_user) { create(:user, :project_bot) }
@@ -153,7 +153,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
             end
 
             context 'when access level is not owner' do
-              it_behaves_like "rotates token succesfully"
+              it_behaves_like "rotates token successfully"
             end
 
             context 'when access level is owner' do

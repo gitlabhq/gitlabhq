@@ -280,13 +280,11 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
 
       it_behaves_like 'internal event tracking' do
-        let(:work_item) { create(:work_item) }
         let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
-        let(:project) { work_item.project }
-        let(:user) { work_item.author }
-        let(:namespace) { project.namespace }
+        let(:project) { reusable_project }
+        let(:user) { create(:user) }
 
-        subject(:service_action) { work_item }
+        subject(:service_action) { create(:work_item, project: reusable_project, author: user) }
       end
     end
 

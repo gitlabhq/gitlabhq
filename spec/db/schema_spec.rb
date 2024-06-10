@@ -155,7 +155,14 @@ RSpec.describe 'Database schema', feature_category: :database do
     value_stream_dashboard_counts: %w[namespace_id],
     zoekt_indices: %w[namespace_id], # needed for cells sharding key
     zoekt_repositories: %w[namespace_id project_identifier], # needed for cells sharding key
-    zoekt_tasks: %w[project_identifier partition_id zoekt_repository_id] # needed for: cells sharding key, partitioning, and performance reasons
+    zoekt_tasks: %w[project_identifier partition_id zoekt_repository_id], # needed for: cells sharding key, partitioning, and performance reasons
+    # TODO: To remove with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155256
+    approval_group_rules: %w[approval_policy_rule_id],
+    approval_project_rules: %w[approval_policy_rule_id],
+    approval_merge_request_rules: %w[approval_policy_rule_id],
+    scan_result_policy_violations: %w[approval_policy_rule_id],
+    software_license_policies: %w[approval_policy_rule_id],
+    namespace_settings: %w[early_access_program_joined_by_id] # isn't used inside product itself. Only through Snowflake
   }.with_indifferent_access.freeze
 
   context 'for table' do

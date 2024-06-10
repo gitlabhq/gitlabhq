@@ -8,7 +8,7 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
 
     subject(:response) { described_class.new(token.user, token).execute }
 
-    shared_examples_for 'rotates token succesfully' do
+    shared_examples_for 'rotates token successfully' do
       it "rotates user's own token", :freeze_time do
         expect(response).to be_success
 
@@ -20,7 +20,7 @@ RSpec.describe PersonalAccessTokens::RotateService, feature_category: :system_ac
       end
     end
 
-    it_behaves_like "rotates token succesfully"
+    it_behaves_like "rotates token successfully"
 
     it 'revokes the previous token' do
       expect { response }.to change { token.reload.revoked? }.from(false).to(true)

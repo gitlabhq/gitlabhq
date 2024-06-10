@@ -902,9 +902,9 @@ Gitlab.ee do
   Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker'] ||= {}
   Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['cron'] ||= "*/10 * * * *"
   Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['job_class'] = 'ClickHouse::RebuildMaterializedViewCronWorker'
-  Settings.cron_jobs['click_house_code_suggestion_events_cron_worker'] ||= {}
-  Settings.cron_jobs['click_house_code_suggestion_events_cron_worker']['cron'] ||= "*/5 * * * *"
-  Settings.cron_jobs['click_house_code_suggestion_events_cron_worker']['job_class'] = 'ClickHouse::CodeSuggestionEventsCronWorker'
+  Settings.cron_jobs['click_house_dump_all_write_buffers_cron_worker'] ||= {}
+  Settings.cron_jobs['click_house_dump_all_write_buffers_cron_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['click_house_dump_all_write_buffers_cron_worker']['job_class'] = 'ClickHouse::DumpAllWriteBuffersCronWorker'
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker'] ||= {}
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['cron'] ||= "0 */4 * * *"
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::ScheduleBulkRefreshUserAssignmentsWorker'

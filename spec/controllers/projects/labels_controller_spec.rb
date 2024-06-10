@@ -364,7 +364,7 @@ RSpec.describe Projects::LabelsController, feature_category: :team_planning do
         expect(label.reload).to eq label
       end
 
-      context 'when label is succesfuly destroyed' do
+      context 'when label is successfully destroyed' do
         it 'redirects to the project labels page' do
           label = create(:label, project: project)
           delete :destroy, params: { namespace_id: group.to_param, project_id: project.to_param, id: label.to_param }

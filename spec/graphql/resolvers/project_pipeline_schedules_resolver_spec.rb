@@ -100,12 +100,12 @@ RSpec.describe Resolvers::ProjectPipelineSchedulesResolver do
     end
 
     context "with by next_run_at" do
-      it "sorts desc" do
+      it "sorts desc", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466308' do
         expect(resolve_pipeline_schedules(args: { sort: :next_run_at_desc }).to_a).to eq([pipeline3, pipeline4,
           pipeline2, pipeline1])
       end
 
-      it "sorts asc" do
+      it "sorts asc", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466309' do
         expect(resolve_pipeline_schedules(args: { sort: :next_run_at_asc }).to_a).to eq([pipeline1, pipeline2,
           pipeline4, pipeline3])
       end

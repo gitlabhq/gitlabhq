@@ -24,7 +24,7 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # https://gitlab.com/gitlab-org/gitlab/-/issues/375713
 #
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
-gem 'rails', '~> 7.0.8.1' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'rails', '~> 7.0.8.4' # rubocop:todo Gemfile/MissingFeatureCategory
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab' # rubocop:todo Gemfile/MissingFeatureCategory
 

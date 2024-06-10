@@ -5,7 +5,7 @@ description: Count of projects imported from GitLab using Project Export/Import
 product_group: import_and_integrate
 value_type: number
 status: removed
-removed_by: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118891"
+removed_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118891"
 milestone_removed: "16.0"
 time_frame: 28d
 data_source: database
@@ -20,4 +20,3 @@ tier:
 - premium
 - ultimate
 milestone: "<13.9"
-removed_by_url:

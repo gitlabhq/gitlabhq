@@ -42,6 +42,9 @@ terms:
 - **JWT:** [JSON Web Token](https://auth0.com/docs/secure/tokens/json-web-tokens), an open standard to encode and transmit identity data.
 - **JWKS:** [JSON Web Key Set](https://auth0.com/docs/secure/tokens/json-web-tokens/json-web-key-sets),
   an open standard to encode cryptographic keys to validate JWTs.
+- **Unit primitives:** The logical feature that a permission/access scope can govern.
+- **Add-On** The group of unit primitives that are bundled and sold together.
+  Example: `code_suggestions` and `duo_chat` are 2 UPs sold together under the `DUO_PRO` add-on.
 
 ## Problem to solve
 

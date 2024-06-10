@@ -42,8 +42,10 @@ class PreMergeChecks
     latest_pipeline = api_client.pipeline(project_id, latest_pipeline_id)
 
     check_pipeline_for_merged_results!(latest_pipeline)
-    check_pipeline_freshness!(latest_pipeline)
+    check_pipeline_not_running!(latest_pipeline)
+    check_pipeline_success!(latest_pipeline)
     check_pipeline_identifier!(latest_pipeline)
+    check_pipeline_freshness!(latest_pipeline)
 
     PreMergeChecksStatus.new(0, "All good for merge! 🚀")
   rescue PreMergeChecksFailedError => ex
@@ -79,12 +81,32 @@ class PreMergeChecks
     TEXT
   end
 
+  def check_pipeline_not_running!(pipeline)
+    return unless pipeline.status == 'running'
+
+    fail_check! <<~TEXT
+      Expected latest pipeline (#{pipeline.web_url}) to be successful! Pipeline status was "#{pipeline.status}".
+
+      Please ensure the latest pipeline is finished and successful.
+    TEXT
+  end
+
+  def check_pipeline_success!(pipeline)
+    return if pipeline.status == 'success'
+
+    fail_check! <<~TEXT
+      Expected latest pipeline (#{pipeline.web_url}) to be successful! Pipeline status was "#{pipeline.status}".
+
+      Please start a new pipeline.
+    TEXT
+  end
+
   def check_pipeline_freshness!(pipeline)
     hours_ago = ((Time.now - Time.parse(pipeline.created_at)) / 3600).ceil(2)
     return if hours_ago < PIPELINE_FRESHNESS_THRESHOLD_IN_HOURS
 
     fail_check! <<~TEXT
-      Expected latest pipeline to be created within the last #{PIPELINE_FRESHNESS_THRESHOLD_IN_HOURS} hours (it was created #{hours_ago} hours ago)!
+      Expected latest pipeline (#{pipeline.web_url}) to be created within the last #{PIPELINE_FRESHNESS_THRESHOLD_IN_HOURS} hours (it was created #{hours_ago} hours ago)!
 
       Please start a new pipeline.
     TEXT
@@ -93,13 +115,13 @@ class PreMergeChecks
   def check_pipeline_identifier!(pipeline)
     if pipeline.name.match?(TIER_IDENTIFIER_REGEX)
       fail_check! <<~MSG unless pipeline.name.include?(REQUIRED_TIER_IDENTIFIER)
-        Expected latest pipeline to be a tier-3 pipeline!
+        Expected latest pipeline (#{pipeline.web_url}) to be a tier-3 pipeline! Pipeline name was "#{pipeline.name}".
 
         Please ensure the MR has all the required approvals, start a new pipeline and put the MR back on the Merge Train.
       MSG
     elsif pipeline.name.include?(PREDICTIVE_PIPELINE_IDENTIFIER)
       fail_check! <<~MSG
-        Expected latest pipeline not to be a predictive pipeline!
+        Expected latest pipeline (#{pipeline.web_url}) not to be a predictive pipeline! Pipeline name was "#{pipeline.name}".
 
         Please ensure the MR has all the required approvals, start a new pipeline and put the MR back on the Merge Train.
       MSG

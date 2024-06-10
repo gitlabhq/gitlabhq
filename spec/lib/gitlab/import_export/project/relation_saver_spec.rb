@@ -54,7 +54,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
         expect(json.keys).not_to include('name')
       end
 
-      it 'successfuly serializes without errors' do
+      it 'successfully serializes without errors' do
         result = relation_saver.save # rubocop:disable Rails/SaveBang
 
         expect(result).to eq(true)
@@ -80,7 +80,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
         expect(ndjson.first.keys).not_to include('description_html')
       end
 
-      it 'successfuly serializes without errors' do
+      it 'successfully serializes without errors' do
         result = relation_saver.save # rubocop:disable Rails/SaveBang
 
         expect(result).to eq(true)

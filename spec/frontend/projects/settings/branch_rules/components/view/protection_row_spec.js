@@ -55,13 +55,9 @@ describe('Branch rule protection row', () => {
   it('renders access level descriptions', () => {
     expect(findAccessLevels().length).toBe(protectionRowPropsMock.accessLevels.length);
 
-    expect(findAccessLevels().at(0).text()).toBe(
-      protectionRowPropsMock.accessLevels[0].accessLevelDescription,
-    );
+    expect(findAccessLevels().at(0).text()).toBe('Developers and Maintainers');
 
-    expect(findAccessLevels().at(1).text()).toContain(
-      protectionRowPropsMock.accessLevels[1].accessLevelDescription,
-    );
+    expect(findAccessLevels().at(1).text()).toContain('Maintainers');
   });
 
   it('renders status checks URL', () => {

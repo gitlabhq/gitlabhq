@@ -36,10 +36,13 @@ export const usersMock = [
   },
 ];
 
-const accessLevelsMock = [
-  { accessLevelDescription: 'Maintainers' },
-  { accessLevelDescription: 'Maintainers + Developers' },
-];
+const accessLevelsMock = [30, 40];
+
+export const protectionMockProps = {
+  headerLinkHref: 'protected/branches',
+  headerLinkTitle: 'Manage in protected branches',
+  roles: accessLevelsMock,
+};
 
 const approvalsRequired = 3;
 
@@ -280,3 +283,7 @@ export const allowedToMergeDrawerProps = {
   title: 'Edit allowed to merge',
   roles: accessLevelsMock,
 };
+
+export const editRuleData = [{ accessLevel: 60 }, { accessLevel: 40 }, { accessLevel: 30 }];
+
+export const editRuleDataNoOne = [{ accessLevel: 0 }];

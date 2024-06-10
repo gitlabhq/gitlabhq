@@ -713,32 +713,37 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
       end
     end
 
-    context 'metrics' do
+    context 'metrics', :clean_gitlab_redis_shared_state do
       context 'cloned from' do
         let(:direction) { :from }
 
-        it 'does not tracks usage' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter)
-            .not_to receive(:track_issue_cloned_action).with(author: author)
-
-          subject
+        it 'does not track usage' do
+          expect { subject }
+            .to not_trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED)
+            .and not_increment_usage_metrics(
+              'redis_hll_counters.issues_edit.g_project_management_issue_cloned_monthly',
+              'redis_hll_counters.issues_edit.g_project_management_issue_cloned_weekly'
+            )
         end
       end
 
-      context 'cloned to', :snowplow do
+      context 'cloned to' do
         let(:direction) { :to }
 
-        it 'tracks usage' do
-          expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter)
-            .to receive(:track_issue_cloned_action).with(author: author, project: project)
-
-          subject
-        end
-
-        it_behaves_like 'internal event tracking' do
-          let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED }
-          let(:user) { author }
-          let(:namespace) { project.namespace }
+        it 'tracks internal events and increments usage metrics' do
+          expect { subject }
+            .to trigger_internal_events(Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CLONED)
+              .with(project: project, user: author, category: 'InternalEventTracking')
+            .and increment_usage_metrics(
+              'redis_hll_counters.issues_edit.g_project_management_issue_cloned_monthly',
+              'redis_hll_counters.issues_edit.g_project_management_issue_cloned_weekly'
+            ).by(1)
+            .and increment_usage_metrics(
+              # Cloner and original issue author are two unique users
+              # --> Not great that we're tracking the original author as an active user...
+              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_monthly',
+              'redis_hll_counters.issues_edit.issues_edit_total_unique_counts_weekly'
+            ).by(2)
         end
       end
     end

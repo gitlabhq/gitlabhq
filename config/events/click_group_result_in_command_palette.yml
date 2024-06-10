@@ -5,8 +5,6 @@ action: click_group_result_in_command_palette
 identifiers:
 - namespace
 - user
-product_section: core_platform
-product_stage: data_stores
 product_group: global_search
 milestone: '17.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151657

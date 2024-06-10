@@ -424,7 +424,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       context 'when image repository tags deletion succeeds' do
         it 'removes tags' do
           expect_next_instance_of(Projects::ContainerRepository::DestroyService) do |service|
-            expect(service).to receive(:execute).and_return({ status: :sucess })
+            expect(service).to receive(:execute).and_return({ status: :success })
           end
 
           destroy_project(project, user)

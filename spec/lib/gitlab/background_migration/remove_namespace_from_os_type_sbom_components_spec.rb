@@ -51,7 +51,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveNamespaceFromOsTypeSbomCompone
       ).perform
     end
 
-    it 'succesfully removes the os namespace prefix' do
+    it 'successfully removes the os namespace prefix' do
       expect(Gitlab::BackgroundMigration::Logger).not_to receive(:warn)
 
       expect { perform_migration }.not_to raise_error

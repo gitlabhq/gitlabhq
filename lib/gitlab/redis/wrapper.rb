@@ -17,7 +17,6 @@ module Gitlab
   module Redis
     class Wrapper
       InvalidPathError = Class.new(StandardError)
-      CommandExecutionError = Class.new(StandardError)
 
       class << self
         delegate :params, :url, :store, :encrypted_secrets, to: :new
@@ -184,7 +183,7 @@ module Gitlab
         config[:instrumentation_class] ||= self.class.instrumentation_class
 
         decrypted_config = parse_encrypted_config(config)
-        final_config = parse_extra_config(decrypted_config)
+        final_config = Gitlab::Redis::ConfigGenerator.new('Redis').generate(decrypted_config)
 
         result = if final_config[:cluster].present?
                    final_config[:cluster] = final_config[:cluster].map do |node|
@@ -198,41 +197,6 @@ module Gitlab
                  end
 
         parse_client_tls_options(result)
-      end
-
-      def parse_extra_config(decrypted_config)
-        command = decrypted_config.delete(:config_command)
-        return decrypted_config unless command.present?
-
-        config_from_command = extra_config_from_command(command)
-        return decrypted_config unless config_from_command.present?
-
-        decrypted_config.deep_merge(config_from_command)
-      end
-
-      def extra_config_from_command(command)
-        cmd = command.split(" ")
-        output, exit_status = Gitlab::Popen.popen(cmd)
-
-        if exit_status != 0
-          raise CommandExecutionError,
-            "Redis: Execution of `#{command}` failed with exit code #{exit_status}. Output: #{output}"
-        end
-
-        parsed_output = YAML.safe_load(output)
-
-        unless parsed_output.is_a?(Hash)
-          raise CommandExecutionError,
-            "Redis: The output of `#{command}` must be a Hash, #{parsed_output.class} given. Output: #{parsed_output}"
-        end
-
-        parsed_output.deep_symbolize_keys
-      rescue Psych::SyntaxError => e
-        error_message = <<~MSG
-          Redis: Execution of `#{command}` generated invalid yaml.
-          Error: #{e.problem} #{e.context} at line #{e.line} column #{e.column}
-        MSG
-        raise CommandExecutionError, error_message
       end
 
       def parse_encrypted_config(encrypted_config)

@@ -325,7 +325,7 @@ To replace the token:
 
 ## Troubleshooting
 
-### Identify project and group access tokens expiring on a certain date using the Rails console
+### Identify personal, project and group access tokens expiring on a certain date using the Rails console
 
 Use either of these scripts in self-managed instances to identify tokens affected by
 [incident 18003](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18003).
@@ -384,6 +384,12 @@ For more information, see the [Rails Runner troubleshooting section](../administ
 
 expires_at_date = "2024-05-22"
 
+# Check for expiring personal access tokens
+PersonalAccessToken.owner_is_human.where(expires_at: expires_at_date).find_each do |token|
+  puts "Expired Personal Access Token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+end
+
+# Check for expiring project and group access tokens
 PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find_each do |token|
   token.user.members.each do |member|
     type = member.is_a?(GroupMember) ? 'Group' : 'Project'
@@ -431,6 +437,12 @@ For more information, see the [Rails Runner troubleshooting section](../administ
 
 date_range = 1.month
 
+# Check for personal access tokens
+PersonalAccessToken.owner_is_human.where(expires_at: Date.today .. Date.today + date_range).find_each do |token|
+  puts "Expired Personal Access Token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+end
+
+# Check for expiring project and group access tokens
 PersonalAccessToken.project_access_token.where(expires_at: Date.today .. Date.today + date_range).find_each do |token|
   token.user.members.each do |member|
     type = member.is_a?(GroupMember) ? 'Group' : 'Project'

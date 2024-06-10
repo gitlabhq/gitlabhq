@@ -176,5 +176,14 @@ RSpec.describe Gitlab::Database::Decomposition::Migrate, :delete, query_analyzer
         )
       end
     end
+
+    context 'when all background migrations are finished' do
+      let!(:batched_migration_1) { create(:batched_background_migration, :finished) }
+      let!(:batched_migration_2) { create(:batched_background_migration, :finalized) }
+
+      it 'does not raise an error' do
+        expect { process }.not_to raise_error
+      end
+    end
   end
 end

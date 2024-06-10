@@ -10,11 +10,18 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
     let(:configuration_instance) { instance_double(Gitlab::Cng::Deployment::Configurations::Kind) }
     let(:cluster_instance) { instance_double(Gitlab::Cng::Kind::Cluster, create: nil) }
     let(:ip) { instance_double(Addrinfo, ipv4_private?: true, ip_address: "127.0.0.1") }
+    let(:ci_components) do
+      {
+        "gitlab.gitaly.image.repository" => "cng-mirror/gitaly",
+        "gitlab.gitaly.image.tag" => "1fb4c252c713f33db2102315870c1936769319ac"
+      }
+    end
 
     before do
       allow(Gitlab::Cng::Deployment::Installation).to receive(:new).and_return(installation_instance)
       allow(Gitlab::Cng::Deployment::Configurations::Kind).to receive(:new).and_return(configuration_instance)
       allow(Gitlab::Cng::Kind::Cluster).to receive(:new).and_return(cluster_instance)
+      allow(Gitlab::Cng::Deployment::DefaultValues).to receive(:component_ci_versions).and_return(ci_components)
       allow(Socket).to receive(:ip_address_list).and_return([ip])
     end
 
@@ -61,6 +68,32 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
       expect(Gitlab::Cng::Kind::Cluster).to have_received(:new)
         .with(name: "gitlab", ci: true, host_http_port: 80, host_ssh_port: 22)
       expect(cluster_instance).to have_received(:create)
+    end
+
+    it "only print arguments with --print-deploy-args option" do
+      chart_sha = "356a1ab41be2"
+      extra_opt = "opt=val"
+      args = [
+        *ci_components.map { |c, v| "--set #{c}=#{v}" }.join(' '),
+        "--set", extra_opt,
+        "--chart-sha", chart_sha
+      ]
+
+      expect do
+        invoke_command(command_name, [], {
+          ci: true,
+          print_deploy_args: true,
+          chart_sha: chart_sha,
+          set: [extra_opt]
+        })
+      end.to output(
+        match(/Received --print-deploy-args option, printing example of all deployment arguments!/).and(
+          match(/cng create deployment kind #{args.join(' ')}/)
+        )
+      ).to_stdout
+
+      expect(cluster_instance).not_to have_received(:create)
+      expect(installation_instance).not_to have_received(:create)
     end
   end
 end

@@ -42,7 +42,6 @@ describe('Tags List', () => {
 
   const queryData = {
     first: GRAPHQL_PAGE_SIZE,
-    name: '',
     sort: 'NAME_ASC',
     id: '1',
     referrers: true,
@@ -61,6 +60,7 @@ describe('Tags List', () => {
     showContainerRegistryTagSignatures = true,
     isImageLoading = false,
     mutationResolver,
+    config = {},
   } = {}) => {
     Vue.use(VueApollo);
 
@@ -80,7 +80,10 @@ describe('Tags List', () => {
       stubs: { RegistryList, DeleteModal },
       provide() {
         return {
-          config: defaultConfig,
+          config: {
+            ...defaultConfig,
+            ...config,
+          },
           glFeatures: { showContainerRegistryTagSignatures },
         };
       },
@@ -203,15 +206,68 @@ describe('Tags List', () => {
         });
       });
     });
+
+    describe('when metadata database is enabled', () => {
+      beforeEach(() => {
+        return mountComponent({
+          config: { isMetadataDatabaseEnabled: true },
+        });
+      });
+
+      it('has persisted search', () => {
+        expect(findPersistedSearch().props()).toMatchObject({
+          defaultOrder: 'PUBLISHED_AT',
+          defaultSort: 'desc',
+          sortableFields: [
+            {
+              label: 'Published',
+              orderBy: 'PUBLISHED_AT',
+            },
+            {
+              label: 'Name',
+              orderBy: 'NAME',
+            },
+          ],
+        });
+      });
+    });
   });
 
   describe('when persisted search emits update', () => {
     beforeEach(() => {
-      mountComponent();
+      return mountComponent();
+    });
+
+    it('with published at sort filter calls resolver with PUBLISHED_AT params', async () => {
+      findPersistedSearch().vm.$emit('update', {
+        sort: 'PUBLISHED_AT_ASC',
+        filters: [],
+        pageInfo: {},
+      });
+      await waitForPromises();
+
+      expect(resolver).toHaveBeenCalledTimes(2);
+      expect(resolver).toHaveBeenLastCalledWith({
+        ...queryData,
+        sort: 'PUBLISHED_AT_ASC',
+      });
+    });
+
+    it('with filtered-search-term filter calls resolver with name params', async () => {
+      findPersistedSearch().vm.$emit('update', {
+        sort: 'NAME_ASC',
+        filters: [{ id: 'token-1', type: 'filtered-search-term', value: { data: 'gl' } }],
+      });
+      await waitForPromises();
+
+      expect(resolver).toHaveBeenCalledTimes(2);
+      expect(resolver).toHaveBeenLastCalledWith({
+        ...queryData,
+        name: 'gl',
+      });
     });
 
     it('with before calls resolver with pagination params', async () => {
-      mountComponent();
       findPersistedSearch().vm.$emit('update', {
         sort: 'NAME_ASC',
         filters: [],
@@ -220,7 +276,7 @@ describe('Tags List', () => {
       await waitForPromises();
 
       expect(resolver).toHaveBeenCalledTimes(2);
-      expect(resolver).toHaveBeenCalledWith({
+      expect(resolver).toHaveBeenLastCalledWith({
         ...queryData,
         first: null,
         before: tagsPageInfo.startCursor,
@@ -237,7 +293,7 @@ describe('Tags List', () => {
       await waitForPromises();
 
       expect(resolver).toHaveBeenCalledTimes(2);
-      expect(resolver).toHaveBeenCalledWith({
+      expect(resolver).toHaveBeenLastCalledWith({
         ...queryData,
         after: tagsPageInfo.endCursor,
       });

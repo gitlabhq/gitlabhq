@@ -184,7 +184,7 @@ describe('Work Item Note', () => {
       });
     });
 
-    it('hides the form after succesful mutation', async () => {
+    it('hides the form after successful mutation', async () => {
       createComponent();
       findNoteActions().vm.$emit('startEditing');
       await nextTick();

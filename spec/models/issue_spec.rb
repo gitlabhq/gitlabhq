@@ -298,13 +298,10 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
 
       it_behaves_like 'internal event tracking' do
-        let(:issue) { create(:issue) }
-        let(:project) { issue.project }
-        let(:user) { issue.author }
+        let(:project) { reusable_project }
         let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_CREATED }
-        let(:namespace) { project.namespace }
 
-        subject(:service_action) { issue }
+        subject { create(:issue, project: reusable_project, author: user) }
       end
     end
 

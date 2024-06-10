@@ -1,0 +1,9 @@
+---
+name: sidekiq_ip_address
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/452532
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155817
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465177
+milestone: '17.1'
+group: group::duo chat
+type: beta
+default_enabled: true

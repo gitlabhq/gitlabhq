@@ -131,9 +131,9 @@ module Packages
           ensure_root_metadata_exists
 
           data.each_value do |val|
-            metadata[:root][:resources] |= val[:resources]
-            metadata[:root][:dependencies][:modules] |= val.dig(:dependencies, :modules)
-            metadata[:root][:dependencies][:providers] |= val.dig(:dependencies, :providers)
+            metadata[:root][:resources] |= val[:resources] || []
+            metadata[:root][:dependencies][:modules] |= val.dig(:dependencies, :modules) || []
+            metadata[:root][:dependencies][:providers] |= val.dig(:dependencies, :providers) || []
 
             val.except!(:resources, :dependencies) if clear_data
           end

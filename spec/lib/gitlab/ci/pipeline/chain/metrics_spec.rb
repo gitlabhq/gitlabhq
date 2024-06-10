@@ -27,6 +27,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Metrics, feature_category: :continuo
     expect(step.break?).to be false
   end
 
+  it 'increments the metrics' do
+    expect(::Gitlab::Ci::Pipeline::Metrics.pipelines_created_counter)
+      .to receive(:increment)
+      .with({ partition_id: instance_of(Integer), source: 'push' })
+
+    run_chain
+  end
+
   context 'with pipeline name' do
     it 'creates snowplow event' do
       run_chain

@@ -66,7 +66,6 @@ export function viteTailwindCompilerPlugin({ shouldWatch = true }) {
   return {
     name: 'gitlab-tailwind-compiler',
     async configureServer() {
-      await ensureCSSinJS();
       return build({ shouldWatch });
     },
   };

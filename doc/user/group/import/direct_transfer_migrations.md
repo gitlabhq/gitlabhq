@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Migrate groups and projects by using direct transfer
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 To migrate GitLab groups and projects by using direct transfer, you:
 
 1. Fulfill the prerequisites.
@@ -33,8 +37,7 @@ Before migrating by using direct transfer, see the following prerequisites.
 
 To maximize the chance of a successful and performant migration, you should:
 
-- To take advantage of [batched exports and imports](https://gitlab.com/groups/gitlab-org/-/epics/9036) of relations,
-  update the source and destinations instances to GitLab 16.2 or later.
+- To take advantage of [batched exports and imports](https://gitlab.com/groups/gitlab-org/-/epics/9036) of relations, update the source and destination instances to GitLab 16.8 or later.
 - Migrate between versions that are as new as possible. Update the source and destination instances to as late a version
   as possible to take advantage of bug fixes and improvements added over time.
 

@@ -9,5 +9,6 @@ module Layouts
 
     renders_one :heading
     renders_one :actions
+    renders_one :description
   end
 end

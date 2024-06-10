@@ -43,9 +43,13 @@ describe('broadcast message on dismiss', () => {
   });
 
   it('removes broadcast message', () => {
+    document.documentElement.style.removeProperty('--broadcast-message-height');
     dismiss();
 
     expect(document.querySelector(`.js-broadcast-notification-${messageId}`)).toBeNull();
+    expect(document.documentElement.style.getPropertyValue('--broadcast-message-height')).toBe(
+      '0px',
+    );
   });
 
   it('calls Cookies.set', () => {
@@ -103,5 +107,43 @@ describe('broadcast message on dismiss', () => {
     await waitForPromises();
 
     expect(Sentry.captureException).toHaveBeenCalledWith(expect.any(Error));
+  });
+});
+
+describe('setBroadcastMessageHeightOffset', () => {
+  beforeEach(() => {
+    setHTMLFixture(`
+        <div class="gl-broadcast-message">
+          Here is a broadcast message
+        </div>
+        <div class="gl-broadcast-message">
+          Here is another broadcast message
+        </div>
+      `);
+  });
+
+  afterEach(() => {
+    resetHTMLFixture();
+  });
+
+  it('sets the height offset for the broadcast message', () => {
+    window.HTMLDivElement.prototype.getBoundingClientRect = () => ({ height: 50 });
+    jest.spyOn(document.documentElement.style, 'setProperty');
+    jest.spyOn(window.HTMLDivElement.prototype, 'getBoundingClientRect');
+
+    initBroadcastNotifications();
+
+    expect(window.HTMLDivElement.prototype.getBoundingClientRect).toHaveBeenCalledTimes(2);
+
+    expect(document.documentElement.style.setProperty).toHaveBeenCalledWith(
+      '--broadcast-message-height',
+      '100px',
+    );
+
+    const cssVariableValue = document.documentElement.style.getPropertyValue(
+      '--broadcast-message-height',
+    );
+
+    expect(cssVariableValue).toBe('100px');
   });
 });

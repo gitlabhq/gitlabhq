@@ -129,7 +129,7 @@ RSpec.shared_examples "redis_shared_examples" do
         end
 
         it 'raises error' do
-          expect { subject }.to raise_error(Gitlab::Redis::Wrapper::CommandExecutionError,
+          expect { subject }.to raise_error(Gitlab::Redis::ConfigGenerator::CommandExecutionError,
             %r{Redis: Execution of `/opt/redis-config.sh` generated invalid yaml})
         end
       end
@@ -140,7 +140,7 @@ RSpec.shared_examples "redis_shared_examples" do
         end
 
         it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::Redis::Wrapper::CommandExecutionError,
+          expect { subject }.to raise_error(Gitlab::Redis::ConfigGenerator::CommandExecutionError,
             %r{Redis: The output of `/opt/redis-config.sh` must be a Hash, String given})
         end
       end
@@ -151,7 +151,7 @@ RSpec.shared_examples "redis_shared_examples" do
         end
 
         it 'raises error' do
-          expect { subject }.to raise_error(Gitlab::Redis::Wrapper::CommandExecutionError,
+          expect { subject }.to raise_error(Gitlab::Redis::ConfigGenerator::CommandExecutionError,
             %r{Redis: Execution of `/opt/redis-config.sh` failed})
         end
       end

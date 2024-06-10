@@ -259,7 +259,7 @@ msgstr "Zona horaria del Cron"
 msgid "Custom notification events"
 msgstr "Eventos de notificaciones personalizadas"
 
-msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
+msgid "With custom notification levels you receive notifications for the same events as in the Participate level, with additional selected events. For more information, see %{notification_link}."
 msgstr "Los niveles de notificación personalizados son los mismos que los niveles participantes. Con los niveles de notificación personalizados, también recibirá notificaciones para eventos seleccionados. Para obtener más información, consulte %{notification_link}."
 
 msgid "Value Stream Analytics"

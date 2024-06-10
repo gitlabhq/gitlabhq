@@ -35,6 +35,7 @@ import {
   matchingBranchesCount,
   protectableBranchesMockResponse,
   allowedToMergeDrawerProps,
+  protectionMockProps,
 } from 'ee_else_ce_jest/projects/settings/branch_rules/components/view/mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
@@ -52,15 +53,6 @@ jest.mock('~/alert');
 Vue.use(VueApollo);
 Vue.use(GlToast);
 useMockLocationHelper();
-
-const protectionMockProps = {
-  headerLinkHref: 'protected/branches',
-  headerLinkTitle: I18N.manageProtectionsLinkTitle,
-};
-const roles = [
-  { accessLevelDescription: 'Maintainers' },
-  { accessLevelDescription: 'Maintainers + Developers' },
-];
 
 describe('View branch rules', () => {
   let wrapper;
@@ -192,13 +184,7 @@ describe('View branch rules', () => {
   });
 
   it('passes expected roles for push rules via props', () => {
-    findAllowedToPush()
-      .props()
-      .roles.forEach((role, i) => {
-        expect(role).toMatchObject({
-          accessLevelDescription: roles[i].accessLevelDescription,
-        });
-      });
+    expect(findAllowedToPush().props('roles')).toEqual(protectionMockProps.roles);
   });
 
   it('does not render Allow force push toggle if there are no push rules set', async () => {
@@ -240,13 +226,7 @@ describe('View branch rules', () => {
   });
 
   it('passes expected roles form merge rules via props', () => {
-    findAllowedToMerge()
-      .props()
-      .roles.forEach((role, i) => {
-        expect(role).toMatchObject({
-          accessLevelDescription: roles[i].accessLevelDescription,
-        });
-      });
+    expect(findAllowedToMerge().props('roles')).toEqual(protectionMockProps.roles);
   });
 
   it('does not render a branch protection component for approvals', () => {

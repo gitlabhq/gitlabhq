@@ -315,6 +315,9 @@ module Projects
       return if @params[:import_export_upload].present? && import_type == 'gitlab_project'
 
       unless ::Gitlab::CurrentSettings.import_sources&.include?(import_type)
+        return if import_type == 'github' && Feature.enabled?(:override_github_disabled, current_user, type: :ops)
+        return if import_type == 'bitbucket_server' && Feature.enabled?(:override_bitbucket_server_disabled, current_user, type: :ops)
+
         raise ImportSourceDisabledError, "#{import_type} import source is disabled"
       end
     end

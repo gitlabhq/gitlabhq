@@ -13,6 +13,7 @@
     "data_category",
     "milestone"
   ],
+  "additionalProperties": false,
   "properties": {
     "key_path": {
       "type": "string"
@@ -151,6 +152,14 @@
     },
     "value_json_schema": {
       "type": "string"
+    },
+    "product_category": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "events": {
     }
   },
   "allOf": [

@@ -177,7 +177,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/app/views/projects/settings/analytics/_data_sources.html.haml'
     - 'ee/app/views/projects/settings/analytics/_product_analytics.html.haml'
     - 'ee/app/views/projects/settings/merge_requests/_merge_trains_settings.html.haml'
-    - 'ee/app/workers/click_house/code_suggestion_events_cron_worker.rb'
     - 'ee/app/workers/elastic/migration_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/add_on_purchases/schedule_bulk_refresh_user_assignments_worker.rb'
     - 'ee/app/workers/llm/embedding/gitlab_documentation/cleanup_previous_versions_records_worker.rb'

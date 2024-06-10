@@ -58,6 +58,7 @@ export default {
     return {
       areAllBranchesVisible: false,
       enteredText: '',
+      formId: 'delete-merged-branches-form',
     };
   },
   computed: {
@@ -90,11 +91,6 @@ export default {
   methods: {
     openModal() {
       this.$refs.modal.show();
-    },
-    submitForm() {
-      if (!this.isDeleteButtonDisabled) {
-        this.$refs.form.submit();
-      }
     },
     closeModal() {
       this.$refs.modal.hide();
@@ -135,7 +131,7 @@ export default {
       modal-id="delete-merged-branches"
       :title="$options.i18n.modalTitle"
     >
-      <form ref="form" :action="formPath" method="post" @submit.prevent>
+      <form :id="formId" :action="formPath" method="post">
         <p>
           <gl-sprintf :message="modalMessage">
             <template #strong="{ content }">
@@ -171,8 +167,8 @@ export default {
             width="sm"
             class="gl-mt-2"
             aria-labelledby="input-label"
+            required
             autocomplete="off"
-            @keyup.enter="submitForm"
           />
         </p>
 
@@ -190,11 +186,13 @@ export default {
           <gl-button
             ref="deleteMergedBrancesButton"
             :disabled="isDeleteButtonDisabled"
+            :form="formId"
             variant="danger"
+            type="submit"
             data-testid="delete-merged-branches-confirmation-button"
-            @click="submitForm"
-            >{{ $options.i18n.deleteButtonText }}</gl-button
           >
+            {{ $options.i18n.deleteButtonText }}
+          </gl-button>
         </div>
       </template>
     </gl-modal>

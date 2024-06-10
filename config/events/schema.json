@@ -111,15 +111,6 @@
         "null"
       ]
     },
-    "product_section": {
-      "type": "string"
-    },
-    "product_stage": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
     "product_group": {
       "type": "string"
     },

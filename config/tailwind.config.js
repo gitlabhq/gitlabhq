@@ -190,6 +190,16 @@ module.exports = {
       gridTemplateRows: {
         auto: 'auto',
       },
+      // The default preset already includes the primary font size scale (xs/sm/base/lg). The below
+      // sizes are non-standard and should probably be migrated to gl-heading-* utils at some point.
+      // In the meantime, we add them to GitLab's own Tailwind config.
+      fontSize: {
+        'size-h-display': '1.75rem',
+        'size-h1': '1.4375rem',
+        'size-h2': '1.1875rem',
+        'size-h1-xl': '2rem',
+        'size-h2-xl': '1.4375rem',
+      },
     },
   },
   plugins: [

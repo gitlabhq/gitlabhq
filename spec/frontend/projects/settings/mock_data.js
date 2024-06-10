@@ -45,9 +45,5 @@ export const pushAccessLevelsMockResult = {
     },
   ],
   groups: [],
-  roles: [
-    {
-      accessLevelDescription: 'Maintainers',
-    },
-  ],
+  roles: [40],
 };

@@ -4365,7 +4365,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         context 'and current user is maintainer' do
           let_it_be(:current_user) { user2 }
 
-          it 'sucessfully changes restrict_user_defined_variables' do
+          it 'successfully changes restrict_user_defined_variables' do
             project_param = { restrict_user_defined_variables: true }
 
             put api("/projects/#{project3.id}", current_user), params: project_param

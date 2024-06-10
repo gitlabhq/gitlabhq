@@ -99,7 +99,8 @@ module Enums
           bridge_source: 6,
           parameter_source: 7,
           compliance_source: 8,
-          security_policies_default_source: 9
+          security_policies_default_source: 9,
+          pipeline_execution_policy_forced: 10
         }
       end
     end

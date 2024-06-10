@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_api_security_weekly
 description: Weekly counts for API Security CI template
-product_section: sec
-product_stage: secure
 product_group: dynamic_analysis
 value_type: number
 status: active

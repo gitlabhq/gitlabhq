@@ -781,7 +781,7 @@ describe Sidekiq::Web do
       refute_nil last_response.header["WWW-Authenticate"]
     end
 
-    it "authenticates successfuly" do
+    it "authenticates successfully" do
       basic_authorize "a", "b"
 
       get "/"

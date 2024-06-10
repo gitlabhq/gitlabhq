@@ -1,6 +1,6 @@
 /**
  * Return the union of the given components' props options. Required props take
- * precendence over non-required props of the same name.
+ * precedence over non-required props of the same name.
  *
  * This makes two assumptions:
  *  - All given components define their props in verbose object format.

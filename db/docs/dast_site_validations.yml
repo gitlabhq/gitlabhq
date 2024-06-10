@@ -19,3 +19,4 @@ desired_sharding_key:
         table: dast_site_tokens
         sharding_key: project_id
         belongs_to: dast_site_token
+desired_sharding_key_migration_job_name: BackfillDastSiteValidationsProjectId

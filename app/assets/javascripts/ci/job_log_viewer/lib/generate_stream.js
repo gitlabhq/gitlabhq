@@ -18,6 +18,12 @@ async function* getIterableFileStream(path) {
   }
 }
 
+function getLastContentAfterCarriageReturn(line) {
+  const parts = line.split('\r').filter(Boolean);
+
+  return parts[parts.length - 1];
+}
+
 /**
  * Obtains lines as an async iterable
  * from a binary stream.
@@ -37,7 +43,7 @@ async function* getLogStreamLines(stream) {
     for (const line of lines) {
       if (line.trim() !== '') {
         yield {
-          text: line,
+          text: getLastContentAfterCarriageReturn(line),
         };
       }
     }
@@ -45,7 +51,7 @@ async function* getLogStreamLines(stream) {
 
   if (chunkRemainder.trim() !== '') {
     yield {
-      text: chunkRemainder,
+      text: getLastContentAfterCarriageReturn(chunkRemainder),
     };
   }
 }

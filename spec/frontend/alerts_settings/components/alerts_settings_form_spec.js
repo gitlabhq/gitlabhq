@@ -90,7 +90,7 @@ describe('AlertsSettingsForm', () => {
   const findSubmitButton = () => wrapper.findByTestId('integration-form-submit');
   const findMultiSupportText = () => wrapper.findByTestId('multi-integrations-not-supported');
   const findJsonTestSubmit = () => wrapper.findByTestId('send-test-alert');
-  const findJsonTextArea = () => wrapper.find(`[id = "test-payload"]`);
+  const findJsonTextArea = () => wrapper.findByTestId('test-payload-field');
   const findActionBtn = () => wrapper.findByTestId('payload-action-btn');
   const findTabs = () => wrapper.findAllComponents(GlTab);
 

@@ -9,7 +9,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       value_type: 'string',
       status: 'active',
       milestone: '14.1',
-      default_generation: 'generation_1',
       key_path: 'uuid',
       product_group: 'product_analytics',
       time_frame: 'none',
@@ -196,6 +195,7 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       :tier               | %w[test ee]
       :repair_issue_url   | nil
       :removed_by_url     | 1
+      :another_attribute  | nil
 
       :performance_indicator_type | nil
       :instrumentation_class      | 'Metric_Class'
@@ -439,7 +439,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
         value_type: 'string',
         status: 'active',
         milestone: '14.1',
-        default_generation: 'generation_1',
         key_path: 'counter.category.event',
         product_group: 'product_analytics',
         time_frame: 'none',

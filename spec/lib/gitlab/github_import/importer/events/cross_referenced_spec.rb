@@ -71,6 +71,12 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::CrossReferenced, :clean_g
       it_behaves_like 'internal event tracking' do
         let(:event) { 'g_project_management_issue_cross_referenced' }
         let(:subject) { importer.execute(issue_event) }
+
+        before do
+          # Trigger g_project_management_issue_created event before executing subject
+          # as this has a different author & increments total issue-action metrics
+          issuable
+        end
       end
     end
 

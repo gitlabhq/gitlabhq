@@ -97,7 +97,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
       pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
     end
 
-    matcher :return_pipeline_schedule_sucessfully do
+    matcher :return_pipeline_schedule_successfully do
       match_unless_raises do |response|
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline_schedule')
@@ -113,7 +113,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         it 'returns pipeline_schedule details' do
           get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
 
-          expect(response).to return_pipeline_schedule_sucessfully
+          expect(response).to return_pipeline_schedule_successfully
           expect(json_response).to have_key('variables')
         end
       end
@@ -124,7 +124,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         it 'returns pipeline_schedule details' do
           get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer)
 
-          expect(response).to return_pipeline_schedule_sucessfully
+          expect(response).to return_pipeline_schedule_successfully
           expect(json_response).to have_key('variables')
         end
       end
@@ -187,7 +187,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         it 'returns pipeline_schedule with no variables' do
           get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
 
-          expect(response).to return_pipeline_schedule_sucessfully
+          expect(response).to return_pipeline_schedule_successfully
           expect(json_response).not_to have_key('variables')
         end
       end
@@ -200,7 +200,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
         it 'returns pipeline_schedule with no variables' do
           get api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", user)
 
-          expect(response).to return_pipeline_schedule_sucessfully
+          expect(response).to return_pipeline_schedule_successfully
           expect(json_response).not_to have_key('variables')
         end
       end
