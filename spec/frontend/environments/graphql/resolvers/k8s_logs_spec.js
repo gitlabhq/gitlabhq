@@ -30,6 +30,27 @@ describe('k8sLogs', () => {
     watchStream = bootstrapWatcherMock();
   });
 
+  it('should request pods logs if no container is specified', async () => {
+    await k8sLogs(null, { configuration, namespace, podName }, { client });
+
+    expect(
+      watchStream.subscribeToStreamMock,
+    ).toHaveBeenCalledWith('/api/v1/namespaces/default/pods/test-pod/log', { follow: true });
+  });
+
+  it('should request specific container logs if container is specified', async () => {
+    const containerName = 'my-container';
+    await k8sLogs(null, { configuration, namespace, podName, containerName }, { client });
+
+    expect(watchStream.subscribeToStreamMock).toHaveBeenCalledWith(
+      '/api/v1/namespaces/default/pods/test-pod/log',
+      {
+        follow: true,
+        container: containerName,
+      },
+    );
+  });
+
   const errorMessage = 'event error message';
   const logContent = 'Plain text log data';
   it.each([

@@ -47,16 +47,19 @@ class LogsCacheWrapper {
   }
 }
 
-export const k8sLogs = (_, { configuration, namespace, podName }, { client }) => {
+export const k8sLogs = (_, { configuration, namespace, podName, containerName }, { client }) => {
   const config = new Configuration(configuration);
   const watchApi = new WatchApi(config);
   const watchPath = buildWatchPath({ resource: podName, namespace });
 
-  const variables = { configuration, namespace, podName };
+  const variables = { configuration, namespace, podName, containerName };
   const cacheWrapper = new LogsCacheWrapper(client, variables);
 
+  const watchQuery = { follow: true };
+  if (containerName) watchQuery.container = containerName;
+
   watchApi
-    .subscribeToStream(watchPath, { follow: true })
+    .subscribeToStream(watchPath, watchQuery)
     .then((watcher) => {
       watcher.on(EVENT_PLAIN_TEXT, (data) => {
         const logsData = cacheWrapper.readLogsData();

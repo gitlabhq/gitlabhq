@@ -57,6 +57,18 @@ RSpec.describe Repository, feature_category: :source_code_management do
       it { is_expected.to match_array(["'test'"]) }
     end
 
+    context 'when exclude_refs is provided' do
+      let(:opts) { { exclude_refs: ['master'] } }
+
+      it { is_expected.not_to include('master') }
+    end
+
+    context 'with limit + exclude_refs options' do
+      let(:opts) { { limit: 1, exclude_refs: ["'test'"] } }
+
+      it { is_expected.to match_array(["2-mb-file"]) }
+    end
+
     describe 'when storage is broken', :broken_storage do
       it 'raises a storage error' do
         expect_to_raise_storage_error do
@@ -78,6 +90,18 @@ RSpec.describe Repository, feature_category: :source_code_management do
       let(:opts) { { limit: 1 } }
 
       it { is_expected.to match_array(['v1.1.0']) }
+    end
+
+    context 'when exclude_refs is provided' do
+      let(:opts) { { exclude_refs: ['v1.1.0'] } }
+
+      it { is_expected.not_to include('v1.1.0') }
+    end
+
+    context 'with limit + exclude_refs options' do
+      let(:opts) { { limit: 1, exclude_refs: ["v1.1.0"] } }
+
+      it { is_expected.to match_array(["v1.1.1"]) }
     end
   end
 

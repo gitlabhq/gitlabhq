@@ -5,7 +5,7 @@ require_relative 'helpers/wait_for_requests'
 
 module Capybara
   class Session
-    module WaitForAllRequestsAfterVisitPage
+    module WaitForRequestsAfterVisitPage
       include CapybaraHelpers
       include WaitForRequests
 
@@ -14,11 +14,11 @@ module Capybara
 
         yield if block
 
-        wait_for_all_requests
+        wait_for_requests
       end
     end
 
-    prepend WaitForAllRequestsAfterVisitPage
+    prepend WaitForRequestsAfterVisitPage
   end
 
   module Node

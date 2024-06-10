@@ -135,97 +135,127 @@ describe('kubernetes_logs', () => {
   });
 
   describe('when environment data is ready', () => {
-    describe('when logs data is empty', () => {
-      beforeEach(async () => {
-        k8sLogsQueryMock = jest.fn().mockResolvedValue({});
-        mountComponent();
-        await waitForPromises();
+    describe('when no container is specified for the logs', () => {
+      describe('when logs data is empty', () => {
+        beforeEach(async () => {
+          k8sLogsQueryMock = jest.fn().mockResolvedValue({});
+          mountComponent();
+          await waitForPromises();
+        });
+
+        it('should not render loading state', () => {
+          expect(findLoadingIcon().exists()).toBe(false);
+        });
+        it('should not render error state', () => {
+          expect(findAlert().exists()).toBe(false);
+        });
+        it('should not render logs viewer', () => {
+          expect(findLogsViewer().exists()).toBe(false);
+        });
+        it('should render empty state with pod name', () => {
+          expect(findEmptyState().text()).toBe('No logs available for pod test-pod');
+        });
       });
 
-      it('should not render loading state', () => {
-        expect(findLoadingIcon().exists()).toBe(false);
+      describe('when logs data fetched successfully', () => {
+        beforeEach(async () => {
+          mountComponent();
+          await waitForPromises();
+        });
+
+        it('should not render loading state', () => {
+          expect(findLoadingIcon().exists()).toBe(false);
+        });
+        it('should not render error state', () => {
+          expect(findAlert().exists()).toBe(false);
+        });
+        it('should not render empty state', () => {
+          expect(findEmptyState().exists()).toBe(false);
+        });
+
+        it('should query logs', () => {
+          expect(k8sLogsQueryMock).toHaveBeenCalledWith(
+            expect.anything(),
+            {
+              configuration,
+              namespace: defaultProps.namespace,
+              podName: defaultProps.podName,
+              containerName: '',
+            },
+            expect.anything(),
+            expect.anything(),
+          );
+        });
+        it('should render logs viewer component with correct parameters', () => {
+          const expectedLogLines = [
+            {
+              content: [{ text: logsMockData[0].content }],
+              lineNumber: 1,
+              lineId: 'L1',
+            },
+            {
+              content: [{ text: logsMockData[1].content }],
+              lineNumber: 2,
+              lineId: 'L2',
+            },
+          ];
+          expect(findLogsViewer().props()).toMatchObject({
+            logLines: expectedLogLines,
+            highlightedLine: 'L2',
+          });
+        });
       });
-      it('should not render error state', () => {
-        expect(findAlert().exists()).toBe(false);
-      });
-      it('should not render logs viewer', () => {
-        expect(findLogsViewer().exists()).toBe(false);
-      });
-      it('should render empty state', () => {
-        expect(findEmptyState().text()).toBe('No logs available for pod test-pod');
+
+      describe('when logs data fetch failed', () => {
+        const errorMessage = 'Error while fetching logs';
+
+        beforeEach(async () => {
+          k8sLogsQueryMock = jest.fn().mockResolvedValue({
+            error: { message: errorMessage },
+          });
+          mountComponent();
+          await waitForPromises();
+        });
+
+        it('should not render loading state', () => {
+          expect(findLoadingIcon().exists()).toBe(false);
+        });
+        it('should render error state', () => {
+          expect(findAlert().text()).toBe(errorMessage);
+        });
+        it('should render empty state', () => {
+          expect(findEmptyState().exists()).toBe(true);
+        });
+        it('should not render logs viewer', () => {
+          expect(findLogsViewer().exists()).toBe(false);
+        });
       });
     });
-
-    describe('when logs data fetched successfully', () => {
+    describe('when a container is specified for the logs', () => {
       beforeEach(async () => {
-        mountComponent();
+        k8sLogsQueryMock = jest.fn().mockResolvedValue({});
+        mountComponent({ containerName: 'my-container' });
         await waitForPromises();
       });
 
-      it('should not render loading state', () => {
-        expect(findLoadingIcon().exists()).toBe(false);
-      });
-      it('should not render error state', () => {
-        expect(findAlert().exists()).toBe(false);
-      });
-      it('should not render empty state', () => {
-        expect(findEmptyState().exists()).toBe(false);
+      it('should render empty state with pod and container name', () => {
+        expect(findEmptyState().text()).toBe(
+          'No logs available for container my-container of pod test-pod',
+        );
       });
 
-      it('should query logs', () => {
+      it('should query logs with the container name included', () => {
         expect(k8sLogsQueryMock).toHaveBeenCalledWith(
           expect.anything(),
           {
             configuration,
             namespace: defaultProps.namespace,
             podName: defaultProps.podName,
+            containerName: 'my-container',
           },
           expect.anything(),
           expect.anything(),
         );
-      });
-      it('should render logs viewer component with correct parameters', () => {
-        const expectedLogLines = [
-          {
-            content: [{ text: logsMockData[0].content }],
-            lineNumber: 1,
-            lineId: 'L1',
-          },
-          {
-            content: [{ text: logsMockData[1].content }],
-            lineNumber: 2,
-            lineId: 'L2',
-          },
-        ];
-        expect(findLogsViewer().props()).toMatchObject({
-          logLines: expectedLogLines,
-          highlightedLine: 'L2',
-        });
-      });
-    });
-
-    describe('when logs data fetch failed', () => {
-      const errorMessage = 'Error while fetching logs';
-
-      beforeEach(async () => {
-        k8sLogsQueryMock = jest.fn().mockResolvedValue({
-          error: { message: errorMessage },
-        });
-        mountComponent();
-        await waitForPromises();
-      });
-
-      it('should not render loading state', () => {
-        expect(findLoadingIcon().exists()).toBe(false);
-      });
-      it('should render error state', () => {
-        expect(findAlert().text()).toBe(errorMessage);
-      });
-      it('should render empty state', () => {
-        expect(findEmptyState().exists()).toBe(true);
-      });
-      it('should not render logs viewer', () => {
-        expect(findLogsViewer().exists()).toBe(false);
       });
     });
   });

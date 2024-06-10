@@ -16,20 +16,22 @@ describe('CatalogSearch', () => {
   const findSorting = () => wrapper.findComponent(GlSorting);
   const findAllSortingItems = () => findSorting().props('sortOptions');
 
-  const createComponent = () => {
-    wrapper = shallowMountExtended(CatalogSearch, {});
+  const createComponent = ({ withCatalogPopularity = false } = {}) => {
+    wrapper = shallowMountExtended(CatalogSearch, {
+      provide: { glFeatures: { ciCatalogPopularity: withCatalogPopularity } },
+    });
   };
 
-  beforeEach(() => {
-    createComponent();
-  });
-
   describe('default UI', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('renders the search bar', () => {
       expect(findSearchBar().exists()).toBe(true);
     });
 
-    it('sets sorting options', () => {
+    it('adds sorting options', () => {
       const sortOptionsProp = findAllSortingItems();
       expect(sortOptionsProp).toHaveLength(3);
       expect(sortOptionsProp[0].text).toBe('Released at');
@@ -40,7 +42,23 @@ describe('CatalogSearch', () => {
     });
   });
 
+  describe('with `ci_catalog_popularity` ff turned on', () => {
+    beforeEach(() => {
+      createComponent({ withCatalogPopularity: true });
+    });
+
+    it('adds the popularity option', () => {
+      const sortOptionsProp = findAllSortingItems();
+      expect(sortOptionsProp).toHaveLength(4);
+      expect(sortOptionsProp[3].text).toBe('Popularity');
+    });
+  });
+
   describe('search', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     it('passes down the search value to the search component', async () => {
       const newSearchTerm = 'cat';
 
@@ -85,6 +103,10 @@ describe('CatalogSearch', () => {
   });
 
   describe('sort', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
     describe('when changing sort order', () => {
       it('changes the `isAscending` prop to the sorting component', async () => {
         expect(findSorting().props().isAscending).toBe(false);

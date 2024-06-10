@@ -22,6 +22,11 @@ export default {
       type: String,
       required: true,
     },
+    containerName: {
+      type: String,
+      required: false,
+      default: '',
+    },
     namespace: {
       type: String,
       required: true,
@@ -49,6 +54,7 @@ export default {
           configuration: this.k8sAccessConfiguration,
           namespace: this.namespace,
           podName: this.podName,
+          containerName: this.containerName,
         };
       },
       skip() {
@@ -98,9 +104,17 @@ export default {
     isLoading() {
       return this.$apollo.queries.k8sLogs.loading || this.$apollo.queries.environment.loading;
     },
+    emptyStateTitle() {
+      return this.containerName
+        ? this.$options.i18n.emptyStateTitleForContainer
+        : this.$options.i18n.emptyStateTitleForPod;
+    },
   },
   i18n: {
-    emptyStateTitle: s__('KubernetesLogs|No logs available for pod %{podName}'),
+    emptyStateTitleForPod: s__('KubernetesLogs|No logs available for pod %{podName}'),
+    emptyStateTitleForContainer: s__(
+      'KubernetesLogs|No logs available for container %{containerName} of pod %{podName}',
+    ),
   },
   EmptyStateSvg,
 };
@@ -117,8 +131,9 @@ export default {
     <gl-empty-state v-else :svg-path="$options.EmptyStateSvg">
       <template #title>
         <h3>
-          <gl-sprintf :message="$options.i18n.emptyStateTitle"
-            ><template #podName>{{ podName }}</template>
+          <gl-sprintf :message="emptyStateTitle"
+            ><template #podName>{{ podName }}</template
+            ><template #containerName>{{ containerName }}</template>
           </gl-sprintf>
         </h3>
       </template>

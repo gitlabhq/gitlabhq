@@ -607,13 +607,6 @@ class User < MainClusterwide::ApplicationRecord
   scope :with_emails, -> { preload(:emails) }
   scope :with_dashboard, ->(dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
-  scope :with_expiring_and_not_notified_personal_access_tokens, ->(at) do
-    where('EXISTS (?)', ::PersonalAccessToken
-      .where('personal_access_tokens.user_id = users.id')
-      .without_impersonation
-      .expiring_and_not_notified(at).select(1)
-    )
-  end
   scope :with_personal_access_tokens_expired_today, -> do
     where('EXISTS (?)', ::PersonalAccessToken
       .select(1)

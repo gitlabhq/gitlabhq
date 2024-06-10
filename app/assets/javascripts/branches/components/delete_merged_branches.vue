@@ -26,7 +26,7 @@ export const i18n = {
     'Branches|This bulk action is %{strongStart}permanent and cannot be undone or recovered%{strongEnd}.',
   ),
   confirmationMessage: s__(
-    'Branches|Plese type the following to confirm: %{codeStart}delete%{codeEnd}.',
+    'Branches|Please type the following to confirm: %{codeStart}delete%{codeEnd}.',
   ),
   cancelButtonText: __('Cancel'),
   actionsToggleText: __('More actions'),

@@ -73,7 +73,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
         .
       </p>
       <p>
-        Plese type the following to confirm:
+        Please type the following to confirm:
         <code>
           delete
         </code>

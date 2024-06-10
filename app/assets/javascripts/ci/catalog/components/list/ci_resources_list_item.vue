@@ -3,6 +3,7 @@ import {
   GlAvatar,
   GlBadge,
   GlButton,
+  GlIcon,
   GlLink,
   GlSprintf,
   GlTooltipDirective,
@@ -14,6 +15,7 @@ import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
 import { VERIFICATION_LEVEL_UNVERIFIED } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
@@ -29,6 +31,7 @@ export default {
     GlAvatar,
     GlBadge,
     GlButton,
+    GlIcon,
     GlLink,
     GlSprintf,
     GlTruncate,
@@ -37,6 +40,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     resource: {
       type: Object,
@@ -86,6 +90,9 @@ export default {
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.createdAt);
     },
+    isPopularityFeatureEnabled() {
+      return Boolean(this.glFeatures?.ciCatalogPopularity);
+    },
     isVerified() {
       return this.resource?.verificationLevel !== VERIFICATION_LEVEL_UNVERIFIED;
     },
@@ -106,6 +113,14 @@ export default {
     },
     starCountText() {
       return n__('Star', 'Stars', this.starCount);
+    },
+    usageCount() {
+      return this.resource?.last30DayUsageCount || 0;
+    },
+    usageText() {
+      return s__(
+        'CiCatalog|The number of projects that used a component from this project in a pipeline, by using "include:component", in the last 30 days.',
+      );
     },
     webPath() {
       return cleanLeadingSeparator(this.resource?.webPath);
@@ -170,18 +185,31 @@ export default {
           <gl-badge size="sm" class="gl-h-5 gl-align-self-center" variant="info">{{
             name
           }}</gl-badge>
-          <gl-button
-            v-gl-tooltip.top
-            data-testid="stats-favorites"
-            class="!gl-text-inherit"
-            icon="star-o"
-            :title="starCountText"
-            :href="starsHref"
-            size="small"
-            variant="link"
-          >
-            {{ starCount }}
-          </gl-button>
+          <div class="gl-display-flex gl-align-items-center gl-ml-3">
+            <div
+              v-if="isPopularityFeatureEnabled"
+              v-gl-tooltip.top
+              class="gl-display-flex gl-align-items-center gl-mr-3"
+              :title="usageText"
+            >
+              <gl-icon name="chart" :size="16" />
+              <span class="gl-ml-2" data-testid="stats-usage">
+                {{ usageCount }}
+              </span>
+            </div>
+            <gl-button
+              v-gl-tooltip.top
+              data-testid="stats-favorites"
+              class="!gl-text-inherit"
+              icon="star-o"
+              :title="starCountText"
+              :href="starsHref"
+              size="small"
+              variant="link"
+            >
+              {{ starCount }}
+            </gl-button>
+          </div>
         </div>
       </div>
       <div

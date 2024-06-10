@@ -9368,7 +9368,7 @@ msgstr ""
 msgid "Branches|Please type the following to confirm:"
 msgstr ""
 
-msgid "Branches|Plese type the following to confirm: %{codeStart}delete%{codeEnd}."
+msgid "Branches|Please type the following to confirm: %{codeStart}delete%{codeEnd}."
 msgstr ""
 
 msgid "Branches|See all branch-related settings together with branch rules"
@@ -11127,6 +11127,9 @@ msgid "CiCatalog|Search must be at least 3 characters"
 msgstr ""
 
 msgid "CiCatalog|Set component project as a CI/CD Catalog project. %{linkStart}What is the CI/CD Catalog?%{linkEnd}"
+msgstr ""
+
+msgid "CiCatalog|The number of projects that used a component from this project in a pipeline, by using \"include:component\", in the last 30 days."
 msgstr ""
 
 msgid "CiCatalog|The project and any released versions will be removed from the CI/CD Catalog. If you re-enable this toggle, the project's existing releases are not re-added to the catalog. You must %{linkStart}create a new release%{linkEnd}."
@@ -21838,6 +21841,9 @@ msgstr ""
 msgid "Failed to load stacktrace."
 msgstr ""
 
+msgid "Failed to load the Web IDE"
+msgstr ""
+
 msgid "Failed to make repository read-only: %{reason}"
 msgstr ""
 
@@ -22545,6 +22551,9 @@ msgid "For more information, go to the "
 msgstr ""
 
 msgid "For more information, see the File Hooks documentation."
+msgstr ""
+
+msgid "For more information, see the developer console. Try to reload the page or sign out and in again. If the issue persists, %{reportIssueStart}report a problem%{reportIssueEnd}."
 msgstr ""
 
 msgid "For the GitLab Team to keep your subscription data up to date, this is a reminder to report your license usage on a monthly basis, or at the cadence set in your agreement with GitLab. This allows us to simplify the billing process for overages and renewals. To report your usage data, export your license usage file and email it to %{renewal_service_email}. If you need an updated license, GitLab will send the license to the email address registered in the %{customers_dot}, and you can upload this license to your instance."
@@ -30161,6 +30170,9 @@ msgstr ""
 msgid "KubernetesDashboard|You can select an agent from a project's environment page."
 msgstr ""
 
+msgid "KubernetesLogs|No logs available for container %{containerName} of pod %{podName}"
+msgstr ""
+
 msgid "KubernetesLogs|No logs available for pod %{podName}"
 msgstr ""
 
@@ -31063,7 +31075,7 @@ msgstr ""
 msgid "Loading snippet"
 msgstr ""
 
-msgid "Loading the GitLab IDE"
+msgid "Loading the Web IDE"
 msgstr ""
 
 msgid "Loading..."
@@ -43417,6 +43429,9 @@ msgstr ""
 msgid "Release|You can edit the content later by editing the release. %{linkStart}How do I edit a release?%{linkEnd}"
 msgstr ""
 
+msgid "Reload"
+msgstr ""
+
 msgid "Reload page"
 msgstr ""
 
@@ -45218,6 +45233,9 @@ msgstr ""
 msgid "Runners|Most recent failures"
 msgstr ""
 
+msgid "Runners|Most used group runners"
+msgstr ""
+
 msgid "Runners|Most used instance runners"
 msgstr ""
 
@@ -45683,6 +45701,9 @@ msgid "Runners|To view the setup instructions, make sure all form fields are com
 msgstr ""
 
 msgid "Runners|Token expiry"
+msgstr ""
+
+msgid "Runners|Top projects consuming group runners"
 msgstr ""
 
 msgid "Runners|Top projects consuming runners"

@@ -250,7 +250,7 @@ When reviewing code changes, you can hide inline comments:
 1. Below the title, select **Changes**.
 1. Scroll to the file that contains the comments you want to hide.
 1. Scroll to the line the comment is attached to, and select **Collapse** (**{collapse}**):
-   ![collapse a comment](img/collapse-comment_v14_8.png)
+   ![collapse a comment](img/collapse-comment_v17_1.png)
 
 To expand inline comments and show them again:
 

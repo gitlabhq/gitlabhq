@@ -29,12 +29,17 @@ describe('CiResourcesListItem', () => {
     resource,
   };
 
-  const createComponent = ({ props = {} } = {}) => {
+  const createComponent = ({ props = {}, withCatalogPopularity = false } = {}) => {
     wrapper = shallowMountExtended(CiResourcesListItem, {
       router,
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      provide: {
+        glFeatures: {
+          ciCatalogPopularity: withCatalogPopularity,
+        },
       },
       stubs: {
         GlSprintf,
@@ -51,6 +56,7 @@ describe('CiResourcesListItem', () => {
   const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findTimeAgoMessage = () => wrapper.findComponent(GlSprintf);
   const findFavorites = () => wrapper.findByTestId('stats-favorites');
+  const findUsage = () => wrapper.findByTestId('stats-usage');
   const findMarkdown = () => wrapper.findComponent(Markdown);
 
   beforeEach(() => {
@@ -286,8 +292,29 @@ describe('CiResourcesListItem', () => {
       });
     });
 
+    describe('with FF `ci_catalog_popularity` turned on', () => {
+      beforeEach(() => {
+        createComponent({ withCatalogPopularity: true });
+      });
+
+      it('renders the statistics', () => {
+        expect(findUsage().exists()).toBe(true);
+        expect(findUsage().text()).toBe('4');
+      });
+    });
+
+    describe('with FF `ci_catalog_popularity` disabled', () => {
+      beforeEach(() => {
+        createComponent();
+      });
+
+      it('renders the statistics', () => {
+        expect(findUsage().exists()).toBe(false);
+      });
+    });
+
     describe('when there are no statistics', () => {
-      it('render favorites as 0', () => {
+      it('render favorites and usage as 0', () => {
         createComponent({
           props: {
             resource: {

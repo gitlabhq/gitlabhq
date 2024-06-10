@@ -2,22 +2,22 @@
 
 require 'fast_spec_helper'
 require 'capybara'
-require 'support/capybara_wait_for_all_requests'
+require 'support/capybara_wait_for_requests'
 
-RSpec.describe 'capybara_wait_for_all_requests', feature_category: :tooling do # rubocop:disable RSpec/FilePath
-  context 'for Capybara::Session::WaitForAllRequestsAfterVisitPage' do
+RSpec.describe 'capybara_wait_for_requests', feature_category: :tooling do
+  context 'for Capybara::Session::WaitForRequestsAfterVisitPage' do
     let(:page_visitor) do
       Class.new do
         def visit(visit_uri)
           visit_uri
         end
 
-        prepend Capybara::Session::WaitForAllRequestsAfterVisitPage
+        prepend Capybara::Session::WaitForRequestsAfterVisitPage
       end.new
     end
 
-    it 'waits for all requests after a page visit' do
-      expect(page_visitor).to receive(:wait_for_all_requests)
+    it 'waits for requests after a page visit' do
+      expect(page_visitor).to receive(:wait_for_requests)
 
       page_visitor.visit('http://test.com')
     end

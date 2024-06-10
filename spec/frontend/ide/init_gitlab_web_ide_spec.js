@@ -8,6 +8,7 @@ import Tracking from '~/tracking';
 import { TEST_HOST } from 'helpers/test_constants';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { renderWebIdeError } from '~/ide/render_web_ide_error';
 import { getMockCallbackUrl } from './helpers';
 
 jest.mock('@gitlab/web-ide');
@@ -18,6 +19,7 @@ jest.mock('~/lib/utils/csrf', () => ({
   headerKey: 'mock-csrf-header',
 }));
 jest.mock('~/tracking');
+jest.mock('~/ide/render_web_ide_error');
 
 const ROOT_ELEMENT_ID = 'ide';
 const TEST_NONCE = 'test123nonce';
@@ -30,6 +32,7 @@ const TEST_FILE_PATH = 'foo/README.md';
 const TEST_MR_ID = '7';
 const TEST_MR_TARGET_PROJECT = 'gitlab-org/the-real-gitlab';
 const TEST_SIGN_IN_PATH = 'sign-in';
+const TEST_SIGN_OUT_PATH = 'sign-out';
 const TEST_FORK_INFO = { fork_path: '/forky' };
 const TEST_IDE_REMOTE_PATH = '/-/ide/remote/:remote_host/:remote_path';
 const TEST_START_REMOTE_PARAMS = {
@@ -82,6 +85,7 @@ describe('ide/init_gitlab_web_ide', () => {
       ],
     });
     el.dataset.signInPath = TEST_SIGN_IN_PATH;
+    el.dataset.signOutPath = TEST_SIGN_OUT_PATH;
 
     document.body.append(el);
   };
@@ -269,6 +273,27 @@ describe('ide/init_gitlab_web_ide', () => {
           httpHeaders: undefined,
         }),
       );
+    });
+  });
+
+  describe('on start error', () => {
+    const mockError = new Error('error');
+
+    beforeEach(() => {
+      jest.mocked(start).mockImplementationOnce(() => {
+        throw mockError;
+      });
+
+      createSubject();
+    });
+
+    it('shows alert', () => {
+      expect(start).toHaveBeenCalledTimes(1);
+      expect(renderWebIdeError).toHaveBeenCalledTimes(1);
+      expect(renderWebIdeError).toHaveBeenCalledWith({
+        error: mockError,
+        signOutPath: TEST_SIGN_OUT_PATH,
+      });
     });
   });
 

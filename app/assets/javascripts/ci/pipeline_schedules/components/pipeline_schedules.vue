@@ -18,7 +18,7 @@ import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline
 import playPipelineScheduleMutation from '../graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
-import { ALL_SCOPE, SCHEDULES_PER_PAGE, DEFAULT_SORT_VALUE } from '../constants';
+import { ALL_SCOPE, SCHEDULES_PER_PAGE } from '../constants';
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
 import TakeOwnershipModal from './take_ownership_modal.vue';
 import DeletePipelineScheduleModal from './delete_pipeline_schedule_modal.vue';
@@ -90,7 +90,6 @@ export default {
           // we need to ensure we send null to the API when
           // the scope is 'ALL'
           status: this.scope === ALL_SCOPE ? null : this.scope,
-          sortValue: this.sortValue,
           first: this.pagination.first,
           last: this.pagination.last,
           prevPageCursor: this.pagination.prevPageCursor,
@@ -129,9 +128,6 @@ export default {
       playSuccess: false,
       errorMessage: '',
       scheduleId: null,
-      sortValue: DEFAULT_SORT_VALUE,
-      sortBy: 'ID',
-      sortDesc: true,
       showDeleteModal: false,
       showTakeOwnershipModal: false,
       count: 0,
@@ -336,13 +332,6 @@ export default {
         };
       }
     },
-    onUpdateSorting(sortValue, sortBy, sortDesc) {
-      this.sortValue = sortValue;
-      this.sortBy = sortBy;
-      this.sortDesc = sortDesc;
-
-      this.resetPagination();
-    },
   },
 };
 </script>
@@ -408,12 +397,9 @@ export default {
           <pipeline-schedules-table
             :schedules="schedules.list"
             :current-user="schedules.currentUser"
-            :sort-by="sortBy"
-            :sort-desc="sortDesc"
             @showTakeOwnershipModal="setTakeOwnershipModal"
             @showDeleteModal="setDeleteModal"
             @playPipelineSchedule="playPipelineSchedule"
-            @update-sorting="onUpdateSorting"
           />
 
           <gl-pagination

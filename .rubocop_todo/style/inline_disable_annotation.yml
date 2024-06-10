@@ -3020,7 +3020,6 @@ Style/InlineDisableAnnotation:
     - 'spec/support/sidekiq_middleware.rb'
     - 'spec/support_specs/ability_check_spec.rb'
     - 'spec/support_specs/capybara_slow_finder_spec.rb'
-    - 'spec/support_specs/capybara_wait_for_all_requests_spec.rb'
     - 'spec/support_specs/database/multiple_databases_helpers_spec.rb'
     - 'spec/support_specs/helpers/stub_feature_flags_spec.rb'
     - 'spec/support_specs/matchers/event_store_spec.rb'

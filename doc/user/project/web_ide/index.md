@@ -280,3 +280,15 @@ As a workaround:
    or modify the `"editor.fontFamily"` setting.
 
 For more information, see [VS Code issue 80170](https://github.com/microsoft/vscode/issues/80170).
+
+### Report a problem
+
+To report a problem, [create a new issue](https://gitlab.com/gitlab-org/gitlab-web-ide/-/issues/new)
+with the following information:
+
+- The error message
+- The full error details
+- How often the problem occurs
+- Steps to reproduce the problem
+
+If you're on a paid tier, you can also [contact Support](https://about.gitlab.com/support/#contact-support) for help.

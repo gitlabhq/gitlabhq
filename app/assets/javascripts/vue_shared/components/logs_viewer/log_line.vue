@@ -38,6 +38,7 @@ export default {
                 href: chunk,
                 class: 'gl-reset-color! gl-text-decoration-underline',
                 rel: 'nofollow noopener noreferrer', // eslint-disable-line @gitlab/require-i18n-strings
+                target: '_blank',
               },
             },
             chunk,

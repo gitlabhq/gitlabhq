@@ -9,6 +9,7 @@ export const SCOPE = {
 };
 
 export const SORT_OPTION_CREATED = 'CREATED';
+export const SORT_OPTION_POPULARITY = 'USAGE_COUNT';
 export const SORT_OPTION_RELEASED = 'LATEST_RELEASED_AT';
 export const SORT_OPTION_STAR_COUNT = 'STAR_COUNT';
 export const SORT_ASC = 'ASC';

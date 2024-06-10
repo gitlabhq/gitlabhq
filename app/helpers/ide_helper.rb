@@ -7,6 +7,7 @@ module IdeHelper
       'use-new-web-ide' => use_new_web_ide?.to_s,
       'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index', anchor: 'vscode-reimplementation'),
       'sign-in-path' => new_session_path(current_user),
+      'sign-out-path' => destroy_user_session_path,
       'user-preferences-path' => profile_preferences_path
     }.merge(use_new_web_ide? ? new_ide_data(project: project) : legacy_ide_data(project: project))
 

@@ -4,7 +4,6 @@ query getPipelineSchedulesQuery(
   $projectPath: ID!
   $status: PipelineScheduleStatus
   $ids: [ID!] = null
-  $sortValue: PipelineScheduleSort
   $first: Int
   $last: Int
   $prevPageCursor: String = ""
@@ -22,7 +21,6 @@ query getPipelineSchedulesQuery(
     pipelineSchedules(
       status: $status
       ids: $ids
-      sort: $sortValue
       first: $first
       last: $last
       after: $nextPageCursor
