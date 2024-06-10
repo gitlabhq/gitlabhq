@@ -599,6 +599,16 @@ variable, or as a CI/CD variable.
 - If using a variable, set the value of `ADDITIONAL_CA_CERT_BUNDLE` to the text
   representation of the certificate.
 
+### Demo Projects
+
+There are [demonstration projects](https://gitlab.com/gitlab-org/security-products/demos/SAST-analyzer-configurations) that illustrate some of these configuration options.
+
+Many of the demo projects illustrate using remote rulesets to override or disable rules and are grouped together by which analyzer they are for.
+
+There are also some video demonstrations walking through setting up remote rulesets:
+
+- [Secret Detection with local and remote ruleset](https://youtu.be/rsN1iDug5GU)
+
 ## FIPS-enabled images
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.

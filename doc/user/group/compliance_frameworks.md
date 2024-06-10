@@ -14,7 +14,7 @@ You can create a compliance framework that is a label to identify that your proj
 requirements or needs additional oversight. The label can optionally enforce
 [compliance pipeline configuration](compliance_pipelines.md) to the projects on which it is applied.
 
-Compliance frameworks are created on top-level groups. Group owners can create, edit, and delete compliance frameworks.
+Compliance frameworks are created on top-level groups. Users must have the Owner or Maintainer role in the top-level group or be assigned a [custom role](../../user/custom_roles) with the `admin_compliance_framework` [custom permission](../../user/custom_roles/abilities.md#compliance-management) to create, edit, and delete compliance frameworks.
 
 NOTE:
 If a project is moved outside of its existing top-level group, its framework is removed.
