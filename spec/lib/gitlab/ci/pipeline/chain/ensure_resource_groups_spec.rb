@@ -60,6 +60,47 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups do
           expect(job.resource_group).to be_nil
         end
       end
+
+      context 'when a resource group key contains a variable to be substituted' do
+        let!(:job) do
+          build(:ci_build, project: project, options: { resource_group_key: resource_group_key },
+            yaml_variables: [{ key: "VAR", value: "TE" }, { key: "NESTED_VAR", value: "${VAR}ST" }])
+        end
+
+        context "when there is a single layer of variables" do
+          let(:resource_group_key) { '${VAR}_GROUP' }
+
+          it 'always expands the single layer of variables' do
+            expect { subject }.to change { Ci::ResourceGroup.count }.by(1)
+            expect(project.resource_groups.find_by_key('TE_GROUP')).to be_present
+            expect(job.options[:resource_group_key]).to be_nil
+          end
+        end
+
+        context "when there are nested variables" do
+          let(:resource_group_key) { '${NESTED_VAR}_GROUP' }
+
+          context "when the ci_expand_nested_resource_group_variables feature flag is not true" do
+            before do
+              stub_feature_flags(ci_expand_nested_resource_group_variables: false)
+            end
+
+            it 'does not expand nested variables before creating the group' do
+              expect { subject }.to change { Ci::ResourceGroup.count }.by(1)
+              expect(project.resource_groups.find_by_key('${VAR}ST_GROUP')).to be_present
+              expect(job.options[:resource_group_key]).to be_nil
+            end
+          end
+
+          context "when the ci_expand_nested_resource_group_variables feature flag is true" do
+            it 'expands all of the nested variables before creating the group' do
+              expect { subject }.to change { Ci::ResourceGroup.count }.by(1)
+              expect(project.resource_groups.find_by_key('TEST_GROUP')).to be_present
+              expect(job.options[:resource_group_key]).to be_nil
+            end
+          end
+        end
+      end
     end
 
     context 'when a pipeline does not contain a job that requires a resource group' do

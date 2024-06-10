@@ -132,7 +132,7 @@ To disable Code Suggestions, disable the feature in your IDE editor extension.
 For details, see the documentation for your extension.
 
 If you'd prefer, you can
-[turn off GitLab Duo for a group, project, or instance](../../../ai_features_enable.md#turn-off-gitlab-duo-features).
+[turn off GitLab Duo for a group, project, or instance](../../../../user/gitlab_duo/turn_on_off.md).
 
 ## Feedback
 

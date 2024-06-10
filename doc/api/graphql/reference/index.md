@@ -17518,18 +17518,16 @@ Represents the total number of issues and their weights for a particular day.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourcedescription"></a>`description` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Description of the catalog resource. |
+| <a id="cicatalogresourcedescription"></a>`description` | [`String`](#string) | Description of the catalog resource. |
 | <a id="cicatalogresourcefullpath"></a>`fullPath` **{warning-solid}** | [`ID`](#id) | **Introduced** in GitLab 16.11. **Status**: Experiment. Full project path of the catalog resource. |
-| <a id="cicatalogresourceicon"></a>`icon` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Icon for the catalog resource. |
-| <a id="cicatalogresourceid"></a>`id` **{warning-solid}** | [`ID!`](#id) | **Introduced** in GitLab 15.11. **Status**: Experiment. ID of the catalog resource. |
+| <a id="cicatalogresourceicon"></a>`icon` | [`String`](#string) | Icon for the catalog resource. |
+| <a id="cicatalogresourceid"></a>`id` | [`ID!`](#id) | ID of the catalog resource. |
 | <a id="cicatalogresourcelast30dayusagecount"></a>`last30DayUsageCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 17.0. **Status**: Experiment. Number of projects that used a component from this catalog resource in a pipeline, by using `include:component`, in the last 30 days. |
 | <a id="cicatalogresourcelatestreleasedat"></a>`latestReleasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.5. **Status**: Experiment. Release date of the catalog resource's latest version. |
-| <a id="cicatalogresourcename"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. Name of the catalog resource. |
-| <a id="cicatalogresourceopenissuescount"></a>`openIssuesCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open issues that belong to the the catalog resource. |
-| <a id="cicatalogresourceopenmergerequestscount"></a>`openMergeRequestsCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.3. **Status**: Experiment. Count of open merge requests that belong to the the catalog resource. |
-| <a id="cicatalogresourcestarcount"></a>`starCount` **{warning-solid}** | [`Int!`](#int) | **Introduced** in GitLab 16.1. **Status**: Experiment. Number of times the catalog resource has been starred. |
-| <a id="cicatalogresourcestarrerspath"></a>`starrersPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.10. **Status**: Experiment. Relative path to the starrers page for the catalog resource project. |
-| <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` **{warning-solid}** | [`CiCatalogResourceVerificationLevel`](#cicatalogresourceverificationlevel) | **Introduced** in GitLab 16.9. **Status**: Experiment. Verification level of the catalog resource. |
+| <a id="cicatalogresourcename"></a>`name` | [`String`](#string) | Name of the catalog resource. |
+| <a id="cicatalogresourcestarcount"></a>`starCount` | [`Int!`](#int) | Number of times the catalog resource has been starred. |
+| <a id="cicatalogresourcestarrerspath"></a>`starrersPath` | [`String`](#string) | Relative path to the starrers page for the catalog resource project. |
+| <a id="cicatalogresourceverificationlevel"></a>`verificationLevel` | [`CiCatalogResourceVerificationLevel`](#cicatalogresourceverificationlevel) | Verification level of the catalog resource. |
 | <a id="cicatalogresourcewebpath"></a>`webPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.1. **Status**: Experiment. Web path of the catalog resource. |
 
 #### Fields with arguments
@@ -17537,10 +17535,6 @@ Represents the total number of issues and their weights for a particular day.
 ##### `CiCatalogResource.versions`
 
 Versions of the catalog resource. This field can only be resolved for one catalog resource in any single request.
-
-DETAILS:
-**Introduced** in GitLab 16.2.
-**Status**: Experiment.
 
 Returns [`CiCatalogResourceVersionConnection`](#cicatalogresourceversionconnection).
 
@@ -17560,10 +17554,10 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourcecomponentid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesComponentID!`](#cicatalogresourcescomponentid) | **Introduced** in GitLab 16.7. **Status**: Experiment. ID of the component. |
-| <a id="cicatalogresourcecomponentincludepath"></a>`includePath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Path used to include the component. |
-| <a id="cicatalogresourcecomponentinputs"></a>`inputs` **{warning-solid}** | [`[CiCatalogResourceComponentInput!]`](#cicatalogresourcecomponentinput) | **Introduced** in GitLab 16.7. **Status**: Experiment. Inputs for the component. |
-| <a id="cicatalogresourcecomponentname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Name of the component. |
+| <a id="cicatalogresourcecomponentid"></a>`id` | [`CiCatalogResourcesComponentID!`](#cicatalogresourcescomponentid) | ID of the component. |
+| <a id="cicatalogresourcecomponentincludepath"></a>`includePath` | [`String`](#string) | Path used to include the component. |
+| <a id="cicatalogresourcecomponentinputs"></a>`inputs` | [`[CiCatalogResourceComponentInput!]`](#cicatalogresourcecomponentinput) | Inputs for the component. |
+| <a id="cicatalogresourcecomponentname"></a>`name` | [`String`](#string) | Name of the component. |
 
 ### `CiCatalogResourceComponentInput`
 
@@ -17571,9 +17565,9 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourcecomponentinputdefault"></a>`default` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Default value for the input. |
-| <a id="cicatalogresourcecomponentinputname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.7. **Status**: Experiment. Name of the input. |
-| <a id="cicatalogresourcecomponentinputrequired"></a>`required` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 16.7. **Status**: Experiment. Indicates if an input is required. |
+| <a id="cicatalogresourcecomponentinputdefault"></a>`default` | [`String`](#string) | Default value for the input. |
+| <a id="cicatalogresourcecomponentinputname"></a>`name` | [`String`](#string) | Name of the input. |
+| <a id="cicatalogresourcecomponentinputrequired"></a>`required` | [`Boolean`](#boolean) | Indicates if an input is required. |
 
 ### `CiCatalogResourceVersion`
 
@@ -17581,14 +17575,14 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="cicatalogresourceversionauthor"></a>`author` **{warning-solid}** | [`UserCore`](#usercore) | **Introduced** in GitLab 16.7. **Status**: Experiment. User that created the version. |
-| <a id="cicatalogresourceversioncommit"></a>`commit` **{warning-solid}** | [`Commit`](#commit) | **Introduced** in GitLab 16.7. **Status**: Experiment. Commit associated with the version. |
-| <a id="cicatalogresourceversioncomponents"></a>`components` **{warning-solid}** | [`CiCatalogResourceComponentConnection`](#cicatalogresourcecomponentconnection) | **Introduced** in GitLab 16.7. **Status**: Experiment. Components belonging to the catalog resource. |
-| <a id="cicatalogresourceversioncreatedat"></a>`createdAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.7. **Status**: Experiment. Timestamp of when the version was created. |
-| <a id="cicatalogresourceversionid"></a>`id` **{warning-solid}** | [`CiCatalogResourcesVersionID!`](#cicatalogresourcesversionid) | **Introduced** in GitLab 16.7. **Status**: Experiment. Global ID of the version. |
-| <a id="cicatalogresourceversionname"></a>`name` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. Name that uniquely identifies the version within the catalog resource. |
-| <a id="cicatalogresourceversionpath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. Relative web path to the version's readme. |
-| <a id="cicatalogresourceversionreadme"></a>`readme` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.8. **Status**: Experiment. Readme data. |
+| <a id="cicatalogresourceversionauthor"></a>`author` | [`UserCore`](#usercore) | User that created the version. |
+| <a id="cicatalogresourceversioncommit"></a>`commit` | [`Commit`](#commit) | Commit associated with the version. |
+| <a id="cicatalogresourceversioncomponents"></a>`components` | [`CiCatalogResourceComponentConnection`](#cicatalogresourcecomponentconnection) | Components belonging to the catalog resource. (see [Connections](#connections)) |
+| <a id="cicatalogresourceversioncreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of when the version was created. |
+| <a id="cicatalogresourceversionid"></a>`id` | [`CiCatalogResourcesVersionID!`](#cicatalogresourcesversionid) | Global ID of the version. |
+| <a id="cicatalogresourceversionname"></a>`name` | [`String`](#string) | Name that uniquely identifies the version within the catalog resource. |
+| <a id="cicatalogresourceversionpath"></a>`path` | [`String`](#string) | Relative web path to the version. |
+| <a id="cicatalogresourceversionreadme"></a>`readme` | [`String`](#string) | Readme data. |
 | <a id="cicatalogresourceversionreadmehtml"></a>`readmeHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `readme`. |
 | <a id="cicatalogresourceversionreleasedat"></a>`releasedAt` **{warning-solid}** | [`Time`](#time) | **Introduced** in GitLab 16.7. **Status**: Experiment. Timestamp of when the version was released. |
 
@@ -22792,6 +22786,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupvulnerabilityseveritiescountcapped"></a>`capped` | [`Boolean`](#boolean) | Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. |
 | <a id="groupvulnerabilityseveritiescountclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="groupvulnerabilityseveritiescountdismissalreason"></a>`dismissalReason` | [`[VulnerabilityDismissalReason!]`](#vulnerabilitydismissalreason) | Filter by dismissal reason. |
 | <a id="groupvulnerabilityseveritiescounthasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have issues. |
@@ -23428,6 +23423,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="instancesecuritydashboardvulnerabilityseveritiescountcapped"></a>`capped` | [`Boolean`](#boolean) | Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountdismissalreason"></a>`dismissalReason` | [`[VulnerabilityDismissalReason!]`](#vulnerabilitydismissalreason) | Filter by dismissal reason. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescounthasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have issues. |
@@ -29026,6 +29022,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectvulnerabilityseveritiescountcapped"></a>`capped` | [`Boolean`](#boolean) | Default value is false. When set to true, the count returned for each severity is capped at a maximum of 1001. |
 | <a id="projectvulnerabilityseveritiescountclusteragentid"></a>`clusterAgentId` | [`[ClustersAgentID!]`](#clustersagentid) | Filter vulnerabilities by `cluster_agent_id`. Vulnerabilities with a `reportType` of `cluster_image_scanning` are only included with this filter. |
 | <a id="projectvulnerabilityseveritiescountdismissalreason"></a>`dismissalReason` | [`[VulnerabilityDismissalReason!]`](#vulnerabilitydismissalreason) | Filter by dismissal reason. |
 | <a id="projectvulnerabilityseveritiescounthasissues"></a>`hasIssues` | [`Boolean`](#boolean) | Filter vulnerabilities that do or do not have issues. |

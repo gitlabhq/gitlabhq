@@ -16,10 +16,7 @@ RSpec.describe Gitlab::Cng::Kubectl::Client do
 
   it "creates custom resource" do
     expect(client.create_resource(resource)).to eq("cmd-output")
-    expect(client).to have_received(:execute_shell).with(
-      %w[kubectl apply -n gitlab -f -],
-      stdin_data: resource.json
-    )
+    expect(client).to have_received(:execute_shell).with(%w[kubectl apply -n gitlab -f -], stdin_data: resource.json)
   end
 
   describe "#execute" do
@@ -145,5 +142,23 @@ RSpec.describe Gitlab::Cng::Kubectl::Client do
       expect { events = client.events }.to output(/Fetching events/).to_stdout
       expect(events).to eq("some events")
     end
+  end
+
+  it "executes custom command in pod" do
+    allow(client).to receive(:execute_shell)
+      .with(%w[kubectl get pods -n gitlab --output jsonpath={.items[*].metadata.name}], stdin_data: nil)
+      .and_return("some-pod-123 test-pod-123")
+
+    expect(client.execute("test-pod", ["ls"], container: "toolbox")).to eq("cmd-output")
+    expect(client).to have_received(:execute_shell).with(
+      %w[kubectl exec test-pod-123 -n gitlab -c toolbox -- ls], stdin_data: nil
+    )
+  end
+
+  it "deletes resource" do
+    expect(client.delete_resource("secret", "test")).to eq("cmd-output")
+    expect(client).to have_received(:execute_shell).with(
+      %w[kubectl delete secret test -n gitlab --ignore-not-found=true --wait], stdin_data: nil
+    )
   end
 end

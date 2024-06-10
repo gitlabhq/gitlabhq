@@ -101,8 +101,10 @@ export default {
         :deployment-class="deploymentClass"
         :has-deployment-metrics="hasDeploymentMetrics"
       />
+
       <merge-train-position-indicator
         class="mr-widget-extension"
+        :merge-request-state="mr.mergeRequestState"
         :merge-train-index="mr.mergeTrainIndex"
         :merge-trains-count="mr.mergeTrainsCount"
         :merge-trains-path="mr.mergeTrainsPath"

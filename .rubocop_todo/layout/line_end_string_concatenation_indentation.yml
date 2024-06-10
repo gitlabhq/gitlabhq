@@ -345,7 +345,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/protected_environment_approval_rules_required_approvals_average_metric_spec.rb'
     - 'ee/spec/lib/gitlab/usage/metrics/instrumentations/protected_environments_required_approvals_average_metric_spec.rb'
     - 'ee/spec/lib/gitlab/vulnerability_scanning/security_report_builder_spec.rb'
-    - 'ee/spec/lib/remote_development/rd_fast_spec_helper.rb'
     - 'ee/spec/lib/security/scan_result_policies/detailed_policy_violation_comment_spec.rb'
     - 'ee/spec/lib/security/scan_result_policies/policy_violation_details_spec.rb'
     - 'ee/spec/mailers/emails/abandoned_trial_notification_spec.rb'

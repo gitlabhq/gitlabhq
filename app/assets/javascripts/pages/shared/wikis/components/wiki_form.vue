@@ -101,6 +101,7 @@ export default {
     submitButton: {
       existingPage: s__('WikiPage|Save changes'),
       newPage: s__('WikiPage|Create page'),
+      newSidebar: s__('WikiPage|Create custom sidebar'),
       newTemplate: s__('WikiPage|Create template'),
     },
     cancel: s__('WikiPage|Cancel'),
@@ -119,7 +120,15 @@ export default {
     DeleteWikiModal,
   },
   mixins: [trackingMixin],
-  inject: ['isEditingPath', 'formatOptions', 'pageInfo', 'drawioUrl', 'templates', 'pageHeading'],
+  inject: [
+    'isEditingPath',
+    'formatOptions',
+    'pageInfo',
+    'drawioUrl',
+    'templates',
+    'pageHeading',
+    'wikiUrl',
+  ],
   data() {
     const title = window.location.href.includes('random_title=true') ? '' : getTitle(this.pageInfo);
     return {
@@ -176,9 +185,16 @@ export default {
       return MARKDOWN_LINK_TEXT[this.format];
     },
     submitButtonText() {
-      return this.pageInfo.persisted
+      let buttonText = this.pageInfo.persisted
         ? this.$options.i18n.submitButton.existingPage
         : this.$options.i18n.submitButton.newPage;
+
+      buttonText =
+        this.isCustomSidebar && !this.pageInfo.persisted
+          ? this.$options.i18n.submitButton.newSidebar
+          : buttonText;
+
+      return buttonText;
     },
     titleHelpText() {
       return this.pageInfo.persisted
@@ -213,6 +229,9 @@ export default {
       }
 
       return null;
+    },
+    isCustomSidebar() {
+      return this.wikiUrl.endsWith('_sidebar');
     },
   },
   watch: {
@@ -277,7 +296,12 @@ export default {
       if (!this.title) return;
 
       // Replace hyphens with spaces
-      const newTitle = this.title.replace(/-+/g, ' ').replace('templates/', '');
+      let newTitle = this.title.replace(/-+/g, ' ').replace('templates/', '');
+
+      // Replace _sidebar with sidebar
+      if (this.isCustomSidebar) {
+        newTitle = this.title.replace('_sidebar', 'sidebar');
+      }
 
       const newCommitMessage = sprintf(this.commitMessageI18n, { pageTitle: newTitle }, false);
       this.commitMessage = newCommitMessage;
@@ -355,6 +379,7 @@ export default {
           :label="$options.i18n.title.label"
           label-for="wiki_title"
           label-class="gl-sr-only"
+          :class="{ 'gl-hidden': isCustomSidebar }"
         >
           <template v-if="!isTemplate" #description>
             <gl-icon name="bulb" />

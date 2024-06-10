@@ -162,7 +162,7 @@ When new files are added, this information can take up to five minutes to update
 ### Add repository languages
 
 Not all files are detected and listed on the **Project overview** page. Documentation,
-vendor code, and most markup languages are excluded.
+vendor code, and [most markup languages](files/index.md#supported-markup-languages) are excluded.
 
 You can change this behavior by overriding the default settings.
 
@@ -178,66 +178,7 @@ View a list of
 [supported data types](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
 
 This feature can use excessive CPU.
-For more information, see the [troubleshooting section](#repository-languages-excessive-cpu-use).
-
-### Supported markup languages
-
-If your file has one of the following file extensions, GitLab renders the
-contents of the file's [markup language](https://en.wikipedia.org/wiki/Lightweight_markup_language) in the UI.
-
-| Markup language | Extensions |
-| --------------- | ---------- |
-| Plain text | `txt` |
-| [Markdown](../../markdown.md) | `mdown`, `mkd`, `mkdn`, `md`, `markdown` |
-| [reStructuredText](https://docutils.sourceforge.io/rst.html) | `rst` |
-| [AsciiDoc](../../asciidoc.md) | `adoc`, `ad`, `asciidoc` |
-| [Textile](https://textile-lang.com/) | `textile` |
-| [Rdoc](https://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
-| [Org mode](https://orgmode.org/) | `org` |
-| [creole](http://www.wikicreole.org/) | `creole` |
-| [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |
-
-### README and index files
-
-When a `README` or `index` file is present in a repository, GitLab renders its contents.
-These files can either be plain text or have the extension of a
-[supported markup language](#supported-markup-languages).
-
-- When both a `README` and an `index` file are present, the `README` always
-  takes precedence.
-- When multiple files have the same name but a different extension, the files are
-  ordered alphabetically. Any file without an extension is ordered last.
-  For example, `README.adoc` takes precedence over `README.md`, and `README.rst`
-  takes precedence over `README`.
-
-### OpenAPI viewer
-
-GitLab can render OpenAPI specification files. The filename must include `openapi` or `swagger` and the extension must be `yaml`,
-`yml`, or `json`. The following examples are all correct:
-
-- `openapi.yml`
-- `openapi.yaml`
-- `openapi.json`
-- `swagger.yml`
-- `swagger.yaml`
-- `swagger.json`
-- `gitlab_swagger.yml`
-- `openapi_gitlab.yml`
-- `OpenAPI.YML`
-- `openapi.Yaml`
-- `openapi.JSON`
-- `openapi.gitlab.yml`
-- `gitlab.openapi.yml`
-
-To render an OpenAPI file:
-
-1. Go to the OpenAPI file in your repository.
-1. Select **Display rendered file**.
-1. To display the `operationId` in the operations list, add `displayOperationId=true` to the query string.
-
-NOTE:
-When `displayOperationId` is present in the query string and has _any_ value, it
-evaluates to `true`. This behavior matches the default behavior of Swagger.
+For more information, see the [troubleshooting section](files/index.md#repository-languages-excessive-cpu-use).
 
 ## Repository size
 
@@ -307,43 +248,8 @@ because they can't follow redirects:
 - [Create a directory](web_editor.md#create-a-directory)
 - [Find file history](git_history.md)
 - [Identify changes by line (Git blame)](git_blame.md)
-- [Use Jupyter notebooks with GitLab](jupyter_notebooks/index.md)
 
 ## Troubleshooting
-
-### Repository Languages: excessive CPU use
-
-To determine which languages are in a repository's files, GitLab uses a Ruby gem.
-When the gem parses a file to determine which type it is, [the process can use excessive CPU](https://gitlab.com/gitlab-org/gitaly/-/issues/1565).
-The gem contains a [heuristics configuration file](https://github.com/github/linguist/blob/master/lib/linguist/heuristics.yml)
-that defines which file extensions must be parsed.
-
-Files with the `.txt` extension and XML files with an extension not defined by the gem can take excessive CPU.
-
-The workaround is to specify the language to assign to specific file extensions.
-The same approach should also allow misidentified file types to be fixed.
-
-1. Identify the language to specify. The gem contains a [configuration file for known data types](https://github.com/github/linguist/blob/master/lib/linguist/languages.yml).
-   To add an entry for text files, for example:
-
-   ```yaml
-   Text:
-     type: prose
-     wrap: true
-     aliases:
-     - fundamental
-     - plain text
-     extensions:
-     - ".txt"
-   ```
-
-1. Add or modify `.gitattributes` in the root of your repository:
-
-   ```plaintext
-   *.txt linguist-language=Text
-   ```
-
-  `*.txt` files have an entry in the heuristics file. This example prevents parsing of these files.
 
 ### Search sequence of pushes to a repository
 

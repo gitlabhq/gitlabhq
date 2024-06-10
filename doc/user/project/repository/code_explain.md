@@ -21,7 +21,7 @@ you can ask GitLab Duo to explain the code to you.
 Prerequisites:
 
 - You must belong to at least one group with the
-  [experiment and beta features setting](../../../user/ai_features_enable.md#turn-on-beta-and-experimental-features) enabled.
+  [experiment and beta features setting](../../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
 - You must have access to view the project.
 
 To explain the code in a file:
@@ -43,4 +43,4 @@ We cannot guarantee that the large language model produces results that are corr
 You can also explain code in:
 
 - A [merge request](../../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
-- The [IDE](../../../user/gitlab_duo_chat_examples.md#explain-code-in-the-ide).
+- The [IDE](../../../user/gitlab_duo_chat/examples.md#explain-code-in-the-ide).

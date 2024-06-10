@@ -242,6 +242,8 @@ class Issue < ApplicationRecord
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
+  scope :with_work_item_type, -> { joins(:work_item_type) }
+
   before_validation :ensure_namespace_id, :ensure_work_item_type
 
   after_save :ensure_metrics!, unless: :skip_metrics?

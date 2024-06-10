@@ -18,6 +18,13 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
       let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
       let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignees: [assignee]) }
 
+      it 'includes work item icons in list' do
+        autocomplete = described_class.new(project, nil)
+        issues = autocomplete.issues.map(&:icon_name)
+
+        expect(issues).to include 'issue-type-issue'
+      end
+
       it 'does not list project confidential issues for guests' do
         autocomplete = described_class.new(project, nil)
         issues = autocomplete.issues.map(&:iid)

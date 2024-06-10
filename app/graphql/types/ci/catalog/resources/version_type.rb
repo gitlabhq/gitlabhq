@@ -11,37 +11,29 @@ module Types
           connection_type_class Types::CountableConnectionType
 
           field :id, ::Types::GlobalIDType[::Ci::Catalog::Resources::Version], null: false,
-            description: 'Global ID of the version.',
-            alpha: { milestone: '16.7' }
+            description: 'Global ID of the version.'
 
-          field :created_at, Types::TimeType, null: true, description: 'Timestamp of when the version was created.',
-            alpha: { milestone: '16.7' }
+          field :created_at, Types::TimeType, null: true, description: 'Timestamp of when the version was created.'
 
           field :released_at, Types::TimeType, null: true, description: 'Timestamp of when the version was released.',
             alpha: { milestone: '16.7' }
 
           field :name, GraphQL::Types::String, null: true,
-            description: 'Name that uniquely identifies the version within the catalog resource.',
-            alpha: { milestone: '16.8' }
+            description: 'Name that uniquely identifies the version within the catalog resource.'
 
           field :path, GraphQL::Types::String, null: true,
-            description: 'Relative web path to the version\'s readme.',
-            alpha: { milestone: '16.8' }
+            description: 'Relative web path to the version.'
 
-          field :author, Types::UserType, null: true, description: 'User that created the version.',
-            alpha: { milestone: '16.7' }
+          field :author, Types::UserType, null: true, description: 'User that created the version.'
 
           field :commit, Types::CommitType, null: true, complexity: 10, calls_gitaly: true,
-            description: 'Commit associated with the version.',
-            alpha: { milestone: '16.7' }
+            description: 'Commit associated with the version.'
 
           field :components, Types::Ci::Catalog::Resources::ComponentType.connection_type, null: true,
-            description: 'Components belonging to the catalog resource.',
-            alpha: { milestone: '16.7' }
+            description: 'Components belonging to the catalog resource.'
 
           field :readme, GraphQL::Types::String, null: true, calls_gitaly: true,
-            description: 'Readme data.',
-            alpha: { milestone: '16.8' } do
+            description: 'Readme data.' do
               extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
             end
 

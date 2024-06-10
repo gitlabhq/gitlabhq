@@ -56,7 +56,12 @@ RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", featu
         result = execute
 
         expect(result).to be_error
-        expect(result[:message]).to eq("Artifacts (#{deleted_job_artifacts.map(&:id).join(',')}) not found")
+
+        expected_ids = deleted_job_artifacts.map(&:id).sort
+        result_ids = result[:message].scan(/\d+/).map(&:to_i).sort
+
+        expect(result_ids).to eq(expected_ids)
+        expect(result[:message]).to match(/Artifacts \(\d+,\d+,\d+\) not found/)
       end
     end
 

@@ -36,6 +36,13 @@ module Ci
         self.upsert(entry.attributes.compact, returning: %w[build_id], unique_by: :build_id)
       end
 
+      def namespace_transfer_params(namespace)
+        {
+          namespace_traversal_ids: namespace.traversal_ids,
+          namespace_id: namespace.id
+        }
+      end
+
       private
 
       def args_from_build(build)

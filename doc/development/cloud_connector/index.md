@@ -270,7 +270,7 @@ To decide if the service is available or visible to the end user, we need to:
    ```
 
 - Optional. If the service has free access, this usually means that the experimental features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
-  - For GitLab Duo features, the customer needs to enable [experimental toggle](../../user/ai_features_enable.md#turn-on-beta-and-experimental-features) in order to use experimental features for free.
+  - For GitLab Duo features, the customer needs to enable [experimental toggle](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) in order to use experimental features for free.
 
 - On GitLab.com and self-managed GitLab, if the service is not accessible for free, check if the add-on bundled with this service has been purchased by the customer (for the group/namespace)
 

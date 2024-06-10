@@ -1542,6 +1542,15 @@
   :weight: 2
   :idempotent: true
   :tags: []
+- :name: jira_connect:integrations_jira_connect_remove_branch
+  :worker_name: Integrations::JiraConnect::RemoveBranchWorker
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: jira_connect:jira_connect_forward_event
   :worker_name: JiraConnect::ForwardEventWorker
   :feature_category: :integrations

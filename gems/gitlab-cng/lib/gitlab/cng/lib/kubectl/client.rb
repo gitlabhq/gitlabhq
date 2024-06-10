@@ -31,6 +31,18 @@ module Gitlab
           run_in_namespace("apply", args: ["-f", "-"], stdin_data: resource.json)
         end
 
+        # Remove kubernetes resource
+        #
+        # @param [String] resource_type
+        # @param [String] resource_name
+        # @param [Boolean] ignore_not_found
+        # @return [String] command output
+        def delete_resource(resource_type, resource_name, ignore_not_found: true)
+          run_in_namespace("delete", resource_type, resource_name, args: [
+            "--ignore-not-found=#{ignore_not_found}", "--wait"
+          ])
+        end
+
         # Execute command in a pod
         #
         # @param [String] pod full or part of pod name

@@ -28,7 +28,13 @@ module Gitlab
 
             def expanded_resource_group_key
               strong_memoize(:expanded_resource_group_key) do
-                ExpandVariables.expand(resource_group_key, -> { variables })
+                variable_set = if Feature.enabled?(:ci_expand_nested_resource_group_variables, processable.project)
+                                 variables.sort_and_expand_all
+                               else
+                                 variables
+                               end
+
+                ExpandVariables.expand(resource_group_key, -> { variable_set })
               end
             end
 

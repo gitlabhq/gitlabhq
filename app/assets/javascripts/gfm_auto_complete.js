@@ -514,6 +514,7 @@ class GfmAutoComplete {
               title: i.title,
               reference: i.reference,
               search: `${i.iid} ${i.title}`,
+              iconName: i.icon_name,
             };
           });
         },
@@ -1155,8 +1156,9 @@ GfmAutoComplete.Issues = {
     // eslint-disable-next-line no-template-curly-in-string
     return value.reference || '${atwho-at}${id}';
   },
-  templateFunction({ id, title, reference }) {
-    return `<li><small>${escape(reference || id)}</small> ${escape(title)}</li>`;
+  templateFunction({ id, title, reference, iconName }) {
+    const icon = iconName ? spriteIcon(iconName, 'gl-text-secondary s16 gl-mr-2') : '';
+    return `<li>${icon}<small>${escape(reference || id)}</small> ${escape(title)}</li>`;
   },
 };
 // Milestones

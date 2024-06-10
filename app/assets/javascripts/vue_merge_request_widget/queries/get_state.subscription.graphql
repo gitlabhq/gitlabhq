@@ -1,9 +1,13 @@
+#import "ee_else_ce/vue_merge_request_widget/queries/states/merge_train_position.fragment.graphql"
+
 subscription getStateSubscription($issuableId: IssuableID!) {
   mergeRequestMergeStatusUpdated(issuableId: $issuableId) {
     ... on MergeRequest {
       id
       detailedMergeStatus
       commitCount
+
+      ...MergeTrainPosition
     }
   }
 }

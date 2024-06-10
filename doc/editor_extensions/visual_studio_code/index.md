@@ -38,7 +38,7 @@ you can [configure](https://marketplace.visualstudio.com/items?itemName=GitLab.g
 - [Features to display or hide](https://gitlab.com/gitlab-org/gitlab-vscode-extension#extension-settings).
 - [Self-signed certificate](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#self-signed-certificates) information.
 - [Code Suggestions](../../user/project/repository/code_suggestions/index.md).
-- [GitLab Duo Chat](../../user/gitlab_duo_chat.md#use-gitlab-duo-chat-in-vs-code).
+- [GitLab Duo Chat](../../user/gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-vs-code).
 
 ## Report issues with the extension
 

@@ -6,7 +6,10 @@ module Projects
     include Routing::WikiHelper
 
     def issues
-      IssuesFinder.new(current_user, project_id: project.id, state: 'opened').execute.select([:iid, :title])
+      IssuesFinder.new(current_user, project_id: project.id, state: 'opened')
+        .execute
+        .with_work_item_type
+        .select([:iid, :title, 'work_item_types.icon_name'])
     end
 
     def milestones

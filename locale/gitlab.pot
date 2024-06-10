@@ -19574,9 +19574,6 @@ msgstr ""
 msgid "Edit milestone"
 msgstr ""
 
-msgid "Edit page"
-msgstr ""
-
 msgid "Edit project: %{project_name}"
 msgstr ""
 
@@ -31882,6 +31879,9 @@ msgstr ""
 msgid "MemberRole|Change role"
 msgstr ""
 
+msgid "MemberRole|Could not check guest overage."
+msgstr ""
+
 msgid "MemberRole|Could not fetch available permissions."
 msgstr ""
 
@@ -42981,12 +42981,6 @@ msgstr ""
 msgid "Quick actions can be used in description and comment boxes."
 msgstr ""
 
-msgid "Quick assign"
-msgstr ""
-
-msgid "Quick assign a reviewer"
-msgstr ""
-
 msgid "Quick help"
 msgstr ""
 
@@ -45594,6 +45588,9 @@ msgstr ""
 msgid "Runners|The %{boldStart}runner authentication token%{boldEnd} is no longer visible, it is stored in the %{codeStart}config.toml%{codeEnd} if you have registered the runner."
 msgstr ""
 
+msgid "Runners|The ID of the machine hosting the runner."
+msgstr ""
+
 msgid "Runners|The deployment name is invalid"
 msgstr ""
 
@@ -45612,9 +45609,6 @@ msgid "Runners|The time it takes for a group runner assigned to this group to pi
 msgstr ""
 
 msgid "Runners|The time it takes for an instance runner to pick up a job. Jobs waiting for runners are in the pending state."
-msgstr ""
-
-msgid "Runners|The unique ID for each runner that uses this configuration."
 msgstr ""
 
 msgid "Runners|The user is not allowed to create a runner"
@@ -59270,10 +59264,22 @@ msgstr ""
 msgid "WikiHistoricalPage|This is an old version of this page."
 msgstr ""
 
+msgid "WikiPageConfirmDelete|Are you sure you want to delete the custom sidebar?"
+msgstr ""
+
 msgid "WikiPageConfirmDelete|Are you sure you want to delete this page?"
 msgstr ""
 
 msgid "WikiPageConfirmDelete|Are you sure you want to delete this template?"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Delete"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Delete custom sidebar"
+msgstr ""
+
+msgid "WikiPageConfirmDelete|Delete custom sidebar?"
 msgstr ""
 
 msgid "WikiPageConfirmDelete|Delete page"
@@ -59301,6 +59307,9 @@ msgid "WikiPage|Content"
 msgstr ""
 
 msgid "WikiPage|Create %{pageTitle}"
+msgstr ""
+
+msgid "WikiPage|Create custom sidebar"
 msgstr ""
 
 msgid "WikiPage|Create page"
@@ -59372,6 +59381,9 @@ msgstr ""
 msgid "Wiki|Last edited by %{author} %{timeago}"
 msgstr ""
 
+msgid "Wiki|New custom sidebar"
+msgstr ""
+
 msgid "Wiki|New page"
 msgstr ""
 
@@ -59385,6 +59397,12 @@ msgid "Wiki|Page history"
 msgstr ""
 
 msgid "Wiki|Pages"
+msgstr ""
+
+msgid "Wiki|Sidebar was successfully created."
+msgstr ""
+
+msgid "Wiki|Sidebar was successfully updated."
 msgstr ""
 
 msgid "Wiki|Template history"

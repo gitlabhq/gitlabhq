@@ -45,7 +45,7 @@ module Groups
       group.run_after_commit_or_now do |group|
         pending_builds_params = { instance_runners_enabled: group.shared_runners_enabled }
 
-        ::Ci::UpdatePendingBuildService.new(group, pending_builds_params).execute
+        ::Ci::PendingBuilds::UpdateGroupWorker.perform_async(group.id, pending_builds_params)
       end
     end
 

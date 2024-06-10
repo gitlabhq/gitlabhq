@@ -13,6 +13,8 @@ module Gitlab
         #   with appropriate configuration class which encapsulates optional deployment hooks and specific helm values
         #
         class Deployment < Command
+          DEFAULT_HELM_RELEASE_NAME = "gitlab"
+
           class << self
             # Add common deployment options for each deployment command defined as public method
             #
@@ -46,7 +48,8 @@ module Gitlab
             end
           end
 
-          desc "kind [NAME]", "Create CNG deployment against local kind k8s cluster where NAME is deployment name"
+          desc "kind [NAME]", "Create CNG deployment against local kind k8s cluster where NAME is helm release name. " \
+                              "Default: #{DEFAULT_HELM_RELEASE_NAME}"
           option :create_cluster,
             desc: "Create kind cluster for local deployments before creating deployment",
             type: :boolean,
@@ -79,7 +82,7 @@ module Gitlab
                   "Useful for reproducing CI deployments. Only valid with --ci flag.",
             type: :boolean,
             default: false
-          def kind(name = "gitlab")
+          def kind(name = DEFAULT_HELM_RELEASE_NAME)
             return print_deploy_args("kind") if options[:print_deploy_args] && options[:ci]
 
             if options[:create_cluster]

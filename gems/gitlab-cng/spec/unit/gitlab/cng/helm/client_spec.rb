@@ -43,7 +43,7 @@ RSpec.describe Gitlab::Cng::Helm::Client do
           .with(%w[helm repo add gitlab https://charts.gitlab.io], stdin_data: nil)
           .and_raise(Gitlab::Cng::Helpers::Shell::CommandFailure.new("something went wrong"))
 
-        expect { client.add_helm_chart }.to raise_error("something went wrong")
+        expect { expect { client.add_helm_chart }.to raise_error("something went wrong") }.to output.to_stdout
       end
     end
 
@@ -100,6 +100,45 @@ RSpec.describe Gitlab::Cng::Helm::Client do
         --wait
         --dry-run
       ], stdin_data: values)
+    end
+  end
+
+  describe "#status" do
+    it "returns status details when release present" do
+      allow(client).to receive(:execute_shell)
+        .with(%w[helm status gitlab --namespace gitlab], stdin_data: nil)
+        .and_return("status")
+
+      expect(client.status("gitlab", namespace: "gitlab")).to eq("status")
+    end
+
+    it "return nil when release not present" do
+      allow(client).to receive(:execute_shell)
+       .with(%w[helm status gitlab --namespace gitlab], stdin_data: nil)
+       .and_raise(Gitlab::Cng::Helpers::Shell::CommandFailure.new("release: not found"))
+
+      expect(client.status("gitlab", namespace: "gitlab")).to be_nil
+    end
+
+    it "raises error when command fails" do
+      allow(client).to receive(:execute_shell)
+        .with(%w[helm status gitlab --namespace gitlab], stdin_data: nil)
+        .and_raise(Gitlab::Cng::Helpers::Shell::CommandFailure.new("something went wrong"))
+
+      expect { client.status("gitlab", namespace: "gitlab") }.to raise_error("something went wrong")
+    end
+  end
+
+  describe "#uninstall" do
+    it "runs helm uninstall command" do
+      expect do
+        client.uninstall("gitlab", namespace: "gitlab", timeout: "10m")
+      end.to output(/Uninstalling helm release 'gitlab' in namespace 'gitlab'/).to_stdout
+
+      expect(client).to have_received(:execute_shell).with(
+        %w[helm uninstall gitlab --namespace gitlab --timeout 10m --wait],
+        stdin_data: nil
+      )
     end
   end
 end

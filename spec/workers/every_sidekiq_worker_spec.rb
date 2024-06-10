@@ -334,6 +334,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Issues::PlacementWorker' => 3,
         'Issues::RebalancingWorker' => 3,
         'IterationsUpdateStatusWorker' => 3,
+        'Integrations::JiraConnect::RemoveBranchWorker' => 3,
         'JiraConnect::SyncBranchWorker' => 3,
         'JiraConnect::SyncBuildsWorker' => 3,
         'JiraConnect::SyncDeploymentsWorker' => 3,

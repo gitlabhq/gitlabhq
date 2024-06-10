@@ -35,8 +35,10 @@ export default {
     GlIcon,
     GlAlert,
     RoleSelector,
+    GuestOverageConfirmation: () =>
+      import('ee_component/members/components/table/guest_overage_confirmation.vue'),
   },
-  inject: ['namespace'],
+  inject: ['namespace', 'group'],
   props: {
     member: {
       type: Object,
@@ -94,11 +96,20 @@ export default {
         this.$emit('close');
       }
     },
+    checkGuestOverage() {
+      this.saveError = null;
+      this.isSavingRole = true;
+      const confirmOverageFn = this.$refs.guestOverageConfirmation.confirmOverage;
+      // If guestOverageConfirmation is real instead of the CE dummy, check the guest overage. Otherwise, just update
+      // the role.
+      if (confirmOverageFn) {
+        confirmOverageFn();
+      } else {
+        this.updateRole();
+      }
+    },
     async updateRole() {
       try {
-        this.saveError = null;
-        this.isSavingRole = true;
-
         const url = this.memberPath.replace(':id', this.member.id);
         const accessLevelProp = ACCESS_LEVEL_PROPERTY_NAME[this.namespace];
 
@@ -117,10 +128,15 @@ export default {
           const { member } = this;
           // Update the access level on the member object so that the members table shows the new role.
           member.accessLevel = {
-            ...this.selectedRole,
             stringValue: this.selectedRole.text,
             integerValue: this.selectedRole.accessLevel,
+            description: this.selectedRole.description,
+            memberRoleId: this.selectedRole.memberRoleId,
           };
+          // Update the license usage info to show/hide the "Is using seat" badge.
+          if (data?.using_license !== undefined) {
+            member.usingLicense = data?.using_license;
+          }
         }
       } catch (error) {
         this.saveError = s__('MemberRole|Could not update role.');
@@ -131,6 +147,11 @@ export default {
     },
     resetRole() {
       this.selectedRole = this.initialRole;
+      this.isSavingRole = false;
+    },
+    showCheckOverageError() {
+      this.saveError = s__('MemberRole|Could not check guest overage.');
+      this.isSavingRole = false;
     },
   },
   getContentWrapperHeight,
@@ -246,7 +267,7 @@ export default {
             variant="confirm"
             :loading="isSavingRole"
             data-testid="save-button"
-            @click="updateRole"
+            @click="checkGuestOverage"
           >
             {{ s__('MemberRole|Update role') }}
           </gl-button>
@@ -258,6 +279,15 @@ export default {
           >
             {{ __('Cancel') }}
           </gl-button>
+          <guest-overage-confirmation
+            ref="guestOverageConfirmation"
+            :group-path="group.path"
+            :member="member"
+            :role="selectedRole"
+            @confirm="updateRole"
+            @cancel="resetRole"
+            @error="showCheckOverageError"
+          />
         </div>
       </template>
     </gl-drawer>

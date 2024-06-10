@@ -16,6 +16,7 @@ describe('ReviewerTitle component', () => {
   let wrapper;
 
   const findEditButton = () => wrapper.findByTestId('reviewers-edit-button');
+  const findDrawerToggle = () => wrapper.findByTestId('drawer-toggle');
 
   const createComponent = (props, { reviewerAssignDrawer = false } = {}) => {
     const apolloProvider = createMockApollo([
@@ -135,7 +136,7 @@ describe('ReviewerTitle component', () => {
       resetHTMLFixture();
     });
 
-    it('sets title for dropdown toggle as `Quick assign`', async () => {
+    it('sets title for drawer toggle as `Add or edit reviewers`', async () => {
       wrapper = createComponent(
         {
           editable: true,
@@ -145,7 +146,7 @@ describe('ReviewerTitle component', () => {
 
       await waitForPromises();
 
-      expect(findEditButton().attributes('title')).toBe('Quick assign');
+      expect(findDrawerToggle().attributes('title')).toBe('Add or edit reviewers');
     });
 
     it('clicking toggle opens reviewer drawer', async () => {
@@ -158,7 +159,7 @@ describe('ReviewerTitle component', () => {
 
       expect(document.querySelector('.gl-drawer')).toBe(null);
 
-      wrapper.find('[data-testid="drawer-toggle"]').vm.$emit('click');
+      findDrawerToggle().vm.$emit('click');
 
       await waitForPromises();
 

@@ -6,17 +6,12 @@
 - @noteable_type = 'Wiki'
 - templates = @templates.map { |t| wiki_page_basic_info(t) }
 
-- if @page.persisted?
-  - page_title = @page.template? ? s_("Wiki|Edit template") : s_("Wiki|Edit page")
-- else
-  - page_title = @page.template? ? s_("Wiki|New template") : s_("Wiki|New page")
-
 = form_errors(@page, truncate: :title)
 
 #js-vue-wiki-edit-app{ data: {
   testid: 'wiki-page-edit-app',
   error: @error,
-  page_heading: page_title,
+  page_heading: @page.title,
   page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
   is_page_template: @page.template?.to_s,
   page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,

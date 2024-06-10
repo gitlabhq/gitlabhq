@@ -7,7 +7,6 @@
 module Packages
   module GcsSignedUrlMetadata
     def url(*args, **kwargs)
-      return super if ::Feature.disabled?(:augment_gcs_signed_url_with_metadata, Feature.current_request)
       return super unless fog_credentials[:provider] == 'Google' && Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- As per https://gitlab.com/groups/gitlab-org/-/epics/8834, we are only interested in egress traffic on Gitlab.com
 
       project = model.try(:project)

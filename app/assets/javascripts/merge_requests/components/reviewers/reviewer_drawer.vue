@@ -67,7 +67,11 @@ export default {
     <template #header>
       <approval-summary />
     </template>
-    <reviewers-container :reviewers="reviewers" :loading-reviewers="loadingReviewers" />
+    <reviewers-container
+      :reviewers="reviewers"
+      :loading-reviewers="loadingReviewers"
+      @request-review="(params) => $emit('request-review', params)"
+    />
     <approval-rules-wrapper :reviewers="reviewers" />
   </gl-drawer>
 </template>

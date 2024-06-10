@@ -13,7 +13,8 @@ module Groups
       IssuesFinder.new(current_user, finder_params)
         .execute
         .preload(project: :namespace)
-        .select(:iid, :title, :project_id, :namespace_id)
+        .with_work_item_type
+        .select(:iid, :title, :project_id, :namespace_id, 'work_item_types.icon_name')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

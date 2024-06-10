@@ -33,7 +33,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
       it 'can create a custom sidebar', :js do
         click_on 'Add custom sidebar'
         fill_in :wiki_content, with: 'My custom sidebar'
-        click_on 'Create page'
+        click_on 'Create custom sidebar'
 
         within('.right-sidebar') do
           expect(page).to have_content('My custom sidebar')

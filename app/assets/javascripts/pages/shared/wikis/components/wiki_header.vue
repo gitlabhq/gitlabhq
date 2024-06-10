@@ -26,8 +26,31 @@ export default {
     'pageVersion',
     'authorUrl',
     'isEditingPath',
+    'wikiUrl',
+    'pagePersisted',
   ],
   computed: {
+    pageHeadingComputed() {
+      let { pageHeading } = this;
+
+      if (this.isEditingPath) {
+        if (this.wikiUrl.endsWith('_sidebar')) {
+          pageHeading = this.pagePersisted
+            ? this.$options.i18n.editSidebar
+            : this.$options.i18n.newSidebar;
+        } else if (this.isPageTemplate) {
+          pageHeading = this.pagePersisted
+            ? this.$options.i18n.editTemplate
+            : this.$options.i18n.newTemplate;
+        } else {
+          pageHeading = this.pagePersisted
+            ? this.$options.i18n.editPage
+            : this.$options.i18n.newPage;
+        }
+      }
+
+      return pageHeading;
+    },
     editTooltipText() {
       return this.isPageTemplate ? this.$options.i18n.editTemplate : this.$options.i18n.editPage;
     },
@@ -57,8 +80,12 @@ export default {
   },
   i18n: {
     edit: __('Edit'),
-    editPage: __('Edit page'),
-    editTemplate: __('Edit template'),
+    newPage: s__('Wiki|New page'),
+    editPage: s__('Wiki|Edit page'),
+    newTemplate: s__('Wiki|New template'),
+    editTemplate: s__('Wiki|Edit template'),
+    newSidebar: s__('Wiki|New custom sidebar'),
+    editSidebar: s__('Wiki|Edit custom sidebar'),
     lastEdited: s__('Wiki|Last edited by %{author} %{timeago}'),
   },
 };
@@ -68,7 +95,7 @@ export default {
   <div
     class="wiki-page-header has-sidebar-toggle detail-page-header border-bottom-0 !gl-pt-0 gl-flex gl-flex-wrap"
   >
-    <page-heading :heading="pageHeading" class="gl-w-full">
+    <page-heading :heading="pageHeadingComputed" class="gl-w-full">
       <template v-if="!isEditingPath" #actions>
         <gl-button
           v-if="showEditButton"

@@ -204,11 +204,7 @@ module WikiActions
     @page = response.payload[:page]
 
     if response.success?
-      flash[:toast] = s_('Wiki|Wiki page was successfully updated.')
-
-      redirect_to(
-        wiki_page_path(wiki, page)
-      )
+      handle_action_success :updated, @page
     else
       @error = response.message
       @templates = templates_list
@@ -224,11 +220,7 @@ module WikiActions
     @page = response.payload[:page]
 
     if response.success?
-      flash[:toast] = s_('Wiki|Wiki page was successfully created.')
-
-      redirect_to(
-        wiki_page_path(wiki, page)
-      )
+      handle_action_success :created, @page
     else
       @templates = templates_list
 
@@ -291,6 +283,20 @@ module WikiActions
   end
 
   private
+
+  def handle_action_success(action, page)
+    if page.title == Wiki::SIDEBAR
+      flash[:toast] = s_('Wiki|Sidebar was successfully created.') if action == :created
+      flash[:toast] = s_('Wiki|Sidebar was successfully updated.') if action == :updated
+
+      redirect_to wiki_path(wiki)
+    else
+      flash[:toast] = s_('Wiki|Wiki page was successfully created.') if action == :created
+      flash[:toast] = s_('Wiki|Wiki page was successfully updated.') if action == :updated
+
+      redirect_to(wiki_page_path(wiki, page))
+    end
+  end
 
   def container
     raise NotImplementedError

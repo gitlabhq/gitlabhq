@@ -17,6 +17,7 @@ module Atlassian
         dev_info = args.slice(:commits, :branches, :merge_requests)
         build_info = args.slice(:pipelines)
         deploy_info = args.slice(:deployments)
+        remove_branch_info = args.slice(:remove_branch_info)
         ff_info = args.slice(:feature_flags)
 
         responses = []
@@ -24,6 +25,7 @@ module Atlassian
         responses << store_dev_info(**common, **dev_info) if dev_info.present?
         responses << store_build_info(**common, **build_info) if build_info.present?
         responses << store_deploy_info(**common, **deploy_info) if deploy_info.present?
+        responses << remove_branch_info(**common, **remove_branch_info) if remove_branch_info.present?
         responses << store_ff_info(**common, **ff_info) if ff_info.present?
         raise ArgumentError, 'Invalid arguments' if responses.empty?
 
@@ -108,10 +110,27 @@ module Atlassian
         post('/rest/devinfo/0.10/bulk', { repositories: [repo] })
       end
 
+      def remove_branch_info(project:, remove_branch_info:, update_sequence_id: nil)
+        # converts the branch name passed as remove_branch_info into a hexdecimal as per
+        # jira's process. Note: we use the hexdigest method in the serializer to parse the id from the branch name
+        # see ../lib/atlassian/jira_connect/serializers/branch_entity.rb#L8
+        jira_branch_id = Digest::SHA256.hexdigest(remove_branch_info)
+
+        logger.info({ message: "deleting jira branch id: #{jira_branch_id}, gitlab branch name: #{remove_branch_info}" })
+
+        delete("/rest/devinfo/0.10/repository/#{project.id}/branch/#{jira_branch_id}")
+      end
+
       def post(path, payload)
         uri = URI.join(@base_uri, path)
 
         self.class.post(uri, headers: headers(uri), body: metadata.merge(payload).to_json)
+      end
+
+      def delete(path)
+        uri = URI.join(@base_uri, path)
+
+        self.class.delete(uri, headers: headers(uri, 'DELETE'))
       end
 
       def headers(uri, http_method = 'POST')
@@ -180,6 +199,10 @@ module Atlassian
         )
 
         Atlassian::Jwt.encode(claims, @shared_secret)
+      end
+
+      def logger
+        Gitlab::IntegrationsLogger
       end
     end
   end

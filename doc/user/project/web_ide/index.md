@@ -262,7 +262,7 @@ To uninstall an extension in the Web IDE:
 
 ## Related topics
 
-- [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat.md#use-gitlab-duo-chat-in-the-web-ide)
+- [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat/index.md#use-gitlab-duo-chat-in-the-web-ide)
 
 ## Troubleshooting
 

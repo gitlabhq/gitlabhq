@@ -54,6 +54,28 @@ module Gitlab
           ], values)
         end
 
+        # Uninstall helm relase
+        #
+        # @param [String] name
+        # @param [String] namespace
+        # @param [String] timeout
+        # @return [void]
+        def uninstall(name, namespace:, timeout:)
+          log("Uninstalling helm release '#{name}' in namespace '#{namespace}'", :info)
+          puts run_helm(%W[uninstall #{name} --namespace #{namespace} --timeout #{timeout} --wait])
+        end
+
+        # Display status of helm release
+        #
+        # @param [String] name
+        # @param [String] namespace
+        # @return [<String, nil>] status of helm release or nil if release is not found
+        def status(name, namespace:)
+          run_helm(%W[status #{name} --namespace #{namespace}])
+        rescue Helpers::Shell::CommandFailure => e
+          e.message.include?("release: not found") ? nil : raise(e)
+        end
+
         private
 
         # Temporary directory for helm chart

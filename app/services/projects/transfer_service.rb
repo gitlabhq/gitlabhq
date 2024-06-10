@@ -275,10 +275,7 @@ module Projects
     end
 
     def pending_builds_params
-      {
-        namespace_id: new_namespace.id,
-        namespace_traversal_ids: new_namespace.traversal_ids
-      }
+      ::Ci::PendingBuild.namespace_transfer_params(new_namespace)
     end
 
     def remove_issue_contacts

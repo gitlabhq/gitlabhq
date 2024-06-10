@@ -47,6 +47,8 @@ export default {
   },
   methods: {
     toggleDrawerOpen(drawerOpen = !this.drawerOpen) {
+      if (!this.glFeatures.reviewerAssignDrawer) return;
+
       this.drawerOpen = drawerOpen;
     },
   },
@@ -61,33 +63,28 @@ export default {
     <template v-if="editable">
       <gl-button
         v-tooltip.hover
-        :title="glFeatures.reviewerAssignDrawer ? __('Quick assign') : __('Change reviewer')"
-        :aria-label="glFeatures.reviewerAssignDrawer ? __('Quick assign a reviewer') : null"
-        class="js-sidebar-dropdown-toggle edit-link gl-ml-auto hide-collapsed gl-float-right"
+        :title="
+          glFeatures.reviewerAssignDrawer ? __('Add or edit reviewers') : __('Change reviewer')
+        "
+        class="gl-ml-auto hide-collapsed gl-float-right"
+        :class="{ 'js-sidebar-dropdown-toggle edit-link': !glFeatures.reviewerAssignDrawer }"
         data-track-action="click_edit_button"
         data-track-label="right_sidebar"
         data-track-property="reviewer"
-        data-testid="reviewers-edit-button"
+        :data-testid="glFeatures.reviewerAssignDrawer ? 'drawer-toggle' : 'reviewers-edit-button'"
         category="tertiary"
         size="small"
-        :icon="glFeatures.reviewerAssignDrawer ? 'plus' : ''"
-        ><template v-if="!glFeatures.reviewerAssignDrawer">{{ __('Edit') }}</template></gl-button
-      >
-      <gl-button
-        v-if="glFeatures.reviewerAssignDrawer"
-        v-tooltip.hover
-        :title="__('Add or edit reviewers')"
-        category="tertiary"
-        size="small"
-        class="gl-float-right gl-ml-2"
-        data-testid="drawer-toggle"
         @click="toggleDrawerOpen(!drawerOpen)"
       >
         {{ __('Edit') }}
       </gl-button>
     </template>
     <mounting-portal v-if="glFeatures.reviewerAssignDrawer" mount-to="#js-reviewer-drawer-portal">
-      <reviewer-drawer :open="drawerOpen" @close="toggleDrawerOpen(false)" />
+      <reviewer-drawer
+        :open="drawerOpen"
+        @request-review="(params) => $emit('request-review', params)"
+        @close="toggleDrawerOpen(false)"
+      />
     </mounting-portal>
   </div>
 </template>

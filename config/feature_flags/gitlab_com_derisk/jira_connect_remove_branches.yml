@@ -1,0 +1,9 @@
+---
+name: jira_connect_remove_branches
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351625
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148712
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/456457
+milestone: '17.1'
+group: group::import and integrate
+type: gitlab_com_derisk
+default_enabled: false

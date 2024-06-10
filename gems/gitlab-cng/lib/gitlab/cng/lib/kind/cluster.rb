@@ -11,6 +11,8 @@ module Gitlab
       class Cluster
         include Helpers::Output
         include Helpers::Shell
+        extend Helpers::Output
+        extend Helpers::Shell
 
         HTTP_PORT = 32080
         SSH_PORT = 32022
@@ -21,6 +23,19 @@ module Gitlab
           @host_http_port = host_http_port
           @host_ssh_port = host_ssh_port
           @docker_hostname = ci ? docker_hostname || "docker" : docker_hostname
+        end
+
+        # Destroy kind cluster
+        #
+        # @param [String] name
+        # @return [void]
+        def self.destroy(name)
+          log("Destroying cluster '#{name}'", :info, bright: true)
+          return log("Cluster not found, skipping!", :warn) unless execute_shell(%w[kind get clusters]).include?(name)
+
+          Helpers::Spinner.spin("destroying cluster") do
+            puts execute_shell(%W[kind delete cluster --name #{name}])
+          end
         end
 
         def create

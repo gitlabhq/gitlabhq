@@ -27,7 +27,7 @@ module Gitlab
 
         def vscode_settings
           # TODO: Add instance-level setting for this https://gitlab.com/gitlab-org/gitlab/-/issues/451871
-          # TODO: We need to harmonize this with `ee/lib/remote_development/settings/defaults_initializer.rb`
+          # TODO: We need to harmonize this with `lib/remote_development/settings/defaults_initializer.rb`
           #       https://gitlab.com/gitlab-org/gitlab/-/issues/460515
           {
             item_url: 'https://open-vsx.org/vscode/item',

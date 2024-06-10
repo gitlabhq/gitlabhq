@@ -14,6 +14,7 @@ describe('pages/shared/wikis/components/wiki_header', () => {
         isPageTemplate: false,
         isEditingPath: false,
         showEditButton: true,
+        wikiUrl: 'http://wiki.url',
         editButtonUrl: 'http://edit.url',
         lastVersion: '2024-06-03T01:53:28.000Z',
         pageVersion: {
@@ -22,6 +23,7 @@ describe('pages/shared/wikis/components/wiki_header', () => {
             authored_date: '2024-06-03T01:53:28.000Z',
           },
         },
+        pagePersisted: true,
         authorUrl: 'http://author.url',
         ...provide,
       },

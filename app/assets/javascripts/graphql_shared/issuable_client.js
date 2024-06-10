@@ -219,6 +219,9 @@ export const config = {
           };
         },
       },
+      MergeRequestApprovalState: {
+        merge: true,
+      },
     },
   },
 };

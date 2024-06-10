@@ -307,10 +307,7 @@ module Groups
     end
 
     def pending_builds_params
-      {
-        namespace_traversal_ids: group.traversal_ids,
-        namespace_id: group.id
-      }
+      ::Ci::PendingBuild.namespace_transfer_params(group)
     end
 
     def update_crm_objects(was_root_group)

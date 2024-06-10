@@ -43,29 +43,19 @@ To break down implementation, we are taking the following steps:
 
 ## Implementation Details
 
-### Stage 1 - Split GraphQL and REST Instances
-
-| Issue | MR | Status |
-| ----- | -- | ------ |
-| [Move legacy files to new directory](https://gitlab.com/gitlab-org/gitlab/-/work_items/464375) | [154625](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154625) | ✅ |
-| [Move remaining legacy code](https://gitlab.com/gitlab-org/gitlab/-/work_items/464379) | [154818](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154818) | ✅ |
-| [Create README for PMG](https://gitlab.com/gitlab-org/gitlab/-/work_items/464632) | [154964](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154964) | In Review |
-
-### Stage 2 - Complete GraphQL Support
-
-| Issue | MR | Status |
-| ----- | -- | ------ |
-| [GraphQL Query Optimization](https://gitlab.com/gitlab-org/gitlab/-/issues/465309) | [465309](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155129) | In Review |
-| [Dedicated component for downstream pipelines](https://gitlab.com/gitlab-org/gitlab/-/work_items/465575) | [155382](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155382) | In Dev |
-| [Fetch Stage by ID](https://gitlab.com/gitlab-org/gitlab/-/issues/464100) | TBD | Not Started |
-
-### Stage 3 - Rollout GraphQL Support Globally
-
-| Issue | MR | Status |
-| ----- | -- | ------ |
-| Migrate available apps to GraphQL instance | TBD | Not Started |
-| [Rollout `ci_graphql_pipeline_mini_graph`](https://gitlab.com/gitlab-org/gitlab/-/issues/407818) | TBD | Not Started |
-| Remove GraphQL logic from commit widget, pipeline editor | TBD | Not Started |
+| Issue | Milestone | MR | Status |
+| ----- | --------- | -- | ------ |
+| [Move legacy files to new directory](https://gitlab.com/gitlab-org/gitlab/-/work_items/464375) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) | [154625](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154625) | ✅ |
+| [Move remaining legacy code](https://gitlab.com/gitlab-org/gitlab/-/work_items/464379) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) |[154818](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154818) | ✅ |
+| [Create README for PMG](https://gitlab.com/gitlab-org/gitlab/-/work_items/464632) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) | [154964](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154964) | ✅ |
+| [GraphQL Query Optimization](https://gitlab.com/gitlab-org/gitlab/-/issues/465309) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) | [465309](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155129) | ✅ |
+| [Dedicated component for downstream pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/466238) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) | [155382](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155382) | In Review |
+| [Fetch Stage by ID](https://gitlab.com/gitlab-org/gitlab/-/issues/464100) | [17.2](https://gitlab.com/groups/gitlab-org/-/milestones/100#tab-issues) | TBD | In Dev |
+| [Rollout `ci_graphql_pipeline_mini_graph`](https://gitlab.com/gitlab-org/gitlab/-/issues/407818) | [17.2](https://gitlab.com/groups/gitlab-org/-/milestones/100#tab-issues) | TBD | Blocked |
+| [Migrate MR PMG to GraphQL instance](https://gitlab.com/gitlab-org/gitlab/-/issues/419725) | [17.2](https://gitlab.com/groups/gitlab-org/-/milestones/100#tab-issues) | TBD | Blocked |
+| [Migrate pipeline editor PMG to GraphQL instance](https://gitlab.com/gitlab-org/gitlab/-/issues/466275) | TBD | TBD | Blocked |
+| [Migrate commit page PMG to GraphQL instance](https://gitlab.com/gitlab-org/gitlab/-/issues/466274) | TBD | TBD | Blocked |
+| [Remove dead logic from PMG codebase](https://gitlab.com/gitlab-org/gitlab/-/issues/466277) | TBD | TBD | Blocked |
 
 ## Design Details
 

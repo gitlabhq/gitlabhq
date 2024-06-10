@@ -27,6 +27,7 @@ describe('Role details drawer', () => {
         currentUserId: 1,
         canManageMembers: true,
         namespace,
+        group: 'group/path',
       },
       stubs: { GlDrawer, MembersTableCell, GlSprintf },
       mocks: { $toast: { show: toastShowMock } },

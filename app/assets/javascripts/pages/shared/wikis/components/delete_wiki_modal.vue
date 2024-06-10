@@ -25,21 +25,20 @@ export default {
   computed: {
     isTemplate,
     title() {
-      return sprintf(
-        this.isTemplate
-          ? this.$options.i18n.deleteTemplateTitle
-          : this.$options.i18n.deletePageTitle,
-        {
-          pageTitle: escape(this.pageHeading),
-        },
-        false,
-      );
+      let title = this.isTemplate
+        ? this.$options.i18n.deleteTemplateTitle
+        : this.$options.i18n.deletePageTitle;
+      if (this.isCustomSidebar) {
+        title = this.$options.i18n.deleteSidebarTitle;
+      }
+      return sprintf(title, { pageTitle: escape(this.pageHeading) }, false);
     },
     primaryProps() {
+      let deleteText = this.deleteTemplateText;
+      if (this.isCustomSidebar) deleteText = this.$options.i18n.modalFooterSidebarButtonText;
+
       return {
-        text: this.isTemplate
-          ? this.$options.i18n.deleteTemplateText
-          : this.$options.i18n.deletePageText,
+        text: deleteText,
         attributes: {
           variant: 'danger',
           'data-testid': 'confirm-deletion-button',
@@ -47,12 +46,21 @@ export default {
       };
     },
     deleteTemplateText() {
-      return this.isTemplate
+      let buttonText = this.isTemplate
         ? this.$options.i18n.deleteTemplateText
         : this.$options.i18n.deletePageText;
+
+      if (this.isCustomSidebar) buttonText = this.$options.i18n.deleteSidebarText;
+
+      return buttonText;
     },
     modalBody() {
-      return this.isTemplate ? this.$options.i18n.modalBodyTemplate : this.$options.i18n.modalBody;
+      let body = this.isTemplate
+        ? this.$options.i18n.modalBodyTemplate
+        : this.$options.i18n.modalBody;
+      if (this.isCustomSidebar) body = this.$options.i18n.modalBodySidebar;
+
+      return body;
     },
     cancelProps() {
       return {
@@ -68,6 +76,9 @@ export default {
         },
       };
     },
+    isCustomSidebar() {
+      return this.wikiUrl.endsWith('_sidebar');
+    },
   },
   methods: {
     onSubmit() {
@@ -80,6 +91,12 @@ export default {
     deleteTemplateTitle: s__('WikiPageConfirmDelete|Delete template "%{pageTitle}"?'),
     deletePageText: s__('WikiPageConfirmDelete|Delete page'),
     deleteTemplateText: s__('WikiPageConfirmDelete|Delete template'),
+    deleteSidebarText: s__('WikiPageConfirmDelete|Delete custom sidebar'),
+    modalBodySidebar: s__(
+      'WikiPageConfirmDelete|Are you sure you want to delete the custom sidebar?',
+    ),
+    modalFooterSidebarButtonText: s__('WikiPageConfirmDelete|Delete'),
+    deleteSidebarTitle: s__('WikiPageConfirmDelete|Delete custom sidebar?'),
     modalBody: s__('WikiPageConfirmDelete|Are you sure you want to delete this page?'),
     modalBodyTemplate: s__('WikiPageConfirmDelete|Are you sure you want to delete this template?'),
     cancelButtonText: __('Cancel'),

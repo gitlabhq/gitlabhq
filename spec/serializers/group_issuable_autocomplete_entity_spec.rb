@@ -12,7 +12,7 @@ RSpec.describe GroupIssuableAutocompleteEntity do
     subject { described_class.new(issue, parent_group: group).as_json }
 
     it 'includes the iid, title, and reference' do
-      expect(subject).to include(:iid, :title, :reference)
+      expect(subject).to include(:iid, :title, :reference, :icon_name)
     end
   end
 end

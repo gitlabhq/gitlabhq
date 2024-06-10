@@ -50,7 +50,7 @@ export default {
     <template #head(systemId)="{ label }">
       {{ label }}
       <help-popover>
-        {{ s__('Runners|The unique ID for each runner that uses this configuration.') }}
+        {{ s__('Runners|The ID of the machine hosting the runner.') }}
       </help-popover>
     </template>
     <template #cell(status)="{ item = {} }">

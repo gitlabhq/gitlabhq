@@ -3,6 +3,7 @@
 require "thor"
 require "require_all"
 require "uri"
+require "tty-prompt"
 
 # make sure helpers are required first
 require_rel "lib/helpers/**/*.rb"
@@ -34,6 +35,9 @@ module Gitlab
 
       desc "log [SUBCOMMAND]", "Manage deployment related logs"
       subcommand "log", Commands::Log
+
+      desc "destroy [SUBCOMMAND]", "Manage deployment related object cleanup"
+      subcommand "destroy", Commands::Destroy
     end
   end
 end

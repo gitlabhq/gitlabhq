@@ -118,9 +118,9 @@ If you're proposing to fetch data from an external public database (e.g. fetchin
 
 Using a new embedding model or persisting data into a new storage would require [legal reviews](https://handbook.gitlab.com/handbook/legal/). See the following links for more information:
 
-- [Data privacy](../../../user/ai_data_usage.md#data-privacy)
-- [Data retention](../../../user/ai_data_usage.md#data-retention)
-- [Training data](../../../user/ai_data_usage.md#training-data)
+- [Data privacy](../../../user/gitlab_duo/data_usage.md#data-privacy)
+- [Data retention](../../../user/gitlab_duo/data_usage.md#data-retention)
+- [Training data](../../../user/gitlab_duo/data_usage.md#training-data)
 
 ## Evaluation
 

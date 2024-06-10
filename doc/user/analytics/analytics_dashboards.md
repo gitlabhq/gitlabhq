@@ -282,7 +282,7 @@ DETAILS:
 Prerequisites:
 
 - The top-level group of the project must have GitLab Duo
- [experiment and beta features enabled](../ai_features_enable.md#turn-on-beta-and-experimental-features).
+ [experiment and beta features enabled](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 
 To generate a custom visualization with GitLab Duo using a natural language query:
 

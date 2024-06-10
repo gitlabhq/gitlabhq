@@ -6,6 +6,7 @@ PATH
       rainbow (~> 3.1)
       require_all (~> 3.0)
       thor (~> 1.3)
+      tty-prompt (~> 0.23.1)
       tty-spinner (~> 0.9.3)
       tty-which (~> 0.5.0)
 
@@ -242,6 +243,8 @@ GEM
     parser (3.3.0.5)
       ast (~> 2.4.1)
       racc
+    pastel (0.8.0)
+      tty-color (~> 0.5)
     proc_to_ast (0.1.0)
       coderay
       parser
@@ -337,7 +340,16 @@ GEM
     tins (1.32.1)
       sync
     trailblazer-option (0.1.2)
+    tty-color (0.6.0)
     tty-cursor (0.7.1)
+    tty-prompt (0.23.1)
+      pastel (~> 0.8)
+      tty-reader (~> 0.8)
+    tty-reader (0.9.0)
+      tty-cursor (~> 0.7)
+      tty-screen (~> 0.8)
+      wisper (~> 2.0)
+    tty-screen (0.8.2)
     tty-spinner (0.9.3)
       tty-cursor (~> 0.7)
     tty-which (0.5.0)
@@ -356,6 +368,7 @@ GEM
       selenium-webdriver (~> 4.0)
     webrick (1.7.0)
     websocket (1.2.10)
+    wisper (2.0.1)
     xpath (3.2.0)
       nokogiri (~> 1.8)
     zeitwerk (2.6.15)

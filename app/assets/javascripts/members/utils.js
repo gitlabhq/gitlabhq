@@ -3,6 +3,7 @@ import { s__ } from '~/locale';
 import showGlobalToast from '~/vue_shared/plugins/global_toast';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams } from '~/lib/utils/url_utility';
+import { ACCESS_LEVEL_GUEST_INTEGER } from '~/access_level/constants';
 import {
   FIELDS,
   DEFAULT_SORT,
@@ -49,6 +50,8 @@ export const roleDropdownItems = ({ validRoles }) => {
     accessLevel,
     memberRoleId: null, // The value `null` is need to downgrade from custom role to static role. See: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133430#note_1595153555
     value: `role-static-${accessLevel}`,
+    // For base roles, only Guest and Minimal Access users won't occupy a seat.
+    occupiesSeat: accessLevel > ACCESS_LEVEL_GUEST_INTEGER,
   }));
 
   return { flatten: staticRoleDropdownItems, formatted: staticRoleDropdownItems };

@@ -61,13 +61,5 @@ RSpec.shared_examples 'augmenting GCS signed URL with metadata' do
     context 'when not on GitLab.com' do
       it { is_expected.not_to include('x-goog-custom-audit-gitlab-') }
     end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(augment_gcs_signed_url_with_metadata: false)
-      end
-
-      it { is_expected.not_to include('x-goog-custom-audit-gitlab-') }
-    end
   end
 end
