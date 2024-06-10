@@ -21,6 +21,10 @@ You can receive updates about activity in issues, merge requests, epics, and des
 For the tool that GitLab administrators can use to send messages to users, read
 [Email from GitLab](../../administration/email_from_gitlab.md).
 
+In GitLab 17.1 and later, administrators can turn on a
+[rate limit for notifications](../../security/rate_limits.md#notification-emails)
+per 24 hours per project or group per user.
+
 ## Who receives notifications
 
 When notifications are enabled for an issue, merge request, or epic, GitLab notifies you of actions

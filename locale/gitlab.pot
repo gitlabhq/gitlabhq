@@ -50709,6 +50709,9 @@ msgid_plural "Stars"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Star count"
+msgstr ""
+
 msgid "Star labels to start sorting by priority."
 msgstr ""
 

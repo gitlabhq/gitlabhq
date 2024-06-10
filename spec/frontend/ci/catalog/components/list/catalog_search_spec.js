@@ -6,6 +6,7 @@ import {
   SORT_DESC,
   SORT_OPTION_CREATED,
   SORT_OPTION_RELEASED,
+  SORT_OPTION_STAR_COUNT,
 } from '~/ci/catalog/constants';
 
 describe('CatalogSearch', () => {
@@ -30,7 +31,7 @@ describe('CatalogSearch', () => {
 
     it('sets sorting options', () => {
       const sortOptionsProp = findAllSortingItems();
-      expect(sortOptionsProp).toHaveLength(2);
+      expect(sortOptionsProp).toHaveLength(3);
       expect(sortOptionsProp[0].text).toBe('Released at');
     });
 
@@ -116,6 +117,13 @@ describe('CatalogSearch', () => {
 
         expect(findSorting().props().sortBy).toBe(SORT_OPTION_CREATED);
         expect(findSorting().props().text).toBe('Created at');
+      });
+
+      it('changes the sort option to `Star count`', async () => {
+        await findSorting().vm.$emit('sortByChange', SORT_OPTION_STAR_COUNT);
+
+        expect(findSorting().props('sortBy')).toBe(SORT_OPTION_STAR_COUNT);
+        expect(findSorting().props('text')).toBe('Star count');
       });
     });
   });

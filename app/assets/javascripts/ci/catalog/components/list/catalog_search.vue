@@ -1,7 +1,13 @@
 <script>
 import { GlSearchBoxByClick, GlSorting } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { SORT_ASC, SORT_DESC, SORT_OPTION_CREATED, SORT_OPTION_RELEASED } from '../../constants';
+import {
+  SORT_ASC,
+  SORT_DESC,
+  SORT_OPTION_CREATED,
+  SORT_OPTION_RELEASED,
+  SORT_OPTION_STAR_COUNT,
+} from '../../constants';
 
 export default {
   components: {
@@ -58,6 +64,7 @@ export default {
   sortOptions: [
     { value: SORT_OPTION_RELEASED, text: __('Released at') },
     { value: SORT_OPTION_CREATED, text: __('Created at') },
+    { value: SORT_OPTION_STAR_COUNT, text: __('Star count') },
   ],
 };
 </script>

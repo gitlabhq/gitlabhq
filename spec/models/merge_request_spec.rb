@@ -3752,17 +3752,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let(:options) { { auto_merge_requested: true, auto_merge_strategy: auto_merge_strategy } }
 
       where(:auto_merge_strategy, :skip_approved_check, :skip_draft_check, :skip_blocked_check,
-        :skip_discussions_check, :skip_external_status_check, :skip_requested_changes_check) do
-        ''                                                      | false | false | false | false | false | false
-        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false | false | false | false | false | false
-        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | true | true | true | true | true
+        :skip_discussions_check, :skip_external_status_check, :skip_requested_changes_check, :skip_jira_check) do
+        ''                                                      | false | false | false | false | false | false | false
+        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false | false | false | false | false | false | false
+        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | true | true | true | true | true | true
       end
 
       with_them do
         it do
           is_expected.to include(skip_approved_check: skip_approved_check, skip_draft_check: skip_draft_check,
             skip_blocked_check: skip_blocked_check, skip_discussions_check: skip_discussions_check,
-            skip_external_status_check: skip_external_status_check, skip_requested_changes_check: skip_requested_changes_check)
+            skip_external_status_check: skip_external_status_check, skip_requested_changes_check: skip_requested_changes_check,
+            skip_jira_check: skip_jira_check)
         end
       end
     end
@@ -6579,6 +6580,52 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:merge_request) { build_stubbed(:merge_request) }
 
     it { is_expected.to eq(false) }
+  end
+
+  describe '#has_jira_issue_keys?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:has_jira_issue_keys) { merge_request.has_jira_issue_keys? }
+
+    context 'when project has jira integration' do
+      let(:jira_integration) { build(:jira_integration) }
+
+      before do
+        allow(merge_request.project).to receive(:jira_integration).and_return(jira_integration)
+      end
+
+      context 'when the merge request title has a key' do
+        before do
+          merge_request.title = 'PROJECT-1'
+        end
+
+        it 'returns true' do
+          expect(has_jira_issue_keys).to be_truthy
+        end
+      end
+
+      context 'when the merge request title has a key' do
+        before do
+          merge_request.description = 'PROJECT-1'
+        end
+
+        it 'returns true' do
+          expect(has_jira_issue_keys).to be_truthy
+        end
+      end
+
+      context 'when the merge request does not have a key' do
+        it 'returns false' do
+          expect(has_jira_issue_keys).to be_falsey
+        end
+      end
+    end
+
+    context 'when project does not have jira integration' do
+      it 'returns false' do
+        expect(has_jira_issue_keys).to be_falsey
+      end
+    end
   end
 
   describe '#allows_multiple_assignees?' do

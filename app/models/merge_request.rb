@@ -1252,7 +1252,8 @@ class MergeRequest < ApplicationRecord
       skip_blocked_check: merge_when_checks_pass_strat,
       skip_discussions_check: merge_when_checks_pass_strat,
       skip_external_status_check: merge_when_checks_pass_strat,
-      skip_requested_changes_check: merge_when_checks_pass_strat
+      skip_requested_changes_check: merge_when_checks_pass_strat,
+      skip_jira_check: merge_when_checks_pass_strat
     }
   end
 
@@ -1264,6 +1265,7 @@ class MergeRequest < ApplicationRecord
   # skip_blocked_check
   # skip_external_status_check
   # skip_requested_changes_check
+  # skip_jira_check
   def mergeable?(check_mergeability_retry_lease: false, skip_rebase_check: false, **mergeable_state_check_params)
     return false unless mergeable_state?(**mergeable_state_check_params)
 
@@ -1303,6 +1305,7 @@ class MergeRequest < ApplicationRecord
   # skip_blocked_check
   # skip_external_status_check
   # skip_requested_changes_check
+  # skip_jira_check
   def mergeable_state?(**params)
     results = check_mergeability_states(checks: self.class.mergeable_state_checks, **params)
 
@@ -2281,6 +2284,16 @@ class MergeRequest < ApplicationRecord
 
   def temporarily_unapproved?
     false
+  end
+
+  def has_jira_issue_keys?
+    return false unless project&.jira_integration&.reference_pattern
+
+    Atlassian::JiraIssueKeyExtractor.has_keys?(
+      title,
+      description,
+      custom_regex: project.jira_integration.reference_pattern
+    )
   end
 
   private
