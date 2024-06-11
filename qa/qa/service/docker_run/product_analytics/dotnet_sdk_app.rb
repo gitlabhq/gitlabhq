@@ -13,13 +13,13 @@ module QA
             # It's built on every merge to main branch in the repository.
             # @name should not contain _ (underscores) as it is used to generate host_name
             # and _ are not allowed for domain names.
-            # Note: set @host_name = 'localhost' here when running locally against GDK.
             @image = 'registry.gitlab.com/gitlab-org/analytics-section/product-analytics/' \
                      'gl-application-sdk-dotnet/example-app:main'
             @name = 'dotnet-sdk'
             @sdk_host = URI(sdk_host)
             @sdk_app_id = sdk_app_id
             @port = '5171'
+            @host_name = 'localhost' unless Runtime::Env.running_in_ci?
 
             super()
           end

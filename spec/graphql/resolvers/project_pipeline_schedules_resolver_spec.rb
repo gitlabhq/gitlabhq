@@ -30,33 +30,25 @@ RSpec.describe Resolvers::ProjectPipelineSchedulesResolver do
     end
   end
 
-  describe '#sort' do
-    before do
-      travel_to(Time.zone.local(2024, 3, 2, 1, 0))
+  describe '#sort', time_travel_to: Time.zone.local(2024, 3, 2, 12, 0) do
+    let!(:pipeline1) do
+      create(:ci_pipeline_schedule, description: :aab, ref: :masterb, cron: ' 0 13 * * *   ',
+        created_at: Time.zone.now, updated_at: 2.months.ago, project: project)
     end
 
-    let_it_be(:pipeline1) do
-      create(:ci_pipeline_schedule, description: :aab, ref: :masterb, cron: ' 0 5 * * *   ',
-        created_at: Time.zone.local(2024, 3, 2, 1, 0), updated_at: Time.zone.local(2024, 1, 2, 1, 0),
-        project: project)
+    let!(:pipeline2) do
+      create(:ci_pipeline_schedule, description: :aaa, ref: :masterz, cron: ' 0 23 * * *   ',
+        created_at: 1.year.ago, updated_at: Time.zone.now, project: project)
     end
 
-    let_it_be(:pipeline2) do
-      create(:ci_pipeline_schedule, description: :aaa, ref: :masterz, cron: ' 0 6 * * *   ',
-        created_at: Time.zone.local(2023, 3, 2, 1, 0), updated_at: Time.zone.local(2024, 3, 2, 1, 0),
-        project: project)
+    let!(:pipeline3) do
+      create(:ci_pipeline_schedule, description: :zzz, ref: :mastera, cron: ' 0 12 * * *   ',
+        created_at: 2.years.ago, updated_at: 1.month.from_now, project: project)
     end
 
-    let_it_be(:pipeline3) do
-      create(:ci_pipeline_schedule, description: :zzz, ref: :mastera, cron: ' 0 8 * * *   ',
-        created_at: Time.zone.local(2022, 3, 2, 1, 0), updated_at: Time.zone.local(2024, 4, 2, 1, 0),
-        project: project)
-    end
-
-    let_it_be(:pipeline4) do
-      create(:ci_pipeline_schedule, description: :zza, ref: :mastery, cron: ' 0 7 * * *   ',
-        created_at: Time.zone.local(2021, 3, 2, 1, 0), updated_at: Time.zone.local(2024, 2, 2, 1, 0),
-        project: project)
+    let!(:pipeline4) do
+      create(:ci_pipeline_schedule, description: :zza, ref: :mastery, cron: ' 0 1 * * *   ',
+        created_at: 3.years.ago, updated_at: 1.month.ago, project: project)
     end
 
     context "with by id" do
@@ -100,12 +92,12 @@ RSpec.describe Resolvers::ProjectPipelineSchedulesResolver do
     end
 
     context "with by next_run_at" do
-      it "sorts desc", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466308' do
+      it "sorts desc" do
         expect(resolve_pipeline_schedules(args: { sort: :next_run_at_desc }).to_a).to eq([pipeline3, pipeline4,
           pipeline2, pipeline1])
       end
 
-      it "sorts asc", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466309' do
+      it "sorts asc" do
         expect(resolve_pipeline_schedules(args: { sort: :next_run_at_asc }).to_a).to eq([pipeline1, pipeline2,
           pipeline4, pipeline3])
       end

@@ -446,7 +446,7 @@
 {"name":"openssl-signature_algorithm","version":"1.3.0","platform":"ruby","checksum":"a3b40b5e8276162d4a6e50c7c97cdaf1446f9b2c3946a6fa2c14628e0c957e80"},
 {"name":"opentelemetry-api","version":"1.2.5","platform":"ruby","checksum":"ab3d9a0566cd2ee068ade40e840bc973383ab8568e693c0c5712f0c789122cc9"},
 {"name":"opentelemetry-common","version":"0.21.0","platform":"ruby","checksum":"fe891a44583a20bc3217b324aec76d066504494951682d391cfd57d40cd01c98"},
-{"name":"opentelemetry-exporter-otlp","version":"0.26.3","platform":"ruby","checksum":"fc1deea7924c74e3536983b02684d1bc7e9737baa5c38f3aff9809a7fd330399"},
+{"name":"opentelemetry-exporter-otlp","version":"0.27.0","platform":"ruby","checksum":"0050cf6ade97186ee3176cd8c44087b70cb739c3c624dbfc7c33097a3a189e4c"},
 {"name":"opentelemetry-helpers-sql-obfuscation","version":"0.1.0","platform":"ruby","checksum":"bc6ef1373dbcf979647091b3bfc99d7b6fb9669f74c3ae184f58b48adfc8d432"},
 {"name":"opentelemetry-instrumentation-action_pack","version":"0.9.0","platform":"ruby","checksum":"c5df8472afc9cdbfc1425d9af7816b9cfc1a1a69b86621f1fc624974bd9acb9a"},
 {"name":"opentelemetry-instrumentation-action_view","version":"0.7.0","platform":"ruby","checksum":"bc7c714be0b4bb76843085c29ecc9465e65cb7fe6722e34c71629e44f8c3cb75"},

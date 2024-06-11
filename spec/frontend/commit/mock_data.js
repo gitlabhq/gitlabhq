@@ -10,6 +10,7 @@ export const mockDownstreamPipelinesGraphql = ({ includeSourceJobRetried = true 
       },
       detailedStatus: {
         id: 'success-612-612',
+        detailsPath: '/root/trigger-downstream/-/pipelines/610',
         group: 'success',
         icon: 'status_success',
         label: 'passed',
@@ -31,6 +32,7 @@ export const mockDownstreamPipelinesGraphql = ({ includeSourceJobRetried = true 
       },
       detailedStatus: {
         id: 'success-611-611',
+        detailsPath: '/root/trigger-downstream/-/pipelines/610',
         group: 'success',
         icon: 'status_success',
         label: 'passed',
@@ -52,6 +54,7 @@ export const mockDownstreamPipelinesGraphql = ({ includeSourceJobRetried = true 
       },
       detailedStatus: {
         id: 'success-609-609',
+        detailsPath: '/root/trigger-downstream/-/pipelines/610',
         group: 'success',
         icon: 'status_success',
         label: 'passed',
@@ -77,6 +80,7 @@ const upstream = {
   },
   detailedStatus: {
     id: 'success-610-610',
+    detailsPath: '/root/trigger-downstream/-/pipelines/610',
     group: 'success',
     icon: 'status_success',
     label: 'passed',

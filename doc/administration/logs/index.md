@@ -1055,7 +1055,7 @@ This file is located at:
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab Dedicated
+**Offering:** GitLab.com, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137812) in GitLab 16.7.
 

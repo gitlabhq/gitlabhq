@@ -1,12 +1,13 @@
 <script>
-import { GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlIcon, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
 import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
+import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import getPipelineMiniGraphQuery from './graphql/queries/get_pipeline_mini_graph.query.graphql';
-import LinkedPipelinesMiniList from './linked_pipelines_mini_list.vue';
+import DownstreamPipelines from './downstream_pipelines.vue';
 import PipelineStages from './pipeline_stages.vue';
 /**
  * Renders the GraphQL instance of the pipeline mini graph.
@@ -16,10 +17,14 @@ export default {
     pipelineMiniGraphFetchError: __('There was a problem fetching the pipeline mini graph.'),
   },
   arrowStyles: ['arrow-icon gl-display-inline-block gl-mx-1 gl-text-gray-500 !gl-align-middle'],
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   components: {
+    CiIcon,
+    DownstreamPipelines,
     GlIcon,
     GlLoadingIcon,
-    LinkedPipelinesMiniList,
     PipelineStages,
   },
   props: {
@@ -90,6 +95,9 @@ export default {
     upstreamPipeline() {
       return this.pipeline?.upstream;
     },
+    upstreamTooltipText() {
+      return `${this.upstreamPipeline.project.name} - ${this.upstreamPipeline.detailedStatus.label}`;
+    },
   },
   mounted() {
     toggleQueryPollingByVisibility(this.$apollo.queries.pipeline);
@@ -101,11 +109,14 @@ export default {
   <div>
     <gl-loading-icon v-if="$apollo.queries.pipeline.loading" />
     <div v-else data-testid="pipeline-mini-graph">
-      <linked-pipelines-mini-list
+      <ci-icon
         v-if="upstreamPipeline"
-        :triggered-by="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
-          upstreamPipeline,
-        ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+        v-gl-tooltip.hover
+        :title="upstreamTooltipText"
+        :aria-label="upstreamTooltipText"
+        :status="upstreamPipeline.detailedStatus"
+        :show-tooltip="false"
+        class="gl-align-middle"
         data-testid="pipeline-mini-graph-upstream"
       />
       <gl-icon
@@ -125,9 +136,9 @@ export default {
         name="long-arrow"
         data-testid="downstream-arrow-icon"
       />
-      <linked-pipelines-mini-list
+      <downstream-pipelines
         v-if="hasDownstreamPipelines"
-        :triggered="downstreamPipelines"
+        :pipelines="downstreamPipelines"
         :pipeline-path="pipelinePath"
         data-testid="pipeline-mini-graph-downstream"
       />

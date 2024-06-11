@@ -127,7 +127,8 @@ module Backup
         Backup::Tasks::TerraformState.id => Backup::Tasks::TerraformState.new(progress: progress, options: options),
         Backup::Tasks::Registry.id => Backup::Tasks::Registry.new(progress: progress, options: options),
         Backup::Tasks::Packages.id => Backup::Tasks::Packages.new(progress: progress, options: options),
-        Backup::Tasks::CiSecureFiles.id => Backup::Tasks::CiSecureFiles.new(progress: progress, options: options)
+        Backup::Tasks::CiSecureFiles.id => Backup::Tasks::CiSecureFiles.new(progress: progress, options: options),
+        Backup::Tasks::ExternalDiffs.id => Backup::Tasks::ExternalDiffs.new(progress: progress, options: options)
       }.freeze
     end
 

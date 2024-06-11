@@ -1,8 +1,8 @@
 import { mount } from '@vue/test-utils';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import LinkedPipelinesMiniList from '~/ci/pipeline_mini_graph/linked_pipelines_mini_list.vue';
-import mockData from '../linked_pipelines_mock_data';
+import LinkedPipelinesMiniList from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_linked_pipelines_mini_list.vue';
+import mockData from '../legacy_linked_pipelines_mock_data';
 
 describe('Linked pipeline mini list', () => {
   let wrapper;
@@ -61,12 +61,6 @@ describe('Linked pipeline mini list', () => {
       expect(tooltip.value.title).toBe('GitLabCE - running');
     });
 
-    it('should correctly set is-upstream', () => {
-      expect(findLinkedPipelineMiniList().exists()).toBe(true);
-
-      expect(findLinkedPipelineMiniList().classes('is-upstream')).toBe(true);
-    });
-
     it('should correctly compute shouldRenderCounter', () => {
       expect(findLinkedPipelineMiniList().vm.shouldRenderCounter).toBe(false);
     });
@@ -103,12 +97,6 @@ describe('Linked pipeline mini list', () => {
       const tooltip = getBinding(findLinkedPipelineMiniItem().element, 'gl-tooltip');
 
       expect(tooltip.value.title).toBe('GitLabCE - running');
-    });
-
-    it('should correctly set is-downstream', () => {
-      expect(findLinkedPipelineMiniList().exists()).toBe(true);
-
-      expect(findLinkedPipelineMiniList().classes('is-downstream')).toBe(true);
     });
 
     it('should render the pipeline counter', () => {

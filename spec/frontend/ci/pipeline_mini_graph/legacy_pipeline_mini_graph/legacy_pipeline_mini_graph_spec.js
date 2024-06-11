@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { pipelines } from 'test_fixtures/pipelines/pipelines.json';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineStages from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_stages.vue';
-import mockLinkedPipelines from '../linked_pipelines_mock_data';
+import mockLinkedPipelines from '../legacy_linked_pipelines_mock_data';
 
 const mockStages = pipelines[0].details.stages;
 

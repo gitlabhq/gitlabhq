@@ -75,12 +75,7 @@ export default {
 
 <template>
   <div data-testid="pipeline-stage">
-    <ci-icon
-      :status="stage.detailedStatus"
-      :show-tooltip="false"
-      :use-link="false"
-      class="gl-mb-0!"
-    />
+    <ci-icon :status="stage.detailedStatus" :show-tooltip="false" :use-link="false" />
     <!-- <ul v-for="job in jobs" :key="job.id">
       <job-item :job="job" />
     </ul> -->

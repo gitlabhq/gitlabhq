@@ -66,7 +66,7 @@ export default {
       return `+${this.linkedPipelines.length - this.maxRenderedPipelines}`;
     },
     counterTooltipText() {
-      return sprintf(s__('LinkedPipelines|%{counterLabel} more downstream pipelines'), {
+      return sprintf(s__('Pipelines|%{counterLabel} more downstream pipelines'), {
         counterLabel: this.counterLabel,
       });
     },
@@ -76,6 +76,7 @@ export default {
       const { label } = accessValue(pipeline, this.dataMethod, 'detailedStatus');
 
       return `${pipeline.project.name} - ${label}`;
+      // return `${pipeline?.project?.name} - ${pipeline?.details?.status?.label}`;
     },
     pipelineStatus(pipeline) {
       // detailedStatus is graphQL, details.status is REST
@@ -88,10 +89,6 @@ export default {
 <template>
   <span
     v-if="linkedPipelines"
-    :class="{
-      'is-upstream': isUpstream,
-      'is-downstream': isDownstream,
-    }"
     class="linked-pipeline-mini-list gl-display-inline-flex gl-gap-2 gl-align-middle"
   >
     <ci-icon

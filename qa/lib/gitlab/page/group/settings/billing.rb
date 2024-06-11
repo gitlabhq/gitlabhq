@@ -10,25 +10,6 @@ module Gitlab
           link :upgrade_to_premium
           link :upgrade_to_ultimate
 
-          # Subscription details
-          h5 :subscription_header
-          button :refresh_seats
-
-          # Usage
-          p :seats_in_subscription
-          p :seats_currently_in_use
-          p :max_seats_used
-          p :seats_owed
-
-          # Billing
-          p :subscription_start_date
-          p :subscription_end_date
-
-          def refresh_subscription_seats
-            refresh_seats
-            ::QA::Support::WaitForRequests.wait_for_requests
-          end
-
           # Waits for subscription to be synced and UI to be updated
           #
           # @param subscription_plan [String]

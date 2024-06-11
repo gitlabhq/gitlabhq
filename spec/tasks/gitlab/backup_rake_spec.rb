@@ -6,13 +6,16 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
   let(:enable_registry) { true }
   let(:backup_restore_pid_path) { "#{Rails.application.root}/tmp/backup_restore.pid" }
   let(:backup_rake_task_names) do
-    %w[db repo uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
+    %w[db repo uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files external_diffs]
   end
 
   let(:progress) { StringIO.new }
 
   let(:backup_task_ids) do
-    %w[db repositories uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files]
+    %w[
+      db repositories uploads builds artifacts pages lfs terraform_state registry packages ci_secure_files
+      external_diffs
+    ]
   end
 
   def tars_glob
@@ -312,7 +315,9 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
           "Dumping packages ... ",
           "Dumping packages ... done",
           "Dumping ci secure files ... ",
-          "Dumping ci secure files ... done"
+          "Dumping ci secure files ... done",
+          "Dumping external diffs ... ",
+          "Dumping external diffs ... done"
         ])
 
         backup_rake_task_names.each do |task|
@@ -399,6 +404,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
             registry.tar.gz
             packages.tar.gz
             ci_secure_files.tar.gz
+            external_diffs.tar.gz
           ]
         )
 
@@ -414,6 +420,7 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
         expect(tar_contents).to match('registry.tar.gz')
         expect(tar_contents).to match('packages.tar.gz')
         expect(tar_contents).to match('ci_secure_files.tar.gz')
+        expect(tar_contents).to match('external_diffs.tar.gz')
         expect(tar_contents).not_to match(%r{^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|
                                                              pages.tar.gz|artifacts.tar.gz|registry.tar.gz)/$})
       end
@@ -674,7 +681,8 @@ RSpec.describe 'gitlab:backup namespace rake tasks', :reestablished_active_recor
         'registry.tar.gz',
         'packages.tar.gz',
         'repositories',
-        'ci_secure_files.tar.gz'
+        'ci_secure_files.tar.gz',
+        'external_diffs.tar.gz'
       )
     end
 

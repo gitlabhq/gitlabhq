@@ -14,6 +14,7 @@ query getLinkedPipelines($fullPath: ID!, $iid: ID!) {
           }
           detailedStatus {
             id
+            detailsPath
             group
             icon
             label
@@ -33,6 +34,7 @@ query getLinkedPipelines($fullPath: ID!, $iid: ID!) {
         }
         detailedStatus {
           id
+          detailsPath
           group
           icon
           label

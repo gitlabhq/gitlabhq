@@ -175,7 +175,7 @@ including:
 - Snippets
 - [Group wikis](../../user/project/wiki/group.md)
 - Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
-- External merge request diffs (GitLab Helm chart only. [Issue 438777](https://gitlab.com/gitlab-org/gitlab/-/issues/438777) proposes to backup local external MR diffs with the Linux package)
+- External merge request diffs ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154914) in GitLab 17.1)
 
 Backups do not include:
 
@@ -443,7 +443,7 @@ Depending on your installation type, slightly different components can be skippe
 
 :::TabTitle Linux package (Omnibus) / Docker / Self-compiled
 
-<!-- source: https://gitlab.com/gitlab-org/gitlab/-/blob/31c3df7ebb65768208772da3e20d32688a6c90ef/lib/backup/manager.rb#L126 -->
+<!-- source: https://gitlab.com/gitlab-org/gitlab/-/blob/d693aa7f894c7306a0d20ab6d138a7b95785f2ff/lib/backup/manager.rb#L117-133 -->
 
 - `db` (database)
 - `repositories` (Git repositories data, including wikis)
@@ -456,6 +456,7 @@ Depending on your installation type, slightly different components can be skippe
 - `registry` (Container registry images)
 - `packages` (Packages)
 - `ci_secure_files` (Project-level Secure Files)
+- `external_diffs` (External Merge Request diffs)
 
 :::TabTitle Helm chart (Kubernetes)
 
