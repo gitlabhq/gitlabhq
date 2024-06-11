@@ -11,6 +11,7 @@ query getMergeRequests(
   $authorUsername: String
   $draft: Boolean
   $milestoneTitle: String
+  $milestoneWildcardId: MilestoneWildcardId
   $sourceBranches: [String!]
   $targetBranches: [String!]
   $beforeCursor: String
@@ -27,6 +28,7 @@ query getMergeRequests(
       authorUsername: $authorUsername
       draft: $draft
       milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
       sourceBranches: $sourceBranches
       targetBranches: $targetBranches
       before: $beforeCursor

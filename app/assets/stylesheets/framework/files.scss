@@ -61,7 +61,7 @@
   }
 
   .file-blame-legend {
-    background-color: $gray-light;
+    background-color: $gray-10;
     text-align: right;
     padding: 8px $gl-padding;
     border-bottom: 1px solid $border-color;
@@ -242,7 +242,7 @@ span.idiff {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    background-color: $gray-light;
+    background-color: $gray-10;
     border-bottom: 1px solid $border-color;
     padding: $gl-padding-8 $gl-padding;
     margin: 0;
@@ -263,11 +263,6 @@ span.idiff {
   }
 }
 
-.file-validation {
-  // we use $gray-light variable instead of utility class, because it's value is dynamic per color theme
-  background-color: $gray-light;
-}
-
 .blob-content-holder .file-actions {
   @include media-breakpoint-down(sm) {
     .btn {
@@ -286,7 +281,7 @@ span.idiff {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  background-color: $gray-light;
+  background-color: $gray-10;
   border-bottom: 1px solid $border-color;
   padding: 5px $gl-padding;
 }
@@ -520,7 +515,7 @@ span.idiff {
   .blame-commit {
     width: 400px;
     flex: none;
-    background: $gray-light;
+    background: $gray-10;
     border-left: 3px solid;
 
     .commit-row-title {

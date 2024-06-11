@@ -3,12 +3,10 @@ Fips/MD5:
   Exclude:
     - 'app/experiments/application_experiment.rb'
     - 'app/models/concerns/checksummable.rb'
-    - 'app/services/packages/debian/generate_distribution_service.rb'
     - 'app/services/packages/go/create_package_service.rb'
     - 'app/services/packages/maven/metadata/append_package_file_service.rb'
     - 'app/services/packages/rubygems/create_gemspec_service.rb'
     - 'ee/app/models/license.rb'
-    - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
     - 'lib/tasks/migrate/setup_postgresql.rake'
     - 'qa/qa/specs/features/api/3_create/repository/project_archive_compare_spec.rb'
     - 'spec/controllers/invites_controller_spec.rb'

@@ -1,6 +1,5 @@
 ---
 Rails/RequireDependency:
-  Details: grace period
   Exclude:
     - 'app/models/alert_management/alert.rb'
     - 'app/models/design_management/action.rb'
@@ -18,7 +17,6 @@ Rails/RequireDependency:
     - 'ee/app/services/vulnerabilities/resolve_service.rb'
     - 'ee/app/services/vulnerabilities/revert_to_detected_service.rb'
     - 'ee/spec/lib/gitlab/insights/validators/params_validator_spec.rb'
-    - 'lib/api/terraform/state.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/pattern/regular_expression.rb'
     - 'lib/gitlab/email/receiver.rb'
     - 'lib/gitlab/omniauth_initializer.rb'
@@ -29,7 +27,6 @@ Rails/RequireDependency:
     - 'lib/tasks/gitlab/assets.rake'
     - 'spec/lib/gitlab/ci/config/entry/include/rules/rule_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/include/rules_spec.rb'
-    - 'spec/lib/gitlab/ci/config/entry/include_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/includes_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/product/matrix_spec.rb'
     - 'spec/lib/gitlab/ci/config/entry/product/parallel_spec.rb'

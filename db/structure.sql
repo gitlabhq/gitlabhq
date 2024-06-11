@@ -1361,6 +1361,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_ebab34f83f1d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_packages"
+  WHERE "packages_packages"."id" = NEW."package_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_fb587b1ae7ad() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -7699,21 +7715,14 @@ CREATE TABLE ci_runners (
     contacted_at timestamp without time zone,
     active boolean DEFAULT true NOT NULL,
     name character varying,
-    version character varying,
-    revision character varying,
-    platform character varying,
-    architecture character varying,
     run_untagged boolean DEFAULT true NOT NULL,
     locked boolean DEFAULT false NOT NULL,
     access_level integer DEFAULT 0 NOT NULL,
-    ip_address character varying,
     maximum_timeout integer,
     runner_type smallint NOT NULL,
     token_encrypted character varying,
     public_projects_minutes_cost_factor double precision DEFAULT 1.0 NOT NULL,
     private_projects_minutes_cost_factor double precision DEFAULT 1.0 NOT NULL,
-    config jsonb DEFAULT '{}'::jsonb NOT NULL,
-    executor_type smallint,
     maintainer_note text,
     token_expires_at timestamp with time zone,
     allowed_plans text[] DEFAULT '{}'::text[] NOT NULL,
@@ -13648,7 +13657,8 @@ ALTER SEQUENCE packages_debian_project_distributions_id_seq OWNED BY packages_de
 CREATE TABLE packages_debian_publications (
     id bigint NOT NULL,
     package_id bigint NOT NULL,
-    distribution_id bigint NOT NULL
+    distribution_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE packages_debian_publications_id_seq
@@ -25893,8 +25903,6 @@ CREATE INDEX index_ci_runners_on_token_expires_at_and_id_desc ON ci_runners USIN
 
 CREATE INDEX index_ci_runners_on_token_expires_at_desc_and_id_desc ON ci_runners USING btree (token_expires_at DESC, id DESC);
 
-CREATE INDEX index_ci_runners_on_version ON ci_runners USING btree (version);
-
 CREATE UNIQUE INDEX index_ci_running_builds_on_build_id ON ci_running_builds USING btree (build_id);
 
 CREATE UNIQUE INDEX index_ci_running_builds_on_partition_id_build_id ON ci_running_builds USING btree (partition_id, build_id);
@@ -27490,6 +27498,8 @@ CREATE INDEX index_packages_debian_project_distributions_on_creator_id ON packag
 CREATE INDEX index_packages_debian_publications_on_distribution_id ON packages_debian_publications USING btree (distribution_id);
 
 CREATE UNIQUE INDEX index_packages_debian_publications_on_package_id ON packages_debian_publications USING btree (package_id);
+
+CREATE INDEX index_packages_debian_publications_on_project_id ON packages_debian_publications USING btree (project_id);
 
 CREATE UNIQUE INDEX index_packages_dependencies_on_name_and_version_pattern ON packages_dependencies USING btree (name, version_pattern);
 
@@ -30847,6 +30857,8 @@ CREATE TRIGGER trigger_dbdd61a66a91 BEFORE INSERT OR UPDATE ON agent_activity_ev
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
+CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
+
 CREATE TRIGGER trigger_fb587b1ae7ad BEFORE INSERT OR UPDATE ON merge_requests FOR EACH ROW EXECUTE FUNCTION trigger_fb587b1ae7ad();
 
 CREATE TRIGGER trigger_fbd8825b3057 BEFORE INSERT OR UPDATE ON boards_epic_board_labels FOR EACH ROW EXECUTE FUNCTION trigger_fbd8825b3057();
@@ -32202,6 +32214,9 @@ ALTER TABLE ONLY vulnerability_remediations
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_fc7bc5e687 FOREIGN KEY (due_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY packages_debian_publications
+    ADD CONSTRAINT fk_fd1ad5dd37 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY abuse_report_events
     ADD CONSTRAINT fk_fdd4d610e0 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;

@@ -5,7 +5,6 @@ RSpec/DescribedClass:
     - 'qa/spec/service/docker_run/base_spec.rb'
     - 'qa/spec/support/loglinking_spec.rb'
     - 'qa/spec/support/page_error_checker_spec.rb'
-    - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/ci/variables/collection/item_spec.rb'
     - 'spec/lib/gitlab/git/repository_spec.rb'
     - 'spec/lib/gitlab/git/tree_spec.rb'

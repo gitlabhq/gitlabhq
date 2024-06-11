@@ -608,20 +608,6 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
       end
     end
 
-    context 'when the feature flag :single_relation_import is disabled' do
-      before do
-        stub_feature_flags(single_relation_import: false)
-      end
-
-      it 'returns not found' do
-        params[:path] = 'any/project'
-
-        perform_relation_import
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
     def upload_relation_archive(file, headers = {}, params = {})
       workhorse_finalize(
         api("/projects/import-relation", user),

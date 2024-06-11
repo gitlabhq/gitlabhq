@@ -5,4 +5,3 @@ Metrics/ParameterLists:
     - 'app/helpers/blob_helper.rb'
     - 'app/models/packages/sem_ver.rb'
     - 'app/models/repository.rb'
-    - 'lib/gitlab/git/tree.rb'

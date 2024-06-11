@@ -50,6 +50,10 @@ module Users
       self.class.similar_to(self).includes(:user)
     end
 
+    def duplicate_records
+      self.class.similar_to(self).where.not(user: user)
+    end
+
     def self.related_to_banned_user?(international_dial_code, phone_number)
       joins(:banned_user)
       .where(

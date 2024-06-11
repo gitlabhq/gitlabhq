@@ -17,7 +17,7 @@ $conflict-colors: (
   white-button-origin-chosen  : #268ced,
 
   white-header-not-chosen     : #f0f0f0,
-  white-line-not-chosen       : $gray-light,
+  white-line-not-chosen       : $gray-10,
 
   dark-header-head-neutral   : rgba(#3f3, 0.2),
   dark-line-head-neutral     : rgba(#3f3, 0.1),
@@ -111,7 +111,7 @@ $conflict-colors: (
   none_line_origin_chosen    : $gray-100,
   none_button_origin_chosen  : $gray-100,
 
-  none_header_not_chosen     : $gray-light,
-  none_line_not_chosen       : $gray-light
+  none_header_not_chosen     : $gray-10,
+  none_line_not_chosen       : $gray-10
 
 );

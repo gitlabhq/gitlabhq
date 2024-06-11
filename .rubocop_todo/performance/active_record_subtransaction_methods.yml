@@ -1,15 +1,13 @@
 ---
 Performance/ActiveRecordSubtransactionMethods:
   Exclude:
-    - 'app/controllers/repositories/lfs_storage_controller.rb'
     - 'app/controllers/search_controller.rb'
     - 'app/models/application_record.rb'
+    - 'app/models/ci/external_pull_request.rb'
     - 'app/models/ci/ref.rb'
     - 'app/models/concerns/commit_signature.rb'
-    - 'app/models/container_repository.rb'
     - 'app/models/design_management/design_collection.rb'
     - 'app/models/error_tracking/error.rb'
-    - 'app/models/ci/external_pull_request.rb'
     - 'app/models/plan.rb'
     - 'app/models/project.rb'
     - 'app/models/shard.rb'
@@ -34,9 +32,7 @@ Performance/ActiveRecordSubtransactionMethods:
     - 'ee/app/models/ee/plan.rb'
     - 'ee/app/models/elastic/index_setting.rb'
     - 'ee/app/models/gitlab_subscription.rb'
-    - 'ee/app/models/software_license.rb'
     - 'ee/app/services/boards/user_preferences/update_service.rb'
-    - 'ee/app/services/ci/minutes/update_project_and_namespace_usage_service.rb'
     - 'ee/app/services/security/store_scan_service.rb'
     - 'ee/app/workers/import_software_licenses_worker.rb'
     - 'ee/db/fixtures/production/027_plans.rb'

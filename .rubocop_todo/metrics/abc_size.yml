@@ -1,7 +1,6 @@
 ---
 Metrics/AbcSize:
   Exclude:
-    - 'app/helpers/issuables_helper.rb'
     - 'app/models/instance_configuration.rb'
     - 'app/services/projects/create_service.rb'
     - 'lib/gitlab/analytics/cycle_analytics/request_params.rb'

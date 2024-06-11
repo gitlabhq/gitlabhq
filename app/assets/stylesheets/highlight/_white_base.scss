@@ -74,7 +74,7 @@ $white-gc-bg: #eaf2f5;
 
 @mixin match-line {
   color: $t-gray-a-24;
-  background-color: $gray-light;
+  background-color: $gray-10;
 }
 
 @mixin diff-match-line {
@@ -106,7 +106,7 @@ $white-gc-bg: #eaf2f5;
   .line-numbers,
   .diff-line-num,
   .code-search-line {
-    background-color: $gray-light;
+    background-color: $gray-10;
 
     &.conflict_marker,
     &.conflict_our {

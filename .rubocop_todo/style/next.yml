@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/Next:
-  Details: grace period
-  Exclude:
-    - 'lib/gitlab/tracking/event_definition.rb'

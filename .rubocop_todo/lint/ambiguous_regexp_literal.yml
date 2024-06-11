@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Lint/AmbiguousRegexpLiteral:
-  Exclude:
-    - 'spec/serializers/commit_entity_spec.rb'
-

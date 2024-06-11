@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/RedundantReturn:
-  Details: grace period
   Exclude:
     - 'app/controllers/snippets/notes_controller.rb'
     - 'app/helpers/profiles_helper.rb'
@@ -9,7 +8,6 @@ Style/RedundantReturn:
     - 'app/models/concerns/cascading_namespace_setting_attribute.rb'
     - 'app/models/namespaces/randomized_suffix_path.rb'
     - 'app/models/notification_recipient.rb'
-    - 'app/models/packages/debian/publication.rb'
     - 'app/models/releases/link.rb'
     - 'app/presenters/packages/nuget/service_index_presenter.rb'
     - 'app/presenters/packages/nuget/version_helpers.rb'

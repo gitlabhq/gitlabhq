@@ -63,7 +63,7 @@ exports[`packages_list_row renders 1`] = `
         class="gl-display-flex gl-flex-direction-column gl-flex-shrink-0 gl-justify-content-space-between gl-sm-align-items-flex-end gl-text-secondary"
       >
         <div
-          class="gl-align-items-center gl-display-flex gl-min-h-6 gl-sm-font-weight-semibold gl-sm-text-body"
+          class="gl-align-items-center gl-display-flex gl-min-h-6 gl-sm-text-body"
         >
           <publish-method-stub />
         </div>

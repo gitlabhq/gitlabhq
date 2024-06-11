@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/ArgumentsForwarding:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/users_controller.rb'
     - 'app/controllers/application_controller.rb'
@@ -115,7 +114,6 @@ Style/ArgumentsForwarding:
     - 'lib/gitlab/database/load_balancing/session.rb'
     - 'lib/gitlab/database/load_balancing/sticking.rb'
     - 'lib/gitlab/database/lock_writes_manager.rb'
-    - 'lib/gitlab/database/migrations/background_migration_helpers.rb'
     - 'lib/gitlab/database/migrations/lock_retry_mixin.rb'
     - 'lib/gitlab/database/migrations/runner_backoff/communicator.rb'
     - 'lib/gitlab/database/migrations/test_batched_background_runner.rb'

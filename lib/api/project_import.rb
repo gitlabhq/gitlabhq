@@ -239,7 +239,6 @@ module API
         consumes ['multipart/form-data']
       end
       post 'import-relation' do
-        not_found! unless Feature.enabled?(:single_relation_import, current_user, type: :beta)
         forbidden! unless Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
 
         require_gitlab_workhorse!

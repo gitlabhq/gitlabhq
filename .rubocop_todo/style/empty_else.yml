@@ -5,8 +5,6 @@ Style/EmptyElse:
     - 'app/controllers/concerns/sends_blob.rb'
     - 'app/controllers/google_api/authorizations_controller.rb'
     - 'app/finders/group_finder.rb'
-    - 'app/graphql/resolvers/group_milestones_resolver.rb'
-    - 'app/graphql/types/ci/detailed_status_type.rb'
     - 'app/models/legacy_diff_discussion.rb'
     - 'app/models/resource_state_event.rb'
     - 'app/models/resource_timebox_event.rb'

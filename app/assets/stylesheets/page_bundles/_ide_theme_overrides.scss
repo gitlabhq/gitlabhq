@@ -103,7 +103,7 @@
   .bs-callout,
   .ide-pipeline .top-bar,
   .ide-terminal .top-bar {
-    background-color: var(--ide-background, $gray-light);
+    background-color: var(--ide-background, $gray-10);
   }
 
   .bs-callout {
@@ -376,7 +376,7 @@
 
   // todo: remove this block after all disabled buttons have been migrated to gl-button
   .btn[disabled]:not(.gl-button) {
-    background-color: var(--ide-btn-default-background, $gray-light) !important;
+    background-color: var(--ide-btn-default-background, $gray-10) !important;
     border: 1px solid var(--ide-btn-disabled-border, $gray-100) !important;
     color: var(--ide-btn-disabled-color, $gl-text-color-disabled) !important;
   }

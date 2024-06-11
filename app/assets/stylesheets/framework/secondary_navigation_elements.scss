@@ -260,7 +260,7 @@
   }
 
   .fade-right {
-    @include fade(left, $gray-light);
+    @include fade(left, $gray-10);
     right: -5px;
 
     svg {
@@ -274,7 +274,7 @@
   }
 
   .fade-left {
-    @include fade(right, $gray-light);
+    @include fade(right, $gray-10);
     left: -5px;
     text-align: center;
 

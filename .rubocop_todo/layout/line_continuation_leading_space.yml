@@ -3,4 +3,3 @@
 Layout/LineContinuationLeadingSpace:
   Exclude:
     - 'ee/lib/tasks/gitlab/geo.rake'
-    - 'scripts/qa/testcases-check'

@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Rails/FindEach:
-  Details: grace period
   Exclude:
     - 'app/finders/projects/members/effective_access_level_finder.rb'
     - 'app/services/ci/expire_pipeline_cache_service.rb'
@@ -19,7 +18,6 @@ Rails/FindEach:
     - 'ee/spec/lib/ee/gitlab/usage_data_spec.rb'
     - 'ee/spec/requests/api/graphql/ci/jobs_spec.rb'
     - 'ee/spec/services/package_metadata/ingestion/advisory/advisory_ingestion_task_spec.rb'
-    - 'ee/spec/services/vulnerabilities/starboard_vulnerability_resolve_service_spec.rb'
     - 'ee/spec/workers/concerns/update_orchestration_policy_configuration_spec.rb'
     - 'lib/banzai/reference_parser/base_parser.rb'
     - 'lib/gitlab/background_migration/populate_vulnerability_dismissal_fields.rb'
@@ -30,7 +28,6 @@ Rails/FindEach:
     - 'spec/features/issues/user_interacts_with_awards_spec.rb'
     - 'spec/features/merge_request/user_creates_image_diff_notes_spec.rb'
     - 'spec/features/merge_request/user_resolves_diff_notes_and_discussions_resolve_spec.rb'
-    - 'spec/features/projects/show/download_buttons_spec.rb'
     - 'spec/features/projects/show/user_sees_git_instructions_spec.rb'
     - 'spec/features/search/user_searches_for_merge_requests_spec.rb'
     - 'spec/frontend/fixtures/analytics.rb'
@@ -40,7 +37,6 @@ Rails/FindEach:
     - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
     - 'spec/lib/gitlab/project_template_spec.rb'
     - 'spec/lib/gitlab/sample_data_template_spec.rb'
-    - 'spec/lib/gitlab/usage/metric_definition_spec.rb'
     - 'spec/migrations/20231003045342_migrate_sidekiq_namespaced_jobs_spec.rb'
     - 'spec/models/ci_platform_metric_spec.rb'
     - 'spec/workers/authorized_project_update/user_refresh_over_user_range_worker_spec.rb'

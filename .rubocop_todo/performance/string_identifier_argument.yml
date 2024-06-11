@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Performance/StringIdentifierArgument:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/import/github_oauth.rb'
     - 'app/controllers/import/github_controller.rb'
@@ -99,7 +98,6 @@ Performance/StringIdentifierArgument:
     - 'lib/gitlab/application_context.rb'
     - 'lib/gitlab/auth/activity.rb'
     - 'lib/gitlab/ci/ansi2html.rb'
-    - 'lib/gitlab/ci/ansi2json/parser.rb'
     - 'lib/gitlab/ci/matching/build_matcher.rb'
     - 'lib/gitlab/ci/matching/runner_matcher.rb'
     - 'lib/gitlab/ci/reports/test_report.rb'

@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/RedundantParentheses:
-  Details: grace period
   Exclude:
     - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'
     - 'app/graphql/resolvers/tree_resolver.rb'

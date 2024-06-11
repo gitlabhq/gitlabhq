@@ -1,6 +1,5 @@
 ---
 # Cop supports --autocorrect.
 Performance/StringInclude:
-  Details: grace period
   Exclude:
     - 'qa/qa/specs/features/browser_ui/2_plan/email/trigger_email_notification_spec.rb'

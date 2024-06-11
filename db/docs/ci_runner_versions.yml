@@ -8,4 +8,4 @@ description: Information about used Ci::Runner versions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90982
 milestone: '15.2'
 gitlab_schema: gitlab_ci
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460096
+exempt_from_sharding: true

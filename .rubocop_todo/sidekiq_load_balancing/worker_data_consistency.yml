@@ -329,7 +329,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/elastic_namespace_indexer_worker.rb'
     - 'ee/app/workers/elastic_namespace_rollout_worker.rb'
     - 'ee/app/workers/elastic_remove_expired_namespace_subscriptions_from_index_cron_worker.rb'
-    - 'ee/app/workers/elastic_wiki_indexer_worker.rb'
     - 'ee/app/workers/emails/abandoned_trial_emails_cron_worker.rb'
     - 'ee/app/workers/epics/new_epic_issue_worker.rb'
     - 'ee/app/workers/epics/update_cached_metadata_worker.rb'
@@ -411,4 +410,3 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/vulnerabilities/statistics/schedule_worker.rb'
     - 'ee/app/workers/vulnerability_exports/export_deletion_worker.rb'
     - 'ee/app/workers/vulnerability_exports/export_worker.rb'
-    - 'ee/app/workers/zoekt/indexer_worker.rb'

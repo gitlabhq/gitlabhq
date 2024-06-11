@@ -53,6 +53,26 @@ RSpec.describe Users::PhoneNumberValidation, feature_category: :instance_resilie
     end
   end
 
+  describe '#duplicate_records' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:phone_number_validation) { create(:phone_number_validation, user: user) }
+
+    let_it_be(:phone_number) do
+      phone_number_validation.attributes.with_indifferent_access.slice(
+        :international_dial_code, :phone_number
+      )
+    end
+
+    let_it_be(:match) { create(:phone_number_validation, phone_number) }
+
+    let_it_be(:non_match_1) { create(:phone_number_validation, phone_number.merge(international_dial_code: 81)) }
+    let_it_be(:non_match_2) { create(:phone_number_validation, phone_number.merge(phone_number: '5555555555')) }
+
+    it 'returns matches with the same international dialing code and phone number' do
+      expect(phone_number_validation.duplicate_records).to match_array([match])
+    end
+  end
+
   describe '.related_to_banned_user?' do
     let_it_be(:international_dial_code) { 1 }
     let_it_be(:phone_number) { '555' }

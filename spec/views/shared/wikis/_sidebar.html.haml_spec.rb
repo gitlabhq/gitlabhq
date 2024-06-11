@@ -10,19 +10,6 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
     assign(:project, project)
   end
 
-  context 'the sidebar failed to load' do
-    before do
-      assign(:sidebar_error, Object.new)
-    end
-
-    it 'reports this to the user' do
-      render
-
-      expect(rendered).to include('The sidebar failed to load')
-      expect(rendered).to have_css('.gl-alert.gl-alert-info')
-    end
-  end
-
   context 'The sidebar comes from a custom page' do
     before do
       assign(:sidebar_page, double('WikiPage', path: 'sidebar.md', slug: 'sidebar', content: 'Some sidebar content', wiki: wiki))
@@ -39,31 +26,6 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
       render
 
       expect(rendered).to include('Some sidebar content')
-    end
-  end
-
-  context 'The sidebar comes a list of wiki pages' do
-    before do
-      create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page')
-      assign(:wiki_pages_count, 3)
-      assign(:sidebar_wiki_entries, create_list(:wiki_page, 3, wiki: wiki))
-      assign(:sidebar_limited, true)
-      stub_template "shared/wikis/_wiki_pages.html.erb" => "Entries: <%= @sidebar_wiki_entries.size %>"
-      stub_template "shared/wikis/_wiki_page.html.erb" => 'A WIKI PAGE'
-    end
-
-    it 'does not show an alert' do
-      render
-
-      expect(rendered).not_to include('The sidebar failed to load')
-      expect(rendered).not_to have_css('.gl-alert.gl-alert-info')
-    end
-
-    it 'renders the wiki content' do
-      render
-
-      expect(rendered).to include("A WIKI PAGE\n" * 3)
-      expect(rendered).to have_link('View all pages')
     end
   end
 

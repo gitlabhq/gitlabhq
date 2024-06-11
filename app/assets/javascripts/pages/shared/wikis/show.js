@@ -5,6 +5,7 @@ import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_
 import csrf from '~/lib/utils/csrf';
 import Wikis from './wikis';
 import WikiContentApp from './app.vue';
+import WikiSidebarEntries from './components/wiki_sidebar_entries.vue';
 
 const mountWikiContentApp = () => {
   const el = document.querySelector('#js-vue-wiki-content-app');
@@ -71,7 +72,29 @@ const mountWikiContentApp = () => {
   });
 };
 
+const mountWikiSidebarEntries = () => {
+  const el = document.querySelector('#js-wiki-sidebar-entries');
+  if (!el) return false;
+
+  const { hasCustomSidebar, canCreate, viewAllPagesPath } = el.dataset;
+
+  return new Vue({
+    el,
+    provide: {
+      hasCustomSidebar: parseBoolean(hasCustomSidebar),
+      canCreate: parseBoolean(canCreate),
+      sidebarPagesApi: gl.GfmAutoComplete.dataSources.wikis,
+      viewAllPagesPath,
+    },
+    render(createElement) {
+      return createElement(WikiSidebarEntries);
+    },
+  });
+};
+
 export const mountApplications = () => {
   mountWikiContentApp();
+  mountWikiSidebarEntries();
+
   new Wikis(); // eslint-disable-line no-new
 };

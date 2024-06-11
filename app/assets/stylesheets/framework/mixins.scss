@@ -51,7 +51,7 @@
     }
 
     &.active {
-      background: $gray-light;
+      background: $gray-10;
 
       a {
         font-weight: $gl-font-weight-bold;
@@ -438,7 +438,7 @@
   transition: width $gl-transition-duration-medium;
   height: $toggle-sidebar-height;
   padding: 0 $gl-padding;
-  background-color: $gray-light;
+  background-color: $gray-10;
   border: 0;
   color: $gl-text-color-secondary;
   display: flex;

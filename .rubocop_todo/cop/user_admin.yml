@@ -17,7 +17,6 @@ Cop/UserAdmin:
     - 'app/services/users/build_service.rb'
     - 'ee/app/controllers/ee/projects_controller.rb'
     - 'ee/app/models/ee/user.rb'
-    - 'ee/app/policies/ee/group_policy.rb'
     - 'ee/app/services/ee/groups/create_service.rb'
     - 'ee/app/services/ee/groups/update_service.rb'
     - 'ee/app/services/ee/projects/update_service.rb'

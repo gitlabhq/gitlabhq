@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 GraphQL/UnnecessaryFieldAlias:
-  Details: grace period
   Exclude:
     - 'app/graphql/types/ci/pipeline_type.rb'
     - 'app/graphql/types/ci/runner_manager_type.rb'

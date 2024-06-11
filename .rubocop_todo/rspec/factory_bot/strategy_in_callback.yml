@@ -37,7 +37,6 @@ RSpec/FactoryBot/StrategyInCallback:
     - 'spec/factories/integrations.rb'
     - 'spec/factories/issues.rb'
     - 'spec/factories/merge_requests.rb'
-    - 'spec/factories/ml/candidates.rb'
     - 'spec/factories/namespaces.rb'
     - 'spec/factories/packages/dependency_links.rb'
     - 'spec/factories/packages/package_files.rb'

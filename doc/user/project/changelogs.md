@@ -135,6 +135,8 @@ these variables:
 
 ### Custom templates
 
+> - Default template [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806) from using `commit.reference` and `merge_request.reference` to `commit.web_url` and `merge_request.web_url` in GitLab 17.1.
+
 Category sections are generated using a template. The default template:
 
 ```plaintext
@@ -143,9 +145,9 @@ Category sections are generated using a template. The default template:
 ### {{ title }} ({% if single_change %}1 change{% else %}{{ count }} changes{% end %})
 
 {% each entries %}
-- [{{ title }}]({{ commit.reference }})\
+- [{{ title }}]({{ commit.web_url }})\
 {% if author.credit %} by {{ author.reference }}{% end %}\
-{% if merge_request %} ([merge request]({{ merge_request.reference }})){% end %}
+{% if merge_request %} ([merge request]({{ merge_request.web_url }})){% end %}
 
 {% end %}
 
@@ -233,7 +235,7 @@ template: |
   ### {{ title }}
 
   {% each entries %}
-  - [{{ title }}]({{ commit.reference }})\
+  - [{{ title }}]({{ commit.web_url }})\
   {% if author.credit %} by {{ author.reference }}{% end %}
 
   {% end %}
@@ -248,6 +250,8 @@ When specifying the template you should use `template: |` and not
 `template: >`, as the latter doesn't preserve newlines in the template.
 
 ### Template data
+
+> - `commit.web_url` and `merge_request.web_url` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806) in GitLab 17.1.
 
 At the top level, the following variable is available:
 
@@ -272,6 +276,8 @@ In an entry, the following variables are available (here `foo.bar` means that
 - `author.reference`: a reference to the commit author (for example, `@alice`).
 - `commit.reference`: a reference to the commit, for example,
   `gitlab-org/gitlab@0a4cdd86ab31748ba6dac0f69a8653f206e5cfc7`.
+- `commit.web_url`: a URL to the commit, for example,
+  `https://gitlab.com/gitlab-org/gitlab/-/commit/0a4cdd86ab31748ba6dac0f69a8653f206e5cfc7`.
 - `commit.trailers`: an object containing all the Git trailers that were present
   in the commit body.
 
@@ -296,6 +302,8 @@ In an entry, the following variables are available (here `foo.bar` means that
 
 - `merge_request.reference`: a reference to the merge request that first
   introduced the change (for example, `gitlab-org/gitlab!50063`).
+- `merge_request.web_url`: a URL to the merge request that first introduced
+  the change (for example, `https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50063`).
 - `title`: the title of the changelog entry (this is the commit title).
 
 The `author` and `merge_request` objects might not be present if the data

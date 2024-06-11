@@ -93,11 +93,6 @@ RSpec.shared_examples 'wiki controller actions' do
       expect(assigns(:page)).to be_nil
     end
 
-    it 'does not load the sidebar' do
-      expect(assigns(:sidebar_wiki_entries)).to be_nil
-      expect(assigns(:sidebar_limited)).to be_nil
-    end
-
     context 'when the request is of non-html format' do
       it 'returns a 404 error' do
         get :pages, params: routing_params.merge(format: 'json')
@@ -206,30 +201,6 @@ RSpec.shared_examples 'wiki controller actions' do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('shared/wikis/show')
         expect(assigns(:page).title).to eq(wiki_title)
-        expect(assigns(:sidebar_wiki_entries)).to contain_exactly(an_instance_of(WikiPage))
-        expect(assigns(:sidebar_limited)).to be(false)
-      end
-
-      context 'the sidebar fails to load' do
-        before do
-          allow(Wiki).to receive(:for_container).and_return(wiki)
-          wiki.create_wiki_repository
-          expect(wiki).to receive(:find_sidebar) do
-            raise ::Gitlab::Git::CommandTimedOut, 'Deadline Exceeded'
-          end
-        end
-
-        it 'renders the page, and marks the sidebar as failed' do
-          request
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template('shared/wikis/_sidebar')
-          expect(assigns(:page).title).to eq(wiki_title)
-          expect(assigns(:sidebar_page)).to be_nil
-          expect(assigns(:sidebar_wiki_entries)).to be_nil
-          expect(assigns(:sidebar_limited)).to be_nil
-          expect(assigns(:sidebar_error)).to be_a_kind_of(::Gitlab::Git::CommandError)
-        end
       end
 
       context 'page view tracking' do

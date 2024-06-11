@@ -81,7 +81,7 @@ $ide-commit-header-height: 48px;
 
 .multi-file-tabs {
   display: flex;
-  background-color: var(--ide-background, $gray-light);
+  background-color: var(--ide-background, $gray-10);
   box-shadow: inset 0 -1px var(--ide-border-color, $border-color);
 
   > ul {
@@ -330,7 +330,7 @@ $ide-commit-header-height: 48px;
   display: flex;
   position: relative;
   padding: 0;
-  background-color: var(--ide-background, $gray-light);
+  background-color: var(--ide-background, $gray-10);
 
   .context-header {
     width: auto;
@@ -993,7 +993,7 @@ $ide-commit-header-height: 48px;
 
       &:not(.active),
       &:not(.gl-tab-nav-item-active) {
-        background-color: var(--ide-dropdown-background, $gray-light);
+        background-color: var(--ide-dropdown-background, $gray-10);
       }
 
       &.gl-tab-nav-item-active {
@@ -1091,7 +1091,7 @@ $ide-commit-header-height: 48px;
 
 .ide-file-templates {
   padding: $grid-size $gl-padding;
-  background-color: var(--ide-background, $gray-light);
+  background-color: var(--ide-background, $gray-10);
   border-bottom: 1px solid var(--ide-border-color, $border-color);
 
   .dropdown {

@@ -333,11 +333,7 @@ module WikiActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def load_sidebar
     @sidebar_page = wiki.find_sidebar(params[:version_id])
-
-    @sidebar_wiki_entries, @sidebar_limited = wiki.sidebar_entries(load_content: Feature.enabled?(:wiki_front_matter_title, container))
     @wiki_pages_count = pages_list.total_count
-  rescue ::Gitlab::Git::CommandTimedOut => e
-    @sidebar_error = e
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 

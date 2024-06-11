@@ -22,7 +22,6 @@ Lint/SymbolConversion:
     - 'app/models/concerns/packages/debian/component_file.rb'
     - 'app/models/concerns/packages/debian/distribution.rb'
     - 'app/models/concerns/participable.rb'
-    - 'app/models/packages/conan/metadatum.rb'
     - 'app/models/packages/debian/file_entry.rb'
     - 'app/models/work_items/widgets/assignees.rb'
     - 'app/models/work_items/widgets/base.rb'

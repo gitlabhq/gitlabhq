@@ -1,6 +1,5 @@
 ---
 # Cop supports --autocorrect.
 GraphQL/OrderedFields:
-  Details: grace period
   Exclude:
     - 'app/graphql/types/merge_request_type.rb'

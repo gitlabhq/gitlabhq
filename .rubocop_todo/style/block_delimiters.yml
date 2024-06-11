@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/BlockDelimiters:
-  Details: grace period
   Exclude:
     - 'ee/spec/finders/security/related_pipelines_finder_spec.rb'
     - 'ee/spec/finders/security/vulnerability_reads_finder_spec.rb'
@@ -34,7 +33,6 @@ Style/BlockDelimiters:
     - 'ee/spec/services/package_metadata/data_object_fabricator_spec.rb'
     - 'ee/spec/services/security/scanned_resources_counting_service_spec.rb'
     - 'ee/spec/services/security/scanned_resources_service_spec.rb'
-    - 'ee/spec/services/security/security_orchestration_policies/ci_configuration_service_spec.rb'
     - 'ee/spec/services/security/vulnerability_counting_service_spec.rb'
     - 'spec/helpers/abuse_reports_helper_spec.rb'
     - 'spec/helpers/admin/user_actions_helper_spec.rb'
@@ -59,7 +57,6 @@ Style/BlockDelimiters:
     - 'spec/models/packages/npm/metadatum_spec.rb'
     - 'spec/models/packages/protection/rule_spec.rb'
     - 'spec/models/packages/pypi/metadatum_spec.rb'
-    - 'spec/models/users/phone_number_validation_spec.rb'
     - 'spec/models/users/project_callout_spec.rb'
     - 'spec/presenters/tree_entry_presenter_spec.rb'
     - 'spec/requests/api/graphql/mutations/container_registry/protection/rule/create_spec.rb'

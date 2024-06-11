@@ -11,14 +11,14 @@
 %table.gl-table.gl-text-gray-500.gl-w-full
   = render_if_exists 'admin/dashboard/stats_active_users_row', users_statistics: @users_statistics
 
-  %tr.bg-gray-light.gl-text-gray-900
+  %tr.gl-bg-gray-10.gl-text-gray-900
     %td.gl-p-5!
       %strong
         = s_('AdminArea|Blocked users')
     %td.gl-text-right{ class: 'gl-p-5!' }
       %strong
         = @users_statistics&.blocked
-  %tr.bg-gray-light.gl-text-gray-900
+  %tr.gl-bg-gray-10.gl-text-gray-900
     %td.gl-p-5!
       %strong
         = s_('AdminArea|Total users')

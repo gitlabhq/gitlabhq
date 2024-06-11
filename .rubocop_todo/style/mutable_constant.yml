@@ -4,7 +4,6 @@ Style/MutableConstant:
   Exclude:
     - 'app/graphql/mutations/container_repositories/destroy_tags.rb'
     - 'app/graphql/mutations/packages/bulk_destroy.rb'
-    - 'app/helpers/blame_helper.rb'
     - 'app/models/ci/build_trace_chunks/redis_base.rb'
     - 'app/models/integrations/datadog.rb'
     - 'app/presenters/packages/helm/index_presenter.rb'
@@ -13,7 +12,6 @@ Style/MutableConstant:
     - 'app/workers/concerns/worker_context.rb'
     - 'danger/architecture/Dangerfile'
     - 'danger/database/Dangerfile'
-    - 'danger/feature_flag/Dangerfile'
     - 'ee/app/services/elastic/indexing_control_service.rb'
     - 'ee/app/services/security/ingestion/tasks/ingest_vulnerability_statistics.rb'
     - 'ee/app/services/vulnerabilities/statistics/adjustment_service.rb'

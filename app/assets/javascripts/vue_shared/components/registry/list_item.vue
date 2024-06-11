@@ -116,7 +116,7 @@ export default {
                 'right-primary'
               ]
             "
-            class="gl-display-flex gl-align-items-center gl-sm-text-body gl-sm-font-weight-semibold gl-min-h-6"
+            class="gl-display-flex gl-align-items-center gl-sm-text-body gl-min-h-6"
           >
             <slot name="right-primary"></slot>
           </div>

@@ -339,7 +339,7 @@
     &.stripes-odd tr:nth-of-type(odd),
     &.stripes-even tr:nth-of-type(even),
     &.stripes-hover tr:hover {
-      background: $gray-light;
+      background: $gray-10;
     }
   }
 
@@ -733,7 +733,7 @@ pre {
   word-break: break-all;
   word-wrap: break-word;
   color: $gl-text-color;
-  background-color: $gray-light;
+  background-color: $gray-10;
   border: 1px solid $gray-100;
   border-radius: $border-radius-small;
 

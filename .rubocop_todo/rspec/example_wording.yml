@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/ExampleWording:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/projects/pipelines_controller_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'
@@ -48,11 +47,9 @@ RSpec/ExampleWording:
     - 'spec/lib/gitlab/git/diff_spec.rb'
     - 'spec/models/concerns/issuable_spec.rb'
     - 'spec/models/deployment_spec.rb'
-    - 'spec/models/packages/debian/publication_spec.rb'
     - 'spec/models/packages/maven/metadatum_spec.rb'
     - 'spec/models/packages/package_spec.rb'
     - 'spec/models/packages/pypi/metadatum_spec.rb'
-    - 'spec/models/packages/rpm/metadatum_spec.rb'
     - 'spec/models/project_spec.rb'
     - 'spec/models/releases/link_spec.rb'
     - 'spec/models/user_spec.rb'

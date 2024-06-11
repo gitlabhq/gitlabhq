@@ -1,6 +1,5 @@
 ---
 GraphQL/GraphqlName:
-  Details: grace period
   Exclude:
     - 'app/graphql/mutations/alert_management/base.rb'
     - 'app/graphql/mutations/alert_management/http_integration/http_integration_base.rb'

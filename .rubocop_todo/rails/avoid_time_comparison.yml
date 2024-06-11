@@ -1,6 +1,5 @@
 ---
 Rails/AvoidTimeComparison:
-  Details: grace period
   Exclude:
     - 'app/services/packages/mark_package_files_for_destruction_service.rb'
     - 'app/workers/gitlab/import/advance_stage.rb'

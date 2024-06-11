@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Layout/ClassStructure:
-  Details: grace period
   Exclude:
     - 'app/components/pajamas/accordion_item_component.rb'
     - 'app/components/pajamas/alert_component.rb'
@@ -274,9 +273,7 @@ Layout/ClassStructure:
     - 'ee/app/services/path_locks/unlock_service.rb'
     - 'ee/app/services/personal_access_tokens/rotation_verifier_service.rb'
     - 'ee/app/services/search/zoekt/callback_service.rb'
-    - 'ee/app/services/search/zoekt/indexing_task_service.rb'
     - 'ee/app/services/search/zoekt/routing_service.rb'
-    - 'ee/app/services/search/zoekt/scheduling_service.rb'
     - 'ee/app/services/search/zoekt/task_presenter_service.rb'
     - 'ee/app/services/search/zoekt/task_serializer_service.rb'
     - 'ee/app/services/security/ingestion/tasks/update_vulnerability_uuids.rb'
@@ -361,7 +358,6 @@ Layout/ClassStructure:
     - 'lib/gitlab/checks/container_moved.rb'
     - 'lib/gitlab/checks/post_push_message.rb'
     - 'lib/gitlab/checks/project_created.rb'
-    - 'lib/gitlab/ci/ansi2html.rb'
     - 'lib/gitlab/ci/build/status/reason.rb'
     - 'lib/gitlab/ci/config/entry/job.rb'
     - 'lib/gitlab/ci/config/entry/jobs.rb'

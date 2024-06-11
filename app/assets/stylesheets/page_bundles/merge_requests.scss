@@ -939,15 +939,6 @@ $tabs-holder-z-index: 250;
   height: 0;
 }
 
-// TODO: Move to GitLab UI
-.mr-extenson-scrim {
-  background: linear-gradient(to bottom, rgba($gray-light, 0), rgba($gray-light, 1));
-
-  .gl-dark & {
-    background: linear-gradient(to bottom, rgba(#333, 0), rgba(#333, 1));
-  }
-}
-
 .attention-request-sidebar-popover {
   z-index: 999;
 }

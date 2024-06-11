@@ -1,6 +1,5 @@
 ---
 # Cop supports --autocorrect.
 Style/SelfAssignment:
-  Details: grace period
   Exclude:
     - 'app/serializers/entity_date_helper.rb'

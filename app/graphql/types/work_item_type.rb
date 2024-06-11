@@ -5,6 +5,7 @@ module Types
     graphql_name 'WorkItem'
 
     implements Types::TodoableInterface
+    connection_type_class Types::CountableConnectionType
 
     authorize :read_work_item
 

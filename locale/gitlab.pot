@@ -36697,7 +36697,7 @@ msgstr ""
 msgid "OutboundRequests|Resolve IP addresses for outbound requests to prevent DNS-rebinding attacks."
 msgstr ""
 
-msgid "OutboundRequests|Webhooks and integrations might not work properly."
+msgid "OutboundRequests|Webhooks and integrations might not work properly. GitLab Duo will not work unless `cloud.gitlab.com` is in the following allowlist."
 msgstr ""
 
 msgid "OutdatedBrowser|GitLab may not work properly, because you are using an outdated web browser."
@@ -59408,6 +59408,9 @@ msgstr ""
 msgid "Wiki|Edit template"
 msgstr ""
 
+msgid "Wiki|Home"
+msgstr ""
+
 msgid "Wiki|Last edited by %{author} %{timeago}"
 msgstr ""
 
@@ -60020,7 +60023,7 @@ msgstr ""
 msgid "Workspaces|Allow this agent for all group members?"
 msgstr ""
 
-msgid "Workspaces|Allowed Agents"
+msgid "Workspaces|Allowed agents"
 msgstr ""
 
 msgid "Workspaces|Block agent"
@@ -60140,6 +60143,12 @@ msgstr ""
 msgid "Workspaces|The branch, tag, or commit hash GitLab uses to create your workspace."
 msgstr ""
 
+msgid "Workspaces|This agent is already allowed."
+msgstr ""
+
+msgid "Workspaces|This agent is already blocked."
+msgstr ""
+
 msgid "Workspaces|This group has no agents. Start by creating an agent."
 msgstr ""
 
@@ -60147,6 +60156,9 @@ msgid "Workspaces|This group has no available agents. Select the %{strongStart}A
 msgstr ""
 
 msgid "Workspaces|To create a workspace, add a devfile to this project. A devfile is a configuration file for your workspace."
+msgstr ""
+
+msgid "Workspaces|Unable to complete this action"
 msgstr ""
 
 msgid "Workspaces|Unable to load current workspaces. Please try again or contact an administrator."

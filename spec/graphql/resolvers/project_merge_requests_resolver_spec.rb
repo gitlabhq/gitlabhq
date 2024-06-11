@@ -18,6 +18,7 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
       target_project: project,
       author: other_user,
       assignee: other_user,
+      milestone: create(:milestone, project: project),
       reviewers: [reviewer]
     )
   end
@@ -85,6 +86,27 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
       result = resolve_mr(project, reviewer_wildcard_id: 'ANY')
 
       expect(result).to contain_exactly(merge_request)
+    end
+  end
+
+  context 'with milestone wildcard param' do
+    it 'filters merge requests by NONE wildcard' do
+      result = resolve_mr(project, milestone_wildcard_id: 'NONE')
+
+      expect(result).to contain_exactly(merge_request2)
+    end
+
+    it 'filters merge requests by ANY wildcard' do
+      result = resolve_mr(project, milestone_wildcard_id: 'ANY')
+
+      expect(result).to contain_exactly(merge_request)
+    end
+
+    it 'returns error when milestone title and wildcard id are used' do
+      expect_graphql_error_to_be_created(GraphQL::Schema::Validator::ValidationFailedError,
+        'Only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
+        resolve_mr(project, milestone_title: 'test', milestone_wildcard_id: 'ANY')
+      end
     end
   end
 

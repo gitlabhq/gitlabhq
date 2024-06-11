@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 Graphql/Descriptions:
   Exclude:
-    - 'app/graphql/resolvers/work_items_resolver.rb'
     - 'app/graphql/types/alert_management/alert_type.rb'
     - 'app/graphql/types/award_emojis/award_emoji_type.rb'
     - 'app/graphql/types/board_list_type.rb'
@@ -34,7 +33,6 @@ Graphql/Descriptions:
     - 'app/graphql/types/milestone_type.rb'
     - 'app/graphql/types/namespace/package_settings_type.rb'
     - 'app/graphql/types/notes/discussion_type.rb'
-    - 'app/graphql/types/notes/note_type.rb'
     - 'app/graphql/types/notes/noteable_interface.rb'
     - 'app/graphql/types/packages/cleanup/policy_type.rb'
     - 'app/graphql/types/packages/package_details_type.rb'

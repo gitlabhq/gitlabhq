@@ -22,6 +22,8 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 - Bitbucket identities with untrusted `extern_uid` are deleted.
   For more information, see [issue 452426](https://gitlab.com/gitlab-org/gitlab/-/issues/452426).
+- The default [changelog](../../user/project/changelogs.md) template generates links as full URLs instead of GitLab specific references.
+  For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
 
 ## 17.0.0
 

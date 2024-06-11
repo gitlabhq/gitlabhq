@@ -122,10 +122,6 @@
   color: $brand-info;
 }
 
-.bg-gray-light {
-  background-color: $gray-light;
-}
-
 .bg-white {
   background-color: $white;
 }
@@ -370,7 +366,7 @@ li.note {
     clip: auto;
     text-decoration: none;
     color: $gl-text-color;
-    background: $gray-light;
+    background: $gray-10;
     z-index: 1;
   }
 }

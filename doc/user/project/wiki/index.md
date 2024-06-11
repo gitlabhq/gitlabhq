@@ -79,7 +79,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **Wiki actions** **{ellipsis_v}** **> New page** on this page, or any other wiki page.
+1. Select **Wiki actions** (**{ellipsis_v}**) **> New page** on this page, or any other wiki page.
 1. Select a content format.
 1. Add a title for your new page. Page titles use
    [special characters](#special-characters-in-page-titles) for subdirectories and formatting,
@@ -98,7 +98,7 @@ locally:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **Wiki actions** **{ellipsis_v}** **> Clone repository**.
+1. Select **Wiki actions** (**{ellipsis_v}**) **> Clone repository**.
 1. Follow the on-screen instructions.
 
 Files you add to your wiki locally must use one of the following
@@ -223,7 +223,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **Wiki actions** **{ellipsis_v}** **> Templates**.
+1. Select **Wiki actions** (**{ellipsis_v}**) **> Templates**.
 1. Select **New Template**.
 1. Enter template title, format and content, as if creating a regular wiki page.
 

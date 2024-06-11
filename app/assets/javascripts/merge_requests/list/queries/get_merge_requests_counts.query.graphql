@@ -1,16 +1,36 @@
-query getMergeRequestsCount($fullPath: ID!) {
+query getMergeRequestsCount(
+  $fullPath: ID!
+  $milestoneTitle: String
+  $milestoneWildcardId: MilestoneWildcardId
+) {
   project(fullPath: $fullPath) {
     id
-    openedMergeRequests: mergeRequests(state: opened) {
+    openedMergeRequests: mergeRequests(
+      state: opened
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+    ) {
       count
     }
-    mergedMergeRequests: mergeRequests(state: merged) {
+    mergedMergeRequests: mergeRequests(
+      state: merged
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+    ) {
       count
     }
-    closedMergeRequests: mergeRequests(state: closed) {
+    closedMergeRequests: mergeRequests(
+      state: closed
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+    ) {
       count
     }
-    allMergeRequests: mergeRequests(state: all) {
+    allMergeRequests: mergeRequests(
+      state: all
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+    ) {
       count
     }
   }

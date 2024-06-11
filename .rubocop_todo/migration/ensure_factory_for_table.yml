@@ -1,6 +1,5 @@
 ---
 Migration/EnsureFactoryForTable:
-  Details: grace period
   Exclude:
     - 'db/migrate/20230626211305_create_catalog_resource_versions.rb'
     - 'db/migrate/20230704233431_create_table_batched_git_ref_updates_deletions.rb'
