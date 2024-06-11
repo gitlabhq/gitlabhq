@@ -2,6 +2,23 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.0.2 (2024-06-11)
+
+### Fixed (1 change)
+
+- [Fix instance templates pagination](gitlab-org/security/gitlab@d53fb868885472d0b7645afabee590f416eda0d5) **GitLab Enterprise Edition**
+
+### Changed (1 change)
+
+- [Only query the fields needed](gitlab-org/security/gitlab@74794d45373cf605d7c036cc0ab13a3d5018c616)
+
+### Security (4 changes)
+
+- [XSS and content injection raw XHTML files on IOS devices](gitlab-org/security/gitlab@7459916b867b01581b3422fd065419feb6352180) ([merge request](gitlab-org/security/gitlab!4093))
+- [Improve go_package_regex to prevent ReDoS attacks](gitlab-org/security/gitlab@45ccd851058bf319f7795e88afcb27c1440c24e9) ([merge request](gitlab-org/security/gitlab!4096))
+- [Fix ReDoS in CI Interpolation](gitlab-org/security/gitlab@11be5651e849441813c022bc492e6549e9ed297d) ([merge request](gitlab-org/security/gitlab!4081))
+- [Verify Asana access token when testing Asana integration](gitlab-org/security/gitlab@c35fb1ce0e58b8e90bc61b7d48949572fca6705c) ([merge request](gitlab-org/security/gitlab!4059))
+
 ## 17.0.1 (2024-05-21)
 
 ### Fixed (2 changes)
