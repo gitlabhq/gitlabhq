@@ -8483,10 +8483,10 @@ msgstr ""
 msgid "Billing|Cannot remove user"
 msgstr ""
 
-msgid "Billing|Confirm bulk seat allocation"
+msgid "Billing|Confirm bulk seat assignment"
 msgstr ""
 
-msgid "Billing|Confirm bulk seat unassignment"
+msgid "Billing|Confirm bulk seat removal"
 msgstr ""
 
 msgid "Billing|Direct memberships"
@@ -16432,6 +16432,9 @@ msgid "DORA4Metrics|To help us improve the Value Stream Management Dashboard, pl
 msgstr ""
 
 msgid "DORA4Metrics|To see usage overview, you must %{linkStart}enable background aggregation%{linkEnd}"
+msgstr ""
+
+msgid "DORA4Metrics|To see usage overview, you must %{linkStart}enable background aggregation%{linkEnd}."
 msgstr ""
 
 msgid "DORA4Metrics|Took 1 day or less to restore service when a service incident or a defect that impacts users occurs."

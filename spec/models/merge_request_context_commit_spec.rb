@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestContextCommit do
+RSpec.describe MergeRequestContextCommit, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:raw_repository) { project.repository.raw_repository }

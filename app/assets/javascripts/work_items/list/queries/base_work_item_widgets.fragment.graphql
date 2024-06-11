@@ -34,5 +34,6 @@ fragment BaseWorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetStartAndDueDate {
     type
     dueDate
+    startDate
   }
 }

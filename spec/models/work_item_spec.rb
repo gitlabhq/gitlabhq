@@ -397,9 +397,17 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       let(:link_reference_url) { 'http://localhost/namespace/project/-/work_items/1' }
 
       it 'matches with expected attributes' do
-        expect(match_data['namespace']).to eq('namespace')
-        expect(match_data['project']).to eq('project')
+        expect(match_data['group_or_project_namespace']).to eq('namespace/project')
         expect(match_data['work_item']).to eq('1')
+      end
+
+      context 'when work item exists in a group' do
+        let(:link_reference_url) { 'http://localhost/groups/group/sub_group/-/work_items/1' }
+
+        it 'matches with expected attributes' do
+          expect(match_data['group_or_project_namespace']).to eq('group/sub_group')
+          expect(match_data['work_item']).to eq('1')
+        end
       end
     end
   end

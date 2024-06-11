@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
+  let_it_be(:group)           { create(:group) }
   let_it_be(:namespace)       { create(:namespace, name: 'main-namespace') }
   let_it_be(:project)         { create(:project, :public, namespace: namespace, path: 'main-project') }
   let_it_be(:cross_namespace) { create(:namespace, name: 'cross-namespace') }
@@ -12,7 +13,11 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
   let_it_be(:work_item)       { create(:work_item, project: project) }
 
   def item_url(item)
-    work_item_path = "/#{item.project.namespace.path}/#{item.project.path}/-/work_items/#{item.iid}"
+    work_item_path = if item.project_id.present?
+                       "/#{item.project.namespace.path}/#{item.project.path}/-/work_items/#{item.iid}"
+                     else
+                       "/groups/#{item.namespace.path}/-/work_items/#{item.iid}"
+                     end
 
     "http://#{Gitlab.config.gitlab.host}#{work_item_path}"
   end
@@ -71,28 +76,12 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
       expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-work_item'
     end
 
-    it 'includes a data-project attribute' do
-      doc = reference_filter("Issue #{written_reference}")
-      link = doc.css('a').first
-
-      expect(link).to have_attribute('data-project')
-      expect(link.attr('data-project')).to eq cross_project.id.to_s
-    end
-
     it 'includes a data-issue attribute' do
       doc = reference_filter("See #{written_reference}")
       link = doc.css('a').first
 
       expect(link).to have_attribute('data-work-item')
       expect(link.attr('data-work-item')).to eq work_item.id.to_s
-    end
-
-    it 'includes data attributes for issuable popover' do
-      doc = reference_filter("See #{written_reference}")
-      link = doc.css('a').first
-
-      expect(link.attr('data-project-path')).to eq cross_project.full_path
-      expect(link.attr('data-iid')).to eq work_item.iid.to_s
     end
 
     it 'includes a data-original attribute' do
@@ -150,55 +139,24 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
     end
   end
 
-  # Example:
-  #   "See #1"
-  context 'when standard internal reference' do
-    it 'is handled by IssueReferenceFilter, not WorkItemReferenceFilter' do
-      doc = reference_filter("Fixed ##{work_item.iid}")
+  context 'when group level work item URL reference' do
+    let_it_be(:work_item, reload: true) { create(:work_item, :group_level, namespace: group) }
+    let_it_be(:work_item_url)     { item_url(work_item) }
+    let_it_be(:reference)         { work_item_url }
+    let_it_be(:written_reference) { reference }
+    let_it_be(:inner_text)        { written_reference }
 
-      expect(doc.css('a')).to be_empty
-    end
+    it_behaves_like 'a work item reference'
   end
 
-  # Example:
-  #   "See cross-namespace/cross-project#1"
-  context 'when cross-project / cross-namespace complete reference' do
-    let_it_be(:work_item2) { create(:work_item, project: cross_project) }
-    let_it_be(:reference)  { "#{cross_project.full_path}##{work_item2.iid}" }
+  context 'when group level work item full reference' do
+    let_it_be(:work_item, reload: true) { create(:work_item, :group_level, namespace: group) }
+    let_it_be(:work_item_url)     { item_url(work_item) }
+    let_it_be(:reference)         { work_item.to_reference(full: true) }
+    let_it_be(:written_reference) { reference }
+    let_it_be(:inner_text)        { written_reference }
 
-    it 'is handled by IssueReferenceFilter, not WorkItemReferenceFilter' do
-      doc = reference_filter("See #{reference}")
-
-      expect(doc.css('a')).to be_empty
-    end
-  end
-
-  # Example:
-  #   "See main-namespace/cross-project#1"
-  context 'when cross-project / same-namespace complete reference' do
-    let_it_be(:cross_project) { create(:project, :public, namespace: namespace, path: 'cross-project') }
-    let_it_be(:work_item)     { create(:work_item, project: cross_project) }
-    let_it_be(:reference)     { "#{cross_project.full_path}##{work_item.iid}" }
-
-    it 'is handled by IssueReferenceFilter, not WorkItemReferenceFilter' do
-      doc = reference_filter("See #{reference}")
-
-      expect(doc.css('a')).to be_empty
-    end
-  end
-
-  # Example:
-  #   "See cross-project#1"
-  context 'when cross-project / same-namespace shorthand reference' do
-    let_it_be(:cross_project) { create(:project, :public, namespace: namespace, path: 'cross-project') }
-    let_it_be(:work_item)     { create(:work_item, project: cross_project) }
-    let_it_be(:reference)     { "#{cross_project.path}##{work_item.iid}" }
-
-    it 'is handled by IssueReferenceFilter, not WorkItemReferenceFilter' do
-      doc = reference_filter("See #{reference}")
-
-      expect(doc.css('a')).to be_empty
-    end
+    it_behaves_like 'a work item reference'
   end
 
   # Example:
@@ -211,6 +169,22 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
     let_it_be(:inner_text)        { written_reference }
 
     it_behaves_like 'a work item reference'
+
+    it 'includes a data-project attribute' do
+      doc = reference_filter("Issue #{written_reference}")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-project')
+      expect(link.attr('data-project')).to eq cross_project.id.to_s
+    end
+
+    it 'includes data attributes for issuable popover' do
+      doc = reference_filter("See #{written_reference}")
+      link = doc.css('a').first
+
+      expect(link.attr('data-project-path')).to eq cross_project.full_path
+      expect(link.attr('data-iid')).to eq work_item.iid.to_s
+    end
   end
 
   # Example:
@@ -244,22 +218,6 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
   end
 
   # Example:
-  #   'See <a href="cross-namespace/cross-project#1">Reference</a>''
-  context 'when cross-project reference in link href' do
-    let_it_be(:work_item)      { create(:work_item, project: cross_project) }
-    let_it_be(:reference)      { work_item.to_reference(project) }
-    let_it_be(:reference_link) { %(<a href="#{reference}">Reference</a>) }
-    let_it_be(:work_item_url)  { item_url(work_item) }
-
-    it 'is handled by IssueReferenceFilter, not WorkItemReferenceFilter' do
-      doc = reference_filter("See #{reference_link}")
-
-      expect(doc.css('a').first[:href]).to eq reference
-      expect(doc.css('a').first[:href]).not_to eq work_item_url
-    end
-  end
-
-  # Example:
   #   'See <a href=\"http://localhost/cross-namespace/cross-project/-/work_items/1\">Reference</a>''
   context 'when cross-project URL in link href' do
     let_it_be(:work_item, reload: true) { create(:work_item, project: cross_project) }
@@ -270,12 +228,69 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
     let_it_be(:inner_text)        { 'Reference' }
 
     it_behaves_like 'a work item reference'
+
+    it 'includes a data-project attribute' do
+      doc = reference_filter("Issue #{written_reference}")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-project')
+      expect(link.attr('data-project')).to eq cross_project.id.to_s
+    end
+
+    it 'includes data attributes for issuable popover' do
+      doc = reference_filter("See #{written_reference}")
+      link = doc.css('a').first
+
+      expect(link.attr('data-project-path')).to eq cross_project.full_path
+      expect(link.attr('data-iid')).to eq work_item.iid.to_s
+    end
   end
 
   context 'for group context' do
-    let_it_be(:group)         { create(:group) }
-    let_it_be(:context)       { { project: nil, group: group } }
-    let_it_be(:work_item_url) { item_url(work_item) }
+    let_it_be(:context) { { project: nil, group: group } }
+    let(:work_item_url) { item_url(work_item) }
+
+    context 'when work item exists at the group level' do
+      let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
+
+      it 'links to a valid group level work item by URL' do
+        doc = reference_filter("See #{work_item_url}", context)
+
+        link = doc.css('a').first
+
+        expect(link.attr('href')).to eq(work_item_url)
+        expect(link.text).to eq("##{work_item.iid}")
+      end
+
+      it 'links to a valid group level work item with short reference' do
+        doc = reference_filter("See #{work_item.to_reference}", context)
+
+        link = doc.css('a').first
+
+        expect(link.attr('href')).to eq(work_item_url)
+        expect(link.text).to eq("##{work_item.iid}")
+      end
+
+      it 'links to a valid group level work item with long reference' do
+        doc = reference_filter("See #{work_item.to_reference(full: true)}", context)
+
+        link = doc.css('a').first
+
+        expect(link.attr('href')).to eq(work_item_url)
+        expect(link.text).to eq("##{work_item.iid}")
+      end
+
+      context 'when work item belongs to a different group than the one from the context' do
+        it 'links to a valid group level work item with long reference' do
+          doc = reference_filter("See #{work_item.to_reference(full: true)}", group: create(:group))
+
+          link = doc.css('a').first
+
+          expect(link.attr('href')).to eq(work_item_url)
+          expect(link.text).to eq("#{group.full_path}##{work_item.iid}")
+        end
+      end
+    end
 
     it 'links to a valid reference for url cross-namespace' do
       reference = "#{work_item_url}#note_123"

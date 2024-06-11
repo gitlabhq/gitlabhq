@@ -4,6 +4,7 @@ import { STATUS_CLOSED } from '~/issues/constants';
 import {
   dateInWords,
   getTimeRemainingInWords,
+  humanTimeframe,
   isInFuture,
   isInPast,
   isToday,
@@ -47,13 +48,25 @@ export default {
       return this.issue.dueDate || this.issue.widgets?.find(isStartAndDueDateWidget)?.dueDate;
     },
     dueDateText() {
-      return this.dueDate && dateInWords(newDateAsLocaleTime(this.dueDate), true);
+      if (this.startDate) {
+        return humanTimeframe(this.startDate, this.dueDate);
+      }
+      if (this.dueDate) {
+        return dateInWords(newDateAsLocaleTime(this.dueDate), true);
+      }
+      return null;
     },
     isClosed() {
       return this.issue.state === STATUS_CLOSED || this.issue.state === STATE_CLOSED;
     },
     showDueDateInRed() {
+      if (!this.dueDate) {
+        return false;
+      }
       return isInPast(newDateAsLocaleTime(this.dueDate)) && !this.isClosed;
+    },
+    startDate() {
+      return this.issue.widgets?.find(isStartAndDueDateWidget)?.startDate;
     },
     timeEstimate() {
       return this.issue.humanTimeEstimate || this.issue.timeStats?.humanTimeEstimate;
@@ -100,7 +113,7 @@ export default {
       </gl-link>
     </span>
     <span
-      v-if="dueDate"
+      v-if="dueDateText"
       v-gl-tooltip
       class="issuable-due-date gl-mr-3"
       :class="{ 'gl-text-red-500': showDueDateInRed }"

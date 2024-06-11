@@ -28,7 +28,7 @@ module Banzai
 
       # The project or group for the issuable might be pending for deletion!
       # Filter them out because we don't care about them.
-      issuables_for_nodes(nodes).select { |node, issuable| issuable.project || issuable.group }
+      issuables_for_nodes(nodes).select { |node, issuable| issuable.resource_parent }
     end
 
     private

@@ -7890,7 +7890,7 @@
   canonical: |
     <p>This project snippet ID reference IS filtered: $88888</p>
   static: |-
-    <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-project="77777" data-snippet="88888" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
+    <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-snippet="88888" data-project="77777" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__004:
   canonical: |
     <p>This personal snippet ID reference is not filtered: $99999</p>

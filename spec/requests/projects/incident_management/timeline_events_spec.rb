@@ -16,11 +16,12 @@ RSpec.describe 'Timeline Events', feature_category: :incident_management do
       end
 
       let(:expected_reference) do
-        %(<a href="/#{project.full_path}/-/issues/#{incident.iid}" data-reference-type="issue" ) +
-          %(data-original="##{incident.iid}" data-link="false" data-link-reference="false" ) +
-          %(data-project="#{project.id}" data-issue="#{incident.id}" data-project-path="#{project.full_path}" ) +
-          %(data-iid="#{incident.iid}" data-issue-type="incident" data-container="body" data-placement="top" ) +
-          %(title="#{incident.title}" class="gfm gfm-issue">##{incident.iid}</a>)
+        "<a href=\"/#{project.full_path}/-/issues/#{incident.iid}\" data-reference-type=\"issue\" " \
+          "data-original=\"##{incident.iid}\" data-link=\"false\" data-link-reference=\"false\" " \
+          "data-issue=\"#{incident.id}\" data-project=\"#{project.id}\" data-iid=\"#{incident.iid}\" " \
+          "data-project-path=\"#{project.full_path}\" " \
+          "data-issue-type=\"incident\" data-container=\"body\" data-placement=\"top\" " \
+          "title=\"#{incident.title}\" class=\"gfm gfm-issue\">##{incident.iid}</a>"
       end
 
       let(:expected_body) do

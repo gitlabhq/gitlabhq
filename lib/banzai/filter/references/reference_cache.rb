@@ -64,6 +64,12 @@ module Banzai
           group_ref
         end
 
+        def full_namespace_path(matches)
+          return current_parent_path if matches.named_captures['group_or_project_namespace'].blank?
+
+          matches[:group_or_project_namespace]
+        end
+
         def cache_loaded?
           !!@cache_loaded
         end
@@ -88,6 +94,8 @@ module Banzai
               prepare_doc_for_scan.to_enum(:scan, pattern).each do
                 parent_path = if parent_type == :group
                                 full_group_path($~[:group])
+                              elsif parent_type == :namespace
+                                full_namespace_path($~)
                               else
                                 full_project_path($~[:namespace], $~[:project], $~)
                               end
@@ -188,8 +196,13 @@ module Banzai
           search_paths = absolute_path ? paths.pluck(1..-1) : paths
 
           klass = parent_type.to_s.camelize.constantize
-          result = klass.where_full_path_in(search_paths)
-          return result if parent_type == :group
+          result = if parent_type == :namespace
+                     klass.id_in(Route.by_paths(search_paths).select(:namespace_id))
+                   else
+                     klass.where_full_path_in(search_paths)
+                   end
+
+          return result if parent_type == :group || parent_type == :namespace
           return unless parent_type == :project
 
           projects = result.includes(namespace: :route)
