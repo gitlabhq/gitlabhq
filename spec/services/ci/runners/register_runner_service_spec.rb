@@ -246,7 +246,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'when it exceeds the application limits' do
         before do
-          create(:ci_runner, :unregistered, runner_type: :group_type, groups: [group], created_at: 1.month.ago)
+          create(:ci_runner, :unregistered, runner_type: :group_type, groups: [group], created_at: 6.days.ago)
           create(:plan_limits, :default_plan, ci_registered_group_runners: 1)
         end
 

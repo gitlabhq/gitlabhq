@@ -48,7 +48,7 @@ export default {
   i18n: {
     settingBlockTitle: s__('ContainerRegistry|Protected containers'),
     settingBlockDescription: s__(
-      'ContainerRegistry|When a container is protected then only certain user roles are able to push and delete the protected container image. This helps to avoid tampering with the container image.',
+      'ContainerRegistry|When a container is protected, only certain user roles can push and delete the protected container image, which helps to avoid tampering with the container image.',
     ),
     protectionRuleDeletionConfirmModal: {
       title: s__('ContainerRegistry|Delete container protection rule?'),

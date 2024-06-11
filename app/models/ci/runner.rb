@@ -67,7 +67,7 @@ module Ci
     UPDATE_CONTACT_COLUMN_EVERY = ((40.minutes)..(55.minutes))
 
     # The `STALE_TIMEOUT` constant defines the how far past the last contact or creation date a runner will be considered stale
-    STALE_TIMEOUT = 3.months
+    STALE_TIMEOUT = 7.days
 
     # Only allow authentication token to be visible for a short while
     REGISTRATION_AVAILABILITY_TIME = 1.hour

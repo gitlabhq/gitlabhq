@@ -34,7 +34,7 @@ If successful, returns [`200`](rest/index.md#status-codes) and the following res
 
 | Attribute          | Type    | Description |
 |--------------------|---------|-------------|
-| `inbound_enabled`  | boolean | Indicates if the [**Grant access to this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) is enabled. |
+| `inbound_enabled`  | boolean | Indicates if the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) is enabled. |
 | `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 18.0](../update/deprecations.md#default-cicd-job-token-ci_job_token-scope-changed). |
 
 Example request:
@@ -55,9 +55,8 @@ Example response:
 ## Patch a project's CI/CD job token access settings
 
 > - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
-> - **Limit access _to_ this project** setting [renamed to **Grant access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.1.
 
-Patch the [**Grant access to this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) (job token scope) of a project.
+Patch the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) (job token scope) of a project.
 
 ```plaintext
 PATCH /projects/:id/job_token_scope
@@ -68,7 +67,7 @@ Supported attributes:
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
 | `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
-| `enabled` | boolean        | Yes      | Indicates if the [**Grant access to this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) should be enabled. |
+| `enabled` | boolean        | Yes      | Indicates if the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) should be enabled. |
 
 If successful, returns [`204`](rest/index.md#status-codes) and no response body.
 

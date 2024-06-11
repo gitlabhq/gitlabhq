@@ -36,6 +36,11 @@ module Clusters
     scope :with_name, ->(name) { where(name: name) }
     scope :has_vulnerabilities, ->(value = true) { where(has_vulnerabilities: value) }
 
+    enum connection_mode: {
+      outgoing: 0, # agentk -> kas
+      incoming: 1  # kas -> agentk
+    }, _prefix: true
+
     validates :name,
       presence: true,
       length: { maximum: 63 },

@@ -796,7 +796,7 @@ To resolve this, instead of binding the `/tmp` folder, bind specific files or fo
 
 ### Resolving `context deadline exceeded` error
 
-This error typically occurs when scanning images containing JAR files, as it takes longer to download the `trivy-java-db` vulnerability database. To resolve this, increase the `TRIVY_TIMEOUT` environment variable to a longer duration.
+This error means a timeout occurred. To resolve it, add the `TRIVY_TIMEOUT` environment variable to the `container_scanning` job with a sufficiently long duration.
 
 ## Changes
 

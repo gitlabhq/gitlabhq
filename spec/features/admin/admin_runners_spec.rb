@@ -62,8 +62,8 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
       context "with multiple runners" do
         before do
           create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: Time.zone.now)
+          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.day.ago)
           create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.week.ago)
-          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.year.ago)
 
           visit admin_runners_path
         end

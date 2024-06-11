@@ -9991,10 +9991,7 @@ msgstr ""
 msgid "CICD|Add an existing project to the scope"
 msgstr ""
 
-msgid "CICD|Allow CI/CD job token access"
-msgstr ""
-
-msgid "CICD|Authorized groups and projects"
+msgid "CICD|Allow access to this project from authorized groups or projects by adding them to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "CICD|Auto DevOps"
@@ -10027,7 +10024,7 @@ msgstr ""
 msgid "CICD|Enable feature to limit job token access to the following projects."
 msgstr ""
 
-msgid "CICD|Ensure only groups and projects with members authorized to access sensitive project data are added to the allowlist."
+msgid "CICD|Groups and projects with access"
 msgstr ""
 
 msgid "CICD|Jobs"
@@ -10037,6 +10034,9 @@ msgid "CICD|Limit"
 msgstr ""
 
 msgid "CICD|Limit access %{italicStart}from%{italicEnd} this project (Deprecated)"
+msgstr ""
+
+msgid "CICD|Limit access %{italicStart}to%{italicEnd} this project"
 msgstr ""
 
 msgid "CICD|Maintainer"
@@ -10051,7 +10051,7 @@ msgstr ""
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and will be removed in the 18.0 milestone. Use the %{boldStart}Allow CI/CD job token access%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
+msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and will be removed in the 18.0 milestone. Use the %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}to%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file. %{link_start}What is Auto DevOps?%{link_end}"
@@ -10067,9 +10067,6 @@ msgid "CICD|Unprotected branches will not have access to the cache from protecte
 msgstr ""
 
 msgid "CICD|Use separate caches for protected branches"
-msgstr ""
-
-msgid "CICD|When enabled, groups and projects listed in the allowlist are authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -14416,7 +14413,7 @@ msgstr ""
 msgid "ContainerRegistry|We are having trouble connecting to the Container Registry. Please try refreshing the page. If this error persists, please review  %{docLinkStart}the troubleshooting documentation%{docLinkEnd}."
 msgstr ""
 
-msgid "ContainerRegistry|When a container is protected then only certain user roles are able to push and delete the protected container image. This helps to avoid tampering with the container image."
+msgid "ContainerRegistry|When a container is protected, only certain user roles can push and delete the protected container image, which helps to avoid tampering with the container image."
 msgstr ""
 
 msgid "ContainerRegistry|While the rename is in progress, new uploads to the container registry are blocked. Ongoing uploads may fail and need to be retried."
@@ -14794,7 +14791,7 @@ msgstr ""
 msgid "Contributor analytics"
 msgstr ""
 
-msgid "Control whether CI/CD job tokens can be used to authenticate with this project."
+msgid "Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects."
 msgstr ""
 
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
@@ -29537,9 +29534,6 @@ msgstr ""
 msgid "Job logs and artifacts"
 msgstr ""
 
-msgid "Job token permissions"
-msgstr ""
-
 msgid "Job was retried"
 msgstr ""
 
@@ -37428,7 +37422,7 @@ msgstr ""
 msgid "PackageRegistry|Validate these URLs manually to ensure malicious packages are not uploaded to the NuGet package registry. Selecting and clearing the checkbox might lead to invalid records in the package registry that you cannot update."
 msgstr ""
 
-msgid "PackageRegistry|When a package is protected then only certain user roles are able to update and delete the protected package. This helps to avoid tampering with the package."
+msgid "PackageRegistry|When a package is protected, only certain user roles can push, update, and delete the protected package, which helps to avoid tampering with the package."
 msgstr ""
 
 msgid "PackageRegistry|When a package with same name and version is uploaded to the registry, more assets are added to the package. To save storage space, keep only the most recent assets."
@@ -55120,6 +55114,9 @@ msgid "Toggles :%{name}: emoji reaction."
 msgstr ""
 
 msgid "Token"
+msgstr ""
+
+msgid "Token Access"
 msgstr ""
 
 msgid "Token name"

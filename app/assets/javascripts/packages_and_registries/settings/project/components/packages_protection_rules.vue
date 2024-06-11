@@ -46,7 +46,7 @@ export default {
   i18n: {
     settingBlockTitle: s__('PackageRegistry|Protected packages'),
     settingBlockDescription: s__(
-      'PackageRegistry|When a package is protected then only certain user roles are able to update and delete the protected package. This helps to avoid tampering with the package.',
+      'PackageRegistry|When a package is protected, only certain user roles can push, update, and delete the protected package, which helps to avoid tampering with the package.',
     ),
     protectionRuleDeletionConfirmModal: {
       title: s__('PackageRegistry|Delete package protection rule?'),

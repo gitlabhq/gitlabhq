@@ -438,7 +438,6 @@ Ensure that included configuration files do not create a loop of references to e
 ### `Failed to pull image` messages
 
 > - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
-> - **Limit access _to_ this project** setting [renamed to **Grant access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.1.
 
 A runner might return a `Failed to pull image` message when trying to pull a container image
 in a CI/CD job.
@@ -462,7 +461,7 @@ For example:
 
 These errors can happen if the following are both true:
 
-- The [**Grant access to this project**](jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects)
+- The [**Limit access _to_ this project**](jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects)
   option is enabled in the private project hosting the image.
 - The job attempting to fetch the image is running in a project that is not listed in
   the private project's allowlist.

@@ -306,3 +306,37 @@ The following example uses the [statically defined credentials](../../../ci/dock
 It is possible that consecutive scans may return differing vulnerability findings in the absence of code or configuration changes. This is primarily due to the unpredictability associated with the target environment and its state, and the parallelization of requests sent by the scanner. Multiple requests are sent in parallel by the scanner to optimize scan time, which in turn means that the exact order the target server responds to the requests is not predetermined.
 
 Timing attack vulnerabilities that are detected by the length of time between request and response such as OS Command or SQL Injections may be detected if the server is under load and unable to service responses to the tests within their given thresholds. The same scan executions when the server is not under load may not return positive findings for these vulnerabilities, leading to differing results. Profiling the target server, [Performance tuning and testing speed](performance.md#performance-tuning-and-testing-speed), and establishing baselines for optimal server performance during testing may be helpful in identifying where false positives may appear due to the aforementioned factors.
+
+## `sudo: The "no new privileges" flag is set, which prevents sudo from running as root.`
+
+Starting with v5 of the analyzer, a non-root user is used by default. This requires the use of `sudo` when performing privileged operations.
+
+This error occurs with a specific container daemon setup that prevents running containers from obtaining new permissions. In most settings, this is not the default configuration, it's something specifically configured, often as part of a security hardening guide.
+
+**Error message**
+
+This issue can be identified by the error message generated when a `before_script` or `APISEC_PRE_SCRIPT` is executed:
+
+```shell
+$ sudo apk add nodejs
+
+sudo: The "no new privileges" flag is set, which prevents sudo from running as root.
+
+sudo: If sudo is running in a container, you may need to adjust the container configuration to disable the flag.
+```
+
+**Solution**
+
+This issue can be worked around in the following ways:
+
+1. Run the container as the `root` user. This can be done by modifying the CICD configuration:
+
+   ```yaml
+   api_security:
+     image:
+       name: $SECURE_ANALYZERS_PREFIX/$DAST_API_IMAGE:$DAST_API_VERSION$DAST_API_IMAGE_SUFFIX
+       docker:
+         user: root
+   ```
+
+1. Change the GitLab Runner configuration, disabling the no-new-privileges flag.

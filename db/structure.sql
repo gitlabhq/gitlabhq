@@ -7995,6 +7995,7 @@ CREATE TABLE cluster_agents (
     name text NOT NULL,
     created_by_user_id bigint,
     has_vulnerabilities boolean DEFAULT false NOT NULL,
+    connection_mode smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_3498369510 CHECK ((char_length(name) <= 255))
 );
 

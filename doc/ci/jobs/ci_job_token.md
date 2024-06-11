@@ -88,7 +88,6 @@ with a job token from any project. These resources can also be [limited to only 
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.10.
 > - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 > - Adding groups to the job token allowlist [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.0.
-> - **Limit access _to_ this project** setting [renamed to **Grant access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.1.
 
 You can add groups or projects to your job token allowlist to allow access your project's resources
 with a job token for authentication. By default, the allowlist of any project only includes itself.
@@ -114,7 +113,7 @@ To add a group or project to the allowlist:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
-1. Ensure the **Grant access to this project** toggle is enabled. Enabled by default in new projects.
+1. Ensure the **Limit access _to_ this project** toggle is enabled. Enabled by default in new projects.
    It is a security risk to disable this feature, so project maintainers or owners should
    keep this setting enabled at all times.
 1. Select **Add group or project**.
@@ -152,14 +151,13 @@ To set a feature to be only visible to project members:
 ### Allow any project to access your project
 
 > - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
-> - **Limit access _to_ this project** setting [renamed to **Grant access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.1.
 
 WARNING:
 It is a security risk to disable the token access limit and allowlist. A malicious user could try to compromise
 a pipeline created in an unauthorized project. If the pipeline was created by one of
 your maintainers, the job token could be used in an attempt to access your project.
 
-If you disable the **Grant access to this project** setting, the allowlist is ignored.
+If you disable the **Limit access _to_ this project** setting, the allowlist is ignored.
 Jobs from any project could access your project with a job token if the user that
 triggers the pipeline has permission to access your project.
 
@@ -175,7 +173,7 @@ To disable the job token scope allowlist:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Token Access**.
-1. Toggle **Grant access to this project** to disabled.
+1. Toggle **Limit access _to_ this project** to disabled.
    Enabled by default in new projects.
 
 You can also enable and disable the setting with the [GraphQL](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate) (`inboundJobTokenScopeEnabled`) and [REST](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) API.
@@ -197,7 +195,7 @@ proposes to change this behavior.
 NOTE:
 The [**Limit access _from_ this project**](#configure-the-job-token-scope-deprecated)
 setting is disabled by default for all new projects and is [scheduled for removal](https://gitlab.com/gitlab-org/gitlab/-/issues/383084)
-in GitLab 18.0. Project maintainers or owners should configure the [**Grant access to this project**](#add-a-group-or-project-to-the-job-token-allowlist)
+in GitLab 17.0. Project maintainers or owners should configure the [**Limit access _to_ this project**](#add-a-group-or-project-to-the-job-token-allowlist)
 setting instead.
 
 Control your project's job token scope by creating an allowlist of projects which

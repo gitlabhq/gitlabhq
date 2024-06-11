@@ -195,8 +195,6 @@ To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or l
 
 In 16.3, the names of these settings were changed to clarify their meanings: the deprecated **Limit CI_JOB_TOKEN access** setting is now called **Limit access _from_ this project**, and the newer **Allow access to this project with a CI_JOB_TOKEN** setting is now called **Limit access _to_ this project**.
 
-In 17.1, the name of the **Limit access _to_ this project** setting was further clarified: it is now called **Grant access to this project**.
-
 </div>
 
 <div class="deprecation breaking-change" data-milestone="18.0">
@@ -2978,8 +2976,6 @@ In 18.0, we plan to remove the **Limit** setting completely, and set the **Allow
 To prepare for this change, users on GitLab.com or self-managed GitLab 15.9 or later can enable the **Allow access** setting now and add the other projects. It will not be possible to disable the setting in 18.0 or later.
 
 In 16.3, the names of these settings were changed to clarify their meanings: the deprecated **Limit CI_JOB_TOKEN access** setting is now called **Limit access _from_ this project**, and the newer **Allow access to this project with a CI_JOB_TOKEN** setting is now called **Limit access _to_ this project**.
-
-In 17.1, the name of the **Limit access _to_ this project** setting was further clarified: it is now called **Grant access to this project**.
 
 </div>
 

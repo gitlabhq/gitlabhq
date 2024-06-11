@@ -474,10 +474,10 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '.recent' do
     subject { described_class.recent }
 
-    let!(:runner1) { create(:ci_runner, :instance, contacted_at: nil, created_at: 2.months.ago) }
-    let!(:runner2) { create(:ci_runner, :instance, contacted_at: nil, created_at: 3.months.ago) }
-    let!(:runner3) { create(:ci_runner, :instance, contacted_at: 1.month.ago, created_at: 2.months.ago) }
-    let!(:runner4) { create(:ci_runner, :instance, contacted_at: 1.month.ago, created_at: 3.months.ago) }
+    let!(:runner1) { create(:ci_runner, contacted_at: nil, created_at: 6.days.ago) }
+    let!(:runner2) { create(:ci_runner, contacted_at: nil, created_at: 7.days.ago) }
+    let!(:runner3) { create(:ci_runner, contacted_at: 1.day.ago, created_at: 6.days.ago) }
+    let!(:runner4) { create(:ci_runner, contacted_at: 1.day.ago, created_at: 7.days.ago) }
 
     it { is_expected.to contain_exactly(runner1, runner3, runner4) }
   end
@@ -569,11 +569,11 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
       using RSpec::Parameterized::TableSyntax
 
       where(:created_at, :contacted_at, :expected_stale?) do
-        nil                     | nil                     | false
-        3.months.ago            | 3.months.ago            | true
-        3.months.ago            | (3.months - 1.hour).ago | false
-        3.months.ago            | nil                     | true
-        (3.months - 1.hour).ago | nil                     | false
+        nil                   | nil                   | false
+        7.days.ago            | 7.days.ago            | true
+        7.days.ago            | (7.days - 1.hour).ago | false
+        7.days.ago            | nil                   | true
+        (7.days - 1.hour).ago | nil                   | false
       end
 
       with_them do
@@ -866,7 +866,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     subject { runner.status }
 
     context 'never connected' do
-      let(:runner) { build(:ci_runner, :instance, :unregistered, created_at: 3.months.ago) }
+      let(:runner) { build(:ci_runner, :instance, :unregistered, created_at: 7.days.ago) }
 
       it { is_expected.to eq(:stale) }
 
@@ -890,13 +890,13 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'contacted recently' do
-      let(:runner) { build(:ci_runner, :instance, contacted_at: (3.months - 1.second).ago) }
+      let(:runner) { build(:ci_runner, :instance, contacted_at: (7.days - 1.second).ago) }
 
       it { is_expected.to eq(:offline) }
     end
 
     context 'contacted long time ago' do
-      let(:runner) { build(:ci_runner, :instance, created_at: 3.months.ago, contacted_at: 3.months.ago) }
+      let(:runner) { build(:ci_runner, :instance, created_at: 7.days.ago, contacted_at: 7.days.ago) }
 
       it { is_expected.to eq(:stale) }
     end
@@ -925,8 +925,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     context 'contacted long time ago' do
       before do
-        runner.created_at = 3.months.ago
-        runner.contacted_at = 3.months.ago
+        runner.created_at = 7.days.ago
+        runner.contacted_at = 7.days.ago
       end
 
       it { is_expected.to eq(:stale) }
@@ -2042,7 +2042,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '.stale_deadline', :freeze_time do
     subject { described_class.stale_deadline }
 
-    it { is_expected.to eq(3.months.ago) }
+    it { is_expected.to eq(7.days.ago) }
   end
 
   describe '.with_runner_type' do

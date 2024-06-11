@@ -105,11 +105,11 @@
   %section.settings.no-animate#js-token-access{ class: ('expanded' if expanded) }
     .settings-header
       %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _("Job token permissions")
+        = _("Token Access")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded ? _('Collapse') : _('Expand')
       %p.gl-text-secondary
-        = _("Control whether CI/CD job tokens can be used to authenticate with this project.")
+        = _("Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects.")
     .settings-content
       = render 'ci/token_access/index'
 

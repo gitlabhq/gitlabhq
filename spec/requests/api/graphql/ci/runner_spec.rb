@@ -689,7 +689,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     let_it_be(:never_contacted_instance_runner) do
-      create(:ci_runner, :unregistered, description: 'Missing runner 1', created_at: 1.month.ago)
+      create(:ci_runner, :unregistered, description: 'Missing runner 1', created_at: 6.days.ago)
     end
 
     let(:query) do

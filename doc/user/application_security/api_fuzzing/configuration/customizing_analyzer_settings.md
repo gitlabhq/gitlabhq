@@ -420,9 +420,11 @@ container that has Python 3 and Bash installed.
 You have to set the environment variable `FUZZAPI_OVERRIDES_CMD` to the program or script you would like
 to execute. The provided command creates the overrides JSON file as defined previously.
 
-You might want to install other scripting runtimes like NodeJS or Ruby, or maybe you need to install a dependency for
-your overrides command. In this case, we recommend setting the `FUZZAPI_PRE_SCRIPT` to the file path of a script which
-provides those prerequisites. The script provided by `FUZZAPI_PRE_SCRIPT` is executed once, before the analyzer starts.
+You might want to install other scripting runtimes like NodeJS or Ruby, or maybe you need to install a dependency for your overrides command. In this case, you should set the `FUZZAPI_PRE_SCRIPT` to the file path of a script that provides those prerequisites. The script provided by `FUZZAPI_PRE_SCRIPT` is executed once, before the analyzer starts.
+
+NOTE:
+When performing actions that require elevated permissions, make use of the `sudo` command.
+For example, `sudo apk add nodejs`.
 
 See the [Alpine Linux package management](https://wiki.alpinelinux.org/wiki/Alpine_Linux_package_management)
 page for information about installing Alpine Linux packages.
@@ -438,7 +440,7 @@ Optionally:
 - `FUZZAPI_PRE_SCRIPT`: Script to install runtimes or dependencies before the analyzer starts.
 
 WARNING:
-To execute scripts in Alpine Linux you must first use the command [`chmod`](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) to set the [execution permission](https://www.gnu.org/software/coreutils/manual/html_node/Setting-Permissions.html). For example, to set the execution permission of `script.py` for everyone, use the command: `chmod a+x script.py`. If needed, you can version your `script.py` with the execution permission already set.
+To execute scripts in Alpine Linux you must first use the command [`chmod`](https://www.gnu.org/software/coreutils/manual/html_node/chmod-invocation.html) to set the [execution permission](https://www.gnu.org/software/coreutils/manual/html_node/Setting-Permissions.html). For example, to set the execution permission of `script.py` for everyone, use the command: `sudo chmod a+x script.py`. If needed, you can version your `script.py` with the execution permission already set.
 
 ```yaml
 stages:
@@ -582,9 +584,7 @@ As for example, the following script `user-pre-scan-set-up.sh`:
 
 echo "**** install python dependencies ****"
 
-python3 -m ensurepip
-pip3 install --no-cache --upgrade \
-    pip \
+sudo pip3 install --no-cache --upgrade --break-system-packages \
     requests \
     backoff
 

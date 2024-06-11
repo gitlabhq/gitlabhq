@@ -376,3 +376,20 @@ docker pull ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/library/docker:20.10.3@sha
 ```
 
 In this example, `bc9dcf5c8e5908845acc6d34ab8824bca496d6d47d1b08af3baf4b3adb1bd8fe` is the SHA256 of the ARM based image.
+
+### `MissingFile` errors after restoring a backup
+
+If you encounter `MissingFile` or `Cannot read file` errors, it might be because
+[backup archives](../../../administration/backup_restore/backup_gitlab.md)
+do not include the contents of `gitlab-rails/shared/dependency_proxy/`.
+
+To resolve this [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/354574),
+you can use `rsync`, `scp`, or a similar tool to copy the affected files or the whole
+`gitlab-rails/shared/dependency_proxy/` folder structure from the GitLab instance
+that was the source of the backup.
+
+If the data is not needed, you can delete the database entries with:
+
+```shell
+gitlab-psql -c "DELETE FROM dependency_proxy_blobs; DELETE FROM dependency_proxy_blob_states; DELETE FROM dependency_proxy_manifest_states; DELETE FROM dependency_proxy_manifests;"
+```

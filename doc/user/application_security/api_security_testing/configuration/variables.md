@@ -40,8 +40,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 |[`DAST_API_OVERRIDES_ENV`](customizing_analyzer_settings.md#overrides)                 | JSON string containing headers to override. |
 |[`DAST_API_OVERRIDES_CMD`](customizing_analyzer_settings.md#overrides)                 | Overrides command. |
 |[`DAST_API_OVERRIDES_CMD_VERBOSE`](customizing_analyzer_settings.md#overrides)         | When set to any value. It shows overrides command output as part of the job output. |
-|`DAST_API_PRE_SCRIPT`                                  | Run user command or script before scan session starts. |
-|`DAST_API_POST_SCRIPT`                                 | Run user command or script after scan session has finished. |
+|`DAST_API_PRE_SCRIPT`                                  | Run user command or script before scan session starts. `sudo` must be used for privileged operations like installing packages. |
+|`DAST_API_POST_SCRIPT`                                 | Run user command or script after scan session has finished. `sudo` must be used for privileged operations like installing packages. |
 |[`DAST_API_OVERRIDES_INTERVAL`](customizing_analyzer_settings.md#overrides)            | How often to run overrides command in seconds. Defaults to `0` (once). |
 |[`DAST_API_HTTP_USERNAME`](customizing_analyzer_settings.md#http-basic-authentication) | Username for HTTP authentication. |
 |[`DAST_API_HTTP_PASSWORD`](customizing_analyzer_settings.md#http-basic-authentication) | Password for HTTP authentication. Consider using `DAST_API_HTTP_PASSWORD_BASE64` instead. |

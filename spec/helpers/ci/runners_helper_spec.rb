@@ -147,7 +147,7 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
           group_full_path: group.full_path,
           runner_install_help_page: 'https://docs.gitlab.com/runner/install/',
           online_contact_timeout_secs: 7200,
-          stale_timeout_secs: 7889238
+          stale_timeout_secs: 604800
         )
       end
     end
