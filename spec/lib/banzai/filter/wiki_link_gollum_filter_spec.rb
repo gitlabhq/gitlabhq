@@ -192,6 +192,14 @@ RSpec.describe Banzai::Filter::WikiLinkGollumFilter, feature_category: :wiki do
   end
   # rubocop:enable Layout/LineLength
 
+  context 'when the href gets sanitized out' do
+    it 'ignores the link' do
+      doc = pipeline_filter('[[test|http://]]', wiki: wiki)
+
+      expect(doc.at_css('a')['data-gollum']).to be_nil
+    end
+  end
+
   def pipeline_filter(text, context = {})
     context = { project: project, no_sourcepos: true }.merge(context)
 

@@ -5,7 +5,7 @@ workflow:
   name: $PIPELINE_NAME
 
 include:
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@8.15.0"
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@8.15.1"
     inputs:
       job_name: "e2e-test-report"
       job_stage: "report"
@@ -15,7 +15,7 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 8.15.0
+    ref: 8.15.1
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/knapsack-report.yml
@@ -43,6 +43,12 @@ stages:
     BUNDLE_SUPPRESS_INSTALL_USING_MESSAGES: "true"
     BUNDLE_SILENCE_ROOT_WARNING: "true"
     BUNDLE_WITHOUT: development
+
+.qa-run-e2e-with-bundler:
+  script:
+    - source $CI_PROJECT_DIR/scripts/utils.sh
+    - source $CI_PROJECT_DIR/scripts/rspec_helpers.sh
+    - run_e2e_specs "${QA_GITLAB_URL}" "${QA_TESTS}" "${QA_RSPEC_TAGS}"
 
 .qa-install:
   extends:

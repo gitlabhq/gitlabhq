@@ -51,7 +51,8 @@ RSpec.describe 'Query.runners', feature_category: :fleet_visibility do
     # Exclude fields from deeper objects which are problematic:
     # - ownerProject.pipeline: Needs arguments (iid or sha)
     # - project.productAnalyticsState: Can be requested only for 1 Project(s) at a time.
-    let(:excluded_fields) { %w[pipeline productAnalyticsState] }
+    # - mergeTrains Licensed feature
+    let(:excluded_fields) { %w[pipeline productAnalyticsState mergeTrains] }
 
     it 'returns expected runners' do
       post_graphql(query, current_user: current_user)

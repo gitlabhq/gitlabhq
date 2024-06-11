@@ -19,15 +19,14 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/experiment-beta-support.md#experiment).
 
-To use this feature:
+Generate a summary of discussions on an issue.
 
-- The parent group of the issue must:
-  - Enable the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features).
-- You must:
-  - Belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
-  - Have sufficient permissions to view the issue.
+Prerequisites:
 
-You can generate a summary of discussions on an issue:
+- You must belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+- You must have permission to view the issue.
+
+To generate a summary of issue discussions:
 
 1. In an issue, scroll to the **Activity** section.
 1. Select **View summary**.
@@ -49,15 +48,15 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10228) in GitLab 16.2 as an [experiment](../../policy/experiment-beta-support.md#experiment).
 
-To use this feature:
+Improve your planning and decision-making by predicting productivity metrics and
+identifying anomalies across your software development lifecycle.
 
-- The parent group of the project must:
-  - Enable the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features).
-- You must:
-  - Belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
-  - Have sufficient permissions to view the CI/CD analytics.
+Prerequisites:
 
-In CI/CD Analytics, you can view a forecast of deployment frequency:
+- You must belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+- You must have permission to view the CI/CD analytics.
+
+To view a forecast of deployment frequency in CI/CD Analytics:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Analyze > CI/CD analytics**.
@@ -65,14 +64,17 @@ In CI/CD Analytics, you can view a forecast of deployment frequency:
 1. Turn on the **Show forecast** toggle.
 1. On the confirmation dialog, select **Accept testing terms**.
 
-The forecast is displayed as a dotted line on the chart. Data is forecasted for a duration that is half of the selected date range.
-For example, if you select a 30-day range, a forecast for the following 15 days is displayed.
+The forecast is displayed as a dotted line on the chart. Data is forecasted for
+a duration that is half of the selected date range.
+
+For example, if you select a 30-day range, a forecast for the following 15 days
+is displayed.
 
 ![Forecast deployment frequency](img/forecast_deployment_frequency.png)
 
 Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
 
-## Root cause analysis
+## Troubleshoot failed CI/CD jobs with Root cause analysis
 
 DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
@@ -81,15 +83,12 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../../policy/experiment-beta-support.md#experiment).
 
-You can learn more about failed CI/CD jobs by using GitLab Duo Root cause analysis.
+Determine the root cause of a CI/CD job failure by analyzing the logs.
 
 Prerequisites:
 
-- The parent group of the project must:
-  - Enable the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features).
-- You must:
-  - Belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
-  - Have sufficient permissions to view the CI/CD job.
+- You must belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+- You must have permission to view the CI/CD job.
 
 To view root cause analysis:
 
@@ -108,15 +107,14 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10762) in GitLab 16.3 as an [experiment](../../policy/experiment-beta-support.md#experiment).
 
-To use this feature:
+Generate a detailed description for an issue based on a short summary you provide.
 
-- The parent group of the project must:
-  - Enable the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features).
-- You must:
-  - Belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
-  - Have sufficient permissions to view the issue.
+Prerequisites:
 
-You can generate the description for an issue from a short summary.
+- You must belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+- You must have permission to view the issue.
+
+To generate an issue description:
 
 1. Create a new issue.
 1. Above the **Description** field, select **GitLab Duo** (**{tanuki-ai}**) **> Generate issue description**.

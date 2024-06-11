@@ -19,6 +19,10 @@ module PlanLimitsHelper
       s_('AdminSettings|Maximum number of runners registered per group')
     when :ci_registered_project_runners
       s_('AdminSettings|Maximum number of runners registered per project')
+    when :dotenv_size
+      s_('AdminSettings|Maximum size of a dotenv artifact in bytes')
+    when :dotenv_variables
+      s_('AdminSettings|Maximum number of variables in a dotenv artifact')
     when :pipeline_hierarchy_size
       s_("AdminSettings|Maximum number of downstream pipelines in a pipeline's hierarchy tree")
     else

@@ -7,7 +7,7 @@ RSpec.shared_context 'package details setup' do
   let(:package_global_id) { global_id_of(package) }
 
   let(:depth) { 3 }
-  let(:excluded) { %w[metadata apiFuzzingCiConfiguration pipeline packageFiles] }
+  let(:excluded) { %w[metadata apiFuzzingCiConfiguration pipeline packageFiles mergeTrains] }
   let(:package_files) { all_graphql_fields_for('PackageFile') }
   let(:dependency_links) { all_graphql_fields_for('PackageDependencyLink') }
   let(:pipelines) { all_graphql_fields_for('Pipeline', max_depth: 1) }

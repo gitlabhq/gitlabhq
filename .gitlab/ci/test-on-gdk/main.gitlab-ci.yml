@@ -48,6 +48,7 @@ include:
     - .qa-cache
     - .default-retry
     - .gitlab-qa-report
+    - .qa-run-e2e-with-bundler
   stage: test
   services:
     - name: docker:${DOCKER_VERSION}-dind
@@ -66,26 +67,15 @@ include:
     QA_SUITE_STATUS_ENV_FILE: "$CI_PROJECT_DIR/suite_status.env"
     QA_DOCKER_NETWORK: host
     QA_DISABLE_RSPEC_RETRY: "true"
+    QA_GITLAB_URL: http://gdk.test:3000
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    GDK_URL: http://gdk.test:3000
     FF_NETWORK_PER_BUILD: "true"
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     - echo -e "\e[0Ksection_start:`date +%s`:install_gems[collapsed=true]\r\e[0KInstall gems"
-    - source scripts/utils.sh
-    - source scripts/rspec_helpers.sh
     - cd qa && bundle install
     - echo -e "\e[0Ksection_end:`date +%s`:install_gems\r\e[0K"
-  script:
-    - export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $GDK_URL $GITLAB_QA_OPTS -- $QA_TESTS --order random --force-color --format documentation --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}-\${QA_RSPEC_RETRIED:-false}.json"
-    - echo "Running - '$QA_COMMAND'"
-    - |
-      if eval "$QA_COMMAND --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml"; then
-        echo "Test run finished successfully"
-      else
-        retry_failed_e2e_rspec_examples
-      fi
   after_script:
     - !reference [.with-gdk-log, after_script]
     - !reference [.gitlab-qa-report, after_script]

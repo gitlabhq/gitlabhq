@@ -868,6 +868,41 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
   describe 'create integration for the project' do
     subject(:project) { create_project(user, opts) }
 
+    context 'when an instance-level instance specific integration' do
+      let!(:instance_specific_integration) { create(:beyond_identity_integration) }
+
+      it 'creates integration inheriting from the instance level integration' do
+        expect(project.integrations.count).to eq(1)
+        expect(project.integrations.first.active).to eq(instance_specific_integration.active)
+        expect(project.integrations.first.inherit_from_id).to eq(instance_specific_integration.id)
+      end
+
+      context 'when there is a group-level exclusion' do
+        let(:opts) do
+          {
+            name: project_name,
+            namespace_id: group.id
+          }
+        end
+
+        let!(:group) do
+          create(:group).tap do |group|
+            group.add_owner(user)
+          end
+        end
+
+        let!(:group_integration) do
+          create(:beyond_identity_integration, group: group, instance: false, active: false)
+        end
+
+        it 'creates a service from the group-level integration' do
+          expect(project.integrations.count).to eq(1)
+          expect(project.integrations.first.active).to eq(group_integration.active)
+          expect(project.integrations.first.inherit_from_id).to eq(group_integration.id)
+        end
+      end
+    end
+
     context 'with an active instance-level integration' do
       let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
 

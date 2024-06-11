@@ -26627,8 +26627,6 @@ CREATE INDEX index_historical_data_on_recorded_at ON historical_data USING btree
 
 CREATE UNIQUE INDEX index_http_integrations_on_project_and_endpoint ON alert_management_http_integrations USING btree (project_id, endpoint_identifier);
 
-CREATE INDEX index_identities_on_provider ON identities USING btree (provider);
-
 CREATE INDEX index_identities_on_saml_provider_id ON identities USING btree (saml_provider_id) WHERE (saml_provider_id IS NOT NULL);
 
 CREATE INDEX index_identities_on_user_id ON identities USING btree (user_id);
@@ -26791,7 +26789,7 @@ CREATE INDEX index_issues_on_id_and_weight ON issues USING btree (id, weight);
 
 CREATE INDEX index_issues_on_last_edited_by_id ON issues USING btree (last_edited_by_id);
 
-CREATE INDEX index_issues_on_milestone_id ON issues USING btree (milestone_id);
+CREATE INDEX index_issues_on_milestone_id_and_id ON issues USING btree (milestone_id, id);
 
 CREATE INDEX index_issues_on_moved_to_id ON issues USING btree (moved_to_id) WHERE (moved_to_id IS NOT NULL);
 

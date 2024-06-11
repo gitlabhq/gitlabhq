@@ -3485,10 +3485,16 @@ msgstr ""
 msgid "AdminArea|Components"
 msgstr ""
 
+msgid "AdminArea|Current domain doesn't match the Web IDE OAuth configuration"
+msgstr ""
+
 msgid "AdminArea|Developer"
 msgstr ""
 
 msgid "AdminArea|Documentation"
+msgstr ""
+
+msgid "AdminArea|Edit OAuth configuration"
 msgstr ""
 
 msgid "AdminArea|Features"
@@ -3555,6 +3561,9 @@ msgid "AdminArea|Sign up for the GitLab Security Newsletter to get notified for 
 msgstr ""
 
 msgid "AdminArea|Sign up for the GitLab newsletter"
+msgstr ""
+
+msgid "AdminArea|The Web IDE OAuth application doesn't have a redirect URL with the domain that you are using to visit GitLab. This issue will prevent Web IDE users from authenticating and often occurs when using a reverse proxy."
 msgstr ""
 
 msgid "AdminArea|Total Billable users"
@@ -3906,6 +3915,12 @@ msgid "AdminSettings|Maximum number of runners registered per group"
 msgstr ""
 
 msgid "AdminSettings|Maximum number of runners registered per project"
+msgstr ""
+
+msgid "AdminSettings|Maximum number of variables in a dotenv artifact"
+msgstr ""
+
+msgid "AdminSettings|Maximum size of a dotenv artifact in bytes"
 msgstr ""
 
 msgid "AdminSettings|Minimum size must be at least 0."

@@ -365,6 +365,31 @@ RSpec.describe Groups::TransferService, :sidekiq_inline, feature_category: :grou
             end
           end
 
+          context 'with instance specific integration' do
+            let_it_be(:instance_specific_integration) { create(:beyond_identity_integration) }
+            let_it_be(:group_instance_specific_integration) do
+              create(
+                :beyond_identity_integration,
+                group: group,
+                instance: false,
+                active: true,
+                inherit_from_id: instance_specific_integration.id
+              )
+            end
+
+            let_it_be(:parent_group_instance_specific_integration) do
+              create(:beyond_identity_integration, group: new_parent_group, instance: false, active: false)
+            end
+
+            it 'replaces inherited integrations', :aggregate_failures do
+              new_group_instance_specific_integration = Integration.find_by(group: group, type: instance_specific_integration.type)
+              expect(new_group_instance_specific_integration.inherit_from_id).to eq(parent_group_instance_specific_integration.id)
+              expect(new_group_instance_specific_integration.active).to be_falsey
+              expect(PropagateIntegrationWorker).to have_received(:perform_async).with(new_group_instance_specific_integration.id)
+              expect(Integration.count).to eq(5)
+            end
+          end
+
           context 'with a custom integration' do
             let_it_be(:group_integration) { create(:integrations_slack, :group, group: group, webhook: 'http://group.slack.com') }
 

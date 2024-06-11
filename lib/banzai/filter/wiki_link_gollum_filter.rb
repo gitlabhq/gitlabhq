@@ -30,7 +30,7 @@ module Banzai
       # Pattern to match allowed image extensions
       ALLOWED_IMAGE_EXTENSIONS = /(jpg|png|gif|svg|bmp)\z/i
 
-      CSS_WIKILINK_STYLE = 'a[data-wikilink]'
+      CSS_WIKILINK_STYLE = 'a[href][data-wikilink]'
       XPATH_WIKILINK_STYLE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_WIKILINK_STYLE).freeze
 
       def call

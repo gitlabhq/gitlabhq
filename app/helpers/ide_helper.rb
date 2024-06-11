@@ -21,6 +21,18 @@ module IdeHelper
     )
   end
 
+  def show_web_ide_oauth_callback_mismatch_callout?
+    return false unless ::Gitlab::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
+
+    callback_urls = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application_callback_urls
+    callback_url_domains = callback_urls.map { |url| URI.parse(url).origin }
+    callback_url_domains.any? && callback_url_domains.exclude?(request.base_url)
+  end
+
+  def web_ide_oauth_application_id
+    ::Gitlab::WebIde::DefaultOauthApplication.oauth_application_id
+  end
+
   def use_new_web_ide?
     Feature.enabled?(:vscode_web_ide, current_user)
   end

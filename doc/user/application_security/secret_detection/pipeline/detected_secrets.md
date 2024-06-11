@@ -6,6 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Detected secrets
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** GA
+
 This table lists the secrets detected by [pipeline secret detection](index.md).
 
 <!-- markdownlint-disable MD034 -->

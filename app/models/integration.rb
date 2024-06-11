@@ -343,6 +343,10 @@ class Integration < ApplicationRecord
     INSTANCE_SPECIFIC_INTEGRATION_NAMES
   end
 
+  def self.instance_specific_integration_types
+    instance_specific_integration_names.map { |name| integration_name_to_type(name) }
+  end
+
   def self.dev_integration_names
     return [] unless Gitlab.dev_or_test_env?
 
@@ -453,17 +457,37 @@ class Integration < ApplicationRecord
   end
   private_class_method :instance_level_integration
 
-  # Returns the number of successfully saved integrations
-  # Duplicate integrations are excluded from this count by their validations.
-  def self.create_from_active_default_integrations(owner, association)
+  def self.default_integrations(owner, scope)
     group_ids = sorted_ancestors(owner).select(:id)
     array = group_ids.to_sql.present? ? "array(#{group_ids.to_sql})" : 'ARRAY[]'
     order = Arel.sql("type_new ASC, array_position(#{array}::bigint[], #{table_name}.group_id), instance DESC")
-
-    from_union([active.where(instance: true), active.where(group_id: group_ids, inherit_from_id: nil)])
+    from_union([scope.where(instance: true), scope.where(group_id: group_ids, inherit_from_id: nil)])
       .order(order)
       .group_by(&:type)
-      .count { |_type, parents| build_from_integration(parents.first, association => owner.id).save }
+      .transform_values(&:first)
+  end
+  private_class_method :default_integrations
+
+  def self.create_from_default_integrations(owner, association)
+    active_default_count = create_from_active_default_integrations(owner, association)
+    default_instance_specific_count = create_from_default_instance_specific_integrations(owner, association)
+    active_default_count + default_instance_specific_count
+  end
+
+  # Returns the number of successfully saved integrations
+  # Duplicate integrations are excluded from this count by their validations.
+  def self.create_from_active_default_integrations(owner, association)
+    default_integrations(
+      owner,
+      active.where.not(type: instance_specific_integration_types)
+    ).count { |_type, integration| build_from_integration(integration, association => owner.id).save }
+  end
+
+  def self.create_from_default_instance_specific_integrations(owner, association)
+    default_integrations(
+      owner,
+      where(type: instance_specific_integration_types)
+    ).count { |_type, integration| build_from_integration(integration, association => owner.id).save }
   end
 
   def self.descendants_from_self_or_ancestors_from(integration)

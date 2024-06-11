@@ -7,6 +7,7 @@
 = render_if_exists 'shared/submit_license_usage_data_banner'
 = render_if_exists 'shared/qrtly_reconciliation_alert'
 = render 'admin/dashboard/security_newsletter_callout'
+= render 'admin/dashboard/web_ide_oauth_callback_mismatch_callout'
 
 - if show_transition_to_jihu_callout?
   .js-jh-transition-banner{ data: { feature_name: Users::CalloutsHelper::TRANSITION_TO_JIHU_CALLOUT,

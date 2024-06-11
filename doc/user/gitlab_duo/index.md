@@ -198,7 +198,7 @@ DETAILS:
 
 - Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
 - LLM: Vertex AI Codey [`text-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/text)
-- [View documentation](experiments.md#root-cause-analysis).
+- [View documentation](experiments.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
 ### Vulnerability resolution
 

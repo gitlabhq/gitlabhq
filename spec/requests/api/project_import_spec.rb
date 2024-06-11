@@ -64,7 +64,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     it 'executes a limited number of queries', :use_clean_rails_redis_caching do
       control = ActiveRecord::QueryRecorder.new { perform_archive_upload }
 
-      expect(control.count).to be <= 113
+      expect(control.count).to be <= 114
     end
 
     it 'schedules an import using a namespace' do

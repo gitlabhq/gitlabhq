@@ -24,6 +24,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['ci_needs_size_limit']).to eq(Plan.default.actual_limits.ci_needs_size_limit)
           expect(json_response['ci_registered_group_runners']).to eq(Plan.default.actual_limits.ci_registered_group_runners)
           expect(json_response['ci_registered_project_runners']).to eq(Plan.default.actual_limits.ci_registered_project_runners)
+          expect(json_response['dotenv_size']).to eq(Plan.default.actual_limits.dotenv_size)
+          expect(json_response['dotenv_variables']).to eq(Plan.default.actual_limits.dotenv_variables)
           expect(json_response['conan_max_file_size']).to eq(Plan.default.actual_limits.conan_max_file_size)
           expect(json_response['generic_packages_max_file_size']).to eq(Plan.default.actual_limits.generic_packages_max_file_size)
           expect(json_response['helm_max_file_size']).to eq(Plan.default.actual_limits.helm_max_file_size)
@@ -104,6 +106,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             ci_needs_size_limit: 106,
             ci_registered_group_runners: 107,
             ci_registered_project_runners: 108,
+            dotenv_size: 109,
+            dotenv_variables: 110,
             conan_max_file_size: 10,
             enforcement_limit: 100,
             generic_packages_max_file_size: 20,
@@ -127,6 +131,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
           expect(json_response['ci_needs_size_limit']).to eq(106)
           expect(json_response['ci_registered_group_runners']).to eq(107)
           expect(json_response['ci_registered_project_runners']).to eq(108)
+          expect(json_response['dotenv_size']).to eq(109)
+          expect(json_response['dotenv_variables']).to eq(110)
           expect(json_response['conan_max_file_size']).to eq(10)
           expect(json_response['enforcement_limit']).to eq(100)
           expect(json_response['generic_packages_max_file_size']).to eq(20)
@@ -179,6 +185,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             ci_needs_size_limit: 'u',
             ci_registered_group_runners: 't',
             ci_registered_project_runners: 's',
+            dotenv_size: 'r',
+            dotenv_variables: 'q',
             conan_max_file_size: 'a',
             enforcement_limit: 'e',
             generic_packages_max_file_size: 'b',
@@ -203,6 +211,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :shared d
             'ci_needs_size_limit is invalid',
             'ci_registered_group_runners is invalid',
             'ci_registered_project_runners is invalid',
+            'dotenv_size is invalid',
+            'dotenv_variables is invalid',
             'conan_max_file_size is invalid',
             'enforcement_limit is invalid',
             'generic_packages_max_file_size is invalid',

@@ -51,7 +51,7 @@ You can express interest in other IDE extension support
 1. Optional. Ask a follow-up question.
 
 To ask a new question unrelated to the previous conversation, you might receive better answers
-if you clear the context by typing `/reset` and selecting **Send**.
+if you clear the context by typing `/reset` or `/clear` and selecting **Send**.
 
 NOTE:
 Only the last 50 messages are retained in the chat history. The chat history expires 3 days after last use.
@@ -152,11 +152,18 @@ Alternatively, use the context menu to perform these tasks.
 
 When you use a slash command, you can also add additional instructions, for example: `/tests using the Boost.Test framework`.
 
-## Delete all conversations
+## Delete or reset the conversation
 
-To delete all previous conversations:
+To delete all conversations permanently and clear the chat window:
 
 - In the text box, type `/clear` and select **Send**.
+
+To start a new conversation, but keep the previous conversations visible in the chat window:
+
+- In the text box, type `/reset` and select **Send**.
+
+In both cases, the conversation history will not be considered when you ask new questions.
+Deleting or resetting might help improve the answers when you switch contexts, because Duo Chat will not get confused by the unrelated conversations.
 
 ## Give feedback
 

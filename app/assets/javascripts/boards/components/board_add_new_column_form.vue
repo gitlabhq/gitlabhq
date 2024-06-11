@@ -41,7 +41,7 @@ export default {
 
 <template>
   <div
-    class="board-add-new-list board gl-display-inline-block gl-h-full gl-align-top gl-white-space-normal gl-flex-shrink-0 gl-rounded-base gl-pl-2"
+    class="board-add-new-list board gl-display-inline-block gl-h-full gl-align-top gl-whitespace-normal gl-flex-shrink-0 gl-rounded-base gl-pl-2"
     data-testid="board-add-new-column"
   >
     <div

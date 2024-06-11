@@ -47,6 +47,8 @@ class Admin::PlanLimitsController < Admin::ApplicationController
         ci_needs_size_limit
         ci_registered_group_runners
         ci_registered_project_runners
+        dotenv_size
+        dotenv_variables
         pipeline_hierarchy_size
       ])
   end

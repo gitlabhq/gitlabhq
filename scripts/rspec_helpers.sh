@@ -292,6 +292,21 @@ function rspec_parallelized_job() {
   handle_retry_rspec_in_new_process $rspec_run_status
 }
 
+function run_e2e_specs() {
+  local url=$1
+  local tests=$2
+  local tags=$3
+
+  export QA_COMMAND="bundle exec bin/qa ${QA_SCENARIO:=Test::Instance::All} $url -- $tests $tags --order random --force-color --format documentation --format QA::Support::JsonFormatter --out tmp/rspec-${CI_JOB_ID}-\${QA_RSPEC_RETRIED:-false}.json"
+  echo "Running e2e specs via command: '$QA_COMMAND'"
+
+  if eval "$QA_COMMAND --format RspecJunitFormatter --out tmp/rspec-${CI_JOB_ID}.xml"; then
+    echo "Test run finished successfully"
+  else
+    retry_failed_e2e_rspec_examples
+  fi
+}
+
 function retry_failed_e2e_rspec_examples() {
   local rspec_run_status=0
 

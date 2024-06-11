@@ -6,6 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Detected secrets
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, GitLab Dedicated
+**Status:** Beta
+
 This table lists the secrets detected by [secret push protection](index.md).
 
 <!-- markdownlint-disable MD044 -->

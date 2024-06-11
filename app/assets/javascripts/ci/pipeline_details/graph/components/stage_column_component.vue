@@ -204,7 +204,7 @@ export default {
         :id="groupId(group)"
         :key="getGroupId(group)"
         data-testid="stage-column-group"
-        class="gl-relative gl-white-space-normal gl-pipeline-job-width gl-mb-2"
+        class="gl-relative gl-whitespace-normal gl-pipeline-job-width gl-mb-2"
         @mouseenter="$emit('jobHover', group.name)"
         @mouseleave="$emit('jobHover', '')"
       >

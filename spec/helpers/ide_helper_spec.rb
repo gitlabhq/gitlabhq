@@ -3,11 +3,17 @@
 require 'spec_helper'
 
 RSpec.describe IdeHelper, feature_category: :web_ide do
-  describe '#ide_data' do
-    let_it_be(:project) { create(:project) }
-    let_it_be(:user) { project.creator }
-    let_it_be(:fork_info) { { ide_path: '/test/ide/path' } }
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { project.creator }
 
+  before do
+    allow(helper).to receive(:current_user).and_return(user)
+    allow(helper).to receive(:content_security_policy_nonce).and_return('test-csp-nonce')
+    allow(helper).to receive(:new_session_path).and_return('test-sign-in-path')
+  end
+
+  describe '#ide_data' do
+    let_it_be(:fork_info) { { ide_path: '/test/ide/path' } }
     let_it_be(:params) do
       {
         branch: 'master',
@@ -24,12 +30,6 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
         'project' => nil,
         'preview-markdown-path' => nil
       }
-    end
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:content_security_policy_nonce).and_return('test-csp-nonce')
-      allow(helper).to receive(:new_session_path).and_return('test-sign-in-path')
     end
 
     it 'returns hash' do
@@ -139,6 +139,45 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
           ))
         end
       end
+    end
+  end
+
+  describe '#show_web_ide_oauth_callback_mismatch_callout?' do
+    let_it_be(:oauth_application) { create(:oauth_application, owner: nil) }
+
+    it 'returns false if Web IDE OAuth is not enabled' do
+      stub_feature_flags(vscode_web_ide: true, web_ide_oauth: false)
+      expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be false
+    end
+
+    context 'when Web IDE OAuth is enabled' do
+      before do
+        stub_feature_flags(vscode_web_ide: true, web_ide_oauth: true)
+      end
+
+      it 'returns false if no Web IDE OAuth application found' do
+        expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be false
+      end
+
+      it "returns true if domain does not match OAuth application callback URLs" do
+        stub_application_setting({ web_ide_oauth_application: oauth_application })
+        expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be true
+      end
+
+      it "returns false if domain matches OAuth application callback URL" do
+        oauth_application.redirect_uri = "#{request.base_url}/oauth-redirect"
+        stub_application_setting({ web_ide_oauth_application: oauth_application })
+        expect(helper.show_web_ide_oauth_callback_mismatch_callout?).to be false
+      end
+    end
+  end
+
+  describe '#web_ide_oauth_application_id' do
+    let_it_be(:oauth_application) { create(:oauth_application, owner: nil) }
+
+    it 'returns Web IDE OAuth application ID' do
+      stub_application_setting({ web_ide_oauth_application: oauth_application })
+      expect(helper.web_ide_oauth_application_id).to eq(oauth_application.id)
     end
   end
 end

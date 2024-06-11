@@ -486,6 +486,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
         page.within('.as-ci-cd') do
           fill_in 'plan_limits_ci_instance_level_variables', with: 5
+          fill_in 'plan_limits_dotenv_size', with: 6
+          fill_in 'plan_limits_dotenv_variables', with: 7
           fill_in 'plan_limits_ci_pipeline_size', with: 10
           fill_in 'plan_limits_ci_active_jobs', with: 20
           fill_in 'plan_limits_ci_project_subscriptions', with: 30
@@ -498,6 +500,8 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
         limits = default_plan.reload.limits
         expect(limits.ci_instance_level_variables).to eq(5)
+        expect(limits.dotenv_size).to eq(6)
+        expect(limits.dotenv_variables).to eq(7)
         expect(limits.ci_pipeline_size).to eq(10)
         expect(limits.ci_active_jobs).to eq(20)
         expect(limits.ci_project_subscriptions).to eq(30)

@@ -12,6 +12,8 @@ module API
       expose :ci_registered_group_runners, documentation: { type: 'integer', example: 1000 }
       expose :ci_registered_project_runners, documentation: { type: 'integer', example: 1000 }
       expose :conan_max_file_size, documentation: { type: 'integer', example: 3221225472 }
+      expose :dotenv_variables, documentation: { type: 'integer', example: 20 }
+      expose :dotenv_size, documentation: { type: 'integer', example: 5120 }
       expose :enforcement_limit, documentation: { type: 'integer', example: 15000 }
       expose :generic_packages_max_file_size, documentation: { type: 'integer', example: 5368709120 }
       expose :helm_max_file_size, documentation: { type: 'integer', example: 5242880 }

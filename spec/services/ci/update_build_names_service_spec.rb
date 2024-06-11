@@ -8,6 +8,7 @@ RSpec.describe Ci::UpdateBuildNamesService, feature_category: :continuous_integr
   let_it_be(:build1) { create(:ci_build, name: 'build1', pipeline: pipeline) }
   let_it_be(:build2) { create(:ci_build, name: 'build2', pipeline: pipeline) }
   let_it_be(:build3) { create(:ci_build, name: 'build3', pipeline: pipeline) }
+  let_it_be(:bridge1) { create(:ci_bridge, name: 'bridge1', pipeline: pipeline) }
 
   describe '#execute' do
     subject(:service) { described_class.new(pipeline) }
@@ -53,6 +54,12 @@ RSpec.describe Ci::UpdateBuildNamesService, feature_category: :continuous_integr
       }], anything)
 
       service.execute
+    end
+
+    it 'does not create build name for bridge job' do
+      service.execute
+
+      expect(Ci::BuildName.find_by_build_id(bridge1.id)).to be_nil
     end
   end
 end

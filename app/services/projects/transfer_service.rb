@@ -267,7 +267,7 @@ module Projects
 
     def update_integrations
       project.integrations.with_default_settings.delete_all
-      Integration.create_from_active_default_integrations(project, :project_id)
+      Integration.create_from_default_integrations(project, :project_id)
     end
 
     def update_pending_builds

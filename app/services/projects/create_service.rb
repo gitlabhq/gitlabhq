@@ -243,7 +243,7 @@ module Projects
           Namespaces::ProjectNamespace.create_from_project!(@project) if @project.valid?
 
           if @project.saved?
-            Integration.create_from_active_default_integrations(@project, :project_id)
+            Integration.create_from_default_integrations(@project, :project_id)
 
             @project.create_labels unless @project.gitlab_project_import?
 

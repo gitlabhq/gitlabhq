@@ -16,7 +16,13 @@ module Gitlab
           Gitlab::Routing.url_helpers.ide_oauth_redirect_url
         end
 
+        def oauth_application_id
+          oauth_application ? oauth_application.id : nil
+        end
+
         def oauth_application_callback_urls
+          return [] unless oauth_application
+
           URI.extract(oauth_application.redirect_uri, %w[http https]).uniq
         end
 

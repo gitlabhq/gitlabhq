@@ -262,7 +262,7 @@ export default {
     </div>
     <div
       v-safe-html="line.rich_text"
-      class="gl-display-flex! gl-flex-direction-column gl-justify-content-center diff-td line_content left-side gl-white-space-normal!"
+      class="gl-display-flex! gl-flex-direction-column gl-justify-content-center diff-td line_content left-side gl-whitespace-normal!"
     ></div>
   </div>
 </template>

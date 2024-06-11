@@ -13407,6 +13407,54 @@ The edge type for [`MergeRequestReviewer`](#mergerequestreviewer).
 | <a id="mergerequestrevieweredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="mergerequestrevieweredgenode"></a>`node` | [`MergeRequestReviewer`](#mergerequestreviewer) | The item at the end of the edge. |
 
+#### `MergeTrainCarConnection`
+
+The connection type for [`MergeTrainCar`](#mergetraincar).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergetraincarconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="mergetraincarconnectionedges"></a>`edges` | [`[MergeTrainCarEdge]`](#mergetraincaredge) | A list of edges. |
+| <a id="mergetraincarconnectionnodes"></a>`nodes` | [`[MergeTrainCar]`](#mergetraincar) | A list of nodes. |
+| <a id="mergetraincarconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MergeTrainCarEdge`
+
+The edge type for [`MergeTrainCar`](#mergetraincar).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergetraincaredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mergetraincaredgenode"></a>`node` | [`MergeTrainCar`](#mergetraincar) | The item at the end of the edge. |
+
+#### `MergeTrainConnection`
+
+The connection type for [`MergeTrain`](#mergetrain).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergetrainconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="mergetrainconnectionedges"></a>`edges` | [`[MergeTrainEdge]`](#mergetrainedge) | A list of edges. |
+| <a id="mergetrainconnectionnodes"></a>`nodes` | [`[MergeTrain]`](#mergetrain) | A list of nodes. |
+| <a id="mergetrainconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `MergeTrainEdge`
+
+The edge type for [`MergeTrain`](#mergetrain).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergetrainedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="mergetrainedgenode"></a>`node` | [`MergeTrain`](#mergetrain) | The item at the end of the edge. |
+
 #### `MilestoneConnection`
 
 The connection type for [`Milestone`](#milestone).
@@ -25675,6 +25723,58 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="mergerequestreviewerworkspacesincludeactualstates"></a>`includeActualStates` **{warning-solid}** | [`[String!]`](#string) | **Deprecated** in GitLab 16.7. Use actual_states instead. |
 | <a id="mergerequestreviewerworkspacesprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter workspaces by project GlobalIDs. |
 
+### `MergeTrain`
+
+Represents a set of cars/merge_requests queued for merging.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergetraintargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the car's merge request. |
+
+#### Fields with arguments
+
+##### `MergeTrain.cars`
+
+Cars queued in the train.
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Returns [`MergeTrainCarConnection!`](#mergetraincarconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergetraincarsactivitystatus"></a>`activityStatus` | [`MergeTrainStatus!`](#mergetrainstatus) | Filter cars by their high-level status. Defaults to ACTIVE. |
+
+### `MergeTrainCar`
+
+MergeTrainCar represents an attempt to merge a merge requestusing merge trains.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mergetraincarcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the car was created. |
+| <a id="mergetraincarduration"></a>`duration` | [`Int`](#int) | Duration of the car. |
+| <a id="mergetraincarid"></a>`id` | [`MergeTrainsCarID!`](#mergetrainscarid) | Global ID of the car. |
+| <a id="mergetraincarmergerequest"></a>`mergeRequest` | [`MergeRequest!`](#mergerequest) | Merge request the car contains. |
+| <a id="mergetraincarmergedat"></a>`mergedAt` | [`Time`](#time) | Timestamp of when the car was merged. |
+| <a id="mergetraincarpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline of the car. |
+| <a id="mergetraincarstatus"></a>`status` | [`CarStatus!`](#carstatus) | Status of the car. |
+| <a id="mergetraincartargetbranch"></a>`targetBranch` | [`Branch!`](#branch) | Target branch of the car's merge request. |
+| <a id="mergetraincartargetproject"></a>`targetProject` | [`Project!`](#project) | Project the car's MR targets. |
+| <a id="mergetraincarupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the car was last updated. |
+| <a id="mergetraincaruser"></a>`user` | [`UserCore!`](#usercore) | Creator of the car (user who added the merge request to the train). |
+
 ### `Metadata`
 
 #### Fields
@@ -28438,6 +28538,27 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectmergerequeststargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Array of target branch names. All resolved merge requests will have one of these branches as their target. |
 | <a id="projectmergerequestsupdatedafter"></a>`updatedAfter` | [`Time`](#time) | Merge requests updated after the timestamp. |
 | <a id="projectmergerequestsupdatedbefore"></a>`updatedBefore` | [`Time`](#time) | Merge requests updated before the timestamp. |
+
+##### `Project.mergeTrains`
+
+Merge trains available to the project.
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Returns [`MergeTrainConnection`](#mergetrainconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectmergetrainsstatus"></a>`status` | [`MergeTrainStatus`](#mergetrainstatus) | Filter merge trains by a specific status. Defaults to ACTIVE. |
+| <a id="projectmergetrainstargetbranches"></a>`targetBranches` | [`[String!]`](#string) | Filter merge trains by a list of target branches. |
 
 ##### `Project.milestones`
 
@@ -33114,6 +33235,19 @@ Types of blob viewers.
 | <a id="blobviewerstyperich"></a>`rich` | Rich blob viewers type. |
 | <a id="blobviewerstypesimple"></a>`simple` | Simple blob viewers type. |
 
+### `CarStatus`
+
+Status of a merge train's car.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="carstatusfresh"></a>`FRESH` | Car's status: fresh. |
+| <a id="carstatusidle"></a>`IDLE` | Car's status: idle. |
+| <a id="carstatusmerged"></a>`MERGED` | Car's status: merged. |
+| <a id="carstatusmerging"></a>`MERGING` | Car's status: merging. |
+| <a id="carstatusskip_merged"></a>`SKIP_MERGED` | Car's status: skip_merged. |
+| <a id="carstatusstale"></a>`STALE` | Car's status: stale. |
+
 ### `CiCatalogResourceScope`
 
 Values for scoping catalog resources.
@@ -34612,6 +34746,13 @@ Representation of whether a GitLab merge request can be merged.
 | <a id="mergestrategyenummerge_train"></a>`MERGE_TRAIN` | Use the merge_train merge strategy. |
 | <a id="mergestrategyenummerge_when_checks_pass"></a>`MERGE_WHEN_CHECKS_PASS` | Use the merge_when_checks_pass merge strategy. |
 | <a id="mergestrategyenummerge_when_pipeline_succeeds"></a>`MERGE_WHEN_PIPELINE_SUCCEEDS` | Use the merge_when_pipeline_succeeds merge strategy. |
+
+### `MergeTrainStatus`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="mergetrainstatusactive"></a>`ACTIVE` | Active merge train. |
+| <a id="mergetrainstatuscompleted"></a>`COMPLETED` | Completed merge train. |
 
 ### `MergeabilityCheckIdentifier`
 
@@ -36597,6 +36738,12 @@ An example `MergeRequestsClosingIssuesID` is: `"gid://gitlab/MergeRequestsClosin
 A `MergeRequestsExternalStatusCheckID` is a global ID. It is encoded as a string.
 
 An example `MergeRequestsExternalStatusCheckID` is: `"gid://gitlab/MergeRequests::ExternalStatusCheck/1"`.
+
+### `MergeTrainsCarID`
+
+A `MergeTrainsCarID` is a global ID. It is encoded as a string.
+
+An example `MergeTrainsCarID` is: `"gid://gitlab/MergeTrains::Car/1"`.
 
 ### `MilestoneID`
 

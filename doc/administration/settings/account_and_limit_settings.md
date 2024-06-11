@@ -339,6 +339,37 @@ GitLab administrators can prevent this behavior:
 1. Clear the **Allow users with up to Guest role to create groups and personal projects** checkbox.
 1. Select **Save changes**.
 
+## Allow users to make their profiles private
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
+**Status:** Experiment
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421310) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `disallow_private_profiles`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+By default, users can make their profiles private.
+GitLab administrators can disable this setting to prevent users from making their profiles private:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Clear the **Allow users to make their profiles private** checkbox.
+1. Select **Save changes**.
+
+NOTE:
+If this setting is disabled, [Set profiles of new users to private by default](#set-profiles-of-new-users-to-private-by-default) is also disabled.
+
+WARNING:
+When this setting is disabled, it doesn't mark existing private profiles as public.
+GitLab administrators must manually update all existing private profiles back to public.
+For more information, see [issue 461701](https://gitlab.com/gitlab-org/gitlab/-/issues/461701).
+
 ## Set profiles of new users to private by default
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231301) in GitLab 15.8.
@@ -350,6 +381,9 @@ By default, newly created users have a public profile. GitLab administrators can
 1. Expand **Account and limit**.
 1. Select the **Make new users' profiles private by default** checkbox.
 1. Select **Save changes**.
+
+NOTE:
+If [Allow users to make their profiles private](#allow-users-to-make-their-profiles-private) is disabled, this setting is also disabled.
 
 ## Prevent users from deleting their accounts
 

@@ -293,7 +293,7 @@ module Groups
 
     def update_integrations
       @group.integrations.with_default_settings.delete_all
-      Integration.create_from_active_default_integrations(@group, :group_id)
+      Integration.create_from_default_integrations(@group, :group_id)
     end
 
     def propagate_integrations

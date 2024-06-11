@@ -35,9 +35,9 @@
       %div
         = render('shared/milestone_expired', milestone: milestone)
         - if milestone.group_milestone?
-          = gl_badge_tag milestone.group.full_name, { variant: :info }, { class: 'gl-white-space-normal gl-text-left' }
+          = gl_badge_tag milestone.group.full_name, { variant: :info }, { class: 'gl-whitespace-normal gl-text-left' }
         - if milestone.project_milestone?
-          = gl_badge_tag milestone.project.full_name, { variant: :muted }, { class: 'gl-white-space-normal gl-text-left' }
+          = gl_badge_tag milestone.project.full_name, { variant: :muted }, { class: 'gl-whitespace-normal gl-text-left' }
 
     .order-3.order-md-2.mt-2.mt-md-0.milestone-progress{ class: can_admin_milestone ? 'col-md-4' : 'col-md-5' }
       = milestone_progress_bar(milestone)

@@ -104,7 +104,7 @@ For details, see:
 
 - [Request a review of your merge request](../project/merge_requests/reviews/index.md#request-a-review)
 - [Add suggestions to a merge request](../project/merge_requests/reviews/suggestions.md#create-suggestions)
-- [How approvals work](../project/merge_requests/approvals/index.md#how-approvals-work)
+- [Merge request approvals](../project/merge_requests/approvals/index.md)
 
 ## Step 5: Merge the merge request
 

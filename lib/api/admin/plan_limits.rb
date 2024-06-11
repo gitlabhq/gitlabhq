@@ -62,6 +62,8 @@ module API
         optional :ci_registered_group_runners, type: Integer, desc: 'Maximum number of runners registered per group'
         optional :ci_registered_project_runners, type: Integer, desc: 'Maximum number of runners registered per project'
         optional :conan_max_file_size, type: Integer, desc: 'Maximum Conan package file size in bytes'
+        optional :dotenv_size, type: Integer, desc: 'Maximum size of a dotenv artifact in bytes'
+        optional :dotenv_variables, type: Integer, desc: 'Maximum number of variables in a dotenv artifact'
         optional :enforcement_limit, type: Integer,
           desc: 'Maximum storage size for the root namespace enforcement in MiB'
         optional :generic_packages_max_file_size, type: Integer, desc: 'Maximum generic package file size in bytes'

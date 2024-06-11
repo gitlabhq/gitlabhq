@@ -7,6 +7,8 @@ RSpec.describe PlanLimitsHelper, feature_category: :continuous_integration do
     it 'describes known limits', :aggregate_failures do
       [
         :ci_instance_level_variables,
+        :dotenv_size,
+        :dotenv_variables,
         :ci_pipeline_size,
         :ci_active_jobs,
         :ci_project_subscriptions,

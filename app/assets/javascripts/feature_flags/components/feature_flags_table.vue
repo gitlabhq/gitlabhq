@@ -186,7 +186,7 @@ export default {
               v-for="strategy in featureFlag.strategies"
               :key="strategy.id"
               data-testid="strategy-label"
-              class="gl-w-full gl-mr-3 gl-mt-2 gl-white-space-normal gl-text-left"
+              class="gl-w-full gl-mr-3 gl-mt-2 gl-whitespace-normal gl-text-left"
               v-bind="strategyBadgeText(strategy)"
             />
           </div>

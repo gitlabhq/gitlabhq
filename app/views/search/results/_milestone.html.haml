@@ -3,7 +3,7 @@
     %span.term.str-truncated= simple_search_highlight_and_truncate(milestone.title, @search_term)
 
   - if milestone.project_milestone?
-    .gl-mt-2= gl_badge_tag milestone.project.full_name, { variant: :muted }, { class: 'gl-white-space-normal gl-text-left' }
+    .gl-mt-2= gl_badge_tag milestone.project.full_name, { variant: :muted }, { class: 'gl-whitespace-normal gl-text-left' }
 
   - if milestone.description.present?
     .description.term
