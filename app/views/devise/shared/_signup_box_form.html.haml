@@ -9,7 +9,7 @@
     = invisible_captcha nonce: true, autocomplete: SecureRandom.alphanumeric(12)
   - if @invite_email.present?
     .form-group
-      = f.label :email, _('Email'), class: 'gl-display-block'
+      = f.label :email, _('Email'), class: 'gl-block'
       .gl-font-bold{ 'data-testid': 'invite-email' }
         = @invite_email
       = f.hidden_field :email, value: @invite_email

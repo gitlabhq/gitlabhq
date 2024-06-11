@@ -64,7 +64,7 @@ export default {
         v-if="isActive"
         name="arrow-right"
         :show-tooltip="false"
-        class="icon-arrow-right gl-absolute gl-display-block"
+        class="icon-arrow-right gl-absolute gl-block"
       />
 
       <ci-icon :status="job.status" :show-tooltip="false" class="gl-mr-3" />

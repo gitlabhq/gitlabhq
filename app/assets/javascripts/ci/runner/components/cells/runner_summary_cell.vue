@@ -109,7 +109,7 @@ export default {
       </template>
       <tooltip-on-truncate
         v-if="runner.description"
-        class="gl-text-truncate gl-display-block"
+        class="gl-text-truncate gl-block"
         :class="{ 'gl-text-secondary': !runner.description }"
         :title="runner.description"
       >
@@ -143,6 +143,6 @@ export default {
       </runner-summary-field>
     </div>
 
-    <runner-tags class="gl-display-block" :tag-list="runner.tagList" size="sm" />
+    <runner-tags class="gl-block" :tag-list="runner.tagList" size="sm" />
   </div>
 </template>

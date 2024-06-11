@@ -1318,7 +1318,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       shared_examples 'a discussion note email' do |model|
         it_behaves_like 'it should have Gmail Actions links'
 
-        it 'is sent to the given recipient as the author' do
+        # Two tests with flakiness:1 are coming from this test:
+        #
+        # 1. https://gitlab.com/gitlab-org/gitlab/-/issues/464578
+        # 2. https://gitlab.com/gitlab-org/gitlab/-/issues/464577
+        it 'is sent to the given recipient as the author',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/464578' do
           aggregate_failures do
             expect_sender(note_author)
             expect(subject).to deliver_to(recipient.notification_email_or_default)
@@ -1484,7 +1489,12 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
 
         it_behaves_like 'it should have Gmail Actions links'
 
-        it 'is sent to the given recipient as the author' do
+        # Two tests with flakiness:1 are coming from this test:
+        #
+        # 1. https://gitlab.com/gitlab-org/gitlab/-/issues/464579
+        # 2. https://gitlab.com/gitlab-org/gitlab/-/issues/464580
+        it 'is sent to the given recipient as the author',
+          quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/464579' do
           aggregate_failures do
             expect_sender(note_author)
             expect(subject).to deliver_to(recipient.notification_email_or_default)

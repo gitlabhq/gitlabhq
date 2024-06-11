@@ -294,7 +294,7 @@ export default {
               v-gl-tooltip.d0.hover="member.accessLevel.description"
               variant="link"
               :disabled="isRoleDrawerBusy"
-              class="gl-display-block"
+              class="gl-block"
               @click="selectedMember = member"
             >
               {{ member.accessLevel.stringValue }}

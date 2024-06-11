@@ -227,6 +227,7 @@ describe('ModelCreate', () => {
         importPath: '/api/v4/projects/1/packages/ml_models/1/files/',
         subfolder: '',
         maxAllowedFileSize: 99999,
+        onUploadProgress: expect.any(Function),
       });
     });
 
@@ -334,6 +335,7 @@ describe('ModelCreate', () => {
         importPath: '/api/v4/projects/1/packages/ml_models/1/files/',
         subfolder: '',
         maxAllowedFileSize: 99999,
+        onUploadProgress: expect.any(Function),
       });
     });
   });

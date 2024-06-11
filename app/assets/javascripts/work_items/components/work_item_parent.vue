@@ -258,7 +258,7 @@ export default {
       <gl-collapsible-listbox
         id="$options.inputId"
         ref="input"
-        class="gl-display-block"
+        class="gl-block"
         data-testid="work-item-parent-listbox"
         block
         searchable

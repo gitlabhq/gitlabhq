@@ -39,7 +39,7 @@
         .issuable-reference.gl-display-flex.gl-justify-content-end.gl-overflow-hidden
           = gl_badge_tag issuable_reference(related_merge_request),
             { icon: mr_status[:icon], variant: mr_status[:variant], size: :md, href: merge_request_path(related_merge_request) },
-            { class: 'gl-display-block gl-text-truncate', title: mr_status[:title], data: { toggle: 'tooltip', container: 'body' } }
+            { class: 'gl-block gl-text-truncate', title: mr_status[:title], data: { toggle: 'tooltip', container: 'body' } }
 
       - elsif mr_status.nil? && create_mr_button?(from: branch.name, source_project: @project)
         = render Pajamas::ButtonComponent.new(icon: 'merge-request', href: create_mr_path(from: branch.name, source_project: @project), button_options: { class: 'has-tooltip', title: _('New merge request') }) do

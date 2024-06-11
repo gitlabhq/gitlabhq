@@ -97,7 +97,7 @@ export default {
       'li',
       {
         class: {
-          'gl-display-block': true,
+          'gl-block': true,
           'gl-text-left': true,
           'is-focused': highlight,
         },

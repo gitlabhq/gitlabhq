@@ -360,7 +360,7 @@ export default {
           <gl-datepicker
             v-model="selectedDate"
             :input-id="datepickerId"
-            class="gl-display-block!"
+            class="!gl-block"
             :min-date="minDate"
             :target="null"
           />

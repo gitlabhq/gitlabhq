@@ -59,7 +59,7 @@ export default {
 <template>
   <div>
     <label
-      class="dropdown-input gl-pt-3 gl-pb-5 gl-mb-0 gl-border-b-1 gl-border-b-solid gl-display-block"
+      class="dropdown-input gl-pt-3 gl-pb-5 gl-mb-0 gl-border-b-1 gl-border-b-solid gl-block"
       @click.stop
     >
       <input

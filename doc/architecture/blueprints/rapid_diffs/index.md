@@ -246,7 +246,7 @@ flowchart LR
 
 ```
 
-<sup>*</sup>: Front end obscures many unexplored phases. It is likely that the front end will need caches, databases, API abstractions (over sub-modules like network connectivity, etc.), and more. While these have not been expanded on, "Front end" stands in for all of that complexity here.
+<sup>\*</sup>: Front end obscures many unexplored phases. It is likely that the front end will need caches, databases, API abstractions (over sub-modules like network connectivity, etc.), and more. While these have not been expanded on, "Front end" stands in for all of that complexity here.
 
 ###### Gitaly
 

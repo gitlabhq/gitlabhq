@@ -395,7 +395,7 @@ export default {
           v-gl-tooltip.hover
           :class="{
             'gl-text-gray-500': list.collapsed,
-            'gl-display-block': list.collapsed || listType === 'milestone',
+            'gl-block': list.collapsed || listType === 'milestone',
           }"
           :title="listTitle"
           class="board-title-main-text gl-text-truncate"

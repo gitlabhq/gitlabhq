@@ -49,7 +49,7 @@ export default {
         :key="ignoreBtn.status"
         :ref="`${ignoreBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="gl-display-block gl-mb-4 gl-md-mb-0 gl-w-full"
+        class="gl-block gl-mb-4 gl-md-mb-0 gl-w-full"
         :title="ignoreBtn.title"
         :aria-label="ignoreBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: ignoreBtn.status })"
@@ -61,7 +61,7 @@ export default {
         :key="resolveBtn.status"
         :ref="`${resolveBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="gl-display-block gl-mb-4 gl-md-mb-0 gl-w-full"
+        class="gl-block gl-mb-4 gl-md-mb-0 gl-w-full"
         :title="resolveBtn.title"
         :aria-label="resolveBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: resolveBtn.status })"

@@ -120,7 +120,7 @@ export default {
         <span class="gl-flex gl-flex-col">
           <span class="gl-font-bold">{{ versionText(item) }}</span>
           <span v-if="item.author" class="gl-text-gray-600 gl-mt-1">
-            <span class="gl-display-block">{{ getAuthorName(item.author) }}</span>
+            <span class="gl-block">{{ getAuthorName(item.author) }}</span>
             <time-ago
               v-if="item.createdAt"
               class="text-1"

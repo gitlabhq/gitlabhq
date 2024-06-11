@@ -232,6 +232,10 @@ Sometimes we want to send internal events when the component is rendered or load
 
 Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
 
+NOTE:
+Do not pass the page URL or page path as an additional property because we already track the pseudonymized page URL for each event.
+Getting the URL from `window.location` does not pseudonymize project and namespace information [as documented](https://metrics.gitlab.com/identifiers).
+
 For Vue Mixin:
 
 ```javascript

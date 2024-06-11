@@ -6,6 +6,7 @@ module QA
       module HaveMatcher
         PREDICATE_TARGETS = %w[
           alert_with_title
+          artifacts_dropdown
           assignee
           auto_devops_container
           child_pipeline

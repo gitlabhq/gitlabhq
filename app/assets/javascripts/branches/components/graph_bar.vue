@@ -65,7 +65,7 @@ export default {
       :class="[roundedClass, positionSideClass]"
       class="position-absolute bar js-graph-bar"
     ></div>
-    <span :class="textAlignmentClass" class="gl-display-block gl-pt-1 gl-px-1 count js-graph-count">
+    <span :class="textAlignmentClass" class="gl-block gl-pt-1 gl-px-1 count js-graph-count">
       {{ label }}
     </span>
   </div>

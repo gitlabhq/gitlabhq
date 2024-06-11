@@ -172,7 +172,7 @@ export default {
         </div>
       </div>
 
-      <label class="gl-display-block" :for="environmentsDropdownId">{{
+      <label class="gl-block" :for="environmentsDropdownId">{{
         $options.i18n.environmentsLabel
       }}</label>
       <div class="gl-display-flex gl-flex-direction-column">

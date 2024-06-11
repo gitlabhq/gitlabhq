@@ -29,7 +29,7 @@
       = f.hidden_field :description
 
   .form-group.gl-mt-3.gl-mb-3
-    = f.label :avatar, _('Topic avatar'), class: 'gl-display-block'
+    = f.label :avatar, _('Topic avatar'), class: 'gl-block'
     - if @topic.avatar?
       = render Pajamas::AvatarComponent.new(@topic, alt: _('Topic avatar'), class: 'gl-float-left gl-mr-5', size: 96)
     = render 'shared/choose_avatar_button', f: f

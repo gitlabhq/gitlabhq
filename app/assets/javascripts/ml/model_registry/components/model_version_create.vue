@@ -82,6 +82,7 @@ export default {
             file: this.selectedFile.file,
             subfolder: this.selectedFile.subfolder,
             maxAllowedFileSize: this.maxAllowedFileSize,
+            onUploadProgress: this.$refs.importArtifactZoneRef.onUploadProgress,
           });
           const { showPath } = this.versionData.mlModelVersionCreate.modelVersion._links;
           visitUrl(showPath);
@@ -160,6 +161,7 @@ export default {
         <gl-form-group label="Import" label-for="versionImportArtifactZone">
           <import-artifact-zone
             id="versionImportArtifactZone"
+            ref="importArtifactZoneRef"
             v-model="selectedFile"
             :submit-on-select="false"
           />

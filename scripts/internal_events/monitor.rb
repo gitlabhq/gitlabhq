@@ -51,7 +51,6 @@ def extract_standard_context(event)
     next unless context['schema'].start_with?('iglu:com.gitlab/gitlab_standard/jsonschema')
 
     return {
-
       user_id: context["data"]["user_id"],
       namespace_id: context["data"]["namespace_id"],
       project_id: context["data"]["project_id"],

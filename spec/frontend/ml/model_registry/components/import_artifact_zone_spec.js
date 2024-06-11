@@ -1,4 +1,4 @@
-import { GlAlert, GlFormInputGroup, GlLoadingIcon, GlInputGroupText } from '@gitlab/ui';
+import { GlAlert, GlFormInputGroup, GlInputGroupText, GlProgressBar } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
@@ -20,9 +20,10 @@ describe('ImportArtifactZone', () => {
     path: 'some/path',
   };
   const formattedFileSizeDiv = () => wrapper.findByTestId('formatted-file-size');
+  const formattedProgress = () => wrapper.findByTestId('formatted-progress');
   const fileNameDiv = () => wrapper.findByTestId('file-name');
   const zone = () => wrapper.findComponent(UploadDropzone);
-  const loadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const progressBar = () => wrapper.findComponent(GlProgressBar);
   const emulateFileDrop = () => zone().vm.$emit('change', file);
   const subfolderInput = () => wrapper.findByTestId('subfolderId');
   const subfolderInputPrependText = () => wrapper.findComponent(GlInputGroupText);
@@ -48,17 +49,22 @@ describe('ImportArtifactZone', () => {
       expect(fileNameDiv().text()).toBe('file.txt');
     });
 
-    it('displays the loading icon', async () => {
+    it('displays the progress bar', async () => {
+      uploadModel.mockImplementation(({ onUploadProgress }) => {
+        onUploadProgress({ total: 10, loaded: 3 });
+        return Promise.resolve();
+      });
       await emulateFileDrop();
 
-      expect(loadingIcon().exists()).toBe(true);
+      expect(progressBar().exists()).toBe(true);
+      expect(formattedProgress().text()).toBe('3 B / 10 B');
     });
 
     it('resets the file and loading state', async () => {
       await emulateFileDrop();
 
       await waitForPromises();
-      expect(loadingIcon().exists()).toBe(false);
+      expect(progressBar().exists()).toBe(false);
       expect(formattedFileSizeDiv().exists()).toBe(false);
       expect(fileNameDiv().exists()).toBe(false);
     });
@@ -75,6 +81,7 @@ describe('ImportArtifactZone', () => {
         importPath: 'some/path',
         subfolder: '',
         maxAllowedFileSize: 99999,
+        onUploadProgress: expect.any(Function),
       });
     });
 
@@ -134,6 +141,7 @@ describe('ImportArtifactZone', () => {
         importPath: 'some/path',
         subfolder: 'action',
         maxAllowedFileSize: 99999,
+        onUploadProgress: expect.any(Function),
       });
     });
   });
@@ -163,7 +171,7 @@ describe('ImportArtifactZone', () => {
 
       await emulateFileDrop();
       await waitForPromises();
-      expect(loadingIcon().exists()).toBe(false);
+      expect(progressBar().exists()).toBe(false);
       expect(formattedFileSizeDiv().exists()).toBe(false);
       expect(fileNameDiv().exists()).toBe(false);
     });
@@ -185,7 +193,7 @@ describe('ImportArtifactZone', () => {
       await waitForPromises();
 
       expect(uploadModel).not.toHaveBeenCalled();
-      expect(loadingIcon().exists()).toBe(false);
+      expect(progressBar().exists()).toBe(false);
     });
   });
 
@@ -205,7 +213,7 @@ describe('ImportArtifactZone', () => {
       await waitForPromises();
 
       expect(uploadModel).not.toHaveBeenCalled();
-      expect(loadingIcon().exists()).toBe(false);
+      expect(progressBar().exists()).toBe(false);
     });
   });
 });

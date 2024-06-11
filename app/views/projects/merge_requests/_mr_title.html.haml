@@ -12,14 +12,14 @@
       - c.with_body do
         = _('The source project of this merge request has been removed.')
 
-  .detail-page-header.border-bottom-0.gl-display-block.gl-pt-5{ class: "sm:!gl-flex #{'is-merge-request' if !fluid_layout}" }
+  .detail-page-header.border-bottom-0.gl-block.gl-pt-5{ class: "sm:!gl-flex #{'is-merge-request' if !fluid_layout}" }
     .detail-page-header-body
       %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-display-inline-block.gl-flex-grow-1.gl-break-anywhere{ data: { testid: 'title-content' } }
         = markdown_field(@merge_request, :title)
 
       - unless hide_gutter_toggle
         %div
-          = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-float-right gl-display-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle sm:!gl-hidden" })
+          = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-float-right gl-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle sm:!gl-hidden" })
 
     .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions.gl-display-flex
       - if can_update_merge_request

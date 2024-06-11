@@ -495,6 +495,14 @@ module QA
           has_text?(name)
         end
 
+        def has_artifacts_dropdown?
+          has_element?('artifacts-dropdown')
+        end
+
+        def has_no_artifacts_dropdown?
+          has_no_element?('artifacts-dropdown')
+        end
+
         def open_exposed_artifacts_list
           within_element('pipeline-container') do
             wait_until(reload: false) { has_no_text?('Loading artifacts') }

@@ -165,7 +165,7 @@ export default {
           v-show="showImage"
           :src="imageLink"
           :alt="filename"
-          class="gl-display-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
+          class="gl-block gl-mx-auto gl-max-w-full gl-max-h-full gl-w-auto design-img"
           :data-testid="`design-img-${id}`"
           @load="onImageLoad"
           @error="onImageError"

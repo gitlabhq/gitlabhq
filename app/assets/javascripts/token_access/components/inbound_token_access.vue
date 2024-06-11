@@ -30,7 +30,7 @@ export default {
     ),
     cardHeaderTitle: s__('CICD|Groups and projects with access'),
     settingDisabledMessage: s__(
-      'CICD|No access is currently allowed to this project. Enable feature to authorize access from groups or projects in the allowlist below.',
+      'CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project. Enable this setting to restrict authentication to only job tokens generated in the groups and projects in the allowlist below.',
     ),
     addGroupOrProject: __('Add group or project'),
     add: __('Add'),

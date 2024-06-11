@@ -87,7 +87,7 @@ export default {
           />
         </svg>
         <template v-for="(nestedWorkItem, index) in workItem.nestedTypes">
-          <div :key="nestedWorkItem.id" class="gl-display-block gl-mt-2 gl-ml-6">
+          <div :key="nestedWorkItem.id" class="gl-block gl-mt-2 gl-ml-6">
             <gl-icon name="arrow-down" class="gl-text-gray-400" />
           </div>
           <gl-icon

@@ -268,10 +268,7 @@ export default {
 
 <template>
   <div class="gl-new-dropdown content-editor-suggestions-dropdown">
-    <div
-      v-if="!loading && items.length > 0"
-      class="gl-new-dropdown-panel gl-display-block! gl-absolute"
-    >
+    <div v-if="!loading && items.length > 0" class="gl-new-dropdown-panel !gl-block gl-absolute">
       <div class="gl-new-dropdown-inner">
         <ul class="gl-new-dropdown-contents" data-testid="content-editor-suggestions-dropdown">
           <li
@@ -377,7 +374,7 @@ export default {
         </ul>
       </div>
     </div>
-    <div v-if="loading" class="gl-new-dropdown-panel gl-display-block! gl-absolute">
+    <div v-if="loading" class="gl-new-dropdown-panel !gl-block gl-absolute">
       <div class="gl-new-dropdown-inner">
         <div class="gl-px-4 gl-py-3">
           <gl-loading-icon size="sm" class="gl-display-inline-block" /> {{ __('Loading...') }}

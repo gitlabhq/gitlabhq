@@ -1,11 +1,11 @@
 <script>
 import {
   GlAlert,
-  GlLoadingIcon,
   GlFormGroup,
   GlFormInput,
   GlFormInputGroup,
   GlInputGroupText,
+  GlProgressBar,
 } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -21,8 +21,8 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlFormInputGroup,
-    GlLoadingIcon,
     GlInputGroupText,
+    GlProgressBar,
     UploadDropzone,
   },
   inject: ['maxAllowedFileSize'],
@@ -47,30 +47,47 @@ export default {
     return {
       file: this.value.file,
       subfolder: this.value.subfolder,
-      loading: false,
       alert: null,
+      progressLoaded: null,
+      progressTotal: null,
     };
   },
   computed: {
     formattedFileSize() {
       return numberToHumanSize(this.file.size);
     },
+    formattedProgressLoaded() {
+      return `${numberToHumanSize(this.progressLoaded)} / ${numberToHumanSize(this.progressTotal)}`;
+    },
     fileFullpath() {
       return joinPaths(encodeURIComponent(this.subfolder), encodeURIComponent(this.file.name));
+    },
+    progressPercentage() {
+      return Math.round((this.progressLoaded * 100) / this.progressTotal);
+    },
+    loading() {
+      return this.progressLoaded !== null;
     },
   },
   methods: {
     resetFile() {
-      this.loading = false;
+      this.progressTotal = null;
+      this.progressLoaded = null;
       this.discardFile();
     },
+    onUploadProgress(progressEvent) {
+      this.progressTotal = progressEvent.total;
+      this.progressLoaded = progressEvent.loaded;
+    },
     submitRequest(importPath) {
-      this.loading = true;
+      this.progressLoaded = 0;
+      this.progressTotal = this.file.size;
       uploadModel({
         importPath,
         file: this.file,
         subfolder: this.subfolder,
         maxAllowedFileSize: this.maxAllowedFileSize,
+        onUploadProgress: this.onUploadProgress,
       })
         .then(() => {
           this.resetFile();
@@ -128,8 +145,11 @@ export default {
       @change="uploadFile"
     >
       <gl-alert v-if="file" variant="success" :dismissible="!loading" @dismiss="discardFile">
-        <gl-loading-icon v-if="loading" class="gl-p-5" size="sm" />
-        <div data-testid="formatted-file-size">{{ formattedFileSize }}</div>
+        <gl-progress-bar v-if="progressLoaded" :value="progressPercentage" />
+        <div v-if="progressLoaded" data-testid="formatted-progress">
+          {{ formattedProgressLoaded }}
+        </div>
+        <div v-else data-testid="formatted-file-size">{{ formattedFileSize }}</div>
         <div data-testid="file-name">{{ fileFullpath }}</div>
       </gl-alert>
       <gl-alert v-if="alert" :variant="alert.variant" :dismissible="true" @dismiss="hideAlert">

@@ -17,11 +17,9 @@ export default {
 <template>
   <li class="gl-mb-4">
     <p class="gl-leading-20">
-      <span
-        data-testid="findings-drawer-item-description"
-        class="gl-font-bold gl-display-block gl-mb-1"
-        >{{ description }}</span
-      >
+      <span data-testid="findings-drawer-item-description" class="gl-font-bold gl-block gl-mb-1">{{
+        description
+      }}</span>
       <slot name="value">
         <span data-testid="findings-drawer-item-value-prop">{{ value }}</span>
       </slot>

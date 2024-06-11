@@ -14,6 +14,7 @@ module Gitlab
       value: [Integer, Float]
     }.freeze
     DEFAULT_ADDITIONAL_PROPERTIES = {}.freeze
+    KEY_EXPIRY_LENGTH = Gitlab::UsageDataCounters::HLLRedisCounter::KEY_EXPIRY_LENGTH
 
     class << self
       include Gitlab::Tracking::Helpers
@@ -33,9 +34,7 @@ module Gitlab
         project = kwargs[:project]
         kwargs[:namespace] ||= project.namespace if project
 
-        update_redis_values(event_name, additional_properties)
-        update_unique_counters(event_name, kwargs)
-
+        update_redis_values(event_name, additional_properties, kwargs)
         trigger_snowplow_event(event_name, category, additional_properties, kwargs) if send_snowplow_event
         send_application_instrumentation_event(event_name, additional_properties, kwargs) if send_snowplow_event
 
@@ -89,7 +88,7 @@ module Gitlab
         end
       end
 
-      def update_redis_values(event_name, additional_properties)
+      def update_redis_values(event_name, additional_properties, kwargs)
         event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
 
         return unless event_definition
@@ -101,26 +100,38 @@ module Gitlab
 
           next unless matches_filter
 
-          expiry = event_selection_rule.time_framed? ? 6.weeks : nil
-          increment(event_selection_rule.redis_key_for_date, expiry: expiry)
+          if event_selection_rule.total_counter?
+            update_total_counter(event_selection_rule)
+          else
+            update_unique_counter(event_selection_rule, kwargs)
+          end
         end
       end
 
-      def update_unique_counters(event_name, kwargs)
-        unique_properties = EventDefinitions.unique_properties(event_name)
-        return if unique_properties.empty?
+      def update_total_counter(event_selection_rule)
+        expiry = event_selection_rule.time_framed? ? KEY_EXPIRY_LENGTH : nil
 
-        unique_properties.each do |property_name|
-          unless kwargs[property_name]
-            message = "#{event_name} should be triggered with a named parameter '#{property_name}'."
-            Gitlab::AppJsonLogger.warn(message: message)
-            next
-          end
+        # Overrides for legacy keys of total counters are handled in `increment`
+        increment(event_selection_rule.redis_key_for_date, expiry: expiry)
+      end
 
-          unique_value = kwargs[property_name].id
+      def update_unique_counter(event_selection_rule, kwargs)
+        identifier_name = event_selection_rule.unique_identifier_name
 
-          UsageDataCounters::HLLRedisCounter.track_event(event_name, values: unique_value, property_name: property_name)
+        unless kwargs[identifier_name]
+          message = "#{event_selection_rule.name} should be triggered with a named parameter '#{identifier_name}'."
+          Gitlab::AppJsonLogger.warn(message: message)
+          return
         end
+
+        unique_value = kwargs[identifier_name].id
+
+        # Overrides for legacy keys of unique counters are handled in `event_selection_rule.redis_key_for_date`
+        Gitlab::Redis::HLL.add(
+          key: event_selection_rule.redis_key_for_date,
+          value: unique_value,
+          expiry: KEY_EXPIRY_LENGTH
+        )
       end
 
       def trigger_snowplow_event(event_name, category, additional_properties, kwargs)

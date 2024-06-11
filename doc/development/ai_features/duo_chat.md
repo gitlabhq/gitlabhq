@@ -213,7 +213,7 @@ project will be created during request.
 
 1. Restart GDK.
 1. Ask any question to chat.
-1. Observe project in the LangSmith [page](https://smith.langchain.com/) > Projects > [Project name]. 'Runs' tab should contain
+1. Observe project in the LangSmith [page](https://smith.langchain.com/) > Projects > \[Project name\]. 'Runs' tab should contain
 your last requests.
 
 ## Testing GitLab Duo Chat

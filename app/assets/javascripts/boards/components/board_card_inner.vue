@@ -359,7 +359,7 @@ export default {
           tooltip-placement="bottom"
         >
           <span class="js-assignee-tooltip">
-            <span class="gl-font-bold gl-display-block">{{ __('Assignee') }}</span>
+            <span class="gl-font-bold gl-block">{{ __('Assignee') }}</span>
             {{ assignee.name }}
             <span class="text-white-50">@{{ assignee.username }}</span>
           </span>

@@ -5,6 +5,9 @@ module Types
     class NoteType < BaseObject
       graphql_name 'Note'
 
+      include ActionView::Helpers::SanitizeHelper
+      include MarkupHelper
+
       connection_type_class Types::CountableConnectionType
 
       authorize :read_note
@@ -44,6 +47,10 @@ module Types
         null: false,
         method: :note,
         description: 'Content of the note.'
+
+      field :body_first_line_html, GraphQL::Types::String,
+        null: false,
+        description: 'First line of the note content.'
 
       field :award_emoji, Types::AwardEmojis::AwardEmojiType.connection_type,
         null: true,
@@ -119,6 +126,10 @@ module Types
 
         # object is a presenter, so object.object returns the concrete note object.
         ::Gitlab::GlobalId.build(object, model_name: object.object.class.to_s, id: object.discussion_id)
+      end
+
+      def body_first_line_html
+        first_line_in_markdown(object, :note, 125, project: object.project)
       end
     end
   end

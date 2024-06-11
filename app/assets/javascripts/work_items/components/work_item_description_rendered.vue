@@ -138,7 +138,7 @@ export default {
       ></div>
       <div
         v-if="isTruncated"
-        class="description-more gl-display-block gl-w-full"
+        class="description-more gl-block gl-w-full"
         data-test-id="description-read-more"
       >
         <div class="show-all-btn gl-w-full gl-flex gl-justify-center gl-items-center">

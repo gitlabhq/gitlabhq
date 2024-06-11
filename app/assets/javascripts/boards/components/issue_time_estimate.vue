@@ -45,7 +45,7 @@ export default {
       placement="bottom"
       data-testid="issue-time-estimate"
     >
-      <span class="gl-font-bold gl-display-block">{{ $options.i18n.timeEstimate }}</span>
+      <span class="gl-font-bold gl-block">{{ $options.i18n.timeEstimate }}</span>
       {{ title }}
     </gl-tooltip>
   </span>

@@ -35,7 +35,7 @@ export default {
 <template>
   <gl-empty-state :title="$options.i18n.emptyState.title" :svg-path="emptyAlertSvgPath">
     <template #description>
-      <div class="gl-display-block">
+      <div class="gl-block">
         <span>{{ $options.i18n.emptyState.info }}</span>
         <gl-link :href="alertsHelpUrl" target="_blank">
           {{ $options.i18n.moreInformation }}

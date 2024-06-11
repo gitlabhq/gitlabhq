@@ -4,7 +4,13 @@ import { contentTypeMultipartFormData } from '~/lib/utils/headers';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 
-export const uploadModel = ({ importPath, file, subfolder, maxAllowedFileSize }) => {
+export const uploadModel = ({
+  importPath,
+  file,
+  subfolder,
+  maxAllowedFileSize,
+  onUploadProgress,
+}) => {
   if (!file) {
     return Promise.resolve();
   }
@@ -34,5 +40,6 @@ export const uploadModel = ({ importPath, file, subfolder, maxAllowedFileSize })
     headers: {
       ...contentTypeMultipartFormData,
     },
+    onUploadProgress,
   });
 };

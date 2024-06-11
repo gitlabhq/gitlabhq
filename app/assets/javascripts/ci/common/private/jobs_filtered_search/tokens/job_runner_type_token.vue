@@ -58,7 +58,7 @@ export default {
     <template #view>
       <div class="gl-display-flex gl-align-items-center">
         <div :class="findActiveRunnerType.class">
-          <gl-icon :name="findActiveRunnerType.icon" class="gl-mr-2 gl-display-block" />
+          <gl-icon :name="findActiveRunnerType.icon" class="gl-mr-2 gl-block" />
         </div>
         <span>{{ findActiveRunnerType.text }}</span>
       </div>

@@ -125,7 +125,7 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
     check_if_events_exist!(@event_names)
 
     allow(Gitlab::InternalEvents).to receive(:track_event).and_call_original
-    allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).and_call_original
+    allow(Gitlab::Redis::HLL).to receive(:add).and_call_original
 
     collect_expectations do |event_name|
       [
@@ -249,15 +249,13 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
 
   def expect_redis(event_name)
     Gitlab::InternalEvents::EventDefinitions.unique_properties(event_name).map do |property|
-      expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-        .to receive_expected_count_of(:track_event)
-        .with(
-          event_name,
-          include(
-            values: @properties.any? ? id_for(property) : anything,
-            property_name: property
-          )
-        )
+      expect(Gitlab::Redis::HLL)
+        .to receive_expected_count_of(:add)
+        .with(hash_including(
+          key: a_string_including(event_name),
+          value: @properties.any? ? id_for(property) : anything,
+          expiry: 6.weeks
+        ))
     end
   end
 

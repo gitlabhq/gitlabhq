@@ -243,7 +243,7 @@ export default {
     <div class="gl-display-flex gl-gap-3" :class="{ 'gl-mb-4': selectedItems.length }">
       <gl-collapsible-listbox
         ref="results"
-        class="list-selector gl-display-block gl-flex-grow-1"
+        class="list-selector gl-block gl-flex-grow-1"
         :items="filteredItems"
         @select="handleSelectItem"
         @shown="handleSearchInput"

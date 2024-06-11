@@ -14,12 +14,12 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
         class="gl-mb-2"
       >
         <strong
-          class="gl-display-block"
+          class="gl-block"
         >
           This is a header
         </strong>
         <span
-          class="gl-display-block"
+          class="gl-block"
         >
           This is a subheader
         </span>
@@ -101,7 +101,7 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
                     class="gl-mb-2"
                   >
                     <strong
-                      class="gl-display-block"
+                      class="gl-block"
                     >
                       Child row header
                     </strong>

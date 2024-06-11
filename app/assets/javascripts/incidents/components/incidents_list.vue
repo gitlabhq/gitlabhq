@@ -414,7 +414,7 @@ export default {
                 :href="showIncidentLink(item)"
                 class="gl-min-w-0"
               >
-                <tooltip-on-truncate :title="item.title" class="gl-text-truncate gl-display-block">
+                <tooltip-on-truncate :title="item.title" class="gl-text-truncate gl-block">
                   {{ item.title }}
                 </tooltip-on-truncate>
               </gl-link>
@@ -432,7 +432,7 @@ export default {
             <tooltip-on-truncate
               :title="getEscalationStatus(item.escalationStatus)"
               data-testid="incident-escalation-status"
-              class="gl-display-block gl-text-truncate"
+              class="gl-block gl-text-truncate"
             >
               {{ getEscalationStatus(item.escalationStatus) }}
             </tooltip-on-truncate>
@@ -441,7 +441,7 @@ export default {
           <template #cell(createdAt)="{ item }">
             <time-ago-tooltip
               :time="item.createdAt"
-              class="gl-display-block gl-max-w-full gl-text-truncate"
+              class="gl-block gl-max-w-full gl-text-truncate"
             />
           </template>
 
@@ -451,7 +451,7 @@ export default {
               :issue-iid="item.iid"
               :project-path="projectPath"
               :sla-due-at="item.slaDueAt"
-              class="gl-display-block gl-max-w-full gl-text-truncate"
+              class="gl-block gl-max-w-full gl-text-truncate"
             />
           </template>
 

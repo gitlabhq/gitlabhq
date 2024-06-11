@@ -108,7 +108,7 @@ export default {
           generateSnippet(component.includePath)
         }}</code></pre>
         <div class="gl-mt-5">
-          <b class="gl-display-block gl-mb-4"> {{ $options.i18n.inputTitle }}</b>
+          <b class="gl-block gl-mb-4"> {{ $options.i18n.inputTitle }}</b>
           <gl-table-lite :items="component.inputs" :fields="$options.fields">
             <template #cell(required)="{ item }">
               {{ humanizeBoolean(item.required) }}

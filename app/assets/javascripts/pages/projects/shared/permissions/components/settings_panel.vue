@@ -619,14 +619,14 @@ export default {
         </div>
         <span
           v-if="!visibilityAllowed(visibilityLevel)"
-          class="gl-display-block gl-text-gray-500 gl-mt-2"
+          class="gl-block gl-text-gray-500 gl-mt-2"
           >{{
             s__(
               'ProjectSettings|Visibility options for this fork are limited by the current visibility of the source project.',
             )
           }}</span
         >
-        <span class="gl-display-block gl-text-gray-500 gl-mt-2">
+        <span class="gl-block gl-text-gray-500 gl-mt-2">
           <gl-sprintf :message="visibilityLevelDescription">
             <template #membersPageLink="{ content }">
               <gl-link class="gl-link" :href="membersPagePath">{{ content }}</gl-link>
@@ -634,7 +634,7 @@ export default {
           </gl-sprintf>
         </span>
         <div class="gl-mt-4">
-          <strong class="gl-display-block">{{ s__('ProjectSettings|Additional options') }}</strong>
+          <strong class="gl-block">{{ s__('ProjectSettings|Additional options') }}</strong>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
             class="gl-leading-28 gl-font-normal gl-mb-0"
@@ -649,7 +649,7 @@ export default {
           </label>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
-            class="gl-leading-28 gl-font-normal gl-display-block gl-mb-0"
+            class="gl-leading-28 gl-font-normal gl-block gl-mb-0"
           >
             <input
               :value="enforceAuthChecksOnUploads"
@@ -658,7 +658,7 @@ export default {
             />
             <input v-model="enforceAuthChecksOnUploads" type="checkbox" />
             {{ s__('ProjectSettings|Require authentication to view media files') }}
-            <span class="gl-text-gray-500 gl-display-block gl-ml-5 -gl-mt-3">{{
+            <span class="gl-text-gray-500 gl-block gl-ml-5 -gl-mt-3">{{
               s__('ProjectSettings|Prevents direct linking to potentially sensitive media files')
             }}</span>
           </label>

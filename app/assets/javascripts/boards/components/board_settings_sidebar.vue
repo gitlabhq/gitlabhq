@@ -158,7 +158,7 @@ export default {
       </template>
       <template v-if="showSidebar">
         <div v-if="boardListType === ListType.label">
-          <label class="js-list-label gl-display-block">{{ listTypeTitle }}</label>
+          <label class="js-list-label gl-block">{{ listTypeTitle }}</label>
           <gl-label
             :title="activeListLabel.title"
             :background-color="activeListLabel.color"

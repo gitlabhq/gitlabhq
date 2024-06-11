@@ -72,7 +72,7 @@ export default {
         v-for="(color, index) in suggestedColors"
         :key="index"
         v-gl-tooltip:tooltipcontainer
-        class="gl-display-block color-palette"
+        class="gl-block color-palette"
         :style="getStyle(color)"
         :title="getColorName(color)"
         @click.prevent="handleColorClick(getColorCode(color))"

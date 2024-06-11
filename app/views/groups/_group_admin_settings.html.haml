@@ -8,11 +8,11 @@
     - c.with_help_text do
       = _('This setting can be overridden in each project.')
 .form-group.gl-form-group{ role: 'group' }
-  = f.label s_('ProjectCreationLevel|Roles allowed to create projects'), class: 'gl-display-block col-form-label'
+  = f.label s_('ProjectCreationLevel|Roles allowed to create projects'), class: 'gl-block col-form-label'
   = f.select :project_creation_level, options_for_select(::Gitlab::Access.project_creation_options, @group.project_creation_level), {}, class: 'gl-form-select custom-select'
 
 .form-group.gl-form-group{ role: 'group' }
-  = f.label s_('SubgroupCreationLevel|Roles allowed to create subgroups'), class: 'gl-display-block col-form-label'
+  = f.label s_('SubgroupCreationLevel|Roles allowed to create subgroups'), class: 'gl-block col-form-label'
   - ::Gitlab::Access.subgroup_creation_options.each do |label, action|
     = f.gitlab_ui_radio_component :subgroup_creation_level, action, label
 
@@ -24,7 +24,7 @@
   = f.gitlab_ui_checkbox_component :require_two_factor_authentication, '%{label}%{help_link}'.html_safe % { label: label, help_link: help_link }
 
 .form-group.gl-form-group{ role: 'group' }
-  = f.label :two_factor_grace_period, _('Two-factor authentication grace period'), class: 'gl-display-block col-form-label'
+  = f.label :two_factor_grace_period, _('Two-factor authentication grace period'), class: 'gl-block col-form-label'
   = f.text_field :two_factor_grace_period, class: 'form-control gl-form-input gl-form-input-sm'
   %small.form-text.gl-text-secondary
     = _("Time (in hours) that users are allowed to skip forced configuration of two-factor authentication.")

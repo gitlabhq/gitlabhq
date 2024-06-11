@@ -100,7 +100,7 @@
     .form-group
       = f.label :project_view, class: 'label-bold' do
         = s_('Preferences|Project overview content')
-      = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select gl-form-input-xl gl-display-block'
+      = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select gl-form-input-xl gl-block'
       .form-text.text-muted
         = s_('Preferences|Choose what content you want to see on a project’s overview page.')
     .form-group
@@ -152,7 +152,7 @@
     .form-group
       = f.label :first_day_of_week, class: 'label-bold' do
         = _('First day of the week')
-      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select gl-display-block gl-form-input-xl'
+      = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select gl-block gl-form-input-xl'
 
   .settings-section.js-preferences-form.js-search-settings-section#time-preferences
     .settings-sticky-header

@@ -10,6 +10,7 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
       author
       body
       body_html
+      body_first_line_html
       award_emoji
       imported
       internal
@@ -67,6 +68,45 @@ RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
       subject { resolve_field(:body_html, note, current_user: user) }
 
       it_behaves_like 'a note content field with obfuscated email address'
+    end
+  end
+
+  describe '#body_first_line_html' do
+    let_it_be(:user) { build_stubbed(:user) }
+    let_it_be(:project) { build(:project, :public) }
+
+    let(:note_text) { 'note body content' }
+    let(:note) { build(:note, note: note_text, project: project) }
+
+    subject(:resolve_result) { resolve_field(:body_first_line_html, note, current_user: user) }
+
+    it 'calls first_line_in_markdown with the expected arguments' do
+      expect_next_instance_of(described_class) do |note_type|
+        expect(note_type).to receive(:first_line_in_markdown)
+          .with(kind_of(NotePresenter), :note, 125, project: note.project)
+          .and_call_original
+      end
+
+      resolve_result
+    end
+
+    context 'when the note body is shorter than 125 characters' do
+      it 'returns the content unchanged' do
+        expect(resolve_result).to eq('<p>note body content</p>')
+      end
+    end
+
+    context 'when the note body is longer than 125 characters' do
+      let(:note_text) do
+        'this is a note body content which is very, very, very, veeery, long and is supposed ' \
+          'to be longer that 125 characters in length, with a few extra'
+      end
+
+      it 'returns the content trimmed with an ellipsis' do
+        expect(resolve_result).to eq(
+          '<p>this is a note body content which is very, very, very, veeery, long and is supposed ' \
+            'to be longer that 125 characters in le...</p>')
+      end
     end
   end
 end

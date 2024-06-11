@@ -99,11 +99,11 @@ export default {
       <div v-if="hasHeader()" class="gl-display-flex">
         <slot name="header">
           <div class="gl-mb-2">
-            <strong v-safe-html="generatedHeader" class="gl-display-block"></strong
+            <strong v-safe-html="generatedHeader" class="gl-block"></strong
             ><span
               v-if="generatedSubheader"
               v-safe-html="generatedSubheader"
-              class="gl-display-block"
+              class="gl-block"
             ></span>
           </div>
         </slot>

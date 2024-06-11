@@ -81,7 +81,7 @@ export default {
     @select="$emit('input', selected)"
   >
     <template #list-item="{ item }">
-      <span class="gl-display-block">{{ item.text }}</span>
+      <span class="gl-block">{{ item.text }}</span>
       <span v-if="item.subtext" class="gl-font-sm gl-text-gray-500">{{ item.subtext }}</span>
     </template>
   </gl-collapsible-listbox>

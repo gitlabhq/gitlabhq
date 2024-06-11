@@ -9982,6 +9982,9 @@ msgstr ""
 msgid "CICDAnalytics|What is instance runner duration?"
 msgstr ""
 
+msgid "CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project. Enable this setting to restrict authentication to only job tokens generated in the groups and projects in the allowlist below."
+msgstr ""
+
 msgid "CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work."
 msgstr ""
 
@@ -10040,9 +10043,6 @@ msgid "CICD|Limit access %{italicStart}to%{italicEnd} this project"
 msgstr ""
 
 msgid "CICD|Maintainer"
-msgstr ""
-
-msgid "CICD|No access is currently allowed to this project. Enable feature to authorize access from groups or projects in the allowlist below."
 msgstr ""
 
 msgid "CICD|Pipelines and jobs cannot be cancelled"

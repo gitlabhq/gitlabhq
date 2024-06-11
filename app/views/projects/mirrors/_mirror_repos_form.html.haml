@@ -1,7 +1,7 @@
 .form-group
   = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
   .select-wrapper
-    = select_tag :mirror_direction, options_for_select([[_('Push'), 'push']]), class: 'form-control gl-form-select select-control js-mirror-direction gl-max-w-34 gl-display-block', disabled: true, data: { testid: 'mirror-direction-field' }
+    = select_tag :mirror_direction, options_for_select([[_('Push'), 'push']]), class: 'form-control gl-form-select select-control js-mirror-direction gl-max-w-34 gl-block', disabled: true, data: { testid: 'mirror-direction-field' }
     = sprite_icon('chevron-down', css_class: "gl-icon gl-absolute gl-top-3 gl-right-3 gl-text-gray-200")
 
 = render partial: "projects/mirrors/mirror_repos_push", locals: { f: f }

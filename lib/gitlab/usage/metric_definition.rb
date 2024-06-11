@@ -32,14 +32,15 @@ module Gitlab
           EventSelectionRule.new(
             name: event[:name],
             time_framed: time_framed?,
-            filter: event[:filter]
+            filter: event[:filter],
+            unique_identifier_name: event[:unique]&.split('.')&.first&.to_sym
           )
         end
       end
 
       def instrumentation_class
         if internal_events?
-          events.each_value.first.nil? ? "TotalCountMetric" : "RedisHLLMetric"
+          events.each_value.first.nil? ? "TotalCountMetric" : "UniqueCountMetric"
         else
           @attributes[:instrumentation_class]
         end

@@ -46,7 +46,7 @@
         - else
           .gl-new-card-empty.gl-px-3.gl-py-4= _("You do not belong to any groups yet.")
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header gl-display-block'}, body_options: { class: 'gl-new-card-body' }) do |c|
+    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header gl-block'}, body_options: { class: 'gl-new-card-body' }) do |c|
       - c.with_header do
         %h3.gl-new-card-title
           = _('Projects (%{count})') % { count: @project_notifications.size }

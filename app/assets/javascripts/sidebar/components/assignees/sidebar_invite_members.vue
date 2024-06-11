@@ -26,6 +26,6 @@ export default {
     trigger-element="anchor"
     :display-text="$options.displayText"
     :trigger-source="triggerSource"
-    classes="gl-display-block gl-pl-0 gl-hover-text-decoration-none gl-hover-text-blue-800!"
+    classes="gl-block gl-pl-0 gl-hover-text-decoration-none gl-hover-text-blue-800!"
   />
 </template>

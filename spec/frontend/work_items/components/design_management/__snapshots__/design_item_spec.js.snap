@@ -23,7 +23,7 @@ exports[`Design item component with notes renders item with multiple comments 1`
     >
       <img
         alt="test"
-        class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
+        class="design-img gl-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
         data-testid="design-img-1"
         src="null"
       />
@@ -88,7 +88,7 @@ exports[`Design item component with notes renders item with single comment 1`] =
     >
       <img
         alt="test"
-        class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
+        class="design-img gl-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
         data-testid="design-img-1"
         src="null"
       />

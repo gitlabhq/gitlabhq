@@ -69,8 +69,8 @@ export default {
         <template #list-item="{ item }">
           <gl-link :href="item.value" target="_blank" rel="noopener noreferrer nofollow">
             <div>
-              <strong class="gl-text-truncate gl-mb-0 gl-display-block">{{ item.text }}</strong>
-              <p class="gl-text-secondary gl-text-truncate gl-mb-0 gl-display-block">
+              <strong class="gl-text-truncate gl-mb-0 gl-block">{{ item.text }}</strong>
+              <p class="gl-text-secondary gl-text-truncate gl-mb-0 gl-block">
                 {{ item.value }}
               </p>
             </div>
