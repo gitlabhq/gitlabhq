@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlButton, GlLink } from '@gitlab/ui';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { s__, sprintf } from '~/locale';
 
 export default {
@@ -8,6 +9,7 @@ export default {
     GlIcon,
     GlLink,
     GlButton,
+    LocalStorageSync,
   },
   inject: ['canCreate'],
   props: {
@@ -44,6 +46,7 @@ export default {
 </script>
 <template>
   <li dir="auto" :data-testid="page.children.length ? 'wiki-directory-content' : ''">
+    <local-storage-sync v-model="isCollapsed" :storage-key="`wiki:${page.path}:collapsed`" />
     <span
       ref="entry"
       class="gl-relative gl-flex gl-items-center wiki-list gl-px-3 gl-rounded-base gl-cursor-pointer"

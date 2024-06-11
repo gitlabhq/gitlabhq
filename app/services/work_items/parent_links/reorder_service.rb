@@ -10,8 +10,11 @@ module WorkItems
         notes_are_expected = work_item.work_item_parent != issuable
         link = set_parent(issuable, work_item)
 
-        if reorder(link, params[:adjacent_work_item], params[:relative_position]) && notes_are_expected
-          create_notes(work_item)
+        if reorder(link, params[:adjacent_work_item], params[:relative_position])
+          create_notes(work_item) if notes_are_expected
+          # When the hierarchy is changed from the children list,
+          # we have to trigger the update on the parent to update the view
+          GraphqlTriggers.work_item_updated(issuable)
         end
 
         link

@@ -69,11 +69,13 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
       end
     end
 
-    it 'links a new item with work item text', :aggregate_failures do
+    it 'links a new item with work item text', :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444980' do
       verify_linked_item_added(task.title)
     end
 
-    it 'links a new item with work item iid', :aggregate_failures do
+    it 'links a new item with work item iid', :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444751' do
       verify_linked_item_added(task.iid)
     end
 

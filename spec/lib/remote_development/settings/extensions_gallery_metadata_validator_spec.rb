@@ -5,7 +5,7 @@ require_relative "../rd_fast_spec_helper"
 RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataValidator, :rd_fast, feature_category: :remote_development do
   include ResultMatchers
 
-  let(:value) do
+  let(:context) do
     {
       settings: {
         vscode_extensions_gallery_metadata: extensions_gallery_metadata
@@ -14,13 +14,13 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataValidator, 
   end
 
   subject(:result) do
-    described_class.validate(value)
+    described_class.validate(context)
   end
 
   context "when vscode_extensions_gallery_metadata is valid" do
     shared_examples "success result" do
-      it "return an ok Result containing the original value which was passed" do
-        expect(result).to eq(Result.ok(value))
+      it "return an ok Result containing the original context which was passed" do
+        expect(result).to eq(Result.ok(context))
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataValidator, 
         expect(result).to be_err_result do |message|
           expect(message)
             .to be_a(RemoteDevelopment::Settings::Messages::SettingsVscodeExtensionsGalleryMetadataValidationFailed)
-          message.context => { details: String => error_details }
+          message.content => { details: String => error_details }
           expect(error_details).to eq(expected_error_details)
         end
       end

@@ -8,11 +8,11 @@ module RemoteDevelopment
 
       private_class_method :generate_error_response_from_message
 
-      # @param [Hash] value
+      # @param [Hash] context
       # @return [Hash]
       # @raise [UnmatchedResultError]
-      def self.get_settings(value)
-        initial_result = Result.ok(value)
+      def self.get_settings(context)
+        initial_result = Result.ok(context)
 
         # The order of the chain determines the precedence of settings. I.e., defaults are
         # overridden by env vars, and any subsequent steps override env vars.
@@ -29,8 +29,8 @@ module RemoteDevelopment
             .and_then(RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidator.method(:validate))
             .map(
               # As the final step, return the settings in a SettingsGetSuccessful message
-              ->(value) do
-                SettingsGetSuccessful.new(settings: value.fetch(:settings))
+              ->(context) do
+                SettingsGetSuccessful.new(settings: context.fetch(:settings))
               end
             )
         # rubocop:disable Lint/DuplicateBranch -- Rubocop doesn't know the branches are different due to destructuring
@@ -48,7 +48,7 @@ module RemoteDevelopment
         in { err: SettingsPartialReconciliationIntervalSecondsValidationFailed => message }
           generate_error_response_from_message(message: message, reason: :internal_server_error)
         in { ok: SettingsGetSuccessful => message }
-          { settings: message.context.fetch(:settings), status: :success }
+          { settings: message.content.fetch(:settings), status: :success }
         else
           raise UnmatchedResultError.new(result: result)
         end

@@ -100,6 +100,30 @@ module Gitlab
           def upgrade_to_ultimate?
             # This is a stub, used for indexing. The method is dynamically generated.
           end
+
+          # @note Defined as +button :refresh_seats+
+          # Clicks +refresh_seats+
+          def refresh_seats
+            # This is a stub, used for indexing. The method is dynamically generated.
+          end
+
+          # @example
+          #   Gitlab::Page::Group::Settings::Billing.perform do |billing|
+          #     expect(billing.refresh_seats_element).to exist
+          #   end
+          # @return [Watir::Button] The raw +Button+ element
+          def refresh_seats_element
+            # This is a stub, used for indexing. The method is dynamically generated.
+          end
+
+          # @example
+          #   Gitlab::Page::Group::Settings::Billing.perform do |billing|
+          #     expect(billing).to be_refresh_seats
+          #   end
+          # @return [Boolean] true if the +refresh_seats+ element is present on the page
+          def refresh_seats?
+            # This is a stub, used for indexing. The method is dynamically generated.
+          end
         end
       end
     end

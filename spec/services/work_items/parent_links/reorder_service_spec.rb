@@ -63,6 +63,11 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
 
         expect(last_adjacent.parent_link.relative_position).to be_between(*relative_range)
       end
+
+      it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        let(:update_subject) { parent }
+        let(:execute_service) { subject }
+      end
     end
 
     context 'when user has insufficient permissions' do

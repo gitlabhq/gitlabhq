@@ -2225,6 +2225,9 @@ msgstr ""
 msgid "AI|Wrong"
 msgstr ""
 
+msgid "AI|Your request does not seems to contain code to %{action}. To %{human_name} select the lines of code in your editor and then type the command %{command_name} in the chat. You may add additional instructions after this comment. If you have no code to select, you can also simply add the code after the command."
+msgstr ""
+
 msgid "API"
 msgstr ""
 
@@ -6161,6 +6164,9 @@ msgid "Analytics|Visualization type"
 msgstr ""
 
 msgid "Analytics|Visualization was saved successfully"
+msgstr ""
+
+msgid "Analytics|Visualize the relation between AI usage and SDLC trends. Learn more about %{docsLinkStart}AI Impact analytics%{docsLinkEnd} and %{subscriptionLinkStart}GitLab Duo Pro seats usage%{subscriptionLinkEnd}."
 msgstr ""
 
 msgid "Analytics|Would you like to replace your existing selection with a new visualization generated through GitLab Duo?"
@@ -61180,9 +61186,6 @@ msgid "Your access request to the %{source_type} has been withdrawn."
 msgstr ""
 
 msgid "Your account has been blocked. Contact %{support} for assistance."
-msgstr ""
-
-msgid "Your account has been blocked. Contact your GitLab administrator for assistance."
 msgstr ""
 
 msgid "Your account has been deactivated"

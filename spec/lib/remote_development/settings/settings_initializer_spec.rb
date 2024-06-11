@@ -3,11 +3,11 @@
 require_relative "../rd_fast_spec_helper"
 
 RSpec.describe RemoteDevelopment::Settings::SettingsInitializer, :rd_fast, feature_category: :remote_development do
-  let(:value) { {} }
+  let(:context) { {} }
   let(:default_settings_class) { RemoteDevelopment::Settings::DefaultSettings }
 
   subject(:returned_value) do
-    described_class.init(value)
+    described_class.init(context)
   end
 
   context "when settings values and types all match" do

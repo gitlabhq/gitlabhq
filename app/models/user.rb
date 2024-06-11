@@ -655,6 +655,7 @@ class User < MainClusterwide::ApplicationRecord
     .includes(:projects)
   end
 
+  scope :left_join_user_detail, -> { left_joins(:user_detail) }
   scope :preload_user_detail, -> { preload(:user_detail) }
 
   def self.supported_keyset_orderings

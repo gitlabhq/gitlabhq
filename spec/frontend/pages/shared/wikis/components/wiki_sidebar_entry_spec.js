@@ -1,8 +1,11 @@
 import { GlLink, GlIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import WikiSidebarEntry from '~/pages/shared/wikis/components/wiki_sidebar_entry.vue';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
+  useLocalStorageSpy();
+
   let wrapper;
 
   function buildWrapper(props = {}, provide = {}) {
@@ -15,6 +18,10 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
       stubs: {},
     });
   }
+
+  afterEach(() => {
+    localStorage.clear();
+  });
 
   describe('when the page has no children', () => {
     beforeEach(() => {
@@ -46,7 +53,7 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
   });
 
   describe('when the page has children', () => {
-    beforeEach(() => {
+    const buildWrapperWithChildren = () => {
       buildWrapper({
         page: {
           title: 'Foo',
@@ -57,7 +64,9 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
           ],
         },
       });
-    });
+    };
+
+    beforeEach(buildWrapperWithChildren);
 
     it('renders a link to all the pages', () => {
       const links = wrapper.findAllComponents(GlLink);
@@ -86,6 +95,16 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
 
       expect(chevron.props('name')).toBe('chevron-right');
       expect(wrapper.findAllComponents(GlLink)).toHaveLength(1);
+    });
+
+    it('stores the value of the collapsed state in local storage', async () => {
+      await wrapper.findByTestId('wiki-list').trigger('click');
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('wiki:/foo:collapsed', 'true');
+
+      await wrapper.findByTestId('wiki-list').trigger('click');
+
+      expect(localStorage.setItem).toHaveBeenCalledWith('wiki:/foo:collapsed', 'false');
     });
   });
 });

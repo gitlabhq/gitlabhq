@@ -5,17 +5,17 @@ module RemoteDevelopment
     class ExtensionsGalleryMetadataValidator
       include Messages
 
-      # @param [Hash] value
+      # @param [Hash] context
       # @return [Result]
-      def self.validate(value)
-        value => { settings: Hash => settings }
+      def self.validate(context)
+        context => { settings: Hash => settings }
         settings => { vscode_extensions_gallery_metadata: Hash => extensions_gallery_metadata }
 
         validatable_hash = make_hash_validatable_by_json_schemer(extensions_gallery_metadata)
         errors = validate_against_schema(validatable_hash)
 
         if errors.none?
-          Result.ok(value)
+          Result.ok(context)
         else
           Result.err(SettingsVscodeExtensionsGalleryMetadataValidationFailed.new(details: errors.join(". ")))
         end

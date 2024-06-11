@@ -4,7 +4,7 @@ require_relative "../rd_fast_spec_helper"
 
 RSpec.describe RemoteDevelopment::Settings::Main, :rd_fast, feature_category: :remote_development do
   let(:settings) { 'some settings' }
-  let(:value_passed_along_steps) { { settings: settings } }
+  let(:context_passed_along_steps) { { settings: settings } }
 
   let(:rop_steps) do
     [
@@ -29,11 +29,11 @@ RSpec.describe RemoteDevelopment::Settings::Main, :rd_fast, feature_category: :r
     it "returns expected response" do
       # noinspection RubyResolve - https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/tracked-jetbrains-issues/#ruby-31542
       expect do
-        described_class.get_settings(value_passed_along_steps)
+        described_class.get_settings(context_passed_along_steps)
       end
         .to invoke_rop_steps(rop_steps)
               .from_main_class(described_class)
-              .with_value_passed_along_steps(value_passed_along_steps)
+              .with_context_passed_along_steps(context_passed_along_steps)
               .and_return_expected_value(expected_response)
     end
   end
@@ -46,11 +46,11 @@ RSpec.describe RemoteDevelopment::Settings::Main, :rd_fast, feature_category: :r
       it "returns expected response" do
         # noinspection RubyResolve - https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/tracked-jetbrains-issues/#ruby-31542
         expect do
-          described_class.get_settings(value_passed_along_steps)
+          described_class.get_settings(context_passed_along_steps)
         end
           .to invoke_rop_steps(rop_steps)
                 .from_main_class(described_class)
-                .with_value_passed_along_steps(value_passed_along_steps)
+                .with_context_passed_along_steps(context_passed_along_steps)
                 .with_err_result_for_step(err_result_for_step)
                 .and_return_expected_value(expected_response)
       end

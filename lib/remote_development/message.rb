@@ -1,27 +1,27 @@
 # frozen_string_literal: true
 
 module RemoteDevelopment
-  # A message's context can be a hash containing any object that is relevant to the message. It will be
-  # used to provide context when the final Result from the chain is pattern matched
+  # A message's content can be a hash containing any object that is relevant to the message. It will be
+  # used to provide content when the final Result from the chain is pattern matched
   # on the message type and returned to the user.
-  # The context is required to be a hash so that it can be destructured and type-checked with
+  # The content is required to be a hash so that it can be destructured and type-checked with
   # rightward assignment.
   class Message
-    attr_reader :context
+    attr_reader :content
 
-    # @param [Hash] context
+    # @param [Hash] content
     # @return [Message]
-    # raise [ArgumentError] if context is not a Hash
-    def initialize(context = {})
-      raise ArgumentError, 'context must be a Hash' unless context.is_a?(Hash)
+    # raise [ArgumentError] if content is not a Hash
+    def initialize(content = {})
+      raise ArgumentError, 'content must be a Hash' unless content.is_a?(Hash)
 
-      @context = context
+      @content = content
     end
 
     # @param [RemoteDevelopment::Message] other
     # @return [TrueClass, FalseClass]
     def ==(other)
-      self.class == other.class && context == other.context
+      self.class == other.class && content == other.content
     end
   end
 end

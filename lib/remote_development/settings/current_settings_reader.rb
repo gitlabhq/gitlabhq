@@ -5,18 +5,18 @@ module RemoteDevelopment
     class CurrentSettingsReader
       include Messages
 
-      # @param [Hash] value
+      # @param [Hash] context
       # @return [Result]
-      def self.read(value)
+      def self.read(context)
         err_result = nil
-        value[:settings].each_key do |setting_name|
+        context[:settings].each_key do |setting_name|
           next unless Gitlab::CurrentSettings.respond_to?(setting_name)
 
           current_setting_value = Gitlab::CurrentSettings.send(setting_name) # rubocop:disable GitlabSecurity/PublicSend -- No other way to programatically call dynamic class method
 
           next if current_setting_value.nil?
 
-          setting_type = value[:setting_types][setting_name]
+          setting_type = context[:setting_types][setting_name]
 
           unless current_setting_value.is_a?(setting_type)
             # err_result will be set to a non-nil Result.err if type check fails
@@ -27,12 +27,12 @@ module RemoteDevelopment
           end
 
           # CurrentSettings entry of correct type found for declared default setting, use its value as override
-          value[:settings][setting_name] = current_setting_value
+          context[:settings][setting_name] = current_setting_value
         end
 
         return err_result if err_result
 
-        Result.ok(value)
+        Result.ok(context)
       end
     end
   end

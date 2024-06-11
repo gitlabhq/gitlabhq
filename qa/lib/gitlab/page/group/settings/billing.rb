@@ -10,6 +10,14 @@ module Gitlab
           link :upgrade_to_premium
           link :upgrade_to_ultimate
 
+          # Subscription details
+          button :refresh_seats
+
+          def refresh_subscription_seats
+            refresh_seats
+            ::QA::Support::WaitForRequests.wait_for_requests
+          end
+
           # Waits for subscription to be synced and UI to be updated
           #
           # @param subscription_plan [String]

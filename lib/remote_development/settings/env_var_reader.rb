@@ -9,11 +9,11 @@ module RemoteDevelopment
 
       REQUIRED_ENV_VAR_PREFIX = "GITLAB_REMOTE_DEVELOPMENT"
 
-      # @param [Hash] value
+      # @param [Hash] context
       # @return [Result]
-      def self.read(value)
+      def self.read(context)
         err_result = nil
-        value[:settings].each_key do |setting_name|
+        context[:settings].each_key do |setting_name|
           env_var_name = "#{REQUIRED_ENV_VAR_PREFIX}_#{setting_name.to_s.upcase}"
           env_var_value_string = ENV[env_var_name]
 
@@ -24,7 +24,7 @@ module RemoteDevelopment
             env_var_value = cast_value(
               env_var_name: env_var_name,
               env_var_value_string: env_var_value_string,
-              setting_type: value[:setting_types][setting_name]
+              setting_type: context[:setting_types][setting_name]
             )
           rescue RuntimeError => e
             # err_result will be set to a non-nil Result.err if casting fails
@@ -32,12 +32,12 @@ module RemoteDevelopment
           end
 
           # ENV var matches an existing setting and is of the correct type, use its value to override the default value
-          value[:settings][setting_name] = env_var_value
+          context[:settings][setting_name] = env_var_value
         end
 
         return err_result if err_result
 
-        Result.ok(value)
+        Result.ok(context)
       end
 
       # @param [String] env_var_name
@@ -80,7 +80,7 @@ module RemoteDevelopment
       end
 
       # @param [String] env_var_name
-      # @param [String] value
+      # @param [String] context
       # @return [Object, Array]
       # @raise [EncodingError]
       def self.parse_json(env_var_name:, value:)

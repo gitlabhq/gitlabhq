@@ -14,7 +14,7 @@ RSpec.describe RemoteDevelopment::Settings::PublicApi, :rd_fast, feature_categor
 
     describe "get_single_setting" do
       context "when passed a valid setting name" do
-        it "returns the setting value" do
+        it "returns the setting context" do
           expect(settings_module.get_single_setting(:some_setting)).to eq(42)
         end
       end
@@ -22,7 +22,7 @@ RSpec.describe RemoteDevelopment::Settings::PublicApi, :rd_fast, feature_categor
       context "when passed options" do
         let(:options) { { some_options_key: true } }
 
-        it "passes along the options and returns the setting value" do
+        it "passes along the options and returns the setting context" do
           expect(settings_module::Main).to receive(:get_settings).with({ options: options }).and_return(response_hash)
           expect(settings_module.get_single_setting(:some_setting, options)).to eq(42)
         end

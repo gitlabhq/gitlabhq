@@ -5,10 +5,10 @@ module RemoteDevelopment
     class ExtensionsGalleryMetadataGenerator
       include Messages
 
-      # @param [Hash] value
+      # @param [Hash] context
       # @return [Hash]
-      def self.generate(value)
-        value => { options: Hash => options }
+      def self.generate(context)
+        context => { options: Hash => options }
         options_with_defaults = { user: nil, vscode_extensions_marketplace_feature_flag_enabled: nil }.merge(options)
         options_with_defaults => {
           user: ::User | NilClass => user,
@@ -21,8 +21,8 @@ module RemoteDevelopment
           flag_enabled: extensions_marketplace_feature_flag_enabled
         )
 
-        value[:settings][:vscode_extensions_gallery_metadata] = extensions_gallery_metadata
-        value
+        context[:settings][:vscode_extensions_gallery_metadata] = extensions_gallery_metadata
+        context
       end
     end
   end

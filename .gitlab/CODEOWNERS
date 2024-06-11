@@ -734,7 +734,6 @@ lib/gitlab/checks/**
 /doc/api/milestones.md @msedlakjakubowski
 /doc/api/namespaces.md @jglassman1
 /doc/api/notes.md @msedlakjakubowski
-/doc/api/notification_settings.md @msedlakjakubowski
 /doc/api/oauth2.md @jglassman1
 /doc/api/openapi/ @eread
 /doc/api/packages.md @phillipwells
@@ -794,7 +793,6 @@ lib/gitlab/checks/**
 /doc/api/templates/gitignores.md @msedlakjakubowski
 /doc/api/templates/gitlab_ci_ymls.md @marcel.amirault @lyspin
 /doc/api/templates/licenses.md @rdickenson @phillipwells
-/doc/api/todos.md @msedlakjakubowski
 /doc/api/topics.md @lciutacu
 /doc/api/users.md @jglassman1
 /doc/api/version.md @phillipwells
@@ -829,7 +827,7 @@ lib/gitlab/checks/**
 /doc/ci/ssh_keys/ @marcel.amirault
 /doc/ci/steps/ @ashrafkhamis
 /doc/ci/test_cases/ @msedlakjakubowski
-/doc/ci/testing/code_quality.md @rdickenson @phillipwells
+/doc/ci/testing/code_quality.md @rdickenson
 /doc/ci/testing/code_quality_troubleshooting.md @rdickenson @phillipwells
 /doc/ci/variables/ @marcel.amirault
 /doc/ci/yaml/signing_examples.md @marcel.amirault
@@ -844,16 +842,13 @@ lib/gitlab/checks/**
 /doc/development/database/ @abdwdd @alexpooley @manojmj
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @sselhorn
-/doc/development/fe_guide/customizable_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
-/doc/development/fe_guide/onboarding_course/ @gitlab-org/manage/foundations/engineering
-/doc/development/fe_guide/view_component.md @gitlab-org/manage/foundations/engineering
+/doc/development/fe_guide/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
 /doc/development/gitlab_flavored_markdown/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
 /doc/development/gitpod_internals.md @gl-quality/eng-prod
 /doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
-/doc/development/navigation_sidebar.md @gitlab-org/manage/foundations/engineering
 /doc/development/omnibus.md @gitlab-org/distribution
 /doc/development/organization/ @abdwdd @alexpooley @manojmj
 /doc/development/permissions.md @gitlab-org/govern/authorization/approvers
@@ -922,10 +917,7 @@ lib/gitlab/checks/**
 /doc/tutorials/update_commit_messages/ @msedlakjakubowski
 /doc/tutorials/website_project_with_analytics/ @lciutacu
 /doc/update/ @axil
-/doc/user/ai_data_usage.md @sselhorn @jglassman1 @fneill
-/doc/user/ai_experiments.md @sselhorn @jglassman1 @fneill
-/doc/user/ai_features.md @sselhorn @jglassman1 @fneill
-/doc/user/ai_features_enable.md @sselhorn @jglassman1 @fneill
+/doc/user/ @msedlakjakubowski
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson @phillipwells
@@ -935,25 +927,19 @@ lib/gitlab/checks/**
 /doc/user/application_security/security_dashboard/ @rdickenson
 /doc/user/application_security/vulnerabilities/ @rdickenson
 /doc/user/application_security/vulnerability_report/ @rdickenson
-/doc/user/asciidoc.md @msedlakjakubowski
 /doc/user/clusters/ @phillipwells
 /doc/user/compliance/ @eread
 /doc/user/compliance/license_approval_policies.md @rdickenson
 /doc/user/compliance/license_list.md @rdickenson
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson @phillipwells
 /doc/user/discussions/ @aqualls
-/doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/get_started/get_started_managing_code.md @msedlakjakubowski
 /doc/user/get_started/get_started_managing_infrastructure.md @phillipwells
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
 /doc/user/get_started/get_started_projects.md @lciutacu
-/doc/user/gitlab_duo_chat.md @sselhorn @jglassman1 @fneill
+/doc/user/gitlab_duo/ @sselhorn @jglassman1 @fneill
 /doc/user/gitlab_duo_chat/ @sselhorn @jglassman1 @fneill
-/doc/user/gitlab_duo_chat_enable.md @sselhorn @jglassman1 @fneill
-/doc/user/gitlab_duo_chat_examples.md @sselhorn @jglassman1 @fneill
-/doc/user/gitlab_duo_chat_troubleshooting.md @sselhorn @jglassman1 @fneill
-/doc/user/gitlab_duo_examples.md @sselhorn @jglassman1 @fneill
 /doc/user/group/access_and_permissions.md @lciutacu
 /doc/user/group/clusters/ @phillipwells
 /doc/user/group/compliance_frameworks.md @eread
@@ -979,9 +965,7 @@ lib/gitlab/checks/**
 /doc/user/infrastructure/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @ashrafkhamis
-/doc/user/markdown.md @msedlakjakubowski
 /doc/user/namespace/ @lciutacu
-/doc/user/okrs.md @msedlakjakubowski
 /doc/user/operations_dashboard/ @phillipwells
 /doc/user/organization/ @lciutacu
 /doc/user/packages/ @phillipwells
@@ -989,16 +973,10 @@ lib/gitlab/checks/**
 /doc/user/packages/dependency_proxy/ @marcel.amirault
 /doc/user/packages/harbor_container_registry/ @marcel.amirault
 /doc/user/product_analytics/ @lciutacu
-/doc/user/profile/account/ @jglassman1
+/doc/user/profile/ @jglassman1
 /doc/user/profile/achievements.md @lciutacu
 /doc/user/profile/comment_templates.md @aqualls
 /doc/user/profile/contributions_calendar.md @lciutacu
-/doc/user/profile/index.md @jglassman1
-/doc/user/profile/notifications.md @msedlakjakubowski
-/doc/user/profile/personal_access_tokens.md @jglassman1
-/doc/user/profile/service_accounts.md @jglassman1
-/doc/user/profile/user_passwords.md @jglassman1
-/doc/user/project/ @msedlakjakubowski
 /doc/user/project/badges.md @lciutacu
 /doc/user/project/clusters/ @phillipwells
 /doc/user/project/code_intelligence.md @aqualls
@@ -1035,7 +1013,9 @@ lib/gitlab/checks/**
 /doc/user/project/remote_development/ @ashrafkhamis
 /doc/user/project/repository/code_explain.md @sselhorn @jglassman1 @fneill
 /doc/user/project/repository/code_suggestions/ @jglassman1
-/doc/user/project/repository/file_finder.md @ashrafkhamis
+/doc/user/project/repository/files/geojson.md @msedlakjakubowski
+/doc/user/project/repository/files/index.md @ashrafkhamis
+/doc/user/project/repository/files/jupyter_notebooks/ @msedlakjakubowski
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/settings/import_export.md @eread
@@ -1050,13 +1030,8 @@ lib/gitlab/checks/**
 /doc/user/public_access.md @lciutacu
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
-/doc/user/search/command_palette.md @sselhorn
-/doc/user/shortcuts.md @sselhorn
-/doc/user/snippets.md @msedlakjakubowski
 /doc/user/ssh.md @jglassman1
 /doc/user/storage_management_automation.md @fneill
-/doc/user/tasks.md @msedlakjakubowski
-/doc/user/todos.md @msedlakjakubowski
 /doc/user/usage_quotas.md @fneill
 /doc/user/workspace/ @ashrafkhamis
 # End rake-managed-docs-block

@@ -8,7 +8,7 @@ RSpec.describe ::RemoteDevelopment::Settings::CurrentSettingsReader, feature_cat
   let(:overridden_setting_type) { String }
   let(:overridden_setting_value_from_current_settings) { "value_from_current_settings" }
 
-  let(:value) do
+  let(:context) do
     {
       settings: {
         non_overridden_setting: "not_overridden",
@@ -22,7 +22,7 @@ RSpec.describe ::RemoteDevelopment::Settings::CurrentSettingsReader, feature_cat
   end
 
   subject(:result) do
-    described_class.read(value)
+    described_class.read(context)
   end
 
   before do

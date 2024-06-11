@@ -11,9 +11,9 @@ RSpec.describe RemoteDevelopment::Message, :rd_fast, feature_category: :remote_d
   end
 
   describe 'validation' do
-    it 'requires context to be a Hash' do
+    it 'requires content to be a Hash' do
       # noinspection RubyMismatchedArgumentType - Intentionally passing wrong type to check runtime type validation
-      expect { described_class.new(1) }.to raise_error(ArgumentError, "context must be a Hash")
+      expect { described_class.new(1) }.to raise_error(ArgumentError, "content must be a Hash")
     end
   end
 end

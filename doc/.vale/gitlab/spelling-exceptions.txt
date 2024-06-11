@@ -555,6 +555,7 @@ lookbehinds
 Lookbook
 lookups
 loopback
+LSP
 Lua
 Lucene
 macOS

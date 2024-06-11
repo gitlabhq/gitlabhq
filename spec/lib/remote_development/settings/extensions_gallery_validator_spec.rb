@@ -16,7 +16,7 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryValidator, :rd_fast
     }
   end
 
-  let(:value) do
+  let(:context) do
     {
       settings: {
         vscode_extensions_gallery: vscode_extensions_gallery
@@ -25,13 +25,13 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryValidator, :rd_fast
   end
 
   subject(:result) do
-    described_class.validate(value)
+    described_class.validate(context)
   end
 
   context "when vscode_extensions_gallery is valid" do
     shared_examples "success result" do
-      it "return an ok Result containing the original value which was passed" do
-        expect(result).to eq(Result.ok(value))
+      it "return an ok Result containing the original context which was passed" do
+        expect(result).to eq(Result.ok(context))
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryValidator, :rd_fast
       it "returns an err Result containing error details" do
         expect(result).to be_err_result do |message|
           expect(message).to be_a RemoteDevelopment::Settings::Messages::SettingsVscodeExtensionsGalleryValidationFailed
-          message.context => { details: String => error_details }
+          message.content => { details: String => error_details }
           expect(error_details).to eq(expected_error_details)
         end
       end

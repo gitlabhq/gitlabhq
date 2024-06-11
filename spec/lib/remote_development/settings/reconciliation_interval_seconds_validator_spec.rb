@@ -5,7 +5,7 @@ require_relative "../rd_fast_spec_helper"
 RSpec.describe RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidator, :rd_fast, feature_category: :remote_development do
   include ResultMatchers
 
-  let(:value) do
+  let(:context) do
     {
       settings: {
         full_reconciliation_interval_seconds: loaded_full_reconciliation_interval_seconds,
@@ -18,12 +18,12 @@ RSpec.describe RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidat
   let(:loaded_full_reconciliation_interval_seconds) { 3600 }
 
   subject(:result) do
-    described_class.validate(value)
+    described_class.validate(context)
   end
 
   context "when partial_reconciliation_interval_seconds and full_reconciliation_interval_seconds is valid" do
-    it "return an ok Result containing the original value which was passed" do
-      expect(result).to eq(Result.ok(value))
+    it "return an ok Result containing the original context which was passed" do
+      expect(result).to eq(Result.ok(context))
     end
   end
 
@@ -35,7 +35,7 @@ RSpec.describe RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidat
         expect(result).to be_err_result do |message|
           expect(message)
             .to be_a RemoteDevelopment::Settings::Messages::SettingsPartialReconciliationIntervalSecondsValidationFailed
-          message.context => { details: String => error_details }
+          message.content => { details: String => error_details }
           expect(error_details).to eq("Partial reconciliation interval must be greater than zero")
         end
       end
@@ -48,7 +48,7 @@ RSpec.describe RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidat
         expect(result).to be_err_result do |message|
           expect(message)
             .to be_a RemoteDevelopment::Settings::Messages::SettingsPartialReconciliationIntervalSecondsValidationFailed
-          message.context => { details: String => error_details }
+          message.content => { details: String => error_details }
           expect(error_details).to eq("Partial reconciliation interval must be less than full reconciliation interval")
         end
       end
@@ -63,7 +63,7 @@ RSpec.describe RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidat
         expect(result).to be_err_result do |message|
           expect(message)
             .to be_a(RemoteDevelopment::Settings::Messages::SettingsFullReconciliationIntervalSecondsValidationFailed)
-          message.context => { details: String => error_details }
+          message.content => { details: String => error_details }
           expect(error_details).to eq("Full reconciliation interval must be greater than zero")
         end
       end

@@ -5,10 +5,10 @@ module RemoteDevelopment
     class ExtensionsGalleryValidator
       include Messages
 
-      # @param [Hash] value
+      # @param [Hash] context
       # @return [Result]
-      def self.validate(value)
-        value => { settings: Hash => settings }
+      def self.validate(context)
+        context => { settings: Hash => settings }
         settings => { vscode_extensions_gallery: Hash => vscode_extensions_gallery }
 
         # NOTE: We deep_stringify_keys here, so we can still pass keys as symbols during tests.
@@ -17,7 +17,7 @@ module RemoteDevelopment
         errors = validate_against_schema(vscode_extensions_gallery.deep_stringify_keys)
 
         if errors.none?
-          Result.ok(value)
+          Result.ok(context)
         else
           Result.err(SettingsVscodeExtensionsGalleryValidationFailed.new(details: errors.join(". ")))
         end

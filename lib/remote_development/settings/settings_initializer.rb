@@ -5,12 +5,12 @@ module RemoteDevelopment
     class SettingsInitializer
       include Messages
 
-      # @param [Hash] value
+      # @param [Hash] context
       # @return [Hash]
       # @raise [RuntimeError]
-      def self.init(value)
-        value[:settings] = {}
-        value[:setting_types] = {}
+      def self.init(context)
+        context[:settings] = {}
+        context[:setting_types] = {}
 
         DefaultSettings.default_settings.each do |setting_name, setting_value_and_type|
           unless setting_value_and_type.is_a?(Array) && setting_value_and_type.length == 2
@@ -32,11 +32,11 @@ module RemoteDevelopment
               "which does not match declared type of '#{setting_type}'."
           end
 
-          value[:settings][setting_name] = setting_value
-          value[:setting_types][setting_name] = setting_type
+          context[:settings][setting_name] = setting_value
+          context[:setting_types][setting_name] = setting_type
         end
 
-        value
+        context
       end
     end
   end

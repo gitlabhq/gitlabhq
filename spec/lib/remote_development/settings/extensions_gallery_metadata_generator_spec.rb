@@ -12,7 +12,7 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataGenerator, 
         # NOTE: default value of 'vscode_extensions_gallery_metadata' is an empty hash. Include it here to
         #       ensure that it always gets overwritten with the generated value
         vscode_extensions_gallery_metadata: {},
-        some_other_existing_setting_that_should_not_be_overwritten: "some value"
+        some_other_existing_setting_that_should_not_be_overwritten: "some context"
       }
     }
   end

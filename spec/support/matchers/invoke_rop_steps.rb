@@ -80,12 +80,12 @@ module InvokeRopSteps
     raise "'from_main_class' chain must be specified on all 'invoke_rop_steps' matchers" unless main_class
   end
 
-  def validate_value_passed_along_steps(value)
-    raise "'value_passed_along_steps' argument must be a Hash, but was a #{value.class}" unless value.is_a?(Hash)
+  def validate_context_passed_along_steps(context)
+    raise "'context_passed_along_steps' argument must be a Hash, but was a #{context.class}" unless context.is_a?(Hash)
   end
 
-  def validate_value_passed_along_steps_was_specified_in_chain(value)
-    raise "'value_passed_along_steps' chain must be specified on all 'invoke_rop_steps' matchers" unless value
+  def validate_context_passed_along_steps_was_specified_in_chain(context)
+    raise "'context_passed_along_steps' chain must be specified on all 'invoke_rop_steps' matchers" unless context
   end
 
   def validate_expected_return_value(expected_return_value)
@@ -107,7 +107,7 @@ module InvokeRopSteps
     rop_steps:,
     err_results_for_steps:,
     ok_results_for_steps:,
-    value_passed_along_steps:
+    context_passed_along_steps:
   )
 
     expected_rop_steps = []
@@ -131,9 +131,9 @@ module InvokeRopSteps
       elsif ok_results_for_steps.key?(step_class)
         expected_rop_step[:returned_object] = ok_results_for_steps[step_class]
       elsif step_action == :and_then
-        expected_rop_step[:returned_object] = Result.ok(value_passed_along_steps)
+        expected_rop_step[:returned_object] = Result.ok(context_passed_along_steps)
       elsif step_action == :map
-        expected_rop_step[:returned_object] = value_passed_along_steps
+        expected_rop_step[:returned_object] = context_passed_along_steps
       else
         raise "Unexpected internal error when building expected ROP steps: step_action '#{step_action}' is invalid"
       end
@@ -154,7 +154,7 @@ module InvokeRopSteps
     public_methods.first
   end
 
-  def setup_mock_expectations_for_steps(steps:, value_passed_along_steps:)
+  def setup_mock_expectations_for_steps(steps:, context_passed_along_steps:)
     steps.each do |step|
       step => {
         step_class: Class => step_class,
@@ -165,7 +165,7 @@ module InvokeRopSteps
       set_up_step_class_expectation(
         step_class: step_class,
         step_class_method: step_class_method,
-        value_passed_along_steps: value_passed_along_steps,
+        context_passed_along_steps: context_passed_along_steps,
         returned_object: returned_object
       )
     end
@@ -174,10 +174,10 @@ module InvokeRopSteps
   def set_up_step_class_expectation(
     step_class:,
     step_class_method:,
-    value_passed_along_steps:,
+    context_passed_along_steps:,
     returned_object:
   )
-    expect(step_class).to receive(step_class_method).with(value_passed_along_steps).ordered do
+    expect(step_class).to receive(step_class_method).with(context_passed_along_steps).ordered do
       returned_object
     end
   end
@@ -189,7 +189,7 @@ RSpec::Matchers.define :invoke_rop_steps do |rop_steps|
   supports_block_expectations
 
   main_class = nil
-  value_passed_along_steps = nil
+  context_passed_along_steps = nil
   err_results_for_steps = {}
   ok_results_for_steps = {}
   expected_return_value_matcher = nil
@@ -197,7 +197,7 @@ RSpec::Matchers.define :invoke_rop_steps do |rop_steps|
 
   match do |block|
     validate_main_class_was_specified_in_chain(main_class)
-    validate_value_passed_along_steps_was_specified_in_chain(value_passed_along_steps)
+    validate_context_passed_along_steps_was_specified_in_chain(context_passed_along_steps)
     validate_expected_return_value_matcher_was_specified_in_chain(expected_return_value_matcher)
     validate_rop_steps(rop_steps)
 
@@ -205,12 +205,12 @@ RSpec::Matchers.define :invoke_rop_steps do |rop_steps|
       rop_steps: rop_steps,
       err_results_for_steps: err_results_for_steps,
       ok_results_for_steps: ok_results_for_steps,
-      value_passed_along_steps: value_passed_along_steps
+      context_passed_along_steps: context_passed_along_steps
     )
 
     setup_mock_expectations_for_steps(
       steps: steps,
-      value_passed_along_steps: value_passed_along_steps
+      context_passed_along_steps: context_passed_along_steps
     )
 
     # noinspection RubyNilAnalysis -- We ensure this is not nil
@@ -224,10 +224,10 @@ RSpec::Matchers.define :invoke_rop_steps do |rop_steps|
     expect(main_class).to receive(main_class_method).and_call_original
   end
 
-  chain :with_value_passed_along_steps do |value|
-    validate_value_passed_along_steps(value)
+  chain :with_context_passed_along_steps do |context|
+    validate_context_passed_along_steps(context)
     # noinspection RubyUnusedLocalVariable -- TODO: open issue and add to https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/tracked-jetbrains-issues
-    value_passed_along_steps = value
+    context_passed_along_steps = context
   end
 
   chain :with_err_result_for_step do |err_result_for_step|
@@ -243,7 +243,7 @@ RSpec::Matchers.define :invoke_rop_steps do |rop_steps|
   chain :with_ok_result_for_step do |ok_result_for_step|
     # Even though the OK step is normally only applicable to the last step in a chain, multiple steps
     # are allowed to return OK results for other cases, e.g. if there is a `map` with a lambda in the middle
-    # the chain, which performs some processing on the value passed along the chain.
+    # the chain, which performs some processing on the context passed along the chain.
     add_ok_result_for_step(ok_result_for_step, ok_results_for_steps)
   end
 

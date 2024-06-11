@@ -5,10 +5,10 @@ module RemoteDevelopment
     class ReconciliationIntervalSecondsValidator
       include Messages
 
-      # @param [Hash] value
+      # @param [Hash] context
       # @return [Result]
-      def self.validate(value)
-        value => {
+      def self.validate(context)
+        context => {
           settings: {
             full_reconciliation_interval_seconds: Integer => full_reconciliation_interval_seconds,
             partial_reconciliation_interval_seconds: Integer => partial_reconciliation_interval_seconds
@@ -33,7 +33,7 @@ module RemoteDevelopment
                            )
         end
 
-        Result.ok(value)
+        Result.ok(context)
       end
     end
   end
