@@ -69,9 +69,9 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
         let(:ref) { 'main' }
 
         it 'calls the Asana integration' do
-          expect(Gitlab::HTTP).to receive(:post)
+          expect(Gitlab::HTTP_V2).to receive(:post)
             .with("https://app.asana.com/api/1.0/tasks/456789/stories", anything).once.and_return(asana_task)
-          expect(Gitlab::HTTP).to receive(:put)
+          expect(Gitlab::HTTP_V2).to receive(:put)
             .with("https://app.asana.com/api/1.0/tasks/456789", completed_message).once.and_return(asana_task)
 
           execute_integration
@@ -82,8 +82,8 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
         let(:ref) { 'mai' }
 
         it 'does not call the Asana integration' do
-          expect(Gitlab::HTTP).not_to receive(:post)
-          expect(Gitlab::HTTP).not_to receive(:put)
+          expect(Gitlab::HTTP_V2).not_to receive(:post)
+          expect(Gitlab::HTTP_V2).not_to receive(:put)
 
           execute_integration
         end
@@ -102,7 +102,7 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
       end
 
       it 'calls Asana integration to create a story' do
-        expect(Gitlab::HTTP).to receive(:post)
+        expect(Gitlab::HTTP_V2).to receive(:post)
             .with("https://app.asana.com/api/1.0/tasks/#{gid}/stories", expected_message).once.and_return(asana_task)
 
         execute_integration
@@ -113,9 +113,9 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
       let(:message) { 'fix #456789' }
 
       it 'calls Asana integration to create a story and close a task' do
-        expect(Gitlab::HTTP).to receive(:post)
+        expect(Gitlab::HTTP_V2).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/456789/stories", anything).once.and_return(asana_task)
-        expect(Gitlab::HTTP).to receive(:put)
+        expect(Gitlab::HTTP_V2).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/456789", completed_message).once.and_return(asana_task)
 
         execute_integration
@@ -126,9 +126,9 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
       let(:message) { 'closes https://app.asana.com/19292/956299/42' }
 
       it 'calls Asana integration to close via url' do
-        expect(Gitlab::HTTP).to receive(:post)
+        expect(Gitlab::HTTP_V2).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/42/stories", anything).once.and_return(asana_task)
-        expect(Gitlab::HTTP).to receive(:put)
+        expect(Gitlab::HTTP_V2).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/42", completed_message).once.and_return(asana_task)
 
         execute_integration
@@ -144,32 +144,79 @@ RSpec.describe Integrations::Asana, feature_category: :integrations do
       end
 
       it 'allows multiple matches per line' do
-        expect(Gitlab::HTTP).to receive(:post)
+        expect(Gitlab::HTTP_V2).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/123/stories", anything).once.and_return(asana_task)
-        expect(Gitlab::HTTP).to receive(:put)
+        expect(Gitlab::HTTP_V2).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/123", completed_message).once.and_return(asana_task)
 
         asana_task_2 = double(double(data: { gid: 456 }))
-        expect(Gitlab::HTTP).to receive(:post)
+        expect(Gitlab::HTTP_V2).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/456/stories", anything).once.and_return(asana_task_2)
-        expect(Gitlab::HTTP).to receive(:put)
+        expect(Gitlab::HTTP_V2).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/456", completed_message).once.and_return(asana_task_2)
 
         asana_task_3 = double(double(data: { gid: 789 }))
-        expect(Gitlab::HTTP).to receive(:post)
+        expect(Gitlab::HTTP_V2).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/789/stories", anything).once.and_return(asana_task_3)
 
         asana_task_4 = double(double(data: { gid: 42 }))
-        expect(Gitlab::HTTP).to receive(:post)
+        expect(Gitlab::HTTP_V2).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/42/stories", anything).once.and_return(asana_task_4)
 
         asana_task_5 = double(double(data: { gid: 12 }))
-        expect(Gitlab::HTTP).to receive(:post)
+        expect(Gitlab::HTTP_V2).to receive(:post)
           .with("https://app.asana.com/api/1.0/tasks/12/stories", anything).once.and_return(asana_task_5)
-        expect(Gitlab::HTTP).to receive(:put)
+        expect(Gitlab::HTTP_V2).to receive(:put)
           .with("https://app.asana.com/api/1.0/tasks/12", completed_message).once.and_return(asana_task_5)
 
         execute_integration
+      end
+    end
+
+    context 'when processing a large commit message' do
+      let(:message) { '#' * 2_000_000 }
+
+      it 'has no backtracking issue' do
+        expect do
+          Timeout.timeout(1) do
+            execute_integration
+          end
+        end.not_to raise_error
+      end
+    end
+  end
+
+  describe '#test' do
+    let(:asana_integration) { described_class.new(api_key: 'test') }
+    let(:headers) { { "Authorization" => "Bearer test" } }
+
+    subject(:test_integration) { asana_integration.test(nil) }
+
+    context 'when authentication succeeds' do
+      before do
+        stub_request(:get, Integrations::Asana::PERSONAL_ACCESS_TOKEN_TEST_URL)
+          .with(headers: headers)
+          .to_return(status: [200, "Success"])
+      end
+
+      it 'returns a successful result' do
+        result = test_integration
+
+        expect(result[:success]).to be true
+      end
+    end
+
+    context 'when authentication fails' do
+      before do
+        stub_request(:get, Integrations::Asana::PERSONAL_ACCESS_TOKEN_TEST_URL)
+          .to_return(status: [401, 'Unauthorized'])
+      end
+
+      it 'returns an authorized result' do
+        result = test_integration
+
+        expect(result[:success]).to be false
+        expect(result[:result]).to eq 'Unauthorized'
       end
     end
   end
