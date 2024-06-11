@@ -45,14 +45,14 @@ describe('WorkItemProjectsListbox', () => {
   const findRecentDropdownItems = () => findDropdown().find('ul').findAll('[role=option]');
   const findRecentDropdownItemAt = (index) => findRecentDropdownItems().at(index);
 
-  const createComponent = async (isGroup = true) => {
+  const createComponent = async (isGroup = true, fullPath = 'group-a') => {
     wrapper = mountExtended(WorkItemProjectsListbox, {
       apolloProvider: createMockApollo([
         [groupProjectsForLinksWidgetQuery, groupProjectsFormLinksWidgetResolver],
         [relatedProjectsForLinksWidgetQuery, relatedProjectsFormLinksWidgetResolver],
       ]),
       propsData: {
-        fullPath: 'group-a',
+        fullPath,
         isGroup,
       },
     });
@@ -91,7 +91,7 @@ describe('WorkItemProjectsListbox', () => {
 
       const emitted = wrapper.emitted('selectProject');
 
-      expect(emitted[0][0]).toEqual(groupProjectsData[0]);
+      expect(emitted[1][0]).toEqual(groupProjectsData[0]);
     });
 
     it('renders recent projects if present', async () => {
@@ -122,7 +122,7 @@ describe('WorkItemProjectsListbox', () => {
 
       const emitted = wrapper.emitted('selectProject');
 
-      expect(emitted[0][0]).toEqual(groupProjectsData[1]);
+      expect(emitted[1][0]).toEqual(groupProjectsData[1]);
     });
 
     it('supports filtering recent projects via search input', async () => {
@@ -149,7 +149,7 @@ describe('WorkItemProjectsListbox', () => {
 
   describe('project level work items', () => {
     beforeEach(async () => {
-      await createComponent(false);
+      await createComponent(false, 'group-a/example-project-a');
       gon.current_username = 'root';
     });
 
@@ -164,6 +164,14 @@ describe('WorkItemProjectsListbox', () => {
       expect(dropdownItem.text()).toContain(relatedProjectsData[0].namespace.name);
     });
 
+    it('auto-selects the current project', async () => {
+      await nextTick();
+
+      const emitted = wrapper.emitted('selectProject');
+
+      expect(emitted[0][0]).toEqual(relatedProjectsData[0]);
+    });
+
     it('supports selecting a project', async () => {
       removeLocalstorageFrequentItems();
 
@@ -171,13 +179,13 @@ describe('WorkItemProjectsListbox', () => {
 
       await nextTick();
 
-      await findDropdownItemFor(relatedProjectsData[0].fullPath).trigger('click');
+      await findDropdownItemFor(relatedProjectsData[1].fullPath).trigger('click');
 
       await nextTick();
 
       const emitted = wrapper.emitted('selectProject');
 
-      expect(emitted[0][0]).toEqual(relatedProjectsData[0]);
+      expect(emitted[1][0]).toEqual(relatedProjectsData[1]);
     });
 
     it('renders recent projects if present', async () => {
@@ -208,7 +216,7 @@ describe('WorkItemProjectsListbox', () => {
 
       const emitted = wrapper.emitted('selectProject');
 
-      expect(emitted[0][0]).toEqual(relatedProjectsData[1]);
+      expect(emitted[1][0]).toEqual(relatedProjectsData[1]);
     });
 
     it('supports filtering recent projects via search input', async () => {

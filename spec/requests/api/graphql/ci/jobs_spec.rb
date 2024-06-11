@@ -232,7 +232,8 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
         create(:ci_build_need, build: test_job, name: 'my test job')
       end
 
-      it 'reports the build needs and execution requirements' do
+      it 'reports the build needs and execution requirements',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448867' do
         post_graphql(query, current_user: user)
 
         expect(jobs_graphql_data).to contain_exactly(

@@ -57,6 +57,11 @@ export default {
       update(data) {
         return this.isGroup ? data.group?.projects?.nodes : data.project?.group?.projects?.nodes;
       },
+      result() {
+        if (this.selectedProject === null) {
+          this.selectedProjectFullPath = this.fullPath;
+        }
+      },
       debounce: SEARCH_DEBOUNCE,
     },
   },
@@ -156,7 +161,11 @@ export default {
 
       /* Filter for the current group */
       storedFrequentProjects = storedFrequentProjects.filter((item) => {
-        return Boolean(item.webUrl?.slice(1)?.startsWith(this.fullPath));
+        const groupPath = this.isGroup
+          ? this.fullPath
+          : this.fullPath.substring(0, this.fullPath.lastIndexOf('/'));
+
+        return Boolean(item.webUrl?.slice(1)?.startsWith(groupPath));
       });
 
       if (searchTerm) {

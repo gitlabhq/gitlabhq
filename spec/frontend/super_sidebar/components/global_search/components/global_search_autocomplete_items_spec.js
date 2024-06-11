@@ -15,9 +15,16 @@ import GlobalSearchNoResults from '~/super_sidebar/components/global_search/comp
 
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
-  PROJECTS_GROUP_TITLE,
-  GROUPS_GROUP_TITLE,
-} from '~/super_sidebar/components/global_search/command_palette/constants';
+  EVENT_CLICK_PROJECT_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_GROUP_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_ISSUE_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_RECENT_ISSUE_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_RECENT_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE,
+} from '~/super_sidebar/components/global_search/tracking_constants';
+
 import {
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
@@ -151,21 +158,6 @@ describe('GlobalSearchAutocompleteItems', () => {
       });
 
       describe.each`
-        event                                        | category
-        ${'click_project_result_in_command_palette'} | ${PROJECTS_GROUP_TITLE}
-        ${'click_group_result_in_command_palette'}   | ${GROUPS_GROUP_TITLE}
-      `('event tracking', ({ event, category }) => {
-        it(`tracks click for ${category} results`, async () => {
-          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
-          await findGlDisclosureDropdownGroup().vm.$emit('action', {
-            category,
-          });
-
-          expect(trackEventSpy).toHaveBeenCalledWith(event, {}, undefined);
-        });
-      });
-
-      describe.each`
         group              | text
         ${'asdfasdf'}      | ${'Go to %{kbdStart}↵%{kbdEnd}'}
         ${'Users'}         | ${'Go to profile %{kbdStart}↵%{kbdEnd}'}
@@ -193,6 +185,28 @@ describe('GlobalSearchAutocompleteItems', () => {
         it('renders correct layover text', () => {
           expect(findLayover().props('textMessage')).toBe(text);
         });
+      });
+
+      describe('tracking', () => {
+        it.each`
+          action                     | event
+          ${'Projects'}              | ${EVENT_CLICK_PROJECT_RESULT_IN_COMMAND_PALETTE}
+          ${'Groups'}                | ${EVENT_CLICK_GROUP_RESULT_IN_COMMAND_PALETTE}
+          ${'Merge Requests'}        | ${EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
+          ${'Issues'}                | ${EVENT_CLICK_ISSUE_RESULT_IN_COMMAND_PALETTE}
+          ${'Recent issues'}         | ${EVENT_CLICK_RECENT_ISSUE_RESULT_IN_COMMAND_PALETTE}
+          ${'Recent epics'}          | ${EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE}
+          ${'Recent merge requests'} | ${EVENT_CLICK_RECENT_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
+          ${undefined}               | ${EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE}
+        `(
+          "triggers tracking event '$event' after emiting action '$action'",
+          ({ action, event }) => {
+            const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+            findGlDisclosureDropdownGroup().vm.$emit('action', { name: action });
+            expect(trackEventSpy).toHaveBeenCalledWith(event, {}, undefined);
+          },
+        );
       });
     });
   });

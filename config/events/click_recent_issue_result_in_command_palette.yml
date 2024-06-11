@@ -1,0 +1,17 @@
+---
+description: User clicks an issue result in the recent issues section
+internal_events: true
+action: click_recent_issue_result_in_command_palette
+identifiers:
+- namespace
+- user
+product_group: global_search
+milestone: '17.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154576
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

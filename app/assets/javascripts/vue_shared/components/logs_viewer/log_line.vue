@@ -22,7 +22,7 @@ export default {
       return h(
         'span',
         {
-          class: ['gl-white-space-pre-wrap', content.style],
+          class: ['gl-whitespace-pre-wrap', content.style],
         },
         // Simple "tokenization": Split text in chunks of text
         // which alternate between text and urls.
@@ -36,7 +36,7 @@ export default {
             {
               attrs: {
                 href: chunk,
-                class: 'gl-reset-color! gl-text-decoration-underline',
+                class: '!gl-text-inherit gl-underline',
                 rel: 'nofollow noopener noreferrer', // eslint-disable-line @gitlab/require-i18n-strings
                 target: '_blank',
               },

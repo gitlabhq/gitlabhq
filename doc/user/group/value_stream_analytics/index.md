@@ -489,6 +489,13 @@ time from a staging environment to production, you could use the following label
 
 ![Label-based value stream analytics stage](img/vsa_label_based_stage_v14_0.png "Creating a label-based value stream analytics stage")
 
+##### Automatic data labeling with webhooks
+
+You can automatically add labels by using [GitLab webhook events](../../project/integrations/webhook_events.md),
+so that a label is applied to merge requests or issues when a specific event occurs.
+Then, you can add label-based stages to track your workflow.
+To learn more about the implementation, see the blog post [Applying GitLab Labels Automatically](https://about.gitlab.com/blog/2016/08/19/applying-gitlab-labels-automatically/).
+
 #### Example for custom value stream configuration
 
 ![Example configuration](img/object_hierarchy_example_V14_10.png "Example custom value stream configuration")

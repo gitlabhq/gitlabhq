@@ -24074,6 +24074,9 @@ msgstr ""
 msgid "GlobalSearch|List of filtered labels."
 msgstr ""
 
+msgid "GlobalSearch|Merge Requests"
+msgstr ""
+
 msgid "GlobalSearch|Merge requests I've created"
 msgstr ""
 

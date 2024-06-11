@@ -12,6 +12,9 @@ DETAILS:
 
 Interact with [projects](../user/project/index.md) by using the REST API.
 
+NOTE:
+Users with any [default role](../user/permissions.md#roles) can read project properties with the Projects API. Only users with the Owner or Maintainer role can edit project properties in the UI or with the API.
+
 ## Project visibility level
 
 A project in GitLab can be private, internal, or public.

@@ -23,7 +23,6 @@ describe('pages/shared/wikis/components/wiki_more_dropdown', () => {
         wikiPath: '',
         cloneSshUrl: 'ssh://clone.url/path',
         cloneHttpUrl: 'http://clone.url/path',
-        cloneLinkClass: '',
         templatesUrl: 'https://templates.url/path',
         pagePersisted: true,
         ...provide,

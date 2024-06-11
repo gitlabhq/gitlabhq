@@ -83,7 +83,7 @@ RSpec.describe "User toggles subscription", :js, feature_category: :team_plannin
       visit(project_issue_path(project, issue))
     end
 
-    it 'toggles subscription' do
+    it 'toggles subscription', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/435076' do
       subscription_button = find_by_testid('subscribe-button')
 
       expect(page).to have_selector("button[title='Notifications off']")

@@ -178,8 +178,12 @@ When we have a flaky test in `master`:
 
 #### Fast quarantine
 
+Unless you really need to have a test disabled very fast (`< 10min`), consider [using the `~pipeline::expedited` label instead](../pipelines/index.md#the-pipelineexpedited-label).
+
 To quickly quarantine a test without having to open a merge request and wait for pipelines,
 you can follow [the fast quarantining process](https://gitlab.com/gitlab-org/quality/engineering-productivity/fast-quarantine/-/tree/main/#fast-quarantine-a-test).
+
+**Please always proceed** to [open a long-term quarantine merge request](#long-term-quarantine) after fast-quarantining a test! This is to ensure the fast-quarantined test was correctly fixed by running tests from the CI/CD pipelines (which are not run in the context of the fast-quarantine project).
 
 #### Long-term quarantine
 

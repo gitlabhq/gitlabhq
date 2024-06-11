@@ -23,7 +23,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['newUrl', 'historyUrl', 'templatesUrl', 'cloneLinkClass', 'pagePersisted'],
+  inject: ['newUrl', 'historyUrl', 'templatesUrl', 'pagePersisted'],
   i18n: {
     wikiActions: s__('Wiki|Wiki actions'),
   },
@@ -75,7 +75,7 @@ export default {
       return !this.isDropdownVisible ? this.$options.i18n.wikiActions : '';
     },
     showPrintItem() {
-      return !this.isTemplate;
+      return !this.isTemplate && this.pagePersisted;
     },
   },
   methods: {

@@ -19,3 +19,16 @@ export const EVENT_CLICK_GROUP_SCOPED_SEARCH_TO_ADVANCED_SEARCH =
   'click_group_scoped_search_to_advanced_search';
 export const EVENT_CLICK_PROJECT_SCOPED_SEARCH_TO_ADVANCED_SEARCH =
   'click_project_scoped_search_to_advanced_search';
+export const EVENT_CLICK_PROJECT_RESULT_IN_COMMAND_PALETTE =
+  'click_project_result_in_command_palette';
+export const EVENT_CLICK_GROUP_RESULT_IN_COMMAND_PALETTE = 'click_group_result_in_command_palette';
+export const EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE =
+  'click_merge_request_result_in_command_palette';
+export const EVENT_CLICK_ISSUE_RESULT_IN_COMMAND_PALETTE = 'click_issue_result_in_command_palette';
+export const EVENT_CLICK_RECENT_ISSUE_RESULT_IN_COMMAND_PALETTE =
+  'click_recent_issue_result_in_command_palette';
+export const EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE =
+  'click_recent_epic_result_in_command_palette';
+export const EVENT_CLICK_RECENT_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE =
+  'click_recent_merge_request_result_in_command_palette';
+export const EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE = 'click_user_result_in_command_palette';

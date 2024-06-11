@@ -21,7 +21,6 @@
   wiki_path: @wiki.path,
   clone_ssh_url: ssh_clone_url_to_repo(@wiki),
   clone_http_url: http_clone_url_to_repo(@wiki),
-  clone_link_class: active_nav_link?(path: 'wikis#git_access') ? ' active' : '',
   page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
   wiki_url: wiki_page_path(@wiki, @page),
   edit_button_url: wiki_page_path(@wiki, @page, action: :edit),

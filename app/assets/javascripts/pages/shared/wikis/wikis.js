@@ -16,8 +16,26 @@ export default class Wikis {
       sidebarToggles[i].addEventListener('click', (e) => this.handleToggleSidebar(e));
     }
 
-    const listToggles = document.querySelectorAll('.js-wiki-list-toggle');
+    // Store pages visbility in localStorage
+    const pagesToggle = document.querySelector('.js-wiki-expand-pages-list');
+    if (pagesToggle) {
+      if (localStorage.getItem('wiki-sidebar-expanded') === 'expanded') {
+        pagesToggle.classList.remove('collapsed');
+      }
+      pagesToggle.addEventListener('click', (e) => {
+        pagesToggle.classList.toggle('collapsed');
 
+        if (!pagesToggle.classList.contains('collapsed')) {
+          localStorage.setItem('wiki-sidebar-expanded', 'expanded');
+        } else {
+          localStorage.removeItem('wiki-sidebar-expanded');
+        }
+
+        e.stopImmediatePropagation();
+      });
+    }
+
+    const listToggles = document.querySelectorAll('.js-wiki-list-toggle');
     listToggles.forEach((listToggle) => {
       listToggle.querySelectorAll('a').forEach((link) => {
         link.addEventListener('click', (e) => e.stopPropagation());

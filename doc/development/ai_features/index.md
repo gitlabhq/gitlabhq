@@ -10,7 +10,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 ### Access
 
-Access to both Google Cloud Vertex and Anthropic are recommended for setup. 
+Access to both Google Cloud Vertex and Anthropic are recommended for setup.
 
 #### Google Cloud Vertex
 
@@ -21,7 +21,7 @@ To obtain a Google Cloud service key for local development, follow the steps bel
       existing group Google Cloud project (`ai-enablement-dev-69497ba7`) by using
       [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request)
       This project has Vertex APIs and Vertex AI Search (for Duo Chat
-      documentaton questions) already enabled
+      documentation questions) already enabled.
    1. Option 2: Create a sandbox Google Cloud project by following the instructions
       in [the handbook](https://handbook.gitlab.com/handbook/infrastructure-standards/#individual-environment).
       If you are using an individual Google Cloud project, you may also need to
@@ -34,11 +34,11 @@ To obtain a Google Cloud service key for local development, follow the steps bel
       1. Select **Vertex AI API**, then select **Enable**.
 1. Install the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install)
    1. If you already use [`asdf`](https://asdf-vm.com/) for runtime version
-    management, you can install `gcloud` with the
-    [`asdf gcloud` plugin](https://github.com/jthegedus/asdf-gcloud)
+      management, you can install `gcloud` with the
+      [`asdf gcloud` plugin](https://github.com/jthegedus/asdf-gcloud)
 1. Authenticate locally with Google Cloud using the
-  [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login)
-  command.
+   [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login)
+   command.
 1. Open a Rails console. Update the settings to:
 
    ```ruby
@@ -175,7 +175,7 @@ Gitlab::Llm::VertexAi::Client.new(User.first, unit_primitive: 'explain_vulnerabi
 Here is the underlying process happening per request:
 
 1. GitLab-Rails generates a new JWT with a given scope (e.g. `duo_chat`).
-1. GitLab-Rails requets to AI Gateway with the JWT (bearer token in `Authorization` HTTP header).
+1. GitLab-Rails sends a request to AI Gateway with the JWT (bearer token in `Authorization` HTTP header).
 1. AI Gateway decodes the JWT with the JWKS issued by the GitLab-Rails. If it's successful, the request is authenticated.
 1. AI Gateway verifies if the `scopes` claim in the JWT satisfies the target endpoint's scope requirement.
    Required scope varies per endpoint (e.g. `/v1/chat/agent` requires `duo_chat`, `/v2/code/suggestions` requires `code_suggestions`).
@@ -214,9 +214,9 @@ Otherwise, it can be skipped as long as your GDK has
    doesn't work, try `gdk kill` and then `gdk start`.
 1. Alternatively, bypass Sidekiq entirely and run the service synchronously.
    This can help with debugging errors as GraphQL errors are now available in
-  the network inspector instead of the Sidekiq logs. To do that temporary alter
-  `perform_for` method in `Llm::CompletionWorker` class by changing
-  `perform_async` to `perform_inline`.
+   the network inspector instead of the Sidekiq logs. To do that, temporarily alter
+   the `perform_for` method in `Llm::CompletionWorker` class by changing
+   `perform_async` to `perform_inline`.
 
 ## Feature development (Abstraction Layer)
 
@@ -241,7 +241,7 @@ Example of a mutation:
 
 ```graphql
 mutation {
-  aiAction(input: {summarizeComments: {resourceId: "gid://gitlab/Issue/52"}}) {
+  aiAction(input: { summarizeComments: { resourceId: "gid://gitlab/Issue/52" } }) {
     clientMutationId
   }
 }
@@ -252,7 +252,11 @@ As an example, assume we want to build an "explain code" action. To do this, we 
 
 ```graphql
 mutation {
-  aiAction(input: {explainCode: {resourceId: "gid://gitlab/MergeRequest/52", code: "foo() { console.log() }" }}) {
+  aiAction(
+    input: {
+      explainCode: { resourceId: "gid://gitlab/MergeRequest/52", code: "foo() { console.log() }" }
+    }
+  ) {
     clientMutationId
   }
 }
@@ -278,7 +282,12 @@ As an example mutation for summarizing comments, we provide a `randomId` as part
 
 ```graphql
 mutation {
-  aiAction(input: {summarizeComments: {resourceId: "gid://gitlab/Issue/52"}, clientSubscriptionId: "randomId"}) {
+  aiAction(
+    input: {
+      summarizeComments: { resourceId: "gid://gitlab/Issue/52" }
+      clientSubscriptionId: "randomId"
+    }
+  ) {
     clientMutationId
   }
 }
@@ -287,8 +296,16 @@ mutation {
 In our component, we then listen on the `aiCompletionResponse` using the `userId`, `resourceId` and `clientSubscriptionId` (`"randomId"`):
 
 ```graphql
-subscription aiCompletionResponse($userId: UserID, $resourceId: AiModelID, $clientSubscriptionId: String) {
-  aiCompletionResponse(userId: $userId, resourceId: $resourceId, clientSubscriptionId: $clientSubscriptionId) {
+subscription aiCompletionResponse(
+  $userId: UserID
+  $resourceId: AiModelID
+  $clientSubscriptionId: String
+) {
+  aiCompletionResponse(
+    userId: $userId
+    resourceId: $resourceId
+    clientSubscriptionId: $clientSubscriptionId
+  ) {
     content
     errors
   }
@@ -359,12 +376,12 @@ end
 
 We recommend to use [policies](../policies.md) to deal with authorization for a feature. Currently we need to make sure to cover the following checks:
 
-1. For GitLab Duo Chat feature, `ai_duo_chat_switch` is enabled
-1. For other general AI features, `ai_global_switch` is enabled
-1. Feature specific feature flag is enabled
-1. The namespace has the required license for the feature
-1. User is a member of the group/project
-1. `experiment_features_enabled` settings are set on the `Namespace`
+1. For GitLab Duo Chat feature, `ai_duo_chat_switch` is enabled.
+1. For other general AI features, `ai_global_switch` is enabled.
+1. Feature specific feature flag is enabled.
+1. The namespace has the required license for the feature.
+1. User is a member of the group/project.
+1. `experiment_features_enabled` settings are set on the `Namespace`.
 
 For our example, we need to implement the `allowed?(:amazing_new_ai_feature)` call. As an example, you can look at the [Issue Policy for the summarize comments feature](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb). In our example case, we want to implement the feature for Issues as well:
 
@@ -424,8 +441,8 @@ query {
 ```
 
 This cache is especially useful for chat functionality. For other services,
-caching is disabled. (It can be enabled for a service by using `cache_response: true`
-option.)
+caching is disabled. You can enable this for a service by using the `cache_response: true`
+option.
 
 Caching has following limitations:
 

@@ -12,7 +12,7 @@
       = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')
 
     .blocks-container{ class: '!gl-px-3' }
-      .gl-flex.gl-place-content-between.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-list-toggle wiki-list collapsed gl-pl-0' : 'gl-pl-3') }
+      .gl-flex.gl-place-content-between.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-expand-pages-list wiki-list collapsed gl-pl-0' : 'gl-pl-3') }
         .gl-flex.gl-items-center
           - if @sidebar_page
             = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: "js-wiki-list-expand-button wiki-list-expand-button !gl-static gl-mr-2", data: { testid: 'expand-pages-list' } })

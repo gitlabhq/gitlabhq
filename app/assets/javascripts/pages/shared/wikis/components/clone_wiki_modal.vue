@@ -39,7 +39,7 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['wikiPath', 'cloneSshUrl', 'cloneHttpUrl', 'cloneLinkClass'],
+  inject: ['wikiPath', 'cloneSshUrl', 'cloneHttpUrl'],
   props: {
     showAsDropdownItem: {
       type: Boolean,
@@ -71,7 +71,6 @@ export default {
       return {
         text: __('Clone repository'),
         extraAttrs: {
-          class: this.cloneLinkClass,
           'data-testid': 'page-clone-button',
         },
       };

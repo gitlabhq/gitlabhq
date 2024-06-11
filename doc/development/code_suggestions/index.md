@@ -83,23 +83,30 @@ with the deployed staging AI Gateway. To do this:
 
 ### Setup instructions to use GDK with the Code Suggestions Add-on
 
-On February 15, 2023 we will require the code suggestions add-on subscription to be able to use code suggestions.
-To set up your GDK for local development using the add-on, please follow these steps:
+1. Add a **GitLab Ultimate Self-Managed** subscription with a [Duo Pro subscription add-on](../../subscriptions/subscription-add-ons.md) to your GDK instance.
 
-1. Drop a note in the `#s_fulfillment` or `s_fulfillment_engineering` internal Slack channel to request an activation code with the Code Suggestions add-on.
-1. Someone will reach out to you with a code.
+   [Self-purchase your own subscription](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/30a6670d39da223565081cbe46ba17d8e610aad1/doc/flows/buy_subscription.md#buy-subscription) for GitLab Ultimate Self-Managed from the [staging Customers Portal](https://customers.staging.gitlab.com).
+   To do this, send a message to the `#s_fulfillment` or `s_fulfillment_engineering` Slack channels. The team will:
+
+   - Give you instructions or set your account so you do not have to pay for a subscription.
+   - Add the Duo Pro add-on to your account.
+
+   After this step is complete, you will have an activation code for a _GitLab Ultimate Self-Managed subscription with a Duo Pro add-on_.
+
 1. Follow the [activation instructions](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/license/cloud_license.md?ref_type=heads#testing-activation):
+
    1. Set environment variables.
 
-   ```shell
-   export GITLAB_LICENSE_MODE=test
-   export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
-   export GITLAB_SIMULATE_SAAS=0
-   ```
+      ```shell
+      export GITLAB_LICENSE_MODE=test
+      export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
+      export GITLAB_SIMULATE_SAAS=0
+      ```
 
    1. Restart your GDK.
    1. Go to `/admin/subscription`.
-   1. Remove any active license.
+   1. Optional. Remove any active license.
    1. Add the new activation code.
+
 1. Inside your GDK, navigate to Admin Area > GitLab Duo Pro, go to `/admin/code_suggestions`
 1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user
