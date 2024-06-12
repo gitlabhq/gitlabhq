@@ -61,8 +61,24 @@ module WorkhorseHelper
   end
 
   def content_disposition_for_blob(blob, inline)
-    return 'inline' if inline
+    return inline_content_disposition(blob) if inline
 
+    attachment_content_disposition(blob)
+  end
+
+  def inline_content_disposition(blob)
+    # We need to validate the .xhtml extension to avoid content sniffing
+    # since some specific browsers ignore the Content-Disposition header.
+    #
+    # Using `split` instead of `File.extname` to handle files with multiple extensions
+    #
+    # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/458229
+    filename = blob.name.ends_with?('.xhtml') ? blob.name.split('.')[0] : nil
+
+    ActionDispatch::Http::ContentDisposition.format(disposition: 'inline', filename: filename)
+  end
+
+  def attachment_content_disposition(blob)
     ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: blob.name)
   end
 end
