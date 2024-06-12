@@ -153,6 +153,8 @@ as self-managed instances.
 - [001: Use Ruby Push Check approach within monolith](decisions/001_use_ruby_push_check_approach_within_monolith.md)
 - [002: Store the Secret Detection Gem in the same repository](decisions/002_store_the_secret_detection_gem_in_the_same_repository.md)
 - [003: Run scan within subprocess](decisions/003_run_scan_within_subprocess.md)
+- [004: Standalone Secret Detection Service](decisions/004_secret_detection_scanner_service.md)
+- [005: Use Runway for service deployment](decisions/005_use_runway_for_deployment.md)
 
 ## Challenges
 
@@ -174,7 +176,7 @@ In expansion phases we must explore chunking or alternative strategies like the 
 The detection capability relies on a multiphase rollout, from an experimental component implemented directly in the monolith to a standalone service capable of scanning text blobs generically.
 
 The implementation of the secret scanning service is highly dependent on the outcomes of our benchmarking
-and capacity planning against both GitLab.com and our
+and capacity planning against both GitLab.com and
 [Reference Architectures](../../../administration/reference_architectures/index.md).
 As the scanning capability must be an on-by-default component of both our SaaS and self-managed
 instances, [each iteration's](#iterations) deployment characteristic defines whether
@@ -306,123 +308,55 @@ located [here](https://gitlab.com/gitlab-org/gitlab/-/blob/2da1c72dbc9df4d913026
 
 More details about the Gem can be found in the [README](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-secret_detection/README.md) file. Also see [ADR 002](decisions/002_store_the_secret_detection_gem_in_the_same_repository.md) for more on how the Gem code is stored and distributed.
 
-### Phase 2 - Standalone pre-receive service
+### Phase 2 - Standalone Secret Detection service
 
-The critical paths as outlined under [goals above](#goals) cover two major object
-types: Git text blobs (corresponding to push events) and arbitrary text blobs. In Phase 2,
-we continue to focus on Git text blobs.
+This phase emphasizes scaling the service outside of the monolith for general availability, isolating feature's resource
+consumption, and ease of maintainability. The critical paths as outlined under [goals above](#goals) cover
+two major object types: Git text blobs (corresponding to push events) and arbitrary text blobs. In Phase 2, we continue
+to focus on Git text blobs.
 
-This phase emphasizes scaling the service outside of the monolith for general availability and to allow
-an on-by-default behavior. The architecture is adapted to provide an isolated and independently
-scalable service outside of the Rails monolith.
+The responsibility of the service will be limited to running Secret Detection scan on the given set of input blobs. More
+details about the service are outlined in [ADR 004: Secret Detection Scanner Service](decisions/004_secret_detection_scanner_service.md).
 
-In the case of a push detection, the commit is rejected inline and error returned to the end user.
-
-#### Configuration
-
-This phase will be considered "generally available" and on-by-default, with disablement configuration through organization-level settings.
-
-#### High-Level Architecture
-
-The Phase 2 architecture involves extracting the secret detection logic into a standalone service
-which communicates directly with both the Rails application and Gitaly. This provides a means to scale
-the secret detection nodes independently, and reduce resource usage overhead on the rails application.
-
-Scans still runs synchronously as a (potentially) blocking pre-receive transaction. The blob size remains limited to 1MB.
-
-Note that the node count is purely illustrative, but serves to emphasize the independent scaling requirements for the scanning service.
-
-```plantuml
-
-@startuml Phase2
-skinparam linetype ortho
-
-card "**External Load Balancer**" as elb #6a9be7
-card "**Internal Load Balancer**" as ilb #9370DB
-
-together {
-  collections "**GitLab Rails** x3" as gitlab #32CD32
-  collections "**Sidekiq** x3" as sidekiq #ff8dd1
-}
-
-together {
-  collections "**Consul** x3" as consul #e76a9b
-}
-
-card "SecretScanningService Cluster" as prsd_cluster {
-  collections "**SecretScanningService** x5" as prsd #FF8C00
-}
-
-card "Gitaly Cluster" as gitaly_cluster {
-  collections "**Gitaly** x3" as gitaly #FF8C00
-}
-
-card "Database" as database {
-  collections "**PGBouncer** x3" as pgbouncer #4EA7FF
-}
-
-elb -[#6a9be7]-> gitlab
-
-gitlab -[#32CD32,norank]--> ilb
-gitlab .[#32CD32]----> database
-gitlab -[hidden]-> consul
-
-sidekiq -[#ff8dd1,norank]--> ilb
-sidekiq .[#ff8dd1]----> database
-sidekiq -[hidden]-> consul
-
-ilb -[#9370DB]--> prsd_cluster
-ilb -[#9370DB]--> gitaly_cluster
-ilb -[#9370DB]--> database
-ilb -[hidden]u-> consul
-
-consul .[#e76a9b]u-> gitlab
-consul .[#e76a9b]u-> sidekiq
-consul .[#e76a9b]-> database
-consul .[#e76a9b]-> gitaly_cluster
-consul .[#e76a9b]-> prsd_cluster
-
-@enduml
-```
-
-#### Push Event Detection Flow
+The introduction of a dedicated service impacts the workflow for Secret Push Protection as follows:
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User
-    User->>+Workhorse: git push with-secret
-    Workhorse->>+Gitaly: tcp
-    Gitaly->>+GitLabSecretDetection: PreReceive
-    GitLabSecretDetection->>-Gitaly: ListAllBlobs
-    Gitaly->>-GitLabSecretDetection: ListAllBlobsResponse
-
-    Gitaly->>+GitLabSecretDetection: PreReceive
-
-    GitLabSecretDetection->>GitLabSecretDetection: Scan(blob)
-    GitLabSecretDetection->>-Gitaly: found
-
-    Gitaly->>+Rails: PreReceive
-
-    Rails->>User: rejected: secret found
-
-    User->>+Workhorse: git push without-secret
-    Workhorse->>+Gitaly: tcp
-    Gitaly->>+GitLabSecretDetection: PreReceive
-    GitLabSecretDetection->>-Gitaly: ListAllBlobs
-    Gitaly->>-GitLabSecretDetection: ListAllBlobsResponse
-
-    Gitaly->>+GitLabSecretDetection: PreReceive
-
-    GitLabSecretDetection->>GitLabSecretDetection: Scan(blob)
-    GitLabSecretDetection->>-Gitaly: not_found
-
-    Gitaly->>+Rails: PreReceive
-
-    Rails->>User: accepted
+    %% Phase 2: Iter 1
+    Gitaly->>+Rails: invokes `/internal/allowed` API endpoint
+    Rails->>Rails: Perform project eligibility checks
+    alt On access check failure
+        Rails-->>Gitaly: Scanning Skipped
+    end
+    Rails->>Gitaly: Fetch blobs
+    Gitaly->>Rails: Quarantined Blobs
+    Rails->>Secret Detection Service: Invoke scan by embedding blobs
+    Secret Detection Service->>Secret Detection Service: Runs Secret Detection on input blobs
+    Secret Detection Service->>Rails: Result
+    Rails->>Gitaly: Result
 ```
 
-### Phase 3 - Expansion beyond pre-receive service
+The Secret Detection service addresses the previous phase's limitations of feature scalability and shared-resource
+consumption. However, the Secret Push Protection workflow still requires Rails monolith to load large amount of
+Git blobs fetched from Gitaly into its own memory before passing it down to the Secret Detection Service.
+
+### Phase 2.1 - Invoke Push Protection directly from Gitaly
+
+Until the previous phase, there are multiple hops made between Gitaly and Rails for running Pre-receive checks,
+particularly for Secret Push protection so a fairly large amount of Rails memory is occupied for holding Git blobs to
+pass them to the Gem/Service for running secret scan. This problem can be mitigated through a direct interaction between
+the Secret Detection service and Gitaly via standard interface (either [Custom pre-receive hook](../../../administration/server_hooks.md#create-global-server-hooks-for-all-repositories)
+or Gitaly's new [Plugin-based architecture](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143582)). This setup
+skips the need for Rails to be a blob messenger between Gitaly and Service.
+
+Gitaly's new [Plugin-based architecture](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143582) is the
+preferred interface for interacting b/w Gitaly and RPC service as it provides streamlined access to the Git blob
+repository. However, Gitaly team is yet to take it up for development.
+
+_More details on Phase 2.1 will be added once there are updates on the development of Plugin architecture._
+
+### Phase 3 - Expansion beyond Push Protection service
 
 The detection flow for arbitrary text blobs, such as issue comments, relies on
 subscribing to `Notes::PostProcessService` (or equivalent service) to enqueue
@@ -452,7 +386,7 @@ There is no change to the architecture defined in Phase 2, however the individua
 #### Push Event Detection Flow
 
 There is no change to the push event detection flow defined in Phase 2, however the added capability to scan
-arbitary text blobs directly from Rails allows us to emulate a pre-receive behavior for issuable creations,
+arbitrary text blobs directly from Rails allows us to emulate a pre-receive behavior for issuable creations,
 as well (see [target types](#target-types) for priority object types).
 
 ```mermaid

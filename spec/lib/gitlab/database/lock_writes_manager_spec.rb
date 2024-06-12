@@ -5,6 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :cell do
   let(:connection) { ApplicationRecord.connection }
   let(:test_table) { '_test_table' }
+  let(:non_existent_table) { 'non_existent' }
+  let(:skip_table_creation) { false }
   let(:logger) { instance_double(Logger) }
   let(:dry_run) { false }
 
@@ -23,16 +25,18 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
     allow(connection).to receive(:execute).and_call_original
     allow(logger).to receive(:info)
 
-    connection.execute(<<~SQL)
-      CREATE TABLE #{test_table} (id integer NOT NULL, value integer NOT NULL DEFAULT 0);
+    unless skip_table_creation
+      connection.execute(<<~SQL)
+        CREATE TABLE #{test_table} (id integer NOT NULL, value integer NOT NULL DEFAULT 0);
 
-      INSERT INTO #{test_table} (id, value)
-      VALUES (1, 1), (2, 2), (3, 3)
-    SQL
+        INSERT INTO #{test_table} (id, value)
+        VALUES (1, 1), (2, 2), (3, 3)
+      SQL
+    end
   end
 
   after do
-    ApplicationRecord.connection.execute("DROP TABLE IF EXISTS #{test_table}")
+    ApplicationRecord.connection.execute("DROP TABLE IF EXISTS #{test_table}") unless skip_table_creation
   end
 
   describe "#table_locked_for_writes?" do
@@ -125,6 +129,23 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
       }
     end
 
+    context 'when table does not exist' do
+      let(:skip_table_creation) { true }
+      let(:test_table) { non_existent_table }
+
+      it 'skips locking table' do
+        expect(logger).to receive(:info).with("Skipping lock_writes, because #{test_table} does not exist")
+        expect(connection).not_to receive(:execute).with(/CREATE TRIGGER/)
+
+        expect do
+          result = subject.lock_writes
+          expect(result).to eq({ action: "skipped", database: "main", dry_run: false, table: test_table })
+        end.not_to change {
+          number_of_triggers_on(connection, test_table)
+        }
+      end
+    end
+
     context 'when running in dry_run mode' do
       let(:dry_run) { true }
 
@@ -204,6 +225,20 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
       expect(logger).to receive(:info).with("Database: 'main', Table: '_test_table': Allow Writes")
 
       subject.unlock_writes
+    end
+
+    context 'when table does not exist' do
+      let(:skip_table_creation) { true }
+      let(:test_table) { non_existent_table }
+
+      it 'skips unlocking table' do
+        subject.unlock_writes
+
+        expect(subject).not_to receive(:execute_sql_statement)
+        expect(subject.unlock_writes).to eq(
+          { action: "skipped", database: "main", dry_run: dry_run, table: test_table }
+        )
+      end
     end
 
     context 'when running in dry_run mode' do

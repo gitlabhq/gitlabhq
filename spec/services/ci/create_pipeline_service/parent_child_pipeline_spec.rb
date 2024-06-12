@@ -127,12 +127,6 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :ci_config_feature_flag_co
       end
 
       context 'when sidekiq processes the job', :sidekiq_inline do
-        before do
-          allow_next_instance_of(Ci::ResourceGroups::AssignResourceFromResourceGroupService) do |resource_service|
-            allow(resource_service).to receive(:respawn_assign_resource_worker)
-          end
-        end
-
         it 'transitions to pending status and triggers a downstream pipeline' do
           pipeline = create_pipeline!
 

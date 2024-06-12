@@ -440,6 +440,10 @@ In this illustration, you can see that the Apdex score started to decline after 
 
 ![Feature flag metrics](../img/feature-flag-metrics.png)
 
+Certain features necessitate extensive monitoring over multiple days, particularly those that are high-risk and critical to business operations. In contrast, other features may only require a 24-hour monitoring period before continuing with the rollout.
+
+It is recommended to determine the necessary extent of monitoring before initiating the rollout.
+
 ### Feature flag change logging
 
 #### ChatOps level

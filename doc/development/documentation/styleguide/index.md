@@ -1123,13 +1123,8 @@ To describe multiple fields, use unordered list items:
 
 ## Illustrations
 
-Use illustrations only to supplement text, not replace it.
-
-Illustrations can help the reader understand:
-
-- A concept.
-- Where they are in a complicated process.
-- How they should interact with the application.
+Illustrations can help the reader understand a concept, where they are in a complicated process,
+or how they should interact with the application.
 
 Use illustrations sparingly because:
 
@@ -1139,67 +1134,10 @@ Use illustrations sparingly because:
 
 Types of illustrations used in GitLab documentation are:
 
-- Diagram. Use a diagram to illustrate a process or the relationship between entities, for example.
 - Screenshot. Use a screenshot when you need to show a portion of the GitLab user interface.
+- Diagram. Use a diagram to illustrate a process or the relationship between entities, for example.
 
-Use a diagram instead of a screenshot when possible because:
-
-- A diagram's file size is usually much smaller than that of a screenshot.
-- A screenshot often needs to be compressed, which generally reduces the image's quality.
-- A diagram in SVG format can be displayed at any size without affecting the image's quality.
-
-### Diagram
-
-Use a diagram to illustrate a process or the relationship between entities, for example.
-
-Use [Mermaid](https://mermaid.js.org/#/) to create a diagram. This method has several advantages
-over a static image format (screenshot):
-
-- The Mermaid format is easier to maintain because:
-  - Their definition is stored as a code block in the documentation's Markdown source.
-  - The diagram is rendered dynamically at runtime.
-  - Text content that may change over time, such as feature names, can be found using text search
-    tools and edited.
-- The diagram is rendered as an scalable image, better suited to various output devices and sizes.
-
-#### Create a diagram
-
-To create a diagram:
-
-1. Use the [Mermaid Live Editor](https://mermaid.live/) to create the diagram.
-1. Copy the content of the **Code** pane into a `mermaid` code block in the Markdown file. For more
-   details, see [Mermaid](../../../user/markdown.md#mermaid).
-1. Optional. To add GitLab font styling to your diagram, add this line between the Mermaid
-   code block declaration and the type of diagram:
-
-   ```plaintext
-   %%{init: { "fontFamily": "GitLab Sans" }}%%
-   ```
-
-1. To improve accessibility of diagrams, add a title and description. Add these lines on the next
-   line after declaring the type of diagram, like `flowchart` or `sequenceDiagram`:
-
-   ```yaml
-   accTitle: your diagram title here
-   accDescr: describe what your diagram does in a single sentence, with no line breaks.
-   ```
-
-For example, this flowchart contains both accessibility and font information:
-
-````markdown
-```mermaid
-%%{init: { "fontFamily": "GitLab Sans" }}%%
-flowchart TD
-    accTitle: Example diagram title
-    accDescr: A description of your diagram
-
-    A[Start here] -->|action| B[next step]
-```
-````
-
-The Mermaid diagram syntax can be difficult to learn. To make this a little easier, see the Mermaid
-[Beginner's Guide](https://mermaid.js.org/intro/getting-started.html) and the examples on the
-Mermaid site.
+Use illustrations only to supplement text, not replace it.
 
 ### Screenshot
 
@@ -1370,6 +1308,59 @@ You can take a screenshot of a single element.
   ```
 
 Use `spec/docs_screenshots/container_registry_docs.rb` as a guide to create your own scripts.
+
+### Diagram
+
+Use a diagram to illustrate a process or the relationship between entities, for example.
+
+Use [Mermaid](https://mermaid.js.org/#/) to create a diagram. This method has several advantages
+over a static image format (screenshot):
+
+- The Mermaid format is easier to maintain because:
+  - Their definition is stored as a code block in the documentation's Markdown source.
+  - The diagram is rendered dynamically at runtime.
+  - Text content that may change over time, such as feature names, can be found using text search
+    tools and edited.
+- The diagram is rendered as an scalable image, better suited to various output devices and sizes.
+
+#### Create a diagram
+
+To create a diagram:
+
+1. Use the [Mermaid Live Editor](https://mermaid.live/) to create the diagram.
+1. Copy the content of the **Code** pane into a `mermaid` code block in the Markdown file. For more
+   details, see [Mermaid](../../../user/markdown.md#mermaid).
+1. Optional. To add GitLab font styling to your diagram, add this line between the Mermaid
+   code block declaration and the type of diagram:
+
+   ```plaintext
+   %%{init: { "fontFamily": "GitLab Sans" }}%%
+   ```
+
+1. To improve accessibility of diagrams, add a title and description. Add these lines on the next
+   line after declaring the type of diagram, like `flowchart` or `sequenceDiagram`:
+
+   ```yaml
+   accTitle: your diagram title here
+   accDescr: describe what your diagram does in a single sentence, with no line breaks.
+   ```
+
+For example, this flowchart contains both accessibility and font information:
+
+````markdown
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart TD
+    accTitle: Example diagram title
+    accDescr: A description of your diagram
+
+    A[Start here] -->|action| B[next step]
+```
+````
+
+The Mermaid diagram syntax can be difficult to learn. To make this a little easier, see the Mermaid
+[Beginner's Guide](https://mermaid.js.org/intro/getting-started.html) and the examples on the
+Mermaid site.
 
 ## Emoji
 

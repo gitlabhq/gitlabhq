@@ -3263,6 +3263,9 @@ msgstr ""
 msgid "Add topics to projects to help users find them."
 msgstr ""
 
+msgid "Add variable"
+msgstr ""
+
 msgid "Add vulnerability finding"
 msgstr ""
 
@@ -34803,6 +34806,9 @@ msgstr ""
 msgid "No user provided"
 msgstr ""
 
+msgid "No variables"
+msgstr ""
+
 msgid "No vulnerabilities present"
 msgstr ""
 
@@ -43715,6 +43721,9 @@ msgid "Remove user from group"
 msgstr ""
 
 msgid "Remove user from project"
+msgstr ""
+
+msgid "Remove variable"
 msgstr ""
 
 msgid "Remove weight"

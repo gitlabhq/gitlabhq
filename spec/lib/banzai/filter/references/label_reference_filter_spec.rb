@@ -672,9 +672,11 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   describe 'group context' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:subgroup) { create(:group, parent: group) }
+    let_it_be(:label) { create(:group_label, group: group) }
+
     it 'points to the page defined in label_url_method' do
-      group = create(:group)
-      label = create(:group_label, group: group)
       reference = "~#{label.name}"
 
       result = reference_filter("See #{reference}", { project: nil, group: group, label_url_method: :group_url } )
@@ -683,9 +685,6 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'finds labels also in ancestor groups' do
-      group = create(:group)
-      label = create(:group_label, group: group)
-      subgroup = create(:group, parent: group)
       reference = "~#{label.name}"
 
       result = reference_filter("See #{reference}", { project: nil, group: subgroup, label_url_method: :group_url } )
@@ -698,10 +697,118 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
       label = create(:label, project: project)
       reference = "#{project.full_path}~#{label.name}"
 
-      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+      result = reference_filter("See #{reference}", { project: nil, group: group } )
 
       expect(result.css('a').first.attr('href')).to eq(urls.project_issues_url(project, label_name: label.name))
       expect(result.css('a').first.text).to eq "#{label.name} in #{project.full_name}"
+    end
+  end
+
+  shared_examples 'absolute group reference' do
+    it 'supports absolute reference' do
+      absolute_reference = "/#{reference}"
+
+      result = reference_filter("See #{absolute_reference}", context)
+
+      if context[:label_url_method] == :group_url
+        expect(result.css('a').first.attr('href')).to eq(urls.group_url(group, label_name: group_label.name))
+      else
+        expect(result.css('a').first.attr('href')).to eq(urls.issues_group_url(group, label_name: group_label.name))
+      end
+
+      expect(result.css('a').first.attr('data-original')).to eq absolute_reference
+      expect(result.content).to eq "See #{group_label.name}"
+    end
+  end
+
+  shared_examples 'absolute project reference' do
+    it 'supports absolute reference' do
+      absolute_reference = "/#{reference}"
+
+      result = reference_filter("See #{absolute_reference}", context)
+
+      if context[:label_url_method] == :project_merge_requests_url
+        expect(result.css('a').first.attr('href')).to eq(urls.project_merge_requests_url(project, label_name: project_label.name))
+      else
+        expect(result.css('a').first.attr('href')).to eq(urls.project_issues_url(project, label_name: project_label.name))
+      end
+
+      expect(result.css('a').first.attr('data-original')).to eq absolute_reference
+      expect(result.content).to eq "See #{project_label.name}"
+    end
+  end
+
+  describe 'absolute label references' do
+    let_it_be(:parent_group)         { create(:group) }
+    let_it_be(:group)                { create(:group, parent: parent_group) }
+    let_it_be(:project)              { create(:project, :public, group: group) }
+    let_it_be(:project_label)        { create(:label, project: project) }
+    let_it_be(:group_label)          { create(:group_label, group: group) }
+    let_it_be(:parent_group_label)   { create(:group_label, group: parent_group) }
+    let_it_be(:another_parent_group) { create(:group) }
+    let_it_be(:another_group)        { create(:group, parent: another_parent_group) }
+    let_it_be(:another_project)      { create(:project, :public, group: another_group) }
+
+    context 'with a project label' do
+      let(:reference) { "#{project.full_path}~#{project_label.name}" }
+
+      it_behaves_like 'absolute project reference' do
+        let(:context) { { project: project } }
+      end
+
+      it_behaves_like 'absolute project reference' do
+        let(:context) { { project: project, label_url_method: :project_merge_requests_url } }
+      end
+    end
+
+    context 'with a group label' do
+      let_it_be(:reference) { "#{group.full_path}~#{group_label.name}" }
+
+      it_behaves_like 'absolute group reference' do
+        let(:context) { { project: nil, group: group } }
+      end
+
+      it_behaves_like 'absolute group reference' do
+        let(:context) { { project: nil, group: group, label_url_method: :group_url } }
+      end
+    end
+
+    describe 'cross-project absolute reference' do
+      let_it_be(:context) { { project: another_project } }
+
+      # a normal cross-project label works fine. So check just the absolute version.
+      it_behaves_like 'absolute project reference' do
+        let_it_be(:reference) { "#{project.full_path}~#{project_label.name}" }
+      end
+
+      it 'does not find label in ancestors' do
+        reference = "/#{project.full_path}~#{parent_group_label.name}"
+        result = reference_filter("See #{reference}", context)
+
+        expect(result.to_html).to eq "See #{reference}"
+      end
+    end
+
+    describe 'cross-group absolute reference' do
+      let_it_be(:context) { { project: nil, group: another_group } }
+
+      it 'can not find the label' do
+        reference = "#{group.full_path}~#{group_label.name}"
+        result = reference_filter("See #{reference}", context)
+
+        expect(result.to_html).to eq "See #{reference}"
+      end
+
+      it_behaves_like 'absolute group reference' do
+        let_it_be(:reference) { "#{group.full_path}~#{group_label.name}" }
+      end
+
+      it 'does not find label in ancestors' do
+        reference = "/#{group.full_path}~#{parent_group_label.name}"
+        result = reference_filter("See #{reference}", context)
+
+        expect(result.to_html).to eq "See #{reference}"
+      end
     end
   end
 

@@ -11,19 +11,24 @@ module Banzai
         def parent_records(parent, ids)
           return Label.none unless parent.is_a?(Project) || parent.is_a?(Group)
 
-          labels = find_labels(parent)
-          label_ids = ids.map { |y| y[:label_id] }.compact
+          relation = []
 
-          unless label_ids.empty?
-            id_relation = labels.where(id: label_ids)
+          # We need to handle relative and absolute paths separately
+          labels_absolute_indexed = ids.group_by { |id| id[:absolute_path] }
+          labels_absolute_indexed.each do |absolute_path, fitered_ids|
+            label_ids = fitered_ids&.pluck(:label_id)&.compact
+
+            if label_ids.present?
+              relation << find_labels(parent, absolute_path: absolute_path).where(id: label_ids)
+            end
+
+            label_names = fitered_ids&.pluck(:label_name)&.compact
+            if label_names.present?
+              relation << find_labels(parent, absolute_path: absolute_path).where(name: label_names)
+            end
           end
 
-          label_names = ids.map { |y| y[:label_name] }.compact
-          unless label_names.empty?
-            label_relation = labels.where(title: label_names)
-          end
-
-          relation = [id_relation, label_relation].compact
+          relation.compact!
           return Label.none if relation.all?(Label.none)
 
           Label.from_union(relation)
@@ -46,7 +51,13 @@ module Banzai
         # or the label_name, but not both.  But below, we have both pieces of information.
         # But it's accounted for in `find_object`
         def parse_symbol(symbol, match_data)
-          { label_id: match_data[:label_id]&.to_i, label_name: match_data[:label_name]&.tr('"', '') }
+          absolute_path = !!match_data&.named_captures&.fetch('absolute_path')
+
+          {
+            label_id: match_data[:label_id]&.to_i,
+            label_name: match_data[:label_name]&.tr('"', ''),
+            absolute_path: absolute_path
+          }
         end
 
         # We assume that most classes are identifying records by ID.
@@ -78,17 +89,22 @@ module Banzai
           escape_with_placeholders(unescaped_html, labels)
         end
 
-        def find_labels(parent)
-          params = if parent.is_a?(Group)
-                     { group_id: parent.id,
-                       include_ancestor_groups: true,
-                       only_group_labels: true }
-                   else
-                     { project: parent,
-                       include_ancestor_groups: true }
-                   end
+        def find_labels(parent, absolute_path: false)
+          params = label_finder_params(parent, absolute_path)
 
           LabelsFinder.new(nil, params).execute(skip_authorization: true)
+        end
+
+        def label_finder_params(parent, absolute_path)
+          params = if parent.is_a?(Group)
+                     { group_id: parent.id, only_group_labels: true }
+                   else
+                     { project: parent }
+                   end
+
+          params[:include_ancestor_groups] = !absolute_path
+
+          params
         end
 
         def url_for_object(label, parent)
@@ -97,7 +113,11 @@ module Banzai
               context[:label_url_method]
             elsif parent.is_a?(Project)
               :project_issues_url
+            elsif parent.is_a?(Group)
+              :issues_group_url
             end
+
+          label_url_method = :issues_group_url if parent.is_a?(Group) && label_url_method == :project_issues_url
 
           return unless label_url_method
 
@@ -108,7 +128,7 @@ module Banzai
           label_suffix = ''
           parent = project || group
 
-          if project || full_path_ref?(matches)
+          if matches[:absolute_path].blank? && (project || full_path_ref?(matches))
             project_path    = reference_cache.full_project_path(matches[:namespace], matches[:project], matches)
             parent_from_ref = from_ref_cached(project_path)
             reference       = parent_from_ref.to_human_reference(parent)

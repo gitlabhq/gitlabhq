@@ -905,12 +905,6 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
   end
 
   context 'when build requires resource', :sidekiq_inline do
-    before do
-      allow_next_instance_of(Ci::ResourceGroups::AssignResourceFromResourceGroupService) do |resource_service|
-        allow(resource_service).to receive(:respawn_assign_resource_worker)
-      end
-    end
-
     let_it_be(:project) { create(:project, :repository) }
 
     let(:pipeline) { create(:ci_pipeline, project: project) }

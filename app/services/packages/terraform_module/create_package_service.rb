@@ -23,9 +23,7 @@ module Packages
 
         package, package_file = ApplicationRecord.transaction { create_terraform_module_package! }
 
-        if Feature.enabled?(:index_terraform_module_archive, project)
-          ::Packages::TerraformModule::ProcessPackageFileWorker.perform_async(package_file.id)
-        end
+        ::Packages::TerraformModule::ProcessPackageFileWorker.perform_async(package_file.id)
 
         ServiceResponse.success(payload: { package: package })
       rescue ActiveRecord::RecordInvalid => e

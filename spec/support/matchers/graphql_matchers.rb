@@ -109,7 +109,7 @@ RSpec::Matchers.define :have_graphql_arguments do |*expected|
   def expected_names(field)
     @names ||= Array.wrap(expected).map { |name| GraphqlHelpers.fieldnamerize(name) }
 
-    if field.type.try(:ancestors)&.include?(GraphQL::Types::Relay::BaseConnection)
+    if field.try(:type).try(:ancestors)&.include?(GraphQL::Types::Relay::BaseConnection)
       @names | %w[after before first last]
     else
       @names

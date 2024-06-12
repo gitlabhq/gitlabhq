@@ -37,4 +37,4 @@ The decision was made to store the library in the same repository during the fir
 
 With that said, we still followed [the process](../../../../development/gems.md#reserve-a-gem-name) to reserve the gem on [RubyGems.org](https://rubygems.org/gems/gitlab-secret_detection) to avoid name-squatters from taking over the name and providing malicious code to 3rd-parties.
 
-We have no plans to publish the gem externally at least until [Phase 2](../index.md#phase-2---standalone-pre-receive-service) as we begin to consider building a standalone service to perform secret detection.
+We have no plans to publish the gem externally at least until [Phase 2](../index.md#phase-2---standalone-secret-detection-service) as we begin to consider building a standalone service to perform secret detection.

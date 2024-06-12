@@ -453,7 +453,6 @@ Style/IfUnlessModifier:
     - 'ee/lib/ee/gitlab/quick_actions/epic_actions.rb'
     - 'ee/lib/ee/gitlab/quick_actions/issue_actions.rb'
     - 'ee/lib/ee/gitlab/repository_size_checker.rb'
-    - 'ee/lib/ee/sidebars/groups/menus/settings_menu.rb'
     - 'ee/lib/ee/sidebars/projects/menus/analytics_menu.rb'
     - 'ee/lib/ee/sidebars/projects/menus/security_compliance_menu.rb'
     - 'ee/lib/elastic/latest/custom_language_analyzers.rb'

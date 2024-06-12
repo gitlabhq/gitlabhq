@@ -22,7 +22,7 @@ module RemoteDevelopment
             # err_result will be set to a non-nil Result.err if type check fails
             err_result = Result.err(SettingsCurrentSettingsReadFailed.new(
               details: "Gitlab::CurrentSettings.#{setting_name} type of '#{current_setting_value.class}' " \
-                "did not match initialized Remote Development Settings type of '#{setting_type}'." # rubocop:disable Layout/LineEndStringConcatenationIndentation -- use default RubyMine formatting
+                "did not match initialized Remote Development Settings type of '#{setting_type}'."
             ))
           end
 

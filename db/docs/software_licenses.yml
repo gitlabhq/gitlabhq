@@ -4,7 +4,9 @@ classes:
 - SoftwareLicense
 feature_categories:
 - security_policy_management
-description: Normalized software licenses to use in conjunction with License Compliance features (like software license policies)
+description: Normalized software licenses to use in conjunction with License Compliance
+  features (like software license policies)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6246
 milestone: '11.2'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441078

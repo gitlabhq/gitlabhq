@@ -10095,6 +10095,7 @@ Input type: `WorkspaceCreateInput`
 | <a id="mutationworkspacecreateeditor"></a>`editor` | [`String!`](#string) | Editor to inject into the created workspace. Must match a configured template. |
 | <a id="mutationworkspacecreatemaxhoursbeforetermination"></a>`maxHoursBeforeTermination` | [`Int!`](#int) | Maximum hours the workspace can exist before it is automatically terminated. |
 | <a id="mutationworkspacecreateprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project that will provide the Devfile for the created workspace. |
+| <a id="mutationworkspacecreatevariables"></a>`variables` | [`[WorkspaceVariableInput!]`](#workspacevariableinput) | Variables to inject into the workspace. |
 
 #### Fields
 
@@ -36082,6 +36083,14 @@ Type of a work item widget.
 | <a id="workitemwidgettypetime_tracking"></a>`TIME_TRACKING` | Time Tracking widget. |
 | <a id="workitemwidgettypeweight"></a>`WEIGHT` | Weight widget. |
 
+### `WorkspaceVariableInputType`
+
+Enum for the type of the variable to be injected in a workspace.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workspacevariableinputtypeenvironment"></a>`ENVIRONMENT` | Name type. |
+
 ## Scalar types
 
 Scalar values are atomic values, and do not have fields of their own.
@@ -39036,3 +39045,15 @@ Attributes for value stream stage.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetweightinputweight"></a>`weight` | [`Int`](#int) | Weight of the work item. |
+
+### `WorkspaceVariableInput`
+
+Attributes for defining a variable to be injected in a workspace.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workspacevariableinputkey"></a>`key` | [`String!`](#string) | Key of the variable. |
+| <a id="workspacevariableinputtype"></a>`type` | [`WorkspaceVariableInputType!`](#workspacevariableinputtype) | Type of the variable to be injected in a workspace. |
+| <a id="workspacevariableinputvalue"></a>`value` | [`String!`](#string) | Value of the variable. |
