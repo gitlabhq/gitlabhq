@@ -1,0 +1,22 @@
+---
+description: Agents send the register request to KAS periodically (default every 5 min). KAS registers the agent to keep track of connected agents.
+internal_events: true
+action: register_agent_at_kas
+identifiers:
+- project
+- namespace
+additional_properties:
+  label:
+    description: GitLab Agent version
+  property:
+    description: CPU architecture of the agent, e.g. x86_64
+product_group: environments
+milestone: '17.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154883
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

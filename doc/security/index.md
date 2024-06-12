@@ -24,6 +24,21 @@ This section covers some general information and recommendations regarding the p
 
 The [Hardening Guide](hardening.md) contains additional general recommendations that can be implemented for hardening an install.
 
+### Antivirus software
+
+Generally, running an antivirus software on the GitLab host is not recommended.
+
+However, if you must use one, all of the location of GitLab on the system should be excluded from scanning as it could be quarantined as a false positive.
+
+Specifically, you should exclude the following GitLab directories from scanning:
+
+- `/var/opt/gitlab`
+- `/etc/gitlab/`
+- `/var/log/gitlab/`
+- `/opt/gitlab/`
+
+You can find all those directories listed in the [Linux package configuration documentation](https://docs.gitlab.com/omnibus/settings/configuration.html).
+
 ### User Accounts
 
 - [Review authentication options](../administration/auth/index.md).

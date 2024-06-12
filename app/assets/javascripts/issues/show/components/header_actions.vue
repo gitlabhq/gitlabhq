@@ -333,7 +333,7 @@ export default {
 
 <template>
   <div
-    class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3 gl-w-full gl-md-w-auto"
+    class="detail-page-header-actions gl-flex gl-self-start sm:gl-gap-3 gl-w-full md:gl-w-auto gl-mt-1"
   >
     <div class="md:!gl-hidden gl-w-full">
       <gl-disclosure-dropdown

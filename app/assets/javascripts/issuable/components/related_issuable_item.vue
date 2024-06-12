@@ -23,7 +23,7 @@ export default {
     GlIcon,
     GlLink,
     GlTooltip,
-    IssueWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
+    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
     IssueDueDate,
     GlButton,
     WorkItemDetailModal,
@@ -203,11 +203,7 @@ export default {
 
             <!-- Flex order for slots is defined in the parent component: e.g. related_issues_block.vue -->
             <span v-if="weight > 0" class="order-md-1">
-              <issue-weight
-                :weight="weight"
-                class="item-weight gl-display-flex gl-align-items-center"
-                tag-name="span"
-              />
+              <issue-weight :weight="weight" class="item-weight gl-flex gl-items-center" />
             </span>
 
             <span v-if="dueDate" class="order-md-1">

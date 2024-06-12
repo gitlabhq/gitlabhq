@@ -774,9 +774,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :telesign_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :product_analytics_configurator_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :vertex_ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false) # Deprecated. See https://gitlab.com/gitlab-org/gitlab/-/issues/466161
+  attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false) # Deprecated. See https://gitlab.com/gitlab-org/gitlab/-/issues/466161
+  attr_encrypted :vertex_ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false) # Deprecated. See https://gitlab.com/gitlab-org/gitlab/-/issues/466161
 
   # Restricting the validation to `on: :update` only to avoid cyclical dependencies with
   # License <--> ApplicationSetting. This method calls a license check when we create

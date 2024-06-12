@@ -14,7 +14,13 @@ export default {
     WikiEditForm,
     WikiAlert,
   },
-  inject: ['isEditingPath', 'isPageHistorical', 'wikiUrl', 'historyUrl', 'error'],
+  inject: {
+    isEditingPath: { default: null },
+    isPageHistorical: { default: null },
+    wikiUrl: { default: null },
+    historyUrl: { default: null },
+    error: { default: null },
+  },
   i18n: {
     alertText: s__('WikiHistoricalPage|This is an old version of this page.'),
     alertPrimaryButton: s__('WikiHistoricalPage|Go to most recent version'),

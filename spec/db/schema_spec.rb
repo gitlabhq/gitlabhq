@@ -18,7 +18,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
     users: [%w[accepted_term_id]],
     ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-    p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]] # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    ai_testing_terms_acceptances: %w[user_id] # testing terms only have 1 entry, and if the user is deleted the record should remain
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -163,6 +164,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     approval_merge_request_rules: %w[approval_policy_rule_id],
     scan_result_policy_violations: %w[approval_policy_rule_id],
     software_license_policies: %w[approval_policy_rule_id],
+    ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
     namespace_settings: %w[early_access_program_joined_by_id] # isn't used inside product itself. Only through Snowflake
   }.with_indifferent_access.freeze
 

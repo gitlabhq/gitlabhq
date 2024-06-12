@@ -30,7 +30,13 @@ module Ml
     before_destroy :stop_destroy
 
     def package_name
+      return model.name if for_model?
+
       "#{PACKAGE_PREFIX}#{iid}"
+    end
+
+    def for_model?
+      model.present?
     end
 
     def stop_destroy

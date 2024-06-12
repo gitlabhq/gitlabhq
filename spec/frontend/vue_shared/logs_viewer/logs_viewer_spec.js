@@ -25,11 +25,16 @@ describe('logs_viewer.vue', () => {
     highlightedLine: 'L2',
   };
 
+  const defaultSlots = {
+    'header-details': '<b>slot value</b>',
+  };
+
   const createWrapper = (props = {}) => {
     const propsData = { ...defaultProps, ...props };
 
     wrapper = shallowMount(LogsViewer, {
       propsData,
+      slots: defaultSlots,
     });
   };
 
@@ -49,6 +54,10 @@ describe('logs_viewer.vue', () => {
           isFullScreen: false,
           isFollowing: true,
         });
+      });
+
+      it('should provide custom slot to the top bar', () => {
+        expect(findTopBar().text()).toBe('slot value');
       });
 
       it('should render log lines', () => {

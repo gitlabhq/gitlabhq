@@ -20,5 +20,14 @@ FactoryBot.define do
           project: project)
       end
     end
+
+    trait :with_ml_model do
+      artifact do
+        instance.package_name
+        instance.package_version
+        association(:ml_model_package, name: instance.package_name, version: instance.package_version || 'candidate_1',
+          project: project)
+      end
+    end
   end
 end

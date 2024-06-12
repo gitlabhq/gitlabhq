@@ -139,7 +139,7 @@ export default {
           return `${this.char}${item.username}`;
         case 'issue':
         case 'merge_request':
-          return `${this.char}${item.iid}`;
+          return item.reference || `${this.char}${item.iid}`;
         case 'snippet':
           return `${this.char}${item.id}`;
         case 'milestone':
@@ -302,8 +302,13 @@ export default {
                   </span>
                 </span>
                 <span v-if="isIssue || isMergeRequest">
+                  <gl-icon
+                    v-if="item.icon_name"
+                    class="gl-mr-2 gl-text-secondary"
+                    :name="item.icon_name"
+                  />
                   <small
-                    v-safe-html:[$options.safeHtmlConfig]="highlight(item.iid)"
+                    v-safe-html:[$options.safeHtmlConfig]="highlight(item.reference || item.iid)"
                     class="gl-text-gray-500"
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>

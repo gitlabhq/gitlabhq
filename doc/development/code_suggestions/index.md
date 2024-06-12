@@ -36,31 +36,8 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
       1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the code suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
-
-1. [Set up AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist). You can do this in two ways:
-   - [Run the AI Gateway as part of your GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md).
-   - Run the AI Gateway externally:
-      1. [Run the server locally](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
-      1. Uncomment or add the following variables in the `.env` file for all debugging insights.
-         You may need to adjust the filepath (remove `..`) for this log to show in the `ai-assist` root directory.
-
-         ```plaintext
-         AIGW_LOGGING__LEVEL=debug
-         AIGW_LOGGING__FORMAT_JSON=false
-         AIGW_LOGGING__TO_FILE=../modelgateway_debug.log
-         ```
-
-      1. Watch the new log file `modelgateway_debug.log`.
-
-         ```shell
-         tail -f modelgateway_debug.log | fblog -a prefix -a suffix -a current_file_name -a suggestion -a language -a input -a parameters -a score -a exception
-         ```
-
-1. Update the main application (GDK) to reference the AI Gateway URL.
-   1. Set the `AI_GATEWAY_URL` environment variable.
-      - If you set up the AI Gateway externally, run `export AI_GATEWAY_URL=http://localhost:5052`.
-      - If you set up the AI Gateway through GDK, you can get the AI Gateway URL by running `gdk status`, afterwards run `export AI_GATEWAY_URL=<the address set by gdk>`.
-   1. Start or restart GDK (`gdk start` or `gdk restart`).
+   1. [Setup AI Gateway](../ai_features/index.md#local-setup).
+   1. Run your GDK server with `gdk start` if it's not already running.
 
 ### Setup instructions to use staging AI Gateway
 

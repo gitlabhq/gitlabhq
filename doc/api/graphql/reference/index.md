@@ -34650,6 +34650,7 @@ Member role permission.
 | <a id="memberrolepermissionmanage_project_access_tokens"></a>`MANAGE_PROJECT_ACCESS_TOKENS` | Create, read, update, and delete project access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. |
 | <a id="memberrolepermissionmanage_security_policy_link"></a>`MANAGE_SECURITY_POLICY_LINK` | Allows linking security policy projects. |
 | <a id="memberrolepermissionread_code"></a>`READ_CODE` | Allows read-only access to the source code in the user interface. Does not allow users to edit or download repository archives, clone or pull repositories, view source code in an IDE, or view merge requests for private projects. You can download individual files because read-only access inherently grants the ability to make a local copy of the file. |
+| <a id="memberrolepermissionread_crm_contact"></a>`READ_CRM_CONTACT` | Read CRM contact. |
 | <a id="memberrolepermissionread_dependency"></a>`READ_DEPENDENCY` | Allows read-only access to the dependencies and licenses. |
 | <a id="memberrolepermissionread_vulnerability"></a>`READ_VULNERABILITY` | Read vulnerability reports and security dashboards. |
 | <a id="memberrolepermissionremove_group"></a>`REMOVE_GROUP` | Ability to delete or restore a group. This ability does not allow deleting top level groups. Review the Retention period settings to prevent accidental deletion. |

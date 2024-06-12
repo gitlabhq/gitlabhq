@@ -8,14 +8,14 @@ import {
   REPORT_TYPE_SAST,
   REPORT_TYPE_SAST_IAC,
   REPORT_TYPE_SECRET_DETECTION,
-  REPORT_TYPE_CONTAINER_SCANNING,
+  REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY,
 } from '~/vue_shared/security_reports/constants';
 
 import configureSastMutation from './graphql/configure_sast.mutation.graphql';
 import configureSastIacMutation from './graphql/configure_iac.mutation.graphql';
 import configureSecretDetectionMutation from './graphql/configure_secret_detection.mutation.graphql';
 
-import ContinuousContainerRegistryScan from './components/continous_container_registry_scan.vue';
+import ContainerScanningForRegistry from './components/container_scanning_for_registry.vue';
 
 /**
  * Translations for Security Configuration Page
@@ -42,6 +42,8 @@ export const DEPENDENCY_SCANNING_NAME = __('Dependency Scanning');
 
 export const CONTAINER_SCANNING_NAME = __('Container Scanning');
 
+export const CONTAINER_SCANNING_FOR_REGISTRY_NAME = __('Container Scanning For Registry');
+
 export const COVERAGE_FUZZING_NAME = __('Coverage Fuzzing');
 
 export const CORPUS_MANAGEMENT_NAME = __('Corpus Management');
@@ -60,6 +62,7 @@ export const SCANNER_NAMES_MAP = {
   DAST: DAST_SHORT_NAME,
   API_FUZZING: API_FUZZING_NAME,
   CONTAINER_SCANNING: CONTAINER_SCANNING_NAME,
+  CONTAINER_SCANNING_FOR_REGISTRY: CONTAINER_SCANNING_FOR_REGISTRY_NAME,
   COVERAGE_FUZZING: COVERAGE_FUZZING_NAME,
   SECRET_DETECTION: SECRET_DETECTION_NAME,
   DEPENDENCY_SCANNING: DEPENDENCY_SCANNING_NAME,
@@ -70,8 +73,8 @@ export const SCANNER_NAMES_MAP = {
 };
 
 export const securityFeatures = {
-  [REPORT_TYPE_CONTAINER_SCANNING]: {
-    slotComponent: ContinuousContainerRegistryScan,
+  [REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY]: {
+    slotComponent: ContainerScanningForRegistry,
   },
 };
 

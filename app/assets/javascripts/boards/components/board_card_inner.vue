@@ -23,7 +23,7 @@ export default {
     UserAvatarLink,
     IssueDueDate,
     IssueTimeEstimate,
-    IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
+    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
     IssueIteration: () => import('ee_component/boards/components/issue_iteration.vue'),
     IssuableBlockedIcon,
     WorkItemTypeIcon,
@@ -320,11 +320,7 @@ export default {
             :closed-issues-weight="descendantWeightSum.closedIssues"
           />
           <span v-if="!isEpicBoard">
-            <issue-card-weight
-              v-if="validIssueWeight(item)"
-              :weight="item.weight"
-              @click="filterByWeight(item.weight)"
-            />
+            <issue-weight v-if="validIssueWeight(item)" :weight="item.weight" />
             <issue-milestone
               v-if="item.milestone"
               data-testid="issue-milestone"

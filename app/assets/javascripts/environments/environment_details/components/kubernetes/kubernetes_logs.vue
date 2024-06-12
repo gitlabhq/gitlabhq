@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlAlert, GlEmptyState, GlSprintf } from '@gitlab/ui';
+import { GlLoadingIcon, GlAlert, GlEmptyState, GlSprintf, GlIcon } from '@gitlab/ui';
 import EmptyStateSvg from '@gitlab/svgs/dist/illustrations/Dependency-list-empty-state.svg?url';
 import k8sLogsQuery from '~/environments/graphql/queries/k8s_logs.query.graphql';
 import environmentClusterAgentQuery from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
@@ -15,6 +15,7 @@ export default {
     GlAlert,
     GlEmptyState,
     GlSprintf,
+    GlIcon,
   },
   inject: ['kasTunnelUrl', 'projectPath'],
   props: {
@@ -109,12 +110,28 @@ export default {
         ? this.$options.i18n.emptyStateTitleForContainer
         : this.$options.i18n.emptyStateTitleForPod;
     },
+    headerData() {
+      const data = [
+        { icon: 'namespace', label: this.$options.i18n.namespace, value: this.namespace },
+        { icon: 'pod', label: this.$options.i18n.pod, value: this.podName },
+      ];
+      const containerData = {
+        icon: 'container-image',
+        label: this.$options.i18n.container,
+        value: this.containerName,
+      };
+      if (this.containerName) data.push(containerData);
+      return data;
+    },
   },
   i18n: {
     emptyStateTitleForPod: s__('KubernetesLogs|No logs available for pod %{podName}'),
     emptyStateTitleForContainer: s__(
       'KubernetesLogs|No logs available for container %{containerName} of pod %{podName}',
     ),
+    pod: s__('KubernetesLogs|Pod'),
+    container: s__('KubernetesLogs|Container'),
+    namespace: s__('KubernetesLogs|Namespace'),
   },
   EmptyStateSvg,
 };
@@ -123,11 +140,16 @@ export default {
   <div>
     <gl-alert v-if="error" variant="danger" :dismissible="false">{{ error }}</gl-alert>
     <gl-loading-icon v-if="isLoading" />
-    <logs-viewer
-      v-else-if="logLines"
-      :log-lines="logLines"
-      :highlighted-line="highlightedLineHash"
-    />
+
+    <logs-viewer v-else-if="logLines" :log-lines="logLines" :highlighted-line="highlightedLineHash"
+      ><template #header-details
+        ><div class="gl-p-3 gl-ml-auto">
+          <span v-for="(item, index) of headerData" :key="index" class="gl-mr-4">
+            <gl-icon :name="item.icon" class="gl-mr-2" />{{ item.label }}: {{ item.value }}</span
+          >
+        </div>
+      </template>
+    </logs-viewer>
     <gl-empty-state v-else :svg-path="$options.EmptyStateSvg">
       <template #title>
         <h3>

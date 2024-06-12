@@ -3101,7 +3101,7 @@ POST /projects/:id/push_rule
 |---------------------------------|-------------------|----------|-------------|
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `author_email_regex`            | string            | No       | All commit author emails must match this, for example `@my-company.com$`. |
-| `branch_name_regex`             | string            | No       | All branch names must match this, for example `(feature|hotfix)\/*`. |
+| `branch_name_regex`             | string            | No       | All branch names must match this, for example `(feature|hotfix)\/.*`. |
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`          | string            | No       | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`               | boolean           | No       | Deny deleting a tag. |
@@ -3130,7 +3130,7 @@ PUT /projects/:id/push_rule
 |---------------------------------|-------------------|----------|-------------|
 | `id`                            | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 | `author_email_regex`            | string            | No       | All commit author emails must match this, for example `@my-company.com$`. |
-| `branch_name_regex`             | string            | No       | All branch names must match this, for example `(feature|hotfix)\/*`. |
+| `branch_name_regex`             | string            | No       | All branch names must match this, for example `(feature|hotfix)\/.*`. |
 | `commit_message_negative_regex` | string            | No       | No commit message is allowed to match this, for example `ssh\:\/\/`. |
 | `commit_message_regex`          | string            | No       | All commit messages must match this, for example `Fixed \d+\..*`. |
 | `deny_delete_tag`               | boolean           | No       | Deny deleting a tag. |

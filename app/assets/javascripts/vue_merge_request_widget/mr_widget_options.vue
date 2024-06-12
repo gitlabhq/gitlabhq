@@ -44,7 +44,6 @@ import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
 import getStateSubscription from './queries/get_state.subscription.graphql';
-import ReportWidgetContainer from './components/report_widget_container.vue';
 import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 import MergeChecks from './components/merge_checks.vue';
 
@@ -78,7 +77,6 @@ export default {
     SourceBranchRemovalStatus,
     MrWidgetApprovals,
     ReadyToMerge: ReadyToMergeState,
-    ReportWidgetContainer,
     MergeChecks,
   },
   apollo: {
@@ -510,17 +508,13 @@ export default {
 </script>
 <template>
   <div v-if="!loading" id="widget-state" class="mr-state-widget gl-mt-5">
-    <header
-      v-if="shouldRenderCollaborationStatus"
-      class="gl-rounded-base gl-border-solid gl-border-1 gl-border-gray-100 gl-overflow-hidden mr-widget-workflow gl-mt-0!"
-    >
-      <mr-widget-alert-message v-if="shouldRenderCollaborationStatus" type="info">
+    <header v-if="shouldRenderCollaborationStatus" class="mr-section-container gl-overflow-hidden">
+      <mr-widget-alert-message type="info">
         {{ s__('mrWidget|Members who can merge are allowed to add commits.') }}
       </mr-widget-alert-message>
     </header>
     <mr-widget-suggest-pipeline
       v-if="shouldSuggestPipelines"
-      class="mr-widget-workflow"
       :pipeline-path="mr.mergeRequestAddCiConfigPath"
       :pipeline-svg-path="mr.pipelinesEmptySvgPath"
       :human-access="formattedHumanAccess"
@@ -540,16 +534,15 @@ export default {
       data-testid="pipeline-container"
     />
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
-    <report-widget-container>
-      <widget-container :mr="mr" />
-    </report-widget-container>
-    <div class="mr-section-container mr-widget-workflow">
-      <div v-if="hasAlerts" class="gl-overflow-hidden mr-widget-alert-container">
+    <widget-container :mr="mr" />
+    <div class="mr-section-container">
+      <template v-if="hasAlerts">
         <mr-widget-alert-message
           v-if="hasMergeError"
           type="danger"
           dismissible
           data-testid="merge-error"
+          class="mr-widget-section"
         >
           <span v-safe-html="mergeError"></span>
         </mr-widget-alert-message>
@@ -557,6 +550,7 @@ export default {
           v-if="showMergePipelineForkWarning"
           type="warning"
           :help-path="mr.mergeRequestPipelinesHelpPath"
+          class="mr-widget-section"
           data-testid="merge-pipeline-fork-warning"
         >
           {{
@@ -568,7 +562,7 @@ export default {
             {{ __('Learn more') }}
           </template>
         </mr-widget-alert-message>
-      </div>
+      </template>
 
       <div class="mr-widget-section" data-testid="mr-widget-content">
         <template v-if="mergeBlockedComponentVisible">
@@ -586,9 +580,9 @@ export default {
     </div>
     <mr-widget-pipeline-container
       v-if="shouldRenderMergedPipeline"
-      class="js-post-merge-pipeline mr-widget-workflow"
+      class="js-post-merge-pipeline"
       :mr="mr"
-      :is-post-merge="true"
+      is-post-merge
       data-testid="merged-pipeline-container"
     />
   </div>

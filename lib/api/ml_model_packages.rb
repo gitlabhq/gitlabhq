@@ -10,7 +10,15 @@ module API
       file_name: API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
+    FAILURES = [
+      { code: 401, message: 'Unauthorized' },
+      { code: 403, message: 'Forbidden' },
+      { code: 404, message: 'Not Found' }
+    ].freeze
+
     ALLOWED_STATUSES = %w[default hidden].freeze
+
+    CANDIDATE_PREFIX = 'candidate:'
 
     feature_category :mlops
     urgency :low
@@ -43,8 +51,31 @@ module API
         ::Ml::ModelVersion.by_project_id_and_id(user_project.id, params[:model_version_id]) || not_found!
       end
 
+      def find_candidate!
+        candidate_iid = params[:model_version_id].delete_prefix(CANDIDATE_PREFIX)
+        candidate = ::Ml::Candidate.with_project_id_and_iid(user_project.id, candidate_iid)
+
+        candidate || not_found!
+      end
+
       def model_version
         @model_version ||= find_model_version!
+      end
+
+      def candidate
+        @candidate ||= find_candidate!
+      end
+
+      def candidate_package
+        ::Packages::MlModel::PackageForCandidateService
+           .new(candidate.project, current_user, { candidate: candidate })
+           .execute
+      end
+
+      def package
+        return candidate_package if params[:model_version_id].starts_with?(CANDIDATE_PREFIX)
+
+        model_version.package
       end
     end
 
@@ -53,22 +84,18 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       params do
-        requires :model_version_id, type: Integer, desc: 'Model version id'
         requires :file_name, type: String, desc: 'File name', file_path: true,
           regexp: Gitlab::Regex.ml_model_file_name_regex
         optional :path, type: String, desc: 'File directory path'
         optional :status, type: String, values: ALLOWED_STATUSES, desc: 'Package status'
+        requires :model_version_id, type: String, desc: 'Model version id'
       end
       namespace ':id/packages/ml_models/:model_version_id/files/(*path/):file_name',
         requirements: ML_MODEL_PACKAGES_REQUIREMENTS do
         desc 'Workhorse authorize model package file' do
           detail 'Introduced in GitLab 16.8'
           success code: 200
-          failure [
-            { code: 401, message: 'Unauthorized' },
-            { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not Found' }
-          ]
+          failure FAILURES
           tags %w[ml_model_registry]
         end
         put 'authorize' do
@@ -78,11 +105,7 @@ module API
         desc 'Workhorse upload model package file' do
           detail 'Introduced in GitLab 16.8'
           success code: 201
-          failure [
-            { code: 401, message: 'Unauthorized' },
-            { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not Found' }
-          ]
+          failure FAILURES
           tags %w[ml_model_registry]
         end
         params do
@@ -95,13 +118,15 @@ module API
           authorize_upload!(project)
           not_found! unless can?(current_user, :write_model_registry, project)
 
-          bad_request!('File is too large') if max_file_size_exceeded?
+          bad_request!(s_('MlModelRegistry|Artifact file is too large')) if max_file_size_exceeded?
+
+          bad_request!(s_('MlModelRegistry|Package creation failed')) unless package
 
           create_package_file_params = declared(params).merge(
-            model_version: model_version,
+            package: package,
             build: current_authenticated_job,
-            package_name: model_version.name,
-            package_version: model_version.version,
+            package_name: package.name,
+            package_version: package.version,
             file_name: [params[:path], params[:file_name]].compact.join('/')
           )
 
@@ -109,7 +134,7 @@ module API
                            .new(project, current_user, create_package_file_params)
                            .execute
 
-          bad_request!('Package creation failed') unless package_file
+          bad_request!(s_('MlModelRegistry|Artifact file creation failed')) unless package_file
 
           created!
         rescue ObjectStorage::RemoteStoreError => e
@@ -121,11 +146,7 @@ module API
         desc 'Download an ml_model package file' do
           detail 'This feature was introduced in GitLab 16.8'
           success code: 200
-          failure [
-            { code: 401, message: 'Unauthorized' },
-            { code: 403, message: 'Forbidden' },
-            { code: 404, message: 'Not Found' }
-          ]
+          failure FAILURES
           tags %w[ml_model_registry]
         end
 
@@ -134,7 +155,7 @@ module API
 
           file_name = URI.encode_uri_component([params[:path], params[:file_name]].compact.join('/'))
 
-          package_file = ::Packages::PackageFileFinder.new(model_version.package, file_name).execute!
+          package_file = ::Packages::PackageFileFinder.new(package, file_name).execute!
 
           present_package_file!(package_file)
         end

@@ -14,5 +14,6 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type: []
+performance_indicator_type:
+- devops_report
 milestone: "<13.9"

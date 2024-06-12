@@ -87,6 +87,8 @@ NPM_TOKEN=your_token npm publish
 
 Your package should now publish to the package registry.
 
+If the uploaded package has more than one `package.json` file, only the first one found is used, and the others are ignored.
+
 ## Publishing a package by using a CI/CD pipeline
 
 When publishing by using a CI/CD pipeline, you can use the [predefined variables](../../../ci/variables/predefined_variables.md) `${CI_PROJECT_ID}` and `${CI_JOB_TOKEN}` to authenticate with your project's package registry. We use these variables to create a `.npmrc` file [for authentication](#authenticating-via-the-npmrc) during execution of your CI/CD job.

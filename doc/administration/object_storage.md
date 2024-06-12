@@ -842,7 +842,7 @@ See the following additional guides:
 
 ### Objects are not included in GitLab backups
 
-As noted in [the backup documentation](../administration/backup_restore/index.md),
+As noted in [the backup documentation](../administration/backup_restore/backup_gitlab.md#object-storage),
 objects are not included in GitLab backups. You can enable backups with
 your object storage provider instead.
 

@@ -204,6 +204,11 @@ describe('kubernetes_logs', () => {
             highlightedLine: 'L2',
           });
         });
+        it('should provide correct header details to the logs viewer', () => {
+          expect(findLogsViewer().text()).toBe(
+            `Namespace: ${kubernetesNamespace}Pod: ${defaultProps.podName}`,
+          );
+        });
       });
 
       describe('when logs data fetch failed', () => {
@@ -232,19 +237,20 @@ describe('kubernetes_logs', () => {
       });
     });
     describe('when a container is specified for the logs', () => {
-      beforeEach(async () => {
+      it('should render empty state with pod and container name when log data is empty', async () => {
         k8sLogsQueryMock = jest.fn().mockResolvedValue({});
         mountComponent({ containerName: 'my-container' });
         await waitForPromises();
-      });
 
-      it('should render empty state with pod and container name', () => {
         expect(findEmptyState().text()).toBe(
           'No logs available for container my-container of pod test-pod',
         );
       });
 
-      it('should query logs with the container name included', () => {
+      it('should query logs with the container name included', async () => {
+        mountComponent({ containerName: 'my-container' });
+        await waitForPromises();
+
         expect(k8sLogsQueryMock).toHaveBeenCalledWith(
           expect.anything(),
           {
@@ -255,6 +261,15 @@ describe('kubernetes_logs', () => {
           },
           expect.anything(),
           expect.anything(),
+        );
+      });
+
+      it('should provide correct header details to the logs viewer', async () => {
+        mountComponent({ containerName: 'my-container' });
+        await waitForPromises();
+
+        expect(findLogsViewer().text()).toBe(
+          `Namespace: ${kubernetesNamespace}Pod: ${defaultProps.podName}Container: my-container`,
         );
       });
     });

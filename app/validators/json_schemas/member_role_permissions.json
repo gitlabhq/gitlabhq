@@ -55,6 +55,9 @@
     "read_code": {
       "type": "boolean"
     },
+    "read_crm_contact": {
+      "type": "boolean"
+    },
     "read_dependency": {
       "type": "boolean"
     },

@@ -275,6 +275,10 @@ module Gitlab
       package_name_regex
     end
 
+    def ml_model_version_name_regex
+      Regexp.union(semver_regex, /candidate_\d+/)
+    end
+
     def ml_model_file_name_regex
       maven_file_name_regex
     end

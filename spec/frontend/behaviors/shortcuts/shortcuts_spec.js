@@ -149,6 +149,7 @@ describe('Shortcuts', () => {
 
   describe('focusSearchFile', () => {
     let event;
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
     beforeEach(() => {
       jest.spyOn(mockSearchInput, 'dispatchEvent');
@@ -175,6 +176,15 @@ describe('Shortcuts', () => {
 
     it('dispatches an `input` event on the search input', () => {
       expect(mockSearchInput.dispatchEvent).toHaveBeenCalledWith(new Event('input'));
+    });
+
+    it('triggers internal_event tracking', () => {
+      jest.spyOn(mockSearchInput, 'dispatchEvent');
+      event = new KeyboardEvent('keydown', { key: 't' }, { cancelable: true });
+      Shortcuts.focusSearchFile(event);
+      const { trackEventSpy } = bindInternalEventDocument(document.body);
+
+      expect(trackEventSpy).toHaveBeenCalledWith('click_go_to_file_shortcut');
     });
   });
 

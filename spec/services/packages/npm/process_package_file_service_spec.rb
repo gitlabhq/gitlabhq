@@ -14,7 +14,7 @@ RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :pa
     it { expect { service.execute }.to raise_error(described_class::ExtractionError, error_message) }
   end
 
-  describe '#execute' do
+  shared_examples 'processing the package file' do
     it 'processes the package file and enqueues a worker to create metadata cache' do
       expect(::Packages::Npm::CreateMetadataCacheWorker).to receive(:perform_async).with(
         package.project_id,
@@ -24,6 +24,10 @@ RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :pa
 
       service.execute
     end
+  end
+
+  describe '#execute' do
+    it_behaves_like 'processing the package file'
 
     context 'with an invalid package file' do
       let(:package_file) { nil }
@@ -69,6 +73,32 @@ RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :pa
       end
 
       it_behaves_like 'raising an error', 'package.json file too large'
+    end
+
+    context 'with custom root folder name' do
+      before do
+        allow_next_instance_of(Gem::Package::TarReader::Entry) do |instance|
+          allow(instance).to receive(:full_name).and_return('custom/package.json')
+        end
+      end
+
+      it_behaves_like 'processing the package file'
+    end
+
+    context 'with multiple package.json entries' do
+      before do
+        allow(Gem::Package::TarReader).to receive(:new).and_return([
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg1/package.json'),
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg2/package.json'),
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg3/package.json')
+        ])
+      end
+
+      it 'yeilds only one package.json entry' do
+        expect { |b| service.send(:with_package_json_entry, &b) }.to yield_with_args(
+          instance_of(RSpec::Mocks::InstanceVerifyingDouble)
+        )
+      end
     end
   end
 end

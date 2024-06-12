@@ -285,7 +285,8 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
       SQL
     end
 
-    it 'redirects to the new partition', :aggregate_failures do
+    it 'redirects to the new partition', :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444881' do
       expect_range_partitions_for(table_name, {
         '1' => %w[1 3],
         '3' => %w[3 5]

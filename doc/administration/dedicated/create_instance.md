@@ -229,7 +229,7 @@ Consider the following notes:
 
 #### GitLab release rollout schedule
 
-GitLab Dedicated tenant instances are upgraded to the minor GitLab release using the following schedule.
+GitLab Dedicated tenant instances are [upgraded](../../subscriptions/gitlab_dedicated/index.md#upgrades) to the minor GitLab release within [the pre-selected window](#maintenance-window) using the scheduled described below.
 
 Where **T** is the date of a [minor GitLab release](../../policy/maintenance.md) `N`. GitLab Dedicated instances are upgraded to the `N-1` release as follows:
 

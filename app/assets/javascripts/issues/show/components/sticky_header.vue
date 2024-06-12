@@ -87,7 +87,7 @@ export default {
         >
           <gl-badge :variant="statusVariant">
             <gl-icon :name="statusIcon" />
-            <span class="gl-hidden sm:gl-block gl-ml-2">{{ statusText }}</span>
+            <span class="gl-block gl-ml-2">{{ statusText }}</span>
           </gl-badge>
           <confidentiality-badge
             v-if="isConfidential"

@@ -12,10 +12,7 @@ DETAILS:
 
 > - Introduced in GitLab 15.9 as an [experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
 > - `combined_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/389067) by default in GitLab 16.11.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+> - `combined_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454350) in GitLab 17.1.
 
 Analytics dashboards help you visualize the collected data.
 You can use built-in dashboards by GitLab or create your own dashboards with custom visualizations.

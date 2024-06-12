@@ -33,9 +33,14 @@ export const GOOGLE_ANALYTICS_ID_COOKIE_NAME = '_ga';
 
 export const SERVICE_PING_SCHEMA = 'iglu:com.gitlab/gitlab_service_ping/jsonschema/1-0-1';
 
+export const ALLOWED_ADDITIONAL_PROPERTIES = ['label', 'property', 'value'];
+
+// events constants
 export const SERVICE_PING_SECURITY_CONFIGURATION_THREAT_MANAGEMENT_VISIT =
   'users_visiting_security_configuration_threat_management';
 
 export const SERVICE_PING_PIPELINE_SECURITY_VISIT = 'users_visiting_pipeline_security';
 
-export const ALLOWED_ADDITIONAL_PROPERTIES = ['label', 'property', 'value'];
+export const FIND_FILE_BUTTON_CLICK = 'click_find_file_button_on_repository_pages';
+
+export const FIND_FILE_SHORTCUT_CLICK = 'click_go_to_file_shortcut';

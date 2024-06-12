@@ -18,10 +18,8 @@ describe('pages/shared/wikis/components/wiki_header', () => {
         editButtonUrl: 'http://edit.url',
         lastVersion: '2024-06-03T01:53:28.000Z',
         pageVersion: {
-          commit: {
-            author_name: 'Test author',
-            authored_date: '2024-06-03T01:53:28.000Z',
-          },
+          author_name: 'Test author',
+          authored_date: '2024-06-03T01:53:28.000Z',
         },
         pagePersisted: true,
         authorUrl: 'http://author.url',

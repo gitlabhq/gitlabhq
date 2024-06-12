@@ -13,4 +13,5 @@ tier:
 - free
 performance_indicator_type:
 - customer_health_score
+- devops_report
 milestone: "<13.9"

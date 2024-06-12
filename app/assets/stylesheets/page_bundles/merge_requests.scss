@@ -1,8 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-$mr-widget-min-height: 69px;
-$tabs-holder-z-index: 250;
-
 .compare-versions-container {
   min-width: 0;
 }
@@ -416,10 +413,6 @@ $tabs-holder-z-index: 250;
   background-color: var(--gray-50, $gray-50);
 }
 
-.mr-widget-body-loading svg {
-  vertical-align: middle;
-}
-
 .mr-info-list {
   clear: left;
   position: relative;
@@ -469,7 +462,24 @@ $tabs-holder-z-index: 250;
   border-radius: $gl-border-radius-base;
   background: var(--white, $white);
 
+  &:not(:first-child) {
+    @apply gl-mt-5;
+  }
+
+  &:empty {
+    display: none;
+  }
+
+  .gl-skeleton-loader {
+    display: block;
+  }
+
   > .mr-widget-section {
+    &:first-child {
+      border-top-left-radius: $gl-border-radius-base-inner;
+      border-top-right-radius: $gl-border-radius-base-inner;
+    }
+
     > :last-child,
     .deploy-heading:last-child {
       border-bottom-left-radius: $gl-border-radius-base-inner;
@@ -482,45 +492,6 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.mr-source-target {
-  flex-wrap: wrap;
-  padding: $gl-padding;
-  background: var(--white, $white);
-  min-height: $mr-widget-min-height;
-
-  @include media-breakpoint-up(md) {
-    align-items: center;
-  }
-
-  .git-merge-container {
-    justify-content: space-between;
-    flex: 1;
-    flex-direction: row;
-    align-items: center;
-
-    @include media-breakpoint-down(md) {
-      flex-direction: column;
-      align-items: stretch;
-
-      .branch-actions {
-        margin-top: 16px;
-      }
-    }
-
-    @include media-breakpoint-up(lg) {
-      .branch-actions {
-        align-self: center;
-        margin-left: $gl-padding;
-        white-space: nowrap;
-      }
-    }
-  }
-
-  .diverged-commits-count {
-    color: var(--gray-500, $gl-text-color-secondary);
-  }
-}
-
 .mr-state-widget {
   color: var(--gl-text-color, $gl-text-color);
 
@@ -528,24 +499,8 @@ $tabs-holder-z-index: 250;
     border-radius: $gl-border-radius-base;
   }
 
-  .mr-widget-section:not(:first-child) > div,
-  .mr-widget-section:not(:first-child) > section,
-  .mr-widget-section .mr-widget-section > div:not(:first-child) {
-    border-top: solid 1px var(--border-color, $border-color);
-    // Avoid two lines being rendered
-    // instead of exessively adressing those
-    // edge cases we can use this as a boring
-    // solution
-    margin-top: -1px;
-  }
-
   .mr-widget-alert-container + .mr-widget-section {
     border-top: 0;
-  }
-
-  .mr-fast-forward-message {
-    padding-left: $gl-spacing-scale-9;
-    padding-bottom: $gl-padding;
   }
 
   .commits-list {
@@ -778,14 +733,6 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.mr-widget-alert-container {
-  border-radius: $gl-border-radius-base-inner $gl-border-radius-base-inner 0 0;
-
-  .gl-alert:not(:last-child) {
-    margin-bottom: 1px;
-  }
-}
-
 .mr-widget-body,
 .mr-widget-content {
   padding: $gl-padding-12 $gl-padding;
@@ -808,11 +755,6 @@ $tabs-holder-z-index: 250;
       border-bottom-right-radius: $gl-border-radius-base-inner;
     }
   }
-}
-
-.mr-widget-grouped-section .report-block-container {
-  border-bottom-left-radius: $gl-border-radius-base;
-  border-bottom-right-radius: $gl-border-radius-base;
 }
 
 .mr-widget-extension {
@@ -859,33 +801,9 @@ $tabs-holder-z-index: 250;
   transform: translate(-50%, -50%);
 }
 
-.mr-widget-heading {
-  position: relative;
-  border: 1px solid var(--border-color, $border-color);
-  border-radius: $gl-border-radius-base;
-  background: var(--white, $white);
-
-  .gl-skeleton-loader {
-    display: block;
-  }
-}
-
-.mr-widget-info {
-  padding-left: $gl-padding;
-  padding-right: $gl-padding;
-}
-
 .mr-widget-section {
   .code-text {
     flex: 1;
-  }
-}
-
-.mr-widget-workflow {
-  position: relative;
-
-  &:not(:first-child) {
-    margin-top: $gl-padding;
   }
 }
 
@@ -937,10 +855,6 @@ $tabs-holder-z-index: 250;
 
 .mr-section-container .resize-observer > object {
   height: 0;
-}
-
-.attention-request-sidebar-popover {
-  z-index: 999;
 }
 
 .merge-request-overview {

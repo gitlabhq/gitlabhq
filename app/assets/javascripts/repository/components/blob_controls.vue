@@ -16,6 +16,8 @@ import {
   PROJECT_FILES_GO_TO_PERMALINK,
 } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
+import { InternalEvents } from '~/tracking';
+import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { updateElementsVisibility } from '../utils/dom';
 import blobControlsQuery from '../queries/blob_controls.query.graphql';
 
@@ -146,6 +148,7 @@ export default {
       );
     },
     handleFindFile() {
+      InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
   },

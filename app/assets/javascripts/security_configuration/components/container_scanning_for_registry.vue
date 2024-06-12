@@ -1,21 +1,12 @@
 <script>
-import { GlToggle, GlLink, GlAlert, GlLoadingIcon } from '@gitlab/ui';
+import { GlToggle, GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import SetContainerScanningForRegistry from '~/security_configuration/graphql/set_container_scanning_for_registry.graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { __, s__ } from '~/locale';
-import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
-  components: { GlToggle, GlLink, GlAlert, GlLoadingIcon },
+  components: { GlToggle, GlAlert, GlLoadingIcon },
   mixins: [glFeatureFlagsMixin()],
   inject: ['containerScanningForRegistryEnabled', 'projectFullPath'],
-  i18n: {
-    title: s__('CVS|Continuous Container Scanning'),
-    description: s__(
-      'CVS|Scan for vulnerabilities when a container image or the advisory database is updated.',
-    ),
-    learnMore: __('Learn more'),
-  },
   props: {
     feature: {
       type: Object,
@@ -54,7 +45,7 @@ export default {
           mutation: SetContainerScanningForRegistry,
           variables: {
             input: {
-              projectPath: this.projectFullPath,
+              namespacePath: this.projectFullPath,
               enable: checked,
             },
           },
@@ -72,21 +63,16 @@ export default {
         this.toggleValue = oldValue;
         this.reportError(error);
       } finally {
+        this.$emit('overrideStatus', this.toggleValue);
         this.isRunningMutation = false;
       }
     },
   },
-  CVSHelpPagePath: helpPagePath(
-    'user/application_security/continuous_vulnerability_scanning/index',
-  ),
 };
 </script>
 
 <template>
-  <div v-if="glFeatures.containerScanningForRegistry">
-    <h4 class="gl-font-base gl-mt-6">
-      {{ $options.i18n.title }}
-    </h4>
+  <div v-if="glFeatures.containerScanningForRegistryFlag">
     <gl-alert
       v-if="errorMessage"
       class="gl-mb-5 gl-mt-2"
@@ -95,9 +81,11 @@ export default {
       >{{ errorMessage }}</gl-alert
     >
 
+    <br />
+
     <div class="gl-display-flex gl-align-items-center">
       <gl-toggle
-        :disabled="!isFeatureConfigured || isRunningMutation"
+        :disabled="isRunningMutation"
         :value="toggleValue"
         :label="s__('CVS|Toggle CVS')"
         label-position="hidden"
@@ -105,13 +93,5 @@ export default {
       />
       <gl-loading-icon v-if="isRunningMutation" inline class="gl-ml-3" />
     </div>
-
-    <p class="gl-mb-0 gl-mt-5">
-      {{ $options.i18n.description }}
-      <gl-link :href="$options.CVSHelpPagePath" target="_blank">{{
-        $options.i18n.learnMore
-      }}</gl-link>
-      <br />
-    </p>
   </div>
 </template>

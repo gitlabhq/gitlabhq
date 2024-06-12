@@ -66,6 +66,9 @@ To avoid a broken workflow, you must:
 1. Replace the registration token in your runner registration workflow with the
    authentication token.
 
+**Critical note** - Previously stored `registration tokens` cannot be used to register new runners after 17.0, unless the 
+`CI/CD Settings >> Runners >> Allow members of projects and groups to create runners with runner registration tokens` setting is re-enabled.
+
 ## Using registration tokens after GitLab 17.0
 
 To continue using registration tokens after GitLab 17.0:

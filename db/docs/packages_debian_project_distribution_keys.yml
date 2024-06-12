@@ -19,3 +19,4 @@ desired_sharding_key:
         table: packages_debian_project_distributions
         sharding_key: project_id
         belongs_to: distribution
+desired_sharding_key_migration_job_name: BackfillPackagesDebianProjectDistributionKeysProjectId

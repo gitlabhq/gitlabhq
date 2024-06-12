@@ -406,6 +406,7 @@ class FeatureFlagCreator
   end
 
   def execute
+    assert_clipboard_command!
     assert_feature_branch!
     assert_name!
     assert_existing_feature_flag!
@@ -465,6 +466,12 @@ class FeatureFlagCreator
     fail_with "git add failed" unless system(*%W[git add #{file_path}])
 
     Kernel.exec(*%w[git commit --amend])
+  end
+
+  def assert_clipboard_command!
+    return if FeatureFlagOptionParser.copy_to_clipboard_command
+
+    fail_with "Could not find a copy to clipboard command. On Linux, please install xclip or xsel (or wl-clipboard under Wayland). On macOS, make sure pbcopy is available."
   end
 
   def assert_feature_branch!

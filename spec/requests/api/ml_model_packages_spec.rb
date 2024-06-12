@@ -141,6 +141,12 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
       response
     end
 
+    context 'when file has path' do
+      let(:file_path) { 'my_dir' }
+
+      it { is_expected.to have_gitlab_http_status(:success) }
+    end
+
     describe 'user access' do
       where(:visibility, :user_role, :member, :token_type, :valid_token, :expected_status) do
         authorize_permissions_table
@@ -155,12 +161,6 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
         end
 
         context 'when file does not have path' do
-          it { is_expected.to have_gitlab_http_status(expected_status) }
-        end
-
-        context 'when file has path' do
-          let(:file_path) { 'my_dir' }
-
           it { is_expected.to have_gitlab_http_status(expected_status) }
         end
       end
@@ -231,8 +231,37 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
         it_behaves_like 'process ml model package upload'
       end
 
+      # rubocop:disable RSpec/MultipleMemoizedHelpers -- This test requires many different variables to be set
+      context 'when file is for candidate' do
+        let_it_be(:candidate) do
+          create(:ml_candidates, project: model.project, experiment: model.default_experiment, model_version: nil)
+        end
+
+        let(:version_id) { "candidate:#{candidate.iid}" }
+
+        it 'creates package files', :aggregate_failures do
+          expect { api_response }
+            .to change { Packages::PackageFile.count }.by(1)
+                                                      .and change { Packages::Package.count }.by(1)
+
+          expect(api_response).to have_gitlab_http_status(:created)
+
+          package_file = project.packages.last.package_files.reload.last
+          expect(package_file.file_name).to eq(saved_file_name)
+          expect(package_file.package.name).to eq(model.name)
+          expect(package_file.package.version).to eq("candidate_#{candidate.iid}")
+        end
+
+        context 'when candidate does not exist' do
+          let(:version_id) { "candidate:#{non_existing_record_id}" }
+
+          it { is_expected.to have_gitlab_http_status(:not_found) }
+        end
+      end
+
       it_behaves_like 'Not found when model version does not exist'
     end
+    # rubocop:enable RSpec/MultipleMemoizedHelpers
 
     describe 'user access' do
       where(:visibility, :user_role, :member, :token_type, :valid_token, :expected_status) do

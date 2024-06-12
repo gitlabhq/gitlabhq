@@ -41,13 +41,14 @@ export default {
 </script>
 <template>
   <div class="gl-sticky gl-bg-white" :class="headerTopClass">
-    <div class="gl-border gl-flex gl-flex-row-reverse">
+    <div class="gl-border gl-flex gl-flex-wrap gl-items-center">
       <gl-button
         class="gl-m-3"
-        :icon="toggleFullScreenIcon"
-        :title="toggleFullScreenText"
-        :aria-label="toggleFullScreenText"
-        @click="$emit('toggleFullScreen')"
+        icon="scroll_down"
+        :selected="isFollowing"
+        :title="$options.i18n.scrollToBottom"
+        :aria-label="$options.i18n.scrollToBottom"
+        @click="$emit('scrollToBottom')"
       />
       <gl-button
         class="gl-m-3"
@@ -58,12 +59,12 @@ export default {
       />
       <gl-button
         class="gl-m-3"
-        icon="scroll_down"
-        :selected="isFollowing"
-        :title="$options.i18n.scrollToBottom"
-        :aria-label="$options.i18n.scrollToBottom"
-        @click="$emit('scrollToBottom')"
+        :icon="toggleFullScreenIcon"
+        :title="toggleFullScreenText"
+        :aria-label="toggleFullScreenText"
+        @click="$emit('toggleFullScreen')"
       />
+      <slot></slot>
     </div>
   </div>
 </template>

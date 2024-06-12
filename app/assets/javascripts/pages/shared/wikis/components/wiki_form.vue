@@ -359,7 +359,7 @@ export default {
     ref="form"
     :action="formAction"
     method="post"
-    class="wiki-form common-note-form js-quick-submit gl-mt-4"
+    class="wiki-form common-note-form js-quick-submit"
     :class="{ 'gl-mt-5': !isEditingPath }"
     @submit="handleFormSubmit"
     @input="isFormDirty = true"

@@ -164,7 +164,7 @@ export default {
 </script>
 
 <template>
-  <form data-testid="issuable-form">
+  <form data-testid="issuable-form" class="gl-mt-1">
     <locked-warning v-if="showLockedWarning" :issuable-type="issuableType" />
     <gl-alert
       v-if="showOutdatedDescriptionWarning"

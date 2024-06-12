@@ -256,6 +256,12 @@ domains:
       - source_code_management
       - gitaly
 
+  Sbom:
+    description: SBOM related ingestion
+    feature_categories:
+      - software_composition_analysis
+      - dependency_management
+
   Search:
     description: Code and content global search feature, including RAG, Elasticsearch and Zoekt integrations.
     feature_categories:

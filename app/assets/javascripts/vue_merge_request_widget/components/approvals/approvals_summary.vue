@@ -138,7 +138,7 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-2"
+    class="gl-display-flex gl-flex-wrap gl-align-items-baseline gl-gap-2"
     data-testid="approvals-summary-content"
   >
     <span class="gl-font-bold">{{ approvalLeftMessage }}</span>

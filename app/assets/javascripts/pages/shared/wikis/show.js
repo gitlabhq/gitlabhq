@@ -64,7 +64,6 @@ const mountWikiContentApp = () => {
       templates: JSON.parse(templates),
       drawioUrl: gon.diagramsnet_url,
       pagePersisted: parseBoolean(pagePersisted),
-      error: null,
     },
     render(createElement) {
       return createElement(WikiContentApp);

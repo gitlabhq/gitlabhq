@@ -95,6 +95,12 @@ These requirements are documented in the `Required permission` column in the fol
 | [`manage_group_access_tokens`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140115) |  | Create, read, update, and delete group access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/428353) |  |  |
 | [`manage_project_access_tokens`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132342) |  | Create, read, update, and delete project access tokens. When creating a token, users with this custom permission must select a role for that token that has the same or fewer permissions as the default role used as the base for the custom role. | GitLab [16.5](https://gitlab.com/gitlab-org/gitlab/-/issues/421778) | `manage_project_access_tokens` | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141294) |
 
+## Team planning
+
+| Name | Required permission | Description | Introduced in | Feature flag | Enabled in |
+|:-----|:------------|:------------------|:---------|:--------------|:---------|
+| [`read_crm_contact`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154017) |  | Read CRM contact. | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/443268) |  |  |
+
 ## Vulnerability management
 
 | Name | Required permission | Description | Introduced in | Feature flag | Enabled in |

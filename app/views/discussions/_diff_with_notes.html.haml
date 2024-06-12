@@ -29,7 +29,7 @@
             %td.line_content.js-success-lazy-load
               .js-code-placeholder
             %td.js-error-lazy-load-diff.hidden.diff-loading-error-block
-              - button = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'btn-link-retry gl-p-0 js-toggle-lazy-diff-retry-button' }) do
+              - button = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'gl-p-0 js-toggle-lazy-diff-retry-button' }) do
                 = _("Try again")
               = _("Unable to load the diff. %{button_try_again}").html_safe % { button_try_again: button}
           = render "discussions/diff_discussion", discussions: [discussion], expanded: true

@@ -539,7 +539,7 @@ msgstr ""
 msgid "%{argument_name} must be formatted correctly. For example: 1h 30m."
 msgstr ""
 
-msgid "%{attribute} is already taken."
+msgid "%{attribute} already taken."
 msgstr ""
 
 msgid "%{author_link} cloned %{original_issue} to %{new_issue}."
@@ -3668,7 +3668,19 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
+msgid "AdminSelfHostedModels|By enabling Self-Hosted Models, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Define your set of self-hosted models"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Enable Self-hosted models"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Self-Hosted models"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Self-hosted models are an experimental feature."
 msgstr ""
 
 msgid "AdminSelfHostedModels|They point to the self-hosted AI models that can be used for backing up GitLab AI features."
@@ -10129,12 +10141,6 @@ msgstr ""
 msgid "CVE|Why Request a CVE ID?"
 msgstr ""
 
-msgid "CVS|Continuous Container Scanning"
-msgstr ""
-
-msgid "CVS|Scan for vulnerabilities when a container image or the advisory database is updated."
-msgstr ""
-
 msgid "CVS|Toggle CVS"
 msgstr ""
 
@@ -14033,6 +14039,9 @@ msgid "Container Repository"
 msgstr ""
 
 msgid "Container Scanning"
+msgstr ""
+
+msgid "Container Scanning For Registry"
 msgstr ""
 
 msgid "Container expiration policy"
@@ -21352,7 +21361,7 @@ msgstr ""
 msgid "Example"
 msgstr ""
 
-msgid "Example: (feature|hotfix)\\/*"
+msgid "Example: (feature|hotfix)\\/.*"
 msgstr ""
 
 msgid "Example: (jar|exe)$"
@@ -22847,6 +22856,9 @@ msgid "GPG keys allow you to verify signed commits."
 msgstr ""
 
 msgid "GPG signature (loading...)"
+msgstr ""
+
+msgid "GcpDestinationValidator validates only gcp external audit event destinations."
 msgstr ""
 
 msgid "General"
@@ -30197,10 +30209,19 @@ msgstr ""
 msgid "KubernetesDashboard|You can select an agent from a project's environment page."
 msgstr ""
 
+msgid "KubernetesLogs|Container"
+msgstr ""
+
+msgid "KubernetesLogs|Namespace"
+msgstr ""
+
 msgid "KubernetesLogs|No logs available for container %{containerName} of pod %{podName}"
 msgstr ""
 
 msgid "KubernetesLogs|No logs available for pod %{podName}"
+msgstr ""
+
+msgid "KubernetesLogs|Pod"
 msgstr ""
 
 msgid "LDAP"
@@ -33300,6 +33321,12 @@ msgstr ""
 msgid "MlModelRegistry|Are you sure you want to delete model version %{versionName}?"
 msgstr ""
 
+msgid "MlModelRegistry|Artifact file creation failed"
+msgstr ""
+
+msgid "MlModelRegistry|Artifact file is too large"
+msgstr ""
+
 msgid "MlModelRegistry|Artifacts"
 msgstr ""
 
@@ -33475,6 +33502,9 @@ msgid "MlModelRegistry|No logged parameters"
 msgstr ""
 
 msgid "MlModelRegistry|No registered versions"
+msgstr ""
+
+msgid "MlModelRegistry|Package creation failed"
 msgstr ""
 
 msgid "MlModelRegistry|Parameters"
@@ -42158,6 +42188,15 @@ msgstr ""
 msgid "Promotion is not supported."
 msgstr ""
 
+msgid "PromotionRequests|An error occured while loading the role promotion requests. Please refresh the page to try again."
+msgstr ""
+
+msgid "PromotionRequests|Highest role requested"
+msgstr ""
+
+msgid "PromotionRequests|No promotion requests found"
+msgstr ""
+
 msgid "Promotions"
 msgstr ""
 
@@ -44741,6 +44780,9 @@ msgid "Run again"
 msgstr ""
 
 msgid "Run all manual"
+msgstr ""
+
+msgid "Run container scanning job whenever a container image with the latest tag is pushed."
 msgstr ""
 
 msgid "Run housekeeping"
@@ -48782,6 +48824,9 @@ msgstr ""
 msgid "Self-Hosted Models"
 msgstr ""
 
+msgid "Self-Hosted models"
+msgstr ""
+
 msgid "Self-hosted models dropdown"
 msgstr ""
 
@@ -51442,6 +51487,9 @@ msgid "Succeeded"
 msgstr ""
 
 msgid "Success"
+msgstr ""
+
+msgid "Successfully accepted GitLab Testing Terms"
 msgstr ""
 
 msgid "Successfully activated"
@@ -56509,9 +56557,6 @@ msgstr ""
 msgid "UsageQuotas|Namespace transfer data used"
 msgstr ""
 
-msgid "UsageQuota|%{linkStart}Instance runners%{linkEnd} are disabled, so there are no limits set on pipeline usage"
-msgstr ""
-
 msgid "UsageQuota|%{linkTitle} help link"
 msgstr ""
 
@@ -56621,6 +56666,9 @@ msgid "UsageQuota|Namespace total storage represents the sum of storage consumed
 msgstr ""
 
 msgid "UsageQuota|No compute usage data available."
+msgstr ""
+
+msgid "UsageQuota|No compute usage data because %{linkStart}Instance runners%{linkEnd} are disabled, or there are no projects in this group."
 msgstr ""
 
 msgid "UsageQuota|No projects to display."
@@ -61047,6 +61095,9 @@ msgstr ""
 msgid "Your %{plan_name} subscription will expire on %{expires_on}"
 msgstr ""
 
+msgid "Your %{plan_name} subscription with a temporary extension will expire on %{expires_on}"
+msgstr ""
+
 msgid "Your %{plan} plan will be applied to your group."
 msgstr ""
 
@@ -61386,6 +61437,9 @@ msgid "Your subscription has %{remaining_seat_count} out of %{total_seat_count} 
 msgid_plural "Your subscription has %{remaining_seat_count} out of %{total_seat_count} seats remaining."
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Your subscription with temporary extension expired!"
+msgstr ""
 
 msgid "Your top-level group %{namespace_name} has reached the %{free_limit} user limit"
 msgstr ""

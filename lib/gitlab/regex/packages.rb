@@ -233,17 +233,20 @@ module Gitlab
         #   - Must not have a port number, such as :8080 or :8443
 
         @go_package_regex ||= %r{
-          \b (?# word boundary)
+          (?<=^|\s|\() (?# beginning of line, whitespace character, or opening parenthesis)
           (?<domain>
-            [0-9a-z](?:(?:-|[0-9a-z]){0,61}[0-9a-z])? (?# first domain)
-            (?:\.[0-9a-z](?:(?:-|[0-9a-z]){0,61}[0-9a-z])?)* (?# inner domains)
-            \.[a-z]{2,} (?# top-level domain)
+            [0-9a-z](?:(?:-|[0-9a-z]){0,61}[0-9a-z]) (?# first domain)
+            (?:\.[0-9a-z](?:(?:-|[0-9a-z]){0,61}[0-9a-z])?){0,49} (?# inner domains)
+            \.[a-z]{2,63}(?=/|\s|$|\)) (?# top-level domain, ends with /, whitespace, or end of line)
           )
-          (?<path>/(?:
-            [-/$_.+!*'(),0-9a-z] (?# plain URL character)
-            | %[0-9a-f]{2})* (?# URL encoded character)
-          )? (?# path)
-          \b (?# word boundary)
+          (?<path>
+            /(?:
+              [-/$_.+!*'(),0-9a-z] (?# plain URL character)
+              |
+              %[0-9a-f]{2} (?# URL encoded character)
+            ){0,1000}
+          )? (?# optional path)
+          (?=$|\s|\)) (?# followed by end of line, whitespace, or closing parenthesis)
         }ix
       end
 

@@ -17,18 +17,18 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: [
-    'pageHeading',
-    'showEditButton',
-    'isPageTemplate',
-    'editButtonUrl',
-    'lastVersion',
-    'pageVersion',
-    'authorUrl',
-    'isEditingPath',
-    'wikiUrl',
-    'pagePersisted',
-  ],
+  inject: {
+    pageHeading: { default: null },
+    showEditButton: { default: null },
+    isPageTemplate: { default: null },
+    editButtonUrl: { default: null },
+    lastVersion: { default: null },
+    pageVersion: { default: null },
+    authorUrl: { default: null },
+    isEditingPath: { default: null },
+    wikiUrl: { default: null },
+    pagePersisted: { default: null },
+  },
   computed: {
     pageHeadingComputed() {
       let { pageHeading } = this;
@@ -113,22 +113,20 @@ export default {
         />
         <wiki-more-dropdown />
       </template>
+      <template v-if="lastVersion" #description>
+        <div class="wiki-last-version gl-leading-20" data-testid="wiki-page-last-version">
+          <gl-sprintf :message="$options.i18n.lastEdited">
+            <template #author>
+              <gl-link :href="authorUrl" class="gl-text-black-normal gl-font-bold">{{
+                pageVersion.author_name
+              }}</gl-link>
+            </template>
+            <template #timeago>
+              <time-ago :time="pageVersion.authored_date" target="wiki-last-version" />
+            </template>
+          </gl-sprintf>
+        </div>
+      </template>
     </page-heading>
-    <div
-      v-if="lastVersion"
-      class="wiki-last-version gl-leading-20 gl-text-secondary gl-mt-3 gl-mb-5"
-      data-testid="wiki-page-last-version"
-    >
-      <gl-sprintf :message="$options.i18n.lastEdited">
-        <template #author>
-          <gl-link :href="authorUrl" class="gl-text-black-normal gl-font-bold">{{
-            pageVersion.commit.author_name
-          }}</gl-link>
-        </template>
-        <template #timeago>
-          <time-ago :time="pageVersion.commit.authored_date" target="wiki-last-version" />
-        </template>
-      </gl-sprintf>
-    </div>
   </div>
 </template>

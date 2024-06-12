@@ -2004,7 +2004,7 @@ DEPENDENCIES
   gitlab-housekeeper!
   gitlab-http!
   gitlab-labkit (~> 0.36.0)
-  gitlab-license (~> 2.4)
+  gitlab-license (~> 2.5)
   gitlab-mail_room (~> 0.0.24)
   gitlab-markup (~> 1.9.0)
   gitlab-net-dns (~> 0.9.2)

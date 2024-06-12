@@ -113,7 +113,8 @@ export default {
       @toggleFullScreen="toggleFullScreen"
       @scrollToTop="onScrollToTop"
       @scrollToBottom="onScrollToBottom"
-    />
+      ><slot name="header-details"></slot>
+    </logs-top-bar>
     <code class="gl-block gl-bg-black gl-text-base gl-pt-3">
       <log-line
         v-for="logLine in logLines"

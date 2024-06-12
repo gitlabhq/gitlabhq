@@ -2195,7 +2195,7 @@ POST /groups/:id/push_rule
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
 | `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
 | `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
-| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/*` |
+| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*` |
 | `author_email_regex`                          | string         | no       | All commit author emails must match the regular expression provided in this attribute, for example, `@my-company.com$` |
 | `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
@@ -2252,7 +2252,7 @@ PUT /groups/:id/push_rule
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
 | `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
 | `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
-| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/*` |
+| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*` |
 | `author_email_regex`                          | string         | no       | All commit author emails must match the regular expression provided in this attribute, for example, `@my-company.com$` |
 | `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
