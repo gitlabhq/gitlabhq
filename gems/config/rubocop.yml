@@ -132,3 +132,10 @@ Style/HashSyntax:
 # This cop doesn't make sense in the context of gems
 Migration/EnsureFactoryForTable:
   Enabled: false
+
+# This cop doesn't make sense in the context of gems unless they're
+# adding Controller code
+Rails/StrongParams:
+  Enabled: true
+  Include:
+    - '**/controllers/**/*'

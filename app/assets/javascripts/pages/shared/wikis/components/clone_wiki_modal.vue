@@ -39,7 +39,11 @@ export default {
     GlModal: GlModalDirective,
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['wikiPath', 'cloneSshUrl', 'cloneHttpUrl'],
+  inject: {
+    wikiPath: { default: null },
+    cloneSshUrl: { default: null },
+    cloneHttpUrl: { default: null },
+  },
   props: {
     showAsDropdownItem: {
       type: Boolean,

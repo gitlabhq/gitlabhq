@@ -47171,9 +47171,6 @@ msgstr ""
 msgid "SecurityConfiguration|Vulnerability details and statistics in the merge request"
 msgstr ""
 
-msgid "SecurityOrchestraation|(Formerly Scan result policy)"
-msgstr ""
-
 msgid "SecurityOrchestration| and "
 msgstr ""
 
@@ -47796,12 +47793,6 @@ msgstr ""
 msgid "SecurityOrchestration|Summary of syntax changes:"
 msgstr ""
 
-msgid "SecurityOrchestration|The %{oldNameStart}Scan result policy%{oldNameEnd} is now called the %{newNameStart}Merge request approval policy%{newNameEnd} to better align with its purpose. For more details, see %{linkStart}the release notes%{linkEnd}."
-msgstr ""
-
-msgid "SecurityOrchestration|The Scan result policy is now called the Merge request approval policy to better align with its purpose. For more details, see %{linkStart}the release notes%{linkEnd}."
-msgstr ""
-
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
 msgstr ""
 
@@ -47869,9 +47860,6 @@ msgid "SecurityOrchestration|Update scan policies"
 msgstr ""
 
 msgid "SecurityOrchestration|Update via merge request"
-msgstr ""
-
-msgid "SecurityOrchestration|Updated policy name"
 msgstr ""
 
 msgid "SecurityOrchestration|Use a merge request approval policy to create rules that check for security vulnerabilities and license compliance before merging a merge request."

@@ -6,11 +6,16 @@ module Projects
 
     before_action :authorize_admin_issue_link!, only: [:create, :destroy]
     before_action :authorize_issue_link_association!, only: :destroy
+    before_action :disable_query_limit!, only: :create
 
     feature_category :team_planning
     urgency :low
 
     private
+
+    def disable_query_limit!
+      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/467087')
+    end
 
     def authorize_admin_issue_link!
       render_403 unless can?(current_user, :admin_issue_link, issue)

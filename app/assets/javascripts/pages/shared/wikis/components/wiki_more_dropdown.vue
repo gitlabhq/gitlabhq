@@ -23,7 +23,12 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['newUrl', 'historyUrl', 'templatesUrl', 'pagePersisted'],
+  inject: {
+    newUrl: { default: null },
+    historyUrl: { default: null },
+    templatesUrl: { default: null },
+    pagePersisted: { default: null },
+  },
   i18n: {
     wikiActions: s__('Wiki|Wiki actions'),
   },

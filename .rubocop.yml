@@ -1198,3 +1198,10 @@ Gitlab/TokenWithoutPrefix:
     - 'lib/**/*'
     - 'ee/app/**/*'
     - 'ee/lib/**/*'
+
+Rails/StrongParams:
+  Enabled: true
+  SafeAutoCorrect: false
+  Include:
+    - 'app/controllers/**/*'
+    - 'ee/app/controllers/**/*'

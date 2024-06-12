@@ -2,9 +2,6 @@
 boards_epic_board_recent_visits:
   index_epic_board_recent_visits_on_user_group_and_board:
   - index_boards_epic_board_recent_visits_on_user_id
-boards_epic_user_preferences:
-  index_boards_epic_user_preferences_on_board_user_epic_unique:
-  - index_boards_epic_user_preferences_on_board_id
 ci_stages:
   index_ci_stages_on_pipeline_id_and_position:
   - index_ci_stages_on_pipeline_id

@@ -65,6 +65,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_pipelines: %w[partition_id],
     ci_runner_projects: %w[runner_id],
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
+    ci_sources_projects: %w[partition_id],
     ci_stages: %w[partition_id project_id pipeline_id],
     ci_trigger_requests: %w[commit_id],
     ci_job_artifact_states: %w[partition_id],
@@ -401,6 +402,8 @@ RSpec.describe 'Database schema', feature_category: :database do
       partitionable_models = Ci::Partitionable::Testing.partitionable_models
       (partitionable_models - skip_tables).each do |klass|
         model = klass.safe_constantize
+        next unless model
+
         table_name = model.table_name
 
         primary_key_columns = Array.wrap(model.connection.primary_key(table_name))

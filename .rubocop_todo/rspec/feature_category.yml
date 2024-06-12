@@ -783,7 +783,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/boards/epic_list_user_preference_spec.rb'
     - 'ee/spec/models/boards/epic_user_preference_spec.rb'
     - 'ee/spec/models/ci/daily_build_group_report_result_spec.rb'
-    - 'ee/spec/models/ci/sources/project_spec.rb'
     - 'ee/spec/models/ci/subscriptions/project_spec.rb'
     - 'ee/spec/models/commit_spec.rb'
     - 'ee/spec/models/compliance_management/compliance_framework/project_settings_spec.rb'

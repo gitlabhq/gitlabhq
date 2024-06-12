@@ -29,6 +29,7 @@ Ci::Partitionable::Testing.partitionable_models.each do |klass|
   next if klass == 'Ci::Pipeline'
 
   model = klass.safe_constantize
+  next unless model
 
   model.include(PartitioningTesting::CascadeCheck)
 end

@@ -129,6 +129,8 @@ You can install a package from a GitLab project, group, or instance:
 
 You must authenticate to the package registry to install a package from a private project or a private group.
 No authentication is needed if the project or the group is public.
+If the project is internal, you must be a registered user on the GitLab instance.
+An anonymous user cannot pull packages from an internal project.
 
 To authenticate with `npm`:
 

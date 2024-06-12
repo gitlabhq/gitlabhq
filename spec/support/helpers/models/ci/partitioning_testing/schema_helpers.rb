@@ -29,6 +29,8 @@ module Ci
       def each_partitionable_table
         ::Ci::Partitionable::Testing.partitionable_models.each do |klass|
           model = klass.safe_constantize
+          next unless model
+
           table_name = model.table_name.delete_prefix('p_')
 
           yield(table_name)

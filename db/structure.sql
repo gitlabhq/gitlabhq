@@ -7831,7 +7831,8 @@ ALTER SEQUENCE ci_sources_pipelines_id_seq OWNED BY ci_sources_pipelines.id;
 CREATE TABLE ci_sources_projects (
     id bigint NOT NULL,
     pipeline_id bigint NOT NULL,
-    source_project_id bigint NOT NULL
+    source_project_id bigint NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_sources_projects_id_seq
@@ -25470,8 +25471,6 @@ CREATE UNIQUE INDEX index_boards_epic_lists_on_epic_board_id_and_label_id ON boa
 CREATE INDEX index_boards_epic_lists_on_group_id ON boards_epic_lists USING btree (group_id);
 
 CREATE INDEX index_boards_epic_lists_on_label_id ON boards_epic_lists USING btree (label_id);
-
-CREATE INDEX index_boards_epic_user_preferences_on_board_id ON boards_epic_user_preferences USING btree (board_id);
 
 CREATE UNIQUE INDEX index_boards_epic_user_preferences_on_board_user_epic_unique ON boards_epic_user_preferences USING btree (board_id, user_id, epic_id);
 
