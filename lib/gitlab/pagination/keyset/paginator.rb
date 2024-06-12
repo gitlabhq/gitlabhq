@@ -39,26 +39,33 @@ module Gitlab
           set_pagination_helper_flags!
         end
 
-        # rubocop: disable CodeReuse/ActiveRecord
         def records
           @records ||= begin
-            items = if paginate_backward?
-                      reversed_order
-                        .apply_cursor_conditions(keyset_scope, cursor_attributes, keyset_order_options)
-                        .reorder(reversed_order)
-                        .limit(per_page_plus_one)
-                        .to_a
-                    else
-                      order
-                        .apply_cursor_conditions(keyset_scope, cursor_attributes, keyset_order_options)
-                        .limit(per_page_plus_one)
-                        .to_a
-                    end
+            items = keyset_relation.to_a
 
             @has_another_page = items.size == per_page_plus_one
             items.pop if @has_another_page
             items.reverse! if paginate_backward?
             items
+          end
+        end
+
+        def to_sql
+          keyset_relation.to_sql
+        end
+
+        # rubocop: disable CodeReuse/ActiveRecord -- This is a reusable module.
+        # Defining these scopes on the model would encourage duplication.
+        def keyset_relation
+          if paginate_backward?
+            reversed_order
+              .apply_cursor_conditions(keyset_scope, cursor_attributes, keyset_order_options)
+              .reorder(reversed_order)
+              .limit(per_page_plus_one)
+          else
+            order
+              .apply_cursor_conditions(keyset_scope, cursor_attributes, keyset_order_options)
+              .limit(per_page_plus_one)
           end
         end
         # rubocop: enable CodeReuse/ActiveRecord

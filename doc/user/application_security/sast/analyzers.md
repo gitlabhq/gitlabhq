@@ -50,6 +50,18 @@ GitLab-managed rules.
 - [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit)
 - [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) (Security Code Scan (.NET)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/390416) in GitLab 16.0.
 
+## GitLab Advanced SAST analyzer
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** Experiment
+
+The GitLab Advanced SAST analyzer offers a broader and more accurate static analysis for Python,
+particularly by providing cross-function and cross-file taint analysis.
+
+It is not enabled by default. To enable it, please follow the instructions on the [GitLab Advanced SAST page](gitlab_advanced_sast.md).
+
 ## SAST analyzer features
 
 For an analyzer to be considered generally available, it is expected to minimally

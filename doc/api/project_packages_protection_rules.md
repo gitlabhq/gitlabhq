@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: "Documentation for the REST API for Package Protection Rules in GitLab."
 ---
 
-# Package protection rules API
+# Protected packages API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
