@@ -21,7 +21,7 @@ its framework is removed.
 
 - To create, edit, and delete compliance frameworks, users must have either:
   - The Owner or Maintainer role in the top-level group.
-  - Be assigned a [custom role](../../user/custom_roles) with the `admin_compliance_framework`
+  - Be assigned a [custom role](../../user/custom_roles/abilities.md) with the `admin_compliance_framework`
     [custom permission](../../user/custom_roles/abilities.md#compliance-management).
 - To add or remove a compliance framework to or from a project, the group to which the project belongs must have a
   compliance framework.

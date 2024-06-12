@@ -11,10 +11,10 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - Introduced in GitLab 17.1 as an [experiment](../../../../doc/policy/experiment-beta-support.md) for Python.
+> - Introduced in GitLab 17.1 as an [experiment](../../../policy/experiment-beta-support.md) for Python.
 
 NOTE:
-This analyzer is an [experiment](../../../../doc/policy/experiment-beta-support.md)
+This analyzer is an [experiment](../../../policy/experiment-beta-support.md)
 and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 GitLab Advanced SAST is a Static Application Security Testing (SAST) analyzer

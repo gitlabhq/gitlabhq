@@ -327,6 +327,7 @@ export default {
     >
       <gl-form-checkbox-group
         v-model="targetAccessLevels"
+        data-testid="target-access-levels-checkbox-group"
         :options="targetAccessLevelCheckBoxGroupOptions"
       />
     </gl-form-group>

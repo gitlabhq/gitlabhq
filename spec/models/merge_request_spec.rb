@@ -1211,6 +1211,61 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#related_issues' do
+    subject(:related_issues) { merge_request.related_issues(user) }
+
+    let_it_be(:issue_referenced_in_mr_title) { create(:issue) }
+    let_it_be(:issue_referenced_in_mr_desc) { create(:issue) }
+    let_it_be(:issue_referenced_in_mr_commit_msg) { create(:issue) }
+    let_it_be(:issue_referenced_in_mr_note) { create(:issue) }
+    let_it_be(:issue_referenced_in_internal_mr_note) { create(:issue) }
+    let_it_be(:confidential_issue_in_mr_desc) { create(:issue, :confidential) }
+
+    let_it_be(:merge_request) do
+      create(
+        :merge_request,
+        title: "MR for #{issue_referenced_in_mr_title.to_reference}",
+        description: "Fix #{issue_referenced_in_mr_desc.to_reference}, #{confidential_issue_in_mr_desc.to_reference}"
+      )
+    end
+
+    before do
+      commit_stub = double('commit1', safe_message: "Fixes #{issue_referenced_in_mr_commit_msg.to_reference}")
+      allow(merge_request).to receive(:commits).and_return([commit_stub])
+
+      create(:note, noteable: merge_request, note: "See #{issue_referenced_in_mr_note.to_reference}")
+      create(:note, :internal, noteable: merge_request, note: issue_referenced_in_internal_mr_note.to_reference)
+    end
+
+    context 'for guest' do
+      let_it_be(:user) { create(:user, guest_of: project) }
+
+      it 'returns authorized related issues' do
+        expect(related_issues).to contain_exactly(
+          issue_referenced_in_mr_title,
+          issue_referenced_in_mr_desc,
+          issue_referenced_in_mr_note,
+          issue_referenced_in_mr_commit_msg
+        )
+      end
+    end
+
+    context 'for developer' do
+      let_it_be(:user) { create(:user, developer_of: project) }
+
+      it 'returns authorized related issues' do
+        expect(related_issues).to contain_exactly(
+          issue_referenced_in_mr_title,
+          issue_referenced_in_mr_desc,
+          confidential_issue_in_mr_desc,
+          issue_referenced_in_mr_note,
+          issue_referenced_in_internal_mr_note,
+          issue_referenced_in_mr_commit_msg
+        )
+      end
+    end
+  end
+
   describe '#cache_merge_request_closes_issues!' do
     let(:issue) { create(:issue, project: subject.project) }
 

@@ -12727,7 +12727,13 @@ msgstr ""
 msgid "CodeSuggestions|%{linkStart}Code Suggestions%{linkEnd} uses generative AI to suggest code while you're developing."
 msgstr ""
 
-msgid "CodeSuggestions|A user can be assigned a GitLab Duo Pro seat only once each billable month."
+msgid "CodeSuggestions|%{title}"
+msgstr ""
+
+msgid "CodeSuggestions|%{title} seats used"
+msgstr ""
+
+msgid "CodeSuggestions|A user can be assigned a %{title} seat only once each billable month."
 msgstr ""
 
 msgid "CodeSuggestions|Boost productivity across the software development life cycle by using Code Suggestions and GitLab Duo Chat (Beta) as part of the %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd} add-on. You can now try GitLab Duo Pro for free for %{days} days, no credit card required."
@@ -12736,16 +12742,13 @@ msgstr ""
 msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}GitLab Duo Pro%{linkEnd} offers features that use generative AI to suggest code."
 msgstr ""
 
+msgid "CodeSuggestions|GitLab Duo Enterprise"
+msgstr ""
+
 msgid "CodeSuggestions|GitLab Duo Pro"
 msgstr ""
 
-msgid "CodeSuggestions|GitLab Duo Pro add-on"
-msgstr ""
-
 msgid "CodeSuggestions|GitLab Duo Pro add-on status"
-msgstr ""
-
-msgid "CodeSuggestions|GitLab Duo Pro seats used"
 msgstr ""
 
 msgid "CodeSuggestions|Introducing GitLab Duo Pro"
@@ -56566,7 +56569,7 @@ msgstr ""
 msgid "UsageQuota|Git repository."
 msgstr ""
 
-msgid "UsageQuota|GitLab Duo Pro"
+msgid "UsageQuota|GitLab Duo"
 msgstr ""
 
 msgid "UsageQuota|Gitlab-integrated Docker Container Registry for storing Docker Images."

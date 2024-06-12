@@ -1495,6 +1495,18 @@ class MergeRequest < ApplicationRecord
     ext.issues - visible_closing_issues_for(current_user)
   end
 
+  def related_issues(user)
+    visible_notes = user.can?(:read_internal_note, project) ? notes : notes.not_internal
+
+    messages = [title, description, *visible_notes.pluck(:note)]
+    messages += commits.map(&:safe_message) if merge_request_diff.persisted?
+
+    ext = Gitlab::ReferenceExtractor.new(project, user)
+    ext.analyze(messages.join("\n"))
+
+    ext.issues
+  end
+
   def target_project_path
     if target_project
       target_project.full_path
