@@ -27,7 +27,7 @@ choose one or the other; there is no particular benefit in combining them.
 
 ## Routing rules
 
-> - [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) added in GitLab 15.4.
+> - [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) introduced in GitLab 15.4.
 
 NOTE:
 Mailer jobs cannot be routed by routing rules, and always go to the

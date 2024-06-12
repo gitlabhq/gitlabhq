@@ -6,7 +6,18 @@ module Gitlab
       PATH_TRAVERSAL_MESSAGE = 'Potential path traversal attempt detected'
       # Query param names known to have string parts detected as path traversal even though
       # they are valid genuine requests
-      EXCLUDED_QUERY_PARAM_NAMES = %w[search search_title term name filter filter_projects note body].freeze
+      EXCLUDED_QUERY_PARAM_NAMES = %w[
+        search
+        search_title
+        term
+        name
+        filter
+        filter_projects
+        note
+        body
+        commit_message
+        content
+      ].freeze
 
       def initialize(app)
         @app = app

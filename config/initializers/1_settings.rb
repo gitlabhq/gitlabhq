@@ -784,6 +784,9 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
+  Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker'] ||= {}
+  Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['job_class'] ||= 'Search::ElasticIndexEmbeddingBulkCronWorker'
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker']['job_class'] ||= 'ElasticIndexInitialBulkCronWorker'

@@ -584,6 +584,23 @@ RSpec.describe ApplicationWorker, feature_category: :shared do
     end
   end
 
+  describe '.with_ip_address_state' do
+    around do |example|
+      Sidekiq::Testing.fake!(&example)
+    end
+
+    let(:ip_address) { '1.1.1.1' }
+
+    it 'sets IP state' do
+      allow(::Gitlab::IpAddressState).to receive(:current).and_return(ip_address)
+
+      worker.with_ip_address_state.perform_async
+
+      expect(Sidekiq::Queues[worker.queue].first).to include('ip_address_state' => ip_address)
+      expect(Sidekiq::Queues[worker.queue].length).to eq(1)
+    end
+  end
+
   context 'when using perform_async/in/at' do
     let(:shard_pool) { 'dummy_pool' }
     let(:shard_name) { 'shard_name' }

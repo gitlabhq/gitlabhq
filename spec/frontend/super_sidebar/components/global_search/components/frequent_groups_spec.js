@@ -84,4 +84,15 @@ describe('FrequentlyVisitedGroups', () => {
 
     expect(spy).toHaveBeenCalledTimes(1);
   });
+
+  describe('events', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('emits action on click', () => {
+      findFrequentItems().vm.$emit('action');
+      expect(wrapper.emitted('action')).toStrictEqual([['FREQUENTLY_VISITED_GROUPS_HANDLE']]);
+    });
+  });
 });

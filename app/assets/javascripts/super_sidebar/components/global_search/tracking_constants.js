@@ -32,3 +32,9 @@ export const EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE =
 export const EVENT_CLICK_RECENT_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE =
   'click_recent_merge_request_result_in_command_palette';
 export const EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE = 'click_user_result_in_command_palette';
+export const EVENT_CLICK_FREQUENT_PROJECT_IN_COMMAND_PALETTE =
+  'click_frequent_project_in_command_palette';
+export const EVENT_CLICK_FREQUENT_GROUP_IN_COMMAND_PALETTE =
+  'click_frequent_group_in_command_palette';
+export const EVENT_CLICK_COMMANDS_SUB_MENU_IN_COMMAND_PALETTE =
+  'click_commands_sub_menu_in_command_palette';

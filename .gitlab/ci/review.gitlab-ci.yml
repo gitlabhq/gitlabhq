@@ -99,8 +99,6 @@ start-review-app-pipeline:
       - OS_VERSION
       - DOCKER_VERSION
       - CHROME_VERSION
-      - BUNDLER_VERSION
-
   # These variables are set in the pipeline schedules.
   # They need to be explicitly passed on to the child pipeline.
   # https://docs.gitlab.com/ee/ci/pipelines/multi_project_pipelines.html#pass-cicd-variables-to-a-downstream-pipeline-by-using-the-variables-keyword

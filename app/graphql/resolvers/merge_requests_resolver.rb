@@ -13,6 +13,9 @@ module Resolvers
       argument :assignee_username, GraphQL::Types::String,
         required: false,
         description: 'Username of the assignee.'
+      argument :assignee_wildcard_id, ::Types::AssigneeWildcardIdEnum,
+        required: false,
+        description: 'Filter by assignee presence. Incompatible with assigneeUsernames and assigneeUsername.'
     end
 
     def self.accept_author
@@ -126,6 +129,8 @@ module Resolvers
         description: 'Title of the milestone.'
     end
 
+    validates mutually_exclusive: [:assignee_username, :assignee_wildcard_id]
+    validates mutually_exclusive: [:reviewer_username, :reviewer_wildcard_id]
     validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
 
     def self.single

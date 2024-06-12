@@ -24062,6 +24062,9 @@ msgstr ""
 msgid "GlobalSearch|Help"
 msgstr ""
 
+msgid "GlobalSearch|I'm looking for"
+msgstr ""
+
 msgid "GlobalSearch|In this project"
 msgstr ""
 
@@ -24084,9 +24087,6 @@ msgid "GlobalSearch|Issues I've created"
 msgstr ""
 
 msgid "GlobalSearch|Issues assigned to me"
-msgstr ""
-
-msgid "GlobalSearch|I’m looking for"
 msgstr ""
 
 msgid "GlobalSearch|Labels"

@@ -13,7 +13,6 @@ import {
   ISSUABLE_CHANGE_LABEL,
   ISSUABLE_COMMENT_OR_REPLY,
   ISSUABLE_EDIT_DESCRIPTION,
-  MR_COPY_SOURCE_BRANCH_NAME,
   ISSUABLE_COPY_REF,
 } from './keybindings';
 
@@ -43,7 +42,6 @@ export default class ShortcutsIssuable {
       [ISSUABLE_CHANGE_LABEL, () => ShortcutsIssuable.openSidebarDropdown('labels')],
       [ISSUABLE_COMMENT_OR_REPLY, ShortcutsIssuable.replyWithSelectedText],
       [ISSUABLE_EDIT_DESCRIPTION, ShortcutsIssuable.editIssue],
-      [MR_COPY_SOURCE_BRANCH_NAME, () => this.copyBranchName()],
       [ISSUABLE_COPY_REF, () => this.copyIssuableRef()],
     ]);
 
@@ -164,17 +162,6 @@ export default class ShortcutsIssuable {
       editBtn.click();
     }, DEBOUNCE_DROPDOWN_DELAY);
     return false;
-  }
-
-  async copyBranchName() {
-    const button = document.querySelector('.js-source-branch-copy');
-    const branchName = button?.dataset.clipboardText;
-
-    if (branchName) {
-      this.branchInMemoryButton.dataset.clipboardText = branchName;
-
-      this.branchInMemoryButton.dispatchEvent(new CustomEvent('click'));
-    }
   }
 
   async copyIssuableRef() {

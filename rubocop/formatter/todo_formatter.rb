@@ -92,7 +92,8 @@ module RuboCop
       def create_todos_retaining_exclusions(inspected_cop_config)
         inspected_cop_config.each do |cop_name, config|
           todo = @todos[cop_name]
-          todo.add_files(config.fetch('Exclude', []).grep(RETAIN_EXCLUSIONS))
+          excluded_files = config['Exclude'] || []
+          todo.add_files(excluded_files.grep(RETAIN_EXCLUSIONS))
         end
       end
 

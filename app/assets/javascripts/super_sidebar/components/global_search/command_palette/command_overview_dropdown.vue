@@ -1,12 +1,17 @@
 <script>
 import { GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
 import { s__ } from '~/locale';
+import { EVENT_CLICK_COMMANDS_SUB_MENU_IN_COMMAND_PALETTE } from '~/super_sidebar/components/global_search/tracking_constants';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'CommandsOverviewDropdown',
   components: { GlCollapsibleListbox, GlSprintf },
+  mixins: [trackingMixin],
   i18n: {
-    header: s__('GlobalSearch|I’m looking for'),
+    header: s__("GlobalSearch|I'm looking for"),
     button: s__('GlobalSearch|Commands %{link1Start}⌘%{link1End} %{link2Start}k%{link2End}'),
   },
   props: {
@@ -26,6 +31,7 @@ export default {
       this.$refs.commandsDropdown.close();
     },
   },
+  EVENT_CLICK_COMMANDS_SUB_MENU_IN_COMMAND_PALETTE,
 };
 </script>
 
@@ -37,6 +43,7 @@ export default {
       :header-text="$options.i18n.header"
       category="tertiary"
       @select="emitSelected"
+      @shown="trackEvent($options.EVENT_CLICK_COMMANDS_SUB_MENU_IN_COMMAND_PALETTE)"
     >
       <template #toggle>
         <button class="gl-border-0 gl-rounded-base">

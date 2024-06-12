@@ -13,7 +13,7 @@ import {
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TYPE_TARGET_BRANCH,
-  TOKEN_TYPE_MR_ASSIGNEE,
+  TOKEN_TYPE_ASSIGNEE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
 import { getSortOptions } from '~/issues/list/utils';
@@ -109,7 +109,7 @@ describe('Merge requests list app', () => {
 
       it('does not have preloaded users when gon.current_user_id does not exist', () => {
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_MR_ASSIGNEE },
+          { type: TOKEN_TYPE_ASSIGNEE },
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [] },
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_MILESTONE },
@@ -121,7 +121,7 @@ describe('Merge requests list app', () => {
 
     describe('when all tokens are available', () => {
       const urlParams = {
-        mr_assignee_username: 'bob',
+        assignee_username: 'bob',
         draft: 'yes',
         milestone_title: 'milestone',
         'target_branches[]': 'branch-a',
@@ -153,7 +153,7 @@ describe('Merge requests list app', () => {
         ];
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_MR_ASSIGNEE },
+          { type: TOKEN_TYPE_ASSIGNEE },
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_MILESTONE },
@@ -164,7 +164,7 @@ describe('Merge requests list app', () => {
 
       it('pre-displays tokens that are in the url search parameters', () => {
         expect(findIssuableList().props('initialFilterValue')).toMatchObject([
-          { type: TOKEN_TYPE_MR_ASSIGNEE },
+          { type: TOKEN_TYPE_ASSIGNEE },
           { type: TOKEN_TYPE_DRAFT },
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_TARGET_BRANCH },

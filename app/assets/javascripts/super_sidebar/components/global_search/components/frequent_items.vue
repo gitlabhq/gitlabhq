@@ -107,6 +107,7 @@ export default {
         :key="item.forDropdown.id"
         :item="item.forDropdown"
         class="show-on-focus-or-hover--context show-hover-layover"
+        @action="$emit('action')"
       >
         <template #list-item><frequent-item :item="item.forRenderer" /></template>
       </gl-disclosure-dropdown-item>

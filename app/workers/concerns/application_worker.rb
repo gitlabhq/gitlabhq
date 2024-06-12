@@ -203,6 +203,10 @@ module ApplicationWorker
       end
     end
 
+    def with_ip_address_state
+      set(ip_address_state: ::Gitlab::IpAddressState.current)
+    end
+
     private
 
     def do_push_bulk(args_list)

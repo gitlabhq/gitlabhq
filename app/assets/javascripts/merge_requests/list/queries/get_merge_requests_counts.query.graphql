@@ -1,5 +1,7 @@
 query getMergeRequestsCount(
   $fullPath: ID!
+  $assigneeWildcardId: AssigneeWildcardId
+  $assigneeUsernames: String
   $milestoneTitle: String
   $milestoneWildcardId: MilestoneWildcardId
 ) {
@@ -7,6 +9,8 @@ query getMergeRequestsCount(
     id
     openedMergeRequests: mergeRequests(
       state: opened
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
     ) {
@@ -14,6 +18,8 @@ query getMergeRequestsCount(
     }
     mergedMergeRequests: mergeRequests(
       state: merged
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
     ) {
@@ -21,6 +27,8 @@ query getMergeRequestsCount(
     }
     closedMergeRequests: mergeRequests(
       state: closed
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
     ) {
@@ -28,6 +36,8 @@ query getMergeRequestsCount(
     }
     allMergeRequests: mergeRequests(
       state: all
+      assigneeUsername: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
     ) {

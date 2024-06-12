@@ -24,7 +24,7 @@ import {
   TOKEN_TITLE_SOURCE_BRANCH,
   TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TITLE_ASSIGNEE,
-  TOKEN_TYPE_MR_ASSIGNEE,
+  TOKEN_TYPE_ASSIGNEE,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TYPE_MILESTONE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -178,7 +178,7 @@ export default {
 
       return [
         {
-          type: TOKEN_TYPE_MR_ASSIGNEE,
+          type: TOKEN_TYPE_ASSIGNEE,
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
           token: UserToken,

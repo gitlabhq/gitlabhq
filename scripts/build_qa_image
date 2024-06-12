@@ -87,7 +87,6 @@ docker buildx build \
   --build-arg=CHROME_VERSION="${CHROME_VERSION}" \
   --build-arg=DOCKER_VERSION="${DOCKER_VERSION}" \
   --build-arg=RUBY_VERSION="${RUBY_VERSION}" \
-  --build-arg=BUNDLER_VERSION="${BUNDLER_VERSION}" \
   --build-arg=BUILD_OS="${BUILD_OS}" \
   --build-arg=OS_VERSION="${OS_VERSION}" \
   --build-arg=QA_BUILD_TARGET="${QA_BUILD_TARGET}" \

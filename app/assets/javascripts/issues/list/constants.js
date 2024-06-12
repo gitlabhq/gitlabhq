@@ -12,7 +12,6 @@ import {
   OPERATOR_AFTER,
   OPERATOR_BEFORE,
   TOKEN_TYPE_ASSIGNEE,
-  TOKEN_TYPE_MR_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_CONTACT,
@@ -212,26 +211,6 @@ export const filtersMap = {
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'in',
-      },
-    },
-  },
-  [TOKEN_TYPE_MR_ASSIGNEE]: {
-    [API_PARAM]: {
-      [NORMAL_FILTER]: 'assigneeUsername',
-      [SPECIAL_FILTER]: 'assigneeWildcardId',
-      [ALTERNATIVE_FILTER]: 'assigneeId',
-    },
-    [URL_PARAM]: {
-      [OPERATOR_IS]: {
-        [NORMAL_FILTER]: 'mr_assignee_username',
-        [SPECIAL_FILTER]: 'mr_assignee_id',
-        [ALTERNATIVE_FILTER]: 'mr_assignee_username',
-      },
-      [OPERATOR_NOT]: {
-        [NORMAL_FILTER]: 'not[mr_assignee_username]',
-      },
-      [OPERATOR_OR]: {
-        [NORMAL_FILTER]: 'or[mr_assignee_username]',
       },
     },
   },

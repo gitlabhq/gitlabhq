@@ -116,6 +116,19 @@ graph TD;
     end
 ```
 
+### Configuration
+
+The Topology Service will use `config.toml` to configure all service parameters.
+
+#### List of Cells
+
+```toml
+[[cells]]
+id = 1
+address = "cell-us-1.gitlab.com"
+session_prefix = "cell1:"
+```
+
 ### Sequence Service
 
 ```proto
@@ -216,6 +229,7 @@ endpoints for Claims within a transaction.
 enum ClassifyType {
     Route = 1;
     Login = 2;
+    SessionPrefix = 3;
 }
 
 message ClassifyRequest {
@@ -279,6 +293,27 @@ sequenceDiagram
 
 The sign-in request going to Cell 1 might at some point later be round-rubin routed to all Cells,
 as each Cell should be able to classify user and redirect it to correct Cell.
+
+#### Session cookie classification workflow with Classify Service
+
+```mermaid
+sequenceDiagram
+    participant User1
+    participant HTTP Router
+    participant TS / Classify Service
+    participant Cell 1
+    participant Cell 2
+
+    User1->> HTTP Router :GET "/gitlab-org/gitlab/-/issues"<br>Cookie: _gitlab_session=cell1:df1f861a9e609
+    Note over HTTP Router: Extract "cell1" from `_gitlab_session`
+    HTTP Router->> TS / Classify Service: Classify(SessionPrefix) "cell1"
+    TS / Classify Service->>HTTP Router: gitlab-org/gitlab => Cell 1
+    HTTP Router->> Cell 1: GET "/gitlab-org/gitlab/-/issues"<br>Cookie: _gitlab_session=cell1:df1f861a9e609
+    Cell 2->> HTTP Router: Issues Page Response
+    HTTP Router->>User1: Issues Page Response
+```
+
+The session cookie will be validated with `session_prefix` value.
 
 ### Metadata Service (**future**, implemented for Cells 1.5)
 
@@ -382,8 +417,6 @@ sequenceDiagram
 ```
 
 ## Reasons
-
-The original [Cells 1.0](iterations/cells-1.0.md) described [Primary Cell API](iterations/cells-1.0.md#primary-cell), this changes this decision to implement Topology Service for the following reasons:
 
 1. Provide stable and well described set of cluster-wide services that can be used
    by various services (HTTP Routing Service, SSH Routing Service, each Cell).

@@ -80,3 +80,6 @@ export const OVERLAY_PROJECT = s__('GlobalSearch|Go to project %{kbdStart}↵%{k
 export const OVERLAY_FILE = s__('GlobalSearch|Go to file %{kbdStart}↵%{kbdEnd}');
 
 export const OVERLAY_GOTO = s__('GlobalSearch|Go to %{kbdStart}↵%{kbdEnd}');
+
+export const FREQUENTLY_VISITED_PROJECTS_HANDLE = 'FREQUENTLY_VISITED_PROJECTS_HANDLE';
+export const FREQUENTLY_VISITED_GROUPS_HANDLE = 'FREQUENTLY_VISITED_GROUPS_HANDLE';

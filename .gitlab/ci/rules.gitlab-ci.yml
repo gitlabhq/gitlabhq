@@ -180,8 +180,8 @@
 # Changes patterns #
 ####################
 .ci-patterns: &ci-patterns
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
   - "scripts/rspec_helpers.sh"
 
 .ci-build-images-patterns: &ci-build-images-patterns
@@ -340,8 +340,8 @@
   - "{,ee/,jh/}{bin,config,db,elastic,gems,generator_templates,lib}/**/*"
   - "{,ee/,jh/}spec/**/*"
   # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
   - "*_VERSION"
   - "scripts/rspec_helpers.sh"
   # Mapped patterns (see tests.yml)
@@ -455,8 +455,8 @@
   # Auto-generated files
   - "doc/api/graphql/reference/*"
   # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
@@ -481,8 +481,8 @@
   # Auto-generated files
   - "doc/api/graphql/reference/*"
   # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
@@ -514,8 +514,8 @@
   # Auto-generated files
   - "doc/api/graphql/reference/*"
   # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"
@@ -543,8 +543,8 @@
   # Auto-generated files
   - "doc/api/graphql/reference/*"
   # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
   # Backstage changes
   - "Dangerfile"
   - "danger/**/*"
@@ -582,8 +582,8 @@
   # Auto-generated files
   - "doc/api/graphql/reference/*"
   # CI changes
-  - ".gitlab-ci.yml"
-  - ".gitlab/ci/**/*"
+  - "{,jh/}.gitlab-ci.yml"
+  - "{,jh/}.gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
   - "doc/index.md"

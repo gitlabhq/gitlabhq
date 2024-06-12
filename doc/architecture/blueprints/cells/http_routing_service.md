@@ -49,8 +49,8 @@ For example:
 
 1. **GraphQL and other ambiguous endpoints.**
 
-    Most endpoints have a unique sharding key: the Organization, which directly or indirectly (via a Group or Project) can be used to classify endpoints.
-    Some endpoints are ambiguous in their usage (they don't encode the sharding key), or the sharding key is stored deep in the payload.
+    Most endpoints have a unique classification key: the Organization, which directly or indirectly (via a Group or Project) can be used to classify endpoints.
+    Some endpoints are ambiguous in their usage (they don't encode the classification key), or the classification key is stored deep in the payload.
     In these cases, we need to decide how to handle endpoints like `/api/graphql`.
 
 1. **Small.**
@@ -207,9 +207,9 @@ The Routing Service implements the following design guidelines:
    - rules allows to match by any criteria: header, content of the header, or route path.
 1. Agnostic:
    - Routing service is not aware of high-level concepts like organizations.
-   - The classification is done per-specification provided in a rules, to find the sharding key.
-   - The sharding key result is cached.
-   - The single sharding key cached is used to handle many similar requests.
+   - The classification is done per-specification provided in a rules, to find the classification key.
+   - The classification key result is cached.
+   - The single classification key cached is used to handle many similar requests.
 
 The following diagram shows how a user request routes through DNS to the Routing Service deployed
 as Cloudflare Worker and the router chooses a cell to send the request to.
@@ -241,29 +241,10 @@ graph TD;
 
 Each Cell will publish a precompiled list of routing rules that will be consumed by the Routing Service:
 
-- The routing rules describe how to decode the request, find the sharding key, and make the routing decision.
-- The routing rules are compiled during the deployment of the Routing Service.
-  - The deployment process fetches latest version of the routing rules from each Cell
-    that is part of Routing Service configuration.
-  - The compilation process merges the routing rules from all Cells.
-  - The conflicting rules prevent routing service from being compiled / started.
-  - Each routing rule entry has a unique identifier to ease the merge.
-  - The Routing Service would be re-deployed only if the list of rules was changed,
-    which shouldn't happen frequently, because we expect the majority of newly added endpoints
-    to already adhere to the prior route rules.
-- The configuration describes from which Cells the routing rules need to be fetched during deploy.
-- The published routing rules might make routing decision based on the secret. For example, if the session cookie
-  or authentication token has prefix `c100-` all requests are to be forwarded to the given Cell.
-- The Cell does publish routing rules at `/api/v4/internal/cells/route_rules.json`.
-- The rules published by Cell only include endpoints that the particular Cell can process.
-- The Cell might request to perform dynamic classification based on sharding key, by configuring
-  routing rules to call `/api/v4/internal/cells/classify`.
-- The routing rules should use `prefix` as a way to speed up classification. During the compilation phase
-  the routing service transforms all found prefixes into a decision tree to speed up any subsequent regex matches.
-- Some of the prefixes need to be Cell independent, example Personal Access Tokens prefix need to be organization bound and not Cell bound.
-  We want the ability to move an organization from 1 cell to another without changing the Personal Access Token or any other token.
-- The routing rules is ideally compiled into source code to avoid expensive parsing and evaluation of the rules
-  dynamically as part of deployment.
+- The routing rules describe how to decode the request, find the classification key, and make the routing decision.
+- The routing rules are static and defined ahead of time as part of HTTP Router deployment.
+- The routing rules are defined as a JSON document describing in-order a sequence of operation.
+- The routing rules might be compiled to application code to provide a way faster execution scheme.
 
 The routing rules JSON structure describes all matchers:
 
@@ -271,74 +252,65 @@ The routing rules JSON structure describes all matchers:
 {
     "rules": [
         {
-            "id": "<unique-identifier>",
             "cookies": {
                 "<cookie_name>": {
-                    "prefix": "<match-given-prefix>",
                     "match_regex": "<regex_match>"
                 },
                 "<cookie_name2>": {
-                    "prefix": "<match-given-prefix>",
                     "match_regex": "<regex_match>"
                 }
             },
             "headers": {
                 "<header_name>": {
-                    "prefix": "<match-given-prefix>",
                     "match_regex": "<regex_match>"
                 },
                 "<header_name2>": {
-                    "prefix": "<match-given-prefix>",
                     "match_regex": "<regex_match>"
                 },
             },
             "path": {
-                "prefix": "<match-given-prefix>",
                 "match_regex": "<regex_match>"
             },
             "method": ["<list_of_accepted_methods>"],
 
-            // If many rules are matched, define which one wins
-            "priority": 1000,
-
-            // Accept request and proxy to the Cell in question
-            "action": "proxy",
-
-            // Classify request based on regex matching groups
             "action": "classify",
             "classify": {
-                "keys": ["list_of_regex_match_capture_groups"]
+                "type": "session_prefix|project_path|...",
+                "value": "string_build_from_regex_matchers"
             }
         }
     ]
 }
 ```
 
-Example of the routing rules published by the Cell 100 that makes routing decision based session cookie, and secret.
-The high priority is assigned since the routing rules is secret-based, and should take precedence before all other matchers:
+Example of the routing rules that makes routing decision based session cookie, and secret:
 
 ```json
 {
     "rules": [
         {
-            "id": "t4mkd5ndsk58si6uwwz7rdavil9m2hpq",
             "cookies": {
                 "_gitlab_session": {
-                    "prefix": "c100-" // accept `_gitlab_session` that are prefixed with `c100-`
+                    "match_regex": "^(?<cell_name>cell.*:)" // accept `_gitlab_session` that are prefixed with `cell1:`
                 }
             },
-            "action": "proxy",
-            "priority": 1000
+            "action": "classify",
+            "classify": {
+                "type": "session_prefix",
+                "value": "${cell_name}"
+            }
         },
         {
-            "id": "jcshae4d4dtykt8byd6zw1ecccl5dkts",
             "headers": {
                 "GITLAB_TOKEN": {
-                    "prefix": "C100_" // accept `GITLAB_TOKEN` that are prefixed with `C100_`
+                    "match_regex": "^(?<cell_name>cell.*:)" // accept `_gitlab_session` that are prefixed with `cell1:`
                 }
             },
-            "action": "proxy",
-            "priority": 1000
+            "action": "classify",
+            "classify": {
+                "type": "token_prefix",
+                "value": "${cell_name}"
+            }
         }
     ]
 }
@@ -350,14 +322,13 @@ Example of the routing rules published by all Cells that makes routing decision 
 {
     "rules": [
         {
-            "id": "c9scvaiwj51a75kzoh917uwtnw8z4ebl",
             "path": {
-                "prefix": "/api/v4/projects/", // speed-up rule matching
                 "match_regex": "^/api/v4/projects/(?<project_id_or_path_encoded>[^/]+)(/.*)?$"
             },
             "action": "classify",
             "classify": {
-                "keys": ["project_id_or_path_encoded"]
+                "type": "project_id_or_path",
+                "value": "${project_id_or_path_encoded}"
             }
         }
     ]
@@ -366,21 +337,16 @@ Example of the routing rules published by all Cells that makes routing decision 
 
 ### Classification
 
-Each Cell does implement classification endpoint:
+The classification is implemented by [the Classify Service of the Topology Service](topology_service.md#classify-service).
 
-- The classification endpoint is at `/api/v4/internal/cells/classify` (or gRPC endpoint).
-- The classification endpoint accepts a list of the sharding keys. Sharding keys are decoded from request,
-  based on the routing rules provided by the Cell.
-- The endpoint returns other equivalent sharding keys to pollute cache for similar requests.
+- The classification endpoint uses REST (with mTLS) to secure access.
+- The classification endpoint returns only cell name to which information should be routed.
+- The classification could return other equivalent classification keys to pollute cache for similar requests.
   This is to ensure that all similar requests can be handled quickly without having to classify each time.
-- Routing Service tracks the health of Cells, and issues a `classify` request to Cells based on weights,
-  health of the Cell, or other defined criteria. Weights would indicate which Cell is preferred to perform the
-  classification of sharding keys.
-- Routing Service retries the `classify` call for a reasonable amount of time.
-  The repetitive failure of Cell to `classify` is indicative of Cell being unhealthy.
-- The `classify` result is cached regardless of returned `action` (proxy or reject).
+- The HTTP Router retries the `classify` call for a reasonable amount of time.
+- The classification for a given value is cached regardless of returned response (positive or negative).
   The rejected classification is cached to prevent excessive amount of
-  requests for sharding keys that are not found.
+  requests for classification keys that are not found.
 - The cached response is for time defined by `expiry` and `refresh`.
   - The `expiry` defines when the item is removed from cache unless used.
   - The `refresh` defines when the item needs to be reclassified if used.
@@ -392,65 +358,46 @@ For the above example:
 1. It selects the above `rule` for this request, which requests `classify` for `project_id_or_path_encoded`.
 1. It decodes `project_id_or_path_encoded` to be `1000`.
 1. Checks the cache if there's `project_id_or_path_encoded=1000` associated to any Cell.
-1. Sends the request to `/api/v4/internal/cells/classify` if no Cells was found in cache.
-1. Rails responds with the Cell holding the given project, and also all other equivalent sharding keys
+1. Sends the request to `/api/v1/classify` (`type=project_id_or_path`, `value=1000`) if no Cells was found in cache.
+1. Topology Service responds with the Cell holding the given project, and also all other equivalent classification keys
    for the resource that should be put in the cache.
 1. Routing Service caches for the duration specified in configuration, or response.
 
 ```json
-# POST /api/v4/internal/cells/classify
+# POST /api/v1/classify
 ## Request:
 {
-    "metadata": {
-        "rule_id": "c9scvaiwj51a75kzoh917uwtnw8z4ebl",
-        "headers": {
-            "all_request_headers": "value"
-        },
-        "method": "GET",
-        "path": "/api/v4/projects/100/issues"
-    },
-    "keys": {
-        "project_id_or_path_encoded": 100
-    }
+    "type": "project_id_or_path",
+    "value": 1000
 }
 
 ## Response:
 {
     "action": "proxy",
     "proxy": {
-        "name": "cell_1",
-        "url": "https://cell1.gitlab.com"
+        "address": "cell1.gitlab.com"
     },
-    "ttl": "10 minutes",
-    "matched_keys": [ // list of all equivalent keys that should be put in the cache
-        { "project_id_or_path_encoded": 100 },
-        { "project_id_or_path_encoded": "gitlab-org%2Fgitlab" },
-        { "project_full_path": "gitlab-org/gitlab" },
-        { "namespace_full_path": "gitlab-org" },
-        { "namespace_id": 10 },
-        { "organization_full_path": "gitlab-inc" },
-        { "organization_id": 50 },
+    "cache": {
+        "refresh": "10 minutes",
+        "expiry": "10 minutes"
+    },
+    "other_classifications": [ // list of all equivalent keys that should be put in the cache
+        { "type": "session_prefix", "value": "cell1" },
+        { "type": "project_full_path", "value": "gitlab-org/gitlab" },
+        { "type": "project_full_path", "value": "gitlab-org/gitlab" },
+        { "type": "namespace_full_path", "value": "gitlab-org" }
     ]
 }
 ```
 
-The following code represents a negative response when a sharding key was not found:
+The following code represents a negative response when a classification key was not found:
 
 ```json
 # POST /api/v4/internal/cells/classify
 ## Request:
 {
-    "metadata": {
-        "rule_id": "c9scvaiwj51a75kzoh917uwtnw8z4ebl",
-        "headers": {
-            "all_request_headers": "value"
-        },
-        "method": "GET",
-        "path": "/api/v4/projects/100/issues"
-    },
-    "keys": {
-        "project_id_or_path_encoded": 100
-    }
+    "type": "project_id_or_path",
+    "value": 1000
 }
 
 ## Response:
@@ -462,49 +409,16 @@ The following code represents a negative response when a sharding key was not fo
     "cache": {
         "refresh": "10 minutes",
         "expiry": "10 minutes"
-    },
-    "matched_keys": [ // list of all equivalent keys that should be put in the cache
-        { "project_id_or_path_encoded": 100 },
-    ]
+    }
 }
 ```
 
 ### Configuration
 
-The Routing Service will use the configuration similar to this:
+All configuration will be provided via environment variables:
 
-```toml
-[[cells]]
-name=cell_1
-url=https://cell1.gitlab.com
-key=ABC123
-classify_weight=100
-
-[[cells]]
-name=cell_2
-url=https://cell2.gitlab.com
-key=CDE123
-classify_weight=1
-
-[cache.memory.classify]
-refresh_time=10 minutes
-expiry_time=1 hour
-
-[cache.external.classify]
-refresh_time=30 minutes
-expiry_time=6 hour
-```
-
-We assume that this is acceptable to provide a static list of Cells, because:
-
-1. Static: Cells provisioned are unlikely to be dynamically provisioned and decommissioned.
-1. Good enough: We can manage such list even up to 100 Cells.
-1. Simple: We don't have to implement robust service discovery in the service,
-   and we have guarantee that this list is always exhaustive.
-
-The configuration describes all Cells, URLs, zero-trust keys, and weights,
-and how long requests should be cached. The `classify_weight` defines how often
-the Cell should receive classification requests versus other Cells.
+- HTTP Router will only configure an address to Topology Service
+- The mTLS will be used when connecting to Topology Service to authentication / authorization.
 
 ### Deployment
 
@@ -544,10 +458,10 @@ There are several phases to fully deploy the HTTP Routing service to GitLab.com.
 1. `gitlab-org` is a top-level namespace and lives in `Cell US0` in the `GitLab.com Public` organization.
 1. `my-company` is a top-level namespace and lives in `Cell EU0` in the `my-organization` organization.
 
-### Router configured to perform static routing
+### Router configured to perform the following routing
 
 1. The Cell US0 supports all other public-facing projects.
-1. The Cells is configured to generate all secrets and session cookies with a prefix like `eu0_` for Cell EU0.
+1. The Cell EU0 configured to generate all secrets and session cookies with a prefix like `cell_eu0_`.
    1. The Personal Access Token is scoped to Organization, and because the Organization is part only of a single Cell,
       the PATs generated are prefixed with Cell identifier.
    1. The Session Cookie encodes Organization in-use, and because the Organization is part only of a single Cell,
@@ -555,53 +469,40 @@ There are several phases to fully deploy the HTTP Routing service to GitLab.com.
 1. The Cell EU0 allows only private organizations, groups, and projects.
 1. The Cell US0 is a target Cell for all requests unless explicitly prefixed.
 
-Cell US0:
+Router rules:
 
 ```json
 {
     "rules": [
         {
-            "id": "tjh147se67wadjzum7onwqiad2b75uft",
-            "path": {
-                "prefix": "/"
-            },
-            "action": "proxy",
-            "priority": 1
-        }
-    ]
-}
-```
-
-Cell EU0:
-
-```json
-{
-    "rules": [
-        {
-            "id": "t4mkd5ndsk58si6uwwz7rdavil9m2hpq",
             "cookies": {
                 "_gitlab_session": {
-                    "prefix": "eu0_"
+                    "regex_match": "^(?<cell_name>cell.*:)"
                 }
             },
-            "path": {
-                "prefix": "/"
-            },
-            "action": "proxy",
-            "priority": 1000
+            "action": "classify",
+            "classify": {
+                "type": "session_prefix",
+                "value": "${cell_name}"
+            }
         },
         {
-            "id": "jcshae4d4dtykt8byd6zw1ecccl5dkts",
             "headers": {
                 "GITLAB_TOKEN": {
-                    "prefix": "eu0_"
+                    "regex_match": "^(?<cell_name>cell.*-)"
                 }
             },
-            "path": {
-                "prefix": "/"
-            },
-            "action": "proxy",
-            "priority": 1000
+            "action": "classify",
+            "classify": {
+                "type": "token_prefix",
+                "value": "${cell_name}"
+            }
+        },
+        {
+            "action": "classify",
+            "classify": {
+                "type": "first_cell",
+            }
         }
     ]
 }
@@ -609,17 +510,24 @@ Cell EU0:
 
 #### Goes to `/my-company/my-project` while logged in into Cell EU0
 
-1. Because user switched the Organization to `my-company`, its session cookie is prefixed with `eu0_`.
-1. User sends request `/my-company/my-project`, and because the cookie is prefixed with `eu0_` it is directed to Cell EU0.
+1. Because user switched the Organization to `my-company`, its session cookie is prefixed with `cell_eu0_`.
+1. User sends request `/my-company/my-project`, and because the cookie is prefixed with `cell_eu0_` it is directed to Cell EU0.
 1. `Cell EU0` returns the correct response.
 
 ```mermaid
 sequenceDiagram
     participant user as User
     participant router as Router
+    participant cache as Cache
+    participant ts as Topology Service
     participant cell_eu0 as Cell EU0
     participant cell_eu1 as Cell EU1
-    user->>router: GET /my-company/my-project<br/>_gitlab_session=eu0_uwwz7rdavil9
+    user->>router: GET /my-company/my-project<br/>_gitlab_session=cell_eu0_uwwz7rdavil9
+    router->>+cache: GetClassify(type=session_prefix, value=cell_eu0)
+    cache->>-router: NotFound
+    router->>+ts: Classify(type=session_prefix, value=cell_eu0)
+    ts->>-router: Proxy(address="cell-eu0.gitlab.com")
+    router->>cache: Cache(type=session_prefix, value=cell_eu0) = Proxy(address="cell-eu0.gitlab.com"))
     router->>cell_eu0: GET /my-company/my-project
     cell_eu0->>user: <h1>My Project...
 ```
@@ -628,18 +536,24 @@ sequenceDiagram
 
 1. User visits `/my-company/my-project`, and because it does not have session cookie, the request is forwarded to `Cell US0`.
 1. User signs in.
-1. GitLab sees that user default organization is `my-company`, so it assigns session cookie with `eu0_` to indicate that
+1. GitLab sees that user default organization is `my-company`, so it assigns session cookie with `cell_eu0_` to indicate that
    user is meant to interact with `my-company`.
 1. User sends request to `/my-company/my-project` again, now with the session cookie that proxies to `Cell EU0`.
 1. `Cell EU0` returns the correct response.
+
+NOTE:
+The `cache` is intentionally skipped here to reduce diagram complexity.
 
 ```mermaid
 sequenceDiagram
     participant user as User
     participant router as Router
+    participant ts as Topology Service
     participant cell_us0 as Cell US0
     participant cell_eu0 as Cell EU0
     user->>router: GET /my-company/my-project
+    router->>ts: Classify(type=first_cell)
+    ts->>router: Proxy(address="cell-us0.gitlab.com")
     router->>cell_us0: GET /my-company/my-project
     cell_us0->>user: HTTP 302 /users/sign_in?redirect=/my-company/my-project
     user->>router: GET /users/sign_in?redirect=/my-company/my-project
@@ -647,157 +561,39 @@ sequenceDiagram
     cell_us0-->>user: <h1>Sign in...
     user->>router: POST /users/sign_in?redirect=/my-company/my-project
     router->>cell_us0: POST /users/sign_in?redirect=/my-company/my-project
-    cell_us0->>user: HTTP 302 /my-company/my-project<br/>_gitlab_session=eu0_uwwz7rdavil9
-    user->>router: GET /my-company/my-project<br/>_gitlab_session=eu0_uwwz7rdavil9
-    router->>cell_eu0: GET /my-company/my-project<br/>_gitlab_session=eu0_uwwz7rdavil9
+    cell_us0->>user: HTTP 302 /my-company/my-project<br/>_gitlab_session=cell_eu0_uwwz7rdavil9
+    user->>router: GET /my-company/my-project<br/>_gitlab_session=cell_eu0_uwwz7rdavil9
+    router->>ts: Classify(type=session_prefix, value=cell_eu0)
+    ts->>router: Proxy(address="cell-eu0.gitlab.com")
+    router->>cell_eu0: GET /my-company/my-project<br/>_gitlab_session=cell_eu0_uwwz7rdavil9
     cell_eu0->>user: <h1>My Project...
 ```
 
 #### Goes to `/gitlab-org/gitlab` after last step
 
-User visits `/my-company/my-project`, and because it does not have a session cookie, the request is forwarded to `Cell US0`.
-
-```mermaid
-sequenceDiagram
-    participant user as User
-    participant router as Router
-    participant cell_eu0 as Cell EU0
-    participant cell_us0 as Cell US0
-    user->>router: GET /gitlab-org/gitlab<br/>_gitlab_session=eu0_uwwz7rdavil9
-    router->>cell_eu0: GET /gitlab-org/gitlab
-    cell_eu0->>user: HTTP 404
-```
-
-### Router configured to perform dynamic routing based on classification
-
-The Cells publish route rules that allows to classify the requests.
-
-Cell US0 and EU0:
-
-```json
-{
-    "rules": [
-        {
-            "id": "tjh147se67wadjzum7onwqiad2b75uft",
-            "path": {
-                "prefix": "/",
-                "regex": "^/(?top_level_group)[^/]+(/.*)?$",
-            },
-            "action": "classify",
-            "classify": {
-                "keys": ["top_level_group"]
-            }
-        },
-        {
-            "id": "jcshae4d4dtykt8byd6zw1ecccl5dkts",
-            "path": {
-                "prefix": "/"
-            },
-            "action": "proxy"
-        }
-    ]
-}
-```
-
-#### Goes to `/my-company/my-project` while logged in into Cell EU0
-
-1. The `/my-company/my-project/` is visited.
-1. Router decodes sharding key `top_level_group=my-company`.
-1. Router checks if this sharding key is cached.
-1. Because it is not, the classification request is sent to a random Cell to `/classify`.
-1. The response of classify is cached.
-1. The request is then proxied to Cell returned by classification.
+User visits `/gitlab-org/gitlab`, and because it does have a session cookie, the request is forwarded to `Cell EU0`.
+There is no need to ask Topology Service, since the session cookie is cached.
 
 ```mermaid
 sequenceDiagram
     participant user as User
     participant router as Router
     participant cache as Cache
-    participant cell_us0 as Cell US0
+    participant ts as Topology Service
     participant cell_eu0 as Cell EU0
-    user->>router: GET /my-company/my-project
-    router->>cache: CACHE_GET: top_level_group=my-company
-    cache->>router: CACHE_NOT_FOUND
-    router->>cell_us0: POST /api/v4/internal/cells/classify<br/>top_level_group=my-company
-    cell_us0->>router: CLASSIFY: top_level_group=my-company, cell=cell_eu0
-    router->>cache: CACHE_SET: top_level_group=my-company, cell=cell_eu0
+    participant cell_eu1 as Cell EU1
+    user->>router: GET /my-company/my-project<br/>_gitlab_session=cell_eu0_uwwz7rdavil9
+    router->>+cache: GetClassify(type=session_prefix, value=cell_eu0)
+    cache->>-router: Proxy(address="cell-eu0.gitlab.com"))
     router->>cell_eu0: GET /my-company/my-project
     cell_eu0->>user: <h1>My Project...
-```
-
-### Goes to `/my-company/my-project` while not logged in
-
-1. The `/my-company/my-project/` is visited.
-1. Router decodes sharding key `top_level_group=my-company`.
-1. Router checks if this sharding key is cached.
-1. Because it is not, the classification request is sent to a random Cell to `/classify`.
-1. The response of `classify` is cached.
-1. The request is then proxied to Cell returned by classification.
-1. Because project is private, user is redirected to sign in.
-1. The sign-in since is defined to be handled by all Cells, so it is proxied to a random Cell.
-1. User visits the `/my-company/my-project/` again after logging in.
-1. The `top_level_group=my-company` is proxied to the correct Cell.
-
-```mermaid
-sequenceDiagram
-    participant user as User
-    participant router as Router
-    participant cache as Cache
-    participant cell_us0 as Cell US0
-    participant cell_eu0 as Cell EU0
-    user->>router: GET /my-company/my-project
-    router->>cache: CACHE_GET: top_level_group=my-company
-    cache->>router: CACHE_NOT_FOUND
-    router->>cell_us0: POST /api/v4/internal/cells/classify<br/>top_level_group=my-company
-    cell_us0->>router: CLASSIFY: top_level_group=my-company, cell=cell_eu0
-    router->>cache: CACHE_SET: top_level_group=my-company, cell=cell_eu0
-    router->>cell_eu0: GET /my-company/my-project
-    cell_eu0->>user: HTTP 302 /users/sign_in?redirect=/my-company/my-project
-    user->>router: GET /users/sign_in?redirect=/my-company/my-project
-    router->>cell_us0: GET /users/sign_in?redirect=/my-company/my-project
-    cell_us0-->>user: <h1>Sign in...
-    user->>router: POST /users/sign_in?redirect=/my-company/my-project
-    router->>cell_eu0: POST /users/sign_in?redirect=/my-company/my-project
-    cell_eu0->>user: HTTP 302 /my-company/my-project
-    user->>router: GET /my-company/my-project
-    router->>cache: CACHE_GET: top_level_group=my-company
-    cache->>router: CACHE_FOUND: cell=cell_eu0
-    router->>cell_eu0: GET /my-company/my-project
-    cell_eu0->>user: <h1>My Project...
-```
-
-#### Goes to `/gitlab-org/gitlab` after last step
-
-1. Because the `/gitlab-org` is not found in cache, it will be classified and then directed to correct Cell.
-
-```mermaid
-sequenceDiagram
-    participant user as User
-    participant router as Router
-    participant cache as Cache
-    participant cell_us0 as Cell US0
-    participant cell_eu0 as Cell EU0
-    user->>router: GET /gitlab-org/gitlab
-    router->>cache: CACHE_GET: top_level_group=gitlab-org
-    cache->>router: CACHE_NOT_FOUND
-    router->>cell_us0: POST /api/v4/internal/cells/classify<br/>top_level_group=gitlab-org
-    cell_us0->>router: CLASSIFY: top_level_group=gitlab-org, cell=cell_us0
-    router->>cache: CACHE_SET: top_level_group=gitlab-org, cell=cell_us0
-    router->>cell_us0: GET /gitlab-org/gitlab
-    cell_us0->>user: <h1>My Project...
 ```
 
 ### Performance and reliability considerations
 
-- It is expected that each Cell can classify all sharding keys.
-- Alternatively the classification could be done by Cluster-wide Data Provider
-  if it would own all data required to classify.
-- The published routing rules allow to define static criteria, allowing to make routing decision
-  only on a secret. As a result, the Routing Service doesn't add any latency
-  for request processing, and superior resiliency.
-- It is expected that there will be penalty when learning new sharding key. However,
+- It is expected that there will be penalty when learning new classification key. However,
   it is expected that multi-layer cache should provide a very high cache-hit-ratio,
-  due to low cardinality of sharding key. The sharding key would effectively be mapped
+  due to low cardinality of classification key. The classification key would effectively be mapped
   into resource (organization, group, or project), and there's a finite amount of those.
 
 ## Alternatives
@@ -809,7 +605,7 @@ describes an approach where Cell answers with `X-Gitlab-Cell-Redirect` to redire
 
 - This is based on a need to buffer the whole request (headers + body) which is very memory intensive.
 - This proposal does not provide an easy way to handle mixed deployment of Cells, where Cells might be running different versions.
-- This proposal likely requires caching significantly more information, since it is based on requests, rather than on decoded sharding keys.
+- This proposal likely requires caching significantly more information, since it is based on requests, rather than on decoded classification keys.
 
 ### Learn request
 
@@ -819,7 +615,7 @@ is done in a single go in a form of pre-flight check `/api/v4/internal/cells/lea
 
 - This makes the whole routes learning dynamic, and dependent on availability of the Cells.
 - This proposal does not provide an easy way to handle mixed deployment of Cells, where Cells might be running different versions.
-- This proposal likely requires caching significantly more information, since it is based on requests, rather than on decoded sharding keys.
+- This proposal likely requires caching significantly more information, since it is based on requests, rather than on decoded classification keys.
 
 ## FAQ
 

@@ -14,14 +14,14 @@
 
   .detail-page-header.border-bottom-0.gl-block.gl-pt-5{ class: "sm:!gl-flex #{'is-merge-request' if !fluid_layout}" }
     .detail-page-header-body
-      %h1.title.page-title.gl-font-size-h-display.gl-my-0.gl-display-inline-block.gl-flex-grow-1.gl-break-anywhere{ data: { testid: 'title-content' } }
+      %h1.title.gl-heading-1.gl-my-0.gl-block.gl-grow.gl-break-anywhere{ class: '!gl-m-0', data: { testid: 'title-content' } }
         = markdown_field(@merge_request, :title)
 
       - unless hide_gutter_toggle
         %div
           = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon gl-float-right gl-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle sm:!gl-hidden" })
 
-    .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions.gl-display-flex
+    .detail-page-header-actions.gl-self-start.is-merge-request.js-issuable-actions.gl-flex.gl-mt-1
       - if can_update_merge_request
         - edit_action_description = _('Edit merge request')
         - edit_action_shortcut = 'e'
@@ -29,7 +29,7 @@
         = render Pajamas::ButtonComponent.new(href: edit_project_merge_request_path(@project, @merge_request), button_options: { aria: {label: edit_action_description, keyshortcuts: edit_action_shortcut}, class: "gl-hidden sm:gl-block gl-align-self-start has-tooltip js-issuable-edit", data: { html: "true", testid: "edit-title-button" }, title: edit_button_title }) do
           = _('Edit')
 
-      .gl-display-flex.gl-flex-direction-column.gl-sm-flex-direction-row.gl-gap-3.gl-w-full.gl-sm-w-auto.gl-mt-2.gl-sm-mt-0
+      .gl-flex.gl-flex-col.sm:gl-flex-row.gl-gap-3.gl-w-full.sm:gl-w-auto.gl-mt-2.sm:gl-mt-0
         - if @merge_request.source_project
           = render 'projects/merge_requests/code_dropdown'
 

@@ -733,6 +733,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_05ce163deddf() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "target_project_id"
+  INTO NEW."project_id"
+  FROM "merge_requests"
+  WHERE "merge_requests"."id" = NEW."merge_request_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_0da002390fdc() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -17221,7 +17237,8 @@ CREATE TABLE status_check_responses (
     external_status_check_id bigint NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
     retried_at timestamp with time zone,
-    created_at timestamp with time zone DEFAULT now() NOT NULL
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE status_check_responses_id_seq
@@ -18301,7 +18318,8 @@ CREATE TABLE vulnerability_exports (
     author_id bigint NOT NULL,
     file_store integer,
     format smallint DEFAULT 0 NOT NULL,
-    group_id integer
+    group_id integer,
+    organization_id bigint DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE vulnerability_exports_id_seq
@@ -28365,6 +28383,8 @@ CREATE INDEX index_status_check_responses_on_external_status_check_id ON status_
 
 CREATE INDEX index_status_check_responses_on_merge_request_id ON status_check_responses USING btree (merge_request_id);
 
+CREATE INDEX index_status_check_responses_on_project_id ON status_check_responses USING btree (project_id);
+
 CREATE UNIQUE INDEX index_status_page_published_incidents_on_issue_id ON status_page_published_incidents USING btree (issue_id);
 
 CREATE INDEX index_status_page_settings_on_project_id ON status_page_settings USING btree (project_id);
@@ -28712,6 +28732,8 @@ CREATE INDEX index_vulnerability_exports_on_author_id ON vulnerability_exports U
 CREATE INDEX index_vulnerability_exports_on_file_store ON vulnerability_exports USING btree (file_store);
 
 CREATE INDEX index_vulnerability_exports_on_group_id_not_null ON vulnerability_exports USING btree (group_id) WHERE (group_id IS NOT NULL);
+
+CREATE INDEX index_vulnerability_exports_on_organization_id ON vulnerability_exports USING btree (organization_id);
 
 CREATE INDEX index_vulnerability_exports_on_project_id_not_null ON vulnerability_exports USING btree (project_id) WHERE (project_id IS NOT NULL);
 
@@ -29147,6 +29169,8 @@ CREATE UNIQUE INDEX unique_external_audit_event_destination_namespace_id_and_nam
 
 CREATE UNIQUE INDEX unique_google_cloud_logging_configurations_on_namespace_id ON audit_events_google_cloud_logging_configurations USING btree (namespace_id, google_project_id_name, log_id_name);
 
+CREATE UNIQUE INDEX unique_idx_member_approvals_on_pending_status ON member_approvals USING btree (user_id, member_namespace_id) WHERE (status = 0);
+
 CREATE UNIQUE INDEX unique_idx_namespaces_storage_limit_exclusions_on_namespace_id ON namespaces_storage_limit_exclusions USING btree (namespace_id);
 
 CREATE UNIQUE INDEX unique_import_source_users_source_identifier_and_import_source ON import_source_users USING btree (source_user_identifier, namespace_id, source_hostname, import_type);
@@ -29156,8 +29180,6 @@ CREATE UNIQUE INDEX unique_index_ci_build_pending_states_on_partition_id_build_i
 CREATE UNIQUE INDEX unique_index_for_credit_card_validation_payment_method_xid ON user_credit_card_validations USING btree (zuora_payment_method_xid) WHERE (zuora_payment_method_xid IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_index_for_project_pages_unique_domain ON project_settings USING btree (pages_unique_domain) WHERE (pages_unique_domain IS NOT NULL);
-
-CREATE UNIQUE INDEX unique_index_member_approvals_on_pending_status ON member_approvals USING btree (user_id, member_namespace_id, new_access_level, member_role_id) WHERE (status = 0);
 
 CREATE UNIQUE INDEX unique_index_ml_model_metadata_name ON ml_model_metadata USING btree (model_id, name);
 
@@ -30787,6 +30809,8 @@ CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE 
 
 CREATE TRIGGER trigger_01b3fc052119 BEFORE INSERT OR UPDATE ON approval_merge_request_rules FOR EACH ROW EXECUTE FUNCTION trigger_01b3fc052119();
 
+CREATE TRIGGER trigger_05ce163deddf BEFORE INSERT OR UPDATE ON status_check_responses FOR EACH ROW EXECUTE FUNCTION trigger_05ce163deddf();
+
 CREATE TRIGGER trigger_0da002390fdc BEFORE INSERT OR UPDATE ON operations_feature_flags_issues FOR EACH ROW EXECUTE FUNCTION trigger_0da002390fdc();
 
 CREATE TRIGGER trigger_0e13f214e504 BEFORE INSERT OR UPDATE ON merge_request_assignment_events FOR EACH ROW EXECUTE FUNCTION trigger_0e13f214e504();
@@ -31630,6 +31654,9 @@ ALTER TABLE ONLY merge_request_review_llm_summaries
 ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
     ADD CONSTRAINT fk_8ed182d7da FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY vulnerability_exports
+    ADD CONSTRAINT fk_90e75ccdf8 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_91d1f47b13 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;
 
@@ -31812,6 +31839,9 @@ ALTER TABLE ONLY issues
 
 ALTER TABLE ONLY protected_tag_create_access_levels
     ADD CONSTRAINT fk_b4eb82fe3c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY status_check_responses
+    ADD CONSTRAINT fk_b53bf31a72 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY compliance_framework_security_policies
     ADD CONSTRAINT fk_b5df066d8f FOREIGN KEY (framework_id) REFERENCES compliance_management_frameworks(id) ON DELETE CASCADE;
