@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.11.4 (2024-06-11)
+
+### Security (4 changes)
+
+- [XSS and content injection raw XHTML files on IOS devices](gitlab-org/security/gitlab@5df472ac0deefe1e59ecfc0ffae7fa489cb6c9ab) ([merge request](gitlab-org/security/gitlab!4094))
+- [Improve go_package_regex to prevent ReDoS attacks](gitlab-org/security/gitlab@d0b04b06f59e81bc57f6b33e26a0399b4b86ee80) ([merge request](gitlab-org/security/gitlab!4097))
+- [Fix ReDoS in CI Interpolation](gitlab-org/security/gitlab@b013996a0612c9cc1e43bcd0be4b47d98eaf92f4) ([merge request](gitlab-org/security/gitlab!4082))
+- [Verify Asana access token when testing Asana integration](gitlab-org/security/gitlab@6db47bd6ace0904869f56f035ff408855f3f4c9b) ([merge request](gitlab-org/security/gitlab!4060))
+
 ## 16.11.3 (2024-05-21)
 
 ### Fixed (2 changes)

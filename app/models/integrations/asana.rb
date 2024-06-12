@@ -2,6 +2,7 @@
 
 module Integrations
   class Asana < Integration
+    PERSONAL_ACCESS_TOKEN_TEST_URL = 'https://app.asana.com/api/1.0/users/me'
     TASK_URL_TEMPLATE = 'https://app.asana.com/api/1.0/tasks/%{task_gid}'
     STORY_URL_TEMPLATE = 'https://app.asana.com/api/1.0/tasks/%{task_gid}/stories'
 
@@ -67,25 +68,34 @@ module Integrations
       # - fix/ed/es/ing
       # - close/s/d
       # - closing
-      issue_finder = %r{(fix\w*|clos[ei]\w*+)?\W*(?:https://app\.asana\.com/\d+/\w+/(\w+)|#(\w+))}i
+      issue_finder = %r{(?:https://app\.asana\.com/\d+/\w+/(\w+)|#(\w+))}i
+      proceded_keyword_finder = %r{(fix\w*|clos[ei]\w*+)}i
 
-      message.scan(issue_finder).each do |tuple|
-        # tuple will be
-        # [ 'fix', 'id_from_url', 'id_from_pound' ]
-        taskid = tuple[2] || tuple[1]
+      message.split(issue_finder).each_slice(2) do |prepended_text, task_id|
+        next unless task_id
 
         begin
-          story_on_task_url = format(STORY_URL_TEMPLATE, task_gid: taskid)
-          Gitlab::HTTP.post(story_on_task_url, headers: { "Authorization" => "Bearer #{api_key}" }, body: { text: "#{push_msg} #{message}" })
+          story_on_task_url = format(STORY_URL_TEMPLATE, task_gid: task_id)
+          Gitlab::HTTP_V2.post(story_on_task_url, headers: { "Authorization" => "Bearer #{api_key}" }, body: { text: "#{push_msg} #{message}" })
 
-          if tuple[0]
-            task_url = format(TASK_URL_TEMPLATE, task_gid: taskid)
-            Gitlab::HTTP.put(task_url, headers: { "Authorization" => "Bearer #{api_key}" }, body: { completed: true })
+          if prepended_text.match?(proceded_keyword_finder)
+            task_url = format(TASK_URL_TEMPLATE, task_gid: task_id)
+            Gitlab::HTTP_V2.put(task_url, headers: { "Authorization" => "Bearer #{api_key}" }, body: { completed: true })
           end
         rescue StandardError => e
           log_error(e.message)
           next
         end
+      end
+    end
+
+    def test(_)
+      result = Gitlab::HTTP_V2.get(PERSONAL_ACCESS_TOKEN_TEST_URL, headers: { "Authorization" => "Bearer #{api_key}" })
+
+      if result.success?
+        { success: true }
+      else
+        { success: false, result: result.message }
       end
     end
 

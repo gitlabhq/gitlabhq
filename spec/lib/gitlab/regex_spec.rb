@@ -709,11 +709,27 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
   describe '.go_package_regex' do
     subject { described_class.go_package_regex }
 
+    let(:fifty_segment_tld) { "#{Array.new(50, 'segment').join('.')}.com/path" }
+    let(:fifty_one_segment_tld) { "#{Array.new(51, 'segment').join('.')}.com/path" }
+    let(:one_thousand_character_path) { "example.com/#{'a' * 1000}" }
+    let(:one_thousand_and_one_character_path) { "example.com/#{'a' * 1001}" }
+
     it { is_expected.to match('example.com') }
     it { is_expected.to match('example.com/foo') }
+    it { is_expected.to match('example.com/foo%2Fbar') }
     it { is_expected.to match('example.com/foo/bar') }
     it { is_expected.to match('example.com/foo/bar/baz') }
     it { is_expected.to match('tl.dr.foo.bar.baz') }
+    it { is_expected.to match('(tl.dr.foo.bar.baz)') }
+    it { is_expected.to match(' tl.dr.foo.bar.baz ') }
+    it { is_expected.to match(fifty_segment_tld) }
+    it { is_expected.to match(one_thousand_character_path) }
+
+    it { is_expected.not_to match('.tl.dr.foo.bar.baz') }
+    it { is_expected.not_to match('-tl.dr.foo.bar.baz') }
+    it { is_expected.not_to match('tl.dr.foo.bar.baz.') }
+    it { is_expected.not_to match(fifty_one_segment_tld) }
+    it { is_expected.not_to match(one_thousand_and_one_character_path) }
   end
 
   describe '.unbounded_semver_regex' do
