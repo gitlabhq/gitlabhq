@@ -16,4 +16,4 @@ variables:
   QA_OMNIBUS_MR_TESTS: "only-smoke"
   # Retry failed specs in separate process
   QA_RETRY_FAILED_SPECS: "true"
-  GITLAB_HELM_CHART_REF: "c7532b6e1ba98d5663b58012a879a781689db916" # helm chart ref used by test-on-cng pipeline
+  GITLAB_HELM_CHART_REF: "4c21d49231b948fa31f502feee136f688e3abf76" # helm chart ref used by test-on-cng pipeline

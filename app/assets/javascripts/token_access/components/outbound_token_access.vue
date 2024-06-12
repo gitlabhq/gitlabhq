@@ -8,9 +8,10 @@ import {
   GlLoadingIcon,
   GlSprintf,
   GlToggle,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { __, s__ } from '~/locale';
+import { __, s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import addProjectCIJobTokenScopeMutation from '../graphql/mutations/add_project_ci_job_token_scope.mutation.graphql';
@@ -46,17 +47,6 @@ export default {
   deprecationDocumentationLink: helpPagePath('ci/jobs/ci_job_token', {
     anchor: 'limit-your-projects-job-token-access',
   }),
-  fields: [
-    {
-      key: 'fullPath',
-      label: __('Project that can be accessed'),
-    },
-    {
-      key: 'actions',
-      label: '',
-      tdClass: 'gl-text-right',
-    },
-  ],
   components: {
     GlAlert,
     GlButton,
@@ -67,6 +57,9 @@ export default {
     GlSprintf,
     GlToggle,
     TokenAccessTable,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   mixins: [glFeatureFlagMixin()],
   inject: {
@@ -120,6 +113,14 @@ export default {
     },
     disableTokenToggle() {
       return !this.jobTokenScopeEnabled;
+    },
+    projectCountTooltip() {
+      return sprintf(
+        n__('%{count} project has access', '%{count} projects have access', this.projects.length),
+        {
+          count: this.projects.length,
+        },
+      );
     },
   },
   methods: {
@@ -265,13 +266,13 @@ export default {
       <div>
         <gl-card
           class="gl-new-card"
-          header-class="gl-new-card-header"
+          header-class="gl-new-card-header gl-border-b-0"
           body-class="gl-new-card-body gl-px-0"
         >
           <template #header>
             <div class="gl-new-card-title-wrapper">
               <h5 class="gl-new-card-title">{{ $options.i18n.cardHeaderTitle }}</h5>
-              <span class="gl-new-card-count">
+              <span v-gl-tooltip :title="projectCountTooltip" class="gl-new-card-count">
                 <gl-icon name="project" class="gl-mr-2" />
                 {{ projects.length }}
               </span>
@@ -280,11 +281,7 @@ export default {
               <gl-button size="small" disabled>{{ $options.i18n.addProject }}</gl-button>
             </div>
           </template>
-          <token-access-table
-            :items="projects"
-            :table-fields="$options.fields"
-            @removeItem="removeProject"
-          />
+          <token-access-table :items="projects" @removeItem="removeProject" />
         </gl-card>
       </div>
     </template>

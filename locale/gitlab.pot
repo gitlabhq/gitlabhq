@@ -675,6 +675,11 @@ msgid_plural "%{count} groups"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{count} group has access"
+msgid_plural "%{count} groups have access"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{count} issue"
 msgid_plural "%{count} issues"
 msgstr[0] ""
@@ -715,6 +720,11 @@ msgstr ""
 
 msgid "%{count} project"
 msgid_plural "%{count} projects"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%{count} project has access"
+msgid_plural "%{count} projects have access"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -9969,9 +9979,6 @@ msgid "CI/CD configuration file"
 msgstr ""
 
 msgid "CI/CD limits"
-msgstr ""
-
-msgid "CI/CD|No %{itemType}s have been added to the scope"
 msgstr ""
 
 msgid "CICDAnalytics|%{percent}%{percentSymbol}"
@@ -40767,9 +40774,6 @@ msgstr ""
 msgid "Project slug"
 msgstr ""
 
-msgid "Project that can be accessed"
-msgstr ""
-
 msgid "Project uploads"
 msgstr ""
 
@@ -52182,9 +52186,6 @@ msgid "Target branch: %{target_branch}"
 msgstr ""
 
 msgid "Target branches"
-msgstr ""
-
-msgid "Target project"
 msgstr ""
 
 msgid "Target project cannot be equal to source project"

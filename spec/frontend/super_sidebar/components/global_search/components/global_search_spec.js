@@ -13,6 +13,7 @@ import CommandPaletteItems from '~/super_sidebar/components/global_search/comman
 import CommandsOverviewDropdown from '~/super_sidebar/components/global_search/command_palette/command_overview_dropdown.vue';
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import {
   SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
   COMMON_HANDLES,
@@ -52,6 +53,14 @@ Vue.use(Vuex);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
+  queryToObject: jest.fn(),
+  objectToQuery: jest.fn(() => 'search=test'),
+  isRootRelative: jest.fn(),
+  getBaseURL: jest.fn(() => 'https://gdk.test:3000'),
+}));
+
+jest.mock('~/search/store/utils.js', () => ({
+  injectRegexSearch: jest.fn(() => '/search?search=test'),
 }));
 
 const triggerKeydownEvent = (target, code, metaKey = false) => {
@@ -136,6 +145,9 @@ describe('GlobalSearchModal', () => {
   const findCommandPaletteDropdown = () => wrapper.findComponent(CommandsOverviewDropdown);
 
   describe('template', () => {
+    beforeEach(() => {
+      useMockLocationHelper();
+    });
     describe('always renders', () => {
       beforeEach(() => {
         createComponent();
@@ -379,6 +391,7 @@ describe('GlobalSearchModal', () => {
           it('will submit a search with the sufficient number of characters', () => {
             createComponent();
             findGlobalSearchInput().vm.$emit('input', MOCK_SEARCH);
+
             submitSearch();
             expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
           });

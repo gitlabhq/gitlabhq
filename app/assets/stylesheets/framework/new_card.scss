@@ -1,6 +1,6 @@
 .gl-new-card {
   margin-top: $gl-spacing-scale-5;
-  background-color: $gray-10;
+  background-color: var(--gl-background-color-subtle);
   border-width: $gl-border-size-1;
   border-style: solid;
   border-color: $gray-100;
@@ -13,7 +13,7 @@
     padding-bottom: $gl-spacing-scale-4;
     display: flex;
     justify-content: space-between;
-    background-color: $white;
+    background-color: var(--gl-background-color-default);
     border-bottom-width: $gl-border-size-1;
     border-bottom-style: solid;
     border-bottom-color: $gray-100;
@@ -88,14 +88,14 @@
   }
 
   &-footer {
-    background-color: $white;
+    background-color: var(--gl-background-color-default);
   }
 
   &-add-form {
     padding: $gl-spacing-scale-4;
     margin-top: $gl-spacing-scale-2;
     margin-bottom: $gl-spacing-scale-2;
-    background-color: $white;
+    background-color: var(--gl-background-color-default);
     border-width: $gl-border-size-1;
     border-style: solid;
     border-color: $gray-100;

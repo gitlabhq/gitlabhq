@@ -12,7 +12,6 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
   let(:user) { create(:user, name: "John Doe", email: "jdoe@gitlab.com") }
   let(:issue_confidential) { false }
   let(:issue) { create(:issue, project: project, title: 'A bug', confidential: issue_confidential) }
-  let(:issue_iid) { nil }
   let(:description) { nil }
   let(:source_branch) { 'feature' }
   let(:target_branch) { 'master' }
@@ -63,8 +62,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
       source_project: source_project,
       target_project: target_project,
       milestone_id: milestone_id,
-      label_ids: label_ids,
-      issue_iid: issue_iid
+      label_ids: label_ids
     }
   end
 
@@ -533,17 +531,6 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
         it 'adds the remaining lines of the first multi-line commit message as the description' do
           expect(merge_request.description).to eq('Create the app')
-        end
-      end
-
-      context 'when the issue is created in the fork' do
-        let(:source_project) { create(:project, :repository, forked_from_project: project) }
-        let(:issue) { create(:issue, project: source_project, title: 'A bug') }
-        let(:issue_iid) { issue.iid }
-
-        it 'uses a full reference to the issue' do
-          allow(project).to receive(:get_issue).and_return issue
-          expect(merge_request.description).to include("Closes #{source_project.full_path}##{issue_iid}")
         end
       end
     end

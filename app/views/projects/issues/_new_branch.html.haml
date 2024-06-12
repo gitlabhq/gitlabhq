@@ -5,14 +5,12 @@
   - value = can_create_confidential_merge_request? ? _('Create confidential merge request') : value
   - create_mr_text = can_create_confidential_merge_request? ? _('Create confidential merge request') : _('Create merge request')
 
-  - default_project = default_target(@project)
   - can_create_path = can_create_branch_project_issue_path(@project, @issue)
   - create_branch_path = project_branches_path(@project, branch_name: @issue.to_branch_name, ref: @project.default_branch, issue_iid: @issue.iid, format: :json)
-  - refs_path = refs_namespace_project_path(default_project.namespace, default_project, search: '')
+  - refs_path = refs_namespace_project_path(@project.namespace, @project, search: '')
   - tracking_data = create_mr_tracking_data(can_create_merge_request, can_create_confidential_merge_request?)
-  - default_create_mr_path = create_mr_path(from: @issue.to_branch_name, source_project: @project, to: default_project.default_branch, mr_params: { issue_iid: @issue.iid })
 
-  .create-mr-dropdown-wrap.gl-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: default_create_mr_path, create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
+  .create-mr-dropdown-wrap.gl-inline-block.full-width-mobile.js-create-mr{ data: { project_path: @project.full_path, project_id: @project.id, can_create_path: can_create_path, create_mr_path: create_mr_path(from: @issue.to_branch_name, source_project: @project, to: @project.default_branch, mr_params: { issue_iid: @issue.iid }), create_branch_path: create_branch_path, refs_path: refs_path, is_confidential: can_create_confidential_merge_request?.to_s } }
     .btn-group.unavailable
       = render Pajamas::ButtonComponent.new(button_options: { disabled: 'disabled' }) do
         = gl_loading_icon(inline: true, css_class: 'js-create-mr-spinner gl-button-icon gl-hidden')
@@ -28,10 +26,10 @@
 
       = render Pajamas::ButtonComponent.new(variant: :confirm, icon: 'chevron-down', button_options: { class: 'js-dropdown-toggle dropdown-toggle create-merge-request-dropdown-toggle', data: { 'dropdown-trigger': '#create-merge-request-dropdown', display: 'static' } })
 
-      %form.droplab-dropdown
+      .droplab-dropdown
         %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-right.gl-show-field-errors{ class: ("create-confidential-merge-request-dropdown-menu" if can_create_confidential_merge_request?), data: { dropdown: true } }
           - if can_create_merge_request
-            %li.js-type-toggle.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: create_mr_text } }
+            %li.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: create_mr_text } }
               .menu-item.text-nowrap
                 = sprite_icon('check', css_class: 'icon')
                 - if can_create_confidential_merge_request?
@@ -39,7 +37,7 @@
                 - else
                   = _('Create merge request and branch')
 
-          %li.js-type-toggle{ class: [!can_create_merge_request && 'droplab-item-selected'], role: 'button', data: { value: 'create-branch', text: _('Create branch') } }
+          %li{ class: [!can_create_merge_request && 'droplab-item-selected'], role: 'button', data: { value: 'create-branch', text: _('Create branch') } }
             .menu-item
               = sprite_icon('check', css_class: 'icon')
               = _('Create branch')
@@ -48,13 +46,6 @@
           %li.droplab-item-ignore.gl-ml-3.gl-mr-3.gl-mt-5
             - if can_create_confidential_merge_request?
               #js-forked-project{ data: { namespace_path: @project.namespace.full_path, project_path: @project.full_path, new_fork_path: new_project_fork_path(@project), help_page_path: help_page_path('user/project/merge_requests/index') } }
-
-            - if @project.forked? && can_create_merge_request
-              .form-group
-                %label{ for: 'target-project' }
-                  = _('Target project')
-                = select nil, nil, options_for_select(merge_request_target_projects_options(@issue, @project, default_create_mr_path), refs_path), {}, id: 'target-project', class: 'js-target-project form-control gl-form-select custom-select'
-
             .form-group
               %label{ for: 'new-branch-name' }
                 = _('Branch name')

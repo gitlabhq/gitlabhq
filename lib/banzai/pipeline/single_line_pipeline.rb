@@ -20,6 +20,7 @@ module Banzai
         [
           Filter::References::UserReferenceFilter,
           Filter::References::IssueReferenceFilter,
+          Filter::References::WorkItemReferenceFilter,
           Filter::References::ExternalIssueReferenceFilter,
           Filter::References::MergeRequestReferenceFilter,
           Filter::References::SnippetReferenceFilter,

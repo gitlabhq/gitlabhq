@@ -15,6 +15,12 @@ import {
   MSG_IN_ALL_GITLAB,
 } from '~/vue_shared/global_search/constants';
 
+import {
+  SCOPE_SEARCH_PROJECT,
+  SCOPE_SEARCH_GROUP,
+  SCOPE_SEARCH_ALL,
+} from '~/super_sidebar/components/global_search/command_palette/constants';
+
 export const MOCK_USERNAME = 'anyone';
 
 export const MOCK_SEARCH_PATH = '/search';
@@ -51,7 +57,7 @@ export const MOCK_SUBGROUP = {
   path: `${MOCK_GROUP}/mock-subgroup`,
 };
 
-export const MOCK_SEARCH_QUERY = 'http://gitlab.com/search?search=test';
+export const MOCK_SEARCH_QUERY = '/search?search=test';
 
 export const MOCK_SEARCH = 'test';
 
@@ -104,7 +110,7 @@ export const MOCK_DEFAULT_SEARCH_OPTIONS = [
 ];
 export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [
   {
-    text: 'scoped-in-project',
+    text: SCOPE_SEARCH_PROJECT,
     scope: MOCK_PROJECT.name,
     scopeCategory: PROJECTS_CATEGORY,
     icon: ICON_PROJECT,
@@ -115,7 +121,7 @@ export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [
     },
   },
   {
-    text: 'scoped-in-group',
+    text: SCOPE_SEARCH_GROUP,
     scope: MOCK_GROUP.name,
     scopeCategory: GROUPS_CATEGORY,
     icon: ICON_GROUP,
@@ -126,7 +132,7 @@ export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [
     },
   },
   {
-    text: 'scoped-in-all',
+    text: SCOPE_SEARCH_ALL,
     description: MSG_IN_ALL_GITLAB,
     href: MOCK_ALL_PATH,
     extraAttrs: {
@@ -137,7 +143,7 @@ export const MOCK_SCOPED_SEARCH_OPTIONS_DEF = [
 ];
 export const MOCK_SCOPED_SEARCH_OPTIONS = [
   {
-    text: 'scoped-in-project',
+    text: SCOPE_SEARCH_PROJECT,
     scope: MOCK_PROJECT.name,
     scopeCategory: PROJECTS_CATEGORY,
     icon: ICON_PROJECT,
@@ -151,7 +157,7 @@ export const MOCK_SCOPED_SEARCH_OPTIONS = [
     url: MOCK_PROJECT_LONG.path,
   },
   {
-    text: 'scoped-in-group',
+    text: SCOPE_SEARCH_GROUP,
     scope: MOCK_GROUP.name,
     scopeCategory: GROUPS_CATEGORY,
     icon: ICON_GROUP,
@@ -165,7 +171,7 @@ export const MOCK_SCOPED_SEARCH_OPTIONS = [
     url: MOCK_SUBGROUP.path,
   },
   {
-    text: 'scoped-in-all',
+    text: SCOPE_SEARCH_ALL,
     description: MSG_IN_ALL_GITLAB,
     url: MOCK_ALL_PATH,
   },
@@ -174,21 +180,21 @@ export const MOCK_SCOPED_SEARCH_OPTIONS = [
 export const MOCK_SCOPED_SEARCH_GROUP = {
   items: [
     {
-      text: 'scoped-in-project',
+      text: SCOPE_SEARCH_PROJECT,
       scope: MOCK_PROJECT.name,
       scopeCategory: PROJECTS_CATEGORY,
       icon: ICON_PROJECT,
       href: MOCK_PROJECT.path,
     },
     {
-      text: 'scoped-in-group',
+      text: SCOPE_SEARCH_GROUP,
       scope: MOCK_GROUP.name,
       scopeCategory: GROUPS_CATEGORY,
       icon: ICON_GROUP,
       href: MOCK_GROUP.path,
     },
     {
-      text: 'scoped-in-all',
+      text: SCOPE_SEARCH_ALL,
       description: MSG_IN_ALL_GITLAB,
       href: MOCK_ALL_PATH,
     },

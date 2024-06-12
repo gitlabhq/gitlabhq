@@ -1,11 +1,27 @@
 <script>
-import { GlButton, GlTableLite } from '@gitlab/ui';
-import { sprintf, s__ } from '~/locale';
+import { GlButton, GlIcon, GlLink, GlTableLite } from '@gitlab/ui';
+import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 
 export default {
+  fields: [
+    {
+      key: 'fullPath',
+      label: '',
+      tdClass: 'gl-w-3/4',
+    },
+    {
+      key: 'actions',
+      label: '',
+      tdClass: 'gl-w-1/4 gl-text-right',
+    },
+  ],
   components: {
     GlButton,
+    GlIcon,
+    GlLink,
     GlTableLite,
+    ProjectAvatar,
   },
   inject: {
     fullPath: {
@@ -22,19 +38,11 @@ export default {
       type: Array,
       required: true,
     },
-    tableFields: {
-      type: Array,
-      required: true,
-    },
   },
-  computed: {
-    emptyText() {
-      return sprintf(s__('CI/CD|No %{itemType}s have been added to the scope'), {
-        itemType: this.itemType,
-      });
-    },
-    itemType() {
-      return this.isGroup ? 'group' : 'project';
+  methods: {
+    itemType(item) {
+      // eslint-disable-next-line no-underscore-dangle
+      return item.__typename === TYPENAME_GROUP ? 'group' : 'project';
     },
   },
 };
@@ -42,16 +50,34 @@ export default {
 <template>
   <gl-table-lite
     :items="items"
-    :fields="tableFields"
-    :tbody-tr-attr="{ 'data-testid': `${itemType}s-token-table-row` }"
-    :empty-text="emptyText"
-    show-empty
-    stacked="sm"
+    :fields="$options.fields"
+    :tbody-tr-attr="{ 'data-testid': 'token-access-table-row' }"
     thead-class="gl-display-none"
+    class="gl-mb-0"
     fixed
   >
     <template #cell(fullPath)="{ item }">
-      <span :data-testid="`token-access-${itemType}-name`">{{ item.fullPath }}</span>
+      <div class="gl-inline-flex gl-items-center">
+        <gl-icon
+          :name="itemType(item)"
+          class="gl-mr-3 gl-flex-shrink-0"
+          :data-testid="`token-access-${itemType(item)}-icon`"
+        />
+        <project-avatar
+          :alt="item.name"
+          :project-avatar-url="item.avatarUrl"
+          :project-id="item.id"
+          :project-name="item.name"
+          class="gl-mr-3"
+          :data-testid="`token-access-${itemType(item)}-avatar`"
+        />
+        <gl-link
+          class="gl-text-gray-900"
+          :href="`/${item.fullPath}`"
+          :data-testid="`token-access-${itemType(item)}-name`"
+          >{{ item.fullPath }}</gl-link
+        >
+      </div>
     </template>
 
     <template #cell(actions)="{ item }">

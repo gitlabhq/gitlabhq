@@ -256,6 +256,8 @@ export default {
       this.idState.moreActionsShown = val;
     },
     toggleReview(newReviewedStatus) {
+      // this is the easiest way to hide an already open tooltip that triggers on focus
+      document.activeElement.blur();
       const autoCollapsed =
         this.isCollapsed && collapsedType(this.diffFile) === DIFF_FILE_AUTOMATIC_COLLAPSE;
       const open = this.expanded;

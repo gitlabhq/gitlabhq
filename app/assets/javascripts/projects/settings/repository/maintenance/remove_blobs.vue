@@ -36,7 +36,7 @@ export default {
   i18n,
   DRAWER_Z_INDEX,
   removeBlobsHelpLink: helpPagePath('/user/project/repository/reducing_the_repo_size_using_git', {
-    anchor: 'repository-cleanup',
+    anchor: 'get-a-list-of-object-ids',
   }),
   modalCancel: { text: i18n.modalCancelText },
   components: { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal, GlFormInput },

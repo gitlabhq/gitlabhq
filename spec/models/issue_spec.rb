@@ -1140,7 +1140,7 @@ RSpec.describe Issue, feature_category: :team_planning do
         allow(project).to receive(:forked?).and_return(true)
       end
 
-      it { is_expected.to be_can_be_worked_on }
+      it { is_expected.not_to be_can_be_worked_on }
     end
 
     it { is_expected.to be_can_be_worked_on }
@@ -2290,6 +2290,102 @@ RSpec.describe Issue, feature_category: :team_planning do
       end
 
       it { is_expected.to be_truthy }
+    end
+  end
+
+  shared_examples 'a markdown field that parses work item references' do
+    shared_examples 'a html field with work item information' do
+      it 'parses the work item reference' do
+        html_link = Nokogiri::HTML.fragment(issue[:"#{field}_html"]).css('a').first
+
+        expect(html_link.text).to eq(expected_link_text)
+        expect(html_link[:href]).to eq(work_item_path)
+      end
+    end
+
+    let_it_be(:group) { create(:group) }
+
+    context 'when it is a group level issue', :aggregate_failures do
+      let(:issue) { create(:issue, :group_level, namespace: group, field => work_item_reference) }
+      let(:work_item_path) { Gitlab::UrlBuilder.build(group_work_item, only_path: true) }
+      let(:expected_link_text) { group_work_item.to_reference }
+
+      context 'when field contains a work item reference (URL)' do
+        let(:work_item_path) { Gitlab::UrlBuilder.build(group_work_item) }
+        let(:work_item_reference) { work_item_path }
+
+        it_behaves_like 'a html field with work item information'
+      end
+
+      context 'when field contains a work item reference (short)' do
+        let(:work_item_reference) { group_work_item.to_reference }
+
+        it_behaves_like 'a html field with work item information'
+      end
+
+      context 'when field contains a work item reference (full)' do
+        let(:work_item_reference) { group_work_item.to_reference(full: true) }
+
+        it_behaves_like 'a html field with work item information'
+      end
+
+      context 'when field contains a project level work item reference (URL)' do
+        let(:work_item_path) { Gitlab::UrlBuilder.build(project_work_item) }
+        let(:work_item_reference) { work_item_path }
+        let(:expected_link_text) { "#{reusable_project.full_path}##{project_work_item.iid}" }
+
+        it_behaves_like 'a html field with work item information'
+      end
+    end
+
+    context 'when it is a project level issue', :aggregate_failures do
+      let(:issue) { create(:issue, :task, project: reusable_project, field => work_item_reference) }
+      let(:work_item_path) { Gitlab::UrlBuilder.build(project_work_item, only_path: true) }
+      let(:expected_link_text) { group_work_item.to_reference }
+
+      context 'when field contains a work item reference (URL)' do
+        let(:work_item_path) { Gitlab::UrlBuilder.build(project_work_item) }
+        let(:work_item_reference) { work_item_path }
+        let(:expected_link_text) { project_work_item.to_reference }
+
+        it_behaves_like 'a html field with work item information'
+      end
+
+      context 'when field contains a work item reference (short)' do
+        let(:work_item_reference) { project_work_item.to_reference }
+
+        it_behaves_like 'a html field with work item information'
+      end
+
+      context 'when field contains a work item reference (full)' do
+        let(:work_item_reference) { project_work_item.to_reference(full: true) }
+
+        it_behaves_like 'a html field with work item information'
+      end
+
+      context 'when field contains a group level work item reference (URL)' do
+        let(:work_item_path) { Gitlab::UrlBuilder.build(group_work_item) }
+        let(:work_item_reference) { work_item_path }
+        let(:expected_link_text) { "#{group.full_path}##{group_work_item.iid}" }
+
+        it_behaves_like 'a html field with work item information'
+      end
+    end
+  end
+
+  describe '#title_html' do
+    it_behaves_like 'a markdown field that parses work item references' do
+      let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
+      let_it_be(:project_work_item) { create(:work_item, :task, project: reusable_project) }
+      let(:field) { :title }
+    end
+  end
+
+  describe '#description_html' do
+    it_behaves_like 'a markdown field that parses work item references' do
+      let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
+      let_it_be(:project_work_item) { create(:work_item, :task, project: reusable_project) }
+      let(:field) { :description }
     end
   end
 end

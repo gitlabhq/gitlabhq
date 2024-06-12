@@ -5,6 +5,7 @@ import Api from '~/api';
 import { createAlert } from '~/alert';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as actions from '~/search/store/actions';
@@ -13,7 +14,7 @@ import {
   PROJECTS_LOCAL_STORAGE_KEY,
   SIDEBAR_PARAMS,
   REGEX_PARAM,
-  LOCAL_STORAGE_NAME_SPACE_EXTENSION,
+  LS_REGEX_HANDLE,
 } from '~/search/store/constants';
 import * as types from '~/search/store/mutation_types';
 import createState from '~/search/store/state';
@@ -29,6 +30,7 @@ import {
   PRELOAD_EXPECTED_MUTATIONS,
   PROMISE_ALL_EXPECTED_MUTATIONS,
   MOCK_NAVIGATION_DATA,
+  MOCK_NAVIGATION,
   MOCK_NAVIGATION_ACTION_MUTATION,
   MOCK_ENDPOINT_RESPONSE,
   MOCK_RECEIVE_AGGREGATIONS_SUCCESS_MUTATION,
@@ -38,18 +40,6 @@ import {
 } from '../mock_data';
 
 jest.mock('~/alert');
-jest.mock('~/lib/utils/url_utility', () => ({
-  setUrlParams: jest.fn(),
-  joinPaths: jest.fn().mockReturnValue(''),
-  visitUrl: jest.fn(),
-  queryToObject: jest.fn().mockReturnValue({ scope: 'projects', search: '' }),
-  objectToQuery: jest.fn((params) =>
-    Object.keys(params)
-      .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
-      .join('&'),
-  ),
-  getBaseURL: jest.fn().mockReturnValue('http://gdk.test:3000'),
-}));
 
 jest.mock('~/lib/logger', () => ({
   logError: jest.fn(),
@@ -203,28 +193,32 @@ describe('Global Search Store Actions', () => {
       });
 
       it(`setsItem in local storage`, () => {
-        expect(storeUtils.setDataToLS).toHaveBeenCalledWith(
-          `${payload.key}_${LOCAL_STORAGE_NAME_SPACE_EXTENSION}`,
-          expect.anything(),
-        );
+        expect(storeUtils.setDataToLS).toHaveBeenCalledWith(LS_REGEX_HANDLE, expect.anything());
       });
     });
   });
 
   describe('applyQuery', () => {
+    beforeEach(() => {
+      setWindowLocation('https://test/');
+      jest.spyOn(urlUtils, 'visitUrl').mockReturnValue({});
+    });
+
     it('calls visitUrl and setParams with the state.query', async () => {
       await testAction(actions.applyQuery, null, state, [], []);
-      expect(urlUtils.setUrlParams).toHaveBeenCalledWith(
-        { ...state.query, page: null },
-        'http://test.host/',
-        false,
-        true,
+      expect(urlUtils.visitUrl).toHaveBeenCalledWith(
+        'https://test/?scope=issues&state=all&group_id=1&language%5B%5D=C&language%5B%5D=JavaScript&labels%5B%5D=60&labels%5B%5D=37&search=*',
       );
-      expect(urlUtils.visitUrl).toHaveBeenCalled();
     });
   });
 
   describe('resetQuery', () => {
+    beforeEach(() => {
+      setWindowLocation('https://test/');
+      jest.spyOn(urlUtils, 'visitUrl').mockReturnValue({});
+      jest.spyOn(urlUtils, 'setUrlParams').mockReturnValue({});
+    });
+
     it('calls visitUrl and setParams with empty values', async () => {
       await testAction(actions.resetQuery, null, state, [], []);
       const resetParams = SIDEBAR_PARAMS.reduce((acc, param) => {
@@ -327,6 +321,9 @@ describe('Global Search Store Actions', () => {
         state.urlQuery = {
           scope,
         };
+        state.query = {
+          search: 'et',
+        };
 
         if (axiosMock.method) {
           mock[axiosMock.method]().reply(axiosMock.code, MOCK_ENDPOINT_RESPONSE);
@@ -360,17 +357,15 @@ describe('Global Search Store Actions', () => {
 
   describe('fetchSidebarCount uses wild card seach', () => {
     beforeEach(() => {
-      state.navigation = mapValues(MOCK_NAVIGATION_DATA, (navItem) => ({
-        ...navItem,
-        count_link: '/search/count?scope=projects&search=',
-      }));
+      state.navigation = MOCK_NAVIGATION;
       state.urlQuery.search = '';
     });
 
     it('should use wild card', async () => {
       await testAction({ action: actions.fetchSidebarCount, state, expectedMutations: [] });
-      expect(mock.history.get[0].url).toBe(
-        'http://gdk.test:3000/search/count?scope=projects&search=*',
+      expect(mock.history.get[0].url).toBe('http://test.host/search/count?scope=projects&search=*');
+      expect(mock.history.get[3].url).toBe(
+        'http://test.host/search/count?scope=merge_requests&search=*',
       );
     });
   });

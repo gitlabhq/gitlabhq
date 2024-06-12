@@ -560,7 +560,7 @@ class Issue < ApplicationRecord
   end
 
   def can_be_worked_on?
-    !self.closed?
+    !self.closed? && !self.project.forked?
   end
 
   # Returns `true` if the current issue can be viewed by either a logged in User
@@ -624,7 +624,10 @@ class Issue < ApplicationRecord
   end
 
   def banzai_render_context(field)
-    super.merge(label_url_method: :project_issues_url)
+    additional_attributes = { label_url_method: :project_issues_url }
+    additional_attributes[:group] = namespace if namespace.is_a?(Group)
+
+    super.merge(additional_attributes)
   end
 
   def design_collection

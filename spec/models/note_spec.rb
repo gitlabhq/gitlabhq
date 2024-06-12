@@ -518,6 +518,55 @@ RSpec.describe Note, feature_category: :team_planning do
     let(:set_mentionable_text) { ->(txt) { subject.note = txt } }
   end
 
+  describe '#note_html' do
+    shared_examples 'note that parses work item references' do
+      it 'parses the work item reference' do
+        html_link = Nokogiri::HTML.fragment(note.note_html).css('a').first
+
+        expect(html_link.text).to eq(expected_link_text)
+        expect(html_link[:href]).to eq(work_item_path)
+      end
+    end
+
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
+    let_it_be(:project_work_item) { create(:work_item, :task, project: project) }
+
+    context 'when noteable is a group level work item', :aggregate_failures do
+      let(:work_item_path) { Gitlab::UrlBuilder.build(group_work_item, only_path: true) }
+      let(:expected_link_text) { group_work_item.to_reference }
+      let(:note) { create(:note, :on_group_work_item, noteable: group_work_item, note: note_text) }
+
+      context 'when note text contains a group reference (URL)' do
+        let(:work_item_path) { Gitlab::UrlBuilder.build(group_work_item) }
+        let(:note_text) { work_item_path }
+
+        it_behaves_like 'note that parses work item references'
+      end
+
+      context 'when note text contains a group reference (short)' do
+        let(:note_text) { group_work_item.to_reference }
+
+        it_behaves_like 'note that parses work item references'
+      end
+
+      context 'when note text contains a group reference (full)' do
+        let(:note_text) { group_work_item.to_reference(full: true) }
+
+        it_behaves_like 'note that parses work item references'
+      end
+
+      context 'when note text contains a project reference (URL)' do
+        let(:work_item_path) { Gitlab::UrlBuilder.build(project_work_item) }
+        let(:note_text) { work_item_path }
+        let(:expected_link_text) { "#{project.path}##{project_work_item.iid}" }
+
+        it_behaves_like 'note that parses work item references'
+      end
+    end
+  end
+
   describe "#all_references" do
     let!(:note1) { create(:note_on_issue) }
     let!(:note2) { create(:note_on_issue) }

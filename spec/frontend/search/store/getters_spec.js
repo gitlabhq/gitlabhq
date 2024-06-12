@@ -1,5 +1,9 @@
 import { cloneDeep } from 'lodash';
-import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY } from '~/search/store/constants';
+import {
+  GROUPS_LOCAL_STORAGE_KEY,
+  PROJECTS_LOCAL_STORAGE_KEY,
+  LS_REGEX_HANDLE,
+} from '~/search/store/constants';
 import * as getters from '~/search/store/getters';
 import createState from '~/search/store/state';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
@@ -71,6 +75,8 @@ describe('Global Search Store Getters', () => {
 
   describe('navigationItems', () => {
     it('returns the re-mapped navigation data', () => {
+      localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
+
       state.navigation = MOCK_NAVIGATION;
       expect(getters.navigationItems(state)).toStrictEqual(MOCK_NAVIGATION_ITEMS);
     });

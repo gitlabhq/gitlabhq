@@ -545,6 +545,7 @@ describe('DiffFileHeader component', () => {
 
   describe('file reviews', () => {
     it('calls the action to set the new review', () => {
+      jest.spyOn(document.activeElement, 'blur');
       createComponent({
         props: {
           diffFile: {
@@ -563,6 +564,8 @@ describe('DiffFileHeader component', () => {
       const file = wrapper.vm.diffFile;
 
       findReviewFileCheckbox().vm.$emit('change', true);
+
+      expect(document.activeElement.blur).toHaveBeenCalled();
 
       return testAction(
         reviewFile,

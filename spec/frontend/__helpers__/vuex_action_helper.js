@@ -81,7 +81,6 @@ export default (
 
     return Promise.resolve();
   };
-
   const validateResults = () => {
     expect({
       mutations,

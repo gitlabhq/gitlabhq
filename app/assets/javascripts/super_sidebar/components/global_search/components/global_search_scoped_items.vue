@@ -10,6 +10,7 @@ import {
   EVENT_CLICK_GROUP_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
   EVENT_CLICK_PROJECT_SCOPED_SEARCH_TO_ADVANCED_SEARCH,
 } from '~/super_sidebar/components/global_search/tracking_constants';
+import { injectRegexSearch } from '~/search/store/utils';
 import {
   OVERLAY_SEARCH,
   SCOPE_SEARCH_ALL,
@@ -40,6 +41,7 @@ export default {
         name: this.scopedSearchGroup.name,
         items: this.scopedSearchGroup.items.map((item) => ({
           ...item,
+          href: item.text === SCOPE_SEARCH_PROJECT ? injectRegexSearch(item.href) : item.href,
           scopeName: item.scope || item.description,
           extraAttrs: {
             class: 'show-hover-layover',

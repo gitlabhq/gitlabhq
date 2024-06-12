@@ -82,8 +82,8 @@ Some of the scenarios where these `Security::Finding` records may be promoted to
 
 If the pipeline ran on the default branch then the following steps, in addition to the steps in [Scan runs in a pipeline for a non-default branch](#scan-runs-in-a-pipeline-for-a-non-default-branch), are executed:
 
-1. `Security::StoreScansService` gets called and schedules `StoreSecurityReportsWorker`.
-1. `StoreSecurityReportsWorker` executes `Security::Ingestion::IngestReportsService`.
+1. `Security::StoreScansService` gets called and schedules `StoreSecurityReportsByProjectWorker`.
+1. `StoreSecurityReportsByProjectWorker` executes `Security::Ingestion::IngestReportsService`.
 1. `Security::Ingestion::IngestReportsService` takes all reports from a given Pipeline and calls `Security::Ingestion::IngestReportService` and then calls `Security::Ingestion::MarkAsResolvedService`.
 1. `Security::Ingestion::IngestReportService` calls `Security::Ingestion::IngestReportSliceService` which executes a number of tasks for a report slice.
 

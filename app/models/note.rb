@@ -557,7 +557,10 @@ class Note < ApplicationRecord
   end
 
   def banzai_render_context(field)
-    super.merge(noteable: noteable, system_note: system?, label_url_method: noteable_label_url_method)
+    additional_attributes = { noteable: noteable, system_note: system?, label_url_method: noteable_label_url_method }
+    additional_attributes[:group] = namespace if namespace.is_a?(Group)
+
+    super.merge(additional_attributes)
   end
 
   def retrieve_upload(_identifier, paths)

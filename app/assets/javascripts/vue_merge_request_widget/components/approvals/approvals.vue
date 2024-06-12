@@ -280,10 +280,8 @@ export default {
     >
       <template v-if="isLoading">{{ $options.FETCH_LOADING }}</template>
       <template v-else>
-        <div class="gl-display-flex gl-flex-direction-column">
-          <div
-            class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-gap-3 gl-align-items-baseline"
-          >
+        <div class="gl-flex gl-flex-col">
+          <div class="gl-flex gl-flex-col sm:gl-flex-row gl-gap-3 gl-items-baseline">
             <div v-if="requireSamlAuthToApprove && showApprove">
               <gl-form
                 ref="form"

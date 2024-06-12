@@ -236,6 +236,67 @@ When using repository cleanup, note:
   [Clearing the instance cache](../../../administration/raketasks/maintenance.md#clear-redis-cache)
   may help to remove some of them, but it should not be depended on for security purposes!
 
+## Remove blobs
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Permanently delete sensitive or confidential information that was accidentally committed, ensuring
+it's no longer accessible in your repository's history.
+
+Prerequisites:
+
+- You must have the Owner role for the instance.
+- You must have [a list of object IDs](#get-a-list-of-object-ids) to remove.
+
+To remove blobs from your repository:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Repository**.
+1. Expand **Repository maintenance**.
+1. Select **Remove blobs**.
+1. On the drawer, enter a list of blob IDs to remove, each ID on its own line.
+1. Select **Remove blobs**.
+1. On the confirmation dialog, enter your project path.
+1. Select **Yes, remove blobs**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the section labeled **Advanced**.
+1. Select **Run housekeeping**.
+
+### Get a list of object IDs
+
+To remove blobs, you need a list of objects to remove.
+To get these IDs, use the Git `ls-tree command`.
+
+Prerequisites:
+
+- You must have the repository cloned to your local machine.
+
+For example, to get a list of files at a given commit or branch sorted by size:
+
+1. Open a terminal and go to your repository directory.
+1. Run the following command:
+
+   ```shell
+   git ls-tree -r -t --long --full-name <COMMIT/BRANCH> | sort -nk 4
+   ```
+
+   Example output:
+
+   ```plaintext
+   100644 blob 8150ee86f923548d376459b29afecbe8495514e9  133508 doc/howto/img/remote-development-new-workspace-button.png
+   100644 blob cde4360b3d3ee4f4c04c998d43cfaaf586f09740  214231 doc/howto/img/dependency_proxy_macos_config_new.png
+   100644 blob 2ad0e839a709e73a6174e78321e87021b20be445  216452 doc/howto/img/gdk-in-gitpod.jpg
+   100644 blob 115dd03fc0828a9011f012abbc58746f7c587a05  242304 doc/howto/img/gitpod-button-repository.jpg
+   100644 blob c41ebb321a6a99f68ee6c353dd0ed29f52c1dc80  491158 doc/howto/img/dependency_proxy_macos_config.png
+   ```
+
+   The third column in the output is the object ID of the blob.
+
 ## Storage limits
 
 Repository size limits:

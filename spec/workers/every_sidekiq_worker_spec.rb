@@ -449,6 +449,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'StageUpdateWorker' => 3,
         'StatusPage::PublishWorker' => 5,
         'StoreSecurityReportsWorker' => 3,
+        'Security::StoreSecurityReportsByProjectWorker' => 3,
         'SyncSeatLinkRequestWorker' => 20,
         'SyncSeatLinkWorker' => 12,
         'SystemHookPushWorker' => 3,

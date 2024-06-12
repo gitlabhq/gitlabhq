@@ -9,9 +9,10 @@ import {
   GlLoadingIcon,
   GlSprintf,
   GlToggle,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { __, s__ } from '~/locale';
+import { __, s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
 import inboundAddGroupOrProjectCIJobTokenScope from '../graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
@@ -41,17 +42,6 @@ export default {
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
   },
-  fields: [
-    {
-      key: 'fullPath',
-      label: '',
-    },
-    {
-      key: 'actions',
-      label: '',
-      tdClass: 'gl-text-right',
-    },
-  ],
   components: {
     GlAlert,
     GlButton,
@@ -63,6 +53,9 @@ export default {
     GlSprintf,
     GlToggle,
     TokenAccessTable,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: {
     fullPath: {
@@ -92,8 +85,13 @@ export default {
         };
       },
       update({ project }) {
-        this.projects = project?.ciJobTokenScope?.inboundAllowlist?.nodes ?? [];
-        this.groups = project?.ciJobTokenScope?.groupsAllowlist?.nodes ?? [];
+        const projects = project?.ciJobTokenScope?.inboundAllowlist?.nodes ?? [];
+        const groups = project?.ciJobTokenScope?.groupsAllowlist?.nodes ?? [];
+
+        this.projectCount = projects.length;
+        this.groupCount = groups.length;
+
+        return [...groups, ...projects];
       },
       error() {
         createAlert({ message: this.$options.i18n.projectsFetchError });
@@ -103,18 +101,35 @@ export default {
   data() {
     return {
       inboundJobTokenScopeEnabled: null,
-      targetPath: '',
-      projects: [],
-      groups: [],
+      groupsAndProjectsWithAccess: [],
+      groupOrProjectPath: '',
+      projectCount: 0,
+      groupCount: 0,
       isAddFormVisible: false,
     };
   },
   computed: {
-    isTargetPathEmpty() {
-      return this.targetPath === '';
+    isGroupOrProjectPathEmpty() {
+      return this.groupOrProjectPath === '';
     },
     ciJobTokenHelpPage() {
       return helpPagePath('ci/jobs/ci_job_token#control-job-token-access-to-your-project');
+    },
+    groupCountTooltip() {
+      return sprintf(
+        n__('%{count} group has access', '%{count} groups have access', this.groupCount),
+        {
+          count: this.groupCount,
+        },
+      );
+    },
+    projectCountTooltip() {
+      return sprintf(
+        n__('%{count} project has access', '%{count} projects have access', this.projectCount),
+        {
+          count: this.projectCount,
+        },
+      );
     },
   },
   methods: {
@@ -152,7 +167,7 @@ export default {
           mutation: inboundAddGroupOrProjectCIJobTokenScope,
           variables: {
             projectPath: this.fullPath,
-            targetPath: this.targetPath,
+            targetPath: this.groupOrProjectPath,
           },
         });
 
@@ -162,7 +177,7 @@ export default {
       } catch (error) {
         createAlert({ message: error.message });
       } finally {
-        this.clearTargetPath();
+        this.clearGroupOrProjectPath();
         this.getGroupsAndProjects();
       }
     },
@@ -204,8 +219,8 @@ export default {
         this.getGroupsAndProjects();
       }
     },
-    clearTargetPath() {
-      this.targetPath = '';
+    clearGroupOrProjectPath() {
+      this.groupOrProjectPath = '';
       this.isAddFormVisible = false;
     },
     getGroupsAndProjects() {
@@ -262,16 +277,28 @@ export default {
           body-class="gl-new-card-body gl-px-0"
         >
           <template #header>
-            <div class="gl-new-card-title-wrapper">
-              <h5 class="gl-new-card-title">{{ $options.i18n.cardHeaderTitle }}</h5>
-              <span class="gl-new-card-count">
-                <gl-icon name="group" class="gl-mr-2" />
-                {{ groups.length }}
-              </span>
-              <span class="gl-new-card-count">
-                <gl-icon name="project" class="gl-mr-2" />
-                {{ projects.length }}
-              </span>
+            <div class="gl-new-card-title-wrapper gl-flex-direction-column gl-flex-wrap">
+              <div class="gl-new-card-title gl-items-center">
+                <h5 class="gl-my-0">{{ $options.i18n.cardHeaderTitle }}</h5>
+                <span
+                  v-gl-tooltip
+                  :title="groupCountTooltip"
+                  class="gl-new-card-count"
+                  data-testid="group-count"
+                >
+                  <gl-icon name="group" class="gl-mr-2" />
+                  {{ groupCount }}
+                </span>
+                <span
+                  v-gl-tooltip
+                  :title="projectCountTooltip"
+                  class="gl-new-card-count"
+                  data-testid="project-count"
+                >
+                  <gl-icon name="project" class="gl-mr-2" />
+                  {{ projectCount }}
+                </span>
+              </div>
             </div>
             <div class="gl-new-card-actions">
               <gl-button
@@ -287,35 +314,24 @@ export default {
           <div v-if="isAddFormVisible" class="gl-new-card-add-form gl-m-3">
             <h4 class="gl-mt-0">{{ $options.i18n.addGroupOrProject }}</h4>
             <gl-form-input
-              v-model="targetPath"
+              v-model="groupOrProjectPath"
               :placeholder="$options.i18n.addProjectPlaceholder"
             />
             <div class="gl-display-flex gl-mt-5">
               <gl-button
                 variant="confirm"
-                :disabled="isTargetPathEmpty"
+                :disabled="isGroupOrProjectPathEmpty"
                 class="gl-mr-3"
                 data-testid="add-project-btn"
                 @click="addGroupOrProject"
               >
                 {{ $options.i18n.add }}
               </gl-button>
-              <gl-button @click="clearTargetPath">{{ $options.i18n.cancel }}</gl-button>
+              <gl-button @click="clearGroupOrProjectPath">{{ $options.i18n.cancel }}</gl-button>
             </div>
           </div>
 
-          <token-access-table
-            :is-group="true"
-            :items="groups"
-            :table-fields="$options.fields"
-            @removeItem="removeItem"
-          />
-
-          <token-access-table
-            :items="projects"
-            :table-fields="$options.fields"
-            @removeItem="removeItem"
-          />
+          <token-access-table :items="groupsAndProjectsWithAccess" @removeItem="removeItem" />
         </gl-card>
       </div>
     </template>

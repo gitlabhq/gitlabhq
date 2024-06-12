@@ -1,7 +1,7 @@
 <script>
 import { GlLoadingIcon, GlPagination, GlSprintf, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
-import { debounce } from 'lodash';
+import { debounce, throttle } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapGetters, mapActions } from 'vuex';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -19,7 +19,7 @@ import { InternalEvents } from '~/tracking';
 import { isSingleViewStyle } from '~/helpers/diffs_helper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { parseBoolean, handleLocationHash } from '~/lib/utils/common_utils';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { Mousetrap } from '~/lib/mousetrap';
 import { updateHistory, getLocationHash } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -309,6 +309,13 @@ export default {
     renderFileTree() {
       return this.renderDiffFiles && this.showTreeList;
     },
+    hideTooltips() {
+      const hide = () => {
+        if (!this.shouldShow) return;
+        this.$root.$emit(BV_HIDE_TOOLTIP);
+      };
+      return throttle(hide, 100);
+    },
   },
   watch: {
     commit(newCommit, oldCommit) {
@@ -387,6 +394,7 @@ export default {
 
     this.subscribeToVirtualScrollingEvents();
     window.addEventListener('hashchange', this.handleHashChange);
+    window.addEventListener('scroll', this.hideTooltips);
   },
   beforeCreate() {
     diffsApp.instrument();
@@ -414,6 +422,7 @@ export default {
     this.removeEventListeners();
 
     window.removeEventListener('hashchange', this.handleHashChange);
+    window.removeEventListener('scroll', this.hideTooltips);
 
     diffsEventHub.$off('scrollToFileHash', this.scrollVirtualScrollerToFileHash);
     diffsEventHub.$off('scrollToIndex', this.scrollVirtualScrollerToIndex);

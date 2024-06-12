@@ -1,5 +1,5 @@
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import { MAX_FREQUENCY, SIDEBAR_PARAMS } from '~/search/store/constants';
+import { MAX_FREQUENCY, SIDEBAR_PARAMS, LS_REGEX_HANDLE } from '~/search/store/constants';
 import {
   loadDataFromLS,
   setFrequentItemToLS,
@@ -9,8 +9,10 @@ import {
   getAggregationsUrl,
   prepareSearchAggregations,
   addCountOverLimit,
+  injectRegexSearch,
 } from '~/search/store/utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import {
   MOCK_LS_KEY,
   MOCK_GROUPS,
@@ -301,6 +303,57 @@ describe('Global Search Store Utils', () => {
 
     it('should return empty string if count is not provided', () => {
       expect(addCountOverLimit()).toEqual('');
+    });
+  });
+
+  describe('injectRegexSearch', () => {
+    describe.each`
+      urlIn                                                            | urlOut
+      ${`${TEST_HOST}/search?search=test&group_id=123`}                | ${'/search?search=test&group_id=123'}
+      ${'/search?search=test&group_id=123'}                            | ${'/search?search=test&group_id=123'}
+      ${`${TEST_HOST}/search?search=test&project_id=123`}              | ${'/search?search=test&project_id=123'}
+      ${'/search?search=test&project_id=123'}                          | ${'/search?search=test&project_id=123'}
+      ${`${TEST_HOST}/search?search=test&project_id=123&group_id=123`} | ${'/search?search=test&project_id=123&group_id=123'}
+      ${'/search?search=test&project_id=123&group_id=123'}             | ${'/search?search=test&project_id=123&group_id=123'}
+    `('modifies urls and links', ({ urlIn, urlOut }) => {
+      it(`should add regex=true to ${urlIn}`, () => {
+        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
+        expect(injectRegexSearch(urlIn)).toEqual(`${urlOut}&regex=true`);
+      });
+
+      it(`should NOT add regex=true to ${urlIn}`, () => {
+        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(false));
+        expect(injectRegexSearch(urlIn)).toEqual(urlOut);
+      });
+    });
+
+    describe.each`
+      urlIn                                | urlOut
+      ${'/search?search=test'}             | ${'/search?search=test'}
+      ${`${TEST_HOST}/search?search=test`} | ${'/search?search=test'}
+      ${'/'}                               | ${'/'}
+    `('does not modify urls and links', ({ urlIn, urlOut }) => {
+      it('should return link with regex equals true', () => {
+        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
+        expect(injectRegexSearch(urlIn)).toEqual(urlOut);
+      });
+    });
+
+    describe.each`
+      urlIn                                                           | urlOut
+      ${'/search?search=test&group_id=123&regex=true'}                | ${'/search?search=test&group_id=123&regex=true'}
+      ${'/search?search=test&project_id=123&regex=true'}              | ${'/search?search=test&project_id=123&regex=true'}
+      ${'/search?search=test&project_id=123&group_id=123&regex=true'} | ${'/search?search=test&project_id=123&group_id=123&regex=true'}
+    `('does not double params', ({ urlIn, urlOut }) => {
+      it(`should not add additional regex=true to ${urlIn} if enabled`, () => {
+        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
+        expect(injectRegexSearch(urlIn)).toEqual(`${urlOut}`);
+      });
+
+      it(`should NOT remove regex=true from ${urlIn} if disabled`, () => {
+        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(false));
+        expect(injectRegexSearch(urlIn)).toEqual(urlOut);
+      });
     });
   });
 });

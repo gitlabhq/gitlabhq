@@ -43,6 +43,10 @@ As part of the plan to switch to the new server, reindex all [affected indexes](
 
 This approach was used for GitLab.com. To learn more about this process and how the different types of indexes were handled, see the blog post about [upgrading the operating system on our Postgres database clusters](https://about.gitlab.com/blog/2022/08/12/upgrading-database-os/).
 
+After reindexing bad indexes, the collation must be refreshed.
+To update the system catalog to record the current collation version,
+run the query `ALTER COLLATION <collation_name> REFRESH VERSION`.
+
 **Advantages**:
 
 - Downtime is shorter: the time to perform the necessary reindexing, plus validation.

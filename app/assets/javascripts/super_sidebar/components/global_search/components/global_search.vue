@@ -28,6 +28,7 @@ import {
 import modalKeyboardNavigationMixin from '~/vue_shared/mixins/modal_keyboard_navigation_mixin';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
+import { injectRegexSearch } from '~/search/store/utils';
 import {
   EVENT_PRESS_ENTER_TO_ADVANCED_SEARCH,
   EVENT_PRESS_ESCAPE_IN_COMMAND_PALETTE,
@@ -255,7 +256,8 @@ export default {
       if (this.search?.length <= SEARCH_SHORTCUTS_MIN_CHARACTERS) {
         return;
       }
-      visitUrl(this.searchQuery);
+
+      visitUrl(injectRegexSearch(this.searchQuery));
     },
     runFirstCommand() {
       this.getFocusableOptions()[0]?.firstChild.click();
