@@ -1,8 +1,8 @@
+import { nextTick } from 'vue';
 import { GlDisclosureDropdown, GlButton, GlFormInput, GlModal, GlSprintf } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
-import waitForPromises from 'helpers/wait_for_promises';
 import DeleteMergedBranches, { i18n } from '~/branches/components/delete_merged_branches.vue';
 import { formPath, propsDataMock } from '../mock_data';
 
@@ -104,19 +104,28 @@ describe('Delete merged branches component', () => {
 
     it('keeps disabled state when wrong input is provided', async () => {
       findFormInput().vm.$emit('input', 'hello');
-      await waitForPromises();
+      await nextTick();
       expect(findConfirmationButton().props('disabled')).toBe(true);
     });
 
     it('enables the button when correct input is provided', async () => {
       findFormInput().vm.$emit('input', 'delete');
-      await waitForPromises();
+      await nextTick();
       expect(findConfirmationButton().props('disabled')).toBe(false);
     });
 
     it('calls hide on the modal when cancel button is clicked', () => {
       findCancelButton().trigger('click');
       expect(modalHideSpy).toHaveBeenCalled();
+    });
+
+    it('resets the input field when the modal is closed', async () => {
+      const inputValue = 'hello';
+      findFormInput().vm.$emit('input', inputValue);
+      await nextTick();
+      expect(findFormInput().attributes('value')).toBe(inputValue);
+      await findModal().vm.$emit('hidden');
+      expect(findFormInput().attributes('value')).toBe('');
     });
   });
 });

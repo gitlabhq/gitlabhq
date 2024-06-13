@@ -6,39 +6,34 @@
 - commit = @diffs.diffable
 - add_page_specific_style 'page_bundles/commit_description'
 
-.wiki-page-header.has-sidebar-toggle.gl-flex.gl-items-center{ class: '!gl-mt-5' }
-  = wiki_sidebar_toggle_button
+.wiki-page-header.has-sidebar-toggle
+  = render ::Layouts::PageHeadingComponent.new(_('Changes')) do |c|
+    - c.with_actions do
+      = link_button_to wiki_page_path(@wiki, @page, action: :history), role: 'button', data: { testid: 'page-history-button' } do
+        = @page.template? ? s_('Wiki|Template history') : s_('Wiki|Page history')
 
-  %h1.gl-heading-1.gl-grow{ class: '!gl-mb-0' }
-    = link_to_wiki_page @page
-    %span.light
-      &middot;
-      = _('Changes')
+      #js-vue-wiki-more-actions{ data: {
+        clone_ssh_url: ssh_clone_url_to_repo(@wiki),
+        clone_http_url: http_clone_url_to_repo(@wiki),
+        wiki_url: wiki_path(@wiki),
+        new_url: wiki_path(@wiki, action: :new),
+        templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+      } }
 
-  .nav-controls.gl-flex.gl-gap-3
-    = link_button_to wiki_page_path(@wiki, @page, action: :history), role: 'button', data: { testid: 'page-history-button' } do
-      = @page.template? ? s_('Wiki|Template history') : s_('Wiki|Page history')
+      = wiki_sidebar_toggle_button
 
-    #js-vue-wiki-more-actions{ data: {
-      clone_ssh_url: ssh_clone_url_to_repo(@wiki),
-      clone_http_url: http_clone_url_to_repo(@wiki),
-      wiki_url: wiki_path(@wiki),
-      new_url: wiki_path(@wiki, action: :new),
-      templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
-    } }
-
-.page-content-header
-  .header-main-content
-    %strong= markdown_field(commit, :title)
-    %span.gl-hidden.sm:gl-inline= _('authored')
-    #{time_ago_with_tooltip(commit.authored_date)}
-    %span= s_('ByAuthor|by')
-    = author_avatar(commit, size: 24, has_tooltip: false)
-    %strong
-      = commit_author_link(commit, avatar: true, size: 24)
-    - if commit.description.present?
-      %pre.commit-description.gl-white-space-pre-wrap.gl-line-height-normal
-        = preserve(markdown_field(commit, :description))
+    - c.with_description do
+      .header-main-content
+        %strong= markdown_field(commit, :title)
+        %span.gl-hidden.sm:gl-inline= _('authored')
+        #{time_ago_with_tooltip(commit.authored_date)}
+        %span= s_('ByAuthor|by')
+        = author_avatar(commit, size: 24, has_tooltip: false)
+        %strong
+          = commit_author_link(commit, avatar: true, size: 24)
+        - if commit.description.present?
+          %pre.commit-description.gl-white-space-pre-wrap.gl-line-height-normal
+            = preserve(markdown_field(commit, :description))
 
 = render 'projects/diffs/diffs', diffs: @diffs, diff_page_context: "is-wiki"
 = render 'shared/wikis/sidebar'

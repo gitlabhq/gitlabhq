@@ -35,6 +35,8 @@ export default {
       return this.pipeline.source === TRIGGER_ORIGIN;
     },
     isPipelineFromSource() {
+      if (!this.targetProjectFullPath) return true;
+
       const fullPath = this.pipeline?.project?.full_path;
       // We may or may not have a trailing slash in `targetProjectFullPath` value, so we account for both cases
       return (

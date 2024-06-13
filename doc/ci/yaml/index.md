@@ -4216,6 +4216,10 @@ docker build:
 In this example, the `docker build` job is only included when the `Dockerfile` has changed
 relative to `refs/heads/branch1` and the pipeline source is a merge request event.
 
+**Additional details**:
+
+- Using `compare_to` with [merged results pipelines](../pipelines/merged_results_pipelines.md#troubleshooting) can cause unexpected results, because the comparison base is an internal commit that GitLab creates.
+
 **Related topics**:
 
 - You can use `rules:changes:compare_to` to [skip a job if the branch is empty](../jobs/job_rules.md#skip-jobs-if-the-branch-is-empty).

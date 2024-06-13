@@ -56,7 +56,6 @@ export default {
   },
   data() {
     return {
-      areAllBranchesVisible: false,
       enteredText: '',
       formId: 'delete-merged-branches-form',
     };
@@ -95,6 +94,9 @@ export default {
     closeModal() {
       this.$refs.modal.hide();
     },
+    resetModal() {
+      this.enteredText = '';
+    },
   },
   i18n,
 };
@@ -130,6 +132,7 @@ export default {
       size="sm"
       modal-id="delete-merged-branches"
       :title="$options.i18n.modalTitle"
+      @hidden="resetModal"
     >
       <form :id="formId" :action="formPath" method="post">
         <p>

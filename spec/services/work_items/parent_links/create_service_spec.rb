@@ -226,10 +226,10 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
           is_expected.not_to eq(service_error(error, http_status: 422))
         end
 
-        it 'creates notes for valid links' do
+        it 'creates notes for valid links', :aggregate_failures do
           subject
 
-          expect(work_item.notes.last.note).to eq("added #{other_project_task.to_reference} as child task")
+          expect(work_item.notes.last.note).to eq("added #{other_project_task.to_reference(full: true)} as child task")
           expect(task1.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
           expect(issue.notes).to be_empty
           expect(other_project_task.notes).not_to be_empty

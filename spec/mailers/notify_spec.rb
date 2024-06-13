@@ -2507,14 +2507,23 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
   end
 
   describe 'rate limiting', :freeze_time, :clean_gitlab_redis_rate_limiting do
+    let(:recipient) { issue.assignees.first }
+
     before do
       allow(Gitlab::ApplicationRateLimiter).to receive(:rate_limits)
         .and_return(notification_emails: { threshold: 1, interval: 1.minute })
     end
 
-    it 'stops sending notifications and notifies the user of the rate limit only once', :aggregate_failures do
+    it 'logs a message, stops sending notifications, and notifies the user of the rate limit only once', :aggregate_failures do
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        event: 'notification_emails_rate_limited',
+        user_id: recipient.id,
+        project_id: issue.project_id,
+        group_id: nil
+      )
+
       perform_enqueued_jobs do
-        3.times { described_class.new_issue_email(issue.assignees.first.id, issue.id).deliver }
+        3.times { described_class.new_issue_email(recipient.id, issue.id).deliver }
       end
 
       expect(ActionMailer::Base.deliveries.count).to eq(2)
@@ -2522,6 +2531,7 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       allowed_notification, rate_limit_notification = ActionMailer::Base.deliveries
 
       expect(allowed_notification).to have_referable_subject(issue)
+      expect(rate_limit_notification.to).to contain_exactly(recipient.notification_email)
       expect(rate_limit_notification).to have_subject(/Notifications temporarily disabled/)
     end
 
@@ -2530,9 +2540,16 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         stub_feature_flags(rate_limit_notification_emails: false)
       end
 
-      it 'does not stop sending of notifications' do
+      it 'logs a message but does not stop sending of notifications' do
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          event: 'notification_emails_rate_limited',
+          user_id: recipient.id,
+          project_id: issue.project_id,
+          group_id: nil
+        )
+
         perform_enqueued_jobs do
-          3.times { described_class.new_issue_email(issue.assignees.first.id, issue.id).deliver }
+          3.times { described_class.new_issue_email(recipient.id, issue.id).deliver }
         end
 
         expect(ActionMailer::Base.deliveries.count).to eq(3)

@@ -63,7 +63,7 @@ module Gitlab
           pipelines_create: { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute },
           temporary_email_failure: { threshold: 300, interval: 1.day },
           permanent_email_failure: { threshold: 5, interval: 1.day },
-          notification_emails: { threshold: 500, interval: 1.day },
+          notification_emails: { threshold: 1000, interval: 1.day },
           project_testing_integration: { threshold: 5, interval: 1.minute },
           email_verification: { threshold: 10, interval: 10.minutes },
           email_verification_code_send: { threshold: 10, interval: 1.hour },

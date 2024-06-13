@@ -802,8 +802,8 @@ project:
 - export_jobs
 - daily_build_group_report_results
 - jira_imports
-- compliance_framework_setting
-- compliance_management_framework
+- compliance_framework_settings
+- compliance_management_frameworks
 - metrics_users_starred_dashboards
 - alert_management_alerts
 - repository_storage_moves

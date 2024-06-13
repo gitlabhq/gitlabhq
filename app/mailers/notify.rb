@@ -249,27 +249,36 @@ class Notify < ApplicationMailer
   end
 
   def check_rate_limit
-    return if rate_limit_scope.nil?
-    return if Feature.disabled?(:rate_limit_notification_emails, rate_limit_scope)
+    return if rate_limit_scope.nil? || @recipient.nil?
 
+    enforce_rate_limit = Feature.enabled?(:rate_limit_notification_emails, rate_limit_scope)
     already_notified = throttled?(peek: true)
 
     return unless throttled?
 
-    message.perform_deliveries = false
+    message.perform_deliveries = false if enforce_rate_limit
 
     return if already_notified
 
+    Gitlab::AppLogger.info(
+      event: 'notification_emails_rate_limited',
+      user_id: @recipient.id,
+      project_id: @project&.id,
+      group_id: @group&.id
+    )
+
+    return unless enforce_rate_limit
+
     Namespaces::RateLimiterMailer.project_or_group_emails(
       rate_limit_scope,
-      message.to
+      @recipient.notification_email_for(rate_limit_scope)
     ).deliver_later
   end
 
   def throttled?(peek: false)
     ::Gitlab::ApplicationRateLimiter.throttled?(
       :notification_emails,
-      scope: [rate_limit_scope, message.to].flatten,
+      scope: [rate_limit_scope, @recipient].flatten,
       peek: peek
     )
   end

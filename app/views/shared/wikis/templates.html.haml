@@ -3,24 +3,22 @@
 - page_title s_("Wiki|Templates"), _("Wiki")
 - add_page_specific_style 'page_bundles/wiki'
 
-.wiki-page-header.gl-flex.gl-items-center{ class: '!gl-mt-5' }
-  %h1.gl-heading-1.gl-grow{ class: '!gl-mb-0' }
-    = s_("Wiki|Wiki templates")
+.wiki-page-header
+  = render ::Layouts::PageHeadingComponent.new(s_("Wiki|Wiki templates")) do |c|
+    - c.with_actions do
+      .dropdown.inline.wiki-sort-dropdown
+        .btn-group{ role: 'group' }
+          = wiki_sort_controls(@wiki, params[:direction], action: :templates)
 
-  .nav-controls.gl-flex.gl-gap-3
-    .dropdown.inline.wiki-sort-dropdown
-      .btn-group{ role: 'group' }
-        = wiki_sort_controls(@wiki, params[:direction], action: :templates)
+      #js-vue-wiki-more-actions{ data: {
+        clone_ssh_url: ssh_clone_url_to_repo(@wiki),
+        clone_http_url: http_clone_url_to_repo(@wiki),
+        wiki_url: wiki_path(@wiki),
+        new_url: wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true),
+        templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+      } }
 
-    #js-vue-wiki-more-actions{ data: {
-      clone_ssh_url: ssh_clone_url_to_repo(@wiki),
-      clone_http_url: http_clone_url_to_repo(@wiki),
-      wiki_url: wiki_path(@wiki),
-      new_url: wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true),
-      templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
-    } }
-
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-mt-0' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
   - c.with_header do
     .gl-new-card-title-wrapper.gl-flex-col
       %h3.gl-new-card-title

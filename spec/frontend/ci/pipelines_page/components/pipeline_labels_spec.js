@@ -25,12 +25,13 @@ describe('Pipeline label component', () => {
 
   const defaultProps = mockPipeline(projectPath);
 
-  const createComponent = (props) => {
+  const createComponent = (props, provide = {}) => {
     wrapper = shallowMountExtended(PipelineLabelsComponent, {
       propsData: { ...defaultProps, ...props },
       provide: {
         pipelineSchedulesPath: 'group/project/-/schedules',
         targetProjectFullPath: projectPath,
+        ...provide,
       },
     });
   };
@@ -190,12 +191,23 @@ describe('Pipeline label component', () => {
       const sourcePipeline = { ...defaultProps.pipeline };
       sourcePipeline.project.full_path = 'test/test';
 
-      createComponent({
-        pipeline: sourcePipeline,
-      });
+      createComponent({ ...sourcePipeline });
     });
 
     it('should not render', () => {
+      expect(findForkTag().exists()).toBe(false);
+    });
+  });
+
+  describe('when no targetBranchFullPath is provided', () => {
+    beforeEach(() => {
+      const forkedPipeline = { ...defaultProps.pipeline };
+      forkedPipeline.project.full_path = 'test/forked';
+
+      createComponent({ ...forkedPipeline }, { targetProjectFullPath: undefined });
+    });
+
+    it('does not render the badge', () => {
       expect(findForkTag().exists()).toBe(false);
     });
   });

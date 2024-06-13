@@ -207,7 +207,7 @@ This feature is available for testing, but not ready for production use.
 
 There is a rate limit for notification emails related to a project or group.
 
-The **rate limit** is 500 notifications per 24 hours per project or group per user.
+The **rate limit** is 1,000 notifications per 24 hours per project or group per user.
 
 ## Troubleshooting
 

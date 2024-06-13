@@ -388,7 +388,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
       include_examples 'N+1 query check'
     end
 
-    context 'when requesting `timelogs`' do
+    context 'when requesting `timelogs`', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448337' do
       let(:requested_fields) { 'timelogs { nodes { timeSpent } }' }
 
       before do

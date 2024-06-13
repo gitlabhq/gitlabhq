@@ -278,7 +278,7 @@ export default {
     titleClassComponent() {
       return {
         'sm:!gl-block': !this.parentWorkItem,
-        'gl-display-none sm:!gl-block gl-mt-3': this.parentWorkItem,
+        'gl-hidden sm:!gl-block gl-mt-3': this.parentWorkItem,
         'editable-wi-title': this.workItemsMvc2Enabled,
       };
     },
@@ -288,7 +288,7 @@ export default {
     modalCloseButtonClass() {
       return {
         'sm:gl-hidden': !this.error,
-        'gl-display-flex': true,
+        'gl-flex': true,
       };
     },
   },
@@ -493,9 +493,7 @@ export default {
           :svg-height="null"
         />
         <div v-else data-testid="detail-wrapper">
-          <div
-            class="gl-block sm:!gl-flex gl-align-items-flex-start gl-flex-direction-row gl-gap-3 gl-pt-3"
-          >
+          <div class="gl-block sm:!gl-flex gl-items-start gl-flex-row gl-gap-3">
             <work-item-ancestors v-if="parentWorkItem" :work-item="workItem" class="gl-mb-1" />
             <div v-if="!error" :class="titleClassHeader" data-testid="work-item-type">
               <work-item-title
@@ -508,7 +506,7 @@ export default {
                 @error="updateError = $event"
               />
             </div>
-            <div class="gl-display-flex gl-align-self-start gl-ml-auto gl-gap-3">
+            <div class="gl-flex gl-self-start gl-ml-auto gl-gap-3 gl-mt-1">
               <gl-button
                 v-if="shouldShowEditButton"
                 category="secondary"
@@ -560,7 +558,7 @@ export default {
             </div>
             <gl-button
               v-if="isModal"
-              class="gl-display-none sm:!gl-block"
+              class="gl-hidden sm:!gl-block"
               category="tertiary"
               data-testid="work-item-close"
               icon="close"
@@ -568,7 +566,7 @@ export default {
               @click="$emit('close')"
             />
           </div>
-          <div>
+          <div :class="{ 'gl-mt-3': !editMode }">
             <work-item-title
               v-if="workItem.title && parentWorkItem"
               ref="title"

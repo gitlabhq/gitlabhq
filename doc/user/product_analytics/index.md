@@ -264,13 +264,21 @@ The autofill approach has both benefits and limitations.
 Use funnel analysis to understand the flow of users through your application, and where
 users drop out of a predefined flow (for example, a checkout process or ticket purchase).
 
-Each product can also define an unlimited number of funnels.
+Each project can define an unlimited number of funnels.
 Like dashboards, funnels are defined with the GitLab YAML schema
 and stored in the `.gitlab/analytics/funnels/` directory of a project repository.
 If a repository has a custom dashboards pointer project that points to another repository,
 funnels must be defined in the pointer project.
 
 ### Create a funnel dashboard
+
+To create a funnel dashboard, you must first create a funnel definition file and a visualization.
+Each funnel must have a custom visualization defined for it.
+When funnel definitions and visualizations are ready,
+you can [create a custom dashboard](../analytics/analytics_dashboards.md#create-a-custom-dashboard)
+to visualize funnel analysis behavior.
+
+#### Create a funnel definition
 
 1. In the `.gitlab/analytics/` directory, create a directory named `funnels`.
 1. In the new `.gitlab/analytics/funnels` directory, create a funnel definition YAML file.
@@ -290,8 +298,6 @@ Each step must include the keys `name`, `target`, and `action`.
 | `action` | The action performed. (Only `pageview` is supported.)                          |
 | `target` | The target of the step. (Because only `pageview` is supported, this should be a path.) |
 
-#### Example funnel definition
-
 The following example defines a funnel that tracks users who completed a purchase within one hour by going through three target pages:
 
 ```yaml
@@ -308,7 +314,40 @@ steps:
     action: 'pageview'
 ```
 
-#### Query a funnel
+#### Create a funnel visualization
+
+To create funnel visualizations, follow the steps for [defining a chart visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization).
+Funnel visualizations support the measure `count` and the dimension `step`.
+
+The following example defines a column chart that visualizes the number of users who reached different steps in a funnel:
+
+```yaml
+version: 1
+type: ColumnChart
+data:
+  type: cube_analytics
+  query:
+    measures:
+      - FUNNEL_NAME.count
+    dimensions:
+      - FUNNEL_NAME.step
+    limit: 100
+    timezone: UTC
+    timeDimensions: []
+options:
+  xAxis:
+    name: Step
+    type: category
+  yAxis:
+    name: Total
+    type: value
+```
+
+NOTE:
+The funnel name defined in the YAML definition is converted to a slug that can be referenced in visualization definitions.
+For example, the funnel name `Successful Conversions` is converted to `successful_conversions`.
+
+### Query a funnel
 
 You can [query the funnel data with the REST API](../../api/product_analytics.md#send-query-request-to-cube).
 To do this, you can use the example query body below, where you need to replace `FUNNEL_NAME` with your funnel's name.
@@ -347,36 +386,6 @@ The `afterDate` filter is not supported. Use `beforeDate` or `inDateRange`.
     }
 }
 ```
-
-To create funnel visualizations, follow the steps for [defining a chart visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization).
-Each funnel must have a custom visualization defined for it.
-Funnel visualizations support the measure `count` and the dimension `step`.
-
-The following example defines a column chart that visualizes the number of users who reached different steps in a funnel:
-
-```yaml
-version: 1
-type: ColumnChart
-data:
-  type: cube_analytics
-  query:
-    measures:
-      - FUNNEL_NAME.count
-    dimensions:
-      - FUNNEL_NAME.step
-    limit: 100
-    timezone: UTC
-    timeDimensions: []
-options:
-  xAxis:
-    name: Step
-    type: category
-  yAxis:
-    name: Total
-    type: value
-```
-
-When funnel definitions and visualizations are ready, you can [create a custom dashboard](../analytics/analytics_dashboards.md#create-a-custom-dashboard) to visualize funnel analysis behavior.
 
 ## Raw data export
 

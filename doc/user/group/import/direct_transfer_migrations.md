@@ -156,9 +156,18 @@ To review the results of an import:
 
 You can also see that an item was imported when you see an **Imported** badge on some items in the GitLab UI.
 
-## Cancel a running import
+## Cancel a running migration
 
-To cancel a running import:
+If required, you can cancel a running migration by using either the REST API or a Rails console.
+
+### Cancel with the REST API
+
+For information on cancelling a running migration with the REST API, see
+[Cancel a migration](../../../api/bulk_imports.md#cancel-a-migration).
+
+### Cancel with a Rails console
+
+To cancel a running migration with a Rails console:
 
 1. Start a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session)
    on the destination GitLab instance.

@@ -37,13 +37,6 @@
     }
   }
 
-  button.sidebar-toggle {
-    position: absolute;
-    right: 0;
-    top: 11px;
-    display: block;
-  }
-
   &.has-sidebar-toggle .git-access-header {
     padding-right: $sidebar-toggle-width;
   }

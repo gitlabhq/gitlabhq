@@ -25,6 +25,8 @@ module Types
         field :last_edited_by, Types::UserType,
           null: true,
           description: 'User that made the last edit to the work item\'s description.'
+        field :task_completion_status, Types::TaskCompletionStatus, null: false,
+          description: 'Task completion status of the work item.'
 
         markdown_field :description_html, null: true, &:work_item
       end

@@ -849,7 +849,7 @@ excluded_attributes:
     - :max_artifacts_size
     - :marked_for_deletion_at
     - :marked_for_deletion_by_user_id
-    - :compliance_framework_setting
+    - :compliance_framework_settings
     - :show_default_award_emojis
     - :warn_about_potentially_unwanted_characters
     - :enforce_auth_checks_on_uploads

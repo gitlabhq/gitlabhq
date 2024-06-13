@@ -62,7 +62,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       widgetUrl,
     } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
 
-    const { daysRemaining, trialEndDate } = convertObjectPropsToCamelCase(
+    const { daysRemaining, trialEndDate, purchaseNowUrl } = convertObjectPropsToCamelCase(
       sidebarData.duo_pro_trial_status_popover_data_attrs,
     );
 
@@ -77,7 +77,8 @@ const getTrialStatusWidgetData = (sidebarData) => {
       daysRemaining,
       targetId: containerId,
       trialEndDate: new Date(trialEndDate),
-      purchaseNowUrl: widgetUrl,
+      purchaseNowUrl,
+      learnAboutButtonUrl: widgetUrl,
     };
   }
 

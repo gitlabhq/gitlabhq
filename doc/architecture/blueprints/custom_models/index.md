@@ -125,60 +125,40 @@ When the standard prompts are migrated into either the AI Gateway or a prompt te
 ### Supported LLMs
 
 - [Mistral-7B-v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1)
+- [Mixtral-8x7B-instruct](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)
 - [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1)
+- [CodeGemma 7B IT](https://huggingface.co/google/codegemma-7b-it)
+- [CodeGemma 2B](https://huggingface.co/google/codegemma-2b)
 
 Installation instructions will be added to the Developer documentation. [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/452509)
 
-_This list will expand in the near future, but the overall architecture will be the same_
-
-### Self Hosted models fitting into the current architecture
-
-```mermaid
-sequenceDiagram
-    actor User
-    participant GitLab
-    participant AIGateway as AI Gateway
-    participant SelfHostedModel as Self Hosted Model
-    participant GitLabAIVendor as GitLab AI Vendor
-
-    User ->> GitLab: Send request
-    GitLab ->> GitLab: Check if self-hosted model is configured
-    alt Self-hosted model configured
-        GitLab ->> AIGateway: Create prompt and send request
-        AIGateway ->> SelfHostedModel: Perform API request to AI model
-        SelfHostedModel -->> AIGateway: Respond to the prompt
-        AIGateway -->> GitLab: Forward AI response
-    else
-        GitLab ->> AIGateway: Create prompt and send request
-        AIGateway ->> GitLabAIVendor: Perform API request to AI model
-        GitLabAIVendor -->> AIGateway: Respond to the prompt
-        AIGateway -->> GitLab: Forward AI response
-    end
-    GitLab -->> User: Forward AI response
-```
-
 ### GitLab Duo Feature Support
 
-| Feature             | Default Model    | [Mistral AI 7B v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1) | [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1) |
-|---------------------|------------------|----------------------------------------------------------------|---------------------|
-| GitLab Duo Chat     | Anthropic Claude-2 <br/> Vertex AI Codey textembedding-gecko | Not planned        | Not planned         |
-| Code Completion     | Vertex AI Codey code-gecko                                   | ✅                 | ✅ |
-| Code Generation     | Anthropic Claude-3                                           | ✅                 | ✅ |
-| GitLab Duo for the CLI     | Vertex AI Codey codechat-bison                        | Not planned        | Not planned        |
-| Discussion Summary  | Vertex AI Codey text-bison                                   | Not planned        | Not planned        |
-| Issue Description Generation | Anthropic Claude-2                                  | Not planned        | Not planned        |
-| Test Generation     | Anthropic Claude-2                                           | Not planned        | Not planned        |
-| Merge request template population | Vertex AI Codey text-bison                     | Not planned        | Not planned        |
-| Suggested Reviewers | GitLab In-House Model                                        | Not planned        | Not planned        |
-| Merge request summary | Vertex AI Codey text-bison                                 | Not planned        | Not planned        |
-| Code review summary | Vertex AI Codey text-bison                                   | Not planned        | Not planned        |
-| Vulnerability explanation | Vertex AI Codey text-bison Anthropic <br/>Claude-2 if degraded performance | Not planned | Not planned  |
-| Vulnerability resolution | Vertex AI Codey code-bison                              | Not planned         | Not planned         |
-| Code explanation | Vertex AI Codey codechat-bison                                  | Not planned         | Not planned         |
-| Root cause analysis | Vertex AI Codey text-bison                                   | Not planned         | Not planned         |
-| Value stream forecasting | GitLab In-House Model                                   | Not planned         | Not planned         |
+| Feature             | Default Model                | Mistral 7B | Mixtral-8x7B | Mixtral 8x22B  | CodeGemma 7B | CodeGemma 2B |
+|---------------------|------------------------------|------------|--------------|----------------|--------------|--------------|
+| GitLab Duo Chat     | Anthropic Claude-3           | 🔎         | 🔎            | 🔎             | 🔎           | 🔎           |
+| Code Completion     | Vertex AI Codey code-gecko   | 🚫         | 🚫            | 🚫             |  ✅          | ✅           |
+| Code Generation     | Anthropic Claude-3           | ✅         | ✅            |  ✅            | 🔎           | 🔎           |
+| Git Suggestions     | Vertex AI Codey codechat-bison  | 🔎      | 🔎            | 🔎             | 🔎           | 🔎           |
+| Discussion Summary  | Vertex AI Codey text-bison   | 🔎         | 🔎            | 🔎             | 🔎           | 🔎           |
+| Issue Description Generation | Anthropic Claude-2  | 🔎         | 🔎            | 🔎             | 🔎           | 🔎           |
+| Test Generation     | Anthropic Claude-2           | 🔎         | 🔎            | 🔎             | 🔎           | 🔎           |
+| MR template population | Vertex AI Codey text-bison | 🔎        | 🔎            | 🔎             | 🔎           | 🔎           |
+| Suggested Reviewers | GitLab In-House Model         | 🔎        | 🔎            | 🔎             | 🔎           | 🔎           |
+| Merge request summary | Vertex AI Codey text-bison  | 🔎        | 🔎            | 🔎             | 🔎           | 🔎           |
+| Code review summary | Vertex AI Codey text-bison    | 🔎        | 🔎            | 🔎             | 🔎           | 🔎           |
+| Vulnerability explanation | Vertex AI Codey text-bison Anthropic | 🚫 | 🔎      | 🔎             | 🔎           | 🔎           |
+| Vulnerability resolution | Vertex AI Codey code-bison  | 🔎     | 🔎            | 🔎             | 🔎           | 🔎           |
+| Code explanation | Vertex AI Codey codechat-bison      | 🔎        | 🔎            | 🔎             | 🔎           | 🔎           |
+| Root cause analysis | Vertex AI Codey text-bison       | 🔎        | 🔎            | 🔎             | 🔎           | 🔎           |
+| Value stream forecasting | GitLab In-House Model       | 🔎        | 🔎            | 🔎             | 🔎           | 🔎           |
 
-The `Suggested Reviewers` and `Value stream forecasting` models are Convolutional Neural Networks (CNNs) developed in-house by GitLab.
+- The `Suggested Reviewers` and `Value stream forecasting` models are Convolutional Neural Networks (CNNs) developed in-house by GitLab.
+- ✅ `Supported` : means the GitLab Duo feature is supported for this model
+- 🚫 `Not Supported`: the GitLab Duo feature is not supported for this model
+- 🔎 `To be Evaluated`: research is needed to determine if this feature will be supported
+- GitLab Duo Chat can also use Vertex AI Codey textembedding-gecko
+- Vulnerability explanation can fall back to Claude-2 if degraded performance
 
 #### LLM-hosting
 

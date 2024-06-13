@@ -970,6 +970,16 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
         expect(work_item.notes.last.note).to eq("added ##{task.iid} as child task")
         expect(task.notes.last.note).to eq("added ##{work_item.iid} as parent issue")
       end
+
+      context 'when the parent belongs to a different namespace' do
+        let(:work_item) { create(:work_item, :group_level, namespace: group) }
+
+        it 'uses full references on the system notes' do
+          expect { subject }.to change { Note.system.count }.by(2)
+          expect(work_item.notes.last.note).to eq("added #{task.namespace.full_path}##{task.iid} as child task")
+          expect(task.notes.last.note).to eq("added #{work_item.namespace.full_path}##{work_item.iid} as parent issue")
+        end
+      end
     end
 
     context 'when child task is removed' do
@@ -984,6 +994,16 @@ RSpec.describe ::SystemNotes::IssuablesService, feature_category: :team_planning
         expect { subject }.to change { Note.system.count }.by(2)
         expect(work_item.notes.last.note).to eq("removed child task ##{task.iid}")
         expect(task.notes.last.note).to eq("removed parent issue ##{work_item.iid}")
+      end
+
+      context 'when the parent belongs to a different namespace' do
+        let(:work_item) { create(:work_item, :group_level, namespace: group) }
+
+        it 'uses full references on the system notes' do
+          expect { subject }.to change { Note.system.count }.by(2)
+          expect(work_item.notes.last.note).to eq("removed child task #{task.namespace.full_path}##{task.iid}")
+          expect(task.notes.last.note).to eq("removed parent issue #{work_item.namespace.full_path}##{work_item.iid}")
+        end
       end
     end
   end

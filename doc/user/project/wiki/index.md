@@ -25,8 +25,6 @@ sidebar contains a partial list of pages in the wiki, displayed as a nested tree
 with sibling pages listed in alphabetical order. To view a list of all pages, select
 **View All Pages** in the sidebar:
 
-![Wiki sidebar](img/wiki_sidebar_v13_5.png)
-
 ## View a project wiki
 
 To access a project wiki:
@@ -79,7 +77,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **Wiki actions** (**{ellipsis_v}**) **> New page** on this page, or any other wiki page.
+1. Select **Wiki actions** (**{ellipsis_v}**), then **New page** on this page, or any other wiki page.
 1. Select a content format.
 1. Add a title for your new page. Page titles use
    [special characters](#special-characters-in-page-titles) for subdirectories and formatting,
@@ -98,7 +96,7 @@ locally:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **Wiki actions** (**{ellipsis_v}**) **> Clone repository**.
+1. Select **Wiki actions** (**{ellipsis_v}**), then **Clone repository**.
 1. Follow the on-screen instructions.
 
 Files you add to your wiki locally must use one of the following
@@ -223,7 +221,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **Wiki actions** (**{ellipsis_v}**) **> Templates**.
+1. Select **Wiki actions** (**{ellipsis_v}**), then **Templates**.
 1. Select **New Template**.
 1. Enter template title, format and content, as if creating a regular wiki page.
 
@@ -249,8 +247,6 @@ Prerequisites:
 The changes of a wiki page over time are recorded in the wiki's Git repository.
 The history page shows:
 
-![Wiki page history](img/wiki_page_history.png)
-
 - The revision (Git commit SHA) of the page.
 - The page author.
 - The commit message.
@@ -273,8 +269,6 @@ You can see the changes made in a version of a wiki page, similar to versioned d
 1. Go to the wiki page you're interested in.
 1. Select **Page history** to see all page versions.
 1. Select the commit message in the **Changes** column for the version you're interested in.
-
-   ![Wiki page changes](img/wiki_page_diffs_v13_2.png)
 
 ## Track wiki events
 
@@ -300,7 +294,7 @@ replaces the default sidebar navigation:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. In the upper-right corner of the page, select **Edit sidebar**.
+1. In the upper-right corner of the page, select **Add custom sidebar** (**{settings}**).
 1. When complete, select **Save changes**.
 
 A `_sidebar` example, formatted with Markdown:

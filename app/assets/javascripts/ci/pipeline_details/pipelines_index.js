@@ -63,6 +63,7 @@ export const initPipelinesIndex = (selector = '#pipelines-list-vue') => {
       identityVerificationRequired: parseBoolean(identityVerificationRequired),
       suggestedCiTemplates: JSON.parse(suggestedCiTemplates),
       showJenkinsCiPrompt: parseBoolean(showJenkinsCiPrompt),
+      targetProjectFullPath: fullPath,
     },
     data() {
       return {
