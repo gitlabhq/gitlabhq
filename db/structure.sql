@@ -18407,6 +18407,28 @@ CREATE SEQUENCE vulnerability_exports_id_seq
 
 ALTER SEQUENCE vulnerability_exports_id_seq OWNED BY vulnerability_exports.id;
 
+CREATE TABLE vulnerability_export_parts (
+    id bigint NOT NULL,
+    vulnerability_export_id bigint NOT NULL,
+    start_id bigint NOT NULL,
+    end_id bigint NOT NULL,
+    organization_id bigint DEFAULT 1 NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer,
+    file text,
+    CONSTRAINT check_baded21d39 CHECK ((char_length(file) <= 255))
+);
+
+CREATE SEQUENCE vulnerability_export_parts_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE vulnerability_export_parts_id_seq OWNED BY vulnerability_export_parts.id;
+
 CREATE TABLE vulnerability_external_issue_links (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -20927,6 +20949,8 @@ ALTER TABLE ONLY value_stream_dashboard_counts ALTER COLUMN id SET DEFAULT nextv
 ALTER TABLE ONLY vs_code_settings ALTER COLUMN id SET DEFAULT nextval('vs_code_settings_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerabilities ALTER COLUMN id SET DEFAULT nextval('vulnerabilities_id_seq'::regclass);
+
+ALTER TABLE ONLY vulnerability_export_parts ALTER COLUMN id SET DEFAULT nextval('vulnerability_export_parts_id_seq'::regclass);
 
 ALTER TABLE ONLY vulnerability_exports ALTER COLUMN id SET DEFAULT nextval('vulnerability_exports_id_seq'::regclass);
 
@@ -23609,6 +23633,9 @@ ALTER TABLE ONLY vs_code_settings
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT vulnerabilities_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_export_parts
+    ADD CONSTRAINT vulnerability_export_parts_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT vulnerability_exports_pkey PRIMARY KEY (id);
@@ -28816,6 +28843,10 @@ CREATE INDEX index_vulnerabilities_on_resolved_by_id ON vulnerabilities USING bt
 CREATE INDEX index_vulnerabilities_project_id_and_id_on_default_branch ON vulnerabilities USING btree (project_id, id) WHERE (present_on_default_branch IS TRUE);
 
 CREATE INDEX index_vulnerabilities_project_id_state_severity_default_branch ON vulnerabilities USING btree (project_id, state, severity, present_on_default_branch);
+
+CREATE INDEX index_vulnerability_export_parts_on_organization_id ON vulnerability_export_parts USING btree (organization_id);
+
+CREATE INDEX index_vulnerability_export_parts_on_vulnerability_export_id ON vulnerability_export_parts USING btree (vulnerability_export_id);
 
 CREATE INDEX index_vulnerability_exports_on_author_id ON vulnerability_exports USING btree (author_id);
 
@@ -34230,6 +34261,9 @@ ALTER TABLE ONLY board_group_recent_visits
 ALTER TABLE ONLY incident_management_issuable_escalation_statuses
     ADD CONSTRAINT fk_rails_f4c811fd28 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY vulnerability_export_parts
+    ADD CONSTRAINT fk_rails_f50ca1aabf FOREIGN KEY (vulnerability_export_id) REFERENCES vulnerability_exports(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_f5827a7ccd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -34283,6 +34317,9 @@ ALTER TABLE ONLY cluster_groups
 
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_rails_fe91ece594 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY vulnerability_export_parts
+    ADD CONSTRAINT fk_rails_feaf890d7a FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY pages_deployment_states
     ADD CONSTRAINT fk_rails_ff6ca551a4 FOREIGN KEY (pages_deployment_id) REFERENCES pages_deployments(id) ON DELETE CASCADE;

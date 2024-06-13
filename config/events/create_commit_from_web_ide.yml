@@ -1,0 +1,18 @@
+---
+description: Tracks when commit is made with Web IDE
+internal_events: true
+action: create_commit_from_web_ide
+identifiers:
+  - project
+  - user
+  - namespace
+product_group: ide
+milestone: '17.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149507
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

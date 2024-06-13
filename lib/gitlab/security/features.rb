@@ -10,11 +10,22 @@ module Gitlab
           sast: {
             name: _('Static Application Security Testing (SAST)'),
             short_name: _('SAST'),
-            description: _('Analyze your source code for known vulnerabilities.'),
+            description: _('Analyze your source code for vulnerabilities.'),
             help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/index'),
             configuration_help_path: Gitlab::Routing.url_helpers.help_page_path('user/application_security/sast/index',
               anchor: 'configuration'),
             type: 'sast'
+          },
+          sast_advanced: {
+            name: _('GitLab Advanced SAST'),
+            short_name: _('Advanced SAST'),
+            description: _('Analyze your source code for vulnerabilities with the GitLab Advanced SAST analyzer.'),
+            help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/sast/gitlab_advanced_sast'),
+            configuration_help_path: Gitlab::Routing.url_helpers.help_page_path(
+              'user/application_security/sast/gitlab_advanced_sast',
+              anchor: 'configuration'),
+            type: 'sast_advanced'
           },
           sast_iac: {
             name: _('Infrastructure as Code (IaC) Scanning'),

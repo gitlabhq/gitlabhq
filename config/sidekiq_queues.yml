@@ -333,6 +333,10 @@
   - 1
 - - export_csv
   - 1
+- - export_segmented_export
+  - 1
+- - export_segmented_export_finalisation
+  - 1
 - - external_service_reactive_caching
   - 1
 - - file_hook

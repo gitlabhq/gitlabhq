@@ -129,6 +129,9 @@ export default {
     getProjectPath(item) {
       return cleanLeadingSeparator(item.project.full_path);
     },
+    getStages(item) {
+      return item?.details?.stages || [];
+    },
     failedJobsCount(pipeline) {
       return pipeline?.failed_builds_count || 0;
     },
@@ -190,7 +193,7 @@ export default {
         <legacy-pipeline-mini-graph
           :downstream-pipelines="getDownstreamPipelines(item)"
           :pipeline-path="item.path"
-          :stages="item.details.stages"
+          :stages="getStages(item)"
           :update-dropdown="updateGraphDropdown"
           :upstream-pipeline="item.triggered_by"
           @miniGraphStageClick="trackPipelineMiniGraph"

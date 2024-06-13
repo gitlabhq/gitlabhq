@@ -18,6 +18,26 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
     let(:params) { base_params }
     let(:service) { described_class.new(current_user, params) }
 
+    context 'with user_detail built' do
+      it 'creates the user_detail record' do
+        user = service.execute
+
+        expect { user.save! }.to change { UserDetail.count }.by(1)
+      end
+
+      context 'when create_user_details_all_user_creation feature flag is disabled' do
+        before do
+          stub_feature_flags(create_user_details_all_user_creation: false)
+        end
+
+        it 'does not create the user_detail record' do
+          user = service.execute
+
+          expect { user.save! }.not_to change { UserDetail.count }
+        end
+      end
+    end
+
     context 'with nil current_user' do
       subject(:user) { service.execute }
 

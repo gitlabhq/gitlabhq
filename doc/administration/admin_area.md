@@ -108,8 +108,7 @@ You can use the user search box to search and filter users by:
 - User **state**.
 
 You can also type text into the search box. For example, the name of a specific user.
-This text search is case insensitive, and applies partial matching to name and username.
-To search for an email address, you must provide the complete email address.
+This text search is case insensitive, and applies partial matching to name, username and email for self-managed instances.
 
 For each user, the following are listed:
 

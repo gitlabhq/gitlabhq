@@ -3446,20 +3446,62 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'with private emails search' do
+        let(:options) { { with_private_emails: true } }
+
         it 'returns users with matching private primary email' do
-          expect(described_class.search(user.email, with_private_emails: true)).to match_array([user])
+          expect(described_class.search(user.email, **options)).to match_array([user])
         end
 
         it 'returns users with matching private unconfirmed primary email' do
-          expect(described_class.search(unconfirmed_user.email, with_private_emails: true)).to match_array([unconfirmed_user])
+          expect(described_class.search(unconfirmed_user.email, **options)).to match_array([unconfirmed_user])
         end
 
         it 'returns users with matching private confirmed secondary email' do
-          expect(described_class.search(confirmed_secondary_email.email, with_private_emails: true)).to match_array([user])
+          expect(described_class.search(confirmed_secondary_email.email, **options)).to match_array([user])
         end
 
         it 'does not return users with matching private unconfirmed secondary email' do
-          expect(described_class.search(unconfirmed_secondary_email.email, with_private_emails: true)).to be_empty
+          expect(described_class.search(unconfirmed_secondary_email.email, **options)).to be_empty
+        end
+
+        context 'with partial email search' do
+          let(:options) { super().merge(partial_email_search: true) }
+
+          before do
+            user.emails.each { |email| email.update! confirmed_at: nil }
+          end
+
+          it 'returns users with partially matching private primary email' do
+            expect(described_class.search(user.email[1...-1], **options)).to match_array([user, user2])
+          end
+
+          it 'returns users with partially matching private unconfirmed primary email' do
+            expect(described_class.search(unconfirmed_user.email[1...-1], **options)).to match_array([unconfirmed_user])
+          end
+
+          it 'returns users with partially matching private confirmed secondary email' do
+            expect(described_class.search(confirmed_secondary_email.email[1...-1], **options)).to match_array([user])
+          end
+
+          context 'when search is less than minimum char limit' do
+            subject(:users) { described_class.search(user.public_email[1..2], **options) }
+
+            context 'and use_minimum_char_limit is false' do
+              let(:options) { super().merge(use_minimum_char_limit: false) }
+
+              it 'ignores minimum char limit and returns users with a partially matching public email' do
+                expect(users).to match_array([user])
+              end
+            end
+
+            context 'and use_minimum_char_limit is true' do
+              let(:options) { super().merge(use_minimum_char_limit: true) }
+
+              it 'respects minimum char limit and does not return any users' do
+                expect(users).to be_empty
+              end
+            end
+          end
         end
       end
     end

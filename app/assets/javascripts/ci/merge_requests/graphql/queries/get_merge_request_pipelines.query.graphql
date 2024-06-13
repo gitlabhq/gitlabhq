@@ -1,14 +1,53 @@
 query getMergeRequestPipelines($mergeRequestIid: String!, $fullPath: ID!) {
   project(fullPath: $fullPath) {
     id
+    fullPath
     mergeRequest(iid: $mergeRequestIid) {
       id
+      iid
+      title
+      webPath
       pipelines {
         count
         nodes {
           id
           iid
+          name
+          duration
+          finishedAt
           path
+          configSource
+          stuck
+          mergeRequestEventType
+          failureReason
+          yamlErrors
+          commit {
+            id
+            title
+            webPath
+            shortId
+            authorGravatar
+            author {
+              id
+              avatarUrl
+              commitEmail
+              name
+              webUrl
+            }
+          }
+          detailedStatus {
+            id
+            hasDetails
+            detailsPath
+            label
+            name
+          }
+          user {
+            id
+            avatar_url: avatarUrl
+            name
+            path: webPath
+          }
         }
       }
     }

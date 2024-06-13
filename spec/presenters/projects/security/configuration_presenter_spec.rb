@@ -95,6 +95,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter, feature_category: :so
           :dast | true
           :dast_profiles | true
           :sast | true
+          :sast_advanced | false
           :sast_iac | false
           :container_scanning | false
           :cluster_image_scanning | false

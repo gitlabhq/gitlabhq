@@ -52,19 +52,4 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::RedisMetric, :clean_git
       end
     end
   end
-
-  context "with usage prefix disabled" do
-    let(:expected_value) { 3 }
-
-    before do
-      3.times do
-        Gitlab::UsageDataCounters::WebIdeCounter.increment_merge_requests_count
-      end
-    end
-
-    it_behaves_like 'a correct instrumented metric value', {
-      options: { event: 'merge_requests_count', prefix: 'web_ide', include_usage_prefix: false },
-      time_frame: 'all'
-    }
-  end
 end

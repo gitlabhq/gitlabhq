@@ -149,16 +149,55 @@ describe('Pipeline label component', () => {
     expect(findTriggeredTag().text()).toBe('trigger token');
   });
 
-  it('should render the fork badge when the pipeline was run in a fork', () => {
-    const forkedPipeline = defaultProps.pipeline;
-    forkedPipeline.project.full_path = '/test/forked';
+  describe('fork badge', () => {
+    describe('when the pipeline path does not equal the project path', () => {
+      describe('with a trailing slash', () => {
+        beforeEach(() => {
+          const forkedPipeline = { ...defaultProps.pipeline };
+          forkedPipeline.project.full_path = '/test/forked';
 
-    createComponent({
-      ...forkedPipeline,
+          createComponent({
+            ...forkedPipeline,
+          });
+        });
+
+        it('renders the badge', () => {
+          expect(findForkTag().exists()).toBe(true);
+          expect(findForkTag().text()).toBe('fork');
+        });
+      });
+
+      describe('without a trailing slash', () => {
+        beforeEach(() => {
+          const forkedPipeline = { ...defaultProps.pipeline };
+          forkedPipeline.project.full_path = 'test/forked';
+
+          createComponent({
+            ...forkedPipeline,
+          });
+        });
+
+        it('renders the badge', () => {
+          expect(findForkTag().exists()).toBe(true);
+          expect(findForkTag().text()).toBe('fork');
+        });
+      });
+    });
+  });
+
+  describe('when the project path equals the pipeline path', () => {
+    beforeEach(() => {
+      const sourcePipeline = { ...defaultProps.pipeline };
+      sourcePipeline.project.full_path = 'test/test';
+
+      createComponent({
+        pipeline: sourcePipeline,
+      });
     });
 
-    expect(findForkTag().exists()).toBe(true);
-    expect(findForkTag().text()).toBe('fork');
+    it('should not render', () => {
+      expect(findForkTag().exists()).toBe(false);
+    });
   });
 
   it('should render the merged results badge when the pipeline is a merged results pipeline', () => {

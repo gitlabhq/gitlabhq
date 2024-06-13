@@ -179,7 +179,11 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   end
 
   def incr_count_webide_merge_request
-    webide_source? && Gitlab::UsageDataCounters::WebIdeCounter.increment_merge_requests_count
+    webide_source? && Gitlab::InternalEvents.track_event(
+      'create_merge_request_from_web_ide',
+      project: project,
+      user: current_user
+    )
   end
 
   def tracking_project_source

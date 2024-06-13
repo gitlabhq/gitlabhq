@@ -34,11 +34,15 @@ export default {
     isTriggered() {
       return this.pipeline.source === TRIGGER_ORIGIN;
     },
-    isInFork() {
-      return Boolean(
-        this.targetProjectFullPath &&
-          this.pipeline?.project?.full_path !== `/${this.targetProjectFullPath}`,
+    isPipelineFromSource() {
+      const fullPath = this.pipeline?.project?.full_path;
+      // We may or may not have a trailing slash in `targetProjectFullPath` value, so we account for both cases
+      return (
+        fullPath === `/${this.targetProjectFullPath}` || fullPath === this.targetProjectFullPath
       );
+    },
+    isInFork() {
+      return !this.isPipelineFromSource;
     },
     showMergedResultsBadge() {
       // A merge train pipeline is technically also a merged results pipeline,

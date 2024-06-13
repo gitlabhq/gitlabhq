@@ -4683,6 +4683,9 @@ msgstr ""
 msgid "Advanced"
 msgstr ""
 
+msgid "Advanced SAST"
+msgstr ""
+
 msgid "Advanced Search"
 msgstr ""
 
@@ -6206,7 +6209,10 @@ msgstr ""
 msgid "Analyze your source code and Git history for secrets by using CI/CD pipelines."
 msgstr ""
 
-msgid "Analyze your source code for known vulnerabilities."
+msgid "Analyze your source code for vulnerabilities with the GitLab Advanced SAST analyzer."
+msgstr ""
+
+msgid "Analyze your source code for vulnerabilities."
 msgstr ""
 
 msgid "Analyzing file…"
@@ -23560,6 +23566,9 @@ msgid "GitLab API"
 msgstr ""
 
 msgid "GitLab Account Request"
+msgstr ""
+
+msgid "GitLab Advanced SAST"
 msgstr ""
 
 msgid "GitLab Billing Team."

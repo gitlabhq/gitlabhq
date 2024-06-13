@@ -46,5 +46,5 @@
           %button.btn-blank.btn-link.js-trigger-shortcut{ type: 'button' }
             = _('Use shortcuts')
         - unless Gitlab::CurrentSettings.help_page_hide_commercial_content?
-          %li= link_to _('Get a support subscription'), "https://#{ApplicationHelper.promo_host}/pricing/", { class: 'gl-text-blue-600!' }
-          %li= link_to _('Compare GitLab editions'), "https://#{ApplicationHelper.promo_host}/features/#compare", { class: 'gl-text-blue-600!' }
+          %li= link_to _('Get a support subscription'), "#{ApplicationHelper.promo_url}/pricing/", { class: 'gl-text-blue-600!' }
+          %li= link_to _('Compare GitLab editions'), "#{ApplicationHelper.promo_url}/features/#compare", { class: 'gl-text-blue-600!' }

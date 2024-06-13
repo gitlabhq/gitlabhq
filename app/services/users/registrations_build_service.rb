@@ -11,7 +11,11 @@ module Users
       # This will ensure we either load an existing record or create it.
       # TODO: Eventually we should specifically build here once we get away from the lazy loading in
       # https://gitlab.com/gitlab-org/gitlab/-/issues/462919.
-      user.user_detail
+      if Feature.enabled?(:create_user_details_all_user_creation, Feature.current_request)
+        super
+      else
+        user.user_detail
+      end
     end
 
     def signup_params

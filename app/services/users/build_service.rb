@@ -143,9 +143,10 @@ module Users
     end
 
     def build_user_detail
-      # no-op overridden by inheriting classes
-      # TODO: This will eventually be populated based on success of
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/461656
+      return unless Feature.enabled?(:create_user_details_all_user_creation, Feature.current_request)
+
+      # This will ensure we either load an existing record or create it.
+      user.user_detail
     end
 
     def update_canonical_email

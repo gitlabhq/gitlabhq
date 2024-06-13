@@ -31,7 +31,7 @@ export default {
       required: true,
       validator(status) {
         const { icon } = status;
-        return typeof icon === 'string' && icon.startsWith('status_');
+        return typeof icon === 'string' && icon.startsWith('status');
       },
     },
     showStatusText: {

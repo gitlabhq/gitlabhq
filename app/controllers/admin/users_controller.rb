@@ -21,7 +21,13 @@ class Admin::UsersController < Admin::ApplicationController
     return redirect_to admin_cohorts_path if params[:tab] == 'cohorts'
 
     @users = User.filter_items(params[:filter]).order_name_asc
-    @users = @users.search(params[:search_query], with_private_emails: true) if params[:search_query].present?
+
+    if params[:search_query].present?
+      # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- available only for self-managed instances
+      @users = @users.search(params[:search_query], with_private_emails: true, partial_email_search: !Gitlab.com?)
+      # rubocop:enable Gitlab/AvoidGitlabInstanceChecks
+    end
+
     @users = users_with_included_associations(@users)
     @sort = params[:sort].presence || sort_value_name
     @users = @users.sort_by_attribute(@sort)

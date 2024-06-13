@@ -95,7 +95,7 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
     where(:scan_type, :features_hash) do
       :sast | { name: "Static Application Security Testing (SAST)",
          short_name: "SAST",
-         description: "Analyze your source code for known vulnerabilities.",
+         description: "Analyze your source code for vulnerabilities.",
          help_path: "/help/user/application_security/sast/index",
          configuration_help_path: "/help/user/application_security/sast/index#configuration",
          type: "sast" }

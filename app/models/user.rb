@@ -855,6 +855,7 @@ class User < MainClusterwide::ApplicationRecord
     #
     # query - The search query as a String
     # with_private_emails - include private emails in search
+    # partial_email_search - only for admins to preserve email privacy. Only for self-managed instances.
     #
     # Returns an ActiveRecord::Relation.
     def search(query, **options)
@@ -876,8 +877,18 @@ class User < MainClusterwide::ApplicationRecord
 
       sanitized_order_sql = Arel.sql(sanitize_sql_array([order, { query: query }]))
 
-      scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
-      scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
+      use_minimum_char_limit = options[:use_minimum_char_limit]
+
+      scope =
+        if options[:with_private_emails]
+          with_primary_or_secondary_email(
+            query, use_minimum_char_limit: use_minimum_char_limit, partial_email_search: options[:partial_email_search]
+          )
+        else
+          with_public_email(query)
+        end
+
+      scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: use_minimum_char_limit))
 
       order = Gitlab::Pagination::Keyset::Order.build(
         [
@@ -949,16 +960,25 @@ class User < MainClusterwide::ApplicationRecord
       where(public_email: email_address)
     end
 
-    def with_primary_or_secondary_email(email_address)
+    def with_primary_or_secondary_email(query, use_minimum_char_limit: true, partial_email_search: false)
       email_table = Email.arel_table
+
+      if partial_email_search
+        email_table_matched_by_email = Email.fuzzy_arel_match(:email, query, use_minimum_char_limit: use_minimum_char_limit)
+        matched_by_email = User.fuzzy_arel_match(:email, query, use_minimum_char_limit: use_minimum_char_limit)
+      else
+        email_table_matched_by_email = email_table[:email].eq(query)
+        matched_by_email = arel_table[:email].eq(query)
+      end
+
       matched_by_email_user_id = email_table
         .project(email_table[:user_id])
-        .where(email_table[:email].eq(email_address))
+        .where(email_table_matched_by_email)
         .where(email_table[:confirmed_at].not_eq(nil))
         .take(1) # at most 1 record as there is a unique constraint
 
       where(
-        arel_table[:email].eq(email_address)
+        matched_by_email
         .or(arel_table[:id].eq(matched_by_email_user_id))
       )
     end

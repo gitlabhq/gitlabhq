@@ -77,7 +77,7 @@ export default {
           commitAuthorInformation = pipelineCommitAuthor;
 
           // 3. If GitLab user does not have avatar, they might have a Gravatar
-        } else if (pipelineCommit.author_gravatar_url) {
+        } else if (pipelineCommit?.author_gravatar_url) {
           commitAuthorInformation = {
             ...pipelineCommitAuthor,
             avatar_url: pipelineCommit.author_gravatar_url,
@@ -86,8 +86,8 @@ export default {
         // 4. If committer is not a GitLab User, they can have a Gravatar
       } else {
         commitAuthorInformation = {
-          avatar_url: pipelineCommit.author_gravatar_url,
-          path: `mailto:${pipelineCommit.author_email}`,
+          avatar_url: pipelineCommit?.author_gravatar_url,
+          path: `mailto:${pipelineCommit?.author_email}`,
           username: pipelineCommit.author_name,
         };
       }

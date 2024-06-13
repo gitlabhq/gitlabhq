@@ -35404,6 +35404,7 @@ The status of the security scan.
 | <a id="securityreporttypeenumdast"></a>`DAST` | DAST scan report. |
 | <a id="securityreporttypeenumdependency_scanning"></a>`DEPENDENCY_SCANNING` | DEPENDENCY SCANNING scan report. |
 | <a id="securityreporttypeenumsast"></a>`SAST` | SAST scan report. |
+| <a id="securityreporttypeenumsast_advanced"></a>`SAST_ADVANCED` | SAST ADVANCED scan report. |
 | <a id="securityreporttypeenumsast_iac"></a>`SAST_IAC` | SAST IAC scan report. |
 | <a id="securityreporttypeenumsecret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION scan report. |
 
@@ -35421,6 +35422,7 @@ The type of the security scanner.
 | <a id="securityscannertypedast"></a>`DAST` | DAST scanner. |
 | <a id="securityscannertypedependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency Scanning scanner. |
 | <a id="securityscannertypesast"></a>`SAST` | SAST scanner. |
+| <a id="securityscannertypesast_advanced"></a>`SAST_ADVANCED` | Sast Advanced scanner. |
 | <a id="securityscannertypesast_iac"></a>`SAST_IAC` | Sast Iac scanner. |
 | <a id="securityscannertypesecret_detection"></a>`SECRET_DETECTION` | Secret Detection scanner. |
 

@@ -34,3 +34,5 @@
 '{event_counters}_delete_design_management_design': USAGE_DESIGN_MANAGEMENT_DESIGNS_DELETE
 '{event_counters}_create_merge_request': USAGE_MERGE_REQUEST_CREATE
 '{event_counters}_create_merge_request_note': USAGE_NOTE_CREATE_MERGEREQUEST
+'{event_counters}_create_commit_from_web_ide': WEB_IDE_COMMITS_COUNT
+'{event_counters}_create_merge_request_from_web_ide': WEB_IDE_MERGE_REQUESTS_COUNT

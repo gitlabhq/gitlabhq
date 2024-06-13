@@ -7,14 +7,6 @@ module Gitlab
       PREFIX = 'web_ide'
 
       class << self
-        def increment_commits_count
-          count('commits')
-        end
-
-        def increment_merge_requests_count
-          count('merge_requests')
-        end
-
         def increment_terminals_count
           count('terminals')
         end

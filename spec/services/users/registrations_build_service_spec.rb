@@ -20,6 +20,18 @@ RSpec.describe Users::RegistrationsBuildService, feature_category: :system_acces
 
         expect { user.save! }.to change { UserDetail.count }.by(1)
       end
+
+      context 'when create_user_details_all_user_creation feature flag is disabled' do
+        before do
+          stub_feature_flags(create_user_details_all_user_creation: false)
+        end
+
+        it 'creates the user_detail record' do
+          user = service.execute
+
+          expect { user.save! }.to change { UserDetail.count }.by(1)
+        end
+      end
     end
 
     context 'when automatic user confirmation is not enabled' do

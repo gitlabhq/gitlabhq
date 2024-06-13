@@ -49,8 +49,10 @@ To break down implementation, we are taking the following steps:
 | [Move remaining legacy code](https://gitlab.com/gitlab-org/gitlab/-/work_items/464379) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) |[154818](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154818) | ✅ |
 | [Create README for PMG](https://gitlab.com/gitlab-org/gitlab/-/work_items/464632) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) | [154964](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154964) | ✅ |
 | [GraphQL Query Optimization](https://gitlab.com/gitlab-org/gitlab/-/issues/465309) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) | [465309](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155129) | ✅ |
-| [Dedicated component for downstream pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/466238) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) | [155382](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155382) | In Review |
+| [Dedicated component for downstream pipelines](https://gitlab.com/gitlab-org/gitlab/-/issues/466238) | [17.1](https://gitlab.com/groups/gitlab-org/-/milestones/99#tab-issues) | [155382](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155382) | ✅ |
 | [Fetch Stage by ID](https://gitlab.com/gitlab-org/gitlab/-/issues/464100) | [17.2](https://gitlab.com/groups/gitlab-org/-/milestones/100#tab-issues) | TBD | In Dev |
+| [Job Item](https://gitlab.com/gitlab-org/gitlab/-/issues/467278) | [17.2](https://gitlab.com/groups/gitlab-org/-/milestones/100#tab-issues) | TBD | Not Started |
+| [Job Actions](https://gitlab.com/gitlab-org/gitlab/-/issues/467279) | [17.2](https://gitlab.com/groups/gitlab-org/-/milestones/100#tab-issues) | TBD | Not Started |
 | [Rollout `ci_graphql_pipeline_mini_graph`](https://gitlab.com/gitlab-org/gitlab/-/issues/407818) | [17.2](https://gitlab.com/groups/gitlab-org/-/milestones/100#tab-issues) | TBD | Blocked |
 | [Migrate MR PMG to GraphQL instance](https://gitlab.com/gitlab-org/gitlab/-/issues/419725) | [17.2](https://gitlab.com/groups/gitlab-org/-/milestones/100#tab-issues) | TBD | Blocked |
 | [Migrate pipeline editor PMG to GraphQL instance](https://gitlab.com/gitlab-org/gitlab/-/issues/466275) | TBD | TBD | Blocked |

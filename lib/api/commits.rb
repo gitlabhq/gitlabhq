@@ -31,7 +31,7 @@ module API
       def track_commit_events
         return unless find_user_from_warden
 
-        Gitlab::UsageDataCounters::WebIdeCounter.increment_commits_count
+        Gitlab::InternalEvents.track_event('create_commit_from_web_ide', user: current_user, project: user_project)
         Gitlab::InternalEvents.track_event('g_edit_by_web_ide', user: current_user, project: user_project)
 
         namespace = user_project.namespace
@@ -43,7 +43,10 @@ module API
           namespace: namespace,
           user: current_user,
           label: 'counts.web_ide_commits',
-          context: [Gitlab::Usage::MetricDefinition.context_for('counts.web_ide_commits').to_context]
+          context: [Gitlab::Tracking::ServicePingContext.new(
+            data_source: 'redis_hll',
+            event: 'create_commit_from_web_ide'
+          ).to_context]
         )
       end
     end
