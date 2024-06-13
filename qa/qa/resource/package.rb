@@ -19,8 +19,7 @@ module QA
         this_package.try(:fetch, :id)
       end
 
-      def fabricate!
-      end
+      def fabricate!; end
 
       def fabricate_via_api!
         resource_web_url(api_get)

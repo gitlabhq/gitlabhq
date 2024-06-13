@@ -1025,6 +1025,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_4ad9a52a6614() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "sbom_occurrences"
+  WHERE "sbom_occurrences"."id" = NEW."sbom_occurrence_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_56d49f4ed623() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -16532,7 +16548,8 @@ CREATE TABLE sbom_occurrences_vulnerabilities (
     sbom_occurrence_id bigint NOT NULL,
     vulnerability_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE sbom_occurrences_vulnerabilities_id_seq
@@ -28296,6 +28313,8 @@ CREATE INDEX index_sbom_occurrences_on_source_id ON sbom_occurrences USING btree
 
 CREATE UNIQUE INDEX index_sbom_occurrences_on_uuid ON sbom_occurrences USING btree (uuid);
 
+CREATE INDEX index_sbom_occurrences_vulnerabilities_on_project_id ON sbom_occurrences_vulnerabilities USING btree (project_id);
+
 CREATE INDEX index_sbom_occurrences_vulnerabilities_on_vulnerability_id ON sbom_occurrences_vulnerabilities USING btree (vulnerability_id);
 
 CREATE INDEX index_sbom_source_packages_on_source_package_id_and_id ON sbom_occurrences USING btree (source_package_id, id);
@@ -30970,6 +30989,8 @@ CREATE TRIGGER trigger_43484cb41aca BEFORE INSERT OR UPDATE ON wiki_repository_s
 
 CREATE TRIGGER trigger_44558add1625 BEFORE INSERT OR UPDATE ON merge_request_assignees FOR EACH ROW EXECUTE FUNCTION trigger_44558add1625();
 
+CREATE TRIGGER trigger_4ad9a52a6614 BEFORE INSERT OR UPDATE ON sbom_occurrences_vulnerabilities FOR EACH ROW EXECUTE FUNCTION trigger_4ad9a52a6614();
+
 CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variables FOR EACH ROW EXECUTE FUNCTION trigger_56d49f4ed623();
 
 CREATE TRIGGER trigger_57ad2742ac16 BEFORE INSERT OR UPDATE ON user_achievements FOR EACH ROW EXECUTE FUNCTION trigger_57ad2742ac16();
@@ -31104,6 +31125,9 @@ ALTER TABLE ONLY service_desk_settings
 
 ALTER TABLE ONLY design_management_designs_versions
     ADD CONSTRAINT fk_03c671965c FOREIGN KEY (design_id) REFERENCES design_management_designs(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY sbom_occurrences_vulnerabilities
+    ADD CONSTRAINT fk_058f258503 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_dashboards_pointers
     ADD CONSTRAINT fk_05d96922bd FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;

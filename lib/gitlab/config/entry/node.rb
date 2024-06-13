@@ -118,8 +118,7 @@ module Gitlab
           @config.is_a?(Integer)
         end
 
-        def self.default(**)
-        end
+        def self.default(**); end
 
         def self.aspects
           @aspects ||= []

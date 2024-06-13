@@ -214,59 +214,9 @@ e2e-test-pipeline-generate:
 # This is the manual start of the chain of E2E jobs
 # After playing this, it'll follow up with:
 # follow-up:compile-production-assets -> follow-up:build-assets-image --\
-#                                    \-> follow-up:trigger-omnibus-env -> follow-up:trigger-omnibus -> follow-up:e2e:package-and-test-ee
+#                                    \-> follow-up:e2e:package-and-test-ee
 # follow-up:build-qa-image --------------------------------------------------------------------------/
 manual:e2e-test-pipeline-generate:
   extends:
     - e2e-test-pipeline-generate
     - .qa:rules:manual-e2e
-
-trigger-omnibus-env:
-  stage: prepare
-  extends:
-    - .qa:rules:trigger-omnibus-env
-  needs:
-    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream omnibus-gitlab pipeline.
-    - compile-production-assets
-  variables:
-    BUILD_ENV: build.env
-  before_script:
-    - source scripts/utils.sh
-  script:
-    # Note that OMNIBUS_GITLAB_CACHE_UPDATE is not used in the code, but it is actually used in the 2-hourly maintenance pipeline schedule.
-    - |
-      SECURITY_SOURCES=$([[ ! "$CI_PROJECT_NAMESPACE" =~ ^gitlab-org\/security ]] || echo "true")
-      echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
-      echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
-      echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION}" >> $BUILD_ENV
-      for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
-      echo "OMNIBUS_GITLAB_BUILD_ON_ALL_OS=${OMNIBUS_GITLAB_BUILD_ON_ALL_OS:-false}" >> $BUILD_ENV
-      ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> $BUILD_ENV
-      echo "SHORT_RUBY_VERSION=${RUBY_VERSION}" >> $BUILD_ENV
-      echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
-      echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
-      define_trigger_branch_in_build_env
-    - |
-      echo "Built environment file for omnibus build:"
-      cat $BUILD_ENV
-  artifacts:
-    expire_in: 3 days
-    reports:
-      dotenv: $BUILD_ENV
-    paths:
-      - $BUILD_ENV
-
-trigger-omnibus-env as-if-foss:
-  extends:
-    - trigger-omnibus-env
-    - .qa:rules:package-and-test-ce
-  needs:
-    - compile-production-assets as-if-foss
-  variables:
-    FOSS_ONLY: "1"
-
-follow-up:trigger-omnibus-env:
-  extends:
-    - trigger-omnibus-env
-    - .qa:rules:follow-up-e2e
-  needs: ["follow-up:compile-production-assets"]

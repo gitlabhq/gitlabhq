@@ -8,8 +8,7 @@ module Gitlab
     class Limit
       LimitExceededError = Class.new(StandardError)
 
-      def initialize(_context, _resource)
-      end
+      def initialize(_context, _resource); end
 
       def enabled?
         raise NotImplementedError

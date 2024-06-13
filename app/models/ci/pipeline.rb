@@ -167,6 +167,7 @@ module Ci
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
     validates :source, exclusion: { in: %w[unknown], unless: :importing? }, on: :create
+    validates :project, presence: true, on: :create
 
     after_create :keep_around_commits, unless: :importing?
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?

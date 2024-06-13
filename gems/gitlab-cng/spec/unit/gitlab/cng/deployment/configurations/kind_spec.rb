@@ -108,4 +108,14 @@ RSpec.describe Gitlab::Cng::Deployment::Configurations::Kind do
   it "returns correct gitlab url" do
     expect(configuration.gitlab_url).to eq("http://gitlab.127.0.0.1.nip.io")
   end
+
+  it "handles already existing admin PAT" do
+    allow(kubeclient).to receive(:execute)
+      .with("toolbox", kind_of(Array), container: "toolbox")
+      .and_raise(Gitlab::Cng::Kubectl::Client::Error, <<~MSG)
+        /srv/gitlab/vendor/bundle/ruby/3.1.0/gems/activerecord-7.0.8.1/lib/active_record/connection_adapters/postgresql_adapter.rb:768:in `exec_params': PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint "index_personal_access_tokens_on_token_digest" (ActiveRecord::RecordNotUnique)
+      MSG
+
+    expect { configuration.run_post_deployment_setup }.to output(/Token already exists, skipping!/).to_stdout
+  end
 end

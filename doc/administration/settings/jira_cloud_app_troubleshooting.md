@@ -74,7 +74,7 @@ If GitLab fails to process or store these tokens, an `Invalid JWT` error occurs.
 To resolve this issue on your self-managed GitLab instance:
 
 - Confirm your self-managed GitLab instance is publicly available to:
-  - GitLab.com (if you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#connect-the-gitlab-for-jira-cloud-app)).
+  - GitLab.com (if you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace)).
   - Jira Cloud (if you [installed the app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually)).
 - Ensure the token request sent to the `/-/jira_connect/events/installed` endpoint when you install the app is accessible from Jira.
   The following command should return a `401 Unauthorized`:
@@ -88,7 +88,7 @@ To resolve this issue on your self-managed GitLab instance:
 
 Depending on how you installed the app, you might want to check the following:
 
-- If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#connect-the-gitlab-for-jira-cloud-app),
+- If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
   switch between GitLab versions in the GitLab for Jira Cloud app:
 
 <!-- markdownlint-disable MD044 -->
@@ -272,5 +272,5 @@ To resolve this issue:
    curl --include "https://gitlab.example.com/-/jira_connect/oauth_application_id"
    ```
 
-1. If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#connect-the-gitlab-for-jira-cloud-app),
+1. If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
    ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` without leading slashes.

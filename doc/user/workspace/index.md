@@ -27,13 +27,13 @@ For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.
 ## Workspaces and projects
 
 Workspaces are scoped to a project.
-When you [create a workspace](configuration.md#set-up-a-workspace), you must:
+When you [create a workspace](configuration.md#create-a-workspace), you must:
 
 - Assign the workspace to a specific project.
-- Select a project with a [`.devfile.yaml`](#devfile) file.
+- Select a project with a [devfile](#devfile).
 
 The workspace can interact with the GitLab API, with the access level defined by current user permissions.
-A running workspace remains accessible even if user permissions are later revoked.
+A running workspace remains accessible to the user even if user permissions are later revoked.
 
 ### Manage workspaces from a project
 
@@ -51,9 +51,10 @@ WARNING:
 When you terminate a workspace, any unsaved or uncommitted data
 in that workspace is deleted and cannot be recovered.
 
-### Deleting data associated with a workspace
+### Deleting resources associated with a workspace
 
-When you delete a project, agent, user, or token associated with a workspace:
+When you terminate a workspace, all resources associated with the workspace are deleted.
+When you delete a project, agent, user, or token associated with a running workspace:
 
 - The workspace is deleted from the user interface.
 - In the Kubernetes cluster, the running workspace resources become orphaned and are not automatically deleted.
@@ -95,7 +96,7 @@ A devfile is a file that defines a development environment by specifying the nec
 tools, languages, runtimes, and other components for a GitLab project.
 
 Workspaces have built-in support for devfiles.
-You can specify a devfile for your project in the GitLab configuration file.
+The default location is `.devfile.yaml`, but you can also use a custom location.
 The devfile is used to automatically configure the development environment with the defined specifications.
 
 This way, you can create consistent and reproducible development environments
@@ -180,7 +181,7 @@ For more information, see the [VS Code documentation](https://code.visualstudio.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.
 
-When you [create a workspace](configuration.md#set-up-a-workspace), you get a personal access token with `write_repository` permission.
+When you [create a workspace](configuration.md#create-a-workspace), you get a personal access token with `write_repository` permission.
 This token is used to initially clone the project while starting the workspace.
 
 Any Git operation you perform in the workspace uses this token for authentication and authorization.

@@ -28,8 +28,7 @@ module Mattermost
     LEASE_TIMEOUT = 60
 
     Request = Struct.new(:parameters, keyword_init: true) do
-      def method_missing(method_name, *args, &block)
-      end
+      def method_missing(method_name, *args, &block); end
     end
 
     attr_accessor :current_resource_owner, :token, :base_uri

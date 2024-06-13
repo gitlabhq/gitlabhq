@@ -15,9 +15,9 @@ DETAILS:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
-When you [set up a workspace](configuration.md#set-up-a-workspace),
-you must configure the GitLab agent for remote development.
-The remote development settings are available in the agent
+When you [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure),
+you must configure the GitLab agent.
+The workspace settings are available in the agent
 configuration file under `remote_development`.
 
 You can use any agent in the top-level group of your workspace project
@@ -26,7 +26,7 @@ is properly configured for remote development.
 For example, if the path to your workspace project is `top-group/subgroup-1/subgroup-2/workspace-project`,
 you can use any configured agent in `top-group` and in any of its subgroups.
 
-## Remote development settings
+## Workspace settings
 
 | Setting                                                                                   | Required | Default value                           | Description |
 |-------------------------------------------------------------------------------------------|----------|-----------------------------------------|-------------|
@@ -47,7 +47,7 @@ If a setting has an invalid value, it's not possible to update any setting until
 Use this setting to define whether:
 
 - The GitLab agent can communicate with the GitLab instance.
-- You can [create a workspace](configuration.md#set-up-a-workspace) with the GitLab agent.
+- You can [create a workspace](configuration.md#create-a-workspace) with the GitLab agent.
 
 The default value is `false`.
 

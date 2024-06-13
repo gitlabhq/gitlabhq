@@ -76,8 +76,7 @@ module Gitlab
             self.when == 'delayed'
           end
 
-          def default
-          end
+          def default; end
         end
       end
     end

@@ -4,6 +4,7 @@ include:
   - local: .gitlab/ci/qa-common/main.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/rules.gitlab-ci.yml
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
+  - local: .gitlab/ci/qa-common/omnibus.gitlab-ci.yml
 
 # ==========================================
 # Prepare stage

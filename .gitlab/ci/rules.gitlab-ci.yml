@@ -679,6 +679,9 @@
   - "tooling/custom_roles/docs/templates/custom_abilities.md.erb"
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
+.cng-orchestrator-patterns: &cng-orchestrator-patterns
+  - gems/gitlab-cng/**/*.rb
+
 ##################
 # Conditions set #
 ##################
@@ -1247,6 +1250,8 @@
       changes: *dependency-patterns
     - <<: *if-default-refs
       changes: *code-qa-patterns
+    - <<: *if-merge-request
+      changes: *cng-orchestrator-patterns
 
 .frontend:rules:compile-production-assets:
   rules:
@@ -1586,40 +1591,6 @@
     - <<: *if-force-ci
       allow_failure: true
 
-# All rules copied from qa:rules:package-and-test-ee but jobs are automatic and not allowed to fail
-.qa:rules:trigger-omnibus-env:
-  rules:
-    # From .qa:rules:package-and-test-common
-    - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: *if-ruby-branch
-    - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-merge-request
-      changes: *qa-patterns
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
-    - <<: *if-merge-request
-      changes: *dependency-patterns
-      variables:
-        OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
-    - <<: *if-merge-request
-      changes: *feature-flag-development-config-patterns
-    - <<: *if-merge-request
-      changes: *initializers-patterns
-    - <<: *if-merge-request
-      changes: *nodejs-patterns
-    - <<: *if-merge-request
-      changes: *ci-qa-patterns
-    - <<: *if-security-merge-request
-      changes: *code-patterns
-    - <<: *if-merge-request-and-specific-devops-stage
-      changes: *code-patterns
-    - <<: *if-force-ci
-    # From .qa:rules:package-and-test-schedule
-    - <<: *if-dot-com-gitlab-org-schedule
-    - !reference [".qa:rules:code-merge-request", rules]
-
 .qa:rules:package-and-test-never-run:
   rules:
     - <<: *if-not-canonical-namespace
@@ -1633,16 +1604,12 @@
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-ruby-branch
-      allow_failure: true
     - <<: *if-merge-request-labels-run-all-e2e
-      allow_failure: true
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
-      allow_failure: true
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
-      allow_failure: true
     # Otherwise, only run tests after the MR is approved
     - <<: *if-merge-request-not-approved
       when: never
@@ -1652,22 +1619,16 @@
         OMNIBUS_GITLAB_BUILD_ON_ALL_OS: 'true'
     - <<: *if-merge-request
       changes: *feature-flag-development-config-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *initializers-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *nodejs-patterns
-      allow_failure: true
     - <<: *if-merge-request
       changes: *ci-qa-patterns
-      allow_failure: true
     - <<: *if-security-merge-request
       changes: *code-patterns
-      allow_failure: true
     - <<: *if-merge-request-and-specific-devops-stage
       changes: *code-patterns
-      allow_failure: true
     - <<: *if-force-ci
       when: manual
       allow_failure: true
@@ -1698,9 +1659,6 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
-    # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
-    - <<: *if-merge-request
-      changes: *gdk-component-patterns
     - <<: *if-merge-request
       changes: *code-patterns
       variables:
@@ -1713,11 +1671,6 @@
     KNAPSACK_GENERATE_REPORT: "true"
     QA_SAVE_TEST_METRICS: "true"
     QA_EXPORT_TEST_METRICS: "false"  # on main runs, metrics are exported to separate bucket via rake task for better consistency
-
-.qa:rules:package-and-test-schedule:
-  rules:
-    - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
-      allow_failure: true
 
 .qa:rules:e2e-schedule-blocking:
   rules:
@@ -1747,13 +1700,11 @@
     - <<: *if-merge-request
       changes: *code-patterns
 
-# Note: If any changes are made to this rule, the following should also be updated:
-# 1) .qa:rules:trigger-omnibus-env
-# 2) .qa:rules:post-run-e2e-message
+# Note: If any changes are made to this rule, the following should also be updated - .qa:rules:post-run-e2e-message
 .qa:rules:package-and-test-ee:
   rules:
     - !reference [".qa:rules:package-and-test-common", rules]
-    - !reference [".qa:rules:package-and-test-schedule", rules]
+    - !reference [".qa:rules:e2e-schedule-blocking", rules]
     - !reference [".qa:rules:code-merge-request-manual", rules]
 
 .qa:rules:package-and-test-ce:
@@ -1784,17 +1735,17 @@
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
     - !reference [".qa:rules:e2e-blocking", rules]
+    # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
+    - <<: *if-merge-request
+      changes: *gdk-component-patterns
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
 
 .qa:rules:e2e:test-on-cng:
   rules:
-    - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: [*if-dot-com-gitlab-org-schedule, *qa-e2e-test-schedule-variables]
+    - !reference [".qa:rules:e2e-blocking", rules]
+    - !reference [".qa:rules:e2e-schedule-blocking", rules]
     - <<: *if-merge-request
-      changes: *qa-patterns
-    - <<: *if-merge-request
-      changes:
-        - gems/gitlab-cng/**/*.rb
+      changes: *cng-orchestrator-patterns
 
 .qa:rules:package-and-test-nightly:
   rules:
@@ -1807,16 +1758,6 @@
         CREATE_TEST_FAILURE_ISSUES: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"
-
-.qa:rules:trigger-omnibus:
-  rules:
-    - !reference [".qa:rules:package-and-test-nightly", rules]
-    - !reference [".qa:rules:package-and-test-ee", rules]
-
-.qa:rules:trigger-omnibus-ce:
-  rules:
-    - !reference [".qa:rules:package-and-test-nightly", rules]
-    - !reference [".qa:rules:package-and-test-ce", rules]
 
 # These provide a manual way to trigger follow-up:e2e:package-and-test-ee
 # It is fine if they're overlapping with the automatic ones.

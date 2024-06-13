@@ -21,6 +21,8 @@ module Gitlab
         # @return [String] command output
         def create_namespace
           execute_shell(["kubectl", "create", "namespace", namespace])
+        rescue Helpers::Shell::CommandFailure => e
+          raise(Error, e.message)
         end
 
         # Create kubernetes resource
@@ -128,6 +130,8 @@ module Gitlab
         # @return [String]
         def run_in_namespace(*action, args:, stdin_data: nil)
           execute_shell(["kubectl", *action, "-n", namespace, *args], stdin_data: stdin_data)
+        rescue Helpers::Shell::CommandFailure => e
+          raise(Error, e.message)
         end
       end
     end

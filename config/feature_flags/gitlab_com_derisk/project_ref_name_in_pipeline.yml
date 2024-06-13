@@ -1,9 +1,0 @@
----
-name: project_ref_name_in_pipeline
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441771
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148305
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454773
-milestone: '17.0'
-group: group::pipeline authoring
-type: gitlab_com_derisk
-default_enabled: false

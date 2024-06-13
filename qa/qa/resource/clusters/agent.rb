@@ -16,8 +16,7 @@ module QA
           @name = "my-agent"
         end
 
-        def fabricate!
-        end
+        def fabricate!; end
 
         def resource_web_url(resource)
           super

@@ -192,6 +192,9 @@ To create a cleanup policy in the UI:
    | **Remove tags older than** | Remove only tags older than X days. |
    | **Remove tags matching**   | A regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
+   NOTE:
+   Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
+
 1. Select **Save**.
 
 The policy runs on the scheduled interval you selected.
@@ -204,9 +207,6 @@ If you edit the policy and select **Save** again, the interval is reset.
 Cleanup policies use regex patterns to determine which tags should be preserved or removed, both in the UI and the API.
 
 GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in the cleanup policy.
-
-Regex patterns are automatically surrounded with `\A` and `\Z` anchors. Therefore, you do not need to include any
-`\A`, `\Z`, `^` or `$` tokens in the regex patterns.
 
 Here are some examples of regex patterns you can use:
 

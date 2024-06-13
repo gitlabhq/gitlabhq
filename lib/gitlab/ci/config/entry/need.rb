@@ -102,11 +102,9 @@ module Gitlab
           end
 
           class UnknownStrategy < ::Gitlab::Config::Entry::Node
-            def type
-            end
+            def type; end
 
-            def value
-            end
+            def value; end
 
             def errors
               ["#{location} has an unsupported type"]

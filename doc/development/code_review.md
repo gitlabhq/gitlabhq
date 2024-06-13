@@ -694,17 +694,6 @@ When reviewing merge requests added by wider community contributors:
   the current milestone. This is to avoid confusion around when it'll be
   merged and avoid moving milestone too often when it's not yet ready.
 
-If the MR source branch is more than 1,000 commits behind the target branch:
-
-- Ask the author to rebase it, or consider taking a bias-for-action and rebasing it yourself
-  if the MR has "Allows commits from members who can merge to the target branch" enabled.
-- Reviewing MRs in the context of recent changes can help prevent hidden runtime conflicts and
-  promote consistency. Depending on the nature of the change, you might also want to rebase if the
-  MR is less than 1,000 commits behind.
-- A forced push could throw off the contributor, so it's a good idea to communicate that you've performed a rebase,
-  or check with the contributor first when they're actively working on the MR.
-- The rebase can usually be done inside GitLab with the `/rebase` [quick action](../user/project/quick_actions.md).
-
 #### Taking over a community merge request
 
 When an MR needs further changes but the author is not responding for a long period of time,

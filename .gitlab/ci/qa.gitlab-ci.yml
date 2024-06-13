@@ -36,6 +36,10 @@
       - OS_VERSION
       - REGISTRY_GROUP
       - REGISTRY_HOST
+      - OMNIBUS_GITLAB_CACHE_UPDATE
+      - OMNIBUS_GITLAB_CACHE_EDITION
+      - OMNIBUS_GITLAB_BUILD_ON_ALL_OS
+      - FOSS_ONLY
   trigger:
     strategy: depend
     forward:
@@ -69,66 +73,14 @@ cache-qa-gems-e2e-runners:
   tags:
     - e2e
 
-trigger-omnibus:
-  stage: qa
-  extends:
-    - .qa:rules:trigger-omnibus
-  needs:
-    - trigger-omnibus-env
-    - build-assets-image
-  inherit:
-    variables: false
-  variables:
-    GITALY_SERVER_VERSION: $GITALY_SERVER_VERSION
-    GITLAB_ELASTICSEARCH_INDEXER_VERSION: $GITLAB_ELASTICSEARCH_INDEXER_VERSION
-    GITLAB_KAS_VERSION: $GITLAB_KAS_VERSION
-    GITLAB_PAGES_VERSION: $GITLAB_PAGES_VERSION
-    GITLAB_SHELL_VERSION: $GITLAB_SHELL_VERSION
-    GITLAB_WORKHORSE_VERSION: $GITLAB_WORKHORSE_VERSION
-    GITLAB_VERSION: $CI_COMMIT_SHA
-    GITLAB_ASSETS_TAG: $GITLAB_ASSETS_TAG
-    IMAGE_TAG: "${CI_COMMIT_SHA}-ruby${SHORT_RUBY_VERSION}"
-    TOP_UPSTREAM_SOURCE_PROJECT: $CI_PROJECT_PATH
-    SECURITY_SOURCES: $SECURITY_SOURCES
-    CACHE_UPDATE: $OMNIBUS_GITLAB_CACHE_UPDATE
-    CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
-    USE_SPECIFIED_RUBY_VERSION: "true"
-    RUBY_VERSION: $FULL_RUBY_VERSION
-    BUILD_ON_ALL_OS: $OMNIBUS_GITLAB_BUILD_ON_ALL_OS
-    SKIP_QA_TEST: "true"
-    ee: $EE
-  trigger:
-    project: gitlab-org/build/omnibus-gitlab-mirror
-    branch: $TRIGGER_BRANCH
-    strategy: depend
-
-follow-up:trigger-omnibus:
-  extends:
-    - trigger-omnibus
-    - .qa:rules:follow-up-e2e
-  needs:
-    - follow-up:trigger-omnibus-env
-    - follow-up:build-assets-image
-
-trigger-omnibus as-if-foss:
-  extends:
-    - trigger-omnibus
-    - .qa:rules:trigger-omnibus-ce
-  needs:
-    - trigger-omnibus-env as-if-foss
-    - build-assets-image as-if-foss
-  variables:
-    # Override gitlab repository so that omnibus doesn't use foss repository for CE build
-    GITLAB_ALTERNATIVE_REPO: $CI_PROJECT_URL
-
 # If a rename is required for this job, please notify the Delivery team (`@gitlab-org/delivery`)
 e2e:package-and-test-ee:
   extends:
     - .e2e-trigger-base
     - .qa:rules:package-and-test-ee
   needs:
+    - build-assets-image
     - build-qa-image
-    - trigger-omnibus
     - e2e-test-pipeline-generate
   variables:
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
@@ -142,7 +94,7 @@ follow-up:e2e:package-and-test-ee:
     - .qa:rules:follow-up-e2e
   needs:
     - follow-up:build-qa-image
-    - follow-up:trigger-omnibus
+    - follow-up:build-assets-image
     - manual:e2e-test-pipeline-generate
 
 e2e:post-run-e2e-message:
@@ -160,7 +112,6 @@ e2e:post-run-e2e-message:
     - scripts/generate-message-to-run-e2e-pipeline.rb
   needs:
     - e2e-test-pipeline-generate
-    - trigger-omnibus-env
     - build-assets-image
   artifacts:
     expire_in: 1 day
@@ -172,8 +123,8 @@ e2e:package-and-test-ce:
     - e2e:package-and-test-ee
     - .qa:rules:package-and-test-ce
   needs:
+    - build-assets-image as-if-foss
     - build-qa-image as-if-foss
-    - trigger-omnibus as-if-foss
     - e2e-test-pipeline-generate
   variables:
     FOSS_ONLY: "1"
@@ -188,8 +139,8 @@ e2e:package-and-test-nightly:
     - .e2e-trigger-base
     - .qa:rules:package-and-test-nightly
   needs:
+    - build-assets-image
     - build-qa-image
-    - trigger-omnibus
     - e2e-test-pipeline-generate
   variables:
     GITLAB_SEMVER_VERSION: $GITLAB_SEMVER_VERSION

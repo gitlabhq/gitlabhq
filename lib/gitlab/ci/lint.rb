@@ -146,8 +146,6 @@ module Gitlab
       end
 
       def project_ref_name
-        return unless ::Feature.enabled?(:project_ref_name_in_pipeline, project)
-
         return unless project
 
         Rails.cache.fetch(['project', project.id, 'ref/containing/sha', sha], expires_in: 5.minutes) do

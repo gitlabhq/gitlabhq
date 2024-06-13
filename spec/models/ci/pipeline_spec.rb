@@ -94,6 +94,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:sha) }
     it { is_expected.to validate_presence_of(:status) }
+    it { is_expected.to validate_presence_of(:project) }
   end
 
   describe 'associations' do

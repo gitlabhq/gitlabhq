@@ -30,6 +30,21 @@ For an [overview of the feature flag lifecycle](https://handbook.gitlab.com/hand
 
 Moved to the ["When to use feature flags"](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) section in the handbook.
 
+### Do not use feature flags for long lived settings
+
+Feature flags are meant to be short lived. If you are intending on adding a
+feature flag so that something can be enabled per user/group/project for a long
+period of time, consider introducing
+[Cascading Settings](../cascading_settings.md) or [Application Settings](../application_settings.md)
+instead. Settings
+offer a way for customers to enable or disable features for themselves on
+GitLab.com or self-managed and can remain in the codebase as long as needed. In
+contrast users have no way to enable or disable feature flags for themselves on
+GitLab.com and only self-managed admins can change the feature flags.
+Also note that
+[feature flags are not supported in GitLab Dedicated](../enabling_features_on_dedicated.md#feature-flags)
+which is another reason you should not use them as a replacement for settings.
+
 ## Feature flags in GitLab development
 
 The following highlights should be considered when deciding if feature flags

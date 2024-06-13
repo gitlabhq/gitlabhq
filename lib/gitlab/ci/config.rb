@@ -29,11 +29,7 @@ module Gitlab
         @inject_edge_stages = inject_edge_stages
 
         @context = self.logger.instrument(:config_build_context, once: true) do
-          pipeline ||= if ::Feature.enabled?(:project_ref_name_in_pipeline, project)
-                         ::Ci::Pipeline.new(project: project, sha: sha, ref: ref, user: user, source: source)
-                       else
-                         ::Ci::Pipeline.new(project: project, sha: sha, user: user, source: source)
-                       end
+          pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, ref: ref, user: user, source: source)
 
           build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline, pipeline_config: pipeline_config)
         end

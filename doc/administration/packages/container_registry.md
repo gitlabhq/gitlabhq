@@ -1887,3 +1887,22 @@ if prj.has_container_registry_tags?
   prj.container_repositories.each { |p| p.destroy }
 end
 ```
+
+### Registry service listens on IPv6 address instead of IPv4
+
+You might see the following error if the `localhost` hostname resolves to a IPv6
+loopback address (`::1`) on your GitLab server and GitLab expects the registry service
+to be available on the IPv4 loopback address (`127.0.0.1`):
+
+```plaintext
+request: "GET /v2/ HTTP/1.1", upstream: "http://[::1]:5000/v2/", host: "registry.example.com:5005"
+[error] 1201#0: *13442797 connect() failed (111: Connection refused) while connecting to upstream, client: x.x.x.x, server: registry.example.com, request: "GET /v2/<path> HTTP/1.1", upstream: "http://[::1]:5000/v2/<path>", host: "registry.example.com:5005"
+```
+
+To fix the error, change `registry['registry_http_addr']` to an IPv4 address in `/etc/gitlab/gitlab.rb`. For example:
+
+```ruby
+registry['registry_http_addr'] = "127.0.0.1:5000"
+```
+
+See [issue 5449](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5449) for more details.

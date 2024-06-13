@@ -333,21 +333,6 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
           2.times { lint.validate(content, dry_run: dry_run) }
         end
       end
-
-      context 'when project_ref_name_in_pipeline feature flag is disabled' do
-        before do
-          stub_feature_flags(project_ref_name_in_pipeline: false)
-        end
-
-        it 'passes nil as the ref name to YamlProcessor' do
-          expect(Gitlab::Ci::YamlProcessor)
-            .to receive(:new)
-            .with(content, a_hash_including(ref: nil))
-            .and_call_original
-
-          expect(subject.errors).to include("Project `#{project.full_path}` reference `` does not exist!")
-        end
-      end
     end
 
     context 'when a pipeline ref variable is used in an include and project_sha_exists? returns false' do

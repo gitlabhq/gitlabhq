@@ -64,7 +64,8 @@ module Gitlab
           chart_reference = run_pre_deploy_setup
           run_deploy(chart_reference)
           run_post_deploy_setup
-        rescue Helpers::Shell::CommandFailure
+        # Exit on error to not duplicate error messages and exit cleanly when kubectl or helm related errors are raised
+        rescue Kubectl::Client::Error, Helm::Client::Error
           exit(1)
         end
 
@@ -181,7 +182,7 @@ module Gitlab
         def create_namespace
           log("Creating namespace '#{namespace}'", :info)
           puts kubeclient.create_namespace
-        rescue StandardError => e
+        rescue Kubectl::Client::Error => e
           return log("namespace already exists, skipping", :warn) if e.message.include?("already exists")
 
           raise(e)

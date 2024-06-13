@@ -13,6 +13,9 @@ module Gitlab
         HELM_CHART = "https://charts.gitlab.io"
         HELM_CHART_REPO = "https://gitlab.com/gitlab-org/charts/gitlab"
 
+        # Error raised by helm client class
+        Error = Class.new(StandardError)
+
         # Add helm chart and return reference
         #
         # @param [String] sha fetch and package helm chart using specific repo sha
@@ -23,14 +26,14 @@ module Gitlab
           log("Adding gitlab helm chart '#{HELM_CHART}'", :info)
           puts run_helm(%W[repo add #{HELM_CHART_PREFIX} #{HELM_CHART}])
           "#{HELM_CHART_PREFIX}/gitlab"
-        rescue Helpers::Shell::CommandFailure => e
+        rescue Error => e
           if e.message.include?("already exists")
             log("helm chart repo already exists, updating", :warn)
             puts(run_helm(%w[repo update gitlab]))
             return "#{HELM_CHART_PREFIX}/gitlab"
           end
 
-          raise(e)
+          raise(Error, e.message)
         end
 
         # Run helm upgrade command with --install argument
@@ -72,7 +75,7 @@ module Gitlab
         # @return [<String, nil>] status of helm release or nil if release is not found
         def status(name, namespace:)
           run_helm(%W[status #{name} --namespace #{namespace}])
-        rescue Helpers::Shell::CommandFailure => e
+        rescue Error => e
           e.message.include?("release: not found") ? nil : raise(e)
         end
 
@@ -120,6 +123,8 @@ module Gitlab
         # @return [String]
         def run_helm(cmd, stdin = nil)
           execute_shell(["helm", *cmd], stdin_data: stdin)
+        rescue Helpers::Shell::CommandFailure => e
+          raise(Error, e.message)
         end
       end
     end
