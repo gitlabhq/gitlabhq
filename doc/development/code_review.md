@@ -103,9 +103,6 @@ To find a domain expert:
 NOTE:
 Reviewer roulette is an internal tool for use on GitLab.com, and not available for use on customer installations.
 
-NOTE:
-Until %16.11, GitLab is running [an experiment](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/377) to remove hungriness and busy indicators.
-
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It makes
 **recommendations** for developer reviewers and you should override it if you think someone else is a better
@@ -125,14 +122,10 @@ page, with these behaviors:
   - Emoji is from one of these categories:
     - **On leave** - 🌴 `:palm_tree:`, 🏖️ `:beach:`, ⛱ `:beach_umbrella:`, 🏖 `:beach_with_umbrella:`, 🌞 `:sun_with_face:`, 🎡 `:ferris_wheel:`, 🏙 `:cityscape:`
     - **Out sick** - 🌡️ `:thermometer:`, 🤒 `:face_with_thermometer:`
-    - **At capacity** - 🔴 `:red_circle:`
-    - **Focus mode** - 💡 `:bulb:` (focusing on their team's work)
 - It doesn't pick people who are already assigned a number of reviews that is equal to
   or greater than their chosen "review limit". The review limit is the maximum number of
   reviews people are ready to handle at a time. Set a review limit by using one of the following
   as a Slack or [GitLab status](../user/profile/index.md#set-your-current-status):
-  - 0️⃣ - `:zero:` (similar to `:red_circle:`)
-  - 1️⃣ - `:one:`
   - 2️⃣ - `:two:`
   - 3️⃣ - `:three:`
   - 4️⃣ - `:four:`
@@ -143,12 +136,6 @@ page, with these behaviors:
   not counted. These MRs are usually backports, and maintainers or reviewers usually
   do not need much time reviewing them.
 
-- 'Hungriness' for reviews: Team members whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
-  is 🔵 `:large_blue_circle:` are more likely to be picked. This applies to both reviewers and trainee maintainers.
-  - Reviewers with 🔵 `:large_blue_circle:` are two times as likely to be picked as other reviewers.
-  - [Trainee maintainers](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/#trainee-maintainer) with 🔵 `:large_blue_circle:` are three times as likely to be picked as other reviewers.
-- People whose [GitLab status](../user/profile/index.md#set-your-current-status) emoji
-  is 🔶 `:large_orange_diamond:` or 🔸 `:small_orange_diamond:` are half as likely to be picked.
 - It always picks the same reviewers and maintainers for the same
   branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so

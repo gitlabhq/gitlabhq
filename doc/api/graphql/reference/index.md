@@ -3180,7 +3180,7 @@ Input type: `CreateContainerRegistryProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | Container registry protection rule after mutation. |
+| <a id="mutationcreatecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` **{warning-solid}** | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
 | <a id="mutationcreatecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.createCustomEmoji`
@@ -3412,7 +3412,7 @@ Input type: `CreatePackagesProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| <a id="mutationcreatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. Introduced in GitLab 16.5: **Status**: Experiment. |
 | <a id="mutationcreatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
 | <a id="mutationcreatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example `NPM`. |
 | <a id="mutationcreatepackagesprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
@@ -3423,7 +3423,7 @@ Input type: `CreatePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationcreatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationcreatepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationcreatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule after mutation. |
+| <a id="mutationcreatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` **{warning-solid}** | [`PackagesProtectionRule`](#packagesprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.5. |
 
 ### `Mutation.createRequirement`
 
@@ -3963,7 +3963,7 @@ Input type: `DeleteContainerRegistryProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationdeletecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationdeletecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | Container registry protection rule that was deleted successfully. |
+| <a id="mutationdeletecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` **{warning-solid}** | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
 | <a id="mutationdeletecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.deletePackagesProtectionRule`
@@ -3989,7 +3989,7 @@ Input type: `DeletePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationdeletepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationdeletepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationdeletepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule that was deleted successfully. |
+| <a id="mutationdeletepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` **{warning-solid}** | [`PackagesProtectionRule`](#packagesprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
 
 ### `Mutation.deletePagesDeployment`
 
@@ -8870,16 +8870,16 @@ Input type: `UpdateContainerRegistryProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatecontainerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | Global ID of the container registry protection rule to be updated. |
-| <a id="mutationupdatecontainerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level allowed to delete container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
-| <a id="mutationupdatecontainerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level allowed to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
-| <a id="mutationupdatecontainerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String`](#string) | Container's repository path pattern of the protection rule. For example, `my-scope/my-project/container-dev-*`. Wildcard character `*` allowed. |
+| <a id="mutationupdatecontainerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationupdatecontainerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
+| <a id="mutationupdatecontainerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationupdatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationupdatecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | Container registry protection rule after mutation. |
+| <a id="mutationupdatecontainerregistryprotectionrulecontainerregistryprotectionrule"></a>`containerRegistryProtectionRule` **{warning-solid}** | [`ContainerRegistryProtectionRule`](#containerregistryprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.7. |
 | <a id="mutationupdatecontainerregistryprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
 ### `Mutation.updateDependencyProxyImageTtlGroupPolicy`
@@ -9191,9 +9191,9 @@ Input type: `UpdatePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatepackagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | Global ID of the package protection rule to be updated. |
-| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
-| <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String`](#string) | Package name protected by the protection rule. For example, `@my-scope/my-package-*`. Wildcard character `*` allowed. |
-| <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example, `NPM`. |
+| <a id="mutationupdatepackagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`PackagesProtectionRuleAccessLevel`](#packagesprotectionruleaccesslevel) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
+| <a id="mutationupdatepackagesprotectionrulepackagenamepattern"></a>`packageNamePattern` **{warning-solid}** | [`String`](#string) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
+| <a id="mutationupdatepackagesprotectionrulepackagetype"></a>`packageType` **{warning-solid}** | [`PackagesProtectionRulePackageType`](#packagesprotectionrulepackagetype) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
 
 #### Fields
 
@@ -9201,7 +9201,7 @@ Input type: `UpdatePackagesProtectionRuleInput`
 | ---- | ---- | ----------- |
 | <a id="mutationupdatepackagesprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationupdatepackagesprotectionruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
-| <a id="mutationupdatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` | [`PackagesProtectionRule`](#packagesprotectionrule) | Packages protection rule after mutation. |
+| <a id="mutationupdatepackagesprotectionrulepackageprotectionrule"></a>`packageProtectionRule` **{warning-solid}** | [`PackagesProtectionRule`](#packagesprotectionrule) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 16.6. |
 
 ### `Mutation.updateRequirement`
 
@@ -18758,10 +18758,10 @@ A container registry protection rule designed to prevent users with a certain ac
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="containerregistryprotectionruleid"></a>`id` | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | ID of the container registry protection rule. |
-| <a id="containerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level to allow to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
-| <a id="containerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level to allow to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
-| <a id="containerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
+| <a id="containerregistryprotectionruleid"></a>`id` **{warning-solid}** | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | **Introduced** in GitLab 16.6. **Status**: Experiment. ID of the container registry protection rule. |
+| <a id="containerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level to allow to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| <a id="containerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level to allow to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| <a id="containerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
 
 ### `ContainerRepository`
 
@@ -26834,10 +26834,10 @@ A packages protection rule designed to protect packages from being pushed by use
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="packagesprotectionruleid"></a>`id` | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | ID of the package protection rule. |
-| <a id="packagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | Minimum GitLab access required to push packages to the package registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
-| <a id="packagesprotectionrulepackagenamepattern"></a>`packageNamePattern` | [`String!`](#string) | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
-| <a id="packagesprotectionrulepackagetype"></a>`packageType` | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | Package type protected by the protection rule. For example `NPM`. |
+| <a id="packagesprotectionruleid"></a>`id` **{warning-solid}** | [`PackagesProtectionRuleID!`](#packagesprotectionruleid) | **Introduced** in GitLab 16.5. **Status**: Experiment. ID of the package protection rule. |
+| <a id="packagesprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`PackagesProtectionRuleAccessLevel!`](#packagesprotectionruleaccesslevel) | **Introduced** in GitLab 16.5. **Status**: Experiment. Minimum GitLab access required to push packages to the package registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| <a id="packagesprotectionrulepackagenamepattern"></a>`packageNamePattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.5. **Status**: Experiment. Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
+| <a id="packagesprotectionrulepackagetype"></a>`packageType` **{warning-solid}** | [`PackagesProtectionRulePackageType!`](#packagesprotectionrulepackagetype) | **Introduced** in GitLab 16.5. **Status**: Experiment. Package type protected by the protection rule. For example `NPM`. |
 
 ### `PageInfo`
 
@@ -27517,7 +27517,7 @@ Project-level settings for product analytics provider.
 | <a id="projectopenmergerequestscount"></a>`openMergeRequestsCount` | [`Int`](#int) | Number of open merge requests for the project. |
 | <a id="projectorganizationeditpath"></a>`organizationEditPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Path for editing project at the organization level. |
 | <a id="projectpackagescleanuppolicy"></a>`packagesCleanupPolicy` | [`PackagesCleanupPolicy`](#packagescleanuppolicy) | Packages cleanup policy for the project. |
-| <a id="projectpackagesprotectionrules"></a>`packagesProtectionRules` | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | Packages protection rules for the project. (see [Connections](#connections)) |
+| <a id="projectpackagesprotectionrules"></a>`packagesProtectionRules` **{warning-solid}** | [`PackagesProtectionRuleConnection`](#packagesprotectionruleconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. Packages protection rules for the project. |
 | <a id="projectpath"></a>`path` | [`String!`](#string) | Path of the project. |
 | <a id="projectpathlocks"></a>`pathLocks` | [`PathLockConnection`](#pathlockconnection) | The project's path locks. (see [Connections](#connections)) |
 | <a id="projectpermanentdeletiondate"></a>`permanentDeletionDate` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Date when project will be deleted if delayed project deletion is enabled. |
@@ -33728,9 +33728,9 @@ Access level of a container registry protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="containerregistryprotectionruleaccessleveladmin"></a>`ADMIN` | Admin access. |
-| <a id="containerregistryprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
-| <a id="containerregistryprotectionruleaccesslevelowner"></a>`OWNER` | Owner access. |
+| <a id="containerregistryprotectionruleaccessleveladmin"></a>`ADMIN` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Admin access. |
+| <a id="containerregistryprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Maintainer access. |
+| <a id="containerregistryprotectionruleaccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 16.6. **Status**: Experiment. Owner access. |
 
 ### `ContainerRepositoryCleanupStatus`
 
@@ -35084,9 +35084,9 @@ Access level of a package protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="packagesprotectionruleaccessleveladmin"></a>`ADMIN` | Admin access. |
-| <a id="packagesprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` | Maintainer access. |
-| <a id="packagesprotectionruleaccesslevelowner"></a>`OWNER` | Owner access. |
+| <a id="packagesprotectionruleaccessleveladmin"></a>`ADMIN` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Admin access. |
+| <a id="packagesprotectionruleaccesslevelmaintainer"></a>`MAINTAINER` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Maintainer access. |
+| <a id="packagesprotectionruleaccesslevelowner"></a>`OWNER` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Owner access. |
 
 ### `PackagesProtectionRulePackageType`
 
@@ -35094,7 +35094,7 @@ Package type of a package protection rule resource.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
+| <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Packages of the npm format. |
 
 ### `PipelineConfigSourceEnum`
 
@@ -35909,6 +35909,15 @@ OwaspTop10 category of the vulnerability.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="vulnerabilityowasptop10a01_2021"></a>`A01_2021` | A01:2021-Broken Access Control, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a02_2021"></a>`A02_2021` | A02:2021-Cryptographic Failures, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a03_2021"></a>`A03_2021` | A03:2021-Injection, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a04_2021"></a>`A04_2021` | A04:2021-Insecure Design, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a05_2021"></a>`A05_2021` | A05:2021-Security Misconfiguration, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a06_2021"></a>`A06_2021` | A06:2021-Vulnerable and Outdated Components, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a07_2021"></a>`A07_2021` | A07:2021-Identification and Authentication Failures, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a08_2021"></a>`A08_2021` | A08:2021-Software and Data Integrity Failures, OWASP top 10 category. |
+| <a id="vulnerabilityowasptop10a09_2021"></a>`A09_2021` | A09:2021-Security Logging and Monitoring Failures, OWASP top 10 category. |
 | <a id="vulnerabilityowasptop10a10_2017"></a>`A10_2017` | A10:2017-Insufficient Logging & Monitoring, OWASP top 10 category. |
 | <a id="vulnerabilityowasptop10a10_2021"></a>`A10_2021` | A10:2021-Server-Side Request Forgery, OWASP top 10 category. |
 | <a id="vulnerabilityowasptop10a1_2017"></a>`A1_2017` | A1:2017-Injection, OWASP top 10 category. |

@@ -30,6 +30,13 @@ function run_rubocop {
   while IFS= read -r -d '' file; do
     files_for_rubocop+=("$file")
   done < <(find . -path './**/remote_development/*.rb' -print0)
+  files_for_rails+=(
+      "lib/result.rb"
+      "spec/lib/result_spec.rb"
+      "spec/support/matchers/invoke_rop_steps.rb"
+      "spec/support/railway_oriented_programming.rb"
+      "spec/support_specs/matchers/result_matchers_spec.rb"
+  )
   REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
 }
 

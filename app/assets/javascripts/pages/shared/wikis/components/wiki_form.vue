@@ -382,11 +382,13 @@ export default {
           :class="{ 'gl-hidden': isCustomSidebar }"
         >
           <template v-if="!isTemplate" #description>
-            <gl-icon name="bulb" />
-            {{ titleHelpText }}
-            <gl-link :href="helpPath" target="_blank">
-              {{ $options.i18n.title.helpText.learnMore }}
-            </gl-link>
+            <div class="gl-mt-3">
+              <gl-icon name="bulb" />
+              {{ titleHelpText }}
+              <gl-link :href="helpPath" target="_blank">
+                {{ $options.i18n.title.helpText.learnMore }}
+              </gl-link>
+            </div>
           </template>
           <gl-form-input
             id="wiki_title"
@@ -449,24 +451,26 @@ export default {
             @keydown.meta.enter="submitFormWithShortcut"
           />
           <template #description>
-            <gl-sprintf
-              v-if="displayWikiSpecificMarkdownHelp && !isTemplate"
-              :message="$options.i18n.linksHelpText"
-            >
-              <template #linkExample>
-                <code>{{ linkExample }}</code>
-              </template>
-              <template
-                #link="// eslint-disable-next-line vue/no-template-shadow
-                { content }"
-                ><gl-link
-                  :href="wikiSpecificMarkdownHelpPath"
-                  target="_blank"
-                  data-testid="wiki-markdown-help-link"
-                  >{{ content }}</gl-link
-                ></template
+            <div class="gl-mt-3">
+              <gl-sprintf
+                v-if="displayWikiSpecificMarkdownHelp && !isTemplate"
+                :message="$options.i18n.linksHelpText"
               >
-            </gl-sprintf>
+                <template #linkExample>
+                  <code>{{ linkExample }}</code>
+                </template>
+                <template
+                  #link="// eslint-disable-next-line vue/no-template-shadow
+                  { content }"
+                  ><gl-link
+                    :href="wikiSpecificMarkdownHelpPath"
+                    target="_blank"
+                    data-testid="wiki-markdown-help-link"
+                    >{{ content }}</gl-link
+                  ></template
+                >
+              </gl-sprintf>
+            </div>
           </template>
         </gl-form-group>
       </div>

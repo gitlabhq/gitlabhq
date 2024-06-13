@@ -558,6 +558,7 @@ loopback
 LSP
 Lua
 Lucene
+Lucidchart
 macOS
 Mailchimp
 Maildir

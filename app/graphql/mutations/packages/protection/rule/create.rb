@@ -38,6 +38,7 @@ module Mutations
           field :package_protection_rule,
             Types::Packages::Protection::RuleType,
             null: true,
+            alpha: { milestone: '16.5' },
             description: 'Packages protection rule after mutation.'
 
           def resolve(project_path:, **kwargs)

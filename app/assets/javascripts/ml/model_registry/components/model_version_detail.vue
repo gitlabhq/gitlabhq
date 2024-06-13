@@ -61,6 +61,9 @@ export default {
         :package-type="packageType"
       >
         <template v-if="showImportArtifactZone" #upload="{ refetch }">
+          <h3 data-testid="uploadHeader" class="gl-text-lg gl-mt-5">
+            {{ __('Upload artifacts') }}
+          </h3>
           <import-artifact-zone :path="importPath" @change="refetch" />
         </template>
       </package-files>

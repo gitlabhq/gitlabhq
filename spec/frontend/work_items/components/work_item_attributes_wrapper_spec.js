@@ -7,6 +7,7 @@ import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
+import WorkItemDevelopment from '~/work_items/components/work_item_development/work_item_development.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import { workItemResponseFactory } from '../mock_data';
@@ -23,10 +24,11 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemParent = () => wrapper.findComponent(WorkItemParent);
   const findWorkItemTimeTracking = () => wrapper.findComponent(WorkItemTimeTracking);
   const findWorkItemParticipants = () => wrapper.findComponent(Participants);
+  const findWorkItemDevelopment = () => wrapper.findComponent(WorkItemDevelopment);
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
-    workItemsBeta = true,
+    workItemsMvc2 = false,
     groupPath = '',
   } = {}) => {
     wrapper = shallowMount(WorkItemAttributesWrapper, {
@@ -42,7 +44,7 @@ describe('WorkItemAttributesWrapper component', () => {
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         glFeatures: {
-          workItemsBeta,
+          workItemsMvc2,
         },
       },
       stubs: {
@@ -182,6 +184,34 @@ describe('WorkItemAttributesWrapper component', () => {
       createComponent({ workItem: response.data.workItem });
 
       expect(findWorkItemParticipants().exists()).toBe(exists);
+    });
+  });
+
+  describe('development widget', () => {
+    describe('when `workItesMvc2` FF is off', () => {
+      it.each`
+        description                                               | developmentWidgetPresent | exists
+        ${'does not render when widget is returned from API'}     | ${true}                  | ${false}
+        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
+      `('$description', ({ developmentWidgetPresent, exists }) => {
+        const response = workItemResponseFactory({ developmentWidgetPresent });
+        createComponent({ workItem: response.data.workItem, workItemsMvc2: false });
+
+        expect(findWorkItemDevelopment().exists()).toBe(exists);
+      });
+    });
+
+    describe('when `workItesMvc2` FF is on', () => {
+      it.each`
+        description                                               | developmentWidgetPresent | exists
+        ${'renders when widget is returned from API'}             | ${true}                  | ${true}
+        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
+      `('$description', ({ developmentWidgetPresent, exists }) => {
+        const response = workItemResponseFactory({ developmentWidgetPresent });
+        createComponent({ workItem: response.data.workItem, workItemsMvc2: true });
+
+        expect(findWorkItemDevelopment().exists()).toBe(exists);
+      });
     });
   });
 });

@@ -8,7 +8,9 @@ module Types
         description 'Access level of a package protection rule resource'
 
         ::Packages::Protection::Rule.minimum_access_level_for_pushes.each_key do |access_level_key|
-          value access_level_key.upcase, value: access_level_key.to_s,
+          value access_level_key.upcase,
+            value: access_level_key.to_s,
+            alpha: { milestone: '16.5' },
             description: "#{access_level_key.capitalize} access."
         end
       end

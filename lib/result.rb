@@ -15,7 +15,8 @@
 
 # NOTE: This class is intentionally not namespaced to allow for more concise, readable, and explicit usage.
 #       It it a generic reusable implementation of the Result type, and is not specific to any domain
-# rubocop:disable Gitlab/NamespacedClass
+# rubocop:disable Gitlab/NamespacedClass -- TODO: We should move this to the GitLab namespace, as it is part of the platform layer for bounded contexts - https://gitlab.com/gitlab-org/gitlab/-/issues/467293
+# rubocop:disable Gitlab/BoundedContexts -- TODO: We should move this to the GitLab namespace, as it is part of the platform layer for bounded contexts - https://gitlab.com/gitlab-org/gitlab/-/issues/467293
 class Result
   # The .ok and .err factory class methods are the only way to create a Result
   #
@@ -173,9 +174,17 @@ class Result
   private
 
   # The `value` attribute will contain either the ok_value or the err_value
-  attr_reader :value
+  def value # rubocop:disable Style/TrivialAccessors -- We are not using attr_reader here, so we can avoid nilability type errors in RubyMine
+    # TODO: We are not using attr_reader here, so we can avoid nilability type errors in RubyMine. This will be reported
+    #   to JetBrains and tracked on
+    #   https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/tracked-jetbrains-issues/,
+    #   this comment should then be updated with the issue link on that page.
+    #   Note that we don't use `noinspection` to suppress this error because there's several instances where this error
+    #   leaks to other classes through the call stack.
+    @value
+  end
 
-  def initialize(ok_value: nil, err_value: nil)
+  def initialize(ok_value: nil, err_value: nil) # rubocop:disable Layout/ClassStructure -- We want this constructor to be private
     if (!ok_value.nil? && !err_value.nil?) || (ok_value.nil? && err_value.nil?)
       raise(ArgumentError, 'Do not directly use private constructor, use Result.ok or Result.err')
     end
@@ -206,5 +215,5 @@ class Result
     raise(ArgumentError, err_msg)
   end
 end
-
 # rubocop:enable Gitlab/NamespacedClass
+# rubocop:enable Gitlab/BoundedContexts

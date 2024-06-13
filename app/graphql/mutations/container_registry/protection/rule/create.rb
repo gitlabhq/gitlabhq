@@ -42,6 +42,7 @@ module Mutations
           field :container_registry_protection_rule,
             Types::ContainerRegistry::Protection::RuleType,
             null: true,
+            alpha: { milestone: '16.6' },
             description: 'Container registry protection rule after mutation.'
 
           def resolve(project_path:, **kwargs)

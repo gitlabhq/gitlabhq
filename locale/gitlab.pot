@@ -3084,6 +3084,9 @@ msgstr ""
 msgid "Add approvers"
 msgstr ""
 
+msgid "Add branch or merge request"
+msgstr ""
+
 msgid "Add branch target"
 msgstr ""
 
@@ -13613,6 +13616,9 @@ msgstr ""
 msgid "ComplianceStandardsAdherence|A rule is configured to require two approvals."
 msgstr ""
 
+msgid "ComplianceStandardsAdherence|All attached frameworks"
+msgstr ""
+
 msgid "ComplianceStandardsAdherence|At least one non-author approval"
 msgstr ""
 
@@ -13674,6 +13680,9 @@ msgid "ComplianceStandardsAdherence|No rule is configured to require two approva
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|None"
+msgstr ""
+
+msgid "ComplianceStandardsAdherence|Other compliance frameworks applied to %{linkStart}%{projectName}%{linkEnd}"
 msgstr ""
 
 msgid "ComplianceStandardsAdherence|Prevent authors as approvers"
@@ -16505,6 +16514,9 @@ msgid "DORA4Metrics|Took more than 7 days to restore service when a service inci
 msgstr ""
 
 msgid "DORA4Metrics|Total projects (%{count}) with DORA metrics"
+msgstr ""
+
+msgid "DORA4Metrics|You have insufficient permissions to view"
 msgstr ""
 
 msgid "DSN"
@@ -33532,6 +33544,9 @@ msgstr ""
 msgid "MlModelRegistry|Parameters"
 msgstr ""
 
+msgid "MlModelRegistry|Provide a subfolder name to organize your artifacts. Entering an existing subfolder's name will place artifacts in the existing folder"
+msgstr ""
+
 msgid "MlModelRegistry|Setting up the client"
 msgstr ""
 
@@ -33544,13 +33559,13 @@ msgstr ""
 msgid "MlModelRegistry|Store and manage your machine learning models and versions"
 msgstr ""
 
+msgid "MlModelRegistry|Subfolder (optional)"
+msgstr ""
+
 msgid "MlModelRegistry|This model has no candidates"
 msgstr ""
 
 msgid "MlModelRegistry|Triggered by"
-msgstr ""
-
-msgid "MlModelRegistry|Upload files under path: "
 msgstr ""
 
 msgid "MlModelRegistry|Uploaded files successfully"
@@ -33569,6 +33584,9 @@ msgid "MlModelRegistry|Version candidates"
 msgstr ""
 
 msgid "MlModelRegistry|Versions"
+msgstr ""
+
+msgid "MlModelRegistry|folder name"
 msgstr ""
 
 msgid "MlModelRegistry|· %d version"
@@ -47827,7 +47845,7 @@ msgstr ""
 msgid "SecurityOrchestration|Send bot message"
 msgstr ""
 
-msgid "SecurityOrchestration|Several merge request approval policy criteria have been deprecated. Policies using these criteria will not work after GitLab 17.0 (May 10, 2024). You must edit these policies to replace or remove the deprecated criteria."
+msgid "SecurityOrchestration|Several merge request approval policy criteria have been deprecated. Policies using these criteria will not work after GitLab 18.0 (May 10, 2025). You must edit these policies to replace or remove the deprecated criteria."
 msgstr ""
 
 msgid "SecurityOrchestration|Severity is %{severity}."
@@ -48085,19 +48103,10 @@ msgstr ""
 msgid "SecurityOrchestration|have no fix available"
 msgstr ""
 
-msgid "SecurityOrchestration|match_on_inclusion is replaced by %{linkStart}match_on_inclusion_license%{linkEnd}"
-msgstr ""
-
 msgid "SecurityOrchestration|more than %{allowed}"
 msgstr ""
 
-msgid "SecurityOrchestration|newly_detected in scan_finding rules is replaced by %{firstLinkStart}new_needs_triage%{firstLinkEnd} and %{secondLinkStart}new_dismissed%{secondLinkEnd}"
-msgstr ""
-
 msgid "SecurityOrchestration|or from:"
-msgstr ""
-
-msgid "SecurityOrchestration|project.networkpolicies will be removed (GraphQL API associated with the network policies)"
 msgstr ""
 
 msgid "SecurityOrchestration|projects with compliance frameworks"
@@ -56528,6 +56537,9 @@ msgstr ""
 msgid "Upload a text file of objects, and then GitLab removes internal Git references to these objects. Use %{git_filter_link_start}git filter-repo%{git_filter_link_end} on the repository to generate the list of objects to remove as a commit-map file."
 msgstr ""
 
+msgid "Upload artifacts"
+msgstr ""
+
 msgid "Upload commit-map file"
 msgstr ""
 
@@ -59742,6 +59754,9 @@ msgstr ""
 msgid "WorkItem|Delete this %{workItemType} and release all child items? This action cannot be reversed."
 msgstr ""
 
+msgid "WorkItem|Development"
+msgstr ""
+
 msgid "WorkItem|Discard changes"
 msgstr ""
 
@@ -60180,7 +60195,7 @@ msgstr ""
 msgid "Workspaces|Group members can use allowed agents to create workspaces."
 msgstr ""
 
-msgid "Workspaces|Group members can't create a workspace with a blocked agent. Existing workspaces using this agent will continue to run, but can't restart if they are terminated."
+msgid "Workspaces|Group members can't create a workspace with a blocked agent. Existing workspaces using this agent will continue to run and will not be affected by this."
 msgstr ""
 
 msgid "Workspaces|If your devfile is not in the root directory of your project, specify a relative path."

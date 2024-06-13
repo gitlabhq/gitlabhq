@@ -1,6 +1,6 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import CandidateDetail from '~/ml/model_registry/components/candidate_detail.vue';
@@ -24,7 +24,7 @@ const createWrapper = (modelVersion = modelVersionWithCandidate, props = {}, pro
   ];
 
   const apolloProvider = createMockApollo(requestHandlers);
-  wrapper = shallowMount(ModelVersionDetail, {
+  wrapper = shallowMountExtended(ModelVersionDetail, {
     apolloProvider,
     propsData: {
       allowArtifactImport: true,
@@ -44,6 +44,7 @@ const createWrapper = (modelVersion = modelVersionWithCandidate, props = {}, pro
 const findPackageFiles = () => wrapper.findComponent(PackageFiles);
 const findCandidateDetail = () => wrapper.findComponent(CandidateDetail);
 const findImportArtifactZone = () => wrapper.findComponent(ImportArtifactZone);
+const artifactLabel = () => wrapper.findByTestId('uploadHeader');
 
 describe('ml/model_registry/components/model_version_detail.vue', () => {
   describe('base behaviour', () => {
@@ -86,6 +87,10 @@ describe('ml/model_registry/components/model_version_detail.vue', () => {
           subfolder: '',
         },
       });
+    });
+
+    it('renders artifact label', () => {
+      expect(artifactLabel().text()).toContain('Upload artifacts');
     });
   });
 

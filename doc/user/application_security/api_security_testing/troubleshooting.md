@@ -99,9 +99,12 @@ The best-suited solution depends on whether or not your target API changes for e
 
 ## API security testing job excludes some paths from operations
 
-If you find that some paths are being excluded from operations, ensure that the `consumes` array is defined and has a valid type in the target definition JSON file. This is required.
+If you find that some paths are being excluded from operations, make sure that:
 
-See the [example project target definition file](https://gitlab.com/gitlab-org/security-products/demos/api-dast/openapi-example/-/blob/12e2b039d08208f1dd38a1e7c52b0bda848bb449/rest_target_openapi.json?plain=1#L13) where the `consumes` array is defined.
+- The variable `DAST_API_EXCLUDE_URLS` is not configured to exclude operations you want to test.
+- Required. The `consumes` array is defined and has a valid type in the target definition JSON file.
+
+  For an example definition, see the [example project target definition file](https://gitlab.com/gitlab-org/security-products/demos/api-dast/openapi-example/-/blob/12e2b039d08208f1dd38a1e7c52b0bda848bb449/rest_target_openapi.json?plain=1#L13).
 
 ### Static environment solution
 

@@ -258,25 +258,37 @@ export default {
     setIteration(iteration) {
       this.board.iterationCadenceId = iteration.iterationCadenceId;
 
-      this.$set(this.board, 'iteration', {
-        id: iteration.id,
-      });
+      this.board = {
+        ...this.board,
+        iteration: {
+          id: iteration.id,
+        },
+      };
     },
     setBoardLabels(labels) {
       this.board.labels = labels;
     },
     setAssignee(assigneeId) {
-      this.$set(this.board, 'assignee', {
-        id: assigneeId,
-      });
+      this.board = {
+        ...this.board,
+        assignee: {
+          id: assigneeId,
+        },
+      };
     },
     setMilestone(milestoneId) {
-      this.$set(this.board, 'milestone', {
-        id: milestoneId,
-      });
+      this.board = {
+        ...this.board,
+        milestone: {
+          id: milestoneId,
+        },
+      };
     },
     setWeight(weight) {
-      this.$set(this.board, 'weight', weight);
+      this.board = {
+        ...this.board,
+        weight,
+      };
     },
   },
   formType,

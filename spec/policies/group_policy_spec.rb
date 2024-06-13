@@ -1219,8 +1219,16 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         end
       end
 
+      context 'placeholder user' do
+        let_it_be(:placeholder_user) { create(:user, user_type: :placeholder, developer_of: group) }
+
+        subject { described_class.new(placeholder_user, group) }
+
+        it_behaves_like 'disallows all dependency proxy access'
+      end
+
       context 'all other user types' do
-        User::USER_TYPES.except(:human, :project_bot).each_value do |user_type|
+        User::USER_TYPES.except(:human, :project_bot, :placeholder).each_value do |user_type|
           context "with user_type #{user_type}" do
             before do
               current_user.update!(user_type: user_type)

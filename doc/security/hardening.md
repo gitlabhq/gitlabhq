@@ -57,6 +57,10 @@ application (such as `gitlab.rb`) are documented separately. For more informatio
 You can adjust the underlying operating system to increase overall security. For more information, see the
 [operating system recommendations](hardening_operating_system_recommendations.md).
 
+## NIST 800-53 compliance
+
+You can configure self-managed GitLab to enforce compliance with the NIST 800-53 security standard. For more information, see [NIST 800-53 compliance](hardening_nist_800_53.md).
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

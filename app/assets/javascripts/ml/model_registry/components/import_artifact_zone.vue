@@ -4,8 +4,9 @@ import {
   GlFormGroup,
   GlFormInput,
   GlFormInputGroup,
-  GlInputGroupText,
+  GlIcon,
   GlProgressBar,
+  GlTooltip,
 } from '@gitlab/ui';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
@@ -18,12 +19,16 @@ export default {
   name: 'ImportArtifactZone',
   components: {
     GlAlert,
+    GlIcon,
+    GlTooltip,
     GlFormGroup,
     GlFormInput,
     GlFormInputGroup,
-    GlInputGroupText,
     GlProgressBar,
     UploadDropzone,
+  },
+  directives: {
+    'gl-tooltip': GlTooltip,
   },
   inject: ['maxAllowedFileSize'],
   props: {
@@ -128,14 +133,40 @@ export default {
     uploadSingleMessage: s__(
       'MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifact to attach',
     ),
-    subfolderPrependText: s__('MlModelRegistry|Upload files under path: '),
+    subfolderLabel: s__('MlModelRegistry|Subfolder (optional)'),
     successfulUpload: s__('MlModelRegistry|Uploaded files successfully'),
+    subfolderPlaceholder: s__('MlModelRegistry|folder name'),
+    subfolderTooltip: s__(
+      "MlModelRegistry|Provide a subfolder name to organize your artifacts. Entering an existing subfolder's name will place artifacts in the existing folder",
+    ),
   },
   validFileMimetypes: [],
 };
 </script>
 <template>
   <div class="gl-p-5">
+    <gl-form-group label-for="subfolderId">
+      <div>
+        <label for="subfolderId" class="gl-font-weight-bold" data-testid="subfolderLabel">{{
+          $options.i18n.subfolderLabel
+        }}</label>
+        <gl-icon id="toolTipSubfolderId" v-gl-tooltip name="information-o" tabindex="0" />
+        <gl-tooltip target="toolTipSubfolderId">
+          {{ $options.i18n.subfolderTooltip }}
+        </gl-tooltip>
+        <gl-form-input-group label-class="!gl-m-0 !gl-p-0">
+          <gl-form-input
+            id="subfolderId"
+            v-model="subfolder"
+            data-testid="subfolderId"
+            autocomplete="off"
+            class="gl-mb-5"
+            :placeholder="$options.i18n.subfolderPlaceholder"
+            @input="changeSubfolder"
+          />
+        </gl-form-input-group>
+      </div>
+    </gl-form-group>
     <upload-dropzone
       single-file-selection
       :valid-file-mimetypes="$options.validFileMimetypes"
@@ -156,25 +187,5 @@ export default {
         {{ alert.message }}
       </gl-alert>
     </upload-dropzone>
-    <gl-form-group label-for="subfolderId">
-      <div>
-        <gl-form-input-group label-class="gl-m-0! gl-p-0!">
-          <gl-form-input
-            id="subfolderId"
-            v-model="subfolder"
-            data-testid="subfolderId"
-            autocomplete="off"
-            class="gl-mb-5"
-            @input="changeSubfolder"
-          />
-
-          <template #prepend>
-            <gl-input-group-text class="gl-p-5 gl-m-0!">
-              {{ $options.i18n.subfolderPrependText }}
-            </gl-input-group-text>
-          </template>
-        </gl-form-input-group>
-      </div>
-    </gl-form-group>
   </div>
 </template>

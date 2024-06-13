@@ -37,7 +37,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
         sign_in(source_user.reassign_to_user)
       end
 
-      it { expect { accept_invite }.to change { source_user.reload.completed? }.from(false).to(true) }
+      it { expect { accept_invite }.to change { source_user.reload.reassignment_in_progress? }.from(false).to(true) }
 
       it 'redirects with a notice when accepted' do
         accept_invite

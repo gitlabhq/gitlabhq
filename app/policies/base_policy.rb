@@ -47,6 +47,10 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:llm_bot) { @user&.llm_bot? }
 
+  desc "User is placeholder"
+  with_options scope: :user, score: 0
+  condition(:placeholder_user) { @user.try(:placeholder?) || false }
+
   desc "User email is unconfirmed or user account is locked"
   with_options scope: :user, score: 0
   condition(:inactive) { @user&.confirmation_required_on_sign_in? || @user&.access_locked? }
@@ -85,6 +89,8 @@ class BasePolicy < DeclarativePolicy::Base
   rule { default }.enable :read_cross_project
 
   condition(:is_gitlab_com, score: 0, scope: :global) { ::Gitlab.com? }
+
+  rule { placeholder_user }.prevent_all
 
   private
 

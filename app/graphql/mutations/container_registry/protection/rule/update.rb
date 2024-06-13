@@ -21,6 +21,7 @@ module Mutations
             GraphQL::Types::String,
             required: false,
             validates: { allow_blank: false },
+            alpha: { milestone: '16.7' },
             description:
             'Container\'s repository path pattern of the protection rule. ' \
             'For example, `my-scope/my-project/container-dev-*`. ' \
@@ -30,6 +31,7 @@ module Mutations
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
             validates: { allow_blank: false },
+            alpha: { milestone: '16.7' },
             description:
             'Minimum GitLab access level allowed to delete container images to the container registry. ' \
             'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
@@ -38,6 +40,7 @@ module Mutations
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
             validates: { allow_blank: false },
+            alpha: { milestone: '16.7' },
             description:
               'Minimum GitLab access level allowed to push container images to the container registry. ' \
               'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
@@ -45,6 +48,7 @@ module Mutations
           field :container_registry_protection_rule,
             Types::ContainerRegistry::Protection::RuleType,
             null: true,
+            alpha: { milestone: '16.7' },
             description: 'Container registry protection rule after mutation.'
 
           def resolve(id:, **kwargs)

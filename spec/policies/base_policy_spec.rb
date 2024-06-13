@@ -98,4 +98,16 @@ RSpec.describe BasePolicy do
   describe 'change_repository_storage' do
     it_behaves_like 'admin only access', :change_repository_storage
   end
+
+  describe 'placeholder_user' do
+    let(:current_user) { build_stubbed(:user, user_type: :placeholder) }
+
+    subject { described_class.new(current_user, nil) }
+
+    it { expect_disallowed(:access_git) }
+    it { expect_disallowed(:log_in) }
+    it { expect_disallowed(:access_api) }
+    it { expect_disallowed(:receive_notifications) }
+    it { expect_disallowed(:use_slash_commands) }
+  end
 end

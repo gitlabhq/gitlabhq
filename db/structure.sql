@@ -25634,8 +25634,6 @@ CREATE INDEX index_boards_epic_board_recent_visits_on_epic_board_id ON boards_ep
 
 CREATE INDEX index_boards_epic_board_recent_visits_on_group_id ON boards_epic_board_recent_visits USING btree (group_id);
 
-CREATE INDEX index_boards_epic_board_recent_visits_on_user_id ON boards_epic_board_recent_visits USING btree (user_id);
-
 CREATE INDEX index_boards_epic_boards_on_group_id ON boards_epic_boards USING btree (group_id);
 
 CREATE INDEX index_boards_epic_list_user_preferences_on_epic_list_id ON boards_epic_list_user_preferences USING btree (epic_list_id);

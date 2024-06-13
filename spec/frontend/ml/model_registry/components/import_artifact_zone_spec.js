@@ -1,4 +1,4 @@
-import { GlAlert, GlFormInputGroup, GlInputGroupText, GlProgressBar } from '@gitlab/ui';
+import { GlAlert, GlFormInputGroup, GlProgressBar } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
@@ -26,7 +26,7 @@ describe('ImportArtifactZone', () => {
   const progressBar = () => wrapper.findComponent(GlProgressBar);
   const emulateFileDrop = () => zone().vm.$emit('change', file);
   const subfolderInput = () => wrapper.findByTestId('subfolderId');
-  const subfolderInputPrependText = () => wrapper.findComponent(GlInputGroupText);
+  const subfolderLabel = () => wrapper.findByTestId('subfolderLabel');
   const alert = () => wrapper.findComponent(GlAlert);
 
   describe('Successful upload', () => {
@@ -118,8 +118,12 @@ describe('ImportArtifactZone', () => {
       expect(subfolderInput().exists()).toBe(true);
     });
 
-    it('displays the subfolder input text', () => {
-      expect(subfolderInputPrependText().text()).toBe('Upload files under path:');
+    it('displays the subfolder label', () => {
+      expect(subfolderLabel().text()).toBe('Subfolder (optional)');
+    });
+
+    it('displays the placeholder in the subfolder input', () => {
+      expect(subfolderInput().attributes('placeholder')).toBe('folder name');
     });
 
     it('displays the formatted file name', async () => {

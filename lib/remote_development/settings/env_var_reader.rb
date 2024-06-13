@@ -80,7 +80,7 @@ module RemoteDevelopment
       end
 
       # @param [String] env_var_name
-      # @param [String] context
+      # @param [String] value
       # @return [Object, Array]
       # @raise [EncodingError]
       def self.parse_json(env_var_name:, value:)

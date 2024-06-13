@@ -76,6 +76,7 @@ describe('ModelVersionCreate', () => {
     findGlModal().vm.$emit('primary', new Event('primary'));
     await waitForPromises();
   };
+  const artifactZoneLabel = () => wrapper.findByTestId('uploadArtifactsHeader');
 
   describe('Initial state', () => {
     beforeEach(() => {
@@ -133,6 +134,10 @@ describe('ModelVersionCreate', () => {
 
       it('does not render the alert by default', () => {
         expect(findGlAlert().exists()).toBe(false);
+      });
+
+      it('displays the title of the artifacts uploader', () => {
+        expect(artifactZoneLabel().attributes('label')).toBe('Upload artifacts');
       });
     });
   });

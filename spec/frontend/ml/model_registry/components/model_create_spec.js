@@ -84,6 +84,7 @@ describe('ModelCreate', () => {
     findGlModal().vm.$emit('primary', new Event('primary'));
     await waitForPromises();
   };
+  const findArtifactZoneLabel = () => wrapper.findByTestId('importArtifactZoneLabel');
 
   describe('Initial state', () => {
     describe('Modal closed', () => {
@@ -130,6 +131,18 @@ describe('ModelCreate', () => {
 
       it('renders the import artifact zone input', () => {
         expect(findImportArtifactZone().exists()).toBe(false);
+      });
+
+      it('does not displays the title of the artifacts uploader', () => {
+        expect(findArtifactZoneLabel().exists()).toBe(false);
+      });
+
+      it('displays the title of the artifacts uploader when a version is entered', async () => {
+        findNameInput().vm.$emit('input', 'gpt-alice-1');
+        findVersionInput().vm.$emit('input', '1.0.0');
+        findVersionDescriptionInput().vm.$emit('input', 'My version description');
+        await Vue.nextTick();
+        expect(findArtifactZoneLabel().attributes('label')).toBe('Upload artifacts');
       });
 
       it('renders the import artifact zone input with version entered', async () => {

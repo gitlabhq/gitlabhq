@@ -161,7 +161,7 @@ export default {
     modelName: s__('MlModelRegistry|Model name'),
     modelDescription: __('Description'),
     version: __('Version'),
-    import: __('Import'),
+    uploadLabel: __('Upload artifacts'),
     modelSuccessButVersionArtifactFailAlert: {
       id: 'ml-model-success-version-artifact-failed',
       message: s__(
@@ -234,13 +234,15 @@ export default {
         </gl-form-group>
         <gl-form-group
           v-if="showImportArtifactZone"
-          :label="$options.modal.Import"
+          data-testid="importArtifactZoneLabel"
+          :label="$options.modal.uploadLabel"
           label-for="versionImportArtifactZone"
         >
           <import-artifact-zone
             id="versionImportArtifactZone"
             ref="importArtifactZoneRef"
             v-model="selectedFile"
+            class="gl-px-3 gl-py-0"
             :submit-on-select="false"
           />
         </gl-form-group>

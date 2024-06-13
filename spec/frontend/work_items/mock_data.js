@@ -685,6 +685,202 @@ export const mockLinkedItems = {
   __typename: 'WorkItemWidgetLinkedItems',
 };
 
+export const workItemDevelopmentNodes = [
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '13',
+      id: 'gid://gitlab/MergeRequest/121',
+      title: 'Karma configuration',
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/13',
+      state: 'opened',
+      project: {
+        name: 'Flight',
+        id: 'gid://gitlab/Project/1',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [
+          {
+            webUrl: 'http://127.0.0.1:3000/root',
+            id: 'gid://gitlab/User/1',
+            name: 'Administrator',
+            webPath: '/root',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+        ],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '15',
+      id: 'gid://gitlab/MergeRequest/123',
+      title: 'got immutability working end to end.  Scope for some cleanup/optimization',
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/15',
+      state: 'opened',
+      project: {
+        id: 'gid://gitlab/Project/1',
+        name: 'Flight',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '14',
+      id: 'gid://gitlab/MergeRequest/122',
+      title: "Draft: Always call registry's trigger method from withRegistration",
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/14',
+      state: 'opened',
+      project: {
+        id: 'gid://gitlab/Project/1',
+        name: 'Flight',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '12',
+      id: 'gid://gitlab/MergeRequest/120',
+      title: 'got immutability working and other changes and end to end',
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/12',
+      state: 'closed',
+      project: {
+        id: 'gid://gitlab/Project/1',
+        name: 'Flight',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [
+          {
+            webUrl: 'http://127.0.0.1:3000/root',
+            id: 'gid://gitlab/User/1',
+            name: 'Administrator',
+            webPath: '/root',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+        ],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '11',
+      id: 'gid://gitlab/MergeRequest/119',
+      title: '[UX] Work items: Development widget (MRs, branches, feature flags)',
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/11',
+      state: 'opened',
+      project: {
+        id: 'gid://gitlab/Project/1',
+        name: 'Flight',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [
+          {
+            webUrl: 'http://127.0.0.1:3000/contributor_001',
+            id: 'gid://gitlab/User/50',
+            name: 'Contributor',
+            webPath: '/contributor_001',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/0425546bf992b09bf77c16afe53f3824a919c5f4a5ef3355d493155740dfaaf5?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+          {
+            webUrl: 'http://127.0.0.1:3000/reported_user_17',
+            id: 'gid://gitlab/User/40',
+            name: "Amira O'Keefe",
+            webPath: '/reported_user_17',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/4650f7f452b5606f219ac12ed4c2869705752e62b94e28d3263aa9a5598c6ab8?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+          {
+            webUrl: 'http://127.0.0.1:3000/reported_user_5',
+            id: 'gid://gitlab/User/28',
+            name: 'Echo Littel',
+            webPath: '/reported_user_5',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/3dcc93993fcf6705adb708f460d314d0994463ec2cb0a693e1e0597111acd3c7?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+          {
+            webUrl: 'http://127.0.0.1:3000/root',
+            id: 'gid://gitlab/User/1',
+            name: 'Administrator',
+            webPath: '/root',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+        ],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+];
+
+export const workItemDevelopmentFragmentResponse = (nodes = workItemDevelopmentNodes) => {
+  return {
+    type: 'DEVELOPMENT',
+    closingMergeRequests: {
+      nodes,
+      __typename: 'WorkItemClosingMergeRequestConnection',
+    },
+    __typename: 'WorkItemWidgetDevelopment',
+  };
+};
+
 export const workItemResponseFactory = ({
   iid = '1',
   canUpdate = false,
@@ -709,6 +905,7 @@ export const workItemResponseFactory = ({
   healthStatusWidgetPresent = true,
   notesWidgetPresent = true,
   designWidgetPresent = true,
+  developmentWidgetPresent = true,
   confidential = false,
   discussionLocked = false,
   canInviteMembers = false,
@@ -728,6 +925,7 @@ export const workItemResponseFactory = ({
   awardEmoji = mockAwardsWidget,
   state = 'OPEN',
   linkedItems = mockEmptyLinkedItems,
+  developmentItems = workItemDevelopmentFragmentResponse(),
   color = '#1068bf',
 } = {}) => ({
   data: {
@@ -1023,6 +1221,13 @@ export const workItemResponseFactory = ({
               type: 'DESIGNS',
             }
           : { type: 'MOCK TYPE' },
+        developmentWidgetPresent
+          ? {
+              ...developmentItems,
+            }
+          : {
+              type: 'MOCK TYPE',
+            },
       ],
     },
   },

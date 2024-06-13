@@ -158,11 +158,17 @@ export default {
             :placeholder="$options.modal.descriptionPlaceholder"
           />
         </gl-form-group>
-        <gl-form-group label="Import" label-for="versionImportArtifactZone">
+        <gl-form-group
+          id="uploadArtifactsHeader"
+          data-testid="uploadArtifactsHeader"
+          label="Upload artifacts"
+          label-for="versionImportArtifactZone"
+        >
           <import-artifact-zone
             id="versionImportArtifactZone"
             ref="importArtifactZoneRef"
             v-model="selectedFile"
+            class="gl-px-3 gl-py-0"
             :submit-on-select="false"
           />
         </gl-form-group>
