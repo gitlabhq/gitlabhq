@@ -320,7 +320,7 @@ RSpec.describe Ci::RunnersFinder, feature_category: :fleet_visibility do
     let_it_be(:project_6) { create(:project, group: sub_group_4) }
     let_it_be(:runner_instance) { create(:ci_runner, :instance, contacted_at: 13.minutes.ago) }
     let_it_be(:runner_group) { create(:ci_runner, :group, contacted_at: 12.minutes.ago, groups: [group]) }
-    let_it_be(:runner_sub_group_1) { create(:ci_runner, :group, active: false, contacted_at: 11.minutes.ago, groups: [sub_group_1]) }
+    let_it_be(:runner_sub_group_1) { create(:ci_runner, :group, :inactive, contacted_at: 11.minutes.ago, groups: [sub_group_1]) }
     let_it_be(:runner_sub_group_2) { create(:ci_runner, :group, contacted_at: 10.minutes.ago, groups: [sub_group_2]) }
     let_it_be(:runner_sub_group_3) { create(:ci_runner, :group, contacted_at: 9.minutes.ago, groups: [sub_group_3]) }
     let_it_be(:runner_sub_group_4) { create(:ci_runner, :group, contacted_at: 8.minutes.ago, groups: [sub_group_4]) }

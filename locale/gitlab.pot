@@ -12931,6 +12931,9 @@ msgstr ""
 msgid "CommandPalette|Project files"
 msgstr ""
 
+msgid "CommandPalette|Settings"
+msgstr ""
+
 msgid "CommandPalette|Type %{commandHandle} for command, %{userHandle} for user, %{projectHandle} for project, %{pathHandle} for project file, or perform generic search..."
 msgstr ""
 
@@ -25475,16 +25478,16 @@ msgstr ""
 msgid "GroupSettings|Security policy management"
 msgstr ""
 
+msgid "GroupSettings|Select a project"
+msgstr ""
+
 msgid "GroupSettings|Select a subgroup to use as a source of custom templates for new projects in this group. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "GroupSettings|Select parent group"
 msgstr ""
 
-msgid "GroupSettings|Select the project containing Analytics Dashboards configuration files"
-msgstr ""
-
-msgid "GroupSettings|Select the project containing Analytics Dashboards configuration files."
+msgid "GroupSettings|Select the project containing %{link_start}Analytics Dashboards%{link_end} configuration files."
 msgstr ""
 
 msgid "GroupSettings|Select the project containing the %{code_start}.gitlab/insights.yml%{code_end} file"
@@ -41572,7 +41575,7 @@ msgstr ""
 msgid "ProjectSettings|Select the default branch for this project, and configure the template for branch names."
 msgstr ""
 
-msgid "ProjectSettings|Select the project containing Analytics Dashboards configuration files."
+msgid "ProjectSettings|Select the project containing %{link_start}Analytics Dashboards%{link_end} configuration files."
 msgstr ""
 
 msgid "ProjectSettings|Set the default behavior of this option in merge requests. Changes to this are also applied to existing merge requests."
@@ -41728,7 +41731,7 @@ msgstr ""
 msgid "ProjectSettings|With GitLab Pages you can host your static websites on GitLab. GitLab Pages uses a caching mechanism for efficiency. Your changes may not take effect until that cache is invalidated, which usually takes less than a minute."
 msgstr ""
 
-msgid "ProjectSettings|Your project is set up. %{linkStart}View instrumentation instructions%{linkEnd}."
+msgid "ProjectSettings|Your project is set up. %{instructionsLinkStart}View instrumentation instructions%{instructionsLinkEnd} and %{dashboardsLinkStart}Analytics Dashboards%{dashboardsLinkEnd}."
 msgstr ""
 
 msgid "ProjectSetting|already in use"
@@ -59515,6 +59518,9 @@ msgid "Wiki|Page history"
 msgstr ""
 
 msgid "Wiki|Pages"
+msgstr ""
+
+msgid "Wiki|Search pages"
 msgstr ""
 
 msgid "Wiki|Sidebar was successfully created."

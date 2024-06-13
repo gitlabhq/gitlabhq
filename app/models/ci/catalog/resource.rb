@@ -49,8 +49,7 @@ module Ci
         )
       end
 
-      # TODO: The usage counts will be populated by a worker that aggregates the data daily.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/452545.
+      # The usage counts are updated daily by Ci::Catalog::Resources::AggregateLast30DayUsageWorker
       scope :order_by_last_30_day_usage_count_desc, -> { reorder(last_30_day_usage_count: :desc) }
       scope :order_by_last_30_day_usage_count_asc, -> { reorder(last_30_day_usage_count: :asc) }
 

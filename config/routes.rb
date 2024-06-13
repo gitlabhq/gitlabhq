@@ -63,6 +63,7 @@ InitializerConnections.raise_if_new_database_connection do
     # Search
     get 'search' => 'search#show', as: :search
     get 'search/autocomplete' => 'search#autocomplete', as: :search_autocomplete
+    get 'search/settings' => 'search#settings'
     get 'search/count' => 'search#count', as: :search_count
     get 'search/opensearch' => 'search#opensearch', as: :search_opensearch
 

@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::CountCiRunnersInstanceT
   let(:expected_value) { 1 }
 
   before do
-    create(:ci_runner, contacted_at: 1.second.ago)
+    create(:ci_runner, :online)
   end
 
   it_behaves_like 'a correct instrumented metric value', { time_frame: 'all', data_source: 'database' }

@@ -2212,6 +2212,12 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project2) { create(:project, star_count: 1) }
     let_it_be(:project3) { create(:project, last_activity_at: 2.minutes.ago) }
 
+    before_all do
+      create(:project_statistics, project: project1, repository_size: 1)
+      create(:project_statistics, project: project2, repository_size: 3)
+      create(:project_statistics, project: project3, repository_size: 2)
+    end
+
     it 'reorders the input relation by start count desc' do
       projects = described_class.sort_by_attribute(:stars_desc)
 
@@ -2241,6 +2247,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
       expect(projects).to eq([project1, project2, project3].sort_by(&:path).reverse)
     end
+
+    it 'reorders the input relation by storage size asc' do
+      projects = described_class.sort_by_attribute(:storage_size_asc)
+
+      expect(projects).to eq([project1, project3, project2])
+    end
+
+    it 'reorders the input relation by storage size desc' do
+      projects = described_class.sort_by_attribute(:storage_size_desc)
+
+      expect(projects).to eq([project2, project3, project1])
+    end
   end
 
   describe '.order_by_storage_size' do
@@ -2249,11 +2267,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project_3) { create(:project_statistics, repository_size: 2).project }
 
     context 'ascending' do
-      it { expect(described_class.order_by_storage_size(:asc)).to eq([project_1, project_3, project_2]) }
+      it { expect(described_class.sorted_by_storage_size_asc).to eq([project_1, project_3, project_2]) }
     end
 
     context 'descending' do
-      it { expect(described_class.order_by_storage_size(:desc)).to eq([project_2, project_3, project_1]) }
+      it { expect(described_class.sorted_by_storage_size_desc).to eq([project_2, project_3, project_1]) }
     end
   end
 

@@ -19,7 +19,8 @@ module Enums
       rpm: 10,
       deb: 11,
       'cbl-mariner': 12,
-      wolfi: 13
+      wolfi: 13,
+      cargo: 14
     }.with_indifferent_access.freeze
 
     DEPENDENCY_SCANNING_PURL_TYPES = %w[
@@ -31,6 +32,7 @@ module Enums
       npm
       nuget
       pypi
+      cargo
     ].freeze
 
     CONTAINER_SCANNING_PURL_TYPES = %w[

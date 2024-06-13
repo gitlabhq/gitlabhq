@@ -48,7 +48,7 @@ module Gitlab
           def component_ci_versions
             {
               "gitlab.gitaly.image.repository" => "#{IMAGE_REPOSITORY}/gitaly",
-              "gitlab.gitaly.image.tag" => gitaly_version,
+              "gitlab.gitaly.image.tag" => semver?(gitaly_version) ? "v#{gitaly_version}" : gitaly_version,
               "gitlab.gitlab-shell.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-shell",
               "gitlab.gitlab-shell.image.tag" => "v#{gitlab_shell_version}",
               "gitlab.migrations.image.repository" => "#{IMAGE_REPOSITORY}/gitlab-toolbox-ee",
@@ -64,6 +64,16 @@ module Gitlab
               "gitlab.webservice.workhorse.image" => "#{IMAGE_REPOSITORY}/gitlab-workhorse-ee",
               "gitlab.webservice.workhorse.tag" => commit_sha
             }
+          end
+
+          private
+
+          # Semver compatible version
+          #
+          # @param [String] version
+          # @return [Boolean]
+          def semver?(version)
+            version.match?(/^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?(-ee)?$/)
           end
         end
       end

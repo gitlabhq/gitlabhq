@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitlab_redis_shared_state,
   feature_category: :pipeline_composition do
   let(:redis_key) { 'my_redis_key:cursor' }
-  let(:target_scope) { class_double(Ci::Catalog::Resource, maximum: max_target_id) }
+  let(:target_model) { class_double(Ci::Catalog::Resource, maximum: max_target_id) }
   let(:max_target_id) { initial_redis_attributes[:target_id] }
 
   let(:usage_window) { described_class::Window.new(Date.parse('2024-01-08'), Date.parse('2024-01-14')) }
@@ -14,13 +14,13 @@ RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitla
   let(:initial_redis_attributes) do
     {
       target_id: 1,
-      usage_window: initial_redis_usage_window,
+      usage_window: initial_redis_usage_window.to_h,
       last_used_by_project_id: 100,
       last_usage_count: 10
     }
   end
 
-  subject(:cursor) { described_class.new(redis_key: redis_key, target_scope: target_scope, usage_window: usage_window) }
+  subject(:cursor) { described_class.new(redis_key: redis_key, target_model: target_model, usage_window: usage_window) }
 
   before do
     Gitlab::Redis::SharedState.with do |redis|
@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitla
 
   describe '.new' do
     it 'fetches and parses the attributes from Redis' do
-      expect(cursor.attributes).to eq(initial_redis_attributes)
+      expect(cursor.attributes).to include(initial_redis_attributes)
     end
 
     context 'when Redis usage_window is different than the given usage_window' do
@@ -39,9 +39,9 @@ RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitla
       end
 
       it 'resets last usage attributes' do
-        expect(cursor.attributes).to eq({
+        expect(cursor.attributes).to include({
           target_id: initial_redis_attributes[:target_id],
-          usage_window: usage_window,
+          usage_window: usage_window.to_h,
           last_used_by_project_id: 0,
           last_usage_count: 0
         })
@@ -56,9 +56,9 @@ RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitla
       end
 
       it 'sets target_id and last usage attributes to zero' do
-        expect(cursor.attributes).to eq({
+        expect(cursor.attributes).to include({
           target_id: 0,
-          usage_window: usage_window,
+          usage_window: usage_window.to_h,
           last_used_by_project_id: 0,
           last_usage_count: 0
         })
@@ -76,9 +76,9 @@ RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitla
       )
 
       expect(cursor.interrupted?).to eq(true)
-      expect(cursor.attributes).to eq({
+      expect(cursor.attributes).to include({
         target_id: initial_redis_attributes[:target_id],
-        usage_window: usage_window,
+        usage_window: usage_window.to_h,
         last_used_by_project_id: initial_redis_attributes[:last_used_by_project_id] + 1,
         last_usage_count: initial_redis_attributes[:last_usage_count] + 1
       })
@@ -90,9 +90,9 @@ RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitla
       it 'sets new target_id and resets last usage attributes' do
         cursor.target_id = initial_redis_attributes[:target_id] + 1
 
-        expect(cursor.attributes).to eq({
+        expect(cursor.attributes).to include({
           target_id: initial_redis_attributes[:target_id] + 1,
-          usage_window: usage_window,
+          usage_window: usage_window.to_h,
           last_used_by_project_id: 0,
           last_usage_count: 0
         })
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitla
 
     context 'when new target_id is the same as cursor target_id' do
       it 'does not change cursor attributes' do
-        expect(cursor.attributes).to eq(initial_redis_attributes)
+        expect(cursor.attributes).to include(initial_redis_attributes)
       end
     end
   end
@@ -115,9 +115,10 @@ RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitla
 
         expect(cursor.attributes).to eq({
           target_id: initial_redis_attributes[:target_id] + 1,
-          usage_window: usage_window,
+          usage_window: usage_window.to_h,
           last_used_by_project_id: 0,
-          last_usage_count: 0
+          last_usage_count: 0,
+          max_target_id: max_target_id
         })
       end
     end
@@ -128,29 +129,17 @@ RSpec.describe Gitlab::Ci::Components::Usages::Aggregators::Cursor, :clean_gitla
 
         expect(cursor.attributes).to eq({
           target_id: 0,
-          usage_window: usage_window,
+          usage_window: usage_window.to_h,
           last_used_by_project_id: 0,
-          last_usage_count: 0
+          last_usage_count: 0,
+          max_target_id: max_target_id
         })
       end
     end
   end
 
-  describe '#max_target_id' do
-    let(:target_scope) { Ci::Catalog::Resource }
-
-    before_all do
-      create(:ci_catalog_resource, id: 123)
-      create(:ci_catalog_resource, id: 100)
-    end
-
-    it 'returns maximum ID of the target scope' do
-      expect(cursor.max_target_id).to eq(123)
-    end
-  end
-
   describe '#save!' do
-    it 'saves cursor attributes to Redis as JSON' do
+    it 'saves cursor attributes except max_target_id to Redis as JSON' do
       cursor.target_id = 11
       cursor.interrupt!(
         last_used_by_project_id: 33,

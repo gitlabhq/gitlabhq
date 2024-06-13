@@ -38,44 +38,18 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       )
     end
 
-    let(:env) do
-      {
-        "QA_EE_LICENSE" => "license",
-        "CI_PROJECT_DIR" => File.expand_path("../../../../fixture", __dir__),
-        "CI_COMMIT_SHA" => "0acb5ee6db0860436fafc2c31a2cd87849c51aa3",
-        "CI_COMMIT_SHORT_SHA" => "0acb5ee6db08"
-      }
-    end
-
-    let(:values_yml) do
+    let(:expected_values_yml) do
       {
         global: {
-          hosts: {
-            domain: gitlab_domain,
-            https: false
-          },
-          ingress: {
-            configureCertmanager: false,
-            tls: {
-              enabled: false
-            }
-          },
-          appConfig: {
-            applicationSettingsCacheSeconds: 0
-          },
+          common: "val",
           extraEnv: {
             GITLAB_LICENSE_MODE: "test",
             CUSTOMER_PORTAL_URL: "https://customers.staging.gitlab.com"
           }
         },
         gitlab: {
-          "gitlab-exporter": { enabled: false },
           license: { secret: "gitlab-license" }
         },
-        redis: { metrics: { enabled: false } },
-        prometheus: { install: false },
-        certmanager: { install: false },
-        "gitlab-runner": { install: false },
         **config_values
       }.deep_stringify_keys.to_yaml
     end
@@ -85,12 +59,15 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
       allow(Gitlab::Cng::Kubectl::Client).to receive(:new).with("gitlab").and_return(kubeclient)
       allow(Gitlab::Cng::Helm::Client).to receive(:new).and_return(helmclient)
       allow(Gitlab::Cng::Deployment::Configurations::Kind).to receive(:new).and_return(configuration)
+      allow(Gitlab::Cng::Deployment::DefaultValues).to receive(:common_values).with(gitlab_domain).and_return({
+        global: { common: "val" }
+      })
 
       allow(installation).to receive(:execute_shell)
     end
 
     around do |example|
-      ClimateControl.modify(env) { example.run }
+      ClimateControl.modify({ "QA_EE_LICENSE" => "license" }) { example.run }
     end
 
     context "without ci" do
@@ -105,7 +82,7 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
           chart_reference,
           namespace: "gitlab",
           timeout: "10m",
-          values: values_yml,
+          values: expected_values_yml,
           args: []
         )
 
@@ -121,6 +98,11 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     context "with ci and specific sha" do
       let(:ci) { true }
       let(:chart_sha) { "sha" }
+      let(:ci_components) { { "gitlab.gitaly.image.repository" => "repo", "gitlab.gitaly.image.tag" => "tag" } }
+
+      before do
+        allow(Gitlab::Cng::Deployment::DefaultValues).to receive(:component_ci_versions).and_return(ci_components)
+      end
 
       it "runs helm install with correctly merged values and component versions" do
         expect { installation.create }.to output(/Creating CNG deployment 'gitlab'/).to_stdout
@@ -131,27 +113,8 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
           chart_reference,
           namespace: "gitlab",
           timeout: "10m",
-          values: values_yml,
-          # rubocop:disable Layout/LineLength -- fitting the args in to 120 would make the definition quite unreadable
-          args: %W[
-            --set gitlab.gitaly.image.repository=registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly
-            --set gitlab.gitaly.image.tag=7aa06a578d76bdc294ee8e9acb4f063e7d9f1d5f
-            --set gitlab.gitlab-shell.image.repository=registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell
-            --set gitlab.gitlab-shell.image.tag=v14.35.0
-            --set gitlab.migrations.image.repository=registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-toolbox-ee
-            --set gitlab.migrations.image.tag=#{env['CI_COMMIT_SHA']}
-            --set gitlab.toolbox.image.repository=registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-toolbox-ee
-            --set gitlab.toolbox.image.tag=#{env['CI_COMMIT_SHA']}
-            --set gitlab.sidekiq.annotations.commit=#{env['CI_COMMIT_SHORT_SHA']}
-            --set gitlab.sidekiq.image.repository=registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ee
-            --set gitlab.sidekiq.image.tag=#{env['CI_COMMIT_SHA']}
-            --set gitlab.webservice.annotations.commit=#{env['CI_COMMIT_SHORT_SHA']}
-            --set gitlab.webservice.image.repository=registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-webservice-ee
-            --set gitlab.webservice.image.tag=#{env['CI_COMMIT_SHA']}
-            --set gitlab.webservice.workhorse.image=registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-workhorse-ee
-            --set gitlab.webservice.workhorse.tag=#{env['CI_COMMIT_SHA']}
-          ]
-          # rubocop:enable Layout/LineLength
+          values: expected_values_yml,
+          args: ci_components.flat_map { |k, v| ["--set", "#{k}=#{v}"] }
         )
       end
     end

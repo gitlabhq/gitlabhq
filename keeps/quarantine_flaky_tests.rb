@@ -194,8 +194,8 @@ module Keeps
         [Flaky tests management process](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/flaky-tests-management-and-processes/#flaky-tests-management-process)
         to help us increase `master` stability.
 
-        Please let us know your feedback
-        [in the dedicated issue](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues/447).
+        Please let us know your feedback in the
+        [Engineering Productivity issue tracker](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues).
 
         Related to #{flaky_issue['web_url']}.
         MARKDOWN

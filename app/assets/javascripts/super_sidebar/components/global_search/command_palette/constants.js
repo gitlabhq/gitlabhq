@@ -52,6 +52,7 @@ export const PROJECTS_GROUP_TITLE = s__('GlobalSearch|Projects');
 export const GROUPS_GROUP_TITLE = s__('GlobalSearch|Groups');
 export const ISSUES_GROUP_TITLE = s__('GlobalSearch|Issues');
 export const PATH_GROUP_TITLE = s__('CommandPalette|Project files');
+export const SETTINGS_GROUP_TITLE = s__('CommandPalette|Settings');
 
 export const MODAL_CLOSE_ESC = 'esc';
 export const MODAL_CLOSE_BACKGROUND = 'backdrop';

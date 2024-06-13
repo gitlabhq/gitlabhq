@@ -62,6 +62,15 @@ stages:
     - echo "Running - '$QA_COMMAND'"
     - eval "$QA_COMMAND"
 
+.docker-in-docker:
+  services:
+    - docker:${DOCKER_VERSION}-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+
 .qa:
   extends:
     - .bundler-variables

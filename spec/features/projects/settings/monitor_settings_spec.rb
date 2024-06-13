@@ -97,7 +97,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
 
           wait_for_requests
 
-          within '.js-error-tracking-settings' do
+          within '#js-error-tracking-settings' do
             click_button('Expand')
             choose('cloud-hosted Sentry')
           end
@@ -142,7 +142,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
 
           wait_for_requests
 
-          within '.js-error-tracking-settings' do
+          within '#js-error-tracking-settings' do
             click_button('Expand')
             choose('cloud-hosted Sentry')
             check('Active')
@@ -163,13 +163,13 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
 
           wait_for_requests
 
-          within '.js-error-tracking-settings' do
+          within '#js-error-tracking-settings' do
             click_button('Expand')
           end
 
           expect(page).to have_content('Error tracking backend')
 
-          within '.js-error-tracking-settings' do
+          within '#js-error-tracking-settings' do
             check('Active')
             choose('GitLab')
           end
@@ -182,7 +182,7 @@ RSpec.describe 'Projects > Settings > For a forked project', :js, feature_catego
 
           assert_text('Your changes have been saved')
 
-          within '.js-error-tracking-settings' do
+          within '#js-error-tracking-settings' do
             click_button('Expand')
           end
 

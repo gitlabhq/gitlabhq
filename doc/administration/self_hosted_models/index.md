@@ -20,6 +20,7 @@ For more information, see the history.
 
 WARNING:
 This feature is considered [experimental](../../policy/experiment-beta-support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
+For GitLab 17.1 the feature has a deadline until 31 Aug 2024.
 
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.

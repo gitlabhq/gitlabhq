@@ -1,4 +1,4 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader, GlSearchBoxByType } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import axios from '~/lib/utils/axios_utils';
@@ -46,6 +46,7 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
   const findAllEntries = () => wrapper.findAllComponents(WikiSidebarEntry);
   const findAndMapEntriesToPages = () =>
     findAllEntries().wrappers.map((entry) => ({ ...entry.props('page') }));
+  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
   function buildWrapper(props = {}, provide = {}) {
     wrapper = shallowMountExtended(WikiSidebarEntries, {
@@ -57,7 +58,9 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
         canCreate: false,
         ...provide,
       },
-      stubs: {},
+      stubs: {
+        GlSearchBoxByType,
+      },
     });
   }
 
@@ -164,6 +167,40 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
     it('displays + X more text', () => {
       // 17 - 15 = 2
       expect(wrapper.text()).toContain('+ 2 more');
+    });
+
+    it('has a "View all pages" button', () => {
+      expect(findViewAllPagesButton().exists()).toBe(true);
+      expect(findViewAllPagesButton().attributes('href')).toBe(MOCK_VIEW_ALL_PAGES_PATH);
+    });
+  });
+
+  describe('when searching for pages', () => {
+    beforeEach(async () => {
+      mock.onGet(MOCK_SIDEBAR_PAGES_API).reply(HTTP_STATUS_OK, MOCK_ENTRIES_MORE_THAN_LIMIT);
+      buildWrapper();
+
+      await waitForPromises();
+
+      findSearchBox().vm.$emit('input', 'Page 1');
+    });
+
+    it('lists all the filtered search results', () => {
+      expect(findAndMapEntriesToPages()).toEqual([
+        { slug: 'page-1', path: 'path/to/page-1', title: 'Page 1', children: [] },
+        { slug: 'page-10', path: 'path/to/page-10', title: 'Page 10', children: [] },
+        { slug: 'page-11', path: 'path/to/page-11', title: 'Page 11', children: [] },
+        { slug: 'page-12', path: 'path/to/page-12', title: 'Page 12', children: [] },
+        { slug: 'page-13', path: 'path/to/page-13', title: 'Page 13', children: [] },
+        { slug: 'page-14', path: 'path/to/page-14', title: 'Page 14', children: [] },
+        { slug: 'page-15', path: 'path/to/page-15', title: 'Page 15', children: [] },
+        { slug: 'page-16', path: 'path/to/page-16', title: 'Page 16', children: [] },
+        { slug: 'page-17', path: 'path/to/page-17', title: 'Page 17', children: [] },
+      ]);
+    });
+
+    it('does not display + X more text', () => {
+      expect(wrapper.text()).not.toMatch(/\+ \d+ more/);
     });
 
     it('has a "View all pages" button', () => {

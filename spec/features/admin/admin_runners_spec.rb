@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
+RSpec.describe "Admin Runners", :freeze_time, feature_category: :fleet_visibility do
   include Features::SortingHelpers
   include Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers
@@ -61,9 +61,9 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
 
       context "with multiple runners" do
         before do
-          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: Time.zone.now)
-          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.day.ago)
-          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.week.ago)
+          create(:ci_runner, :instance, :online)
+          create(:ci_runner, :instance, :offline)
+          create(:ci_runner, :instance, :stale)
 
           visit admin_runners_path
         end
@@ -82,9 +82,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
 
       it 'shows a job count' do
         runner = create(:ci_runner, :project, projects: [project])
-
-        create(:ci_build, runner: runner)
-        create(:ci_build, runner: runner)
+        create_list(:ci_build, 2, runner: runner)
 
         visit admin_runners_path
 
@@ -262,9 +260,9 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
         end
 
         before_all do
-          create(:ci_runner, :instance, description: 'runner-1', contacted_at: Time.zone.now)
-          create(:ci_runner, :instance, description: 'runner-2', contacted_at: Time.zone.now)
-          create(:ci_runner, :instance, description: 'runner-offline', contacted_at: 1.week.ago)
+          create(:ci_runner, :instance, :online, description: 'runner-1')
+          create(:ci_runner, :instance, :online, description: 'runner-2')
+          create(:ci_runner, :instance, :contacted_within_stale_deadline, description: 'runner-offline')
         end
 
         before do

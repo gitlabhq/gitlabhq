@@ -52,7 +52,7 @@ gem 'sprockets', '~> 3.7.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'view_component', '~> 3.12.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Supported DBs
-gem 'pg', '~> 1.5.6' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'pg', '~> 1.5.6', feature_category: :database
 
 gem 'neighbor', '~> 0.3.2', feature_category: :duo_chat
 
@@ -252,9 +252,12 @@ gem 'state_machines-activerecord', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeat
 gem 'acts-as-taggable-on', '~> 10.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Background jobs
-gem 'sidekiq', path: 'vendor/gems/sidekiq-7.1.6', require: 'sidekiq' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'sidekiq-cron', '~> 1.12.0', feature_category: :shared
-gem 'gitlab-sidekiq-fetcher', path: 'vendor/gems/sidekiq-reliable-fetch', require: 'sidekiq-reliable-fetch' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'sidekiq', path: 'vendor/gems/sidekiq-7.1.6', require: 'sidekiq', feature_category: :scalability
+gem 'sidekiq-cron', '~> 1.12.0', feature_category: :scalability
+gem 'gitlab-sidekiq-fetcher',
+  path: 'vendor/gems/sidekiq-reliable-fetch',
+  require: 'sidekiq-reliable-fetch',
+  feature_category: :scalability
 
 # Cron Parser
 gem 'fugit', '~> 1.8.1' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -290,7 +293,7 @@ gem 'redis-clustering', '~> 5.2.0', feature_category: :redis
 gem 'connection_pool', '~> 2.4' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Redis session store
-gem 'redis-actionpack', '~> 5.4.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'redis-actionpack', '~> 5.4.0', feature_category: :redis
 
 # Discord integration
 gem 'discordrb-webhooks', '~> 3.5', require: false, feature_category: :integrations

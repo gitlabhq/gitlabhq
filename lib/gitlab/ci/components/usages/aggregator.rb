@@ -7,30 +7,38 @@ module Gitlab
         # Component usage is defined as the number of unique `used_by_project_id`s in the table
         # `p_catalog_resource_component_usages` for a given scope.
         #
-        # This aggregator iterates through the target scope in batches. For each target ID, it collects
-        # the usage count using `distinct_each_batch` for the given usage window. Since this process can
-        # be interrupted when it reaches MAX_RUNTIME, we utilize a Redis cursor so the aggregator can
-        # resume from where it left off on each run. We collect the count in Rails because the SQL query
-        # `COUNT(DISTINCT(*))` is not performant when the dataset is large.
+        # This aggregator is intended to be run in a scheduled cron job. It implements a "continue later"
+        # mechanism with a Redis cursor, which enables the work to continue from where it was last interrupted
+        # on each run. It iterates through the target table in batches, in order of ID ascending. For each
+        # target ID, it collects the usage count using `distinct_each_batch` for the given usage window.
+        # We collect the count in Rails because the SQL query `COUNT(DISTINCT(*))` is not performant when the
+        # data volume is large.
         #
-        # RUNTIME: The actual total runtime will be slightly longer than MAX_RUNTIME because
+        # RUNTIME: The actual total runtime will be longer than MAX_RUNTIME because
         #          it depends on the execution time of `&usage_counts_block`.
         # EXCLUSIVE LEASE: This aggregator is protected from parallel processing with an exclusive lease guard.
         # WORKER: The worker running this service should be scheduled at the same cadence as MAX_RUNTIME, with:
-        #         deduplicate :until_executed, if_deduplicated: :reschedule_once, ttl: LEASE_TIMEOUT
+        #         deduplicate :until_executed, if_deduplicated: :reschedule_once, ttl: WORKER_DEDUP_TTL
+        # STOPPING: When the aggregator's cursor advances past the max target_id, it resets to 0. This means
+        #           it may reprocess targets that have already been processed for the given usage window.
+        #           To minimize redundant reprocessing, you should prevent the aggregator from running once it
+        #           meets a certain stop condition (e.g. when all targets have been marked as "processed").
         #
         ##### Usage
         #
         # each_batch:
-        #   - Yields each batch of `usage_counts` to the given block.
-        #   - The block should be able to handle targets that might be reprocessed multiple times.
+        #   - Yields each batch of `usage_counts` to the given block. The block should:
+        #     - Be able to handle targets that might be reprocessed multiple times.
+        #     - Not exceed 1 minute in execution time.
         #   - `usage_counts` format: { target_object1 => 100, target_object2 => 200, ... }
-        #   - If the lease is obtained, returns a Result containing the `cursor` object and
-        #     `total_targets_completed`. Otherwise, returns nil.
+        #   - If the lease is obtained, returns a Result containing `total_targets_completed` and
+        #     `cursor_attributes`. Otherwise, returns nil.
         #
         # Example:
+        #  return if done_processing?
+        #
         #  aggregator = Gitlab::Ci::Components::Usages::Aggregator.new(
-        #    target_scope: Ci::Catalog::Resource.scope_to_get_only_unprocessed_targets,
+        #    target_model: Ci::Catalog::Resource,
         #    group_by_column: :catalog_resource_id,
         #    usage_start_date: Date.today - 30.days,
         #    usage_end_date: Date.today - 1.day,
@@ -43,37 +51,32 @@ module Gitlab
         #
         ##### Parameters
         #
-        # target_scope:
-        #   - ActiveRecord relation to retrieve the target IDs. Processed in order of ID ascending.
-        #   - The target model class should have `include EachBatch`.
-        #   - When cursor.target_id gets reset to 0, the aggregator may reprocess targets that have
-        #     already been processed for the given usage window.  To minimize redundant reprocessing,
-        #     add a limiting condition to the target scope so it only retrieves unprocessed targets.
-        # group_by_column: This should be the usage table's foreign key of the target_scope.
+        # target_model: Target model to iterate through. Model class should contain `include EachBatch`.
+        # group_by_column: This should be the usage table's foreign key of the target_model.
         # usage_start_date & usage_end_date: Date objects specifiying the window of usage data to aggregate.
         # lease_key: Used for obtaining an exclusive lease. Also used as part of the cursor Redis key.
         #
         # rubocop: disable CodeReuse/ActiveRecord -- Custom queries required for data processing
         class Aggregator
-          include Gitlab::Utils::StrongMemoize
           include ExclusiveLeaseGuard
 
-          Result = Struct.new(:cursor, :total_targets_completed, keyword_init: true)
+          Result = Struct.new(:total_targets_completed, :cursor_attributes, keyword_init: true)
 
           TARGET_BATCH_SIZE = 1000
           DISTINCT_USAGE_BATCH_SIZE = 100
           MAX_RUNTIME = 4.minutes # Should be >= job scheduling frequency so there is no gap between job runs
-          LEASE_TIMEOUT = 5.minutes # Should be MAX_RUNTIME + extra time to execute `&usage_counts_block`
+          WORKER_DEDUP_TTL = MAX_RUNTIME + 1.minute # Includes extra time to execute `&usage_counts_block`
+          LEASE_TIMEOUT = 10.minutes
 
-          def initialize(target_scope:, group_by_column:, usage_start_date:, usage_end_date:, lease_key:)
-            @target_scope = target_scope
+          def initialize(target_model:, group_by_column:, usage_start_date:, usage_end_date:, lease_key:)
+            @target_model = target_model
             @group_by_column = group_by_column
             @lease_key = lease_key # Used by ExclusiveLeaseGuard
             @runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
 
             @cursor = Aggregators::Cursor.new(
               redis_key: "#{lease_key}:cursor",
-              target_scope: target_scope,
+              target_model: target_model,
               usage_window: Aggregators::Cursor::Window.new(usage_start_date, usage_end_date)
             )
           end
@@ -82,17 +85,18 @@ module Gitlab
             try_obtain_lease do
               total_targets_completed = process_targets(&usage_counts_block)
 
-              Result.new(cursor: cursor, total_targets_completed: total_targets_completed)
+              Result.new(total_targets_completed: total_targets_completed, cursor_attributes: cursor.attributes)
             end
           end
 
           private
 
-          attr_reader :target_scope, :group_by_column, :cursor, :runtime_limiter
+          attr_reader :target_model, :group_by_column, :cursor, :runtime_limiter
 
           def process_targets
-            # Restore the scope from cursor so we can resume from the last run
-            restored_target_scope = target_scope.where('id >= ?', cursor.target_id)
+            # Restore the scope from cursor so we can resume from the last run. `cursor.target_id` is 0
+            # when the Redis cursor is first initialized or when it advances past the max target ID.
+            restored_target_scope = target_model.where('id >= ?', cursor.target_id)
             total_targets_completed = 0
 
             restored_target_scope.each_batch(of: TARGET_BATCH_SIZE) do |targets_relation|

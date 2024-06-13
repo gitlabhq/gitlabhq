@@ -29,6 +29,11 @@ module Gitlab
     # values. Enums/state fields must be translated into their underlying
     # representations, for example, and no hooks will be called.
     #
+    # This tool does not support all column types. For example,
+    # ActiveModel::Type.lookup(column.type) throws an exception when
+    # the column type is `:timestamptz` (timestamp with time zone).
+    #
+    #
     module BulkUpdate
       LIST_SEPARATOR = ', '
 

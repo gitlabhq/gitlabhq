@@ -15,13 +15,11 @@ workflow:
   stage: test
   extends:
     - .qa-cache
+    - .docker-in-docker
     - .qa-run-e2e-with-bundler
   needs: [build-cng]
   tags: [e2e]
-  services:
-    - docker:${DOCKER_VERSION}-dind
   variables:
-    DOCKER_HOST: tcp://docker:2375
     FF_NETWORK_PER_BUILD: "true"
     NAMESPACE: gitlab
     KUBECONFIG: /root/.kube/config
@@ -61,7 +59,7 @@ workflow:
       fi
     - cd qa
     - bundle exec cng log events --save
-    - bundle exec cng log pods --save --containers all
+    - bundle exec cng log pods --save --containers all --no-fail-on-missing-pods
     # This command prints all the necessary arguments to be able to recreate the same deployment as on CI
     - |
       bundle exec cng create deployment "${DEPLOYMENT_TYPE}" \

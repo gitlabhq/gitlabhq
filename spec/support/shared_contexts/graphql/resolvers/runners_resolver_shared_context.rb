@@ -9,11 +9,13 @@ RSpec.shared_context 'runners resolver setup' do
   let_it_be(:project) { create(:project, :public, group: group) }
 
   let_it_be(:inactive_project_runner) do
-    create(:ci_runner, :project, projects: [project], description: 'inactive project runner', token: 'abcdef', active: false, contacted_at: 1.minute.ago, tag_list: %w[project_runner])
+    create(:ci_runner, :project, :inactive, :online, projects: [project],
+      description: 'inactive project runner', token: 'abcdef', tag_list: %w[project_runner])
   end
 
   let_it_be(:offline_project_runner) do
-    create(:ci_runner, :project, projects: [project], description: 'offline project runner', token: 'defghi', contacted_at: 1.day.ago, tag_list: %w[project_runner active_runner])
+    create(:ci_runner, :project, :offline, projects: [project],
+      description: 'offline project runner', token: 'defghi', tag_list: %w[project_runner active_runner])
   end
 
   let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], token: 'mnopqr', description: 'group runner', contacted_at: 2.seconds.ago) }

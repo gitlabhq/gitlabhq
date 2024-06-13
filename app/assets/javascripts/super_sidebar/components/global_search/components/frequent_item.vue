@@ -27,7 +27,7 @@ export default {
       :project-id="item.id"
       :project-name="item.title"
       :project-avatar-url="item.avatar"
-      :size="24"
+      :size="32"
       aria-hidden="true"
     />
 

@@ -51,6 +51,26 @@ RSpec.describe Gitlab::Cng::Commands::Log do
       expect(File).to have_received(:write).with("pod-1.log", "log-1")
       expect(File).to have_received(:write).with("pod-2.log", "log-2")
     end
+
+    it "raises error when no pod is found" do
+      allow(kubeclient).to receive(:pod_logs).and_raise(
+        Gitlab::Cng::Kubectl::Client::Error, "No pods found in namespace 'gitlab'"
+      )
+
+      expect do
+        expect { invoke_command(command_name) }.to output(/No pods found in namespace 'gitlab'/).to_stdout
+      end.to raise_error(SystemExit)
+    end
+
+    it "prints warning with --no-fail-on-missing-pods argument" do
+      allow(kubeclient).to receive(:pod_logs).and_raise(
+        Gitlab::Cng::Kubectl::Client::Error, "No pods found in namespace 'gitlab'"
+      )
+
+      expect do
+        invoke_command(command_name, [], { fail_on_missing_pods: false })
+      end.to output(/No pods found in namespace 'gitlab'/).to_stdout
+    end
   end
 
   describe "events command" do

@@ -132,7 +132,7 @@ registry-with-cdn:
 object-storage:
   extends:
     - .qa
-    - ee
+    - .ee
   variables:
     QA_SCENARIO: Test::Instance::Image
     QA_RSPEC_TAGS: --tag object_storage

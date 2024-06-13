@@ -37,9 +37,9 @@ module Gitlab
 
             alias_method :interrupted?, :interrupted
 
-            def initialize(redis_key:, target_scope:, usage_window:)
+            def initialize(redis_key:, target_model:, usage_window:)
               @redis_key = redis_key
-              @target_scope = target_scope
+              @target_model = target_model
               @usage_window = usage_window
               @interrupted = false
 
@@ -65,26 +65,22 @@ module Gitlab
             def attributes
               {
                 target_id: target_id,
-                usage_window: usage_window,
+                usage_window: usage_window.to_h,
                 last_used_by_project_id: last_used_by_project_id,
-                last_usage_count: last_usage_count
+                last_usage_count: last_usage_count,
+                max_target_id: max_target_id
               }
             end
 
-            def max_target_id
-              target_scope.maximum(:id).to_i
-            end
-            strong_memoize_attr :max_target_id
-
             def save!
               Gitlab::Redis::SharedState.with do |redis|
-                redis.set(redis_key, attributes.to_json, ex: CURSOR_REDIS_KEY_TTL)
+                redis.set(redis_key, attributes.except(:max_target_id).to_json, ex: CURSOR_REDIS_KEY_TTL)
               end
             end
 
             private
 
-            attr_reader :redis_key, :target_scope
+            attr_reader :redis_key, :target_model
 
             def fetch_initial_attributes!
               data = Gitlab::Redis::SharedState.with do |redis|
@@ -106,6 +102,11 @@ module Gitlab
               @last_used_by_project_id = 0
               @last_usage_count = 0
             end
+
+            def max_target_id
+              target_model.maximum(:id).to_i
+            end
+            strong_memoize_attr :max_target_id
 
             def parse_date(date_str)
               Date.parse(date_str) if date_str

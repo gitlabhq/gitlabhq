@@ -29,6 +29,10 @@ module Gitlab
           desc: "Save logs to a file instead of printing to stdout",
           type: :boolean,
           default: false
+        option :fail_on_missing_pods,
+          desc: "Fail if no pods are found",
+          type: :boolean,
+          default: true
         def pods(name = "")
           logs = kubeclient.pod_logs(name.split(","), since: options[:since], containers: options[:containers])
 
@@ -45,6 +49,12 @@ module Gitlab
             log("Logs for pod '#{pod_name}'", :success)
             puts pod_logs
           end
+        rescue Kubectl::Client::Error => e
+          raise(e) unless ["No pods matched", "No pods found in namespace"].any? { |msg| e.message.include?(msg) }
+
+          fail_on_missing_pods = options[:fail_on_missing_pods]
+          log(e.message, fail_on_missing_pods ? :error : :warn)
+          exit(1) if fail_on_missing_pods
         end
 
         desc "events", "Log cluster events"

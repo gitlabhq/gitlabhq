@@ -882,31 +882,31 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when there is a runner' do
-      let(:runner) { create(:ci_runner, :project, projects: [build.project]) }
-
       before do
-        runner.update!(contacted_at: 1.second.ago)
+        create(:ci_runner, *runner_traits, :project, projects: [build.project])
       end
 
-      it { is_expected.to be_truthy }
+      context 'that is online' do
+        let(:runner_traits) { [:online] }
+
+        it { is_expected.to be_truthy }
+      end
 
       context 'that is inactive' do
-        before do
-          runner.update!(active: false)
-        end
+        let(:runner_traits) { [:online, :inactive] }
 
         it { is_expected.to be_falsey }
       end
 
-      context 'that is not online' do
-        before do
-          runner.update!(contacted_at: nil)
-        end
+      context 'that is offline' do
+        let(:runner_traits) { [:offline] }
 
         it { is_expected.to be_falsey }
       end
 
       context 'that cannot handle build' do
+        let(:runner_traits) { [:online] }
+
         before do
           expect_any_instance_of(Gitlab::Ci::Matching::RunnerMatcher).to receive(:matches?).with(build.build_matcher).and_return(false)
         end

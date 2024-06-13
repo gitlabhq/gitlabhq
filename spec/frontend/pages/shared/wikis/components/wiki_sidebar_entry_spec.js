@@ -50,6 +50,12 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
 
       expect(wrapper.findByTestId('wiki-list-create-child-button').exists()).toBe(true);
     });
+
+    it('highlights the searchTerm in the page title', () => {
+      buildWrapper({ page: { title: 'Foo', path: '/foo', children: [] }, searchTerm: 'Fo' });
+
+      expect(wrapper.html()).toContain('<strong>Fo</strong>o');
+    });
   });
 
   describe('when the page has children', () => {

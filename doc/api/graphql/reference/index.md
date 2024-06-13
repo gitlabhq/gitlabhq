@@ -35244,6 +35244,8 @@ Values for sorting projects.
 | <a id="projectsortpath_desc"></a>`PATH_DESC` | Path by descending order. |
 | <a id="projectsortstars_asc"></a>`STARS_ASC` | Stars by ascending order. |
 | <a id="projectsortstars_desc"></a>`STARS_DESC` | Stars by descending order. |
+| <a id="projectsortstorage_size_asc"></a>`STORAGE_SIZE_ASC` | Storage size by ascending order. |
+| <a id="projectsortstorage_size_desc"></a>`STORAGE_SIZE_DESC` | Storage size by descending order. |
 | <a id="projectsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
 | <a id="projectsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
 | <a id="projectsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |

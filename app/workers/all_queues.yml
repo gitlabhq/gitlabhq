@@ -246,6 +246,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:ci_catalog_resources_aggregate_last30_day_usage
+  :worker_name: Ci::Catalog::Resources::AggregateLast30DayUsageWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_catalog_resources_process_sync_events
   :worker_name: Ci::Catalog::Resources::ProcessSyncEventsWorker
   :feature_category: :pipeline_composition

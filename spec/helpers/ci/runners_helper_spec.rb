@@ -21,18 +21,18 @@ RSpec.describe Ci::RunnersHelper, feature_category: :fleet_visibility do
     end
 
     it "returns offline text" do
-      runner = create(:ci_runner, contacted_at: 1.day.ago)
+      runner = create(:ci_runner, :offline)
       expect(helper.runner_status_icon(runner)).to include("is offline")
     end
 
     it "returns stale text" do
-      runner = create(:ci_runner, created_at: 4.months.ago, contacted_at: 4.months.ago)
+      runner = create(:ci_runner, :stale)
       expect(helper.runner_status_icon(runner)).to include("is stale")
       expect(helper.runner_status_icon(runner)).to include("last contact was")
     end
 
     it "returns stale text, when runner never contacted" do
-      runner = create(:ci_runner, :unregistered, created_at: 4.months.ago)
+      runner = create(:ci_runner, :unregistered, :stale)
       expect(helper.runner_status_icon(runner)).to include("is stale")
       expect(helper.runner_status_icon(runner)).to include("never contacted")
     end

@@ -161,7 +161,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'when it exceeds the application limits' do
         before do
-          create(:ci_runner, runner_type: :project_type, projects: [project], contacted_at: 1.second.ago)
+          create(:ci_runner, :project, projects: [project], contacted_at: 1.second.ago)
           create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
         end
 
@@ -179,7 +179,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'when abandoned runners cause application limits to not be exceeded' do
         before do
-          create(:ci_runner, runner_type: :project_type, projects: [project], created_at: 14.months.ago, contacted_at: 13.months.ago)
+          create(:ci_runner, :project, :stale, projects: [project])
           create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
         end
 
@@ -246,7 +246,7 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'when it exceeds the application limits' do
         before do
-          create(:ci_runner, :unregistered, runner_type: :group_type, groups: [group], created_at: 6.days.ago)
+          create(:ci_runner, :unregistered, :created_within_stale_deadline, :group, groups: [group])
           create(:plan_limits, :default_plan, ci_registered_group_runners: 1)
         end
 
@@ -264,8 +264,8 @@ RSpec.describe ::Ci::Runners::RegisterRunnerService, '#execute', feature_categor
 
       context 'when abandoned runners cause application limits to not be exceeded' do
         before do
-          create(:ci_runner, runner_type: :group_type, groups: [group], created_at: 4.months.ago, contacted_at: 3.months.ago)
-          create(:ci_runner, :unregistered, runner_type: :group_type, groups: [group], created_at: 4.months.ago)
+          create(:ci_runner, :group, :stale, groups: [group])
+          create(:ci_runner, :unregistered, :group, groups: [group], created_at: 4.months.ago)
           create(:plan_limits, :default_plan, ci_registered_group_runners: 1)
         end
 

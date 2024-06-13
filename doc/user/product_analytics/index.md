@@ -275,11 +275,10 @@ funnels must be defined in the pointer project.
 1. In the `.gitlab/analytics/` directory, create a directory named `funnels`.
 1. In the new `.gitlab/analytics/funnels` directory, create a funnel definition YAML file.
 
-Funnel definitions must include the keys `name` and `seconds_to_convert`, and an array of `steps`.
+Funnel definitions must include the key `seconds_to_convert` and an array of `steps`.
 
 | Key                  | Description                                              |
 |----------------------|----------------------------------------------------------|
-| `name`               | The name of the funnel.                                  |
 | `seconds_to_convert` | The number of seconds a user has to complete the funnel. |
 | `steps`              | An array of funnel steps.                                |
 
@@ -296,7 +295,6 @@ Each step must include the keys `name`, `target`, and `action`.
 The following example defines a funnel that tracks users who completed a purchase within one hour by going through three target pages:
 
 ```yaml
-name: completed_purchase
 seconds_to_convert: 3600
 steps:
   - name: view_page_1
@@ -314,6 +312,13 @@ steps:
 
 You can [query the funnel data with the REST API](../../api/product_analytics.md#send-query-request-to-cube).
 To do this, you can use the example query body below, where you need to replace `FUNNEL_NAME` with your funnel's name.
+
+NOTE:
+The name of a funnel is generated from the filename of the funnel definition YAML file,
+by separating words with underscores and removing special characters.
+For example, for a funnel definition file in `.gitlab/analytics/funnels/Successful Conversions.yaml`
+the funnel name is `successful_conversions`.
+This funnel name can be referenced in visualization definitions.
 
 NOTE:
 The `afterDate` filter is not supported. Use `beforeDate` or `inDateRange`.
@@ -370,10 +375,6 @@ options:
     name: Total
     type: value
 ```
-
-NOTE:
-The funnel name defined in the YAML definition is converted to a slug that can be referenced in visualization definitions.
-For example, the funnel name `Successful Conversions` is converted to `successful_conversions`.
 
 When funnel definitions and visualizations are ready, you can [create a custom dashboard](../analytics/analytics_dashboards.md#create-a-custom-dashboard) to visualize funnel analysis behavior.
 

@@ -27,7 +27,7 @@
         %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
         .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
 
-  %section.settings.no-animate{ class: ('expanded' if expanded), data: { testid: 'badges-settings-content' } }
+  %section.settings.no-animate#js-badges-settings{ class: ('expanded' if expanded), data: { testid: 'badges-settings-content' } }
     .settings-header
       %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
         = s_('ProjectSettings|Badges')

@@ -10,6 +10,7 @@ module Ci
     STARTED_STATUSES = %w[running success failed].freeze
     ACTIVE_STATUSES = %w[waiting_for_resource preparing waiting_for_callback pending running].freeze
     COMPLETED_STATUSES = %w[success failed canceled skipped].freeze
+    COMPLETED_WITH_MANUAL_STATUSES = COMPLETED_STATUSES + %w[manual]
     STOPPED_STATUSES = COMPLETED_STATUSES + BLOCKED_STATUS
     ORDERED_STATUSES = %w[failed preparing pending running waiting_for_callback waiting_for_resource manual scheduled canceling canceled success skipped created].freeze
     PASSED_WITH_WARNINGS_STATUSES = %w[failed canceled].to_set.freeze
@@ -48,7 +49,7 @@ module Ci
       end
 
       def completed_with_manual_statuses
-        completed_statuses + [:manual]
+        COMPLETED_WITH_MANUAL_STATUSES.map(&:to_sym)
       end
 
       def stopped_statuses
@@ -121,7 +122,7 @@ module Ci
     end
 
     def complete_or_manual?
-      self.class.completed_with_manual_statuses.map(&:to_s).include?(status)
+      COMPLETED_WITH_MANUAL_STATUSES.include?(status)
     end
 
     def incomplete?

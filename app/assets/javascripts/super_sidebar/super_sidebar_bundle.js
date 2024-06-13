@@ -107,7 +107,14 @@ export const initSuperSidebar = () => {
   const commandPaletteLinks = convertObjectPropsToCamelCase(sidebarData.current_menu_items || []);
   const contextSwitcherLinks = sidebarData.context_switcher_links;
 
-  const { searchPath, issuesPath, mrPath, autocompletePath, searchContext } = searchData;
+  const {
+    searchPath,
+    issuesPath,
+    mrPath,
+    autocompletePath,
+    settingsPath,
+    searchContext,
+  } = searchData;
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
 
   const isGroup = Boolean(sidebarData.current_context?.namespace === CONTEXT_NAMESPACE_GROUPS);
@@ -124,6 +131,7 @@ export const initSuperSidebar = () => {
       commandPaletteLinks,
       contextSwitcherLinks,
       autocompletePath,
+      settingsPath,
       searchContext,
       projectFilesPath,
       projectBlobPath,

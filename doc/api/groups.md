@@ -1451,6 +1451,53 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+### List Service Account Users
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+
+Prerequisites:
+
+- You must be an administrator of the self-managed instance, or have the Owner role for the group.
+
+Lists all service account users that are provisioned by group.
+
+This function takes pagination parameters `page` and `per_page` to restrict the list of users.
+
+```plaintext
+GET /groups/:id/service_accounts
+```
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
+```
+
+Supported attributes:
+
+| Attribute    | Type     | Required   | Description                                                     |
+|:-------------|:---------|:-----------|:----------------------------------------------------------------|
+| `order_by`   | string   | no         | Orders list of users by `username` or `id`. Default is `id`.    |
+| `sort`       | string   | no         | Specifies sorting by `asc` or `desc`. Default is `desc`.        |
+
+Example response:
+
+```json
+[
+
+  {
+    "id": 57,
+    "username": "service_account_group_345_<random_hash>",
+    "name": "Service account user"
+  },
+  {
+  "id": 58,
+  "username": "service_account_group_345_<random_hash>",
+  "name": "Service account user"
+  }
+]
+```
+
 ### Create Service Account User
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.

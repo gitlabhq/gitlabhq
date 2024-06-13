@@ -16,6 +16,8 @@ module Types
       value 'PATH_DESC', 'Path by descending order.', value: :path_desc
       value 'STARS_ASC', 'Stars by ascending order.', value: :stars_asc
       value 'STARS_DESC', 'Stars by descending order.', value: :stars_desc
+      value 'STORAGE_SIZE_ASC', 'Storage size by ascending order.', value: :storage_size_asc
+      value 'STORAGE_SIZE_DESC', 'Storage size by descending order.', value: :storage_size_desc
     end
   end
 end

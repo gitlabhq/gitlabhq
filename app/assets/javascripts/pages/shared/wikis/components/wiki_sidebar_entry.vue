@@ -1,7 +1,9 @@
 <script>
 import { GlIcon, GlButton, GlLink } from '@gitlab/ui';
+import { escape } from 'lodash';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { s__, sprintf } from '~/locale';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   name: 'WikiSidebarEntry',
@@ -11,11 +13,19 @@ export default {
     GlButton,
     LocalStorageSync,
   },
+  directives: {
+    SafeHtml,
+  },
   inject: ['canCreate'],
   props: {
     page: {
       type: Object,
       required: true,
+    },
+    searchTerm: {
+      type: String,
+      default: '',
+      required: false,
     },
   },
   data() {
@@ -41,7 +51,16 @@ export default {
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed;
     },
+    highlight(text) {
+      return this.searchTerm
+        ? String(escape(text)).replace(
+            new RegExp(this.searchTerm, 'i'),
+            (match) => `<strong>${match}</strong>`,
+          )
+        : escape(text);
+    },
   },
+  safeHtmlConfig: { ALLOWED_TAGS: ['strong'] },
 };
 </script>
 <template>
@@ -55,14 +74,13 @@ export default {
       @click="toggleCollapsed"
     >
       <gl-link
+        v-safe-html:[$options.safeHtmlConfig]="highlight(pageTitle)"
         :href="page.path"
         class="gl-str-truncated"
         :data-qa-page-name="pageTitle"
         :data-testid="page.children.length ? 'wiki-dir-page-link' : 'wiki-page-link'"
         @click.stop
-      >
-        {{ pageTitle }}
-      </gl-link>
+      />
       <gl-button
         v-if="canCreate"
         icon="plus"
@@ -82,7 +100,12 @@ export default {
       />
     </span>
     <ul v-if="page.children.length && !isCollapsed" dir="auto" class="!gl-pl-5">
-      <wiki-sidebar-entry v-for="child in page.children" :key="child.slug" :page="child" />
+      <wiki-sidebar-entry
+        v-for="child in page.children"
+        :key="child.slug"
+        :page="child"
+        :search-term="searchTerm"
+      />
     </ul>
   </li>
 </template>

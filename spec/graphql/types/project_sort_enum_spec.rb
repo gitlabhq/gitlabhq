@@ -12,6 +12,7 @@ RSpec.describe GitlabSchema.types['ProjectSort'], feature_category: :groups_and_
       *%w[
         ID_ASC ID_DESC LATEST_ACTIVITY_ASC LATEST_ACTIVITY_DESC
         NAME_ASC NAME_DESC PATH_ASC PATH_DESC STARS_ASC STARS_DESC
+        STORAGE_SIZE_ASC STORAGE_SIZE_DESC
       ]
     )
   end

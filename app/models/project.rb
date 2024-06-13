@@ -664,6 +664,8 @@ class Project < ApplicationRecord
   # Sometimes queries (e.g. using CTEs) require explicit disambiguation with table name
   scope :projects_order_id_asc, -> { reorder(self.arel_table['id'].asc) }
   scope :projects_order_id_desc, -> { reorder(self.arel_table['id'].desc) }
+  scope :sorted_by_storage_size_asc, -> { order_by_storage_size(:asc) }
+  scope :sorted_by_storage_size_desc, -> { order_by_storage_size(:desc) }
   scope :order_by_storage_size, ->(direction) do
     build_keyset_order_on_joined_column(
       scope: joins(:statistics),
@@ -1002,10 +1004,10 @@ class Project < ApplicationRecord
 
     def sort_by_attribute(method)
       case method.to_s
+      when 'storage_size_asc'
+        sorted_by_storage_size_asc
       when 'storage_size_desc'
-        # storage_size is a joined column so we need to
-        # pass a string to avoid AR adding the table name
-        reorder('project_statistics.storage_size DESC, projects.id DESC')
+        sorted_by_storage_size_desc
       when 'latest_activity_desc'
         sorted_by_updated_desc
       when 'latest_activity_asc'

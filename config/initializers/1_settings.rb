@@ -707,6 +707,9 @@ Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worke
 Settings.cron_jobs['performance_bar_stats'] ||= {}
 Settings.cron_jobs['performance_bar_stats']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['performance_bar_stats']['job_class'] = 'GitlabPerformanceBarStatsWorker'
+Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker'] ||= {}
+Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['cron'] ||= '*/4 * * * *'
+Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['job_class'] = 'Ci::Catalog::Resources::AggregateLast30DayUsageWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

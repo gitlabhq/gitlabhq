@@ -8,10 +8,6 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
   let_it_be(:project) { create(:project, :public, :repository, :wiki_repo, name: 'awesome project', group: group) }
   let_it_be(:projects) { create_list(:project, 5, :public, :repository, :wiki_repo) }
 
-  before do
-    login_as(user)
-  end
-
   def send_search_request(params)
     get search_path, params: params
   end
@@ -36,6 +32,10 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
 
   describe 'GET /search' do
     let(:creation_traits) { [] }
+
+    before do
+      login_as(user)
+    end
 
     context 'for issues scope' do
       let(:object) { :issue }
@@ -196,6 +196,63 @@ RSpec.describe SearchController, type: :request, feature_category: :global_searc
         send_search_request({ search: sha, group_id: project.root_namespace.id })
 
         expect(response).not_to redirect_to(project_commit_path(project, sha))
+      end
+    end
+  end
+
+  describe 'GET /search/settings' do
+    subject(:request) { get search_settings_path, params: params }
+
+    let(:params) { nil }
+
+    context 'when user is not signed-in' do
+      it { is_expected.to redirect_to(new_user_session_path) }
+    end
+
+    context 'when user is signed-in' do
+      before do
+        login_as(user)
+      end
+
+      context 'when project_id param is missing' do
+        it 'raises an error' do
+          expect { request }.to raise_error(ActionController::ParameterMissing)
+        end
+      end
+
+      context 'when given project is not found' do
+        let(:params) { { project_id: non_existing_record_id } }
+
+        it 'returns an empty array' do
+          request
+          expect(response.body).to eq '[]'
+        end
+      end
+
+      context 'when user is not allowed to change settings in given project' do
+        let(:params) { { project_id: project.id } }
+
+        it 'returns an empty array' do
+          request
+          expect(response.body).to eq '[]'
+        end
+      end
+
+      context 'when user is allowed to change settings in given project' do
+        before_all do
+          project.add_maintainer(user)
+        end
+
+        let(:params) { { project_id: project.id } }
+
+        it 'returns all available settings results' do
+          expect_next_instance_of(Search::Settings) do |settings|
+            expect(settings).to receive(:for_project).with(project).and_return(%w[foo bar])
+          end
+
+          request
+          expect(response.body).to eq '["foo","bar"]'
+        end
       end
     end
   end

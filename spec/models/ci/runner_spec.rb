@@ -217,9 +217,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
   describe '#access_level' do
     context 'when creating new runner and access_level is nil' do
-      let(:runner) do
-        build(:ci_runner, access_level: nil)
-      end
+      let(:runner) { build(:ci_runner, access_level: nil) }
 
       it "object is invalid" do
         expect(runner).not_to be_valid
@@ -227,9 +225,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'when creating new runner and access_level is defined in enum' do
-      let(:runner) do
-        build(:ci_runner, access_level: :not_protected)
-      end
+      let(:runner) { build(:ci_runner, access_level: :not_protected) }
 
       it "object is valid" do
         expect(runner).to be_valid
@@ -474,10 +470,10 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   describe '.recent' do
     subject { described_class.recent }
 
-    let!(:runner1) { create(:ci_runner, contacted_at: nil, created_at: 6.days.ago) }
-    let!(:runner2) { create(:ci_runner, contacted_at: nil, created_at: 7.days.ago) }
-    let!(:runner3) { create(:ci_runner, contacted_at: 1.day.ago, created_at: 6.days.ago) }
-    let!(:runner4) { create(:ci_runner, contacted_at: 1.day.ago, created_at: 7.days.ago) }
+    let!(:runner1) { create(:ci_runner, :unregistered, :created_within_stale_deadline) }
+    let!(:runner2) { create(:ci_runner, :unregistered, :stale) }
+    let!(:runner3) { create(:ci_runner, :created_within_stale_deadline, :contacted_within_stale_deadline) }
+    let!(:runner4) { create(:ci_runner, :stale, :contacted_within_stale_deadline) }
 
     it { is_expected.to contain_exactly(runner1, runner3, runner4) }
   end
@@ -506,17 +502,15 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '.paused' do
-    before do
-      expect(described_class).to receive(:active).with(false).and_call_original
-    end
-
-    subject { described_class.paused }
+    subject(:paused) { described_class.paused }
 
     let!(:runner1) { create(:ci_runner, :instance, active: false) }
     let!(:runner2) { create(:ci_runner, :instance) }
 
     it 'returns inactive runners' do
-      is_expected.to match_array([runner1])
+      expect(described_class).to receive(:active).with(false).and_call_original
+
+      expect(paused).to contain_exactly(runner1)
     end
   end
 
@@ -560,39 +554,33 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     subject { runner.stale? }
 
     before do
-      allow_any_instance_of(described_class).to receive(:cached_attribute).and_call_original
-
       allow(Ci::Runners::ProcessRunnerVersionUpdateWorker).to receive(:perform_async).once
     end
 
     context 'table tests' do
       using RSpec::Parameterized::TableSyntax
 
+      let(:stale_deadline) { described_class.stale_deadline }
+      let(:almost_stale_deadline) { 1.second.after(stale_deadline) }
+
       where(:created_at, :contacted_at, :expected_stale?) do
-        nil                   | nil                   | false
-        7.days.ago            | 7.days.ago            | true
-        7.days.ago            | (7.days - 1.hour).ago | false
-        7.days.ago            | nil                   | true
-        (7.days - 1.hour).ago | nil                   | false
+        nil                         | nil                         | false
+        ref(:stale_deadline)        | ref(:stale_deadline)        | true
+        ref(:stale_deadline)        | ref(:almost_stale_deadline) | false
+        ref(:stale_deadline)        | nil                         | true
+        ref(:almost_stale_deadline) | nil                         | false
       end
 
       with_them do
         before do
           runner.created_at = created_at
+          runner.contacted_at = contacted_at
         end
 
-        context 'no cache value' do
-          before do
-            stub_redis_runner_contacted_at(nil)
-            runner.contacted_at = contacted_at
-          end
-
-          it { is_expected.to eq(expected_stale?) }
-        end
+        it { is_expected.to eq(expected_stale?) }
 
         context 'with cache value' do
           before do
-            runner.contacted_at = contacted_at ? contacted_at + 1.week : nil
             stub_redis_runner_contacted_at(contacted_at.to_s)
           end
 
@@ -613,69 +601,51 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#online?', :clean_gitlab_redis_cache, :freeze_time do
-    let(:runner) { build(:ci_runner, :instance) }
-
     subject { runner.online? }
 
-    before do
-      allow_any_instance_of(described_class).to receive(:cached_attribute).and_call_original
+    context 'never contacted' do
+      let(:runner) { build(:ci_runner, :unregistered) }
+
+      it { is_expected.to be_falsey }
     end
 
-    context 'no cache value' do
-      before do
-        stub_redis_runner_contacted_at(nil)
-      end
+    context 'contacted long time ago' do
+      let(:runner) { build(:ci_runner, :stale) }
 
-      context 'never contacted' do
-        before do
-          runner.contacted_at = nil
-        end
+      it { is_expected.to be_falsey }
+    end
 
-        it { is_expected.to be_falsey }
-      end
+    context 'contacted now' do
+      let(:runner) { build(:ci_runner, :online) }
 
-      context 'contacted long time ago' do
-        before do
-          runner.contacted_at = 1.year.ago
-        end
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'contacted 1s ago' do
-        before do
-          runner.contacted_at = 1.second.ago
-        end
-
-        it { is_expected.to be_truthy }
-      end
+      it { is_expected.to be_truthy }
     end
 
     context 'with cache value' do
+      let(:runner) { create(:ci_runner, :stale) }
+
+      before do
+        stub_redis_runner_contacted_at(cached_contacted_at.to_s)
+      end
+
       context 'contacted long time ago' do
-        before do
-          runner.contacted_at = 1.year.ago
-          stub_redis_runner_contacted_at(1.year.ago.to_s)
-        end
+        let(:cached_contacted_at) { runner.uncached_contacted_at }
 
         it { is_expected.to be_falsey }
       end
 
       context 'contacted 1s ago' do
-        before do
-          runner.contacted_at = 50.minutes.ago
-          stub_redis_runner_contacted_at(1.second.ago.to_s)
-        end
+        let(:cached_contacted_at) { 1.second.ago }
 
         it { is_expected.to be_truthy }
       end
-    end
 
-    def stub_redis_runner_contacted_at(value)
-      Gitlab::Redis::Cache.with do |redis|
-        cache_key = runner.send(:cache_attribute_key)
-        expect(redis).to receive(:get).with(cache_key)
-          .and_return({ contacted_at: value }.to_json).at_least(:once)
+      def stub_redis_runner_contacted_at(value)
+        Gitlab::Redis::Cache.with do |redis|
+          cache_key = runner.send(:cache_attribute_key)
+          expect(redis).to receive(:get).with(cache_key)
+            .and_return({ contacted_at: value }.to_json).at_least(:once)
+        end
       end
     end
   end
@@ -866,76 +836,65 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     subject { runner.status }
 
     context 'never connected' do
-      let(:runner) { build(:ci_runner, :instance, :unregistered, created_at: 7.days.ago) }
+      let(:runner) { build(:ci_runner, :unregistered, :stale) }
 
       it { is_expected.to eq(:stale) }
 
       context 'created recently' do
-        let(:runner) { build(:ci_runner, :instance, :unregistered, created_at: 1.day.ago) }
+        let(:runner) { build(:ci_runner, :unregistered, created_at: 1.day.ago) }
 
         it { is_expected.to eq(:never_contacted) }
       end
     end
 
     context 'inactive but online' do
-      let(:runner) { build(:ci_runner, :instance, active: false, contacted_at: 1.second.ago) }
+      let(:runner) { build(:ci_runner, :inactive, :online) }
 
       it { is_expected.to eq(:online) }
     end
 
     context 'contacted 1s ago' do
-      let(:runner) { build(:ci_runner, :instance, contacted_at: 1.second.ago) }
+      let(:runner) { build(:ci_runner, contacted_at: 1.second.ago) }
 
       it { is_expected.to eq(:online) }
     end
 
     context 'contacted recently' do
-      let(:runner) { build(:ci_runner, :instance, contacted_at: (7.days - 1.second).ago) }
+      let(:runner) { build(:ci_runner, :contacted_within_stale_deadline) }
 
       it { is_expected.to eq(:offline) }
     end
 
     context 'contacted long time ago' do
-      let(:runner) { build(:ci_runner, :instance, created_at: 7.days.ago, contacted_at: 7.days.ago) }
+      let(:runner) { build(:ci_runner, :stale) }
 
       it { is_expected.to eq(:stale) }
     end
   end
 
   describe '#deprecated_rest_status', :freeze_time do
-    let(:runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
-
     subject { runner.deprecated_rest_status }
 
     context 'never connected' do
-      before do
-        runner.contacted_at = nil
-      end
+      let(:runner) { build(:ci_runner, :unregistered) }
 
       it { is_expected.to eq(:never_contacted) }
     end
 
-    context 'contacted 1s ago' do
-      before do
-        runner.contacted_at = 1.second.ago
-      end
+    context 'contacted recently' do
+      let(:runner) { build(:ci_runner, :online) }
 
       it { is_expected.to eq(:online) }
     end
 
     context 'contacted long time ago' do
-      before do
-        runner.created_at = 7.days.ago
-        runner.contacted_at = 7.days.ago
-      end
+      let(:runner) { build(:ci_runner, :stale) }
 
       it { is_expected.to eq(:stale) }
     end
 
     context 'inactive' do
-      before do
-        runner.active = false
-      end
+      let(:runner) { build(:ci_runner, :inactive, :online) }
 
       it { is_expected.to eq(:paused) }
     end
@@ -1008,16 +967,12 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#heartbeat', :freeze_time do
-    let(:runner) { create(:ci_runner, :project) }
-
     subject(:heartbeat) do
       runner.heartbeat
     end
 
     context 'when database was updated recently' do
-      before do
-        runner.contacted_at = Time.current
-      end
+      let(:runner) { create(:ci_runner, :online) }
 
       it 'updates cache' do
         expect_redis_update
@@ -1027,14 +982,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
 
     context 'when database was not updated recently' do
-      before do
-        runner.contacted_at = 2.hours.ago
-      end
-
       context 'with invalid runner' do
-        before do
-          runner.runner_projects.delete_all
-        end
+        let(:runner) { create(:ci_runner, :offline, :project, :without_projects) }
 
         it 'still updates contacted at in redis cache and database' do
           expect(runner).to be_invalid
@@ -1065,7 +1014,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#clear_heartbeat', :freeze_time do
-    let!(:runner) { create(:ci_runner, :project) }
+    let!(:runner) { create(:ci_runner) }
 
     it 'clears contacted at' do
       expect do
@@ -1238,13 +1187,13 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
   describe '#has_tags?' do
     context 'when runner has tags' do
-      subject { create(:ci_runner, tag_list: ['tag']) }
+      subject { build(:ci_runner, tag_list: ['tag']) }
 
       it { is_expected.to have_tags }
     end
 
     context 'when runner does not have tags' do
-      subject { create(:ci_runner, tag_list: []) }
+      subject { build(:ci_runner, tag_list: []) }
 
       it { is_expected.not_to have_tags }
     end
@@ -1908,7 +1857,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe '#ensure_token' do
-    let(:runner) { described_class.new(registration_type: registration_type) }
+    let(:runner) { build(:ci_runner, registration_type: registration_type) }
     let(:token) { 'an_existing_secret_token' }
     let(:static_prefix) { described_class::CREATED_RUNNER_TOKEN_PREFIX }
 
@@ -1980,8 +1929,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
   end
 
   describe 'status scopes' do
-    let_it_be(:online_runner) { create(:ci_runner, :instance, contacted_at: 1.second.ago) }
-    let_it_be(:offline_runner) { create(:ci_runner, :instance, contacted_at: 2.hours.ago) }
+    let_it_be(:online_runner) { create(:ci_runner, :instance, :online) }
+    let_it_be(:offline_runner) { create(:ci_runner, :instance, :offline) }
     let_it_be(:never_contacted_runner) { create(:ci_runner, :instance, :unregistered) }
 
     describe '.online' do
@@ -2011,13 +1960,8 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     describe '.stale', :freeze_time do
       subject { described_class.stale }
 
-      let!(:stale_runner1) do
-        create(:ci_runner, :instance, created_at: described_class.stale_deadline - 1.second, contacted_at: nil)
-      end
-
-      let!(:stale_runner2) do
-        create(:ci_runner, :instance, created_at: 4.months.ago, contacted_at: described_class.stale_deadline - 1.second)
-      end
+      let!(:stale_runner1) { create(:ci_runner, :unregistered, :stale) }
+      let!(:stale_runner2) { create(:ci_runner, :stale) }
 
       it 'returns stale runners' do
         is_expected.to contain_exactly(stale_runner1, stale_runner2)
@@ -2050,7 +1994,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
     let_it_be(:instance_runner) { create(:ci_runner, :instance) }
     let_it_be(:group_runner) { create(:ci_runner, :group) }
-    let_it_be(:project_runner) { create(:ci_runner, :project) }
+    let_it_be(:project_runner) { create(:ci_runner, :project, :without_projects) }
 
     context 'with instance_type' do
       let(:runner_type) { 'instance_type' }
