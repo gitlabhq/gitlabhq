@@ -12,6 +12,7 @@ import {
   PACKAGE_TYPE_GENERIC,
   PACKAGE_TYPE_DEBIAN,
   PACKAGE_TYPE_HELM,
+  PACKAGE_TYPE_ML_MODEL,
   LIST_KEY_PROJECT,
   SORT_FIELDS,
 } from './constants';
@@ -38,6 +39,8 @@ export const getPackageTypeLabel = (packageType) => {
       return s__('PackageRegistry|Debian');
     case PACKAGE_TYPE_HELM:
       return s__('PackageRegistry|Helm');
+    case PACKAGE_TYPE_ML_MODEL:
+      return s__('PackageRegistry|MlModel');
     default:
       return null;
   }

@@ -8,12 +8,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, GitLab Dedicated
 
 You can run your CI/CD jobs on GitLab.com and GitLab Dedicated using GitLab-hosted runners to seamlessly build, test and deploy
 your application on different environments.
 
 ## Hosted runners for GitLab.com
+
+DETAILS:
+**Offering:** GitLab.com
 
 These runners fully integrated with GitLab.com and are enabled by default for all projects, with no configuration required.
 Your jobs can run on:
@@ -98,6 +101,9 @@ You can find all GitLab Runner breaking changes under [Deprecations and removals
 
 ## Hosted runners for GitLab community contributions
 
+DETAILS:
+**Offering:** GitLab.com
+
 If you want to [contribute to GitLab](https://about.gitlab.com/community/contribute/), jobs will be picked up by the
 `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners, dedicated for GitLab projects and related community forks.
 
@@ -108,10 +114,12 @@ As we want to encourage people to contribute, these runners are free of charge.
 
 ## Hosted runners for GitLab Dedicated
 
-These runners are created on-demand for GitLab Dedicated customers and are fully integrated with your GitLab Dedicated instance.
-Your jobs can run on:
+DETAILS:
+**Offering:** GitLab Dedicated
+**Status:** Beta
 
-- [Hosted runners on Linux](hosted_runners/linux.md) ([beta](../../policy/experiment-beta-support.md#beta))
+These runners are created on demand for GitLab Dedicated customers and are fully integrated with your GitLab Dedicated instance.
+For more information, see [hosted runners for GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md#gitlab-runners).
 
 ## Supported image lifecycle
 

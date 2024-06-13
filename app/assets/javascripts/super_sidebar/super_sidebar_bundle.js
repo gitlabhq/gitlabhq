@@ -29,7 +29,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trialDiscoverPagePath,
     } = convertObjectPropsToCamelCase(sidebarData.trial_status_widget_data_attrs);
 
-    const { daysRemaining, targetId, trialEndDate } = convertObjectPropsToCamelCase(
+    const { daysRemaining, trialEndDate } = convertObjectPropsToCamelCase(
       sidebarData.trial_status_popover_data_attrs,
     );
 
@@ -44,7 +44,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       planName,
       plansHref,
       daysRemaining,
-      targetId,
+      targetId: containerId,
       trialEndDate: new Date(trialEndDate),
       trialDiscoverPagePath,
     };
@@ -62,7 +62,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       widgetUrl,
     } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
 
-    const { daysRemaining, trialEndDate, purchaseNowUrl } = convertObjectPropsToCamelCase(
+    const { daysRemaining, trialEndDate } = convertObjectPropsToCamelCase(
       sidebarData.duo_pro_trial_status_popover_data_attrs,
     );
 
@@ -77,7 +77,7 @@ const getTrialStatusWidgetData = (sidebarData) => {
       daysRemaining,
       targetId: containerId,
       trialEndDate: new Date(trialEndDate),
-      purchaseNowUrl,
+      purchaseNowUrl: widgetUrl,
     };
   }
 

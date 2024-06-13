@@ -122,6 +122,16 @@ module.exports = {
       medium: '200ms',
       fast: '100ms',
     },
+    // TODO: Backport to GitLab UI.
+    borderRadius: {
+      none: '0',
+      6: '1.5rem',
+      base: '.25rem',
+      full: '50%', // Tailwind gl-rounded-full is 9999px
+      small: '.125rem',
+      lg: '.5rem',
+      pill: '.75rem',
+    },
     // These extends probably should be moved to GitLab UI:
     extend: {
       // TODO: Backport to GitLab UI. This should be part of the default colors config.
@@ -132,10 +142,6 @@ module.exports = {
       borderWidth: {
         // We have a border-1 class, while tailwind was missing it
         1: '1px',
-      },
-      borderRadius: {
-        // Tailwind gl-rounded-full is 9999px
-        full: '50%',
       },
       boxShadow: {
         none: 'none',

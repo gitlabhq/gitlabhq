@@ -25,6 +25,7 @@ export const PACKAGE_TYPE_RUBYGEMS = 'RUBYGEMS';
 export const PACKAGE_TYPE_GENERIC = 'GENERIC';
 export const PACKAGE_TYPE_DEBIAN = 'DEBIAN';
 export const PACKAGE_TYPE_HELM = 'HELM';
+export const PACKAGE_TYPE_ML_MODEL = 'ML_MODEL';
 
 export const TRACKING_LABEL_CODE_INSTRUCTION = 'code_instruction';
 export const TRACKING_LABEL_MAVEN_INSTALLATION = 'maven_installation';
@@ -217,6 +218,7 @@ export const PACKAGE_TYPES_OPTIONS = [
   { value: 'RubyGems', title: s__('PackageRegistry|RubyGems') },
   { value: 'Debian', title: s__('PackageRegistry|Debian') },
   { value: 'Helm', title: s__('PackageRegistry|Helm') },
+  { value: 'Ml_Model', title: s__('PackageRegistry|Machine learning model') },
 ];
 /* eslint-enable @gitlab/require-i18n-strings */
 

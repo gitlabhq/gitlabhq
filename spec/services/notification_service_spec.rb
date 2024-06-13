@@ -378,22 +378,24 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
 
     describe '#resource_access_token_about_to_expire' do
       let_it_be(:project_bot) { create(:user, :project_bot) }
-      let_it_be(:expiring_token) { create(:personal_access_token, user: project_bot, expires_at: 5.days.from_now) }
+      let_it_be(:expiring_token) { "Expiring Token" }
 
       let_it_be(:owner1) { create(:user) }
       let_it_be(:owner2) { create(:user) }
+      let_it_be(:maintainer) { create(:user) }
+      let_it_be(:parent_group) { create(:group) }
+      let_it_be(:group) { create(:group, parent: parent_group) }
 
       subject(:notification_service) do
-        notification.bot_resource_access_token_about_to_expire(project_bot, [expiring_token.name])
+        notification.bot_resource_access_token_about_to_expire(project_bot, [expiring_token])
       end
 
       context 'when the resource is a group' do
-        let(:group) { create(:group) }
-
-        before do
+        before_all do
           group.add_owner(owner1)
           group.add_owner(owner2)
           group.add_reporter(project_bot)
+          group.add_maintainer(maintainer)
         end
 
         it 'sends emails to the group owners' do
@@ -401,45 +403,118 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             have_enqueued_email(
               owner1,
               project_bot.resource_bot_resource,
-              [expiring_token.name],
+              [expiring_token],
               mail: "bot_resource_access_token_about_to_expire_email"
             ).and(
               have_enqueued_email(
                 owner2,
                 project_bot.resource_bot_resource,
-                [expiring_token.name],
+                [expiring_token],
                 mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
           )
+        end
+
+        it 'does not send an email to group maintainer' do
+          expect { notification_service }.not_to(
+            have_enqueued_email(
+              maintainer,
+              project_bot.resource_bot_resource,
+              [expiring_token],
+              mail: "bot_resource_access_token_about_to_expire_email"
+            )
+          )
+        end
+
+        context 'when group has inherited members' do
+          let_it_be(:project_bot) { create(:user, :project_bot) }
+          let_it_be(:expiring_token_1) { "Expiring Token 1" }
+          let_it_be(:expiring_token_2) { "Expirigin Token 2" }
+
+          subject(:notification_service) do
+            notification.bot_resource_access_token_about_to_expire(project_bot, [expiring_token_1, expiring_token_2])
+          end
+
+          before_all do
+            parent_group.add_owner(owner2)
+            group.add_owner(owner1)
+            group.add_reporter(project_bot)
+          end
+
+          it 'does not send email to inherited members' do
+            expect { notification_service }.to(
+              have_enqueued_email(
+                owner1,
+                project_bot.resource_bot_resource,
+                [expiring_token_1, expiring_token_2],
+                mail: "bot_resource_access_token_about_to_expire_email"
+              )
+            )
+
+            expect { notification_service }.not_to(
+              have_enqueued_email(
+                owner2,
+                project_bot.resource_bot_resource,
+                [expiring_token_1, expiring_token_2],
+                mail: "bot_resource_access_token_about_to_expire_email"
+              )
+            )
+          end
         end
       end
 
       context 'when the resource is a project' do
-        let(:project) { create(:project) }
+        let_it_be(:project) { create(:project) }
 
-        before do
-          project.add_maintainer(owner1)
-          project.add_maintainer(owner2)
+        before_all do
+          project.add_maintainer(maintainer)
           project.add_reporter(project_bot)
         end
 
-        it 'sends emails to the group owners' do
+        it 'sends emails to the project maintainers and owners' do
           expect { notification_service }.to(
             have_enqueued_email(
-              owner1,
+              maintainer,
               project_bot.resource_bot_resource,
-              [expiring_token.name],
+              [expiring_token],
               mail: "bot_resource_access_token_about_to_expire_email"
             ).and(
               have_enqueued_email(
-                owner2,
+                project.owner,
                 project_bot.resource_bot_resource,
-                [expiring_token.name],
+                [expiring_token],
                 mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
           )
+        end
+
+        context 'when project has inherited members' do
+          before_all do
+            project.namespace = group
+            project.save!
+          end
+
+          it 'does not send email to inherited members' do
+            expect { notification_service }.to(
+              have_enqueued_email(
+                maintainer,
+                project_bot.resource_bot_resource,
+                [expiring_token],
+                mail: "bot_resource_access_token_about_to_expire_email"
+              )
+            )
+
+            expect { notification_service }.not_to(
+              have_enqueued_email(
+                project.owner,
+                project_bot.resource_bot_resource,
+                [expiring_token],
+                mail: "bot_resource_access_token_about_to_expire_email"
+              )
+            )
+          end
         end
       end
     end

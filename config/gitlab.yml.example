@@ -1272,6 +1272,16 @@ production: &base
     # Default is '.gitlab_workhorse_secret' relative to Rails.root (i.e. root of the GitLab app).
     # secret_file: /home/git/gitlab/.gitlab_workhorse_secret
 
+  topology_service:
+    # enabled: false
+    # address: topology-service.gitlab.example.com:443
+    # ca_file: /home/git/gitlab/config/topology-service-ca.pem
+    # certificate_file: /home/git/gitlab/config/topology-service-cert.pem
+    # private_key_file: /home/git/gitlab/config/topology-service-key.pem
+
+  cell:
+    # name: cell-1
+
   gitlab_kas:
     # enabled: true
     # File that contains the secret key for verifying access for gitlab-kas.

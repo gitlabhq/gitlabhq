@@ -924,7 +924,6 @@
 - './ee/spec/helpers/security_helper_spec.rb'
 - './ee/spec/helpers/subscriptions_helper_spec.rb'
 - './ee/spec/helpers/timeboxes_helper_spec.rb'
-- './ee/spec/helpers/trial_status_widget_helper_spec.rb'
 - './ee/spec/helpers/users_helper_spec.rb'
 - './ee/spec/helpers/vulnerabilities_helper_spec.rb'
 - './ee/spec/initializers/1_settings_spec.rb'

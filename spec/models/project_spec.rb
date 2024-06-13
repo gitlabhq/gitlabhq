@@ -32,6 +32,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
     it { is_expected.to have_many(:maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
+    it { is_expected.to have_many(:owners_and_maintainers).through(:project_members).source(:user).conditions(members: { access_level: Gitlab::Access::MAINTAINER }) }
     it { is_expected.to have_many(:events) }
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
@@ -258,6 +259,23 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     context 'after initialized' do
       it "has a project_feature" do
         expect(described_class.new.project_feature).to be_present
+      end
+    end
+
+    describe 'owners_and_maintainers association' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:maintainer) { create(:user) }
+      let_it_be(:reporter) { create(:user) }
+      let_it_be(:developer) { create(:user) }
+
+      before do
+        project.add_maintainer(maintainer)
+        project.add_developer(developer)
+        project.add_reporter(reporter)
+      end
+
+      it 'returns only maintainers and owners' do
+        expect(project.owners_and_maintainers).to match_array([maintainer, project.owner])
       end
     end
 

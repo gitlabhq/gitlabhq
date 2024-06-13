@@ -40,6 +40,7 @@ For this bot:
 Other examples of internal users:
 
 - [GitLab Admin Bot](https://gitlab.com/gitlab-org/gitlab/-/blob/278bc9018dd1515a10cbf15b6c6cd55cb5431407/app/models/user.rb#L950-960)
+- [GitLab Automation Bot](../user/group/iterations/index.md#gitlab-automation-bot-user)
 - [Alert Bot](../operations/incident_management/alerts.md#trigger-actions-from-alerts)
 - [Ghost User](../user/profile/account/delete_account.md#associated-records)
 - [Support Bot](../user/project/service_desk/configure.md#support-bot-user)
@@ -48,4 +49,5 @@ Other examples of internal users:
   - [Project access tokens](../user/project/settings/project_access_tokens.md).
   - [Group access tokens](../user/group/settings/group_access_tokens.md).
 
-  These are implemented as `project_{project_id}_bot_{random_string}` i.e. `group_{group_id}_bot_{random_string}` users, with a `PersonalAccessToken`.
+  These are implemented as `project_{project_id}_bot_{random_string}` and `group_{group_id}_bot_{random_string}`
+  users, with a `PersonalAccessToken`.

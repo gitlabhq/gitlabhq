@@ -37250,6 +37250,9 @@ msgstr ""
 msgid "PackageRegistry|License information located at %{link}"
 msgstr ""
 
+msgid "PackageRegistry|Machine learning model"
+msgstr ""
+
 msgid "PackageRegistry|Manage storage used by package assets"
 msgstr ""
 
@@ -37266,6 +37269,9 @@ msgid "PackageRegistry|Maven XML"
 msgstr ""
 
 msgid "PackageRegistry|Minimum access level for push"
+msgstr ""
+
+msgid "PackageRegistry|MlModel"
 msgstr ""
 
 msgid "PackageRegistry|Name pattern"
@@ -60458,10 +60464,10 @@ msgstr ""
 msgid "You are on a read-only GitLab instance."
 msgstr ""
 
-msgid "You are receiving this email because you are a Maintainer of the Project."
+msgid "You are receiving this email because you are an Owner of the Group."
 msgstr ""
 
-msgid "You are receiving this email because you are an Owner of the Group."
+msgid "You are receiving this email because you are either an Owner or Maintainer of the project."
 msgstr ""
 
 msgid "You are receiving this message because you are a GitLab administrator for %{url}."

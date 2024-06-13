@@ -184,7 +184,7 @@ export default {
                   :text="getNoteableData.source_branch"
                   size="small"
                   category="tertiary"
-                  class="gl-mx-1"
+                  class="gl-mx-1 js-source-branch-copy"
                 />
               </template>
               <template #source>

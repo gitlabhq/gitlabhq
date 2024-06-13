@@ -88,6 +88,17 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       it_behaves_like 'handles logging git upload pack operation'
       it_behaves_like 'handles logging git receive pack operation'
 
+      describe 'POST #ssh_upload_pack' do
+        it 'returns not found error' do
+          allow(controller).to receive(:verify_workhorse_api!).and_return(true)
+
+          post :ssh_upload_pack, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to eq 'Not found'
+        end
+      end
+
       describe 'POST #git_upload_pack' do
         before do
           allow(controller).to receive(:verify_workhorse_api!).and_return(true)

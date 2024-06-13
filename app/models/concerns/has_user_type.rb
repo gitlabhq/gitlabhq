@@ -83,13 +83,13 @@ module HasUserType
     projects&.first || groups&.first
   end
 
-  def resource_bot_owners
+  def resource_bot_owners_and_maintainers
     return [] unless project_bot?
 
     resource = resource_bot_resource
     return [] unless resource
 
-    return resource.maintainers if resource.is_a?(Project)
+    return resource.owners_and_maintainers if resource.is_a?(Project)
 
     resource
       .owners

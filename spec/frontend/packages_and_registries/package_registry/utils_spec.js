@@ -18,6 +18,7 @@ describe('Packages shared utils', () => {
       ${'COMPOSER'} | ${'Composer'}
       ${'DEBIAN'}   | ${'Debian'}
       ${'HELM'}     | ${'Helm'}
+      ${'ML_MODEL'} | ${'MlModel'}
       ${'FOO'}      | ${null}
     `(`package type`, ({ packageType, expectedResult }) => {
       it(`${packageType} should show as ${expectedResult}`, () => {

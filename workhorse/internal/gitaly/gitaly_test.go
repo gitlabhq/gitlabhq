@@ -55,6 +55,13 @@ func TestNewDiffClient(t *testing.T) {
 	testOutgoingMetadata(ctx, t)
 }
 
+func TestNewConnectionWithSidechannel(t *testing.T) {
+	conn, sidechannel, err := NewConnectionWithSidechannel(serverFixture())
+	require.NotNil(t, conn)
+	require.Equal(t, sidechannelRegistry, sidechannel)
+	require.NoError(t, err)
+}
+
 func testOutgoingMetadata(ctx context.Context, t *testing.T) {
 	t.Helper()
 	md, ok := metadata.FromOutgoingContext(ctx)

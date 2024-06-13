@@ -187,6 +187,12 @@ This token is used to initially clone the project while starting the workspace.
 Any Git operation you perform in the workspace uses this token for authentication and authorization.
 When you terminate the workspace, the token is revoked.
 
+The `GIT_CONFIG_COUNT`, `GIT_CONFIG_KEY_n`, and `GIT_CONFIG_VALUE_n`
+[environment variables](https://git-scm.com/docs/git-config/#Documentation/git-config.txt-GITCONFIGCOUNT)
+are used for Git authentication in the workspace.
+Support for these variables was added in Git 2.31, so the Git version
+you use in the workspace container must be 2.31 and later.
+
 ## Pod interaction in a cluster
 
 Workspaces run as pods in a Kubernetes cluster.

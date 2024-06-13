@@ -71,7 +71,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/helpers/security_helper_spec.rb'
     - 'ee/spec/helpers/subscriptions_helper_spec.rb'
     - 'ee/spec/helpers/timeboxes_helper_spec.rb'
-    - 'ee/spec/helpers/trial_status_widget_helper_spec.rb'
     - 'ee/spec/helpers/trials_helper_spec.rb'
     - 'ee/spec/helpers/users/identity_verification_helper_spec.rb'
     - 'ee/spec/helpers/users_helper_spec.rb'

@@ -968,6 +968,22 @@ Settings['workhorse'] ||= {}
 Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret')
 
 #
+# Topology Service
+#
+Settings['topology_service'] ||= {}
+Settings.topology_service['enabled'] ||= false
+Settings.topology_service['address'] ||= 'topology-service.gitlab.example.com:443'
+Settings.topology_service['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
+Settings.topology_service['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
+Settings.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
+
+#
+# Cells
+#
+Settings['cell'] ||= {}
+Settings.cell['name'] ||= 'cell-1'
+
+#
 # GitLab KAS
 #
 Settings['gitlab_kas'] ||= {}

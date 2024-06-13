@@ -3,6 +3,9 @@
 /* eslint-disable import/extensions */
 
 import { deepEqual } from 'node:assert';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {
   extractRules,
@@ -12,6 +15,11 @@ import {
   mismatchAllowList,
 } from './lib/tailwind_migration.mjs';
 import { convertUtilsToCSSInJS, toMinimalUtilities } from './tailwind_all_the_way.mjs';
+
+const EQUIV_FILE = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  'tailwind_equivalents.json',
+);
 
 function darkModeResolver(str) {
   return str.replace(
@@ -79,6 +87,27 @@ function ensureNoLegacyUtilIsUsedWithATailwindModifier(minimalUtils) {
   return fail;
 }
 
+function ensureWeHaveTailwindEquivalentsForLegacyUtils(minimalUtils, equivalents) {
+  let fail = 0;
+
+  for (const key of Object.keys(minimalUtils)) {
+    const legacyClassName = key.replace(/^\./, 'gl-').replace('\\', '');
+    /* Note: Right now we check that the equivalents are defined, future iteration could be:
+       !equivalents[legacyClassName] to ensure that all used legacy utils actually have a tailwind equivalent
+       and not null */
+    if (!(legacyClassName in equivalents)) {
+      console.warn(
+        `New legacy util (${legacyClassName}) introduced which is untracked in tailwind_equivalents.json.`,
+      );
+      fail += 1;
+    }
+  }
+  if (fail) {
+    console.log(`\t${fail} unmapped legacy utils found`);
+  }
+  return fail;
+}
+
 console.log('# Converting legacy styles to CSS-in-JS definitions');
 
 const stats = await convertUtilsToCSSInJS();
@@ -114,6 +143,10 @@ const { rules } = await toMinimalUtilities();
 
 console.log('## Running checks');
 failures += ensureNoLegacyUtilIsUsedWithATailwindModifier(rules);
+
+console.log('# Checking if we have tailwind equivalents of all classes');
+const equivalents = JSON.parse(await readFile(EQUIV_FILE, 'utf-8'));
+failures += ensureWeHaveTailwindEquivalentsForLegacyUtils(rules, equivalents);
 
 if (failures) {
   process.exitCode = 1;

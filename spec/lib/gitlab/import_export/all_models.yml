@@ -648,6 +648,7 @@ project:
 - project_repository
 - users
 - maintainers
+- owners_and_maintainers
 - requesters
 - namespace_members
 - namespace_requesters

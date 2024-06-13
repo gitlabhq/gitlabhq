@@ -37,6 +37,11 @@ module Repositories
       render_ok
     end
 
+    # POST /foo/bar.git/ssh-upload-pack" (git pull via SSH)
+    def ssh_upload_pack
+      render plain: "Not found", status: :not_found
+    end
+
     private
 
     def deny_head_requests
@@ -58,6 +63,8 @@ module Repositories
     def git_command
       if action_name == 'info_refs'
         params[:service]
+      elsif action_name == 'ssh_upload_pack'
+        'git-upload-pack'
       else
         action_name.dasherize
       end

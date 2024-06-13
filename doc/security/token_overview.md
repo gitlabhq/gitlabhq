@@ -59,7 +59,7 @@ You can use the [project access tokens API](../api/project_access_tokens.md) to
 programmatically take action, such as
 [rotating a project access token](../api/project_access_tokens.md#rotate-a-project-access-token).
 
-Project maintainers with a direct membership receive an email when project access tokens are 7 days or less from expiration. Inherited members do not receive an email.
+Project Owners and Maintainers with a direct membership receive an email when project access tokens are seven days or less from expiration. Inherited members do not receive an email.
 
 ## Group access tokens
 
