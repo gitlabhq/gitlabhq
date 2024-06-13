@@ -41,7 +41,7 @@ If the issue is occurring with versions v1.6.196 or greater, contact Support and
 
 ## `Failed to start scanner session (version header not found)`
 
-The API security testing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause of this issue is changing the `DAST_API_API` variable from its default.
+The API security testing engine outputs an error message when it cannot establish a connection with the scanner application component. The error message is shown in the job output window of the `dast_api` job. A common cause of this issue is changing the `APISEC_API` variable from its default.
 
 **Error message**
 
@@ -49,8 +49,8 @@ The API security testing engine outputs an error message when it cannot establis
 
 **Solution**
 
-- Remove the `DAST_API_API` variable from the `.gitlab-ci.yml` file. The value inherits from the API security testing CI/CD template. We recommend this method instead of manually setting a value.
-- If removing the variable is not possible, check to see if this value has changed in the latest version of the [API security testing CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
+- Remove the `APISEC_API` variable from the `.gitlab-ci.yml` file. The value inherits from the API security testing CI/CD template. We recommend this method instead of manually setting a value.
+- If removing the variable is not possible, check to see if this value has changed in the latest version of the [API security testing CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml). If so, update the value in the `.gitlab-ci.yml` file.
 
 ## `Failed to start session with scanner. Please retry, and if the problem persists reach out to support.`
 
@@ -82,18 +82,18 @@ The text `http://[::]:5000` in the previous message could be different in your c
 
 If you did not find evidence that the port was already taken, check other troubleshooting sections which also address the same error message shown in the job console output. If there are no more options, feel free to [get support or request an improvement](index.md#get-support-or-request-an-improvement) through the proper channels.
 
-Once you have confirmed the issue was produced because the port was already taken. Then, [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) introduced the configuration variable `DAST_API_API_PORT`. This configuration variable allows setting a fixed port number for the scanner background component.
+Once you have confirmed the issue was produced because the port was already taken. Then, [GitLab 15.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/367734) introduced the configuration variable `APISEC_API_PORT`. This configuration variable allows setting a fixed port number for the scanner background component.
 
 **Solution**
 
-1. Ensure your `.gitlab-ci.yml` file defines the configuration variable `DAST_API_API_PORT`.
-1. Update the value of `DAST_API_API_PORT` to any available port number greater than 1024. We recommend checking that the new value is not in used by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
+1. Ensure your `.gitlab-ci.yml` file defines the configuration variable `APISEC_API_PORT`.
+1. Update the value of `APISEC_API_PORT` to any available port number greater than 1024. We recommend checking that the new value is not in used by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
 
 ## `Application cannot determine the base URL for the target API`
 
 The API security testing engine outputs an error message when it cannot determine the target API after inspecting the OpenAPI document. This error message is shown when the target API has not been set in the `.gitlab-ci.yml` file, it is not available in the `environment_url.txt` file, and it could not be computed using the OpenAPI document.
 
-There is a order of precedence in which the API security testing engine tries to get the target API when checking the different sources. First, it tries to use the `DAST_API_TARGET_URL`. If the environment variable has not been set, then the API security testing engine attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the API security testing engine uses the OpenAPI document contents and the URL provided in `DAST_API_OPENAPI` (if a URL is provided) to try to compute the target API.
+There is a order of precedence in which the API security testing engine tries to get the target API when checking the different sources. First, it tries to use the `APISEC_TARGET_URL`. If the environment variable has not been set, then the API security testing engine attempts to use the `environment_url.txt` file. If there is no file `environment_url.txt`, then the API security testing engine uses the OpenAPI document contents and the URL provided in `APISEC_OPENAPI` (if a URL is provided) to try to compute the target API.
 
 The best-suited solution depends on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
 
@@ -109,18 +109,18 @@ This solution is for pipelines in which the target API URL doesn't change (is st
 
 **Add environmental variable**
 
-For environments where the target API remains the same, we recommend you specify the target URL by using the `DAST_API_TARGET_URL` environment variable. In your `.gitlab-ci.yml`, add a variable `DAST_API_TARGET_URL`. The variable must be set to the base URL of API testing target. For example:
+For environments where the target API remains the same, we recommend you specify the target URL by using the `APISEC_TARGET_URL` environment variable. In your `.gitlab-ci.yml`, add a variable `APISEC_TARGET_URL`. The variable must be set to the base URL of API testing target. For example:
 
 ```yaml
 stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_TARGET_URL: http://test-deployment/
-  DAST_API_OPENAPI: test-api-specification.json
+  APISEC_TARGET_URL: http://test-deployment/
+  APISEC_OPENAPI: test-api-specification.json
 ```
 
 ### Dynamic environment solutions
@@ -150,7 +150,7 @@ deploy-test-target:
 
 ## Use OpenAPI with an invalid schema
 
-There are cases where the document is autogenerated with an invalid schema or cannot be edited manually in a timely manner. In those scenarios, the API security testing is able to perform a relaxed validation by setting the variable `DAST_API_OPENAPI_RELAXED_VALIDATION`. We recommend providing a fully compliant OpenAPI document to prevent unexpected behaviors.
+There are cases where the document is autogenerated with an invalid schema or cannot be edited manually in a timely manner. In those scenarios, the API security testing is able to perform a relaxed validation by setting the variable `APISEC_OPENAPI_RELAXED_VALIDATION`. We recommend providing a fully compliant OpenAPI document to prevent unexpected behaviors.
 
 ### Edit a non-compliant OpenAPI file
 
@@ -167,20 +167,20 @@ If your OpenAPI document is generated manually, load your document in the editor
 
 Relaxed validation is meant for cases when the OpenAPI document cannot meet OpenAPI specifications, but it still has enough content to be consumed by different tools. A validation is performed but less strictly in regards to document schema.
 
-API security testing can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct API security testing to perform a relaxed validation, set the variable `DAST_API_OPENAPI_RELAXED_VALIDATION` to any value, for example:
+API security testing can still try to consume an OpenAPI document that does not fully comply with OpenAPI specifications. To instruct API security testing to perform a relaxed validation, set the variable `APISEC_OPENAPI_RELAXED_VALIDATION` to any value, for example:
 
 ```yaml
 stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_TARGET_URL: http://test-deployment/
-  DAST_API_OPENAPI: test-api-specification.json
-  DAST_API_OPENAPI_RELAXED_VALIDATION: 'On'
+  APISEC_PROFILE: Quick
+  APISEC_TARGET_URL: http://test-deployment/
+  APISEC_OPENAPI: test-api-specification.json
+  APISEC_OPENAPI_RELAXED_VALIDATION: 'On'
 ```
 
 ## `No operation in the OpenAPI document is consuming any supported media type`
@@ -211,25 +211,25 @@ stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_TARGET_URL: https://test-deployment/
-  DAST_API_OPENAPI: https://specs/openapi.json
+  APISEC_TARGET_URL: https://test-deployment/
+  APISEC_OPENAPI: https://specs/openapi.json
 ```
 
-Change the prefix of `DAST_API_OPENAPI` from `https://` to `http://`:
+Change the prefix of `APISEC_OPENAPI` from `https://` to `http://`:
 
 ```yaml
 stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_TARGET_URL: https://test-deployment/
-  DAST_API_OPENAPI: http://specs/openapi.json
+  APISEC_TARGET_URL: https://test-deployment/
+  APISEC_OPENAPI: http://specs/openapi.json
 ```
 
 If you cannot use a non-TLS connection to access the URL, contact the Support team for help.

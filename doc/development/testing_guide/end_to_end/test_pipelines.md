@@ -194,7 +194,12 @@ This stage is responsible for [allure test report](index.md#allure-report) gener
 The `e2e:test-on-cng` child pipeline runs tests against [Cloud Native GitLab](https://gitlab.com/gitlab-org/build/CNG) installation.
 Unlike `review-apps`, this pipeline uses local [kind](https://github.com/kubernetes-sigs/kind) Kubernetes cluster.
 
-Currently this pipeline is executed on nightly scheduled pipelines and is mainly responsible for testing compatibility with minimal supported version of `redis`.
+Deployment is managed by the [`cng`](../../../../gems/gitlab-cng/README.md) orchestrator tool, which you can also use to locally recreate CI/CD deployments.
+
+This pipeline is executed every two hours on scheduled pipelines and runs the following validations:
+
+- Main test suite against the `CNG` deployment using default chart configuration.
+- Minimal `health_check` test suite against the `CNG` deployment that uses minimal supported `redis` version.
 
 ### Setup
 
@@ -224,3 +229,11 @@ Jobs in `test` stage perform following actions:
 #### report
 
 This stage is responsible for [allure test report](index.md#allure-report) generation as well as test metrics upload.
+
+### Debugging
+
+To help with debugging:
+
+- Each test job prints a list of arguments that you can pass to the [`cng`](../../../../gems/gitlab-cng/README.md) orchestrator to exactly recreate
+  the same deployment for local debugging.
+- Cluster events log and all pod logs are saved in E2E test job artifacts.

@@ -526,7 +526,7 @@ port `2424`:
    ```
 
 Following the above example, you will be able to reach GitLab from your
-web browser under `<hostIP>:8929` and push using SSH under the port `2289`.
+web browser under `<hostIP>:8929` and push using SSH under the port `2424`.
 
 A `docker-compose.yml` example that uses different ports can be found in the
 [Docker compose](#install-gitlab-using-docker-compose) section.

@@ -344,9 +344,11 @@ continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
 When this occurs, run `sudo gitlab-ctl restart` to resolve the issue. This should no longer be
 necessary because [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2521) is resolved.
 
-## Permission denied errors appearing in Gitaly logs when accessing repositories from a standalone Gitaly node
+## Errors in Gitaly logs when accessing repositories from a standalone Gitaly node
 
-If this error occurs even though file permissions are correct, it's likely that the Gitaly node is
+You might see permission-denied errors in the Gitaly logs when you access a repository
+from a standalone Gitaly node. This error occurs even though file permissions are correct.
+It's likely that the Gitaly node is
 experiencing [clock drift](https://en.wikipedia.org/wiki/Clock_drift).
 
 Ensure that the GitLab and Gitaly nodes are synchronized and use an NTP time
@@ -438,9 +440,14 @@ To resolve this, remove the `noexec` option from the file system mount. An alter
 1. Add `gitaly['runtime_dir'] = '<PATH_WITH_EXEC_PERM>'` to `/etc/gitlab/gitlab.rb` and specify a location without `noexec` set.
 1. Run `sudo gitlab-ctl reconfigure`.
 
-## Commit signing fails with `invalid argument: signing key is encrypted` or `invalid data: tag byte does not have MSB set.`
+## Commit signing fails with `invalid argument` or `invalid data`
 
-Because Gitaly commit signing is headless and not associated with a specific user, the GPG signing key must be created without a passphrase, or the passphrase must be removed before export.
+If commit signing fails with either of these errors:
+
+- `invalid argument: signing key is encrypted`
+- `invalid data: tag byte does not have MSB set`
+
+This error happens because Gitaly commit signing is headless and not associated with a specific user. The GPG signing key must be created without a passphrase, or the passphrase must be removed before export.
 
 ## Gitaly logs show errors in `info` messages
 

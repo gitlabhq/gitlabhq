@@ -77,10 +77,14 @@ increase this value if you have more **secondary** sites.
 Be sure to restart PostgreSQL for this to take effect. See the
 [PostgreSQL replication setup](../../setup/database.md#postgresql-replication) guide for more details.
 
-### Message: `FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist`?
+### Message: `replication slot "geo_secondary_my_domain_com" does not exist`
 
-This occurs when PostgreSQL does not have a replication slot for the
-**secondary** site by that name.
+This error occurs when PostgreSQL does not have a replication slot for the
+**secondary** site by that name:
+
+```plaintext
+FATAL:  could not start WAL streaming: ERROR:  replication slot "geo_secondary_my_domain_com" does not exist
+```
 
 You may want to rerun the [replication process](../../setup/database.md) on the **secondary** site .
 
@@ -143,7 +147,13 @@ sudo gitlab-ctl reconfigure
 To help us resolve this problem, consider commenting on
 [the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/4489).
 
-### Message: `FATAL:  could not connect to the primary server: server certificate for "PostgreSQL" does not match host name`
+### Message: `server certificate for "PostgreSQL" does not match host name`
+
+If you see this error:
+
+```plaintext
+FATAL:  could not connect to the primary server: server certificate for "PostgreSQL" does not match host name
+```
 
 This happens because the PostgreSQL certificate that the Linux package automatically creates contains
 the Common Name `PostgreSQL`, but the replication is connecting to a different host and GitLab attempts to use
@@ -182,9 +192,10 @@ This happens when you have added IP addresses without a subnet mask in `postgres
 To fix this, add the subnet mask in `/etc/gitlab/gitlab.rb` under `postgresql['md5_auth_cidr_addresses']`
 to respect the CIDR format (for example, `10.0.0.1/32`).
 
-### Message: `Found data in the gitlabhq_production database!` when running `gitlab-ctl replicate-geo-database`
+### Message: `Found data in the gitlabhq_production database`
 
-This happens if data is detected in the `projects` table. When one or more projects are detected, the operation
+If you receive the error `Found data in the gitlabhq_production database!` when running
+`gitlab-ctl replicate-geo-database`, data was detected in the `projects` table. When one or more projects are detected, the operation
 is aborted to prevent accidental data loss. To bypass this message, pass the `--force` option to the command.
 
 ### Message: `FATAL:  could not map anonymous shared memory: Cannot allocate memory`

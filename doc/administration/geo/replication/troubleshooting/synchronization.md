@@ -181,10 +181,17 @@ To solve this:
 During a [backfill](../../index.md#backfill), failures are scheduled to be retried at the end
 of the backfill queue, therefore these failures only clear up **after** the backfill completes.
 
-## Message: curl 18 transfer closed with outstanding read data remaining & fetch-pack: unexpected disconnect while reading sideband packet
+## Message: `unexpected disconnect while reading sideband packet`
 
 Unstable networking conditions can cause Gitaly to fail when trying to fetch large repository
-data from the primary site. This is more likely to happen if a repository has to be
+data from the primary site. Those conditions can result in this error:
+
+```plaintext
+curl 18 transfer closed with outstanding read data remaining & fetch-pack:
+unexpected disconnect while reading sideband packet
+```
+
+This error is more likely to happen if a repository has to be
 replicated from scratch between sites.
 
 Geo retries several times, but if the transmission is consistently interrupted

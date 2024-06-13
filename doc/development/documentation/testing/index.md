@@ -52,35 +52,21 @@ error if any Markdown files return a Mermaid syntax error.
 To help debug your Mermaid charts, use the
 [Mermaid Live Editor](https://mermaid-js.github.io/mermaid-live-editor/edit).
 
-## Tests in `docs-lint links`
+## Tests in `docs-lint links` and other jobs
 
-Merge requests containing changes to Markdown (`.md`) files run a `docs-lint links`
-job, which runs two types of link checks. In both cases, links with destinations
-that begin with `http` or `https` are considered external links, and skipped:
+To check for broken links, merge requests containing changes to Markdown (`.md`) files run these jobs in their
+pipelines:
 
-- `bundle exec nanoc check internal_links`: Tests links to internal pages.
-- `bundle exec nanoc check internal_anchors`: Tests links to topic title anchors on internal pages.
+- `docs-lint links` job in the `gitlab` project. For example: <https://gitlab.com/gitlab-org/gitlab/-/jobs/7065686331>.
+- `docs-lint links` job in the `omnibus-gitlab` project. For example: <https://gitlab.com/gitlab-org/omnibus-gitlab/-/jobs/7065337075>.
+- `docs-lint links` job in the `gitlab-operator` project.
+- `docs:lint markdown` job in the `gitlab-runner` project, which includes link checking. For example:
+  <https://gitlab.com/gitlab-org/gitlab-runner/-/jobs/7056674997>.
+- `check_docs_links` job in the `charts/gitlab` project. For example:
+  <https://gitlab.com/gitlab-org/charts/gitlab/-/jobs/7066011619>.
 
-Failures from these tests are displayed at the end of the test results in the **Issues found!** area.
-For example, failures in the `internal_anchors` test follow this format:
-
-```plaintext
-[ ERROR ] internal_anchors - Broken anchor detected!
-  - source file `/tmp/gitlab-docs/public/ee/user/application_security/api_fuzzing/index.html`
-  - destination `/tmp/gitlab-docs/public/ee/development/code_review.html`
-  - link `../../../development/code_review.html#review-response-slo`
-  - anchor `#review-response-slo`
-```
-
-- **Source file**: The full path to the file containing the error. To find the
-  file in the `gitlab` repository, replace `/tmp/gitlab-docs/public/ee` with `doc`, and `.html` with `.md`.
-- **Destination**: The full path to the file not found by the test. To find the
-  file in the `gitlab` repository, replace `/tmp/gitlab-docs/public/ee` with `doc`, and `.html` with `.md`.
-- **Link**: The actual link the script attempted to find.
-- **Anchor**: If present, the topic title anchor the script attempted to find.
-
-Check for multiple instances of the same broken link on each page reporting an error.
-Even if a specific broken link appears multiple times on a page, the test reports it only once.
+These jobs check links, including anchor links, and report any problems. Any link that requires a network
+connection is skipped.
 
 ## Tests in `ui-docs-links lint`
 
@@ -156,19 +142,30 @@ The output should be similar to:
 
 ### Run documentation link tests locally
 
-To test links in the documentation locally:
+To run documentation link tests locally, you can either:
 
+- Run a link check for a single project that contains documentation.
+- Run a link check across entire local copy of the [GitLab documentation site](https://docs.gitlab.com).
+
+#### Check a single project
+
+To check the links on a single project:
+
+1. Install [Lychee](https://lychee.cli.rs/installation/).
+1. Change into the root directory of the project.
+1. Run `lychee --offline --include-fragments <doc_directory>` where `<doc_directory>` it the directory that contains
+   documentation to check. For example: `lychee --offline --include-fragments doc`.
+
+#### Check all GitLab Docs site projects
+
+To check links on the entire [GitLab documentation site](https://docs.gitlab.com):
+
+1. Make sure you have all the documentation projects cloned in the same directory as your `gitlab-docs` clone. You can
+   run `make clone-all-docs-projects` to clone any projects you don't have in that location. If you want to update
+   the documentation projects, run `make update-all-projects`.
 1. Go to the [`gitlab-docs`](https://gitlab.com/gitlab-org/gitlab-docs) directory.
-1. Run the following commands:
-
-   ```shell
-   # Check for broken internal links
-   bundle exec nanoc check internal_links
-
-   # Check for broken external links (might take a lot of time to complete).
-   # This test is allowed to fail, and is run only in the gitlab-docs project CI
-   bundle exec nanoc check internal_anchors
-   ```
+1. Run `make internal-links-and-anchors-check`, which builds the GitLab Docs site with `nanoc` and checks links on the
+   built site by using `nanoc`.
 
 ### Run UI link tests locally
 

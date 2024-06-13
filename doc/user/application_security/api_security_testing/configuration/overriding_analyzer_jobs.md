@@ -13,9 +13,9 @@ inclusion and specify any additional keys under it. For example, this sets the t
 
 ```yaml
 include:
-  - template: Security/DAST-API.gitlab-ci.yml
+  - template: Security/API-Security.gitlab-ci.yml
 
-dast_api:
+api_security:
   variables:
-    DAST_API_TARGET_URL: https://target/api
+    APISEC_TARGET_URL: https://target/api
 ```

@@ -37,29 +37,29 @@ OpenAPI 2.x lets you specify the accepted media types globally or per operation,
 Testing the same operation (for example, `POST /user`) using different media types (for example, `application/json` and `application/xml`) is not always desirable.
 For example, if the target application executes the same code regardless of the request content type, it will take longer to finish the test session, and it may report duplicated vulnerabilities related to the request body depending on the target app.
 
-The environment variable `DAST_API_OPENAPI_ALL_MEDIA_TYPES` lets you specify whether or not to use all supported media types instead of one when generating requests for a given operation. When the environment variable `DAST_API_OPENAPI_ALL_MEDIA_TYPES` is set to any value, API security testing tries to generate requests for all supported media types instead of one in a given operation. This will cause testing to take longer as testing is repeated for each provided media type.
+The environment variable `APISEC_OPENAPI_ALL_MEDIA_TYPES` lets you specify whether or not to use all supported media types instead of one when generating requests for a given operation. When the environment variable `APISEC_OPENAPI_ALL_MEDIA_TYPES` is set to any value, API security testing tries to generate requests for all supported media types instead of one in a given operation. This will cause testing to take longer as testing is repeated for each provided media type.
 
-Alternatively, the variable `DAST_API_OPENAPI_MEDIA_TYPES` is used to provide a list of media types that will each be tested. Providing more than one media type causes testing to take longer, as testing is performed for each media type selected. When the environment variable `DAST_API_OPENAPI_MEDIA_TYPES` is set to a list of media types, only the listed media types are included when creating requests.
+Alternatively, the variable `APISEC_OPENAPI_MEDIA_TYPES` is used to provide a list of media types that will each be tested. Providing more than one media type causes testing to take longer, as testing is performed for each media type selected. When the environment variable `APISEC_OPENAPI_MEDIA_TYPES` is set to a list of media types, only the listed media types are included when creating requests.
 
-Multiple media types in `DAST_API_OPENAPI_MEDIA_TYPES` are separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and `multipart/form-data`, set the environment variable `DAST_API_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though non-supported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8`, is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when performing the filtering media types on request generation.
+Multiple media types in `APISEC_OPENAPI_MEDIA_TYPES` are separated by a colon (`:`). For example, to limit request generation to the media types `application/x-www-form-urlencoded` and `multipart/form-data`, set the environment variable `APISEC_OPENAPI_MEDIA_TYPES` to `application/x-www-form-urlencoded:multipart/form-data`. Only supported media types in this list are included when creating requests, though non-supported media types are always skipped. A media type text may contain different sections. For example, `application/vnd.api+json; charset=UTF-8`, is a compound of `type "/" [tree "."] subtype ["+" suffix]* [";" parameter]`. Parameters are not taken into account when performing the filtering media types on request generation.
 
-The environment variables `DAST_API_OPENAPI_ALL_MEDIA_TYPES` and `DAST_API_OPENAPI_MEDIA_TYPES` allow you to decide how to handle media types. These settings are mutually exclusive. If both are enabled, API security testing reports an error.
+The environment variables `APISEC_OPENAPI_ALL_MEDIA_TYPES` and `APISEC_OPENAPI_MEDIA_TYPES` allow you to decide how to handle media types. These settings are mutually exclusive. If both are enabled, API security testing reports an error.
 
 ### Configure API security testing with an OpenAPI Specification
 
 To configure API security testing scanning with an OpenAPI Specification:
 
 1. [Include](../../../../ci/yaml/index.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+   the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
-   Provide the profile by adding the `DAST_API_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
+   Provide the profile by adding the `APISEC_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
 
 1. Provide the location of the OpenAPI Specification as either a file or URL.
-   Specify the location by adding the `DAST_API_OPENAPI` variable.
+   Specify the location by adding the `APISEC_OPENAPI` variable.
 
-1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
+1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
@@ -75,12 +75,12 @@ stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_OPENAPI: test-api-specification.json
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_OPENAPI: test-api-specification.json
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 This is a minimal configuration for API security testing. From here you can:
@@ -113,17 +113,17 @@ cookies. We recommend that you review the HAR file contents before adding them t
 To configure API security testing to use a HAR file that provides information about the target API to test:
 
 1. [Include](../../../../ci/yaml/index.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+   the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
 1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
 
-   Provide the profile by adding the `DAST_API_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
+   Provide the profile by adding the `APISEC_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
 
 1. Provide the location of the HAR file. You can provide the location as a file path
-   or URL. Specify the location by adding the `DAST_API_HAR` variable.
+   or URL. Specify the location by adding the `APISEC_HAR` variable.
 
-1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
+1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
@@ -139,12 +139,12 @@ stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_HAR: test-api-recording.har
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_HAR: test-api-recording.har
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 This example is a minimal configuration for API security testing. From here you can:
@@ -179,11 +179,11 @@ The GraphQL endpoint must support introspection queries for this method to work 
 To configure API security testing to use a GraphQL endpoint URL that provides information about the target API to test:
 
 1. [Include](../../../../ci/yaml/index.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+   the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
-1. Provide the path to the GraphQL endpoint, for example `/api/graphql`. Specify the location by adding the `DAST_API_GRAPHQL` variable.
+1. Provide the path to the GraphQL endpoint, for example `/api/graphql`. Specify the location by adding the `APISEC_GRAPHQL` variable.
 
-1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
+1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
@@ -196,12 +196,12 @@ stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
-dast_api:
+api_security:
   variables:
-    DAST_API_GRAPHQL: /api/graphql
-    DAST_API_TARGET_URL: http://test-deployment/
+    APISEC_GRAPHQL: /api/graphql
+    APISEC_TARGET_URL: http://test-deployment/
 ```
 
 This example is a minimal configuration for API security testing. From here you can:
@@ -217,14 +217,14 @@ API security testing can use a GraphQL schema file to understand and test a Grap
 To configure API security testing to use a GraphQL schema file that provides information about the target API to test:
 
 1. [Include](../../../../ci/yaml/index.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
+   the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml) in your `.gitlab-ci.yml` file.
 
-1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `DAST_API_GRAPHQL` variable.
+1. Provide the GraphQL endpoint path, for example `/api/graphql`. Specify the path by adding the `APISEC_GRAPHQL` variable.
 
 1. Provide the location of the GraphQL schema file. You can provide the location as a file path
-   or URL. Specify the location by adding the `DAST_API_GRAPHQL_SCHEMA` variable.
+   or URL. Specify the location by adding the `APISEC_GRAPHQL_SCHEMA` variable.
 
-1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
+1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
@@ -237,13 +237,13 @@ stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
-dast_api:
+api_security:
   variables:
-    DAST_API_GRAPHQL: /api/graphql
-    DAST_API_GRAPHQL_SCHEMA: test-api-graphql.schema
-    DAST_API_TARGET_URL: http://test-deployment/
+    APISEC_GRAPHQL: /api/graphql
+    APISEC_GRAPHQL_SCHEMA: test-api-graphql.schema
+    APISEC_TARGET_URL: http://test-deployment/
 ```
 
 Complete example configuration of using an GraphQL schema file URL:
@@ -253,13 +253,13 @@ stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
-dast_api:
+api_security:
   variables:
-    DAST_API_GRAPHQL: /api/graphql
-    DAST_API_GRAPHQL_SCHEMA: http://file-store/files/test-api-graphql.schema
-    DAST_API_TARGET_URL: http://test-deployment/
+    APISEC_GRAPHQL: /api/graphql
+    APISEC_GRAPHQL_SCHEMA: http://file-store/files/test-api-graphql.schema
+    APISEC_TARGET_URL: http://test-deployment/
 ```
 
 This example is a minimal configuration for API security testing. From here you can:
@@ -291,16 +291,16 @@ To configure API security testing to use a Postman Collection file that provides
 API to test:
 
 1. [Include](../../../../ci/yaml/index.md#includetemplate)
-   the [`DAST-API.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml).
+   the [`API-Security.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/API-Security.gitlab-ci.yml).
 
 1. The [configuration file](variables.md#configuration-files) has several testing profiles defined with different checks enabled. We recommend that you start with the `Quick` profile.
    Testing with this profile completes faster, allowing for easier configuration validation.
 
-   Provide the profile by adding the `DAST_API_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
+   Provide the profile by adding the `APISEC_PROFILE` CI/CD variable to your `.gitlab-ci.yml` file.
 
-1. Provide the location of the Postman Collection file as either a file or URL. Specify the location by adding the `DAST_API_POSTMAN_COLLECTION` variable.
+1. Provide the location of the Postman Collection file as either a file or URL. Specify the location by adding the `APISEC_POSTMAN_COLLECTION` variable.
 
-1. The target API instance's base URL is also required. Provide it by using the `DAST_API_TARGET_URL`
+1. The target API instance's base URL is also required. Provide it by using the `APISEC_TARGET_URL`
    variable or an `environment_url.txt` file.
 
    Adding the URL in an `environment_url.txt` file at your project's root is great for testing in
@@ -316,12 +316,12 @@ stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_POSTMAN_COLLECTION: postman-collection_serviceA.json
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_POSTMAN_COLLECTION: postman-collection_serviceA.json
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 This is a minimal configuration for API security testing. From here you can:
@@ -429,18 +429,18 @@ The following table provides a quick reference for mapping scope files/URLs to A
 
 | Scope              |  How to Provide |
 | ------------------ | --------------- |
-| Global environment | DAST_API_POSTMAN_COLLECTION_VARIABLES |
-| Environment        | DAST_API_POSTMAN_COLLECTION_VARIABLES |
-| Collection         | DAST_API_POSTMAN_COLLECTION           |
-| API security testing scope | DAST_API_POSTMAN_COLLECTION_VARIABLES |
+| Global environment | APISEC_POSTMAN_COLLECTION_VARIABLES |
+| Environment        | APISEC_POSTMAN_COLLECTION_VARIABLES |
+| Collection         | APISEC_POSTMAN_COLLECTION           |
+| API security testing scope | APISEC_POSTMAN_COLLECTION_VARIABLES |
 | Data               | Not supported   |
 | Local              | Not supported   |
 
-The Postman Collection document automatically includes any _collection_ scoped variables. The Postman Collection is provided with the configuration variable `DAST_API_POSTMAN_COLLECTION`. This variable can be set to a single [exported Postman collection](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections).
+The Postman Collection document automatically includes any _collection_ scoped variables. The Postman Collection is provided with the configuration variable `APISEC_POSTMAN_COLLECTION`. This variable can be set to a single [exported Postman collection](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-collections).
 
-Variables from other scopes are provided through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable. The configuration variable supports a comma (`,`) delimited file list in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356312). GitLab 15.0 and earlier, supports only one single file. The order of the files provided is not important as the files provide the needed scope information.
+Variables from other scopes are provided through the `APISEC_POSTMAN_COLLECTION_VARIABLES` configuration variable. The configuration variable supports a comma (`,`) delimited file list in [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356312). GitLab 15.0 and earlier, supports only one single file. The order of the files provided is not important as the files provide the needed scope information.
 
-The configuration variable `DAST_API_POSTMAN_COLLECTION_VARIABLES` can be set to:
+The configuration variable `APISEC_POSTMAN_COLLECTION_VARIABLES` can be set to:
 
 - [Exported Global environment](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments)
 - [Exported environments](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments)
@@ -589,81 +589,81 @@ The supported dynamic variables during the scanning process are:
 
 #### Example: Global Scope
 
-In this example, [the _global_ scope is exported](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) from the Postman Client as `global-scope.json` and provided to API security testing through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable.
+In this example, [the _global_ scope is exported](https://learning.postman.com/docs/sending-requests/variables/variables/#downloading-global-environments) from the Postman Client as `global-scope.json` and provided to API security testing through the `APISEC_POSTMAN_COLLECTION_VARIABLES` configuration variable.
 
-Here is an example of using `DAST_API_POSTMAN_COLLECTION_VARIABLES`:
+Here is an example of using `APISEC_POSTMAN_COLLECTION_VARIABLES`:
 
 ```yaml
 stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_POSTMAN_COLLECTION: postman-collection.json
-  DAST_API_POSTMAN_COLLECTION_VARIABLES: global-scope.json
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_POSTMAN_COLLECTION: postman-collection.json
+  APISEC_POSTMAN_COLLECTION_VARIABLES: global-scope.json
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 #### Example: Environment Scope
 
-In this example, [the _environment_ scope is exported](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) from the Postman Client as `environment-scope.json` and provided to API security testing through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable.
+In this example, [the _environment_ scope is exported](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) from the Postman Client as `environment-scope.json` and provided to API security testing through the `APISEC_POSTMAN_COLLECTION_VARIABLES` configuration variable.
 
-Here is an example of using `DAST_API_POSTMAN_COLLECTION_VARIABLES`:
+Here is an example of using `APISEC_POSTMAN_COLLECTION_VARIABLES`:
 
 ```yaml
 stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_POSTMAN_COLLECTION: postman-collection.json
-  DAST_API_POSTMAN_COLLECTION_VARIABLES: environment-scope.json
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_POSTMAN_COLLECTION: postman-collection.json
+  APISEC_POSTMAN_COLLECTION_VARIABLES: environment-scope.json
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 #### Example: Collection Scope
 
-The _collection_ scope variables are included in the exported Postman Collection file and provided through the `DAST_API_POSTMAN_COLLECTION` configuration variable.
+The _collection_ scope variables are included in the exported Postman Collection file and provided through the `APISEC_POSTMAN_COLLECTION` configuration variable.
 
-Here is an example of using `DAST_API_POSTMAN_COLLECTION`:
+Here is an example of using `APISEC_POSTMAN_COLLECTION`:
 
 ```yaml
 stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_POSTMAN_COLLECTION: postman-collection.json
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_POSTMAN_COLLECTION: postman-collection.json
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 #### Example: API security testing scope
 
-The API security testing scope is used for two main purposes, defining _data_ and _local_ scope variables that are not supported by API security testing, and changing the value of an existing variable defined in another scope. The API security testing scope is provided through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable.
+The API security testing scope is used for two main purposes, defining _data_ and _local_ scope variables that are not supported by API security testing, and changing the value of an existing variable defined in another scope. The API security testing scope is provided through the `APISEC_POSTMAN_COLLECTION_VARIABLES` configuration variable.
 
-Here is an example of using `DAST_API_POSTMAN_COLLECTION_VARIABLES`:
+Here is an example of using `APISEC_POSTMAN_COLLECTION_VARIABLES`:
 
 ```yaml
 stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_POSTMAN_COLLECTION: postman-collection.json
-  DAST_API_POSTMAN_COLLECTION_VARIABLES: dast-api-scope.json
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_POSTMAN_COLLECTION: postman-collection.json
+  APISEC_POSTMAN_COLLECTION_VARIABLES: dast-api-scope.json
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 The file `dast-api-scope.json` uses our [custom JSON file format](#api-security-testing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
@@ -684,29 +684,29 @@ In this example, a _global_ scope, _environment_ scope, and _collection_ scope a
 - [Export the _environment_ scope](https://learning.postman.com/docs/getting-started/importing-and-exporting/exporting-data/#export-environments) as `environment-scope.json`
 - Export the Postman Collection which includes the _collection_ scope as `postman-collection.json`
 
-The Postman Collection is provided using the `DAST_API_POSTMAN_COLLECTION` variable, while the other scopes are provided using the `DAST_API_POSTMAN_COLLECTION_VARIABLES`. API security testing can identify which scope the provided files match using data provided in each file.
+The Postman Collection is provided using the `APISEC_POSTMAN_COLLECTION` variable, while the other scopes are provided using the `APISEC_POSTMAN_COLLECTION_VARIABLES`. API security testing can identify which scope the provided files match using data provided in each file.
 
 ```yaml
 stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_POSTMAN_COLLECTION: postman-collection.json
-  DAST_API_POSTMAN_COLLECTION_VARIABLES: global-scope.json,environment-scope.json
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_POSTMAN_COLLECTION: postman-collection.json
+  APISEC_POSTMAN_COLLECTION_VARIABLES: global-scope.json,environment-scope.json
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 #### Example: Changing a Variables Value
 
 When using exported scopes, it's often the case that the value of a variable must be changed for use with API security testing. For example, a _collection_ scoped variable might contain a variable named `api_version` with a value of `v2`, while your test needs a value of `v1`. Instead of modifying the exported collection to change the value, the API security testing scope can be used to change its value. This works because the _API security testing_ scope takes precedence over all other scopes.
 
-The _collection_ scope variables are included in the exported Postman Collection file and provided through the `DAST_API_POSTMAN_COLLECTION` configuration variable.
+The _collection_ scope variables are included in the exported Postman Collection file and provided through the `APISEC_POSTMAN_COLLECTION` configuration variable.
 
-The API security testing scope is provided through the `DAST_API_POSTMAN_COLLECTION_VARIABLES` configuration variable, but first, we must create the file.
+The API security testing scope is provided through the `APISEC_POSTMAN_COLLECTION_VARIABLES` configuration variable, but first, we must create the file.
 The file `dast-api-scope.json` uses our [custom JSON file format](#api-security-testing-scope-custom-json-file-format). This JSON is an object with key-value pairs for properties. The keys are the variables' names, and the values are the variables'
 values. For example:
 
@@ -723,13 +723,13 @@ stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_POSTMAN_COLLECTION: postman-collection.json
-  DAST_API_POSTMAN_COLLECTION_VARIABLES: dast-api-scope.json
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_POSTMAN_COLLECTION: postman-collection.json
+  APISEC_POSTMAN_COLLECTION_VARIABLES: dast-api-scope.json
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 #### Example: Changing a Variables Value with Multiple Scopes
@@ -751,20 +751,20 @@ values. For example:
 }
 ```
 
-The Postman Collection is provided using the `DAST_API_POSTMAN_COLLECTION` variable, while the other scopes are provided using the `DAST_API_POSTMAN_COLLECTION_VARIABLES`. API security testing can identify which scope the provided files match using data provided in each file.
+The Postman Collection is provided using the `APISEC_POSTMAN_COLLECTION` variable, while the other scopes are provided using the `APISEC_POSTMAN_COLLECTION_VARIABLES`. API security testing can identify which scope the provided files match using data provided in each file.
 
 ```yaml
 stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 variables:
-  DAST_API_PROFILE: Quick
-  DAST_API_POSTMAN_COLLECTION: postman-collection.json
-  DAST_API_POSTMAN_COLLECTION_VARIABLES: global-scope.json,environment-scope.json,dast-api-scope.json
-  DAST_API_TARGET_URL: http://test-deployment/
+  APISEC_PROFILE: Quick
+  APISEC_POSTMAN_COLLECTION: postman-collection.json
+  APISEC_POSTMAN_COLLECTION_VARIABLES: global-scope.json,environment-scope.json,dast-api-scope.json
+  APISEC_TARGET_URL: http://test-deployment/
 ```
 
 ## Running your first scan

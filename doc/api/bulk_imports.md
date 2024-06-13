@@ -70,7 +70,14 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token_for_destination_
 ```
 
 ```json
-{ "id": 1, "status": "created", "source_type": "gitlab", "created_at": "2021-06-18T09:45:55.358Z", "updated_at": "2021-06-18T09:46:27.003Z" }
+{
+  "id": 1,
+  "status": "created",
+  "source_type": "gitlab",
+  "created_at": "2021-06-18T09:45:55.358Z",
+  "updated_at": "2021-06-18T09:46:27.003Z",
+  "has_failures": false
+}
 ```
 
 ## List all group or project migrations
@@ -104,14 +111,16 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "status": "finished",
         "source_type": "gitlab",
         "created_at": "2021-06-18T09:45:55.358Z",
-        "updated_at": "2021-06-18T09:46:27.003Z"
+        "updated_at": "2021-06-18T09:46:27.003Z",
+        "has_failures": false
     },
     {
         "id": 2,
         "status": "started",
         "source_type": "gitlab",
         "created_at": "2021-06-18T09:47:36.581Z",
-        "updated_at": "2021-06-18T09:47:58.286Z"
+        "updated_at": "2021-06-18T09:47:58.286Z",
+        "has_failures": false
     }
 ]
 ```
@@ -146,7 +155,10 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "id": 1,
         "bulk_import_id": 1,
         "status": "finished",
+        "entity_type": "group",
         "source_full_path": "source_group",
+        "destination_full_path": "destination/full_path",
+        "destination_name": "destination_slug",
         "destination_slug": "destination_slug",
         "destination_namespace": "destination_path",
         "parent_id": null,
@@ -155,6 +167,8 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "created_at": "2021-06-18T09:47:37.390Z",
         "updated_at": "2021-06-18T09:47:51.867Z",
         "failures": [],
+        "migrate_projects": true,
+        "has_failures": false,
         "stats": {
             "labels": {
                 "source": 10,
@@ -172,7 +186,10 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "id": 2,
         "bulk_import_id": 2,
         "status": "failed",
+        "entity_type": "group",
         "source_full_path": "another_group",
+        "destination_full_path": "destination/full_path",
+        "destination_name": "destination_slug",
         "destination_slug": "another_slug",
         "destination_namespace": "another_namespace",
         "parent_id": null,
@@ -191,7 +208,10 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
                 "pipeline_class": "BulkImports::Groups::Pipelines::GroupPipeline",
                 "pipeline_step": "extractor"
             }
-        ]
+        ],
+        "migrate_projects": true,
+        "has_failures": false,
+        "stats": { }
     }
 ]
 ```
@@ -244,10 +264,33 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 [
     {
         "id": 1,
+        "bulk_import_id": 1,
         "status": "finished",
-        "source_type": "gitlab",
-        "created_at": "2021-06-18T09:45:55.358Z",
-        "updated_at": "2021-06-18T09:46:27.003Z",
+        "entity_type": "group",
+        "source_full_path": "source_group",
+        "destination_full_path": "destination/full_path",
+        "destination_name": "destination_slug",
+        "destination_slug": "destination_slug",
+        "destination_namespace": "destination_path",
+        "parent_id": null,
+        "namespace_id": 1,
+        "project_id": null,
+        "created_at": "2021-06-18T09:47:37.390Z",
+        "updated_at": "2021-06-18T09:47:51.867Z",
+        "failures": [
+            {
+                "relation": "group",
+                "step": "extractor",
+                "exception_message": "Error!",
+                "exception_class": "Exception",
+                "correlation_id_value": "dfcf583058ed4508e4c7c617bd7f0edd",
+                "created_at": "2021-06-24T10:40:46.495Z",
+                "pipeline_class": "BulkImports::Groups::Pipelines::GroupPipeline",
+                "pipeline_step": "extractor"
+            }
+        ],
+        "migrate_projects": true,
+        "has_failures": true,
         "stats": {
             "labels": {
                 "source": 10,
@@ -276,11 +319,46 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 ```json
 {
-  "id": 2,
-  "status": "finished",
-  "source_type": "gitlab",
-  "created_at": "2021-06-18T09:45:55.358Z",
-  "updated_at": "2021-06-18T09:46:27.003Z"
+    "id": 1,
+    "bulk_import_id": 1,
+    "status": "finished",
+    "entity_type": "group",
+    "source_full_path": "source_group",
+    "destination_full_path": "destination/full_path",
+    "destination_name": "destination_slug",
+    "destination_slug": "destination_slug",
+    "destination_namespace": "destination_path",
+    "parent_id": null,
+    "namespace_id": 1,
+    "project_id": null,
+    "created_at": "2021-06-18T09:47:37.390Z",
+    "updated_at": "2021-06-18T09:47:51.867Z",
+    "failures": [
+        {
+            "relation": "group",
+            "step": "extractor",
+            "exception_message": "Error!",
+            "exception_class": "Exception",
+            "correlation_id_value": "dfcf583058ed4508e4c7c617bd7f0edd",
+            "created_at": "2021-06-24T10:40:46.495Z",
+            "pipeline_class": "BulkImports::Groups::Pipelines::GroupPipeline",
+            "pipeline_step": "extractor"
+        }
+    ],
+    "migrate_projects": true,
+    "has_failures": true,
+    "stats": {
+        "labels": {
+            "source": 10,
+            "fetched": 10,
+            "imported": 10
+        },
+        "milestones": {
+            "source": 10,
+            "fetched": 10,
+            "imported": 10
+        }
+    }
 }
 ```
 
@@ -327,7 +405,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitla
   "status": "canceled",
   "source_type": "gitlab",
   "created_at": "2021-06-18T09:45:55.358Z",
-  "updated_at": "2021-06-18T09:46:27.003Z"
+  "updated_at": "2021-06-18T09:46:27.003Z",
+  "has_failures": false
 }
 ```
 
