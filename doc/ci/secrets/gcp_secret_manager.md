@@ -71,7 +71,7 @@ After setting up WIF, you must grant the WIF principal access to the secrets in 
      [Project's dashboard](https://console.cloud.google.com/home/dashboard).
    - `POOL_ID`: The ID (not name) of the Workload Identity Pool created in the first section,
      for example `gitlab-pool`.
-   - `GITLAB_PROJECT_ID`: The GitLab project ID found on the [project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+   - `GITLAB_PROJECT_ID`: The GitLab project ID found on the [project overview page](../../user/project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
 1. Assign the role **Secret Manager Secret Accessor**.
 

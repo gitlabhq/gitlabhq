@@ -19,12 +19,16 @@ Model registry is in [beta](../../../../policy/experiment-beta-support.md). [Pro
 
 Model registry allows data scientists and developers to manage their machine learning
 models, along with all metadata associated with their creation: parameters, performance
-metrics, artifacts, logs and more. For the full list of currently supported features,
+metrics, artifacts, logs, and more. For the full list of supported features,
 see [epic 9423](https://gitlab.com/groups/gitlab-org/-/epics/9423).
 
 ## Access the model registry
 
-To set the model registry [visibility level](../../../public_access.md) to public, private or disabled:
+To access the model registry, on the left sidebar, select **Deploy > Model registry**.
+
+If **Model registry** is not available, ensure that it has been enabled.
+
+To enable the model registry or set the [visibility level](../../../public_access.md) to public or private:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
@@ -35,16 +39,92 @@ at least the [Reporter role](../../../permissions.md#roles) to modify or delete 
 
 ## Exploring models, model versions and model candidates
 
-To access the model registry, from the left sidebar, select **Deploy > Model registry**.
+To access the model registry, on the left sidebar, select **Deploy > Model registry**.
 
-## Creating machine learning models and model versions
+This list shows all models. Select one to see its versions.
+
+## Create machine learning models and model versions by using the UI
+
+To create a new machine learning model and model version by using the GitLab UI:
+
+1. On the left sidebar, select **Deploy > Model registry**.
+1. On the **Model registry** page, select **Create Model**.
+1. Complete the fields:
+   - Enter a unique name for your model name.
+   - Optional. Provide a description for the model.
+   - Optional. Create a version for the model along with a version description.
+   - Upload any files, logs, metrics, or parameters associated with the model.
+1. Select **Create**.
+
+You can now view the newly created model in the model registry.
+
+To create a new model version:
+
+1. On the model details page, select **Create model version**.
+1. Complete the fields:
+   - Enter a unique version number following semantic versioning.
+   - Optional. Provide a description for the model version.
+   - Upload any files, logs, metrics, or parameters associated with the model version.
+1. Select on **Create & import**.
+
+The new model version is now available in the model registry.
+
+### Delete a model
+
+To delete a model and all its associated versions:
+
+1. On the left sidebar, select **Deploy > Model registry**.
+1. Find the model you want to delete.
+1. Select the model name to view its details.
+1. Select the vertical ellipsis (**{ellipsis_v}**) and **Delete model**.
+1. Confirm the deletion.
+
+### Delete a model version
+
+To delete a model version:
+
+1. On the left sidebar, select **Deploy > Model registry**.
+1. Find the model with a version you want to delete.
+1. Select the model name to view its details.
+1. Select the **Versions** tab.
+1. Select the version name to view its details.
+1. Select the vertical ellipsis (**{ellipsis_v}**) and **Delete model version**.
+1. Confirm the deletion.
+
+### Updating a model or model version
+
+To add artifacts to a model version:
+
+1. On the left sidebar, select **Deploy > Model registry**.
+1. Find the model.
+1. Select the model name to view its details.
+1. Select the **Versions** tab.
+1. Select the version name to view its details.
+1. Optional. Specify a path for the files to be uploaded to. For example `config`.
+1. Use **select** to choose the files to upload.
+1. Select **Upload**.
+
+Alternatively, you can drag and drop files in the drop area. They will be automatically uploaded.
+
+To delete artifacts of a version:
+
+1. On the left sidebar, select **Deploy > Model registry**.
+1. Find the model.
+1. Select the model name to view its details.
+1. Select the **Versions** tab.
+1. Select the version name to view its details.
+1. Select the box next to each artifact you want to delete.
+1. Select **Delete**.
+1. Confirm the deletion.
+
+## Create machine learning models and model versions by using MLFlow
 
 Models and model versions can be created using the [MLflow](https://www.mlflow.org/docs/latest/tracking.html) client compatibility.
 For more information about how to create and manage models and model versions, see [MLflow client compatibility](../experiment_tracking/mlflow_client.md#model-registry).
 You can also create models directly on GitLab by selecting **Create Model**
 on the Model registry page.
 
-## Upload files, log metrics, log parameters to a model version
+### Add artifacts, metrics, and parameters to a model version by using MLFlow
 
 Files can either be uploaded to a model version using:
 
@@ -56,7 +136,7 @@ Users can log metrics and a parameters of a model version through the MLflow cli
 ## Link a model version to a CI/CD job
 
 When creating a model version through a GitLab CI/CD job, you can link the model
-version to the job, giving easy access to the job's logs, merge request, and pipeline.
+version to the job, giving convenient access to the job's logs, merge request, and pipeline.
 This can be done through the MLflow client compatibility. [View details](../experiment_tracking/mlflow_client.md#linking-a-model-version-to-a-cicd-job).
 
 ## Model versions and semantic versioning
@@ -74,7 +154,7 @@ if a new version can be deployed without changes to the application:
   consumer can safely use the new version without breaking, although the consumer might
   need to be updated to use its new functionality. For example, adding a non-mandatory
   feature column with a default value to the model is a minor bump, because when a value for
-  the added column is not passed, inference will still work.
+  the added column is not passed, inference still works.
 
 - **Patch (integer):** A change in the patch component means that a new version is out that does not
   require any action by the application. For example, a daily retrain of the
@@ -86,13 +166,13 @@ if a new version can be deployed without changes to the application:
 
 ### Model version examples
 
-- Initial Release: 1.0.0 - This is the first release of the model, with no changes or patches.
+- Initial Release: 1.0.0 - The first release of the model, with no changes or patches.
 - New Feature: 1.1.0 - A new non-breaking feature has been added to the model, incrementing the minor version.
 - Bug Fix: 1.1.1 - A bug has been fixed in the model, incrementing the patch version.
 - Breaking Change: 2.0.0 - A breaking change has been made to the model, incrementing the major version.
 - Patch Release: 2.0.1 - A bug has been fixed in the model, incrementing the patch version.
-- Prerelease: 2.0.1-alpha1 - This is a prerelease version of the model, with an alpha release.
-- Prerelease: 2.0.1-rc2 - This is a release candidate version of the model.
+- Prerelease: 2.0.1-alpha1 - A prerelease version of the model, with an alpha release.
+- Prerelease: 2.0.1-rc2 - A release candidate version of the model.
 - New Feature: 2.1.0 - A new feature has been added to the model, so the minor version is incremented.
 
 ## Related topics

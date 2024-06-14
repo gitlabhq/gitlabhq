@@ -248,8 +248,8 @@ For example:
 
   Files returned by this endpoint always have the `plain/text` content type.
 
-In both examples, replace `<project-id>` with a valid project ID. You can find the project ID on the,
-[project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+In both examples, replace `<project-id>` with a valid project ID. You can find the project ID on the
+[project overview page](../../user/project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
 Artifacts for [parent and child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines)
 are searched in hierarchical order from parent to child. For example, if both parent and

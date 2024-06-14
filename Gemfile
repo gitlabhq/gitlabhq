@@ -456,7 +456,7 @@ group :development, :test do
   gem 'deprecation_toolkit', '~> 1.5.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'bullet', '~> 7.1.2' # rubocop:todo Gemfile/MissingFeatureCategory
   # Locked on 3.3.0.5 until inspec-core is updated in Omnibus: https://github.com/inspec/inspec/pull/7030
-  gem 'parser', '= 3.3.3.0', feature_category: :shared
+  gem 'parser', '= 3.3.0.5', feature_category: :shared
   gem 'pry-byebug' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'pry-rails', '~> 0.3.9' # rubocop:todo Gemfile/MissingFeatureCategory
   gem 'pry-shell', '~> 0.6.4' # rubocop:todo Gemfile/MissingFeatureCategory

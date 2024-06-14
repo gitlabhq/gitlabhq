@@ -40,7 +40,7 @@ Prerequisites:
   error (`Validation failed: Version is invalid`) occurs when you publish.
 - A valid `composer.json` file at the project root directory.
 - The Packages feature is enabled in a GitLab repository.
-- The project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+- The project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - One of the following token types:
   - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
   - A [deploy token](../../project/deploy_tokens/index.md)

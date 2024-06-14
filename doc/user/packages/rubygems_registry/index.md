@@ -74,7 +74,7 @@ https://gitlab.example.com/api/v4/projects/<project_id>/packages/rubygems: '<you
 ```
 
 - `<your token>` must be the token value of either your personal access token or deploy token.
-- Your project ID is displayed on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+- Your project ID is displayed on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
 ### Authenticate with a CI job token
 

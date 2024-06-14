@@ -59,7 +59,7 @@ Prerequisites:
     both.
 - A name for your source.
 - Depending on the [endpoint level](#use-the-gitlab-endpoint-for-nuget-packages) you use, either:
-  - Your project ID, which is found on your [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+  - Your project ID, which is found on your [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
   - Your group ID, which is found on your group's home page.
 
 You can now add a new source to NuGet with:

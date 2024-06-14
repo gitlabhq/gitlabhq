@@ -13,6 +13,58 @@ DETAILS:
 Most work in GitLab is done in a [project](../../user/project/index.md). Files and
 code are saved in projects, and most features are in the scope of projects.
 
+## Project overview
+
+> - Project creation date [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/19452) in GitLab 16.10.
+
+When you select a project, the **Project overview** page shows the project contents:
+
+- Files in the repository
+- Project information (description)
+- Topics
+- Badges
+- Number of stars, forks, commits, branches, tags, releases, and environments in the project
+- Project storage size
+- Optional files and configurations
+- `README` or index file
+  - Wiki page
+  - License
+  - Changelog
+  - Contributing guidelines
+  - Kubernetes cluster
+  - CI/CD configuration
+  - Integrations
+  - GitLab Pages
+- Creation date
+
+For public projects, and members of internal and private projects
+with [permissions to view the project's code](../permissions.md#project-members-permissions),
+the project overview page shows:
+
+- A [`README` or index file](repository/files/index.md#readme-and-index-files).
+- A list of directories in the project's repository.
+
+For users without permission to view the project's code, the overview page shows:
+
+- The wiki homepage.
+- The list of issues in the project.
+
+### Access a project by using the project ID
+
+> - Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+
+You can access a project by using its ID instead of its name at `https://gitlab.example.com/projects/<id>`.
+For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`,
+you can access the project either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
+
+You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/index.md).
+
+To copy the project ID:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+1. Select **Copy project ID**.
+
 ## View all projects for the instance
 
 To view all projects for the GitLab instance:
@@ -315,40 +367,6 @@ To rename a repository:
 1. Expand **Advanced**.
 1. In the **Change path** text box, edit the path.
 1. Select **Change path**.
-
-## Access the project overview page by using the project ID
-
-> - Project ID [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
-
-To access a project by using the project ID instead of its name,
-go to `https://gitlab.example.com/projects/<id>`.
-
-To copy the project ID:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. On the project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
-1. Select **Copy project ID**.
-
-For example, if in your personal namespace `alex` you have a project `my-project` with the ID `123456`, you can access the project
-either at `https://gitlab.example.com/alex/my-project` or `https://gitlab.example.com/projects/123456`.
-
-You might also need the project ID if you want to interact with it using the [GitLab API](../../api/index.md).
-
-## Who can view the Project overview page
-
-When you select a project, the **Project overview** page shows the project contents.
-
-For public projects, and members of internal and private projects
-with [permissions to view the project's code](../permissions.md#project-members-permissions),
-the project landing page shows:
-
-- A [`README` or index file](repository/files/index.md#readme-and-index-files).
-- A list of directories in the project's repository.
-
-For users without permission to view the project's code, the landing page shows:
-
-- The wiki homepage.
-- The list of issues in the project.
 
 ## Leave a project
 

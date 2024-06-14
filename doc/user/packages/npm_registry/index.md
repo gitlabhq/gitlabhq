@@ -70,7 +70,7 @@ Create or edit the `.npmrc` file in the same directory as your `package.json`. I
 
 - Replace `@scope` with the [root level group](#naming-convention) of the project you're publishing to the package to.
 - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-- Replace `your_project_id` is your project ID, found on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+- Replace `your_project_id` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - `"${NPM_TOKEN}"` is associated with the token you created later in the process.
 
 WARNING:
@@ -166,7 +166,7 @@ In these examples:
 
 - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
 - Replace `your_group_id` with your group ID, found on the group's home page.
-- Replace `your_project_id` is your project ID, found on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+- Replace `your_project_id` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - Replace `your_token` with a deploy token, group access token, project access token, or personal access token.
 
 NOTE:
@@ -232,7 +232,7 @@ To install a package from the instance level, the package must have been publish
 
    - Replace `@scope` with the [root level group](#naming-convention) of the project you're installing to the package from.
    - Replace `your_domain_name` with your domain name, for example, `gitlab.com`.
-   - Replace `your_project_id` is your project ID, found on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+   - Replace `your_project_id` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
 1. Install the package
 

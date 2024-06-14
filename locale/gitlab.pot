@@ -3348,6 +3348,9 @@ msgstr ""
 msgid "Added %{label_references} %{label_text}."
 msgstr ""
 
+msgid "Added %{timeAgo} by"
+msgstr ""
+
 msgid "Added a to do."
 msgstr ""
 
@@ -38557,7 +38560,13 @@ msgstr ""
 msgid "Pipelines|%{counterLabel} more downstream pipelines"
 msgstr ""
 
-msgid "Pipelines|Active train"
+msgid "Pipelines|Active"
+msgstr ""
+
+msgid "Pipelines|An error occurred while trying to fetch the active merge train."
+msgstr ""
+
+msgid "Pipelines|An error occurred while trying to fetch the completed merge train."
 msgstr ""
 
 msgid "Pipelines|An error occurred while updating the trigger token. Please try again."
@@ -38606,6 +38615,9 @@ msgid "Pipelines|Editor"
 msgstr ""
 
 msgid "Pipelines|Failed to update. Please reload page to update the list of artifacts."
+msgstr ""
+
+msgid "Pipelines|Filter by target branch"
 msgstr ""
 
 msgid "Pipelines|Full configuration"
@@ -53346,6 +53358,9 @@ msgid "There are no issues with the selected labels"
 msgstr ""
 
 msgid "There are no matching files"
+msgstr ""
+
+msgid "There are no merge trains to show."
 msgstr ""
 
 msgid "There are no open epics"

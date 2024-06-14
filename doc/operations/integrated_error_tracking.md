@@ -124,7 +124,7 @@ Don't expose it to the public. If it is leaked or exposed, rotate the Sentry DSN
 
 Prerequisites:
 
-- You need the numeric [project ID](../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id)
+- You need the numeric [project ID](../user/project/working_with_projects.md#access-a-project-by-using-the-project-id)
   for your project.
 
 To rotate the Sentry DSN:
