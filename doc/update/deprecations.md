@@ -4432,16 +4432,34 @@ Administrators who need to add runners for multiple projects can register a runn
 - Removal in GitLab <span class="milestone">15.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
 </div>
 
-All functionality related to GitLab's Container Network Security and Container Host Security categories is deprecated in GitLab 14.8 and scheduled for removal in GitLab 15.0. Users who need a replacement for this functionality are encouraged to evaluate the following open source projects as potential solutions that can be installed and managed outside of GitLab: [AppArmor](https://gitlab.com/apparmor/apparmor), [Cilium](https://github.com/cilium/cilium), [Falco](https://github.com/falcosecurity/falco), [FluentD](https://github.com/fluent/fluentd), [Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/). To integrate these technologies into GitLab, add the desired Helm charts into your copy of the [Cluster Management Project Template](https://docs.gitlab.com/ee/user/clusters/management_project_template.html). Deploy these Helm charts in production by calling commands through GitLab [CI/CD](https://docs.gitlab.com/ee/user/clusters/agent/ci_cd_workflow.html).
+All functionality related to GitLab's Container Network Security and
+Container Host Security categories is deprecated in GitLab 14.8 and
+scheduled for removal in GitLab 15.0. Users who need a replacement for this
+functionality are encouraged to evaluate the following open source projects
+as potential solutions that can be installed and managed outside of GitLab:
+[AppArmor](https://gitlab.com/apparmor/apparmor),
+[Cilium](https://github.com/cilium/cilium),
+[Falco](https://github.com/falcosecurity/falco),
+[FluentD](https://github.com/fluent/fluentd),
+[Pod Security Admission](https://kubernetes.io/docs/concepts/security/pod-security-admission/).
 
-As part of this change, the following specific capabilities within GitLab are now deprecated, and are scheduled for removal in GitLab 15.0:
+To integrate these technologies into GitLab, add the desired Helm charts
+into your copy of the
+[Cluster Management Project Template](https://docs.gitlab.com/ee/user/clusters/management_project_template.html).
+Deploy these Helm charts in production by calling commands through GitLab
+[CI/CD](https://docs.gitlab.com/ee/user/clusters/agent/ci_cd_workflow.html).
+
+As part of this change, the following specific capabilities within GitLab
+are now deprecated, and are scheduled for removal in GitLab 15.0:
 
 - The **Security & Compliance > Threat Monitoring** page.
 - The `Network Policy` security policy type, as found on the **Security & Compliance > Policies** page.
 - The ability to manage integrations with the following technologies through GitLab: AppArmor, Cilium, Falco, FluentD, and Pod Security Policies.
 - All APIs related to the above functionality.
 
-For additional context, or to provide feedback regarding this change, please reference our open [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/7476).
+For additional context, or to provide feedback regarding this change,
+please reference our open
+[deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/7476).
 
 </div>
 

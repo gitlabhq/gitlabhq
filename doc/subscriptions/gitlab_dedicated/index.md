@@ -106,7 +106,23 @@ As a single-tenant SaaS solution, GitLab Dedicated provides infrastructure-level
 
 #### Access controls
 
-GitLab Dedicated adheres to the [principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege) to control access to customer tenant environments. Tenant AWS accounts live under a top-level GitLab Dedicated AWS parent organization. Access to the AWS Organization is restricted to select GitLab team members. All user accounts within the AWS Organization follow the overall [GitLab Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/). Direct access to customer tenant environments is restricted to a single Hub account. The GitLab Dedicated Control Plane uses the Hub account to perform automated actions over tenant accounts when managing environments. Similarly, GitLab Dedicated engineers do not have direct access to customer tenant environments. In [break glass](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/blob/main/engineering/breaking_glass.md) situations, where access to resources in the tenant environment is required to address a high-severity issue, GitLab engineers must go through the Hub account to manage those resources. This is done via an approval process, and after permission is granted, the engineer will assume an IAM role on a temporary basis to access tenant resources through the Hub account. All actions within the hub account and tenant account are logged to CloudTrail.
+GitLab Dedicated adheres to the
+[principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege)
+to control access to customer tenant environments. Tenant AWS accounts live under
+a top-level GitLab Dedicated AWS parent organization. Access to the AWS Organization
+is restricted to select GitLab team members. All user accounts within the AWS Organization
+follow the overall [GitLab Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/).
+Direct access to customer tenant environments is restricted to a single Hub account.
+The GitLab Dedicated Control Plane uses the Hub account to perform automated actions
+over tenant accounts when managing environments. Similarly, GitLab Dedicated engineers
+do not have direct access to customer tenant environments.
+In [break glass](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/blob/main/engineering/breaking_glass.md)
+situations, where access to resources in the tenant environment is required to
+address a high-severity issue, GitLab engineers must go through the Hub account
+to manage those resources. This is done via an approval process, and after permission
+is granted, the engineer will assume an IAM role on a temporary basis to access
+tenant resources through the Hub account. All actions within the hub account and
+tenant account are logged to CloudTrail.
 
 Inside tenant accounts, GitLab leverages Intrusion Detection and Malware Scanning capabilities from AWS GuardDuty. Infrastructure logs are monitored by the GitLab Security Incident Response Team to detect anomalous events.
 
@@ -220,7 +236,7 @@ The following GitLab application features are not available:
   - View the [list of AI features to see which ones are supported](../../user/ai_features.md).
   - Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information.
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
-- Any functionality or feature behind a Feature Flag that is toggled `off` by default. 
+- Any functionality or feature behind a Feature Flag that is toggled `off` by default.
 
 The following features will not be supported:
 

@@ -41,6 +41,7 @@ To set up infrastructure for workspaces:
 > - Support for private projects [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124273) in GitLab 16.4.
 > - **Git reference** and **Devfile location** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) in GitLab 16.10.
 > - **Time before automatic termination** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/392382) to **Workspace automatically terminates after** in GitLab 16.10.
+> - **Variables** [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463514) in GitLab 17.1.
 
 Prerequisites:
 
@@ -66,6 +67,8 @@ To create a workspace:
    If your devfile is not in the root directory of your project, specify a relative path.
 1. In **Workspace automatically terminates after**, enter the number of hours until the workspace automatically terminates.
    This timeout is a safety measure to prevent a workspace from consuming excessive resources or running indefinitely.
+1. In **Variables**, enter the keys and values of the environment variables you want to inject into the workspace.
+   To add a new variable, select **Add variable**.
 1. Select **Create workspace**.
 
 The workspace might take a few minutes to start.

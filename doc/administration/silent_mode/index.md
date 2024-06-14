@@ -16,8 +16,20 @@ DETAILS:
 
 Silent Mode allows you to silence outbound communication, such as emails, from GitLab. Silent Mode is not intended to be used on environments which are in-use. Two use-cases are:
 
-- Validating Geo site promotion. You have a secondary Geo site as part of your [disaster recovery](../geo/disaster_recovery/index.md) solution. You want to regularly test promoting it to become a primary Geo site, as a best practice to ensure your disaster recovery plan actually works. But you don't want to actually perform an entire failover, since the primary site lives in a region which provides the lowest latency to your users. And you don't want to take downtime during every regular test. So, you let the primary site remain up, while you promote the secondary site. You start smoke testing the promoted site. But, the promoted site starts emailing users, the push mirrors push changes to external Git repositories, etc. This is where Silent Mode comes in. You can enable it as part of site promotion, to avoid this issue.
-- Validating GitLab backups. You set up a testing instance to test that your backups restore successfully. As part of the restore, you enable Silent Mode, for example to avoid sending invalid emails to users.
+- Validating Geo site promotion. You have a secondary Geo site as part of your
+  [disaster recovery](../geo/disaster_recovery/index.md) solution. You want to
+  regularly test promoting it to become a primary Geo site, as a best practice
+  to ensure your disaster recovery plan actually works. But you don't want to
+  actually perform an entire failover, since the primary site lives in a region
+  which provides the lowest latency to your users. And you don't want to take
+  downtime during every regular test. So, you let the primary site remain up,
+  while you promote the secondary site. You start smoke testing the promoted
+  site. But, the promoted site starts emailing users, the push mirrors push
+  changes to external Git repositories, etc. This is where Silent Mode comes in.
+  You can enable it as part of site promotion, to avoid this issue.
+- Validating GitLab backups. You set up a testing instance to test that your
+  backups restore successfully. As part of the restore, you enable Silent Mode,
+  for example to avoid sending invalid emails to users.
 
 ## Enable Silent Mode
 

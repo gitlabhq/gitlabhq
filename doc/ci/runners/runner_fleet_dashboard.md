@@ -17,11 +17,10 @@ DETAILS:
 GitLab administrators can use the Runner Fleet Dashboard to assess the health of your instance runners.
 The Runner Fleet Dashboard shows:
 
-- Recent CI errors related caused by runner infrastructure.
-- Number of concurrent jobs executed on most busy runners.
-- Histogram of job queue times [(available only with ClickHouse)](#enable-more-ci-analytics-features-with-clickhouse).
-
-Support for usage and cost analysis are proposed in [epic 11183](https://gitlab.com/groups/gitlab-org/-/epics/11183).
+- Recent CI errors caused by runner infrastructure
+- Number of concurrent jobs executed on most busy runners
+- Compute minutes used by instance runners
+- Job queue times (available only with [ClickHouse](#enable-more-ci-analytics-features-with-clickhouse))
 
 ![Runner Fleet Dashboard](img/runner_fleet_dashboard.png)
 
@@ -45,7 +44,8 @@ These features require [setting up an additional infrastructure](#enable-more-ci
 
 Prerequisites:
 
-- You must be an administrator.
+- You must have administrator access to the instance.
+- You must enable the [ClickHouse integration](../../integration/clickhouse.md).
 
 To analyze runner usage, you can export a CSV file that contains the number of jobs and executed runner minutes. The
 CSV file shows the runner type and job status for each project. The CSV is sent to your email when the export is completed.
@@ -62,16 +62,15 @@ To export compute minutes used by instance runners:
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Experiment
+**Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11180) in GitLab 16.7 with the [flags](../../administration/feature_flags.md) named `ci_data_ingestion_to_click_house` and `clickhouse_ci_analytics`. Disabled by default.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/424866) in GitLab 16.8. Feature flag `clickhouse_ci_analytics` removed.
-> - [Feature flags removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145665/diffs) in GitLab 16.10.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11180) as an [experiment](../../policy/experiment-beta-support.md#experiment) in GitLab 16.7 with [flags](../../administration/feature_flags.md) named `ci_data_ingestion_to_click_house` and `clickhouse_ci_analytics`. Disabled by default.
+> - [Enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/424866) in GitLab 16.10. Feature flags `ci_data_ingestion_to_click_house` and `clickhouse_ci_analytics` removed.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424789) to [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.1.
 
-This feature is an [experiment](../../policy/experiment-beta-support.md).
-To test it, we have launched an early adopters program.
-To join the list of users testing this feature, see
-[epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
+WARNING:
+This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+For more information, see [epic 11180](https://gitlab.com/groups/gitlab-org/-/epics/11180).
 
 To enable additional CI analytics features, [configure the ClickHouse integration](../../integration/clickhouse.md).
 

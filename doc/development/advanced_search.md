@@ -13,9 +13,24 @@ the [Elasticsearch integration documentation](../integration/advanced_search/ela
 
 ## Deep Dive
 
-In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/-/issues/1`) on the GitLab [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) to share his domain specific knowledge with anyone who may work in this part of the codebase in the future. You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on [Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf). Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details might have changed, it should still serve as a good introduction.
+In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only:
+`https://gitlab.com/gitlab-org/create-stage/-/issues/1`) on the GitLab
+[Elasticsearch integration](../integration/advanced_search/elasticsearch.md) to
+share his domain specific knowledge with anyone who may work in this part of the
+codebase in the future. You can find the
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on
+[Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in
+[PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf).
+Everything covered in this deep dive was accurate as of GitLab 12.0, and while
+specific details might have changed, it should still serve as a good introduction.
 
-In August 2020, a second Deep Dive was hosted, focusing on [GitLab-specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices). The <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg) and the [slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available. Everything covered in this deep dive was accurate as of GitLab 13.3.
+In August 2020, a second Deep Dive was hosted, focusing on
+[GitLab-specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices). The
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg) and the
+[slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available.
+Everything covered in this deep dive was accurate as of GitLab 13.3.
 
 ## Supported Versions
 
@@ -36,11 +51,24 @@ Additionally, if you need large repositories or multiple forks for testing, cons
 
 ## How does it work?
 
-The Elasticsearch integration depends on an external indexer. We ship an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). The user must trigger the initial indexing via a Rake task but, after this is done, GitLab itself will trigger reindexing when required via `after_` callbacks on create, update, and destroy that are inherited from [`/ee/app/models/concerns/elastic/application_versioned_search.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/concerns/elastic/application_versioned_search.rb).
+The Elasticsearch integration depends on an external indexer. We ship an
+[indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
+The user must trigger the initial indexing via a Rake task but, after this is done,
+GitLab itself will trigger reindexing when required via `after_` callbacks on create,
+update, and destroy that are inherited from
+[`/ee/app/models/concerns/elastic/application_versioned_search.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/concerns/elastic/application_versioned_search.rb).
 
-After initial indexing is complete, create, update, and delete operations for all models except projects (see [#207494](https://gitlab.com/gitlab-org/gitlab/-/issues/207494)) are tracked in a Redis [`ZSET`](https://redis.io/docs/latest/develop/data-types/#sorted-sets). A regular `sidekiq-cron` `ElasticIndexBulkCronWorker` processes this queue, updating many Elasticsearch documents at a time with the [Bulk Request API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html).
+After initial indexing is complete, create, update, and delete operations for all
+models except projects (see [#207494](https://gitlab.com/gitlab-org/gitlab/-/issues/207494))
+are tracked in a Redis [`ZSET`](https://redis.io/docs/latest/develop/data-types/#sorted-sets).
+A regular `sidekiq-cron` `ElasticIndexBulkCronWorker` processes this queue, updating
+many Elasticsearch documents at a time with the
+[Bulk Request API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html).
 
-Search queries are generated by the concerns found in [`ee/app/models/concerns/elastic`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/models/concerns/elastic). These concerns are also in charge of access control, and have been a historic source of security bugs so pay close attention to them!
+Search queries are generated by the concerns found in
+[`ee/app/models/concerns/elastic`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/models/concerns/elastic).
+These concerns are also in charge of access control, and have been a historic
+source of security bugs so pay close attention to them!
 
 ### Custom routing
 
@@ -54,7 +82,8 @@ during indexing and searching operations. Some of the benefits and tradeoffs to 
 
 ## Existing analyzers and tokenizers
 
-The following analyzers and tokenizers are defined in [`ee/lib/elastic/latest/config.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
+The following analyzers and tokenizers are defined in
+[`ee/lib/elastic/latest/config.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
 
 ### Analyzers
 
@@ -72,7 +101,9 @@ See the `sha_tokenizer` explanation later below for an example.
 
 #### `code_analyzer`
 
-Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer and the [`word_delimiter_graph`](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-word-delimiter-graph-tokenfilter.html), `lowercase`, and `asciifolding` filters.
+Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer
+and the [`word_delimiter_graph`](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-word-delimiter-graph-tokenfilter.html),
+`lowercase`, and `asciifolding` filters.
 
 The `whitespace` tokenizer was selected to have more control over how tokens are split. For example the string `Foo::bar(4)` needs to generate tokens like `Foo` and `bar(4)` to be properly searched.
 
@@ -85,7 +116,9 @@ The [Elasticsearch `code_analyzer` doesn't account for all code cases](../integr
 
 #### `sha_tokenizer`
 
-This is a custom tokenizer that uses the [`edgeNGram` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-edgengram-tokenizer.html) to allow SHAs to be searchable by any sub-set of it (minimum of 5 chars).
+This is a custom tokenizer that uses the
+[`edgeNGram` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-edgengram-tokenizer.html)
+to allow SHAs to be searchable by any sub-set of it (minimum of 5 chars).
 
 Example:
 
@@ -100,7 +133,9 @@ Example:
 
 #### `path_tokenizer`
 
-This is a custom tokenizer that uses the [`path_hierarchy` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pathhierarchy-tokenizer.html) with `reverse: true` to allow searches to find paths no matter how much or how little of the path is given as input.
+This is a custom tokenizer that uses the
+[`path_hierarchy` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pathhierarchy-tokenizer.html)
+with `reverse: true` to allow searches to find paths no matter how much or how little of the path is given as input.
 
 Example:
 
