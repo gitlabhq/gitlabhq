@@ -747,6 +747,25 @@ This is one small step towards moving away from CI/CD templates in preference of
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="17.4">
+
+## GitLab 17.4
+
+<div class="deprecation " data-milestone="17.4">
+
+### Removed Needs tab from the pipeline view
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">17.1</span>
+- Removal in GitLab <span class="milestone">17.4</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/336560).
+</div>
+
+We are removing the Needs tab from the pipeline view, as it duplicates the information displayed in the regular pipeline view with the **Job dependencies** grouping option. We will continue improving the views in the main pipeline graph in the future.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="17.3">
 
 ## GitLab 17.3
