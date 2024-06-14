@@ -449,7 +449,7 @@ There are several phases to fully deploy the HTTP Routing service to GitLab.com.
 1. The third phase involves multiple cells.
    1. For any new cell the HTTP Router routes to, the cell will have:
       1. An internal-only DNS, like `cell-2.gdrd.int.gitlab.com` that is only
-     accesible via the HTTP Router.
+     accessible via the HTTP Router.
       1. A secure, encrypted connection between the HTTP Router and the cell.
 
 ## Request flows
