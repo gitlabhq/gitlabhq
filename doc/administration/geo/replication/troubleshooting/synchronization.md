@@ -159,20 +159,25 @@ To solve this:
 1. Enter the [Rails console](../../../operations/rails_console.md) and run:
 
    ```ruby
-   failed_geo_syncs = Geo::ProjectRegistry.failed.pluck(:id)
-   failed_geo_syncs.each do |fgs|
-     puts Geo::ProjectRegistry.failed.find(fgs).project_id
+   failed_project_registries = Geo::ProjectRepositoryRegistry.failed
+
+   if failed_project_registries.any?
+     puts "Found #{failed_project_registries.count} failed project repository registry entries:"
+
+     failed_project_registries.each do |registry|
+       puts "ID: #{registry.id}, Project ID: #{registry.project_id}, Last Sync Failure: '#{registry.last_sync_failure}'"
+     end
+   else
+     puts "No failed project repository registry entries found."
    end
    ```
 
-1. Run the following commands to reset each project's
-   Geo-related attributes and execute a new sync:
+1. Run the following commands to execute a new sync for each project:
 
    ```ruby
-   failed_geo_syncs.each do |fgs|
-     registry = Geo::ProjectRegistry.failed.find(fgs)
-     registry.update(resync_repository: true, force_to_redownload_repository: false, repository_retry_count: 0)
-     Geo::RepositorySyncService.new(registry.project).execute
+   failed_project_registries.each do |registry|
+     registry.replicator.sync_repository
+     puts "Sync initiated for registry ID: #{registry.id}, Project ID: #{registry.project_id}"
    end
    ```
 
@@ -215,19 +220,19 @@ Commands that change data can cause damage if not run correctly or under the rig
 #### Get the number of verification failed repositories
 
 ```ruby
-Geo::ProjectRegistry.verification_failed('repository').count
+Geo::ProjectRepositoryRegistry.verification_failed.count
 ```
 
 #### Find the verification failed repositories
 
 ```ruby
-Geo::ProjectRegistry.verification_failed('repository')
+Geo::ProjectRepositoryRegistry.verification_failed
 ```
 
 #### Find repositories that failed to sync
 
 ```ruby
-Geo::ProjectRegistry.sync_failed('repository')
+Geo::ProjectRepositoryRegistry.failed
 ```
 
 ### Resync project and project wiki repositories
@@ -251,7 +256,7 @@ Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
 ```ruby
 project = Project.find_by_full_path('<group/project>')
 
-Geo::RepositorySyncService.new(project).execute
+project.replicator.sync_repository
 ```
 
 #### Sync all failed repositories now
@@ -269,18 +274,23 @@ The following script:
   and `nohup`.
 
 ```ruby
-Geo::ProjectRegistry.sync_failed('repository').find_each do |p|
+Geo::ProjectRepositoryRegistry.failed.find_each do |registry|
    begin
-     project = p.project
-     puts "#{project.full_path} | id: #{p.project_id} | last error: '#{p.last_repository_sync_failure}'"
-     Geo::RepositorySyncService.new(project).execute
+     puts "ID: #{registry.id}, Project ID: #{registry.project_id}, Last Sync Failure: '#{registry.last_sync_failure}'"
+     registry.replicator.sync_repository
+     puts "Sync initiated for registry ID: #{id}"
    rescue => e
-     puts "ID: #{p.project_id} failed: '#{e}'", e.backtrace.join("\n")
+     puts "ID: #{registry.id}, Project ID: #{registry.project_id}, Failed: '#{e}'", e.backtrace.join("\n")
    end
 end ; nil
 ```
 
 ## Find repository check failures in a Geo secondary site
+
+NOTE:
+All repositories data types have been migrated to the Geo Self-Service Framework in GitLab 16.3. There is an [issue to implement this functionality back in the Geo Self-Service Framework](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+
+For GitLab 16.2 and earlier:
 
 When [enabled for all projects](../../../repository_checks.md#enable-repository-checks-for-all-projects), [Repository checks](../../../repository_checks.md) are also performed on Geo secondary sites. The metadata is stored in the Geo tracking database.
 
@@ -319,6 +329,6 @@ The [`fsck` Rake command](../../../raketasks/check.md#check-project-code-reposit
 
 ```ruby
 Geo::ProjectRegistry.where(last_repository_check_failed: true).each do |pr|
-    RepositoryCheck::SingleRepositoryWorker.new.perform(pr.project_id)
+  RepositoryCheck::SingleRepositoryWorker.new.perform(pr.project_id)
 end
 ```

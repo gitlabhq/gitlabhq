@@ -1,46 +1,7 @@
 @import 'mixins_and_variables_and_functions';
 @import 'components/content_editor';
 
-.title .edit-wiki-header {
-  width: 780px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-right: 7px;
-}
-
 .wiki-page-header {
-  position: relative;
-
-  .wiki-breadcrumb {
-    border-bottom: 1px solid var(--gray-50, $gray-50);
-    padding: 11px 0;
-  }
-
-  .wiki-last-edit-by {
-    display: block;
-    color: var(--gray-500, $gray-500);
-
-    strong {
-      color: var(--gl-text-color, $gl-text-color);
-    }
-  }
-
-  .light {
-    font-weight: $gl-font-weight-normal;
-    color: var(--gray-500, $gray-500);
-  }
-
-  .git-clone-holder {
-    .input-group-prepend,
-    .input-group-append {
-      background-color: transparent;
-    }
-  }
-
-  &.has-sidebar-toggle .git-access-header {
-    padding-right: $sidebar-toggle-width;
-  }
-
   @include media-breakpoint-up(md) {
     &.has-sidebar-toggle {
       padding-right: 0;
@@ -52,19 +13,7 @@
   }
 }
 
-.wiki-git-access {
-  margin: $gl-padding 0;
-
-  h3 {
-    font-size: 19px;
-    font-weight: $gl-font-weight-normal;
-    margin: $gl-padding 0;
-  }
-}
-
 .right-sidebar.wiki-sidebar {
-  padding: 0;
-
   &.right-sidebar-collapsed {
     display: none;
   }
@@ -76,10 +25,6 @@
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
-  }
-
-  .blocks-container {
-    padding: 0 $gl-padding;
   }
 
   li > .wiki-list {
