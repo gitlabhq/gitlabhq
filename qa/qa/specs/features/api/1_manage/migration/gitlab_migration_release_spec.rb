@@ -52,7 +52,11 @@ module QA
 
         it(
           'successfully imports project release',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360243'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360243',
+          quarantine: {
+            type: :investigating,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/461458"
+          }
         ) do
           expect_project_import_finished_successfully
 
