@@ -235,7 +235,7 @@ including a large number of false positives.
 | `ADDITIONAL_CA_CERT_BUNDLE`    | `""`          | Bundle of CA certs that you want to trust. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. | All |
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. | All |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
-| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:7` | Docker image of the analyzer. | All |
+| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:7` | Docker image of the analyzer. Do not use the `:latest` tag with analyzer images provided by GitLab. | All |
 | `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. | All |
 | `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439782)** in GitLab 17.0. | All |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. | All |

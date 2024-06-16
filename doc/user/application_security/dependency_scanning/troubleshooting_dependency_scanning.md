@@ -60,7 +60,7 @@ affected. Read more in
 
 ### Getting warning message `gl-dependency-scanning-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
+For information on this, see the [general Application Security troubleshooting section](../../../user/application_security/troubleshooting_application_security.md#getting-warning-messages--reportjson-no-matching-files).
 
 ## `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
