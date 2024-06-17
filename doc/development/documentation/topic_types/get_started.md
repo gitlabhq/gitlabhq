@@ -53,8 +53,8 @@ Finally, add links, in this format:
 
 For more information, see:
 
-- [Create your first abc](LINK).
-- [Learn more about abc](LINK).
+- [Create your first abc](link.md).
+- [Learn more about abc](link.md).
 
 ## Step 2: The next thing
 
@@ -62,8 +62,8 @@ Don't link in the body content. Save links for the `for more information` area.
 
 For more information, see:
 
-- [Create your first abc](LINK).
-- [Learn more about abc](LINK).
+- [Create your first abc](link.md).
+- [Learn more about abc](link.md).
 ```
 
 ## Get started page titles

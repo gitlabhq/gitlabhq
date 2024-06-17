@@ -53,13 +53,13 @@ Settings are not cascading by default. To define a cascading setting, take the f
    migrations to add columns and change existing columns. Use the specifications
    below to create migrations as required:
 
-    1. Columns in `namespace_settings` table:
-        - `delayed_project_removal`: No default value. Null values allowed. Use any column type.
-        - `lock_delayed_project_removal`: Boolean column. Default value is false. Null values not allowed.
-    1. Columns in `application_settings` table:
-        - `delayed_project_removal`: Type matching for the column created in `namespace_settings`.
-          Set default value as desired. Null values not allowed.
-        - `lock_delayed_project_removal`: Boolean column. Default value is false. Null values not allowed.
+   1. Columns in `namespace_settings` table:
+      - `delayed_project_removal`: No default value. Null values allowed. Use any column type.
+      - `lock_delayed_project_removal`: Boolean column. Default value is false. Null values not allowed.
+   1. Columns in `application_settings` table:
+      - `delayed_project_removal`: Type matching for the column created in `namespace_settings`.
+        Set default value as desired. Null values not allowed.
+      - `lock_delayed_project_removal`: Boolean column. Default value is false. Null values not allowed.
 
 ## Convenience methods
 

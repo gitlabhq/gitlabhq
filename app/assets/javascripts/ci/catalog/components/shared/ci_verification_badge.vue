@@ -2,10 +2,14 @@
 import { GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { VERIFICATION_LEVELS } from '../../constants';
+import {
+  VERIFICATION_LEVELS,
+  VERIFICATION_LEVEL_VERIFIED_CREATOR_MAINTAINED,
+} from '../../constants';
 
 export default {
   i18n: {
+    verifiedCreatorPopoverLink: s__('CiCatalog|What are verified component creators?'),
     verificationLevelPopoverLink: s__('CiCatalog|Learn more about designated creators'),
   },
   verificationHelpPagePath: helpPagePath('ci/components/index', {
@@ -34,6 +38,11 @@ export default {
     },
   },
   computed: {
+    popoverLink() {
+      return this.verificationLevel === VERIFICATION_LEVEL_VERIFIED_CREATOR_MAINTAINED
+        ? this.$options.i18n.verifiedCreatorPopoverLink
+        : this.$options.i18n.verificationLevelPopoverLink;
+    },
     popoverTarget() {
       return `${this.resourceId}-verification-icon`;
     },
@@ -68,7 +77,7 @@ export default {
           </gl-sprintf>
         </span>
         <gl-link :href="$options.verificationHelpPagePath" target="_blank">
-          {{ $options.i18n.verificationLevelPopoverLink }}
+          {{ popoverLink }}
         </gl-link>
       </div>
     </gl-popover>

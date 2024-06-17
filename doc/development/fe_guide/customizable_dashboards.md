@@ -312,3 +312,26 @@ export default {
   </customizable-dashboard>
 </template>
 ```
+
+## Introducing visualizations behind a feature flag
+
+While developing new visualizations we can use [feature flags](../feature_flags/index.md#create-a-new-feature-flag) to mitigate risks of disruptions or incorrect data for users.
+
+The [`from_data`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/product_analytics/panel.rb#L7) method builds the panel objects for a dashboard. Using the `filter_map` method, we can add a condition to skip rendering panels that include the visualization we are developing.
+
+For example, here we have added the `enable_usage_overview_visualization` feature flag and can check it's current state to determine whether panels using the `usage_overview` visualization should be rendered:
+
+```ruby
+panel_yaml.filter_map do |panel|
+  # Skip processing the usage_overview panel if the feature flag is disabled
+  next if panel['visualization'] == 'usage_overview' && Feature.disabled?(:enable_usage_overview_visualization)
+
+  new(
+    title: panel['title'],
+    project: project,
+    grid_attributes: panel['gridAttributes'],
+    query_overrides: panel['queryOverrides'],
+    visualization: panel['visualization']
+  )
+end
+```

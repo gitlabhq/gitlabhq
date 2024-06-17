@@ -14,7 +14,7 @@ to GitLab code using the Web IDE.
 1. Go to the [GitLab community fork](https://gitlab.com/gitlab-community/gitlab).
 
 1. Search the GitLab code for the string `Customize the color of GitLab`.
-From the [GitLab Community Fork](https://gitlab.com/gitlab-community/gitlab):
+   From the [GitLab Community Fork](https://gitlab.com/gitlab-community/gitlab):
 
    1. On the left sidebar, select **Search or go to**.
    1. Enter the search string `"Customize the color of GitLab"`.

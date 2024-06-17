@@ -16,7 +16,7 @@ module Gitlab
       MATCHING_BASIC_FIELDS = %i[
         author_id iid state_id title title_html description description_html cached_markdown_version lock_version
         last_edited_at last_edited_by_id created_at updated_at closed_at closed_by_id confidential
-        external_key
+        external_key imported_from
       ].freeze
 
       class Epics < ApplicationRecord

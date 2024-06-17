@@ -59,7 +59,7 @@ MR. Also add the Guideline to the "SAST Coverage" table above.
 ### Creating new RuboCop rule
 
 1. Follow the [RuboCop development doc](rubocop_development_guide.md#creating-new-rubocop-cops).
-For an example, see [this merge request](https://gitlab.com/gitlab-org/gitlab-qa/-/merge_requests/1280) on adding a rule to the `gitlab-qa` project.
+   For an example, see [this merge request](https://gitlab.com/gitlab-org/gitlab-qa/-/merge_requests/1280) on adding a rule to the `gitlab-qa` project.
 1. The cop itself should reside in the `gitlab-security` [gem project](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/tree/master/lib/rubocop/cop/gitlab_security)
 
 ## Permissions
@@ -1361,7 +1361,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
   - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
 - Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
 - When credentials are required in a CI/CD job, use [masked variables](../ci/variables/index.md#mask-a-cicd-variable) to help prevent accidental exposure in the job logs. Be aware that when [debug logging](../ci/variables/index.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Also consider using [protected variables](../ci/variables/index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
-- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](hhttps://handbook.gitlab.com/handbook/security/product-security/application-security/inventory/#policies) and our [Data Classification Standards](https://handbook.gitlab.com/handbook/security/data-classification-standard/#standard).
+- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://handbook.gitlab.com/handbook/security/product-security/application-security/inventory/#policies) and our [Data Classification Standards](https://handbook.gitlab.com/handbook/security/data-classification-standard/#standard).
 - To store and/or share credentials between teams, refer to [1Password for Teams](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams) and follow [the 1Password Guidelines](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-guidelines).
 - If you need to share a secret with a team member, use 1Password. Do not share a secret over email, Slack, or other service on the Internet.
 

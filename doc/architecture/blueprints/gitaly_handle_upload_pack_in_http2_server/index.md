@@ -94,7 +94,7 @@ the work of this optimization. More context surrounds it but, in summary, there 
   [server](https://github.com/grpc/grpc-go/blob/master/internal/transport/http2_server.go)). So, even if we can overpass the protobuf problem with a
   [custom codec](https://github.com/grpc/grpc-go/blob/master/Documentation/encoding.md), `grpc-go` is still an unsolved problem.
   [Upstream discussion](https://github.com/grpc/grpc-go/issues/1455) (for read path only) about reusing memory is still pending.
-  [An attempt to add pooled memory]( https://github.com/grpc/grpc-go/commit/642675125e198ce612ea9caff4bf75d3a4a45667) was reverted because it conflicts with typical
+  [An attempt to add pooled memory](https://github.com/grpc/grpc-go/commit/642675125e198ce612ea9caff4bf75d3a4a45667) was reverted because it conflicts with typical
   usage patterns.
 
 We have developed a protocol called Sidechannel, which enables us to communicate raw binary data with clients through an out-of-band channel, bypassing the `grpc-go`

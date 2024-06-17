@@ -37,7 +37,7 @@ For example:
 ```markdown
 ## Feature name
 
-> - [Introduced](<link-to-issue>) in GitLab 11.3.
+> - [Introduced](https://issue-link) in GitLab 11.3.
 
 This feature does something.
 ```
@@ -67,15 +67,15 @@ Start the sentence with the feature name or a gerund.
 For example, on the issue boards page:
 
 ```markdown
-> - [Introduced](<link-to-issue>) in GitLab 13.1.
-> - Creating an issue from an issue board [introduced](<link-to-issue>) in GitLab 14.1.
+> - [Introduced](https://issue-link) in GitLab 13.1.
+> - Creating an issue from an issue board [introduced](https://issue-link) in GitLab 14.1.
 ```
 
 Or on email notifications page:
 
 ```markdown
-> - [Introduced](<link-to-issue>) in GitLab 13.1.
-> - Notifications for expiring tokens [introduced](<link-to-issue>) in GitLab 14.3.
+> - [Introduced](https://issue-link) in GitLab 13.1.
+> - Notifications for expiring tokens [introduced](https://issue-link) in GitLab 14.3.
 ```
 
 #### Making features available as part of a program
@@ -83,8 +83,8 @@ Or on email notifications page:
 When a feature is made available to users as a part of a program, add a new list item.
 
 ```markdown
-> - [Introduced](<link-to-issue>) in GitLab 15.1.
-> - Merged results pipelines [added](<link-to-issue>) to the [Registration Features Program](<link-to-page>) in GitLab 16.7.
+> - [Introduced](https://issue-link) in GitLab 15.1.
+> - Merged results pipelines [added](https://issue-link) to the [Registration Features Program](https://page-link) in GitLab 16.7.
 ```
 
 #### Moving subscription tiers
@@ -92,8 +92,8 @@ When a feature is made available to users as a part of a program, add a new list
 If a feature is moved to another subscription tier, use `moved`:
 
 ```markdown
-> - [Moved](<link-to-issue>) from GitLab Ultimate to GitLab Premium in 11.8.
-> - [Moved](<link-to-issue>) from GitLab Premium to GitLab Free in 12.0.
+> - [Moved](https://issue-link) from GitLab Ultimate to GitLab Premium in 11.8.
+> - [Moved](https://issue-link) from GitLab Premium to GitLab Free in 12.0.
 ```
 
 #### Changing the feature status
@@ -101,14 +101,14 @@ If a feature is moved to another subscription tier, use `moved`:
 If the feature status changes to experiment or beta, use `changed`:
 
 ```markdown
-> - [Introduced](<link-to-issue>) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 15.7.
-> - [Changed](<link-to-issue>) to beta in GitLab 16.0.
+> - [Introduced](https://issue-link) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 15.7.
+> - [Changed](https://issue-link) to beta in GitLab 16.0.
 ```
 
 For a change to generally available, use:
 
 ```markdown
-> - [Generally available](issue-link) in GitLab 16.10.
+> - [Generally available](https://issue-link) in GitLab 16.10.
 ```
 
 #### Features introduced behind feature flags
@@ -123,7 +123,7 @@ inline with the existing text. If possible, include a link to the related issue,
 merge request, or epic. For example:
 
 ```markdown
-The voting strategy [in GitLab 13.4 and later](<link-to-issue>) requires the primary and secondary
+The voting strategy [in GitLab 13.4 and later](https://issue-link) requires the primary and secondary
 voters to agree.
 ```
 
@@ -150,8 +150,8 @@ To deprecate a page or topic:
    **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
    WARNING:
-   This feature was [deprecated](<link-to-issue>) in GitLab 14.8
-   and is planned for removal in 15.4. Use [feature X](<link-to-docs>) instead.
+   This feature was [deprecated](https://issue-link) in GitLab 14.8
+   and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
    ```
 
    If you're not sure when the feature will be removed or no
@@ -178,8 +178,8 @@ To deprecate a page or topic:
    **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
    WARNING:
-   This feature was [deprecated](<link-to-issue>) in GitLab 14.8
-   and is planned for removal in 15.4. Use [feature X](<link-to-docs>) instead.
+   This feature was [deprecated](https://issue-link) in GitLab 14.8
+   and is planned for removal in 15.4. Use [feature X](link-to-docs.md) instead.
 
    <!--- end_remove -->
    ```
@@ -216,9 +216,9 @@ To remove a page:
    **Tier:** Premium, Ultimate
    **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-   This feature was [deprecated](<link-to-issue>) in GitLab X.Y
-   and [removed](<link-to-issue>) in X.Y.
-   Use [feature X](<link-to-docs>) instead.
+   This feature was [deprecated](https://issue-link) in GitLab X.Y
+   and [removed](https://issue-link) in X.Y.
+   Use [feature X](link-to-docs.md) instead.
    ```
 
 1. Remove the page's entry from the global navigation by editing [`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/content/_data/navigation.yaml) in `gitlab-docs`.
@@ -245,9 +245,9 @@ To remove a topic:
    **Tier:** Premium, Ultimate
    **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-   This feature was [deprecated](<link-to-issue>) in GitLab X.Y
-   and [removed](<link-to-issue>) in X.Y.
-   Use [feature X](<link-to-docs>) instead.
+   This feature was [deprecated](https://issue-link) in GitLab X.Y
+   and [removed](https://issue-link) in X.Y.
+   Use [feature X](link-to-docs.md) instead.
 
    <!--- end_remove -->
    ```
@@ -316,8 +316,8 @@ We cannot guarantee future feature work, and promises
 like these can raise legal issues. Instead, say that an issue exists.
 For example:
 
-- Support for improvements is proposed in `[issue <issue_number>](LINK-TO-ISSUE)`.
-- You cannot do this thing, but `[issue 12345](LINK-TO-ISSUE)` proposes to change this behavior.
+- Support for improvements is proposed in `[issue <issue_number>](https://link-to-issue)`.
+- You cannot do this thing, but `[issue 12345](https://link-to-issue)` proposes to change this behavior.
 
 You can say that we plan to remove a feature.
 

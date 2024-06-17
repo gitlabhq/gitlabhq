@@ -11139,6 +11139,9 @@ msgstr ""
 msgid "CiCatalog|Created and maintained by a %{boldStart}GitLab Partner%{boldEnd}"
 msgstr ""
 
+msgid "CiCatalog|Created and maintained by a %{boldStart}verified creator%{boldEnd}"
+msgstr ""
+
 msgid "CiCatalog|Discover CI/CD components that can improve your pipeline with additional functionality."
 msgstr ""
 
@@ -11232,7 +11235,13 @@ msgstr ""
 msgid "CiCatalog|Use the 'release' keyword in a CI/CD job to publish to the CI/CD Catalog."
 msgstr ""
 
+msgid "CiCatalog|Verified creator"
+msgstr ""
+
 msgid "CiCatalog|We want to help you create and manage pipeline component repositories, while also making it easier to reuse pipeline configurations. Let us know how we're doing!"
+msgstr ""
+
+msgid "CiCatalog|What are verified component creators?"
 msgstr ""
 
 msgid "CiCatalog|Your groups"
@@ -39869,6 +39878,9 @@ msgid "ProductAnalytics|Current month to date"
 msgstr ""
 
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
+msgstr ""
+
+msgid "ProductAnalytics|Dimension"
 msgstr ""
 
 msgid "ProductAnalytics|Dimensions"

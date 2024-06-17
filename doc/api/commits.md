@@ -896,7 +896,7 @@ Example response:
 
 ## Get signature of a commit
 
-Get the [signature from a commit](../user/project/repository/signed_commits),
+Get the [signature from a commit](../user/project/repository/signed_commits/index.md),
 if it is signed. For unsigned commits, it results in a 404 response.
 
 ```plaintext

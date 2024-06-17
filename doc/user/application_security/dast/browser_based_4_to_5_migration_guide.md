@@ -74,7 +74,7 @@ Follow the progress of the remaining checks in the epic [Remaining active checks
 ## Changes to CI/CD variables
 
 The following table outlines migration actions required for each browser-based analyzer DAST version 4 CI/CD variable.
-See [configuration](browser/configuration) for more information on configuring the browser-based analyzer.
+See [configuration](browser/configuration/index.md) for more information on configuring the browser-based analyzer.
 
 | DAST version 4 CI/CD variable               | Required action    | Notes                                         |
 |:--------------------------------------------|:-------------------|:----------------------------------------------|

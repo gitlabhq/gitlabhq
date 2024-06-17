@@ -28,7 +28,7 @@ For example:
 DETAILS:
 **Status:** Experiment
 
-> - [Introduced](link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/experiment-beta-support.md).
+> - [Introduced](https://issue-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.
@@ -39,7 +39,7 @@ Use this new feature when you need to do this new thing.
 
 This feature is an [experiment](<link_to>/policy/experiment-beta-support.md). To join
 the list of users testing this feature, do this thing. If you find a bug,
-[open an issue](link).
+[open an issue](https://link).
 ```
 
 When the feature is ready for production, remove:

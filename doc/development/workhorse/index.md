@@ -142,9 +142,3 @@ for specific behavior but the high-level integration tests should have
 the first priority during development.
 
 It is OK if a feature is only covered by integration tests.
-
-<!--
-## License
-
-This code is distributed under the MIT license, see the [LICENSE](LICENSE) file.
--->

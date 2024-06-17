@@ -96,7 +96,7 @@ Gateways can be used, for example, to implement sink endpoints to intercept
 Cloud Events, wrap into an internally used Ruby classes and allow developers /
 users to subscribe to them.
 
-We also may be able to implement [cross-Cell](../cells) communication through a
+We also may be able to implement [cross-Cell](../cells/index.md) communication through a
 generic events bus implemented using Gateways.
 
 There are also ideas around cross-instance communication to improve how GitLab

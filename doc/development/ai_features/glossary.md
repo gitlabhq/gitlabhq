@@ -26,7 +26,7 @@ to AI that you think could benefit from being in this list, add it!
   [MVC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134610).
   [Design doc for next iteration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136127).
 - **Cloud Connector**: Cloud Connector is a way to access services common to
-multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the
+  multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the
   set of technical solutions and APIs used to make such services available to all GitLab customers.
   For more information, see the [Cloud Connector architecture](../cloud_connector/architecture.md).
 - **Closed Source Model**: A private model fine-tuned or built from scratch by an organisation. These may be hosted as cloud services, for example ChatGPT.

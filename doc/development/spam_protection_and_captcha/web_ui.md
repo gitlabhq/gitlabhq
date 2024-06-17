@@ -15,8 +15,8 @@ Three different scenarios are supported. Two are used with JavaScript XHR/Fetch 
 for either Apollo or Axios, and one is used only with standard HTML form requests:
 
 1. A JavaScript-based submission (possibly via Vue)
-    1. Using Apollo (GraphQL API via Fetch/XHR request)
-    1. Using Axios (REST API via Fetch/XHR request)
+   1. Using Apollo (GraphQL API via Fetch/XHR request)
+   1. Using Axios (REST API via Fetch/XHR request)
 1. A standard HTML form submission (HTML request)
 
 Some parts of the implementation depend upon which of these scenarios you must support.
@@ -82,12 +82,12 @@ changes required to the relevant backend controller actions (typically just `cre
    - The `needs_recaptcha` property on the model is set to true.
 1. Wrap the existing controller action return value (rendering or redirecting) in a block passed to
    a `#with_captcha_check_json_format` helper method, which transparently handles:
-    1. Check if CAPTCHA is enabled, and if so, proceeding with the next step.
-    1. Checking if there the model contains an error, and the `needs_recaptcha` flag is true.
-       - If yes: Add the appropriate spam or CAPTCHA fields to the JSON response, and return
-         a `409 - Conflict` HTTP status code.
-       - If no (if CAPTCHA is disabled or if no spam was detected): The standard request return
-         logic passed in the block is run.
+   1. Check if CAPTCHA is enabled, and if so, proceeding with the next step.
+   1. Checking if there the model contains an error, and the `needs_recaptcha` flag is true.
+      - If yes: Add the appropriate spam or CAPTCHA fields to the JSON response, and return
+        a `409 - Conflict` HTTP status code.
+      - If no (if CAPTCHA is disabled or if no spam was detected): The standard request return
+        logic passed in the block is run.
 
 Thanks to the abstractions, it's more straightforward to implement than it is to explain it.
 You don't have to worry much about the hidden details!

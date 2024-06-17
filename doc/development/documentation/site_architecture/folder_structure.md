@@ -62,8 +62,8 @@ When working with directories and files:
      Every page you would navigate under `/profile` should have its own document,
      for example, `account.md`, `applications.md`, or `emails.md`.
 1. In the `doc/administration/` directory: all administrator-related
-     documentation for administrators, including admin tasks done in both
-    the UI and on the backend servers.
+   documentation for administrators, including admin tasks done in both
+   the UI and on the backend servers.
 
 If you're unsure where to place a document or a content addition, this shouldn't
 stop you from authoring and contributing. Use your best judgment, and then ask

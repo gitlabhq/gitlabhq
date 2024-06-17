@@ -26,33 +26,33 @@ Enable any relevant feature flag, if the spam/CAPTCHA support is behind a featur
 ## Set up Akismet and reCAPTCHA
 
 1. To set up reCAPTCHA:
-    1. Review the [GitLab reCAPTCHA documentation](../../integration/recaptcha.md).
-    1. Get Google's official test reCAPTCHA credentials using the instructions from
-       [Google's reCAPTCHA documentation](https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-tests-with-recaptcha.-what-should-i-do).
-        1. For **Site key**, use: `6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`
-        1. For **Secret key**, use: `6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe`
-    1. Go to **Admin -> Settings -> Reporting** settings: `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
-    1. Expand the **Spam and Anti-bot Protection** section.
-    1. Select **Enable reCAPTCHA**. Enabling for login is not required unless you are testing that feature.
-    1. Enter the **Site key** and **Secret key**.
+   1. Review the [GitLab reCAPTCHA documentation](../../integration/recaptcha.md).
+   1. Get Google's official test reCAPTCHA credentials using the instructions from
+      [Google's reCAPTCHA documentation](https://developers.google.com/recaptcha/docs/faq#id-like-to-run-automated-tests-with-recaptcha.-what-should-i-do).
+      1. For **Site key**, use: `6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI`
+      1. For **Secret key**, use: `6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe`
+   1. Go to **Admin -> Settings -> Reporting** settings: `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
+   1. Expand the **Spam and Anti-bot Protection** section.
+   1. Select **Enable reCAPTCHA**. Enabling for login is not required unless you are testing that feature.
+   1. Enter the **Site key** and **Secret key**.
 1. To set up Akismet:
-    1. Review the [GitLab documentation on Akismet](../../integration/akismet.md).
-    1. Get an Akismet API key. You can sign up for [a testing key from Akismet](https://akismet.com).
-       You must enter your local host (such as`gdk.test`) and email when signing up.
-    1. Go to GitLab Akismet settings page, for example:
-       `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
-    1. Enable Akismet and enter your Akismet **API key**.
+   1. Review the [GitLab documentation on Akismet](../../integration/akismet.md).
+   1. Get an Akismet API key. You can sign up for [a testing key from Akismet](https://akismet.com).
+      You must enter your local host (such as`gdk.test`) and email when signing up.
+   1. Go to GitLab Akismet settings page, for example:
+      `http://gdk.test:3000/admin/application_settings/reporting#js-spam-settings`
+   1. Enable Akismet and enter your Akismet **API key**.
 1. To force an Akismet false-positive spam check, refer to the
    [Akismet API documentation](https://akismet.com/developers/detailed-docs/comment-check/) and
    [Akismet Getting Started documentation](https://akismet.com/support/getting-started/confirm/) for more details:
-    1. You can use `akismet-guaranteed-spam@example.com` as the author email to force spam using the following steps:
-        1. Go to user email settings: `http://gdk.test:3000/-/profile/emails`
-        1. Add `akismet-guaranteed-spam@example.com` as a secondary email for the administrator user.
-        1. Confirm it in the Rails console: `bin/rails c` -> `User.find_by_username('root').emails.last.confirm`
-        1. Switch this verified email to be your primary email:
-           1. Go to **Avatar dropdown list -> Edit Profile -> Main Settings**.
-           1. For **Email**, enter `akismet-guaranteed-spam@example.com` to replace `admin@example.com`.
-           1. Select **Update Profile Settings** to save your changes.
+   1. You can use `akismet-guaranteed-spam@example.com` as the author email to force spam using the following steps:
+      1. Go to user email settings: `http://gdk.test:3000/-/profile/emails`
+      1. Add `akismet-guaranteed-spam@example.com` as a secondary email for the administrator user.
+      1. Confirm it in the Rails console: `bin/rails c` -> `User.find_by_username('root').emails.last.confirm`
+      1. Switch this verified email to be your primary email:
+         1. Go to **Avatar dropdown list -> Edit Profile -> Main Settings**.
+         1. For **Email**, enter `akismet-guaranteed-spam@example.com` to replace `admin@example.com`.
+         1. Select **Update Profile Settings** to save your changes.
 
 ## Test in the web UI
 
@@ -164,20 +164,6 @@ only models with full Spam and CAPTCHA support.
 In this example, Akismet and CAPTCHA are enabled:
 
 1. [Initial request](#initial-request).
-
-<!-- TODO in future edit
-
-Some example videos:
-
-- REST API:
-
-![CAPTCHA REST API](/uploads/b148cbe45496e6f4a4f63d00bb9fbd8a/captcha_rest_api.mov)
-
-GraphQL API:
-
-![CAPTCHA GraphQL API](/uploads/3c7ef0fad0b84bd588572bae51519463/captcha_graphql_api.mov)
-
--->
 
 #### Initial request
 

@@ -210,21 +210,21 @@ The GitLab.com configuration should be almost the same as the [CustomersDot conf
 As an example, the feature is delivered as a stand-alone service called `new_feature`.
 
 1. Call `CloudConnector::AvailableServices.find_by_name(:new_feature).access_token(user_or_namespace)`
-and include this token in the `Authorization` HTTP header field.
+   and include this token in the `Authorization` HTTP header field.
 
-    - On GitLab.com, it will self-issue a token with scopes that depend on the provided resource:
-      - For a user: scopes will be based on the user's seat assignment
-      - For a namespace: scopes will be based on purchased add-ons for this namespace
-          - If a service can be accessed for free, the token will include all available scopes for that service.
-          - For Duo Chat, the **JWT** would include the `documentation_search` and `duo_chat` scopes.
-    - On self-managed, it will always return `::CloudConnector::ServiceAccessToken` **JWT** token.
-      - Provided parameters such as user, namespace or extra claims would be ignored for Self managed instances.
-        Refer to [this section](#the-new-feature-is-introduced-through-the-existing-backend-service) to see how custom claims are handled for self-managed instances.
+   - On GitLab.com, it will self-issue a token with scopes that depend on the provided resource:
+     - For a user: scopes will be based on the user's seat assignment
+     - For a namespace: scopes will be based on purchased add-ons for this namespace
+       - If a service can be accessed for free, the token will include all available scopes for that service.
+       - For Duo Chat, the **JWT** would include the `documentation_search` and `duo_chat` scopes.
+   - On self-managed, it will always return `::CloudConnector::ServiceAccessToken` **JWT** token.
+     - Provided parameters such as user, namespace or extra claims would be ignored for Self managed instances.
+       Refer to [this section](#the-new-feature-is-introduced-through-the-existing-backend-service) to see how custom claims are handled for self-managed instances.
 
-    The **backend service** (i.e. Ai Gateway) must validate this token and any scopes it carries when receiving the request.
+   The **backend service** (i.e. Ai Gateway) must validate this token and any scopes it carries when receiving the request.
 
 1. If you need to embed additional claims in the token specific to your use case, you can pass these
-    in the `extra_claims` argument.
+   in the `extra_claims` argument.
 
 1. Ensure your request sends the required headers to the [backend service](#implement-authorization-checks-in-backend-service).
 
@@ -244,7 +244,7 @@ and include this token in the `Authorization` HTTP header field.
 To decide if the service is available or visible to the end user, we need to:
 
 - Optional. On self-managed GitLab, if the new feature is introduced as a new [enterprise feature](../ee_features.md#implement-a-new-ee-feature),
-    check to determine if user has access to the feature by following the [EE feature guildeline](../ee_features.md#guard-your-ee-feature).
+  check to determine if user has access to the feature by following the [EE feature guildeline](../ee_features.md#guard-your-ee-feature).
 
   ```ruby
     next true if ::Gitlab::Saas.feature_available?(:new_feature_on_saas)

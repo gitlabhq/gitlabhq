@@ -21,7 +21,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](<link-to-issue>) in GitLab 16.3.
+> - [Introduced](https://link-to-issue) in GitLab 16.3.
 > - Updated in GitLab 16.4.
 ```
 

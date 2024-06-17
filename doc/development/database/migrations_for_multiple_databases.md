@@ -80,9 +80,9 @@ end
    introduced_by_url: Merge request link
    milestone: Milestone example
    feature_categories:
-    - Feature category example
+   - Feature category example
    classes:
-    - Class example
+   - Class example
    gitlab_schema: gitlab_main
    ```
 

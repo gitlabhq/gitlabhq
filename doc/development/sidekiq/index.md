@@ -18,10 +18,10 @@ There are pages with additional detail on the following topics:
 1. [Limited capacity worker: continuously performing work with a specified concurrency](limited_capacity_worker.md)
 1. [Logging](logging.md)
 1. [Worker attributes](worker_attributes.md)
-    1. **Job urgency** specifies queuing and execution SLOs
-    1. **Resource boundaries** and **external dependencies** for describing the workload
-    1. **Feature categorization**
-    1. **Database load balancing**
+   1. **Job urgency** specifies queuing and execution SLOs
+   1. **Resource boundaries** and **external dependencies** for describing the workload
+   1. **Feature categorization**
+   1. **Database load balancing**
 
 ## ApplicationWorker
 

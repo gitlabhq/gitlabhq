@@ -11,7 +11,12 @@ module QA
       end
 
       it 'can preview markdown side-by-side while editing', :blocking,
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367749' do
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/367749',
+        quarantine: {
+          only: { job: 'gdk' },
+          type: 'test_environment',
+          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466663'
+        } do
         project.visit!
         Page::Project::Show.perform do |project|
           project.click_file('README.md')
@@ -21,7 +26,7 @@ module QA
 
         Page::File::Edit.perform do |file|
           file.remove_content
-          file.add_content('# ' + edited_readme_content)
+          file.add_content("# #{edited_readme_content}")
           file.preview
           expect(file.has_markdown_preview?('h1', edited_readme_content)).to be true
           file.commit_changes

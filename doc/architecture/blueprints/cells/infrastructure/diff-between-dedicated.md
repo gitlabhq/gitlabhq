@@ -360,7 +360,7 @@ Deployments of anything to these clusters are managed through at least three rep
 
 VMs:
 
-Managed by Ansible: A mixture of [SSH](<https://gitlab-com.gitlab.io/gl-infra/gitlab-dedicated/team/runbooks/tenant-ssh.html>] (internal link) with the use of [Identify-Aware Proxy](https://cloud.google.com/compute/docs/connect/ssh-using-iap).
+Managed by Ansible: A mixture of [SSH](https://gitlab-com.gitlab.io/gl-infra/gitlab-dedicated/team/runbooks/tenant-ssh.html) (internal link) with the use of [Identify-Aware Proxy](https://cloud.google.com/compute/docs/connect/ssh-using-iap).
 This must be used with the [Break glass procedure](https://gitlab-com.gitlab.io/gl-infra/gitlab-dedicated/team/engineering/breaking_glass.html) (internal link).
 
 Kubernetes:

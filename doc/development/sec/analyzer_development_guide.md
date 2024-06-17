@@ -39,7 +39,7 @@ Analyzers are shipped as Docker images. For example, to run the
        registry.gitlab.com/gitlab-org/security-products/analyzers/semgrep:latest /analyzer run
    ```
 
-1. The Docker container generates a report in the mounted project directory with a report filename corresponding to the analyzer category. For example, [SAST](../../user/application_security/sast) generates a file named `gl-sast-report.json`.
+1. The Docker container generates a report in the mounted project directory with a report filename corresponding to the analyzer category. For example, [SAST](../../user/application_security/sast/index.md) generates a file named `gl-sast-report.json`.
 
 ## Analyzers development
 

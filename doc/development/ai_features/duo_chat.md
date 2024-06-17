@@ -214,7 +214,7 @@ project will be created during request.
 1. Restart GDK.
 1. Ask any question to chat.
 1. Observe project in the LangSmith [page](https://smith.langchain.com/) > Projects > \[Project name\]. 'Runs' tab should contain
-your last requests.
+   your last requests.
 
 ## Testing GitLab Duo Chat
 
@@ -342,9 +342,9 @@ run the `rspec-ee unit gitlab-duo-chat-qa` on the `master` the branch:
    run and then manually kick off this job by selecting the "Play" icon.
 
 When the test runs on `master`, the reporter script posts the generated report as an issue,
-saves the evaluations artfacts as a snippet, and updates the tracking issue in
+saves the evaluations artifacts as a snippet, and updates the tracking issue in
 [`GitLab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
-in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](<https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation>).
+in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation).
 
 ## GraphQL Subscription
 

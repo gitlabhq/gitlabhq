@@ -36,7 +36,7 @@ gem 'chemlab', '~> 0.11', '>= 0.11.1'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1', '>= 0.1.1'
 
 # dependencies for jenkins client
-gem 'nokogiri', '~> 1.16', '>= 1.16.5'
+gem 'nokogiri', '~> 1.16', '>= 1.16.6'
 
 gem 'deprecation_toolkit', '~> 2.2.0', require: false
 

@@ -166,7 +166,7 @@ This applies to Rails controllers, Grape endpoints, and any other Rack requests.
 The process for adding a new throttle is loosely:
 
 1. Add new fields to the [rate_limits JSONB column](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/models/application_setting.rb#L603)
-in the `ApplicationSetting` model.
+   in the `ApplicationSetting` model.
 1. Update the JSON schema validator for the [rate_limits column](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/validators/json_schemas/application_setting_rate_limits.json).
 1. Extend `Gitlab::RackAttack` and `Gitlab::RackAttack::Request` to configure the new rate limit,
    and apply it to the desired requests.

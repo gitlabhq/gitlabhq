@@ -857,13 +857,13 @@ Follow these guidelines for link text.
 
 As much as possible, use text that follows one of these patterns:
 
-- `For more information, see [LINK TEXT](LINK)`.
-- `To [DO THIS THING], see [LINK TEXT](LINK)`
+- `For more information, see [link text](link.md)`.
+- `To [DO THIS THING], see [link text](link.md)`
 
 For example:
 
-- `For more information, see [merge requests](LINK).`
-- `To create a review app, see [review apps](LINK).`
+- `For more information, see [merge requests](link.md).`
+- `To create a review app, see [review apps](link.md).`
 
 You can expand on this text by using phrases like
 `For more information about this feature, see...`
@@ -872,8 +872,8 @@ Do not use the following constructions:
 
 - `Learn more about...`
 - `To read more...`.
-- `For more information, see the [Merge requests](LINK) page.`
-- `For more information, see the [Merge requests](LINK) documentation.`
+- `For more information, see the [Merge requests](link.md) page.`
+- `For more information, see the [Merge requests](link.md) documentation.`
 
 #### Descriptive text rather than `here`
 
@@ -881,18 +881,18 @@ Use descriptive text for links, rather than words like `here` or `this page.`
 
 For example, instead of:
 
-- `For more information, see [this page](LINK).`
-- `For more information, go [here](LINK).`
+- `For more information, see [this page](link.md).`
+- `For more information, go [here](link.md).`
 
 Use:
 
-- `For more information, see [merge requests](LINK)`.
+- `For more information, see [merge requests](link.md)`.
 
 #### Links to issues
 
 When linking to an issue, include the issue number in the link. For example:
 
-- `For more information, see [issue 12345](LINK).`
+- `For more information, see [issue 12345](link.md).`
 
 Do not use the pound sign (`issue #12345`).
 
@@ -1420,7 +1420,7 @@ videos that might be out-of-date.
 
 ```markdown
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Video Title](link-to-video).
+For an overview, see [Video Title](https://link-to-video).
 <!-- Video published on YYYY-MM-DD -->
 ```
 
@@ -1489,7 +1489,7 @@ With this formatting:
 Linking to click-through demos should follow similar guidelines to [videos](#videos).
 
 ```markdown
-For a click-through demo, see [Demo Title](link-to-demo).
+For a click-through demo, see [Demo Title](https://link-to-demo).
 <!-- Demo published on YYYY-MM-DD -->
 ```
 
@@ -2003,8 +2003,8 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
- - Information specific to Geo.
- - ...
+- Information specific to Geo.
+- ...
 
 ## X.Y.0
 
