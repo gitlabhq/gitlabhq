@@ -197,8 +197,8 @@ export default {
     isDiscussionLocked() {
       return this.workItemNotes?.discussionLocked;
     },
-    workItemsMvc2Enabled() {
-      return this.glFeatures.workItemsMvc2;
+    workItemsAlphaEnabled() {
+      return this.glFeatures.workItemsAlpha;
     },
     newTodoAndNotificationsEnabled() {
       return this.glFeatures.notificationsTodosButtons;
@@ -279,7 +279,7 @@ export default {
       return {
         'sm:!gl-block': !this.parentWorkItem,
         'gl-hidden sm:!gl-block gl-mt-3': this.parentWorkItem,
-        'editable-wi-title': this.workItemsMvc2Enabled,
+        'editable-wi-title': this.workItemsAlphaEnabled,
       };
     },
     shouldShowEditButton() {
@@ -356,7 +356,7 @@ export default {
       });
     },
     openInModal({ event, modalWorkItem, context }) {
-      if (!this.workItemsMvc2Enabled || context === LINKED_ITEMS_ANCHOR) {
+      if (!this.workItemsAlphaEnabled || context === LINKED_ITEMS_ANCHOR) {
         return;
       }
 

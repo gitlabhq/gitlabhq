@@ -133,7 +133,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 
 1. In the editor toolbar for a comment, select **Comment templates**
-(**{comment-lines}**), then select **Manage group comment templates**.
+   (**{comment-lines}**), then select **Manage group comment templates**.
 1. To edit, select **Edit** (**{pencil}**).
 1. To delete, select **Delete** (**{remove}**), then select **Delete** again on the dialog.
 
@@ -143,6 +143,6 @@ DETAILS:
 **Tier:** Premium, Ultimate
 
 1. In the editor toolbar for a comment, select **Comment templates**
-(**{comment-lines}**), then select **Manage project comment templates**.
+   (**{comment-lines}**), then select **Manage project comment templates**.
 1. To edit, select **Edit** (**{pencil}**).
 1. To delete, select **Delete** (**{remove}**), then select **Delete** again on the dialog.

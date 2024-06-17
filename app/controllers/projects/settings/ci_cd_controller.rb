@@ -165,7 +165,7 @@ module Projects
         @ref = params[:ref] || @project.default_branch_or_main
 
         @badges = [Gitlab::Ci::Badge::Pipeline::Status,
-                   Gitlab::Ci::Badge::Coverage::Report]
+          Gitlab::Ci::Badge::Coverage::Report]
 
         @badges.map! do |badge|
           badge.new(@project, @ref).metadata

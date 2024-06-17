@@ -8,7 +8,7 @@ module Groups
       push_frontend_feature_flag(:notifications_todos_buttons)
       push_force_frontend_feature_flag(:work_items, group&.work_items_feature_flag_enabled?)
       push_force_frontend_feature_flag(:work_items_beta, group&.work_items_beta_feature_flag_enabled?)
-      push_force_frontend_feature_flag(:work_items_mvc_2, group&.work_items_mvc_2_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:work_items_alpha, group&.work_items_alpha_feature_flag_enabled?)
     end
 
     def index

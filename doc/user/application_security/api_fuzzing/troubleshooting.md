@@ -93,8 +93,8 @@ For OpenAPI Specifications that are generated automatically validation errors ar
 **For generated OpenAPI Specifications**
 
 1. Identify the validation errors.
-    1. Use the [Swagger Editor](https://editor.swagger.io/) to identify validation problems in your specification. The visual nature of the Swagger Editor makes it easier to understand what needs to change.
-    1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. JSON Schema validation messages can be complex, and editors can help you validate schema documents.
+   1. Use the [Swagger Editor](https://editor.swagger.io/) to identify validation problems in your specification. The visual nature of the Swagger Editor makes it easier to understand what needs to change.
+   1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. JSON Schema validation messages can be complex, and editors can help you validate schema documents.
 1. Review the documentation for the OpenAPI generation your framework/tech stack is using. Identify the changes needed to produce a correct OpenAPI document.
 1. After the validation issues are resolved, re-run your pipeline.
 

@@ -78,9 +78,9 @@ module Ci
 
     def self.clone_accessors
       %i[pipeline project ref tag options name
-         allow_failure stage stage_idx
-         yaml_variables when environment description needs_attributes
-         scheduling_type ci_stage partition_id].freeze
+        allow_failure stage stage_idx
+        yaml_variables when environment description needs_attributes
+        scheduling_type ci_stage partition_id].freeze
     end
 
     def inherit_status_from_downstream!(pipeline)

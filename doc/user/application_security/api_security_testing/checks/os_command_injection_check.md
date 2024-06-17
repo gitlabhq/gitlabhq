@@ -21,7 +21,7 @@ Ensure your application does not:
 
 - Use user supplied information in the process name to execute.
 - Use user supplied information in an OS command execution function which does
-not escape shell meta-characters.
+  not escape shell meta-characters.
 - Use user supplied information in arguments to OS commands.
 
 The application should have a hardcoded set of arguments that are to be passed to OS commands. If filenames are being passed to these functions, it is recommended that a hash of the filename be used instead, or some other unique identifier. It is strongly recommended that a native library that implements the same functionality be used instead of using OS system commands due to the risk of unknown attacks against third party commands.

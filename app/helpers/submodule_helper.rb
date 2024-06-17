@@ -51,7 +51,7 @@ module SubmoduleHelper
     return [nil, nil] unless project.present? && namespace.present?
 
     gitlab_hosts = [Gitlab.config.gitlab.url,
-                    Gitlab.config.gitlab_shell.ssh_path_prefix]
+      Gitlab.config.gitlab_shell.ssh_path_prefix]
 
     matching_host = gitlab_hosts.find do |host|
       url.start_with?(host)
@@ -83,7 +83,7 @@ module SubmoduleHelper
   def self_url?(url, namespace, project)
     url_no_dotgit = url.chomp('.git')
     return true if url_no_dotgit == [Gitlab.config.gitlab.url, '/', namespace, '/',
-                                     project].join('')
+      project].join('')
 
     url_with_dotgit = "#{url_no_dotgit}.git"
     url_with_dotgit == Gitlab::RepositoryUrlBuilder.build([namespace, '/', project].join(''))

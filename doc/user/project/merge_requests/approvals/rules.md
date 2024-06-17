@@ -85,9 +85,9 @@ To edit a merge request approval rule:
 1. In the **Merge request approvals** section, in the **Approval rules** section, next to the rule you want to edit, select **Edit**.
 1. On the right sidebar, edit the fields:
    - In **Approvals required**, a value of `0` makes
-    [the rule optional](#configure-optional-approval-rules), and any number greater than `0`
-    creates a required rule.
-    Maximum number of required approvals is `100`.
+     [the rule optional](#configure-optional-approval-rules), and any number greater than `0`
+     creates a required rule.
+     Maximum number of required approvals is `100`.
    - To remove users or groups, identify the group or user to remove, and select **Remove**
      (**{remove}**).
 1. Select **Save changes**.

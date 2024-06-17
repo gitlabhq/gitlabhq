@@ -692,6 +692,31 @@ This report can be viewed in the [Dependency List](../dependency_list/index.md).
 
 You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
+## Container Scanning For Registry
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `container_scanning_for_registry_flag`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+When an image is pushed with the `latest` tag, a container scanning job is automatically triggered against the default branch of the project.
+
+Unlike regular Container Scanning, the scan results do not include a security report. Instead, Container Scanning for Registry relies on [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/index.md) to inspect the components detected by the scan.
+
+When security findings are identified, GitLab generates vulnerabilities in the project. These vulnerabilities can be viewed under `Container registry vulnerabilities` tab on the [Vulnerability Report](../vulnerability_report/index.md) page.
+
+By default there is a limit of `50` scans per project per day.
+
+### Prerequisites
+
+- Ensure that the security configuration [Container Scanning For Registry](../configuration#security-testing) is enabled.
+- The project must contain a repository. Note that if you are utilizing an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project has an initial commit on the default branch.
+
 ## Security Dashboard
 
 The [Security Dashboard](../security_dashboard/index.md) shows you an overview of all

@@ -11,7 +11,7 @@ module Ci
       # include the table name.
       #
       SWAPABLE_METHODS = %i[table_name quoted_table_name arel_table
-                            predicate_builder cached_find_by_statement].freeze
+        predicate_builder cached_find_by_statement].freeze
 
       included do |base|
         partitioned = Class.new(base) do

@@ -12,6 +12,7 @@ import {
   OPERATOR_AFTER,
   OPERATOR_BEFORE,
   TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_CONTACT,
@@ -231,6 +232,23 @@ export const filtersMap = {
       },
       [OPERATOR_OR]: {
         [NORMAL_FILTER]: 'or[assignee_username][]',
+      },
+    },
+  },
+  [TOKEN_TYPE_REVIEWER]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'reviewerUsername',
+      [SPECIAL_FILTER]: 'reviewerWildcardId',
+      [ALTERNATIVE_FILTER]: 'reviewerId',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'reviewer_username',
+        [SPECIAL_FILTER]: 'reviewer_id',
+        [ALTERNATIVE_FILTER]: 'reviewer_username',
+      },
+      [OPERATOR_NOT]: {
+        [NORMAL_FILTER]: 'not[reviewer_username]',
       },
     },
   },

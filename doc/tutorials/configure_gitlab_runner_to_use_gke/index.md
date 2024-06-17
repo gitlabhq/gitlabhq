@@ -128,7 +128,7 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
    - To use the `cert-manager`:
 
      1. Use the `certificate-issuer-install.yaml` to install a `Certificate` and `Issuer` in the default namespace, in addition
-     to the operator installation:
+        to the operator installation:
 
         ```shell
         cat > certificate-issuer-install.yaml << EOF

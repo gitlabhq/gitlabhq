@@ -35,8 +35,8 @@ When SAML is enabled, users with the Owner role see a new menu
 item in group **Settings > SAML Group Links**.
 
 - You can configure one or more **SAML Group Links** to map a SAML identity
-  provider group name to a GitLab role.
-- Members of the SAML identity provider group are added as members of the GitLab
+  provider (IdP) group name to a GitLab role.
+- Members of the SAML IdP group are added as members of the GitLab
   group on their next SAML sign-in.
 - Group membership is evaluated each time a user signs in using SAML.
 - SAML Group Links can be configured for a top-level group or any subgroup.
@@ -54,6 +54,19 @@ To link the SAML groups:
 1. Repeat to add additional group links if required.
 
 ![SAML Group Links](img/saml_group_links_v13_9.png)
+
+### Self-managed GitLab with multiple SAML IdPs
+
+When a user signs in, GitLab:
+
+- Checks all the configured SAML group links.
+- Adds that user to the corresponding GitLab groups based on the SAML groups the user belongs to across the different IdPs. 
+
+For this to work correctly, you must configure all SAML IdPs to contain group attributes in the SAML response.
+
+For example, if you have two SAML IdPs and you configure a group link named `GTLB-Owners` mapped to the Owner role,
+the SAML response from either SAML IdP must contain a group attribute `GTLB-Owners`. If one of the SAML IdPs does not return the group attribute,
+when the user signs in with that SAML IdP, that user is removed from the group.
 
 ### How role conflicts are resolved
 

@@ -279,7 +279,7 @@ DETAILS:
 Prerequisites:
 
 - The top-level group of the project must have GitLab Duo
- [experiment and beta features enabled](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
+  [experiment and beta features enabled](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 
 To generate a custom visualization with GitLab Duo using a natural language query:
 
@@ -321,7 +321,7 @@ defined in `ee/app/validators/json_schemas/analytics_visualization.json`.
 If a dashboard panel displays an error message:
 
 - Make sure your [Cube query](../product_analytics/index.md#product-analytics-dashboards) and
-[visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization) configurations are set up correctly.
+  [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization) configurations are set up correctly.
 - For [product analytics](../product_analytics/index.md), also check that your visualization's Cube query is valid.
 
 ### Generate visualization with GitLab Duo returns unexpected results
@@ -330,4 +330,4 @@ If GitLab Duo doesn't return the expected or a useful result, try editing your q
 
 - Specify a date range. For example: _number of unique users in 2023 to 2024, grouped monthly_.
 - Use the same names for metrics and dimensions as shown in the visualization designer.
-For example: _returning users_ instead of _existing customers_.
+  For example: _returning users_ instead of _existing customers_.

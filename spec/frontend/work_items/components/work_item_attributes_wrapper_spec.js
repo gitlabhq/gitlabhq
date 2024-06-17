@@ -28,7 +28,7 @@ describe('WorkItemAttributesWrapper component', () => {
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
-    workItemsMvc2 = false,
+    workItemsAlpha = false,
     groupPath = '',
   } = {}) => {
     wrapper = shallowMount(WorkItemAttributesWrapper, {
@@ -44,7 +44,7 @@ describe('WorkItemAttributesWrapper component', () => {
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         glFeatures: {
-          workItemsMvc2,
+          workItemsAlpha,
         },
       },
       stubs: {
@@ -195,7 +195,7 @@ describe('WorkItemAttributesWrapper component', () => {
         ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
       `('$description', ({ developmentWidgetPresent, exists }) => {
         const response = workItemResponseFactory({ developmentWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsMvc2: false });
+        createComponent({ workItem: response.data.workItem, workItemsAlpha: false });
 
         expect(findWorkItemDevelopment().exists()).toBe(exists);
       });
@@ -208,7 +208,7 @@ describe('WorkItemAttributesWrapper component', () => {
         ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
       `('$description', ({ developmentWidgetPresent, exists }) => {
         const response = workItemResponseFactory({ developmentWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsMvc2: true });
+        createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
 
         expect(findWorkItemDevelopment().exists()).toBe(exists);
       });

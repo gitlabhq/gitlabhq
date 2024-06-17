@@ -24,7 +24,7 @@ function getRoutes() {
     },
   ];
 
-  if (gon.features?.workItemsMvc2) {
+  if (gon.features?.workItemsAlpha) {
     routes.unshift({
       path: '/new',
       name: 'createWorkItem',

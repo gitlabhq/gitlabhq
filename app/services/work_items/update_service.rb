@@ -102,6 +102,10 @@ module WorkItems
         Gitlab::EventStore.publish(event)
       end
     end
+
+    def parent
+      container
+    end
   end
 end
 

@@ -155,19 +155,19 @@ In GitLab 15.4, we [removed the deprecated analyzers](https://gitlab.com/gitlab-
 To preview the upcoming changes to the CI/CD configuration in GitLab 15.3 or earlier:
 
 1. Open an MR to switch from the Stable CI/CD template, `SAST.gitlab-ci.yml`, to [the Latest template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml), `SAST.latest.gitlab-ci.yml`.
-    - On GitLab.com, use the latest template directly:
+   - On GitLab.com, use the latest template directly:
 
-      ```yaml
-      include:
-        template: 'Jobs/SAST.latest.gitlab-ci.yml'
-      ```
+     ```yaml
+     include:
+       template: 'Jobs/SAST.latest.gitlab-ci.yml'
+     ```
 
-    - On a self-managed instance, download the template from GitLab.com:
+   - On a self-managed instance, download the template from GitLab.com:
 
-      ```yaml
-      include:
-        remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/2851f4d5/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml'
-      ```
+     ```yaml
+     include:
+       remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/2851f4d5/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml'
+     ```
 
 1. Verify that scanning jobs succeed in the MR. You notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
 1. Close the MR.

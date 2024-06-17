@@ -149,7 +149,7 @@ To create a new project and add its README to your profile:
    - In the **Project name** field, enter the name for your new project.
    - In the **Project URL** field, select your GitLab username.
    - In the **Project slug** field, enter your GitLab username.
-   All of these fields are case sensitive. If your username has capital letters, enter it into the project slug field with the capitals included.
+     All of these fields are case sensitive. If your username has capital letters, enter it into the project slug field with the capitals included.
 1. For **Visibility Level**, select **Public**.
    ![Proper project path for an individual on the hosted product](img/personal_readme_setup_v14_5.png)
 1. For **Project Configuration**, ensure **Initialize repository with a README** is selected.

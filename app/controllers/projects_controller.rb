@@ -52,7 +52,7 @@ class ProjectsController < Projects::ApplicationController
 
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
   end
 
   layout :determine_layout
@@ -73,7 +73,7 @@ class ProjectsController < Projects::ApplicationController
   # TODO: Set high urgency for #show https://gitlab.com/gitlab-org/gitlab/-/issues/334444
 
   urgency :low, [:refs, :show, :toggle_star, :transfer, :archive, :destroy, :update, :create,
-                 :activity, :edit, :new, :export, :remove_export, :generate_new_export, :download_export]
+    :activity, :edit, :new, :export, :remove_export, :generate_new_export, :download_export]
 
   urgency :high, [:unfoldered_environment_names]
 

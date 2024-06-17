@@ -261,7 +261,7 @@ When mirroring fails due to Silent Mode the following are the debug steps:
 - [Triggering the mirror using the API](pull.md#trigger-pipelines-for-mirror-updates) shows: `The project is not mirrored`.
 
 - If pull or push mirror was already set up but there are no further updates on the mirrored repository,
-confirm the [project's pull and push mirror details ans status](../../../../api/projects.md#get-a-projects-pull-mirror-details) are not recent as shown below. This indicates mirroring was paused and disabling GitLab Silent Mode restarts it automatically.
+  confirm the [project's pull and push mirror details ans status](../../../../api/projects.md#get-a-projects-pull-mirror-details) are not recent as shown below. This indicates mirroring was paused and disabling GitLab Silent Mode restarts it automatically.
 
 For example, if Silent Mode is what is impeding your imports, the output is similar to the following:
 

@@ -64,7 +64,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action only: :show do
     push_frontend_feature_flag(:work_items_beta, project&.group)
     push_force_frontend_feature_flag(:work_items_beta, project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:display_work_item_epic_issue_sidebar, project)
   end

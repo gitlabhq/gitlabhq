@@ -331,6 +331,7 @@ $white-gc-bg: #eaf2f5;
   .ge { font-style: italic; }
   .gr { color: $white-gr; }
 
+  .hljs-section,
   .gh { color: $white-gh;
     font-weight: $gl-font-weight-bold; }
 
@@ -344,12 +345,15 @@ $white-gc-bg: #eaf2f5;
     }
   }
 
+  .hljs-quote,
   .go { color: $white-go; }
   .gp { color: $white-gp; }
   .gs { font-weight: $gl-font-weight-bold; }
 
   .gu { color: $white-gu;
     font-weight: $gl-font-weight-bold; }
+
+  .hljs-quote,
   .gt { color: $white-gt; }
   .kc { font-weight: $gl-font-weight-bold; }
 
@@ -371,7 +375,12 @@ $white-gc-bg: #eaf2f5;
   .na,
   .hljs-attr,
   .hljs-property,
+  .hljs-symbol,
+  .hljs-bullet,
   .hljs-title.function_ { color: $white-na; }
+
+  .hljs-symbol,
+  .hljs-link { text-decoration: underline; }
 
   .nb,
   .hljs-title.class_,
@@ -402,6 +411,8 @@ $white-gc-bg: #eaf2f5;
   .mi,
   .hljs-number { color: $white-mi; }
   .mo { color: $white-mo; }
+
+  .hljs-code,
   .sb { color: $white-sb; }
   .sc { color: $white-sc; }
   .sd { color: $white-sd; }
@@ -409,6 +420,8 @@ $white-gc-bg: #eaf2f5;
   .se { color: $white-se; }
   .sh { color: $white-sh; }
   .si { color: $white-si; }
+
+  .hljs-link,
   .sx { color: $white-sx; }
   .sr { color: $white-sr; }
 
@@ -423,4 +436,8 @@ $white-gc-bg: #eaf2f5;
 
   .gc { color: $white-gc-color;
   background-color: $white-gc-bg; }
+
+  .hljs-strong { font-weight: bold; }
+
+  .hljs-emphasis { font-style: italic; }
 }

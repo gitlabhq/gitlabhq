@@ -104,7 +104,7 @@ describe('WorkItemDetail component', () => {
     handler = successHandler,
     mutationHandler,
     error = undefined,
-    workItemsMvc2Enabled = false,
+    workItemsAlphaEnabled = false,
     workItemsBeta = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
@@ -128,7 +128,7 @@ describe('WorkItemDetail component', () => {
       },
       provide: {
         glFeatures: {
-          workItemsMvc2: workItemsMvc2Enabled,
+          workItemsAlpha: workItemsAlphaEnabled,
           workItemsBeta,
         },
         hasIssueWeightsFeature: true,
@@ -379,7 +379,7 @@ describe('WorkItemDetail component', () => {
         createComponent({
           isModal: true,
           handler: jest.fn().mockRejectedValue('Oops, problemo'),
-          workItemsMvc2Enabled: true,
+          workItemsAlphaEnabled: true,
         });
 
         await waitForPromises();
@@ -501,7 +501,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('opens the modal with the child when `show-modal` is emitted', async () => {
-        createComponent({ handler: objectiveHandler, workItemsMvc2Enabled: true });
+        createComponent({ handler: objectiveHandler, workItemsAlphaEnabled: true });
         await waitForPromises();
 
         const event = {
@@ -525,7 +525,7 @@ describe('WorkItemDetail component', () => {
           createComponent({
             isModal: true,
             handler: objectiveHandler,
-            workItemsMvc2Enabled: true,
+            workItemsAlphaEnabled: true,
           });
 
           await waitForPromises();
@@ -581,7 +581,7 @@ describe('WorkItemDetail component', () => {
       it('opens the modal with the linked item when `showModal` is emitted', async () => {
         createComponent({
           handler,
-          workItemsMvc2Enabled: true,
+          workItemsAlphaEnabled: true,
         });
         await waitForPromises();
 
@@ -604,7 +604,7 @@ describe('WorkItemDetail component', () => {
           createComponent({
             isModal: true,
             handler,
-            workItemsMvc2Enabled: true,
+            workItemsAlphaEnabled: true,
           });
 
           await waitForPromises();

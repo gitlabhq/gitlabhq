@@ -124,7 +124,7 @@ module MergeRequestsHelper
     return if merge_request.can_allow_collaboration?(current_user)
 
     minimum_visibility = [merge_request.target_project.visibility_level,
-                          merge_request.source_project.visibility_level].min
+      merge_request.source_project.visibility_level].min
 
     if minimum_visibility < Gitlab::VisibilityLevel::INTERNAL
       _('Not available for private projects')

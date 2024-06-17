@@ -311,7 +311,8 @@ To troubleshoot this:
 1. Sometimes GitLab cannot automatically select an authentication method that the SMTP server supports. Either:
    - Try the available authentication methods (**Plain**, **Login** and **CRAM-MD5**).
    - Check which authentication methods your SMTP server supports, using the
-   [`swaks` command line tool](https://www.jetmore.org/john/code/swaks/):
+     [`swaks` command line tool](https://www.jetmore.org/john/code/swaks/):
+
      1. Run the following command with your credentials and look for a line that starts with `250-AUTH`:
 
         ```shell

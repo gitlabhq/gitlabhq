@@ -9,6 +9,8 @@ query getMergeRequests(
   $state: MergeRequestState
   $assigneeUsernames: String
   $assigneeWildcardId: AssigneeWildcardId
+  $reviewerUsername: String
+  $reviewerWildcardId: ReviewerWildcardId
   $authorUsername: String
   $draft: Boolean
   $milestoneTitle: String
@@ -27,6 +29,8 @@ query getMergeRequests(
       state: $state
       assigneeUsername: $assigneeUsernames
       assigneeWildcardId: $assigneeWildcardId
+      reviewerUsername: $reviewerUsername
+      reviewerWildcardId: $reviewerWildcardId
       authorUsername: $authorUsername
       draft: $draft
       milestoneTitle: $milestoneTitle

@@ -229,11 +229,11 @@ module Ci
 
       def clone_accessors
         %i[pipeline project ref tag options name
-           allow_failure stage stage_idx trigger_request
-           yaml_variables when environment coverage_regex
-           description tag_list protected needs_attributes
-           job_variables_attributes resource_group scheduling_type
-           ci_stage partition_id id_tokens interruptible].freeze
+          allow_failure stage stage_idx trigger_request
+          yaml_variables when environment coverage_regex
+          description tag_list protected needs_attributes
+          job_variables_attributes resource_group scheduling_type
+          ci_stage partition_id id_tokens interruptible].freeze
       end
 
       def supported_keyset_orderings
@@ -839,8 +839,8 @@ module Ci
 
     def steps
       [Gitlab::Ci::Build::Step.from_commands(self),
-       Gitlab::Ci::Build::Step.from_release(self),
-       Gitlab::Ci::Build::Step.from_after_script(self)].compact
+        Gitlab::Ci::Build::Step.from_release(self),
+        Gitlab::Ci::Build::Step.from_after_script(self)].compact
     end
 
     def runtime_hooks

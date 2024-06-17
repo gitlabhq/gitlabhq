@@ -22910,7 +22910,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="groupworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="groupworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
-| <a id="groupworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
+| <a id="groupworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="groupworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 
 ##### `Group.workItemTypes`
@@ -22957,7 +22957,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="groupworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="groupworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
-| <a id="groupworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
+| <a id="groupworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="groupworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 
 ### `GroupAuditEventNamespaceFilter`
@@ -29225,7 +29225,7 @@ Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 | <a id="projectworkitemstatecountssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="projectworkitemstatecountssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="projectworkitemstatecountsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
-| <a id="projectworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
+| <a id="projectworkitemstatecountsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="projectworkitemstatecountstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 
 ##### `Project.workItemTypes`
@@ -29270,7 +29270,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectworkitemssearch"></a>`search` | [`String`](#string) | Search query for title or description. |
 | <a id="projectworkitemssort"></a>`sort` | [`WorkItemSort`](#workitemsort) | Sort work items by criteria. |
 | <a id="projectworkitemsstate"></a>`state` | [`IssuableState`](#issuablestate) | Current state of the work item. |
-| <a id="projectworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_mvc_2` is disabled. |
+| <a id="projectworkitemsstatuswidget"></a>`statusWidget` | [`StatusFilterInput`](#statusfilterinput) | Input for status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="projectworkitemstypes"></a>`types` | [`[IssueType!]`](#issuetype) | Filter work items by the given work item types. |
 
 ### `ProjectCiCdSetting`

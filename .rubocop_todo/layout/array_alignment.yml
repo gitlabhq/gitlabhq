@@ -2,20 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ArrayAlignment:
   Exclude:
-    - 'app/controllers/admin/application_settings_controller.rb'
-    - 'app/controllers/profiles_controller.rb'
-    - 'app/controllers/projects/labels_controller.rb'
-    - 'app/controllers/projects/protected_branches_controller.rb'
-    - 'app/controllers/projects/settings/ci_cd_controller.rb'
-    - 'app/controllers/projects_controller.rb'
-    - 'app/controllers/users_controller.rb'
-    - 'app/graphql/resolvers/concerns/issues/sort_arguments.rb'
-    - 'app/graphql/types/permission_types/merge_request.rb'
-    - 'app/helpers/merge_requests_helper.rb'
-    - 'app/helpers/submodule_helper.rb'
-    - 'app/models/ci/bridge.rb'
-    - 'app/models/ci/build.rb'
-    - 'app/models/concerns/ci/partitionable/switch.rb'
     - 'app/models/deploy_token.rb'
     - 'app/models/dev_ops_report/metric.rb'
     - 'app/models/integrations/microsoft_teams.rb'

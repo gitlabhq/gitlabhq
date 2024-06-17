@@ -294,8 +294,10 @@ To view value stream analytics for your group or project:
    1. Select a parameter.
    1. Select a value or enter text to refine the results.
    1. To view metrics in a particular date range, from the dropdown list select a predefined date range or the **Custom** option. With the **Custom** option selected:
-        - In the **From** field, select a start date.
-        - In the **To** field, select an end date.
+
+      - In the **From** field, select a start date.
+      - In the **To** field, select an end date.
+
       The charts and list display workflow items created during the date range.
 1. Optional. Sort results by ascending or descending:
       - To sort by most recent or oldest workflow item, select the **Last event** header.

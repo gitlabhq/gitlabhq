@@ -291,7 +291,7 @@ Add an output to your `hello` step.
    ```
 
    - In this `spec`, you've defined a single output `greeting` without a default. Because
-   there is no default, the output `greeting` is required.
+     there is no default, the output `greeting` is required.
    - Outputs are written to a file `${{ output_file }}` (provided at run time) in the form `key=value`.
    - This step runs `echo greeting=hello ${{ inputs.name }}` and sends the output to the logs and the output file (`tee ${{ output_file }}`).
 

@@ -307,15 +307,15 @@ On the Route 53 dashboard, select **Hosted zones** in the left navigation bar:
 
 1. Select an existing hosted zone or, if you do not already have one for your domain, select **Create Hosted Zone**, enter your domain name, and select **Create**.
 1. Select **Create record** and provide the following values:
-    1. **Name:** Use the domain name (the default value) or enter a subdomain.
-    1. **Type:** Select **A - IPv4 address**.
-    1. **Alias:** Defaults to **disabled**. Enable this option.
-    1. **Route traffic to:** Select **Alias to Network Load Balancer**.
-    1. **Region:** Select the region where the Network Load Balancer resides.
-    1. **Choose network load balancer:** Select the Network Load Balancer we created earlier.
-    1. **Routing Policy:** We use **Simple** but you can choose a different policy based on your use case.
-    1. **Evaluate Target Health:** We set this to **No** but you can choose to have the load balancer route traffic based on target health.
-    1. Select **Create**.
+   1. **Name:** Use the domain name (the default value) or enter a subdomain.
+   1. **Type:** Select **A - IPv4 address**.
+   1. **Alias:** Defaults to **disabled**. Enable this option.
+   1. **Route traffic to:** Select **Alias to Network Load Balancer**.
+   1. **Region:** Select the region where the Network Load Balancer resides.
+   1. **Choose network load balancer:** Select the Network Load Balancer we created earlier.
+   1. **Routing Policy:** We use **Simple** but you can choose a different policy based on your use case.
+   1. **Evaluate Target Health:** We set this to **No** but you can choose to have the load balancer route traffic based on target health.
+   1. Select **Create**.
 1. If you registered your domain through Route 53, you're done. If you used a different domain registrar, you must update your DNS records with your domain registrar. You must:
    1. Select **Hosted zones** and select the domain you added above.
    1. You see a list of `NS` records. From your domain registrar's administrator panel, add each of these as `NS` records to your domain's DNS records. These steps may vary between domain registrars. If you're stuck, Google **"name of your registrar" add DNS records** and you should find a help article specific to your domain registrar.

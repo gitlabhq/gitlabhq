@@ -52335,6 +52335,9 @@ msgstr ""
 msgid "Terminal sync service is running"
 msgstr ""
 
+msgid "Terminates"
+msgstr ""
+
 msgid "Terms"
 msgstr ""
 

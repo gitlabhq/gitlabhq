@@ -29,11 +29,11 @@ To set up the integration, you must:
 
 - Have a GitLab project where you have at least the Maintainer role.
 - Have the [Owner](https://cloud.google.com/iam/docs/understanding-roles#owner) IAM role on the
-   Google Cloud projects that you want to use.
+  Google Cloud projects that you want to use.
 - Have [billing enabled for your Google Cloud project](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project).
 - Have a Google Artifact Registry repository with Docker format and Standard mode.
 - Install the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install)
-   and [Terraform](https://developer.hashicorp.com/terraform/install).
+  and [Terraform](https://developer.hashicorp.com/terraform/install).
 
 ## Secure your usage with Google Cloud Identity and Access Management (IAM)
 
@@ -56,7 +56,7 @@ After this step, you can view your Google Cloud artifacts in GitLab.
 1. Under **Enable integration**, select the **Active** checkbox.
 1. Complete the fields:
    - **[Google Cloud project ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)**:
-   The ID of the Google Cloud project where your Artifact Registry repository is located.
+     The ID of the Google Cloud project where your Artifact Registry repository is located.
    - **Repository name**: The name of your Artifact Registry repository.
    - **Repository location**: The location of your Artifact Registry repository.
 1. In **Configure Google Cloud IAM policies**, follow the onscreen instructions
@@ -80,9 +80,9 @@ a runner manager that creates temporary runners to execute multiple jobs simulta
 1. Complete the fields.
    - In the **Platform** section, select **Google Cloud**.
    - In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
-      If there are no job tags for this runner, select **Run untagged**.
+     If there are no job tags for this runner, select **Run untagged**.
    - Optional. In the **Runner description** field, add a description for the runner
-      that displays in GitLab.
+     that displays in GitLab.
    - Optional. In the **Configuration** section, add additional configurations.
 1. Select **Create runner**.
 1. Complete the fields in the **Step 1: Specify environment** section to specify the environment in

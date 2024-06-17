@@ -253,11 +253,11 @@ The autofill approach has both benefits and limitations.
   - Data exports have rows for the entire date range, making data analysis easier.
 - Limitations:
   - The `day` [granularity](https://cube.dev/docs/product/apis-integrations/rest-api/query-format) must be used.
-  All other granularities are not supported.
+    All other granularities are not supported.
   - Only date ranges defined by the [`inDateRange`](https://cube.dev/docs/product/apis-integrations/rest-api/query-format#indaterange) filter are filled.
     - The date selector in the UI already uses this filter.
   - The filling of data ignores the query-defined limit. If you set a limit of 10 data points over 20 days, it
-  returns 20 data points, with the missing data filled by `0`. [Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
+    returns 20 data points, with the missing data filled by `0`. [Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
 
 ## Funnel analysis
 

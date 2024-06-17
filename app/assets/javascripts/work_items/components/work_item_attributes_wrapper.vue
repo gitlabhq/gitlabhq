@@ -125,7 +125,7 @@ export default {
       return this.workItem?.author;
     },
     workItemDevelopment() {
-      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT) && this.glFeatures.workItemsMvc2;
+      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT) && this.glFeatures.workItemsAlpha;
     },
   },
   methods: {

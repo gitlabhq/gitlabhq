@@ -3229,8 +3229,8 @@ class Project < ApplicationRecord
     group&.work_items_beta_feature_flag_enabled? || Feature.enabled?(:work_items_beta, type: :beta)
   end
 
-  def work_items_mvc_2_feature_flag_enabled?
-    group&.work_items_mvc_2_feature_flag_enabled? || Feature.enabled?(:work_items_mvc_2)
+  def work_items_alpha_feature_flag_enabled?
+    group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
   end
 
   def enqueue_record_project_target_platforms

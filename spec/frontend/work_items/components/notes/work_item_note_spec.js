@@ -161,7 +161,7 @@ describe('Work Item Note', () => {
     });
 
     it('should show the awards list when in edit mode', async () => {
-      createComponent({ note: mockWorkItemCommentNote, workItemsMvc2: true });
+      createComponent({ note: mockWorkItemCommentNote, workItemsAlpha: true });
       findNoteActions().vm.$emit('startEditing');
       await nextTick();
       expect(findAwardsList().exists()).toBe(true);
@@ -444,7 +444,7 @@ describe('Work Item Note', () => {
     });
 
     it('passes note props to awards list', () => {
-      createComponent({ note: mockWorkItemCommentNote, workItemsMvc2: true });
+      createComponent({ note: mockWorkItemCommentNote, workItemsAlpha: true });
 
       expect(findAwardsList().props('note')).toBe(mockWorkItemCommentNote);
       expect(findAwardsList().props('workItemIid')).toBe('1');
