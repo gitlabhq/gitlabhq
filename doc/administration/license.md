@@ -106,9 +106,9 @@ You may have connectivity issues due to the following reasons:
 - **Firewall settings**:
   - Confirm that GitLab instance can establish an encrypted connection to `https://customers.gitlab.com` on port 443.
 
-  ```shell
-  curl --verbose "https://customers.gitlab.com/"
-  ```
+    ```shell
+    curl --verbose "https://customers.gitlab.com/"
+    ```
 
   - If the curl command returns an error, either:
     - Check your firewall or proxy. The domain `https://customers.gitlab.com` is

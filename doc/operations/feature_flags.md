@@ -49,7 +49,7 @@ To create and enable a feature flag:
    or dashes (`-`), and does not end with a dash (`-`) or underscore (`_`).
 1. Optional. Enter a description (255 characters maximum).
 1. Add feature flag [**Strategies**](#feature-flag-strategies) to define how the flag should be applied. For each strategy, include the **Type** (defaults to [**All users**](#all-users))
-     and **Environments** (defaults to all environments).
+   and **Environments** (defaults to all environments).
 1. Select **Create feature flag**.
 
 To change these settings, select **Edit** (**{pencil}**)

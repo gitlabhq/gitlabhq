@@ -58,20 +58,20 @@ If something unexpected happens during the migration, it is safe to start over.
 
     - The database node that will store the `gitlabhq_production_ci` database needs enough space to store a copy of the existing database: we _duplicate_ `gitlabhq_production`. Run the following SQL query to find out how much space is needed. Add 25%, to ensure you will not run out of disk space.
 
-    ```shell
-    sudo gitlab-psql -c "SELECT pg_size_pretty( pg_database_size('gitlabhq_production') );"
-    ```
+      ```shell
+      sudo gitlab-psql -c "SELECT pg_size_pretty( pg_database_size('gitlabhq_production') );"
+      ```
 
     - During the process, a dump of the `gitlabhq_production` database needs to be temporarily stored on the filesystem of the node that will run the migration. Execute the following SQL statement to find out how much local disk space will be used. Add 25%, to ensure you will not run out of disk space.
 
-    ```shell
-    sudo gitlab-psql -c "select sum(pg_table_size(concat(table_schema,'.',table_name))) from information_schema.tables where table_catalog = 'gitlabhq_production' and table_type = 'BASE TABLE'"
-    ```
+      ```shell
+      sudo gitlab-psql -c "select sum(pg_table_size(concat(table_schema,'.',table_name))) from information_schema.tables where table_catalog = 'gitlabhq_production' and table_type = 'BASE TABLE'"
+      ```
 
 1. Plan for downtime. The downtime is dependent on the size of the `gitlabhq_production` database.
 
-    - We dump `gitlabhq_production` and restore it into a new `gitlabhq_production_ci` database. Database sizes below 50 GB should be done within 30 minutes. Larger databases need more time. For example, a 100 GB database needs 1-2 hours to be copied to the new database.
-    - We advise to also plan some time for smaller tasks like modifying the configuration.
+   - We dump `gitlabhq_production` and restore it into a new `gitlabhq_production_ci` database. Database sizes below 50 GB should be done within 30 minutes. Larger databases need more time. For example, a 100 GB database needs 1-2 hours to be copied to the new database.
+   - We advise to also plan some time for smaller tasks like modifying the configuration.
 
 1. Create the new `gitlabhq_production_ci` database:
 

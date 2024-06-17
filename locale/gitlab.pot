@@ -9756,13 +9756,13 @@ msgstr ""
 msgid "BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again."
 msgstr ""
 
+msgid "BulkImport|Import from %{hostname} completed"
+msgstr ""
+
 msgid "BulkImport|Import groups by direct transfer"
 msgstr ""
 
 msgid "BulkImport|Import is finished. Pick another name for re-import"
-msgstr ""
-
-msgid "BulkImport|Import of %{source_group} from %{hostname}"
 msgstr ""
 
 msgid "BulkImport|Import with projects"
@@ -9867,7 +9867,7 @@ msgstr ""
 msgid "BulkImport|Template / File-based import / Direct transfer"
 msgstr ""
 
-msgid "BulkImport|The import of %{strong_open}%{source_group}%{strong_close} from %{strong_open}%{hostname}%{strong_close} to %{strong_color_open}%{destination_group}%{strong_color_close} is complete. You can view the results of the import."
+msgid "BulkImport|The import you started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed. You can now review your import results."
 msgstr ""
 
 msgid "BulkImport|This %{importable} was imported from another instance."
@@ -17586,8 +17586,10 @@ msgstr[1] ""
 msgid "Dependencies|%{locationCount} locations"
 msgstr ""
 
-msgid "Dependencies|%{projectCount} projects"
-msgstr ""
+msgid "Dependencies|%{projectCount} project"
+msgid_plural "Dependencies|%{projectCount} projects"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Dependencies|%{remainingLicensesCount} more"
 msgstr ""
@@ -33627,6 +33629,9 @@ msgstr[1] ""
 msgid "Mlmodelregistry|Provide the max allowed file size"
 msgstr ""
 
+msgid "Mlmodelregistry|Subfolder cannot contain spaces"
+msgstr ""
+
 msgid "Mock an external CI integration."
 msgstr ""
 
@@ -47459,6 +47464,9 @@ msgstr ""
 msgid "SecurityOrchestration|At least one framework label should be selected"
 msgstr ""
 
+msgid "SecurityOrchestration|Automate vulnerability management workflows."
+msgstr ""
+
 msgid "SecurityOrchestration|Automatically selected runners"
 msgstr ""
 
@@ -47628,6 +47636,9 @@ msgid "SecurityOrchestration|Hide extra projects"
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the main branch, then require two approvals from any two members of the application security team are required."
+msgstr ""
+
+msgid "SecurityOrchestration|If any scanner finds a vulnerability that was previously detected but no longer found in a subsequent scan, then automatically set the status to Resolved."
 msgstr ""
 
 msgid "SecurityOrchestration|Individual users"
@@ -48029,6 +48040,12 @@ msgid "SecurityOrchestration|Vulnerability age is less than %{vulnerabilityAge}.
 msgstr ""
 
 msgid "SecurityOrchestration|Vulnerability age requires previously existing vulnerability states (detected, confirmed, resolved, or dismissed)"
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerability management"
+msgstr ""
+
+msgid "SecurityOrchestration|Vulnerability management policy"
 msgstr ""
 
 msgid "SecurityOrchestration|What does an example message look like?"
@@ -50586,6 +50603,9 @@ msgid "Something went wrong. Unable to remove identity verification exemption."
 msgstr ""
 
 msgid "Sorry, no projects matched your search"
+msgstr ""
+
+msgid "Sorry, this page doesn't exist"
 msgstr ""
 
 msgid "Sorry, you have exceeded the maximum browsable page number. Please use the API to explore further."
@@ -59602,6 +59622,9 @@ msgid "Wiki|The sidebar failed to load. You can reload the page to try again."
 msgstr ""
 
 msgid "Wiki|There are no pages in this wiki yet"
+msgstr ""
+
+msgid "Wiki|Use the sidebar to find a different page."
 msgstr ""
 
 msgid "Wiki|View all pages"

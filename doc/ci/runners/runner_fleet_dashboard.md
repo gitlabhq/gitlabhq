@@ -6,7 +6,7 @@ info: >-
   this page, see
   https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
-# Runner Fleet Dashboard
+# Runner fleet dashboard
 
 DETAILS:
 **Tier:** Ultimate
@@ -14,17 +14,17 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424495) in GitLab 16.6
 
-GitLab administrators can use the Runner Fleet Dashboard to assess the health of your instance runners.
-The Runner Fleet Dashboard shows:
+GitLab administrators can use the runner fleet dashboard to assess the health of your instance runners.
+The runner fleet dashboard shows:
 
 - Recent CI errors caused by runner infrastructure
 - Number of concurrent jobs executed on most busy runners
 - Compute minutes used by instance runners
 - Job queue times (available only with [ClickHouse](#enable-more-ci-analytics-features-with-clickhouse))
 
-![Runner Fleet Dashboard](img/runner_fleet_dashboard.png)
+![Runner fleet dashboard](img/runner_fleet_dashboard.png)
 
-## View the Runner Fleet Dashboard
+## View the runner fleet dashboard
 
 Prerequisites:
 
@@ -75,11 +75,12 @@ For more information, see [epic 11180](https://gitlab.com/groups/gitlab-org/-/ep
 To enable additional CI analytics features, [configure the ClickHouse integration](../../integration/clickhouse.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For a video walkthrough, see [Setting up Runner Fleet Dashboard with ClickHouse](https://www.youtube.com/watch?v=YpGV95Ctbpk).
+For an overview, see [Setting up runner fleet dashboard with ClickHouse](https://www.youtube.com/watch?v=YpGV95Ctbpk).
+<!-- Video published on 2023-12-19 -->
 
 ## Feedback
 
-To help us improve the Runner Fleet Dashboard, you can provide feedback in
+To help us improve the runner fleet dashboard, you can provide feedback in
 [issue 421737](https://gitlab.com/gitlab-org/gitlab/-/issues/421737).
 In particular:
 

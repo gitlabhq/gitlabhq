@@ -1,6 +1,5 @@
 .js-jira-connect-app{ data: jira_connect_app_data(@subscriptions, @current_jira_installation) }
 
-= webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 = webpack_bundle_tag 'jira_connect_app'
 
 - add_page_specific_style 'page_bundles/jira_connect', defer: false

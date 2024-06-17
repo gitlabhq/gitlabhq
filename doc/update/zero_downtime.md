@@ -53,7 +53,7 @@ In addition to the above, please be aware of the following considerations:
 - Some releases may include [background migrations](index.md#check-for-background-migrations-before-upgrading). These migrations are performed in the background by Sidekiq and are often used for migrating data. Background migrations are only added in the monthly releases.
   - Certain major or minor releases may require a set of background migrations to be finished. While this doesn't require downtime (if the above conditions are met), it's required that you [wait for background migrations to complete](index.md#check-for-background-migrations-before-upgrading) between each major or minor release upgrade.
   - The time necessary to complete these migrations can be reduced by increasing the number of Sidekiq workers that can process jobs in the
-`background_migration` queue. To see the size of this queue, [check for background migrations before upgrading](index.md#check-for-background-migrations-before-upgrading).
+    `background_migration` queue. To see the size of this queue, [check for background migrations before upgrading](index.md#check-for-background-migrations-before-upgrading).
 - [PostgreSQL major version upgrades](../administration/postgresql/replication_and_failover.md#near-zero-downtime-upgrade-of-postgresql-in-a-patroni-cluster) are a separate process and not covered by zero-downtime upgrades (smaller upgrades are covered).
 - Zero-downtime upgrades are supported for any GitLab components you've deployed with the GitLab Linux package. If you've deployed select components via a supported third party service, such as PostgreSQL in AWS RDS or Redis in GCP Memorystore, upgrades for those services will need to be performed separately as per their standard processes.
 - As a general guideline, the larger amount of data you have, the more time it will take for the upgrade to complete. In testing, any database smaller than 10 GB shouldn't generally take longer than an hour, but your mileage may vary.
@@ -216,81 +216,81 @@ In addition to the above, Rails is where the main database migrations need to be
 
 1. On the **Rails deploy node**:
 
-    1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
-       NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
-       done via the following shell script:
+   1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
+      NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
+      done via the following shell script:
 
-       ```shell
-       # Send QUIT to NGINX master process to drain and exit
-       NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
-       kill -QUIT $NGINX_PID
+      ```shell
+      # Send QUIT to NGINX master process to drain and exit
+      NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
+      kill -QUIT $NGINX_PID
  
-       # Wait for drain to complete
-       while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
+      # Wait for drain to complete
+      while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
  
-       # Stop NGINX service to prevent automatic restarts
-       gitlab-ctl stop nginx
-       ```
+      # Stop NGINX service to prevent automatic restarts
+      gitlab-ctl stop nginx
+      ```
 
-    1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
+   1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
-       ```shell
-       sudo touch /etc/gitlab/skip-auto-reconfigure
-       ```
+      ```shell
+      sudo touch /etc/gitlab/skip-auto-reconfigure
+      ```
 
-    1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
+   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
-    1. Configure regular migrations to by setting `gitlab_rails['auto_migrate'] = true` in the
-       `/etc/gitlab/gitlab.rb` configuration file.
-        - If the deploy node is currently going through PgBouncer to reach the database then
-          you must [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
-          and connect directly to the database leader before running migrations.
-        - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
+   1. Configure regular migrations to by setting `gitlab_rails['auto_migrate'] = true` in the
+      `/etc/gitlab/gitlab.rb` configuration file.
+      - If the deploy node is currently going through PgBouncer to reach the database then
+        you must [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
+        and connect directly to the database leader before running migrations.
+      - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
 
-    1. Run the regular migrations and get the latest code in place:
+   1. Run the regular migrations and get the latest code in place:
 
-       ```shell
-       sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-ctl reconfigure
-       ```
+      ```shell
+      sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-ctl reconfigure
+      ```
 
-    1. Leave this node as-is for now as you'll come back to run post-deployment migrations
-       later.
+   1. Leave this node as-is for now as you'll come back to run post-deployment migrations
+      later.
 
 1. On every **other Rails node** sequentially:
 
-    1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
-       NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
-       done via the following shell script:
+   1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
+      NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
+      done via the following shell script:
 
-       ```shell
-       # Send QUIT to NGINX master process to drain and exit
-       NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
-       kill -QUIT $NGINX_PID
+      ```shell
+      # Send QUIT to NGINX master process to drain and exit
+      NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
+      kill -QUIT $NGINX_PID
  
-       # Wait for drain to complete
-       while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
+      # Wait for drain to complete
+      while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
  
-       # Stop NGINX service to prevent automatic restarts
-       gitlab-ctl stop nginx
-       ```
+      # Stop NGINX service to prevent automatic restarts
+      gitlab-ctl stop nginx
+      ```
 
-    1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
+   1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
-       ```shell
-       sudo touch /etc/gitlab/skip-auto-reconfigure
-       ```
+      ```shell
+      sudo touch /etc/gitlab/skip-auto-reconfigure
+      ```
 
-    1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
+   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
-    1. Ensure that `gitlab_rails['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb` to prevent
-       `reconfigure` from automatically running database migrations.
+   1. Ensure that `gitlab_rails['auto_migrate'] = false` is set in `/etc/gitlab/gitlab.rb` to prevent
+      `reconfigure` from automatically running database migrations.
 
-    1. Run the `reconfigure` command to get the latest code in place as well as restart:
+   1. Run the `reconfigure` command to get the latest code in place as well as restart:
 
-       ```shell
-       sudo gitlab-ctl reconfigure
-       sudo gitlab-ctl restart
-       ```
+      ```shell
+      sudo gitlab-ctl reconfigure
+      sudo gitlab-ctl restart
+      ```
 
 1. On the **Rails deploy node** run the post-deployment migrations:
 
@@ -298,7 +298,7 @@ In addition to the above, Rails is where the main database migrations need to be
       is currently going through PgBouncer to reach the database then you must
       [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
       and connect directly to the database leader before running migrations.
-         - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
+      - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
 
    1. Run the post-deployment migrations:
 
@@ -307,15 +307,15 @@ In addition to the above, Rails is where the main database migrations need to be
       ```
 
    1. Return the config back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
-       `/etc/gitlab/gitlab.rb` configuration file.
-         - If PgBouncer is being used make sure to set the database config to once again point towards it
+      `/etc/gitlab/gitlab.rb` configuration file.
+      - If PgBouncer is being used make sure to set the database config to once again point towards it
 
    1. Run through reconfigure once again to reapply the normal config as well as restart:
 
-       ```shell
-       sudo gitlab-ctl reconfigure
-       sudo gitlab-ctl restart
-       ```
+      ```shell
+      sudo gitlab-ctl reconfigure
+      sudo gitlab-ctl restart
+      ```
 
 ### Sidekiq
 
@@ -375,95 +375,95 @@ below:
 
 1. On the **Rails deploy node**:
 
-    1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
-       NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
-       done via the following shell script:
+   1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
+      NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
+      done via the following shell script:
 
-       ```shell
-       # Send QUIT to NGINX master process to drain and exit
-       NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
-       kill -QUIT $NGINX_PID
+      ```shell
+      # Send QUIT to NGINX master process to drain and exit
+      NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
+      kill -QUIT $NGINX_PID
  
-       # Wait for drain to complete
-       while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
+      # Wait for drain to complete
+      while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
  
-       # Stop NGINX service to prevent automatic restarts
-       gitlab-ctl stop nginx
-       ```
+      # Stop NGINX service to prevent automatic restarts
+      gitlab-ctl stop nginx
+      ```
 
-    1. Stop the Geo Logcursor process to ensure it fails over to another node:
+   1. Stop the Geo Logcursor process to ensure it fails over to another node:
 
-       ```shell
-       gitlab-ctl stop geo-logcursor
-       ```
+      ```shell
+      gitlab-ctl stop geo-logcursor
+      ```
 
-    1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
+   1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
-       ```shell
-       sudo touch /etc/gitlab/skip-auto-reconfigure
-       ```
+      ```shell
+      sudo touch /etc/gitlab/skip-auto-reconfigure
+      ```
 
-    1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
+   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
-    1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site Rails node to the secondary site Rails node if they're different. The file must be the same on all of a site's nodes.
+   1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the primary site Rails node to the secondary site Rails node if they're different. The file must be the same on all of a site's nodes.
 
-    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
-       `/etc/gitlab/gitlab.rb` configuration file.
+   1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
+      `/etc/gitlab/gitlab.rb` configuration file.
 
-    1. Run the `reconfigure` command to get the latest code in place as well as restart:
+   1. Run the `reconfigure` command to get the latest code in place as well as restart:
 
-       ```shell
-       sudo gitlab-ctl reconfigure
-       sudo gitlab-ctl restart
-       ```
+      ```shell
+      sudo gitlab-ctl reconfigure
+      sudo gitlab-ctl restart
+      ```
 
-    1. Run the regular Geo Tracking migrations and get the latest code in place:
+   1. Run the regular Geo Tracking migrations and get the latest code in place:
 
-       ```shell
-       sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate:geo
-       ```
+      ```shell
+      sudo SKIP_POST_DEPLOYMENT_MIGRATIONS=true gitlab-rake db:migrate:geo
+      ```
 
 1. On every **other Rails node** sequentially:
 
-    1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
-       NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
-       done via the following shell script:
+   1. Drain the node of traffic gracefully. This can be done in various ways, but one approach is via
+      NGINX by sending it a `QUIT` signal and then stopping the service. As an example this could be
+      done via the following shell script:
 
-       ```shell
-       # Send QUIT to NGINX master process to drain and exit
-       NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
-       kill -QUIT $NGINX_PID
+      ```shell
+      # Send QUIT to NGINX master process to drain and exit
+      NGINX_PID=$(cat /var/opt/gitlab/nginx/nginx.pid)
+      kill -QUIT $NGINX_PID
  
-       # Wait for drain to complete
-       while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
+      # Wait for drain to complete
+      while kill -0 $NGINX_PID 2>/dev/null; do sleep 1; done
  
-       # Stop NGINX service to prevent automatic restarts
-       gitlab-ctl stop nginx
-       ```
+      # Stop NGINX service to prevent automatic restarts
+      gitlab-ctl stop nginx
+      ```
 
-    1. Stop the Geo Logcursor process to ensure it fails over to another node:
+   1. Stop the Geo Logcursor process to ensure it fails over to another node:
 
-       ```shell
-       gitlab-ctl stop geo-logcursor
-       ```
+      ```shell
+      gitlab-ctl stop geo-logcursor
+      ```
 
-    1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
+   1. Create an empty file at `/etc/gitlab/skip-auto-reconfigure`. This prevents upgrades from running `gitlab-ctl reconfigure`, which by default automatically stops GitLab, runs all database migrations, and restarts GitLab:
 
-       ```shell
-       sudo touch /etc/gitlab/skip-auto-reconfigure
-       ```
+      ```shell
+      sudo touch /etc/gitlab/skip-auto-reconfigure
+      ```
 
-    1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
+   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
-    1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
-       `/etc/gitlab/gitlab.rb` configuration file.
+   1. Ensure no migrations are configured to be run automatically by setting `gitlab_rails['auto_migrate'] = false` and `geo_secondary['auto_migrate'] = false` in the
+      `/etc/gitlab/gitlab.rb` configuration file.
 
-    1. Run the `reconfigure` command to get the latest code in place as well as restart:
+   1. Run the `reconfigure` command to get the latest code in place as well as restart:
 
-       ```shell
-       sudo gitlab-ctl reconfigure
-       sudo gitlab-ctl restart
-       ```
+      ```shell
+      sudo gitlab-ctl reconfigure
+      sudo gitlab-ctl restart
+      ```
 
 #### Sidekiq
 
@@ -481,7 +481,7 @@ Finally, head back to the primary site and finish the upgrade by running the pos
       is currently going through PgBouncer to reach the database then you must
       [bypass it](../administration/postgresql/pgbouncer.md#procedure-for-bypassing-pgbouncer)
       and connect directly to the database leader before running migrations.
-         - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
+      - To find the database leader you can run the following command on any database node - `sudo gitlab-ctl patroni members`.
 
    1. Run the post-deployment migrations:
 
@@ -496,15 +496,15 @@ Finally, head back to the primary site and finish the upgrade by running the pos
       ```
 
    1. Return the config back to normal by setting `gitlab_rails['auto_migrate'] = false` in the
-       `/etc/gitlab/gitlab.rb` configuration file.
-         - If PgBouncer is being used make sure to set the database config to once again point towards it
+      `/etc/gitlab/gitlab.rb` configuration file.
+      - If PgBouncer is being used make sure to set the database config to once again point towards it
 
    1. Run through reconfigure once again to reapply the normal config as well as restart:
 
-       ```shell
-       sudo gitlab-ctl reconfigure
-       sudo gitlab-ctl restart
-       ```
+      ```shell
+      sudo gitlab-ctl reconfigure
+      sudo gitlab-ctl restart
+      ```
 
 1. On the Secondary site's **Rails deploy node** run the post-deployment Geo Tracking migrations:
 

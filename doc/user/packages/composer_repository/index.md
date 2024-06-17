@@ -141,15 +141,15 @@ To install a package:
 
    - Connect to the package registry for your group:
 
-   ```shell
-   composer config repositories.<group_id> composer https://gitlab.example.com/api/v4/group/<group_id>/-/packages/composer/packages.json
-   ```
+     ```shell
+     composer config repositories.<group_id> composer https://gitlab.example.com/api/v4/group/<group_id>/-/packages/composer/packages.json
+     ```
 
    - Set the required package version:
 
-   ```shell
-   composer require <package_name>:<version>
-   ```
+     ```shell
+     composer require <package_name>:<version>
+     ```
 
    Result in the `composer.json` file:
 

@@ -255,8 +255,8 @@ RSpec.shared_examples 'wiki controller actions' do
         it 'shows the empty state' do
           request
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template('shared/wikis/empty')
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to render_template('shared/wikis/404')
         end
       end
     end

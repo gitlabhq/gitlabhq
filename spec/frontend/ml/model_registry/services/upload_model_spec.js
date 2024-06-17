@@ -43,6 +43,14 @@ describe('uploadModel', () => {
     });
   });
 
+  it('should not upload when the subfolder contains spaces', async () => {
+    const subfolder = 'sub folder';
+
+    await expect(uploadModel({ importPath, file, subfolder, maxAllowedFileSize })).rejects.toThrow(
+      new Error('Subfolder cannot contain spaces'),
+    );
+  });
+
   it('should not make a request if no file is provided', async () => {
     await uploadModel({ importPath });
 

@@ -26,13 +26,13 @@ To deploy your environments to different Kubernetes clusters:
 
 1. [Create Kubernetes clusters](../../user/infrastructure/clusters/connect/new_gke_cluster.md).
 1. Associate the clusters to your project:
-    1. [Install a GitLab agent on each cluster](../../user/clusters/agent/index.md).
-    1. [Configure each agent to access your project](../../user/clusters/agent/install/index.md#configure-your-agent).
+   1. [Install a GitLab agent on each cluster](../../user/clusters/agent/index.md).
+   1. [Configure each agent to access your project](../../user/clusters/agent/install/index.md#configure-your-agent).
 1. [Install NGINX Ingress Controller](cloud_deployments/auto_devops_with_gke.md#install-ingress) in each cluster. Save the IP address and Kubernetes namespace for the next step.
 1. [Configure the Auto DevOps CI/CD Pipeline variables](cicd_variables.md#build-and-deployment-variables)
-    - Set up a `KUBE_CONTEXT` variable [for each environment](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable). The value must point to the agent of the relevant cluster.
-    - Set up a `KUBE_INGRESS_BASE_DOMAIN`. You must [configure the base domain](requirements.md#auto-devops-base-domain) for each environment to point to the Ingress of the relevant cluster.
-    - Add a `KUBE_NAMESPACE` variable with a value of the Kubernetes namespace you want your deployments to target. You can scope the variable to multiple environments.
+   - Set up a `KUBE_CONTEXT` variable [for each environment](../../ci/environments/index.md#limit-the-environment-scope-of-a-cicd-variable). The value must point to the agent of the relevant cluster.
+   - Set up a `KUBE_INGRESS_BASE_DOMAIN`. You must [configure the base domain](requirements.md#auto-devops-base-domain) for each environment to point to the Ingress of the relevant cluster.
+   - Add a `KUBE_NAMESPACE` variable with a value of the Kubernetes namespace you want your deployments to target. You can scope the variable to multiple environments.
 
 For deprecated, [certificate-based clusters](../../user/infrastructure/clusters/index.md#certificate-based-kubernetes-integration-deprecated):
 

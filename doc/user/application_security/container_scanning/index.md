@@ -823,6 +823,16 @@ To resolve this, instead of binding the `/tmp` folder, bind specific files or fo
 
 This error means a timeout occurred. To resolve it, add the `TRIVY_TIMEOUT` environment variable to the `container_scanning` job with a sufficiently long duration.
 
+### Max allowed age is 5 days error
+
+When you try to use the Grype scanner, you might encounter the following error:
+
+```shell
+1 error occurred: db could not be loaded: the vulnerability database was built 1 week ago (max allowed age is 5 days)
+```
+
+To resolve this issue, in the Container_Scanning job, set the variable `GRYPE_DB_VALIDATE_AGE` to `false`.
+
 ## Changes
 
 Changes to the container scanning analyzer can be found in the project's

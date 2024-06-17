@@ -30,22 +30,20 @@ RSpec.describe Emails::Imports, feature_category: :importers do
 
   describe '#bulk_import_complete' do
     let(:bulk_import) { build_stubbed(:bulk_import, :finished, :with_configuration) }
-    let(:bulk_import_entity) { build_stubbed(:bulk_import_entity, :group_entity) }
 
     subject { Notify.bulk_import_complete('user_id', 'bulk_import_id') }
 
     before do
       allow(User).to receive(:find).and_return(user)
       allow(BulkImport).to receive(:find).and_return(bulk_import)
-      allow(bulk_import).to receive(:parent_group_entity).and_return(bulk_import_entity)
     end
 
     it 'sends complete email' do
-      is_expected.to have_subject("Import of #{bulk_import_entity.source_full_path} from " \
-        "#{bulk_import.configuration.url}")
+      is_expected.to have_subject("Import from #{bulk_import.configuration.url} completed")
       is_expected.to have_content('Import completed')
-      is_expected.to have_content("The import of #{bulk_import_entity.source_full_path} from " \
-        "#{bulk_import.configuration.url} to #{bulk_import_entity.full_path_with_fallback} is complete.")
+      is_expected.to have_content("The import you started on " \
+        "#{I18n.l(bulk_import.created_at.to_date, format: :long)} " \
+        "from #{bulk_import.configuration.url} has completed. You can now review your import results.")
       is_expected.to have_body_text(history_import_bulk_import_url(bulk_import.id))
     end
   end

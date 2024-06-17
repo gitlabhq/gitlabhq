@@ -58,10 +58,28 @@ RSpec.describe BoardPolicy do
   end
 
   context 'create_non_backlog_issues' do
+    shared_examples 'with admin' do
+      let!(:current_user) { create(:user, :admin) }
+
+      context 'when admin mode enabled', :enable_admin_mode do
+        it 'allows to add non backlog issues from issue board' do
+          expect_allowed(:create_non_backlog_issues)
+        end
+      end
+
+      context 'when admin mode disabled' do
+        it 'does not allow to add non backlog issues from issue board' do
+          expect_disallowed(:create_non_backlog_issues)
+        end
+      end
+    end
+
     context 'for project boards' do
       let!(:current_user) { create(:user) }
 
       subject { described_class.new(current_user, project_board) }
+
+      it_behaves_like 'with admin'
 
       context 'when user can admin project issues' do
         it 'allows to add non backlog issues from issue board' do
@@ -88,9 +106,7 @@ RSpec.describe BoardPolicy do
 
       subject { described_class.new(current_user, group_board) }
 
-      before do
-        project_1.add_guest(current_user)
-      end
+      it_behaves_like 'with admin'
 
       context 'when user is at least reporter in one of the child projects' do
         it 'allows to add non backlog issues from issue board' do

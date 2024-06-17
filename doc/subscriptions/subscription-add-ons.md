@@ -72,10 +72,10 @@ Prerequisites:
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **GitLab Duo Pro**.
    - If the **GitLab Duo Pro** menu item is not available, synchronize your subscription
-   after purchase:
+     after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
-     synchronize subscription (**{retry}**).
+        synchronize subscription (**{retry}**).
 1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
 
 #### Configure network and proxy settings

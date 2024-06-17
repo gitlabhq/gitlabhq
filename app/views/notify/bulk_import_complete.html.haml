@@ -3,20 +3,16 @@
 - button_style = 'border: 1px solid #694cc0; border-radius: 4px; font-size: 14px; padding: 8px 16px; background-color: #7b58cf; color: #fff; cursor: pointer;'
 
 - strong_tag_pair = tag_pair(tag.strong, :strong_open, :strong_close)
-- strong_color_tag_pair = tag_pair(tag.strong(style: 'color: #7b58cf'), :strong_color_open, :strong_color_close)
-
-- destination_group = @bulk_import_entity.full_path_with_fallback
+- start_date = l(@bulk_import.created_at.to_date, format: :long)
 
 %h1{ style: header_style }
   = s_('BulkImport|Import completed')
 
 %p{ style: text_style }
-  = safe_format(s_('BulkImport|The import of %{strong_open}%{source_group}%{strong_close} from %{strong_open}%{hostname}%{strong_close} to %{strong_color_open}%{destination_group}%{strong_color_close} is complete. You can view the results of the import.'),
+  = safe_format(s_('BulkImport|The import you started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed. You can now review your import results.'),
     strong_tag_pair,
-    strong_color_tag_pair,
-    source_group: @source_group,
     hostname: @hostname,
-    destination_group: destination_group)
+    start_date: start_date)
 
 %p{ style: text_style }
   = link_to history_import_bulk_import_url(@bulk_import.id), target: '_blank', rel: 'noopener noreferrer' do

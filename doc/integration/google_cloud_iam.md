@@ -75,7 +75,7 @@ Prerequisites:
    ```
 
 1. Add an OIDC provider to the workload identity pool with the following
-  command. Replace these values:
+   command. Replace these values:
 
    - `<your_identity_provider_id>` with the ID to use for the provider, which
      must be 4 to 32 lowercase letters, digits, or hyphens. To avoid
@@ -132,10 +132,10 @@ After you create the workload identity pool and provider, to complete the setup 
 1. Select **Manual setup**
 1. Complete the fields.
    - **[Project ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)**
-   for the Google Cloud project in which you created the workload identity.
-   pool and provider. Example: `my-sample-project-191923`.
+     for the Google Cloud project in which you created the workload identity.
+     pool and provider. Example: `my-sample-project-191923`.
    - **[Project number](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)**
-   for the same Google Cloud project. Example: `314053285323`.
+     for the same Google Cloud project. Example: `314053285323`.
    - **Pool ID** of the workload identity pool you created for this integration.
    - **Provider ID** of the workload identity provider you created for this integration.
 

@@ -218,9 +218,9 @@ To guard your licensed feature:
 
    - For a global (system-wide) feature:
 
-   ```ruby
-   License.feature_available?(:my_feature_name)  # true if available in this instance
-   ```
+     ```ruby
+     License.feature_available?(:my_feature_name)  # true if available in this instance
+     ```
 
 1. Optional. If your global feature is also available to namespaces with a paid plan, combine two
    feature identifiers to allow both administrators and group users. For example:

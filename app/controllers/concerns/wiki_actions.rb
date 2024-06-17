@@ -157,6 +157,8 @@ module WikiActions
       )
     elsif show_create_form?
       handle_create_form
+    elsif wiki.exists?
+      render 'shared/wikis/404', status: :not_found
     else
       render 'shared/wikis/empty'
     end
