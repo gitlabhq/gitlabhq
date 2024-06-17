@@ -39,3 +39,4 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 |[`FUZZAPI_HTTP_USERNAME`](customizing_analyzer_settings.md#http-basic-authentication)        | Username for HTTP authentication. |
 |[`FUZZAPI_HTTP_PASSWORD`](customizing_analyzer_settings.md#http-basic-authentication)        | Password for HTTP authentication. |
 |[`FUZZAPI_HTTP_PASSWORD_BASE64`](customizing_analyzer_settings.md#http-basic-authentication) | Password for HTTP authentication, Base64-encoded. [Introduced](https://gitlab.com/gitlab-org/security-products/analyzers/api-fuzzing-src/-/merge_requests/702) in GitLab 15.4. |
+|`FUZZAPI_SUCCESS_STATUS_CODES`                        | Specify a comma-separated (`,`) list of HTTP success status codes that determine whether an API Fuzzing testing scanning job has passed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442219) in GitLab 17.1. Example: `'200, 201, 204'` |

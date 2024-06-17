@@ -263,7 +263,8 @@ Supported attributes:
   "disable_overriding_approvers_per_merge_request": false,
   "merge_requests_author_approval": true,
   "merge_requests_disable_committers_approval": false,
-  "require_password_to_approve": true
+  "require_password_to_approve": true, // Deprecated in 16.9, use require_reauthentication_to_approve instead
+  "require_reauthentication_to_approve": true
 }
 ```
 
@@ -284,7 +285,8 @@ Supported attributes:
 | `disable_overriding_approvers_per_merge_request` | boolean           | No       | Allow or prevent overriding approvers per merge request. |
 | `merge_requests_author_approval`                 | boolean           | No       | Allow or prevent authors from self approving merge requests; `true` means authors can self approve. |
 | `merge_requests_disable_committers_approval`     | boolean           | No       | Allow or prevent committers from self approving merge requests. |
-| `require_password_to_approve`                    | boolean           | No       | Require approver to enter a password to authenticate before adding the approval. |
+| `require_password_to_approve` (deprecated)       | boolean           | No       | Require approver to enter a password to authenticate before adding the approval. [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/431346) in GitLab 16.9. Use `require_reauthentication_to_approve` instead. |
+| `require_reauthentication_to_approve`            | boolean           | No       | Require approver to enter a to authenticate before adding the approval. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/431346) in GitLab 17.1. |
 | `reset_approvals_on_push`                        | boolean           | No       | Reset approvals on a new push. |
 | `selective_code_owner_removals`                  | boolean           | No       | Reset approvals from Code Owners if their files changed. You must disable the `reset_approvals_on_push` field to use this field. |
 
@@ -296,7 +298,8 @@ Supported attributes:
   "disable_overriding_approvers_per_merge_request": false,
   "merge_requests_author_approval": false,
   "merge_requests_disable_committers_approval": false,
-  "require_password_to_approve": true
+  "require_password_to_approve": true,
+  "require_reauthentication_to_approve": true
 }
 ```
 
@@ -1232,7 +1235,7 @@ Supported attributes:
 | Attribute           | Type              | Required | Description |
 |---------------------|-------------------|----------|-------------|
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path of a project](rest/index.md#namespaced-path-encoding). |
-| `approval_password` | string            | No       | Current user's password. Required if [**Require user password to approve**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve) is enabled in the project settings. |
+| `approval_password` | string            | No       | Current user's password. Required if [**Require user re-authentication to approve**](../user/project/merge_requests/approvals/settings.md#require-user-re-authentication-to-approve) is enabled in the project settings. Always fails if the group or self-managed instance is configured to force SAML authentication. |
 | `merge_request_iid` | integer           | Yes      | The IID of the merge request. |
 | `sha`               | string            | No       | The `HEAD` of the merge request. |
 

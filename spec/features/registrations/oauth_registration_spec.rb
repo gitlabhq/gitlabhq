@@ -84,7 +84,7 @@ RSpec.describe 'OAuth Registration', :js, :allow_forgery_protection, feature_cat
         let_it_be(:project) { create(:project, :repository, namespace: group) }
 
         let(:invite_email) { generate(:email) }
-        let(:extra_params) { { invite_type: Emails::Members::INITIAL_INVITE } }
+        let(:extra_params) { { invite_type: ::Members::InviteMailer::INITIAL_INVITE } }
         let(:group_invite) do
           create(
             :group_member, :invited,

@@ -526,10 +526,6 @@ class NotificationService
     ).deliver_later
   end
 
-  def invite_member(member, token)
-    mailer.member_invited_email(member.real_source_type, member.id, token).deliver_later
-  end
-
   def new_member(member)
     notifiable_options = case member.source
                          when Group

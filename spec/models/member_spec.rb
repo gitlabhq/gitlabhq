@@ -833,22 +833,19 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   describe 'callbacks' do
     describe '#send_invite' do
       context 'with an invited group member' do
-        it 'sends an invite email' do
-          expect_next_instance_of(NotificationService) do |instance|
-            expect(instance).to receive(:invite_member)
-          end
+        it 'enqueues initial invite email' do
+          allow(Members::InviteMailer).to receive(:initial_email).and_call_original
 
-          create(:group_member, :invited)
+          expect do
+            member = create(:group_member, :invited)
+            expect(Members::InviteMailer).to have_received(:initial_email).with(member, member.raw_invite_token)
+          end.to have_enqueued_mail(Members::InviteMailer, :initial_email)
         end
       end
 
       context 'with an uninvited member' do
-        it 'does not send an invite email' do
-          expect_next_instance_of(NotificationService) do |instance|
-            expect(instance).not_to receive(:invite_member)
-          end
-
-          create(:group_member)
+        it 'does not enqueue the initial invite email' do
+          expect { create(:group_member) }.not_to have_enqueued_mail(Members::InviteMailer, :initial_email)
         end
       end
     end

@@ -99,7 +99,7 @@ class InvitesController < ApplicationController
   end
 
   def initial_invite_email?
-    params[:invite_type] == Emails::Members::INITIAL_INVITE
+    params[:invite_type] == ::Members::InviteMailer::INITIAL_INVITE
   end
 
   def sign_in_redirect_params

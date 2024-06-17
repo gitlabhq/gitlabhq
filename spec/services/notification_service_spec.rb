@@ -3321,22 +3321,6 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
   end
 
-  describe '#invite_member' do
-    let_it_be(:group_member) { create(:group_member) }
-
-    subject(:invite_member) { notification.invite_member(group_member, 'token') }
-
-    it 'sends exactly one email' do
-      expect(Notify)
-        .to receive(:member_invited_email).with('Group', group_member.id, 'token').at_least(:once).and_call_original
-
-      invite_member
-
-      expect_delivery_jobs_count(1)
-      expect_enqueud_email('Group', group_member.id, 'token', mail: 'member_invited_email')
-    end
-  end
-
   describe '#new_instance_access_request', :deliver_mails_inline do
     let_it_be(:user) { create(:user, :blocked_pending_approval) }
     let_it_be(:admins) { create_list(:admin, 12, :with_sign_ins) }

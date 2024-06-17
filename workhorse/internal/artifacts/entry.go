@@ -71,12 +71,19 @@ func unpackFileFromZip(ctx context.Context, archivePath, encodedFilename string,
 		return err
 	}
 
+	logWriter := log.ContextLogger(ctx).Writer()
+	defer func() {
+		if closeErr := logWriter.Close(); closeErr != nil {
+			log.ContextLogger(ctx).WithError(closeErr).Error("failed to close gitlab-zip-cat log writer")
+		}
+	}()
+
 	catFile := exec.Command("gitlab-zip-cat")
 	catFile.Env = append(os.Environ(),
 		"ARCHIVE_PATH="+archivePath,
 		"ENCODED_FILE_NAME="+encodedFilename,
 	)
-	catFile.Stderr = log.ContextLogger(ctx).Writer()
+	catFile.Stderr = logWriter
 	catFile.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	stdout, err := catFile.StdoutPipe()
 	if err != nil {

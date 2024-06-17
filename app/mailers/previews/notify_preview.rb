@@ -185,10 +185,6 @@ class NotifyPreview < ActionMailer::Preview
     ).message
   end
 
-  def member_invited_email
-    Notify.member_invited_email('project', member.id, '1234').message
-  end
-
   def member_about_to_expire_email
     cleanup do
       member = project.add_member(user, Gitlab::Access::GUEST, expires_at: 7.days.from_now.to_date)

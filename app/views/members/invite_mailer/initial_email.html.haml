@@ -7,7 +7,7 @@
   role_type: member.present.role_type }
 - join_text =  s_('InviteEmail|Join now')
 - inviter_name = member.created_by.name if member.created_by
-- join_url = invite_url(@token, invite_type: Emails::Members::INITIAL_INVITE)
+- join_url = invite_url(@token, invite_type: ::Members::InviteMailer::INITIAL_INVITE)
 
 = content_for :preview_text do
   %div{ style: "display:none;font-size:1px;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;" }

@@ -51,7 +51,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
 
         context 'when invite clicked and not signed in' do
           before do
-            visit invite_path(group_invite.raw_invite_token, invite_type: Emails::Members::INITIAL_INVITE)
+            visit invite_path(group_invite.raw_invite_token, invite_type: ::Members::InviteMailer::INITIAL_INVITE)
           end
 
           it 'sign in, grants access and redirects to group page' do
@@ -132,7 +132,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
     let(:new_user) { build_stubbed(:user) }
     let(:invite_email) { new_user.email }
     let(:group_invite) { create(:group_member, :invited, group: group, invite_email: invite_email, created_by: owner) }
-    let(:extra_params) { { invite_type: Emails::Members::INITIAL_INVITE } }
+    let(:extra_params) { { invite_type: ::Members::InviteMailer::INITIAL_INVITE } }
 
     before do
       stub_application_setting_enum('email_confirmation_setting', 'hard')

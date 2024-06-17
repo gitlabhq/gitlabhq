@@ -121,9 +121,8 @@ class Notify < ApplicationMailer
     subject << @project.name if @project
     subject << @group.name if @group
     subject.concat(extra) if extra.present?
-    subject << Gitlab.config.gitlab.email_subject_suffix if Gitlab.config.gitlab.email_subject_suffix.present?
 
-    subject.join(' | ')
+    subject_with_suffix(subject)
   end
 
   # Return a string suitable for inclusion in the 'Message-Id' mail header.

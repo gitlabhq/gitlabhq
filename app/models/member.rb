@@ -591,7 +591,7 @@ class Member < ApplicationRecord
   end
 
   def send_invite
-    run_after_commit_or_now { notification_service.invite_member(self, @raw_invite_token) }
+    run_after_commit_or_now { Members::InviteMailer.initial_email(self, @raw_invite_token).deliver_later }
   end
 
   def send_request

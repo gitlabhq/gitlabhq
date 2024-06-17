@@ -22,6 +22,7 @@ RSpec.describe Gitlab::Runtime, feature_category: :cloud_connector do
 
   before do
     allow(described_class).to receive(:process_name).and_return('ruby')
+    hide_const('::Puma::Server')
     stub_rails_env('production')
   end
 

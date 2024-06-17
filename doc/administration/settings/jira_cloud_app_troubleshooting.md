@@ -274,3 +274,17 @@ To resolve this issue:
 
 1. If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
    ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` without leading slashes.
+
+## `Missing required parameter: client_id`
+
+When you sign in to the GitLab for Jira Cloud app after you point the app
+to your self-managed instance, you might get the following error:
+
+```plaintext
+Missing required parameter: client_id
+```
+
+To resolve this issue, ensure all prerequisites for your installation method have been met:
+
+- [Prerequisites for connecting the GitLab for Jira Cloud app](jira_cloud_app.md#prerequisites)
+- [Prerequisites for installing the GitLab for Jira Cloud app manually](jira_cloud_app.md#prerequisites-1)

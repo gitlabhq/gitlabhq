@@ -343,3 +343,44 @@ This issue can be worked around in the following ways:
    ```
 
 1. Change the GitLab Runner configuration, disabling the no-new-privileges flag.
+
+## `Index was outside the bounds of the array.    at Peach.Web.Runner.Services.RunnerOptions.GetHeaders()`
+
+This error message indicates that the API security testing analyzer is unable to parse the value of the `APISEC_REQUEST_HEADERS` or `APISEC_REQUEST_HEADERS_BASE64` configuration variable.
+
+**Error message**
+
+This issue can be identified by two error messages. The first error message is seen in the job console output and the second in the `gl-api-security-scanner.log` file.
+
+_Error message from job console:_
+
+```log
+05:48:38 [ERR] API Security: Testing failed: An unexpected exception occurred: Index was outside the bounds of the array.
+```
+
+_Error message from `gl_api_security-scanner.log`:_
+
+```log
+08:45:43.616 [ERR] <Peach.Web.Core.Services.WebRunnerMachine> Unexpected exception in WebRunnerMachine::Run()
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Peach.Web.Runner.Services.RunnerOptions.GetHeaders() in /builds/gitlab-org/security-products/analyzers/api-fuzzing-src/web/PeachWeb/Runner/Services/[RunnerOptions.cs:line 362
+   at Peach.Web.Runner.Services.RunnerService.Start(Job job, IRunnerOptions options) in /builds/gitlab-org/security-products/analyzers/api-fuzzing-src/web/PeachWeb/Runner/Services/RunnerService.cs:line 67
+   at Peach.Web.Core.Services.WebRunnerMachine.Run(IRunnerOptions runnerOptions, CancellationToken token) in /builds/gitlab-org/security-products/analyzers/api-fuzzing-src/web/PeachWeb/Core/Services/WebRunnerMachine.cs:line 321
+08:45:43.634 [WRN] <Peach.Web.Core.Services.WebRunnerMachine> * Session failed: An unexpected exception occurred: Index was outside the bounds of the array.
+08:45:43.677 [INF] <Peach.Web.Core.Services.WebRunnerMachine> Finished testing. Performed a total of 0 requests.
+```
+
+**Solution**
+
+This issue occurs due to a malformed `APISEC_REQUEST_HEADERS` or `APISEC_REQUEST_HEADERS_BASE64` variable. The expected format is one or more headers of `Header: value` construction separated by a comma. The solution is to correct the syntax to match what is expected.
+
+_Valid examples:_
+
+- `Authorization: Bearer XYZ`
+- `X-Custom: Value,Authorization: Bearer XYZ`
+
+_Invalid examples:_
+
+- `Header:,value`
+- `HeaderA: value,HeaderB:,HeaderC: value`
+- `Header`

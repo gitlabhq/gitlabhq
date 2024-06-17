@@ -1088,84 +1088,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       )
     end
 
-    describe 'project invitation' do
-      let(:maintainer) { create(:user, maintainer_of: project) }
-      let(:project_member) { invite_to_project(project, inviter: inviter) }
-      let(:inviter) { maintainer }
-
-      subject(:invite_email) do
-        described_class.member_invited_email('project', project_member.id, project_member.invite_token)
-      end
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should show Gmail Actions Join now link'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-      it_behaves_like 'does not render a manage notifications link'
-
-      context 'when there is an inviter', :aggregate_failures do
-        it 'contains all the useful information' do
-          is_expected.to have_subject "#{inviter.name} invited you to join GitLab"
-          is_expected.to have_body_text project.full_name
-          is_expected.to have_body_text project_member.human_access
-          is_expected.to have_body_text 'default role'
-          is_expected.to have_body_text project_member.invite_token
-          is_expected.to have_link(
-            'Join now',
-            href: invite_url(project_member.invite_token, invite_type: Emails::Members::INITIAL_INVITE)
-          )
-          is_expected.to have_content("#{inviter.name} invited you to join the")
-          is_expected.to have_content('Project details')
-          is_expected.to have_content("What's it about?")
-        end
-      end
-
-      context 'when there is no inviter', :aggregate_failures do
-        let(:inviter) { nil }
-
-        it 'contains all the useful information' do
-          is_expected.to have_subject "Invitation to join the #{project.full_name} project"
-          is_expected.to have_body_text project.full_name
-          is_expected.to have_body_text project_member.human_access
-          is_expected.to have_body_text 'default role'
-          is_expected.to have_body_text project_member.invite_token
-          is_expected.to have_link(
-            'Join now',
-            href: invite_url(project_member.invite_token, invite_type: Emails::Members::INITIAL_INVITE)
-          )
-          is_expected.to have_content('Project details')
-          is_expected.to have_content("What's it about?")
-        end
-      end
-
-      context 'when invite email sent is tracked', :snowplow do
-        it 'tracks the sent invite' do
-          invite_email.deliver_now
-
-          expect_snowplow_event(
-            category: 'Notify',
-            action: 'invite_email_sent',
-            label: 'invite_email',
-            property: project_member.id.to_s
-          )
-        end
-      end
-
-      context 'when mailgun events are enabled' do
-        before do
-          stub_application_setting(mailgun_events_enabled: true)
-        end
-
-        it 'has custom headers' do
-          aggregate_failures do
-            expect(subject).to have_header('X-Mailgun-Tag', ::Members::Mailgun::INVITE_EMAIL_TAG)
-            expect(subject).to have_header('X-Mailgun-Variables', { ::Members::Mailgun::INVITE_EMAIL_TOKEN_KEY => project_member.invite_token }.to_json)
-          end
-        end
-      end
-    end
-
     describe 'project invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
       let(:recipient) { create(:user, maintainer_of: project) }
@@ -1772,41 +1694,6 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
         user: user,
         created_by: inviter
       )
-    end
-
-    describe 'invitations' do
-      let(:owner) { create(:user, owner_of: group) }
-      let(:group_member) { invite_to_group(group, inviter: inviter) }
-      let(:inviter) { owner }
-
-      subject { described_class.member_invited_email('Group', group_member.id, group_member.invite_token) }
-
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should show Gmail Actions Join now link'
-      it_behaves_like "a user cannot unsubscribe through footer link"
-      it_behaves_like 'appearance header and footer enabled'
-      it_behaves_like 'appearance header and footer not enabled'
-      it_behaves_like 'does not render a manage notifications link'
-
-      context 'when there is an inviter' do
-        it 'contains all the useful information' do
-          is_expected.to have_subject "#{group_member.created_by.name} invited you to join GitLab"
-          is_expected.to have_body_text group.name
-          is_expected.to have_body_text group_member.human_access
-          is_expected.to have_body_text group_member.invite_token
-        end
-      end
-
-      context 'when there is no inviter' do
-        let(:inviter) { nil }
-
-        it 'contains all the useful information' do
-          is_expected.to have_subject "Invitation to join the #{group.name} group"
-          is_expected.to have_body_text group.name
-          is_expected.to have_body_text group_member.human_access
-          is_expected.to have_body_text group_member.invite_token
-        end
-      end
     end
 
     describe 'group invitation reminders' do
