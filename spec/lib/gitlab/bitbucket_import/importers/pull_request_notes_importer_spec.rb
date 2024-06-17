@@ -14,7 +14,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
   let_it_be(:merge_request) { create(:merge_request, source_project: project) }
   let_it_be(:merge_request_diff) { create(:merge_request_diff, :external, merge_request: merge_request) }
   let_it_be(:bitbucket_user) { create(:user) }
-  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: 'bitbucket_user', provider: :bitbucket) }
+  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket) }
   let(:hash) { { iid: merge_request.iid } }
   let(:client) { Bitbucket::Client.new({}) }
   let(:ref_converter) { Gitlab::BitbucketImport::RefConverter.new(project) }
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
   let(:note_hash) do
     {
       'id' => 12,
-      'user' => { 'nickname' => 'bitbucket_user' },
+      'user' => { 'nickname' => 'bitbucket_user', 'uuid' => '{123}' },
       'content' => { 'raw' => note_body },
       'created_on' => created_at,
       'updated_on' => updated_at
@@ -88,7 +88,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
         let(:note_hash) do
           {
             'id' => 12,
-            'user' => { 'nickname' => 'bitbucket_user' },
+            'user' => { 'nickname' => 'bitbucket_user', 'uuid' => '{123}' },
             'content' => { 'raw' => note_body },
             'deleted' => true,
             'created_on' => created_at,
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
             'to' => 1
           },
           'parent' => { 'id' => 13 },
-          'user' => { 'nickname' => 'bitbucket_user' },
+          'user' => { 'nickname' => 'bitbucket_user', 'uuid' => '{123}' },
           'content' => { 'raw' => reply_body },
           'created_on' => created_at,
           'updated_on' => updated_at
@@ -136,7 +136,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
             'from' => nil,
             'to' => 1
           },
-          'user' => { 'nickname' => 'non_existent_user' },
+          'user' => { 'nickname' => 'non_existent_user', 'uuid' => '{456}' },
           'content' => { 'raw' => note_body },
           'created_on' => created_at,
           'updated_on' => updated_at
@@ -171,7 +171,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
               'to' => nil
             },
             'parent' => { 'id' => 13 },
-            'user' => { 'nickname' => 'bitbucket_user' },
+            'user' => { 'nickname' => 'bitbucket_user', 'uuid' => '{123}' },
             'content' => { 'raw' => reply_body },
             'created_on' => created_at,
             'updated_on' => updated_at
@@ -186,7 +186,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
               'from' => nil,
               'to' => nil
             },
-            'user' => { 'nickname' => 'bitbucket_user' },
+            'user' => { 'nickname' => 'bitbucket_user', 'uuid' => '{123}' },
             'content' => { 'raw' => note_body },
             'created_on' => created_at,
             'updated_on' => updated_at
@@ -213,7 +213,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
       context 'when an error is raised for one note' do
         before do
           allow(user_finder).to receive(:gitlab_user_id).and_call_original
-          allow(user_finder).to receive(:gitlab_user_id).with(project, 'bitbucket_user').and_raise(StandardError)
+          allow(user_finder).to receive(:gitlab_user_id).with(project, '{123}').and_raise(StandardError)
         end
 
         it 'tracks the error and continues to import other notes' do

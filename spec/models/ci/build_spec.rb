@@ -99,15 +99,13 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when running after_commit callbacks' do
       it 'tracks creation event' do
-        build = FactoryBot.build(:ci_build, user: create(:user))
-
         expect(Gitlab::InternalEvents).to receive(:track_event).with(
           'create_ci_build',
-          project: build.project,
-          user: build.user
+          project: project,
+          user: user
         )
 
-        build.save!
+        create(:ci_build, user: user, project: project)
       end
     end
   end
@@ -1834,7 +1832,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '#runner_manager' do
     let_it_be(:runner) { create(:ci_runner) }
     let_it_be(:runner_manager) { create(:ci_runner_machine, runner: runner) }
-    let_it_be(:build) { create(:ci_build, runner_manager: runner_manager) }
+    let_it_be(:ci_stage) { create(:ci_stage) }
+    let_it_be(:build) { create(:ci_build, runner_manager: runner_manager, ci_stage: ci_stage) }
 
     subject(:build_runner_manager) { described_class.find(build.id).runner_manager }
 
@@ -3128,7 +3127,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when pipeline variable overrides build variable' do
       let(:build) do
-        create(:ci_build, pipeline: pipeline, yaml_variables: [{ key: 'MYVAR', value: 'myvar', public: true }])
+        create(:ci_build, pipeline: pipeline, ci_stage: pipeline.stages.first, yaml_variables: [{ key: 'MYVAR', value: 'myvar', public: true }])
       end
 
       before do
@@ -3191,7 +3190,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when build has not been persisted yet' do
       let(:build) do
-        described_class.new(
+        FactoryBot.build(:ci_build,
           name: 'rspec',
           stage: 'test',
           ref: 'feature',
@@ -3640,10 +3639,12 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     shared_examples 'calculates scoped_variables' do
       context 'when build has not been persisted yet' do
+        let(:ci_stage) { create(:ci_stage) }
         let(:build) do
-          described_class.new(
+          FactoryBot.build(
+            :ci_build,
             name: 'rspec',
-            stage: 'test',
+            ci_stage: ci_stage,
             ref: 'feature',
             project: project,
             pipeline: pipeline,
@@ -5748,7 +5749,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     include Ci::PartitioningHelpers
 
     let(:new_pipeline) { create(:ci_pipeline, project: project) }
-    let(:ci_build) { FactoryBot.build(:ci_build, pipeline: new_pipeline) }
+    let(:ci_stage) { create(:ci_stage, pipeline: new_pipeline) }
+    let(:ci_build) { FactoryBot.build(:ci_build, pipeline: new_pipeline, ci_stage: ci_stage) }
 
     before do
       stub_current_partition_id
@@ -5800,9 +5802,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe 'metadata partitioning', :ci_partitionable do
     let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
 
-    let(:build) do
-      FactoryBot.build(:ci_build, pipeline: pipeline)
-    end
+    let(:ci_stage) { create(:ci_stage, pipeline: pipeline) }
+    let(:build) { FactoryBot.build(:ci_build, pipeline: pipeline, ci_stage: ci_stage) }
 
     it 'creates the metadata record and assigns its partition' do
       # The record is initialized by the factory calling metadatable setters
@@ -5821,7 +5822,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe 'secrets management id_tokens usage data' do
     context 'when ID tokens are defined' do
       context 'on create' do
-        let(:ci_build) { FactoryBot.build(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
+        let(:ci_build) { create(:ci_build, user: user, id_tokens: { 'ID_TOKEN_1' => { aud: 'developers' } }) }
 
         before do
           allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event).and_call_original
@@ -5831,7 +5832,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
           expect(::Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
             .with('i_ci_secrets_management_id_tokens_build_created', values: user.id)
 
-          ci_build.save!
+          ci_build
         end
 
         it 'tracks Snowplow event with RedisHLL context' do
@@ -5848,7 +5849,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
             ).to_context.to_json]
           }
 
-          ci_build.save!
+          ci_build
           expect_snowplow_event(**params)
         end
       end
@@ -5871,14 +5872,14 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
 
     context 'when ID tokens are not defined' do
-      let(:ci_build) { FactoryBot.build(:ci_build, user: user) }
+      let(:ci_build) { create(:ci_build, user: user) }
 
       context 'on create' do
         it 'does not track RedisHLL event' do
           expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
             .with('i_ci_secrets_management_id_tokens_build_created', values: user.id)
 
-          ci_build.save!
+          ci_build
         end
 
         it 'does not track Snowplow event' do

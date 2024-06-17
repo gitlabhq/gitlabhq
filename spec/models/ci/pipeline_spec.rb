@@ -4864,7 +4864,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
 
     before do
-      create_list(:ci_build, 2, pipeline: pipeline, stage: stage.name)
+      create_list(:ci_build, 2, pipeline: pipeline, ci_stage: stage)
     end
 
     describe '#stage' do

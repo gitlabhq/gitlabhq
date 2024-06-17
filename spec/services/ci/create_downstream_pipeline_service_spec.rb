@@ -869,7 +869,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       let_it_be(:child)      { create(:ci_pipeline, child_of: parent) }
       let_it_be(:sibling)    { create(:ci_pipeline, child_of: parent) }
 
-      let(:project) { build(:project, :repository) }
+      let(:project) { create(:project, :repository) }
       let(:bridge) do
         create(:ci_bridge, status: :pending, user: user, options: trigger, pipeline: child, project: project)
       end

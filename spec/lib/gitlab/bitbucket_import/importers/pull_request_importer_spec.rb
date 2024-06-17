@@ -9,7 +9,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
   let_it_be(:bitbucket_user) { create(:user) }
   let_it_be(:user_2) { create(:user) }
   let_it_be(:user_3) { create(:user) }
-  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: 'bitbucket_user', provider: :bitbucket) }
+  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket) }
   let_it_be(:identity_2) { create(:identity, user: user_2, extern_uid: 'user_2', provider: :bitbucket) }
   let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }
   let(:source_branch_sha) { project.repository.commit.sha }
@@ -17,7 +17,8 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
 
   let(:hash) do
     {
-      author: 'bitbucket_user',
+      author: '{123}',
+      author_nickname: 'bitbucket_user',
       created_at: Date.today,
       description: 'description',
       iid: 11,

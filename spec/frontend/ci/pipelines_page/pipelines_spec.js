@@ -801,7 +801,7 @@ describe('Pipelines', () => {
           expect(cancelMock.cancel).toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();
           expect(restartMock).toHaveBeenCalledWith(
-            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=build`,
+            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=test`,
           );
         });
 
@@ -813,7 +813,7 @@ describe('Pipelines', () => {
           expect(cancelMock.cancel).not.toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();
           expect(restartMock).toHaveBeenCalledWith(
-            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=build`,
+            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=test`,
           );
         });
       });

@@ -4,6 +4,10 @@ module Bitbucket
   module Representation
     class Comment < Representation::Base
       def author
+        user['uuid']
+      end
+
+      def author_nickname
         user['nickname']
       end
 

@@ -7,7 +7,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueImporter, :clean_gitlab_
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:bitbucket_user) { create(:user) }
-  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: 'bitbucket_user', provider: :bitbucket) }
+  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket) }
   let_it_be(:default_work_item_type) { create(:work_item_type) }
   let_it_be(:label) { create(:label, project: project) }
   let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }
@@ -18,7 +18,8 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueImporter, :clean_gitlab_
       title: 'title',
       description: 'description',
       state: 'closed',
-      author: 'bitbucket_user',
+      author: '{123}',
+      author_nickname: 'bitbucket_user',
       milestone: 'my milestone',
       issue_type_id: default_work_item_type.id,
       label_id: label.id,

@@ -2,10 +2,16 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Bitbucket::Representation::Comment do
+RSpec.describe Bitbucket::Representation::Comment, feature_category: :importers do
   describe '#author' do
-    it { expect(described_class.new('user' => { 'nickname' => 'Ben' }).author).to eq('Ben') }
+    it { expect(described_class.new('user' => { 'uuid' => '{123}' }).author).to eq('{123}') }
+    it { expect(described_class.new('user' => { 'nickname' => 'Ben' }).author).to be_nil }
     it { expect(described_class.new({}).author).to be_nil }
+  end
+
+  describe '#author_nickname' do
+    it { expect(described_class.new('user' => { 'nickname' => 'Ben' }).author_nickname).to eq('Ben') }
+    it { expect(described_class.new({}).author_nickname).to be_nil }
   end
 
   describe '#note' do

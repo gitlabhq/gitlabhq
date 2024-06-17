@@ -4,6 +4,10 @@ module Bitbucket
   module Representation
     class PullRequest < Representation::Base
       def author
+        raw.dig('author', 'uuid')
+      end
+
+      def author_nickname
         raw.dig('author', 'nickname')
       end
 
@@ -66,6 +70,7 @@ module Bitbucket
         {
           iid: iid,
           author: author,
+          author_nickname: author_nickname,
           description: description,
           created_at: created_at,
           updated_at: updated_at,

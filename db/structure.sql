@@ -18421,10 +18421,10 @@ CREATE TABLE vulnerability_export_parts (
     start_id bigint NOT NULL,
     end_id bigint NOT NULL,
     organization_id bigint DEFAULT 1 NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
     file_store integer,
     file text,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
     CONSTRAINT check_baded21d39 CHECK ((char_length(file) <= 255))
 );
 

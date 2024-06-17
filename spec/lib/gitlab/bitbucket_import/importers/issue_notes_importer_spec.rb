@@ -12,7 +12,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueNotesImporter, :clean_gi
   end
 
   let_it_be(:bitbucket_user) { create(:user) }
-  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: 'bitbucket_user', provider: :bitbucket) }
+  let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket) }
   let_it_be(:issue) { create(:issue, project: project) }
   let(:hash) { { iid: issue.iid } }
   let(:note_body) { 'body' }
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueNotesImporter, :clean_gi
     let(:issue_comments_response) do
       [
         Bitbucket::Representation::Comment.new({
-          'user' => { 'nickname' => 'bitbucket_user' },
+          'user' => { 'nickname' => 'bitbucket_user', 'uuid' => '{123}' },
           'content' => { 'raw' => note_body },
           'created_on' => Date.today,
           'updated_on' => Date.today

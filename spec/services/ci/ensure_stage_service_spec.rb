@@ -11,6 +11,10 @@ RSpec.describe Ci::EnsureStageService, '#execute', feature_category: :continuous
 
   let(:service) { described_class.new(project, user) }
 
+  before do
+    stub_feature_flags(ci_remove_ensure_stage_service: false)
+  end
+
   context 'when build has a stage assigned' do
     it 'does not create a new stage' do
       job.assign_attributes(stage_id: stage.id)

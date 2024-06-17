@@ -68,6 +68,16 @@ curl --verbose --user "$USER:$API_TOKEN" "https://$ATLASSIAN_SUBDOMAIN.atlassian
 
 If the user can access the issue, Jira responds with a `200 OK` and the returned JSON includes the Jira issue details.
 
+## GitLab cannot create a Jira issue
+
+When you try to create a Jira issue from a vulnerability, you might see a "field is required" error. For example, `Components is required` because a field called
+"Components" is missing. This occurs because Jira has some required fields
+configured that are not passed by GitLab. To work around this issue:
+
+1. Create a new "Vulnerability" [issue type](https://support.atlassian.com/jira-cloud-administration/docs/what-are-issue-types/) in the Jira instance.
+1. Assign the new issue type to the project.
+1. Alter the field scheme to all "Vulnerabilities" in the project so they do not require the missing field.
+
 ## GitLab cannot close a Jira issue
 
 If GitLab cannot close a Jira issue:

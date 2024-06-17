@@ -77,7 +77,7 @@ module Gitlab
         def author_line
           return '' if find_user_id
 
-          formatter.author_line(object[:author])
+          formatter.author_line(object[:author_nickname])
         end
 
         def find_user_id

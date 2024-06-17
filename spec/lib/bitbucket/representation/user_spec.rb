@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Bitbucket::Representation::User do
+RSpec.describe Bitbucket::Representation::User, feature_category: :importers do
   let(:display_name) { 'Jonathan Doe' }
   let(:nickname) { 'Jon Doe' }
   let(:account_id) { '123456:abcdefgh-1234-5678-9012-abcdefghijkl' }
