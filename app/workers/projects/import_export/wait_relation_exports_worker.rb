@@ -8,7 +8,6 @@ module Projects
 
       idempotent!
       data_consistency :always
-      deduplicate :until_executed
       feature_category :importers
       loggable_arguments 1, 2
       worker_resource_boundary :cpu

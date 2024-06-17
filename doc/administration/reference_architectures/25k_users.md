@@ -1839,7 +1839,6 @@ To configure the Sidekiq nodes, on each one:
    gitlab_rails['auto_migrate'] = false
 
    # Sidekiq
-   sidekiq['enable'] = true
    sidekiq['listen_address'] = "0.0.0.0"
 
    ## Set number of Sidekiq queue processes to the same number as available CPUs

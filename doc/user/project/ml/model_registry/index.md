@@ -37,13 +37,7 @@ To enable the model registry or set the [visibility level](../../../public_acces
    Users must have
 at least the [Reporter role](../../../permissions.md#roles) to modify or delete models and model versions.
 
-## Exploring models, model versions and model candidates
-
-To access the model registry, on the left sidebar, select **Deploy > Model registry**.
-
-This list shows all models. Select one to see its versions.
-
-## Create machine learning models and model versions by using the UI
+## Create machine learning models by using the UI
 
 To create a new machine learning model and model version by using the GitLab UI:
 
@@ -57,6 +51,8 @@ To create a new machine learning model and model version by using the GitLab UI:
 1. Select **Create**.
 
 You can now view the newly created model in the model registry.
+
+## Create a model version by using the UI
 
 To create a new model version:
 
@@ -91,7 +87,7 @@ To delete a model version:
 1. Select the vertical ellipsis (**{ellipsis_v}**) and **Delete model version**.
 1. Confirm the deletion.
 
-### Updating a model or model version
+### Add artifacts to a model version
 
 To add artifacts to a model version:
 
@@ -104,7 +100,9 @@ To add artifacts to a model version:
 1. Use **select** to choose the files to upload.
 1. Select **Upload**.
 
-Alternatively, you can drag and drop files in the drop area. They will be automatically uploaded.
+Alternatively, you can drag and drop files in the drop area. The artifacts are automatically uploaded.
+
+### Delete artifacts from a model version
 
 To delete artifacts of a version:
 
@@ -117,14 +115,14 @@ To delete artifacts of a version:
 1. Select **Delete**.
 1. Confirm the deletion.
 
-## Create machine learning models and model versions by using MLFlow
+## Create machine learning models and model versions by using MLflow
 
 Models and model versions can be created using the [MLflow](https://www.mlflow.org/docs/latest/tracking.html) client compatibility.
 For more information about how to create and manage models and model versions, see [MLflow client compatibility](../experiment_tracking/mlflow_client.md#model-registry).
 You can also create models directly on GitLab by selecting **Create Model**
 on the Model registry page.
 
-### Add artifacts, metrics, and parameters to a model version by using MLFlow
+### Add artifacts, metrics, and parameters to a model version by using MLflow
 
 Files can either be uploaded to a model version using:
 

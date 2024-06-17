@@ -250,6 +250,7 @@ The following features will not be supported:
 The following operational features are not available:
 
 - Multiple Geo secondaries (Geo replicas) beyond the secondary site included by default
+- [Geo proxying](../../administration/geo/secondary_proxy/index.md) and using a unified URL
 - Self-serve purchasing and configuration
 - Multiple login providers
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure

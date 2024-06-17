@@ -102,7 +102,7 @@ The best-suited solution depends on whether or not your target API changes for e
 If you find that some paths are being excluded from operations, make sure that:
 
 - The variable `DAST_API_EXCLUDE_URLS` is not configured to exclude operations you want to test.
-- Required. The `consumes` array is defined and has a valid type in the target definition JSON file.
+- The `consumes` array is defined and has a valid type in the target definition JSON file.
 
   For an example definition, see the [example project target definition file](https://gitlab.com/gitlab-org/security-products/demos/api-dast/openapi-example/-/blob/12e2b039d08208f1dd38a1e7c52b0bda848bb449/rest_target_openapi.json?plain=1#L13).
 

@@ -409,6 +409,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'Projects::DeregisterSuggestedReviewersProjectWorker' => 3,
         'Projects::DisableLegacyOpenSourceLicenseForInactiveProjectsWorker' => 3,
         'Projects::GitGarbageCollectWorker' => false,
+        'Projects::ImportExport::RelationExportWorker' => 6,
         'Projects::ImportExport::RelationImportWorker' => 6,
         'Projects::InactiveProjectsDeletionNotificationWorker' => 3,
         'Projects::PostCreationWorker' => 3,
