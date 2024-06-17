@@ -50,9 +50,12 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   }
   ```
 
-  In this example, the `duplicate-path` storage must be removed or relocated to a new path. If the storage is removed,
-  then any projects associated with it must have their storage updated in the GitLab database. You can update their
-  storage using the Rails console. For example:
+  In this example, the `duplicate-path` storage must be removed or relocated to a new path. If you have
+  more than one Gitaly node, you must ensure only the corresponding storage for that node is listed
+  in that node's `gitlab.rb` file.
+
+  If the storage is removed from a node's `gitlab.rb` file, then any projects associated with it must have their storage updated
+  in the GitLab database. You can update their storage using the Rails console. For example:
 
   ```shell
   $ sudo gitlab-rails console

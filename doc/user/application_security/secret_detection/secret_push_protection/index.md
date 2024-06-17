@@ -23,6 +23,9 @@ in your GitLab self-managed instance, use [pipeline secret detection](../index.m
 instead. Pipeline secret detection can be used together with secret push protection to
 further secure your GitLab.com or Dedicated instance.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview, see the playlist [Get Started with Secret Push Protection](https://www.youtube.com/playlist?list=PL05JrBw4t0KoADm-g2vxfyR0m6QLphTv-).
+
 Regardless of the Git client, GitLab prompts a message when a push is
 blocked, including details of:
 

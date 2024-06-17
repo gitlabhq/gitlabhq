@@ -91,6 +91,7 @@ See [configuration](browser/configuration) for more information on configuring t
 | `DAST_BROWSER_ACTION_STABILITY_TIMEOUT`     | Replace            | With `DAST_PAGE_DOM_READY_TIMEOUT`            |
 | `DAST_BROWSER_ACTION_TIMEOUT`               | Remove             | Not supported                                 |
 | `DAST_BROWSER_ALLOWED_HOSTS`                | Rename             | To `DAST_SCOPE_ALLOW_HOSTS`                   |
+| `DAST_BROWSER_CACHE`                        | Rename             | To `DAST_USE_CACHE`                           |
 | `DAST_BROWSER_COOKIES`                      | Rename             | To `DAST_REQUEST_COOKIES`                     |
 | `DAST_BROWSER_CRAWL_GRAPH`                  | Rename             | To `DAST_CRAWL_GRAPH`                         |
 | `DAST_BROWSER_CRAWL_TIMEOUT`                | Rename             | To `DAST_CRAWL_TIMEOUT`                       |
