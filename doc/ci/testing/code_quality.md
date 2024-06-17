@@ -602,7 +602,7 @@ To ensure Code Quality jobs can run on a Kubernetes executor:
 
 - If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/index.html#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
 - It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
-[Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file below.
+  [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file below.
 
 ### Kubernetes
 
@@ -712,29 +712,29 @@ name = "docker:20.10.12-dind"
 1. [Set the custom configuration to your runner](https://docs.gitlab.com/runner/configuration/configuring_runner_operator.html#customize-configtoml-with-a-configuration-template).
 
 1. Optional. Attach a [`privileged` service account](https://docs.openshift.com/container-platform/3.11/admin_guide/manage_scc.html)
-to the build Pod. This depends on your OpenShift cluster setup:
+   to the build Pod. This depends on your OpenShift cluster setup:
 
-```shell
-  oc create sa dind-sa
-  oc adm policy add-scc-to-user anyuid -z dind-sa
-  oc adm policy add-scc-to-user -z dind-sa privileged
-```
+   ```shell
+   oc create sa dind-sa
+   oc adm policy add-scc-to-user anyuid -z dind-sa
+   oc adm policy add-scc-to-user -z dind-sa privileged
+   ```
 
 1. Set the permissions in the [`[runners.kubernetes]` section](https://docs.gitlab.com/runner/executors/kubernetes/index.html#other-configtoml-settings).
 1. Set the job definition stays the same as in Kubernetes case:
 
-  ```yaml
-  include:
-  - template: Code-Quality.gitlab-ci.yml
+   ```yaml
+   include:
+   - template: Code-Quality.gitlab-ci.yml
 
-  code_quality:
-  services: []
-  variables:
-    DOCKER_HOST: tcp://dind:2375
-    DOCKER_DRIVER: ""
-  before_script:
-    - while ! docker info > /dev/null 2>&1; do sleep 1; done
-  ```
+   code_quality:
+   services: []
+   variables:
+     DOCKER_HOST: tcp://dind:2375
+     DOCKER_DRIVER: ""
+   before_script:
+     - while ! docker info > /dev/null 2>&1; do sleep 1; done
+   ```
 
 #### Volumes and Docker storage
 

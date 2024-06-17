@@ -3619,6 +3619,12 @@ RSpec.describe User, feature_category: :user_profile do
       expect(described_class.find_by_ssh_key_id(signing_key.id)).to be_nil
       expect(described_class.find_by_ssh_key_id(auth_and_signing_key.id)).to eq(user)
     end
+
+    it 'does not return a user for a deploy key' do
+      deploy_key = create(:deploy_key)
+
+      expect(described_class.find_by_ssh_key_id(deploy_key.id)).to be_nil
+    end
   end
 
   shared_examples "find user by login" do

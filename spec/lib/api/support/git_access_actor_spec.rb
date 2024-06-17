@@ -31,6 +31,19 @@ RSpec.describe API::Support::GitAccessActor do
         expect(described_class).to receive(:identify).and_call_original
         expect(described_class.from_params(identifier: "key-#{key.id}").user).to eq(key.user)
       end
+
+      context 'when identifier is for a deploy key' do
+        let_it_be(:key) { create(:deploy_key, user: user) }
+
+        it 'finds the deploy key based on an identifier' do
+          expect(described_class).to receive(:identify).and_call_original
+
+          actor = described_class.from_params(identifier: "key-#{key.id}")
+
+          expect(actor.key).to eq(key)
+          expect(actor.user).to eq(key.user)
+        end
+      end
     end
 
     context 'when passing a signing key' do

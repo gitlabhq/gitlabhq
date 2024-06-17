@@ -206,6 +206,14 @@ export-test-metrics:
   variables:
     QA_METRICS_REPORT_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-metrics-*.json
 
+export-code-paths-mapping:
+  extends:
+    - .export-code-paths-mapping
+  variables:
+    QA_CODE_PATHS_MAPPING_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/test-code-paths-mapping-*.json
+  rules:
+    - if: '$COVERBAND_ENABLED == "true"'
+
 .gitlab-qa-report:
   variables:
     QA_RSPEC_JSON_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/rspec-*.json

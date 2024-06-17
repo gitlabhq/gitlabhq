@@ -146,8 +146,8 @@ For Linux package installations, the directory is set in `gitlab.rb` under `gita
 For self-compiled installations:
 
 - The directory is set in `gitaly/config.toml` under the `[hooks]` section. However,
-    GitLab honors the `custom_hooks_dir` value in `gitlab-shell/config.yml` if the value in `gitaly/config.toml` is blank
-    or non-existent.
+  GitLab honors the `custom_hooks_dir` value in `gitlab-shell/config.yml` if the value in `gitaly/config.toml` is blank
+  or non-existent.
 - The default directory is `/home/git/gitlab-shell/hooks`.
 
 ### Create the global server hook

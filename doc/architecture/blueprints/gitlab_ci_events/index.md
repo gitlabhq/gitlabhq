@@ -83,14 +83,14 @@ Any accepted proposal should take in consideration the following requirements an
 For now, we have technical 5 proposals;
 
 1. [Proposal 1: Using the `.gitlab-ci.yml` file](proposal-1-using-the-gitlab-ci-file.md)
-    Based on;
-    - [GitLab CI Workflows PoC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91244)
-    - [PoC NPM CI events](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111693)
+   Based on;
+   - [GitLab CI Workflows PoC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91244)
+   - [PoC NPM CI events](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111693)
 1. [Proposal 2: Using the `rules` keyword](proposal-2-using-the-rules-keyword.md)
-    Highly inefficient way.
+   Highly inefficient way.
 1. [Proposal 3: Using the `.gitlab/ci/events` folder](proposal-3-using-the-gitlab-ci-events-folder.md)
-    Involves file reading for every event.
+   Involves file reading for every event.
 1. [Proposal 4: Creating events via a CI config file](proposal-4-creating-events-via-ci-files.md)
-    Separate configuration files for defininig events.
+   Separate configuration files for defininig events.
 1. [Proposal 5: Combined proposal](proposal-5-combined-proposal.md)
-    Combination of all of the proposals listed above.
+   Combination of all of the proposals listed above.

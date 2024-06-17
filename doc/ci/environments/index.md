@@ -965,8 +965,8 @@ with the `action: stop` is not in a runnable state due to its `stages:` or `need
 For example:
 
 - The environment might start in a stage that also has a job that failed.
-Then the jobs in later stages job don't start. If the job with the `action: stop`
-for the environment is also in a later stage, it can't start and the environment isn't deleted.
+  Then the jobs in later stages job don't start. If the job with the `action: stop`
+  for the environment is also in a later stage, it can't start and the environment isn't deleted.
 - The job with the `action: stop` might have a dependency on a job that has not yet completed.
 
 To ensure the `action: stop` can always run when needed, you can:

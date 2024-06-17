@@ -58,11 +58,11 @@ In GitLab Dedicated, you can use KMS keys in two ways:
 After you have received the AWS account ID, create your KMS keys using the AWS Console:
 
 1. In `Configure key`, select:
-    1. Key type: **Symmetrical**
-    1. Key usage: **Encrypt and decrypt**
-    1. `Advanced options`:
-        1. Key material origin: **KMS**
-        1. Regionality: **Multi-Region key**
+   1. Key type: **Symmetrical**
+   1. Key usage: **Encrypt and decrypt**
+   1. `Advanced options`:
+      1. Key material origin: **KMS**
+      1. Regionality: **Multi-Region key**
 1. Enter your values for key alias, description, and tags.
 1. Select key administrators.
 1. Optional. Allow or prevent key administrators from deleting the key.

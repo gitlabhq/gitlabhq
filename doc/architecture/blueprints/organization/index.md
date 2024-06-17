@@ -28,8 +28,8 @@ This document is a work in progress and represents the current state of the Orga
 Organizations solve the following problems:
 
 1. Enables grouping of top-level Groups. For example, the following top-level Groups would belong to the Organization `GitLab`:
-    1. `https://gitlab.com/gitlab-org/`
-    1. `https://gitlab.com/gitlab-com/`
+   1. `https://gitlab.com/gitlab-org/`
+   1. `https://gitlab.com/gitlab-com/`
 1. Allows different Organizations to be isolated. Top-level Groups of the same Organization can interact with each other but not with Groups in other Organizations, providing clear boundaries for an Organization, similar to a self-managed instance. Isolation should have a positive impact on performance and availability as things like User dashboards can be scoped to Organizations.
 1. Allows integration with Cells. Isolating Organizations makes it possible to allocate and distribute them across different Cells.
 1. Removes the need to define hierarchies. An Organization is a container that could be filled with whatever hierarchy/entity set makes sense (Organization, top-level Groups, etc.)

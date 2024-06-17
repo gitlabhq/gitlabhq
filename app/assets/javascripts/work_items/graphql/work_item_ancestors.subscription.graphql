@@ -1,0 +1,33 @@
+subscription workItemAncestorsUpdated($id: WorkItemID!) {
+  workItemUpdated(workItemId: $id) {
+    id
+    widgets {
+      ... on WorkItemWidgetHierarchy {
+        type
+        parent {
+          id
+          title
+          webUrl
+        }
+        ancestors {
+          nodes {
+            id
+            iid
+            confidential
+            workItemType {
+              id
+              name
+              iconName
+            }
+            title
+            state
+            reference(full: true)
+            createdAt
+            closedAt
+            webUrl
+          }
+        }
+      }
+    }
+  }
+}

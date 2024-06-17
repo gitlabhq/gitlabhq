@@ -29,10 +29,10 @@ Some secrets are used for features, for example, `ci_jwt_signing_key`.
 ## 3. Proposal
 
 1. Secrets used for features will need to be consistent across all Cells, so that the UX is consistent.
-    1. This is especially true for the `db_key_base` secret which is used for
-       encrypting data at rest in the database - so that Projects that are
-       transferred to another Cell will continue to work. We do not want to have
-       to re-encrypt such rows when we move Projects/Groups between Cells.
+   1. This is especially true for the `db_key_base` secret which is used for
+      encrypting data at rest in the database - so that Projects that are
+      transferred to another Cell will continue to work. We do not want to have
+      to re-encrypt such rows when we move Projects/Groups between Cells.
 1. Secrets which are used for intra-Cell communication only should be uniquely generated
    per Cell.
 

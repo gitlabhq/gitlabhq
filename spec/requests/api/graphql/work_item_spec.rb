@@ -13,7 +13,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     create(
       :work_item,
       project: project,
-      description: '- List item',
+      description: '- [x] List item',
       start_date: Date.today,
       due_date: 1.week.from_now,
       created_at: 1.week.ago,
@@ -132,6 +132,10 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   username
                 }
                 lastEditedAt
+                taskCompletionStatus {
+                  completedCount
+                  count
+                }
               }
             }
           GRAPHQL
@@ -150,6 +154,10 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 'lastEditedBy' => {
                   'webPath' => "/#{guest.full_path}",
                   'username' => guest.username
+                },
+                'taskCompletionStatus' => {
+                  'completedCount' => 1,
+                  'count' => 1
                 }
               )
             )

@@ -73,7 +73,7 @@ verification methods:
 
 1. Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo sites.
 1. Object storage replication can be performed by Geo or by your object storage provider/appliance
-         native replication feature.
+   native replication feature.
 1. Object Storage verification is behind a [feature flag](../../feature_flags.md), `geo_object_storage_verification`, [introduced in 16.4](https://gitlab.com/groups/gitlab-org/-/epics/8056) and enabled by default. It uses a checksum of the file size to verify the files.
 
 ### Git repositories

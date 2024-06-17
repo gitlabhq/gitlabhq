@@ -25,6 +25,25 @@ With this integration, you can use [exact code search](../../user/search/exact_c
 instead of [advanced search](../../user/search/advanced_search.md) to search for code in GitLab.
 You can use regular expression and exact match modes to search for code in a group or repository.
 
+## Index root namespaces automatically
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can index both existing and new root namespaces automatically. To index all root namespaces automatically:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. Select the **Index root namespaces automatically** checkbox.
+1. Select **Save changes**.
+
+When you disable this setting:
+
+- Existing root namespaces remain indexed.
+- New root namespaces are no longer indexed.
+
 ## Enable exact code search
 
 Prerequisites:

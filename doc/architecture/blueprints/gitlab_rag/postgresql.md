@@ -19,12 +19,12 @@ This page explains how to retrieve data from PostgreSQL for [RAG](index.md).
 1. Install [PgVector extension](#vector-store-with-pgvector) to the PostgreSQL database.
 1. Add a `vector` column to a new or existing table.
 1. Data <=> Embedding synchronization
-    1. Load data which you want to search from.
-    1. Pass the data to an embedding model and get an vector.
-    1. Set the vector to the `vector` column.
+   1. Load data which you want to search from.
+   1. Pass the data to an embedding model and get an vector.
+   1. Set the vector to the `vector` column.
 1. Retrieval
-    1. Pass the user input to an embedding model and get an vector.
-    1. Get the nearest neighbors to the user input vector e.g. `SELECT * FROM a_table ORDER BY vector_column <-> '<user-input-vector>' LIMIT 5;`
+   1. Pass the user input to an embedding model and get an vector.
+   1. Get the nearest neighbors to the user input vector e.g. `SELECT * FROM a_table ORDER BY vector_column <-> '<user-input-vector>' LIMIT 5;`
 
 ### Vector store with PgVector
 

@@ -10,7 +10,8 @@ module Gitlab
         # git push over http
         identify_using_user(identifier)
       when /\Akey-\d+\Z/
-        # git push over ssh
+        # git push over ssh. will not return a user for deploy keys.
+        # identify_using_deploy_key instead.
         identify_using_ssh_key(identifier)
       end
     end
@@ -26,7 +27,7 @@ module Gitlab
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    # Tries to identify a user based on an SSH key identifier (e.g. "key-123").
+    # Tries to identify a user based on an SSH key identifier (e.g. "key-123"). Deploy keys are excluded.
     def identify_using_ssh_key(identifier)
       key_id = identifier.gsub("key-", "")
 

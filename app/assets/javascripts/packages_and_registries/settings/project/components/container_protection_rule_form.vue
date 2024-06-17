@@ -1,5 +1,14 @@
 <script>
-import { GlAlert, GlButton, GlFormGroup, GlForm, GlFormInput, GlFormSelect } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlFormGroup,
+  GlForm,
+  GlFormInput,
+  GlFormSelect,
+  GlSprintf,
+} from '@gitlab/ui';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import createProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 
@@ -15,11 +24,16 @@ export default {
     GlFormGroup,
     GlFormInput,
     GlFormSelect,
+    GlSprintf,
+    HelpPageLink,
   },
   inject: ['projectPath'],
   i18n: {
     protectionRuleSavedErrorMessage: s__(
       'ContainerRegistry|Something went wrong while saving the protection rule.',
+    ),
+    packageNamePatternInputHelpText: s__(
+      'ContainerRegistry|Path pattern with %{linkStart}wildcards%{linkEnd} such as `my-scope/my-container-*` are supported.',
     ),
   },
   data() {
@@ -127,6 +141,17 @@ export default {
           required
           :disabled="isFieldDisabled"
         />
+        <template #description>
+          <gl-sprintf :message="$options.i18n.packageNamePatternInputHelpText">
+            <template #link="{ content }">
+              <help-page-link
+                href="user/packages/container_registry/container_protection_rules.md"
+                target="_blank"
+                >{{ content }}</help-page-link
+              >
+            </template>
+          </gl-sprintf>
+        </template>
       </gl-form-group>
 
       <gl-form-group

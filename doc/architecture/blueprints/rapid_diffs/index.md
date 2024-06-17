@@ -133,14 +133,14 @@ To measure our success, we need to set meaningful metrics. These metrics should 
 1. The RRD app loads less than or equal to 150 KiB of markup, images, styles, fonts, etc. (compressed / "across-the-wire")<sup>1</sup>.
 1. The Time to First Diff (`mr-diffs-mark-first-diff-file-shown`) happens before 3 seconds mark.
 1. The RRD app can execute in total isolation from the rest of the GitLab product:
-    1. "Execute" means the app can load, display data, and allows user interaction ("read-only").
-    1. If a part of the application is only used in merge requests or diffs, it is considered part of the Diffs application.
-    1. If a part of the application must be brought in from the rest of the product, it is not considered part of the Diffs load (as defined in metrics 3 and 4).
-    1. If a part of the application must be brought in from the rest of the product, it may not block functionality of the Diffs application.
-    1. If a part of the application must be brought in from the rest of the product, it must be loaded asynchronously.
-    1. If a part of the application meets 5.1-5.5 _(such as: the Markdown editor is loaded asynchronously when the user would like to leave a comment on a diff)_ and its inclusion causes a budget overflow:
-       - It must be added to a list of documented exceptions that we accept are out of bounds and out of our control.
-       - The exceptions list should be addressed on a regular basis to determine the ongoing value of overflowing our budget.
+   1. "Execute" means the app can load, display data, and allows user interaction ("read-only").
+   1. If a part of the application is only used in merge requests or diffs, it is considered part of the Diffs application.
+   1. If a part of the application must be brought in from the rest of the product, it is not considered part of the Diffs load (as defined in metrics 3 and 4).
+   1. If a part of the application must be brought in from the rest of the product, it may not block functionality of the Diffs application.
+   1. If a part of the application must be brought in from the rest of the product, it must be loaded asynchronously.
+   1. If a part of the application meets 5.1-5.5 _(such as: the Markdown editor is loaded asynchronously when the user would like to leave a comment on a diff)_ and its inclusion causes a budget overflow:
+      - It must be added to a list of documented exceptions that we accept are out of bounds and out of our control.
+      - The exceptions list should be addressed on a regular basis to determine the ongoing value of overflowing our budget.
 
 ---
 <sup>1</sup>: [The Performance Inequality Gap, 2023](https://infrequently.org/2022/12/performance-baseline-2023/)
@@ -201,7 +201,7 @@ To improve the perceived performance of the page we should implement the followi
 1. Limit the number of diffs rendered on the page at first.
 1. Use [HTML streaming](https://gitlab.com/gitlab-org/frontend/rfcs/-/issues/101)
    to render the rest of the diffs.
-    1. Use Web Components to hook into diff files appearing on the page.
+   1. Use Web Components to hook into diff files appearing on the page.
 1. Apply `content-visibility` whenever possible to reduce redraw overhead.
 1. Render diff discussions asynchronously.
 

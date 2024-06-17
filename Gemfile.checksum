@@ -91,6 +91,7 @@
 {"name":"cork","version":"0.3.0","platform":"ruby","checksum":"a0a0ac50e262f8514d1abe0a14e95e71c98b24e3378690e5d044daf0013ad4bc"},
 {"name":"cose","version":"1.3.0","platform":"ruby","checksum":"63247c66a5bc76e53926756574fe3724cc0a88707e358c90532ae2a320e98601"},
 {"name":"countries","version":"4.0.1","platform":"ruby","checksum":"d32e8a3c0b22949f1a41ea6d9005f5168ffce226f8fe077d1d6be785fffa81c5"},
+{"name":"coverband","version":"6.1.2","platform":"ruby","checksum":"979f356b0f1ff63a78b6ffbbbd0dccb3674c83d74d7e6fbdc3ee98f1ef35ba32"},
 {"name":"crack","version":"0.4.3","platform":"ruby","checksum":"5318ba8cd9cf7e0b5feb38948048503ba4b1fdc1b6ff30a39f0a00feb6036b29"},
 {"name":"crass","version":"1.0.6","platform":"ruby","checksum":"dc516022a56e7b3b156099abc81b6d2b08ea1ed12676ac7a5657617f012bd45d"},
 {"name":"creole","version":"0.5.0","platform":"ruby","checksum":"951701e2d80760f156b1cb2a93471ca97c076289becc067a33b745133ed32c03"},

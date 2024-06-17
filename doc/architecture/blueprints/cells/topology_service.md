@@ -558,10 +558,10 @@ For this reason we are going to set up [Multi-Regional read-write deployment](#m
 Cloud Spanner provides 3 ways of recovery:
 
 1. [Backups](https://cloud.google.com/spanner/docs/backup): A backup of a database _inside_ of the instance. You can copy the backup to another instance but this requires an instance [of the same size of storage](https://cloud.google.com/spanner/docs/backup/copy-backup#prereqs) which can 2x the costs.
-    One concern with using backups is if the instance gets deleted by mistake (even with [deletion protection](https://cloud.google.com/spanner/docs/prevent-database-deletion))
+   One concern with using backups is if the instance gets deleted by mistake (even with [deletion protection](https://cloud.google.com/spanner/docs/prevent-database-deletion))
 1. [Import/Export](https://cloud.google.com/spanner/docs/import-export-overview): Export the database as a [medium priority](https://cloud.google.com/spanner/docs/cpu-utilization#task-priority) task inside of Google Cloud Storage.
 1. [Point-in-time recovery](https://cloud.google.com/spanner/docs/pitr): Version [retention period](https://cloud.google.com/spanner/docs/use-pitr#set-period) up to 7 days, this can help with recovery of a [portion of the database](https://cloud.google.com/spanner/docs/use-pitr#recover-portion) or create a backup/restore from a specific time to [recover the full database](https://cloud.google.com/spanner/docs/use-pitr#recover-entire).
-    Increasing the retention period does have [performance implications](https://cloud.google.com/spanner/docs/pitr#performance)
+   Increasing the retention period does have [performance implications](https://cloud.google.com/spanner/docs/pitr#performance)
 
 As you can see all these options only handle the data side, not the storage/compute side, this is because storage/compute is managed for us.
 This means our Disaster Recovery plan should only account for potential logical application errors where it deletes/logically corrupts the data.

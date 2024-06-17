@@ -19,6 +19,8 @@ transient_admin = User.new(admin: true)
 user = Users::CreateService.new(transient_admin, user_args.merge!(skip_confirmation: true)).execute
 
 if user.persisted?
+  Organizations::Organization.default_organization.add_owner(user)
+
   puts "Administrator account created:".color(:green)
   puts
   puts "login:    root".color(:green)

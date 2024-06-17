@@ -232,6 +232,17 @@ RSpec.describe Key, :mailer do
         expect(described_class.signing).to match_array([signing_key, auth_and_signing_key])
       end
     end
+
+    describe '.regular_keys' do
+      let_it_be(:personal_key) { create(:personal_key) }
+      let_it_be(:key) { create(:key) }
+      let_it_be(:deploy_key) { create(:deploy_key) }
+
+      it 'does not return keys of type DeployKey' do
+        expect(described_class.all).to match_array([personal_key, key, deploy_key])
+        expect(described_class.regular_keys).to match_array([personal_key, key])
+      end
+    end
   end
 
   context 'validation of uniqueness (based on fingerprint uniqueness)' do

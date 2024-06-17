@@ -91,7 +91,7 @@ The following two diagrams highlight the request flow for GitLab.com customers a
 A couple small differences exist between the two:
 
 1. The JWT sent to GOB in GitLab.com requests is created in Rails, whereas the JWT or otherwise referred to as IJWT in
-the self-managed flow originates from CustomersDot.
+   the self-managed flow originates from CustomersDot.
 1. There is no CustomersDot JWT sync in the GitLab.com flow.
 
 ### Observability offered in GitLab.com
@@ -112,7 +112,7 @@ sequenceDiagram
     U->>SDK: configure with PAT & Project endpoint
 
     Note over U,GOB: Sending OpenTelemetry Data
-    loop Requests issued by SDK/Collector 
+    loop Requests issued by SDK/Collector
         SDK->>.comW: send opentelemetry data with PAT
         .comW->>.comR: preAuthHandler without body
         .comR->>.comR: auth with PAT

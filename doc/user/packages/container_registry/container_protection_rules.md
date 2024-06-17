@@ -26,10 +26,24 @@ When a container repository is protected, the default behavior enforces these re
 
 | Action                                                     | Minimum role         |
 |------------------------------------------------------------|----------------------|
-| Protect a container repository and its container images   | The Maintainer role. |
+| Protect a container repository and its container images    | The Maintainer role. |
 | Push or create a new image in a container repository       | The role set in the [**Minimum access level for push**](#protect-a-container-repository-and-create-a-protection-rule) setting.   |
 | Push or update an existing image in a container repository | The role set in the [**Minimum access level for push**](#protect-a-container-repository-and-create-a-protection-rule) setting    |
 | Delete an existing image from a container repository       | The role set in the [**Minimum access level for delete**](#protect-a-container-repository-and-create-a-protection-rule) setting. |
+
+You can use a wildcard (`*`) to protect multiple container repositories with the same container protection rule.
+For example, you can protect different container repositories containing temporary container images built during a CI/CD pipeline.
+
+The following table contains examples of container protection rules that match multiple container repositories:
+
+| Path pattern with wildcard | Example matching container repositories |
+|----------------------------|-----------------------------------------|
+| `group/container-*`        | `group/container-prod`, `group/container-prod-sha123456789` |
+| `group/*container`         | `group/container`, `group/prod-container`, `group/prod-sha123456789-container` |
+| `group/*container*`        | `group/container`, `group/prod-sha123456789-container-v1` |
+
+You can apply several protection rules to the same container repository.
+A container repository is protected if at least one protection rule matches.
 
 ## Protect a container repository and create a protection rule
 

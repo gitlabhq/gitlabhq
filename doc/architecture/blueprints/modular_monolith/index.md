@@ -113,7 +113,7 @@ In progress.
 ## Decisions
 
 1. [ADR-001: Modularize application domain](decisions/001_modular_application_domain.md)? Start with modularizing
-  the application domain and infrastructure code.
+   the application domain and infrastructure code.
 1. [ADR-002: Define bounded context around feature categories](decisions/002_bounded_contexts_definition.md) as a SSoT in the code.
 1. [ADR-003: Assign stewards to all modules and libraries](decisions/003_stewardship.md).
 

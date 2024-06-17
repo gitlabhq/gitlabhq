@@ -9,6 +9,7 @@ import { createAlert } from '~/alert';
 import DisclosureHierarchy from '~/work_items/components/work_item_ancestors/disclosure_hierarchy.vue';
 import WorkItemAncestors from '~/work_items/components/work_item_ancestors/work_item_ancestors.vue';
 import workItemAncestorsQuery from '~/work_items/graphql/work_item_ancestors.query.graphql';
+import workItemAncestorsUpdatedSubscription from '~/work_items/graphql/work_item_ancestors.subscription.graphql';
 import { formatAncestors } from '~/work_items/utils';
 
 import { workItemTask } from '../../mock_data';
@@ -33,6 +34,9 @@ describe('WorkItemAncestors', () => {
     .fn()
     .mockResolvedValue(workItemThreeAncestorsQueryResponse);
   const workItemAncestorsFailureHandler = jest.fn().mockRejectedValue(new Error());
+  const workItemAncestorsUpdatedSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue({ data: { workItemUpdated: null } });
 
   const findDisclosureHierarchy = () => wrapper.findComponent(DisclosureHierarchy);
   const findPopover = () => wrapper.findComponent(GlPopover);
@@ -42,7 +46,10 @@ describe('WorkItemAncestors', () => {
     options = {},
     ancestorsQueryHandler = workItemAncestorsQueryHandler,
   } = {}) => {
-    mockApollo = createMockApollo([[workItemAncestorsQuery, ancestorsQueryHandler]]);
+    mockApollo = createMockApollo([
+      [workItemAncestorsQuery, ancestorsQueryHandler],
+      [workItemAncestorsUpdatedSubscription, workItemAncestorsUpdatedSubscriptionHandler],
+    ]);
     return mountExtended(WorkItemAncestors, {
       apolloProvider: mockApollo,
       propsData: {
@@ -85,6 +92,12 @@ describe('WorkItemAncestors', () => {
 
     expect(findPopover().text()).toContain(ancestor.title);
     expect(findPopover().text()).toContain(ancestor.reference);
+  });
+
+  it('calls the work item updated subscription', () => {
+    expect(workItemAncestorsUpdatedSubscriptionHandler).toHaveBeenCalledWith({
+      id: workItemTask.id,
+    });
   });
 
   describe('when work item has less than 3 ancestors', () => {

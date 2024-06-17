@@ -241,7 +241,7 @@ write a good `README.md` file:
 
 - The documentation should start with a summary of the capabilities that the components in the project provide.
 - If the project contains multiple components, use a [table of contents](../../user/markdown.md#table-of-contents)
-   to help users quickly jump to a specific component's details.
+  to help users quickly jump to a specific component's details.
 - Add a `## Components` section with sub-sections like `### Component A` for each component in the project.
 - In each component section:
   - Add a description of what the component does.

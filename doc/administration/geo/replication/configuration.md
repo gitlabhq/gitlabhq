@@ -186,9 +186,9 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
 
    - For `gitlab-sshd`:
 
-      ```shell
-      sudo gitlab-ctl restart gitlab-sshd
-      ```
+     ```shell
+     sudo gitlab-ctl restart gitlab-sshd
+     ```
 
 1. Verify SSH is still functional.
 

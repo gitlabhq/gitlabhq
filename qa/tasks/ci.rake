@@ -83,4 +83,11 @@ namespace :ci do
 
     QA::Tools::Ci::TestMetrics.export(args[:glob])
   end
+
+  desc "Export code paths mapping to GCP"
+  task :export_code_paths_mapping, [:glob] do |_, args|
+    raise("Code paths mapping JSON glob pattern is required") unless args[:glob]
+
+    QA::Tools::Ci::ExportCodePathsMapping.export(args[:glob])
+  end
 end

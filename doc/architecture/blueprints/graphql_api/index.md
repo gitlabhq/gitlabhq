@@ -150,10 +150,10 @@ state synchronization mechanisms and hooking into existing ones.
 ### In the scope of the blueprint
 
 1. [GraphQL API architecture](https://gitlab.com/groups/gitlab-org/-/epics/5842)
-    1. [Build comprehensive Grafana dashboard for GraphQL](https://gitlab.com/groups/gitlab-org/-/epics/5841)
-    1. [Improve logging of GraphQL requests in Elastic](https://gitlab.com/groups/gitlab-org/-/epics/4646)
-    1. [Build GraphQL query correlation mechanisms](https://gitlab.com/groups/gitlab-org/-/epics/5320)
-    1. [Design a better data-informed deprecation policy](https://gitlab.com/groups/gitlab-org/-/epics/5321)
+   1. [Build comprehensive Grafana dashboard for GraphQL](https://gitlab.com/groups/gitlab-org/-/epics/5841)
+   1. [Improve logging of GraphQL requests in Elastic](https://gitlab.com/groups/gitlab-org/-/epics/4646)
+   1. [Build GraphQL query correlation mechanisms](https://gitlab.com/groups/gitlab-org/-/epics/5320)
+   1. [Design a better data-informed deprecation policy](https://gitlab.com/groups/gitlab-org/-/epics/5321)
 
 ### Future iterations
 

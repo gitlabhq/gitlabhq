@@ -4,7 +4,8 @@ classes:
 - MergeRequest::ReviewLlmSummary
 feature_categories:
 - code_review_workflow
-description: This is the table that stores information about the review summaries produced from different LLM's.
+description: This is the table that stores information about the review summaries
+  produced from different LLM's.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124402
 milestone: '16.2'
 gitlab_schema: gitlab_main_cell
@@ -19,3 +20,4 @@ desired_sharding_key:
         table: reviews
         sharding_key: project_id
         belongs_to: review
+desired_sharding_key_migration_job_name: BackfillMergeRequestReviewLlmSummariesProjectId

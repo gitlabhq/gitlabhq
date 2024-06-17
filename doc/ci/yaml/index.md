@@ -1637,9 +1637,9 @@ Use the `cache:paths` keyword to choose which files or directories to cache.
   You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
   patterns:
   - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-  [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
+    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
   - In GitLab Runner 12.10 and earlier,
-  [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+    [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
 
 **Example of `cache:paths`**:
 

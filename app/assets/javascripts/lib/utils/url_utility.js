@@ -373,17 +373,39 @@ export function isAbsoluteOrRootRelative(url) {
 }
 
 /**
- * Returns true if url is an external URL
+ * Returns a list of path segments of the given URL instance.
  *
- * @param {String} url
- * @returns {Boolean}
+ * @param {URL} url - URL instance (not a string!)
+ * @returns {Array<string>} List of path segments of the given URL
+ */
+export function pathSegments(url) {
+  const pathname = url.pathname.endsWith(PATH_SEPARATOR) ? url.pathname.slice(0, -1) : url.pathname;
+  return pathname.split(PATH_SEPARATOR).slice(1);
+}
+
+/**
+ * Returns `true` if the `url` is an external URL.
+ * The query and hash of the url are ignored.
+ *
+ * @param {string} url
+ * @returns {boolean}
  */
 export function isExternal(url) {
-  if (isRootRelative(url)) {
-    return false;
+  const gitlabURL = new URL(gon.gitlab_url);
+  const newURL = new URL(url, window.location.href);
+
+  if (gitlabURL.origin !== newURL.origin) {
+    return true;
   }
 
-  return !url.includes(gon.gitlab_url);
+  const gitlabURLpathSegments = pathSegments(gitlabURL);
+  const newURLpathSegments = pathSegments(newURL);
+
+  const isInternal = gitlabURLpathSegments.every(
+    (pathSegment, i) => pathSegment === newURLpathSegments[i],
+  );
+
+  return !isInternal;
 }
 
 /**

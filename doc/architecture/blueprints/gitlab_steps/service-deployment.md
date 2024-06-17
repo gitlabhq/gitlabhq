@@ -9,8 +9,8 @@ description: Steps Runner Deployment and Lifecycle Management for [Runner Integr
 This Blueprint is concerned with:
 
 - The deployment or injection of the Step Runner binary into target
-environments. This includes build containers for Docker, Kubernetes and
-Instance executors.
+  environments. This includes build containers for Docker, Kubernetes and
+  Instance executors.
 - Startup of the Step Runner gRPC service in said environments.
 - Any required install-time configuration.
 - Service restart in the event of a crash.

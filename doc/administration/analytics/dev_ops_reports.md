@@ -51,9 +51,9 @@ DevOps Adoption shows feature adoption for development, security, and operations
 You can use DevOps Adoption to:
 
 - Identify groups that are lagging in their adoption of GitLab features,
-so you can guide them on their DevOps journey.
+  so you can guide them on their DevOps journey.
 - Identify groups that have adopted certain GitLab features, and use them as an example
-for other groups to adopt those features.
+  for other groups to adopt those features.
 - Evaluate if you are getting the expected return on investment from GitLab.
 
 ## View DevOps Reports

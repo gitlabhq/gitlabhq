@@ -64,10 +64,6 @@ However, GitLab Duo Chat works differently. When you turn off GitLab Duo:
 
 ### Turn off for a group
 
-> - [in GitLab 16.10, 16.11, and 17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/448709), `duo_features_enabled` was enabled by default. This feature flag controlled GitLab Duo for groups and subgroups, but not projects. Subgroups and projects could override the setting. Another flag, `lock_duo_features_enabled`, when set for the parent group, enforced the setting for all subgroups and projects, preventing them from overriding it.
-> - [In GitLab 17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/448709), subgroups and projects automatically inherit the parent's setting but can override it.
-`lock_duo_features_enabled` on a parent group still enforces the setting for all subgroups and projects, preventing them from overriding it.
-
 You can turn off GitLab Duo for a group.
 
 Prerequisites:
@@ -86,11 +82,6 @@ To turn off GitLab Duo for a group:
 
    ![Cascading setting](img/disable_duo_features_v17_0.png)
 <!-- vale gitlab.Substitutions = YES -->
-
-NOTE:
-An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/448709) for making the group-level
-setting cascade to all groups and projects. Right now the lower-level projects and groups do not
-display the setting of the top-level group.
 
 ### Turn off for a project
 

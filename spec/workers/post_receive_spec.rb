@@ -124,6 +124,17 @@ RSpec.describe PostReceive, feature_category: :source_code_management do
       end
     end
 
+    context 'when identifier is for a deploy key' do
+      let(:deploy_key) { create(:deploy_key, user: project.first_owner) }
+      let!(:key_id) { deploy_key.shell_id }
+
+      it 'calls Git::ProcessRefChangesService' do
+        expect(Git::ProcessRefChangesService).to receive(:new).with(project, project.first_owner, kind_of(Hash)).and_call_original
+
+        perform
+      end
+    end
+
     context 'with changes' do
       let(:push_service) { double(execute: true) }
 

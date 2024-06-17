@@ -68,7 +68,7 @@ flowchart LR
 - GitLab-side: Vertex AI Search can [search at scale, with high queries per second (QPS), high recall, low latency, and cost efficiency](https://cloud.google.com/vertex-ai/docs/vector-search/overview).
 - GitLab-side: Vertex AI Search supports [global and multi-region deployments](https://cloud.google.com/generative-ai-app-builder/docs/locations).
 - Customer-side: The outbound requests from their GitLab Self-managed instances could cause more network latency than retrieving from a local vector store.
-This latency issue is addressable by multi-region deployments.
+  This latency issue is addressable by multi-region deployments.
 
 ## Availability
 

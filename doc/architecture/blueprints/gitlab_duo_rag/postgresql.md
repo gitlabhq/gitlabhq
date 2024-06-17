@@ -32,13 +32,13 @@ Here is the overview of synchronizing process that is currently running in GitLa
 1. Load documentation files of the GitLab instance. i.e. `doc/**/*.md`.
 1. Compare the checksum of each file to detect an new, update or deleted documents.
 1. If a doc is added or updated:
-    1. Split the docs with the following strategy:
-        - Text splitter: Split by new lines (`\n`). Subsequently split by 100~1500 chars.
-    1. Bulk-fetch embeddings of the chunks from `textembedding-gecko` model (768 dimensions).
-    1. Bulk-insert the embeddings into the `vertex_gitlab_docs` table.
-    1. Cleanup the older embeddings.
+   1. Split the docs with the following strategy:
+      - Text splitter: Split by new lines (`\n`). Subsequently split by 100~1500 chars.
+   1. Bulk-fetch embeddings of the chunks from `textembedding-gecko` model (768 dimensions).
+   1. Bulk-insert the embeddings into the `vertex_gitlab_docs` table.
+   1. Cleanup the older embeddings.
 1. If a doc is deleted:
-    1. Delete embeddings of the page.
+   1. Delete embeddings of the page.
 
 As of today, there are 17345 rows (chunks) on `vertex_gitlab_docs` table on GitLab.com.
 

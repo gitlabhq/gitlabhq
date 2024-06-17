@@ -39,7 +39,7 @@ These attributes are deprecated, and are scheduled to be removed in v5 of the AP
 The `merge_method` can use these options:
 
 - `merge`: a merge commit is created for every merge, and merging is allowed if
- no conflicts are present.
+  no conflicts are present.
 - `rebase_merge`: a merge commit is created for every merge, but merging is only
   allowed if fast-forward merge is possible. You can make sure that the target
   branch would build after this merge request builds and merges.

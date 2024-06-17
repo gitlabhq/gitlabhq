@@ -127,6 +127,17 @@ stages:
   script:
     - bundle exec rake "ci:export_test_metrics[$QA_METRICS_REPORT_FILE_PATTERN]"
 
+.export-code-paths-mapping:
+  extends:
+    - .qa-install
+    - .ruby-image
+  stage: report
+  when: always
+  variables:
+    QA_CODE_PATHS_MAPPING_FILE_PATTERN: $CI_PROJECT_DIR/gitlab-qa-run-*/**/test-code-paths-mapping-*.json
+  script:
+    - bundle exec rake "ci:export_code_paths_mapping[$QA_CODE_PATHS_MAPPING_FILE_PATTERN]"
+
 .generate-test-session:
   extends:
     - .qa-install

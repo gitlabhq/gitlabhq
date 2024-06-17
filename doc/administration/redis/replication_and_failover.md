@@ -721,7 +721,7 @@ To make this work with Sentinel:
    - Redis URLs should be in the format: `redis://:PASSWORD@SENTINEL_PRIMARY_NAME`, where:
      - `PASSWORD` is the plaintext password for the Redis instance.
      - `SENTINEL_PRIMARY_NAME` is the Sentinel primary name set with `redis['master_name']`,
-        for example `gitlab-redis-cache`.
+       for example `gitlab-redis-cache`.
 
 1. Save the file and reconfigure GitLab for the change to take effect:
 

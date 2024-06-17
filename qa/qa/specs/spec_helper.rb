@@ -37,6 +37,7 @@ RSpec.configure do |config|
   config.add_formatter QA::Support::Formatters::QuarantineFormatter
   config.add_formatter QA::Support::Formatters::FeatureFlagFormatter
   config.add_formatter QA::Support::Formatters::TestMetricsFormatter if QA::Runtime::Env.running_in_ci?
+  config.add_formatter QA::Support::Formatters::CoverbandFormatter if QA::Runtime::Env.coverband_enabled?
 
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', 'tmp/examples.txt')
 

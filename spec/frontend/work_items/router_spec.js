@@ -57,6 +57,7 @@ describe('Work items router', () => {
         WorkItemNotes: true,
         WorkItemAwardEmoji: true,
         WorkItemTimeTracking: true,
+        WorkItemAncestors: true,
       },
     });
   };
