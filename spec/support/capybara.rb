@@ -81,11 +81,13 @@ Capybara.register_driver :chrome do |app|
     options.add_preference("download.prompt_for_download", false)
   end
 
-  # Set up a proxy server to block all external traffic.
-  @blackhole_tcp_server = TCPServer.new(0)
-  Thread.new do
-    loop do
-      Thread.start(@blackhole_tcp_server.accept, &:close)
+  if @blackhole_tcp_server.nil?
+    # Set up a proxy server to block all external traffic.
+    @blackhole_tcp_server = TCPServer.new(0)
+    Thread.new do
+      loop do
+        Thread.start(@blackhole_tcp_server.accept, &:close)
+      end
     end
   end
 
