@@ -532,6 +532,14 @@ To configure the certificate:
 
 ::EndTabs
 
+## Configuring firewalls for webhook traffic
+
+When configuring firewalls for webhooks traffic, you can configure assuming that webhooks are usually sent asynchronously from Sidekiq nodes. However, there are cases
+when webhooks are sent synchronously from Rails nodes, including when:
+
+- [Testing a Webhook](#test-a-webhook) in the UI.
+- [Retrying a Webhook](#inspect-request-and-response-details) in the UI.
+
 ## Related topics
 
 - [Webhook events and webhook JSON payloads](webhook_events.md)

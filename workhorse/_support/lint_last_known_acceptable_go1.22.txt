@@ -293,7 +293,6 @@ internal/redis/keywatcher.go:1:1: package-comments: should have a package commen
 internal/redis/keywatcher.go:19:6: exported: exported type KeyWatcher should have comment or be unexported (revive)
 internal/redis/keywatcher.go:28:1: exported: exported function NewKeyWatcher should have comment or be unexported (revive)
 internal/redis/keywatcher.go:42:2: exported: exported var KeyWatchers should have comment or be unexported (revive)
-internal/redis/keywatcher.go:79:86: (*KeyWatcher).receivePubSubStream - result 0 (error) is always nil (unparam)
 internal/redis/keywatcher.go:90:16: Error return value of `kw.conn.Close` is not checked (errcheck)
 internal/redis/keywatcher.go:120:66: unnecessary conversion (unconvert)
 internal/redis/keywatcher.go:129:1: exported: exported method KeyWatcher.Process should have comment or be unexported (revive)

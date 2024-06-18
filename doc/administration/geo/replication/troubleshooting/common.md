@@ -491,14 +491,14 @@ It is risky to reuse a secondary site without resetting it because the secondary
 
 If these kinds of risks do not apply, for example in a test environment, or if you know that the main Postgres database still contains all Geo events since the Geo site was added, then you can bypass this health check:
 
-1. Get the last processed event time. In Rails console in the secondary site, run:
+1. Get the last processed event time. In Rails console in the **secondary** site, run:
 
    ```ruby
    Geo::EventLogState.last.created_at.utc
    ```
 
 1. Copy the output, for example `2024-02-21 23:50:50.676918 UTC`.
-1. Update the created time of the secondary site to make it appear older. In Rails console in the primary site, run:
+1. Update the created time of the secondary site to make it appear older. In Rails console in the **primary** site, run:
 
    ```ruby
    GeoNode.secondary_nodes.last.update_column(:created_at, DateTime.parse('2024-02-21 23:50:50.676918 UTC') - 1.second)
@@ -506,7 +506,7 @@ If these kinds of risks do not apply, for example in a test environment, or if y
 
    This command assumes that the affected secondary site is the one that was created last.
 
-1. Update the secondary site's status in **Admin > Geo > Sites**. In Rails console in the secondary site, run:
+1. Update the secondary site's status in **Admin > Geo > Sites**. In Rails console in the **secondary** site, run:
 
    ```ruby
    Geo::MetricsUpdateWorker.new.perform

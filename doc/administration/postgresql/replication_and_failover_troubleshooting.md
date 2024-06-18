@@ -50,7 +50,7 @@ postgresql['trust_auth_cidr_addresses'] = %w(123.123.123.123/32 <other_cidrs>)
 
 [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
-## PgBouncer errors `Error running command: GitlabCtl::Errors::ExecutionError` and `ERROR: database gitlabhq_production is not paused`
+## PgBouncer nodes don't fail over after Patroni switchover
 
 Due to a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8166) that
 affects versions of GitLab prior to 16.5.0, the automatic failover of PgBouncer nodes does not
