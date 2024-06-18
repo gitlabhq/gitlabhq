@@ -32,6 +32,35 @@ module API
         present user_project.package_protection_rules, with: Entities::Projects::Packages::Protection::Rule
       end
 
+      desc 'Create a package protection rule for a project' do
+        success Entities::Projects::Packages::Protection::Rule
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' },
+          { code: 422, message: 'Unprocessable Entity' }
+        ]
+        tags %w[projects]
+      end
+      params do
+        requires :package_name_pattern, type: String,
+          desc: 'Package name protected by the rule. For example @my-scope/my-package-*. Wildcard character * allowed.'
+        requires :package_type, type: String, values: Packages::Protection::Rule.package_types.keys,
+          desc: 'Package type protected by the rule. For example npm.'
+        requires :minimum_access_level_for_push, type: String,
+          values: Packages::Protection::Rule.minimum_access_level_for_pushes.keys,
+          desc: 'Minimum GitLab access level able to push a package. For example developer, maintainer, owner.'
+      end
+      post ':id/packages/protection/rules' do
+        response = ::Packages::Protection::CreateRuleService.new(project: user_project, current_user: current_user,
+          params: declared_params(params)).execute
+
+        render_api_error!({ error: response.message }, :unprocessable_entity) if response.error?
+
+        present response[:package_protection_rule], with: Entities::Projects::Packages::Protection::Rule
+      end
+
       desc 'Delete package protection rule' do
         success code: 204, message: '204 No Content'
         failure [

@@ -232,7 +232,7 @@ gem 'nokogiri', '~> 1.16' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gitlab-glfm-markdown', '~> 0.0.17', feature_category: :team_planning
 
 # Calendar rendering
-gem 'icalendar' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'icalendar', '~> 2.10.1', feature_category: :system_access
 
 # Diffs
 gem 'diffy', '~> 3.4' # rubocop:todo Gemfile/MissingFeatureCategory

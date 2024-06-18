@@ -955,7 +955,7 @@ GEM
     i18n (1.14.4)
       concurrent-ruby (~> 1.0)
     i18n_data (0.13.1)
-    icalendar (2.8.0)
+    icalendar (2.10.1)
       ice_cube (~> 0.16)
     ice_cube (0.16.4)
     ice_nine (0.11.2)
@@ -2062,7 +2062,7 @@ DEPENDENCIES
   html-pipeline (~> 2.14.3)
   html2text
   httparty (~> 0.21.0)
-  icalendar
+  icalendar (~> 2.10.1)
   influxdb-client (~> 3.1)
   invisible_captcha (~> 2.1.0)
   ipaddr (~> 1.2.5)

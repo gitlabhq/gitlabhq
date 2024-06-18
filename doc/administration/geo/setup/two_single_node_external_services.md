@@ -323,7 +323,7 @@ secondary site is a read-only copy.
       match exactly.
    1. Optional. In **Internal URL (optional)**, enter an internal URL for the primary site.
    1. Optional. Select which groups or storage shards should be replicated by the
-      secondary site. To replicate all, leave the field blank. See [selective synchronization](../replication/configuration.md#selective-synchronization).
+      secondary site. To replicate all, leave the field blank. See [selective synchronization](../replication/selective_synchronization.md).
    1. Select **Save changes**.
 1. SSH into each Rails and Sidekiq node on your secondary site and restart the services:
 

@@ -2080,6 +2080,9 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
     let(:expiration_date) { Date.new(expiration_year, expiration_month, -1) }
     let(:credit_card_validated_at) { Time.utc(2020, 1, 1) }
     let(:zuora_payment_method_xid) { 'abc123' }
+    let(:stripe_setup_intent_xid) { 'seti_abc123' }
+    let(:stripe_payment_method_xid) { 'pm_abc123' }
+    let(:stripe_card_fingerprint) { 'card123' }
 
     let(:path) { "/user/#{user.id}/credit_card_validation" }
     let(:params) do
@@ -2090,7 +2093,10 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
         credit_card_holder_name: holder_name,
         credit_card_type: network,
         credit_card_mask_number: last_digits,
-        zuora_payment_method_xid: zuora_payment_method_xid
+        zuora_payment_method_xid: zuora_payment_method_xid,
+        stripe_setup_intent_xid: stripe_setup_intent_xid,
+        stripe_payment_method_xid: stripe_payment_method_xid,
+        stripe_card_fingerprint: stripe_card_fingerprint
       }
     end
 
@@ -2125,7 +2131,10 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
           holder_name_hash: sha256(holder_name.downcase),
           last_digits_hash: sha256(last_digits),
           expiration_date_hash: sha256(expiration_date.to_s),
-          zuora_payment_method_xid: zuora_payment_method_xid
+          zuora_payment_method_xid: zuora_payment_method_xid,
+          stripe_setup_intent_xid: stripe_setup_intent_xid,
+          stripe_payment_method_xid: stripe_payment_method_xid,
+          stripe_card_fingerprint: stripe_card_fingerprint
         )
       end
 

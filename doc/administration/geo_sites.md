@@ -37,7 +37,7 @@ the **primary** node is listed first as `Primary site`.
 
 | Setting                   | Description |
 |---------------------------|-------------|
-| Selective synchronization | Enable Geo [selective sync](../administration/geo/replication/configuration.md#selective-synchronization) for this **secondary** site. |
+| Selective synchronization | Enable Geo [selective sync](../administration/geo/replication/selective_synchronization.md) for this **secondary** site. |
 | Repository sync capacity  | Number of concurrent requests this **secondary** site makes to the **primary** site when backfilling repositories. |
 | File sync capacity        | Number of concurrent requests this **secondary** site makes to the **primary** site when backfilling files. |
 

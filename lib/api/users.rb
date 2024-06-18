@@ -1301,6 +1301,9 @@ module API
         requires :credit_card_type, type: String, desc: 'The credit card network name'
 
         optional :zuora_payment_method_xid, type: String, desc: 'The Zuora payment method ID'
+        optional :stripe_setup_intent_xid, type: String, desc: 'The Stripe setup intent ID'
+        optional :stripe_payment_method_xid, type: String, desc: 'The Stripe payment method ID'
+        optional :stripe_card_fingerprint, type: String, desc: 'The Stripe credit card fingerprint'
       end
       put ":user_id/credit_card_validation", urgency: :low, feature_category: :subscription_management do
         authenticated_as_admin!

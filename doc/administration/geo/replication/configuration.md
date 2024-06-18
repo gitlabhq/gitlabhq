@@ -4,36 +4,38 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo configuration
+# Configure a new **secondary** site
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
-
-## Configuring a new **secondary** site
 
 NOTE:
 This is the final step in setting up a **secondary** Geo site. Stages of the
 setup process must be completed in the documented order.
 If not, [complete all prior stages](../setup/index.md#using-linux-package-installations) before proceeding.
 
-Make sure you [set up the database replication](../setup/database.md), and [configured fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md) in **both primary and secondary sites**.
-
 The basic steps of configuring a **secondary** site are to:
 
-- Replicate required configurations between the **primary** site and the **secondary** sites.
-- Configure a tracking database on each **secondary** site.
-- Start GitLab on each **secondary** site.
+1. Replicate required configurations between the **primary** and the **secondary** site.
+1. Configure a tracking database on each **secondary** site.
+1. Start GitLab on each **secondary** site.
 
-You are encouraged to first read through all the steps before executing them
-in your testing/production environment.
+This document focuses on the first item. You are encouraged to first read
+through all the steps before executing them in your testing/production
+environment.
+
+Prerequisites for **both primary and secondary sites**:
+
+- [Set up the database replication](../setup/database.md)
+- [Configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md)
 
 NOTE:
-**Do not** set up any custom authentication for the **secondary** sites. This is handled by the **primary** site.
+**Do not** set up any custom authentication for the **secondary** site. This is handled by the **primary** site.
 Any change that requires access to the **Admin Area** needs to be done in the
 **primary** site because the **secondary** site is a read-only replica.
 
-### Step 1. Manually replicate secret GitLab values
+## Step 1. Manually replicate secret GitLab values
 
 GitLab stores a number of secret values in the `/etc/gitlab/gitlab-secrets.json`
 file which *must* be the same on all of a site's nodes. Until there is
@@ -84,7 +86,7 @@ they must be manually replicated to **all nodes of the secondary site**.
    gitlab-ctl restart
    ```
 
-### Step 2. Manually replicate the **primary** site's SSH host keys
+## Step 2. Manually replicate the **primary** site's SSH host keys
 
 GitLab integrates with the system-installed SSH daemon, designating a user
 (typically named `git`) through which all access requests are handled.
@@ -195,7 +197,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    SSH into your GitLab **secondary** server in a new terminal. If you are unable to connect,
    verify the permissions are correct according to the previous steps.
 
-### Step 3. Add the **secondary** site
+## Step 3. Add the **secondary** site
 
 1. SSH into **each Rails and Sidekiq node on your secondary** site and login as root:
 
@@ -233,7 +235,7 @@ In the following steps, replace `<ssh_host_key_path>` with the one you're using:
    1. Optional. In **Internal URL (optional)**, enter an internal URL for the secondary site.
    1. Optional. Select which groups or storage shards should be replicated by the
       **secondary** site. Leave blank to replicate all. For more information, see
-      [selective synchronization](#selective-synchronization).
+      [selective synchronization](selective_synchronization.md).
    1. Select **Save changes** to add the **secondary** site.
 1. SSH into **each Rails, and Sidekiq node on your secondary** site and restart the services:
 
@@ -267,14 +269,14 @@ that the **secondary** site can act on those notifications immediately.
 Be sure the _secondary_ site is running and accessible. You can sign in to the
 _secondary_ site with the same credentials as were used with the _primary_ site.
 
-### Step 4. (Optional) Using custom certificates
+## Step 4. (Optional) Using custom certificates
 
 You can safely skip this step if:
 
 - Your **primary** site uses a public CA-issued HTTPS certificate.
 - Your **primary** site only connects to external services with CA-issued (not self-signed) HTTPS certificates.
 
-#### Custom or self-signed certificate for inbound connections
+### Custom or self-signed certificate for inbound connections
 
 If your GitLab Geo **primary** site uses a custom or [self-signed certificate to secure inbound HTTPS connections](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates), this can be either a single-domain or multi-domain certificate.
 
@@ -283,7 +285,7 @@ Install the correct certificate based on your certificate type:
 - **Multi-domain certificate** that includes both primary and secondary site domains: Install the certificate at `/etc/gitlab/ssl` on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
 - **Single-domain certificate** where the certificates are specific to each Geo site domain: Generate a valid certificate for your **secondary** site's domain and install it at `/etc/gitlab/ssl` following [these instructions](https://docs.gitlab.com/omnibus/settings/ssl/index.html#install-custom-public-certificates) on all **Rails, Sidekiq, and Gitaly** nodes in the **secondary** site.
 
-#### Connecting to external services that use custom certificates
+### Connecting to external services that use custom certificates
 
 A copy of the self-signed certificate for the external service needs to be added to the trust store on all the **primary** site's nodes that require access to the service.
 
@@ -322,7 +324,7 @@ If your **primary** site is using a [custom or self-signed certificate for inbou
    sudo gitlab-ctl reconfigure
    ```
 
-### Step 5. Enable Git access over HTTP/HTTPS and SSH
+## Step 5. Enable Git access over HTTP/HTTPS and SSH
 
 Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. This is enabled by default, but if converting an existing site to Geo it should be checked:
@@ -337,7 +339,7 @@ On the **primary** site:
    1. Follow [Fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md) on **all primary and secondary** sites.
 1. If not using Git over SSH, then set "Enabled Git access protocols" to "Only HTTP(S)".
 
-### Step 6. Verify proper functioning of the **secondary** site
+## Step 6. Verify proper functioning of the **secondary** site
 
 You can sign in to the **secondary** site with the same credentials you used with
 the **primary** site. After you sign in:
@@ -378,43 +380,6 @@ Currently, this is what is synced:
 - LFS objects.
 - Issues, merge requests, snippets, and comment attachments.
 - Users, groups, and project avatars.
-
-## Selective synchronization
-
-Geo supports selective synchronization, which allows administrators to choose
-which projects should be synchronized by **secondary** sites.
-A subset of projects can be chosen, either by group or by storage shard. The
-former is ideal for replicating data belonging to a subset of users, while the
-latter is more suited to progressively rolling out Geo to a large GitLab
-instance.
-
-NOTE:
-Geo's synchronization logic is outlined in the [documentation](../index.md). Both the solution and the documentation is subject to change from time to time. You must independently determine your legal obligations in regard to privacy and cybersecurity laws, and applicable trade control law on an ongoing basis.
-
-Selective synchronization:
-
-1. Does not restrict permissions from **secondary** sites.
-1. Does not hide project metadata from **secondary** sites.
-   - Since Geo currently relies on PostgreSQL replication, all project metadata
-     gets replicated to **secondary** sites, but repositories that have not been
-     selected are empty.
-1. Does not reduce the number of events generated for the Geo event log.
-   - The **primary** site generates events as long as any **secondary** sites are present.
-     Selective synchronization restrictions are implemented on the **secondary** sites,
-     not the **primary** site.
-
-### Git operations on unreplicated repositories
-
-Git clone, pull, and push operations over HTTP(S) and SSH are supported for repositories that
-exist on the **primary** site but not on **secondary** sites. This situation can occur
-when:
-
-- Selective synchronization does not include the project attached to the repository.
-- The repository is actively being replicated but has not completed yet.
-
-## Upgrading Geo
-
-See the [upgrading the Geo sites document](upgrading_the_geo_sites.md).
 
 ## Troubleshooting
 

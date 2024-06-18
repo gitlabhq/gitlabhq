@@ -90,10 +90,14 @@ module Resolvers
       required: false,
       description: 'Merge requests updated before the timestamp.'
 
+    argument :label_name, [GraphQL::Types::String, { null: true }],
+      required: false,
+      description: 'Labels applied to the merge request.'
     argument :labels, [GraphQL::Types::String],
       required: false,
       as: :label_name,
-      description: 'Array of label names. All resolved merge requests will have all of these labels.'
+      description: 'Array of label names. All resolved merge requests will have all of these labels.',
+      deprecated: { reason: 'Use `labelName`', milestone: '17.1' }
     argument :merged_after, Types::TimeType,
       required: false,
       description: 'Merge requests merged after the date.'

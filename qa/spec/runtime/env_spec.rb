@@ -9,26 +9,29 @@ RSpec.describe QA::Runtime::Env do
 
   shared_examples 'boolean method with parameter' do |method:, env_key:, default:, param: nil|
     context 'when there is an env variable set' do
-      it 'returns false when falsey values specified' do
+      it 'returns false when variable is falsey or unsupported' do
         stub_env(env_key, 'false')
-        expect(described_class.public_send(method, *param)).to be_falsey
+        expect(described_class.public_send(method, *param)).to eq(false)
 
         stub_env(env_key, 'no')
-        expect(described_class.public_send(method, *param)).to be_falsey
+        expect(described_class.public_send(method, *param)).to eq(false)
 
         stub_env(env_key, '0')
-        expect(described_class.public_send(method, *param)).to be_falsey
-      end
-
-      it 'returns true when anything else specified' do
-        stub_env(env_key, 'true')
-        expect(described_class.public_send(method, *param)).to be_truthy
-
-        stub_env(env_key, '1')
-        expect(described_class.public_send(method, *param)).to be_truthy
+        expect(described_class.public_send(method, *param)).to eq(false)
 
         stub_env(env_key, 'anything')
-        expect(described_class.public_send(method, *param)).to be_truthy
+        expect(described_class.public_send(method, *param)).to eq(false)
+      end
+
+      it 'returns true when variable set to truthy' do
+        stub_env(env_key, 'true')
+        expect(described_class.public_send(method, *param)).to eq(true)
+
+        stub_env(env_key, '1')
+        expect(described_class.public_send(method, *param)).to eq(true)
+
+        stub_env(env_key, 'yes')
+        expect(described_class.public_send(method, *param)).to eq(true)
       end
     end
 

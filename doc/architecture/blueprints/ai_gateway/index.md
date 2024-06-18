@@ -582,9 +582,7 @@ In the next iteration, we plan to decompose the Chat primitive into multiple pri
 
 The introduction of Unit Primitives will simplify the management of AI features and provide a more granular control over the functionalities exposed through the AI Gateway. This will also pave the way for future work on supporting user-deployed models and locally hosted models.
 
-For more details, refer to the [Initial Set of Unit Primitives](https://gitlab.com/gitlab-org/gitlab/-/issues/444934) issue.
-
-- [Unit Primitives for Accessing CC Features](https://gitlab.com/groups/gitlab-org/-/epics/12556)
+For more details on how to implement and integrate unit primitives, refer to the [Cloud Connector documentation](../../../development/cloud_connector/index.md).
 
 ### Self Managed AI Gateway
 

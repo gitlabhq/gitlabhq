@@ -1505,6 +1505,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_dc13168b8025() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "vulnerability_occurrences"
+  WHERE "vulnerability_occurrences"."id" = NEW."vulnerability_occurrence_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_ebab34f83f1d() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -7855,7 +7871,8 @@ CREATE TABLE ci_runner_projects (
     runner_id integer NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    project_id integer
+    project_id integer,
+    CONSTRAINT check_db297016c6 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE ci_runner_projects_id_seq
@@ -18024,6 +18041,12 @@ CREATE TABLE user_credit_card_validations (
     expiration_date_hash text,
     network_hash text,
     zuora_payment_method_xid text,
+    stripe_setup_intent_xid text,
+    stripe_payment_method_xid text,
+    stripe_card_fingerprint text,
+    CONSTRAINT check_126615a57d CHECK ((char_length(stripe_payment_method_xid) <= 255)),
+    CONSTRAINT check_209503e313 CHECK ((char_length(stripe_card_fingerprint) <= 255)),
+    CONSTRAINT check_5d9e69ede5 CHECK ((char_length(stripe_setup_intent_xid) <= 255)),
     CONSTRAINT check_7721e1961a CHECK ((char_length(network_hash) <= 44)),
     CONSTRAINT check_83f1e2ace3 CHECK ((char_length(expiration_date_hash) <= 44)),
     CONSTRAINT check_9a15d14e37 CHECK ((char_length(zuora_payment_method_xid) <= 50)),
@@ -18629,6 +18652,7 @@ CREATE TABLE vulnerability_flags (
     flag_type smallint DEFAULT 0 NOT NULL,
     origin text NOT NULL,
     description text NOT NULL,
+    project_id bigint,
     CONSTRAINT check_45e743349f CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_49c1d00032 CHECK ((char_length(origin) <= 255))
 );
@@ -28772,6 +28796,8 @@ CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id ON user_canonical_ema
 
 CREATE UNIQUE INDEX index_user_canonical_emails_on_user_id_and_canonical_email ON user_canonical_emails USING btree (user_id, canonical_email);
 
+CREATE INDEX index_user_credit_card_validations_on_stripe_card_fingerprint ON user_credit_card_validations USING btree (stripe_card_fingerprint);
+
 CREATE INDEX index_user_custom_attributes_on_key_and_value ON user_custom_attributes USING btree (key, value);
 
 CREATE UNIQUE INDEX index_user_custom_attributes_on_user_id_and_key ON user_custom_attributes USING btree (user_id, key);
@@ -28961,6 +28987,8 @@ CREATE INDEX index_vulnerability_finding_signatures_on_signature_sha ON vulnerab
 CREATE INDEX index_vulnerability_findings_remediations_on_remediation_id ON vulnerability_findings_remediations USING btree (vulnerability_remediation_id);
 
 CREATE UNIQUE INDEX index_vulnerability_findings_remediations_on_unique_keys ON vulnerability_findings_remediations USING btree (vulnerability_occurrence_id, vulnerability_remediation_id);
+
+CREATE INDEX index_vulnerability_flags_on_project_id ON vulnerability_flags USING btree (project_id);
 
 CREATE UNIQUE INDEX index_vulnerability_flags_on_unique_columns ON vulnerability_flags USING btree (vulnerability_occurrence_id, flag_type, origin);
 
@@ -31108,6 +31136,8 @@ CREATE TRIGGER trigger_dadd660afe2c BEFORE INSERT OR UPDATE ON packages_debian_g
 
 CREATE TRIGGER trigger_dbdd61a66a91 BEFORE INSERT OR UPDATE ON agent_activity_events FOR EACH ROW EXECUTE FUNCTION trigger_dbdd61a66a91();
 
+CREATE TRIGGER trigger_dc13168b8025 BEFORE INSERT OR UPDATE ON vulnerability_flags FOR EACH ROW EXECUTE FUNCTION trigger_dc13168b8025();
+
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
@@ -32220,6 +32250,9 @@ ALTER TABLE ONLY external_status_checks_protected_branches
 
 ALTER TABLE ONLY dast_profiles_pipelines
     ADD CONSTRAINT fk_cc206a8c13 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_flags
+    ADD CONSTRAINT fk_cc3b7b4548 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_ccf0373936 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;

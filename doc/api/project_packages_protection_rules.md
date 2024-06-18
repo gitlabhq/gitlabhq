@@ -9,7 +9,7 @@ description: "Documentation for the REST API for Package Protection Rules in Git
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed
+**Offering:** Self-managed
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151741) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `packages_protected_packages`. Disabled by default.
@@ -70,6 +70,48 @@ Example response:
   "minimum_access_level_for_push": "maintainer"
  }
 ]
+```
+
+## Create a package protection rule
+
+Create a package protection rule for a project.
+
+```plaintext
+POST /api/v4/projects/:id/packages/protection/rules
+```
+
+Supported attributes:
+
+| Attribute                             | Type            | Required | Description                    |
+|---------------------------------------|-----------------|----------|--------------------------------|
+| `id`                                  | integer/string  | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `package_name_pattern`                | string          | Yes      | Package name protected by the protection rule. For example `@my-scope/my-package-*`. Wildcard character `*` allowed. |
+| `package_type`                        | string          | Yes      | Package type protected by the protection rule. For example `npm`. |
+| `minimum_access_level_for_push`       | string          | Yes      | Minimum GitLab access level able to push a package. For example `developer`, `maintainer`, `owner`. |
+
+If successful, returns [`201`](rest/index.md#status-codes) and the created package protection rule.
+
+Can return the following status codes:
+
+- `201 Created`: The package protection rule was created successfully.
+- `400 Bad Request`: The package protection rule is invalid.
+- `401 Unauthorized`: The access token is invalid.
+- `403 Forbidden`: The user does not have permission to create a package protection rule.
+- `404 Not Found`: The project was not found.
+- `422 Unprocessable Entity`: The package protection rule could not be created, for example, because the `package_name_pattern` is already taken.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/7/packages/protection/rules" \
+  --data '{
+       "package_name_pattern": "package-name-pattern-*",
+       "package_type": "npm",
+       "minimum_access_level_for_push": "maintainer"
+    }'
 ```
 
 ## Delete a package protection rule

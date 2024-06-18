@@ -317,7 +317,7 @@
 {"name":"httpclient","version":"2.8.3","platform":"ruby","checksum":"2951e4991214464c3e92107e46438527d23048e634f3aee91c719e0bdfaebda6"},
 {"name":"i18n","version":"1.14.4","platform":"ruby","checksum":"c7deedead0866ea9102975a4eab7968f53de50793a0c211a37808f75dd187551"},
 {"name":"i18n_data","version":"0.13.1","platform":"ruby","checksum":"e5aa99b09a69b463bb0443fc1f9540351a49f3d1541c5e91316bafa035c63f66"},
-{"name":"icalendar","version":"2.8.0","platform":"ruby","checksum":"e404f970c7572bdebf6f09f9890970b68aab400ba9e609dc7d46098f28d0ee87"},
+{"name":"icalendar","version":"2.10.1","platform":"ruby","checksum":"1f3108bb95c89e03d418ac95b2fd6182c0b5d112bbe757cf6e23e3282a3f710e"},
 {"name":"ice_cube","version":"0.16.4","platform":"ruby","checksum":"da117e5de24bdc33931be629f9b55048641924442c7e9b72fedc05e5592531b7"},
 {"name":"ice_nine","version":"0.11.2","platform":"ruby","checksum":"5d506a7d2723d5592dc121b9928e4931742730131f22a1a37649df1c1e2e63db"},
 {"name":"imagen","version":"0.1.8","platform":"ruby","checksum":"fde7b727d4fe79c6bb5ac46c1f7184bf87a6d54df54d712ad2be039d2f93a162"},
