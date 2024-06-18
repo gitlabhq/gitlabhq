@@ -9024,9 +9024,6 @@ msgstr ""
 msgid "Boards|Move to start of list"
 msgstr ""
 
-msgid "Boards|New board"
-msgstr ""
-
 msgid "Boards|No cadence matches current iteration filter"
 msgstr ""
 

@@ -8,10 +8,6 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action do
     push_frontend_feature_flag(:board_multi_select, project)
     push_frontend_feature_flag(:display_work_item_epic_issue_sidebar, project)
-    experiment(:prominent_create_board_btn, subject: current_user) do |e|
-      e.control {}
-      e.candidate {}
-    end.run
   end
 
   feature_category :team_planning

@@ -361,7 +361,7 @@ With this configuration, GitLab adds **artifact 1** as a link to `file.txt` to t
 
 ## Keep artifacts from most recent successful jobs
 
-> - Artifacts for [blocked](https://gitlab.com/gitlab-org/gitlab/-/issues/387087) or [failed](https://gitlab.com/gitlab-org/gitlab/-/issues/266958) pipelines no longer kept indefinitely in GitLab 16.7.
+> - Artifacts for [blocked](https://gitlab.com/gitlab-org/gitlab/-/issues/387087) or [failed](https://gitlab.com/gitlab-org/gitlab/-/issues/266958) pipelines changed to no longer be kept indefinitely in GitLab 16.7.
 
 By default artifacts are always kept for successful pipelines for the most recent commit on each ref.
 Any [`expire_in`](#with-an-expiry) configuration does not apply to the most recent artifacts.
