@@ -226,6 +226,10 @@ export default {
     import(
       /* webpackChunkName: 'hl-svelte' */ '~/vue_shared/components/source_viewer/languages/svelte'
     ),
+  hcl: () =>
+    import(
+      /* webpackChunkName: 'hl-hcl' */ '~/packages_and_registries/infrastructure_registry/languages/hcl'
+    ),
   swift: () => import(/* webpackChunkName: 'hl-swift' */ 'highlight.js/lib/languages/swift'),
   taggerscript: () =>
     import(/* webpackChunkName: 'hl-taggerscript' */ 'highlight.js/lib/languages/taggerscript'),

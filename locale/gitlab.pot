@@ -13499,6 +13499,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Summary"
 msgstr ""
 
+msgid "ComplianceFrameworks|The compliance framework must be edited in top-level group %{linkStart}namespace%{linkEnd}"
+msgstr ""
+
 msgid "ComplianceFrameworks|There can be only one default framework."
 msgstr ""
 
@@ -13515,6 +13518,9 @@ msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try
 msgstr ""
 
 msgid "ComplianceFrameworks|You are about to permanently delete the compliance framework %{framework} from all projects which currently have it applied, which may remove other functionality. This cannot be undone."
+msgstr ""
+
+msgid "ComplianceFrameworks|You can only create the compliance framework in top-level group %{linkStart}namespace%{linkEnd}"
 msgstr ""
 
 msgid "ComplianceFrameworks|Your Compliance Project Frameworks CSV export for the group \"%{group_name}\" has been attached to this email."
@@ -20618,6 +20624,9 @@ msgstr ""
 msgid "Environments|Updating"
 msgstr ""
 
+msgid "Environments|View logs"
+msgstr ""
+
 msgid "Environments|by %{avatar}"
 msgstr ""
 
@@ -21899,6 +21908,9 @@ msgid "Failed to find issue or merge request"
 msgstr ""
 
 msgid "Failed to find users for %{missing}"
+msgstr ""
+
+msgid "Failed to format markdown."
 msgstr ""
 
 msgid "Failed to generate description"
@@ -26129,6 +26141,9 @@ msgstr ""
 msgid "Help translate to your language"
 msgstr ""
 
+msgid "Help us improve the merge train visualization by sharing your feedback with us."
+msgstr ""
+
 msgid "Helpful"
 msgstr ""
 
@@ -30182,6 +30197,9 @@ msgstr ""
 msgid "KubernetesDashboard|Completed"
 msgstr ""
 
+msgid "KubernetesDashboard|Containers"
+msgstr ""
+
 msgid "KubernetesDashboard|CronJob"
 msgstr ""
 
@@ -30222,6 +30240,9 @@ msgid "KubernetesDashboard|Labels"
 msgstr ""
 
 msgid "KubernetesDashboard|Learn more"
+msgstr ""
+
+msgid "KubernetesDashboard|Logs"
 msgstr ""
 
 msgid "KubernetesDashboard|Name"
@@ -37449,6 +37470,9 @@ msgstr ""
 msgid "PackageRegistry|PyPI"
 msgstr ""
 
+msgid "PackageRegistry|Readme"
+msgstr ""
+
 msgid "PackageRegistry|Recipe: %{recipe}"
 msgstr ""
 
@@ -39358,6 +39382,9 @@ msgid "Policy management project does not have any policies in %{policy_path}"
 msgstr ""
 
 msgid "Policy project doesn't exist"
+msgstr ""
+
+msgid "PolicyRuleMultiSelect|%{firstLabel} %{moreLabel}"
 msgstr ""
 
 msgid "PolicyRuleMultiSelect|%{firstLabel} +%{numberOfAdditionalLabels} more"
@@ -47907,9 +47934,6 @@ msgstr ""
 msgid "SecurityOrchestration|Select security policy project"
 msgstr ""
 
-msgid "SecurityOrchestration|Select users"
-msgstr ""
-
 msgid "SecurityOrchestration|Send a bot message when the conditions match."
 msgstr ""
 
@@ -52347,6 +52371,9 @@ msgid "TelegramIntegration|Unique authentication token."
 msgstr ""
 
 msgid "Telephone number"
+msgstr ""
+
+msgid "Tell us what you think"
 msgstr ""
 
 msgid "Template"
@@ -63830,6 +63857,9 @@ msgid "user namespace cannot be the parent of another namespace"
 msgstr ""
 
 msgid "username"
+msgstr ""
+
+msgid "users"
 msgstr ""
 
 msgid "v%{version} published %{timeAgo}"

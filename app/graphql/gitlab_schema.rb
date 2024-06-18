@@ -10,10 +10,7 @@ class GitlabSchema < GraphQL::Schema
   DEFAULT_MAX_DEPTH = 15
   AUTHENTICATED_MAX_DEPTH = 20
 
-  # Tracers (order is important)
-  trace_with Gitlab::Graphql::Tracers::MetricsTracer
-  trace_with Gitlab::Graphql::Tracers::LoggerTracer
-  trace_with Gitlab::Graphql::Tracers::ApplicationContextTracer
+  trace_with Gitlab::Graphql::Tracers::InstrumentationTracer
 
   use Gitlab::Graphql::Subscriptions::ActionCableWithLoadBalancing
   use BatchLoader::GraphQL
@@ -57,8 +54,8 @@ class GitlabSchema < GraphQL::Schema
       unless object.respond_to?(:to_global_id)
         # This is an error in our schema and needs to be solved. So raise a
         # more meaningful error message
-        raise "#{object} does not implement `to_global_id`. "\
-              "Include `GlobalID::Identification` into `#{object.class}"
+        raise "#{object} does not implement `to_global_id`. " \
+          "Include `GlobalID::Identification` into `#{object.class}"
       end
 
       object.to_global_id

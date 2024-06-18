@@ -52,6 +52,33 @@ export const DEFAULT_WORKLOAD_TABLE_FIELDS = [
   },
 ];
 
+export const PODS_TABLE_FIELDS = [
+  {
+    key: 'name',
+    label: s__('KubernetesDashboard|Name'),
+    tdClass: 'md:gl-w-1/4 gl-break-anywhere',
+  },
+  {
+    key: 'status',
+    label: s__('KubernetesDashboard|Status'),
+    tdClass: 'md:gl-w-1/6',
+  },
+  {
+    key: 'namespace',
+    label: s__('KubernetesDashboard|Namespace'),
+    tdClass: 'md:gl-w-1/4 gl-break-anywhere',
+  },
+  {
+    key: 'age',
+    label: s__('KubernetesDashboard|Age'),
+  },
+  {
+    key: 'logs',
+    label: s__('KubernetesDashboard|Logs'),
+    sortable: false,
+  },
+];
+
 export const STATUS_TRUE = 'True';
 export const STATUS_FALSE = 'False';
 

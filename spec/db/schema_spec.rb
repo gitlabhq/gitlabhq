@@ -35,6 +35,7 @@ RSpec.describe 'Database schema', feature_category: :database do
   # See: https://docs.gitlab.com/ee/development/database/foreign_keys.html#naming-foreign-keys
   IGNORED_FK_COLUMNS = {
     abuse_reports: %w[reporter_id user_id],
+    abuse_report_notes: %w[discussion_id],
     application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id eks_access_key_id],
     approvals: %w[user_id],
     approver_groups: %w[target_id],

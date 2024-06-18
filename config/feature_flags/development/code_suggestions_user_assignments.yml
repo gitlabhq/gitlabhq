@@ -1,8 +1,0 @@
----
-name: code_suggestions_user_assignments
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134034
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428574
-milestone: '16.5'
-type: development
-group: group::subscription management
-default_enabled: false

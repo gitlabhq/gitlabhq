@@ -1,11 +1,10 @@
-import { GlEmptyState } from '@gitlab/ui';
+import { GlEmptyState, GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import stubChildren from 'helpers/stub_children';
-
 import PackagesApp from '~/packages_and_registries/infrastructure_registry/details/components/app.vue';
 import PackageFiles from '~/packages_and_registries/infrastructure_registry/details/components/package_files.vue';
 import PackageHistory from '~/packages_and_registries/infrastructure_registry/details/components/package_history.vue';
@@ -16,9 +15,10 @@ import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
 import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 import TerraformTitle from '~/packages_and_registries/infrastructure_registry/details/components/details_title.vue';
 import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
+import Markdown from '~/vue_shared/components/markdown/markdown_content.vue';
+import { stubComponent } from 'helpers/stub_component';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-
-import { mavenPackage, mavenFiles, npmPackage } from '../../mock_data';
+import { mavenPackage, mavenFiles, npmPackage, terraformModule } from '../../mock_data';
 
 Vue.use(Vuex);
 
@@ -67,9 +67,9 @@ describe('PackagesApp', () => {
         TitleArea: false,
         GlButton: false,
         GlModal: false,
-        GlTab: false,
         GlTabs: false,
         GlTable: false,
+        Markdown: stubComponent(Markdown),
       },
     });
   }
@@ -79,18 +79,19 @@ describe('PackagesApp', () => {
   const deleteButton = () => wrapper.find('.js-delete-button');
   const findDeleteModal = () => wrapper.findComponent({ ref: 'deleteModal' });
   const findDeleteFileModal = () => wrapper.findComponent({ ref: 'deleteFileModal' });
-  const versionsTab = () => wrapper.find('.js-versions-tab > a');
+  const findAllTabs = () => wrapper.findAllComponents(GlTab);
+  const versionsTab = () => findAllTabs().at(1);
   const packagesLoader = () => wrapper.findComponent(PackagesListLoader);
   const packagesVersionRows = () => wrapper.findAllComponents(PackageListRow);
   const noVersionsMessage = () => wrapper.find('[data-testid="no-versions-message"]');
   const findPackageHistory = () => wrapper.findComponent(PackageHistory);
   const findTerraformInstallation = () => wrapper.findComponent(TerraformInstallation);
   const findPackageFiles = () => wrapper.findComponent(PackageFiles);
+  const findReadmeTab = () => findAllTabs().at(2);
+  const findMarkdown = () => wrapper.findComponent(Markdown);
 
-  it('renders the app and displays the package title', async () => {
+  it('renders the app and displays the package title', () => {
     createComponent();
-
-    await nextTick();
 
     expect(packageTitle().exists()).toBe(true);
   });
@@ -143,7 +144,7 @@ describe('PackagesApp', () => {
       });
 
       it('makes api request on first click of tab', () => {
-        versionsTab().trigger('click');
+        versionsTab().vm.$emit('click');
 
         expect(fetchPackageVersions).toHaveBeenCalled();
       });
@@ -165,6 +166,48 @@ describe('PackagesApp', () => {
       createComponent();
 
       expect(noVersionsMessage().exists()).toBe(true);
+    });
+  });
+
+  describe('readme', () => {
+    it('does not show tab when readme data does not exist', () => {
+      createComponent({
+        packageEntity: terraformModule,
+      });
+
+      const tabsContainingReadme = findAllTabs().filter(
+        (tab) => tab.attributes('title') === 'Readme',
+      );
+      expect(tabsContainingReadme).toHaveLength(0);
+    });
+
+    describe('when readme data exists', () => {
+      beforeEach(() => {
+        createComponent({
+          packageEntity: {
+            ...terraformModule,
+            terraform_module_metadatum: {
+              fields: {
+                root: {
+                  readme: '# Header',
+                },
+              },
+            },
+          },
+        });
+      });
+
+      it('renders tab', () => {
+        expect(findReadmeTab().attributes('title')).toBe('Readme');
+      });
+
+      it('sets lazy attribute on tab', () => {
+        expect(findReadmeTab().attributes('lazy')).toBeDefined();
+      });
+
+      it('renders readme data', () => {
+        expect(findMarkdown().props('value')).toBe('# Header');
+      });
     });
   });
 

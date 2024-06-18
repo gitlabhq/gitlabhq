@@ -46,10 +46,10 @@ For example, "Run debug tools" or "Verify syntax."
 
 ### Troubleshooting reference
 
-This topic includes the error message. To be consistent, use **workaround** for temporary solutions and **resolution** and **resolve** for permanent solutions. For example:
+This topic includes the message. To be consistent, use **workaround** for temporary solutions and **resolution** and **resolve** for permanent solutions. For example:
 
 ```markdown
-### The error message or a description of it
+### The message or a description of it
 
 You might get an error that states <error message>.
 
@@ -67,11 +67,26 @@ For more guidance on solution types, see [workaround](../../documentation/styleg
 
 For the title of a **Troubleshooting reference** topic:
 
-- Consider including at least a partial error message.
+- Consider including at least a partial output message.
   If the message is more than 70 characters, include the text that's most important, or describe the message instead.
+- State the type of message at the start of the title. This indicates the severity. For example, `Error:`, `Warning:`.
 - Do not use links in the title.
 
-If you do not put the full error in the title, include it in the body text.
+If you do not put the full message in the title, include it in the body text. For example:
+
+````markdown
+## Error: `unexpected disconnect while reading sideband packet`
+
+Unstable networking conditions can cause Gitaly to fail when trying to fetch large repository
+data from the primary site. Those conditions can result in this error:
+
+```plaintext
+curl 18 transfer closed with outstanding read data remaining & fetch-pack:
+unexpected disconnect while reading sideband packet
+```
+
+To resolve this issue...
+````
 
 ## Rails console write functions
 

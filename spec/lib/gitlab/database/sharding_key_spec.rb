@@ -29,7 +29,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       *['boards.project_id', 'boards.group_id'],
       *['bulk_import_exports.project_id', 'bulk_import_exports.group_id'],
       'ci_pipeline_schedules.project_id',
-      'ci_runner_namespaces.namespace_id',
       'ci_sources_pipelines.project_id',
       'ci_triggers.project_id',
       'gpg_signatures.project_id',

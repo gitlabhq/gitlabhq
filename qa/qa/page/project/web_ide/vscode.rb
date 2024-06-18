@@ -124,9 +124,7 @@ module QA
           end
 
           def has_message?(content)
-            within_vscode_editor do
-              has_text?(content)
-            end
+            within_vscode_editor { has_text?(content) }
           end
 
           def close_ide_tab
@@ -253,9 +251,14 @@ module QA
               # VSCode eagerly removes the input[type='file'] from click on Upload.
               # We need to execute a script on the iframe to stub out the iframes body.removeChild to add it back in.
               page.execute_script("document.body.removeChild = function(){};")
-              right_click_file_explorer
-              click_upload_menu_item
-              enter_file_input(file_path)
+
+              # under some conditions the page may not be fully loaded and the right click
+              # context menu can get closed prior to hitting 'upload' leading to failures
+              Support::Retrier.retry_until(retry_on_exception: true, message: "Uploading a file in vscode") do
+                right_click_file_explorer
+                click_upload_menu_item
+                enter_file_input(file_path)
+              end
             end
           end
 

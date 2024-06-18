@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import htmlSnippetsShow from 'test_fixtures/snippets/show.html';
-import Cookies from '~/lib/utils/cookies';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
@@ -373,7 +372,7 @@ describe('AwardsHandler', () => {
   describe('frequently used emojis', () => {
     beforeEach(() => {
       // Clear it out
-      Cookies.set('frequently_used_emojis', '');
+      localStorage.setItem('frequently_used_emojis', '');
     });
 
     it('shouldn\'t have any "Frequently used" heading if no frequently used emojis', async () => {
@@ -408,7 +407,7 @@ describe('AwardsHandler', () => {
     });
 
     it('should disregard invalid frequently used emoji already set in cookie', () => {
-      Cookies.set('frequently_used_emojis', '8ball,invalid_emoji,grinning');
+      localStorage.setItem('frequently_used_emojis', '8ball,invalid_emoji,grinning');
 
       expect(awardsHandler.getFrequentlyUsedEmojis()).toEqual(['8ball', 'grinning']);
     });

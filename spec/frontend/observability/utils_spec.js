@@ -1,4 +1,10 @@
-import { periodToDate, dateFilterObjToQuery, queryToDateFilterObj } from '~/observability/utils';
+import {
+  periodToDate,
+  dateFilterObjToQuery,
+  queryToDateFilterObj,
+  addTimeToDate,
+  formattedTimeFromDate,
+} from '~/observability/utils';
 import {
   CUSTOM_DATE_RANGE_OPTION,
   DATE_RANGE_QUERY_KEY,
@@ -121,5 +127,57 @@ describe('dateFilterObjToQuery', () => {
 
   it('returns empty object if filter undefined', () => {
     expect(dateFilterObjToQuery()).toEqual({});
+  });
+});
+
+describe('formattedTimeFromDate', () => {
+  it('should return an empty string when given an invalid date', () => {
+    expect(formattedTimeFromDate(null)).toBe('');
+    expect(formattedTimeFromDate(undefined)).toBe('');
+    expect(formattedTimeFromDate('invalid')).toBe('');
+  });
+
+  it('should return the time in the format "HH:mm:ss"', () => {
+    const date = new Date('2023-04-20T12:00:56.789Z');
+    expect(formattedTimeFromDate(date)).toBe('12:00:56');
+  });
+
+  it('should pad single-digit hours, minutes, and seconds with a leading zero', () => {
+    const date = new Date('2023-04-20T07:08:09.012Z');
+    expect(formattedTimeFromDate(date)).toBe('07:08:09');
+  });
+});
+
+describe('addTimeToDate', () => {
+  it('should add the time to the date', () => {
+    const origDate = new Date('2023-04-01T00:00:00.000Z');
+    const timeString = '12:34:56';
+    const result = addTimeToDate(timeString, origDate);
+    expect(result).toEqual(new Date('2023-04-01T12:34:56.000Z'));
+  });
+
+  it('should handle missing seconds', () => {
+    const origDate = new Date('2023-04-01T00:00:00.000Z');
+    const timeString = '12:34';
+    const result = addTimeToDate(timeString, origDate);
+    expect(result).toEqual(new Date('2023-04-01T12:34:00.000Z'));
+  });
+
+  it('should gracefully handle missing minutes and seconds', () => {
+    const origDate = new Date('2023-04-01T00:00:00.000Z');
+    const timeString = '12';
+    expect(addTimeToDate(timeString, origDate)).toEqual(origDate);
+  });
+
+  it('should gracefully handle invalid time strings', () => {
+    const origDate = new Date('2023-04-01T00:00:00.000Z');
+    const timeString = 'invalid';
+    expect(addTimeToDate(timeString, origDate)).toEqual(origDate);
+  });
+
+  it('should gracefully handle empty time strings', () => {
+    const origDate = new Date('2023-04-01T00:00:00.000Z');
+    const timeString = '';
+    expect(addTimeToDate(timeString, origDate)).toEqual(origDate);
   });
 });

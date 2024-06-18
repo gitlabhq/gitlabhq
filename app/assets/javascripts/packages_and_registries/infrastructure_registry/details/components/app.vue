@@ -42,6 +42,7 @@ export default {
     PackageHistory,
     TerraformInstallation,
     PackageFiles,
+    Markdown: () => import('~/vue_shared/components/markdown/markdown_content.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -69,6 +70,9 @@ export default {
     ]),
     isValidPackage() {
       return Boolean(this.packageEntity.name);
+    },
+    readme() {
+      return this.packageEntity.terraform_module_metadatum?.fields?.root?.readme;
     },
     tracking() {
       return {
@@ -206,6 +210,10 @@ export default {
         <p v-else class="gl-mt-3" data-testid="no-versions-message">
           {{ s__('PackageRegistry|There are no other versions of this package.') }}
         </p>
+      </gl-tab>
+
+      <gl-tab v-if="readme" :title="s__('PackageRegistry|Readme')" lazy>
+        <markdown :value="readme" />
       </gl-tab>
     </gl-tabs>
 

@@ -184,6 +184,13 @@ Audit event types belong to the following product categories.
 | [`update_compliance_framework`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74292) | Triggered when a compliance framework is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/340649) | Group |
 | [`update_status_check`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84624) | Event triggered when an external status check is updated| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) | Project |
 
+### Container registry
+
+| Name | Description | Saved to database | Streamed | Introduced in | Scope |
+|:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`container_repository_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | Triggered when a project's container registry is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
+| [`container_repository_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | Triggered when a project's container repository is marked for deletion| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
+
 ### Continuous delivery
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |

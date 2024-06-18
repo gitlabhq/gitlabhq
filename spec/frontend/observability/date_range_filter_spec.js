@@ -1,7 +1,7 @@
-import { GlDaterangePicker } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DateRangesDropdown from '~/analytics/shared/components/date_ranges_dropdown.vue';
 import DateRangeFilter from '~/observability/components/date_range_filter.vue';
+import DatetimeRangePicker from '~/observability/components/datetime_range_picker.vue';
 import { useFakeDate } from 'helpers/fake_date';
 
 describe('DateRangeFilter', () => {
@@ -29,7 +29,7 @@ describe('DateRangeFilter', () => {
   });
 
   const findDateRangesDropdown = () => wrapper.findComponent(DateRangesDropdown);
-  const findDateRangesPicker = () => wrapper.findComponent(GlDaterangePicker);
+  const findDatetimeRangesPicker = () => wrapper.findComponent(DatetimeRangePicker);
 
   it('renders the date ranges dropdown with the default selected value and options', () => {
     const dateRangesDropdown = findDateRangesDropdown();
@@ -131,9 +131,9 @@ describe('DateRangeFilter', () => {
       selected: { value: 'custom', startDate: timeRange.startDate, endDate: timeRange.endDate },
     });
 
-    expect(findDateRangesPicker().exists()).toBe(true);
-    expect(findDateRangesPicker().props('defaultStartDate')).toBe(timeRange.startDate);
-    expect(findDateRangesPicker().props('defaultEndDate')).toBe(timeRange.endDate);
+    expect(findDatetimeRangesPicker().exists()).toBe(true);
+    expect(findDatetimeRangesPicker().props('defaultStartDate')).toBe(timeRange.startDate);
+    expect(findDatetimeRangesPicker().props('defaultEndDate')).toBe(timeRange.endDate);
   });
 
   it('emits the onDateRangeSelected event when the time range is selected', async () => {
@@ -154,10 +154,10 @@ describe('DateRangeFilter', () => {
     };
     await findDateRangesDropdown().vm.$emit('customDateRangeSelected');
 
-    expect(findDateRangesPicker().props('startOpened')).toBe(true);
+    expect(findDatetimeRangesPicker().props('startOpened')).toBe(true);
     expect(wrapper.emitted('onDateRangeSelected')).toBeUndefined();
 
-    await findDateRangesPicker().vm.$emit('input', timeRange);
+    await findDatetimeRangesPicker().vm.$emit('input', timeRange);
 
     expect(wrapper.emitted('onDateRangeSelected')).toEqual([
       [
@@ -173,7 +173,7 @@ describe('DateRangeFilter', () => {
     it('sets startOpened to true if custom date is selected without start and end date', () => {
       mount({ selected: { value: 'custom' } });
 
-      expect(findDateRangesPicker().props('startOpened')).toBe(true);
+      expect(findDatetimeRangesPicker().props('startOpened')).toBe(true);
     });
 
     it('sets startOpened to false if custom date is selected with start and end date', () => {
@@ -185,20 +185,20 @@ describe('DateRangeFilter', () => {
         },
       });
 
-      expect(findDateRangesPicker().props('startOpened')).toBe(false);
+      expect(findDatetimeRangesPicker().props('startOpened')).toBe(false);
     });
 
     it('sets startOpend to true if customDateRangeSelected is emitted', async () => {
       await findDateRangesDropdown().vm.$emit('customDateRangeSelected');
 
-      expect(findDateRangesPicker().props('startOpened')).toBe(true);
+      expect(findDatetimeRangesPicker().props('startOpened')).toBe(true);
     });
   });
 
   it('sets the max-date to tomorrow', async () => {
     await findDateRangesDropdown().vm.$emit('customDateRangeSelected');
 
-    expect(findDateRangesPicker().props('defaultMaxDate').toISOString()).toBe(
+    expect(findDatetimeRangesPicker().props('defaultMaxDate').toISOString()).toBe(
       '2024-04-24T00:00:00.000Z',
     );
   });
@@ -212,6 +212,6 @@ describe('DateRangeFilter', () => {
       maxDateRange: 7,
     });
 
-    expect(findDateRangesPicker().props('maxDateRange')).toBe(7);
+    expect(findDatetimeRangesPicker().props('maxDateRange')).toBe(7);
   });
 });

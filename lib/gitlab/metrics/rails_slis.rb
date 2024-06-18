@@ -6,10 +6,12 @@ module Gitlab
       class << self
         def initialize_request_slis!
           request_labels = possible_request_labels
-
           Gitlab::Metrics::Sli::Apdex.initialize_sli(:rails_request, request_labels)
           Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:rails_request, request_labels)
-          Gitlab::Metrics::Sli::Apdex.initialize_sli(:graphql_query, possible_graphql_query_labels)
+
+          graphql_query_labels = possible_graphql_query_labels
+          Gitlab::Metrics::Sli::Apdex.initialize_sli(:graphql_query, graphql_query_labels)
+          Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:graphql_query, graphql_query_labels)
         end
 
         def request_apdex
@@ -22,6 +24,10 @@ module Gitlab
 
         def graphql_query_apdex
           Gitlab::Metrics::Sli::Apdex[:graphql_query]
+        end
+
+        def graphql_query_error_rate
+          Gitlab::Metrics::Sli::ErrorRate[:graphql_query]
         end
 
         private

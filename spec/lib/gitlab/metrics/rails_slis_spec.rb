@@ -50,9 +50,15 @@ RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
     end
 
     it "initializes the SLI for all possible endpoints if they weren't", :aggregate_failures do
-      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:rails_request, array_including(*possible_request_labels)).and_call_original
-      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli).with(:graphql_query, array_including(*possible_graphql_labels)).and_call_original
-      expect(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli).with(:rails_request, array_including(*possible_request_labels)).and_call_original
+      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli)
+        .with(:rails_request, array_including(*possible_request_labels)).and_call_original
+      expect(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli)
+        .with(:rails_request, array_including(*possible_request_labels)).and_call_original
+
+      expect(Gitlab::Metrics::Sli::Apdex).to receive(:initialize_sli)
+        .with(:graphql_query, array_including(*possible_graphql_labels)).and_call_original
+      expect(Gitlab::Metrics::Sli::ErrorRate).to receive(:initialize_sli)
+        .with(:graphql_query, array_including(*possible_graphql_labels)).and_call_original
 
       described_class.initialize_request_slis!
     end
@@ -125,6 +131,14 @@ RSpec.describe Gitlab::Metrics::RailsSlis, feature_category: :error_budgets do
       described_class.initialize_request_slis!
 
       expect(described_class.graphql_query_apdex).to be_initialized
+    end
+  end
+
+  describe '.graphql_query_error_rate' do
+    it 'returns the initialized request apdex SLI object' do
+      described_class.initialize_request_slis!
+
+      expect(described_class.graphql_query_error_rate).to be_initialized
     end
   end
 end

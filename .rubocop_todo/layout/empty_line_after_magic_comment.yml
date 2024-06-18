@@ -475,7 +475,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/lib/gitlab/graphql/markdown_field_spec.rb'
     - 'spec/lib/gitlab/graphql/mount_mutation_spec.rb'
     - 'spec/lib/gitlab/graphql/present/field_extension_spec.rb'
-    - 'spec/lib/gitlab/graphql/tracers/logger_tracer_spec.rb'
     - 'spec/lib/gitlab/health_checks/redis_spec.rb'
     - 'spec/lib/gitlab/import/set_async_jid_spec.rb'
     - 'spec/lib/gitlab/jwt_token_spec.rb'

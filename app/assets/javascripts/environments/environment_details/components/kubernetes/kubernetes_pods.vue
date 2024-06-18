@@ -7,6 +7,7 @@ import {
   STATUS_SUCCEEDED,
   STATUS_FAILED,
   STATUS_LABELS,
+  PODS_TABLE_FIELDS,
 } from '~/kubernetes_dashboard/constants';
 import { getAge } from '~/kubernetes_dashboard/helpers/k8s_integration_helper';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
@@ -43,6 +44,7 @@ export default {
               kind: s__('KubernetesDashboard|Pod'),
               spec: pod.spec,
               fullStatus: pod.status,
+              containers: pod.spec.containers,
             };
           }) || []
         );
@@ -131,6 +133,7 @@ export default {
     podsTitle: s__('Environment|Pods'),
   },
   PAGE_SIZE: 10,
+  PODS_TABLE_FIELDS,
 };
 </script>
 <template>
@@ -148,6 +151,7 @@ export default {
         v-if="k8sPods"
         :items="filteredPods"
         :page-size="$options.PAGE_SIZE"
+        :fields="$options.PODS_TABLE_FIELDS"
         class="gl-mt-8"
         @select-item="onItemSelect"
         @remove-selection="onRemoveSelection"
