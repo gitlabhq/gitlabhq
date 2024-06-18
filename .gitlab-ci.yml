@@ -10,6 +10,7 @@ stages:
   - review
   - qa
   - post-qa
+  - pre-merge
   - pages
   - notify
   - release-environments
