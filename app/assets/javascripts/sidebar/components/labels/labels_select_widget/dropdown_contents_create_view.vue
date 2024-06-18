@@ -1,6 +1,6 @@
 <script>
 import { get } from 'lodash';
-import { GlAlert, GlTooltipDirective, GlButton, GlFormInput, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlTooltipDirective, GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import produce from 'immer';
 import { createAlert } from '~/alert';
 import { WORKSPACE_GROUP } from '~/issues/constants';
@@ -15,8 +15,8 @@ export default {
   components: {
     GlAlert,
     GlButton,
+    GlFormGroup,
     GlFormInput,
-    GlLoadingIcon,
     SidebarColorPicker,
   },
   directives: {
@@ -135,42 +135,42 @@ export default {
 </script>
 
 <template>
-  <div class="labels-select-contents-create js-labels-create">
-    <div class="dropdown-input">
-      <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mt-3">
-        {{ error }}
-      </gl-alert>
+  <div class="gl-px-4">
+    <gl-alert v-if="error" variant="danger" :dismissible="false" class="gl-mt-3">
+      {{ error }}
+    </gl-alert>
+    <gl-form-group
+      class="gl-my-3"
+      :label="__('Name new label')"
+      label-for="label-title-input"
+      label-sr-only
+    >
       <gl-form-input
+        id="label-title-input"
         v-model.trim="labelTitle"
-        class="gl-mt-3"
+        autofocus
         :placeholder="__('Name new label')"
-        :autofocus="true"
-        data-testid="label-title-input"
       />
-    </div>
-    <sidebar-color-picker
-      v-model.trim="selectedColor"
-      :suggested-colors="suggestedColors"
-      class="gl-px-4 gl-py-2"
-    />
-    <div class="dropdown-actions gl-display-flex gl-justify-content-space-between gl-pt-3 gl-px-3">
-      <gl-button
-        :disabled="disableCreate"
-        category="primary"
-        variant="confirm"
-        class="gl-display-flex gl-align-items-center"
-        data-testid="create-button"
-        @click="createLabel"
-      >
-        <gl-loading-icon v-if="labelCreateInProgress" size="sm" :inline="true" class="mr-1" />
-        {{ __('Create') }}
-      </gl-button>
+    </gl-form-group>
+    <sidebar-color-picker v-model.trim="selectedColor" :suggested-colors="suggestedColors" />
+    <div class="gl-flex gl-justify-end gl-gap-3 gl-mt-2">
       <gl-button
         class="js-btn-cancel-create"
+        size="small"
         data-testid="cancel-button"
         @click.stop="$emit('hideCreateView')"
       >
         {{ __('Cancel') }}
+      </gl-button>
+      <gl-button
+        :disabled="disableCreate"
+        :loading="labelCreateInProgress"
+        size="small"
+        variant="confirm"
+        data-testid="create-button"
+        @click="createLabel"
+      >
+        {{ __('Create') }}
       </gl-button>
     </div>
   </div>

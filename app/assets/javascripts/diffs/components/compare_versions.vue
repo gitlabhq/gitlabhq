@@ -138,7 +138,7 @@ export default {
         v-if="hasChanges"
         v-gl-tooltip.html="toggleFileBrowserTooltip"
         variant="default"
-        icon="file-tree"
+        icon="sidebar"
         class="gl-mr-3 js-toggle-tree-list btn-icon"
         data-testid="file-tree-button"
         :aria-label="toggleFileBrowserTitle"

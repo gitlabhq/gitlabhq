@@ -1629,12 +1629,6 @@
       changes: *code-patterns
     - <<: *if-merge-request-and-specific-devops-stage
       changes: *code-patterns
-    - <<: *if-force-ci
-      when: manual
-      allow_failure: true
-      # We used to have a rule at the end here that would catch any remaining code MRs and allow the job to be run
-      # manually. That rule is now in ".qa:rules:code-merge-request-manual" so it can be included when needed and we can
-      # still use ".qa:rules:package-and-test-common" in jobs we don't want to be manual.
 
 # Like .qa:rules:package-and-test-common but not allowed to fail.
 # It's named `e2e` instead of `package-and-test` because it's used for e2e tests on GDK (and could be used
@@ -1705,7 +1699,6 @@
   rules:
     - !reference [".qa:rules:package-and-test-common", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
-    - !reference [".qa:rules:code-merge-request-manual", rules]
 
 .qa:rules:package-and-test-ce:
   rules:
@@ -1770,7 +1763,9 @@
 # These provide a manual way to trigger follow-up:e2e:package-and-test-ee
 # It is fine if they're overlapping with the automatic ones.
 # It'll not hurt and it can simplify the rules, decoupling them.
-# If any changes are made to this rule, `.qa:rules:follow-up-e2e` should also be updated.
+# If any changes are made to this rule, the following should also be updated:
+# 1) .qa:rules:follow-up-e2e
+# 2) .qa:rules:post-run-e2e-message
 .qa:rules:manual-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
@@ -1779,7 +1774,8 @@
     - !reference [".qa:rules:code-merge-request-manual", rules]
 
 # These are based on `.qa:rules:manual-e2e` but with manual jobs changed to automatic.
-# If any changes are made to this rule, `.qa:rules:manual-e2e` should also be updated.
+# If any changes are made to this rule, the following should also be updated:
+# 1) .qa:rules:manual-e2e
 .qa:rules:follow-up-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
@@ -1824,11 +1820,10 @@
       when: never
     - <<: *if-merge-request-and-specific-devops-stage
       when: never
-    - <<: *if-force-ci
-      when: never
     # From .qa:rules:package-and-test-schedule
     - <<: *if-dot-com-gitlab-org-schedule
       when: never
+    # From .qa:rules:manual-e2e
     - !reference [".qa:rules:code-merge-request-allowed-to-fail", rules]
 
 .qa:rules:fulfillment-e2e-quarantine-report:

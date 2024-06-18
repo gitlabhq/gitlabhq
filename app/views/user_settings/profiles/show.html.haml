@@ -110,9 +110,7 @@
         = f.label :twitter, _('X (formerly Twitter)')
         = f.text_field :twitter, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|@username")
       .form-group.gl-form-group
-        - external_accounts_help_url = help_page_path('user/profile/index', anchor: 'add-external-accounts-to-your-user-profile-page')
-        - external_accounts_link = link_to '', external_accounts_help_url, target: "_blank", rel: "noopener noreferrer"
-        - external_accounts_docs_link = safe_format(s_('Profiles|Your Discord user ID. %{external_accounts_link_start}Learn more%{external_accounts_link_end}.'), tag_pair(external_accounts_link, :external_accounts_link_start, :external_accounts_link_end))
+        - external_accounts_docs_link = safe_format(s_('Profiles|Your Discord user ID.'))
         - min_discord_length = 17
         - max_discord_length = 20
         = f.label :discord

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import PagesEdit from './components/pages_edit.vue';
+import PagesEdit from './components/edit.vue';
 
 Vue.use(VueApollo);
 
@@ -20,12 +20,11 @@ export default function initPages() {
     el,
     name: 'GitlabPagesEditRoot',
     apolloProvider,
+    provide: {
+      projectFullPath: el.dataset.fullPath,
+    },
     render(createElement) {
-      return createElement(PagesEdit, {
-        props: {
-          ...el.dataset,
-        },
-      });
+      return createElement(PagesEdit, {});
     },
   });
 }

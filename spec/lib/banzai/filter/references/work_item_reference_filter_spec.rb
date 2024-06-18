@@ -183,6 +183,7 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
       link = doc.css('a').first
 
       expect(link.attr('data-project-path')).to eq cross_project.full_path
+      expect(link.attr('data-namespace-path')).to eq cross_project.full_path
       expect(link.attr('data-iid')).to eq work_item.iid.to_s
     end
   end
@@ -242,6 +243,7 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
       link = doc.css('a').first
 
       expect(link.attr('data-project-path')).to eq cross_project.full_path
+      expect(link.attr('data-namespace-path')).to eq cross_project.full_path
       expect(link.attr('data-iid')).to eq work_item.iid.to_s
     end
   end
@@ -252,6 +254,14 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
 
     context 'when work item exists at the group level' do
       let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
+
+      it 'includes data attributes for issuable popover' do
+        doc = reference_filter("See #{work_item_url}", context)
+        link = doc.css('a').first
+
+        expect(link.attr('data-namespace-path')).to eq(group.full_path)
+        expect(link.attr('data-iid')).to eq(work_item.iid.to_s)
+      end
 
       it 'links to a valid group level work item by URL' do
         doc = reference_filter("See #{work_item_url}", context)

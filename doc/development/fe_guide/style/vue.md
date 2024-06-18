@@ -358,6 +358,16 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
    <my-component />
    ```
 
+## `<style>` tags
+
+We don't use `<style>` tags in Vue components for a few reasons:
+
+1. You cannot use SCSS variables and mixins or [Tailwind CSS](scss.md#tailwind-css) `@apply` directive.
+1. These styles get inserted at runtime.
+1. We already have a few other ways to define CSS.
+
+Instead of using a `<style>` tag you should use [Tailwind CSS utility classes](scss.md#tailwind-css) or [page specific CSS](https://gitlab.com/groups/gitlab-org/-/epics/3694).
+
 ## Ordering
 
 1. Tag order in `.vue` file
@@ -371,7 +381,7 @@ Check the [rules](https://github.com/vuejs/eslint-plugin-vue#bulb-rules) for mor
      // ...
    </template>
 
-   // We don't use scoped styles but there are few instances of this
+   // We don't use `<style>` tags but there are few instances of this
    <style>
      // ...
    </style>

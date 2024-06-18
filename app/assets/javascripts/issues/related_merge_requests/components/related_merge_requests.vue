@@ -1,12 +1,56 @@
 <script>
+import produce from 'immer';
 import { GlLink, GlLoadingIcon, GlIcon } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapState, mapActions } from 'vuex';
+import { createAlert } from '~/alert';
 import { sprintf, __, n__ } from '~/locale';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import relatedMergeRequestsQuery from '../queries/related_merge_requests.query.graphql';
 
 export default {
   name: 'RelatedMergeRequests',
+  apollo: {
+    mergeRequests: {
+      query: relatedMergeRequestsQuery,
+      variables() {
+        return {
+          projectPath: this.projectPath,
+          iid: this.iid,
+        };
+      },
+      update: (d) => d?.project?.issue?.relatedMergeRequests?.nodes,
+      result({ data }) {
+        const pageInfo = data?.project?.issue?.relatedMergeRequests?.pageInfo;
+
+        this.totalCount = data?.project?.issue?.relatedMergeRequests?.count;
+
+        if (pageInfo?.hasNextPage) {
+          this.$apollo.queries.mergeRequests.fetchMore({
+            variables: {
+              projectPath: this.projectPath,
+              iid: this.iid,
+              after: pageInfo.endCursor,
+            },
+            updateQuery: (previousResult, { fetchMoreResult }) => {
+              const newMergeRequests = fetchMoreResult.project.issue.relatedMergeRequests.nodes;
+              const prevMergeRequests = previousResult.project.issue.relatedMergeRequests.nodes;
+
+              return produce(fetchMoreResult, (draftData) => {
+                draftData.project.issue.relatedMergeRequests.nodes = prevMergeRequests.concat(
+                  newMergeRequests,
+                );
+              });
+            },
+          });
+        }
+      },
+      error() {
+        createAlert({
+          message: __('Something went wrong while fetching related merge requests.'),
+        });
+      },
+    },
+  },
   components: {
     GlIcon,
     GlLink,
@@ -14,26 +58,30 @@ export default {
     RelatedIssuableItem,
   },
   props: {
-    endpoint: {
-      type: String,
-      required: true,
-    },
     hasClosingMergeRequest: {
       type: Boolean,
       required: false,
       default: false,
     },
-    projectNamespace: {
-      type: String,
-      required: true,
-    },
     projectPath: {
       type: String,
       required: true,
     },
+    iid: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      mergeRequests: null,
+      totalCount: null,
+    };
   },
   computed: {
-    ...mapState(['isFetchingMergeRequests', 'mergeRequests', 'totalCount']),
+    isFetchingMergeRequests() {
+      return this.$apollo.queries.mergeRequests.loading;
+    },
     closingMergeRequestsText() {
       if (!this.hasClosingMergeRequest) {
         return '';
@@ -48,18 +96,9 @@ export default {
       return sprintf(__('%{mrText}, this issue will be closed automatically.'), { mrText });
     },
   },
-  mounted() {
-    this.setInitialState({ apiEndpoint: this.endpoint });
-    this.fetchMergeRequests();
-  },
   methods: {
-    ...mapActions(['setInitialState', 'fetchMergeRequests']),
-    getAssignees(mr) {
-      if (mr.assignees) {
-        return mr.assignees;
-      }
-
-      return mr.assignee ? [mr.assignee] : [];
+    idKey(mergeRequest) {
+      return getIdFromGraphQLId(mergeRequest.id);
     },
   },
 };
@@ -107,19 +146,18 @@ export default {
               class="list-item gl-m-0! gl-p-0! gl-border-b-0!"
             >
               <related-issuable-item
-                :id-key="mr.id"
+                :id-key="idKey(mr)"
                 :display-reference="mr.reference"
                 :title="mr.title"
                 :milestone="mr.milestone"
-                :assignees="getAssignees(mr)"
-                :created-at="mr.created_at"
-                :closed-at="mr.closed_at"
-                :merged-at="mr.merged_at"
-                :path="mr.web_url"
+                :assignees="mr.assignees.nodes"
+                :created-at="mr.createdAt"
+                :merged-at="mr.mergedAt"
+                :path="mr.webUrl"
                 :state="mr.state"
-                :is-merge-request="true"
-                :pipeline-status="mr.head_pipeline && mr.head_pipeline.detailed_status"
+                :pipeline-status="mr.headPipeline && mr.headPipeline.detailedStatus"
                 path-id-separator="!"
+                is-merge-request
                 class="-gl-mx-2"
               />
             </li>

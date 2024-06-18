@@ -1,7 +1,8 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import RelatedMergeRequests from './components/related_merge_requests.vue';
-import createStore from './store';
 
 export function initRelatedMergeRequests() {
   const el = document.querySelector('#js-related-merge-requests');
@@ -9,20 +10,23 @@ export function initRelatedMergeRequests() {
   if (!el) {
     return undefined;
   }
+  Vue.use(VueApollo);
 
-  const { endpoint, hasClosingMergeRequest, projectPath, projectNamespace } = el.dataset;
+  const { hasClosingMergeRequest, projectPath, iid } = el.dataset;
+  const apolloProvider = new VueApollo({
+    defaultClient: createDefaultClient(),
+  });
 
   return new Vue({
+    apolloProvider,
     el,
     name: 'RelatedMergeRequestsRoot',
-    store: createStore(),
     render: (createElement) =>
       createElement(RelatedMergeRequests, {
         props: {
-          endpoint,
           hasClosingMergeRequest: parseBoolean(hasClosingMergeRequest),
-          projectNamespace,
           projectPath,
+          iid,
         },
       }),
   });

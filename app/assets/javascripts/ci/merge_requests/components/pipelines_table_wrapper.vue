@@ -1,11 +1,17 @@
 <script>
 import { GlButton, GlEmptyState, GlLoadingIcon, GlModal, GlLink, GlSprintf } from '@gitlab/ui';
+import { createAlert } from '~/alert';
+import Api from '~/api';
 import { getQueryHeaders } from '~/ci/pipeline_details/graph/utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import eventHub from '~/ci/event_hub';
 import PipelinesTableComponent from '~/ci/common/pipelines_table.vue';
 import { s__, __ } from '~/locale';
 import getMergeRequestPipelines from '~/ci/merge_requests/graphql/queries/get_merge_request_pipelines.query.graphql';
+import cancelPipelineMutation from '~/ci/pipeline_details/graphql/mutations/cancel_pipeline.mutation.graphql';
+import retryPipelineMutation from '~/ci/pipeline_details/graphql/mutations/retry_pipeline.mutation.graphql';
+import { TYPENAME_CI_PIPELINE } from '~/graphql_shared/constants';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import { formatPipelinesGraphQLDataToREST } from '../utils';
 
 export default {
@@ -47,6 +53,8 @@ export default {
   data() {
     return {
       hasError: false,
+      isInitialLoading: true,
+      isRunningMergeRequestPipeline: false,
       page: 1,
       pageInfo: {},
       pipelines: [],
@@ -72,6 +80,7 @@ export default {
         return formatPipelinesGraphQLDataToREST(data?.project) || [];
       },
       result({ data }) {
+        this.isInitialLoading = false;
         this.pageInfo = data?.project?.mergeRequest?.pipelines?.pageInfo || {};
       },
       error() {
@@ -84,7 +93,7 @@ export default {
       return this.pipelines.length > 0;
     },
     isLoading() {
-      return this.$apollo.queries.pipelines.loading;
+      return this.isInitialLoading && this.$apollo.queries.pipelines.loading;
     },
     latestPipeline() {
       return this.pipelines[0];
@@ -114,9 +123,6 @@ export default {
     isLatestPipelineCreatedInTargetProject() {
       return this.latestPipeline?.project?.full_path === `/${this.targetProjectFullPath}`;
     },
-    isRunningMergeRequestPipeline() {
-      return false;
-    },
     shouldShowSecurityWarning() {
       return (
         this.canCreatePipelineInTargetProject &&
@@ -139,6 +145,28 @@ export default {
     },
   },
   methods: {
+    cancelPipeline(pipeline) {
+      this.executePipelineAction(pipeline, cancelPipelineMutation);
+    },
+    retryPipeline(pipeline) {
+      this.executePipelineAction(pipeline, retryPipelineMutation);
+    },
+    async executePipelineAction(pipeline, mutation) {
+      try {
+        await this.$apollo.mutate({
+          mutation,
+          variables: {
+            id: convertToGraphQLId(TYPENAME_CI_PIPELINE, pipeline.id),
+          },
+        });
+        this.refreshPipelineTable();
+      } catch {
+        createAlert({ message: __('An error occurred while performing this action.') });
+      }
+    },
+    refreshPipelineTable() {
+      this.$apollo.queries.pipelines.refetch();
+    },
     /**
      * When the user clicks on the "Run pipeline" button
      * we need to make a post request and
@@ -150,11 +178,34 @@ export default {
      *
      */
 
-    onClickRunPipeline() {
-      eventHub.$emit('runMergeRequestPipeline', {
-        projectId: this.projectId,
-        mergeRequestId: this.mergeRequestId,
-      });
+    async onClickRunPipeline() {
+      try {
+        this.isRunningMergeRequestPipeline = true;
+
+        await Api.postMergeRequestPipeline(this.projectId, {
+          mergeRequestId: this.mergeRequestId,
+        });
+        this.$toast.show(s__('Pipeline|Creating pipeline.'));
+      } catch (e) {
+        const unauthorized = e.response.status === HTTP_STATUS_UNAUTHORIZED;
+        let errorMessage = __(
+          'An error occurred while trying to run a new pipeline for this merge request.',
+        );
+
+        if (unauthorized) {
+          errorMessage = __('You do not have permission to run a pipeline on this branch.');
+        }
+
+        createAlert({
+          message: errorMessage,
+          primaryButton: {
+            text: __('Learn more'),
+            link: helpPagePath('ci/pipelines/merge_request_pipelines.md'),
+          },
+        });
+      }
+
+      this.isRunningMergeRequestPipeline = false;
     },
     tryRunPipeline() {
       if (!this.shouldShowSecurityWarning) {
@@ -281,6 +332,9 @@ export default {
         :pipelines="pipelines"
         :update-graph-dropdown="updateGraphDropdown"
         :source-project-full-path="sourceProjectFullPath"
+        @cancel-pipeline="cancelPipeline"
+        @retry-pipeline="retryPipeline"
+        @refresh-pipelines-table="refreshPipelineTable"
       >
         <template #table-header-actions>
           <div v-if="canRenderPipelineButton" class="gl-text-right">

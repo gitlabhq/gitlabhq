@@ -1,0 +1,42 @@
+#import "~/graphql_shared/fragments/ci_icon.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/graphql_shared/fragments/milestone.fragment.graphql"
+
+query fetchRelatedMergeRequests($projectPath: ID!, $iid: String!, $after: String = "") {
+  project(fullPath: $projectPath) {
+    id
+    issue(iid: $iid) {
+      id
+      relatedMergeRequests(after: $after) {
+        count
+        pageInfo {
+          ...PageInfo
+        }
+        nodes {
+          id
+          reference
+          state
+          title
+          createdAt
+          mergedAt
+          webUrl
+          milestone {
+            ...MilestoneFragment
+          }
+          assignees {
+            nodes {
+              ...User
+            }
+          }
+          headPipeline {
+            id
+            detailedStatus {
+              ...CiIcon
+            }
+          }
+        }
+      }
+    }
+  }
+}

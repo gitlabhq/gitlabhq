@@ -10,8 +10,8 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
     IssuesHelper
   end
 
-  let(:project) { create(:project, :public) }
-  let(:issue) { create(:issue, project: project) }
+  let_it_be(:project) { create(:project, :public) }
+  let_it_be_with_reload(:issue) { create(:issue, project: project) }
   let(:issue_path) { "/#{issue.project.namespace.path}/#{issue.project.path}/-/issues/#{issue.iid}" }
   let(:issue_url) { "http://#{Gitlab.config.gitlab.host}#{issue_path}" }
 
@@ -100,6 +100,14 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
 
       expect(link).to have_attribute('data-project')
       expect(link.attr('data-project')).to eq project.id.to_s
+    end
+
+    it 'includes a data-namespace-path attribute' do
+      doc = reference_filter("Issue #{written_reference}")
+      link = doc.css('a').first
+
+      expect(link).to have_attribute('data-namespace-path')
+      expect(link.attr('data-namespace-path')).to eq(project.full_path)
     end
 
     it 'includes a data-issue attribute' do

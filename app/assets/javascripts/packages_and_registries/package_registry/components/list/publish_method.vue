@@ -42,7 +42,7 @@ export default {
       <gl-link
         data-testid="pipeline-sha"
         :href="pipeline.commitPath"
-        class="gl-mr-2 gl-text-decoration-underline"
+        class="gl-mr-2 gl-underline"
         >{{ packageShaShort }}</gl-link
       >
 

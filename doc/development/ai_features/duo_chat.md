@@ -615,7 +615,7 @@ flow of how we construct a Chat prompt:
 GitLab Duo Chat has error codes with specified meanings to assist in debugging.
 Currently, they are only logged, but in the future, they will be displayed on the UI.
 
-When developing for GitLab Duo Chat, please include these error codes when returning an error, especially a user-facing error.
+When developing for GitLab Duo Chat, please include these error codes when returning an error and [document them](../../user/gitlab_duo_chat/troubleshooting.md), especially for user-facing errors.
 
 ### Error Code Format
 

@@ -96,7 +96,7 @@ describe('Job Log Line', () => {
     it('renders a link with corresponding styles', () => {
       createComponent(mockProps({ text: httpsUrl }));
 
-      expect(findLink().classes()).toEqual(['!gl-text-inherit', 'gl-text-decoration-underline']);
+      expect(findLink().classes()).toEqual(['!gl-text-inherit', 'gl-underline']);
     });
 
     it('renders links with queries, surrounded by questions marks', () => {

@@ -207,11 +207,9 @@ export default {
           id="peek-view-trace"
           class="view"
         >
-          <gl-link
-            class="gl-text-decoration-underline"
-            :href="currentRequest.details.tracing.tracing_url"
-            >{{ s__('PerformanceBar|Trace') }}</gl-link
-          >
+          <gl-link class="gl-underline" :href="currentRequest.details.tracing.tracing_url">{{
+            s__('PerformanceBar|Trace')
+          }}</gl-link>
         </div>
         <div v-if="showFlamegraphButtons" id="peek-flamegraph" class="view">
           <gl-link

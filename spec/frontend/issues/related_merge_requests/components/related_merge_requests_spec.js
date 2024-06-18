@@ -1,65 +1,121 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
-import MockAdapter from 'axios-mock-adapter';
-import mockData from 'test_fixtures/issues/related_merge_requests.json';
-import axios from '~/lib/utils/axios_utils';
-import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import RelatedMergeRequests from '~/issues/related_merge_requests/components/related_merge_requests.vue';
-import createStore from '~/issues/related_merge_requests/store/index';
+import relatedMergeRequestsQuery from '~/issues/related_merge_requests/queries/related_merge_requests.query.graphql';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
 
-const API_ENDPOINT = '/api/v4/projects/2/issues/33/related_merge_requests';
+Vue.use(VueApollo);
+
+const mockData = {
+  data: {
+    project: {
+      id: 1,
+      issue: {
+        id: 1,
+        relatedMergeRequests: {
+          count: 2,
+          pageInfo: {
+            hasNextPage: false,
+            hasPreviousPage: false,
+            startCursor: 'eyJpZCI6IjEwNjEwIn0',
+            endCursor: 'eyJpZCI6IjM0In0',
+            __typename: 'PageInfo',
+          },
+          nodes: [
+            {
+              id: 'gid://gitlab/MergeRequest/42',
+              reference: '!18',
+              state: 'merged',
+              title: ':star: hello world',
+              createdAt: '2023-03-03T12:25:40Z',
+              mergedAt: '2023-04-27T12:01:04Z',
+              webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/merge_requests/18',
+              milestone: {
+                expired: false,
+                id: 'gid://gitlab/Milestone/5',
+                state: 'active',
+                title: 'v4.0',
+                __typename: 'Milestone',
+              },
+              assignees: {
+                nodes: [],
+                __typename: 'MergeRequestAssigneeConnection',
+              },
+              headPipeline: null,
+              __typename: 'MergeRequest',
+            },
+            {
+              id: 'gid://gitlab/MergeRequest/34',
+              reference: '!10',
+              state: 'opened',
+              title: 'Draft: :parrot: Title with custom emoji',
+              createdAt: '2022-09-23T14:33:32Z',
+              mergedAt: null,
+              webUrl: 'http://gdk.test:3000/gitlab-org/gitlab-test/-/merge_requests/10',
+              milestone: {
+                expired: false,
+                id: 'gid://gitlab/Milestone/5',
+                state: 'active',
+                title: 'v4.0',
+                __typename: 'Milestone',
+              },
+              assignees: {
+                nodes: [
+                  {
+                    id: 'gid://gitlab/User/1',
+                    avatarUrl:
+                      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80\u0026d=identicon',
+                    name: 'Administrator',
+                    username: 'root',
+                    webUrl: 'http://gdk.test:3000/root',
+                    webPath: '/root',
+                    __typename: 'MergeRequestAssignee',
+                  },
+                ],
+                __typename: 'MergeRequestAssigneeConnection',
+              },
+              headPipeline: {
+                id: 1,
+                detailedStatus: {
+                  id: 'success-66-66',
+                  icon: 'status_success',
+                  text: 'Passed',
+                  detailsPath: '/root/test-ci/-/pipelines/66',
+                  __typename: 'DetailedStatus',
+                },
+                __typename: 'Pipeline',
+              },
+              __typename: 'MergeRequest',
+            },
+          ],
+          __typename: 'MergeRequestConnection',
+        },
+        __typename: 'Issue',
+      },
+      __typename: 'Project',
+    },
+  },
+};
 
 describe('RelatedMergeRequests', () => {
   let wrapper;
-  let mock;
 
-  beforeEach(() => {
-    // put the fixture in DOM as the component expects
-    document.body.innerHTML = `<div id="js-issuable-app"></div>`;
-    document.getElementById('js-issuable-app').dataset.initial = JSON.stringify(mockData);
-
-    mock = new MockAdapter(axios);
-    mock.onGet(`${API_ENDPOINT}?per_page=100`).reply(HTTP_STATUS_OK, mockData, { 'x-total': 2 });
-
+  beforeEach(async () => {
+    const apolloProvider = createMockApollo([
+      [relatedMergeRequestsQuery, jest.fn().mockResolvedValue(mockData)],
+    ]);
     wrapper = shallowMount(RelatedMergeRequests, {
-      store: createStore(),
+      apolloProvider,
       propsData: {
-        endpoint: API_ENDPOINT,
-        projectNamespace: 'gitlab-org',
         projectPath: 'gitlab-ce',
+        iid: '1',
       },
     });
 
-    return axios.waitForAll();
-  });
-
-  afterEach(() => {
-    mock.restore();
-  });
-
-  describe('methods', () => {
-    describe('getAssignees', () => {
-      const assignees = [{ name: 'foo' }, { name: 'bar' }];
-
-      describe('when there is assignees array', () => {
-        it('should return assignees array', () => {
-          const mr = { assignees };
-
-          expect(wrapper.vm.getAssignees(mr)).toEqual(assignees);
-        });
-      });
-
-      it('should return an array with single assignee', () => {
-        const mr = { assignee: assignees[0] };
-
-        expect(wrapper.vm.getAssignees(mr)).toEqual([assignees[0]]);
-      });
-
-      it('should return empty array when assignee is not set', () => {
-        expect(wrapper.vm.getAssignees({})).toEqual([]);
-        expect(wrapper.vm.getAssignees({ assignee: null })).toEqual([]);
-      });
-    });
+    await waitForPromises();
   });
 
   describe('template', () => {
@@ -68,17 +124,16 @@ describe('RelatedMergeRequests', () => {
       expect(wrapper.findAllComponents(RelatedIssuableItem)).toHaveLength(2);
 
       const props = wrapper.findAllComponents(RelatedIssuableItem).at(1).props();
-      const data = mockData[1];
+      const data = mockData.data.project.issue.relatedMergeRequests.nodes[1];
 
-      expect(props.idKey).toEqual(data.id);
+      expect(props.idKey).toEqual(34);
       expect(props.pathIdSeparator).toEqual('!');
-      expect(props.pipelineStatus).toBe(data.head_pipeline.detailed_status);
-      expect(props.assignees).toEqual([data.assignee]);
+      expect(props.assignees).toEqual(data.assignees.nodes);
       expect(props.isMergeRequest).toBe(true);
       expect(props.confidential).toEqual(false);
       expect(props.title).toEqual(data.title);
       expect(props.state).toEqual(data.state);
-      expect(props.createdAt).toEqual(data.created_at);
+      expect(props.createdAt).toEqual(data.createdAt);
     });
   });
 });

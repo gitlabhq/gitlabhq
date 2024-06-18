@@ -107,11 +107,20 @@ Because of LLM limits and performance reasons, the content of the currently
 opened file is truncated:
 
 - For code completion: to 2048 tokens (roughly 8192 characters).
-- For code generation: to 50,000 characters.
+- For code generation: to 142,856 tokens (roughly 500,000 characters).
 
 Content above the cursor is prioritized over content below the cursor. The content
 above the cursor is truncated from the left side, and content below the cursor
-is truncated from the right side.
+is truncated from the right side. These numbers represent the maximum input context
+size for Code Suggestions.
+
+## Output length
+
+Because of LLM limits and for performance reasons, the output of Code Suggestions
+is limited:
+
+- For code completion: to 64 tokens (roughly 256 characters).
+- For code generation: to 2048 tokens (roughly 7168 characters).
 
 ## Accuracy of results
 

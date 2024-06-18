@@ -53,7 +53,7 @@ export default {
   <span>
     <gl-sprintf :message="publishedMessage">
       <template v-if="projectName" #projectName>
-        <gl-link class="gl-text-decoration-underline" :href="projectUrl">{{ projectName }}</gl-link>
+        <gl-link class="gl-underline" :href="projectUrl">{{ projectName }}</gl-link>
       </template>
       <template #date>
         <time-ago-tooltip :time="publishDate" />

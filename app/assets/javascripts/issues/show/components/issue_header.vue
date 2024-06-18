@@ -120,7 +120,7 @@ export default {
     <template #status-badge>
       <gl-sprintf v-if="closedStatusLink" :message="statusText">
         <template #link>
-          <gl-link class="!gl-text-inherit gl-text-decoration-underline" :href="closedStatusLink">{{
+          <gl-link class="!gl-text-inherit gl-underline" :href="closedStatusLink">{{
             closedStatusText
           }}</gl-link>
         </template>

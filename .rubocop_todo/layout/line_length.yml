@@ -2187,7 +2187,6 @@ Layout/LineLength:
     - 'ee/spec/workers/repository_import_worker_spec.rb'
     - 'ee/spec/workers/security/orchestration_policy_rule_schedule_namespace_worker_spec.rb'
     - 'ee/spec/workers/security/orchestration_policy_rule_schedule_worker_spec.rb'
-    - 'ee/spec/workers/store_security_reports_worker_spec.rb'
     - 'ee/spec/workers/sync_seat_link_request_worker_spec.rb'
     - 'ee/spec/workers/update_all_mirrors_worker_spec.rb'
     - 'ee/spec/workers/vulnerability_exports/export_deletion_worker_spec.rb'

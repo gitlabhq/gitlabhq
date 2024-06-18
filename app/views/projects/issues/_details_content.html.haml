@@ -27,10 +27,9 @@
     = render_if_exists 'projects/issues/linked_resources'
     = render 'projects/issues/related_issues'
 
-    #js-related-merge-requests{ data: { endpoint: expose_path(api_v4_projects_issues_related_merge_requests_path(id: @project.id, issue_iid: issuable.iid)),
-      has_closing_merge_request: (issuable.merge_requests_count(current_user) != 0).to_s,
-      project_namespace: @project.namespace.path,
-      project_path: @project.path } }
+    #js-related-merge-requests{ data: { has_closing_merge_request: (issuable.merge_requests_count(current_user) != 0).to_s,
+      project_path: @project.full_path,
+      iid: issuable.iid } }
 
     - if can?(current_user, :read_code, @project)
       - add_page_startup_api_call related_branches_path

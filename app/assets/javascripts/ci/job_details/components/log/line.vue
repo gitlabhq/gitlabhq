@@ -42,7 +42,7 @@ export default {
             {
               attrs: {
                 href: chunk,
-                class: '!gl-text-inherit gl-text-decoration-underline',
+                class: '!gl-text-inherit gl-underline',
                 rel: 'nofollow noopener noreferrer', // eslint-disable-line @gitlab/require-i18n-strings
               },
             },

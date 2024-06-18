@@ -1617,6 +1617,9 @@ msgstr ""
 msgid "+ %{numberOfHiddenAssignees} more"
 msgstr ""
 
+msgid "+ %{n} more deployments"
+msgstr ""
+
 msgid "+%d more"
 msgid_plural "+%d more"
 msgstr[0] ""
@@ -37689,6 +37692,21 @@ msgstr ""
 msgid "PagesDomain|Certificate Key is too long. (Max %d bytes)"
 msgstr ""
 
+msgid "Pages|Deployments"
+msgstr ""
+
+msgid "Pages|Environment deployments"
+msgstr ""
+
+msgid "Pages|Include stopped deployments"
+msgstr ""
+
+msgid "Pages|No deployments yet"
+msgstr ""
+
+msgid "Pages|Some Pages deployments could not be loaded. Try reloading the page."
+msgstr ""
+
 msgid "Pagination|First"
 msgstr ""
 
@@ -40413,7 +40431,7 @@ msgstr ""
 msgid "Profiles|Don't display activity-related personal information on your profile."
 msgstr ""
 
-msgid "Profiles|Don't display activity-related personal information on your profile. %{private_profile_help_link_start}Learn more%{private_profile_help_link_end}."
+msgid "Profiles|Don't display activity-related personal information on your profile. %{private_profile_help_link_start}What information is hidden?%{private_profile_help_link_end}"
 msgstr ""
 
 msgid "Profiles|Edit Profile"
@@ -40599,10 +40617,10 @@ msgstr ""
 msgid "Profiles|The maximum file size allowed is 200 KiB."
 msgstr ""
 
-msgid "Profiles|This email will be displayed on your public profile."
+msgid "Profiles|This email is used for web-based operations, such as edits and merges. %{commit_email_link_start}What is a private commit email?%{commit_email_link_end}"
 msgstr ""
 
-msgid "Profiles|This email will be used for web based operations, such as edits and merges. %{commit_email_link_start}Learn more%{commit_email_link_end}."
+msgid "Profiles|This email will be displayed on your public profile."
 msgstr ""
 
 msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
@@ -40683,7 +40701,7 @@ msgstr ""
 msgid "Profiles|You must transfer ownership or delete these groups before you can delete your account."
 msgstr ""
 
-msgid "Profiles|Your Discord user ID. %{external_accounts_link_start}Learn more%{external_accounts_link_end}."
+msgid "Profiles|Your Discord user ID."
 msgstr ""
 
 msgid "Profiles|Your LinkedIn profile name from linkedin.com/in/profilename"
@@ -59292,6 +59310,9 @@ msgid "What does this command do?"
 msgstr ""
 
 msgid "What happens during repository cleanup?"
+msgstr ""
+
+msgid "What information is hidden?"
 msgstr ""
 
 msgid "What is GitLab Runner?"

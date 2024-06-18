@@ -83,7 +83,7 @@ The storage management and cleanup automation methods described in this page use
 
 - The [`python-gitlab`](https://python-gitlab.readthedocs.io/en/stable/) library, which provides
   a feature-rich programming interface.
-- The `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` script in the [GitLab API with Python](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/) project.
+- The `get_all_projects_top_level_namespace_storage_analysis_cleanup_example.py` script in the [GitLab API with Python](https://gitlab.com/gitlab-da/use-cases/gitlab-api/gitlab-api-python/) project.
 
 For more information about use cases for the `python-gitlab` library,
 see [Efficient DevSecOps workflows: Hands-on `python-gitlab` API automation](https://about.gitlab.com/blog/2023/02/01/efficient-devsecops-workflows-hands-on-python-gitlab-api-automation/).
@@ -212,7 +212,7 @@ To implement this algorithm:
 :::TabTitle GitLab CLI
 
 ```shell
-export GROUP_NAME="gitlab-de"
+export GROUP_NAME="gitlab-da"
 
 # Return sub group IDs
 glab api groups/$GROUP_NAME/subgroups | jq --compact-output '.[]' | jq --compact-output '.id'
@@ -431,12 +431,12 @@ $ python3 get_all_projects_top_level_namespace_storage_analysis_cleanup_example.
 
 |Project|Job|Artifact name|Artifact type|Artifact size|
 |-|-|-|-|-|
-| [gitlab-de/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297946 | artifacts.zip | archive | 50.0154 |
-| [gitlab-de/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297946 | metadata.gz | metadata | 0.0001 |
-| [gitlab-de/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297946 | job.log | trace | 0.0030 |
-| [gitlab-de/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297945 | artifacts.zip | archive | 20.0063 |
-| [gitlab-de/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297945 | metadata.gz | metadata | 0.0001 |
-| [gitlab-de/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297945 | job.log | trace | 0.0030 |
+| [gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297946 | artifacts.zip | archive | 50.0154 |
+| [gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297946 | metadata.gz | metadata | 0.0001 |
+| [gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297946 | job.log | trace | 0.0030 |
+| [gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297945 | artifacts.zip | archive | 20.0063 |
+| [gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297945 | metadata.gz | metadata | 0.0001 |
+| [gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4](Gen Job Artifacts 4) | 4828297945 | job.log | trace | 0.0030 |
 ```
 
 ### Delete job artifacts in bulk
@@ -607,7 +607,7 @@ In the following example that uses a Bash script:
 - `jq` and the GitLab CLI are installed and authorized.
 - The exported environment variable `GL_PROJECT_ID`.
 
-The full script `get_cicd_pipelines_compare_age_threshold_example.sh` is located in the [GitLab API with Linux Shell](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-linux-shell) project.
+The full script `get_cicd_pipelines_compare_age_threshold_example.sh` is located in the [GitLab API with Linux Shell](https://gitlab.com/gitlab-da/use-cases/gitlab-api/gitlab-api-linux-shell) project.
 
 ```shell
 #/bin/bash
@@ -749,21 +749,21 @@ python3 get_all_cicd_config_artifacts_expiry.py
 
 |Project|Job|Artifact expiry|
 |-|-|-|
-| [Gen Job Artifacts 4](https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-4) | generator | 30 days |
-| [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | included-job10 | 10 days |
-| [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | included-job1 | 1 days |
-| [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | included-job30 | 30 days |
-| [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | generator | 30 days |
-| [Gen Job Artifacts 2](https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-2) | generator | ❌ N/A |
-| [Gen Job Artifacts 1](https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-1) | generator | ❌ N/A |
+| [Gen Job Artifacts 4](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-4) | generator | 30 days |
+| [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | included-job10 | 10 days |
+| [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | included-job1 | 1 days |
+| [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | included-job30 | 30 days |
+| [Gen Job Artifacts with expiry and included jobs](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) | generator | 30 days |
+| [Gen Job Artifacts 2](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-2) | generator | ❌ N/A |
+| [Gen Job Artifacts 1](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-1) | generator | ❌ N/A |
 ```
 
-The `get_all_cicd_config_artifacts_expiry.py` script is located in the [GitLab API with Python project](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-api-python/).
+The `get_all_cicd_config_artifacts_expiry.py` script is located in the [GitLab API with Python project](https://gitlab.com/gitlab-da/use-cases/gitlab-api/gitlab-api-python/).
 
 Alternatively, you can use [advanced search](search/advanced_search.md) with API requests. The following example uses the [scope: blobs](../api/search.md#scope-blobs) to searches for the string `artifacts` in all `*.yml` files:
 
 ```shell
-# https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs
+# https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs
 export GL_PROJECT_ID=48349263
 
 glab api --method GET projects/$GL_PROJECT_ID/search --field "scope=blobs" --field "search=expire_in filename:*.yml"
@@ -798,11 +798,11 @@ export GL_PROJECT_ID=48057080
 
 curl --silent --header "Authorization: Bearer $GITLAB_TOKEN" "https://gitlab.com/api/v4/projects/$GL_PROJECT_ID/registry/repositories" | jq --compact-output '.[]' | jq --compact-output '.id,.location' | jq
 4435617
-"registry.gitlab.com/gitlab-de/playground/container-package-gen-group/docker-alpine-generator"
+"registry.gitlab.com/gitlab-da/playground/container-package-gen-group/docker-alpine-generator"
 
 curl --silent --header "Authorization: Bearer $GITLAB_TOKEN" "https://gitlab.com/api/v4/registry/repositories/4435617?size=true" | jq --compact-output '.id,.location,.size'
 4435617
-"registry.gitlab.com/gitlab-de/playground/container-package-gen-group/docker-alpine-generator"
+"registry.gitlab.com/gitlab-da/playground/container-package-gen-group/docker-alpine-generator"
 3401613
 ```
 
@@ -813,11 +813,11 @@ export GL_PROJECT_ID=48057080
 
 glab api --method GET projects/$GL_PROJECT_ID/registry/repositories | jq --compact-output '.[]' | jq --compact-output '.id,.location'
 4435617
-"registry.gitlab.com/gitlab-de/playground/container-package-gen-group/docker-alpine-generator"
+"registry.gitlab.com/gitlab-da/playground/container-package-gen-group/docker-alpine-generator"
 
 glab api --method GET registry/repositories/4435617 --field='size=true' | jq --compact-output '.id,.location,.size'
 4435617
-"registry.gitlab.com/gitlab-de/playground/container-package-gen-group/docker-alpine-generator"
+"registry.gitlab.com/gitlab-da/playground/container-package-gen-group/docker-alpine-generator"
 3401613
 
 glab api --method GET projects/$GL_PROJECT_ID/registry/repositories/4435617/tags | jq --compact-output '.[]' | jq --compact-output '.name'
@@ -904,7 +904,7 @@ Package registries are available [for projects](../api/packages.md#for-a-project
 The following example shows fetching packages from a defined project ID using the GitLab CLI. The result set is an array of dictionary items that can be filtered with the `jq` command chain.
 
 ```shell
-# https://gitlab.com/gitlab-de/playground/container-package-gen-group/generic-package-generator
+# https://gitlab.com/gitlab-da/playground/container-package-gen-group/generic-package-generator
 export GL_PROJECT_ID=48377643
 
 glab api --method GET projects/$GL_PROJECT_ID/packages | jq --compact-output '.[]' | jq --compact-output '.id,.name,.package_type'
@@ -1060,7 +1060,7 @@ Create a test project to generate fake artifact blobs using CI/CD job matrix bui
 
    ```yaml
    include:
-       - remote: https://gitlab.com/gitlab-de/use-cases/efficiency/job-artifact-generator/-/raw/main/.gitlab-ci.yml
+       - remote: https://gitlab.com/gitlab-da/use-cases/efficiency/job-artifact-generator/-/raw/main/.gitlab-ci.yml
    ```
 
 1. [Configure pipeline schedules](../ci/pipelines/schedules.md#add-a-pipeline-schedule).
@@ -1070,7 +1070,7 @@ Alternatively, reduce the 86 MB daily generated MB to different values in the `M
 
 ```yaml
 include:
-    - remote: https://gitlab.com/gitlab-de/use-cases/efficiency/job-artifact-generator/-/raw/main/.gitlab-ci.yml
+    - remote: https://gitlab.com/gitlab-da/use-cases/efficiency/job-artifact-generator/-/raw/main/.gitlab-ci.yml
 
 generator:
     parallel:
@@ -1079,7 +1079,7 @@ generator:
 
 ```
 
-For more information, see the [Job Artifact Generator README](https://gitlab.com/gitlab-de/use-cases/efficiency/job-artifact-generator), with an [example group](https://gitlab.com/gitlab-de/playground/artifact-gen-group).
+For more information, see the [Job Artifact Generator README](https://gitlab.com/gitlab-da/use-cases/efficiency/job-artifact-generator), with an [example group](https://gitlab.com/gitlab-da/playground/artifact-gen-group).
 
 ### Generate job artifacts with expiry
 
@@ -1089,7 +1089,7 @@ The project CI/CD configuration specifies job definitions in:
 - The `artifacts:expire_in` setting.
 - Project files and templates.
 
-To test the analysis scripts, the [`gen-job-artifacts-expiry-included-jobs`](https://gitlab.com/gitlab-de/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) project provides an example configuration.
+To test the analysis scripts, the [`gen-job-artifacts-expiry-included-jobs`](https://gitlab.com/gitlab-da/playground/artifact-gen-group/gen-job-artifacts-expiry-included-jobs) project provides an example configuration.
 
 ```yaml
 # .gitlab-ci.yml
@@ -1150,7 +1150,7 @@ included-job30:
 
 ### Generate container images
 
-The example group [`container-package-gen-group`](https://gitlab.com/gitlab-de/playground/container-package-gen-group) provides projects that:
+The example group [`container-package-gen-group`](https://gitlab.com/gitlab-da/playground/container-package-gen-group) provides projects that:
 
 - Use a base image in Dockerfile to build a new image.
 - Include the `Docker.gitlab-ci.yml` template to build images on GitLab.com SaaS.
@@ -1158,12 +1158,12 @@ The example group [`container-package-gen-group`](https://gitlab.com/gitlab-de/p
 
 Example projects available to fork:
 
-- [`docker-alpine-generator`](https://gitlab.com/gitlab-de/playground/container-package-gen-group/docker-alpine-generator)
-- [`docker-python-generator`](https://gitlab.com/gitlab-de/playground/container-package-gen-group/docker-python-generator)
+- [`docker-alpine-generator`](https://gitlab.com/gitlab-da/playground/container-package-gen-group/docker-alpine-generator)
+- [`docker-python-generator`](https://gitlab.com/gitlab-da/playground/container-package-gen-group/docker-python-generator)
 
 ### Generate generic packages
 
-The example project [`generic-package-generator`](https://gitlab.com/gitlab-de/playground/container-package-gen-group/generic-package-generator) provides projects that:
+The example project [`generic-package-generator`](https://gitlab.com/gitlab-da/playground/container-package-gen-group/generic-package-generator) provides projects that:
 
 - Generate a random text blob, and create a tarball with the current Unix timestamp as release version.
 - Upload the tarball into the generic package registry, using the Unix timestamp as release version.
@@ -1200,4 +1200,4 @@ Use the following projects to test storage usage with [cost factors for forks](u
 The following resources are not officially supported. Ensure to test scripts and tutorials before running destructive cleanup commands that may not be reverted.
 
 - Forum topic: [Storage management automation resources](https://forum.gitlab.com/t/storage-management-automation-resources/91184)
-- Script: [GitLab Storage Analyzer](https://gitlab.com/gitlab-de/use-cases/gitlab-api/gitlab-storage-analyzer), unofficial project by the [GitLab Developer Evangelism team](https://gitlab.com/gitlab-de/). You find similar code examples in this documentation how-to here.
+- Script: [GitLab Storage Analyzer](https://gitlab.com/gitlab-da/use-cases/gitlab-api/gitlab-storage-analyzer), unofficial project by the [GitLab Developer Evangelism team](https://gitlab.com/gitlab-da/). You find similar code examples in this documentation how-to here.

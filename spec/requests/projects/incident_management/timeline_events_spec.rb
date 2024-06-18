@@ -19,7 +19,7 @@ RSpec.describe 'Timeline Events', feature_category: :incident_management do
         "<a href=\"/#{project.full_path}/-/issues/#{incident.iid}\" data-reference-type=\"issue\" " \
           "data-original=\"##{incident.iid}\" data-link=\"false\" data-link-reference=\"false\" " \
           "data-issue=\"#{incident.id}\" data-project=\"#{project.id}\" data-iid=\"#{incident.iid}\" " \
-          "data-project-path=\"#{project.full_path}\" " \
+          "data-namespace-path=\"#{project.full_path}\" data-project-path=\"#{project.full_path}\" " \
           "data-issue-type=\"incident\" data-container=\"body\" data-placement=\"top\" " \
           "title=\"#{incident.title}\" class=\"gfm gfm-issue\">##{incident.iid}</a>"
       end

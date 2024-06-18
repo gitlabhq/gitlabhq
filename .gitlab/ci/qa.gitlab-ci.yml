@@ -110,9 +110,7 @@ e2e:post-run-e2e-message:
     - install_gitlab_gem
   script:
     - scripts/generate-message-to-run-e2e-pipeline.rb
-  needs:
-    - e2e-test-pipeline-generate
-    - build-assets-image
+  needs: []
   artifacts:
     expire_in: 1 day
     paths:
