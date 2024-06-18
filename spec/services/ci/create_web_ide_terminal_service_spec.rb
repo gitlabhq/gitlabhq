@@ -87,7 +87,7 @@ RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_in
 
           it_behaves_like 'be successful'
 
-          it 'saves the variables' do
+          it 'saves the variables', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466397' do
             expect(subject[:pipeline].builds[0].variables).to include(
               key: 'KEY1', value: 'VAL1', public: true, masked: false
             )

@@ -6,22 +6,34 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # AI features based on 3rd-party integrations
 
-## Local setup
+## Instructions for setting up GitLab Duo features in the local development environment
 
 ### Required: Install AI Gateway
 
-Follow [this instruction](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md) to install AI Gateway with GDK.
+**Why:** Certain AI operations are provided by AI Gateway only, such as text completion, embedding and semantic search.
+
+**How:**
+Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#install)
+to install the AI Gateway with GDK.
 
 ### Required: Setup Google Cloud Platform in AI Gateway
 
-To obtain a Google Cloud service key for local development, follow the steps below:
+**Why:** some GitLab Duo features use Vertex AI models. Duo Chat uses Vertex AI Search
+**Why:** You may not be able to boot AI Gateway if Google Cloud Platform credentials isn't correctly setup because AI Gateway checks the access at boot time.
+
+**How:**
 
 1. Set up a Google Cloud project
-   1. Option 1 (recommended for GitLab team members): request access to our
-      existing group Google Cloud project (`ai-enablement-dev-69497ba7`) by using
+   1. Option 1 (recommended for GitLab team members): use the existing
+      `ai-enablement-dev-69497ba7`) Google Cloud project.
+      Using the existing project is recommended because this project has Vertex
+      APIs and Vertex AI Search already enabled.
+      Also, GitLab team members from the Engineering and Product divisions should
+      already have access to this project. Visit the
+      [Google Cloud console](https://console.cloud.google.com) to check if you
+      already have access. If you do not, use
       [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request)
-      This project has Vertex APIs and Vertex AI Search (for Duo Chat
-      documentation questions) already enabled.
+      to request access.
    1. Option 2: Create a sandbox Google Cloud project by following the instructions
       in [the handbook](https://handbook.gitlab.com/handbook/infrastructure-standards/#individual-environment).
       If you are using an individual Google Cloud project, you may also need to
@@ -37,74 +49,148 @@ To obtain a Google Cloud service key for local development, follow the steps bel
       management, you can install `gcloud` with the
       [`asdf gcloud` plugin](https://github.com/jthegedus/asdf-gcloud)
 1. Authenticate locally with Google Cloud using the
-  [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login)
-  command.
+   [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login)
+   command.
 1. Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
 
-  ```shell
-  # <GDK-root>/gitlab-ai-gateway/.env
+   ```shell
+   # <GDK-root>/gitlab-ai-gateway/.env
 
-  # PROJECT_ID = "ai-enablement-dev-69497ba7" for GitLab team members with access
-  # to the group using the access request method described above
+   # PROJECT_ID = "ai-enablement-dev-69497ba7" for GitLab team members with access
+   # to the shared project
 
-  # PROJECT_ID = "your-google-cloud-project-name" for those with their own sandbox
-  # Google Cloud project.
+   # PROJECT_ID = "your-google-cloud-project-name" for those with their own sandbox
+   # Google Cloud project.
 
-  AIGW_GOOGLE_CLOUD_PLATFORM__PROJECT='PROJECT_ID'
-  ```
+   AIGW_GOOGLE_CLOUD_PLATFORM__PROJECT='PROJECT_ID'
+   ```
 
-### Required: Setup Anthropic in AI Gateway
+### Required: Setup Anthropic in the AI Gateway
 
+**Why:** some GitLab Duo features use Anthropic models.
+
+**How:**
 After filling out an
 [access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=AI_Access_Request),
-you can sign up for an Anthropic account and [create an API key](https://docs.anthropic.com/en/docs/getting-access-to-claude).
+you can sign up for an Anthropic account and
+[create an API key](https://docs.anthropic.com/en/docs/getting-access-to-claude).
+
 Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
 
 ```shell
 # <GDK-root>/gitlab-ai-gateway/.env
+
 ANTHROPIC_API_KEY='<your-anthropic-api-key>'
 ```
 
 ### Required: Setup AI Gateway endpoint in GitLab-Rails
 
-Update following variables in the `env.runit` file in your GDK root:
+**Why:** Your need to tell your local GitLab instance to talk to your local AI
+Gateway. Otherwise, it tries to talk to the production AI Gateway
+(`cloud.gitlab.com`), which results in an authentication error.
+
+**How:**
+
+Update following variable in the `env.runit` file in your GDK root:
 
 ```shell
 # <GDK-root>/env.runit
+
 export AI_GATEWAY_URL=http://0.0.0.0:5052
 ```
 
 By default, the above URL works as-is.
+
 You can also change it to a different URL by updating the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
 
 ```shell
 # <GDK-root>/gitlab-ai-gateway/.env
+
 AIGW_FASTAPI__API_HOST=0.0.0.0
 AIGW_FASTAPI__API_PORT=5052
 ```
 
 ### Required: Setup Licenses in GitLab-Rails
 
+**Why:** GitLab Duo is available to Premium and Ultimate customers only. You
+likely want an Ultimate license for your GDK. Ultimate gets you access to
+all GitLab Duo features.
+
+**How:**
+
 Follow [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
 for your local instance and [upload the license](../../administration/license_file.md).
 
-1. To verify that the license is applied go to **Admin Area** > **Subscription**
-  and check the subscription plan.
+To verify that the license is applied, go to **Admin Area** > **Subscription**
+and check the subscription plan.
 
 ### Required: Enable feature flags in GitLab-Rails
 
-Enable all AI-related feature flags:
+**Why:** some GitLab Duo functionality is behind a feature flag.
+
+**How:**
+
+Enable all feature flags maintained by "group::ai framework" by running this command in your `/gitlab` directory:
 
 ```shell
-rake gitlab:duo:enable_feature_flags
+bundle exec rake gitlab:duo:enable_feature_flags
+```
+
+### Recommended: Run GDK in SaaS mode and enable AI features for a test group
+
+**Why:** By default, GDK runs GitLab as a self-managed instance. But, the Duo
+licensing setup for self-managed is more complex than it is for GitLab.com. If
+the feature you are working on available on GitLab.com, you should
+run GDK in "SaaS" mode so that you can skip the
+[customersDot setup](#option-2-use-your-customersdot-instance-as-a-provider).
+
+**How:** the following should be set in the `env.runit` file in your GDK root:
+
+```shell
+# <GDK-root>/env.runit
+
+export GITLAB_SIMULATE_SAAS=1
+```
+
+Run `gdk restart rails` after you update the file so that the value
+is picked up by your local instance.
+
+If you are running GDK in SaaS mode, you also need to enable Duo
+features for at least one group. To do this, run this command in your `/gitlab` directory:
+
+```shell
+GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'
+```
+
+Replace `<test-group-name>` with the name of any top-level group. If the
+group doesn't exist, it creates a new one. You might need to
+re-run the script multiple times; it prints error messages with links
+on how to resolve the error.
+
+Membership to a group with Duo features enabled is what enables many AI
+features. To enable AI feature access locally, make sure that your test user is
+a member of the group with Duo features enabled.
+
+Finally, you must clear the GitLab-Rails Redis cache. User access to GitLab Duo
+features in SaaS mode is cached in Redis. This cache expires every 60 minutes.
+A manual cache-clearing ensures that you can use Duo features immediately:
+
+```shell
+bundle exec rake cache:clear
 ```
 
 ### Recommended: Test clients in Rails console
 
-After the setup is complete, you can test clients in GitLab-Rails if it can correctly reach to AI Gateway:
+**Why:** you've completed all of the setup steps, now it's time to confirm that
+GitLab Duo is actually working.
+
+**How:**
+
+After the setup is complete, you can test clients in GitLab-Rails to see if it can
+correctly reach to AI Gateway:
 
 1. Run `gdk start`.
-1. Login to Rails console e.g. `gdk rails console`.
+1. Login to Rails console with `gdk rails console`.
 1. Talk to a model:
 
   ```ruby
@@ -119,37 +205,26 @@ After the setup is complete, you can test clients in GitLab-Rails if it can corr
   ```
 
 NOTE:
-See [this doc](../cloud_connector/index.md) for registering unit primitives in cloud connector.
-
-### Optional: Create a test group in GitLab-Rails
-
-If you are running GDK in SaaS mode (recommended), you need to enable Duo
-features for at least one group. To do this, run:
-
-```shell
-GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'
-```
-
-Replace `<test-group-name>` with the name of any top-level group. If the
-group doesn't exist, it creates a new one. You might need to
-re-run the script multiple times; it prints error messages with links
-on how to resolve the error.
-Membership to a group with Duo features enabled is what enables many AI
-features. To enable AI feature access locally, make sure that your test user is
-a member of the group with Duo features enabled.
+See [this doc](../cloud_connector/index.md) for registering unit primitives in Cloud Connector.
 
 ### Optional: Enable logging in AI Gateway
+
+**Why:** Logging makes it easier to debug any issues with GitLab Duo requests.
+
+**How:**
 
 Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
 
 ```shell
 # <GDK-root>/gitlab-ai-gateway/.env
+
 AIGW_LOGGING__LEVEL=debug
 AIGW_LOGGING__FORMAT_JSON=false
 AIGW_LOGGING__TO_FILE='./ai-gateway.log'
 ```
 
-For example, you can watch the log file with the following command.
+For example, you can watch the log file with the following command when in the
+`gitlab-ai-gateway` directory:
 
 ```shell
 tail -f ai-gateway.log | fblog -a prefix -a suffix -a current_file_name -a suggestion -a language -a input -a parameters -a score -a exception
@@ -157,22 +232,29 @@ tail -f ai-gateway.log | fblog -a prefix -a suffix -a current_file_name -a sugge
 
 ### Optional: Enable authentication and authorization in AI Gateway
 
-AI Gateway has [authentication and authorization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md) flow
-to verify if clients have permission to access the features.
-This is enforced in any live environments hosted by GitLab infra team.
-To test this flow in your local development environment, see the following options.
+**Why:** The AI Gateway has [authentication and authorization](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/auth.md)
+flow to verify if clients have permission to access the features. Auth is
+enforced in any live environments hosted by GitLab infra team. You may want to
+test this flow in your local development environment.
 
 NOTE:
-In development environments (e.g. GDK), this process is disabled by default.
-To confirm this, set `AIGW_AUTH__BYPASS_EXTERNAL` to `true` in the [application setting file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md)  (`<GDK-root>/gitlab-ai-gateway/.env`) in AI Gateway.
+In development environments (for example: GDK), this process is disabled by default.
 
-#### Option-1: Use your GitLab instance as a provider
+To enable authorization checks, set `AIGW_AUTH__BYPASS_EXTERNAL` to `false` in the
+[application setting file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md)
+(`<GDK-root>/gitlab-ai-gateway/.env`) in AI Gateway.
 
+#### Option 1: Use your GitLab instance as a provider
+
+**Why:** this is the simplest method of testing authentication and reflects our setup on GitLab.com.
+
+**How:**
 Assuming that you are running the [AI Gateway with GDK](#required-install-ai-gateway),
 apply the following configuration to GDK:
 
 ```shell
 # <GDK-root>/env.runit
+
 export GITLAB_SIMULATE_SAAS=1
 ```
 
@@ -180,28 +262,28 @@ Update the [application settings file](https://gitlab.com/gitlab-org/modelops/ap
 
 ```shell
 # <GDK-root>/gitlab-ai-gateway/.env
-export AIGW_AUTH__BYPASS_EXTERNAL=false
-export AIGW_GITLAB_URL=<your-gdk-url>
+
+AIGW_AUTH__BYPASS_EXTERNAL=false
+AIGW_GITLAB_URL=<your-gdk-url>
 ```
 
 and `gdk restart`.
 
-#### Option-2: Use your customer dot instance as a provider
+#### Option 2: Use your customersDot instance as a provider
 
-CustomersDot setup is helpful when you want to test or update functionality
+**Why**: CustomersDot setup is required when you want to test or update functionality
 related to [cloud licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/)
 or if you are running GDK in non-SaaS mode.
 
-[Internal video tutorial](https://youtu.be/rudS6KeQHcA)
+NOTE:
+This setup is challenging. There is [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463341)
+for discussing how to make it easier to test the customersDot integration locally.
+Until that is addressed, this setup process is time consuming and should be
+avoided if possible.
 
-1. Follow [Instruct your local CustomersDot instance to use the GitLab application](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/setup/installation_steps.md#instruct-your-local-customersdot-instance-to-use-the-gitlab-application).
-1. Activate GitLab Enterprise license
-   1. To test Self Managed instances, follow
-      [Cloud Activation steps](../../administration/license.md#activate-gitlab-ee)
-      using the cloud activation code you received earlier.
-   1. To test SaaS, follow
-      [Activate GitLab Enterprise license](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#use-gitlab-enterprise-features)
-      with your license file.
+If you need to get customersDot working for your local GitLab Rails instance for
+any reason, reach out to `#s_fulfillment_engineering` in Slack. For questions around the integration of CDot with other systems to deliver AI use cases, reach out to `#g_cloud_connector`.
+assistance.
 
 ### Help
 
@@ -215,9 +297,9 @@ or if you are running GDK in non-SaaS mode.
    doesn't work, try `gdk kill` and then `gdk start`.
 1. Alternatively, bypass Sidekiq entirely and run the service synchronously.
    This can help with debugging errors as GraphQL errors are now available in
-   the network inspector instead of the Sidekiq logs. To do that, temporarily alter
-   the `perform_for` method in `Llm::CompletionWorker` class by changing
-   `perform_async` to `perform_inline`.
+  the network inspector instead of the Sidekiq logs. To do that, temporarily alter
+  the `perform_for` method in `Llm::CompletionWorker` class by changing
+  `perform_async` to `perform_inline`.
 
 ## Feature development (Abstraction Layer)
 
@@ -242,7 +324,7 @@ Example of a mutation:
 
 ```graphql
 mutation {
-  aiAction(input: { summarizeComments: { resourceId: "gid://gitlab/Issue/52" } }) {
+  aiAction(input: {summarizeComments: {resourceId: "gid://gitlab/Issue/52"}}) {
     clientMutationId
   }
 }
@@ -445,8 +527,8 @@ query {
 ```
 
 This cache is especially useful for chat functionality. For other services,
-caching is disabled. You can enable this for a service by using the `cache_response: true`
-option.
+caching is disabled. You can enable this for a service by using the
+`cache_response: true` option.
 
 Caching has following limitations:
 

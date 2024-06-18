@@ -32,7 +32,7 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     it "is set on the group_canonical_path" do
       visit(group_canonical_path(group))
 
-      within '[data-testid=group_sort_by_dropdown]' do
+      within '[data-testid=groups-projects-sort]' do
         expect(find_dropdown_toggle).to have_content(vue_sort_label)
       end
     end
@@ -40,7 +40,7 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     it "is set on the details_group_path" do
       visit(details_group_path(group))
 
-      within '[data-testid=group_sort_by_dropdown]' do
+      within '[data-testid=groups-projects-sort]' do
         expect(find_dropdown_toggle).to have_content(vue_sort_label)
       end
     end
@@ -75,7 +75,7 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     before do
       sign_in(user)
       visit(group_canonical_path(group))
-      within '[data-testid=group_sort_by_dropdown]' do
+      within '[data-testid=groups-projects-sort]' do
         find_dropdown_toggle.click
         find('li', text: 'Created').click
         wait_for_requests
@@ -89,7 +89,7 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :grou
     before do
       sign_in(user)
       visit(details_group_path(group))
-      within '[data-testid=group_sort_by_dropdown]' do
+      within '[data-testid=groups-projects-sort]' do
         find_dropdown_toggle.click
         find('li', text: 'Updated').click
         wait_for_requests

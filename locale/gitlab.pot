@@ -46771,6 +46771,9 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
+msgid "Search (3 character minimum)"
+msgstr ""
+
 msgid "Search Within"
 msgstr ""
 

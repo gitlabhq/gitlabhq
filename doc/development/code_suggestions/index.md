@@ -36,7 +36,7 @@ This should enable everyone to see locally any change in an IDE being sent to th
       1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
       1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the code suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
-   1. [Setup AI Gateway](../ai_features/index.md#local-setup).
+   1. [Setup AI Gateway](../ai_features/index.md#required-install-ai-gateway).
    1. Run your GDK server with `gdk start` if it's not already running.
 
 ### Setup instructions to use staging AI Gateway

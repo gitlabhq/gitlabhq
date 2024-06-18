@@ -9,7 +9,8 @@ import KubernetesPods from './kubernetes_pods.vue';
 import KubernetesServices from './kubernetes_services.vue';
 import KubernetesSummary from './kubernetes_summary.vue';
 
-const tabs = ['summary', k8sResourceType.k8sPods, k8sResourceType.k8sServices];
+const defaultTabs = [k8sResourceType.k8sPods, k8sResourceType.k8sServices];
+const tabsWithSummary = ['summary', ...defaultTabs];
 
 export default {
   components: {
@@ -42,7 +43,9 @@ export default {
   },
   data() {
     return {
-      activeTabIndex: tabs.indexOf(this.value),
+      activeTabIndex: this.glFeatures.k8sTreeView
+        ? tabsWithSummary.indexOf(this.value)
+        : defaultTabs.indexOf(this.value),
       selectedItem: {},
       showDetailsDrawer: false,
     };
@@ -54,10 +57,13 @@ export default {
     renderTreeView() {
       return this.glFeatures.k8sTreeView;
     },
+    tabs() {
+      return this.renderTreeView ? tabsWithSummary : defaultTabs;
+    },
   },
   watch: {
     activeTabIndex(newValue) {
-      this.$emit('input', tabs[newValue]);
+      this.$emit('input', this.tabs[newValue]);
     },
   },
   methods: {

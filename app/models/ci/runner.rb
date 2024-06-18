@@ -19,9 +19,6 @@ module Ci
 
     extend ::Gitlab::Utils::Override
 
-    ignore_column %i[config version revision platform architecture ip_address executor_type],
-      remove_with: '17.2', remove_after: '2024-07-22'
-
     add_authentication_token_field :token,
       encrypted: :optional,
       expires_at: :compute_token_expiration,
