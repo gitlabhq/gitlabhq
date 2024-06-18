@@ -235,6 +235,6 @@ This stage is responsible for [allure test report](index.md#allure-report) gener
 
 To help with debugging:
 
-- Each test job prints a list of arguments that you can pass to the [`cng`](../../../../gems/gitlab-cng/README.md) orchestrator to exactly recreate
-  the same deployment for local debugging.
+- Each test job prints a list of arguments that you can pass to the [`cng`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-cng/README.md)
+  orchestrator to exactly recreate the same deployment for local debugging.
 - Cluster events log and all pod logs are saved in E2E test job artifacts.

@@ -23,5 +23,3 @@ GitLab has two methods for detecting secrets which can be used simultaneously:
 - The [pipeline](pipeline/index.md) method detects secrets during the project's CI/CD pipeline. This method cannot reject pushes.
 - The [secret push protection](secret_push_protection/index.md) method detects secrets when users push changes to the
   remote Git branch. This method can reject pushes if a secret is detected.
-
-A secret detected during a secret detection scan remains in the [vulnerability report](../vulnerability_report/index.md) as "Still detected" even after the secret is removed from the scanned file. This is because a secret remains in the Git repository's history. To address a detected secret, remediate the leak, then triage the vulnerability.

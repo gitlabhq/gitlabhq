@@ -84,9 +84,9 @@ follow up issue and attach it to the component implementation epic found in the
 
 A Submit button inside of a form attaches an `onSubmit` event listener on the form element. [This code](https://gitlab.com/gitlab-org/gitlab/-/blob/794c247a910e2759ce9b401356432a38a4535d49/app/assets/javascripts/main.js#L225) adds a `disabled` class selector to the submit button when the form is submitted. To avoid this behavior, add the class `js-no-auto-disable` to the button.
 
-### 5. Should one use a full URL (for example `gon.gitlab_url`) or a full path (for example `gon.relative_url_root`) when referencing backend endpoints?
+### 5. Should one use a full URL or a full path when referencing backend endpoints?
 
-It's preferred to use a **full path** over a **full URL**. This is because the URL uses the hostname configured with
+It's preferred to use a **full path** like `gon.relative_url_root` over a **full URL** (like `gon.gitlab_url`). This is because the URL uses the hostname configured with
 GitLab which may not match the request. This causes [cross-origin resource sharing issues like this Web IDE example](https://gitlab.com/gitlab-org/gitlab/-/issues/36810).
 
 Example:

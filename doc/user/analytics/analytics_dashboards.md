@@ -310,6 +310,10 @@ If the error persists:
 - Check that your configurations match the [dashboard JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
 - For product analytics, make sure your [admin and project settings](../product_analytics/index.md#project-level-settings) are set up correctly.
 
+### `Invalid dashboard configuration`
+
+If the dashboard displays a global error message that the configuration is invalid, check that your configurations match the [dashboard JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
+
 ### `Invalid visualization configuration`
 
 If a dashboard panel displays a message that the visualization configuration is invalid,

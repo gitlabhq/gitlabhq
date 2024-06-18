@@ -6050,6 +6050,9 @@ msgstr ""
 msgid "Analytics|Host"
 msgstr ""
 
+msgid "Analytics|Invalid dashboard configuration"
+msgstr ""
+
 msgid "Analytics|Invalid visualization configuration"
 msgstr ""
 
@@ -12791,7 +12794,7 @@ msgstr ""
 msgid "CodeSuggestions|A user can be assigned a %{title} seat only once each billable month."
 msgstr ""
 
-msgid "CodeSuggestions|Boost productivity across the software development life cycle by using Code Suggestions and GitLab Duo Chat (Beta) as part of the %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd} add-on. You can now try GitLab Duo Pro for free for %{days} days, no credit card required."
+msgid "CodeSuggestions|Boost productivity across the software development life cycle by using Code Suggestions and GitLab Duo Chat as part of the %{duoLinkStart}GitLab Duo Pro%{duoLinkEnd} add-on. You can now try GitLab Duo Pro for free for %{days} days, no credit card required."
 msgstr ""
 
 msgid "CodeSuggestions|Enhance your coding experience with intelligent recommendations. %{linkStart}GitLab Duo Pro%{linkEnd} offers features that use generative AI to suggest code."
@@ -14532,6 +14535,9 @@ msgid "ContainerRegistry|You can add an image to this registry with the followin
 msgstr ""
 
 msgid "Containers"
+msgstr ""
+
+msgid "Contains errors"
 msgstr ""
 
 msgid "Contains only whitespace changes."

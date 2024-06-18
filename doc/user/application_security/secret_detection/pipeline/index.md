@@ -43,6 +43,12 @@ For example, GitLab [adds a `glpat-` prefix](../../../../administration/settings
 
 To provide more reliable, high-confidence results, Pipeline Secret Detection only looks for passwords or other unstructured secrets in specific contexts like URLs.
 
+A detected secret remains in the vulnerability report as "Still
+detected" even after the secret is removed from the scanned file. This
+is because the secret remains in the Git repository's history. To
+address a detected secret, remediate the leak, then triage the
+vulnerability.
+
 ## Coverage
 
 Pipeline Secret Detection scans different aspects of your code, depending on the situation. For all methods

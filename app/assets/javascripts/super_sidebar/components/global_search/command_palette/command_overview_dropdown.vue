@@ -24,6 +24,9 @@ export default {
     emitSelected(selected) {
       this.$emit('selected', selected);
     },
+    emitHidden() {
+      this.$emit('hidden');
+    },
     open() {
       this.$refs.commandsDropdown.open();
     },
@@ -44,6 +47,7 @@ export default {
       category="tertiary"
       @select="emitSelected"
       @shown="trackEvent($options.EVENT_CLICK_COMMANDS_SUB_MENU_IN_COMMAND_PALETTE)"
+      @hidden="emitHidden"
     >
       <template #toggle>
         <button class="gl-border-0 gl-rounded-base">

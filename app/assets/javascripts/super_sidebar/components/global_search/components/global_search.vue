@@ -238,15 +238,18 @@ export default {
     },
     onKeyComboDown(event) {
       const { code, metaKey } = event;
-
       if (code === KEY_K && metaKey) {
         if (!this.commandPaletteDropdownOpen) {
           this.$refs.commandDropdown.open();
+          this.commandPaletteDropdownOpen = true;
         } else {
           this.$refs.commandDropdown.close();
+          this.commandPaletteDropdownOpen = false;
         }
-        this.commandPaletteDropdownOpen = !this.commandPaletteDropdownOpen;
       }
+    },
+    handleClosing() {
+      this.commandPaletteDropdownOpen = false;
     },
     submitSearch() {
       if (this.isCommandMode) {
@@ -464,6 +467,7 @@ export default {
             ref="commandDropdown"
             :items="commandPaletteDropdownItems"
             @selected="handleCommandSelection"
+            @hidden="handleClosing"
         /></span>
       </div>
     </template>

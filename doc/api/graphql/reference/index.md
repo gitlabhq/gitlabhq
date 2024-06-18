@@ -19381,10 +19381,10 @@ Represents a product analytics dashboard.
 | <a id="customizabledashboardconfigurationproject"></a>`configurationProject` | [`Project`](#project) | Project which contains the dashboard definition. |
 | <a id="customizabledashboarddescription"></a>`description` | [`String`](#string) | Description of the dashboard. |
 | <a id="customizabledashboarderrors"></a>`errors` | [`[String!]`](#string) | Errors on yaml definition. |
-| <a id="customizabledashboardpanels"></a>`panels` | [`CustomizableDashboardPanelConnection!`](#customizabledashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
+| <a id="customizabledashboardpanels"></a>`panels` | [`CustomizableDashboardPanelConnection`](#customizabledashboardpanelconnection) | Panels shown on the dashboard. (see [Connections](#connections)) |
 | <a id="customizabledashboardslug"></a>`slug` | [`String!`](#string) | Slug of the dashboard. |
 | <a id="customizabledashboardstatus"></a>`status` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.0. **Status**: Experiment. Status of the dashboard. |
-| <a id="customizabledashboardtitle"></a>`title` | [`String!`](#string) | Title of the dashboard. |
+| <a id="customizabledashboardtitle"></a>`title` | [`String`](#string) | Title of the dashboard. |
 | <a id="customizabledashboarduserdefined"></a>`userDefined` | [`Boolean!`](#boolean) | Indicates whether the dashboard is user-defined or provided by GitLab. |
 
 ### `CustomizableDashboardPanel`
@@ -19397,8 +19397,8 @@ Represents a product analytics dashboard panel.
 | ---- | ---- | ----------- |
 | <a id="customizabledashboardpanelgridattributes"></a>`gridAttributes` | [`JSON`](#json) | Description of the position and size of the panel. |
 | <a id="customizabledashboardpanelqueryoverrides"></a>`queryOverrides` | [`JSON`](#json) | Overrides for the visualization query object. |
-| <a id="customizabledashboardpaneltitle"></a>`title` | [`String!`](#string) | Title of the panel. |
-| <a id="customizabledashboardpanelvisualization"></a>`visualization` | [`CustomizableDashboardVisualization!`](#customizabledashboardvisualization) | Visualization of the panel. |
+| <a id="customizabledashboardpaneltitle"></a>`title` | [`String`](#string) | Title of the panel. |
+| <a id="customizabledashboardpanelvisualization"></a>`visualization` | [`CustomizableDashboardVisualization`](#customizabledashboardvisualization) | Visualization of the panel. |
 
 ### `CustomizableDashboardVisualization`
 

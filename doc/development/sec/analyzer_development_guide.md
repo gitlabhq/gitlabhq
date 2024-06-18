@@ -138,9 +138,9 @@ For more information, refer to the [project README](https://gitlab.com/gitlab-or
 
 ## Versioning and release process
 
-GitLab Security Products use an independent versioning system from GitLab Rails' `MAJOR.MINOR`. All products use a variation of [Semantic Versioning](https://semver.org) and are available as Docker images.
+GitLab Security Products use an independent versioning system from GitLab `MAJOR.MINOR`. All products use a variation of [Semantic Versioning](https://semver.org) and are available as Docker images.
 
-`Patch` version bumps tend to correspond to a `Minor` version bump of the underlying tools (i.e. [`bandit`](https://wiki.openstack.org/wiki/Security/Projects/Bandit)), allowing us greater flexibility in reserving `Minor` bumps for more significant changes to our scanners. In case of breaking changes imposed by the wrapped scanner, creating a new analyzer on a separate repository must be considered.
+`Major` is bumped with every new major release of GitLab, when [breaking changes are allowed](../deprecation_guidelines/index.md). `Minor` is bumped for new functionality, and `Patch` is reserved for bugfixes.
 
 The analyzers are released as Docker images following this scheme:
 

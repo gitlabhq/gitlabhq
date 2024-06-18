@@ -77,6 +77,8 @@ const triggerKeydownEvent = (target, code, metaKey = false) => {
 describe('GlobalSearchModal', () => {
   let wrapper;
   let store;
+  let handleClosingSpy;
+  let onKeyComboDownSpy;
 
   const actionSpies = {
     setSearch: jest.fn(),
@@ -129,6 +131,16 @@ describe('GlobalSearchModal', () => {
       ...mountOptions,
     });
   };
+
+  beforeEach(() => {
+    handleClosingSpy = jest.spyOn(GlobalSearchModal.methods, 'handleClosing');
+    onKeyComboDownSpy = jest.spyOn(GlobalSearchModal.methods, 'onKeyComboDown');
+  });
+
+  afterEach(() => {
+    handleClosingSpy.mockRestore();
+    onKeyComboDownSpy.mockRestore();
+  });
 
   const findGlobalSearchModal = () => wrapper.findComponent(GlModal);
 
@@ -400,15 +412,6 @@ describe('GlobalSearchModal', () => {
     });
 
     describe('Modal events', () => {
-      const openSpy = jest.fn();
-      const closeSpy = jest.fn();
-
-      CommandsOverviewDropdown.methods = {
-        open: openSpy,
-        close: closeSpy,
-        emitSelected: jest.fn(),
-      };
-
       beforeEach(() => {
         createComponent({
           initialState: { search: '', commandChar: '' },
@@ -421,27 +424,48 @@ describe('GlobalSearchModal', () => {
             GlSearchBoxByType,
           },
         });
-
-        wrapper.vm.$refs.commandDropdown.open = openSpy;
-        wrapper.vm.$refs.commandDropdown.close = closeSpy;
-
-        findGlobalSearchModal().vm.$emit('shown');
       });
 
       describe('when combination shortcut is pressed', () => {
-        it('Command+k opens commands dropdown', async () => {
-          await triggerKeydownEvent(window, KEY_K, true);
+        it('calls handleClosing when hidden event is emitted', () => {
+          findCommandPaletteDropdown().vm.$emit('hidden');
+          expect(handleClosingSpy).toHaveBeenCalled();
+        });
 
-          expect(openSpy).toHaveBeenCalledTimes(1);
-          expect(closeSpy).toHaveBeenCalledTimes(0);
+        it('key combination triggers correctly', async () => {
+          const openSpy = jest.fn();
+          const closeSpy = jest.fn();
+
+          wrapper.vm.$refs.commandDropdown.open = openSpy;
+          wrapper.vm.$refs.commandDropdown.close = closeSpy;
+
+          await findGlobalSearchModal().vm.$emit('shown');
+          await triggerKeydownEvent(window, KEY_K, true);
           await triggerKeydownEvent(window, KEY_K, true);
 
           expect(openSpy).toHaveBeenCalledTimes(1);
           expect(closeSpy).toHaveBeenCalledTimes(1);
         });
+
+        it('opens correctly after esc dismiss of open dropdown', async () => {
+          const openSpy = jest.fn();
+          const closeSpy = jest.fn();
+
+          wrapper.vm.$refs.commandDropdown.open = openSpy;
+          wrapper.vm.$refs.commandDropdown.close = closeSpy;
+
+          await findGlobalSearchModal().vm.$emit('shown');
+          await triggerKeydownEvent(window, KEY_K, true);
+          findCommandPaletteDropdown().vm.$emit('hidden');
+          await triggerKeydownEvent(window, KEY_K, true);
+
+          expect(openSpy).toHaveBeenCalledTimes(2);
+          expect(closeSpy).toHaveBeenCalledTimes(0);
+        });
       });
 
       it('should emit `shown` event when modal shown`', () => {
+        findGlobalSearchModal().vm.$emit('shown');
         expect(wrapper.emitted('shown')).toHaveLength(1);
       });
 
