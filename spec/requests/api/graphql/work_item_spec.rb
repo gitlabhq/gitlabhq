@@ -22,8 +22,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     )
   end
 
-  let_it_be(:child_item1) { create(:work_item, :task, project: project) }
-  let_it_be(:child_item2) { create(:work_item, :task, confidential: true, project: project) }
+  let_it_be(:child_item1) { create(:work_item, :task, project: project, id: 1200) }
+  let_it_be(:child_item2) { create(:work_item, :task, confidential: true, project: project, id: 1400) }
   let_it_be(:child_link1) { create(:parent_link, work_item_parent: work_item, work_item: child_item1) }
   let_it_be(:child_link2) { create(:parent_link, work_item_parent: work_item, work_item: child_item2) }
 
@@ -258,9 +258,9 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           end
         end
 
-        context 'when ordered by default by created_at' do
-          let_it_be(:newest_child) { create(:work_item, :task, project: project, created_at: 5.minutes.from_now) }
-          let_it_be(:oldest_child) { create(:work_item, :task, project: project, created_at: 5.minutes.ago) }
+        context 'when ordered by default by work_item_id' do
+          let_it_be(:newest_child) { create(:work_item, :task, project: project, id: 2000) }
+          let_it_be(:oldest_child) { create(:work_item, :task, project: project, id: 1000) }
           let_it_be(:newest_link) { create(:parent_link, work_item_parent: work_item, work_item: newest_child) }
           let_it_be(:oldest_link) { create(:parent_link, work_item_parent: work_item, work_item: oldest_child) }
 
@@ -276,7 +276,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           end
 
           context 'when relative position is set' do
-            let_it_be(:first_child) { create(:work_item, :task, project: project, created_at: 5.minutes.from_now) }
+            let_it_be(:first_child) { create(:work_item, :task, project: project, id: 3000) }
 
             let_it_be(:first_link) do
               create(:parent_link, work_item_parent: work_item, work_item: first_child, relative_position: 1)

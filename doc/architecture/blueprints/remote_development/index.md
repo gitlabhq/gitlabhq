@@ -12,6 +12,10 @@ participating-stages: []
 
 # Remote development
 
+## Decisions
+
+- [100: New agent authorization strategy](decisions/100_new_agent_authorization_strategy.md)
+
 ## Summary
 
 Remote development is a new architecture for our software-as-a-service platform that provides a more consistent user experience writing code hosted in GitLab. It may also provide additional features in the future, such as a purely browser-based workspace and the ability to connect to an already running VM/Container or to use a GitLab-hosted VM/Container.

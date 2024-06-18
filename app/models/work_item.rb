@@ -66,21 +66,23 @@ class WorkItem < Issue
     end
 
     def work_item_children_keyset_order
-      keyset_order = Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :relative_position,
-          column_expression: WorkItems::ParentLink.arel_table[:relative_position],
-          order_expression: WorkItems::ParentLink.arel_table[:relative_position].asc.nulls_last,
-          nullable: :nulls_last
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :created_at,
-          order_expression: WorkItem.arel_table[:created_at].asc,
-          nullable: :not_nullable
-        )
-      ])
+      keyset_order = Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'parent_link_relative_position',
+            column_expression: WorkItems::ParentLink.arel_table[:relative_position],
+            order_expression: WorkItems::ParentLink.arel_table[:relative_position].asc.nulls_last,
+            add_to_projections: true,
+            nullable: :nulls_last
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'work_item_id',
+            order_expression: WorkItems::ParentLink.arel_table['work_item_id'].asc
+          )
+        ]
+      )
 
-      includes(:parent_link).order(keyset_order)
+      keyset_order.apply_cursor_conditions(includes(:parent_link)).reorder(keyset_order)
     end
 
     def linked_items_keyset_order

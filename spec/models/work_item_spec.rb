@@ -48,9 +48,9 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     subject { parent_item.reload.work_item_children_by_relative_position }
 
     let_it_be(:parent_item) { create(:work_item, :objective, project: reusable_project) }
-    let_it_be(:oldest_item) { create(:work_item, :objective, created_at: 5.hours.ago, project: reusable_project) }
+    let_it_be(:oldest_item) { create(:work_item, :objective, project: reusable_project) }
     let_it_be(:middle_item) { create(:work_item, :objective, project: reusable_project) }
-    let_it_be(:newest_item) { create(:work_item, :objective, created_at: 5.hours.from_now, project: reusable_project) }
+    let_it_be(:newest_item) { create(:work_item, :objective, project: reusable_project) }
 
     let_it_be_with_reload(:link_to_oldest_item) do
       create(:parent_link, work_item_parent: parent_item, work_item: oldest_item)
@@ -64,7 +64,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       create(:parent_link, work_item_parent: parent_item, work_item: newest_item)
     end
 
-    context 'when ordered by relative position and created_at' do
+    context 'when ordered by relative position' do
       using RSpec::Parameterized::TableSyntax
 
       where(:oldest_item_position, :middle_item_position, :newest_item_position, :expected_order) do
@@ -73,6 +73,11 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
         nil | 1   | 2   | lazy { [middle_item, newest_item, oldest_item] }
         2   | 3   | 1   | lazy { [newest_item, oldest_item, middle_item] }
         1   | 2   | 3   | lazy { [oldest_item, middle_item, newest_item] }
+        1   | 3   | 2   | lazy { [oldest_item, newest_item, middle_item] }
+        2   | 1   | 3   | lazy { [middle_item, oldest_item, newest_item] }
+        3   | 1   | 2   | lazy { [middle_item, newest_item, oldest_item] }
+        3   | 2   | 1   | lazy { [newest_item, middle_item, oldest_item] }
+        1   | 2   | 1   | lazy { [oldest_item, newest_item, middle_item] }
       end
 
       with_them do

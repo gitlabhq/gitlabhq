@@ -133,6 +133,18 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
             expect(event_selection_rule.redis_keys_for_time_frame('7d'))
               .to eq(["{event_counters}_an_event-filter:[label:foo]-2024-21"])
           end
+
+          context 'when key is overridden' do
+            before do
+              stub_file_read(Gitlab::UsageDataCounters::HLLRedisCounter::KEY_OVERRIDES_PATH,
+                content: 'an_event-filter:[label:foo]: a_legacy_key')
+            end
+
+            it 'uses the legacy key' do
+              expect(event_selection_rule.redis_keys_for_time_frame('7d'))
+               .to eq(["{event_counters}_a_legacy_key-2024-21"])
+            end
+          end
         end
 
         context 'when time_frame is "28d"' do
