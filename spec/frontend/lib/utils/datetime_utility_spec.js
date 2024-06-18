@@ -158,25 +158,33 @@ describe('timeIntervalInWords', () => {
 });
 
 describe('humanizeTimeInterval', () => {
-  it.each`
-    intervalInSeconds | expected
-    ${0}              | ${'0 seconds'}
-    ${1}              | ${'1 second'}
-    ${1.48}           | ${'1.5 seconds'}
-    ${2}              | ${'2 seconds'}
-    ${60}             | ${'1 minute'}
-    ${91}             | ${'1.5 minutes'}
-    ${120}            | ${'2 minutes'}
-    ${3600}           | ${'1 hour'}
-    ${5401}           | ${'1.5 hours'}
-    ${7200}           | ${'2 hours'}
-    ${86400}          | ${'1 day'}
-    ${129601}         | ${'1.5 days'}
-    ${172800}         | ${'2 days'}
+  describe.each`
+    intervalInSeconds | expected         | abbreviated
+    ${0}              | ${'0 seconds'}   | ${'0s'}
+    ${1}              | ${'1 second'}    | ${'1s'}
+    ${1.48}           | ${'1.5 seconds'} | ${'1.5s'}
+    ${2}              | ${'2 seconds'}   | ${'2s'}
+    ${60}             | ${'1 minute'}    | ${'1min'}
+    ${91}             | ${'1.5 minutes'} | ${'1.5min'}
+    ${120}            | ${'2 minutes'}   | ${'2min'}
+    ${3600}           | ${'1 hour'}      | ${'1h'}
+    ${5401}           | ${'1.5 hours'}   | ${'1.5h'}
+    ${7200}           | ${'2 hours'}     | ${'2h'}
+    ${86400}          | ${'1 day'}       | ${'1d'}
+    ${129601}         | ${'1.5 days'}    | ${'1.5d'}
+    ${172800}         | ${'2 days'}      | ${'2d'}
   `(
-    'returns "$expected" when the time interval is $intervalInSeconds seconds',
-    ({ intervalInSeconds, expected }) => {
-      expect(datetimeUtility.humanizeTimeInterval(intervalInSeconds)).toBe(expected);
+    'when the time interval is $intervalInSeconds seconds',
+    ({ intervalInSeconds, expected, abbreviated }) => {
+      it(`returns "${expected}" by default`, () => {
+        expect(datetimeUtility.humanizeTimeInterval(intervalInSeconds)).toBe(expected);
+      });
+
+      it(`returns "${abbreviated}" when rendering the abbreviated`, () => {
+        expect(datetimeUtility.humanizeTimeInterval(intervalInSeconds, { abbreviated: true })).toBe(
+          abbreviated,
+        );
+      });
     },
   );
 });

@@ -185,7 +185,7 @@ WEBDRIVER_HEADLESS=false bundle exec bin/qa QA::EE::Scenario::Test::Geo --primar
 
 You can use [GitLab-QA Orchestrator](https://gitlab.com/gitlab-org/gitlab-qa) to orchestrate two GitLab containers and configure them as a Geo setup.
 
-Geo requires an EE license. To visit the Geo sites in your browser, you need a reverse proxy server (for example, [NGINX](https://www.nginx.com/)).
+Geo requires an EE license. To visit the Geo sites in your browser, you need a reverse proxy server (for example, [NGINX](https://www.f5.com/go/product/welcome-to-nginx)).
 
 1. Export your EE license
 

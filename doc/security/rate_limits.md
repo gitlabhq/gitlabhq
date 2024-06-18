@@ -51,7 +51,8 @@ You can set these rate limits in the Admin Area of your instance:
 - [GitLab Pages rate limits](../administration/pages/index.md#rate-limits)
 - [Pipeline rate limits](../administration/settings/rate_limit_on_pipelines_creation.md)
 - [Incident management rate limits](../administration/settings/incident_management_rate_limits.md)
-- [Unauthenticated access to Projects List API rate limits](../administration/settings/rate_limit_on_projects_api.md)
+- [Projects API rate limits](../administration/settings/rate_limit_on_projects_api.md)
+- [Groups API rate limits](../administration/settings/rate_limit_on_groups_api.md)
 
 You can set these rate limits using the Rails console:
 
@@ -75,10 +76,23 @@ This limit:
 
 No response headers are provided.
 
+To avoid being rate limited, you can:
+
+- Stagger the execution of your automated pipelines.
+- Configure [exponential back off and retry](https://docs.aws.amazon.com/prescriptive-guidance/latest/cloud-design-patterns/retry-backoff.html) for failed authentication attempts.
+- Use a documented process and [best practice](https://about.gitlab.com/blog/2023/10/25/access-token-lifetime-limits/#how-to-minimize-the-impact) to manage token expiry.
+
 For configuration information, see
 [Omnibus GitLab configuration options](https://docs.gitlab.com/omnibus/settings/configuration.html#configure-a-failed-authentication-ban).
 
 ## Non-configurable limits
+
+> - Rate limit on the `:user_id/status`, `:id/following`, `:id/followers`, `:user_id/keys`, `id/keys/:key_id`, `:id/gpg_keys`, and `:id/gpg_keys/:key_id` endpoints [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452349) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limiting_user_endpoints`. Disabled by default.
+
+FLAG:
+The availability of multiple endpoints in this feature is controlled by a feature flag.
+For more information, see the history.
+These endpoints are available for testing, but not ready for production use.
 
 ### Repository archives
 
@@ -100,6 +114,48 @@ There is a rate limit per IP address on the `/users/sign_up` endpoint. This is t
 discover usernames or email addresses in use.
 
 The **rate limit** is 20 calls per minute per IP address.
+
+### User status
+
+There is a rate limit per IP address on the `:user_id/status` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 240 calls per minute per IP address.
+
+### User following
+
+There is a rate limit per IP address on the `:id/following` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 100 calls per minute per IP address.
+
+### User followers
+
+There is a rate limit per IP address on the `:id/followers` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 100 calls per minute per IP address.
+
+### User keys
+
+There is a rate limit per IP address on the `:user_id/keys` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 120 calls per minute per IP address.
+
+### User specific key
+
+There is a rate limit per IP address on the `id/keys/:key_id` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 120 calls per minute per IP address.
+
+### User GPG keys
+
+There is a rate limit per IP address on the `:id/gpg_keys` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 120 calls per minute per IP address.
+
+### User specific GPG keys
+
+There is a rate limit per IP address on the `:id/gpg_keys/:key_id` endpoint. This is to mitigate attempts to misuse the endpoint.
+
+The **rate limit** is 120 calls per minute per IP address.
 
 ### Update username
 
@@ -139,6 +195,19 @@ The **rate limit** is 160 calls per 8 hours per authenticated user.
 There is a rate limit for [removing project or group members using the API endpoints](../api/members.md#remove-a-member-from-a-group-or-project) `/groups/:id/members` or `/project/:id/members`.
 
 The **rate limit** is 60 deletions per minute.
+
+### Notification emails
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limit_notification_emails`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+There is a rate limit for notification emails related to a project or group.
+
+The **rate limit** is 1,000 notifications per 24 hours per project or group per user.
 
 ## Troubleshooting
 

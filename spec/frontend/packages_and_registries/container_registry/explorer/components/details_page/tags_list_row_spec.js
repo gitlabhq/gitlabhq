@@ -4,50 +4,54 @@ import {
   GlIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
+  GlBadge,
+  GlLink,
 } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-
-import component from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
+import TagsListRow from '~/packages_and_registries/container_registry/explorer/components/details_page/tags_list_row.vue';
+import SignatureDetailsModal from '~/packages_and_registries/container_registry/explorer/components/details_page/signature_details_modal.vue';
 import {
   REMOVE_TAG_BUTTON_TITLE,
   MISSING_MANIFEST_WARNING_TOOLTIP,
   NOT_AVAILABLE_TEXT,
   NOT_AVAILABLE_SIZE,
   COPY_IMAGE_PATH_TITLE,
-} from '~/packages_and_registries/container_registry/explorer/constants/index';
+} from '~/packages_and_registries/container_registry/explorer/constants';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-
 import { tagsMock } from '../../mock_data';
 import { ListItem } from '../../stubs';
 
 describe('tags list row', () => {
   let wrapper;
-  const [tag] = [...tagsMock];
+  const tag = tagsMock[0];
 
   const defaultProps = { tag, isMobile: false, index: 0 };
 
   const findCheckbox = () => wrapper.findComponent(GlFormCheckbox);
-  const findName = () => wrapper.find('[data-testid="name"]');
-  const findSize = () => wrapper.find('[data-testid="size"]');
-  const findTime = () => wrapper.find('[data-testid="time"]');
-  const findShortRevision = () => wrapper.find('[data-testid="digest"]');
+  const findName = () => wrapper.findByTestId('name');
+  const findSize = () => wrapper.findByTestId('size');
+  const findTime = () => wrapper.findByTestId('time');
+  const findShortRevision = () => wrapper.findByTestId('digest');
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findDetailsRows = () => wrapper.findAllComponents(DetailsRow);
-  const findPublishedDateDetail = () => wrapper.find('[data-testid="published-date-detail"]');
-  const findManifestDetail = () => wrapper.find('[data-testid="manifest-detail"]');
-  const findConfigurationDetail = () => wrapper.find('[data-testid="configuration-detail"]');
+  const findPublishedDateDetail = () => wrapper.findByTestId('published-date-detail');
+  const findManifestDetail = () => wrapper.findByTestId('manifest-detail');
+  const findConfigurationDetail = () => wrapper.findByTestId('configuration-detail');
+  const findSignaturesDetails = () => wrapper.findAllByTestId('signatures-detail');
   const findWarningIcon = () => wrapper.findComponent(GlIcon);
   const findAdditionalActionsMenu = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDeleteButton = () => wrapper.findComponent(GlDisclosureDropdownItem);
+  const findSignedBadge = () => wrapper.findComponent(GlBadge);
+  const findSignatureDetailsModal = () => wrapper.findComponent(SignatureDetailsModal);
+  const getTooltipFor = (component) => getBinding(component.element, 'gl-tooltip');
 
-  const mountComponent = (propsData = defaultProps, mountFn = shallowMount) => {
-    wrapper = mountFn(component, {
+  const mountComponent = (propsData = defaultProps) => {
+    wrapper = shallowMountExtended(TagsListRow, {
       stubs: {
         GlSprintf,
         ListItem,
@@ -56,9 +60,7 @@ describe('tags list row', () => {
         GlDisclosureDropdownItem,
       },
       propsData,
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
-      },
+      directives: { GlTooltip: createMockDirective('gl-tooltip') },
     });
   };
 
@@ -123,9 +125,7 @@ describe('tags list row', () => {
     it('has a tooltip', () => {
       mountComponent();
 
-      const tooltip = getBinding(findName().element, 'gl-tooltip');
-
-      expect(tooltip.value.title).toBe(tag.name);
+      expect(getTooltipFor(findName()).value).toBe(tag.name);
     });
 
     it('on mobile has mw-s class', () => {
@@ -180,8 +180,7 @@ describe('tags list row', () => {
     it('has an appropriate tooltip', () => {
       mountComponent({ tag: { ...tag, digest: null } });
 
-      const tooltip = getBinding(findWarningIcon().element, 'gl-tooltip');
-      expect(tooltip.value.title).toBe(MISSING_MANIFEST_WARNING_TOOLTIP);
+      expect(getTooltipFor(findWarningIcon()).value).toBe(MISSING_MANIFEST_WARNING_TOOLTIP);
     });
   });
 
@@ -337,9 +336,9 @@ describe('tags list row', () => {
       });
 
       it('delete event emits delete', () => {
-        mountComponent(undefined, mount);
+        mountComponent();
 
-        wrapper.find('[data-testid="single-delete-button"]').trigger('click');
+        wrapper.findByTestId('single-delete-button').trigger('click');
 
         expect(wrapper.emitted('delete')).toEqual([[]]);
       });
@@ -420,6 +419,112 @@ describe('tags list row', () => {
 
         await nextTick();
         expect(findDetailsRows().length).toBe(0);
+      });
+    });
+  });
+
+  describe('tag signatures', () => {
+    describe('without signatures', () => {
+      beforeEach(() => {
+        mountComponent();
+      });
+
+      it('does not show the signed badge', () => {
+        expect(findSignedBadge().exists()).toBe(false);
+      });
+
+      it('does not show the signature details row', () => {
+        expect(findSignaturesDetails().exists()).toBe(false);
+      });
+
+      it('does not show the signatures modal', () => {
+        expect(findSignatureDetailsModal().exists()).toBe(false);
+      });
+    });
+
+    describe('with signatures', () => {
+      beforeEach(() => {
+        mountComponent({
+          tag: {
+            ...tag,
+            referrers: [
+              {
+                artifactType: 'application/vnd.dev.cosign.artifact.sig.v1+json',
+                digest: 'sha256:0',
+              },
+              {
+                artifactType: 'application/vnd.dev.cosign.artifact.sig.v1+json',
+                digest: 'sha256:1',
+              },
+              {
+                artifactType: 'not/a/signature',
+                digest: 'sha256:deadbeef',
+              },
+            ],
+          },
+        });
+      });
+
+      it('shows the signed badge with the expected settings', () => {
+        expect(findSignedBadge().text()).toBe('Signed');
+        expect(findSignedBadge().props('variant')).toBe('muted');
+      });
+
+      it('shows the signed badge tooltip', () => {
+        expect(getTooltipFor(findSignedBadge()).modifiers.d0).toBe(true);
+        expect(getTooltipFor(findSignedBadge()).value).toBe(
+          'GitLab is unable to validate this signature automatically. Validate the signature manually before trusting it.',
+        );
+      });
+
+      describe('signature details rows', () => {
+        it('shows the correct number of rows', () => {
+          expect(findSignaturesDetails()).toHaveLength(2);
+        });
+
+        describe.each([0, 1])('details row %s', (index) => {
+          it('shows the pencil icon', () => {
+            expect(findSignaturesDetails().at(index).props('icon')).toBe('pencil');
+          });
+
+          it('shows the expected text', () => {
+            expect(findSignaturesDetails().at(index).text()).toContain(
+              `Signature digest: sha256:${index}`,
+            );
+          });
+
+          it('shows the view details link', () => {
+            expect(findSignaturesDetails().at(index).findComponent(GlLink).text()).toBe(
+              'View details',
+            );
+          });
+        });
+      });
+
+      describe('signature details modal', () => {
+        it('does not show modal by default', () => {
+          expect(findSignatureDetailsModal().props('visible')).toBe(false);
+          expect(findSignatureDetailsModal().props('digest')).toBe(null);
+        });
+
+        describe(`when a row's view details link is clicked`, () => {
+          beforeEach(() => {
+            findSignaturesDetails().at(0).findComponent(GlLink).vm.$emit('click');
+          });
+
+          it('shows modal', () => {
+            expect(findSignatureDetailsModal().props('visible')).toBe(true);
+            expect(findSignatureDetailsModal().props('digest')).toBe('sha256:0');
+          });
+
+          it('hides modal when the modal is closed', async () => {
+            findSignatureDetailsModal().vm.$emit('close');
+            await nextTick();
+
+            expect(findSignatureDetailsModal().props('visible')).toBe(false);
+            expect(findSignatureDetailsModal().props('digest')).toBe(null);
+          });
+        });
       });
     });
   });

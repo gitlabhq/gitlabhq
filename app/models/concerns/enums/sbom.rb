@@ -7,10 +7,10 @@ module Enums
     }.with_indifferent_access.freeze
 
     PURL_TYPES = {
-      composer: 1, # refered to as `packagist` in gemnasium-db
+      composer: 1, # refered to as `packagist` in gemnasium-db and semver_dialects
       conan: 2,
       gem: 3,
-      golang: 4, # refered to as `go` in gemnasium-db
+      golang: 4, # refered to as `go` in gemnasium-db and semver_dialects
       maven: 5,
       npm: 6,
       nuget: 7,
@@ -19,7 +19,8 @@ module Enums
       rpm: 10,
       deb: 11,
       'cbl-mariner': 12,
-      wolfi: 13
+      wolfi: 13,
+      cargo: 14
     }.with_indifferent_access.freeze
 
     DEPENDENCY_SCANNING_PURL_TYPES = %w[
@@ -31,6 +32,7 @@ module Enums
       npm
       nuget
       pypi
+      cargo
     ].freeze
 
     CONTAINER_SCANNING_PURL_TYPES = %w[

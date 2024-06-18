@@ -8,7 +8,7 @@ import BoardForm from 'ee_else_ce/boards/components/board_form.vue';
 import { formType } from '~/boards/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isMetaKey } from '~/lib/utils/common_utils';
-import { updateHistory } from '~/lib/utils/url_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__, __ } from '~/locale';
 
@@ -25,10 +25,10 @@ export default {
   name: 'BoardsSelector',
   i18n: {
     fetchBoardsError: s__('Boards|An error occurred while fetching boards. Please try again.'),
-    headerText: s__('IssueBoards|Switch board'),
-    noResultsText: s__('IssueBoards|No matching boards found'),
+    headerText: s__('Boards|Switch board'),
+    noResultsText: s__('Boards|No matching boards found'),
     hiddenBoardsText: s__(
-      'IssueBoards|Some of your boards are hidden, add a license to see them again.',
+      'Boards|Some of your boards are hidden, add a license to see them again.',
     ),
   },
   components: {
@@ -81,7 +81,7 @@ export default {
 
   computed: {
     boardName() {
-      return this.board?.name || s__('IssueBoards|Select board');
+      return this.board?.name || s__('Boards|Select board');
     },
     boardId() {
       return getIdFromGraphQLId(this.board.id) || '';
@@ -243,13 +243,12 @@ export default {
     async switchBoardKeyEvent(boardId, e) {
       if (isMetaKey(e)) {
         e.stopPropagation();
-        window.open(`${this.boardBaseUrl}/${boardId}`, '_blank');
+        visitUrl(`${this.boardBaseUrl}/${boardId}`, true);
       }
     },
     switchBoardGroup(value) {
       // Epic board ID is supported in EE version of this file
       this.$emit('switchBoard', this.fullBoardId(value));
-      updateHistory({ url: `${this.boardBaseUrl}/${value}` });
     },
   },
   formType,
@@ -257,7 +256,7 @@ export default {
 </script>
 
 <template>
-  <div class="boards-switcher gl-mr-3" data-testid="boards-selector">
+  <div class="boards-switcher" data-testid="boards-selector">
     <span class="boards-selector-wrapper">
       <gl-collapsible-listbox
         v-if="showDropdown"
@@ -284,9 +283,7 @@ export default {
 
         <template #footer>
           <div v-if="hasMissingBoards" class="gl-border-t gl-font-sm gl-px-4 gl-pt-4 gl-pb-3">
-            {{
-              s__('IssueBoards|Some of your boards are hidden, add a license to see them again.')
-            }}
+            {{ s__('Boards|Some of your boards are hidden, add a license to see them again.') }}
           </div>
           <div v-if="canAdminBoard" class="gl-border-t gl-py-2 gl-px-2">
             <gl-button
@@ -301,19 +298,7 @@ export default {
               data-track-property="dropdown"
               @click="$emit('showBoardModal', $options.formType.new)"
             >
-              {{ s__('IssueBoards|Create new board') }}
-            </gl-button>
-
-            <gl-button
-              v-if="showDelete"
-              v-gl-modal-directive="'board-config-modal'"
-              block
-              category="tertiary"
-              variant="danger"
-              class="gl-mt-0! gl-justify-content-start!"
-              @click="$emit('showBoardModal', $options.formType.delete)"
-            >
-              {{ s__('IssueBoards|Delete board') }}
+              {{ s__('Boards|Create new board') }}
             </gl-button>
           </div>
         </template>
@@ -326,8 +311,11 @@ export default {
         :weights="weights"
         :current-board="board"
         :current-page="boardModalForm"
+        :show-delete="showDelete"
         @addBoard="addBoard"
         @updateBoard="$emit('updateBoard', $event)"
+        @showBoardModal="$emit('showBoardModal', $event)"
+        @shown="loadBoards"
         @cancel="cancel"
       />
     </span>

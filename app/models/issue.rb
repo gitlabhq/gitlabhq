@@ -58,6 +58,7 @@ class Issue < ApplicationRecord
 
   # prevent caching this column by rails, as we want to easily remove it after the backfilling
   ignore_column :tmp_epic_id, remove_with: '16.11', remove_after: '2024-03-31'
+  ignore_column :imported, remove_with: '17.2', remove_after: '2024-07-22'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
@@ -240,6 +241,8 @@ class Issue < ApplicationRecord
   scope :with_null_relative_position, -> { where(relative_position: nil) }
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
   scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
+
+  scope :with_work_item_type, -> { joins(:work_item_type) }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
 
@@ -557,7 +560,7 @@ class Issue < ApplicationRecord
   end
 
   def can_be_worked_on?
-    !self.closed?
+    !self.closed? && !self.project.forked?
   end
 
   # Returns `true` if the current issue can be viewed by either a logged in User
@@ -613,7 +616,7 @@ class Issue < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def merge_requests_count(user = nil)
-    ::MergeRequestsClosingIssues.closing_count_for_issue(self.id, user)
+    ::MergeRequestsClosingIssues.count_for_issue(self.id, user)
   end
 
   def previous_updated_at
@@ -621,7 +624,10 @@ class Issue < ApplicationRecord
   end
 
   def banzai_render_context(field)
-    super.merge(label_url_method: :project_issues_url)
+    additional_attributes = { label_url_method: :project_issues_url }
+    additional_attributes[:group] = namespace if namespace.is_a?(Group)
+
+    super.merge(additional_attributes)
   end
 
   def design_collection

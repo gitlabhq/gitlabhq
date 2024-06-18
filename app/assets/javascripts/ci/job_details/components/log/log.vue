@@ -69,7 +69,7 @@ export default {
 };
 </script>
 <template>
-  <code class="job-log gl-display-block" data-testid="job-log-content">
+  <code class="job-log gl-block" data-testid="job-log-content">
     <template v-for="line in jobLog">
       <template v-if="isLineVisible(line)">
         <log-line-header

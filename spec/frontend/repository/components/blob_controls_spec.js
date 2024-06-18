@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import BlobControls from '~/repository/components/blob_controls.vue';
 import blobControlsQuery from '~/repository/queries/blob_controls.query.graphql';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import createRouter from '~/repository/router';
 import { updateElementsVisibility } from '~/repository/utils/dom';
 import { resetShortcutsForTests } from '~/behaviors/shortcuts';
@@ -51,6 +52,7 @@ describe('Blob controls component', () => {
   const findBlameButton = () => wrapper.findByTestId('blame');
   const findHistoryButton = () => wrapper.findByTestId('history');
   const findPermalinkButton = () => wrapper.findByTestId('permalink');
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   beforeEach(() => createComponent());
 
@@ -60,6 +62,15 @@ describe('Blob controls component', () => {
     findFileButton.vm.$emit('click');
 
     expect(Shortcuts.focusSearchFile).toHaveBeenCalled();
+  });
+
+  it('emits a tracking event when the Find file button is clicked', () => {
+    const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+    jest.spyOn(Shortcuts, 'focusSearchFile').mockResolvedValue();
+
+    findFindButton().vm.$emit('click');
+
+    expect(trackEventSpy).toHaveBeenCalledWith('click_find_file_button_on_repository_pages');
   });
 
   it('renders a blame button with the correct href', () => {

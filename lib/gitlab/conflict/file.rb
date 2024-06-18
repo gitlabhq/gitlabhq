@@ -222,9 +222,9 @@ module Gitlab
 
       def content_path
         conflict_for_path_project_merge_request_path(merge_request.project,
-                                                     merge_request,
-                                                     old_path: their_path,
-                                                     new_path: our_path)
+          merge_request,
+          old_path: their_path,
+          new_path: our_path)
       end
 
       def conflict_type(when_renamed: false)

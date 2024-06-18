@@ -1,6 +1,5 @@
 ---
 Database/AvoidUsingPluckWithoutLimit:
-  Details: grace period
   Exclude:
     - 'app/finders/groups/projects_requiring_authorizations_refresh/base.rb'
     - 'app/finders/issuables/label_filter.rb'
@@ -23,7 +22,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'app/models/concerns/integrations/reset_secret_fields.rb'
     - 'app/models/concerns/issuable.rb'
     - 'app/models/concerns/packages/debian/distribution.rb'
-    - 'app/models/concerns/routable.rb'
     - 'app/models/concerns/subquery.rb'
     - 'app/models/concerns/taggable_queries.rb'
     - 'app/models/customer_relations/contact.rb'
@@ -44,7 +42,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'app/models/merge_request.rb'
     - 'app/models/merge_request_diff.rb'
     - 'app/models/merge_requests_closing_issues.rb'
-    - 'app/models/namespace.rb'
     - 'app/models/namespaces/traversal/linear.rb'
     - 'app/models/namespaces/traversal/recursive.rb'
     - 'app/models/note.rb'
@@ -161,7 +158,5 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/app/services/security/security_orchestration_policies/protected_branches_push_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/rule_schedule_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/validate_policy_service.rb'
-    - 'ee/app/services/security/sync_license_scanning_rules_service.rb'
     - 'ee/app/services/vulnerabilities/bulk_dismiss_service.rb'
-    - 'ee/app/services/vulnerability_exports/export_service.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'

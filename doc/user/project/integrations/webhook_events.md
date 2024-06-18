@@ -2086,7 +2086,6 @@ Payload example for project:
 ```json
 {
   "object_kind": "access_token",
-  "project_id": 7,
   "project": {
     "id": 7,
     "name": "Flight",
@@ -2107,10 +2106,10 @@ Payload example for project:
   },
   "object_attributes": {
     "user_id": 90,
-    "created_at": "2024-02-05T03:13:44.855Z",
+    "created_at": "2024-01-24 16:27:40 UTC",
     "id": 25,
     "name": "acd",
-    "expires_at": "2024-01-26",
+    "expires_at": "2024-01-26"
   },
   "event_name": "expiring_access_token"
 }
@@ -2121,11 +2120,9 @@ Payload example for group:
 ```json
 {
   "object_kind": "access_token",
-  "group_id": 35,
   "group": {
     "group_name": "Twitter",
     "group_path": "twitter",
-    "full_path": "twitter",
     "group_id": 35
   },
   "object_attributes": {
@@ -2133,7 +2130,7 @@ Payload example for group:
     "created_at": "2024-01-24 16:27:40 UTC",
     "id": 25,
     "name": "acd",
-    "expires_at": "2024-01-26",
+    "expires_at": "2024-01-26"
   },
   "event_name": "expiring_access_token"
 }

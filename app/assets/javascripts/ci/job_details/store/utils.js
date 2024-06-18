@@ -16,6 +16,22 @@ const linesAfterOffset = (newLines = [], offset = -1) => {
   return newLines.filter((newLine) => newLine.offset > offset);
 };
 
+const TIMESTAMP_LENGTH = 27;
+const TIME_START = 11;
+const TIME_END = 19;
+/**
+ * Shortens timestamps in the form "2024-05-22T12:43:46.962646Z"
+ * and extracts the time from them, example: "12:43:46Z"
+ *
+ * If the timestamp appears malformed the full string is returned.
+ */
+const extractTime = (timestamp) => {
+  if (timestamp.length === TIMESTAMP_LENGTH) {
+    return `${timestamp.substring(TIME_START, TIME_END)}Z`;
+  }
+  return timestamp;
+};
+
 /**
  * Parses a series of trace lines from a job and returns lines and
  * sections of the log. Each line is annotated with a lineNumber.
@@ -48,6 +64,7 @@ export const logLinesParser = (
       offset,
       content,
       section,
+      timestamp,
       section_header: isHeader,
       section_footer: isFooter,
       section_duration: duration,
@@ -60,6 +77,7 @@ export const logLinesParser = (
         offset,
         lineNumber,
         content,
+        ...(timestamp ? { time: extractTime(timestamp) } : {}),
         ...(section ? { section } : {}),
         ...(isHeader ? { isHeader: true } : {}),
       });

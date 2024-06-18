@@ -41,9 +41,7 @@ module Gitlab
         when TagsFinder
           true
         when ::Repositories::TreeFinder
-          Feature.enabled?(:repository_tree_gitaly_pagination, project)
-        else
-          false
+          true
         end
       end
 
@@ -56,9 +54,7 @@ module Gitlab
         when TagsFinder
           true
         when ::Repositories::TreeFinder
-          Feature.enabled?(:repository_tree_gitaly_pagination, project)
-        else
-          false
+          true
         end
       end
 

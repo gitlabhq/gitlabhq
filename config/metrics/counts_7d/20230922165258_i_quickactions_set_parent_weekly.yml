@@ -2,8 +2,6 @@
 key_path: redis_hll_counters.quickactions.i_quickactions_set_parent_weekly
 name: quickactions_set_parent_weekly
 description: Count of WAU using the `/set_parent` quick action
-product_section: dev
-product_stage: plan
 product_group: product_planning
 value_type: number
 status: active

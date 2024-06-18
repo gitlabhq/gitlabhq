@@ -14,7 +14,7 @@ module Gitlab
           return unless args.slice(*@mutually_exclusive_arg_names).compact.size > 1
 
           arg_str = @mutually_exclusive_arg_names.map { |x| x.to_s.camelize(:lower) }.join(', ')
-          "only one of [#{arg_str}] arguments is allowed at the same time."
+          "Only one of [#{arg_str}] arguments is allowed at the same time."
         end
       end
     end

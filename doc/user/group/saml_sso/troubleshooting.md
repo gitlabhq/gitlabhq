@@ -21,7 +21,7 @@ This page contains possible solutions for problems you might encounter when usin
 SAML responses are base64 encoded, so we recommend the following browser plugins to decode them on the fly:
 
 - [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
-- [SAML Message Decoder](https://chrome.google.com/webstore/detail/saml-message-decoder/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
+- [SAML Message Decoder](https://chromewebstore.google.com/detail/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
 
 Pay specific attention to:
 
@@ -416,10 +416,12 @@ Additionally, see [troubleshooting users receiving a 404 after sign in](#users-r
 
 ## Message: The SAML response did not contain an email address. Either the SAML identity provider is not configured to send the attribute, or the identity provider directory does not have an email address value for your user
 
-This error appears when the SAML response does not contain the user's email address in an **email** or **mail** attribute.
-Ensure the SAML identity provider is configured to send a [supported mail attribute](../../../integration/saml.md).
+This error appears when:
 
-Examples:
+- the SAML response does not contain the user's email address in an **email** or **mail** attribute.
+- a user attempts to [link SAML](index.md#user-access-and-management) to their account but has not yet completed the [identity verification process](../../../security/identity_verification.md).
+
+Ensure the SAML identity provider is configured to send a [supported mail attribute](../../../integration/saml.md):
 
 ```xml
 <Attribute Name="email">

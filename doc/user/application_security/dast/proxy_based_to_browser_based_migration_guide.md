@@ -141,7 +141,7 @@ See the DAST version 5 [troubleshooting](browser/troubleshooting.md) documentati
 ## Changes to CI/CD variables
 
 The following table outlines migration actions required for each proxy-based analyzer CI/CD variable.
-See [configuration](browser/configuration) for more information on configuring DAST version 5.
+See [configuration](browser/configuration/index.md) for more information on configuring DAST version 5.
 
 | Proxy-based analyzer CI/CD variable  | Required action          | Notes                                                                                    |
 |:-------------------------------------|:-------------------------|:-----------------------------------------------------------------------------------------|

@@ -1,8 +1,6 @@
 ---
 key_path: counts.in_product_marketing_email_admin_verify_0_cta_clicked
 description: Total clicks on the admin_verify track's first email
-product_section: growth
-product_stage: growth
 product_group: activation
 value_type: number
 status: removed

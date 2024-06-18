@@ -13,6 +13,10 @@ module Gitlab
           end
         end
 
+        def relation_factory_params(relation_key, relation_index, data_hash)
+          super.merge({ import_source: ::Import::SOURCE_PROJECT_EXPORT_IMPORT })
+        end
+
         private
 
         def group_models

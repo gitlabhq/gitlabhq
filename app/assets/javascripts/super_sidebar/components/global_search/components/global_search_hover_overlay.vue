@@ -23,7 +23,7 @@ export default {
       <slot></slot>
     </span>
     <span
-      class="show-hover-layover-hint gl-opacity-0 gl-justify-content-end gl-align-items-center gl-display-none gl-sm-display-flex"
+      class="show-hover-layover-hint gl-opacity-0 gl-justify-content-end gl-align-items-center gl-hidden sm:gl-flex"
     >
       <span class="gl-text-gray-700 gl-whitespace-nowrap" data-testid="overlay-message">
         <gl-sprintf :message="textMessage">

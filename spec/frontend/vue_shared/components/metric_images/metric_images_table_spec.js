@@ -6,6 +6,7 @@ import merge from 'lodash/merge';
 import Vuex from 'vuex';
 import createStore from '~/vue_shared/components/metric_images/store';
 import MetricsImageTable from '~/vue_shared/components/metric_images/metric_images_table.vue';
+import MetricImageDetailsModal from '~/vue_shared/components/metric_images/metric_image_details_modal.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
 const defaultProps = {
@@ -45,17 +46,13 @@ describe('Metrics upload item', () => {
   const findCollapseButton = () => wrapper.find('[data-testid="collapse-button"]');
   const findMetricImageBody = () => wrapper.find('[data-testid="metric-image-body"]');
   const findModal = () => wrapper.findComponent(GlModal);
-  const findEditModal = () => wrapper.find('[data-testid="metric-image-edit-modal"]');
   const findDeleteButton = () => wrapper.find('[data-testid="delete-button"]');
   const findEditButton = () => wrapper.find('[data-testid="edit-button"]');
-  const findImageTextInput = () => wrapper.find('[data-testid="metric-image-text-field"]');
-  const findImageUrlInput = () => wrapper.find('[data-testid="metric-image-url-field"]');
-
+  const findImageDetailsModal = () => wrapper.findComponent(MetricImageDetailsModal);
   const closeModal = () => findModal().vm.$emit('hidden');
   const submitModal = () => findModal().vm.$emit('primary', mockEvent);
   const deleteImage = () => findDeleteButton().vm.$emit('click');
-  const closeEditModal = () => findEditModal().vm.$emit('hidden');
-  const submitEditModal = () => findEditModal().vm.$emit('primary', mockEvent);
+  const closeEditModal = () => findImageDetailsModal().vm.$emit('hidden');
   const editImage = () => findEditButton().vm.$emit('click');
 
   it('render the metrics image component', () => {
@@ -157,66 +154,29 @@ describe('Metrics upload item', () => {
   });
 
   describe('edit functionality', () => {
-    it('should open the delete modal when clicked', async () => {
-      mountComponent({ stubs: { GlModal: true } });
+    it('should open the metric image details dialog when clicked', async () => {
+      mountComponent({ stubs: { MetricImageDetailsModal: true } });
 
       editImage();
 
       await waitForPromises();
 
-      expect(findEditModal().attributes('visible')).toBe('true');
+      expect(findImageDetailsModal().attributes('visible')).toBe('true');
     });
 
-    describe('when the modal is open', () => {
-      beforeEach(() => {
-        mountComponent({
-          data() {
-            return { editModalVisible: true };
-          },
-          propsData: { urlText: 'test' },
-          stubs: { GlModal: true },
-        });
+    it('should close the metric image details dialog when cancelled', async () => {
+      mountComponent({
+        data() {
+          return { editModalVisible: true };
+        },
+        stubs: { MetricImageDetailsModal: true },
       });
 
-      it('should close the modal when cancelled', async () => {
-        closeEditModal();
+      closeEditModal();
 
-        await waitForPromises();
-        expect(findEditModal().attributes('visible')).toBeUndefined();
-      });
+      await waitForPromises();
 
-      it('should delete the image when selected', async () => {
-        const dispatchSpy = jest.spyOn(store, 'dispatch').mockImplementation(jest.fn());
-
-        submitEditModal();
-
-        await waitForPromises();
-
-        expect(dispatchSpy).toHaveBeenCalledWith('updateImage', {
-          imageId: defaultProps.id,
-          url: null,
-          urlText: 'test',
-        });
-      });
-
-      it('should clear edits when the modal is closed', async () => {
-        await findImageTextInput().setValue('test value');
-        await findImageUrlInput().setValue('http://www.gitlab.com');
-
-        expect(findImageTextInput().element.value).toBe('test value');
-        expect(findImageUrlInput().element.value).toBe('http://www.gitlab.com');
-
-        closeEditModal();
-
-        await waitForPromises();
-
-        editImage();
-
-        await waitForPromises();
-
-        expect(findImageTextInput().element.value).toBe('test');
-        expect(findImageUrlInput().element.value).toBe('');
-      });
+      expect(findImageDetailsModal().attributes('visible')).toBeUndefined();
     });
   });
 });

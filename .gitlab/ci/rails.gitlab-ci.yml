@@ -31,7 +31,9 @@ setup-test-env:
     paths:
       - ${TMP_TEST_FOLDER}/gitaly/_build/bin/
       - ${TMP_TEST_FOLDER}/gitaly/config.toml
+      - ${TMP_TEST_FOLDER}/gitaly/config.toml.transactions
       - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml
+      - ${TMP_TEST_FOLDER}/gitaly/gitaly2.config.toml.transactions
       - ${TMP_TEST_FOLDER}/gitaly/internal/
       - ${TMP_TEST_FOLDER}/gitaly/Makefile
       - ${TMP_TEST_FOLDER}/gitaly/praefect.config.toml
@@ -45,6 +47,7 @@ setup-test-env:
       - ${TMP_TEST_FOLDER}/repositories/
       - ${TMP_TEST_FOLDER}/second_storage/
       - ${TMP_TEST_GITLAB_WORKHORSE_PATH}/
+      - log/*.log
     when: always
 
 setup-test-env-fips:
@@ -302,6 +305,59 @@ rspec system pg14 praefect:
     - .praefect-with-db
     - .rspec-system-parallel
     - .rails:rules:praefect-with-db
+
+# Test jobs that run without Gitaly's transactions enabled. These will be removed once
+# transactions are always in use in Gitaly.
+rspec migration pg14 no_gitaly_transactions:
+  extends:
+    - rspec migration pg14
+    - .gitaly-without-transactions
+
+rspec background_migration pg14 no_gitaly_transactions:
+  extends:
+    - rspec background_migration pg14
+    - .gitaly-without-transactions
+
+rspec unit pg14 no_gitaly_transactions:
+  extends:
+    - rspec unit pg14
+    - .gitaly-without-transactions
+
+rspec integration pg14 no_gitaly_transactions:
+  extends:
+    - rspec integration pg14
+    - .gitaly-without-transactions
+
+rspec system pg14 no_gitaly_transactions:
+  extends:
+    - rspec system pg14
+    - .gitaly-without-transactions
+
+rspec-ee migration pg14 no_gitaly_transactions:
+  extends:
+    - rspec-ee migration pg14
+    - .gitaly-without-transactions
+
+rspec-ee background_migration pg14 no_gitaly_transactions:
+  extends:
+    - rspec-ee background_migration pg14
+    - .gitaly-without-transactions
+
+rspec-ee unit pg14 no_gitaly_transactions:
+  extends:
+    - rspec-ee unit pg14
+    - .gitaly-without-transactions
+
+rspec-ee integration pg14 no_gitaly_transactions:
+  extends:
+    - rspec-ee integration pg14
+    - .gitaly-without-transactions
+
+rspec-ee system pg14 no_gitaly_transactions:
+  extends:
+    - rspec-ee system pg14
+    - .gitaly-without-transactions
+
 
 # Dedicated job to test DB library code against PG13.
 # Note that these are already tested against PG13 in the `rspec unit pg13` / `rspec-ee unit pg13` jobs.

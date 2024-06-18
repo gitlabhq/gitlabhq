@@ -42,7 +42,10 @@ The following chart should help you determine your subscription model. Select
 the list item to go to the respective help page.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+  accTitle: My subscription
+  accDescr: Determine your subscription model and see its help page
 
 A(Is your user account on GitLab.com?)
 A --> B(Yes)

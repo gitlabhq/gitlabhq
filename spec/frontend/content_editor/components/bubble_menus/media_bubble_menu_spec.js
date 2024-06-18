@@ -22,21 +22,13 @@ import {
   PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML,
 } from '../../test_constants';
 
-const TIPTAP_AUDIO_HTML = `<p dir="auto">
-  <span class="media-container audio-container"><audio src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></audio><a href="https://gitlab.com/favicon.png" class="with-attachment-icon">gitlab favicon</a></span>
-</p>`;
+const TIPTAP_AUDIO_HTML = `<p dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></audio><a href="https://gitlab.com/favicon.png" class="with-attachment-icon">gitlab favicon</a></span></p>`;
 
-const TIPTAP_DIAGRAM_HTML = `<p dir="auto">
-  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon">
-</p>`;
+const TIPTAP_DIAGRAM_HTML = `<p dir="auto"><img src="https://gitlab.com/favicon.png" alt="gitlab favicon"></p>`;
 
-const TIPTAP_IMAGE_HTML = `<p dir="auto">
-  <img src="https://gitlab.com/favicon.png" alt="gitlab favicon">
-</p>`;
+const TIPTAP_IMAGE_HTML = `<p dir="auto"><img src="https://gitlab.com/favicon.png" alt="gitlab favicon"></p>`;
 
-const TIPTAP_VIDEO_HTML = `<p dir="auto">
-  <span class="media-container video-container"><video src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></video><a href="https://gitlab.com/favicon.png" class="with-attachment-icon">gitlab favicon</a></span>
-</p>`;
+const TIPTAP_VIDEO_HTML = `<p dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/favicon.png" controls="true" data-setup="{}" data-title="gitlab favicon"></video><a href="https://gitlab.com/favicon.png" class="with-attachment-icon">gitlab favicon</a></span></p>`;
 
 const createFakeEvent = () => ({ preventDefault: jest.fn(), stopPropagation: jest.fn() });
 
@@ -110,7 +102,7 @@ describe.each`
       tiptapEditor
         .chain()
         .insertContent(mediaHTML)
-        .setNodeSelection(4) // select the media
+        .setNodeSelection(1) // select the media
         .run();
 
       contentEditor.resolveUrl.mockResolvedValue(`/group1/project1/-/wikis/${filePath}`);

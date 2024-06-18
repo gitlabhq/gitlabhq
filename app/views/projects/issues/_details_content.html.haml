@@ -8,7 +8,7 @@
     #js-issuable-app{ data: { initial: issuable_initial_data(issuable).to_json,
       header_actions_data: issue_header_actions_data(@project, issuable, current_user, @issuable_sidebar).to_json } }
       .title-container
-        %h1.title.page-title.gl-font-size-h-display= markdown_field(issuable, :title)
+        %h1.gl-heading-1{ class: '!gl-m-0' }= markdown_field(issuable, :title)
       - if issuable.description.present?
         .description
           .md= markdown_field(issuable, :description)

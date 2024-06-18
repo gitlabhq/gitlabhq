@@ -33,7 +33,7 @@ export default {
     placement="top"
   >
     <p>
-      <label for="push-to-create-tip" class="gl-font-weight-normal">
+      <label for="push-to-create-tip" class="gl-font-normal">
         {{ $options.i18n.labelText }}
       </label>
     </p>

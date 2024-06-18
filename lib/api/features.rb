@@ -20,7 +20,7 @@ module API
         when '0', 'false'
           false
         else
-          raise BadValueError unless params[:value].match? /^\d+(\.\d+)?$/
+          raise BadValueError unless params[:value].match?(/^\d+(\.\d+)?$/)
 
           # https://github.com/jnunemaker/flipper/blob/master/lib/flipper/typecast.rb#L47
           if params[:value].to_s.include?('.')

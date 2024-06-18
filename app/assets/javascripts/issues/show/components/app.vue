@@ -612,6 +612,7 @@ export default {
       />
 
       <edited-component
+        class="gl-mt-4"
         :task-completion-status="state.taskCompletionStatus"
         :updated-at="state.updatedAt"
         :updated-by-name="state.updatedByName"

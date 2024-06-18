@@ -41,7 +41,7 @@ export default {
       v-if="feature.image_url"
       :href="feature.documentation_link"
       target="_blank"
-      class="gl-display-block"
+      class="gl-block"
       data-testid="whats-new-image-link"
       data-track-action="click_whats_new_item"
       :data-track-label="feature.name"
@@ -57,7 +57,7 @@ export default {
     <gl-link
       :href="feature.documentation_link"
       target="_blank"
-      class="whats-new-item-title-link gl-display-block gl-mt-4 gl-mb-1"
+      class="whats-new-item-title-link gl-block gl-mt-4 gl-mb-1"
       data-track-action="click_whats_new_item"
       :data-track-label="feature.name"
       :data-track-property="feature.documentation_link"
@@ -79,7 +79,7 @@ export default {
     </div>
     <div
       v-safe-html:[$options.safeHtmlConfig]="feature.description"
-      class="gl-pt-3 gl-line-height-20"
+      class="gl-pt-3 gl-leading-20"
     ></div>
     <gl-button
       :href="feature.documentation_link"

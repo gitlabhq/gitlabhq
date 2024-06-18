@@ -43,12 +43,11 @@ RSpec.shared_examples 'User updates wiki page' do
 
       first(:link, text: 'three').click
 
-      expect(find('[data-testid="wiki-page-title"]')).to have_content('three')
+      expect(find('[data-testid="page-heading"]')).to have_content('three')
 
       click_on('Edit')
 
       expect(page).to have_current_path(%r{one/two/three-test}, ignore_query: true)
-      expect(page).to have_content('Edit Page')
 
       fill_in('Content', with: 'Updated Wiki Content')
       click_on('Save changes')
@@ -65,7 +64,7 @@ RSpec.shared_examples 'User updates wiki page' do
     before do
       visit(wiki_path(wiki))
 
-      click_link('Edit')
+      click_on('Edit')
     end
 
     it 'updates a page', :js do
@@ -78,6 +77,46 @@ RSpec.shared_examples 'User updates wiki page' do
       expect(page).to have_content('Home')
       expect(page).to have_content("Last edited by #{user.name}")
       expect(page).to have_content('My awesome wiki!')
+    end
+
+    it 'updates entry in redirects.yml file on rename' do
+      wiki.repository.update_file(
+        user, '.gitlab/redirects.yml',
+        "home2: home\nfoo: bar",
+        message: 'Add redirect', branch_name: 'master'
+      )
+
+      fill_in(:wiki_title, with: 'home2')
+      fill_in(:wiki_content, with: 'My awesome wiki!')
+      click_button('Save changes')
+
+      expect(page).to have_content('Home')
+      expect(page).to have_content('My awesome wiki!')
+
+      expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq("---\nfoo: bar\nhome: home2\n")
+    end
+
+    context 'when wiki_redirection feature flag is disabled' do
+      before do
+        stub_feature_flags(wiki_redirection: false)
+      end
+
+      it 'does not modify the redirects.yml file' do
+        wiki.repository.update_file(
+          user, '.gitlab/redirects.yml',
+          "home2: home\nfoo: bar",
+          message: 'Add redirect', branch_name: 'master'
+        )
+
+        fill_in(:wiki_title, with: 'home2')
+        fill_in(:wiki_content, with: 'My awesome wiki!')
+        click_button('Save changes')
+
+        expect(page).to have_content('Home')
+        expect(page).to have_content('My awesome wiki!')
+
+        expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq("home2: home\nfoo: bar")
+      end
     end
 
     it 'saves page content in local storage if the user navigates away', :js do
@@ -104,9 +143,16 @@ RSpec.shared_examples 'User updates wiki page' do
       expect(page).to have_field('wiki[message]', with: 'Update Wiki title')
     end
 
-    it "disables the submit button", :js do
+    it "does not disable the submit button", :js do
       page.within(".wiki-form") do
         fill_in(:wiki_content, with: "")
+        expect(page).to have_button('Save changes', disabled: false)
+      end
+    end
+
+    it "disables the submit button", :js do
+      page.within(".wiki-form") do
+        fill_in(:wiki_title, with: "")
         expect(page).to have_button('Save changes', disabled: true)
       end
     end

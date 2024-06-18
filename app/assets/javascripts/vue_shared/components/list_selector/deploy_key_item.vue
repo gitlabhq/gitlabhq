@@ -36,7 +36,7 @@ export default {
   >
     <gl-icon name="key" />
     <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
-      <span class="gl-font-weight-bold">{{ title }}</span>
+      <span class="gl-font-bold">{{ title }}</span>
       <span class="gl-text-gray-600">@{{ owner }}</span>
     </span>
 

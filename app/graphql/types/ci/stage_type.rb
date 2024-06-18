@@ -33,7 +33,7 @@ module Types
           by_pipeline = keys.group_by(&:pipeline)
           include_needs = keys.any? do |k|
             k.requires?(%i[nodes jobs nodes needs]) ||
-            k.requires?(%i[nodes jobs nodes previousStageJobsOrNeeds])
+              k.requires?(%i[nodes jobs nodes previousStageJobsOrNeeds])
           end
 
           by_pipeline.each do |pl, key_group|

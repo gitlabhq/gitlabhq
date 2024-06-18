@@ -10,12 +10,12 @@
 
 ## Author's checklist
 
-- [ ] Optional. Consider taking [the GitLab Technical Writing Fundamentals course](https://about.gitlab.com/handbook/product/ux/technical-writing/fundamentals/).
+- [ ] Optional. Consider taking [the GitLab Technical Writing Fundamentals course](https://handbook.gitlab.com/handbook/product/ux/technical-writing/fundamentals/).
 - [ ] Follow the:
   - [Documentation process](https://docs.gitlab.com/ee/development/documentation/workflow.html).
   - [Documentation guidelines](https://docs.gitlab.com/ee/development/documentation/).
   - [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
-- [ ] If you're adding a new page, add the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges) under the H1 topic title.
+- [ ] If you're adding a new page, add the [product availability details](https://docs.gitlab.com/ee/development/documentation/styleguide/availability_details.html) under the H1 topic title.
 - [ ] If you are a GitLab team member, [request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on:
     - The documentation page's [metadata](https://docs.gitlab.com/ee/development/documentation/metadata.html).
     - The [associated Technical Writer](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments).
@@ -47,5 +47,5 @@ If you aren't sure which tech writer to ask, use [roulette](https://gitlab-org.g
     - If the content still needs to be edited for topic types, you can create a follow-up issue with the ~"docs-technical-debt" label.
 - [ ] Review by assigned maintainer, who can always request/require the reviews above. Maintainer's review can occur before or after a technical writer review.
 
-/label ~documentation ~"type::maintenance" ~"docs::improvement" ~"maintenance::refactor"
+/label ~documentation ~"type::maintenance" ~"docs::improvement" ~"maintenance::refactor" ~"docs-only"
 /assign me

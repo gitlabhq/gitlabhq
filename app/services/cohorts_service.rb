@@ -57,7 +57,7 @@ class CohortsService
     month_totals =
       all_months
         .map { |activity_month| counts_by_month[[registration_month, activity_month]] }
-        .reduce([]) { |result, total| result << result.last.to_i + total.to_i }
+        .reduce([]) { |result, total| result << (result.last.to_i + total.to_i) }
         .reverse
 
     overall_total = month_totals.first

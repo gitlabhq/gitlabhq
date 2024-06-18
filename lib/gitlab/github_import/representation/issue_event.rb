@@ -7,9 +7,9 @@ module Gitlab
         include Representable
 
         expose_attribute :id, :actor, :event, :commit_id, :label_title, :old_title, :new_title,
-                         :milestone_title, :issue, :source, :assignee, :review_requester,
-                         :requested_reviewer, :created_at, :updated_at, :submitted_at,
-                         :state, :body
+          :milestone_title, :issue, :source, :assignee, :review_requester,
+          :requested_reviewer, :created_at, :updated_at, :submitted_at,
+          :state, :body
 
         # attributes - A Hash containing the event details. The keys of this
         #              Hash (and any nested hashes) must be symbols.

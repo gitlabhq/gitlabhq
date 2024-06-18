@@ -112,6 +112,14 @@ module API
       def validate_projects_api_rate_limit_for_unauthenticated_users!
         check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: [ip_address]) if current_user.blank?
       end
+
+      def validate_projects_api_rate_limit!
+        if current_user && Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:projects_api)
+        else
+          validate_projects_api_rate_limit_for_unauthenticated_users!
+        end
+      end
     end
 
     helpers do
@@ -125,21 +133,21 @@ module API
         use :pagination
 
         optional :simple, type: Boolean, default: false,
-                          desc: 'Return only the ID, URL, name, and path of each project'
+          desc: 'Return only the ID, URL, name, and path of each project'
       end
 
       params :sort_params do
         optional :order_by, type: String,
-                            values: %w[id name path created_at updated_at last_activity_at similarity] + Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS,
-                            default: 'created_at', desc: "Return projects ordered by field. #{Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS.join(', ')} are only available to admins. Similarity is available when searching and is limited to projects the user has access to."
+          values: %w[id name path created_at updated_at last_activity_at similarity] + Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS,
+          default: 'created_at', desc: "Return projects ordered by field. #{Helpers::ProjectsHelpers::STATISTICS_SORT_PARAMS.join(', ')} are only available to admins. Similarity is available when searching and is limited to projects the user has access to."
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return projects sorted in ascending and descending order'
+          desc: 'Return projects sorted in ascending and descending order'
       end
 
       params :filter_params do
         optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
-                              desc: 'Limit by visibility'
+          desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of projects matching the search criteria'
         optional :search_namespaces, type: Boolean, desc: "Include ancestor namespaces when matching search criteria"
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
@@ -247,6 +255,10 @@ module API
         use :with_custom_attributes
       end
       get ":user_id/projects", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:user_projects_api)
+        end
+
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -267,9 +279,13 @@ module API
         use :pagination
 
         optional :simple, type: Boolean, default: false,
-                          desc: 'Return only the ID, URL, name, and path of each project'
+          desc: 'Return only the ID, URL, name, and path of each project'
       end
       get ":user_id/contributed_projects", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:user_contributed_projects_api)
+        end
+
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -289,6 +305,10 @@ module API
         use :statistics_params
       end
       get ":user_id/starred_projects", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:user_starred_projects_api)
+        end
+
         user = find_user(params[:user_id])
         not_found!('User') unless user
 
@@ -315,7 +335,7 @@ module API
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/211495
       get feature_category: :groups_and_projects, urgency: :low do
-        validate_projects_api_rate_limit_for_unauthenticated_users!
+        validate_projects_api_rate_limit!
         validate_updated_at_order_and_filter!
 
         present_projects load_projects
@@ -351,8 +371,8 @@ module API
 
         if project.saved?
           present_project project, with: Entities::Project,
-                                   user_can_admin_project: can?(current_user, :admin_project, project),
-                                   current_user: current_user
+            user_can_admin_project: can?(current_user, :admin_project, project),
+            current_user: current_user
         else
           if project.errors[:limit_reached].present?
             error!(project.errors[:limit_reached], 403)
@@ -399,8 +419,8 @@ module API
 
         if project.saved?
           present_project project, with: Entities::Project,
-                                   user_can_admin_project: can?(current_user, :admin_project, project),
-                                   current_user: current_user
+            user_can_admin_project: can?(current_user, :admin_project, project),
+            current_user: current_user
         else
           forbidden! if project.errors[:import_source_disabled].present?
 
@@ -437,10 +457,14 @@ module API
         use :with_custom_attributes
 
         optional :license, type: Boolean, default: false,
-                           desc: 'Include project license data'
+          desc: 'Include project license data'
       end
       # TODO: Set higher urgency https://gitlab.com/gitlab-org/gitlab/-/issues/357622
       get ":id", feature_category: :groups_and_projects, urgency: :low do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:project_api)
+        end
+
         options = {
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           current_user: current_user,
@@ -570,8 +594,10 @@ module API
 
         if result[:status] == :success
           present_project user_project, with: Entities::Project,
-                                        user_can_admin_project: can?(current_user, :admin_project, user_project),
-                                        current_user: current_user
+            user_can_admin_project: can?(current_user, :admin_project, user_project),
+            current_user: current_user
+        elsif result[:status] == :api_error
+          render_api_error!(result[:message], 400)
         else
           render_validation_error!(user_project)
         end
@@ -912,11 +938,11 @@ module API
         optional :search, type: String, desc: 'Return list of groups matching the search criteria', documentation: { example: 'group' }
         optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
         optional :with_shared, type: Boolean, default: false,
-                               desc: 'Include shared groups'
+          desc: 'Include shared groups'
         optional :shared_visible_only, type: Boolean, default: false,
-                                       desc: 'Limit to shared groups user has access to'
+          desc: 'Limit to shared groups user has access to'
         optional :shared_min_access_level, type: Integer, values: Gitlab::Access.all_values,
-                                           desc: 'Limit returned shared groups by minimum access level to the project'
+          desc: 'Limit returned shared groups by minimum access level to the project'
         use :pagination
       end
       get ':id/groups', feature_category: :source_code_management do

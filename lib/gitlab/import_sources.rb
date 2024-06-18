@@ -45,18 +45,6 @@ module Gitlab
       def import_table
         IMPORT_TABLE
       end
-
-      def map_import_source_names_to_ints_for_rows(resources)
-        resources.each do |resource|
-          next unless resource['imported_from']
-
-          resource['imported_from'] = import_source_name_to_int(resource['imported_from'])
-        end
-      end
-
-      def import_source_name_to_int(name)
-        ::Import::HasImportSource::IMPORT_SOURCES[name.to_sym]
-      end
     end
   end
 end

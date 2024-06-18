@@ -82,7 +82,7 @@ describe('Repository last commit component', () => {
     });
 
     it('renders commit description collapsed by default', () => {
-      expect(findCommitRowDescription().classes('gl-display-block!')).toBe(false);
+      expect(findCommitRowDescription().classes('!gl-block')).toBe(false);
       expect(findTextExpander().classes('open')).toBe(false);
       expect(findTextExpander().props('selected')).toBe(false);
     });
@@ -91,7 +91,7 @@ describe('Repository last commit component', () => {
       findTextExpander().vm.$emit('click');
       await nextTick();
 
-      expect(findCommitRowDescription().classes('gl-display-block!')).toBe(true);
+      expect(findCommitRowDescription().classes('!gl-block')).toBe(true);
       expect(findTextExpander().classes('open')).toBe(true);
       expect(findTextExpander().props('selected')).toBe(true);
     });

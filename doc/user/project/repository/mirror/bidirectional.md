@@ -172,8 +172,6 @@ settings:
 - Use the `unknown_git` user as the commit author, if the GitLab user doesn't exist in
   Perforce Helix.
 
-Read about [Git Fusion settings on Perforce.com](https://www.perforce.com/manuals/git-fusion/Content/Git-Fusion/section_vss_bdw_w3.html#section_zdp_zz1_3l).
-
 ## Related topics
 
 - [Troubleshooting](troubleshooting.md) for repository mirroring.

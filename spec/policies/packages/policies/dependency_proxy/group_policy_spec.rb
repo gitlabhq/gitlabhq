@@ -6,7 +6,7 @@ RSpec.describe Packages::Policies::DependencyProxy::GroupPolicy, feature_categor
   subject { described_class.new(auth_token, group.dependency_proxy_for_containers_policy_subject) }
 
   let_it_be(:guest) { create(:user) }
-  let_it_be(:non_group_member) { create(:user) }
+  let_it_be_with_reload(:non_group_member) { create(:user) }
   let_it_be(:group, refind: true) { create(:group, :private, :owner_subgroup_creation_only, guests: guest) }
   let_it_be(:current_user) { guest }
 
@@ -88,6 +88,30 @@ RSpec.describe Packages::Policies::DependencyProxy::GroupPolicy, feature_categor
           end
 
           it_behaves_like 'allows dependency proxy read access'
+        end
+      end
+
+      context 'with all other user types' do
+        User::USER_TYPES.except(:human, :project_bot).each_value do |user_type|
+          context "with user_type #{user_type}" do
+            let_it_be(:auth_token) { create(:personal_access_token, user: non_group_member) }
+
+            before do
+              non_group_member.update!(user_type: user_type)
+            end
+
+            context 'when the user has sufficient access' do
+              before do
+                group.add_guest(non_group_member)
+              end
+
+              it_behaves_like 'allows dependency proxy read access'
+            end
+
+            context 'when the user does not have sufficient access' do
+              it_behaves_like 'disallows dependency proxy read access'
+            end
+          end
         end
       end
     end

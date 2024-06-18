@@ -1,0 +1,13 @@
+- title: "Replace `threshold` with `maxretries` for container registry notifications"
+  announcement_milestone: "17.1"
+  removal_milestone: "18.0"
+  breaking_change: true
+  reporter: trizzi
+  stage: Package
+  issue_url: https://gitlab.com/gitlab-org/container-registry/-/issues/1243
+  body: |
+    You can configure the container registry to send [webhook notifications](https://docs.gitlab.com/ee/administration/packages/container_registry.html#configure-container-registry-notifications) in response to events happening in the registry. The configuration uses the `threshold` and `backoff` parameters to specify how many failures are allowed before backing off for a period of time before retrying.
+
+    The problem is that the event will be held in memory forever until it is successful or the registry is shut down. This is not ideal as it can cause high memory and CPU usage on the registry side if the events are not sent properly. It will also delay any new events added to the queue of events.
+
+    A new `maxretries` parameter has been added to control how many times an event will be retried before dropping the event. As such, we have deprecated the `threshold` parameter in favor of `maxretries` so that events are not held in memory forever.

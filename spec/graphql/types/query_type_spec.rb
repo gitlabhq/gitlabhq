@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
+  include GraphqlHelpers
+
   include_context 'with FOSS query type fields'
 
   it 'is called Query' do
@@ -163,6 +165,16 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
       is_expected.to have_graphql_arguments(:integrationName)
       is_expected.to have_graphql_type(Types::Integrations::ExclusionType.connection_type)
       is_expected.to have_graphql_resolver(Resolvers::Integrations::ExclusionsResolver)
+    end
+  end
+
+  describe 'featureFlagEnabled field' do
+    subject { described_class.fields['featureFlagEnabled'] }
+
+    it 'returns feature flag status', :aggregate_failures do
+      is_expected.to have_graphql_type(GraphQL::Types::Boolean.to_non_null_type)
+      is_expected.to have_graphql_arguments(:name)
+      is_expected.to have_graphql_resolver(Resolvers::FeatureFlagResolver)
     end
   end
 end

@@ -583,23 +583,15 @@ class Commit
   end
 
   def branches_containing(limit: 0, exclude_tipped: false)
-    # WARNING: This argument can be confusing, if there is a limit.
-    # for example set the limit to 5 and in the 5 out a total of 25 refs there is 2 tipped refs,
-    # then the method will only 3 refs, even though there is more.
     excluded = exclude_tipped ? tipping_branches : []
 
-    refs = repository.branch_names_contains(id, limit: limit) || []
-    refs - excluded
+    repository.branch_names_contains(id, limit: limit, exclude_refs: excluded) || []
   end
 
   def tags_containing(limit: 0, exclude_tipped: false)
-    # WARNING: This argument can be confusing, if there is a limit.
-    # for example set the limit to 5 and in the 5 out a total of 25 refs there is 2 tipped refs,
-    # then the method will only 3 refs, even though there is more.
     excluded = exclude_tipped ? tipping_tags : []
 
-    refs = repository.tag_names_contains(id, limit: limit) || []
-    refs - excluded
+    repository.tag_names_contains(id, limit: limit, exclude_refs: excluded) || []
   end
 
   private

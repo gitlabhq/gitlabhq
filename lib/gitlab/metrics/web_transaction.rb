@@ -80,7 +80,7 @@ module Gitlab
       def labels_from_controller
         controller = @env[CONTROLLER_KEY]
 
-        action = "#{controller.action_name}"
+        action = controller.action_name.to_s
 
         # Devise exposes a method called "request_format" that does the below.
         # However, this method is not available to all controllers (e.g. certain

@@ -3,8 +3,6 @@ data_category: operational
 key_path: counts.package_events_i_package_push_package_by_deploy_token
 description: A count of packages that have been published to the package registry
   using a deploy token
-product_section: ops
-product_stage: package
 product_group: package_registry
 value_type: number
 status: active

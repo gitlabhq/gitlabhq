@@ -62,6 +62,11 @@ domains:
       - permissions
       - system_access
 
+  Backup:
+    description: Backup and restore
+    feature_categories:
+      - backup_restore
+
   Boards:
     description:
     feature_categories:
@@ -112,7 +117,7 @@ domains:
   DependencyProxy:
     description:
     feature_categories:
-      - dependency_proxy
+      - virtual_registry
       - package_registry
 
   DesignManagement:
@@ -137,10 +142,8 @@ domains:
     description:
     feature_categories:
       - seat_cost_management
-      - saas_provisioning
-      - sm_provisioning
+      - plan_provisioning
       - subscription_management
-      - purchase
 
   Import:
     description:
@@ -194,6 +197,14 @@ domains:
     feature_categories:
       - navigation
 
+  Notes:
+    description: Notes, discussions on issuables and abuse reports
+    feature_categories:
+      - team_planning
+      - portfolio_management
+      - code_review_workflow
+      - insider_threat
+
   Observability:
     description:
     feature_categories:
@@ -245,20 +256,25 @@ domains:
       - source_code_management
       - gitaly
 
+  Sbom:
+    description: SBOM related ingestion
+    feature_categories:
+      - software_composition_analysis
+      - dependency_management
+
   Search:
     description: Code and content global search feature, including RAG, Elasticsearch and Zoekt integrations.
     feature_categories:
       - global_search
 
   Security:
-    description: Manage and execute security scanners and policies 
+    description: Manage and execute security scanners and policies
     feature_categories:
       - container_scanning
       - dynamic_application_security_testing
       - security_policy_management
       - software_composition_analysis
       - static_application_security_testing
-      - vulnerability_management
 
   ServiceDesk:
     description:
@@ -291,6 +307,11 @@ domains:
     feature_categories:
       - consumables_cost_management
 
+  Vulnerabilities:
+    description: Vulnerability management
+    feature_categories:
+      - vulnerability_management
+
   WebHooks:
     description: Outbound integration of GitLab with external tools and workflows
     feature_categories:
@@ -319,7 +340,9 @@ domains:
 # This is where all shared concepts live, from Base classes to utilities.
 # Modules from the platform layer could potentially be extracted as gems.
 platform:
-  Gitlab::Database:
-    description: Utilities for GitLab Rails persistence layer built for Postgres database
+  Gitlab:
+    description: Platform layer containing infrastructure and technical concerns.
+      For example observability tools, generic base classes, utilities, database helpers, etc.
+      Each functionality in this layer should be isolated and extracted into gems.
   Banzai:
     description: Parsing and rendering for GitLab Flavored Markdown

@@ -22,7 +22,7 @@ module Gitlab
       def create_fk_index_migration
         migration_template(
           '../templates/foreign_key_index.rb.template',
-         fk_index_file_name)
+          fk_index_file_name)
       end
 
       def create_fk_definition_migration

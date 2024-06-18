@@ -12,12 +12,22 @@ RSpec.describe Gitlab::Database::Migrations::MilestoneMixin, feature_category: :
   end
 
   let(:migration_mixin) do
-    Class.new(Gitlab::Database::Migration[2.2])
+    Class.new(Gitlab::Database::Migration[2.2]) do
+      @_defining_file = 'db/migrate/00000000000000_example.rb'
+    end
   end
 
   let(:migration_mixin_version) do
     Class.new(Gitlab::Database::Migration[2.2]) do
       milestone '16.4'
+      @_defining_file = 'db/migrate/00000000000000_example.rb'
+    end
+  end
+
+  let(:migration_mixin_version_post) do
+    Class.new(Gitlab::Database::Migration[2.2]) do
+      milestone '16.4'
+      @_defining_file = 'db/post_migrate/00000000000000_example.rb'
     end
   end
 
@@ -30,7 +40,7 @@ RSpec.describe Gitlab::Database::Migrations::MilestoneMixin, feature_category: :
   context 'when the mixin is included' do
     context 'when a milestone is not specified' do
       it "raises MilestoneNotSetError" do
-        expect { migration_mixin.new(4, 4, :regular) }.to raise_error(
+        expect { migration_mixin.new(4, 4) }.to raise_error(
           "#{described_class}::MilestoneNotSetError".constantize
         )
       end
@@ -38,13 +48,25 @@ RSpec.describe Gitlab::Database::Migrations::MilestoneMixin, feature_category: :
 
     context 'when a milestone is specified' do
       it "does not raise an error" do
-        expect { migration_mixin_version.new(4, 4, :regular) }.not_to raise_error
+        expect { migration_mixin_version.new(4, 4) }.not_to raise_error
       end
     end
 
     context 'when initialize arguments are not provided' do
       it "does not raise an error" do
         expect { migration_mixin_version.new }.not_to raise_error
+      end
+    end
+
+    context "when it's a regular migration" do
+      it 'is a regular migration' do
+        expect(migration_mixin_version.new(4, 4).version.type).to eq(:regular)
+      end
+    end
+
+    context "when it's a post-deployment migration" do
+      it 'is a regular migration' do
+        expect(migration_mixin_version_post.new(4, 4).version.type).to eq(:post)
       end
     end
   end

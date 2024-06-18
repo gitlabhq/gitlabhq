@@ -271,6 +271,8 @@ export const Tracker = {
         if (window.glClient) {
           window.glClient?.setReferrerUrl(pageLinks.referrer);
         }
+      } else {
+        window.snowplow('setReferrerUrl', window.gl?.maskedDefaultReferrerUrl);
       }
     }
 

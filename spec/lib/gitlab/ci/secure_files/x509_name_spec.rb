@@ -6,12 +6,12 @@ RSpec.describe Gitlab::Ci::SecureFiles::X509Name do
   describe '.parse' do
     it 'parses an X509Name object into a hash format' do
       sample = OpenSSL::X509::Name.new([
-                                         ['C', 'Test Country'],
+        ['C', 'Test Country'],
                                          ['O', 'Test Org Name'],
                                          ['OU', 'Test Org Unit'],
                                          ['CN', 'Test Common Name'],
                                          ['UID', 'Test UID']
-                                       ])
+      ])
 
       parsed_sample = described_class.parse(sample)
 

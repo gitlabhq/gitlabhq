@@ -29,8 +29,8 @@ RSpec.describe Gitlab::Graphql::Tracers::MetricsTracer do
 
   describe 'when used as tracer and query is executed' do
     where(:duration, :expected_success) do
-      0.1                                                          | true
-      0.1 + ::Gitlab::EndpointAttributes::DEFAULT_URGENCY.duration | false
+      0.1 | true
+      (0.1 + ::Gitlab::EndpointAttributes::DEFAULT_URGENCY.duration) | false
     end
 
     with_them do

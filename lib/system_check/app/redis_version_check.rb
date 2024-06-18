@@ -25,7 +25,7 @@ module SystemCheck
           @custom_error_message = "Your Redis version #{redis_version} is not supported anymore. Update your Redis server to a version >= #{RECOMMENDED_REDIS_VERSION}"
           status = false
         elsif Gem::Version.new(redis_version) < Gem::Version.new(RECOMMENDED_REDIS_VERSION)
-          @custom_error_message = "Support for your Redis version #{redis_version} has been deprecated and will be removed soon. Update your Redis server to a version >= #{RECOMMENDED_REDIS_VERSION}"
+          @custom_error_message = "Your Redis version #{redis_version} has reached end-of-life (EOL). Update your Redis server to a version >= #{RECOMMENDED_REDIS_VERSION}"
           status = false
         end
 

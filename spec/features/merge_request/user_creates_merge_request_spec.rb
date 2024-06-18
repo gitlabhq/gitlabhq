@@ -52,7 +52,7 @@ RSpec.describe 'User creates a merge request', :js, feature_category: :code_revi
         project.repository.create_branch("<img/src='x'/onerror=alert('oops')>", 'master')
       end
 
-      it 'does not execute the suspicious branch name' do
+      it 'does not execute the suspicious branch name', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/447484' do
         visit(project_new_merge_request_path(project))
 
         compare_source_and_target("<img/src='x'/onerror=alert('oops')>", 'feature')

@@ -81,6 +81,7 @@ module JiraIntegrationHelpers
 
   def stub_jira_integration_test
     WebMock.stub_request(:get, /serverInfo/).to_return(body: { url: 'http://url' }.to_json)
+    WebMock.stub_request(:get, /myself/).to_return(body: { accountType: 'atlassian' }.to_json)
   end
 
   def stub_jira_urls(issue_id)

@@ -11,7 +11,6 @@ module Gitlab
       InvalidError = Class.new(RuntimeError)
 
       attr_reader :path
-      attr_reader :attributes
 
       def initialize(path, opts = {})
         @path = path
@@ -19,19 +18,50 @@ module Gitlab
       end
 
       def key
-        key_path
+        @attributes[:key_path]
       end
-
+      alias_method :key_path, :key
       def events
         events_from_new_structure || events_from_old_structure || {}
       end
 
+      def event_selection_rules
+        return [] unless @attributes[:events]
+
+        @event_selection_rules ||= @attributes[:events].map do |event|
+          EventSelectionRule.new(
+            name: event[:name],
+            time_framed: time_framed?,
+            filter: event[:filter],
+            unique_identifier_name: event[:unique]&.split('.')&.first&.to_sym
+          )
+        end
+      end
+
       def instrumentation_class
         if internal_events?
-          events.each_value.first.nil? ? "TotalCountMetric" : "RedisHLLMetric"
+          events.each_value.first.nil? ? "TotalCountMetric" : "UniqueCountMetric"
         else
-          attributes[:instrumentation_class]
+          @attributes[:instrumentation_class]
         end
+      end
+
+      # This method can be removed when the refactoring is complete. It is only here to
+      # limit access to @attributes in a gradual manner.
+      def raw_attributes
+        @attributes
+      end
+
+      def status
+        @attributes[:status]
+      end
+
+      def value_json_schema
+        @attributes[:value_json_schema]
+      end
+
+      def value_type
+        @attributes[:value_type]
       end
 
       def to_context
@@ -41,7 +71,7 @@ module Gitlab
       end
 
       def to_h
-        attributes
+        @attributes
       end
 
       def json_schema
@@ -53,15 +83,15 @@ module Gitlab
       def json_schema_path
         return '' unless has_json_schema?
 
-        Rails.root.join(attributes[:value_json_schema])
+        Rails.root.join(@attributes[:value_json_schema])
       end
 
       def has_json_schema?
-        attributes[:value_type] == 'object' && attributes[:value_json_schema].present?
+        @attributes[:value_type] == 'object' && @attributes[:value_json_schema].present?
       end
 
       def validation_errors
-        SCHEMA.validate(attributes.deep_stringify_keys).map do |error|
+        SCHEMA.validate(@attributes.deep_stringify_keys).map do |error|
           <<~ERROR_MSG
             --------------- VALIDATION ERROR ---------------
             Metric file: #{path}
@@ -72,16 +102,40 @@ module Gitlab
         end
       end
 
-      def category_to_lowercase
-        attributes[:data_category]&.downcase!
+      def product_group
+        @attributes[:product_group]
+      end
+
+      def time_frame
+        @attributes[:time_frame]
+      end
+
+      def time_framed?
+        %w[7d 28d].include?(time_frame)
+      end
+
+      def active?
+        status == 'active'
+      end
+
+      def broken?
+        status == 'broken'
       end
 
       def available?
-        AVAILABLE_STATUSES.include?(attributes[:status])
+        AVAILABLE_STATUSES.include?(status)
       end
 
       def valid_service_ping_status?
-        VALID_SERVICE_PING_STATUSES.include?(attributes[:status])
+        VALID_SERVICE_PING_STATUSES.include?(status)
+      end
+
+      def data_category
+        @attributes[:data_category]
+      end
+
+      def data_source
+        @attributes[:data_source]
       end
 
       def internal_events?
@@ -104,12 +158,12 @@ module Gitlab
         end
 
         def not_removed
-          all.select { |definition| definition.attributes[:status] != 'removed' }.index_by(&:key_path)
+          all.select { |definition| definition.status != 'removed' }.index_by(&:key_path)
         end
 
         def with_instrumentation_class
           all.select do |definition|
-            (definition.internal_events? || definition.attributes[:instrumentation_class].present?) && definition.available?
+            (definition.internal_events? || definition.instrumentation_class.present?) && definition.available?
           end
         end
 
@@ -134,7 +188,7 @@ module Gitlab
           definition = YAML.safe_load(definition)
           definition.deep_symbolize_keys!
 
-          self.new(path, definition).tap(&:category_to_lowercase)
+          self.new(path, definition)
         rescue StandardError => e
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(InvalidError.new(e.message))
         end
@@ -154,23 +208,15 @@ module Gitlab
 
       private
 
-      def method_missing(method, *args)
-        attributes[method] || super
-      end
-
-      def respond_to_missing?(method, *args)
-        attributes[method].present? || super
-      end
-
       def events_from_new_structure
-        events = attributes[:events]
+        events = @attributes[:events]
         return unless events
 
         events.to_h { |event| [event[:name], event[:unique]&.to_sym] }
       end
 
       def events_from_old_structure
-        options_events = attributes.dig(:options, :events)
+        options_events = @attributes.dig(:options, :events)
         return unless options_events
 
         options_events.index_with { nil }

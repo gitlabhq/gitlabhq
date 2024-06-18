@@ -15,6 +15,7 @@ describe('content_editor', () => {
   const buildWrapper = ({ markdown = '', listeners = {} } = {}) => {
     wrapper = mountExtended(ContentEditor, {
       propsData: {
+        markdownDocsPath: '',
         renderMarkdown,
         uploadsPath: '/',
         markdown,

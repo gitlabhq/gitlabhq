@@ -132,13 +132,13 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
         it 'returns navigation with badges' do
           expect(helper.issuables_state_counter_text(:issues, :opened, true))
-            .to eq('<span>Open</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-display-none gl-sm-display-inline-flex">42</span>')
+            .to eq('<span>Open</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-hidden sm:gl-inline-flex">42</span>')
           expect(helper.issuables_state_counter_text(:issues, :closed, true))
-            .to eq('<span>Closed</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-display-none gl-sm-display-inline-flex">42</span>')
+            .to eq('<span>Closed</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-hidden sm:gl-inline-flex">42</span>')
           expect(helper.issuables_state_counter_text(:merge_requests, :merged, true))
-            .to eq('<span>Merged</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-display-none gl-sm-display-inline-flex">42</span>')
+            .to eq('<span>Merged</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-hidden sm:gl-inline-flex">42</span>')
           expect(helper.issuables_state_counter_text(:merge_requests, :all, true))
-            .to eq('<span>All</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-display-none gl-sm-display-inline-flex">42</span>')
+            .to eq('<span>All</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-hidden sm:gl-inline-flex">42</span>')
         end
       end
 
@@ -170,7 +170,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
 
         it 'returns truncated count' do
           expect(helper.issuables_state_counter_text(:issues, :opened, true))
-            .to eq('<span>Open</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-display-none gl-sm-display-inline-flex">1.1k</span>')
+            .to eq('<span>Open</span> <span class="gl-badge badge badge-pill badge-muted sm gl-tab-counter-badge gl-hidden sm:gl-inline-flex">1.1k</span>')
         end
       end
     end
@@ -253,7 +253,7 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
           canDestroy: true,
           issuableRef: "##{issue.iid}",
           imported: issue.imported?,
-          markdownPreviewPath: "/#{@project.full_path}/preview_markdown?target_id=#{issue.iid}&target_type=Issue",
+          markdownPreviewPath: "/#{@project.full_path}/-/preview_markdown?target_id=#{issue.iid}&target_type=Issue",
           markdownDocsPath: '/help/user/markdown',
           lockVersion: issue.lock_version,
           issuableTemplateNamesPath: template_names_path(@project, issue),

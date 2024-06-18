@@ -26,6 +26,7 @@ describe('BranchRuleModal', () => {
       apolloProvider: fakeApollo,
       provide: { projectPath },
       propsData: {
+        id: 'test-id',
         title: 'Test Title',
         actionPrimaryText: 'Primary Action',
       },

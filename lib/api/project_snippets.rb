@@ -80,8 +80,8 @@ module API
         requires :title, type: String, allow_blank: false, desc: 'The title of the snippet'
         optional :description, type: String, desc: 'The description of a snippet'
         requires :visibility, type: String,
-                              values: Gitlab::VisibilityLevel.string_values,
-                              desc: 'The visibility of the snippet'
+          values: Gitlab::VisibilityLevel.string_values,
+          desc: 'The visibility of the snippet'
         use :create_file_params
       end
       post ":id/snippets" do
@@ -118,8 +118,8 @@ module API
         optional :file_name, type: String, desc: 'The file name of the snippet'
         optional :title, type: String, allow_blank: false, desc: 'The title of the snippet'
         optional :visibility, type: String,
-                              values: Gitlab::VisibilityLevel.string_values,
-                              desc: 'The visibility of the snippet'
+          values: Gitlab::VisibilityLevel.string_values,
+          desc: 'The visibility of the snippet'
 
         use :update_file_params
         use :minimum_update_params

@@ -79,10 +79,10 @@ module IssuableLinks
         link = relate_issuables(referenced_object)
 
         if link.errors.any?
-          @errors << _("%{ref} cannot be added: %{error}") % {
+          @errors << (_("%{ref} cannot be added: %{error}") % {
             ref: referenced_object.to_reference,
             error: link.errors.messages.values.flatten.to_sentence
-          }
+          })
         else
           after_create_for(link)
         end

@@ -45,7 +45,7 @@ db:rollback single-db:
     - .single-db
     - .rails:rules:single-db
 
-# https://docs.gitlab.com/ee/development/database/dbmigrate:multi-version-upgrade-job.html
+# https://docs.gitlab.com/ee/development/database/dbmigrate_multi_version_upgrade_job.html
 db:migrate:multi-version-upgrade:
   extends:
     - .db-job-base
@@ -54,7 +54,7 @@ db:migrate:multi-version-upgrade:
     - curl -o latest_upgrade_stop.gz https://gitlab.com/gitlab-org/quality/pg-dump-generator/-/raw/main/pg_dumps/ee/latest_upgrade_stop.gz
     - gunzip -c latest_upgrade_stop.gz > gitlabhq_production
     - bundle exec rake db:drop db:create
-    - apt-get update -qq && apt-get install -y -qq postgresql
+    - apt-get update -qq && apt-get install -y -qq postgresql-client
     - psql --output /dev/null -v "ON_ERROR_STOP=1" -h postgres -U postgres -d gitlabhq_test < gitlabhq_production
     - bundle exec rake gitlab:db:configure
 
@@ -147,7 +147,7 @@ db:backup_and_restore:
   script:
     - . scripts/prepare_build.sh
     - bundle exec rake db:drop db:create db:schema:load db:seed_fu
-    - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages,ci_secure_files}
+    - mkdir -p tmp/tests/public/uploads tmp/tests/{artifacts,pages,lfs-objects,terraform_state,registry,packages,ci_secure_files,external-diffs}
     - bundle exec rake gitlab:backup:create
     - date
     - bundle exec rake gitlab:backup:restore

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Govern', :smoke, :mobile, product_group: :authentication do
+  RSpec.describe 'Govern', :smoke, :health_check, :mobile, product_group: :authentication do
     describe 'basic user login' do
       it 'user logs in using basic credentials and logs out',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347880' do

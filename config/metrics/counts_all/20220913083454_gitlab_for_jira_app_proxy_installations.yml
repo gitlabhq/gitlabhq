@@ -1,8 +1,6 @@
 ---
 key_path: counts.gitlab_for_jira_app_proxy_installations
 description: Count active Jira Cloud installations that are using GitLab as a proxy
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active

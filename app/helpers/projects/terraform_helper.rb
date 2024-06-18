@@ -11,4 +11,10 @@ module Projects::TerraformHelper
       terraform_api_url: "#{Settings.gitlab.url}/api/v4/projects/#{project.id}/terraform/state"
     }
   end
+
+  def show_period_in_terraform_state_name_alert?(project)
+    return false unless show_period_in_terraform_state_name_alert_callout?
+
+    project.terraform_states.exists?
+  end
 end

@@ -49,13 +49,23 @@ export const GLOBAL_COMMANDS_GROUP_TITLE = s__('CommandPalette|Global Commands')
 export const USERS_GROUP_TITLE = s__('GlobalSearch|Users');
 export const PAGES_GROUP_TITLE = s__('CommandPalette|Pages');
 export const PROJECTS_GROUP_TITLE = s__('GlobalSearch|Projects');
-export const ISSUE_GROUP_TITLE = s__('GlobalSearch|Recent issues');
+export const GROUPS_GROUP_TITLE = s__('GlobalSearch|Groups');
+export const ISSUES_GROUP_TITLE = s__('GlobalSearch|Issues');
 export const PATH_GROUP_TITLE = s__('CommandPalette|Project files');
+export const SETTINGS_GROUP_TITLE = s__('CommandPalette|Settings');
+
+export const MODAL_CLOSE_ESC = 'esc';
+export const MODAL_CLOSE_BACKGROUND = 'backdrop';
+export const MODAL_CLOSE_HEADERCLOSE = 'headerclose';
+
+export const SCOPE_SEARCH_ALL = 'scoped-in-all';
+export const SCOPE_SEARCH_GROUP = 'scoped-in-group';
+export const SCOPE_SEARCH_PROJECT = 'scoped-in-project';
 
 export const GROUP_TITLES = {
   [USER_HANDLE]: USERS_GROUP_TITLE,
   [PROJECT_HANDLE]: PROJECTS_GROUP_TITLE,
-  [ISSUE_HANDLE]: ISSUE_GROUP_TITLE,
+  [ISSUE_HANDLE]: ISSUES_GROUP_TITLE,
   [PATH_HANDLE]: PATH_GROUP_TITLE,
 };
 
@@ -63,9 +73,6 @@ export const MAX_ROWS = 20;
 
 export const OVERLAY_CHANGE_CONTEXT = s__('GlobalSearch|Change context %{kbdStart}↵%{kbdEnd}');
 export const OVERLAY_SEARCH = s__('GlobalSearch|Search %{kbdStart}↵%{kbdEnd}');
-export const OVERLAY_CREATE_IN_SHELL_UI = s__(
-  'GlobalSearch|Create in %{namespace} %{kbdStart}↵%{kbdEnd}',
-);
 
 export const OVERLAY_PROFILE = s__('GlobalSearch|Go to profile %{kbdStart}↵%{kbdEnd}');
 
@@ -74,3 +81,6 @@ export const OVERLAY_PROJECT = s__('GlobalSearch|Go to project %{kbdStart}↵%{k
 export const OVERLAY_FILE = s__('GlobalSearch|Go to file %{kbdStart}↵%{kbdEnd}');
 
 export const OVERLAY_GOTO = s__('GlobalSearch|Go to %{kbdStart}↵%{kbdEnd}');
+
+export const FREQUENTLY_VISITED_PROJECTS_HANDLE = 'FREQUENTLY_VISITED_PROJECTS_HANDLE';
+export const FREQUENTLY_VISITED_GROUPS_HANDLE = 'FREQUENTLY_VISITED_GROUPS_HANDLE';

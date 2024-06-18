@@ -147,7 +147,7 @@ export default {
       @close="toggleActionsDrawer"
     >
       <template #title>
-        <div class="gl-font-weight-bold gl-font-size-h2">{{ $options.i18n.actions }}</div>
+        <div class="gl-font-bold gl-font-size-h2">{{ $options.i18n.actions }}</div>
       </template>
       <template #default>
         <gl-form @submit.prevent="submitForm">

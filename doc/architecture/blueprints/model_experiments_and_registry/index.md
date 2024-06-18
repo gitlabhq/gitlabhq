@@ -78,7 +78,7 @@ Data topology changes:
 
 Goal:
 
-- [ ] All packages associated to an Ml::Candidate are of `ml_model` type
+- \[ \] All packages associated to an Ml::Candidate are of `ml_model` type
 
 Existing candidates use the generic package type to store artifacts, while model
 registry uses the new ml model type and its endpoints. These endpoints allow more domain control
@@ -109,8 +109,8 @@ ml_models to accept the existing name and version.
 
 Goal:
 
-- [ ] `experiment_id` column on Ml::Candidate is removed, and a column `model_id` is added
-- [ ] Add candidate comparison table to the model detail page
+- \[ \] `experiment_id` column on Ml::Candidate is removed, and a column `model_id` is added
+- \[ \] Add candidate comparison table to the model detail page
 
 Ml::Model is now composed by a default_experiment Ml::Experiment, with the same
 name as the model, which holds the Ml::Candidates assigned to the model. Removing
@@ -124,10 +124,10 @@ registry only shows a list without much information
 
 Goals:
 
-- [ ] MLflow client compat endpoints (`experiments/create`) create a model instead of an experiment
-- [ ] A new model is created for each experiment
-- [ ] All candidates are created within models
-- [ ] Ml::Candidates parent changes from an experiment to a model
+- \[ \] MLflow client compat endpoints (`experiments/create`) create a model instead of an experiment
+- \[ \] A new model is created for each experiment
+- \[ \] All candidates are created within models
+- \[ \] Ml::Candidates parent changes from an experiment to a model
 
 Experiments is an abstraction that serves only to group candidates. But if
 candidates are assigned to models, a model already plays the role of experiment
@@ -160,9 +160,9 @@ A new column `model_id` needs to be added to Ml::Candidate
 
 Goals:
 
-- [ ] Delete tables Ml::Experiments and Ml::ExperimentsMetadata
-- [ ] Delete ExperimentsController (and related helpers)
-- [ ] Delete frontend code under [`ml/experiment_tracking`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/ml/experiment_tracking/)
+- \[ \] Delete tables Ml::Experiments and Ml::ExperimentsMetadata
+- \[ \] Delete ExperimentsController (and related helpers)
+- \[ \] Delete frontend code under [`ml/experiment_tracking`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/ml/experiment_tracking/)
 
 # Alternatives
 

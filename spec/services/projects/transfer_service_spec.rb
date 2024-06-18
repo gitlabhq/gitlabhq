@@ -274,6 +274,29 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
           expect { execute_transfer }.not_to change { project.slack_integration.webhook }
         end
       end
+
+      context 'when the new default integration is instance specific and deactivated' do
+        let!(:instance_specific_integration) { create(:beyond_identity_integration) }
+        let!(:project_instance_specific_integration) do
+          create(
+            :beyond_identity_integration,
+            project: project,
+            instance: false,
+            active: true,
+            inherit_from_id: instance_specific_integration.id
+          )
+        end
+
+        let!(:group_instance_specific_integration) do
+          create(:beyond_identity_integration, group: target, instance: false, active: false)
+        end
+
+        it 'creates an integration inheriting from the default' do
+          expect { execute_transfer }
+            .to change { project.beyond_identity_integration.reload.active }.from(true).to(false)
+            .and change { project.beyond_identity_integration.inherit_from_id }.to(group_instance_specific_integration.id)
+        end
+      end
     end
 
     context 'when project has pending builds', :sidekiq_inline do

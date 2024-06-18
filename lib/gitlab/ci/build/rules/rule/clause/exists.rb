@@ -86,29 +86,13 @@ module Gitlab
         end
 
         def pattern_matches?(paths, pattern_globs, context)
-          if ::Feature.disabled?(:ci_rules_exists_pattern_matches_cache, context.project)
-            return legacy_pattern_matches?(paths, pattern_globs)
-          end
-
-          comparisons = 0
+          return true if (paths.size * pattern_globs.size) > MAX_PATTERN_COMPARISONS
 
           pattern_globs.any? do |glob|
             Gitlab::SafeRequestStore.fetch("ci_rules_exists_pattern_matches_#{context.project&.id}_#{glob}") do
               paths.any? do |path|
-                comparisons += 1
-                comparisons > MAX_PATTERN_COMPARISONS || pattern_match?(glob, path)
+                pattern_match?(glob, path)
               end
-            end
-          end
-        end
-
-        def legacy_pattern_matches?(paths, pattern_globs)
-          comparisons = 0
-
-          pattern_globs.any? do |glob|
-            paths.any? do |path|
-              comparisons += 1
-              comparisons > MAX_PATTERN_COMPARISONS || pattern_match?(glob, path)
             end
           end
         end
@@ -119,19 +103,19 @@ module Gitlab
 
         # matches glob patterns that only match files in the top level directory
         def top_level_glob?(glob)
-          !glob.include?('/') && !glob.include?('**')
+          glob.exclude?('/') && glob.exclude?('**')
         end
 
         # matches glob patterns that have no metacharacters for File#fnmatch?
         def exact_glob?(glob)
-          !glob.include?('*') && !glob.include?('?') && !glob.include?('[') && !glob.include?('{')
+          glob.exclude?('*') && glob.exclude?('?') && glob.exclude?('[') && glob.exclude?('{')
         end
 
         # matches glob patterns like **/*.js or **/*.so.1 to optimize with path.end_with?('.js')
         def extension_glob?(glob)
           without_nested = without_wildcard_nested_pattern(glob)
 
-          without_nested.start_with?('.') && !without_nested.include?('/') && exact_glob?(without_nested)
+          without_nested.start_with?('.') && without_nested.exclude?('/') && exact_glob?(without_nested)
         end
 
         def without_wildcard_nested_pattern(glob)

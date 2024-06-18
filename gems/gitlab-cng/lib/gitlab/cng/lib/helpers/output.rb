@@ -49,6 +49,19 @@ module Gitlab
             .then { |m| color ? m.color(color) : m }
         end
 
+        # Remove sensitive data from message
+        #
+        # @param [String] message
+        # @param [Array<String>] secrets
+        # @return [String]
+        def mask_secrets(message, secrets)
+          # Add explicit arg validation to avoid values leaking to error outputs in case of errors
+          raise ArgumentError, "message must be a string" unless message.is_a?(String)
+          raise ArgumentError, "secrets must be an array of strings" unless secrets.is_a?(Array) && secrets.all?(String)
+
+          message.gsub(/#{secrets.join('|')}/, "*****")
+        end
+
         # Instance of rainbow colorization class
         #
         # @return [Rainbow]

@@ -38,6 +38,15 @@ RSpec.describe BitbucketServer::Client, feature_category: :importers do
 
       subject.activities(project, repo_slug, 1)
     end
+
+    it 'requests a collection with offset and limit' do
+      offset = 10
+      limit = 100
+
+      expect(BitbucketServer::Paginator).to receive(:new).with(anything, path, :activity, page_offset: offset, limit: limit)
+
+      subject.activities(project, repo_slug, 1, page_offset: offset, limit: limit)
+    end
   end
 
   describe '#repo' do

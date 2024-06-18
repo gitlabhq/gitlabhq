@@ -5,7 +5,7 @@ module API
     helpers ::API::Helpers::GraphqlHelpers
     include APIGuard
 
-    allow_access_with_scope [:read_user, :ai_features], if: -> (request) { request.get? || request.head? }
+    allow_access_with_scope [:read_user, :ai_features], if: ->(request) { request.get? || request.head? }
 
     before { authenticate! }
 

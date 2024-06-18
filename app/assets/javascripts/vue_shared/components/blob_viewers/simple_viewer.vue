@@ -158,13 +158,13 @@ export default {
         >
           <a
             v-if="showBlameLink"
-            class="gl-select-none gl-shadow-none! file-line-blame gl-mx-n2"
+            class="gl-select-none !gl-shadow-none file-line-blame -gl-mx-2"
             :href="`${blamePath}#L${line}`"
           ></a>
           <a
             :id="`L${line}`"
             :key="line"
-            class="gl-select-none gl-shadow-none! file-line-num"
+            class="gl-select-none !gl-shadow-none file-line-num"
             :href="`#L${line}`"
             :data-line-number="line"
             @click="scrollToLine(`#LC${line}`)"

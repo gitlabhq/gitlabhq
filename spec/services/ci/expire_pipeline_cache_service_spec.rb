@@ -116,7 +116,7 @@ RSpec.describe Ci::ExpirePipelineCacheService, feature_category: :continuous_int
       control = ActiveRecord::QueryRecorder.new { subject.execute(pipeline) }
 
       create(:ci_sources_pipeline, pipeline: pipeline)
-      create(:ci_sources_pipeline, source_job: create(:ci_build, pipeline: pipeline))
+      create(:ci_sources_pipeline, source_job: create(:ci_build, pipeline: pipeline, ci_stage: create(:ci_stage)))
 
       expect { subject.execute(pipeline) }.not_to exceed_query_limit(control)
     end

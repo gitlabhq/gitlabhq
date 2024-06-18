@@ -36,7 +36,7 @@ module PreferencesHelper
       followed_user_activity: _("Followed Users' Activity"),
       groups: _("Your Groups"),
       todos: _("Your To-Do List"),
-      issues: _("Assigned Issues"),
+      issues: _("Assigned issues"),
       merge_requests: _("Assigned merge requests"),
       operations: _("Operations Dashboard")
     }.with_indifferent_access.freeze

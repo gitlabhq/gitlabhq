@@ -107,7 +107,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-border-t">
     <refs-list
       v-if="hasBranches"
       :has-containing-refs="hasContainingBranches"

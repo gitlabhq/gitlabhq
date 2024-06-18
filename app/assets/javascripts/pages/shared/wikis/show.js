@@ -1,47 +1,98 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createApolloClient from '~/lib/graphql';
+import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
+import csrf from '~/lib/utils/csrf';
 import Wikis from './wikis';
-import WikiContent from './components/wiki_content.vue';
-import WikiMoreDropdown from './components/wiki_more_dropdown.vue';
+import WikiContentApp from './app.vue';
+import WikiSidebarEntries from './components/wiki_sidebar_entries.vue';
 
 const mountWikiContentApp = () => {
-  const el = document.querySelector('.js-async-wiki-page-content');
-
-  if (el) {
-    const { getWikiContentUrl } = el.dataset;
-
-    // eslint-disable-next-line no-new
-    new Vue({
-      el,
-      render(createElement) {
-        return createElement(WikiContent, {
-          props: { getWikiContentUrl },
-        });
-      },
-    });
-  }
-};
-
-const mountWikiExportApp = () => {
-  const el = document.querySelector('#js-export-actions');
+  const el = document.querySelector('#js-vue-wiki-content-app');
 
   if (!el) return false;
-  const { history, print } = JSON.parse(el.dataset.options);
+  const {
+    pageHeading,
+    contentApi,
+    showEditButton,
+    pageInfo,
+    isPageTemplate,
+    isPageHistorical,
+    editButtonUrl,
+    lastVersion,
+    pageVersion,
+    authorUrl,
+    wikiPath,
+    cloneSshUrl,
+    cloneHttpUrl,
+    newUrl,
+    historyUrl,
+    templatesUrl,
+    wikiUrl,
+    pagePersisted,
+    templates,
+    formatOptions,
+  } = el.dataset;
+
+  Vue.use(VueApollo);
+  const apolloProvider = new VueApollo({ defaultClient: createApolloClient() });
+
+  return new Vue({
+    el,
+    apolloProvider,
+    provide: {
+      isEditingPath: false,
+      pageHeading,
+      contentApi,
+      showEditButton: parseBoolean(showEditButton),
+      pageInfo: convertObjectPropsToCamelCase(JSON.parse(pageInfo)),
+      isPageTemplate: parseBoolean(isPageTemplate),
+      isPageHistorical: parseBoolean(isPageHistorical),
+      editButtonUrl,
+      lastVersion,
+      pageVersion: JSON.parse(pageVersion),
+      authorUrl,
+      wikiPath,
+      cloneSshUrl,
+      cloneHttpUrl,
+      newUrl,
+      historyUrl,
+      templatesUrl,
+      wikiUrl,
+      formatOptions: JSON.parse(formatOptions),
+      csrfToken: csrf.token,
+      templates: JSON.parse(templates),
+      drawioUrl: gon.diagramsnet_url,
+      pagePersisted: parseBoolean(pagePersisted),
+    },
+    render(createElement) {
+      return createElement(WikiContentApp);
+    },
+  });
+};
+
+export const mountWikiSidebarEntries = () => {
+  const el = document.querySelector('#js-wiki-sidebar-entries');
+  if (!el) return false;
+
+  const { hasCustomSidebar, canCreate, viewAllPagesPath } = el.dataset;
 
   return new Vue({
     el,
     provide: {
-      history,
-      print,
+      hasCustomSidebar: parseBoolean(hasCustomSidebar),
+      canCreate: parseBoolean(canCreate),
+      sidebarPagesApi: gl.GfmAutoComplete.dataSources.wikis,
+      viewAllPagesPath,
     },
     render(createElement) {
-      return createElement(WikiMoreDropdown);
+      return createElement(WikiSidebarEntries);
     },
   });
 };
 
 export const mountApplications = () => {
-  // eslint-disable-next-line no-new
-  new Wikis();
   mountWikiContentApp();
-  mountWikiExportApp();
+
+  new Wikis(); // eslint-disable-line no-new
 };

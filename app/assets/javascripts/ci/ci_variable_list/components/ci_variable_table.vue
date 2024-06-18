@@ -53,10 +53,6 @@ export default {
       tdClass: 'text-plain',
     },
     {
-      key: 'Attributes',
-      label: s__('CiVariables|Attributes'),
-    },
-    {
       key: 'environmentScope',
       label: s__('CiVariables|Environments'),
     },
@@ -283,14 +279,14 @@ export default {
             >
               <span
                 :id="`ci-variable-key-${item.id}`"
-                class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+                class="gl-display-inline-block gl-max-w-full gl-break-anywhere"
                 >{{ item.key }}</span
               >
               <gl-button
                 v-gl-tooltip
                 category="tertiary"
                 icon="copy-to-clipboard"
-                class="gl-my-n2 gl-ml-2"
+                class="-gl-my-2 gl-ml-2"
                 size="small"
                 :title="__('Copy key')"
                 :data-clipboard-text="item.key"
@@ -329,7 +325,7 @@ export default {
               v-gl-tooltip
               category="tertiary"
               icon="copy-to-clipboard"
-              class="gl-my-n2 gl-ml-2"
+              class="-gl-my-2 gl-ml-2"
               size="small"
               :title="__('Copy value')"
               :data-clipboard-text="item.value"
@@ -343,14 +339,14 @@ export default {
           >
             <span
               :id="`ci-variable-env-${item.id}`"
-              class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+              class="gl-display-inline-block gl-max-w-full gl-break-anywhere"
               >{{ convertEnvironmentScopeValue(item.environmentScope) }}</span
             >
             <gl-button
               v-gl-tooltip
               category="tertiary"
               icon="copy-to-clipboard"
-              class="gl-my-n2 gl-ml-2"
+              class="-gl-my-2 gl-ml-2"
               size="small"
               :title="__('Copy environment')"
               :data-clipboard-text="convertEnvironmentScopeValue(item.environmentScope)"
@@ -365,7 +361,7 @@ export default {
             <gl-link
               :id="`ci-variable-group-${item.id}`"
               data-testid="ci-variable-table-row-cicd-path"
-              class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+              class="gl-display-inline-block gl-max-w-full gl-break-anywhere"
               :href="item.groupCiCdSettingsPath"
             >
               {{ item.groupName }}

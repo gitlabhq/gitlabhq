@@ -19,10 +19,10 @@ class EnvironmentEntity < Grape::Entity
   expose :name_without_type
   expose :last_deployment, using: DeploymentEntity
   expose :stop_actions_available?, as: :has_stop_action
-  expose :rollout_status, if: -> (*) { can_read_deploy_board? }, using: RolloutStatusEntity
+  expose :rollout_status, if: ->(*) { can_read_deploy_board? }, using: RolloutStatusEntity
   expose :tier
 
-  expose :upcoming_deployment, if: -> (environment) { environment.upcoming_deployment } do |environment, ops|
+  expose :upcoming_deployment, if: ->(environment) { environment.upcoming_deployment } do |environment, ops|
     DeploymentEntity.represent(environment.upcoming_deployment,
       ops.merge(except: UNNECESSARY_ENTRIES_FOR_UPCOMING_DEPLOYMENT))
   end
@@ -35,7 +35,7 @@ class EnvironmentEntity < Grape::Entity
     stop_project_environment_path(environment.project, environment)
   end
 
-  expose :cancel_auto_stop_path, if: -> (*) { can_update_environment? } do |environment|
+  expose :cancel_auto_stop_path, if: ->(*) { can_update_environment? } do |environment|
     cancel_auto_stop_project_environment_path(environment.project, environment)
   end
 

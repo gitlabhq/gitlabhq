@@ -1,9 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Style/StringLiteralsInInterpolation:
-  Details: grace period
   Exclude:
-    - 'app/models/application_setting_implementation.rb'
     - 'app/models/ci/namespace_mirror.rb'
     - 'app/services/draft_notes/publish_service.rb'
     - 'app/services/projects/create_service.rb'
@@ -27,7 +25,6 @@ Style/StringLiteralsInInterpolation:
     - 'lib/gitlab/doctor/secrets.rb'
     - 'lib/gitlab/endpoint_attributes/config.rb'
     - 'lib/gitlab/gitaly_client/ref_service.rb'
-    - 'lib/gitlab/graphql/queries.rb'
     - 'lib/gitlab/quick_actions/extractor.rb'
     - 'lib/gitlab/sanitizers/exif.rb'
     - 'lib/gitlab/sidekiq_signals.rb'
@@ -38,8 +35,6 @@ Style/StringLiteralsInInterpolation:
     - 'qa/qa/resource/events/base.rb'
     - 'qa/qa/service/cluster_provider/base.rb'
     - 'qa/qa/service/cluster_provider/gcloud.rb'
-    - 'qa/qa/tools/generate_perf_testdata.rb'
-    - 'rubocop/cop/migration/prevent_index_creation.rb'
     - 'spec/features/commits_spec.rb'
     - 'spec/features/users/login_spec.rb'
     - 'spec/lib/banzai/filter/references/commit_reference_filter_spec.rb'

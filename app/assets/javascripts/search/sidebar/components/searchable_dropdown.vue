@@ -210,7 +210,7 @@ export default {
         <div class="gl-display-flex gl-flex-direction-column">
           <span
             v-safe-html="highlightedItemName(item)"
-            class="gl-font-weight-bold gl-whitespace-nowrap"
+            class="gl-font-bold gl-whitespace-nowrap"
             data-testid="item-title"
           ></span>
           <span class="gl-font-sm gl-text-gray-700" data-testid="item-namespace">

@@ -108,13 +108,13 @@ code_quality:
 
 ## Using Code Quality with Kubernetes CI executor
 
-Code Quality requires a Docker in Docker setup to work. The Kubernetes executor already [has support for this](https://docs.gitlab.com/runner/executors/kubernetes.html#using-dockerdind).
+Code Quality requires a Docker in Docker setup to work. The Kubernetes executor already [has support for this](https://docs.gitlab.com/runner/executors/kubernetes/index.html#using-dockerdind).
 
 To ensure Code Quality jobs can run on a Kubernetes executor:
 
-- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes.html#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
+- If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/index.html#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
 - It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
-the [Kubernetes executor for GitLab Runner](https://docs.gitlab.com/runner/executors/kubernetes.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running) troubleshooting section.
+[Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running).
 
 ## Error: `x509: certificate signed by unknown authority`
 
@@ -157,7 +157,7 @@ Example:
 ### Kubernetes
 
 If you have access to GitLab Runner configuration and the Kubernetes cluster,
-you can [mount a ConfigMap](https://docs.gitlab.com/runner/executors/kubernetes.html#configmap-volumes).
+you can [mount a ConfigMap](https://docs.gitlab.com/runner/executors/kubernetes/index.html#configmap-volume).
 
 Replace `gitlab.example.com` with the actual domain of the registry.
 

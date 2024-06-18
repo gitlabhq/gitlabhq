@@ -137,7 +137,7 @@ export default {
 
 <template>
   <li class="groups-list-item gl-py-5 gl-border-b gl-display-flex">
-    <div class="gl-md-display-flex gl-flex-grow-1">
+    <div class="md:gl-flex gl-flex-grow-1">
       <div class="gl-flex gl-grow gl-items-start">
         <div
           v-if="showGroupIcon"
@@ -155,7 +155,7 @@ export default {
         >
           <template #meta>
             <div class="gl-px-2">
-              <div class="gl-mx-n2 gl-display-flex gl-align-items-center gl-flex-wrap">
+              <div class="-gl-mx-2 gl-display-flex gl-align-items-center gl-flex-wrap">
                 <div class="gl-px-2">
                   <gl-icon
                     v-if="visibility"
@@ -168,7 +168,7 @@ export default {
                   <gl-badge
                     v-if="shouldShowAccessLevel"
                     size="sm"
-                    class="gl-display-block"
+                    class="gl-block"
                     data-testid="access-level-badge"
                     >{{ accessLevelLabel }}</gl-badge
                   >

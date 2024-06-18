@@ -60,7 +60,7 @@ affected. Read more in
 
 ### Getting warning message `gl-dependency-scanning-report.json: no matching files`
 
-For information on this, see the [general Application Security troubleshooting section](../../../ci/jobs/job_artifacts_troubleshooting.md#error-message-no-files-to-upload).
+For information on this, see the [general Application Security troubleshooting section](../../../user/application_security/troubleshooting_application_security.md#getting-warning-messages--reportjson-no-matching-files).
 
 ## `Error response from daemon: error processing tar file: docker-tar: relocation error`
 
@@ -189,11 +189,16 @@ To avoid this error, follow [Poetry's configuration advice](https://python-poetr
 
 ## Error: Project has `<number>` unresolved dependencies
 
-The error message `Project has <number> unresolved dependencies` indicates a dependency resolution problem caused by your `gradle.build` or `gradle.build.kts` file. In the current release, `gemnasium-maven` cannot continue processing when an unresolved dependency is encountered. However, there is an [open epic](https://gitlab.com/groups/gitlab-org/-/epics/12361) to allow `gemnasium-maven` to recover from unresolved dependency errors and produce a dependency graph. Until this epic has been resolved, consult the [Gradle dependency resolution documentation](https://docs.gradle.org/current/userguide/dependency_resolution.html) for details on how to fix your `gradle.build` file.
+The error message `Project has <number> unresolved dependencies` indicates a dependency resolution problem caused by your `gradle.build` or `gradle.build.kts` file.
+In GitLab 16.7 to 16.9, `gemnasium-maven` cannot continue processing when an unresolved dependency is encountered.
+Consult the [Gradle dependency resolution documentation](https://docs.gradle.org/current/userguide/dependency_resolution.html)
+for details on how to fix your `gradle.build` file.
+More details can be found in [epic 12361](https://gitlab.com/groups/gitlab-org/-/epics/12361)
+and [issue 437278](https://gitlab.com/gitlab-org/gitlab/-/issues/437278).
 
 ## Setting build constraints when scanning Go projects
 
-Dependency scanning runs within a `linux/amd64` container. As a result, the build list generated
+Dependency scanning runs in a `linux/amd64` container. As a result, the build list generated
 for a Go project contains dependencies that are compatible with this environment. If your deployment environment is not
 `linux/amd64`, the final list of dependencies might contain additional incompatible
 modules. The dependency list might also omit modules that are only compatible with your deployment environment. To prevent

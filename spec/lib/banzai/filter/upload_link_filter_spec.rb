@@ -40,7 +40,7 @@ RSpec.describe Banzai::Filter::UploadLinkFilter, feature_category: :team_plannin
   let(:project_path) { project.full_path }
   let(:only_path) { true }
   let(:upload_path) { '/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg' }
-  let(:relative_path) { "/#{project.full_path}#{upload_path}" }
+  let(:relative_path) { "/-/project/#{project.id}#{upload_path}" }
 
   it 'preserves original url in data-canonical-src attribute' do
     doc = filter(link(upload_path))
@@ -102,7 +102,7 @@ RSpec.describe Banzai::Filter::UploadLinkFilter, feature_category: :team_plannin
       path = '/uploads/한글.png'
       doc = filter(link(path))
 
-      expect(doc.at_css('a')['href']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
+      expect(doc.at_css('a')['href']).to eq("/-/project/#{project.id}/uploads/%ED%95%9C%EA%B8%80.png")
       expect(doc.at_css('a').classes).to include('gfm')
       expect(doc.at_css('a')['data-link']).to eq('true')
     end
@@ -112,7 +112,7 @@ RSpec.describe Banzai::Filter::UploadLinkFilter, feature_category: :team_plannin
       escaped = Addressable::URI.escape(path)
       doc = filter(image(escaped))
 
-      expect(doc.at_css('img')['src']).to eq("/#{project.full_path}/uploads/%ED%95%9C%EA%B8%80.png")
+      expect(doc.at_css('img')['src']).to eq("/-/project/#{project.id}/uploads/%ED%95%9C%EA%B8%80.png")
       expect(doc.at_css('img').classes).to include('gfm')
       expect(doc.at_css('img')['data-link']).not_to eq('true')
     end
@@ -123,7 +123,7 @@ RSpec.describe Banzai::Filter::UploadLinkFilter, feature_category: :team_plannin
     let_it_be(:group) { create(:group) }
 
     let(:project) { nil }
-    let(:relative_path) { "/groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
+    let(:relative_path) { "/-/group/#{group.id}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
 
     context 'with an absolute URL' do
       let(:absolute_path) { Gitlab.config.gitlab.url + relative_path }

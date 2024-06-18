@@ -10,14 +10,14 @@ export default {
 </script>
 
 <template>
-  <div class="gl-mt-3">
-    <div class="mr-widget-heading p-3">
+  <div class="gl-mt-5">
+    <div class="mr-section-container gl-p-4">
       <gl-skeleton-loader :width="577" :height="12">
         <rect width="86" height="12" rx="2" />
         <rect x="96" width="300" height="12" rx="2" />
       </gl-skeleton-loader>
     </div>
-    <div class="mr-widget-heading mr-widget-workflow p-3">
+    <div class="mr-section-container gl-p-4">
       <gl-skeleton-loader :width="577" :height="72">
         <rect width="120" height="12" rx="2" />
         <rect y="20" width="300" height="12" rx="2" />

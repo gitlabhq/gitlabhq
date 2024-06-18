@@ -17,6 +17,7 @@ module Members
     validates :new_access_level, presence: true
     validates :user, presence: true
     validates :member_namespace, presence: true
+    validates :metadata, json_schema: { filename: "members_approval_request_metadata" }
   end
 end
 

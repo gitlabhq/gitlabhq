@@ -44,6 +44,10 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       url_variables: [
         { key: 'token', value: 'very-secret' },
         { key: 'abc', value: 'other value' }
+      ],
+      custom_headers: [
+        { key: 'X-Custom-Header', value: 'custom value' },
+        { key: 'abc', value: 'other value' }
       ]
     )
   end
@@ -98,6 +102,23 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
         expect(json_response).to contain_exactly(
           a_hash_including(
             'url_variables' => [{ 'key' => 'token' }]
+          )
+        )
+      end
+    end
+
+    context 'the hook has custom headers', if: prefix != '/projects/:id' do
+      before do
+        hook.update!(custom_headers: { 'Custom-Header' => 'supers3cret' })
+      end
+
+      it 'returns the names of the custom headers' do
+        get api(collection_uri, user, admin_mode: user.admin?)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to contain_exactly(
+          a_hash_including(
+            'custom_headers' => [{ 'key' => 'Custom-Header' }]
           )
         )
       end
@@ -195,6 +216,10 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
         { 'key' => 'token' },
         { 'key' => 'abc' }
       ]
+      expect(json_response['custom_headers']).to match_array [
+        { 'key' => 'X-Custom-Header' },
+        { 'key' => 'abc' }
+      ]
       expect(json_response).not_to include('token')
     end
 
@@ -272,6 +297,19 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['url_variables']).to match_array [
+        { 'key' => 'abc' },
+        { 'key' => 'def' }
+      ]
+    end
+
+    it 'updates the custom headers' do
+      hook.update!(custom_headers: { 'abc' => 'some value' })
+
+      put api(hook_uri, user, admin_mode: user.admin?),
+        params: { custom_headers: [{ key: 'def', value: 'other value' }] }
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['custom_headers']).to match_array [
         { 'key' => 'abc' },
         { 'key' => 'def' }
       ]
@@ -415,6 +453,305 @@ RSpec.shared_examples 'web-hook API endpoints' do |prefix|
       delete api(hook_uri(non_existing_record_id) + "/url_variables/abc", user, admin_mode: user.admin?)
 
       expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+
+  describe "PUT #{prefix}/hooks/:hook_id/custom_headers/:key", :aggregate_failures do
+    it 'sets the custom header' do
+      expect do
+        put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+          params: { value: 'some secret value' }
+      end.to change { hook.reload.custom_headers }.to(eq('abc' => 'some secret value'))
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    it 'overwrites existing values' do
+      hook.update!(custom_headers: { 'abc' => 'xyz', 'def' => 'other value' })
+
+      put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: 'some secret value' }
+
+      expect(response).to have_gitlab_http_status(:no_content)
+      expect(hook.reload.custom_headers).to eq('abc' => 'some secret value', 'def' => 'other value')
+    end
+
+    it "returns a 404 error when editing non existent hook" do
+      put api("#{hook_uri(non_existing_record_id)}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: 'xyz' }
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it "returns a 422 error when the key is illegal" do
+      put api("#{hook_uri}/custom_headers/abc%20def", user, admin_mode: user.admin?),
+        params: { value: 'xyz' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+
+    it "returns a 422 error when the value is illegal" do
+      put api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?),
+        params: { value: '' }
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+    end
+  end
+
+  describe "DELETE #{prefix}/hooks/:hook_id/custom_headers/:key", :aggregate_failures do
+    before do
+      hook.update!(custom_headers: { 'abc' => 'prior value', 'def' => 'other value' })
+    end
+
+    it 'unsets the custom header' do
+      expect do
+        delete api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?)
+      end.to change { hook.reload.custom_headers }.to(eq({ 'def' => 'other value' }))
+
+      expect(response).to have_gitlab_http_status(:no_content)
+    end
+
+    it 'returns 404 for keys that do not exist' do
+      hook.update!(custom_headers: { 'def' => 'other value' })
+
+      delete api("#{hook_uri}/custom_headers/abc", user, admin_mode: user.admin?)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it "returns a 404 error when deleting a custom header from a non existent hook" do
+      delete api(hook_uri(non_existing_record_id) + "/custom_headers/abc", user, admin_mode: user.admin?)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+  end
+end
+
+RSpec.shared_examples 'test web-hook endpoint' do
+  include StubRequests
+  context "when trigger webhook test", :aggregate_failures, :clean_gitlab_redis_rate_limiting do
+    before do
+      stub_full_request(hook.url, method: :post).to_return(status: 200)
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :web_hook_test do
+      let(:current_user) { user }
+
+      def request
+        post api("#{hook_uri}/test/push_events", user), params: {}
+      end
+
+      context 'when ops flag is disabled' do
+        before do
+          stub_feature_flags(web_hook_test_api_endpoint_rate_limit: false)
+        end
+
+        it 'does not block the request' do
+          request
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
+    context 'when testing is not available for trigger' do
+      where(:trigger_name) do
+        %w[confidential_note_events deployment_events feature_flag_events]
+      end
+      with_them do
+        it 'returns error message that testing is not available' do
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Testing not available for this hook')
+        end
+      end
+    end
+
+    context 'when push_events' do
+      where(:trigger_name) do
+        [
+          ["push_events"],
+          ["tag_push_events"]
+        ]
+      end
+      with_them do
+        it 'executes hook' do
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+    end
+
+    context 'when issue_events' do
+      where(:trigger_name) do
+        %w[issues_events confidential_issues_events]
+      end
+      with_them do
+        it 'executes hook' do
+          create(:issue, project: project)
+
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        it 'returns error message if not enough data' do
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Ensure the project has issues.')
+        end
+      end
+    end
+
+    context 'when note_events' do
+      where(:trigger_name) do
+        [
+          ["note_events"],
+          ["emoji_events"]
+        ]
+      end
+      with_them do
+        it 'executes hook' do
+          create(:note, :on_issue, project: project)
+
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+
+        it 'returns error message if not enough data' do
+          post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['message']).to eq('Ensure the project has notes.')
+        end
+      end
+    end
+
+    context 'when merge_request_events' do
+      let(:trigger_name) { 'merge_requests_events' }
+
+      it 'executes hook' do
+        create(:merge_request, source_project: project, target_project: project)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if not enough data' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the project has merge requests.')
+      end
+    end
+
+    context 'when job_events' do
+      let(:trigger_name) { 'job_events' }
+
+      it 'executes hook' do
+        create(:ci_build, project: project, name: 'build')
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if not enough data' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the project has CI jobs.')
+      end
+    end
+
+    context 'when pipeline_events' do
+      let(:trigger_name) { 'pipeline_events' }
+
+      it 'executes hook' do
+        create(:ci_pipeline, project: project, user: user)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if not enough data' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the project has CI pipelines.')
+      end
+    end
+
+    context 'when wiki_page_events' do
+      let(:trigger_name) { 'wiki_page_events' }
+
+      it 'executes hook' do
+        create(:wiki_page, wiki: project.wiki)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if wiki is not enabled' do
+        project.project_feature.update!(wiki_access_level: ProjectFeature::DISABLED)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the wiki is enabled and has pages.')
+      end
+    end
+
+    context 'when release_events' do
+      let(:trigger_name) { 'releases_events' }
+
+      it 'executes hook' do
+        create(:release, project: project)
+
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'returns error message if not enough data' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        expect(json_response['message']).to eq('Ensure the project has releases.')
+      end
+    end
+
+    context 'when resource_access_token_events' do
+      let(:trigger_name) { 'resource_access_token_events' }
+
+      it 'executes hook' do
+        post api("#{hook_uri}/test/#{trigger_name}", user, admin_mode: user.admin?), params: {}
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+    end
+
+    it "returns a 400 error when trigger is invalid" do
+      post api("#{hook_uri}/test/xyz", user, admin_mode: user.admin?), params: {}
+
+      expect(response).to have_gitlab_http_status(:bad_request)
+      expect(json_response['error']).to eq('trigger does not have a valid value')
+    end
+
+    it "returns a 422 error when request trigger test is not successful" do
+      stub_full_request(hook.url, method: :post).to_return(status: 400, body: 'Error response')
+
+      post api("#{hook_uri}/test/push_events", user, admin_mode: user.admin?), params: {}
+
+      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      expect(json_response['message']).to eq('Error response')
     end
   end
 end

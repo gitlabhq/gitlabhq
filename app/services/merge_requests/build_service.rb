@@ -202,11 +202,11 @@ module MergeRequests
     end
 
     def source_branch_exists?
-      source_branch.blank? || source_project.commit(source_branch)
+      source_branch.blank? || source_project.branch_exists?(source_branch)
     end
 
     def target_branch_exists?
-      target_branch.blank? || target_project.commit(target_branch)
+      target_branch.blank? || target_project.branch_exists?(target_branch)
     end
 
     def set_draft_title_if_needed
@@ -256,7 +256,7 @@ module MergeRequests
     def append_closes_description
       return unless issue&.to_reference.present?
 
-      closes_issue = "#{target_project.autoclose_referenced_issues ? 'Closes' : 'Related to'} #{issue.to_reference(target_project)}"
+      closes_issue = "#{target_project.autoclose_referenced_issues ? 'Closes' : 'Related to'} #{issue.to_reference}"
 
       if description.present?
         descr_parts = [merge_request.description, closes_issue]
@@ -348,8 +348,7 @@ module MergeRequests
 
     def issue
       strong_memoize(:issue) do
-        issue_project = same_source_and_target_project? ? target_project : source_project
-        issue_project.get_issue(issue_iid, current_user)
+        target_project.get_issue(issue_iid, current_user)
       end
     end
   end

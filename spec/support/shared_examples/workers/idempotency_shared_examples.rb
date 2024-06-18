@@ -19,7 +19,7 @@ RSpec.shared_examples 'an idempotent worker' do
   let(:worker_exec_times) { IdempotentWorkerHelper::WORKER_EXEC_TIMES }
 
   # Avoid stubbing calls for a more accurate run.
-  subject do
+  subject(:perform_idempotent_work) do
     if described_class.include?(::Gitlab::EventStore::Subscriber)
       event_worker
     else

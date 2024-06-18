@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlButton, GlModalDirective, GlTooltipDirective, GlIcon } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
 import { __, s__, sprintf } from '~/locale';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import {
@@ -16,6 +17,8 @@ import MergeRequestMenu from './merge_request_menu.vue';
 import UserMenu from './user_menu.vue';
 import SuperSidebarToggle from './super_sidebar_toggle.vue';
 import { SEARCH_MODAL_ID } from './global_search/constants';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   // "GitLab Next" is a proper noun, so don't translate "Next"
@@ -41,7 +44,7 @@ export default {
       import(/* webpackChunkName: 'organization_switcher' */ './organization_switcher.vue'),
   },
   i18n: {
-    issues: __('Issues'),
+    issues: __('Assigned issues'),
     mergeRequests: __('Merge requests'),
     searchKbdHelp: sprintf(
       s__('GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search'),
@@ -56,7 +59,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glFeatureFlagsMixin(), trackingMixin],
   inject: ['isImpersonating'],
   props: {
     hasCollapseButton: {
@@ -170,7 +173,7 @@ export default {
       />
       <component
         :is="mergeRequestMenuComponent"
-        class="gl-flex-basis-third gl-display-block!"
+        class="gl-flex-basis-third !gl-block"
         :items="sidebarData.merge_request_menu"
         @shown="mrMenuShown = true"
         @hidden="mrMenuShown = false"
@@ -205,8 +208,9 @@ export default {
       id="super-sidebar-search"
       v-gl-tooltip.bottom.html="searchTooltip"
       v-gl-modal="$options.SEARCH_MODAL_ID"
-      class="user-bar-button gl-display-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-line-height-1 gl-w-full"
+      class="user-bar-button gl-block gl-py-3 gl-bg-gray-10 gl-rounded-base gl-text-gray-900 gl-border-none gl-leading-1 gl-w-full"
       data-testid="super-sidebar-search-button"
+      @click="trackEvent('click_search_button_to_activate_command_palette')"
     >
       <gl-icon name="search" />
       {{ $options.i18n.searchBtnText }}

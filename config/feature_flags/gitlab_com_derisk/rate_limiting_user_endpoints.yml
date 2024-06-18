@@ -1,0 +1,8 @@
+---
+name: rate_limiting_user_endpoints
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150327
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/452349
+milestone: '17.1'
+type: gitlab_com_derisk
+group: group::authentication
+default_enabled: false

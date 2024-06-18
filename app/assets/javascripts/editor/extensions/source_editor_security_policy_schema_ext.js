@@ -24,8 +24,11 @@ export const getSinglePolicySchema = async ({ namespacePath, namespaceType, poli
     const { data: schemaForMultiplePolicies } = await axios.get(
       getSecurityPolicySchemaUrl({ namespacePath, namespaceType }),
     );
+    const properties =
+      schemaForMultiplePolicies.properties[policyType]?.items?.properties ||
+      schemaForMultiplePolicies.$defs[policyType]?.items?.properties ||
+      {};
     return {
-      $id: schemaForMultiplePolicies.$id,
       title: schemaForMultiplePolicies.title,
       description: schemaForMultiplePolicies.description,
       type: schemaForMultiplePolicies.type,
@@ -36,7 +39,7 @@ export const getSinglePolicySchema = async ({ namespacePath, namespaceType, poli
           description: 'Specifies the type of policy to be enforced.',
           enum: policyType,
         },
-        ...schemaForMultiplePolicies.properties[policyType].items.properties,
+        ...properties,
       },
     };
   } catch {

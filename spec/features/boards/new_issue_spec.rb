@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning do
+RSpec.describe 'Issue Boards new issue', :js, feature_category: :portfolio_management do
   let_it_be(:project)        { create(:project, :public) }
   let_it_be(:board)          { create(:board, project: project) }
   let_it_be(:label)          { create(:label, project: project, name: 'Label 1') }
@@ -84,7 +84,7 @@ RSpec.describe 'Issue Boards new issue', :js, feature_category: :team_planning d
       expect(page).to have_selector('[data-testid="issue-boards-sidebar"]')
     end
 
-    it 'successfuly loads labels to be added to newly created issue' do
+    it 'successfully loads labels to be added to newly created issue' do
       page.within(first('.board')) do
         click_button 'Create new issue'
       end

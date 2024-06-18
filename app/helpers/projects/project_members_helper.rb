@@ -11,8 +11,8 @@ module Projects::ProjectMembersHelper
     else
       ERB::Util.html_escape(_("Members can be added by project " \
                   "%{i_open}Maintainers%{i_close} or %{i_open}Owners%{i_close}")) % {
-        i_open: '<i>'.html_safe, i_close: '</i>'.html_safe
-      }
+                    i_open: '<i>'.html_safe, i_close: '</i>'.html_safe
+                  }
     end
   end
 
@@ -29,7 +29,8 @@ module Projects::ProjectMembersHelper
       can_manage_members: Ability.allowed?(current_user, :admin_project_member, project),
       can_manage_access_requests: Ability.allowed?(current_user, :admin_member_access_request, project),
       group_name: project.group&.name,
-      group_path: project.group&.full_path
+      group_path: project.group&.full_path,
+      can_approve_access_requests: true # true for CE, overridden in EE
     }
   end
 

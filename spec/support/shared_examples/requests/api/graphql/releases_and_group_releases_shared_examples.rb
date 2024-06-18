@@ -18,7 +18,7 @@ RSpec.shared_examples 'when there are no releases' do
   let(:data) { graphql_data.dig(resource_type.to_s, 'releases') }
 
   before do
-    project.releases.delete_all
+    project.releases.delete_all(:delete_all)
 
     post_query
   end

@@ -51,7 +51,7 @@ RSpec.describe Constraints::ProjectUrlConstrainer do
 
   def build_request(namespace, project, method = 'GET')
     double(:request,
-      'get?': (method == 'GET'),
+      get?: (method == 'GET'),
       params: { namespace_id: namespace, id: project })
   end
 end

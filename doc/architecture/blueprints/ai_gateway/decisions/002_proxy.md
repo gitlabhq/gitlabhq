@@ -85,7 +85,7 @@ Expose the following HTTP/1.1 endpoint in AI Gateway:
 POST /v1/proxy/vertex-ai/(*path)
 ```
 
-`path` can be forwarded to the folloinwg endpoints:
+`path` can be forwarded to the following endpoints:
 
 - [`/v1/{endpoint}:predict`](https://cloud.google.com/vertex-ai/docs/reference/rest/v1/projects.locations.publishers.models/predict)
   - `endpoint` must be one of: `chat-bison`, `code-bison`, `codechat-bison`, `text-bison`, `textembedding-gecko@003`.
@@ -97,7 +97,7 @@ POST /v1/proxy/vertex-ai/(*path)
 - Response body is returned to clients as-is.
 - Response headers are filtered/replaced by AI Gateway accordingly e.g. Allow only `date`, `content-type`, `transfer-encoding` and filter out the rest.
 - Response status is returned to clients as-is.
-- HTTP Streaming is supoprted.
+- HTTP Streaming is supported.
 - if unsupported `path` is specified, AI Gateway responds with a 404 Not Found error.
 
 #### Access control

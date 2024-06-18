@@ -12,7 +12,11 @@ module PersonalAccessTokens
 
       # We _only_ want to update last_used_at and not also updated_at (which
       # would be updated when using #touch).
-      @personal_access_token.update_column(:last_used_at, Time.zone.now) if update?
+      return unless update?
+
+      ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do
+        @personal_access_token.update_column(:last_used_at, Time.zone.now)
+      end
     end
 
     private

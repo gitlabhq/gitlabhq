@@ -6,7 +6,7 @@ module API
     include APIGuard
     helpers ::API::Helpers::EventsHelpers
 
-    allow_access_with_scope :read_user, if: -> (request) { request.get? || request.head? }
+    allow_access_with_scope :read_user, if: ->(request) { request.get? || request.head? }
 
     feature_category :user_profile
     urgency :low
@@ -22,8 +22,8 @@ module API
       end
       params do
         optional :scope, type: String,
-                         desc: 'Include all events across a user’s projects',
-                         documentation: { example: 'all' }
+          desc: 'Include all events across a user’s projects',
+          documentation: { example: 'all' }
         use :pagination
         use :event_filter_params
         use :sort_params

@@ -12,8 +12,8 @@ module API
     end
     params do
       optional :search, type: String,
-                        desc: 'Return list of topics matching the search criteria',
-                        documentation: { example: 'search' }
+        desc: 'Return list of topics matching the search criteria',
+        documentation: { example: 'search' }
       optional :without_projects, type: Boolean, desc: 'Return list of topics without assigned projects'
       use :pagination
     end
@@ -45,7 +45,7 @@ module API
       requires :title, type: String, desc: 'Title'
       optional :description, type: String, desc: 'Description'
       optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic',
-                        documentation: { type: 'file' }
+        documentation: { type: 'file' }
     end
     post 'topics' do
       authenticated_as_admin!
@@ -69,7 +69,7 @@ module API
       optional :title, type: String, desc: 'Title'
       optional :description, type: String, desc: 'Description'
       optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic',
-                        documentation: { type: 'file' }
+        documentation: { type: 'file' }
     end
     put 'topics/:id' do
       authenticated_as_admin!

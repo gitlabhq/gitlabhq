@@ -1,4 +1,4 @@
-- page_title _("Issues")
+- page_title _("Assigned issues")
 - @breadcrumb_link = issues_dashboard_path(assignee_username: current_user.username)
 - add_page_specific_style 'page_bundles/issuable_list'
 - add_page_specific_style 'page_bundles/dashboard'
@@ -9,11 +9,8 @@
 = render_if_exists 'shared/dashboard/saml_reauth_notice',
   groups_requiring_saml_reauth: user_groups_requiring_reauth
 
-.page-title-holder.gl-display-flex.gl-align-items-center
-  %h1.page-title.gl-font-size-h-display= _('Issues')
-
-  - if current_user
-    .page-title-controls
-      = render 'shared/new_project_item_vue_select'
+= render ::Layouts::PageHeadingComponent.new(_('Assigned issues')) do |c|
+  - c.with_actions do
+    = render 'shared/new_project_item_vue_select'
 
 .js-issues-dashboard{ data: dashboard_issues_list_data(current_user) }

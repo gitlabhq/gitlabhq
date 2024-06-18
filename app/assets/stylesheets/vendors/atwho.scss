@@ -58,7 +58,7 @@
 
       &.cur {
         @include gl-focus;
-        background-color: $gray-darker;
+        background-color: $gray-50;
         color: $gl-text-color;
 
         small {

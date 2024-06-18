@@ -2,10 +2,10 @@
   .event-item-timestamp.gl-font-sm
     = time_ago_with_tooltip(event.created_at)
 
-  .system-note-image.gl-rounded-full.gl-bg-gray-50.gl-line-height-0= sprite_icon('eye-slash', size: 14, css_class: 'icon')
+  .system-note-image.gl-rounded-full.gl-bg-gray-50.gl-leading-0= sprite_icon('eye-slash', size: 14, css_class: 'icon')
 
   = event_user_info(event)
 
-  .event-title.d-flex.gl-flex-wrap
+  .event-title.gl-flex.gl-flex-wrap
     = inline_event_icon(event)
     = s_('Profiles|Made a private contribution')

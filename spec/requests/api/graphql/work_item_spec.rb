@@ -13,7 +13,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     create(
       :work_item,
       project: project,
-      description: '- List item',
+      description: '- [x] List item',
       start_date: Date.today,
       due_date: 1.week.from_now,
       created_at: 1.week.ago,
@@ -132,6 +132,10 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   username
                 }
                 lastEditedAt
+                taskCompletionStatus {
+                  completedCount
+                  count
+                }
               }
             }
           GRAPHQL
@@ -150,6 +154,10 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 'lastEditedBy' => {
                   'webPath' => "/#{guest.full_path}",
                   'username' => guest.username
+                },
+                'taskCompletionStatus' => {
+                  'completedCount' => 1,
+                  'count' => 1
                 }
               )
             )
@@ -1074,7 +1082,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
     end
 
     describe 'development widget' do
-      context 'when fetching related feature flags' do
+      context 'when fetching closing merge requests' do
         let_it_be(:merge_request1) { create(:merge_request, source_project: project) }
         let_it_be(:merge_request2) { create(:merge_request, source_project: project, target_branch: 'feature2') }
         let_it_be(:private_project) { create(:project, :repository, :private) }
@@ -1085,9 +1093,10 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             widgets {
               type
               ... on WorkItemWidgetDevelopment {
-                relatedMergeRequests {
+                closingMergeRequests {
                   nodes {
-                    closesWorkItem
+                    id
+                    fromMrDescription
                     mergeRequest { id }
                   }
                 }
@@ -1096,15 +1105,22 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
           GRAPHQL
         end
 
-        before_all do
-          [merge_request1, merge_request2].each do |merge_request|
-            create(
-              :merge_requests_closing_issues,
-              merge_request: merge_request,
-              issue: work_item,
-              closes_work_item: false
-            )
-          end
+        let_it_be(:mr_closing_issue1) do
+          create(
+            :merge_requests_closing_issues,
+            merge_request: merge_request1,
+            issue: work_item,
+            from_mr_description: false
+          )
+        end
+
+        let_it_be(:mr_closing_issue2) do
+          create(
+            :merge_requests_closing_issues,
+            merge_request: merge_request2,
+            issue: work_item,
+            from_mr_description: true
+          )
         end
 
         before do
@@ -1120,16 +1136,18 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
               'widgets' => array_including(
                 hash_including(
                   'type' => 'DEVELOPMENT',
-                  'relatedMergeRequests' => {
+                  'closingMergeRequests' => {
                     'nodes' => containing_exactly(
-                      {
+                      hash_including(
+                        'id' => mr_closing_issue1.to_gid.to_s,
                         'mergeRequest' => { 'id' => merge_request1.to_global_id.to_s },
-                        'closesWorkItem' => false
-                      },
-                      {
+                        'fromMrDescription' => false
+                      ),
+                      hash_including(
+                        'id' => mr_closing_issue2.to_gid.to_s,
                         'mergeRequest' => { 'id' => merge_request2.to_global_id.to_s },
-                        'closesWorkItem' => false
-                      }
+                        'fromMrDescription' => true
+                      )
                     )
                   }
                 )
@@ -1144,15 +1162,11 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             end
             expect(graphql_errors).to be_blank
 
-            merge_request3 = create(:merge_request, source_project: project, target_branch: 'feature3')
-            [merge_request1, merge_request2, merge_request3].each do |merge_request|
-              create(
-                :merge_requests_closing_issues,
-                merge_request: merge_request,
-                issue: work_item,
-                closes_work_item: true
-              )
-            end
+            create(
+              :merge_requests_closing_issues,
+              merge_request: create(:merge_request, source_project: project, target_branch: 'feature3'),
+              issue: work_item
+            )
 
             expect do
               post_graphql(query, current_user: current_user)

@@ -10,5 +10,3 @@ milestone: '15.7'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   namespace_id: namespaces
-allow_cross_joins:
-  - gitlab_main_clusterwide # TODO: Exists just for example in specs

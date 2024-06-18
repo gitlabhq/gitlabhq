@@ -100,7 +100,7 @@ module Gitlab
 
         def ci_minutes_exceeded_builds_counter
           name = :ci_minutes_exceeded_builds_counter
-          comment = 'Count of builds dropped due to CI minutes exceeded'
+          comment = 'Count of builds dropped due to compute minutes exceeded'
 
           Gitlab::Metrics.counter(name, comment)
         end

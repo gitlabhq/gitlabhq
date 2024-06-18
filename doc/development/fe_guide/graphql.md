@@ -80,7 +80,7 @@ the GraphQL extension, follow these steps:
 
 Our GraphQL API can be explored via GraphiQL at your instance's
 `/-/graphql-explorer` or at [GitLab.com](https://gitlab.com/-/graphql-explorer). Consult the
-[GitLab GraphQL API Reference documentation](../../api/graphql/reference)
+[GitLab GraphQL API Reference documentation](../../api/graphql/reference/index.md)
 where needed.
 
 To check all existing queries and mutations, on the right side of GraphiQL, select **Documentation explorer**.

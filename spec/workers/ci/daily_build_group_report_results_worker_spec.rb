@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Ci::DailyBuildGroupReportResultsWorker, feature_category: :code_testing do
   describe '#perform' do
-    let!(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:pipeline) { create(:ci_pipeline) }
 
     subject { described_class.new.perform(pipeline_id) }
 
@@ -20,7 +20,7 @@ RSpec.describe Ci::DailyBuildGroupReportResultsWorker, feature_category: :code_t
     end
 
     context 'when pipeline is not found' do
-      let(:pipeline_id) { 123 }
+      let(:pipeline_id) { non_existing_record_id }
 
       it 'does not execute service' do
         expect_any_instance_of(Ci::DailyBuildGroupReportResultService)

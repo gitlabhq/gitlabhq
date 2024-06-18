@@ -145,7 +145,7 @@ export default {
         class="gl-absolute gl-w-full gl-bg-white gl-opacity-5 gl-z-2"
         size="lg"
       />
-      <span class="gl-font-weight-bold">{{ $options.i18n.viewLabelText }}</span>
+      <span class="gl-font-bold">{{ $options.i18n.viewLabelText }}</span>
       <gl-button-group class="gl-mx-4">
         <gl-button
           v-for="viewType in viewTypesList"

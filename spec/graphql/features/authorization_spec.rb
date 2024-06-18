@@ -82,9 +82,9 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
         permissions = permission_collection
         query_factory do |qt|
           qt.field :item, type,
-                   null: true,
-                   resolver: new_resolver(test_object),
-                   authorize: permissions
+            null: true,
+            resolver: new_resolver(test_object),
+            authorize: permissions
         end
       end
 
@@ -201,9 +201,9 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
     let(:query_type) do
       query_factory do |query|
         query.field :item, type,
-                    null: true,
-                    resolver: resolver,
-                    authorize: permission_2
+          null: true,
+          resolver: resolver,
+          authorize: permission_2
       end
     end
 
@@ -261,8 +261,8 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
         let(:query_type) do
           query_factory do |query|
             query.field :item, type,
-                        null: true,
-                        resolver: resolver
+              null: true,
+              resolver: resolver
           end
         end
 
@@ -387,8 +387,8 @@ RSpec.describe 'DeclarativePolicy authorization in GraphQL ' do
       type_factory do |type|
         type.graphql_name 'FakeProjectType'
         type.field :test_issues, field_type,
-                   null: false,
-                   resolver: new_resolver(issues)
+          null: false,
+          resolver: new_resolver(issues)
       end
     end
 

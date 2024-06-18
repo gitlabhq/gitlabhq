@@ -44,7 +44,7 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, service: true do
           message = "issue move #{issue.iid} #{project.full_path}"
 
           expect(process_message(message)).to include(response_type: :ephemeral,
-                                                      text: a_string_matching('Cannot move issue'))
+            text: a_string_matching('Cannot move issue'))
         end
       end
 
@@ -67,7 +67,7 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, service: true do
         it 'returns the new issue' do
           expect(process_message(message))
             .to include(response_type: :in_channel,
-                        attachments: [a_hash_including(title_link: a_string_including(other_project.full_path))])
+              attachments: [a_hash_including(title_link: a_string_including(other_project.full_path))])
         end
 
         it 'mentions the old issue' do
@@ -82,7 +82,7 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, service: true do
         message = "issue move #{issue.iid.succ} #{other_project.full_path}"
 
         expect(process_message(message)).to include(response_type: :ephemeral,
-                                                    text: a_string_matching('not found'))
+          text: a_string_matching('not found'))
       end
     end
 
@@ -91,7 +91,7 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, service: true do
         message = "issue move #{issue.iid} #{other_project.full_path}/foo"
 
         expect(process_message(message)).to include(response_type: :ephemeral,
-                                                    text: a_string_matching('not found'))
+          text: a_string_matching('not found'))
       end
     end
 
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, service: true do
         other_project.team.truncate
 
         expect(process_message(message)).to include(response_type: :ephemeral,
-                                                    text: a_string_matching('not found'))
+          text: a_string_matching('not found'))
       end
     end
 
@@ -112,7 +112,7 @@ RSpec.describe Gitlab::SlashCommands::IssueMove, service: true do
         other_project.team.add_guest(user)
 
         expect(process_message(message)).to include(response_type: :ephemeral,
-                                                    text: a_string_matching('Cannot move issue'))
+          text: a_string_matching('Cannot move issue'))
       end
     end
   end

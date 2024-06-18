@@ -217,8 +217,8 @@ in the bound claims. For example:
 }
 ```
 
-- If only `namespace_id` is used, all projects in the namespace are allowed.
-- If both `namespace_id` and `project_id` are used, Vault first checks if the project's namespace is in `namespace_id`. If not, it then checks if the project is in `project_id`.
+- If only `namespace_id` is used, all projects in the namespace are allowed. Nested projects are not included, so their namespace IDs must also be added to the list if needed.
+- If both `namespace_id` and `project_id` are used, Vault first checks if the project's namespace is in `namespace_id` then checks if the project is in `project_id`.
 
 [`token_explicit_max_ttl`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#token_explicit_max_ttl) specifies that the token issued by Vault, upon successful authentication, has a hard lifetime limit of 60 seconds.
 

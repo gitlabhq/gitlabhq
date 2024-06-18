@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Importers::LfsObjectsImporter, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketImport::Importers::LfsObjectsImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:project) do
     create(:project, :import_started,
       import_data_attributes: {
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::LfsObjectsImporter, feature_c
     }
   end
 
-  describe '#execute', :clean_gitlab_redis_cache do
+  describe '#execute' do
     context 'when lfs is enabled' do
       before do
         allow(project).to receive(:lfs_enabled?).and_return(true)

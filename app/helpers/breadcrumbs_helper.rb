@@ -39,7 +39,7 @@ module BreadcrumbsHelper
     {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
-      'itemListElement': build_item_list_elements&.map&.with_index do |item, index|
+      itemListElement: build_item_list_elements&.map&.with_index do |item, index|
         {
           '@type' => 'ListItem',
           'position' => index + 1,

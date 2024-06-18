@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
+RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :clean_gitlab_redis_cache, feature_category: :continuous_integration do
   include ProjectForksHelper
 
   let_it_be_with_refind(:project) { create(:project, :repository) }

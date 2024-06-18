@@ -104,7 +104,7 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
             link = build(:parent_link, work_item_parent: item4, work_item: item3)
 
             expect(link).not_to be_valid
-            expect(link.errors[:work_item]).to include('is already present in ancestors')
+            expect(link.errors[:work_item]).to include("it's already present in this item's hierarchy")
           end
         end
       end

@@ -2,7 +2,6 @@
 Rails/LexicallyScopedActionFilter:
   Exclude:
     - 'app/controllers/admin/groups_controller.rb'
-    - 'app/controllers/admin/hooks_controller.rb'
     - 'app/controllers/clusters/base_controller.rb'
     - 'app/controllers/clusters/clusters_controller.rb'
     - 'app/controllers/concerns/enforces_two_factor_authentication.rb'
@@ -20,7 +19,6 @@ Rails/LexicallyScopedActionFilter:
     - 'app/controllers/passwords_controller.rb'
     - 'app/controllers/projects/badges_controller.rb'
     - 'app/controllers/projects/branches_controller.rb'
-    - 'app/controllers/projects/environments_controller.rb'
     - 'app/controllers/projects/hooks_controller.rb'
     - 'app/controllers/projects/incidents_controller.rb'
     - 'app/controllers/projects/issue_links_controller.rb'

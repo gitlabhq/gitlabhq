@@ -121,6 +121,13 @@ func NewDiffClient(ctx context.Context, server api.GitalyServer) (context.Contex
 	return withOutgoingMetadata(ctx, server), &DiffClient{grpcClient}, nil
 }
 
+// NewConnectionWithSidechannel returns a Gitaly connection with a sidechannel
+func NewConnectionWithSidechannel(server api.GitalyServer) (*grpc.ClientConn, *gitalyclient.SidechannelRegistry, error) {
+	conn, err := getOrCreateConnection(server)
+
+	return conn, sidechannelRegistry, err
+}
+
 func getOrCreateConnection(server api.GitalyServer) (*grpc.ClientConn, error) {
 	key := getCacheKey(server)
 

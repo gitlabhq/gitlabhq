@@ -283,7 +283,7 @@ export default {
                     <strong
                       v-for="(headerText, i) in item.header"
                       :key="`${item.id}-headerText-${i}`"
-                      class="gl-display-block gl-mt-2"
+                      class="gl-block gl-mt-2"
                     >
                       {{ headerText }}
                     </strong>

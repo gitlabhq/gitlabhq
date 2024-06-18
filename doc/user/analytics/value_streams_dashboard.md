@@ -10,8 +10,8 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Introduced in GitLab 15.8 as a Closed [Beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Disabled by default.
-> - Released in GitLab 15.11 as an Open [Beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Enabled by default.
+> - Introduced in GitLab 15.8 as a closed [beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Disabled by default.
+> - Released in GitLab 15.11 as an open [beta](../../policy/experiment-beta-support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 
 To help us improve the Value Streams Dashboard, share feedback about your experience in this [survey](https://gitlab.fra1.qualtrics.com/jfe/form/SV_50guMGNU2HhLeT4).
@@ -116,7 +116,7 @@ panels:
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439737) in GitLab 16.9.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/440694) in GitLab 16.11. Feature flag `dora_performers_score_panel` removed.
 
-The [DORA metrics](dora_metrics.md) Performers score panel is a bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
+The [DORA metrics](dora_metrics.md) Performers score panel is a group-level bar chart that visualizes the status of the organization's DevOps performance levels across different projects.
 
 The chart is a breakdown of your project's DORA scores, [categorized](https://cloud.google.com/blog/products/devops-sre/dora-2022-accelerate-state-of-devops-report-now-out) as high, medium, or low.
 The chart aggregates all the child projects in the group.
@@ -136,7 +136,8 @@ For example, if a project has a high score for deployment frequency (velocity), 
 
 #### Filter the DORA Performers score by project topics
 
-When used in combination with a [YAML configuration](#using-yaml-configuration), you can filter the projects shown based on their assigned [topics](../project/project_topics.md).
+When you customize dashboards with a YAML configuration,
+you can filter the displayed projects by assigned [topics](../project/project_topics.md).
 
 ```yaml
 panels:
@@ -154,22 +155,26 @@ If multiple topics are provided, all topics must match for the project to be inc
 
 ### AI Impact analytics
 
+DETAILS:
+**Offering:** GitLab.com, Self-managed
+
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`.
-On GitLab.com and GitLab Dedicated, this feature is available.
+On GitLab.com this feature is available.
+On GitLab Dedicated this feature is not available.
 
 AI Impact analytics displays SDLC metrics for a group or project in the month-to-date and the past six months. You can use this table to observe how changes in the AI usage metric correlate with changes in other metrics.
 
-The metric **Monthly Code Suggestions Usage rate** is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). GitLab considers the total monthly unique code contributors, meaning only users with `pushed` events are included in the calculation.
+The metric **Monthly Code Suggestions Usage rate** represents users that engage with Code Suggestions every month. It is calculated as the number of monthly unique Code Suggestions users divided by total monthly [unique contributors](../../user/profile/contributions_calendar.md#user-contribution-events). Only unique code contributors, meaning users with `pushed` events, are included in the calculation.
 
 The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.
 
 The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members.
 
 NOTE:
-Usage rate for Code Suggestions is calculated with data starting on 2024-04-04.
+Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
 For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
 
 ## Enable or disable overview background aggregation
@@ -184,13 +189,13 @@ DETAILS:
 
 To enable or disable the overview count aggregation for the Value Streams Dashboard:
 
-1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Search or go to** and find your top-level group.
 1. Select **Settings > Analytics**.
 1. In **Value Streams Dashboard**, select or clear the **Enable overview background aggregation for Value Streams Dashboard** checkbox.
 
 To retrieve aggregated usage counts in the group, use the [GraphQL API](../../api/graphql/reference/index.md#groupvaluestreamdashboardusageoverview).
 
-## View the value streams dashboard
+## View the Value Streams Dashboard
 
 Prerequisites:
 
@@ -201,7 +206,7 @@ Prerequisites:
   - Configure [ClickHouse for contribution analytics](../../user/group/contribution_analytics/index.md#contribution-analytics-with-clickhouse).
 - To view the contributor count metric in the comparison panel, you must [set up ClickHouse](../../integration/clickhouse.md).
 
-To view the value streams dashboard:
+To view the Value Streams Dashboard:
 
 - From Analytics Dashboards:
 
@@ -215,18 +220,46 @@ To view the value streams dashboard:
    1. Below the **Filter results** text box, in the **Lifecycle metrics** row, select **Value Streams Dashboard / DORA**.
    1. Optional. To open the new page, append this path `/analytics/dashboards/value_streams_dashboard` to the group URL (for example, `https://gitlab.com/groups/gitlab-org/-/analytics/dashboards/value_streams_dashboard`).
 
-You can also view the Value Streams Dashboard rendered as an analytics dashboard for a [group](analytics_dashboards.md#view-group-dashboards) or [project](analytics_dashboards.md#view-project-dashboards).
+### View the Value Streams Dashboard for a project
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+- Overview background aggregation for Value Streams Dashboards must be enabled.
+
+To view the Value Streams Dashboard as an analytics dashboard for a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Analyze > Analytics dashboards**.
+1. From the list of available dashboards, select **Value Streams Dashboard**.
+
+### Schedule Value Streams Dashboard reports
+
+You can schedule reports using the CI/CD component
+[Value Streams Dashboard Scheduled Reports tool](https://gitlab.com/components/vsd-reports-generator).
+This tool saves time and effort by eliminating the need to manually search for the right dashboard with the relevant data, so that you can focus on analyzing insights.
+By scheduling reports, you can ensure that the decision-makers in your organization receive proactive, timely, and relevant information.
+
+The Scheduled Reports tool collects metrics from projects or groups through the public GitLab GraphQL API,
+then builds a report using [GitLab Flavored Markdown](../../user/markdown.md),
+and opens an issue in a specified project.
+The issue includes a comparison metrics table in Markdown format.
+
+See an [example scheduled report](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report).
 
 ## Customize the dashboard panels
 
 You can customize the Value Streams Dashboard and configure what subgroups and projects to include in the page.
 
-### Using YAML configuration
-
-To customize the default content of the page, you need to create a YAML configuration file in a project of your choice. In this file you can define various settings and parameters, such as title, description, and number of panels and labels filters. The file is schema-driven and managed with version control systems like Git. This enables tracking and maintaining a history of configuration changes, reverting to previous versions if necessary, and collaborating effectively with team members.
+To customize the default content of the page, you need to create a YAML configuration file in a project of your choice.
+In this file, you can define various settings and parameters, such as title, description, and number of panels and labels filters.
+The file is schema-driven and managed with version control systems like Git.
+This enables tracking and maintaining a history of configuration changes, reverting to previous versions if necessary, and collaborating effectively with team members.
 Query parameters can still be used to override the YAML configuration.
 
-First, you need to set up the project.
+Before you customize the dashboard panels, you must select a project to store your YAML configuration file.
 
 Prerequisites:
 
@@ -239,7 +272,7 @@ Prerequisites:
 
 After you have set up the project, set up the configuration file:
 
-1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Search or go to** and find the project you selected in the previous step.
 1. In the default branch, create the configuration file: `.gitlab/analytics/dashboards/value_streams/value_streams.yaml`.
 1. In the `value_streams.yaml` configuration file, fill in the configuration options:
 
@@ -257,7 +290,10 @@ After you have set up the project, set up the configuration file:
 | `height` (subfield of `gridAttributes`) | Height of the panel |
 
 ```yaml
-# title - Change the title of the Value Streams Dashboard. [optional]
+# version - The latest version of the analytics dashboard schema
+version: '2'
+
+# title - Change the title of the Value Streams Dashboard.
 title: 'Custom Dashboard title'
 
 # description - Change the description of the Value Streams Dashboard. [optional]
@@ -323,20 +359,20 @@ panels:
       width: 12
 ```
 
-#### Supported visualization filters
+### Supported visualization filters
 
 The `filters` subfield on the `queryOverrides` field can be used to customize the data displayed in a panel.
 
-##### DevSecOps metrics comparison panel filters
+#### DevSecOps metrics comparison panel filters
 
 Filters for the `dora_chart` visualization.
 
 |Filter|Description|Supported values|
 |---|---|---|
 |`excludeMetrics`| Hides rows by metric ID from the chart panel | `deployment_frequency`, `lead_time_for_changes`,`time_to_restore_service`, `change_failure_rate`, `lead_time`, `cycle_time`, `issues`, `issues_completed`, `deploys`, `merge_request_throughput`, `median_time_to_merge`, `contributor_count`, `vulnerability_critical`, `vulnerability_high`|
-| `labels` | Filters data by labels | Any available group label |
+| `labels` | Filters data by labels | Any available group label. Label filtering is supported by the following metrics: `lead_time`, `cycle_time`, `issues`, `issues_completed`, `merge_request_throughput`, `median_time_to_merge`. |
 
-##### DORA Performers score panel filters
+#### DORA Performers score panel filters
 
 Filters for the `dora_performers_score` visualization.
 
@@ -344,7 +380,7 @@ Filters for the `dora_performers_score` visualization.
 |---|---|---|
 |`projectTopics`|Filters the projects shown based on their assigned [topics](../project/project_topics.md)| Any available group topic|
 
-##### Usage overview panel filters
+#### Usage overview panel filters
 
 Filters for the `usage_overview` visualization.
 

@@ -12,7 +12,7 @@ module RuboCop
       class MarkUsedFeatureFlags < RuboCop::Cop::Base
         include RuboCop::CodeReuseHelpers
 
-        FEATURE_CALLERS = %w[Feature YamlProcessor::FeatureFlags].freeze
+        FEATURE_CALLERS = %w[Feature Config::FeatureFlags].freeze
         FEATURE_METHODS = %i[enabled? disabled?].freeze
         EXPERIMENT_METHODS = %i[
           experiment

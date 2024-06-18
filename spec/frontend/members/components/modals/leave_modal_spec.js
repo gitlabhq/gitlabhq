@@ -7,7 +7,7 @@ import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import LeaveModal from '~/members/components/modals/leave_modal.vue';
 import {
   LEAVE_MODAL_ID,
-  MEMBER_TYPES,
+  MEMBERS_TAB_TYPES,
   MEMBER_MODEL_TYPE_PROJECT_MEMBER,
 } from '~/members/constants';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
@@ -24,7 +24,7 @@ describe('LeaveModal', () => {
   const createStore = (state = {}) => {
     return new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.user]: {
+        [MEMBERS_TAB_TYPES.user]: {
           namespaced: true,
           state: {
             memberPath: '/groups/foo-bar/-/group_members/:id',
@@ -39,7 +39,7 @@ describe('LeaveModal', () => {
     wrapper = mountExtended(LeaveModal, {
       store: createStore(state),
       provide: {
-        namespace: MEMBER_TYPES.user,
+        namespace: MEMBERS_TAB_TYPES.user,
       },
       propsData: {
         member,

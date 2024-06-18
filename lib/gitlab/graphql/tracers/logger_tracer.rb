@@ -35,12 +35,22 @@ module Gitlab
             query_string: query.query_string
           }
 
+          token_info = auth_token_info(query)
+          info.merge!(token_info) if token_info
+
           Gitlab::ExceptionLogFormatter.format!(exception, info)
 
           info.merge!(::Gitlab::ApplicationContext.current)
           info.merge!(analysis_info) if analysis_info
 
           ::Gitlab::GraphqlLogger.info(info)
+        end
+
+        def auth_token_info(query)
+          request_env = query.context[:request]&.env
+          return unless request_env
+
+          request_env[::Gitlab::Auth::AuthFinders::API_TOKEN_ENV]
         end
 
         def clean_variables(variables)

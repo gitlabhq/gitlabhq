@@ -25,7 +25,7 @@ RSpec.describe CustomEmoji do
     end
 
     it 'disallows very long invalid emoji name without regular expression backtracking issues' do
-      new_emoji = build(:custom_emoji, name: 'a' * 10000 + '!', group: group)
+      new_emoji = build(:custom_emoji, name: ('a' * 10000) + '!', group: group)
 
       Timeout.timeout(1) do
         expect(new_emoji).not_to be_valid

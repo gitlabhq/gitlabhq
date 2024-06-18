@@ -313,19 +313,6 @@ RSpec.describe Gitlab::GithubImport::UserFinder, :clean_gitlab_redis_shared_stat
             email_for_github_username
           end
 
-          context 'when github_import_lock_user_finder feature flag is disabled' do
-            before do
-              stub_feature_flags(github_import_lock_user_finder: false)
-            end
-
-            it 'does not lock the finder' do
-              expect(finder).not_to receive(:in_lock)
-              expect(client).to receive(:user)
-
-              email_for_github_username
-            end
-          end
-
           context 'if the response contains an email' do
             before do
               allow(client).to receive(:user).and_return({ email: email })

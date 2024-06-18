@@ -75,14 +75,14 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the protected branch', documentation: { example: 'main' }
         optional :push_access_level, type: Integer,
-                                     values: ProtectedBranch::PushAccessLevel.allowed_access_levels,
-                                     desc: 'Access levels allowed to push (defaults: `40`, maintainer access level)'
+          values: ProtectedBranch::PushAccessLevel.allowed_access_levels,
+          desc: 'Access levels allowed to push (defaults: `40`, maintainer access level)'
         optional :merge_access_level, type: Integer,
-                                      values: ProtectedBranch::MergeAccessLevel.allowed_access_levels,
-                                      desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
+          values: ProtectedBranch::MergeAccessLevel.allowed_access_levels,
+          desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
         optional :allow_force_push, type: Boolean,
-                                    default: false,
-                                    desc: 'Allow force push for all users with push access.'
+          default: false,
+          desc: 'Allow force push for all users with push access.'
 
         use :optional_params_ee
       end
@@ -120,8 +120,8 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the branch', documentation: { example: 'main' }
         optional :allow_force_push, type: Boolean,
-                                    desc: 'Allow force push for all users with push access.',
-                                    allow_blank: false
+          desc: 'Allow force push for all users with push access.',
+          allow_blank: false
 
         use :optional_params_ee
       end

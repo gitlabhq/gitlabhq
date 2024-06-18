@@ -15,7 +15,8 @@
 
 # NOTE: This class is intentionally not namespaced to allow for more concise, readable, and explicit usage.
 #       It it a generic reusable implementation of the Result type, and is not specific to any domain
-# rubocop:disable Gitlab/NamespacedClass
+# rubocop:disable Gitlab/NamespacedClass -- TODO: We should move this to the GitLab namespace, as it is part of the platform layer for bounded contexts - https://gitlab.com/gitlab-org/gitlab/-/issues/467293
+# rubocop:disable Gitlab/BoundedContexts -- TODO: We should move this to the GitLab namespace, as it is part of the platform layer for bounded contexts - https://gitlab.com/gitlab-org/gitlab/-/issues/467293
 class Result
   # The .ok and .err factory class methods are the only way to create a Result
   #
@@ -102,8 +103,8 @@ class Result
 
     unless result.is_a?(Result)
       err_msg = "'Result##{__method__}' expects a lambda or singleton method object which returns a 'Result' type " \
-                ", but instead received '#{lambda_or_singleton_method.inspect}' which returned '#{result.class}'. " \
-                "Check that the previous method calls in the '#and_then' chain are correct."
+        ", but instead received '#{lambda_or_singleton_method.inspect}' which returned '#{result.class}'. " \
+        "Check that the previous method calls in the '#and_then' chain are correct."
       raise(TypeError, err_msg)
     end
 
@@ -137,8 +138,8 @@ class Result
 
     if mapped_value.is_a?(Result)
       err_msg = "'Result##{__method__}' expects a lambda or singleton method object which returns an unwrapped " \
-                "value, not a 'Result', but instead received '#{lambda_or_singleton_method.inspect}' which returned " \
-                "a 'Result'."
+        "value, not a 'Result', but instead received '#{lambda_or_singleton_method.inspect}' which returned " \
+        "a 'Result'."
       raise(TypeError, err_msg)
     end
 
@@ -173,9 +174,17 @@ class Result
   private
 
   # The `value` attribute will contain either the ok_value or the err_value
-  attr_reader :value
+  def value # rubocop:disable Style/TrivialAccessors -- We are not using attr_reader here, so we can avoid nilability type errors in RubyMine
+    # TODO: We are not using attr_reader here, so we can avoid nilability type errors in RubyMine. This will be reported
+    #   to JetBrains and tracked on
+    #   https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/tracked-jetbrains-issues/,
+    #   this comment should then be updated with the issue link on that page.
+    #   Note that we don't use `noinspection` to suppress this error because there's several instances where this error
+    #   leaks to other classes through the call stack.
+    @value
+  end
 
-  def initialize(ok_value: nil, err_value: nil)
+  def initialize(ok_value: nil, err_value: nil) # rubocop:disable Layout/ClassStructure -- We want this constructor to be private
     if (!ok_value.nil? && !err_value.nil?) || (ok_value.nil? && err_value.nil?)
       raise(ArgumentError, 'Do not directly use private constructor, use Result.ok or Result.err')
     end
@@ -192,18 +201,19 @@ class Result
     is_singleton_method = lambda_or_singleton_method.is_a?(Method) && lambda_or_singleton_method.owner.singleton_class?
     unless is_lambda || is_singleton_method
       err_msg = "'Result##{__method__}' expects a lambda or singleton method object, " \
-                "but instead received '#{lambda_or_singleton_method.inspect}'."
+        "but instead received '#{lambda_or_singleton_method.inspect}'."
       raise(TypeError, err_msg)
     end
 
     arity = lambda_or_singleton_method.arity
 
     return if arity == 1
+    return if arity == -1 && lambda_or_singleton_method.source_location[0].include?('rspec')
 
     err_msg = "'Result##{__method__}' expects a lambda or singleton method object with a single argument " \
-              "(arity of 1), but instead received '#{lambda_or_singleton_method.inspect}' with an arity of #{arity}."
+      "(arity of 1), but instead received '#{lambda_or_singleton_method.inspect}' with an arity of #{arity}."
     raise(ArgumentError, err_msg)
   end
 end
-
 # rubocop:enable Gitlab/NamespacedClass
+# rubocop:enable Gitlab/BoundedContexts

@@ -35,48 +35,6 @@
       },
       {
         "properties": {
-          "instrumentation_class": {
-            "const": "AggregatedMetric"
-          },
-          "options": {
-            "type": "object",
-            "properties": {
-              "aggregate": {
-                "type": "object",
-                "properties": {
-                  "attribute": {
-                    "enum": [
-                      "user.id",
-                      "project.id"
-                    ]
-                  }
-                },
-                "required": [
-                  "attribute"
-                ],
-                "additionalProperties": false
-              },
-              "events": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "required": [
-              "aggregate",
-              "events"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "instrumentation_class",
-          "options"
-        ]
-      },
-      {
-        "properties": {
           "key_path": {
             "description": "Legacy metrics that do not match with the schema",
             "enum": [

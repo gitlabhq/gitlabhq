@@ -1,4 +1,4 @@
 .form-group.gl-form-group{ role: 'group' }
   = f.fields_for :admin_note do |an|
-    = an.label :note, s_('Admin|Admin notes'), class: 'gl-display-block col-form-label'
+    = an.label :note, s_('Admin|Admin notes'), class: 'gl-block col-form-label'
     = an.text_area :note, class: 'form-control gl-form-input gl-form-textarea'

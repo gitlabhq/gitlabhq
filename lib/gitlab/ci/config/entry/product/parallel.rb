@@ -9,8 +9,8 @@ module Gitlab
         #
         module Product
           class Parallel < ::Gitlab::Config::Entry::Simplifiable
-            strategy :ParallelBuilds, if: -> (config) { config.is_a?(Numeric) }
-            strategy :MatrixBuilds, if: -> (config) { config.is_a?(Hash) }
+            strategy :ParallelBuilds, if: ->(config) { config.is_a?(Numeric) }
+            strategy :MatrixBuilds, if: ->(config) { config.is_a?(Hash) }
 
             PARALLEL_LIMIT = 200
 
@@ -21,7 +21,7 @@ module Gitlab
                 validates :config, numericality: { only_integer: true,
                                                    greater_than_or_equal_to: 1,
                                                    less_than_or_equal_to: Entry::Product::Parallel::PARALLEL_LIMIT },
-                                   allow_nil: true
+                  allow_nil: true
 
                 validate do
                   next unless opt(:allowed_strategies)

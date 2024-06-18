@@ -48,10 +48,38 @@ module Gitlab
               message: "importing merge request #{merge_request.iid} notes"
             )
 
-            activities = client.activities(project_key, repository_slug, merge_request.iid)
-            activities.each do |activity|
-              process_comment(merge_request, activity)
+            # The page counter needs to be scoped by parent_record to avoid skipping
+            # pages of notes from already imported parent_record. As 2 different MR(s)
+            # might share the same page counter.
+            page_counter = Gitlab::Import::PageCounter.new(
+              project, page_counter_id(merge_request), 'bitbucket-server-importer'
+            )
+            page = page_counter.current
+
+            log_message = "importing merge request #{merge_request.iid} notes, "
+            log_message += "page #{page} using batch-size #{concurrent_import_jobs_limit}"
+            loop do
+              log_info(
+                import_stage: 'import_notes',
+                message: log_message
+              )
+
+              activities = client.activities(
+                project_key, repository_slug, merge_request.iid,
+                page_offset: page, limit: concurrent_import_jobs_limit
+              ).to_a
+
+              break if activities.empty?
+
+              activities.each do |activity|
+                process_comment(merge_request, activity)
+              end
+
+              page += 1
+              page_counter.set(page)
             end
+
+            page_counter.expire!
 
             mark_merge_request_processed(merge_request)
           end
@@ -64,9 +92,15 @@ module Gitlab
             return enqueue_comment_import(merge_request, 'standalone_notes', activity.comment)
           end
 
-          return enqueue_comment_import(merge_request, 'merge_event', activity) if activity.merge_event?
+          comment_type = if activity.approved_event?
+                           'approved_event'
+                         elsif activity.declined_event?
+                           'declined_event'
+                         elsif activity.merge_event?
+                           'merge_event'
+                         end
 
-          enqueue_comment_import(merge_request, 'approved_event', activity) if activity.approved_event?
+          enqueue_comment_import(merge_request, comment_type, activity) if comment_type
         end
 
         def enqueue_comment_import(merge_request, comment_type, comment)
@@ -103,7 +137,7 @@ module Gitlab
 
         def generate_activity_key(object)
           # we need to add key prefix to avoid `id` collision between `activity` and `comment`
-          key_prefix = if object.try(:approved_event?) || object.try(:merge_event?)
+          key_prefix = if object.try(:approved_event?) || object.try(:merge_event?) || object.try(:declined_event?)
                          "activity"
                        else
                          "comment"
@@ -133,6 +167,10 @@ module Gitlab
 
         def merge_request_collection
           project.merge_requests.where.not(iid: already_processed_merge_requests) # rubocop: disable CodeReuse/ActiveRecord -- no need to move this to ActiveRecord model
+        end
+
+        def page_counter_id(merge_request)
+          "merge_request/#{merge_request.id}/#{collection_method}"
         end
       end
     end

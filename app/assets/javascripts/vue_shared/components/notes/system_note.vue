@@ -152,7 +152,7 @@ export default {
           'system-note-tiny-dot gl-bg-gray-900!': !isAllowedIcon,
         },
       ]"
-      class="gl-float-left gl--flex-center gl-rounded-full gl-relative timeline-icon"
+      class="gl-float-left gl-flex gl-justify-center gl-items-center gl-rounded-full gl-relative timeline-icon"
     >
       <gl-icon
         v-if="isAllowedIcon"

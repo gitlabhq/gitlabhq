@@ -2,7 +2,7 @@
 status: wip
 creation-date: "2024-02-06"
 authors: [ "@alexander-sosna" ]
-coach: [ "@andrewn" ] 
+coach: [ "@andrewn" ]
 approvers: [  ]
 owning-stage: "~devops::data_stores"
 participating-stages: []
@@ -104,7 +104,7 @@ They can be *high*, *soft*, *low*.
 | PostgreSQL Patch Release                           | Support for minor releases (bugfixes) within 7 days.                                                                                                                                                                                                                                     | high     | ❌         | ✅/?          |
 | PostgreSQL Security Fixes                          | Any security fix to follow out [Security SLAs](https://handbook.gitlab.com/handbook/security/threat-management/vulnerability-management/#remediation-slas), critical within 24 hours.                                                                                                    | high     | ❌         | ✅            |
 | PostgreSQL Beta Release                            | Support for current PostgreSQL beta release, so development and infrastructure teams can test early.                                                                                                                                                                                     | low      | ❌         | ✅            |
-| Near Zero Downtime Upgrade                         | Upgrades need to be possible with only seconds, not minutes or hours, of APDEX degradation.                                                                                                                                                                                              | high     | ❌         | ?            |
+| Near Zero Downtime Upgrade                         | Upgrades need to be possible with only seconds, not minutes or hours, of APDEX degradation.                                                                                                                                                                                              | high     | ❌         | ✅/? ([db-migration](https://gitlab.com/gitlab-com/gl-infra/db-migration#zero-downtime-postgresql-upgrades) can be adapted)             |
 | HA solution                                        | High availability and failover automation, on-par or better than current Patroni solution. Switchover / Failover in seconds without human intervention. No possible split-brain scenarios.                                                                                               | high     | ✅         | ✅            |
 | Logging Integration                                | Structured logging on Postgres available.                                                                                                                                                                                                                                                | high     | ✅         | ✅            |
 | Metrics                                            | Integration in our Prometheus / Grafana monitoring setup.                                                                                                                                                                                                                                | high     | ✅         | ✅            |
@@ -115,7 +115,7 @@ They can be *high*, *soft*, *low*.
 | Base Backups                                       | Automated and manual base backups, configurable retention policy.                                                                                                                                                                                                                        | high     | ❌         | ✅            |
 | Fast backup / restore                              | Automated and manual fast backup like disk / volume snapshots, configurable retention policy, atomic snapshots or integration with [pg_start_backup / pg_stop_backup](https://www.postgresql.org/docs/14/functions-admin.html#FUNCTIONS-ADMIN-BACKUP-TABLE) to guarantee consistent data | high     | ✅         | ✅            |
 | Incremental backups                                | Provide faster backups, which allow us to perform more frequent backups, which reduces RTO.                                                                                                                                                                                              | medium   | ❌         | ❌/?          |
-| Backup Export                                      | Ability to export backups to generic storage e.g. GCS buckets.                                                                                                                                                                                                                           | high     | ✅         | ❌            |
+| Backup Export                                      | Ability to export backups to generic storage e.g. GCS buckets.                                                                                                                                                                                                                           | high     | ❌         | ✅            |
 | WAL Archiving                                      | WAL Archiving for disaster recovery, analytics and data repair, e.g. revert accidental deletion.                                                                                                                                                                                         | high     | ❌         | ✅            |
 | Streaming Replication                              | SR to remote locations is needed for DR and future migrations.                                                                                                                                                                                                                           | high     | ❌         | ✅            |
 | Logical Replication                                | LR to remote locations is needed for zero downtime upgrades and future migrations.                                                                                                                                                                                                       | high     | ✅ / ?     | ✅            |
@@ -155,14 +155,15 @@ We observed the following load peaks and can use them as an indication:
 
 #### Decomposition
 
-We are also evaluating if we can further decompose the `Main` database with [decomposing `Secure and Govern` related tables to a separate Postgres DB](https://gitlab.com/gitlab-org/gitlab/-/issues/427973),.
+The application data for [GitLab.com](https://gitlab.com/) is currently decomposed into two separate database clusters, `Main` and `CI`.
+We are evaluating if we can further decompose the `Main` database with [decomposing `Secure and Govern` related tables to a separate Postgres DB](https://gitlab.com/gitlab-org/gitlab/-/issues/427973) to gain more headroom and scalability for the current platform.
 
-Depending on the actual Cell size and amount of data it makes sense to keep individual clusters for each of the databases, or to use a single cluster per Cell to host multiple databases.
-To not prematurely limit the maximal size a Cell can have, we should implement the option to uses dedicated clusters for each database.
+For Cells it is a design choice to scale horizontally by adding more Cells and to rebalance by moving organizations to less saturated cells.
+Cells should not be scaled vertically to a point where decomposition is reasonable.
+Therefore decomposition within Cells will not be needed and is also **not** supported by the current Dedicated / GET / Cells tooling.
+Adding support for Decomposition in GET and Dedicated in the future would be possible as a medium-complexity task.
 
-Currently, Dedicated / GET / Cells tooling does **not** support decomposition. Adding supporting for Decomposition in GET and Dedicated would be possible as a medium-complexity task.
-If the given estimates on Cell size are not changed, decomposition with in Cells might not be needed.
-So for the first iteration only a single database cluster is needed per Cell, only a single one will be supported.
+In line with this, only a single database cluster is provisioned per Cell, capable of hosting all needed databases.
 
 ## Overview - Possible Solutions
 

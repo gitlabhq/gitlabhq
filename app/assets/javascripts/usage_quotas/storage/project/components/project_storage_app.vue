@@ -206,7 +206,7 @@ export default {
           </p>
         </div>
         <p
-          class="gl-m-0 gl-font-size-h-display gl-font-weight-bold gl-whitespace-nowrap"
+          class="gl-m-0 gl-font-size-h-display gl-font-bold gl-whitespace-nowrap"
           data-testid="total-usage"
         >
           {{ totalUsage }}
@@ -230,7 +230,7 @@ export default {
       data-testid="usage-quotas-project-usage-details"
     />
     <div>
-      <h2 class="gl-mb-2 gl-mt-5 gl-font-lg gl-font-weight-bold">
+      <h2 class="gl-mb-2 gl-mt-5 gl-font-lg gl-font-bold">
         {{ s__('UsageQuota|Namespace entities') }}
       </h2>
 

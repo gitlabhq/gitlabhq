@@ -50,6 +50,10 @@ include:
 .if-schedule-pipeline: &if-schedule-pipeline
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $SCHEDULE_TYPE == "maintenance"'
 
+.never-if-skip-omnibus-trigger: &never-if-skip-omnibus-trigger
+  if: '$SKIP_OMNIBUS_TRIGGER == "true"'
+  when: never
+
 # Selective test execution against omnibus instance have following execution scenarios:
 #   * only e2e spec files changed - runs only changed specs
 #   * qa framework changes - runs full test suite
@@ -66,6 +70,16 @@ include:
 .rules:download-knapsack:
   rules:
     - when: always
+
+.rules:trigger-omnibus:
+  rules:
+    - *never-if-skip-omnibus-trigger
+    - if: '$FOSS_ONLY != "1"'
+
+.rules:trigger-omnibus as-if-foss:
+  rules:
+    - *never-if-skip-omnibus-trigger
+    - if: '$FOSS_ONLY == "1"'
 
 # ------------------------------------------
 # Test

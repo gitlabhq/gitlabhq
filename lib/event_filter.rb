@@ -128,7 +128,7 @@ class EventFilter
     base_scope = base_scope.merge(scope) if scope
 
     order = { id: :desc }
-    finder_query = -> (id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
+    finder_query = ->(id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
 
     if order_hint_column.present?
       order = Gitlab::Pagination::Keyset::Order.build(
@@ -144,7 +144,7 @@ class EventFilter
           )
         ])
 
-      finder_query = -> (_order_hint, id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
+      finder_query = ->(_order_hint, id_expression) { Event.where(Event.arel_table[:id].eq(id_expression)) }
     end
 
     base_scope = base_scope.reorder(order)
@@ -185,7 +185,7 @@ class EventFilter
       from = Arel::Nodes::Grouping.new(column_list).as(as)
       {
         array_scope: array_scope_model.select(:id, in_column).from(from),
-        array_mapping_scope: -> (primary_id_expression, in_column_expression) do
+        array_mapping_scope: ->(primary_id_expression, in_column_expression) do
           Event
             .merge(scope)
             .where(Event.arel_table[array_mapping_column].eq(primary_id_expression))
@@ -199,7 +199,7 @@ class EventFilter
       from = Arel::Nodes::Grouping.new(array_ids_list).as('array_ids(id)')
       {
         array_scope: array_scope_model.select(:id).from(from),
-        array_mapping_scope: -> (primary_id_expression) do
+        array_mapping_scope: ->(primary_id_expression) do
           Event
             .merge(scope)
             .where(Event.arel_table[array_mapping_column].eq(primary_id_expression))

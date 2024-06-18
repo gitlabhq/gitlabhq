@@ -33,9 +33,32 @@ GitLab Dedicated leverages modified versions of the GitLab [Cloud Native Hybrid 
 NOTE:
 The published [reference architectures](../../administration/reference_architectures/index.md) act as a starting point in defining the cloud resources deployed inside GitLab Dedicated environments, but they are not comprehensive. GitLab Dedicated leverages additional Cloud Provider services beyond what's included in the standard reference architectures for enhanced security and stability of the environment. Therefore, GitLab Dedicated costs differ from standard reference architecture costs.
 
+#### Zero-downtime upgrades
+
+Deployments for GitLab Dedicated follow the process for [zero-downtime upgrades](../../update/zero_downtime.md) to ensure [backward compatibility](../../development/multi_version_compatibility.md) of the application during an upgrade. When no infrastructure changes or maintenance tasks require downtime, using the instance during an upgrade is possible and safe.
+
+During a GitLab version update, static assets may change and are only available in one of the two versions. To mitigate this situation, GitLab Dedicated adopts three techniques:
+
+1. Each static asset has a unique name that changes when its content changes.
+1. The browser caches each static asset.
+1. Each request from the same browser is routed to the same server temporarily.
+
+These techniques together give a strong assurance about asset availability:
+
+- During an upgrade, a user routed to a server running the new version will receive assets from the same server, completely removing the risk of receiving a broken page.
+- If routed to the old version, a regular user will have assets cached in their browser.
+- If not cached, they will receive the requested page and assets from the same server.
+- If the specific server is upgraded during the requests, they may still be routed to another server running the same version.
+- If the new server is running the upgraded version, and the requested asset changed, then the page may show some user interface glitches.
+
+To notice the effect of an upgrade, a new user of the system should connect for the first time during a version upgrade and get routed to an old version of the application immediately before its upgrade. The subsequent asset requests should end up in a server running the new version of GitLab, and the requested assets must have changed during this specific version upgrade. If all of this happens, a page refresh is enough to restore it.
+
+NOTE:
+Adopting a caching proxy in the customer network will further reduce this risk.
+
 #### Disaster Recovery
 
-When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance) to GitLab Dedicated, you can provide a Secondary AWS region in which your data is stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
+When [onboarding](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance) to GitLab Dedicated, you specify a Secondary AWS region in which your data will be stored. This region is used to recover your GitLab Dedicated instance in case of a disaster. Regular backups of all GitLab Dedicated datastores (including Database and Git repositories) are taken and tested regularly and stored in your desired secondary region. GitLab Dedicated also provides the ability to store copies of these backups in a separate cloud region of choice for greater redundancy.
 
 For more information, read about the [recovery plan for GitLab Dedicated](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan) as well as RPO and RTO targets. These targets are available only when both the primary and secondary regions are supported by GitLab Dedicated. See below for a [list of available AWS regions](#available-aws-regions) for GitLab Dedicated.
 
@@ -83,7 +106,23 @@ As a single-tenant SaaS solution, GitLab Dedicated provides infrastructure-level
 
 #### Access controls
 
-GitLab Dedicated adheres to the [principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege) to control access to customer tenant environments. Tenant AWS accounts live under a top-level GitLab Dedicated AWS parent organization. Access to the AWS Organization is restricted to select GitLab team members. All user accounts within the AWS Organization follow the overall [GitLab Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/). Direct access to customer tenant environments is restricted to a single Hub account. The GitLab Dedicated Control Plane uses the Hub account to perform automated actions over tenant accounts when managing environments. Similarly, GitLab Dedicated engineers do not have direct access to customer tenant environments. In [break glass](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/blob/main/engineering/breaking_glass.md) situations, where access to resources in the tenant environment is required to address a high-severity issue, GitLab engineers must go through the Hub account to manage those resources. This is done via an approval process, and after permission is granted, the engineer will assume an IAM role on a temporary basis to access tenant resources through the Hub account. All actions within the hub account and tenant account are logged to CloudTrail.
+GitLab Dedicated adheres to the
+[principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege)
+to control access to customer tenant environments. Tenant AWS accounts live under
+a top-level GitLab Dedicated AWS parent organization. Access to the AWS Organization
+is restricted to select GitLab team members. All user accounts within the AWS Organization
+follow the overall [GitLab Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/).
+Direct access to customer tenant environments is restricted to a single Hub account.
+The GitLab Dedicated Control Plane uses the Hub account to perform automated actions
+over tenant accounts when managing environments. Similarly, GitLab Dedicated engineers
+do not have direct access to customer tenant environments.
+In [break glass](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/blob/main/engineering/breaking_glass.md)
+situations, where access to resources in the tenant environment is required to
+address a high-severity issue, GitLab engineers must go through the Hub account
+to manage those resources. This is done via an approval process, and after permission
+is granted, the engineer will assume an IAM role on a temporary basis to access
+tenant resources through the Hub account. All actions within the hub account and
+tenant account are logged to CloudTrail.
 
 Inside tenant accounts, GitLab leverages Intrusion Detection and Malware Scanning capabilities from AWS GuardDuty. Infrastructure logs are monitored by the GitLab Security Incident Response Team to detect anomalous events.
 
@@ -144,7 +183,7 @@ GitLab Pages for GitLab Dedicated is enabled by default for all customers.
 DETAILS:
 **Status:** Beta
 
-On 2024-01-31, GitLab released Hosted runners in closed [Beta](../../policy/experiment-beta-support.md#beta).
+On 2024-01-31, GitLab released Hosted runners in closed [beta](../../policy/experiment-beta-support.md#beta).
 
 Hosted runners for GitLab Dedicated allow you to scale CI/CD workloads with no maintenance overhead.
 
@@ -157,16 +196,16 @@ The beta release of Hosted Runners provides the following features:
 
 Additional features will be included based on customer demand leading up to limited and general availability.
 
-Hosted Runners for Dedicated are available upon invitation for existing GitLab Dedicated customers. To participate in the closed Beta of Hosted Runners for Dedicated, please reach out to your Customer Success Manager or Account representative.
+Hosted Runners for Dedicated are available upon invitation for existing GitLab Dedicated customers. To participate in the closed beta of Hosted Runners for Dedicated, please reach out to your Customer Success Manager or Account representative.
 
 ##### Request runner IP ranges
 
-IP ranges for runners hosted by GitLab are available upon request. IP ranges are maintained on a best-effort basis and may change at any time during the Beta due to changes in the infrastructure.
+IP ranges for runners hosted by GitLab are available upon request. IP ranges are maintained on a best-effort basis and may change at any time during the beta due to changes in the infrastructure.
 Please reach out to your Customer Success Manager or Account representative.
 
 ##### Machine types available for Linux (x86-64)
 
-Instance runners available during the Beta are using EC2 `M7i` general-purpose machines.
+Instance runners available during the beta are using EC2 `M7i` general-purpose machines.
 
 ##### Bring Your Own
 
@@ -197,20 +236,21 @@ The following GitLab application features are not available:
   - View the [list of AI features to see which ones are supported](../../user/ai_features.md).
   - Refer to our [direction page](https://about.gitlab.com/direction/saas-platforms/dedicated/#supporting-ai-features-on-gitlab-dedicated) for more information.
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
-- Interacting with GitLab [Feature Flags](../../administration/feature_flags.md)
-- Any functionality or feature behind a Feature Flag that is toggled `off` by default
+- Any functionality or feature behind a Feature Flag that is toggled `off` by default.
 
 The following features will not be supported:
 
 - Mattermost
 - [Server-side Git hooks](../../administration/server_hooks.md).
   GitLab Dedicated is a SaaS service, and access to the underlying infrastructure is only available to GitLab Inc. team members. Due to the nature of server side configuration, there is a possible security concern of running arbitrary code on Dedicated services, as well as the possible impact that can have on the service SLA. Use the alternative [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) instead.
+- Interacting with GitLab [Feature Flags](../../administration/feature_flags.md). [Feature flags support the development and rollout of new or experimental features](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) on GitLab.com. Features behind feature flags are not considered ready for production use, are experimental and therefore unsafe for GitLab Dedicated. Stability and SLAs may be affected by changing default settings.
 
 ### GitLab Dedicated service features
 
 The following operational features are not available:
 
 - Multiple Geo secondaries (Geo replicas) beyond the secondary site included by default
+- [Geo proxying](../../administration/geo/secondary_proxy/index.md) and using a unified URL
 - Self-serve purchasing and configuration
 - Multiple login providers
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure

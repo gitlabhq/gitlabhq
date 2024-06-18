@@ -9,6 +9,13 @@ export default {
     GlToggle,
     LocalStorageSync,
   },
+  props: {
+    storageKey: {
+      type: String,
+      required: false,
+      default: 'gl-show-board-labels',
+    },
+  },
   data() {
     return {
       isShowingLabels: null,
@@ -40,11 +47,7 @@ export default {
 
 <template>
   <div class="board-labels-toggle-wrapper gl-display-flex gl-align-items-center gl-md-ml-3 gl-h-7">
-    <local-storage-sync
-      :value="isShowingLabels"
-      storage-key="gl-show-board-labels"
-      @input="setShowLabels"
-    />
+    <local-storage-sync :value="isShowingLabels" :storage-key="storageKey" @input="setShowLabels" />
     <gl-toggle
       :value="isShowingLabels"
       :label="__('Show labels')"

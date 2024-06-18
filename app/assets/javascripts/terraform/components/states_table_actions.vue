@@ -81,11 +81,19 @@ export default {
     primaryModalProps() {
       return {
         text: this.$options.i18n.modalRemove,
-        attributes: { disabled: this.disableModalSubmit, variant: 'danger' },
+        attributes: {
+          disabled: this.disableModalSubmit,
+          variant: 'danger',
+          type: 'submit',
+          form: this.$options.removeFormId,
+        },
       };
     },
     commandModalId() {
       return `init-command-modal-${this.state.name}`;
+    },
+    modalInputId() {
+      return `terraform-state-remove-input-${this.state.name}`;
     },
   },
   methods: {
@@ -188,6 +196,7 @@ export default {
       this.showCommandModal = true;
     },
   },
+  removeFormId: 'remove-state-form',
 };
 </script>
 
@@ -199,7 +208,7 @@ export default {
       right
       :data-testid="`terraform-state-actions-${state.name}`"
       :disabled="loading"
-      toggle-class="gl-px-3! gl-shadow-none!"
+      toggle-class="gl-px-3! !gl-shadow-none"
     >
       <template #button-content>
         <gl-icon class="gl-mr-0" name="ellipsis_v" />
@@ -255,30 +264,26 @@ export default {
         </gl-sprintf>
       </template>
 
-      <p>
-        <gl-sprintf :message="$options.i18n.modalBody">
-          <template #name>
-            <span>{{ state.name }}</span>
-          </template>
-        </gl-sprintf>
-      </p>
-
-      <gl-form-group>
-        <template #label>
-          <gl-sprintf :message="$options.i18n.modalInputLabel">
+      <form :id="$options.removeFormId" @submit.prevent="remove">
+        <p>
+          <gl-sprintf :message="$options.i18n.modalBody">
             <template #name>
               <code>{{ state.name }}</code>
             </template>
           </gl-sprintf>
-        </template>
-        <gl-form-input
-          :id="`terraform-state-remove-input-${state.name}`"
-          ref="input"
-          v-model="removeConfirmText"
-          type="text"
-          @keyup.enter="remove"
-        />
-      </gl-form-group>
+        </p>
+
+        <gl-form-group :label-for="modalInputId">
+          <template #label>
+            <gl-sprintf :message="$options.i18n.modalInputLabel">
+              <template #name>
+                <code>{{ state.name }}</code>
+              </template>
+            </gl-sprintf>
+          </template>
+          <gl-form-input :id="modalInputId" ref="input" v-model="removeConfirmText" type="text" />
+        </gl-form-group>
+      </form>
     </gl-modal>
 
     <init-command-modal

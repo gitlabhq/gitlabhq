@@ -27,10 +27,10 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
           [
             create(
               :note, noteable: from_noteable, project: from_noteable.project,
-              created_at: 2.weeks.ago, updated_at: 1.week.ago
+              created_at: 2.weeks.ago, updated_at: 1.week.ago, imported_from: :gitlab_migration
             ),
-            create(:note, noteable: from_noteable, project: from_noteable.project),
-            create(:note, system: true, noteable: from_noteable, project: from_noteable.project)
+            create(:note, noteable: from_noteable, project: from_noteable.project, imported_from: :gitlab_project),
+            create(:note, system: true, noteable: from_noteable, project: from_noteable.project, imported_from: :github)
           ]
         end
 
@@ -44,6 +44,16 @@ RSpec.describe Notes::CopyService, feature_category: :team_planning do
           execute_service
 
           expect(to_noteable.notes.count).to eq(3)
+        end
+
+        it 'changes the imported_from value' do
+          execute_service
+
+          expect(notes[0].reload.imported_from).to eq('gitlab_migration')
+          expect(notes[1].reload.imported_from).to eq('gitlab_project')
+          expect(notes[2].reload.imported_from).to eq('github')
+
+          expect(to_noteable.notes.pluck(:imported_from)).to all(eq('none'))
         end
 
         it 'does not change the note attributes' do

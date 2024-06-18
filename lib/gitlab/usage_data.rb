@@ -361,8 +361,8 @@ module Gitlab
           clusters: distinct_count(::Clusters::Cluster.where(time_period), :user_id),
           clusters_integrations_prometheus: cluster_integrations_user_distinct_count(::Clusters::Integrations::Prometheus, time_period),
           operations_dashboard_default_dashboard: count(::User.active.with_dashboard('operations').where(time_period),
-                                                        start: minimum_id(User),
-                                                        finish: maximum_id(User)),
+            start: minimum_id(User),
+            finish: maximum_id(User)),
           projects_with_error_tracking_enabled: distinct_count(::Project.with_enabled_error_tracking.where(time_period), :creator_id),
           projects_with_incidents: distinct_count(::Issue.with_issue_type(:incident).where(time_period), :project_id),
           # We are making an assumption here that all alert_management_alerts are associated with an issue of type

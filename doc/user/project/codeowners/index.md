@@ -116,6 +116,8 @@ file.md @group-x @group-x/subgroup-y
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+    accTitle: Diagram of group inheritance
+    accDescr: If a subgroup owns a project, the parent group inherits ownership.
     A[Parent group X] -->|owns| B[Project A]
     A -->|contains| C[Subgroup Y]
     C -->|owns| D[Project B]
@@ -141,6 +143,8 @@ so that their members also become eligible Code Owners.
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph LR
+    accTitle: Diagram of subgroup inheritance
+    accDescr: Inviting a subgroup directly to a project affects whether their approvals can be made required.
     A[Parent group X] -->|owns| B[Project A]
     A -->|also contains| C[Subgroup Y]
     C -.->D{Invite Subgroup Y<br/>to Project A?} -.->|yes| E[Members of Subgroup Y<br/>can submit Approvals]

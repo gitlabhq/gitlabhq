@@ -5,7 +5,7 @@ require 'rspec-parameterized'
 require 'support/helpers/rails_helpers'
 
 RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cache, :clean_gitlab_redis_cache,
-               :use_null_store_as_repository_cache, feature_category: :scalability do
+  :use_null_store_as_repository_cache, feature_category: :scalability do
   using RSpec::Parameterized::TableSyntax
   include RedisHelpers
 
@@ -183,13 +183,13 @@ RSpec.describe Gitlab::InstrumentationHelper, :clean_gitlab_redis_repository_cac
       subject
 
       expect(payload).to include(db_replica_count: 0,
-                                 db_replica_cached_count: 0,
-                                 db_primary_count: 0,
-                                 db_primary_cached_count: 0,
-                                 db_primary_wal_count: 0,
-                                 db_replica_wal_count: 0,
-                                 db_primary_wal_cached_count: 0,
-                                 db_replica_wal_cached_count: 0)
+        db_replica_cached_count: 0,
+        db_primary_count: 0,
+        db_primary_cached_count: 0,
+        db_primary_wal_count: 0,
+        db_replica_wal_count: 0,
+        db_primary_wal_cached_count: 0,
+        db_replica_wal_cached_count: 0)
     end
 
     context 'when replica caught up search was made' do

@@ -39,7 +39,9 @@ module QA
           ENV["QA_INFLUXDB_TOKEN"] || raise("Missing QA_INFLUXDB_TOKEN env variable"),
           bucket: INFLUX_TEST_METRICS_BUCKET,
           org: "gitlab-qa",
-          precision: InfluxDB2::WritePrecision::NANOSECOND
+          precision: InfluxDB2::WritePrecision::NANOSECOND,
+          read_timeout: ENV["QA_INFLUXDB_TIMEOUT"]&.to_i || 60,
+          open_timeout: ENV["QA_INFLUXDB_TIMEOUT"]&.to_i || 60
         )
       end
 
@@ -53,9 +55,7 @@ module QA
                       elsif LIVE_ENVS.exclude?(ci_project_name)
                         nil
                       else
-                        test_subset = if env('NO_ADMIN') == 'true'
-                                        'sanity-no-admin'
-                                      elsif env('SMOKE_ONLY') == 'true'
+                        test_subset = if env('SMOKE_ONLY') == 'true'
                                         'sanity'
                                       else
                                         'full'

@@ -65,7 +65,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
 
       describe 'inside a project' do
         it 'renders uploads relative to project' do
-          expect(subject).to include("#{project.full_path}/uploads/test.png")
+          expect(subject).to include("/-/project/#{project.id}/uploads/test.png")
         end
       end
 
@@ -76,7 +76,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
         end
 
         it 'renders uploads relative to the group' do
-          expect(subject).to include("#{group.full_path}/-/uploads/test.png")
+          expect(subject).to include("/-/group/#{group.id}/uploads/test.png")
         end
       end
 
@@ -89,7 +89,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
         end
 
         it 'renders uploads relative to project' do
-          expect(subject).to include("#{project_in_group.path_with_namespace}/uploads/test.png")
+          expect(subject).to include("/-/project/#{project_in_group.id}/uploads/test.png")
         end
       end
     end
@@ -373,7 +373,7 @@ RSpec.describe MarkupHelper, feature_category: :team_planning do
         it 'renders uploads relative to project' do
           result = helper.render_wiki_content(wiki_page)
 
-          expect(result).to include("#{project.full_path}#{upload_link}")
+          expect(result).to include("/-/project/#{project.id}#{upload_link}")
         end
       end
     end

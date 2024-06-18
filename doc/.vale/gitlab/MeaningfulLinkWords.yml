@@ -12,5 +12,6 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 scope: raw
 nonword: true
 tokens:
-  - \[here\]\(.*\)
-  - \[this page\]\(.*\)
+  - '\[here\](?=\(.*\))'
+  - '\[this\](?=\(.*\))'
+  - '\[this page\](?=\(.*\))'

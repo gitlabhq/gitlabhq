@@ -356,7 +356,7 @@ export default {
           </gl-button-group>
 
           <div class="gl-align-self-center gl-pl-5">
-            <span class="gl-display-none gl-md-display-inline">/</span>
+            <span class="gl-hidden md:gl-inline">/</span>
           </div>
         </div>
       </gl-form-group>

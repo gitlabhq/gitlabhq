@@ -1,11 +1,12 @@
 <script>
-import { GlTooltipDirective, GlSprintf, GlSkeletonLoader, GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { n__ } from '~/locale';
 import Tracking from '~/tracking';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
 import { joinPaths } from '~/lib/utils/url_utility';
+import PublishMessage from '~/packages_and_registries/shared/components/publish_message.vue';
 import {
   LIST_DELETE_BUTTON_DISABLED,
   LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION,
@@ -31,6 +32,7 @@ export default {
     ListItem,
     GlSkeletonLoader,
     CleanupStatus,
+    PublishMessage,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -101,6 +103,12 @@ export default {
         ? LIST_DELETE_BUTTON_DISABLED_FOR_MIGRATION
         : LIST_DELETE_BUTTON_DISABLED;
     },
+    projectName() {
+      return this.config.isGroupPage ? this.item.project?.name : '';
+    },
+    projectUrl() {
+      return this.config.isGroupPage ? this.item.project?.webUrl : '';
+    },
   },
   methods: {
     hideButton() {
@@ -133,7 +141,7 @@ export default {
       <router-link
         v-else
         ref="imageName"
-        class="gl-text-body gl-font-weight-bold"
+        class="gl-text-body gl-font-bold"
         data-testid="details-link"
         :to="{ name: 'details', params: { id } }"
       >
@@ -175,6 +183,15 @@ export default {
         </gl-skeleton-loader>
       </div>
     </template>
+    <template #right-primary> &nbsp; </template>
+    <template #right-secondary>
+      <publish-message
+        :project-name="projectName"
+        :project-url="projectUrl"
+        :publish-date="item.createdAt"
+      />
+    </template>
+
     <template #right-action>
       <delete-button
         :title="$options.i18n.REMOVE_REPOSITORY_LABEL"

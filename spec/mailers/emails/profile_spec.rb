@@ -224,7 +224,7 @@ RSpec.describe Emails::Profile, feature_category: :user_profile do
       it_behaves_like 'resource about to expire email'
 
       it 'includes the email reason' do
-        is_expected.to have_body_text _('You are receiving this email because you are a Maintainer of the Project.')
+        is_expected.to have_body_text _('You are receiving this email because you are either an Owner or Maintainer of the project.')
       end
     end
   end

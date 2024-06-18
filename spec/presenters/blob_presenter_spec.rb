@@ -390,12 +390,17 @@ RSpec.describe BlobPresenter do
     end
   end
 
-  describe '#unicode_escaped_blob' do
+  describe '#base64_encoded_blob' do
     let(:blob) { repository.blob_at('HEAD', file) }
     let(:file) { 'files/ruby/popen.rb' }
 
     it 'does not include html in the content' do
-      expect(presenter.unicode_escaped_blob.include?('</span>')).to be_falsey
+      expect(presenter.base64_encoded_blob.include?('</span>')).to be_falsey
+    end
+
+    it 'encodes the raw blob base 64' do
+      expect(presenter.base64_encoded_blob).to include("cmVxdWlyZSAnZmlsZXV0")
+      expect(presenter.base64_encoded_blob).to include("R1cwogIGVuZAplbmQK\n")
     end
 
     context 'when ff unicode_escaped_blob is disabled' do
@@ -404,7 +409,7 @@ RSpec.describe BlobPresenter do
       end
 
       it 'returns nil' do
-        expect(presenter.unicode_escaped_blob).to be_nil
+        expect(presenter.base64_encoded_blob).to be_nil
       end
     end
   end

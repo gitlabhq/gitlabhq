@@ -8,10 +8,10 @@ RSpec.describe Gitlab::ExternalAuthorization::Logger do
   def fake_access(has_access, user, load_type = :request)
     access = double('access')
     allow(access).to receive_messages(user: user,
-                                      has_access?: has_access,
-                                      loaded_at: request_time,
-                                      label: 'dummy_label',
-                                      load_type: load_type)
+      has_access?: has_access,
+      loaded_at: request_time,
+      label: 'dummy_label',
+      load_type: load_type)
 
     access
   end

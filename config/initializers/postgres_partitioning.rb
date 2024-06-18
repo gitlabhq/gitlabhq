@@ -1,12 +1,23 @@
 # frozen_string_literal: true
 
+# On .com partitions are not created on application startup,
+# they are created by the PartitionManagementWorker cron worker
+# which is executed several times per day. If a partition must be present
+# on startup, it could be created using a regular migration.
+# https://gitlab.com/gitlab-com/gl-infra/production/-/issues/2446
+
 Gitlab::Database::Partitioning.register_models(
   [
     AuditEvent,
+    AuditEvents::UserAuditEvent,
+    AuditEvents::GroupAuditEvent,
+    AuditEvents::ProjectAuditEvent,
+    AuditEvents::InstanceAuditEvent,
     BatchedGitRefUpdates::Deletion,
     Ci::BuildMetadata,
     Ci::BuildExecutionConfig,
     Ci::BuildName,
+    Ci::BuildSource,
     Ci::Catalog::Resources::Components::Usage,
     Ci::Catalog::Resources::SyncEvent,
     Ci::JobAnnotation,

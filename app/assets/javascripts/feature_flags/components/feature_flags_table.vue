@@ -157,10 +157,10 @@ export default {
             {{ s__('FeatureFlags|Feature flag') }}
           </div>
           <div
-            class="table-mobile-content gl-text-left gl-display-flex flex-column js-feature-flag-title gl-mr-5"
+            class="table-mobile-content gl-text-left gl-flex flex-column js-feature-flag-title gl-mr-5"
           >
-            <div class="gl-display-flex gl-align-items-center">
-              <div class="feature-flag-name text-monospace text-wrap gl-word-break-word">
+            <div class="gl-flex gl-align-items-center">
+              <div class="feature-flag-name text-monospace text-wrap gl-break-anywhere">
                 {{ featureFlag.name }}
               </div>
               <div class="feature-flag-description">
@@ -180,13 +180,13 @@ export default {
             {{ s__('FeatureFlags|Environment Specs') }}
           </div>
           <div
-            class="table-mobile-content gl-text-left d-flex gl-flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
+            class="table-mobile-content gl-text-left gl-flex gl-flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
           >
             <strategy-label
               v-for="strategy in featureFlag.strategies"
               :key="strategy.id"
               data-testid="strategy-label"
-              class="gl-w-full gl-mr-3 gl-mt-2 gl-white-space-normal gl-text-left"
+              class="gl-w-full gl-mr-3 gl-mt-2 gl-whitespace-normal gl-text-left"
               v-bind="strategyBadgeText(strategy)"
             />
           </div>

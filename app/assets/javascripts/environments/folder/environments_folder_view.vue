@@ -46,7 +46,7 @@ export default {
     <delete-environment-modal :environment="environmentInDeleteModal" />
     <confirm-rollback-modal :environment="environmentInRollbackModal" />
 
-    <h4 class="gl-font-weight-normal" data-testid="folder-name">
+    <h4 class="gl-font-normal" data-testid="folder-name">
       {{ s__('Environments|Environments') }} /
       <b>{{ folderName }}</b>
     </h4>
@@ -69,6 +69,7 @@ export default {
       </gl-tab>
     </gl-tabs>
 
+    <!-- eslint-disable-next-line vue/no-undef-components -->
     <container
       :is-loading="isLoading"
       :environments="state.environments"

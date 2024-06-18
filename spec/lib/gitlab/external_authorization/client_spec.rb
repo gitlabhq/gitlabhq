@@ -37,11 +37,11 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
       )
 
       expect(Gitlab::HTTP).to receive(:post).with(dummy_url,
-                                           hash_including(
-                                             connect_timeout: 3,
-                                             read_timeout: 3,
-                                             write_timeout: 3
-                                           ))
+        hash_including(
+          connect_timeout: 3,
+          read_timeout: 3,
+          write_timeout: 3
+        ))
 
       client.request_access
     end
@@ -88,9 +88,9 @@ RSpec.describe Gitlab::ExternalAuthorization::Client do
     describe 'for ldap users' do
       let(:user) do
         create(:omniauth_user,
-               email: 'dummy_user@example.com',
-               extern_uid: 'external id',
-               provider: 'ldapprovider')
+          email: 'dummy_user@example.com',
+          extern_uid: 'external id',
+          provider: 'ldapprovider')
       end
 
       it 'includes the ldap dn and identities for ldap users' do

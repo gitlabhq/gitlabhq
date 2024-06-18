@@ -19,7 +19,6 @@ module PauseControl
 
       pause_strategies_workers.each do |strategy, workers|
         strategy_klass = Gitlab::SidekiqMiddleware::PauseControl.for(strategy)
-
         next if strategy_klass.should_pause?
 
         workers.each do |worker|

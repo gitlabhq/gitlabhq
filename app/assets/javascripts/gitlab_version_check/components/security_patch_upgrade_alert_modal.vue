@@ -144,16 +144,16 @@ export default {
       <div data-testid="alert-modal-body" class="gl-mb-6">
         <gl-sprintf :message="modalBody">
           <template #currentVersion>
-            <span class="gl-font-weight-bold">{{ currentVersion }}</span>
+            <span class="gl-font-bold">{{ currentVersion }}</span>
           </template>
           <template #latestStableVersions>
-            <span class="gl-font-weight-bold">{{ latestStableVersionsStrings }}</span>
+            <span class="gl-font-bold">{{ latestStableVersionsStrings }}</span>
           </template>
         </gl-sprintf>
         <div v-if="showLatestStableVersionOfMinor" class="gl-mt-6">
           <gl-sprintf :message="$options.i18n.additionalAvailablePatch">
             <template #latestStableVersionOfMinor>
-              <span class="gl-font-weight-bold">{{ latestStableVersionOfMinor }}</span>
+              <span class="gl-font-bold">{{ latestStableVersionOfMinor }}</span>
             </template>
           </gl-sprintf>
         </div>

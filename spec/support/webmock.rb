@@ -24,7 +24,7 @@ def webmock_allowed_hosts
       hosts << Gitlab.config.webpack.dev_server.host
     end
 
-    if ViteRuby.env['VITE_ENABLED'] == "true"
+    if Object.const_defined?(:ViteRuby) && ViteRuby.env['VITE_ENABLED'] == "true"
       hosts << ViteRuby.instance.config.host
       hosts << ViteRuby.env['VITE_HMR_HOST']
     end

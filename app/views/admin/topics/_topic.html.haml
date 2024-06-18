@@ -10,7 +10,7 @@
     %div
       = topic.name
 
-  .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex
+  .stats.gl-text-gray-500.gl-flex-shrink-0.gl-hidden.sm:gl-flex
     %span.gl-ml-5.has-tooltip{ title: n_('%d project', '%d projects', topic.total_projects_count) % topic.total_projects_count }
       = sprite_icon('bookmark', css_class: 'gl-vertical-align-text-bottom')
       = number_with_delimiter(topic.total_projects_count)

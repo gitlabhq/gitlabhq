@@ -38,7 +38,7 @@ We can't ship the entire Cells architecture in one go - it is too large.
 Instead, we are defining key workstreams required by the project.
 For each workstream, we need to define the effort necessary to make features compliant with Cell 1.0, Cell 1.5, and Cell 2.0, respectively.
 
-It is expected that some objectives will not be completed for General Availability (GA), but will be enough to run Cells in production.
+It is expected that some objectives will not be completed for general availability (GA), but will be enough to run Cells in production.
 
 ### 1. Data access layer
 
@@ -85,7 +85,7 @@ The current approach is to define workflows from top to bottom.
 The order defines the presumed priority of the items.
 This list is not exhaustive as we would be expecting other teams to help and fix their workflows after the initial phase, in which we fix the fundamental ones.
 
-To consider a project ready for the Beta phase, it is expected that all features defined below are supported by Cells.
+To consider a project ready for the beta phase, it is expected that all features defined below are supported by Cells.
 In the cases listed below, the workflows define a set of tables to be properly attributed to the feature.
 In some cases, a table with an ambiguous usage has to be broken down.
 For example: `uploads` are used to store user avatars, as well as uploaded attachments for comments.
@@ -186,7 +186,7 @@ flowchart TD
 
 ### 3. Routing layer
 
-See [Cells: Routing Service](routing-service.md) for HTTP Routing.
+See [Cells: Routing Service](http_routing_service.md) for HTTP Routing.
 
 See [Cells: SSH Routing Service](ssh_routing_service.md) for SSH Routing.
 
@@ -214,7 +214,7 @@ When we reach production and are able to store new Organizations on new Cells, w
 
 ## Availability of the feature
 
-We are following the [Support for Experiment, Beta, and Generally Available features](../../../policy/experiment-beta-support.md).
+We are following the [Support for experiment, beta, and generally available features](../../../policy/experiment-beta-support.md).
 
 ### 1. Experiment
 
@@ -254,11 +254,13 @@ Expectations:
 The Cells architecture has long lasting implications to data processing, location, scalability and the GitLab architecture.
 This section links all different technical proposals that are being evaluated.
 
-- [HTTP Routing Service](routing-service.md)
-- [Topology Service](topology_service.md)
+- Cells Services:
+  - [HTTP Routing Service](http_routing_service.md)
+  - [SSH Routing Service](ssh_routing_service.md)
+  - [Topology Service](topology_service.md)
+  - Planned: Indexing Service
 - [Feature Flags](feature_flags.md)
-- Planned: SSH Routing Service
-- Planned: Indexing Service
+- [Cluster wide unique sequences](unique_sequences.md)
 
 ## Impacted features
 
@@ -271,7 +273,6 @@ Below is a list of known affected features with preliminary proposed solutions.
 - [Cells: CI Runners](impacted_features/ci-runners.md)
 - [Cells: Container Registry](impacted_features/container-registry.md)
 - [Cells: Contributions: Forks](impacted_features/contributions-forks.md)
-- [Cells: Database Sequences](impacted_features/database-sequences.md)
 - [Cells: Data Migration](impacted_features/data-migration.md)
 - [Cells: Explore](impacted_features/explore.md)
 - [Cells: Git Access](impacted_features/git-access.md)
@@ -326,9 +327,9 @@ Not directly, our goal is to keep them isolated and only communicate using globa
 
 ### How are Cells provisioned?
 
-The GitLab.com cluster of Cells will use GitLab Dedicated instances.
-Once a GitLab Dedicated instance gets provisioned it could join the GitLab.com cluster and become a Cell.
-One requirement will be that the GitLab Dedicated instance does not contain any prior data.
+The GitLab.com cluster of Cells will use GitLab Dedicated tooling to create instances.
+Once this instance gets provisioned it could join the GitLab.com cluster and become a Cell.
+One requirement will be that the instance does not contain any prior data.
 
 To reach shared resources, Cells will use [Private Service Connect](https://cloud.google.com/vpc/docs/private-service-connect).
 
@@ -389,6 +390,7 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 - [ADR-005: Cells use Flexible Reference Architectures](decisions/005_flexible_reference_architectures.md)
 - [ADR-006: Use Geo for Disaster Recovery](decisions/006_disaster_recovery_geo.md)
 - [ADR-007: Cells 1.0 for internal customers only](decisions/007_internal_customers.md)
+- [ADR-008: Cluster wide unique database sequences](decisions/008_database_sequences.md)
 
 ## Links
 

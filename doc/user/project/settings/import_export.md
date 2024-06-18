@@ -385,19 +385,6 @@ Items that are **not** exported include:
 - Users must set a public email in the source GitLab instance that matches their confirmed primary email in the
   destination GitLab instance. Most users receive an email asking them to confirm their email address.
 
-### Enable export for a group
-
-Prerequisites:
-
-- You must have the Owner role for the group.
-
-To enable export for a group:
-
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Settings > General**.
-1. Expand **Import and export settings**.
-1. In the **Import sources** section, select the **GitLab export** checkbox.
-
 ### Export a group
 
 Prerequisites:

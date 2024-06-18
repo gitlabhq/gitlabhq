@@ -393,7 +393,7 @@ export default {
     </div>
     <div
       v-if="!isCollapsed || contentError"
-      class="gl-relative gl-bg-gray-10"
+      class="gl-relative gl-bg-gray-10 gl-border-t"
       data-testid="widget-extension-collapsed-section"
     >
       <div v-if="isLoadingExpandedContent" class="report-block-container gl-text-center">

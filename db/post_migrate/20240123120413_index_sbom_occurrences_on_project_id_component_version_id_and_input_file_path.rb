@@ -6,10 +6,12 @@ class IndexSbomOccurrencesOnProjectIdComponentVersionIdAndInputFilePath < Gitlab
   disable_ddl_transaction!
   milestone '16.9'
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     remove_concurrent_index_by_name :sbom_occurrences, DROPPED_INDEX_NAME
     add_concurrent_index :sbom_occurrences, %i[project_id component_version_id input_file_path], name: INDEX_NAME
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :sbom_occurrences, INDEX_NAME

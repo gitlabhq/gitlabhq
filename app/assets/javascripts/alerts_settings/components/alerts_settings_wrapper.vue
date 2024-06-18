@@ -357,7 +357,7 @@ export default {
     <gl-tab :title="$options.i18n.settingsTabs.currentIntegrations">
       <gl-alert
         v-if="showSuccessfulCreateAlert"
-        class="gl-mt-n2"
+        class="-gl-mt-2"
         :primary-button-text="$options.i18n.integrationCreated.btnCaption"
         :title="$options.i18n.integrationCreated.title"
         @primaryAction="viewCreatedIntegration"

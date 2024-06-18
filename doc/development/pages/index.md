@@ -158,26 +158,26 @@ GitLab Pages access control is disabled by default. To enable it:
 
    - With GDK, in `gdk.yml`:
 
-      ```yaml
-      gitlab_pages:
-        enabled: true
-        access_control: true
-        auth_client_id: $CLIENT_ID           # the OAuth application id created in http://gdk.test:3000/admin/applications
-        auth_client_secret: $CLIENT_SECRET   # the OAuth application secret created in http://gdk.test:3000/admin/applications
-      ```
+     ```yaml
+     gitlab_pages:
+       enabled: true
+       access_control: true
+       auth_client_id: $CLIENT_ID           # the OAuth application id created in http://gdk.test:3000/admin/applications
+       auth_client_secret: $CLIENT_SECRET   # the OAuth application secret created in http://gdk.test:3000/admin/applications
+     ```
 
-      GDK generates random `auth_secret` and builds the `auth_redirect_uri` based on GitLab Pages
-      host configuration.
+     GDK generates random `auth_secret` and builds the `auth_redirect_uri` based on GitLab Pages
+     host configuration.
 
    - Without GDK, in `gitlab-pages.conf`:
 
-      ```conf
-      ## the following are only needed if you want to test auth for private projects
-      auth-client-id=$CLIENT_ID                         # the OAuth application id created in http://gdk.test:3000/admin/applications
-      auth-client-secret=$CLIENT_SECRET                 # the OAuth application secret created in http://gdk.test:3000/admin/applications
-      auth-secret=$SOME_RANDOM_STRING                   # should be at least 32 bytes long
-      auth-redirect-uri=http://pages.gdk.test:3010/auth # the authentication callback url for GitLab Pages
-      ```
+     ```conf
+     ## the following are only needed if you want to test auth for private projects
+     auth-client-id=$CLIENT_ID                         # the OAuth application id created in http://gdk.test:3000/admin/applications
+     auth-client-secret=$CLIENT_SECRET                 # the OAuth application secret created in http://gdk.test:3000/admin/applications
+     auth-secret=$SOME_RANDOM_STRING                   # should be at least 32 bytes long
+     auth-redirect-uri=http://pages.gdk.test:3010/auth # the authentication callback url for GitLab Pages
+     ```
 
 1. If running Pages inside the GDK, you can use GDK `protected_config_files` section under `gdk` in
    your `gdk.yml` to avoid getting `gitlab-pages.conf` configuration rewritten:

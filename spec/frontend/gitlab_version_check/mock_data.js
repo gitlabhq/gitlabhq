@@ -5,7 +5,7 @@ export const VERSION_CHECK_BADGE_NO_SEVERITY_FIXTURE = `<div class="js-gitlab-ve
 
 export const VERSION_CHECK_BADGE_FIXTURE = `<div class="js-gitlab-version-check-badge" data-version='{ "severity": "success" }'></div>`;
 
-export const VERSION_CHECK_BADGE_FINDER = '[data-testid="badge-click-wrapper"]';
+export const VERSION_CHECK_BADGE_FINDER = '[data-testid="check-version-badge"]';
 
 export const VERSION_BADGE_TEXT = 'Up to date';
 

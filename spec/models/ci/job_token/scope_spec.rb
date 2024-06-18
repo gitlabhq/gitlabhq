@@ -176,4 +176,20 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
       end
     end
   end
+
+  describe '#self_referential?' do
+    subject { scope.self_referential?(access_project) }
+
+    context 'when a current project requested' do
+      let(:access_project) { current_project }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when a different project requested' do
+      let_it_be(:access_project) { create(:project) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
 end

@@ -62,11 +62,11 @@ export default {
       @change="onChange($event)"
     >
       <img v-if="image" :src="image" :class="imgClass" aria-hidden="true" />
-      <span class="gl-font-weight-bold"><slot></slot></span>
+      <span class="gl-font-bold"><slot></slot></span>
     </gl-form-radio>
     <div v-else class="gl-mb-3">
       <img v-if="image" :src="image" :class="imgClass" aria-hidden="true" />
-      <span class="gl-font-weight-bold"><slot></slot></span>
+      <span class="gl-font-bold"><slot></slot></span>
     </div>
   </div>
 </template>

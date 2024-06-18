@@ -9,7 +9,16 @@ export const initPasswordInput = () => {
     }
 
     const { form } = el;
-    const { title, id, minimumPasswordLength, testid, autocomplete, name } = el.dataset;
+
+    const {
+      title,
+      id,
+      minimumPasswordLength,
+      testid,
+      trackActionForErrors,
+      autocomplete,
+      name,
+    } = el.dataset;
 
     // eslint-disable-next-line no-new
     new Vue({
@@ -22,6 +31,7 @@ export const initPasswordInput = () => {
             id,
             minimumPasswordLength,
             testid,
+            trackActionForErrors,
             autocomplete,
             name,
           },

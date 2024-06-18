@@ -59,7 +59,7 @@ Prerequisites:
     both.
 - A name for your source.
 - Depending on the [endpoint level](#use-the-gitlab-endpoint-for-nuget-packages) you use, either:
-  - Your project ID, which is found on your [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+  - Your project ID, which is found on your [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
   - Your group ID, which is found on your group's home page.
 
 You can now add a new source to NuGet with:
@@ -668,6 +668,10 @@ cache with this command:
 nuget locals all -clear
 ```
 
-### `Error publishing` or `Invalid Package: Failed metadata extraction error` messages when trying to publish NuGet packages in a Docker-based GitLab installation
+### Errors when trying to publish NuGet packages in a Docker-based GitLab installation
 
-Webhook requests to local network addresses are blocked to prevent exploitation of internal web services. If you get `Error publishing` or `Invalid Package` messages when you try to publish NuGet packages, change your network settings to [allow webhook and integration requests to the local network](../../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations).
+Webhook requests to local network addresses are blocked to prevent exploitation of
+internal web services. If you get `Error publishing` or
+`Invalid Package: Failed metadata extraction error` messages
+when you try to publish NuGet packages, change your network settings to
+[allow webhook and integration requests to the local network](../../../security/webhooks.md#allow-requests-to-the-local-network-from-webhooks-and-integrations).

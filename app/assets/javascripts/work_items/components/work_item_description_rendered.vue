@@ -47,7 +47,7 @@ export default {
       return this.descriptionHtml?.trim() === '';
     },
     isTruncated() {
-      return this.truncated && !this.disableTruncation && this.glFeatures.workItemsMvc2;
+      return this.truncated && !this.disableTruncation && this.glFeatures.workItemsBeta;
     },
   },
   watch: {
@@ -138,10 +138,10 @@ export default {
       ></div>
       <div
         v-if="isTruncated"
-        class="description-more gl-display-block gl-w-full"
+        class="description-more gl-block gl-w-full"
         data-test-id="description-read-more"
       >
-        <div class="show-all-btn gl-w-full gl--flex-center">
+        <div class="show-all-btn gl-w-full gl-flex gl-justify-center gl-items-center">
           <gl-button
             variant="confirm"
             category="tertiary"

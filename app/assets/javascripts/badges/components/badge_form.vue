@@ -259,7 +259,7 @@ export default {
       <p v-show="isRendering">
         <gl-loading-icon size="sm" :inline="true" />
       </p>
-      <p v-show="!renderedBadge && !isRendering" class="disabled-content">
+      <p v-show="!renderedBadge && !isRendering" class="gl-text-subtle">
         {{ s__('Badges|No image to preview') }}
       </p>
     </div>

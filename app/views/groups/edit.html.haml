@@ -29,9 +29,11 @@
     .settings-content
       = render 'groups/settings/permissions'
 
+- if can?(current_user, :manage_merge_request_settings, @group)
   = render_if_exists 'groups/settings/merge_requests/merge_requests', expanded: expanded, group: @group
   = render_if_exists 'groups/settings/merge_requests/merge_request_approval_settings', expanded: expanded, group: @group, user: current_user
 
+- if can?(current_user, :admin_group, @group)
   %section.settings.no-animate#js-badge-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }

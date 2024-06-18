@@ -255,7 +255,6 @@ export default {
   >
     <gl-form-checkbox
       v-if="showCheckbox"
-      class="issue-check gl-mr-0"
       :checked="checked"
       :data-id="issuableId"
       :data-iid="issuableIid"
@@ -301,7 +300,7 @@ export default {
         <slot v-if="hasSlotContents('title-icons')" name="title-icons"></slot>
         <span
           v-if="taskStatus"
-          class="task-status gl-display-none gl-sm-display-inline-block! gl-ml-2 gl-font-sm"
+          class="task-status gl-hidden sm:!gl-inline-block gl-ml-2 gl-font-sm"
           data-testid="task-status"
         >
           {{ taskStatus }}
@@ -312,7 +311,7 @@ export default {
         <span v-else data-testid="issuable-reference" class="issuable-reference">
           {{ reference }}
         </span>
-        <span class="gl-display-none gl-sm-display-inline">
+        <span class="gl-hidden sm:gl-inline">
           <span aria-hidden="true">&middot;</span>
           <span class="issuable-authored gl-mr-3">
             <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
@@ -396,13 +395,13 @@ export default {
         </li>
         <li
           v-if="showDiscussions && notesCount"
-          class="gl-display-none gl-sm-display-block gl-mr-0!"
+          class="gl-hidden sm:gl-block gl-mr-0!"
           data-testid="issuable-comments"
         >
           <div
             v-gl-tooltip.top
             :title="__('Comments')"
-            class="gl-reset-color! gl-display-flex gl-align-items-center"
+            class="!gl-text-inherit gl-display-flex gl-align-items-center"
           >
             <gl-icon name="comments" class="gl-mr-2" />
             {{ notesCount }}
@@ -412,7 +411,7 @@ export default {
       </ul>
       <div
         v-gl-tooltip.bottom
-        class="gl-text-gray-500 gl-display-none gl-sm-display-inline-block"
+        class="gl-text-gray-500 gl-hidden sm:gl-inline-block"
         :title="tooltipTitle(timestamp)"
         data-testid="issuable-timestamp"
       >

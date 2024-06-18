@@ -1,0 +1,18 @@
+query groupProjectsForLinksWidget($fullPath: ID!, $projectSearch: String) {
+  group(fullPath: $fullPath) {
+    id
+    projects(search: $projectSearch, includeSubgroups: true) {
+      nodes {
+        id
+        name
+        avatarUrl
+        nameWithNamespace
+        fullPath
+        namespace {
+          id
+          name
+        }
+      }
+    }
+  }
+}

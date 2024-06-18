@@ -275,6 +275,16 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       end
     end
 
+    context 'with a deactivated user' do
+      it "returns the deactivated badge" do
+        deactivated = create(:user, :deactivated)
+
+        badges = helper.user_badges_in_admin_section(deactivated)
+
+        expect(filter_ee_badges(badges)).to match_array([text: s_('AdminUsers|Deactivated'), variant: "danger"])
+      end
+    end
+
     context 'with an external user' do
       it 'returns the external badge' do
         external_user = create(:user, external: true)
@@ -541,7 +551,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
       it 'contains resend confirmation e-mail text' do
         expect(user_email_help_text).to include _('Resend confirmation e-mail')
-        expect(user_email_help_text).to match /Please click the link in the confirmation email before continuing. It was sent to.*#{user.unconfirmed_email}/
+        expect(user_email_help_text).to match(/Please click the link in the confirmation email before continuing. It was sent to.*#{user.unconfirmed_email}/)
       end
     end
   end

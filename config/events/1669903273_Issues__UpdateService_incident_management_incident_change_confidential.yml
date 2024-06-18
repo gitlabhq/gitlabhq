@@ -10,8 +10,6 @@ identifiers:
 - user
 - namespace
 description: "Count of unique users changing incidents to confidential. Event migrated from Service Ping metric."
-product_section: ops
-product_stage: monitor
 product_group: respond
 milestone: "15.7"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105223

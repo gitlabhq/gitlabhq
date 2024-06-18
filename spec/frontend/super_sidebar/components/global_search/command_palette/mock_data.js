@@ -191,3 +191,5 @@ export const FILES = [
   'foo/bar/.gitkeep',
   'with space/README.md',
 ];
+
+export const SETTINGS = [{ text: 'Avatar', href: '/settings/general', anchor: 'avatar' }];

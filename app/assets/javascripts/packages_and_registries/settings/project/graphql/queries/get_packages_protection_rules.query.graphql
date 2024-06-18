@@ -14,7 +14,7 @@ query getProjectPackageProtectionRules(
         id
         packageNamePattern
         packageType
-        pushProtectedUpToAccessLevel
+        minimumAccessLevelForPush
       }
       pageInfo {
         ...PageInfo

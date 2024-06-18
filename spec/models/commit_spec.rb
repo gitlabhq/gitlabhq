@@ -335,7 +335,7 @@ RSpec.describe Commit do
       '1234567' | true
       '123456' | false
       '1' | false
-      '0' * 40 | true
+      ('0' * 40) | true
       'c1acaa58bbcbc3eafe538cb8274ba387047b69f8' | true
       'H1acaa58bbcbc3eafe538cb8274ba387047b69f8' | false
       nil | false
@@ -408,10 +408,10 @@ RSpec.describe Commit do
     end
 
     it "does not truncates a message with a newline after 80 but less 100 characters" do
-      message = <<eos
+      message = <<EOS
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
 Vivamus egestas lacinia lacus, sed rutrum mauris.
-eos
+EOS
 
       allow(commit).to receive(:safe_message).and_return(message)
       expect(commit.title).to eq(message.split("\n").first)
@@ -460,20 +460,20 @@ eos
     end
 
     it 'returns description of commit message if title less than 100 characters' do
-      message = <<eos
+      message = <<EOS
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
 Vivamus egestas lacinia lacus, sed rutrum mauris.
-eos
+EOS
 
       allow(commit).to receive(:safe_message).and_return(message)
       expect(commit.description).to eq('Vivamus egestas lacinia lacus, sed rutrum mauris.')
     end
 
     it 'returns full commit message if commit title more than 100 characters' do
-      message = <<eos
+      message = <<EOS
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.
 Vivamus egestas lacinia lacus, sed rutrum mauris.
-eos
+EOS
 
       allow(commit).to receive(:safe_message).and_return(message)
       expect(commit.description).to eq(message)

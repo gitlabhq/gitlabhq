@@ -237,7 +237,7 @@
 .repository-languages-bar {
   height: 0.5rem;
   background-color: var(--white, $white);
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
 
   .progress-bar {
     margin-right: 2px;
@@ -559,6 +559,6 @@
 }
 
 .projects-list .description p {
-  @include gl-line-clamp-2;
+  @apply gl-line-clamp-2 gl-whitespace-normal;
   margin-bottom: 0;
 }

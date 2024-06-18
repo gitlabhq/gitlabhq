@@ -9,7 +9,9 @@ import {
 } from '@gitlab/ui';
 import { reportToSentry } from '~/ci/utils';
 import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
+import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
+
 import {
   ACTIONS_DOWNLOAD_ARTIFACTS,
   ACTIONS_START_NOW,
@@ -141,7 +143,7 @@ export default {
         } else if (redirect) {
           // Retry and Play actions redirect to job detail view
           // we don't need to refetch with jobActionPerformed event
-          redirectTo(job.detailedStatus.detailsPath); // eslint-disable-line import/no-deprecated
+          visitUrl(job.detailedStatus.detailsPath);
         } else {
           eventHub.$emit('jobActionPerformed');
         }
@@ -165,12 +167,33 @@ export default {
 
       this.postJobAction(this.$options.jobCancel, cancelJobMutation);
     },
-    retryJob() {
+    async retryJob() {
+      if (this.job.detailedStatus.action.confirmationMessage !== null) {
+        const confirmed = await confirmJobConfirmationMessage(
+          this.job.name,
+          this.job.detailedStatus.action.confirmationMessage,
+        );
+        if (!confirmed) {
+          return;
+        }
+      }
+
       this.retryBtnDisabled = true;
 
       this.postJobAction(this.$options.jobRetry, retryJobMutation, true);
     },
-    playJob() {
+    async playJob() {
+      if (this.job.detailedStatus.action.confirmationMessage !== null) {
+        const confirmed = await confirmJobConfirmationMessage(
+          this.job.name,
+          this.job.detailedStatus.action.confirmationMessage,
+        );
+
+        if (!confirmed) {
+          return;
+        }
+      }
+
       this.playManualBtnDisabled = true;
 
       this.postJobAction(this.$options.jobPlay, playJobMutation, true);

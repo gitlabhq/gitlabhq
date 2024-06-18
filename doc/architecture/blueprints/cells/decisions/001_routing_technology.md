@@ -11,16 +11,16 @@ In <https://gitlab.com/groups/gitlab-org/-/epics/11002> we first brainstormed [m
 [Cloudflare Worker](https://gitlab.com/gitlab-org/gitlab/-/issues/433471) & [Istio](https://gitlab.com/gitlab-org/gitlab/-/issues/433472).
 
 We favored the Cloudflare Worker PoC and extended the PoC with the [Cell 1.0 proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/437818) to have multiple routing rules.
-These PoCs help validate the [routing service blueprint](../routing-service.md),
+These PoCs help validate the [routing service blueprint](../http_routing_service.md),
 that got accepted in <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142397>,
 and rejected the [request buffering](../rejected/proposal-stateless-router-with-buffering-requests.md),
 and [routes learning](../rejected/proposal-stateless-router-with-routes-learning.md)
 
 ## Decision
 
-Use [Cloudflare Workers](https://workers.cloudflare.com/) written in JavaScript/TypeScript to route the request to the right cell, following the accepted [routing service blueprint](../routing-service.md).
+Use [Cloudflare Workers](https://workers.cloudflare.com/) written in JavaScript/TypeScript to route the request to the right cell, following the accepted [routing service blueprint](../http_routing_service.md).
 
-Cloudflare Workers meets all our [requirements](../routing-service.md#requirements) apart from the `self-managed`, which is a low priority requirement.
+Cloudflare Workers meets all our [requirements](../http_routing_service.md#requirements) apart from the `self-managed`, which is a low priority requirement.
 
 You can read a detailed analysis of Cloudflare workers in <https://gitlab.com/gitlab-org/gitlab/-/issues/433471#results>
 

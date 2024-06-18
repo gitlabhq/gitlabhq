@@ -17,7 +17,7 @@ class ServiceDeskSetting < ApplicationRecord
   validates :project_key,
     length: { maximum: 255 },
     allow_blank: true,
-    format: { with: /\A[a-z0-9_]+\z/, message: -> (setting, data) { _("can contain only lowercase letters, digits, and '_'.") } }
+    format: { with: /\A[a-z0-9_]+\z/, message: ->(setting, data) { _("can contain only lowercase letters, digits, and '_'.") } }
 
   validates :custom_email,
     length: { maximum: 255 },

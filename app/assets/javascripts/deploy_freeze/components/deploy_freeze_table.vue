@@ -127,7 +127,7 @@ export default {
         {{ item.cronTimezone.formattedTimezone }}
       </template>
       <template #cell(actions)="{ item }">
-        <div class="gl-display-flex gl-justify-content-end gl-mt-n2 gl-mb-n2">
+        <div class="gl-display-flex gl-justify-content-end -gl-mt-2 -gl-mb-2">
           <gl-button
             v-gl-modal.deploy-freeze-modal
             icon="pencil"

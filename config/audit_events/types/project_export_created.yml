@@ -1,0 +1,9 @@
+name: project_export_created
+description: Triggered when a project file export is created
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/294168
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO
+feature_category: importers
+milestone: '17.0'
+saved_to_database: true
+scope: [Project]
+streamed: true

@@ -31,6 +31,12 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         .with_foreign_key('parent_type_id')
     end
 
+    it 'has many `parent_restrictions`' do
+      is_expected.to have_many(:parent_restrictions)
+        .class_name('WorkItems::HierarchyRestriction')
+        .with_foreign_key('child_type_id')
+    end
+
     describe 'allowed_child_types_by_name' do
       it 'defines association' do
         is_expected.to have_many(:allowed_child_types_by_name)
@@ -48,6 +54,26 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
         end
 
         expect(parent_type.allowed_child_types_by_name.pluck(:name)).to match_array(expected_type_names)
+      end
+    end
+
+    describe 'allowed_parent_types_by_name' do
+      it 'defines association' do
+        is_expected.to have_many(:allowed_parent_types_by_name)
+          .through(:parent_restrictions)
+          .class_name('::WorkItems::Type')
+          .with_foreign_key(:parent_type_id)
+      end
+
+      it 'sorts by name ascending' do
+        expected_type_names = %w[Atype Ztype gtype]
+        child_type = create(:work_item_type)
+
+        expected_type_names.shuffle.each do |name|
+          create(:hierarchy_restriction, parent_type: create(:work_item_type, name: name), child_type: child_type)
+        end
+
+        expect(child_type.allowed_parent_types_by_name.pluck(:name)).to match_array(expected_type_names)
       end
     end
   end
@@ -293,6 +319,37 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
     end
   end
 
+  describe '#allowed_parent_types' do
+    let_it_be(:work_item_type) { create(:work_item_type) }
+    let_it_be(:parent_type) { create(:work_item_type) }
+    let_it_be(:restriction) { create(:hierarchy_restriction, parent_type: parent_type, child_type: work_item_type) }
+
+    subject { work_item_type.allowed_parent_types(cache: cached) }
+
+    context 'when cache is true' do
+      let(:cached) { true }
+
+      before do
+        allow(work_item_type).to receive(:with_reactive_cache).and_call_original
+      end
+
+      it 'returns the cached data' do
+        expect(work_item_type).to receive(:with_reactive_cache)
+        expect(Rails.cache).to receive(:exist?).with("work_items_type:#{work_item_type.id}:alive")
+        is_expected.to eq([parent_type])
+      end
+    end
+
+    context 'when cache is false' do
+      let(:cached) { false }
+
+      it 'returns queried data' do
+        expect(work_item_type).not_to receive(:with_reactive_cache)
+        is_expected.to eq([parent_type])
+      end
+    end
+  end
+
   describe '#calculate_reactive_cache' do
     let(:work_item_type) { build(:work_item_type) }
 
@@ -300,9 +357,13 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
     it 'returns cache data for allowed child types' do
       child_types = create_list(:work_item_type, 2)
-      expect(work_item_type).to receive(:allowed_child_types_by_name).and_return(child_types)
+      parent_types = create_list(:work_item_type, 2)
+      cache_data = { allowed_child_types_by_name: child_types, allowed_parent_types_by_name: parent_types }
 
-      is_expected.to eq(child_types)
+      expect(work_item_type).to receive(:allowed_child_types_by_name).and_return(child_types)
+      expect(work_item_type).to receive(:allowed_parent_types_by_name).and_return(parent_types)
+
+      is_expected.to eq(cache_data)
     end
   end
 end

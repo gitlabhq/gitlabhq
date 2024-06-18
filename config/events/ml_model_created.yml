@@ -10,8 +10,6 @@ identifiers:
 - project
 - user
 - namespace
-product_section: data-science
-product_stage: modelops
 product_group: mlops
 milestone: "16.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139798

@@ -14,7 +14,7 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
       :package_protection_rule,
       package_name_pattern: "#{package_protection_rule.package_name_pattern}-updated",
       package_type: 'npm',
-      push_protected_up_to_access_level: 'owner'
+      minimum_access_level_for_push: 'owner'
     )
   end
 
@@ -64,7 +64,7 @@ RSpec.describe Packages::Protection::UpdateRuleService, '#execute', feature_cate
   context 'when fields are invalid' do
     let(:params) do
       { package_name_pattern: '', package_type: 'unknown_package_type',
-        push_protected_up_to_access_level: 1000 }
+        minimum_access_level_for_push: 1000 }
     end
 
     it_behaves_like 'an erroneous service response with side effect',

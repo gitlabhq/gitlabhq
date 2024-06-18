@@ -7,27 +7,27 @@ module Gitlab
         module Validators
           class SchemaValidator
             SUPPORTED_VERSIONS = {
-              cluster_image_scanning: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1],
-              container_scanning: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1],
-              coverage_fuzzing: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1],
-              dast: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1],
-              api_fuzzing: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1],
-              dependency_scanning: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1],
-              sast: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1],
-              secret_detection: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1]
+              cluster_image_scanning: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1 15.1.2],
+              container_scanning: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1 15.1.2],
+              coverage_fuzzing: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1 15.1.2],
+              dast: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1 15.1.2],
+              api_fuzzing: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1 15.1.2],
+              dependency_scanning: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1 15.1.2],
+              sast: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1 15.1.2],
+              secret_detection: %w[15.0.0 15.0.1 15.0.2 15.0.4 15.0.5 15.0.6 15.0.7 15.1.0 15.1.1 15.1.2]
             }.freeze
 
-            VERSIONS_TO_REMOVE_IN_17_0 = %w[].freeze
+            VERSIONS_TO_REMOVE_IN_18_0 = %w[].freeze
 
             DEPRECATED_VERSIONS = {
-              cluster_image_scanning: VERSIONS_TO_REMOVE_IN_17_0,
-              container_scanning: VERSIONS_TO_REMOVE_IN_17_0,
-              coverage_fuzzing: VERSIONS_TO_REMOVE_IN_17_0,
-              dast: VERSIONS_TO_REMOVE_IN_17_0,
-              api_fuzzing: VERSIONS_TO_REMOVE_IN_17_0,
-              dependency_scanning: VERSIONS_TO_REMOVE_IN_17_0,
-              sast: VERSIONS_TO_REMOVE_IN_17_0,
-              secret_detection: VERSIONS_TO_REMOVE_IN_17_0
+              cluster_image_scanning: VERSIONS_TO_REMOVE_IN_18_0,
+              container_scanning: VERSIONS_TO_REMOVE_IN_18_0,
+              coverage_fuzzing: VERSIONS_TO_REMOVE_IN_18_0,
+              dast: VERSIONS_TO_REMOVE_IN_18_0,
+              api_fuzzing: VERSIONS_TO_REMOVE_IN_18_0,
+              dependency_scanning: VERSIONS_TO_REMOVE_IN_18_0,
+              sast: VERSIONS_TO_REMOVE_IN_18_0,
+              secret_detection: VERSIONS_TO_REMOVE_IN_18_0
             }.freeze
 
             CURRENT_VERSIONS = SUPPORTED_VERSIONS.to_h { |k, v| [k, v - DEPRECATED_VERSIONS[k]] }
@@ -111,16 +111,16 @@ module Gitlab
 
             def add_schema_version_errors
               if report_version.nil?
-                template = _("Report version not provided,"\
-                " %{report_type} report type supports versions: %{supported_schema_versions}."\
-                " GitLab will attempt to validate this report against the earliest supported versions of this report"\
-                " type, to show all the errors but will not ingest the report")
+                template = _("Report version not provided, "\
+                "%{report_type} report type supports versions: %{supported_schema_versions}. "\
+                "GitLab will attempt to validate this report against the earliest supported versions of this report "\
+                "type, to show all the errors but will not ingest the report")
                 message = format(template, report_type: report_type, supported_schema_versions: supported_schema_versions)
               else
-                template = _("Version %{report_version} for report type %{report_type} is unsupported, supported versions"\
-                " for this report type are: %{supported_schema_versions}."\
-                " GitLab will attempt to validate this report against the earliest supported versions of this report"\
-                " type, to show all the errors but will not ingest the report")
+                template = _("Version %{report_version} for report type %{report_type} is unsupported, supported versions "\
+                "for this report type are: %{supported_schema_versions}. "\
+                "GitLab will attempt to validate this report against the earliest supported versions of this report "\
+                "type, to show all the errors but will not ingest the report")
                 message = format(template, report_version: report_version, report_type: report_type, supported_schema_versions: supported_schema_versions)
               end
 
@@ -165,9 +165,9 @@ module Gitlab
             end
 
             def add_supported_major_minor_behavior_warning
-              template = _("This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match"\
-                " any vendored schema version. Validation will be attempted against version"\
-                " %{find_latest_patch_version}")
+              template = _("This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match "\
+                "any vendored schema version. Validation will be attempted against version "\
+                "%{find_latest_patch_version}")
 
               message = format(template, find_latest_patch_version: find_latest_patch_version)
 

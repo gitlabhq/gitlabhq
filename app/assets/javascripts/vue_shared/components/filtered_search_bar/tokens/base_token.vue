@@ -69,14 +69,19 @@ export default {
       default: () => [],
     },
     valueIdentifier: {
-      type: String,
+      type: Function,
       required: false,
-      default: 'id',
+      default: (token) => token.id,
     },
     searchBy: {
       type: String,
       required: false,
       default: undefined,
+    },
+    appliedTokens: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   data() {
@@ -85,7 +90,11 @@ export default {
       searchKey: '',
       selectedTokens: [],
       recentSuggestions: this.config.recentSuggestionsStorageKey
-        ? getRecentlyUsedSuggestions(this.config.recentSuggestionsStorageKey) ?? []
+        ? getRecentlyUsedSuggestions(
+            this.config.recentSuggestionsStorageKey,
+            this.appliedTokens,
+            this.valueIdentifier,
+          ) ?? []
         : [],
     };
   },
@@ -97,10 +106,10 @@ export default {
       return !this.config.suggestionsDisabled;
     },
     recentTokenIds() {
-      return this.recentSuggestions.map((tokenValue) => tokenValue[this.valueIdentifier]);
+      return this.recentSuggestions.map(this.valueIdentifier);
     },
     preloadedTokenIds() {
-      return this.preloadedSuggestions.map((tokenValue) => tokenValue[this.valueIdentifier]);
+      return this.preloadedSuggestions.map(this.valueIdentifier);
     },
     activeTokenValue() {
       const data =
@@ -127,8 +136,8 @@ export default {
         ? this.suggestions
         : this.suggestions.filter(
             (tokenValue) =>
-              !this.recentTokenIds.includes(tokenValue[this.valueIdentifier]) &&
-              !this.preloadedTokenIds.includes(tokenValue[this.valueIdentifier]),
+              !this.recentTokenIds.includes(this.valueIdentifier(tokenValue)) &&
+              !this.preloadedTokenIds.includes(this.valueIdentifier(tokenValue)),
           );
 
       return this.applyMaxSuggestions(suggestions);
@@ -261,7 +270,7 @@ export default {
       if (
         this.isRecentSuggestionsEnabled &&
         activeTokenValue &&
-        !this.preloadedTokenIds.includes(activeTokenValue[this.valueIdentifier])
+        !this.preloadedTokenIds.includes(this.valueIdentifier(activeTokenValue))
       ) {
         setTokenValueToRecentlyUsed(this.config.recentSuggestionsStorageKey, activeTokenValue);
       }

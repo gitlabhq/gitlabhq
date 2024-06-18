@@ -99,12 +99,12 @@ table {
       tr.responsive-table-border-start,
       tr.responsive-table-border-end {
         display: block;
-        border: solid $gl-text-color-quaternary;
+        border: solid $gray-100;
         padding-left: 0;
         padding-right: 0;
 
         > td {
-          border-color: $gl-text-color-quaternary;
+          border-color: $gray-100;
 
           &,
           &:last-child {
@@ -116,7 +116,7 @@ table {
 
       tr.responsive-table-border-start {
         border-width: 1px 1px 0;
-        border-radius: $border-radius-default $border-radius-default 0 0;
+        border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
         padding-top: 0;
         padding-bottom: 0;
 
@@ -125,13 +125,13 @@ table {
         }
 
         > td:last-child {
-          border-bottom: 1px solid $gl-text-color-quaternary;
+          border-bottom: 1px solid $gray-100;
         }
       }
 
       tr.responsive-table-border-end {
         border-width: 0 1px 1px;
-        border-radius: 0 0 $border-radius-default $border-radius-default;
+        border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
         margin-bottom: 2 * $gl-padding;
 
         > :last-child {

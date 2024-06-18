@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_visibility do
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:admin) { create(:user, :admin) }
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
@@ -23,17 +25,58 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   let_it_be(:group_runner_a) { create(:ci_runner, :group, description: 'Group runner A', groups: [group]) }
   let_it_be(:group_runner_b) { create(:ci_runner, :group, description: 'Group runner B', groups: [subgroup]) }
 
+  let(:query) { {} }
+  let(:extra_query_parts) { {} }
+  let(:query_path) { query.merge(extra_query_parts).to_param }
+
+  shared_context 'access token setup' do
+    let(:current_user) { nil }
+    let(:pat_user) { user }
+    let(:pat) { create(:personal_access_token, user: pat_user, scopes: [scope]) }
+    let(:extra_query_parts) { { private_token: pat.token } }
+  end
+
+  shared_examples 'when scope is forbidden' do |forbidden_scopes: []|
+    where(:scope) { forbidden_scopes }
+
+    with_them do
+      it 'returns 403' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  shared_examples 'when scope is not allowed' do |scopes: []|
+    where(:scope) { scopes }
+
+    with_them do
+      it 'returns 401' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
   describe 'GET /runners' do
+    let(:path) { "/runners?#{query_path}" }
+
+    subject(:perform_request) { get api(path, current_user) }
+
     context 'authorized user' do
+      let(:current_user) { user }
+
       it 'returns response status and headers' do
-        get api('/runners', user)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
       end
 
       it 'returns user available runners' do
-        get api('/runners', user)
+        perform_request
 
         expect(json_response).to match_array [
           a_hash_including('description' => 'Project runner'),
@@ -43,80 +86,127 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         ]
       end
 
-      it 'filters runners by scope' do
-        create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+      context 'with request authorized with access token' do
+        include_context 'access token setup'
 
-        get api('/runners?scope=paused', user)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
-
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Inactive project runner')
-        ]
+        it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner manage_runner]
       end
 
-      it 'avoids filtering if scope is invalid' do
-        get api('/runners?scope=unknown', user)
-        expect(response).to have_gitlab_http_status(:bad_request)
+      context 'when filtering by scope' do
+        let(:query) { { scope: :paused } }
+
+        before_all do
+          create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
+        end
+
+        it 'filters runners by scope' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Inactive project runner')
+          ]
+        end
+
+        context 'when is invalid' do
+          let(:query) { { scope: :unknown } }
+
+          it 'avoids filtering' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
       end
 
-      it 'filters runners by type' do
-        get api('/runners?type=project_type', user)
+      context 'when filtering by type' do
+        let(:query) { { type: type } }
 
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Project runner'),
-          a_hash_including('description' => 'Two projects runner')
-        ]
-      end
+        context 'with project_type type' do
+          let(:type) { :project_type }
 
-      it 'does not filter by invalid type' do
-        get api('/runners?type=bogus', user)
+          it 'filters runners by type' do
+            perform_request
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+            expect(json_response).to match_array [
+              a_hash_including('description' => 'Project runner'),
+              a_hash_including('description' => 'Two projects runner')
+            ]
+          end
+        end
+
+        context 'when type is invalid' do
+          let(:type) { :bogus }
+
+          it 'does not filter by invalid type' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
       end
 
       context 'with an inactive runner' do
-        let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
-
-        it 'filters runners by paused state' do
-          get api('/runners?paused=true', user)
-
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Inactive project runner')
-          ]
+        let_it_be(:runner) do
+          create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project])
         end
 
-        it 'filters runners by status' do
-          get api('/runners?status=paused', user)
+        context 'when filtering by paused' do
+          let(:query) { { paused: true } }
 
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Inactive project runner')
-          ]
+          it 'filters runners by paused state' do
+            perform_request
+
+            expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive project runner'))
+          end
         end
-      end
 
-      it 'does not filter by invalid status' do
-        get api('/runners?status=bogus', user)
+        context 'when filtering by status' do
+          let(:query) { { status: :paused } }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
+          it 'filters runners by status' do
+            perform_request
 
-      it 'filters runners by tag_list' do
-        create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
-        create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
+            expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive project runner'))
+          end
+        end
 
-        get api('/runners?tag_list=tag1,tag2', user)
+        context 'when filtering by invalid status' do
+          let(:query) { { status: :bogus } }
 
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Runner tagged with tag1 and tag2', 'active' => true, 'paused' => false)
-        ]
+          it 'does not filter' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'when filtering by tag_list' do
+          let(:query) { { tag_list: 'tag1,tag2' } }
+
+          before_all do
+            create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
+            create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
+          end
+
+          it 'filters runners by tag_list' do
+            perform_request
+
+            expect(json_response).to contain_exactly(
+              a_hash_including('description' => 'Runner tagged with tag1 and tag2', 'active' => true, 'paused' => false)
+            )
+          end
+        end
       end
     end
 
     context 'unauthorized user' do
+      let(:current_user) { nil }
+
       it 'does not return runners' do
-        get api('/runners')
+        perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -124,21 +214,25 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   end
 
   describe 'GET /runners/all' do
-    let(:path) { '/runners/all' }
+    let(:path) { "/runners/all?#{query_path}" }
+
+    subject(:perform_request) { get api(path, current_user) }
 
     it_behaves_like 'GET request permissions for admin mode'
 
     context 'authorized user' do
-      context 'with admin privileges' do
+      context 'with admin privileges', :enable_admin_mode do
+        let(:current_user) { admin }
+
         it 'returns response status and headers' do
-          get api(path, admin, admin_mode: true)
+          perform_request
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
         end
 
         it 'returns all runners' do
-          get api(path, admin, admin_mode: true)
+          perform_request
 
           expect(json_response).to match_array [
             a_hash_including('description' => 'Project runner', 'is_shared' => false, 'active' => true, 'paused' => false, 'runner_type' => 'project_type'),
@@ -149,133 +243,214 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           ]
         end
 
-        it 'filters runners by scope' do
-          get api('/runners/all?scope=shared', admin, admin_mode: true)
+        context 'with request authorized with access token' do
+          include_context 'access token setup' do
+            let(:pat_user) { admin }
+          end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
-          expect(json_response).to contain_exactly(
-            a_hash_including('description' => 'Shared runner', 'is_shared' => true)
-          )
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner manage_runner]
         end
 
-        it 'filters runners by scope' do
-          get api('/runners/all?scope=specific', admin, admin_mode: true)
+        context 'when filtering runners by scope' do
+          let(:query) { { scope: scope } }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to include_pagination_headers
+          context 'with shared scope' do
+            let(:scope) { :shared }
 
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Project runner'),
-            a_hash_including('description' => 'Two projects runner'),
-            a_hash_including('description' => 'Group runner A'),
-            a_hash_including('description' => 'Group runner B')
-          ]
+            it 'filters runners by scope' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to include_pagination_headers
+              expect(json_response).to contain_exactly(
+                a_hash_including('description' => 'Shared runner', 'is_shared' => true)
+              )
+            end
+          end
+
+          context 'with specific scope' do
+            let(:scope) { :specific }
+
+            it 'filters runners by scope' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to include_pagination_headers
+
+              expect(json_response).to match_array [
+                a_hash_including('description' => 'Project runner'),
+                a_hash_including('description' => 'Two projects runner'),
+                a_hash_including('description' => 'Group runner A'),
+                a_hash_including('description' => 'Group runner B')
+              ]
+            end
+          end
+
+          context 'with invalid scope' do
+            let(:scope) { :unknown }
+
+            it 'avoids filtering' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
+          end
         end
 
-        it 'avoids filtering if scope is invalid' do
-          get api('/runners/all?scope=unknown', admin, admin_mode: true)
-          expect(response).to have_gitlab_http_status(:bad_request)
-        end
+        context 'when filtering runners by type' do
+          let(:query) { { type: type } }
 
-        it 'filters runners by project type' do
-          get api('/runners/all?type=project_type', admin, admin_mode: true)
+          context 'with project_type type' do
+            let(:type) { :project_type }
 
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Project runner'),
-            a_hash_including('description' => 'Two projects runner')
-          ]
-        end
+            it 'filters runners by project type' do
+              perform_request
 
-        it 'filters runners by group type' do
-          get api('/runners/all?type=group_type', admin, admin_mode: true)
+              expect(json_response).to match_array [
+                a_hash_including('description' => 'Project runner'),
+                a_hash_including('description' => 'Two projects runner')
+              ]
+            end
+          end
 
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Group runner A'),
-            a_hash_including('description' => 'Group runner B')
-          ]
-        end
+          context 'with group_type type' do
+            let(:type) { :group_type }
 
-        it 'does not filter by invalid type' do
-          get api('/runners/all?type=bogus', admin, admin_mode: true)
+            it 'filters runners by group type' do
+              perform_request
 
-          expect(response).to have_gitlab_http_status(:bad_request)
+              expect(json_response).to match_array [
+                a_hash_including('description' => 'Group runner A'),
+                a_hash_including('description' => 'Group runner B')
+              ]
+            end
+          end
+
+          context 'with invalid type' do
+            let(:type) { :bogus }
+
+            it 'does not filter by invalid type' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
+          end
         end
 
         context 'with an inactive runner' do
           let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
 
-          it 'filters runners by status' do
-            get api('/runners/all?paused=true', admin, admin_mode: true)
+          context 'when filtering runners by paused status' do
+            let(:query) { { paused: true } }
 
-            expect(json_response).to match_array [
-              a_hash_including('description' => 'Inactive project runner')
-            ]
+            it 'filters runners by status' do
+              perform_request
+
+              expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive project runner'))
+            end
           end
 
-          it 'filters runners by status' do
-            get api('/runners/all?status=paused', admin, admin_mode: true)
+          context 'when filtering runners by status' do
+            let(:query) { { status: :paused } }
 
-            expect(json_response).to match_array [
-              a_hash_including('description' => 'Inactive project runner')
-            ]
+            it 'filters runners by status' do
+              perform_request
+
+              expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive project runner'))
+            end
+
+            context 'and status is invalid' do
+              let(:query) { { status: :bogus } }
+
+              it 'does not filter by invalid status' do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:bad_request)
+              end
+            end
           end
         end
 
-        it 'does not filter by invalid status' do
-          get api('/runners/all?status=bogus', admin, admin_mode: true)
+        context 'when filtering by tag_list' do
+          let(:query) { { tag_list: 'tag1,tag2' } }
 
-          expect(response).to have_gitlab_http_status(:bad_request)
+          before_all do
+            create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
+            create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: %w[tag2])
+          end
+
+          it 'filters runners by tag_list' do
+            perform_request
+
+            expect(json_response).to contain_exactly(
+              a_hash_including('description' => 'Runner tagged with tag1 and tag2')
+            )
+          end
         end
 
-        it 'filters runners by tag_list' do
-          create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
-          create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
-
-          get api('/runners/all?tag_list=tag1,tag2', admin, admin_mode: true)
-
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Runner tagged with tag1 and tag2')
-          ]
-        end
-
-        context 'with ci_runner_machines' do
-          let_it_be(:version_ci_runner) { create(:ci_runner, :project, description: 'Runner with machine') }
-          let_it_be(:version_ci_runner_machine) { create(:ci_runner_machine, runner: version_ci_runner, version: '15.0.3') }
-          let_it_be(:version_16_ci_runner) { create(:ci_runner, :project, description: 'Runner with machine version 16') }
-          let_it_be(:version_16_ci_runner_machine) { create(:ci_runner_machine, runner: version_16_ci_runner, version: '16.0.1') }
-
-          it 'filters runners by version_prefix when prefix is "15.0"' do
-            get api('/runners/all?version_prefix=15.0', admin, admin_mode: true)
-
-            expect(json_response).to match_array [
-              a_hash_including('description' => 'Runner with machine', 'active' => true, 'paused' => false)
-            ]
+        describe 'with ci_runner_machines' do
+          before_all do
+            version_ci_runner = create(:ci_runner, :project, description: 'Runner with machine')
+            version_16_ci_runner = create(:ci_runner, :project, description: 'Runner with machine version 16')
+            create(:ci_runner_machine, runner: version_ci_runner, version: '15.0.3')
+            create(:ci_runner_machine, runner: version_16_ci_runner, version: '16.0.1')
           end
 
-          it 'filters runners by version_prefix when prefix is "16"' do
-            get api('/runners/all?version_prefix=16', admin, admin_mode: true)
-            expect(json_response).to match_array [
-              a_hash_including('description' => 'Runner with machine version 16', 'active' => true, 'paused' => false)
-            ]
-          end
+          context 'when filtering by version_prefix' do
+            let(:query) { { version_prefix: version_prefix } }
 
-          it 'filters runners by version_prefix when prefix is "25"' do
-            get api('/runners/all?version_prefix=25', admin, admin_mode: true)
-            expect(json_response).to match_array []
-          end
+            context 'with version_prefix set to "15.0"' do
+              let(:version_prefix) { '15.0' }
 
-          it 'does not filter runners by version_prefix when prefix is invalid ("V15")' do
-            get api('/runners/all?version_prefix=v15', admin, admin_mode: true)
+              it 'filters runners by version_prefix' do
+                perform_request
 
-            expect(response).to have_gitlab_http_status(:bad_request)
+                expect(json_response).to contain_exactly(
+                  a_hash_including('description' => 'Runner with machine', 'active' => true, 'paused' => false)
+                )
+              end
+            end
+
+            context 'with version_prefix set to "16"' do
+              let(:version_prefix) { '16' }
+
+              it 'filters runners by version_prefix' do
+                perform_request
+
+                expect(json_response).to contain_exactly(
+                  a_hash_including('description' => 'Runner with machine version 16', 'active' => true, 'paused' => false)
+                )
+              end
+            end
+
+            context 'with version_prefix set to "25"' do
+              let(:version_prefix) { '25' }
+
+              it 'filters runners by version_prefix' do
+                perform_request
+
+                expect(json_response).to match_array []
+              end
+            end
+
+            context 'with version_prefix set to invalid prefix "V15"' do
+              let(:version_prefix) { 'V15' }
+
+              it 'does not filter runners by version_prefix' do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:bad_request)
+              end
+            end
           end
         end
       end
 
       context 'without admin privileges' do
+        let(:current_user) { user }
+
         it 'does not return runners list' do
-          get api(path, user)
+          perform_request
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
@@ -283,8 +458,10 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
     end
 
     context 'unauthorized user' do
+      let(:current_user) { nil }
+
       it 'does not return runners' do
-        get api('/runners')
+        perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -292,14 +469,23 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   end
 
   describe 'GET /runners/:id' do
-    let(:path) { "/runners/#{project_runner.id}" }
+    let(:runner_id) { runner.id }
+    let(:path) { "/runners/#{runner_id}?#{query_path}" }
 
-    it_behaves_like 'GET request permissions for admin mode'
+    subject(:perform_request) { get api(path, current_user) }
+
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:runner) { project_runner }
+    end
 
     context 'admin user' do
+      let(:current_user) { admin }
+
       context 'when runner is shared' do
+        let(:runner) { shared_runner }
+
         it "returns runner's details" do
-          get api("/runners/#{shared_runner.id}", admin)
+          perform_request
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['description']).to eq(shared_runner.description)
@@ -311,81 +497,122 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         end
       end
 
-      context 'when runner is not shared' do
-        context 'when unused runner is present' do
-          let!(:unused_project_runner) { create(:ci_runner, :project, :without_projects) }
+      context 'when runner is a project runner' do
+        let(:runner) { project_runner }
 
-          it 'deletes unused runner' do
-            expect do
-              delete api("/runners/#{unused_project_runner.id}", admin, admin_mode: true)
+        it "returns forbidden" do
+          perform_request
 
-              expect(response).to have_gitlab_http_status(:no_content)
-            end.to change { ::Ci::Runner.project_type.count }.by(-1)
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        context 'with admin mode enabled', :enable_admin_mode do
+          it "returns runner's details" do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['description']).to eq(runner.description)
+          end
+
+          it "returns the project's details" do
+            perform_request
+
+            expect(json_response['projects'].first['id']).to eq(project.id)
+          end
+        end
+      end
+
+      context 'when runner does not exist' do
+        let(:runner_id) { non_existing_record_id }
+        let(:runner) { project_runner }
+
+        it 'returns 404', :enable_admin_mode do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    shared_examples 'an endpoint returning expected results' do
+      context 'when the runner is a group runner' do
+        let(:runner) { group_runner_a }
+
+        it "returns the runner's details" do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['description']).to eq(runner.description)
+          expect(json_response['groups'].first['id']).to eq(group.id)
+        end
+      end
+
+      context "runner project's administrative user" do
+        let(:current_user) { user }
+
+        context 'when runner is not shared' do
+          let(:runner) { project_runner }
+
+          it "returns runner's details" do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['description']).to eq(runner.description)
           end
         end
 
-        it "returns runner's details" do
-          get api(path, admin, admin_mode: true)
+        context 'when runner is shared' do
+          let(:runner) { shared_runner }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['description']).to eq(project_runner.description)
+          it "returns runner's details" do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response['description']).to eq(runner.description)
+          end
         end
-
-        it "returns the project's details for a project runner" do
-          get api(path, admin, admin_mode: true)
-
-          expect(json_response['projects'].first['id']).to eq(project.id)
-        end
-      end
-
-      it 'returns 404 if runner does not exist' do
-        get api("/runners/#{non_existing_record_id}", admin, admin_mode: true)
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
-    context 'when the runner is a group runner' do
-      it "returns the runner's details" do
-        get api("/runners/#{group_runner_a.id}", admin, admin_mode: true)
+    context 'authorized user' do
+      let(:current_user) { user }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['description']).to eq(group_runner_a.description)
-        expect(json_response['groups'].first['id']).to eq(group.id)
-      end
-    end
+      it_behaves_like 'an endpoint returning expected results'
 
-    context "runner project's administrative user" do
-      context 'when runner is not shared' do
-        it "returns runner's details" do
-          get api(path, user)
+      context 'with request authorized with access token' do
+        include_context 'access token setup'
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['description']).to eq(project_runner.description)
+        it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner] do
+          let(:runner) { project_runner }
         end
-      end
 
-      context 'when runner is shared' do
-        it "returns runner's details" do
-          get api("/runners/#{shared_runner.id}", user)
+        context 'with sufficient scope' do
+          where(:scope) { %i[manage_runner read_api] }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(json_response['description']).to eq(shared_runner.description)
+          with_them do
+            it_behaves_like 'an endpoint returning expected results'
+          end
         end
       end
     end
 
     context 'other authorized user' do
+      let(:current_user) { user2 }
+      let(:runner) { project_runner }
+
       it "does not return project runner's details" do
-        get api(path, user2)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
     context 'unauthorized user' do
+      let(:current_user) { nil }
+      let(:runner) { project_runner }
+
       it "does not return project runner's details" do
-        get api(path)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -393,331 +620,599 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   end
 
   describe 'PUT /runners/:id' do
-    let(:path) { "/runners/#{project_runner.id}" }
+    let(:runner_id) { runner.id }
+    let(:path) { "/runners/#{runner_id}?#{query_path}" }
+
+    subject(:perform_request) { put api(path, current_user), params: params }
 
     it_behaves_like 'PUT request permissions for admin mode' do
+      let(:runner) { project_runner }
       let(:params) { { description: 'test' } }
     end
 
-    context 'admin user' do
+    context 'admin user', :enable_admin_mode do
+      let(:current_user) { admin }
+
       # see https://gitlab.com/gitlab-org/gitlab-foss/issues/48625
       context 'single parameter update' do
-        it 'runner description' do
-          description = shared_runner.description
-          update_runner(shared_runner.id, admin, description: "#{description}_updated")
+        let(:runner) { shared_runner }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.reload.description).to eq("#{description}_updated")
+        context 'when changing description' do
+          let(:params) { { description: "#{runner.description}_updated" } }
+
+          it 'updates runner description' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(runner.reload.description).to eq(params[:description])
+          end
         end
 
-        it 'runner active state' do
-          active = shared_runner.active
-          update_runner(shared_runner.id, admin, active: !active)
+        context 'when changing active state' do
+          let(:params) { { active: !runner.active } }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.reload.active).to eq(!active)
+          it 'updates runner active state' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(runner.reload.active).to eq(params[:active])
+          end
         end
 
-        it 'runner paused state' do
-          active = shared_runner.active
-          update_runner(shared_runner.id, admin, paused: active)
+        context 'when changing paused state' do
+          let(:params) { { paused: runner.active } }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.reload.active).to eq(!active)
-        end
+          it 'updates runner paused state' do
+            perform_request
 
-        it 'runner tag list' do
-          update_runner(shared_runner.id, admin, tag_list: ['ruby2.1', 'pgsql', 'mysql'])
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(runner.reload.active).to eq(!params[:paused])
+          end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.reload.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
-        end
-
-        it 'unrelated runner attribute on an existing runner with too many tags' do
           # This test ensures that it is possible to update any attribute on a runner that currently fails the
           # validation that ensures that there aren't too many tags associated with a runner
-          existing_invalid_shared_runner = build(:ci_runner, :instance, tag_list: (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" })
-          existing_invalid_shared_runner.save!(validate: false)
+          context 'when changing unrelated runner attribute on an existing runner with too many tags' do
+            let(:params) { { active: !runner.active } }
+            let(:runner) do
+              build(:ci_runner, :instance, tag_list: (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" })
+                .tap { |runner| runner.save!(validate: false) }
+            end
 
-          active = existing_invalid_shared_runner.active
-          update_runner(existing_invalid_shared_runner.id, admin, paused: active)
+            it 'unrelated runner attribute on an existing runner with too many tags' do
+              perform_request
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(existing_invalid_shared_runner.reload.active).to eq(!active)
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(runner.reload.active).to eq(params[:active])
+            end
+          end
         end
 
-        it 'runner untagged flag' do
-          # Ensure tag list is non-empty before setting untagged to false.
-          update_runner(shared_runner.id, admin, tag_list: ['ruby2.1', 'pgsql', 'mysql'])
-          update_runner(shared_runner.id, admin, run_untagged: 'false')
+        context 'when changing tag list' do
+          let(:params) { { tag_list: %w[ruby2.1 pgsql mysql] } }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.reload.run_untagged?).to be(false)
+          it 'updates runner tag list' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(runner.reload.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
+          end
         end
 
-        it 'runner unlocked flag' do
-          update_runner(shared_runner.id, admin, locked: 'true')
+        context 'when changing untagged flag' do
+          let(:params) { { tag_list: %w[ruby2.1 pgsql mysql], run_untagged: 'false' } }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.reload.locked?).to be(true)
+          it 'updates untagged flag' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(runner.reload.run_untagged?).to be(false)
+          end
         end
 
-        it 'runner access level' do
-          update_runner(shared_runner.id, admin, access_level: 'ref_protected')
+        context 'when changing locked flag' do
+          let(:params) { { locked: !runner.locked } }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.reload.ref_protected?).to be_truthy
+          it 'updates locked flag' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(runner.reload.locked?).to be(params[:locked])
+          end
         end
 
-        it 'runner maximum timeout' do
-          update_runner(shared_runner.id, admin, maximum_timeout: 1234)
+        context 'when changing access level' do
+          let(:params) { { access_level: 'ref_protected' } }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.reload.maximum_timeout).to eq(1234)
+          it 'updates access level' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(runner.reload.ref_protected?).to be_truthy
+          end
         end
 
-        it 'maintenance note' do
-          maintenance_note = shared_runner.maintenance_note
-          update_runner(shared_runner.id, admin, maintenance_note: "#{maintenance_note}_updated")
+        context 'when changing maximum timeout' do
+          let(:params) { { maximum_timeout: 1234 } }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.reload.maintenance_note).to eq("#{maintenance_note}_updated")
+          it 'updates maximum timeout' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(runner.reload.maximum_timeout).to eq(1234)
+          end
         end
 
-        it 'fails with no parameters' do
-          put api("/runners/#{shared_runner.id}", admin)
+        context 'when changing maintenance note' do
+          let(:params) { { maintenance_note: "#{runner.maintenance_note}_updated" } }
 
-          shared_runner.reload
-          expect(response).to have_gitlab_http_status(:bad_request)
+          it 'updates maintenance note' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(runner.reload.maintenance_note).to eq(params[:maintenance_note])
+          end
+        end
+
+        context 'with no parameters' do
+          let(:params) { {} }
+
+          it 'fails with bad request' do
+            perform_request
+
+            runner.reload
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
         end
       end
 
       context 'when runner is shared' do
-        it 'updates runner' do
-          description = shared_runner.description
-          active = shared_runner.active
-          runner_queue_value = shared_runner.ensure_runner_queue_value
-
-          update_runner(
-            shared_runner.id,
-            admin,
-            description: "#{description}_updated",
-            active: !active,
-            tag_list: ['ruby2.1', 'pgsql', 'mysql'],
+        let(:runner) { shared_runner }
+        let(:params) do
+          {
+            description: "#{runner.description}_updated",
+            active: !runner.active,
+            tag_list: %w[ruby2.1 pgsql mysql],
             run_untagged: 'false',
             locked: 'true',
             access_level: 'ref_protected',
             maximum_timeout: 1234
-          )
-          shared_runner.reload
+          }
+        end
 
+        it 'updates runner' do
+          active = runner.active
+          runner_queue_value = runner.ensure_runner_queue_value
+
+          perform_request
+
+          runner.reload
           expect(response).to have_gitlab_http_status(:ok)
-          expect(shared_runner.description).to eq("#{description}_updated")
-          expect(shared_runner.active).to eq(!active)
-          expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
-          expect(shared_runner.run_untagged?).to be(false)
-          expect(shared_runner.locked?).to be(true)
-          expect(shared_runner.ref_protected?).to be_truthy
-          expect(shared_runner.ensure_runner_queue_value)
-            .not_to eq(runner_queue_value)
-          expect(shared_runner.maximum_timeout).to eq(1234)
+          expect(runner.description).to eq(params[:description])
+          expect(runner.active).to eq(!active)
+          expect(runner.tag_list).to match_array(params[:tag_list])
+          expect(runner.run_untagged?).to be(false)
+          expect(runner.locked?).to be(true)
+          expect(runner.ref_protected?).to be_truthy
+          expect(runner.ensure_runner_queue_value).not_to eq(runner_queue_value)
+          expect(runner.maximum_timeout).to eq(1234)
+        end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup' do
+            let(:pat_user) { admin }
+          end
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+          context 'with sufficient scope' do
+            let(:scope) { :manage_runner }
+
+            it 'updates runner' do
+              perform_request
+
+              runner.reload
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(runner.description).to eq(params[:description])
+            end
+          end
         end
       end
 
       context 'when runner is not shared' do
+        let(:runner) { project_runner }
+        let(:params) { { description: 'test' } }
+
         it 'updates runner' do
-          description = project_runner.description
-          runner_queue_value = project_runner.ensure_runner_queue_value
+          description = runner.description
+          runner_queue_value = runner.ensure_runner_queue_value
 
-          update_runner(project_runner.id, admin, description: 'test')
-          project_runner.reload
+          perform_request
 
+          runner.reload
           expect(response).to have_gitlab_http_status(:ok)
-          expect(project_runner.description).to eq('test')
-          expect(project_runner.description).not_to eq(description)
-          expect(project_runner.ensure_runner_queue_value)
-            .not_to eq(runner_queue_value)
+          expect(runner.description).to eq(params[:description])
+          expect(runner.description).not_to eq(description)
+          expect(runner.ensure_runner_queue_value).not_to eq(runner_queue_value)
         end
       end
 
-      it 'returns 404 if runner does not exist' do
-        update_runner(non_existing_record_id, admin, description: 'test')
+      context 'when runner id does not exist' do
+        let(:runner_id) { non_existing_record_id }
+        let(:params) { { description: 'test' } }
 
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
+        it 'returns 404' do
+          perform_request
 
-      def update_runner(id, user, args)
-        put api("/runners/#{id}", user, admin_mode: true), params: args
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
     context 'authorized user' do
-      let_it_be(:params) { { description: 'test' } }
+      let(:current_user) { user }
+      let(:params) { { description: 'test' } }
 
       context 'when runner is shared' do
+        let(:runner) { shared_runner }
+
         it 'does not update runner' do
-          put api("/runners/#{shared_runner.id}", user), params: params
+          perform_request
 
           expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup'
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[manage_runner create_runner read_api]
         end
       end
 
       context 'when runner is not shared' do
-        it 'does not update project runner without access to it' do
-          put api(path, user2), params: { description: 'test' }
+        let(:runner) { project_runner }
 
-          expect(response).to have_gitlab_http_status(:forbidden)
+        it 'updates runner description' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(runner.reload.description).to eq(params[:description])
         end
 
-        it 'updates project runner with access to it' do
-          description = project_runner.description
-          put api(path, admin, admin_mode: true), params: params
-          project_runner.reload
+        context 'with request authorized with access token' do
+          include_context 'access token setup'
 
-          expect(project_runner.description).to eq('test')
-          expect(project_runner.description).not_to eq(description)
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+          context 'with sufficient scope' do
+            let(:scope) { :manage_runner }
+
+            it 'updates runner description' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(runner.reload.description).to eq(params[:description])
+            end
+          end
+        end
+
+        context 'when user does not have access to runner' do
+          let(:current_user) { user2 }
+
+          it 'does not update runner' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
       end
     end
 
     context 'unauthorized user' do
-      it 'does not delete project runner' do
-        put api(path)
+      let(:current_user) { nil }
+      let(:runner) { project_runner }
+      let(:params) { { description: 'test' } }
+
+      it 'does not update project runner' do
+        perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
+        expect(runner.reload.description).not_to eq(params[:description])
       end
     end
   end
 
   describe 'DELETE /runners/:id' do
-    let(:path) { "/runners/#{shared_runner.id}" }
+    let(:runner_id) { runner.id }
+    let(:path) { "/runners/#{runner_id}?#{query_path}" }
 
-    it_behaves_like 'DELETE request permissions for admin mode'
+    subject(:perform_request) { delete api(path, current_user) }
 
-    context 'admin user' do
+    it_behaves_like 'DELETE request permissions for admin mode' do
+      let(:runner) { shared_runner }
+    end
+
+    context 'admin user', :enable_admin_mode do
+      let(:current_user) { admin }
+
       context 'when runner is shared' do
+        let(:runner) { shared_runner }
+
         it 'deletes runner' do
-          expect_next_instance_of(Ci::Runners::UnregisterRunnerService, shared_runner, admin) do |service|
+          expect_next_instance_of(Ci::Runners::UnregisterRunnerService, runner, current_user) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
 
           expect do
-            delete api(path, admin, admin_mode: true)
+            perform_request
 
             expect(response).to have_gitlab_http_status(:no_content)
           end.to change { ::Ci::Runner.instance_type.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
-          let(:request) { api(path, admin, admin_mode: true) }
+          let(:request) { api(path, current_user) }
+        end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup' do
+            let(:pat_user) { admin }
+          end
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner]
+
+          context 'with sufficient scope' do
+            let(:scope) { :manage_runner }
+
+            it 'deletes runner' do
+              expect_next_instance_of(Ci::Runners::UnregisterRunnerService, runner, pat_user) do |service|
+                expect(service).to receive(:execute).once.and_call_original
+              end
+
+              expect do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:no_content)
+              end.to change { ::Ci::Runner.instance_type.count }.by(-1)
+            end
+          end
         end
       end
 
       context 'when runner is not shared' do
+        let(:runner) { project_runner }
+
         it 'deletes used project runner' do
-          expect_next_instance_of(Ci::Runners::UnregisterRunnerService, project_runner, admin) do |service|
+          expect_next_instance_of(Ci::Runners::UnregisterRunnerService, runner, current_user) do |service|
             expect(service).to receive(:execute).once.and_call_original
           end
 
           expect do
-            delete api("/runners/#{project_runner.id}", admin, admin_mode: true)
+            perform_request
 
             expect(response).to have_gitlab_http_status(:no_content)
           end.to change { ::Ci::Runner.project_type.count }.by(-1)
         end
       end
 
-      it 'returns 404 if runner does not exist' do
-        allow_next_instance_of(Ci::Runners::UnregisterRunnerService) do |service|
-          expect(service).not_to receive(:execute)
+      context 'when runner does not exist' do
+        let(:runner_id) { non_existing_record_id }
+
+        it 'returns 404' do
+          allow_next_instance_of(Ci::Runners::UnregisterRunnerService) do |service|
+            expect(service).not_to receive(:execute)
+          end
+
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
         end
-
-        delete api("/runners/#{non_existing_record_id}", admin, admin_mode: true)
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
     context 'authorized user' do
+      let(:current_user) { user }
+
       context 'when runner is shared' do
+        let(:runner) { shared_runner }
+
         it 'does not delete runner' do
-          delete api(path, user)
+          perform_request
+
           expect(response).to have_gitlab_http_status(:forbidden)
+        end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup'
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[manage_runner create_runner read_api]
         end
       end
 
-      context 'when runner is not shared' do
-        it 'does not delete runner without access to it' do
-          delete api("/runners/#{project_runner.id}", user2)
-          expect(response).to have_gitlab_http_status(:forbidden)
+      context 'with a project runner' do
+        let(:runner) { project_runner }
+
+        context 'when user does not have access to runner' do
+          let(:current_user) { user2 }
+
+          it 'does not delete runner without access to it' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
 
-        it 'does not delete project runner with more than one associated project' do
-          delete api("/runners/#{two_projects_runner.id}", user)
-          expect(response).to have_gitlab_http_status(:forbidden)
+        context 'when runner is associated with more than one project' do
+          let(:runner) { two_projects_runner }
+
+          it 'does not delete project runner' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
         end
 
-        it 'deletes project runner for one owned project' do
-          expect do
-            delete api("/runners/#{project_runner.id}", user)
+        context 'when runner is associated with one owned project' do
+          let(:runner) { project_runner }
 
-            expect(response).to have_gitlab_http_status(:no_content)
-          end.to change { ::Ci::Runner.project_type.count }.by(-1)
-        end
+          it 'deletes project runner' do
+            expect do
+              perform_request
 
-        it 'does not delete group runner with guest access' do
-          delete api("/runners/#{group_runner_a.id}", group_guest)
+              expect(response).to have_gitlab_http_status(:no_content)
+            end.to change { ::Ci::Runner.project_type.count }.by(-1)
+          end
 
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
 
-        it 'does not delete group runner with reporter access' do
-          delete api("/runners/#{group_runner_a.id}", group_reporter)
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
 
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
 
-        it 'does not delete group runner with developer access' do
-          delete api("/runners/#{group_runner_a.id}", group_developer)
+              it 'deletes project runner' do
+                expect do
+                  perform_request
 
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-
-        it 'does not delete group runner with maintainer access' do
-          delete api("/runners/#{group_runner_a.id}", group_maintainer)
-
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end
-
-        it 'deletes owned group runner with owner access' do
-          expect do
-            delete api("/runners/#{group_runner_a.id}", user)
-
-            expect(response).to have_gitlab_http_status(:no_content)
-          end.to change { ::Ci::Runner.group_type.count }.by(-1)
-        end
-
-        it 'deletes inherited group runner with owner access' do
-          expect do
-            delete api("/runners/#{group_runner_b.id}", user)
-
-            expect(response).to have_gitlab_http_status(:no_content)
-          end.to change { ::Ci::Runner.group_type.count }.by(-1)
+                  expect(response).to have_gitlab_http_status(:no_content)
+                end.to change { ::Ci::Runner.project_type.count }.by(-1)
+              end
+            end
+          end
         end
 
         it_behaves_like '412 response' do
-          let(:request) { api("/runners/#{project_runner.id}", user) }
+          let(:request) { api(path, current_user) }
+        end
+      end
+
+      context 'with group runner' do
+        let(:runner) { group_runner_a }
+
+        context 'when user has guest access' do
+          let(:current_user) { group_guest }
+
+          it 'does not delete runner' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when user has reporter access' do
+          let(:current_user) { group_reporter }
+
+          it 'does not delete runner' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when user has developer access' do
+          let(:current_user) { group_developer }
+
+          it 'does not delete runner' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when user has maintainer access' do
+          let(:current_user) { group_maintainer }
+
+          it 'does not delete runner' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+
+        context 'when user has owner access' do
+          let(:current_user) { user }
+
+          it 'deletes runner' do
+            expect do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:no_content)
+            end.to change { ::Ci::Runner.group_type.count }.by(-1)
+          end
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
+
+              it 'deletes group runner' do
+                expect do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:no_content)
+                end.to change { ::Ci::Runner.group_type.count }.by(-1)
+              end
+            end
+          end
+        end
+
+        it_behaves_like '412 response' do
+          let(:request) { api(path, current_user) }
+        end
+      end
+
+      context 'with inherited group runner' do
+        let(:runner) { group_runner_b }
+
+        context 'when user has owner access' do
+          let(:current_user) { user }
+
+          it 'deletes group runner' do
+            expect do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:no_content)
+            end.to change { ::Ci::Runner.group_type.count }.by(-1)
+          end
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
+
+              it 'deletes group runner' do
+                expect do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:no_content)
+                end.to change { ::Ci::Runner.group_type.count }.by(-1)
+              end
+            end
+          end
+        end
+
+        it_behaves_like '412 response' do
+          let(:request) { api(path, current_user) }
         end
       end
     end
 
     context 'unauthorized user' do
-      it 'does not delete project runner' do
+      let(:current_user) { nil }
+      let(:runner) { project_runner }
+
+      it 'does not delete runner' do
         allow_next_instance_of(Ci::Runners::UnregisterRunnerService) do |service|
           expect(service).not_to receive(:execute)
         end
 
-        delete api("/runners/#{project_runner.id}")
+        perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -725,117 +1220,209 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   end
 
   describe 'POST /runners/:id/reset_authentication_token' do
-    let(:path) { "/runners/#{shared_runner.id}/reset_authentication_token" }
+    let(:runner_id) { runner.id }
+    let(:path) { "/runners/#{runner_id}/reset_authentication_token?#{query_path}" }
+
+    subject(:perform_request) { post api(path, current_user) }
+
+    shared_examples 'a runner accepting authentication token reset' do
+      it 'resets runner authentication token' do
+        expect do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(json_response).to eq({ 'token' => runner.reload.token, 'token_expires_at' => nil })
+        end.to change { runner.reload.token }
+      end
+    end
 
     it_behaves_like 'POST request permissions for admin mode' do
+      let(:runner) { project_runner }
       let(:params) { {} }
     end
 
-    context 'admin user' do
-      it 'resets shared runner authentication token' do
-        expect do
-          post api(path, admin, admin_mode: true)
+    context 'admin user', :enable_admin_mode do
+      let(:current_user) { admin }
 
-          expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => shared_runner.reload.token, 'token_expires_at' => nil })
-        end.to change { shared_runner.reload.token }
+      context 'when runner is shared' do
+        let(:runner) { shared_runner }
+
+        it_behaves_like 'a runner accepting authentication token reset'
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup' do
+            let(:pat_user) { admin }
+          end
+
+          it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+          context 'with sufficient scope' do
+            let(:scope) { :manage_runner }
+
+            it_behaves_like 'a runner accepting authentication token reset'
+          end
+        end
       end
 
-      it 'returns 404 if runner does not exist' do
-        post api("/runners/#{non_existing_record_id}/reset_authentication_token", admin, admin_mode: true)
+      context 'when runner does not exist' do
+        let(:runner_id) { non_existing_record_id }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        it 'returns 404' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
     context 'authorized user' do
-      it 'does not reset project runner authentication token without access to it' do
-        expect do
-          post api("/runners/#{project_runner.id}/reset_authentication_token", user2)
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end.not_to change { project_runner.reload.token }
+      context 'with project runner' do
+        let(:runner) { project_runner }
+
+        context 'when user does not have access to runner' do
+          let(:current_user) { user2 }
+
+          it 'does not reset runner' do
+            expect do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end.not_to change { runner.reload.token }
+          end
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup' do
+              let(:pat_user) { user2 }
+            end
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[manage_runner create_runner read_api]
+          end
+        end
+
+        context 'when user has access to runner' do
+          let(:current_user) { user }
+
+          it_behaves_like 'a runner accepting authentication token reset'
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
+
+              it_behaves_like 'a runner accepting authentication token reset'
+            end
+          end
+        end
       end
 
-      it 'resets project runner authentication token for owned project' do
-        expect do
-          post api("/runners/#{project_runner.id}/reset_authentication_token", user)
+      context 'with group runner' do
+        let(:runner) { group_runner_a }
 
-          expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => project_runner.reload.token, 'token_expires_at' => nil })
-        end.to change { project_runner.reload.token }
-      end
+        context 'when user has guest access' do
+          let(:current_user) { group_guest }
 
-      it 'does not reset group runner authentication token with guest access' do
-        expect do
-          post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_guest)
+          it 'does not reset runner authentication token' do
+            expect do
+              perform_request
 
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end.not_to change { group_runner_a.reload.token }
-      end
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end.not_to change { runner.reload.token }
+          end
+        end
 
-      it 'does not reset group runner authentication token with reporter access' do
-        expect do
-          post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_reporter)
+        context 'when user has reporter access' do
+          let(:current_user) { group_reporter }
 
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end.not_to change { group_runner_a.reload.token }
-      end
+          it 'does not reset runner authentication token' do
+            expect do
+              perform_request
 
-      it 'does not reset group runner authentication token with developer access' do
-        expect do
-          post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_developer)
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end.not_to change { runner.reload.token }
+          end
+        end
 
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end.not_to change { group_runner_a.reload.token }
-      end
+        context 'when user has developer access' do
+          let(:current_user) { group_developer }
 
-      it 'does not reset group runner authentication token with maintainer access' do
-        expect do
-          post api("/runners/#{group_runner_a.id}/reset_authentication_token", group_maintainer)
+          it 'does not reset runner authentication token' do
+            expect do
+              perform_request
 
-          expect(response).to have_gitlab_http_status(:forbidden)
-        end.not_to change { group_runner_a.reload.token }
-      end
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end.not_to change { runner.reload.token }
+          end
+        end
 
-      it 'resets group runner authentication token with owner access' do
-        expect do
-          post api("/runners/#{group_runner_a.id}/reset_authentication_token", user)
+        context 'when user has maintainer access' do
+          let(:current_user) { group_maintainer }
 
-          expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => group_runner_a.reload.token, 'token_expires_at' => nil })
-        end.to change { group_runner_a.reload.token }
-      end
+          it 'does not reset runner authentication token' do
+            expect do
+              perform_request
 
-      it 'resets group runner authentication token with owner access with expiration time', :freeze_time do
-        expect(group_runner_a.reload.token_expires_at).to be_nil
+              expect(response).to have_gitlab_http_status(:forbidden)
+            end.not_to change { runner.reload.token }
+          end
+        end
 
-        group.update!(runner_token_expiration_interval: 5.days)
+        context 'when user has owner access' do
+          let(:current_user) { user }
 
-        expect do
-          post api("/runners/#{group_runner_a.id}/reset_authentication_token", user)
-          group_runner_a.reload
+          it_behaves_like 'a runner accepting authentication token reset'
 
-          expect(response).to have_gitlab_http_status(:success)
-          expect(json_response).to eq({ 'token' => group_runner_a.token, 'token_expires_at' => group_runner_a.token_expires_at.iso8601(3) })
-          expect(group_runner_a.token_expires_at).to eq(5.days.from_now)
-        end.to change { group_runner_a.reload.token }
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner read_api]
+
+            context 'with sufficient scope' do
+              let(:scope) { :manage_runner }
+
+              it_behaves_like 'a runner accepting authentication token reset'
+            end
+          end
+
+          context 'when runner token has expiration time', :freeze_time do
+            before do
+              group.update!(runner_token_expiration_interval: 5.days)
+            end
+
+            it 'resets group runner authentication token with owner access with expiration time' do
+              expect(runner.reload.token_expires_at).to be_nil
+
+              expect do
+                perform_request
+
+                runner.reload
+                expect(response).to have_gitlab_http_status(:success)
+                expect(json_response).to eq({ 'token' => runner.token, 'token_expires_at' => runner.token_expires_at.iso8601(3) })
+                expect(runner.token_expires_at).to eq(5.days.from_now)
+              end.to change { runner.reload.token }
+            end
+          end
+        end
       end
     end
 
     context 'unauthorized user' do
+      let(:current_user) { nil }
+      let(:runner) { project_runner }
+
       it 'does not reset authentication token' do
         expect do
-          post api(path)
+          perform_request
 
           expect(response).to have_gitlab_http_status(:unauthorized)
-        end.not_to change { shared_runner.reload.token }
+        end.not_to change { runner.reload.token }
       end
     end
   end
 
   describe 'GET /runners/:id/jobs' do
-    subject(:request) { get api(path, user, **api_params) }
-
     let_it_be(:shared_runner_manager1) { create(:ci_runner_machine, runner: shared_runner, system_xid: 'id2') }
     let_it_be(:jobs) do
       project_runner_manager1 = create(:ci_runner_machine, runner: project_runner, system_xid: 'id1')
@@ -852,26 +1439,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
       ]
     end
 
-    let(:api_params) { {} }
-    let(:runner_id) { project_runner.id }
-    let(:query_part) { query_params.merge(system_id_params).map { |param| param.join('=') }.join('&') }
-    let(:path) { "/runners/#{runner_id}/jobs?#{query_part}" }
-    let(:query_params) { {} }
-    let(:system_id_params) { {} }
+    let(:runner_id) { runner.id }
+    let(:path) { "/runners/#{runner_id}/jobs?#{query_path}" }
 
-    it_behaves_like 'GET request permissions for admin mode'
+    subject(:perform_request) { get api(path, current_user) }
 
-    context 'admin user' do
-      let(:user) { admin }
-      let(:api_params) { { admin_mode: true } }
+    it_behaves_like 'GET request permissions for admin mode' do
+      let(:runner) { project_runner }
+    end
+
+    context 'admin user', :enable_admin_mode do
+      let(:current_user) { admin }
 
       context 'when runner exists' do
         context 'when runner is shared' do
-          let(:runner_id) { shared_runner.id }
-          let(:system_id) { 'id2' }
+          let(:runner) { shared_runner }
 
           it 'return jobs' do
-            request
+            perform_request
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
@@ -885,13 +1470,39 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           it_behaves_like 'an endpoint with keyset pagination', invalid_order: nil do
             let(:first_record) { jobs[2] }
             let(:second_record) { jobs[1] }
-            let(:api_call) { api(path, user, **api_params) }
+            let(:api_call) { api(path, current_user) }
+          end
+
+          context 'with request authorized with access token' do
+            include_context 'access token setup' do
+              let(:pat_user) { admin }
+            end
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner]
+
+            context 'with sufficient scope' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Need helpers for scenarios
+              let(:scope) { :manage_runner }
+
+              it 'return jobs' do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).to include_pagination_headers
+
+                expect(json_response).to match([
+                  a_hash_including('id' => jobs[1].id),
+                  a_hash_including('id' => jobs[2].id)
+                ])
+              end
+            end
           end
         end
 
         context 'when runner is a project runner' do
+          let(:runner) { project_runner }
+
           it 'return jobs' do
-            request
+            perform_request
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
@@ -902,10 +1513,31 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
             ])
           end
 
+          context 'with request authorized with access token' do
+            include_context 'access token setup'
+
+            it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner]
+
+            context 'with sufficient scope' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Need helpers for scenarios
+              let(:scope) { :manage_runner }
+
+              it 'return jobs' do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).to include_pagination_headers
+
+                expect(json_response).to match([
+                  a_hash_including('id' => jobs[3].id),
+                  a_hash_including('id' => jobs[4].id)
+                ])
+              end
+            end
+          end
+
           context 'when user does not have authorization to see all jobs' do
-            let(:runner_id) { two_projects_runner.id }
-            let(:user) { user2 }
-            let(:api_params) { {} }
+            let(:runner) { two_projects_runner }
+            let(:current_user) { user2 }
 
             before_all do
               project.add_guest(user2)
@@ -913,107 +1545,127 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
             end
 
             it 'shows only jobs it has permission to see' do
-              request
+              perform_request
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
               expect(json_response).to match([a_hash_including('id' => jobs[6].id)])
             end
+
+            context 'with request authorized with access token' do
+              include_context 'access token setup' do
+                let(:pat_user) { user2 }
+              end
+
+              it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner]
+
+              context 'with sufficient scope' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Need helpers for scenarios
+                let(:scope) { :manage_runner }
+
+                it 'shows only jobs it has permission to see' do
+                  perform_request
+
+                  expect(response).to have_gitlab_http_status(:ok)
+                  expect(response).to include_pagination_headers
+                  expect(json_response).to match([a_hash_including('id' => jobs[6].id)])
+                end
+              end
+            end
           end
-        end
 
-        context 'when valid status is provided' do
-          let(:query_params) { { status: :failed } }
+          context 'when valid status is provided' do
+            let(:query) { { status: :failed } }
 
-          it 'return filtered jobs' do
-            request
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to include_pagination_headers
-
-            expect(json_response).to match([a_hash_including('id' => jobs[4].id)])
-          end
-        end
-
-        context 'when valid order_by is provided' do
-          let(:query_params) { { order_by: :id } }
-
-          context 'when sort order is not specified' do
-            it 'return jobs in descending order' do
-              request
+            it 'return filtered jobs' do
+              perform_request
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
 
-              expect(json_response).to match([
-                a_hash_including('id' => jobs[4].id),
-                a_hash_including('id' => jobs[3].id)
-              ])
+              expect(json_response).to match([a_hash_including('id' => jobs[4].id)])
             end
           end
 
-          context 'when sort order is specified as asc' do
-            let(:query_params) { { order_by: :id, sort: :asc } }
+          context 'when valid order_by is provided' do
+            let(:query) { { order_by: :id } }
 
-            it 'return jobs sorted in ascending order' do
-              request
+            context 'when sort order is not specified' do
+              it 'return jobs in descending order' do
+                perform_request
 
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to include_pagination_headers
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).to include_pagination_headers
 
-              expect(json_response).to match([
-                a_hash_including('id' => jobs[3].id),
-                a_hash_including('id' => jobs[4].id)
-              ])
+                expect(json_response).to match([
+                  a_hash_including('id' => jobs[4].id),
+                  a_hash_including('id' => jobs[3].id)
+                ])
+              end
+            end
+
+            context 'when sort order is specified as asc' do
+              let(:query) { { order_by: :id, sort: :asc } }
+
+              it 'return jobs sorted in ascending order' do
+                perform_request
+
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response).to include_pagination_headers
+
+                expect(json_response).to match([
+                  a_hash_including('id' => jobs[3].id),
+                  a_hash_including('id' => jobs[4].id)
+                ])
+              end
             end
           end
-        end
 
-        context 'when invalid status is provided' do
-          let(:query_params) { { status: 'non-existing' } }
+          context 'when invalid status is provided' do
+            let(:query) { { status: 'non-existing' } }
 
-          it 'return 400' do
-            request
+            it 'return 400' do
+              perform_request
 
-            expect(response).to have_gitlab_http_status(:bad_request)
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
           end
-        end
 
-        context 'when invalid order_by is provided' do
-          let(:query_params) { { order_by: 'non-existing' } }
+          context 'when invalid order_by is provided' do
+            let(:query) { { order_by: 'non-existing' } }
 
-          it 'return 400' do
-            request
+            it 'return 400' do
+              perform_request
 
-            expect(response).to have_gitlab_http_status(:bad_request)
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
           end
-        end
 
-        context 'when invalid sort is provided' do
-          let(:query_params) { { sort: 'non-existing' } }
+          context 'when invalid sort is provided' do
+            let(:query) { { sort: 'non-existing' } }
 
-          it 'return 400' do
-            request
+            it 'return 400' do
+              perform_request
 
-            expect(response).to have_gitlab_http_status(:bad_request)
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
           end
         end
       end
 
       describe 'eager loading' do
-        let(:runner_id) { shared_runner.id }
+        let(:runner) { shared_runner }
 
         it 'avoids N+1 DB queries' do
-          get api(path, user, **api_params)
+          get api(path, current_user)
 
           control = ActiveRecord::QueryRecorder.new do
-            get api(path, user, **api_params)
+            get api(path, current_user)
           end
 
           create(:ci_build, :failed, runner: shared_runner, project: project)
 
           expect do
-            get api(path, user, **api_params)
+            get api(path, current_user)
           end.not_to exceed_query_limit(control.count)
         end
 
@@ -1038,7 +1690,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
               ]).once.and_call_original
           end
 
-          get api(path, admin, admin_mode: true), params: { per_page: 2, order_by: 'id', sort: 'desc' }
+          get api(path, current_user), params: { per_page: 2, order_by: 'id', sort: 'desc' }
         end
       end
 
@@ -1046,7 +1698,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         let(:runner_id) { non_existing_record_id }
 
         it 'returns 404' do
-          request
+          perform_request
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -1054,22 +1706,24 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
     end
 
     context "runner project's administrative user" do
-      context 'when runner exists' do
-        let(:runner_id) { shared_runner.id }
+      let(:current_user) { user }
 
+      context 'when runner exists' do
         context 'when runner is shared' do
+          let(:runner) { shared_runner }
+
           it 'returns 403' do
-            request
+            perform_request
 
             expect(response).to have_gitlab_http_status(:forbidden)
           end
         end
 
         context 'when runner is a project runner' do
-          let(:runner_id) { project_runner.id }
+          let(:runner) { project_runner }
 
           it 'return jobs' do
-            request
+            perform_request
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to include_pagination_headers
@@ -1081,10 +1735,10 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           end
 
           context 'when valid status is provided' do
-            let(:query_params) { { status: :failed } }
+            let(:query) { { status: :failed } }
 
             it 'return filtered jobs' do
-              request
+              perform_request
 
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to include_pagination_headers
@@ -1096,10 +1750,10 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
           end
 
           context 'when invalid status is provided' do
-            let(:query_params) { { status: 'non-existing' } }
+            let(:query) { { status: 'non-existing' } }
 
             it 'return 400' do
-              request
+              perform_request
 
               expect(response).to have_gitlab_http_status(:bad_request)
             end
@@ -1111,27 +1765,29 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         let(:runner_id) { non_existing_record_id }
 
         it 'returns 404' do
-          request
+          perform_request
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
       context 'other authorized user' do
-        let(:user) { user2 }
+        let(:current_user) { user2 }
+        let(:runner) { shared_runner }
 
         it 'does not return jobs' do
-          request
+          perform_request
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
       context 'unauthorized user' do
-        let(:user) { nil }
+        let(:current_user) { nil }
+        let(:runner) { shared_runner }
 
         it 'does not return jobs' do
-          request
+          perform_request
 
           expect(response).to have_gitlab_http_status(:unauthorized)
         end
@@ -1139,32 +1795,34 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
     end
 
     context 'with system_id param' do
-      let(:system_id_params) { { system_id: system_id } }
-      let(:system_id) { 'id1' }
-      let(:user) { admin }
-      let(:api_params) { { admin_mode: true } }
+      let(:extra_query_parts) { { system_id: 'id1' } }
+      let(:current_user) { user }
 
-      it 'returns jobs from the runner manager' do
-        request
+      context 'with project runner' do
+        let(:runner) { project_runner }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_limited_pagination_headers
-        expect(response.headers).not_to include('X-Total', 'X-Total-Pages')
-
-        expect(json_response).to match([
-          a_hash_including('id' => jobs[3].id),
-          a_hash_including('id' => jobs[4].id)
-        ])
-      end
-
-      context 'when system_id does not match runner' do
-        let(:runner_id) { shared_runner.id }
-
-        it 'does not return jobs' do
-          request
+        it 'returns jobs from the runner manager' do
+          perform_request
 
           expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_limited_pagination_headers
+          expect(response.headers).not_to include('X-Total', 'X-Total-Pages')
 
+          expect(json_response).to match([
+            a_hash_including('id' => jobs[3].id),
+            a_hash_including('id' => jobs[4].id)
+          ])
+        end
+      end
+
+      context 'when system_id does not match runner', :enable_admin_mode do
+        let(:current_user) { admin }
+        let(:runner) { shared_runner }
+
+        it 'does not return jobs' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:ok)
           expect(json_response).to be_empty
         end
       end
@@ -1173,16 +1831,20 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
   shared_examples_for 'unauthorized access to runners list' do
     context 'authorized user without maintainer privileges' do
+      let(:current_user) { user2 }
+
       it "does not return group's runners" do
-        get api("/#{entity_type}/#{entity.id}/runners", user2)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
     context 'unauthorized user' do
+      let(:current_user) { nil }
+
       it "does not return project's runners" do
-        get api("/#{entity_type}/#{entity.id}/runners")
+        perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1190,16 +1852,26 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   end
 
   describe 'GET /projects/:id/runners' do
-    context 'authorized user with maintainer privileges' do
+    let(:path) { "/projects/#{project.id}/runners?#{query_path}" }
+
+    subject(:perform_request) { get api(path, current_user) }
+
+    context 'admin user', :enable_admin_mode do
+      let(:current_user) { admin }
+
       it 'returns response status and headers' do
-        get api('/runners/all', admin, admin_mode: true)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
       end
+    end
+
+    context 'authorized user with maintainer privileges' do
+      let(:current_user) { user }
 
       it 'returns all runners' do
-        get api("/projects/#{project.id}/runners", user)
+        perform_request
 
         expect(json_response).to match_array [
           a_hash_including('description' => 'Project runner', 'active' => true, 'paused' => false),
@@ -1208,86 +1880,144 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         ]
       end
 
-      it 'filters runners by scope' do
-        get api("/projects/#{project.id}/runners?scope=specific", user)
+      context 'when filtering by scope' do
+        let(:query) { { scope: :specific } }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
+        it 'filters runners by scope' do
+          perform_request
 
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Project runner'),
-          a_hash_including('description' => 'Two projects runner')
-        ]
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner'),
+            a_hash_including('description' => 'Two projects runner')
+          ]
+        end
+
+        context 'and scope is unknown' do
+          let(:query) { { scope: :unknown } }
+
+          it 'avoids filtering' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
       end
 
-      it 'avoids filtering if scope is invalid' do
-        get api("/projects/#{project.id}/runners?scope=unknown", user)
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
+      context 'when filtering by type' do
+        let(:query) { { type: :project_type } }
 
-      it 'filters runners by type' do
-        get api("/projects/#{project.id}/runners?type=project_type", user)
+        it 'filters runners by type' do
+          perform_request
 
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Project runner'),
-          a_hash_including('description' => 'Two projects runner')
-        ]
-      end
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner'),
+            a_hash_including('description' => 'Two projects runner')
+          ]
+        end
 
-      it 'does not filter by invalid type' do
-        get api("/projects/#{project.id}/runners?type=bogus", user)
+        context 'and type is invalid' do
+          let(:query) { { type: :bogus } }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+          it 'does not filter' do
+            perform_request
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
       end
 
       context 'with an inactive runner' do
         let_it_be(:runner) { create(:ci_runner, :project, :inactive, description: 'Inactive project runner', projects: [project]) }
 
-        it 'filters runners by status' do
-          get api("/projects/#{project.id}/runners?paused=true", user)
+        context 'when filtering by paused status' do
+          let(:query) { { paused: true } }
 
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Inactive project runner')
-          ]
+          it 'filters runners by status' do
+            perform_request
+
+            expect(json_response).to contain_exactly(
+              a_hash_including('description' => 'Inactive project runner')
+            )
+          end
         end
 
-        it 'filters runners by status' do
-          get api("/projects/#{project.id}/runners?status=paused", user)
+        context 'when filtering by status' do
+          let(:query) { { status: :paused } }
 
-          expect(json_response).to match_array [
-            a_hash_including('description' => 'Inactive project runner')
-          ]
+          it 'filters runners by status' do
+            perform_request
+
+            expect(json_response).to contain_exactly(
+              a_hash_including('description' => 'Inactive project runner')
+            )
+          end
+
+          context 'and status is invalid' do
+            let(:query) { { status: :bogus } }
+
+            it 'does not filter by invalid status' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
+          end
         end
       end
 
-      it 'does not filter by invalid status' do
-        get api("/projects/#{project.id}/runners?status=bogus", user)
+      context 'when filtering by tag_list' do
+        let(:query) { { tag_list: 'tag1,tag2' } }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
+        before_all do
+          create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
+          create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: %w[tag2])
+        end
 
-      it 'filters runners by tag_list' do
-        create(:ci_runner, :project, description: 'Runner tagged with tag1 and tag2', projects: [project], tag_list: %w[tag1 tag2])
-        create(:ci_runner, :project, description: 'Runner tagged with tag2', projects: [project], tag_list: ['tag2'])
+        it 'filters runners by tag_list' do
+          perform_request
 
-        get api("/projects/#{project.id}/runners?tag_list=tag1,tag2", user)
-
-        expect(json_response).to match_array [
-          a_hash_including('description' => 'Runner tagged with tag1 and tag2')
-        ]
+          expect(json_response).to contain_exactly(
+            a_hash_including('description' => 'Runner tagged with tag1 and tag2')
+          )
+        end
       end
     end
 
-    it_behaves_like 'unauthorized access to runners list' do
-      let(:entity_type) { 'projects' }
-      let(:entity) { project }
+    context 'with request authorized with access token' do
+      include_context 'access token setup'
+
+      it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner manage_runner]
+
+      context 'with sufficient scope' do
+        let(:scope) { :read_api }
+
+        it 'returns all runners' do
+          perform_request
+
+          expect(json_response).to match_array [
+            a_hash_including('description' => 'Project runner', 'active' => true, 'paused' => false),
+            a_hash_including('description' => 'Two projects runner', 'active' => true, 'paused' => false),
+            a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
+          ]
+        end
+      end
     end
+
+    it_behaves_like 'unauthorized access to runners list'
   end
 
   describe 'GET /groups/:id/runners' do
+    let(:path) { "/groups/#{group.id}/runners?#{query_path}" }
+
+    subject(:perform_request) { get api(path, current_user) }
+
     context 'authorized user with maintainer privileges' do
+      let(:current_user) { user }
+
       it 'returns all runners' do
-        get api("/groups/#{group.id}/runners", user)
+        perform_request
 
         expect(json_response).to match_array(
           [
@@ -1297,74 +2027,128 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
       end
 
       context 'filter by type' do
-        it 'returns record when valid and present' do
-          get api("/groups/#{group.id}/runners?type=group_type", user)
+        let(:query) { { type: type } }
 
-          expect(json_response).to match_array([a_hash_including('description' => 'Group runner A')])
+        context 'with type group_type' do
+          let(:type) { :group_type }
+
+          it 'returns group runners' do
+            perform_request
+
+            expect(json_response).to match_array([a_hash_including('description' => 'Group runner A')])
+          end
         end
 
-        it 'returns instance runners when instance_type is specified' do
-          get api("/groups/#{group.id}/runners?type=instance_type", user)
+        context 'with type instance_type' do
+          let(:type) { :instance_type }
 
-          expect(json_response).to match_array([a_hash_including('description' => 'Shared runner')])
+          it 'returns instance runners' do
+            perform_request
+
+            expect(json_response).to match_array([a_hash_including('description' => 'Shared runner')])
+          end
         end
 
         # TODO: Remove when REST API v5 is implemented (https://gitlab.com/gitlab-org/gitlab/-/issues/351466)
-        it 'returns empty result when type does not match' do
-          get api("/groups/#{group.id}/runners?type=project_type", user)
+        context 'with type project_type' do
+          let(:type) { :project_type }
 
-          expect(json_response).to be_empty
-        end
+          it 'returns empty result when type does not match' do
+            perform_request
 
-        it 'does not filter by invalid type' do
-          get api("/groups/#{group.id}/runners?type=bogus", user)
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-        end
-      end
-
-      context 'with an inactive runner' do
-        let_it_be(:runner) { create(:ci_runner, :group, :inactive, description: 'Inactive group runner', groups: [group]) }
-
-        it 'returns runners by paused state' do
-          get api("/groups/#{group.id}/runners?paused=true", user)
-
-          expect(json_response).to match_array([a_hash_including('description' => 'Inactive group runner')])
-        end
-
-        context 'filter runners by status' do
-          it 'returns runners by valid status' do
-            get api("/groups/#{group.id}/runners?status=paused", user)
-
-            expect(json_response).to match_array([a_hash_including('description' => 'Inactive group runner')])
+            expect(json_response).to be_empty
           end
+        end
 
-          it 'does not filter by invalid status' do
-            get api("/groups/#{group.id}/runners?status=bogus", user)
+        context 'with invalid type' do
+          let(:type) { :bogus }
+
+          it 'does not filter by invalid type' do
+            perform_request
 
             expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end
 
-      it 'filters runners by tag_list' do
-        create(:ci_runner, :group, description: 'Runner tagged with tag1 and tag2', groups: [group], tag_list: %w[tag1 tag2])
-        create(:ci_runner, :group, description: 'Runner tagged with tag2', groups: [group], tag_list: %w[tag1])
+      context 'with an inactive runner' do
+        let_it_be(:runner) { create(:ci_runner, :group, :inactive, description: 'Inactive group runner', groups: [group]) }
 
-        get api("/groups/#{group.id}/runners?tag_list=tag1,tag2", user)
+        context 'when filtering by paused status' do
+          let(:query) { { paused: true } }
 
-        expect(json_response).to match_array([a_hash_including('description' => 'Runner tagged with tag1 and tag2')])
+          it 'filters runners by status' do
+            perform_request
+
+            expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive group runner'))
+          end
+        end
+
+        context 'when filtering by status' do
+          let(:query) { { status: :paused } }
+
+          it 'returns runners by valid status' do
+            perform_request
+
+            expect(json_response).to contain_exactly(a_hash_including('description' => 'Inactive group runner'))
+          end
+
+          context 'and status is invalid' do
+            let(:query) { { status: :bogus } }
+
+            it 'does not filter by invalid status' do
+              perform_request
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+            end
+          end
+        end
+      end
+
+      context 'when filtering by tag_list' do
+        let(:query) { { tag_list: 'tag1,tag2' } }
+
+        before_all do
+          create(:ci_runner, :group, description: 'Runner tagged with tag1 and tag2', groups: [group], tag_list: %w[tag1 tag2])
+          create(:ci_runner, :group, description: 'Runner tagged with tag2', groups: [group], tag_list: %w[tag1])
+        end
+
+        it 'filters runners by tag_list' do
+          perform_request
+
+          expect(json_response).to contain_exactly(a_hash_including('description' => 'Runner tagged with tag1 and tag2'))
+        end
       end
     end
 
-    it_behaves_like 'unauthorized access to runners list' do
-      let(:entity_type) { 'groups' }
-      let(:entity) { group }
+    context 'with request authorized with access token' do
+      include_context 'access token setup'
+
+      it_behaves_like 'when scope is forbidden', forbidden_scopes: %i[create_runner manage_runner]
+
+      context 'with sufficient scope' do
+        let(:scope) { :read_api }
+
+        it 'returns all runners' do
+          perform_request
+
+          expect(json_response).to match_array(
+            [
+              a_hash_including('description' => 'Group runner A', 'active' => true, 'paused' => false),
+              a_hash_including('description' => 'Shared runner', 'active' => true, 'paused' => false)
+            ])
+        end
+      end
     end
+
+    it_behaves_like 'unauthorized access to runners list'
   end
 
   describe 'POST /projects/:id/runners' do
+    let(:params) { { runner_id: runner.id } }
     let(:path) { "/projects/#{project.id}/runners" }
+
+    subject(:perform_request) { post api(path, current_user), params: params }
 
     it_behaves_like 'POST request permissions for admin mode' do
       let!(:new_project_runner) { create(:ci_runner, :project) }
@@ -1375,50 +2159,69 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
     context 'authorized user' do
       let_it_be(:project_runner2) { create(:ci_runner, :project, projects: [project2]) }
 
+      let(:current_user) { user }
+      let(:runner) { project_runner2 }
+
       it 'enables project runner' do
-        expect do
-          post api(path, user), params: { runner_id: project_runner2.id }
-        end.to change { project.runners.count }.by(+1)
+        expect { perform_request }.to change { project.runners.count }.by(+1)
+
         expect(response).to have_gitlab_http_status(:created)
       end
 
-      it 'avoids changes when enabling already enabled runner' do
-        expect do
-          post api(path, user), params: { runner_id: project_runner.id }
-        end.to change { project.runners.count }.by(0)
-        expect(response).to have_gitlab_http_status(:bad_request)
+      context 'when enabling already enabled runner' do
+        let(:runner) { project_runner }
+
+        it 'avoids changes' do
+          expect { perform_request }.to change { project.runners.count }.by(0)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
       end
 
-      it 'does not enable locked runner' do
-        project_runner2.update!(locked: true)
+      context 'when enabling locked runner' do
+        let(:runner) { project_runner2 }
 
-        expect do
-          post api(path, user), params: { runner_id: project_runner2.id }
-        end.to change { project.runners.count }.by(0)
+        before_all do
+          project_runner2.update!(locked: true)
+        end
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        it 'does not enable runner' do
+          expect { perform_request }.not_to change { project.runners.count }
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
 
-      it 'does not enable shared runner' do
-        post api(path, user), params: { runner_id: shared_runner.id }
+      context 'when enabling shared runner' do
+        let(:runner) { shared_runner }
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        it 'does not enable runner' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
 
-      it 'does not enable group runner' do
-        post api(path, user), params: { runner_id: group_runner_a.id }
+      context 'when enabling group runner' do
+        let(:runner) { group_runner_a }
 
-        expect(response).to have_gitlab_http_status(:forbidden)
+        it 'does not enable runner' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
 
-      context 'user is admin' do
+      context 'user is admin', :enable_admin_mode do
+        let(:current_user) { admin }
+
         context 'when project runner is used' do
           let!(:new_project_runner) { create(:ci_runner, :project) }
+          let(:runner) { new_project_runner }
 
           it 'enables any project runner' do
-            expect do
-              post api(path, admin, admin_mode: true), params: { runner_id: new_project_runner.id }
-            end.to change { project.runners.count }.by(+1)
+            expect { perform_request }.to change { project.runners.count }.by(+1)
+
             expect(response).to have_gitlab_http_status(:created)
           end
 
@@ -1427,44 +2230,63 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
               create(:plan_limits, :default_plan, ci_registered_project_runners: 1)
             end
 
-            it 'does not enable project runner' do
-              expect do
-                post api(path, admin, admin_mode: true), params: { runner_id: new_project_runner.id }
-              end.not_to change { project.runners.count }
+            it 'does not enable runner' do
+              expect { perform_request }.not_to change { project.runners.count }
+
               expect(response).to have_gitlab_http_status(:bad_request)
             end
           end
         end
       end
 
-      it 'raises an error when no runner_id param is provided' do
-        post api(path, admin, admin_mode: true)
+      context 'with request authorized with access token' do
+        include_context 'access token setup'
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        where(:scope) { %i[create_runner manage_runner] }
+
+        it_behaves_like 'when scope is not allowed', scopes: %i[create_runner manage_runner]
+      end
+
+      context 'when no runner_id param is provided' do
+        let(:params) { {} }
+
+        it 'raises an error' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'when user does not have permissions' do
+        let(:current_user) { user2 }
+        let(:runner) { project_runner }
+
+        it 'does not enable runner' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
       end
     end
 
-    context 'user is not admin' do
+    context 'user is not admin and does not have access to project runner' do
       let!(:new_project_runner) { create(:ci_runner, :project) }
+      let(:runner) { new_project_runner }
+      let(:current_user) { user }
 
-      it 'does not enable runner without access to' do
-        post api(path, user), params: { runner_id: new_project_runner.id }
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
-    context 'authorized user without permissions' do
       it 'does not enable runner' do
-        post api(path, user2)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
     context 'unauthorized user' do
+      let(:current_user) { nil }
+      let(:runner) { project_runner }
+
       it 'does not enable runner' do
-        post api(path)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -1472,48 +2294,72 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   end
 
   describe 'DELETE /projects/:id/runners/:runner_id' do
-    context 'authorized user' do
-      context 'when runner have more than one associated projects' do
-        it "disables project's runner" do
-          expect do
-            delete api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user)
+    let(:runner_id) { runner.id }
+    let(:path) { "/projects/#{project.id}/runners/#{runner_id}" }
 
-            expect(response).to have_gitlab_http_status(:no_content)
-          end.to change { project.runners.count }.by(-1)
+    subject(:perform_request) { delete api(path, current_user) }
+
+    context 'authorized user' do
+      let(:current_user) { user }
+
+      context 'when runner have more than one associated projects' do
+        let(:runner) { two_projects_runner }
+
+        it "disables project's runner" do
+          expect { perform_request }.to change { project.runners.count }.by(-1)
+
+          expect(response).to have_gitlab_http_status(:no_content)
         end
 
         it_behaves_like '412 response' do
-          let(:request) { api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user) }
+          let(:request) { api(path, current_user) }
+        end
+
+        context 'with request authorized with access token' do
+          include_context 'access token setup'
+
+          it_behaves_like 'when scope is not allowed', scopes: %i[create_runner manage_runner]
         end
       end
 
       context 'when runner have one associated projects' do
+        let(:runner) { project_runner }
+
         it "does not disable project's runner" do
-          expect do
-            delete api("/projects/#{project.id}/runners/#{project_runner.id}", user)
-          end.to change { project.runners.count }.by(0)
+          expect { perform_request }.not_to change { project.runners.count }
+
           expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
 
-      it 'returns 404 is runner is not found' do
-        delete api("/projects/#{project.id}/runners/0", user)
+      context 'when runner is not found' do
+        let(:runner_id) { non_existing_record_id }
 
-        expect(response).to have_gitlab_http_status(:not_found)
+        it 'returns 404' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 
     context 'authorized user without permissions' do
+      let(:current_user) { user2 }
+      let(:runner) { project_runner }
+
       it "does not disable project's runner" do
-        delete api("/projects/#{project.id}/runners/#{project_runner.id}", user2)
+        perform_request
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
 
     context 'unauthorized user' do
+      let(:current_user) { nil }
+      let(:runner) { project_runner }
+
       it "does not disable project's runner" do
-        delete api("/projects/#{project.id}/runners/#{project_runner.id}")
+        perform_request
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end

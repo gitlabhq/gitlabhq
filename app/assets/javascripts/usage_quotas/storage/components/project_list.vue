@@ -144,7 +144,7 @@ export default {
 
       <gl-link
         :href="getUsageQuotasUrl(project.webUrl)"
-        class="gl-text-gray-900! js-project-link gl-word-break-word"
+        class="gl-text-gray-900! js-project-link gl-break-anywhere"
         data-testid="project-link"
       >
         {{ getProjectRelativePath(project.nameWithNamespace) }}

@@ -10,8 +10,6 @@ extra_properties:
 identifiers:
 - user
 - namespace
-product_section: ops
-product_stage: verify
 product_group: pipeline_authoring
 milestone: "15.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110422

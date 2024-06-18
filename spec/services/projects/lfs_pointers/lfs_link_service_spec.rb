@@ -23,6 +23,8 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
       oids = Array.new(described_class::MAX_OIDS) { |i| "oid-#{i}" }
       oids << 'the straw'
 
+      expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
+        error: true, labels: {})
       expect { subject.execute(oids) }.to raise_error(described_class::TooManyOidsError)
     end
 
@@ -39,6 +41,8 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
     end
 
     it 'links existing lfs objects to the project' do
+      expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
+        error: false, labels: {})
       expect(project.lfs_objects.count).to eq 2
 
       linked = subject.execute(new_oid_list.keys)
@@ -50,13 +54,19 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
     it 'returns linked oids' do
       linked = lfs_objects_project.map(&:lfs_object).map(&:oid) << new_lfs_object.oid
 
+      expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
+        error: false, labels: {})
+
       expect(subject.execute(new_oid_list.keys)).to contain_exactly(*linked)
     end
 
     it 'links in batches' do
       stub_const("#{described_class}::BATCH_SIZE", 3)
 
-      expect(Gitlab::Import::Logger).to receive(:info).with(
+      expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
+        error: false, labels: {})
+
+      expect(::Import::Framework::Logger).to receive(:info).with(
         class: described_class.name,
         project_id: project.id,
         project_path: project.full_path,
@@ -75,6 +85,8 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
       stub_const("#{described_class}::BATCH_SIZE", 1)
       oids = %w[one two]
 
+      expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
+        error: false, labels: {})
       expect(LfsObject).to receive(:for_oids).with(%w[one]).once.and_call_original
       expect(LfsObject).to receive(:for_oids).with(%w[two]).once.and_call_original
 
@@ -84,6 +96,9 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
     it 'only queries 3 times' do
       # make sure that we don't count the queries in the setup
       new_oid_list
+
+      expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
+        error: false, labels: {})
 
       # These are repeated for each batch of oids: maximum (MAX_OIDS / BATCH_SIZE) times
       # 1. Load the batch of lfs object ids that we might know already
@@ -101,11 +116,16 @@ RSpec.describe Projects::LfsPointers::LfsLinkService, feature_category: :source_
       end
 
       it 'does not raise an error when trying to link exactly the OID limit' do
+        expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
+          error: false, labels: {})
         expect { subject.execute(oids) }.not_to raise_error
       end
 
       it 'raises an error when trying to link more than OID limit' do
         oids << 'the straw'
+
+        expect(Gitlab::Metrics::Lfs).to receive_message_chain(:validate_link_objects_error_rate, :increment).with(
+          error: true, labels: {})
         expect { subject.execute(oids) }.to raise_error(described_class::TooManyOidsError)
       end
     end

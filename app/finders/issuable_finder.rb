@@ -373,8 +373,7 @@ class IssuableFinder
 
   def by_author(items)
     Issuables::AuthorFilter.new(
-      params: original_params,
-      or_filters_enabled: or_filters_enabled?
+      params: original_params
     ).filter(items)
   end
 
@@ -385,8 +384,7 @@ class IssuableFinder
   def assignee_filter
     strong_memoize(:assignee_filter) do
       Issuables::AssigneeFilter.new(
-        params: original_params,
-        or_filters_enabled: or_filters_enabled?
+        params: original_params
       )
     end
   end
@@ -400,8 +398,7 @@ class IssuableFinder
       Issuables::LabelFilter.new(
         params: original_params,
         project: params.project,
-        group: params.group,
-        or_filters_enabled: or_filters_enabled?
+        group: params.group
       )
     end
   end
@@ -490,16 +487,6 @@ class IssuableFinder
     return items unless can_filter_by_crm_organization?
 
     Issuables::CrmOrganizationFilter.new(params: original_params).filter(items)
-  end
-
-  def or_filters_enabled?
-    strong_memoize(:or_filters_enabled) do
-      Feature.enabled?(:or_issuable_queries, feature_flag_scope)
-    end
-  end
-
-  def feature_flag_scope
-    params.group || params.project
   end
 
   def can_filter_by_crm_contact?

@@ -52,7 +52,7 @@ RSpec.describe 'Group Packages', feature_category: :package_registry do
       it_behaves_like 'package details link'
 
       it 'allows you to navigate to the project page' do
-        find_by_testid('root-link', text: project.name).click
+        click_link(project.name)
 
         expect(page).to have_current_path(project_path(project))
         expect(page).to have_content(project.name)

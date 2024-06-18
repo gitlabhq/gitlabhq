@@ -12,7 +12,6 @@
 - add_page_specific_style 'page_bundles/pipelines'
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
-- identity_verification_required = false
 
 - add_page_startup_api_call @endpoint_metadata_url
 - add_page_startup_api_call @pinned_file_url if @pinned_file_url
@@ -25,8 +24,8 @@
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
     = render "projects/merge_requests/mr_box"
     .gl-static.merge-request-tabs-holder{ class: "#{'js-tabs-affix' unless ENV['RAILS_ENV'] == 'test'}" }
-      .merge-request-tabs-container.gl-display-flex.gl-justify-content-space-between{ class: "#{'is-merge-request' if !fluid_layout}" }
-        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-display-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.gl-lg-w-auto
+      .merge-request-tabs-container.gl-flex.gl-justify-content-space-between{ class: "#{'is-merge-request' if !fluid_layout}" }
+        %ul.merge-request-tabs.nav-tabs.nav.nav-links.gl-flex.gl-flex-nowrap.gl-m-0.gl-p-0.gl-w-full.gl-lg-w-auto
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
@@ -45,15 +44,15 @@
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { size: :sm, class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
-        .d-flex.gl-flex-wrap.gl-align-items-center.justify-content-lg-end
+        .gl-flex.gl-flex-wrap.gl-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
           - if !!@issuable_sidebar.dig(:current_user, :id)
-            .gl-display-flex.gl-gap-3
+            .gl-flex.gl-gap-3
               .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
               - if notifications_todos_buttons_enabled?
                 .js-sidebar-subscriptions-widget-root{ data: { full_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid] } }
 
-          .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.gl-ml-3.js-expand-sidebar.gl-absolute.gl-right-5{ class: "gl-lg-display-none!" }
+          .gl-ml-auto.gl-items-center.gl-hidden.sm:gl-flex.lg:gl-hidden.gl-ml-3.js-expand-sidebar.gl-absolute.gl-right-5
             = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left',
               button_options: { class: 'js-sidebar-toggle' }) do
               = _('Expand')
@@ -68,8 +67,7 @@
                 .detail-page-description.gl-pb-0
                   = render "projects/merge_requests/description"
               = render "projects/merge_requests/awards_block"
-              - if identity_verification_required
-                .js-verification-alert{ data: { identity_verification_path: '#' } }
+              .js-verification-alert{ data: identity_verification_alert_data(@merge_request) }
               = render "projects/merge_requests/widget"
               - if mr_action === "show"
                 - add_page_startup_api_call discussions_path(@merge_request, per_page: 20)

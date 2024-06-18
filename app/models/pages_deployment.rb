@@ -92,6 +92,14 @@ class PagesDeployment < ApplicationRecord
     File.join(base_url.to_s, path_prefix.to_s)
   end
 
+  def deactivate
+    update_attribute(:deleted_at, Time.now.utc)
+  end
+
+  def restore
+    update_attribute(:deleted_at, nil)
+  end
+
   private
 
   def set_size

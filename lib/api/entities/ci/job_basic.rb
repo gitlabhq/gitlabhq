@@ -17,14 +17,14 @@ module API
         expose :finished_at, documentation: { type: 'dateTime', example: '2015-12-24T17:54:31.198Z' }
         expose :erased_at, documentation: { type: 'dateTime', example: '2015-12-24T18:00:29.728Z' }
         expose :duration,
-               documentation: { type: 'number', format: 'float', desc: 'Time spent running', example: 0.465 }
+          documentation: { type: 'number', format: 'float', desc: 'Time spent running', example: 0.465 }
         expose :queued_duration,
-               documentation: { type: 'number', format: 'float', desc: 'Time spent enqueued', example: 0.123 }
+          documentation: { type: 'number', format: 'float', desc: 'Time spent enqueued', example: 0.123 }
         expose :user, with: ::API::Entities::User
         expose :commit, with: ::API::Entities::Commit
         expose :pipeline, with: ::API::Entities::Ci::PipelineBasic
         expose :failure_reason,
-               documentation: { type: 'string', example: 'script_failure' }, if: -> (job) { job.failed? }
+          documentation: { type: 'string', example: 'script_failure' }, if: ->(job) { job.failed? }
 
         expose(
           :web_url,

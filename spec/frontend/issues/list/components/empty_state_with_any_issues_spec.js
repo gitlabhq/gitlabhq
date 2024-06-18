@@ -11,11 +11,11 @@ describe('EmptyStateWithAnyIssues component', () => {
     wrapper = shallowMount(EmptyStateWithAnyIssues, {
       propsData: {
         hasSearch: true,
+        isEpic: false,
         isOpenTab: true,
         ...props,
       },
       provide: {
-        emptyStateSvgPath: 'empty/state/svg/path',
         newIssuePath: 'new/issue/path',
         showNewIssueLink: false,
       },
@@ -23,42 +23,46 @@ describe('EmptyStateWithAnyIssues component', () => {
   };
 
   describe('when there is a search (with no results)', () => {
-    beforeEach(() => {
-      mountComponent({ hasSearch: true });
-    });
-
     it('shows empty state', () => {
+      mountComponent({ hasSearch: true });
+
       expect(findGlEmptyState().props()).toMatchObject({
         description: 'To widen your search, change or remove filters above',
         title: 'Sorry, your filter produced no results',
-        svgPath: 'empty/state/svg/path',
       });
     });
   });
 
   describe('when "Open" tab is active', () => {
-    beforeEach(() => {
-      mountComponent({ hasSearch: false, isOpenTab: true });
-    });
-
     it('shows empty state', () => {
-      expect(findGlEmptyState().props()).toMatchObject({
-        description: 'To keep this project going, create a new issue',
-        title: 'There are no open issues',
-        svgPath: 'empty/state/svg/path',
-      });
+      mountComponent({ hasSearch: false, isOpenTab: true });
+
+      expect(findGlEmptyState().props('title')).toBe('There are no open issues');
     });
   });
 
   describe('when "Closed" tab is active', () => {
-    beforeEach(() => {
+    it('shows empty state', () => {
       mountComponent({ hasSearch: false, isOpenTab: false });
+
+      expect(findGlEmptyState().props('title')).toBe('There are no closed issues');
+    });
+  });
+
+  describe('when epic', () => {
+    describe('when "Open" tab is active', () => {
+      it('shows empty state', () => {
+        mountComponent({ hasSearch: false, isEpic: true, isOpenTab: true });
+
+        expect(findGlEmptyState().props('title')).toBe('There are no open epics');
+      });
     });
 
-    it('shows empty state', () => {
-      expect(findGlEmptyState().props()).toMatchObject({
-        title: 'There are no closed issues',
-        svgPath: 'empty/state/svg/path',
+    describe('when "Closed" tab is active', () => {
+      it('shows empty state', () => {
+        mountComponent({ hasSearch: false, isEpic: true, isOpenTab: false });
+
+        expect(findGlEmptyState().props('title')).toBe('There are no closed epics');
       });
     });
   });

@@ -34,6 +34,26 @@ module Gitlab
         any_push_levels_not_developer || any_merge_levels_not_developer
       end
 
+      def no_one_can_push?
+        allowed_to_push_values = settings[:allowed_to_push]
+        allowed_to_push_values.any? { |entry| entry[:access_level] == Gitlab::Access::NO_ACCESS }
+      end
+
+      def no_one_can_merge?
+        allowed_to_merge_values = settings[:allowed_to_merge]
+        allowed_to_merge_values.any? { |entry| entry[:access_level] == Gitlab::Access::NO_ACCESS }
+      end
+
+      def maintainer_can_push?
+        allowed_to_push_values = settings[:allowed_to_push]
+        allowed_to_push_values.any? { |entry| entry[:access_level] == Gitlab::Access::MAINTAINER }
+      end
+
+      def maintainer_can_merge?
+        allowed_to_merge_values = settings[:allowed_to_merge]
+        allowed_to_merge_values.any? { |entry| entry[:access_level] == Gitlab::Access::MAINTAINER }
+      end
+
       def developer_can_push?
         allowed_to_push_values = settings[:allowed_to_push]
         allowed_to_push_values.any? { |entry| entry[:access_level] == Gitlab::Access::DEVELOPER }

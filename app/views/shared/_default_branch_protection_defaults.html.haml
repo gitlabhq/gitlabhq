@@ -5,7 +5,7 @@
     = f.gitlab_ui_radio_component :default_branch_protected?, level[:value], level[:label], help_text: level[:help_text], radio_options: { class: 'js-global-protection-levels' }
 
   .js-global-protection-levels-protected.gl-ml-7
-    %legend.h6.gl-my-3.gl-border-none.gl-font-weight-normal= s_('ProtectedBranch|Allowed to push')
+    %legend.h6.gl-my-3.gl-border-none.gl-font-normal= s_('ProtectedBranch|Allowed to push')
     - allowed_to_push_access_level = value['allowed_to_push'][0]['access_level']
     - ProtectedBranch::PushAccessLevel.human_access_levels.each do |id, text|
       = render Pajamas::RadioTagComponent.new(name: "#{field}[default_branch_protection_defaults][allowed_to_push][][access_level]",
@@ -13,7 +13,7 @@
         value: id,
         checked: allowed_to_push_access_level == id)
 
-    %legend.h6.gl-my-3.gl-border-none.gl-font-weight-normal= s_('ProtectedBranch|Allowed to merge')
+    %legend.h6.gl-my-3.gl-border-none.gl-font-normal= s_('ProtectedBranch|Allowed to merge')
     - allowed_to_merge_access_level = value['allowed_to_merge'][0]['access_level']
     - ProtectedBranch::MergeAccessLevel.human_access_levels.each do |id, text|
       = render Pajamas::RadioTagComponent.new(name: "#{field}[default_branch_protection_defaults][allowed_to_merge][][access_level]",

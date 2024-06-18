@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
+RSpec.describe "Admin Runners", :freeze_time, feature_category: :fleet_visibility do
   include Features::SortingHelpers
   include Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers
@@ -61,9 +61,9 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
 
       context "with multiple runners" do
         before do
-          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: Time.zone.now)
-          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.week.ago)
-          create(:ci_runner, :instance, created_at: 1.year.ago, contacted_at: 1.year.ago)
+          create(:ci_runner, :instance, :online)
+          create(:ci_runner, :instance, :offline)
+          create(:ci_runner, :instance, :stale)
 
           visit admin_runners_path
         end
@@ -82,9 +82,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
 
       it 'shows a job count' do
         runner = create(:ci_runner, :project, projects: [project])
-
-        create(:ci_build, runner: runner)
-        create(:ci_build, runner: runner)
+        create_list(:ci_build, 2, runner: runner)
 
         visit admin_runners_path
 
@@ -262,9 +260,9 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
         end
 
         before_all do
-          create(:ci_runner, :instance, description: 'runner-1', contacted_at: Time.zone.now)
-          create(:ci_runner, :instance, description: 'runner-2', contacted_at: Time.zone.now)
-          create(:ci_runner, :instance, description: 'runner-offline', contacted_at: 1.week.ago)
+          create(:ci_runner, :instance, :online, description: 'runner-1')
+          create(:ci_runner, :instance, :online, description: 'runner-2')
+          create(:ci_runner, :instance, :contacted_within_stale_deadline, description: 'runner-offline')
         end
 
         before do
@@ -565,9 +563,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
     describe 'runner show page breadcrumbs' do
       it 'contains the current runner id and token' do
         within_testid('breadcrumb-links') do
-          expect(find_by_testid('breadcrumb-current-link')).to have_link(
-            "##{runner.id} (#{runner.short_sha})"
-          )
+          expect(find('li:last-of-type')).to have_link("##{runner.id} (#{runner.short_sha})")
         end
       end
     end
@@ -603,7 +599,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
     end
   end
 
-  describe "Runner edit page" do
+  describe "Runner edit page", :js do
     let_it_be(:project1) { create(:project) }
     let_it_be(:project2) { create(:project) }
     let_it_be(:project_runner) { create(:ci_runner, :unregistered, :project) }
@@ -623,7 +619,7 @@ RSpec.describe "Admin Runners", feature_category: :fleet_visibility do
       it 'contains the current runner id and token' do
         within_testid('breadcrumb-links') do
           expect(page).to have_link("##{project_runner.id} (#{project_runner.short_sha})")
-          expect(find_by_testid('breadcrumb-current-link')).to have_content("Edit")
+          expect(find('li:last-of-type')).to have_content("Edit")
         end
       end
     end

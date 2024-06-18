@@ -18,10 +18,12 @@ We strive to run GitLab using the latest Rails releases to benefit from performa
 
 1. Check the [Upgrading Ruby on Rails](https://guides.rubyonrails.org/upgrading_ruby_on_rails.html) guide and prepare the application for the upcoming changes.
 1. Update the `rails` gem version in `Gemfile`.
-1. Run `bundle update rails`.
-1. Run the update task `rake rails:update`.
+1. Run `bundle update --conservative rails`.
+1. For major and minor version updates, run `bin/rails app:update` and check if any of the suggested changes should be applied.
 1. Update the `activesupport` version in `qa/Gemfile`.
 1. Run `bundle update --conservative activesupport` in the `qa` folder.
+1. Update the `activerecord_version` version in `vendor/gems/attr_encrypted/attr_encrypted.gemspec`.
+1. Run `bundle update --conservative activerecord` in the `vendor/gems/attr_encrypted` folder.
 1. Resolve any Bundler conflicts.
 1. Ensure that `@rails/ujs` and `@rails/actioncable` npm packages match the new rails version in [`package.json`](https://gitlab.com/gitlab-org/gitlab/blob/master/package.json).
 1. Run `yarn patch-package @rails/ujs` after updating this to ensure our local patch file version matches.

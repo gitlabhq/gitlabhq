@@ -1,25 +1,23 @@
 include:
-  - project: gitlab-org/quality/pipeline-common
-    ref: 8.11.0
-    file:
-      - /ci/danger-review.yml
+  - component: ${CI_SERVER_FQDN}/gitlab-org/components/danger-review/danger-review@1.2.0
+    inputs:
+      job_image: "${DEFAULT_CI_IMAGE}"
+      # By default DANGER_DANGERFILE_PREFIX is not defined but allows JiHu to
+      # use a different prefix.
+      # See https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml
+      dangerfile: "${DANGER_DANGERFILE_PREFIX}Dangerfile"
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/466701
+      dry_run: false
 
 danger-review:
   extends:
     - .default-retry
     - .ruby-node-cache
-    - .review:rules:danger
+  # extending from .review:rules:danger doesn't work
+  rules: !reference [.review:rules:danger, rules]
   variables:
     BUNDLE_WITH: "danger"
-  image: "${DEFAULT_CI_IMAGE}"
   before_script:
     - source scripts/utils.sh
     - bundle_install_script
     - yarn_install_script
-
-danger-review-local:
-  extends: danger-review
-  before_script:
-    - !reference ["danger-review", "before_script"]
-    # We unset DANGER_GITLAB_API_TOKEN so that Danger will run as local from `danger-review:script`
-    - unset DANGER_GITLAB_API_TOKEN

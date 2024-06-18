@@ -2,13 +2,11 @@ import { GlButton, GlForm } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 
+import organizationUpdateResponse from 'test_fixtures/graphql/organizations/organization_update.mutation.graphql.json';
+import organizationUpdateResponseWithErrors from 'test_fixtures/graphql/organizations/organization_update.mutation.graphql_with_errors.json';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ChangeUrl from '~/organizations/settings/general/components/change_url.vue';
 import organizationUpdateMutation from '~/organizations/settings/general/graphql/mutations/organization_update.mutation.graphql';
-import {
-  organizationUpdateResponse,
-  organizationUpdateResponseWithErrors,
-} from '~/organizations/mock_data';
 import { createAlert } from '~/alert';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';

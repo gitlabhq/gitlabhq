@@ -46,9 +46,9 @@ class DiffNote < Note
     diff_line = diff_file.line_for_position(self.original_position)
     unless diff_line
       raise NoteDiffFileCreationError, DIFF_LINE_NOT_FOUND_MESSAGE % {
-          file_path: diff_file.file_path,
-          old_line: original_position.old_line,
-          new_line: original_position.new_line
+        file_path: diff_file.file_path,
+        old_line: original_position.old_line,
+        new_line: original_position.new_line
       }
     end
 

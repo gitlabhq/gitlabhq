@@ -26,9 +26,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
       allow(command).to receive(:yaml_processor_result)
         .and_return(instance_double(Gitlab::Ci::YamlProcessor::Result,
           included_components: [{
-            component_project: component.project,
-            component_sha: version.sha,
-            component_name: component.name
+            project: component.project,
+            sha: version.sha,
+            name: component.name
           }]
         ))
     end

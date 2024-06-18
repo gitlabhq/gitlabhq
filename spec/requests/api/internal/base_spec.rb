@@ -1185,6 +1185,18 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           end
         end
 
+        context 'when push path is invalid' do
+          let!(:path) { "#{user.namespace.path}/cannot_end_with_dot." }
+
+          it 'returns an error' do
+            expect { subject }.not_to change { Project.count }
+
+            expect(response).to have_gitlab_http_status(:unprocessable_entity)
+            expect(json_response['message']).to include('Could not create project')
+            expect(json_response['status']).to be_falsey
+          end
+        end
+
         context 'from the personal snippet path' do
           let!(:path) { 'snippets/notexist.git' }
 

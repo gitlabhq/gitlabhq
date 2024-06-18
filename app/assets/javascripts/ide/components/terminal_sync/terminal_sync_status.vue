@@ -62,13 +62,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="status"
-    v-gl-tooltip
-    :title="status.text"
-    role="note"
-    class="d-flex gl-align-items-center"
-  >
+  <div v-if="status" v-gl-tooltip :title="status.text" role="note" class="gl-flex gl-items-center">
     <span>{{ __('Terminal') }}:</span>
     <span class="square s16 d-flex-center ml-1" :aria-label="status.text">
       <gl-loading-icon v-if="isLoading" inline size="sm" class="d-flex-center" />

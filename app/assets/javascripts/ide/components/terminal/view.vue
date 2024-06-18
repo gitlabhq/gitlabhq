@@ -25,7 +25,7 @@ export default {
 
 <template>
   <div class="gl-h-full">
-    <div v-if="isShowSplash" class="gl-h-full d-flex flex-column justify-content-center">
+    <div v-if="isShowSplash" class="gl-h-full gl-flex flex-column justify-content-center">
       <empty-state
         :is-loading="allCheck.isLoading"
         :is-valid="allCheck.isValid"

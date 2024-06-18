@@ -8,10 +8,6 @@ description: The site to be validated with a dast_site_token
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41639
 milestone: '13.4'
 gitlab_schema: gitlab_main_cell
-allow_cross_joins:
-- gitlab_main_clusterwide
-allow_cross_transactions:
-- gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 desired_sharding_key:
@@ -23,3 +19,4 @@ desired_sharding_key:
         table: dast_site_tokens
         sharding_key: project_id
         belongs_to: dast_site_token
+desired_sharding_key_migration_job_name: BackfillDastSiteValidationsProjectId

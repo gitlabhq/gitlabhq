@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_design_comments_removed_weekly
 description: Count of unique users per week who removed a comment on a design
-product_section: dev
-product_stage: plan
 product_group: product_planning
 value_type: number
 status: active

@@ -30,7 +30,7 @@ RSpec.describe Gitlab::Changelog::Generator do
 
         ### added (1 change)
 
-        - [This is a new change](#{commit.to_reference(full: true)})
+        - [This is a new change](#{Gitlab::UrlBuilder.build(commit)})
       MARKDOWN
     end
 
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Changelog::Generator do
 
         ### added (1 change)
 
-        - [This is a new change](#{commit.to_reference(full: true)})
+        - [This is a new change](#{Gitlab::UrlBuilder.build(commit)})
 
         ## 1.0.0
 
@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Changelog::Generator do
 
         ### added (1 change)
 
-        - [This is a new change](#{commit.to_reference(full: true)})
+        - [This is a new change](#{Gitlab::UrlBuilder.build(commit)})
 
         ## 1.0.0
 
@@ -157,7 +157,7 @@ RSpec.describe Gitlab::Changelog::Generator do
 
         ### added (1 change)
 
-        - [This is a new change](#{commit.to_reference(full: true)})
+        - [This is a new change](#{Gitlab::UrlBuilder.build(commit)})
       MARKDOWN
     end
   end

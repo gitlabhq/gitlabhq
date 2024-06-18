@@ -1,7 +1,7 @@
 = f.hidden_field(:name)
 
 = dropdown_tag(s_('ProtectedBranch|Select tag or create wildcard'),
-               options: { toggle_class: 'js-protected-tag-select js-filter-submit wide monospace gl-w-auto!',
+               options: { toggle_class: 'js-protected-tag-select js-filter-submit wide monospace !gl-w-auto',
                           filter: true, dropdown_class: "dropdown-menu-selectable capitalize-header git-revision-dropdown", placeholder: s_("ProtectedBranch|Search protected tags"),
                           footer_content: true,
                           data: { show_no: true, show_any: true, show_upcoming: true,

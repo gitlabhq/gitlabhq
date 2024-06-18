@@ -1,0 +1,10 @@
+- return unless show_web_ide_oauth_callback_mismatch_callout?
+
+= render Pajamas::AlertComponent.new(variant: :warning,
+    title: s_('AdminArea|Current domain doesn\'t match the Web IDE OAuth configuration'),
+    alert_options: { class: 'gl-mt-4' }) do |c|
+  - c.with_body do
+    = s_('AdminArea|The Web IDE OAuth application doesn\'t have a redirect URL with the domain that you are using to visit GitLab. This issue will prevent Web IDE users from authenticating and often occurs when using a reverse proxy.')
+  - c.with_actions do
+    = render Pajamas::ButtonComponent.new(variant: :confirm, href: edit_admin_application_path(web_ide_oauth_application_id), button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }) do
+      = s_('AdminArea|Edit OAuth configuration')

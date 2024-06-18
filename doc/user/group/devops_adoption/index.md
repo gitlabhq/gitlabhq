@@ -10,6 +10,8 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+> - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/367093) to the [Registration Features Program](../../../administration/settings/usage_statistics.md#registration-features-program) in GitLab 16.6.
+
 DevOps Adoption shows you how groups in your organization adopt and use the most essential features of GitLab.
 
 You can use Group DevOps Adoption to:

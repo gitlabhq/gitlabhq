@@ -207,6 +207,14 @@ export default {
     showDropdownTooltip() {
       return !this.isDesktopDropdownVisible ? this.dropdownText : '';
     },
+    promoteToEpicItem() {
+      return {
+        text: __('Promote to epic'),
+        extraAttrs: {
+          disabled: this.isToggleStateButtonLoading,
+        },
+      };
+    },
   },
   created() {
     eventHub.$on('toggle.issuable.state', this.toggleIssueState);
@@ -325,9 +333,9 @@ export default {
 
 <template>
   <div
-    class="detail-page-header-actions gl-display-flex gl-align-self-start gl-sm-gap-3 gl-w-full gl-md-w-auto"
+    class="detail-page-header-actions gl-flex gl-self-start sm:gl-gap-3 gl-w-full md:gl-w-auto gl-mt-1"
   >
-    <div class="gl-md-display-none! gl-w-full">
+    <div class="md:!gl-hidden gl-w-full">
       <gl-disclosure-dropdown
         v-if="hasMobileDropdown"
         ref="issuableActionsDropdownMobile"
@@ -361,9 +369,11 @@ export default {
           <template #list-item>{{ buttonText }}</template>
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item v-if="canCreateIssue" :item="newIssueItem" />
-        <gl-disclosure-dropdown-item v-if="canPromoteToEpic" @action="promoteToEpic">
-          <template #list-item>{{ __('Promote to epic') }}</template>
-        </gl-disclosure-dropdown-item>
+        <gl-disclosure-dropdown-item
+          v-if="canPromoteToEpic"
+          :item="promoteToEpicItem"
+          @action="promoteToEpic"
+        />
         <template v-if="showLockIssueOption">
           <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
         </template>
@@ -416,7 +426,7 @@ export default {
       :title="editTooltip"
       :aria-label="$options.i18n.editTitleAndDescription"
       :aria-keyshortcuts="editShortcutKey"
-      class="js-issuable-edit gl-display-none! gl-md-display-block!"
+      class="js-issuable-edit !gl-hidden md:!gl-block"
       data-testid="edit-button"
       @click="edit"
     >
@@ -428,7 +438,7 @@ export default {
       id="new-actions-header-dropdown"
       ref="issuableActionsDropdownDesktop"
       v-gl-tooltip="showDropdownTooltip"
-      class="gl-display-none gl-md-display-inline-flex!"
+      class="gl-hidden md:!gl-inline-flex"
       icon="ellipsis_v"
       category="tertiary"
       placement="left"
@@ -461,12 +471,10 @@ export default {
       <gl-disclosure-dropdown-item v-if="canCreateIssue && isUserSignedIn" :item="newIssueItem" />
       <gl-disclosure-dropdown-item
         v-if="canPromoteToEpic"
-        :disabled="isToggleStateButtonLoading"
+        :item="promoteToEpicItem"
         data-testid="promote-button"
         @action="promoteToEpic"
-      >
-        <template #list-item>{{ __('Promote to epic') }}</template>
-      </gl-disclosure-dropdown-item>
+      />
       <template v-if="showLockIssueOption">
         <issuable-lock-form :is-editable="false" data-testid="lock-issue-toggle" />
       </template>

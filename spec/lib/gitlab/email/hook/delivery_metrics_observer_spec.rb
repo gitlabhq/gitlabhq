@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Email::Hook::DeliveryMetricsObserver do
   let(:email) do
     ActionMailer::Base.mail(to: 'test@example.com',
-                            from: 'info@example.com',
-                            body: 'hello')
+      from: 'info@example.com',
+      body: 'hello')
   end
 
   context 'when email has been delivered' do

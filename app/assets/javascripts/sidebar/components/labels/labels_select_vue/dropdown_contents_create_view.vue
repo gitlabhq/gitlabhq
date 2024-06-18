@@ -55,7 +55,7 @@ export default {
 
 <template>
   <div class="labels-select-contents-create js-labels-create">
-    <div class="dropdown-title d-flex gl-align-items-center pt-0 pb-2 gl-mb-0">
+    <div class="dropdown-title gl-flex gl-items-center pt-0 pb-2 gl-mb-0">
       <gl-button
         :aria-label="__('Go back')"
         category="tertiary"
@@ -93,7 +93,7 @@ export default {
           @click.prevent="handleColorClick(color)"
         />
       </div>
-      <div class="color-input-container gl-display-flex">
+      <div class="color-input-container gl-flex">
         <gl-form-input
           v-model.trim="selectedColor"
           class="gl-rounded-top-right-none gl-rounded-bottom-right-none -gl-mr-1 gl-mb-2 gl-w-8"
@@ -114,7 +114,7 @@ export default {
         :disabled="disableCreate"
         category="primary"
         variant="confirm"
-        class="float-left d-flex gl-align-items-center"
+        class="float-left gl-flex gl-items-center"
         data-testid="create-click"
         @click="handleCreateClick"
       >

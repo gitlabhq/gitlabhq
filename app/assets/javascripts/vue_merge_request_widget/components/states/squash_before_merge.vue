@@ -57,7 +57,7 @@ export default {
       v-gl-tooltip
       :href="helpPath"
       :title="$options.i18n.helpLabel"
-      class="gl-text-blue-600 gl-line-height-1"
+      class="gl-text-blue-600 gl-leading-1"
       target="_blank"
     >
       <gl-icon name="question-o" />

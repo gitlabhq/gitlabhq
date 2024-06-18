@@ -42,7 +42,7 @@ Use your local IDE to make changes to the code in the GDK directory.
    ```
 
 1. Refresh the web browser where you're viewing the GDK.
-  The changes should be displayed. Take a screenshot.
+   The changes should be displayed. Take a screenshot.
 
    ![UI text - Color Theme](../img/ui_color_theme_after.png)
 

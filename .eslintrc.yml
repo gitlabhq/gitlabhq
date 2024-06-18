@@ -146,6 +146,12 @@ rules:
         methods: 'sanitize'
   # This rule will be enabled later.
   unicorn/no-array-callback-reference: off
+  vue/no-undef-components:
+    - error
+    - ignorePatterns:
+        - '^router-link$'
+        - '^router-view$'
+        - '^gl-emoji$'
 overrides:
   - files:
       - '{,ee/,jh/}spec/frontend*/**/*'

@@ -6,7 +6,7 @@ import ProtectionRow from './protection_row.vue';
 
 export const i18n = {
   rolesTitle: s__('BranchRules|Roles'),
-  usersTitle: s__('BranchRules|Users'),
+  usersAndGroupsTitle: s__('BranchRules|Users & groups'),
   groupsTitle: s__('BranchRules|Groups'),
 };
 
@@ -43,11 +43,6 @@ export default {
       required: false,
       default: () => [],
     },
-    approvals: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     statusChecks: {
       type: Array,
       required: false,
@@ -58,13 +53,37 @@ export default {
       required: false,
       default: false,
     },
+    emptyStateCopy: {
+      type: String,
+      required: true,
+    },
+    helpText: {
+      type: String,
+      required: false,
+      default: () => '',
+    },
   },
   computed: {
-    showUsersDivider() {
+    hasRoles() {
       return Boolean(this.roles.length);
     },
-    showGroupsDivider() {
-      return Boolean(this.roles.length || this.users.length);
+    hasUsers() {
+      return Boolean(this.users.length);
+    },
+    hasGroups() {
+      return Boolean(this.groups.length);
+    },
+    hasStatusChecks() {
+      return Boolean(this.statusChecks.length);
+    },
+    showDivider() {
+      return this.hasRoles || this.hasUsers;
+    },
+    showEmptyState() {
+      return !this.hasRoles && !this.hasUsers && !this.hasGroups && !this.hasStatusChecks;
+    },
+    showHelpText() {
+      return Boolean(this.helpText.length);
     },
   },
 };
@@ -73,48 +92,38 @@ export default {
 <template>
   <gl-card
     class="gl-new-card gl-mb-5"
-    header-class="gl-new-card-header"
-    body-class="gl-new-card-body gl-px-5"
+    header-class="gl-new-card-header gl-flex-wrap"
+    body-class="gl-new-card-body gl-px-5 gl-pt-4"
   >
     <template #header>
       <strong>{{ header }}</strong>
       <gl-button
         v-if="glFeatures.editBranchRules && isEditAvailable"
         size="small"
-        data-testid="edit-button"
+        data-testid="edit-rule-button"
         @click="$emit('edit')"
         >{{ __('Edit') }}</gl-button
       >
       <gl-link v-else :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
-    </template>
+      <p v-if="showHelpText" class="gl-flex-basis-full gl-mb-0 gl-text-secondary">
+        {{ helpText }}
+      </p></template
+    >
+
+    <p v-if="showEmptyState" class="gl-text-secondary" data-testid="protection-empty-state">
+      {{ emptyStateCopy }}
+    </p>
 
     <!-- Roles -->
     <protection-row v-if="roles.length" :title="$options.i18n.rolesTitle" :access-levels="roles" />
 
-    <!-- Users -->
+    <!-- Users and Groups -->
     <protection-row
-      v-if="users.length"
-      :show-divider="showUsersDivider"
+      v-if="hasUsers || hasGroups"
+      :show-divider="hasRoles"
       :users="users"
-      :title="$options.i18n.usersTitle"
-    />
-
-    <!-- Groups -->
-    <protection-row
-      v-if="groups.length"
-      :show-divider="showGroupsDivider"
-      :title="$options.i18n.groupsTitle"
-      :access-levels="groups"
-    />
-
-    <!-- Approvals -->
-    <protection-row
-      v-for="(approval, index) in approvals"
-      :key="approval.name"
-      :show-divider="index !== 0"
-      :title="approval.name"
-      :users="approval.eligibleApprovers.nodes"
-      :approvals-required="approval.approvalsRequired"
+      :groups="groups"
+      :title="$options.i18n.usersAndGroupsTitle"
     />
 
     <!-- Status checks -->

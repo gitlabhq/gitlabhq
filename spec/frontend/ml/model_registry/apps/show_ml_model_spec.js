@@ -9,6 +9,7 @@ import CandidateList from '~/ml/model_registry/components/candidate_list.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import ModelVersionCreate from '~/ml/model_registry/components/model_version_create.vue';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -88,6 +89,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         indexModelsPath: 'index/path',
         mlflowTrackingUrl: 'path/to/tracking',
         canWriteModelRegistry,
+        maxAllowedFileSize: 99999,
       },
       stubs: { GlTab, DeleteModel, LoadOrErrorOrShow },
     });
@@ -109,6 +111,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
   const findActionsDropdown = () => wrapper.findComponent(ActionsDropdown);
   const findDeleteButton = () => wrapper.findComponent(DeleteDisclosureDropdownItem);
   const findDeleteModel = () => wrapper.findComponent(DeleteModel);
+  const findModelVersionCreate = () => wrapper.findComponent(ModelVersionCreate);
   const findLoadOrErrorOrShow = () => wrapper.findComponent(LoadOrErrorOrShow);
 
   describe('Title', () => {
@@ -145,6 +148,22 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         createWrapper({ canWriteModelRegistry: false });
 
         expect(findDeleteButton().exists()).toBe(false);
+      });
+    });
+  });
+
+  describe('ModelVersionCreate', () => {
+    beforeEach(() => createWrapper());
+
+    it('displays version creation button', () => {
+      expect(findModelVersionCreate().props()).toEqual({ modelGid: 'gid://gitlab/Ml::Model/1' });
+    });
+
+    describe('when user has no permission to write model registry', () => {
+      it('does not display version creation', () => {
+        createWrapper({ canWriteModelRegistry: false });
+
+        expect(findModelVersionCreate().exists()).toBe(false);
       });
     });
   });

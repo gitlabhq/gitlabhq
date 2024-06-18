@@ -26,7 +26,6 @@
 - g_analytics_valuestream
 - g_compliance_audit_events
 - g_geo_proxied_requests
-- g_metrics_comparison_page
 - g_project_management_users_creating_epic_boards
 - g_project_management_users_updating_epic_board_names
 - g_project_management_users_viewing_epic_boards
@@ -487,6 +486,8 @@
 - p_ci_templates_security_api_discovery
 - p_ci_templates_security_api_fuzzing
 - p_ci_templates_security_api_fuzzing_latest
+- p_ci_templates_security_api_security
+- p_ci_templates_security_api_security_latest
 - p_ci_templates_security_bas_latest
 - p_ci_templates_security_container_scanning
 - p_ci_templates_security_container_scanning_latest
@@ -561,5 +562,4 @@
 - users_visiting_security_vulnerability_report
 - users_visiting_testing_license_compliance_full_report
 - users_visiting_testing_manage_license_compliance
-- web_ide_commit_created
 - wiki_action

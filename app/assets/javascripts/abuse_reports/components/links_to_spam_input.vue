@@ -43,7 +43,7 @@ export default {
               <div class="gl-pb-2">
                 {{ $options.i18n.label }}
               </div>
-              <div class="gl-font-weight-normal">
+              <div class="gl-font-normal">
                 {{ $options.i18n.description }}
               </div>
             </template>

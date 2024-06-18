@@ -25,8 +25,8 @@ module Packages
       end
 
       def package
-        project
-          .packages
+        ::Packages::Conan::Package
+          .for_projects(project)
           .with_name(name)
           .with_version(version)
           .order_created

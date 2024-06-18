@@ -12,7 +12,6 @@ Rails/InverseOf:
     - 'app/models/clusters/project.rb'
     - 'app/models/commit_signatures/x509_commit_signature.rb'
     - 'app/models/commit_status.rb'
-    - 'app/models/concerns/awardable.rb'
     - 'app/models/concerns/commit_signature.rb'
     - 'app/models/concerns/with_uploads.rb'
     - 'app/models/concerns/work_item_resource_event.rb'

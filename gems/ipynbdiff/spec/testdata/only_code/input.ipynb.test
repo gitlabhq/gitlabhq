@@ -1,0 +1,20 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "3",
+   "metadata": {},
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import matplotlib.pyplot as plt"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "language": "python"
+  }
+ }
+}

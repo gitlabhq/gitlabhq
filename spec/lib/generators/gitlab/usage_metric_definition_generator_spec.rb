@@ -52,7 +52,7 @@ RSpec.describe Gitlab::UsageMetricDefinitionGenerator, :silence_stdout, feature_
       end
 
       it 'creates a metric definition file using the template' do
-        described_class.new([key_path], { 'dir' => dir, 'class_name' => class_name, 'ee': true }).invoke_all
+        described_class.new([key_path], { 'dir' => dir, 'class_name' => class_name, ee: true }).invoke_all
         expect(YAML.safe_load(File.read(metric_definition_path))).to eq(sample_metric)
       end
     end

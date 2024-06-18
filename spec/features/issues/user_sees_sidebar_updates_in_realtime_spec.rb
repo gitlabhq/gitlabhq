@@ -12,8 +12,6 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
   let(:labels_value) { find_by_testid('value-wrapper') }
 
   it 'updates the assignee in real-time' do
-    Capybara::Session.new(:other_session)
-
     using_session :other_session do
       visit project_issue_path(project, issue)
       expect(page.find('.assignee')).to have_content 'None'
@@ -34,8 +32,6 @@ RSpec.describe 'Issues > Real-time sidebar', :js, :with_license, feature_categor
   end
 
   it 'updates the label in real-time' do
-    Capybara::Session.new(:other_session)
-
     using_session :other_session do
       visit project_issue_path(project, issue)
       wait_for_requests

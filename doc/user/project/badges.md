@@ -12,10 +12,8 @@ DETAILS:
 
 Badges are a unified way to present condensed pieces of information about your projects.
 A badge consists of a small image and a URL that the image points to.
-In GitLab, badges are displayed below the project description.
+In GitLab, badges are displayed on the project overview page, below the project description.
 You can use badges at the [project](#project-badges) and [group](#group-badges) level.
-
-![Badges on Project information page](img/project_overview_badges_v13_10.png)
 
 ## Available badges
 
@@ -125,7 +123,7 @@ If you set an out of range value, GitLab automatically adjusts it to the default
 
 ## Project badges
 
-Badges can be added to a project by Maintainers or Owners, and are visible on the project's overview page.
+Badges can be added to a project by Maintainers or Owners, and are visible on the project's **Overview** page.
 If you find that you have to add the same badges to several projects, you may want to add them at the [group level](#group-badges).
 
 ### Example project badge: Pipeline Status
@@ -146,9 +144,10 @@ To add this badge to a project:
 
 ## Group badges
 
-By adding a badge to a group, you add and enforce a project-level badge
-for all projects in the group. The group badge is visible on the **Overview**
+Badges can be added to a group by Owners, and are visible on the **Overview**
 page of any project that belongs to the group.
+By adding a badge to a group, you add and enforce a project-level badge
+for all projects in the group.
 
 NOTE:
 While these badges appear as project-level badges in the codebase, they
@@ -189,8 +188,6 @@ Then you can use the link to embed the badge in your HTML or Markdown pages.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
 1. In the **Pipeline status**, **Coverage report**, or **Latest release** sections, view the URLs for the images.
-
-![Pipelines badges](img/pipelines_settings_badges.png)
 
 ## Customize badges
 
@@ -283,7 +280,6 @@ To delete a badge in a project or group:
 1. Expand **Badges**.
 1. Next to the badge you want to delete, select **Delete** (**{remove}**).
 1. On the confirmation dialog, select **Delete badge**.
-1. Select **Save changes**.
 
 NOTE:
 Badges associated with a group can be edited or deleted only at the [group level](#group-badges).
@@ -298,9 +294,14 @@ The following placeholders are available:
 - `%{project_title}`: Title of a project
 - `%{project_name}`: Name of a project
 - `%{project_id}`: Database ID associated with a project
+- `%{project_namespace}`: Project namespace of a project
+- `%{group_name}`: Group of a project
+- `%{gitlab_server}`: Server of a project
+- `%{gitlab_pages_domain}`: Domain of a project
 - `%{default_branch}`: Default branch name configured for a project's repository
 - `%{commit_sha}`: ID of the most recent commit to the default branch of a
   project's repository
+- `%{latest_tag}`: Latest tag added to the project's repository
 
 NOTE:
 Placeholders allow badges to expose otherwise-private information, such as the

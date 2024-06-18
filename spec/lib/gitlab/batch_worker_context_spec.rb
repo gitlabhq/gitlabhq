@@ -6,8 +6,8 @@ RSpec.describe Gitlab::BatchWorkerContext do
   subject(:batch_context) do
     described_class.new(
       %w[hello world],
-      arguments_proc: -> (word) { word },
-      context_proc: -> (word) { { user: build_stubbed(:user, username: word) } }
+      arguments_proc: ->(word) { word },
+      context_proc: ->(word) { { user: build_stubbed(:user, username: word) } }
     )
   end
 

@@ -4,13 +4,13 @@ group: Analytics Instrumentation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Service Data API
+# Service Ping API
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-The Service Data API is associated with [Service Ping](../development/internal_analytics/service_ping/index.md).
+The Service Ping API is associated with [Service Ping](../development/internal_analytics/service_ping/index.md).
 
 ## Export Service Ping data
 
@@ -65,8 +65,6 @@ Example response:
 - key_path: redis_hll_counters.search.i_search_paid_monthly
   description: Calculated unique users to perform a search with a paid license enabled
     by month
-  product_section: enablement
-  product_stage: enablement
   product_group: global_search
   value_type: number
   status: active

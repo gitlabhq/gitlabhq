@@ -8,7 +8,8 @@ RSpec.describe 'Jobs/Build.gitlab-ci.yml' do
   subject(:template) { Gitlab::Template::GitlabCiYmlTemplate.find('Jobs/Build') }
 
   describe 'AUTO_BUILD_IMAGE_VERSION' do
-    it 'corresponds to a published image in the registry' do
+    it 'corresponds to a published image in the registry',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448357' do
       registry = "https://#{template_registry_host}"
       repository = auto_build_image_repository
       reference = YAML.safe_load(template.content).dig('variables', 'AUTO_BUILD_IMAGE_VERSION')

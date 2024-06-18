@@ -24,7 +24,7 @@ RSpec.shared_examples_for 'object cache helper' do
 
   context "when a cache context is supplied" do
     before do
-      kwargs[:cache_context] = -> (item) { item.project.cache_key }
+      kwargs[:cache_context] = ->(item) { item.project.cache_key }
     end
 
     it "uses the context to augment the cache key" do
@@ -99,7 +99,7 @@ RSpec.shared_examples_for 'collection cache helper' do
 
   context "when a cache context is supplied" do
     before do
-      kwargs[:cache_context] = -> (item) { item.project.cache_key }
+      kwargs[:cache_context] = ->(item) { item.project.cache_key }
     end
 
     it "uses the context to augment the cache key" do

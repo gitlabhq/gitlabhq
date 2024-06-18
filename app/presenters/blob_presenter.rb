@@ -95,10 +95,10 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
     url_helpers.project_blame_path(*path_params)
   end
 
-  def unicode_escaped_blob
+  def base64_encoded_blob
     return unless Feature.enabled?(:unicode_escaped_blob)
 
-    encode_uft8_with_unicode_escaping(blob.raw)
+    Base64.encode64(blob.raw)
   end
 
   def history_path

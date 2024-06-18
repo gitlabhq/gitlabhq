@@ -25,8 +25,6 @@ sidebar contains a partial list of pages in the wiki, displayed as a nested tree
 with sibling pages listed in alphabetical order. To view a list of all pages, select
 **View All Pages** in the sidebar:
 
-![Wiki sidebar](img/wiki_sidebar_v13_5.png)
-
 ## View a project wiki
 
 To access a project wiki:
@@ -73,11 +71,13 @@ to be used as your wiki's home page. To create it:
 
 ## Create a new wiki page
 
-Users with at least the Developer role can create new wiki pages:
+Prerequisites:
+
+- You must have at least the Developer role.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Select **New page** on this page, or any other wiki page.
+1. Select **Wiki actions** (**{ellipsis_v}**), then **New page** on this page, or any other wiki page.
 1. Select a content format.
 1. Add a title for your new page. Page titles use
    [special characters](#special-characters-in-page-titles) for subdirectories and formatting,
@@ -96,7 +96,7 @@ locally:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. On the right sidebar, select **Clone repository**.
+1. Select **Wiki actions** (**{ellipsis_v}**), then **Clone repository**.
 1. Follow the on-screen instructions.
 
 Files you add to your wiki locally must use one of the following
@@ -136,13 +136,15 @@ may not be able to check out the wiki locally afterward.
 
 ## Edit a wiki page
 
-You need at least the Developer role to edit a wiki page:
+Prerequisites:
+
+- You must have at least the Developer role.
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to edit, and either:
    - Use the <kbd>e</kbd> wiki [keyboard shortcut](../../shortcuts.md#wiki-pages).
-   - Select the edit icon (**{pencil}**).
+   - Select **Edit**.
 1. Edit the content.
 1. Select **Save changes**.
 
@@ -162,11 +164,17 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to delete.
-1. Select the edit icon (**{pencil}**).
+1. Select **Edit**.
 1. Select **Delete page**.
 1. Confirm the deletion.
 
-## Move a wiki page
+## Move or rename a wiki page
+
+> - Redirects for moved or renamed wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `wiki_redirection`. Enabled by default.
+
+In GitLab 17.1 and later, when you move or rename a page, a redirect is
+automatically set up from the old page to the new page. A list of redirects
+is stored in the `.gitlab/redirects.yml` file in the Wiki repository.
 
 Prerequisites:
 
@@ -174,11 +182,12 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. Go to the page you want to move.
-1. Select the edit icon (**{pencil}**).
-1. Add the new path to the **Title** field. For example, if you have a wiki page
-   called `about` under `company` and you want to move it to the wiki's root,
-   change the **Title** from `about` to `/about`.
+1. Go to the page you want to move or rename.
+1. Select **Edit**.
+1. To move the page, add the new path to the **Title** field. For example,
+   if you have a wiki page called `About` under `Company` and you want to
+   move it to the wiki's root, change the **Title** from `About` to `/About`.
+1. To rename the page, change the **Title**.
 1. Select **Save changes**.
 
 ## Export a wiki page
@@ -192,7 +201,7 @@ You can export a wiki page as a PDF file:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to export.
-1. Select the vertical ellipsis (**{ellipsis_v}**), and then select **Print as PDF**.
+1. On the top right, select **Wiki actions** (**{ellipsis_v}**), then select **Print as PDF**.
 
 A PDF of the wiki page is created.
 
@@ -212,7 +221,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. On the right sidebar, select **Templates**.
+1. Select **Wiki actions** (**{ellipsis_v}**), then **Templates**.
 1. Select **New Template**.
 1. Enter template title, format and content, as if creating a regular wiki page.
 
@@ -238,8 +247,6 @@ Prerequisites:
 The changes of a wiki page over time are recorded in the wiki's Git repository.
 The history page shows:
 
-![Wiki page history](img/wiki_page_history.png)
-
 - The revision (Git commit SHA) of the page.
 - The page author.
 - The commit message.
@@ -262,8 +269,6 @@ You can see the changes made in a version of a wiki page, similar to versioned d
 1. Go to the wiki page you're interested in.
 1. Select **Page history** to see all page versions.
 1. Select the commit message in the **Changes** column for the version you're interested in.
-
-   ![Wiki page changes](img/wiki_page_diffs_v13_2.png)
 
 ## Track wiki events
 
@@ -289,7 +294,7 @@ replaces the default sidebar navigation:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
-1. In the upper-right corner of the page, select **Edit sidebar**.
+1. In the upper-right corner of the page, select **Add custom sidebar** (**{settings}**).
 1. When complete, select **Save changes**.
 
 A `_sidebar` example, formatted with Markdown:

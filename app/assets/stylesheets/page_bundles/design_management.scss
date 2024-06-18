@@ -179,8 +179,8 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
       padding: $gl-padding-8;
       list-style: none;
       transition: background $gl-transition-duration-medium $general-hover-transition-curve;
-      border-top-left-radius: $border-radius-default; // same border radius used by .bordered-box
-      border-top-right-radius: $border-radius-default;
+      border-top-left-radius: $gl-border-radius-base; // same border radius used by .bordered-box
+      border-top-right-radius: $gl-border-radius-base;
 
       video {
         width: 100%;
@@ -189,7 +189,7 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 
     .reply-wrapper {
       padding: $gl-padding-8;
-      border-radius: 0 0 $border-radius-default $border-radius-default;
+      border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
     }
   }
 

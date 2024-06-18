@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness, feature_category: :pipeline_composition do
+RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, feature_category: :pipeline_composition do
   let(:project)     { create(:project, :repository) }
   let(:user)        { project.first_owner }
   let(:ref)         { 'refs/heads/master' }
@@ -188,34 +188,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
             expect(pipeline).to be_persisted
             expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
-          end
-
-          context 'when the FF ci_rules_exists_pattern_matches_cache is disabled' do
-            before do
-              stub_feature_flags(ci_rules_exists_pattern_matches_cache: false)
-            end
-
-            it 'does not use the cache' do
-              expect(File).to receive(:fnmatch?)
-                .with('docs/*.md', anything, anything)
-                .exactly(2 * number_of_project_files).times # it iterates all files twice
-                .and_call_original
-              expect(File).to receive(:fnmatch?)
-                .with('config/*.rb', anything, anything)
-                .once # it iterates once and finds the file once
-                .and_call_original
-              expect(File).to receive(:fnmatch?)
-                .with('config/*.yml', anything, anything)
-                .exactly(number_of_project_files).times # it iterates all files once
-                .and_call_original
-              expect(File).to receive(:fnmatch?)
-                .with('**/app.rb', anything, anything)
-                .exactly(3).times # it iterates once and finds the file three times
-                .and_call_original
-
-              expect(pipeline).to be_persisted
-              expect(build_names).to contain_exactly('job1', 'job2', 'job3', 'job4')
-            end
           end
         end
       end

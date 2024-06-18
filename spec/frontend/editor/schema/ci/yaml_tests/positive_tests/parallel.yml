@@ -1,0 +1,12 @@
+# valid parallel
+parallel job:
+  script: exit 0
+  parallel: 5
+
+minimum allowed value:
+  script: exit 0
+  parallel: 1
+
+maximum allowed value:
+  script: exit 0
+  parallel: 200

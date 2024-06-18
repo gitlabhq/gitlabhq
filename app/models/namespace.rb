@@ -42,6 +42,17 @@ class Namespace < ApplicationRecord
   SR_ENABLED = 'enabled'
   SHARED_RUNNERS_SETTINGS = [SR_DISABLED_AND_UNOVERRIDABLE, SR_DISABLED_AND_OVERRIDABLE, SR_ENABLED].freeze
   URL_MAX_LENGTH = 255
+  STATISTICS_COLUMNS = %i[
+    storage_size
+    repository_size
+    wiki_size
+    snippets_size
+    lfs_objects_size
+    build_artifacts_size
+    pipeline_artifacts_size
+    packages_size
+    uploads_size
+  ].freeze
 
   cache_markdown_field :description, pipeline: :description
 
@@ -165,6 +176,7 @@ class Namespace < ApplicationRecord
   delegate :math_rendering_limits_enabled?,
     :lock_math_rendering_limits_enabled?,
     to: :namespace_settings
+  delegate :add_creator, to: :namespace_details
 
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
@@ -183,31 +195,29 @@ class Namespace < ApplicationRecord
   }
 
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
+  scope :group_namespaces, -> { where(type: Group.sti_name) }
   scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].not_eq(Namespaces::ProjectNamespace.sti_name)) }
   scope :sort_by_type, -> { order(arel_table[:type].asc.nulls_first) }
   scope :include_route, -> { includes(:route) }
-  scope :by_parent, -> (parent) { where(parent_id: parent) }
-  scope :by_root_id, -> (root_id) { where('traversal_ids[1] IN (?)', root_id) }
-  scope :filter_by_path, -> (query) { where('lower(path) = :query', query: query.downcase) }
-  scope :in_organization, -> (organization) { where(organization: organization) }
+  scope :by_parent, ->(parent) { where(parent_id: parent) }
+  scope :by_root_id, ->(root_id) { where('traversal_ids[1] IN (?)', root_id) }
+  scope :filter_by_path, ->(query) { where('lower(path) = :query', query: query.downcase) }
+  scope :in_organization, ->(organization) { where(organization: organization) }
   scope :by_name, ->(name) { where('name LIKE ?', "#{sanitize_sql_like(name)}%") }
   scope :ordered_by_name, -> { order(:name) }
 
   scope :with_statistics, -> do
-    joins('LEFT JOIN project_statistics ps ON ps.namespace_id = namespaces.id')
-      .group('namespaces.id')
-      .select(
-        'namespaces.*',
-        'COALESCE(SUM(ps.storage_size), 0) AS storage_size',
-        'COALESCE(SUM(ps.repository_size), 0) AS repository_size',
-        'COALESCE(SUM(ps.wiki_size), 0) AS wiki_size',
-        'COALESCE(SUM(ps.snippets_size), 0) AS snippets_size',
-        'COALESCE(SUM(ps.lfs_objects_size), 0) AS lfs_objects_size',
-        'COALESCE(SUM(ps.build_artifacts_size), 0) AS build_artifacts_size',
-        'COALESCE(SUM(ps.pipeline_artifacts_size), 0) AS pipeline_artifacts_size',
-        'COALESCE(SUM(ps.packages_size), 0) AS packages_size',
-        'COALESCE(SUM(ps.uploads_size), 0) AS uploads_size'
-      )
+    namespace_statistic_columns = STATISTICS_COLUMNS.map { |column| sum_project_statistics_column(column) }
+    subquery = Arel::Table.new(:statistics)
+    project_statistics = ProjectStatistics.arel_table
+
+    statistics = project_statistics
+      .project(namespace_statistic_columns)
+      .where(project_statistics[:namespace_id].eq(arel_table[:id]))
+      .lateral(subquery.name)
+
+    select(arel_table[Arel.star], subquery[Arel.star])
+      .from([arel.as('namespaces'), statistics])
   end
 
   scope :with_jira_installation, ->(installation_id) do
@@ -215,7 +225,7 @@ class Namespace < ApplicationRecord
     .where(jira_connect_subscriptions: { jira_connect_installation_id: installation_id })
   end
 
-  scope :sorted_by_similarity_and_parent_id_desc, -> (search) do
+  scope :sorted_by_similarity_and_parent_id_desc, ->(search) do
     order_expression = Gitlab::Database::SimilarityScore.build_expression(
       search: search,
       rules: [
@@ -326,6 +336,13 @@ class Namespace < ApplicationRecord
 
     def reference_pattern
       User.reference_pattern
+    end
+
+    def sum_project_statistics_column(column)
+      sum = ProjectStatistics.arel_table[column].sum
+
+      coalesce = Arel::Nodes::NamedFunction.new('COALESCE', [sum, 0])
+      coalesce.as(column.to_s)
     end
   end
 
@@ -554,11 +571,9 @@ class Namespace < ApplicationRecord
 
   def container_repositories_size
     strong_memoize(:container_repositories_size) do
-      next unless Gitlab.com_except_jh?
       next unless root?
       next unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
       next 0 if all_container_repositories.empty?
-      next unless all_container_repositories.all_migrated?
 
       Rails.cache.fetch(container_repositories_size_cache_key, expires_in: 7.days) do
         ContainerRegistry::GitlabApiClient.deduplicated_size(full_path)

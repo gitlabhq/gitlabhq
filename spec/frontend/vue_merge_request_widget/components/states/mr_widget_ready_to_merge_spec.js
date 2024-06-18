@@ -157,10 +157,6 @@ const triggerEditCommitInput = () =>
 const findMergeHelperText = () => wrapper.find('[data-testid="auto-merge-helper-text"]');
 const findTextareas = () => wrapper.findAllComponents(GlFormTextarea);
 
-beforeEach(() => {
-  gon.features = { autoMergeWhenIncompletePipelineSucceeds: true };
-});
-
 describe('ReadyToMerge', () => {
   beforeEach(() => {
     service = createTestService();
@@ -271,48 +267,6 @@ describe('ReadyToMerge', () => {
       });
 
       expect(findMergeImmediatelyDropdown().exists()).toBe(false);
-    });
-
-    describe('when ff auto_merge_when_incomplete_pipeline_succeeds is disabled', () => {
-      beforeEach(() => {
-        gon.features = {};
-      });
-
-      it('dropdown should be visible if pipeline is active', () => {
-        createComponent({
-          mr: {
-            availableAutoMergeStrategies: [],
-            headPipeline: { active: true },
-            onlyAllowMergeIfPipelineSucceeds: false,
-          },
-        });
-
-        expect(findMergeImmediatelyDropdown().exists()).toBe(true);
-      });
-
-      it('dropdown should be hidden if no pipeline is active', () => {
-        createComponent({
-          mr: {
-            availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
-            headPipeline: { active: false },
-            onlyAllowMergeIfPipelineSucceeds: false,
-          },
-        });
-
-        expect(findMergeImmediatelyDropdown().exists()).toBe(false);
-      });
-
-      it('dropdown should be hidden if "Pipelines must succeed" is enabled', () => {
-        createComponent({
-          mr: {
-            availableAutoMergeStrategies: [MWPS_MERGE_STRATEGY],
-            headPipeline: { active: true },
-            onlyAllowMergeIfPipelineSucceeds: true,
-          },
-        });
-
-        expect(findMergeImmediatelyDropdown().exists()).toBe(false);
-      });
     });
   });
 

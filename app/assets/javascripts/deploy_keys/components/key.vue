@@ -119,12 +119,12 @@ export default {
     <div class="table-section section-40">
       <div
         role="rowheader"
-        class="table-mobile-header gl-align-self-start gl-font-weight-bold gl-text-gray-700"
+        class="table-mobile-header gl-align-self-start gl-font-bold gl-text-gray-700"
       >
         {{ s__('DeployKeys|Deploy key') }}
       </div>
       <div class="table-mobile-content" data-testid="key-container">
-        <p class="title gl-font-weight-semibold gl-text-gray-700" data-testid="key-title-content">
+        <p class="title gl-font-semibold gl-text-gray-700" data-testid="key-title-content">
           {{ deployKey.title }}
         </p>
         <dl class="gl-font-sm gl-mb-0">
@@ -144,7 +144,7 @@ export default {
       </div>
     </div>
     <div class="table-section section-20 section-wrap">
-      <div role="rowheader" class="table-mobile-header gl-font-weight-bold gl-text-gray-700">
+      <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-gray-700">
         {{ s__('DeployKeys|Project usage') }}
       </div>
       <div class="table-mobile-content deploy-project-list gl-display-flex gl-flex-wrap">
@@ -186,7 +186,7 @@ export default {
       </div>
     </div>
     <div class="table-section section-15">
-      <div role="rowheader" class="table-mobile-header gl-font-weight-bold gl-text-gray-700">
+      <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-gray-700">
         {{ __('Created') }}
       </div>
       <div class="table-mobile-content gl-text-gray-700 key-created-at">
@@ -196,7 +196,7 @@ export default {
       </div>
     </div>
     <div class="table-section section-15">
-      <div role="rowheader" class="table-mobile-header gl-font-weight-bold gl-text-gray-700">
+      <div role="rowheader" class="table-mobile-header gl-font-bold gl-text-gray-700">
         {{ __('Expires') }}
       </div>
       <div class="table-mobile-content gl-text-gray-700 key-expires-at">

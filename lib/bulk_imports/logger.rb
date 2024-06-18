@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module BulkImports
-  class Logger < ::Gitlab::Import::Logger
+  class Logger < ::Import::Framework::Logger
     IMPORTER_NAME = 'gitlab_migration'
 
     # Extract key information from a provided entity and include it in log

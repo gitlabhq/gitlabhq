@@ -4,7 +4,7 @@ mutation createPackagesProtectionRule($input: CreatePackagesProtectionRuleInput!
       id
       packageNamePattern
       packageType
-      pushProtectedUpToAccessLevel
+      minimumAccessLevelForPush
     }
     errors
   }

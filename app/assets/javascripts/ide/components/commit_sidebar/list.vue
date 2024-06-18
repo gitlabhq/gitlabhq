@@ -90,7 +90,7 @@ export default {
             :class="{
               'disabled-content': !filesLength,
             }"
-            class="gl-shadow-none!"
+            class="!gl-shadow-none"
             category="tertiary"
             icon="remove-all"
             data-placement="bottom"

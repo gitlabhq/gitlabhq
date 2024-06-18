@@ -27,9 +27,9 @@ class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
 
   def protected_ref_params(*attrs)
     attrs = ([:name,
-              :allow_force_push,
-              { merge_access_levels_attributes: access_level_attributes,
-                push_access_levels_attributes: access_level_attributes }] + attrs).uniq
+      :allow_force_push,
+      { merge_access_levels_attributes: access_level_attributes,
+        push_access_levels_attributes: access_level_attributes }] + attrs).uniq
 
     params.require(:protected_branch).permit(attrs)
   end

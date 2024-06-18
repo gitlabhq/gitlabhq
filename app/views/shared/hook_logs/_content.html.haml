@@ -34,7 +34,7 @@
     = s_('Webhooks|Response headers data is empty')
   - else
     - hook_log.response_headers.each do |k, v|
-      <span class="gl-font-weight-bold">#{k}:</span> #{v}
+      <span class="gl-font-bold">#{k}:</span> #{v}
       %br
 
 %h3.gl-mt-6= _('Request')
@@ -48,5 +48,5 @@
 %h4= _('Headers')
 %pre
   - hook_log.request_headers.each do |k, v|
-    <span class="gl-font-weight-bold">#{k}:</span> #{v}
+    <span class="gl-font-bold">#{k}:</span> #{v}
     %br

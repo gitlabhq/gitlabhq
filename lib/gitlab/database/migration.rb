@@ -71,6 +71,11 @@ module Gitlab
       end
 
       class V2_2 < V2_1
+        def self.inherited(subclass)
+          super
+          subclass.instance_variable_set(:@_defining_file, caller_locations.first.absolute_path)
+        end
+
         include Gitlab::Database::Migrations::MilestoneMixin
       end
 

@@ -10,7 +10,7 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'can change the directory path of a page',
+      it 'can change the directory path of a page', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347821' do
         initial_wiki.visit!
 

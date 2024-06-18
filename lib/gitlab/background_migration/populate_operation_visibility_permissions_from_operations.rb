@@ -12,9 +12,9 @@ module Gitlab
       def perform
         each_sub_batch do |batch|
           batch.update_all('monitor_access_level=operations_access_level,' \
-            'infrastructure_access_level=operations_access_level,' \
-            ' feature_flags_access_level=operations_access_level,'\
-            ' environments_access_level=operations_access_level')
+            'infrastructure_access_level=operations_access_level, ' \
+            'feature_flags_access_level=operations_access_level, '\
+            'environments_access_level=operations_access_level')
         end
       end
 

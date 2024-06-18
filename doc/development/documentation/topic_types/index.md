@@ -64,6 +64,6 @@ full sentences, and so should not end in a period.
 ```markdown
 ## Related topics
 
-- [CI/CD variables](link-to-topic)
-- [Environment variables](link-to-topic)
+- [CI/CD variables](link-to-topic.md)
+- [Environment variables](link-to-topic.md)
 ```

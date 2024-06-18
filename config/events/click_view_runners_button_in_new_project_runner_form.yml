@@ -1,13 +1,11 @@
 ---
 description: View Runners clicked after project runner creation
-category: InternalEventTracking
+internal_events: true
 action: click_view_runners_button_in_new_project_runner_form
 identifiers:
   - project
   - namespace
   - user
-product_section: ci
-product_stage: verify
 product_group: runner
 milestone: '16.10'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146063

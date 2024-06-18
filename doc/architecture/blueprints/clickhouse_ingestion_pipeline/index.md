@@ -145,7 +145,7 @@ Having addressed the details of the two aforementioned problem-domains, we can m
 
 ### Self-managed environments
 
-The single, biggest challenge around introducing ClickHouse and related systems would be the ability to make it avaiable to our users running GitLab in self-managed environments. The intended goals of this proposal are intentionally kept within those constraints. It is also prudent to establish that what we're *proposing* here be applicable to applications consuming ClickHouse from inside self-managed environments.
+The single, biggest challenge around introducing ClickHouse and related systems would be the ability to make it available to our users running GitLab in self-managed environments. The intended goals of this proposal are intentionally kept within those constraints. It is also prudent to establish that what we're *proposing* here be applicable to applications consuming ClickHouse from inside self-managed environments.
 
 There are ongoing efforts to streamline distribution and deployment of ClickHouse instances for managed environment within the larger scope of [ClickHouse Usage at GitLab](../clickhouse_usage/index.md). A few other issues tackling parts of the aforementioned problem are:
 

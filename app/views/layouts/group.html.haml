@@ -18,6 +18,7 @@
 
 - content_for :before_content do
   = render 'groups/invite_members_modal', group: @group
+  = dispensable_render_if_exists 'shared/hand_raise_lead_modal', root_namespace: @group.root_ancestor
   = render_if_exists "shared/saml_reload_modal", group_or_project: @group
 
 = dispensable_render_if_exists "shared/web_hooks/group_web_hook_disabled_alert"

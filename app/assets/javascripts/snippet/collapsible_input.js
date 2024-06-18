@@ -1,5 +1,5 @@
-const hide = (el) => el.classList.add('d-none');
-const show = (el) => el.classList.remove('d-none');
+const hide = (el) => el.classList.add('!gl-hidden');
+const show = (el) => el.classList.remove('!gl-hidden');
 
 const setupCollapsibleInput = (el) => {
   const collapsedEl = el.querySelector('.js-collapsed');
@@ -35,9 +35,9 @@ const setupCollapsibleInput = (el) => {
  * Usage in HAML
  *
  * .js-collapsible-input
- *   .js-collapsed{ class: ('d-none' if is_expanded) }
+ *   .js-collapsed{ class: ('!gl-hidden' if is_expanded) }
  *     = input
- *   .js-expanded{ class: ('d-none' if !is_expanded) }
+ *   .js-expanded{ class: ('!gl-hidden' if !is_expanded) }
  *     = big_input
  */
 export default () => {

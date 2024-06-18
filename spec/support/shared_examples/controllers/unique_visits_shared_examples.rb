@@ -9,12 +9,12 @@ RSpec.shared_examples 'tracking unique visits' do |method|
     ids = target_id.instance_of?(String) ? [target_id] : target_id
 
     ids.each do |id|
-      expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-      .to receive(:track_event).with(id, hash_including(values: anything))
+      expect(Gitlab::Redis::HLL)
+      .to receive(:add).with(hash_including(key: a_string_including(id)))
     end
 
     # allow other method calls in addition to the expected one
-    allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+    allow(Gitlab::Redis::HLL).to receive(:add)
 
     get method, params: request_params, format: :html
   end
@@ -22,13 +22,18 @@ RSpec.shared_examples 'tracking unique visits' do |method|
   it 'tracks unique visit if DNT is not enabled' do
     ids = target_id.instance_of?(String) ? [target_id] : target_id
 
+    allow(Gitlab::Redis::HLL).to receive(:add)
     ids.each do |id|
-      expect(Gitlab::UsageDataCounters::HLLRedisCounter)
-      .to receive(:track_event).with(id, hash_including(values: anything))
+      expect(Gitlab::Redis::HLL)
+        .to receive(:add)
+          .with(hash_including(
+            key: a_string_including(id),
+            value: anything
+          ))
     end
 
     # allow other method calls in addition to the expected one
-    allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
+    allow(Gitlab::Redis::HLL).to receive(:add)
 
     stub_do_not_track('0')
 
@@ -36,7 +41,7 @@ RSpec.shared_examples 'tracking unique visits' do |method|
   end
 
   it 'does not track unique visit if DNT is enabled' do
-    expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+    expect(Gitlab::Redis::HLL).not_to receive(:add)
 
     stub_do_not_track('1')
 
@@ -44,7 +49,7 @@ RSpec.shared_examples 'tracking unique visits' do |method|
   end
 
   it 'does not track unique visit if the format is JSON' do
-    expect(Gitlab::UsageDataCounters::HLLRedisCounter).not_to receive(:track_event)
+    expect(Gitlab::Redis::HLL).not_to receive(:add)
 
     get method, params: request_params, format: :json
   end

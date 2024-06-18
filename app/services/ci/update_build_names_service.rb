@@ -12,7 +12,7 @@ module Ci
     # rubocop: disable Database/AvoidUsingPluckWithoutLimit -- plucking on batch
     def execute
       keys = %i[build_id partition_id name project_id]
-      pipeline.latest_builds.each_batch(of: 50) do |batch|
+      pipeline.builds.latest.each_batch(of: 50) do |batch|
         builds_upsert_data =
           batch
             .pluck(:id, :partition_id, :name, :project_id)

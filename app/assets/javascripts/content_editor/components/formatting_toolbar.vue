@@ -1,5 +1,5 @@
 <script>
-import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
+import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import { __, sprintf } from '~/locale';
 import { getModifierKey } from '~/constants';
 import trackUIControl from '../services/track_ui_control';
@@ -17,7 +17,7 @@ export default {
     ToolbarTableButton,
     ToolbarAttachmentButton,
     ToolbarMoreDropdown,
-    CommentTemplatesDropdown,
+    CommentTemplatesModal,
     HeaderDivider,
   },
   inject: {
@@ -75,7 +75,7 @@ export default {
 </script>
 <template>
   <div
-    class="gl-w-full gl-py-3 gl-row-gap-2 gl-display-flex gl-align-items-center gl-flex-wrap gl-border-b gl-border-gray-100 gl-px-3 gl-rounded-top-base"
+    class="gl-w-full gl-py-3 gl-gap-y-2 gl-display-flex gl-align-items-center gl-flex-wrap gl-border-b gl-border-gray-100 gl-px-3 gl-rounded-top-base"
     data-testid="formatting-toolbar"
   >
     <div class="gl-display-flex">
@@ -153,7 +153,7 @@ export default {
       data-testid="bullet-list"
       content-type="bulletList"
       icon-name="list-bulleted"
-      class="gl-display-none gl-sm-display-inline"
+      class="gl-hidden sm:gl-inline"
       editor-command="toggleBulletList"
       :label="i18n.bulletList"
       @execute="trackToolbarControlExecution"
@@ -162,7 +162,7 @@ export default {
       data-testid="ordered-list"
       content-type="orderedList"
       icon-name="list-numbered"
-      class="gl-display-none gl-sm-display-inline"
+      class="gl-hidden sm:gl-inline"
       editor-command="toggleOrderedList"
       :label="i18n.numberedList"
       @execute="trackToolbarControlExecution"
@@ -172,12 +172,12 @@ export default {
         data-testid="task-list"
         content-type="taskList"
         icon-name="list-task"
-        class="gl-display-none gl-sm-display-inline"
+        class="gl-hidden sm:gl-inline"
         editor-command="toggleTaskList"
         :label="i18n.taskList"
         @execute="trackToolbarControlExecution"
       />
-      <div class="gl-display-none gl-sm-display-flex">
+      <div class="gl-hidden sm:gl-flex">
         <header-divider />
       </div>
     </div>
@@ -194,14 +194,14 @@ export default {
         data-testid="quick-actions"
         content-type="quickAction"
         icon-name="quick-actions"
-        class="gl-display-none gl-sm-display-inline"
+        class="gl-hidden sm:gl-inline"
         editor-command="insertQuickAction"
         :label="__('Add a quick action')"
         @execute="trackToolbarControlExecution"
       />
       <header-divider v-if="newCommentTemplatePaths.length" />
     </div>
-    <comment-templates-dropdown
+    <comment-templates-modal
       v-if="newCommentTemplatePaths.length"
       :new-comment-template-paths="newCommentTemplatePaths"
       @select="insertSavedReply"

@@ -15,6 +15,7 @@ import {
   SKIP_RETRY_MODAL_KEY,
   STAGE_VIEW,
   VIEW_TYPE_KEY,
+  POLL_INTERVAL,
 } from './constants';
 import PipelineGraph from './components/graph_component.vue';
 import GraphViewSelector from './components/graph_view_selector.vue';
@@ -129,7 +130,7 @@ export default {
         return getQueryHeaders(this.graphqlResourceEtag);
       },
       query: getPipelineDetails,
-      pollInterval: 10000,
+      pollInterval: POLL_INTERVAL,
       variables() {
         return {
           projectPath: this.pipelineProjectPath,

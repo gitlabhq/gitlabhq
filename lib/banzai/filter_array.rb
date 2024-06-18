@@ -7,7 +7,7 @@ module Banzai
     # If the preceding value does not exist, the new value is added to the end
     # of the Array.
     def insert_after(after_value, value)
-      i = index(after_value) || length - 1
+      i = index(after_value) || (length - 1)
 
       insert(i + 1, value)
     end

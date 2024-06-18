@@ -99,7 +99,7 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
     let(:list_of_projects) { [gcp_project_03, gcp_project_01, gcp_project_02] }
 
     let(:next_page_token) { nil }
-    let(:operation) { double('projects': list_of_projects, 'next_page_token': next_page_token) }
+    let(:operation) { double(projects: list_of_projects, next_page_token: next_page_token) }
 
     it 'calls Google Api CloudResourceManagerService#list_projects' do
       expect_any_instance_of(Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService)
@@ -148,25 +148,25 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
       mock_body = []
 
       expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
-                                                                 .with({ 'role': 'roles/iam.serviceAccountUser', 'members': ["serviceAccount:#{mock_email}"] })
+                                                                 .with({ role: 'roles/iam.serviceAccountUser', members: ["serviceAccount:#{mock_email}"] })
 
       expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
-                                                                 .with({ 'role': 'roles/artifactregistry.admin', 'members': ["serviceAccount:#{mock_email}"] })
+                                                                 .with({ role: 'roles/artifactregistry.admin', members: ["serviceAccount:#{mock_email}"] })
 
       expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
-                                                                 .with({ 'role': 'roles/cloudbuild.builds.builder', 'members': ["serviceAccount:#{mock_email}"] })
+                                                                 .with({ role: 'roles/cloudbuild.builds.builder', members: ["serviceAccount:#{mock_email}"] })
 
       expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
-                                                                 .with({ 'role': 'roles/run.admin', 'members': ["serviceAccount:#{mock_email}"] })
+                                                                 .with({ role: 'roles/run.admin', members: ["serviceAccount:#{mock_email}"] })
 
       expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
-                                                                 .with({ 'role': 'roles/storage.admin', 'members': ["serviceAccount:#{mock_email}"] })
+                                                                 .with({ role: 'roles/storage.admin', members: ["serviceAccount:#{mock_email}"] })
 
       expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
-                                                                 .with({ 'role': 'roles/cloudsql.client', 'members': ["serviceAccount:#{mock_email}"] })
+                                                                 .with({ role: 'roles/cloudsql.client', members: ["serviceAccount:#{mock_email}"] })
 
       expect(Google::Apis::CloudresourcemanagerV1::Binding).to receive(:new)
-                                                                 .with({ 'role': 'roles/browser', 'members': ["serviceAccount:#{mock_email}"] })
+                                                                 .with({ role: 'roles/browser', members: ["serviceAccount:#{mock_email}"] })
 
       expect(Google::Apis::CloudresourcemanagerV1::SetIamPolicyRequest).to receive(:new).and_return([])
 

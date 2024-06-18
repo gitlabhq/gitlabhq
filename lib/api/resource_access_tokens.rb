@@ -142,9 +142,9 @@ module API
           requires :id, type: String, desc: "The #{source_type} ID"
           requires :token_id, type: String, desc: "The ID of the token"
           optional :expires_at,
-                   type: Date,
-                   desc: "The expiration date of the token",
-                   documentation: { example: '2021-01-31' }
+            type: Date,
+            desc: "The expiration date of the token",
+            documentation: { example: '2021-01-31' }
         end
         post ':id/access_tokens/:token_id/rotate' do
           resource = find_source(source_type, params[:id])

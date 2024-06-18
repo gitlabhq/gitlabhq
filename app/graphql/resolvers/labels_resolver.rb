@@ -12,6 +12,10 @@ module Resolvers
       required: false,
       description: 'Search term to find labels with.'
 
+    argument :search_in, [Types::Issuables::Labels::SearchFieldListEnum],
+      default_value: [:title, :description],
+      description: 'Specify which fields to search in.'
+
     argument :include_ancestor_groups, GraphQL::Types::Boolean,
       required: false,
       description: 'Include labels from ancestor groups.',

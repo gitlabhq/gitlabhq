@@ -15,8 +15,8 @@ class SnippetInputAction
 
   validates :action, inclusion: { in: ACTIONS, message: "%{value} is not a valid action" }
   validates :previous_path, presence: true, if: :move_action?
-  validates :file_path, presence: true, if: -> (action) { action.update_action? || action.delete_action? }
-  validates :content, presence: true, if: -> (action) { action.create_action? || action.update_action? }
+  validates :file_path, presence: true, if: ->(action) { action.update_action? || action.delete_action? }
+  validates :content, presence: true, if: ->(action) { action.create_action? || action.update_action? }
   validate :ensure_same_file_path_and_previous_path, if: :update_action?
   validate :ensure_different_file_path_and_previous_path, if: :move_action?
   validate :ensure_allowed_action

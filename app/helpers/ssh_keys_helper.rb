@@ -5,21 +5,21 @@ module SshKeysHelper
     title = _('Delete Key')
 
     {
-        path: path,
-        method: 'delete',
-        testid: 'delete-ssh-key-button',
-        title: title,
-        aria_label: title,
-        modal_attributes: {
-            'data-testid': 'ssh-key-delete-modal',
-            title: _('Are you sure you want to delete this SSH key?'),
-            message: _('This action cannot be undone, and will permanently delete the %{key} SSH key') % { key: key.title },
-            okVariant: 'danger',
-            okTitle: _('Delete')
-        },
-        toggle: 'tooltip',
-        placement: 'top',
-        container: 'body'
+      path: path,
+      method: 'delete',
+      testid: 'delete-ssh-key-button',
+      title: title,
+      aria_label: title,
+      modal_attributes: {
+        'data-testid': 'ssh-key-delete-modal',
+        title: _('Are you sure you want to delete this SSH key?'),
+        message: _('This action cannot be undone, and will permanently delete the %{key} SSH key') % { key: key.title },
+        okVariant: 'danger',
+        okTitle: _('Delete')
+      },
+      toggle: 'tooltip',
+      placement: 'top',
+      container: 'body'
     }
   end
 
@@ -27,19 +27,19 @@ module SshKeysHelper
     title = _('Revoke Key')
 
     {
-        path: path,
-        method: 'delete',
-        title: title,
-        aria_label: title,
-        modal_attributes: {
-            title: _('Are you sure you want to revoke this SSH key?'),
-            message: _('This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified.') % { key: key.title },
-            okVariant: 'danger',
-            okTitle: _('Revoke')
-        },
-        toggle: 'tooltip',
-        placement: 'top',
-        container: 'body'
+      path: path,
+      method: 'delete',
+      title: title,
+      aria_label: title,
+      modal_attributes: {
+        title: _('Are you sure you want to revoke this SSH key?'),
+        message: _('This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified.') % { key: key.title },
+        okVariant: 'danger',
+        okTitle: _('Revoke')
+      },
+      toggle: 'tooltip',
+      placement: 'top',
+      container: 'body'
     }
   end
 

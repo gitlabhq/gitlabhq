@@ -8,18 +8,18 @@ import (
 
 func TestReferencesStore(t *testing.T) {
 	const (
-		docId = 1
-		refId = 3
+		docID = 1
+		refID = 3
 	)
 
 	r, err := NewReferences()
 	require.NoError(t, err)
 
-	err = r.Store(refId, []Item{{Line: 2, DocId: docId}, {Line: 3, DocId: docId}})
+	err = r.Store(refID, []Item{{Line: 2, DocID: docID}, {Line: 3, DocID: docID}})
 	require.NoError(t, err)
 
-	docs := map[ID]string{docId: "doc.go"}
-	serializedReferences := r.For(docs, refId)
+	docs := map[ID]string{docID: "doc.go"}
+	serializedReferences := r.For(docs, refID)
 
 	require.Contains(t, serializedReferences, SerializedReference{Path: "doc.go#L2"})
 	require.Contains(t, serializedReferences, SerializedReference{Path: "doc.go#L3"})
@@ -28,16 +28,16 @@ func TestReferencesStore(t *testing.T) {
 }
 
 func TestReferencesStoreEmpty(t *testing.T) {
-	const refId = 3
+	const refID = 3
 
 	r, err := NewReferences()
 	require.NoError(t, err)
 
-	err = r.Store(refId, []Item{})
+	err = r.Store(refID, []Item{})
 	require.NoError(t, err)
 
 	docs := map[ID]string{1: "doc.go"}
-	serializedReferences := r.For(docs, refId)
+	serializedReferences := r.For(docs, refID)
 
 	require.Nil(t, serializedReferences)
 	require.NoError(t, r.Close())

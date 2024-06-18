@@ -58,7 +58,7 @@ export default {
       return {
         'gl-display-none': true,
         'gl-display-flex': this.tagCount === 1,
-        'gl-md-display-flex!': this.tagCount > 1,
+        'md:!gl-flex': this.tagCount > 1,
         'gl-mr-2': index !== this.tagsToRender.length - 1,
         'gl-ml-3': !this.hideLabel && index === 0,
       };
@@ -71,7 +71,7 @@ export default {
   <div class="gl-display-flex gl-align-items-center">
     <div v-if="!hideLabel" data-testid="tagLabel" class="gl-display-flex gl-align-items-center">
       <gl-icon name="labels" class="gl-text-gray-500 gl-mr-3" />
-      <span class="gl-font-weight-bold">{{ tagsDisplay }}</span>
+      <span class="gl-font-bold">{{ tagsDisplay }}</span>
     </div>
 
     <gl-badge
@@ -91,7 +91,7 @@ export default {
       variant="muted"
       :title="moreTagsTooltip"
       size="sm"
-      class="gl-display-none gl-md-display-flex gl-ml-2"
+      class="gl-hidden md:gl-flex gl-ml-2"
       ><gl-sprintf :message="__('+%{tags} more')">
         <template #tags>
           {{ moreTagsDisplay }}
@@ -103,7 +103,7 @@ export default {
       v-if="moreTagsDisplay && hideLabel"
       data-testid="moreBadge"
       variant="muted"
-      class="gl-md-display-none gl-ml-2"
+      class="md:gl-hidden gl-ml-2"
       >{{ tagsDisplay }}</gl-badge
     >
   </div>

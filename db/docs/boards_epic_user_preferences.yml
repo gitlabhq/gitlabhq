@@ -4,15 +4,10 @@ classes:
 - Boards::EpicUserPreference
 feature_categories:
 - portfolio_management
-description: The epic_ids used to create swimlanes on issue boards; stored per user,
-  per board
+description: The epic_ids used to create swimlanes on issue boards; stored per user, per board
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40360
 milestone: '13.4'
 gitlab_schema: gitlab_main_cell
-allow_cross_joins:
-- gitlab_main_clusterwide
-allow_cross_transactions:
-- gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 desired_sharding_key:
@@ -24,3 +19,4 @@ desired_sharding_key:
         table: epics
         sharding_key: group_id
         belongs_to: epic
+desired_sharding_key_migration_job_name: BackfillBoardsEpicUserPreferencesGroupId

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting dependency proxy image ttl policy for a group', feature_category: :dependency_proxy do
+RSpec.describe 'getting dependency proxy image ttl policy for a group', feature_category: :virtual_registry do
   using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 

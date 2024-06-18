@@ -34,13 +34,13 @@
       }
     }
 
-    &.smoke { background-color: $gray-light; }
+    &.smoke { background-color: $gray-10; }
 
     &:last-child {
       border-bottom: 0;
 
       &.bottom {
-        background: $gray-light;
+        background: $gray-10;
       }
     }
 
@@ -160,7 +160,7 @@ ul.content-list {
     }
 
     &.list-placeholder {
-      background-color: $gray-light;
+      background-color: $gray-10;
       border: dotted 1px $gray-50;
       margin: 1px 0;
       min-height: 52px;

@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsNotesImporter, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestsNotesImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started) }
   let_it_be(:merge_request_1) { create(:merge_request, source_project: project) }
   let_it_be(:merge_request_2) { create(:merge_request, source_project: project, source_branch: 'other-branch') }
 
   subject(:importer) { described_class.new(project) }
 
-  describe '#execute', :clean_gitlab_redis_cache do
+  describe '#execute' do
     it 'imports the notes from each merge request in parallel' do
       expect(Gitlab::BitbucketImport::ImportPullRequestNotesWorker).to receive(:perform_in).twice
 

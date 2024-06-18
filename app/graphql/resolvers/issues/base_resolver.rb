@@ -24,10 +24,10 @@ module Resolvers
         description: 'Username of the author of the issue.'
       argument :closed_after, Types::TimeType,
         required: false,
-        description: 'Issues closed after this date.'
+        description: 'Issues closed after the date.'
       argument :closed_before, Types::TimeType,
         required: false,
-        description: 'Issues closed before this date.'
+        description: 'Issues closed before the date.'
       argument :confidential,
         GraphQL::Types::Boolean,
         required: false,
@@ -35,10 +35,10 @@ module Resolvers
                      'If "true", returns only confidential issues.'
       argument :created_after, Types::TimeType,
         required: false,
-        description: 'Issues created after this date.'
+        description: 'Issues created after the date.'
       argument :created_before, Types::TimeType,
         required: false,
-        description: 'Issues created before this date.'
+        description: 'Issues created before the date.'
       argument :crm_contact_id, GraphQL::Types::String,
         required: false,
         description: 'ID of a contact assigned to the issues.'
@@ -53,10 +53,10 @@ module Resolvers
         description: 'List of IIDs of issues. For example, `["1", "2"]`.'
       argument :label_name, [GraphQL::Types::String, { null: true }],
         required: false,
-        description: 'Labels applied to this issue.'
+        description: 'Labels applied to the issue.'
       argument :milestone_title, [GraphQL::Types::String, { null: true }],
         required: false,
-        description: 'Milestone applied to this issue.'
+        description: 'Milestone applied to the issue.'
       argument :milestone_wildcard_id, ::Types::MilestoneWildcardIdEnum,
         required: false,
         description: 'Filter issues by milestone ID wildcard.'
@@ -76,10 +76,10 @@ module Resolvers
         required: false
       argument :updated_after, Types::TimeType,
         required: false,
-        description: 'Issues updated after this date.'
+        description: 'Issues updated after the date.'
       argument :updated_before, Types::TimeType,
         required: false,
-        description: 'Issues updated before this date.'
+        description: 'Issues updated before the date.'
 
       validates mutually_exclusive: [:assignee_usernames, :assignee_username, :assignee_wildcard_id]
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
@@ -104,11 +104,6 @@ module Resolvers
       end
 
       def ready?(**args)
-        if args[:or].present? && or_issuable_queries_disabled?
-          raise ::Gitlab::Graphql::Errors::ArgumentError,
-            "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
-        end
-
         args[:not] = args[:not].to_h if args[:not]
         args[:or] = args[:or].to_h if args[:or]
 
@@ -116,14 +111,6 @@ module Resolvers
       end
 
       private
-
-      def or_issuable_queries_disabled?
-        if respond_to?(:resource_parent, true)
-          ::Feature.disabled?(:or_issuable_queries, resource_parent)
-        else
-          ::Feature.disabled?(:or_issuable_queries)
-        end
-      end
 
       def prepare_finder_params(args)
         params = super(args)

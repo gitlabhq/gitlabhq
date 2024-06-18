@@ -11,7 +11,7 @@ class BlobEntity < Grape::Entity
     IconsHelper.file_type_icon_class('file', blob.mode, blob.name)
   end
 
-  expose :url, if: -> (*) { request.respond_to?(:ref) } do |blob|
+  expose :url, if: ->(*) { request.respond_to?(:ref) } do |blob|
     project_blob_path(request.project, File.join(request.ref, blob.path))
   end
 end

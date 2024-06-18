@@ -122,6 +122,7 @@ tree:
         - label:
           - :priorities
     - :service_desk_setting
+    - :user_contributions
   group_members:
     - :user
 
@@ -146,6 +147,10 @@ included_attributes:
     - :id
     - :public_email
     - :username
+  user_contributions:
+    - :public_email
+    - :username
+    - :name
   author:
     - :name
   approvals:
@@ -844,7 +849,7 @@ excluded_attributes:
     - :max_artifacts_size
     - :marked_for_deletion_at
     - :marked_for_deletion_by_user_id
-    - :compliance_framework_setting
+    - :compliance_framework_settings
     - :show_default_award_emojis
     - :warn_about_potentially_unwanted_characters
     - :enforce_auth_checks_on_uploads

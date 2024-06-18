@@ -267,7 +267,7 @@ module Projects
 
     def update_integrations
       project.integrations.with_default_settings.delete_all
-      Integration.create_from_active_default_integrations(project, :project_id)
+      Integration.create_from_default_integrations(project, :project_id)
     end
 
     def update_pending_builds
@@ -275,10 +275,7 @@ module Projects
     end
 
     def pending_builds_params
-      {
-        namespace_id: new_namespace.id,
-        namespace_traversal_ids: new_namespace.traversal_ids
-      }
+      ::Ci::PendingBuild.namespace_transfer_params(new_namespace)
     end
 
     def remove_issue_contacts

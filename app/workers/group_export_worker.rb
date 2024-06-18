@@ -14,6 +14,13 @@ class GroupExportWorker # rubocop:disable Scalability/IdempotentWorker
     current_user = User.find(current_user_id)
     group = Group.find(group_id)
 
-    ::Groups::ImportExport::ExportService.new(group: group, user: current_user, params: params).execute
+    params.symbolize_keys!
+
+    ::Groups::ImportExport::ExportService.new(
+      group: group,
+      user: current_user,
+      exported_by_admin: params.delete(:exported_by_admin),
+      params: params
+    ).execute
   end
 end

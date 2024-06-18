@@ -13,7 +13,7 @@ module Gitlab
     end
 
     def identify
-      super(identifier)
+      super(identifier) || identify_using_deploy_key(identifier)&.user
     end
 
     def includes_branches?

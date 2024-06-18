@@ -3,7 +3,6 @@
 module Ci
   module Partitions
     class CreateService
-      MAX_PARTITION_SIZE = 100.gigabytes
       HEADROOM_PARTITIONS = 3
 
       def initialize(partition)
@@ -26,7 +25,7 @@ module Ci
       end
 
       def above_threshold?
-        partition.above_threshold?(MAX_PARTITION_SIZE)
+        partition.above_threshold?(Ci::Partition::MAX_PARTITION_SIZE)
       end
 
       def headroom_available?

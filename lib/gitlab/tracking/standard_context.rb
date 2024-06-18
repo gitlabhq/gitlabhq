@@ -64,8 +64,8 @@ module Gitlab
       def check_argument_type(argument_name, argument_value, allowed_classes)
         return if argument_value.nil? || allowed_classes.any? { |allowed_class| argument_value.is_a?(allowed_class) }
 
-        exception = "Invalid argument type passed for #{argument_name}." \
-          " Should be one of #{allowed_classes.map(&:to_s)}"
+        exception = "Invalid argument type passed for #{argument_name}. " \
+          "Should be one of #{allowed_classes.map(&:to_s)}"
         Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ArgumentError.new(exception))
       end
 

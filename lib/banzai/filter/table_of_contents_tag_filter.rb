@@ -2,45 +2,42 @@
 
 module Banzai
   module Filter
-    # Using `[[_TOC_]]` or `[TOC]` (both case insensitive), inserts a Table of Contents list.
+    # Using `[[_TOC_]]` or `[TOC]` (both case insensitive) on it's own line,
+    # inserts a Table of Contents list.
     #
     # `[[_TOC_]]` is based on the Gollum syntax. This way we have
-    # some consistency between with wiki and normal markdown.
-    # The support for this has been removed from GollumTagsFilter
+    # some consistency between wiki and normal markdown.
+    # Parser will have converted it into a wikilink.
     #
     # `[toc]` is a generally accepted form, used by Typora for example.
     #
     # Based on Banzai::Filter::GollumTagsFilter
     class TableOfContentsTagFilter < HTML::Pipeline::Filter
-      TEXT_QUERY = %q(descendant-or-self::text()[ancestor::p and contains(translate(., 'TOC', 'toc'), 'toc')])
+      OR_SELF = 'descendant-or-self::text()'
+      TOC_QUERY = %(#{OR_SELF}[ancestor::p and starts-with(translate(., '[TOC]', '[toc]'), '[toc]')]).freeze
+      GOLLUM_TOC_QUERY =
+        %(#{OR_SELF}[ancestor::a[@data-wikilink="true"] and starts-with(translate(., '_TOC_', '_toc_'), '_toc_')])
+        .freeze
 
       HEADER_CSS   = 'h1, h2, h3, h4, h5, h6'
       HEADER_XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(HEADER_CSS).freeze
 
       def call
+        return doc unless MarkdownFilter.glfm_markdown?(context)
         return doc if context[:no_header_anchors]
 
-        doc.xpath(TEXT_QUERY).each do |node|
-          if toc_tag?(node)
-            # Support [TOC] / [toc] tags, which don't have a wrapping <em>-tag
-            process_toc_tag(node)
-          elsif toc_tag_em?(node)
-            # Support Gollum like ToC tag (`[[_TOC_]]` / `[[_toc_]]`), which will be converted
-            # into `[[<em>TOC</em>]]` by the markdown filter, so it
-            # needs special-case handling
-            process_toc_tag_em(node)
-          end
+        doc.xpath(GOLLUM_TOC_QUERY).each do |node|
+          process_toc_tag(node.parent) if toc_tag_gollum?(node)
+        end
+
+        doc.xpath(TOC_QUERY).each do |node|
+          process_toc_tag(node)
         end
 
         doc
       end
 
       private
-
-      # Replace an entire `[[<em>TOC</em>]]` node
-      def process_toc_tag_em(node)
-        process_toc_tag(node.parent)
-      end
 
       # Replace an entire `[TOC]` node
       def process_toc_tag(node)
@@ -50,14 +47,8 @@ module Banzai
         node.parent.replace(result[:toc].presence || '')
       end
 
-      def toc_tag_em?(node)
-        node.content.casecmp?('toc') &&
-          node.parent.name == 'em' &&
-          node.parent.parent.text.casecmp?('[[toc]]')
-      end
-
-      def toc_tag?(node)
-        node.parent.text.casecmp?('[toc]')
+      def toc_tag_gollum?(node)
+        node.parent.parent.name == 'p' && node.parent.parent.text.casecmp?('_toc_')
       end
 
       def build_toc

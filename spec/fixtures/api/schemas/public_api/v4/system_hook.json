@@ -12,7 +12,8 @@
     "alert_status",
     "disabled_until",
     "url_variables",
-    "custom_webhook_template"
+    "custom_webhook_template",
+    "custom_headers"
   ],
   "properties": {
     "id": {
@@ -85,6 +86,21 @@
         "string",
         "null"
       ]
+    },
+    "custom_headers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          }
+        }
+      }
     }
   },
   "additionalProperties": false

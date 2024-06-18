@@ -1,4 +1,11 @@
-import { GlAlert, GlCollapsibleListbox, GlButton } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlCollapsibleListbox,
+  GlButton,
+  GlFormGroup,
+  GlSprintf,
+  GlLink,
+} from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
@@ -36,7 +43,7 @@ describe('~/environments/components/namespace_selector.vue', () => {
 
   const closeMock = jest.fn();
 
-  const createWrapper = ({ propsData = {}, queryResult = null } = {}) => {
+  const createWrapper = ({ propsData = {}, queryResult = null, stubs = {} } = {}) => {
     Vue.use(VueApollo);
 
     const mockResolvers = {
@@ -57,6 +64,7 @@ describe('~/environments/components/namespace_selector.vue', () => {
             close: closeMock,
           },
         }),
+        ...stubs,
       },
       apolloProvider: createMockApollo([], mockResolvers),
     });
@@ -111,6 +119,25 @@ describe('~/environments/components/namespace_selector.vue', () => {
           value: 'test-agent',
         },
       ]);
+    });
+
+    it('renders description', () => {
+      wrapper = createWrapper({
+        stubs: {
+          GlFormGroup: stubComponent(GlFormGroup, {
+            template: `<div><slot name="description"></slot></div>`,
+          }),
+          GlSprintf,
+        },
+      });
+      const link = wrapper.findComponent(GlLink);
+
+      expect(wrapper.text()).toBe(
+        'No selection shows all authorized resources in the cluster. Learn more.',
+      );
+      expect(link.attributes('target')).toBe('_blank');
+      expect(link.attributes('href')).toBe('/help/user/clusters/agent/index.md');
+      expect(link.text()).toBe('Learn more.');
     });
 
     it('filters the namespaces list on user search', async () => {

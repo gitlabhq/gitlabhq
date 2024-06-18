@@ -8,8 +8,8 @@ module Gitlab
         # Entry that represents a CI/CD variable.
         #
         class Variable < ::Gitlab::Config::Entry::Simplifiable
-          strategy :SimpleVariable, if: -> (config) { SimpleVariable.applies_to?(config) }
-          strategy :ComplexVariable, if: -> (config) { ComplexVariable.applies_to?(config) }
+          strategy :SimpleVariable, if: ->(config) { SimpleVariable.applies_to?(config) }
+          strategy :ComplexVariable, if: ->(config) { ComplexVariable.applies_to?(config) }
 
           class SimpleVariable < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable

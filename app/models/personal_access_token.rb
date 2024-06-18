@@ -29,19 +29,19 @@ class PersonalAccessToken < ApplicationRecord
   scope :expiring_and_not_notified, ->(date) { where(["revoked = false AND expire_notification_delivered = false AND expires_at >= CURRENT_DATE AND expires_at <= ?", date]) }
   scope :expired_today_and_not_notified, -> { where(["revoked = false AND expires_at = CURRENT_DATE AND after_expiry_notification_delivered = false"]) }
   scope :inactive, -> { where("revoked = true OR expires_at < CURRENT_DATE") }
-  scope :last_used_before_or_unused, -> (date) { where("personal_access_tokens.created_at < :date AND (last_used_at < :date OR last_used_at IS NULL)", date: date) }
+  scope :last_used_before_or_unused, ->(date) { where("personal_access_tokens.created_at < :date AND (last_used_at < :date OR last_used_at IS NULL)", date: date) }
   scope :with_impersonation, -> { where(impersonation: true) }
   scope :without_impersonation, -> { where(impersonation: false) }
   scope :revoked, -> { where(revoked: true) }
   scope :not_revoked, -> { where(revoked: [false, nil]) }
-  scope :for_user, -> (user) { where(user: user) }
-  scope :for_users, -> (users) { where(user: users) }
+  scope :for_user, ->(user) { where(user: user) }
+  scope :for_users, ->(users) { where(user: users) }
   scope :preload_users, -> { preload(:user) }
   scope :order_expires_at_asc_id_desc, -> { reorder(expires_at: :asc, id: :desc) }
   scope :project_access_token, -> { includes(:user).references(:user).merge(User.project_bot) }
   scope :owner_is_human, -> { includes(:user).references(:user).merge(User.human) }
-  scope :last_used_before, -> (date) { where("last_used_at <= ?", date) }
-  scope :last_used_after, -> (date) { where("last_used_at >= ?", date) }
+  scope :last_used_before, ->(date) { where("last_used_at <= ?", date) }
+  scope :last_used_after, ->(date) { where("last_used_at >= ?", date) }
   scope :expiring_and_not_notified_without_impersonation, -> { where(["(revoked = false AND expire_notification_delivered = false AND expires_at >= CURRENT_DATE AND expires_at <= :date) and impersonation = false", { date: DAYS_TO_EXPIRE.days.from_now.to_date }]) }
 
   validates :scopes, presence: true

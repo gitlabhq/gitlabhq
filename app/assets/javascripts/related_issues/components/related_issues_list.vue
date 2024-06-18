@@ -97,10 +97,7 @@ export default {
 
 <template>
   <div :data-link-type="listLinkType">
-    <h4
-      v-if="heading"
-      class="gl-font-sm gl-font-weight-semibold gl-text-gray-700 gl-mx-2 gl-mt-3 gl-mb-2"
-    >
+    <h4 v-if="heading" class="gl-font-sm gl-font-semibold gl-text-gray-700 gl-mx-2 gl-mt-3 gl-mb-2">
       {{ heading }}
     </h4>
     <div class="related-issues-token-body" :class="{ 'sortable-container': canReorder }">
@@ -147,7 +144,7 @@ export default {
             :work-item-type="issue.type"
             event-namespace="relatedIssue"
             data-testid="related-issuable-content"
-            class="gl-mx-n2"
+            class="-gl-mx-2"
             @relatedIssueRemoveRequest="$emit('relatedIssueRemoveRequest', $event)"
           />
         </li>

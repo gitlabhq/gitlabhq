@@ -62,7 +62,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
         end
 
         context 'when created by an admin' do
-          let(:user) { create(:admin, :without_default_org) }
+          let(:user) { create(:admin) }
 
           context 'when admin mode is enabled', :enable_admin_mode do
             it_behaves_like 'creates a user that has their email confirmed'

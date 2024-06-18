@@ -142,6 +142,58 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
       end
     end
 
+    context 'when early_access_program_joined_by_id is updated' do
+      let(:is_participating) { false }
+      let!(:namespace_settings) do
+        group.namespace_settings.update!(early_access_program_participant: is_participating)
+        group.namespace_settings
+      end
+
+      context 'with true' do
+        let(:settings) { { early_access_program_participant: true } }
+
+        context 'with previously unset' do
+          it 'sets early_access_program_joined_by' do
+            expect { service.execute }
+              .to change { namespace_settings.early_access_program_participant }.from(false).to(true)
+              .and change { namespace_settings.early_access_program_joined_by_id }.from(nil).to(user.id)
+          end
+        end
+
+        context 'with previously true' do
+          let(:is_participating) { true }
+
+          it "doesn't change early_access_program_joined_by" do
+            expect { service.execute }
+              .to not_change { namespace_settings.early_access_program_participant }
+              .and not_change { namespace_settings.early_access_program_joined_by_id }
+          end
+        end
+      end
+
+      context 'with false' do
+        let(:settings) { { early_access_program_participant: false } }
+
+        context 'with previously unset' do
+          it "doesn't change early_access_program_joined_by" do
+            expect { service.execute }
+              .to not_change { namespace_settings.early_access_program_participant }
+              .and not_change { namespace_settings.early_access_program_joined_by_id }
+          end
+        end
+
+        context 'with previously true' do
+          let(:is_participating) { true }
+
+          it "doesn't change early_access_program_joined_by" do
+            expect { service.execute }
+              .to change { namespace_settings.early_access_program_participant }.from(true).to(false)
+              .and not_change { namespace_settings.early_access_program_joined_by_id }
+          end
+        end
+      end
+    end
+
     context "updating :resource_access_token_creation_allowed" do
       let(:settings) { { resource_access_token_creation_allowed: false } }
 

@@ -321,6 +321,25 @@ describe('InputCopyToggleVisibility', () => {
         });
       });
     });
+
+    describe('and the input is invalid', () => {
+      beforeEach(() => {
+        createComponent({
+          props: {
+            value: '',
+            readonly: false,
+            formInputGroupProps: { state: false },
+          },
+          attrs: {
+            'invalid-feedback': 'Oh no, something is invalid',
+          },
+        });
+      });
+
+      it('should add class to force validation message visibility', () => {
+        expect(wrapper.classes('input-copy-toggle-visibility-is-invalid')).toBe(true);
+      });
+    });
   });
 
   describe('when `showToggleVisibilityButton` is `false`', () => {

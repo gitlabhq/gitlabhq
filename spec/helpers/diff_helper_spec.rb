@@ -47,12 +47,6 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
   end
 
   describe 'diff_options' do
-    let(:large_notebooks_enabled) { false }
-
-    before do
-      stub_feature_flags(large_ipynb_diffs: large_notebooks_enabled)
-    end
-
     it 'returns no collapse false' do
       expect(diff_options).to include(expanded: false)
     end
@@ -90,18 +84,8 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
           allow(controller).to receive(:params) { { file_identifier: 'something.ipynb' } }
         end
 
-        context 'when large_ipynb_diffs is disabled' do
-          it 'does not set max_patch_bytes_for_file_extension' do
-            expect(diff_options[:max_patch_bytes_for_file_extension]).to be_nil
-          end
-        end
-
-        context 'when large_ipynb_diffs is enabled' do
-          let(:large_notebooks_enabled) { true }
-
-          it 'sets max_patch_bytes_for_file_extension' do
-            expect(diff_options[:max_patch_bytes_for_file_extension]).to eq({ '.ipynb' => 1.megabyte })
-          end
+        it 'sets max_patch_bytes_for_file_extension' do
+          expect(diff_options[:max_patch_bytes_for_file_extension]).to eq({ '.ipynb' => 1.megabyte })
         end
       end
     end

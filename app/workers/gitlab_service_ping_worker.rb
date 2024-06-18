@@ -21,7 +21,6 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
     #
     # See https://github.com/mperham/sidekiq/issues/2372
     triggered_from_cron = options.fetch('triggered_from_cron', true)
-    skip_db_write = options.fetch('skip_db_write', false)
 
     # Disable service ping for GitLab.com unless called manually
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/292929 for details
@@ -32,7 +31,7 @@ class GitlabServicePingWorker # rubocop:disable Scalability/IdempotentWorker
       # Splay the request over a minute to avoid thundering herd problems.
       sleep(rand(0.0..60.0).round(3))
 
-      ServicePing::SubmitService.new(payload: usage_data, skip_db_write: skip_db_write).execute
+      ServicePing::SubmitService.new(payload: usage_data).execute
     end
   end
 

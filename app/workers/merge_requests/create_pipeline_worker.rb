@@ -10,12 +10,14 @@ module MergeRequests
     include PipelineQueue
 
     queue_namespace :pipeline_creation
-    feature_category :continuous_integration
+    feature_category :pipeline_composition
     urgency :high
     worker_resource_boundary :cpu
     idempotent!
 
     def perform(project_id, user_id, merge_request_id, params = {})
+      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464679')
+
       project = Project.find_by_id(project_id)
       return unless project
 

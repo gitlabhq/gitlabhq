@@ -1,6 +1,5 @@
 - action = current_action?(:edit, :update) ? 'edit' : 'create'
-- file_name = params[:id].split("/").last ||= ""
-- is_markdown = Gitlab::MarkupHelper.gitlab_markdown?(file_name)
+- is_markdown = Gitlab::MarkupHelper.gitlab_markdown?(local_assigns[:path])
 
 .file-holder.file.gl-mb-3
   .js-file-title.file-title.gl-display-flex.gl-align-items-center.gl-rounded-top-base{ data: { current_action: action } }
@@ -13,7 +12,7 @@
         %span#editor_path
           = params[:id]
     - if current_action?(:edit, :update)
-      - input_options = { id: 'file_path', name: 'file_path', value: (params[:file_path] || @path), class: 'new-file-path js-file-path-name-input' }
+      - input_options = { id: 'file_path', name: 'file_path', value: params[:file_path] || @path, class: 'new-file-path js-file-path-name-input' }
       = render 'filepath_form', input_options: input_options
 
     - if current_action?(:new, :create)

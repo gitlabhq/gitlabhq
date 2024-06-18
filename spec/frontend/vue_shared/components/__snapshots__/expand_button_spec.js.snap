@@ -10,7 +10,7 @@ exports[`Expand button on click when short text is provided renders button after
   >
     <svg
       aria-hidden="true"
-      class="gl-button-icon gl-icon s16"
+      class="gl-button-icon gl-fill-current gl-icon s16"
       data-testid="ellipsis_h-icon"
       role="img"
     >
@@ -32,7 +32,7 @@ exports[`Expand button on click when short text is provided renders button after
   >
     <svg
       aria-hidden="true"
-      class="gl-button-icon gl-icon s16"
+      class="gl-button-icon gl-fill-current gl-icon s16"
       data-testid="ellipsis_h-icon"
       role="img"
     >
@@ -53,7 +53,7 @@ exports[`Expand button when short text is provided renders button before text 1`
   >
     <svg
       aria-hidden="true"
-      class="gl-button-icon gl-icon s16"
+      class="gl-button-icon gl-fill-current gl-icon s16"
       data-testid="ellipsis_h-icon"
       role="img"
     >
@@ -75,7 +75,7 @@ exports[`Expand button when short text is provided renders button before text 1`
   >
     <svg
       aria-hidden="true"
-      class="gl-button-icon gl-icon s16"
+      class="gl-button-icon gl-fill-current gl-icon s16"
       data-testid="ellipsis_h-icon"
       role="img"
     >

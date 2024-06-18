@@ -24,6 +24,7 @@ export const REPORT_TYPE_BREACH_AND_ATTACK_SIMULATION = 'breach_and_attack_simul
 export const REPORT_TYPE_SECRET_DETECTION = 'secret_detection';
 export const REPORT_TYPE_DEPENDENCY_SCANNING = 'dependency_scanning';
 export const REPORT_TYPE_CONTAINER_SCANNING = 'container_scanning';
+export const REPORT_TYPE_CONTAINER_SCANNING_FOR_REGISTRY = 'container_scanning_for_registry';
 export const REPORT_TYPE_CLUSTER_IMAGE_SCANNING = 'cluster_image_scanning';
 export const REPORT_TYPE_COVERAGE_FUZZING = 'coverage_fuzzing';
 export const REPORT_TYPE_CORPUS_MANAGEMENT = 'corpus_management';

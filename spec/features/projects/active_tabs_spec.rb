@@ -20,8 +20,10 @@ RSpec.describe 'Project active tab', :js, feature_category: :groups_and_projects
     it 'activates Project scope menu' do
       visit project_path(project)
 
-      expect(page).to have_selector('a[aria-current="page"]', count: 1)
-      expect(find('a[aria-current="page"]')).to have_content(project.name)
+      within_testid('super-sidebar') do
+        expect(page).to have_selector('a[aria-current="page"]', count: 1)
+        expect(find('a[aria-current="page"]')).to have_content(project.name)
+      end
     end
   end
 

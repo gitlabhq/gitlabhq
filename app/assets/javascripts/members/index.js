@@ -5,7 +5,7 @@ import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseDataAttributes } from '~/members/utils';
-import { TABS } from 'ee_else_ce/members/constants';
+import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersTabs from './components/members_tabs.vue';
 import membersStore from './store';
 
@@ -28,6 +28,8 @@ export const initMembersApp = (el, options) => {
     groupName,
     groupPath,
     manageMemberRolesPath,
+    canApproveAccessRequests,
+    namespaceUserLimit,
     ...vuexStoreAttributes
   } = parseDataAttributes(el);
 
@@ -63,6 +65,8 @@ export const initMembersApp = (el, options) => {
       canExportMembers,
       exportCsvPath,
       manageMemberRolesPath,
+      canApproveAccessRequests,
+      namespaceUserLimit,
       group: {
         name: groupName,
         path: groupPath,

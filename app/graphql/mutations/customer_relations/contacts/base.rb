@@ -8,9 +8,9 @@ module Mutations
         include Gitlab::Graphql::Authorize::AuthorizeResource
 
         field :contact,
-              Types::CustomerRelations::ContactType,
-              null: true,
-              description: 'Contact after the mutation.'
+          Types::CustomerRelations::ContactType,
+          null: true,
+          description: 'Contact after the mutation.'
 
         authorize :admin_crm_contact
 

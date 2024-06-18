@@ -80,6 +80,26 @@ module Referable
       raise NotImplementedError, "#{self} does not implement #{__method__}"
     end
 
+    def project_or_group_link_reference_pattern(route, parent_pattern, item_pattern)
+      %r{
+        (?<url>
+          #{Regexp.escape(Gitlab.config.gitlab.url)}
+          \/(groups\/)?#{parent_pattern}
+          (?:\/\-)?
+          \/#{route.is_a?(Regexp) ? route : Regexp.escape(route)}
+          \/#{item_pattern}
+          (?<path>
+            (\/[a-z0-9_=-]+)*\/*
+          )?
+          (?<query>
+            \?[a-z0-9_=-]+
+            (&[a-z0-9_=-]+)*
+          )?
+          (?<anchor>\#[a-z0-9_-]+)?
+        )
+      }x
+    end
+
     def compose_link_reference_pattern(route, pattern)
       %r{
         (?<url>

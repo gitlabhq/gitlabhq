@@ -235,7 +235,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
         end
       rescue StandardError
         # Ensures that standard rescue does not silence errors
-      end.to raise_error /Cross-database data modification/
+      end.to raise_error(/Cross-database data modification/)
     end
   end
 
@@ -267,7 +267,7 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModificatio
 
           # the ensure of `.transaction` executes `ROLLBACK TO SAVEPOINT`
         end
-      end.to raise_error /force rollback/
+      end.to raise_error(/force rollback/)
     end
   end
 end

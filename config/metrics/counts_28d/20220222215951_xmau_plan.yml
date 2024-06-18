@@ -1,8 +1,6 @@
 ---
 key_path: counts_monthly.aggregated_metrics.xmau_plan
 description: Removed as duplicate of counts_monthly.aggregated_metrics.users_work_items
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: removed

@@ -19,7 +19,10 @@ issues:
 - sentry_issue
 - issuable_severity
 - label_links
+- own_label_links
 - labels
+- own_labels
+- sync_object
 - last_edited_by
 - todos
 - user_agent_detail
@@ -78,7 +81,9 @@ work_item_type:
 - widget_definitions
 - enabled_widget_definitions
 - child_restrictions
+- parent_restrictions
 - allowed_child_types_by_name
+- allowed_parent_types_by_name
 events:
 - author
 - project
@@ -126,6 +131,7 @@ commit_notes:
 label_links:
 - target
 - label
+- own_label
 label:
 - subscriptions
 - project
@@ -214,7 +220,6 @@ merge_requests:
 - merge_request_context_commit_diff_files
 - events
 - merge_requests_closing_issues
-- merge_requests_closing_issues_closes_work_item
 - cached_closes_issues
 - metrics
 - timelogs
@@ -643,6 +648,7 @@ project:
 - project_repository
 - users
 - maintainers
+- owners_and_maintainers
 - requesters
 - namespace_members
 - namespace_requesters
@@ -759,6 +765,7 @@ project:
 - self_managed_prometheus_alert_events
 - software_license_policies
 - software_licenses
+- custom_software_licenses
 - project_registry
 - packages
 - package_files
@@ -795,8 +802,8 @@ project:
 - export_jobs
 - daily_build_group_report_results
 - jira_imports
-- compliance_framework_setting
-- compliance_management_framework
+- compliance_framework_settings
+- compliance_management_frameworks
 - metrics_users_starred_dashboards
 - alert_management_alerts
 - repository_storage_moves
@@ -1012,7 +1019,10 @@ epic:
 - milestone
 - notes
 - label_links
+- own_label_links
 - labels
+- own_labels
+- sync_object
 - todos
 - metrics
 - group

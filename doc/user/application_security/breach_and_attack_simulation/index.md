@@ -24,7 +24,7 @@ Breach and Attack Simulation is a set of incubating features being developed by 
 
 Breach and Attack Simulation (BAS) uses additional security testing techniques to assess the risk of detected vulnerabilities and prioritize the remediation of exploitable vulnerabilities.
 
-This feature is an [Experiment](../../../policy/experiment-beta-support.md). For feedback, bug
+This feature is an [experiment](../../../policy/experiment-beta-support.md). For feedback, bug
 reports, and feature requests, see the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/404809).
 
 WARNING:

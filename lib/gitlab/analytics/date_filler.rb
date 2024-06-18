@@ -48,7 +48,7 @@ module Gitlab
     #
     # How to format the dates in the resulting hash.
     class DateFiller
-      DEFAULT_DATE_FORMATTER = -> (date) { date }
+      DEFAULT_DATE_FORMATTER = ->(date) { date }
       PERIOD_STEPS = {
         day: 1.day,
         week: 1.week,

@@ -3,17 +3,26 @@
 require 'rubocop_spec_helper'
 
 require_relative '../../../rubocop/cop/experiments_test_coverage'
+require_relative '../../support/helpers/file_read_helpers'
 
 RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisition do
+  include FileReadHelpers
+
   let(:class_offense) { described_class::CLASS_OFFENSE }
   let(:block_offense) { described_class::BLOCK_OFFENSE }
 
   before do
-    allow(File).to receive(:exist?).and_return(true)
-    allow(File).to receive(:new).and_return(instance_double(File, read: tests_code))
+    allow_next_instance_of(Parser::Source::Buffer) do |node_buffer|
+      allow(node_buffer).to receive(:name).and_return(file_path)
+    end
+
+    stub_file_read(test_file_path, content: tests_code)
   end
 
   describe '#on_class' do
+    let(:file_path) { 'app/experiments/experiment_name_experiment.rb' }
+    let(:test_file_path) { 'spec/experiments/experiment_name_experiment_spec.rb' }
+
     context 'when there are no tests' do
       let(:tests_code) { '' }
 
@@ -73,10 +82,6 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
     context 'when all tests are present' do
       let(:tests_code) do
         "#\nstub_experiments(experiment_name: :candidate, experiment_name: :third)"
-      end
-
-      before do
-        allow(cop).to receive(:filepath).and_return('app/experiments/experiment_name_experiment.rb')
       end
 
       it 'does not register an offense' do
@@ -91,6 +96,9 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
   end
 
   describe '#on_block' do
+    let(:file_path) { 'app/controllers/test_controller.rb' }
+    let(:test_file_path) { 'spec/requests/test_controller_spec.rb' }
+
     context 'when there are no tests' do
       let(:tests_code) { '' }
 
@@ -151,18 +159,36 @@ RSpec.describe RuboCop::Cop::ExperimentsTestCoverage, feature_category: :acquisi
     end
 
     context 'when all tests are present' do
+      shared_examples 'covered experiment block' do
+        it 'does not register an offense' do
+          expect_no_offenses(<<~RUBY)
+            experiment(:experiment_name) do |e|
+              e.candidate { 'candidate' }
+              e.variant(:third) { 'third option' }
+              e.run
+            end
+          RUBY
+        end
+      end
+
       let(:tests_code) do
         "#\nstub_experiments(experiment_name: :candidate, experiment_name: :third)"
       end
 
-      it 'does not register an offense' do
-        expect_no_offenses(<<~RUBY)
-          experiment(:experiment_name) do |e|
-            e.candidate { 'candidate' }
-            e.variant(:third) { 'third option' }
-            e.run
-          end
-        RUBY
+      it_behaves_like 'covered experiment block'
+
+      context 'when /lib/api folder' do
+        let(:file_path) { '/lib/api/tests.rb' }
+        let(:test_file_path) { '/spec/requests/api/tests_spec.rb' }
+
+        it_behaves_like 'covered experiment block'
+      end
+
+      context 'when *.haml file' do
+        let(:file_path) { 'app/view/show_test.html.haml' }
+        let(:test_file_path) { 'spec/view/show_test.html.haml_spec.rb' }
+
+        it_behaves_like 'covered experiment block'
       end
     end
   end

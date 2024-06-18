@@ -27,7 +27,7 @@ class DeploymentEntity < Grape::Entity
 
   expose :deployed_by, as: :user, using: UserEntity
 
-  expose :deployable, if: -> (deployment) { deployment.deployable.present? } do |deployment, opts|
+  expose :deployable, if: ->(deployment) { deployment.deployable.present? } do |deployment, opts|
     deployment.deployable.then do |deployable|
       if include_details?
         Ci::JobEntity.represent(deployable, opts)
@@ -38,10 +38,10 @@ class DeploymentEntity < Grape::Entity
     end
   end
 
-  expose :commit, using: CommitEntity, if: -> (*) { include_details? }
-  expose :manual_actions, using: Ci::JobEntity, if: -> (*) { include_details? && can_create_deployment? }
-  expose :scheduled_actions, using: Ci::JobEntity, if: -> (*) { include_details? && can_create_deployment? }
-  expose :playable_job, as: :playable_build, if: -> (deployment) { include_details? && can_create_deployment? && deployment.playable_job } do |deployment, options|
+  expose :commit, using: CommitEntity, if: ->(*) { include_details? }
+  expose :manual_actions, using: Ci::JobEntity, if: ->(*) { include_details? && can_create_deployment? }
+  expose :scheduled_actions, using: Ci::JobEntity, if: ->(*) { include_details? && can_create_deployment? }
+  expose :playable_job, as: :playable_build, if: ->(deployment) { include_details? && can_create_deployment? && deployment.playable_job } do |deployment, options|
     Ci::JobEntity.represent(deployment.playable_job, options.merge(only: [:play_path, :retry_path]))
   end
 

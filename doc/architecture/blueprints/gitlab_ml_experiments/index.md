@@ -7,19 +7,46 @@ coach: "@grzesiek"
 
 # GitLab Service-Integration: AI and Beyond
 
-This document is an abbreviated proposal for Service-Integration to allow teams within GitLab to rapidly build new application features that leverage AI, ML, and data technologies.
+This document is an abbreviated proposal for Service-Integration to allow teams
+within GitLab to rapidly build new application features that leverage AI, ML,
+and data technologies.
 
 ## Executive Summary
 
-This document proposes a service-integration approach to setting up infrastructure to allow teams within GitLab to build new application features that leverage AI, ML, and data technologies at a rapid pace. The scope of the document is limited specifically to internally hosted features, not third-party APIs. The current application architecture runs most GitLab application features in Ruby. However, many ML/AI experiments require different resources and tools, implemented in different languages, with huge libraries that do not always play nicely together, and have different hardware requirements. Adding all these features to the existing infrastructure will increase the size of the GitLab application container rapidly, resulting in slower startup times, increased number of dependencies, security risks, negatively impacting development velocity, and increasing complexity due to different hardware requirements. As an alternative, the proposal suggests adding services to avoid overloading GitLabs main workloads. These services will run independently with isolated resources and dependencies. By adding services, GitLab can maintain the availability and security of GitLab.com, and enable engineers to rapidly iterate on new ML/AI experiments.
+This document proposes a service-integration approach to setting up
+infrastructure to allow teams within GitLab to build new application features
+that leverage AI, ML, and data technologies at a rapid pace. The scope of the
+document is limited specifically to internally hosted features, not third-party
+APIs. The current application architecture runs most GitLab application features
+in Ruby. However, many ML/AI experiments require different resources and tools,
+implemented in different languages, with huge libraries that do not always play
+nicely together, and have different hardware requirements. Adding all these
+features to the existing infrastructure will increase the size of the GitLab
+application container rapidly, resulting in slower startup times, increased
+number of dependencies, security risks, negatively impacting development
+velocity, and increasing complexity due to different hardware requirements. As
+an alternative, the proposal suggests adding services to avoid overloading
+GitLabs main workloads. These services will run independently with isolated
+resources and dependencies. By adding services, GitLab can maintain the
+availability and security of GitLab.com, and enable engineers to rapidly iterate
+on new ML/AI experiments.
 
 ## Scope
 
-The infrastructure, platform, and other changes related to ML/AI experiments is broad. This blueprint is limited specifically to the following scope:
+The infrastructure, platform, and other changes related to ML/AI experiments is
+broad. This blueprint is limited specifically to the following scope:
 
-1. Production workloads, running (directly or indirectly) as a result of requests into the GitLab application (`gitlab.com`), or an associated subdomains (for example, `codesuggestions.gitlab.com`).
-1. Excludes requests from the GitLab application, made to third-party APIs outside of our infrastructure. From an Infrastructure point-of-view, external AI/ML API requests are no different from other API (non ML/AI) requests and generally follow the existing guidelines that are in place for calling external APIs.
-1. Excludes training and tuning workloads not _directly_ connected to our production workloads. Training and tuning workloads are distinct from production workloads and will be covered by their own blueprint(s).
+1. Production workloads, running (directly or indirectly) as a result of
+   requests into the GitLab application (`gitlab.com`), or an associated
+   subdomains (for example, `codesuggestions.gitlab.com`).
+1. Excludes requests from the GitLab application, made to third-party APIs
+   outside of our infrastructure. From an Infrastructure point-of-view, external
+   AI/ML API requests are no different from other API (non ML/AI) requests and
+   generally follow the existing guidelines that are in place for calling
+   external APIs.
+1. Excludes training and tuning workloads not _directly_ connected to our
+   production workloads. Training and tuning workloads are distinct from
+   production workloads and will be covered by their own blueprint(s).
 
 ## Running Production ML/AI experiment workloads
 
@@ -27,34 +54,74 @@ The infrastructure, platform, and other changes related to ML/AI experiments is 
 
 Let's start with some background on how the application is deployed:
 
-1. Most GitLab application features are implemented in Ruby and run in one of two types of Ruby deployments: broadly Rails and Sidekiq (although we do partition this traffic further for different workloads).
-1. These Ruby workloads have two main container images `gitlab-webservice-ee` and `gitlab-sidekiq-ee`. All the code, libraries, binaries, and other resources that we use to support the main Ruby part of the codebase are embedded within these images.
-1. There are thousands of pods running these containers in production for GitLab.com at any moment in time. They are started up and shut down at a high rate throughout the day as traffic demands on the site fluctuate.
-1. For _most_ new features developed, any new supporting resources need to be added to either one, or both of these containers.
+1. Most GitLab application features are implemented in Ruby and run in one of
+   two types of Ruby deployments: broadly Rails and Sidekiq (although we do
+   partition this traffic further for different workloads).
+1. These Ruby workloads have two main container images `gitlab-webservice-ee`
+   and `gitlab-sidekiq-ee`. All the code, libraries, binaries, and other
+   resources that we use to support the main Ruby part of the codebase are
+   embedded within these images.
+1. There are thousands of pods running these containers in production for
+   GitLab.com at any moment in time. They are started up and shut down at a high
+   rate throughout the day as traffic demands on the site fluctuate.
+1. For _most_ new features developed, any new supporting resources need to be
+   added to either one, or both of these containers.
 
 ![current containers](https://docs.google.com/drawings/d/e/2PACX-1vQh9ToJDy6ceKVMZxSJK5kjBjgKUKdnHcigqTz-Jte1G65aV9js5XZhCC-VYNtkJ_gnoNfob4z-DCui/pub?w=692&h=286)\
 [source](https://docs.google.com/drawings/d/1RiTUnsDSkTGaMqK_RfUlCd_rQ6CgSInhfQJNewIKf1M/edit)
 
-Many of the initial discussions focus on adding supporting resources to these existing containers ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/403630#note_1345192671)). Choosing this approach would have many downsides, in terms of both the velocity at which new features can be iterated on, and in terms of the availability of GitLab.com.
+Many of the initial discussions focus on adding supporting resources to these
+existing containers ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/403630#note_1345192671)).
+Choosing this approach would have many downsides, in terms of both the velocity
+at which new features can be iterated on, and in terms of the availability of
+GitLab.com.
 
-Many of the AI experiments that GitLab is considering integrating into the application are substantially different from other libraries and tools that have been integrated in the past.
+Many of the AI experiments that GitLab is considering integrating into the
+application are substantially different from other libraries and tools that have
+been integrated in the past.
 
-1. ML toolkits are **implemented in a plethora of languages**, each requiring separate runtimes. Python, C, C++ are the most common, but there is a long tail of languages used.
-1. There are a very large number of tools that we're looking to integrate with and **no single tool will support all the features that are being investigated**. Tensorflow, PyTorch, Keras, Scikit-learn, Alpaca are just a few examples.
-1. **These libraries are huge**. Tensorflow's container image with GPU support is 3GB, PyTorch is 5GB, Keras is 300MB. Prophet is ~250MB.
-1. Many of these **libraries do not play nicely together**: they may have dependencies that are not compatible, or require different versions of Python, or GPU driver versions.
+1. ML toolkits are **implemented in a plethora of languages**, each requiring
+   separate runtimes. Python, C, C++ are the most common, but there is a long
+   tail of languages used.
+1. There are a very large number of tools that we're looking to integrate with and
+   **no single tool will support all the features that are being investigated**.
+   Tensorflow, PyTorch, Keras, Scikit-learn, Alpaca are just a
+   few examples.
+1. **These libraries are huge**. Tensorflow's container image with GPU support
+   is 3GB, PyTorch is 5GB, Keras is 300MB. Prophet is ~250MB.
+1. Many of these **libraries do not play nicely together**: they may have
+   dependencies that are not compatible, or require different versions of
+   Python, or GPU driver versions.
 
-It's likely that in the next few months, GitLab will experiment with many different features, using many different libraries.
+It's likely that in the next few months, GitLab will experiment with many
+different features, using many different libraries.
 
-Trying to deploy all of these features into the existing infrastructure would have many downsides:
+Trying to deploy all of these features into the existing infrastructure would
+have many downsides:
 
-1. **The size of the GitLab application container would expand very rapidly** as each new experiment introduces a new set of supporting libraries, each library is as big, or bigger, than the existing GitLab application within the container.
-1. **Startup times for new workloads would increase**, potentially impacting the availability of GitLab.com during high-traffic periods.
-1. The number of dependencies within the container would increase rapidly, putting pressure on the engineering teams to **keep ahead of exploits and vulnerabilities**.
-1. **The security attack surface within the container would be greatly increased** with each new dependency. These containers include secrets which, if leaked via an exploit would need costly application-wide secret rotation to be done.
-1. **Development velocity will be negatively impacted** as engineers work to avoid dependency conflicts between libraries.
-1. Additionally there may be **extra complexity due to different hardware requirements** for different libraries with appropriate drivers etc for GPUs, TPUs, CUDA versions, etc.
-1. Our Kubernetes workloads have been tuned for the existing multithreaded Ruby request (Rails) and message (Sidekiq) processes. Adding extremely resource-intensive applications into these workloads would affect unrelated requests, **starving requests of CPU and memory and requiring complex tuning to ensure fairness**. Failure to do this would impact our availability of GitLab.com.
+1. **The size of the GitLab application container would expand very rapidly** as
+   each new experiment introduces a new set of supporting libraries, each
+   library is as big, or bigger, than the existing GitLab application within the
+   container.
+1. **Startup times for new workloads would increase**, potentially impacting the
+   availability of GitLab.com during high-traffic periods.
+1. The number of dependencies within the container would increase rapidly,
+   putting pressure on the engineering teams to **keep ahead of exploits and vulnerabilities**.
+1. **The security attack surface within the container would be greatly increased**
+   with each new dependency. These containers include secrets which,
+   if leaked via an exploit would need costly application-wide secret rotation
+   to be done.
+1. **Development velocity will be negatively impacted** as engineers work to
+   avoid dependency conflicts between libraries.
+1. Additionally there may be **extra complexity due to different hardware
+   requirements** for different libraries with appropriate drivers etc for GPUs,
+   TPUs, CUDA versions, etc.
+1. Our Kubernetes workloads have been tuned for the existing multithreaded Ruby
+   request (Rails) and message (Sidekiq) processes. Adding extremely
+   resource-intensive applications into these workloads would affect unrelated
+   requests, **starving requests of CPU and memory and requiring complex tuning
+   to ensure fairness**. Failure to do this would impact our availability of
+   GitLab.com.
 
 ![fat containers](https://docs.google.com/drawings/d/e/2PACX-1vSW0Pm_7yZV-0JNmgfOHhQlvh6XsJYtrrzkPPhURf5sCbsQDKc0I0kCIbfios3ifD5tmcNvuchXSVUB/pub?w=686&h=364)
 \
@@ -62,46 +129,93 @@ Trying to deploy all of these features into the existing infrastructure would ha
 
 ### Proposal: Avoid Overfilling GitLabs Application Containers with Service-Integration
 
-GitLab.com migrated to Kubernetes several years back, but for numerous good reasons, the application architecture deployed for GitLab.com remains fairly simple.
+GitLab.com migrated to Kubernetes several years back, but for numerous good
+reasons, the application architecture deployed for GitLab.com remains fairly
+simple.
 
-Instead of embedding these applications directly into the Rails and/or Sidekiq containers, we run them as small, independent Kubernetes deployments, isolated from the main workload.
+Instead of embedding these applications directly into the Rails and/or Sidekiq
+containers, we run them as small, independent Kubernetes deployments, isolated
+from the main workload.
 
 ![use services instead of fat containers](https://docs.google.com/drawings/d/e/2PACX-1vSRrPo0TNtXG8Yqj37TO2PaND9PojGZzNRs2rcTA37-vBZm5WZlfxLDCKVJD1vYHTbGy1KY1rDYHwlg/pub?w=1008&h=564)\
 [source](https://docs.google.com/drawings/d/1ZPprcSYH5Oqp8T46I0p1Hhr-GD55iREDvFWcpQq9dTQ/edit)
 
-The service-integration approach has already been used for the [GitLab Duo Suggested Reviewers feature](https://gitlab.com/gitlab-com/gl-infra/readiness/-/merge_requests/114) that has been deployed to GitLab.com.
+The service-integration approach has already been used for the
+[GitLab Duo Suggested Reviewers feature](https://gitlab.com/gitlab-com/gl-infra/readiness/-/merge_requests/114)
+that has been deployed to GitLab.com.
 
 This approach would have many advantages:
 
-1. **Componentization and Replaceability**: some of these AI feature experiments will likely be short-lived. Being able to shut them down (possibly quickly, in an emergency, such as a security breach) is important. If they are terminated, they are less likely to leave technical debt behind in our main application workloads.
-1. **Security Isolation**: experimental services can run with access to a minimal set of secrets, or possibly none. Ideally, the services would be stateless, with data being passed in, processed, and returned to the caller without access to PostgreSQL or other data sources. In the event of a remote code exploit or other security breach, the attacker would have limited access to sensitive data.
-    1. In lieu of direct access to the main or CI Postgres clusters, services would be provided with access to the internal GitLab API through a predefined internal URL. The platform should provide instrumentation and monitoring on this address.
-    1. In future iterations, but out of scope for the initial delivery, the platform could facilitate automatic authentication against the internal API, for example by managing and injecting short-lived API tokens into internal API calls, or OIDC etc.
-1. **Resource Isolation**: resource-intensive workloads would be isolated to individual containers. OOM failures would not impact requests outside of the experiment. CPU saturation would not slow down unrelated requests.
-1. **Dependency Isolation**: different AI libraries will have conflicting dependencies. This will not be an issue if they're run as separate services in Kubernetes.
-1. **Container Size**: the size of the main application containers is not drastically increased, placing a burden on the application.
-1. **Distribution Team Bottleneck**: The Distribution team avoids becoming a bottleneck as demands for many different libraries to be included in the main application containers increase.
-1. **Stronger Ownership of Workloads**: teams can better understand how their workloads are running as they run in isolation.
+1. **Componentization and Replaceability**: some of these AI feature experiments
+   will likely be short-lived. Being able to shut them down (possibly quickly,
+   in an emergency, such as a security breach) is important. If they are
+   terminated, they are less likely to leave technical debt behind in our main
+   application workloads.
+1. **Security Isolation**: experimental services can run with access to a
+   minimal set of secrets, or possibly none. Ideally, the services would be
+   stateless, with data being passed in, processed, and returned to the caller
+   without access to PostgreSQL or other data sources. In the event of a remote
+   code exploit or other security breach, the attacker would have limited access
+   to sensitive data.
+   1. In lieu of direct access to the main or CI Postgres clusters, services
+      would be provided with access to the internal GitLab API through a
+      predefined internal URL. The platform should provide instrumentation and
+      monitoring on this address.
+   1. In future iterations, but out of scope for the initial delivery, the
+      platform could facilitate automatic authentication against the internal
+      API, for example by managing and injecting short-lived API tokens into
+      internal API calls, or OIDC etc.
+1. **Resource Isolation**: resource-intensive workloads would be isolated to
+   individual containers. OOM failures would not impact requests outside of the
+   experiment. CPU saturation would not slow down unrelated requests.
+1. **Dependency Isolation**: different AI libraries will have conflicting
+   dependencies. This will not be an issue if they're run as separate services
+   in Kubernetes.
+1. **Container Size**: the size of the main application containers is not
+   drastically increased, placing a burden on the application.
+1. **Distribution Team Bottleneck**: The Distribution team avoids becoming a
+   bottleneck as demands for many different libraries to be included in the main
+   application containers increase.
+1. **Stronger Ownership of Workloads**: teams can better understand how their
+   workloads are running as they run in isolation.
 
 However, there are several outstanding questions:
 
-1. **Availability Requirements**: would experimental services have the same availability requirements (and alerting requirements) as the main application?
-1. **Oncall**: would teams be responsible for handling pager alerts for their services?
-1. **Support for non-SAAS GitLab instances**: initially all experiments would target GitLab.com, but eventually we may need to consider how to support other instances.
+1. **Availability Requirements**: would experimental services have the same
+   availability requirements (and alerting requirements) as the main
+   application?
+1. **Oncall**: would teams be responsible for handling pager alerts for their
+   services?
+1. **Support for non-SAAS GitLab instances**: initially all experiments would
+   target GitLab.com, but eventually we may need to consider how to support
+   other instances.
    1. There are three possible modes for services:
       1. `M1`: GitLab.com only: only GitLab.com supports the service.
-      1. `M2`: SAAS-hosted for use with self-managed instance and instance-hosted: a singular SAAS-hosted service supports self-managed instances and GitLab.com. This is similar to the [GitLab Plus proposal](https://gitlab.com/groups/gitlab-org/-/epics/308).
-      1. `M3`: Instance-hosted: each instance has a copy of the service. GitLab.com has a copy for GitLab.com. Self-managed instances host their copy of the service. This is similar to the container registry or Gitaly today.
-   1. Initially, most experiments will probably be option 1 but may be promoted to 2 or 3 as they mature.
-1. **Promotion Process**: ML/AI experimental features will need to be promoted to non-experimental status as they mature. A process for this will need to be established.
+      1. `M2`: SAAS-hosted for use with self-managed instance and
+         instance-hosted: a singular SAAS-hosted service supports self-managed
+         instances and GitLab.com. This is similar to the [GitLab Plus proposal](https://gitlab.com/groups/gitlab-org/-/epics/308).
+      1. `M3`: Instance-hosted: each instance has a copy of the service.
+         GitLab.com has a copy for GitLab.com. Self-managed instances host their
+         copy of the service. This is similar to the container registry or
+         Gitaly today.
+   1. Initially, most experiments will probably be option 1 but may be promoted
+      to 2 or 3 as they mature.
+1. **Promotion Process**: ML/AI experimental features will need to be promoted
+   to non-experimental status as they mature. A process for this will need to be
+   established.
 
 #### Proposed Guidelines for Building ML/AI Services
 
-1. Avoid adding any large ML/AI libraries needed to support experimentation to the main application.
+1. Avoid adding any large ML/AI libraries needed to support experimentation to
+   the main application.
 1. Create an platform to support individual ML/AI experiments.
-1. Encourage supporting services to be stateless (excluding deployed models and other resources generated during ML training).
-1. ML/AI experiment support services must not access main application datastores, including but not limited to main PostgreSQL, CI PostgreSQL, and main application Redis instances.
-1. In the main application, client code for services should reside behind a feature-flag toggle, for fine-grained control of the feature.
+1. Encourage supporting services to be stateless (excluding deployed models and
+   other resources generated during ML training).
+1. ML/AI experiment support services must not access main application
+   datastores, including but not limited to main PostgreSQL, CI PostgreSQL, and
+   main application Redis instances.
+1. In the main application, client code for services should reside behind a
+   feature-flag toggle, for fine-grained control of the feature.
 
 #### Technical Details
 
@@ -114,9 +228,13 @@ Some points, in greater detail:
 
 ##### Platform Requirements
 
-In order to quickly deploy and manage experiments, an minimally viable platform will need to be provided to stage-group teams. The technical implementation details of this platform are out of scope for this blueprint and will require their own blueprint (to follow).
+In order to quickly deploy and manage experiments, an minimally viable platform
+will need to be provided to stage-group teams. The technical implementation
+details of this platform are out of scope for this blueprint and will require
+their own blueprint (to follow).
 
-However, Service-Integration will establish certain necessary and optional requirements that the platform will need to satisfy.
+However, Service-Integration will establish certain necessary and optional
+requirements that the platform will need to satisfy.
 
 ###### Ease of Use, Ownership Requirements
 

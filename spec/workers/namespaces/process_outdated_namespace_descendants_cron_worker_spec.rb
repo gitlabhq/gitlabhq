@@ -8,7 +8,7 @@ RSpec.describe Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker, featur
   subject(:run_job) { worker.perform }
 
   include_examples 'an idempotent worker' do
-    it 'executes sucessfully' do
+    it 'executes successfully' do
       expect(worker).to receive(:log_extra_metadata_on_done).with(:result, { processed_namespaces: 0 })
 
       run_job

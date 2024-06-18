@@ -30,7 +30,7 @@ module API
             optional :tags, type: Array, desc: 'Additional metadata for a model version.'
           end
           post 'create', urgency: :low do
-            present ::Ml::CreateModelVersionService.new(
+            result = ::Ml::CreateModelVersionService.new(
               model,
               {
                 model_name: params[:name],
@@ -38,9 +38,11 @@ module API
                 metadata: params[:tags],
                 version: custom_version
               }
-            ).execute,
-              with: Entities::Ml::Mlflow::ModelVersion,
-              root: :model_version
+            ).execute
+
+            invalid_parameter!(result.message) if result.error?
+
+            present result.payload[:model_version], with: Entities::Ml::Mlflow::ModelVersion, root: :model_version
           end
 
           desc 'Fetch model version by name and version' do

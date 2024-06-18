@@ -1,4 +1,4 @@
-import { GlButton, GlDisclosureDropdown, GlDrawer } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { cloneDeep } from 'lodash';
@@ -40,6 +40,7 @@ import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_wit
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
+import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
   CREATED_DESC,
   RELATIVE_POSITION,
@@ -75,7 +76,6 @@ import {
   TOKEN_TYPE_CREATED,
   TOKEN_TYPE_CLOSED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import {
   workItemResponseFactory,
@@ -112,7 +112,6 @@ describe('CE IssuesListApp component', () => {
     canCreateProjects: false,
     canReadCrmContact: false,
     canReadCrmOrganization: false,
-    emptyStateSvgPath: 'empty-state.svg',
     exportCsvPath: 'export/csv/path',
     fullPath: 'path/to/project',
     hasAnyIssues: true,
@@ -129,7 +128,6 @@ describe('CE IssuesListApp component', () => {
     isProject: true,
     isPublicVisibilityRestricted: false,
     isSignedIn: true,
-    jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
     newProjectPath: 'new/project/path',
     releasesPath: 'releases/path',
@@ -170,8 +168,7 @@ describe('CE IssuesListApp component', () => {
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
   const findCalendarButton = () => wrapper.findByTestId('subscribe-calendar');
   const findRssButton = () => wrapper.findByTestId('subscribe-rss');
-  const findIssuableDrawer = () => wrapper.findComponent(GlDrawer);
-  const findDrawerWorkItem = () => wrapper.findComponent(WorkItemDetail);
+  const findWorkItemDrawer = () => wrapper.findComponent(WorkItemDrawer);
   const findIssueCardTimeInfo = () => wrapper.findComponent(IssueCardTimeInfo);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
 
@@ -603,7 +600,7 @@ describe('CE IssuesListApp component', () => {
           wrapper = mountComponent({
             provide: { hasAnyIssues: true },
             mountFn: mount,
-            issuesQueryResponse: getIssuesQueryEmptyResponse,
+            issuesQueryResponse: jest.fn().mockResolvedValue(getIssuesQueryEmptyResponse),
           });
           return waitForPromises();
         });
@@ -611,6 +608,7 @@ describe('CE IssuesListApp component', () => {
         it('shows EmptyStateWithAnyIssues empty state', () => {
           expect(wrapper.findComponent(EmptyStateWithAnyIssues).props()).toEqual({
             hasSearch: false,
+            isEpic: false,
             isOpenTab: true,
           });
         });
@@ -629,6 +627,21 @@ describe('CE IssuesListApp component', () => {
             showIssuableByEmail: false,
             showNewIssueDropdown: false,
           });
+        });
+      });
+
+      describe('when there are errors', () => {
+        beforeEach(() => {
+          wrapper = mountComponent({
+            provide: { hasAnyIssues: true },
+            mountFn: mount,
+            issuesQueryResponse: jest.fn().mockRejectedValue(getIssuesQueryEmptyResponse),
+          });
+          return waitForPromises();
+        });
+
+        it('does not show empty state', () => {
+          expect(wrapper.findComponent(EmptyStateWithAnyIssues).exists()).toBe(false);
         });
       });
     });
@@ -1106,18 +1119,15 @@ describe('CE IssuesListApp component', () => {
             issuesListDrawer: true,
           },
         },
-        stubs: {
-          GlDrawer,
-        },
       });
     });
 
     it('renders issuable drawer component', () => {
-      expect(findIssuableDrawer().exists()).toBe(true);
+      expect(findWorkItemDrawer().exists()).toBe(true);
     });
 
     it('renders issuable drawer closed by default', () => {
-      expect(findIssuableDrawer().props('open')).toBe(false);
+      expect(findWorkItemDrawer().props('open')).toBe(false);
     });
 
     describe('on selecting an issuable', () => {
@@ -1130,7 +1140,7 @@ describe('CE IssuesListApp component', () => {
       });
 
       it('opens issuable drawer', () => {
-        expect(findIssuableDrawer().props('open')).toBe(true);
+        expect(findWorkItemDrawer().props('open')).toBe(true);
       });
 
       it('selects active issuable', () => {
@@ -1141,14 +1151,14 @@ describe('CE IssuesListApp component', () => {
 
       describe('when closing the drawer', () => {
         it('closes the drawer on drawer `close` event', async () => {
-          findIssuableDrawer().vm.$emit('close');
+          findWorkItemDrawer().vm.$emit('close');
           await nextTick();
 
-          expect(findIssuableDrawer().props('open')).toBe(false);
+          expect(findWorkItemDrawer().props('open')).toBe(false);
         });
 
         it('removes active issuable', async () => {
-          findIssuableDrawer().vm.$emit('close');
+          findWorkItemDrawer().vm.$emit('close');
           await nextTick();
 
           expect(findIssuableList().props('activeIssuable')).toBe(null);
@@ -1160,7 +1170,7 @@ describe('CE IssuesListApp component', () => {
           const {
             data: { workItem },
           } = workItemResponseFactory({ iid: '789', state: 'CLOSED' });
-          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+          findWorkItemDrawer().vm.$emit('work-item-updated', workItem);
 
           await waitForPromises();
 
@@ -1172,7 +1182,7 @@ describe('CE IssuesListApp component', () => {
           const {
             data: { workItem },
           } = workItemResponseFactory({ iid: '789' });
-          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+          findWorkItemDrawer().vm.$emit('work-item-updated', workItem);
 
           await waitForPromises();
 
@@ -1188,7 +1198,7 @@ describe('CE IssuesListApp component', () => {
           const {
             data: { workItem },
           } = workItemResponseFactory({ iid: '789' });
-          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+          findWorkItemDrawer().vm.$emit('work-item-updated', workItem);
 
           await waitForPromises();
 
@@ -1210,7 +1220,7 @@ describe('CE IssuesListApp component', () => {
             },
           }).data.workspace;
 
-          findDrawerWorkItem().vm.$emit('work-item-emoji-updated', workItem);
+          findWorkItemDrawer().vm.$emit('work-item-emoji-updated', workItem);
 
           await waitForPromises();
 
@@ -1221,7 +1231,7 @@ describe('CE IssuesListApp component', () => {
           const {
             data: { workItem },
           } = workItemResponseFactory({ iid: '789' });
-          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+          findWorkItemDrawer().vm.$emit('work-item-updated', workItem);
 
           await waitForPromises();
 
@@ -1237,7 +1247,7 @@ describe('CE IssuesListApp component', () => {
           const {
             data: { workItem },
           } = workItemResponseFactory({ iid: '789', confidential: true });
-          findDrawerWorkItem().vm.$emit('work-item-updated', workItem);
+          findWorkItemDrawer().vm.$emit('work-item-updated', workItem);
 
           await waitForPromises();
 
@@ -1246,7 +1256,7 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('refetches the list if new child was added to active issuable', async () => {
-          findDrawerWorkItem().vm.$emit('addChild');
+          findWorkItemDrawer().vm.$emit('addChild');
 
           await waitForPromises();
 
@@ -1255,7 +1265,7 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('updates issuable type to objective if promoted to objective', async () => {
-          findDrawerWorkItem().vm.$emit('promotedToObjective', '789');
+          findWorkItemDrawer().vm.$emit('promotedToObjective', '789');
 
           await waitForPromises();
           // required for cache updates
@@ -1271,7 +1281,7 @@ describe('CE IssuesListApp component', () => {
           const {
             data: { workItem },
           } = workItemResponseFactory({ iid: '789' });
-          findDrawerWorkItem().vm.$emit('deleteWorkItem', workItem);
+          findWorkItemDrawer().vm.$emit('deleteWorkItem', workItem);
 
           await waitForPromises();
         });
@@ -1282,7 +1292,7 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('should close the issue drawer', () => {
-          expect(findIssuableDrawer().props('open')).toBe(false);
+          expect(findWorkItemDrawer().props('open')).toBe(false);
         });
       });
     });
@@ -1300,9 +1310,6 @@ describe('CE IssuesListApp component', () => {
           issuesListDrawer: true,
         },
       },
-      stubs: {
-        GlDrawer,
-      },
       deleteMutationHandler: errorHandler,
     });
 
@@ -1312,7 +1319,7 @@ describe('CE IssuesListApp component', () => {
     );
     await nextTick();
 
-    findDrawerWorkItem().vm.$emit('deleteWorkItem', workItem);
+    findWorkItemDrawer().vm.$emit('deleteWorkItem', workItem);
     await waitForPromises();
 
     expect(Sentry.captureException).toHaveBeenCalled();

@@ -26,7 +26,7 @@ export default {
     editStatus: s__('SetStatusModal|Edit status'),
     editProfile: s__('CurrentUser|Edit profile'),
     preferences: s__('CurrentUser|Preferences'),
-    buyPipelineMinutes: s__('CurrentUser|Buy Pipeline minutes'),
+    buyPipelineMinutes: s__('CurrentUser|Buy compute minutes'),
     oneOfGroupsRunningOutOfPipelineMinutes: s__('CurrentUser|One of your groups is running out'),
     gitlabNext: s__('CurrentUser|Switch to GitLab Next'),
     startTrial: s__('CurrentUser|Start an Ultimate trial'),

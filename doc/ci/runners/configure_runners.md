@@ -195,6 +195,8 @@ token rotate automatically at specified intervals. When the tokens are rotated,
 they are updated for each runner, regardless of the runner's status (`online` or `offline`).
 
 No manual intervention should be required, and no running jobs should be affected.
+For more information about token rotation, see
+[Runner authentication token does not update when rotated](new_creation_workflow.md#runner-authentication-token-does-not-update-when-rotated).
 
 If you need to manually update the runner authentication token, you can run a
 command to [reset the token](https://docs.gitlab.com/runner/commands/#gitlab-runner-reset-token).
@@ -234,6 +236,8 @@ To automatically rotate runner authentication tokens:
 1. Select **Save changes**.
 
 Before the interval expires, runners automatically request a new runner authentication token.
+For more information about token rotation, see
+[Runner authentication token does not update when rotated](new_creation_workflow.md#runner-authentication-token-does-not-update-when-rotated).
 
 ## Prevent runners from revealing sensitive information
 
@@ -463,7 +467,7 @@ You can also use variables to configure how many times a runner
 [attempts certain stages of job execution](#job-stages-attempts).
 
 When using the Kubernetes executor, you can use variables to
-[override Kubernetes CPU and memory allocations for requests and limits](https://docs.gitlab.com/runner/executors/kubernetes.html#overwriting-container-resources).
+[override Kubernetes CPU and memory allocations for requests and limits](https://docs.gitlab.com/runner/executors/kubernetes/index.html#overwrite-container-resources).
 
 ### Git strategy
 

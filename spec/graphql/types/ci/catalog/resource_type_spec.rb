@@ -18,8 +18,6 @@ RSpec.describe Types::Ci::Catalog::ResourceType, feature_category: :pipeline_com
       verification_level
       star_count
       starrers_path
-      open_issues_count
-      open_merge_requests_count
       last_30_day_usage_count
     ]
 

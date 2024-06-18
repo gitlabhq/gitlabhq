@@ -15,7 +15,7 @@
 
 .blank-state-link {
   &:hover {
-    background-color: var(--gray-50, $gray-10);
+    background-color: var(--gl-background-color-subtle);
     color: var(--gl-text-color, $gl-text-color);
     text-decoration: none;
   }

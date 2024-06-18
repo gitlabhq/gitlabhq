@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :model do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:subgroup, refind: true) { create(:group, parent: group) }
+  let(:namespace_settings) { group.namespace_settings }
+
   it_behaves_like 'sanitizable', :namespace_settings, %i[default_branch_name]
 
   # Relationships
@@ -20,12 +24,19 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
   end
 
+  describe '.for_namespaces' do
+    let(:setting_1) { create(:namespace_settings, namespace: namespace_1) }
+    let(:setting_2) { create(:namespace_settings, namespace: namespace_2) }
+    let_it_be(:namespace_1) { create(:namespace) }
+    let_it_be(:namespace_2) { create(:namespace) }
+
+    it 'returns namespace setting for the given projects' do
+      expect(described_class.for_namespaces(namespace_1)).to contain_exactly(setting_1)
+    end
+  end
+
   describe "validations" do
     describe "#default_branch_name_content" do
-      let_it_be(:group) { create(:group) }
-
-      subject(:namespace_settings) { group.namespace_settings }
-
       shared_examples "doesn't return an error" do
         it "doesn't return an error" do
           expect(namespace_settings.valid?).to be_truthy
@@ -58,57 +69,66 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       end
     end
 
-    describe '#allow_mfa_for_group' do
-      let(:settings) {  group.namespace_settings }
-
+    describe 'allow_mfa_for_subgroups' do
       context 'group is top-level group' do
-        let(:group) { create(:group) }
-
         it 'is valid' do
-          settings.allow_mfa_for_subgroups = false
+          namespace_settings.allow_mfa_for_subgroups = false
 
-          expect(settings).to be_valid
+          expect(namespace_settings).to be_valid
         end
       end
 
       context 'group is a subgroup' do
-        let(:group) { create(:group, parent: create(:group)) }
+        let(:namespace_settings) { subgroup.namespace_settings }
 
-        it 'is invalid' do
-          settings.allow_mfa_for_subgroups = false
+        it 'is valid if true' do
+          namespace_settings.allow_mfa_for_subgroups = true
 
-          expect(settings).to be_invalid
+          expect(namespace_settings).to be_valid
+        end
+
+        it 'is invalid if false' do
+          namespace_settings.allow_mfa_for_subgroups = false
+
+          expect(namespace_settings).to be_invalid
+        end
+
+        it 'is invalid if nil' do
+          namespace_settings.allow_mfa_for_subgroups = nil
+
+          expect(namespace_settings).to be_invalid
         end
       end
     end
 
-    describe '#allow_resource_access_token_creation_for_group' do
-      let(:settings) { group.namespace_settings }
-
+    describe 'resource_access_token_creation_allowed' do
       context 'group is top-level group' do
-        let(:group) { create(:group) }
-
         it 'is valid' do
-          settings.resource_access_token_creation_allowed = false
+          namespace_settings.resource_access_token_creation_allowed = false
 
-          expect(settings).to be_valid
+          expect(namespace_settings).to be_valid
         end
       end
 
       context 'group is a subgroup' do
-        let(:group) { create(:group, parent: create(:group)) }
+        let(:namespace_settings) { subgroup.namespace_settings }
 
         it 'is invalid when resource access token creation is not enabled' do
-          settings.resource_access_token_creation_allowed = false
+          namespace_settings.resource_access_token_creation_allowed = false
 
-          expect(settings).to be_invalid
-          expect(group.namespace_settings.errors.messages[:resource_access_token_creation_allowed]).to include("is not allowed since the group is not top-level group.")
+          expect(namespace_settings).to be_invalid
         end
 
         it 'is valid when resource access tokens are enabled' do
-          settings.resource_access_token_creation_allowed = true
+          namespace_settings.resource_access_token_creation_allowed = true
 
-          expect(settings).to be_valid
+          expect(namespace_settings).to be_valid
+        end
+
+        it 'is invalid if nil' do
+          namespace_settings.resource_access_token_creation_allowed = nil
+
+          expect(namespace_settings).to be_invalid
         end
       end
     end
@@ -129,6 +149,18 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
         let(:byte_size) { 0.5.kilobytes }
 
         it { is_expected.to allow_value({ name: value }).for(:default_branch_protection_defaults) }
+      end
+    end
+
+    describe 'remove_dormant_members' do
+      it { expect(subgroup.namespace_settings).to validate_inclusion_of(:remove_dormant_members).in_array([false]) }
+    end
+
+    describe 'remove_dormant_members_period' do
+      it do
+        expect(namespace_settings).to validate_numericality_of(:remove_dormant_members_period)
+          .only_integer
+          .is_greater_than_or_equal_to(90)
       end
     end
   end
@@ -252,8 +284,6 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
   context 'runner registration settings' do
     shared_context 'with runner registration settings changing in hierarchy' do
       context 'when there are no parents' do
-        let_it_be(:group) { create(:group) }
-
         it { is_expected.to be_truthy }
 
         context 'when no group can register runners' do

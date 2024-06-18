@@ -15,6 +15,14 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
   let_it_be(:pull_request_1) { create(:merge_request, source_project: project, iid: 100, source_branch: 'branch_1') }
   let_it_be(:pull_request_2) { create(:merge_request, source_project: project, iid: 101, source_branch: 'branch_2') }
 
+  let_it_be(:page_hash_1) do
+    { limit: 100, page_offset: 1 }
+  end
+
+  let_it_be(:page_hash_2) do
+    { limit: 100, page_offset: 2 }
+  end
+
   let(:merge_event) do
     instance_double(
       BitbucketServer::Representation::Activity,
@@ -22,6 +30,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       comment?: false,
       merge_event?: true,
       approved_event?: false,
+      declined_event?: false,
       to_hash: {
         id: 3
       }
@@ -35,8 +44,23 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
       comment?: false,
       merge_event?: false,
       approved_event?: true,
+      declined_event?: false,
       to_hash: {
         id: 4
+      }
+    )
+  end
+
+  let(:declined_event) do
+    instance_double(
+      BitbucketServer::Representation::Activity,
+      id: 7,
+      comment?: false,
+      merge_event?: false,
+      approved_event?: false,
+      declined_event?: true,
+      to_hash: {
+        id: 7
       }
     )
   end
@@ -158,8 +182,9 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
     context 'when PR has comments' do
       before do
         allow_next_instance_of(BitbucketServer::Client) do |instance|
-          allow(instance).to receive(:activities).with('key', 'slug', 100).and_return([pr_comment])
-          allow(instance).to receive(:activities).with('key', 'slug', 101).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_return([pr_comment])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_2).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
         end
       end
 
@@ -190,8 +215,9 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
     context 'when PR has inline comment' do
       before do
         allow_next_instance_of(BitbucketServer::Client) do |instance|
-          allow(instance).to receive(:activities).with('key', 'slug', 100).and_return([pr_inline_comment])
-          allow(instance).to receive(:activities).with('key', 'slug', 101).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_return([pr_inline_comment])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_2).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
         end
       end
 
@@ -222,8 +248,9 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
     context 'when PR has a merge event' do
       before do
         allow_next_instance_of(BitbucketServer::Client) do |instance|
-          allow(instance).to receive(:activities).with('key', 'slug', 100).and_return([merge_event])
-          allow(instance).to receive(:activities).with('key', 'slug', 101).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_return([merge_event])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_2).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
         end
       end
 
@@ -254,8 +281,9 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
     context 'when PR has an approved event' do
       before do
         allow_next_instance_of(BitbucketServer::Client) do |instance|
-          allow(instance).to receive(:activities).with('key', 'slug', 100).and_return([approved_event])
-          allow(instance).to receive(:activities).with('key', 'slug', 101).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_return([approved_event])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_2).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
         end
       end
 
@@ -278,6 +306,106 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::NotesImporter, feature_
         expect(Gitlab::Cache::Import::Caching.read(importer.job_waiter_remaining_cache_key)).to eq('1')
         expect(Gitlab::Cache::Import::Caching.values_from_set(importer.already_processed_cache_key))
           .to match_array(%w[activity-4])
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
+          .to match_array(%w[100 101])
+      end
+    end
+
+    context 'when PR has a declined event' do
+      before do
+        allow_next_instance_of(BitbucketServer::Client) do |instance|
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_1).and_return([declined_event])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_2).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
+        end
+      end
+
+      it 'imports the declined event' do
+        expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker).to receive(:perform_in).with(
+          anything,
+          project.id,
+          hash_including(
+            iid: 100,
+            comment_type: 'declined_event',
+            comment: hash_including('id' => 7)
+          ),
+          anything
+        )
+
+        waiter = importer.execute
+
+        expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
+        expect(waiter.jobs_remaining).to eq(1)
+        expect(Gitlab::Cache::Import::Caching.read(importer.job_waiter_remaining_cache_key)).to eq('1')
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.already_processed_cache_key))
+          .to match_array(%w[activity-7])
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
+          .to match_array(%w[100 101])
+      end
+    end
+
+    context 'when page counter has been set' do
+      let_it_be(:page_hash_1) do
+        { limit: 100, page_offset: 1 }
+      end
+
+      let_it_be(:page_hash_2) do
+        { limit: 100, page_offset: 2 }
+      end
+
+      let_it_be(:page_hash_3) do
+        { limit: 100, page_offset: 3 }
+      end
+
+      before do
+        allow_next_instance_of(BitbucketServer::Client) do |instance|
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_2).and_return([pr_comment])
+          allow(instance).to receive(:activities).with('key', 'slug', 100, page_hash_3).and_return([])
+          allow(instance).to receive(:activities).with('key', 'slug', 101, page_hash_1).and_return([])
+        end
+      end
+
+      it 'resumes from the last page' do
+        page_counter_id_pr_1 = importer.send(:page_counter_id, pull_request_1)
+        expect_next_instance_of(
+          Gitlab::Import::PageCounter, project, page_counter_id_pr_1, 'bitbucket-server-importer'
+        ) do |page_counter|
+          expect(page_counter).to receive(:current).and_return(2)
+          expect(page_counter).to receive(:set).with(3).and_call_original
+          expect(page_counter).to receive(:expire!).and_call_original
+        end
+
+        page_counter_id_pr_2 = importer.send(:page_counter_id, pull_request_2)
+        expect_next_instance_of(
+          Gitlab::Import::PageCounter, project, page_counter_id_pr_2, 'bitbucket-server-importer'
+        ) do |page_counter|
+          expect(page_counter).to receive(:current).and_return(1)
+          expect(page_counter).to receive(:expire!).and_call_original
+        end
+
+        expect(Gitlab::BitbucketServerImport::ImportPullRequestNoteWorker).to receive(:perform_in).with(
+          anything,
+          project.id,
+          hash_including(
+            iid: 100,
+            comment_type: 'standalone_notes',
+            comment: hash_including('id' => 5)
+          ),
+          anything
+        )
+
+        allow_next_instance_of(Gitlab::Import::PageCounter) do |page_counter|
+          allow(page_counter).to receive(:current).and_return(1)
+          allow(page_counter).to receive(:expire!).and_call_original
+        end
+
+        waiter = importer.execute
+
+        expect(waiter).to be_an_instance_of(Gitlab::JobWaiter)
+        expect(waiter.jobs_remaining).to eq(1)
+        expect(Gitlab::Cache::Import::Caching.read(importer.job_waiter_remaining_cache_key)).to eq('1')
+        expect(Gitlab::Cache::Import::Caching.values_from_set(importer.already_processed_cache_key))
+          .to match_array(%w[comment-5])
         expect(Gitlab::Cache::Import::Caching.values_from_set(importer.send(:merge_request_processed_cache_key)))
           .to match_array(%w[100 101])
       end

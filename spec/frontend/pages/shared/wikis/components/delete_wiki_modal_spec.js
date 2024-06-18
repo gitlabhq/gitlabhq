@@ -18,10 +18,11 @@ describe('DeleteWikiModal', () => {
           },
         },
       },
-      propsData: {
-        deleteWikiUrl: 'delete-wiki-url',
-        pageTitle: 'Page title',
+      provide: {
+        wikiUrl: 'delete-wiki-url',
+        pageHeading: 'Page title',
         csrfToken: 'csrf-token',
+        pagePersisted: true,
       },
     });
   };

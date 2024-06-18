@@ -1,6 +1,7 @@
 <script>
 import { s__ } from '~/locale';
 import currentUserFrecentGroupsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_groups.query.graphql';
+import { FREQUENTLY_VISITED_GROUPS_HANDLE } from '~/super_sidebar/components/global_search/command_palette/constants';
 import FrequentItems from './frequent_items.vue';
 
 export default {
@@ -19,6 +20,7 @@ export default {
     viewAllText: s__('Navigation|View all my groups'),
     emptyStateText: s__('Navigation|Groups you visit often will appear here.'),
   },
+  FREQUENTLY_VISITED_GROUPS_HANDLE,
 };
 </script>
 
@@ -33,5 +35,6 @@ export default {
     :view-all-items-path="groupsPath"
     v-bind="$attrs"
     v-on="$listeners"
+    @action="$emit('action', $options.FREQUENTLY_VISITED_GROUPS_HANDLE)"
   />
 </template>

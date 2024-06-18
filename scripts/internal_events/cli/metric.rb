@@ -4,8 +4,6 @@ module InternalEventsCli
   NEW_METRIC_FIELDS = [
     :key_path,
     :description,
-    :product_section,
-    :product_stage,
     :product_group,
     :performance_indicator_type,
     :value_type,
@@ -31,8 +29,6 @@ module InternalEventsCli
   ].freeze
 
   METRIC_DEFAULTS = {
-    product_section: nil,
-    product_stage: nil,
     product_group: nil,
     introduced_by_url: 'TODO',
     value_type: 'number',

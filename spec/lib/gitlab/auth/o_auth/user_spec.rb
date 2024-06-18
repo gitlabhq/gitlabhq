@@ -69,77 +69,6 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
       end
     end
 
-    # This context should be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/456424
-    context 'for fallback that allows sign-ins to GitLab with Bitbucket identity with untrusted extern_uid when email matches' do
-      let(:provider) { 'bitbucket' }
-      let(:bitbucket_username) { user.username }
-      let(:bitbucket_email) { user.email }
-      let!(:identity) { create(:identity, provider: provider, extern_uid: user.username, user: user, trusted_extern_uid: false) }
-
-      let(:auth_hash) do
-        OmniAuth::AuthHash.new(uid: uid, provider: provider, username: bitbucket_username, email: bitbucket_email)
-      end
-
-      context 'when Bitbucket and GitLab accounts have the same email' do
-        it "updates the identity's extern_uid; updates the identity's trusted_extern_uid to true; returns the user" do
-          expect(identity.reload.extern_uid).not_to eq(uid)
-          expect(identity.reload.extern_uid).to eq(user.username)
-          expect(identity.reload.trusted_extern_uid).to eq(false)
-
-          expect(described_class.find_by_uid_and_provider(uid, provider, auth_hash)).to eq user
-
-          expect(identity.reload.extern_uid).to eq(uid)
-          expect(identity.reload.trusted_extern_uid).to eq(true)
-        end
-      end
-
-      context 'when auth_hash argument is not provided' do
-        it 'returns nil' do
-          expect(described_class.find_by_uid_and_provider(uid, provider)).to eq nil
-        end
-      end
-
-      context 'when Bitbucket and GitLab accounts have different emails' do
-        let(:bitbucket_email) { 'bitbucketuser@example.com' }
-
-        it 'raises Gitlab::Auth::OAuth::User::IdentityWithUntrustedExternUidError' do
-          expect { described_class.find_by_uid_and_provider(uid, provider, auth_hash) }
-            .to raise_error(Gitlab::Auth::OAuth::User::IdentityWithUntrustedExternUidError)
-        end
-      end
-
-      context 'when there is no Bitbucket identity with untrusted extern_uid' do
-        let(:bitbucket_username) { 'bitbucketuser' }
-
-        it 'returns nil' do
-          expect(described_class.find_by_uid_and_provider(uid, provider, auth_hash)).to eq nil
-        end
-      end
-
-      context 'when identity exists for given untrusted uid and provider but is not tied to a user' do
-        before do
-          identity.update!(user: nil)
-        end
-
-        it 'raises Gitlab::Auth::OAuth::User::IdentityWithUntrustedExternUidError' do
-          expect { described_class.find_by_uid_and_provider(uid, provider, auth_hash) }
-            .to raise_error(Gitlab::Auth::OAuth::User::IdentityWithUntrustedExternUidError)
-        end
-      end
-
-      context 'when bitbucket identity with trusted_extern_uid' do
-        let!(:identity) { create(:identity, provider: provider, extern_uid: uid, user: user) }
-
-        it "does not update the identity and returns the user" do
-          identity_updated_at = identity.reload.updated_at
-
-          expect(described_class.find_by_uid_and_provider(uid, provider, auth_hash)).to eq user
-
-          expect(identity.reload.updated_at).to eq(identity_updated_at)
-        end
-      end
-    end
-
     context 'for LDAP' do
       let(:dn) { 'CN=John Åström, CN=Users, DC=Example, DC=com' }
 
@@ -1052,17 +981,6 @@ RSpec.describe Gitlab::Auth::OAuth::User, feature_category: :system_access do
       it 'creates valid user with sanitized username' do
         expect(gl_user).to be_valid
         expect(gl_user.username).to eq('opie.the_opossum')
-      end
-
-      context 'and extra_slug_path_sanitization feature is disabled' do
-        before do
-          stub_feature_flags(extra_slug_path_sanitization: false)
-        end
-
-        it 'fails to create user' do
-          expect(gl_user).not_to be_valid
-          expect(gl_user.errors[:username]).to be_present
-        end
       end
     end
   end

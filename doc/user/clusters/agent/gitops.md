@@ -37,7 +37,11 @@ By combining GitLab, Kubernetes, and GitOps, you can have:
 This diagram shows the repositories and main actors in a GitOps deployment:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+accTitle: Deployment sequence
+accDescr: Shows the repositories and main actors in a GitOps deployment.
+
   participant D as Developer
   participant A as Application code repository
   participant M as Deployment repository
@@ -48,6 +52,7 @@ sequenceDiagram
   loop Regularly
     K-->>C: Grab the configuration
   end
+
   D->>+A: Pushing code changes
   A->>M: Updating manifest
   M->>R: Build an OCI artifact

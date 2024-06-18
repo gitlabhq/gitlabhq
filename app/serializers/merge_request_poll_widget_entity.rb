@@ -38,7 +38,7 @@ class MergeRequestPollWidgetEntity < Grape::Entity
 
   # CI related
   expose :has_ci?, as: :has_ci
-  expose :ci_status, if: -> (mr, _) { presenter(mr).can_read_pipeline? } do |merge_request|
+  expose :ci_status, if: ->(mr, _) { presenter(mr).can_read_pipeline? } do |merge_request|
     presenter(merge_request).ci_status
   end
 
@@ -122,6 +122,10 @@ class MergeRequestPollWidgetEntity < Grape::Entity
 
   expose :approvals_widget_type do |merge_request|
     presenter(merge_request).approvals_widget_type
+  end
+
+  expose :jenkins_integration_active do |merge_request|
+    presenter(merge_request).jenkins_integration_active
   end
 
   private

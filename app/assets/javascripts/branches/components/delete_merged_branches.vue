@@ -26,7 +26,7 @@ export const i18n = {
     'Branches|This bulk action is %{strongStart}permanent and cannot be undone or recovered%{strongEnd}.',
   ),
   confirmationMessage: s__(
-    'Branches|Plese type the following to confirm: %{codeStart}delete%{codeEnd}.',
+    'Branches|Please type the following to confirm: %{codeStart}delete%{codeEnd}.',
   ),
   cancelButtonText: __('Cancel'),
   actionsToggleText: __('More actions'),
@@ -56,8 +56,8 @@ export default {
   },
   data() {
     return {
-      areAllBranchesVisible: false,
       enteredText: '',
+      formId: 'delete-merged-branches-form',
     };
   },
   computed: {
@@ -91,13 +91,11 @@ export default {
     openModal() {
       this.$refs.modal.show();
     },
-    submitForm() {
-      if (!this.isDeleteButtonDisabled) {
-        this.$refs.form.submit();
-      }
-    },
     closeModal() {
       this.$refs.modal.hide();
+    },
+    resetModal() {
+      this.enteredText = '';
     },
   },
   i18n,
@@ -117,14 +115,14 @@ export default {
       category="tertiary"
       no-caret
       placement="right"
-      class="gl-display-none gl-md-display-block!"
+      class="gl-hidden md:!gl-block"
       :items="dropdownItems"
     />
     <gl-button
       data-testid="delete-merged-branches-button"
       category="secondary"
       variant="danger"
-      class="gl-display-block gl-md-display-none!"
+      class="gl-block md:!gl-hidden"
       @click="openModal"
     >
       {{ $options.i18n.deleteButtonText }}
@@ -134,8 +132,9 @@ export default {
       size="sm"
       modal-id="delete-merged-branches"
       :title="$options.i18n.modalTitle"
+      @hidden="resetModal"
     >
-      <form ref="form" :action="formPath" method="post" @submit.prevent>
+      <form :id="formId" :action="formPath" method="post">
         <p>
           <gl-sprintf :message="modalMessage">
             <template #strong="{ content }">
@@ -171,8 +170,8 @@ export default {
             width="sm"
             class="gl-mt-2"
             aria-labelledby="input-label"
+            required
             autocomplete="off"
-            @keyup.enter="submitForm"
           />
         </p>
 
@@ -190,11 +189,13 @@ export default {
           <gl-button
             ref="deleteMergedBrancesButton"
             :disabled="isDeleteButtonDisabled"
+            :form="formId"
             variant="danger"
+            type="submit"
             data-testid="delete-merged-branches-confirmation-button"
-            @click="submitForm"
-            >{{ $options.i18n.deleteButtonText }}</gl-button
           >
+            {{ $options.i18n.deleteButtonText }}
+          </gl-button>
         </div>
       </template>
     </gl-modal>

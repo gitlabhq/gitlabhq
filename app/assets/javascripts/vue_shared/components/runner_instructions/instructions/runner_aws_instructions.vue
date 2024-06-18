@@ -107,13 +107,13 @@ export default {
         class="gl-py-5 gl-pl-8"
         :class="{ 'gl-border-b': borderBottom(idx) }"
       >
-        <div class="-gl-mt-1 gl-pl-4 gl-pb-2 gl-font-weight-bold">
+        <div class="-gl-mt-1 gl-pl-4 gl-pb-2 gl-font-bold">
           {{ easyButton.description }}
           <gl-accordion :header-level="3" class="gl-pt-3">
             <gl-accordion-item
               :title="$options.i18n.moreDetails"
               :title-visible="$options.i18n.lessDetails"
-              class="gl-font-weight-normal"
+              class="gl-font-normal"
             >
               <p class="gl-pt-2">{{ easyButton.moreDetails1 }}</p>
               <p class="gl-m-0">{{ easyButton.moreDetails2 }}</p>

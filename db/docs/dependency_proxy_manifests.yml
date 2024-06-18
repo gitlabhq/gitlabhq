@@ -3,15 +3,11 @@ table_name: dependency_proxy_manifests
 classes:
 - DependencyProxy::Manifest
 feature_categories:
-- dependency_proxy
+- virtual_registry
 description: Dependency proxy manifest files
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/48535
 milestone: '13.7'
 gitlab_schema: gitlab_main_cell
-allow_cross_joins:
-- gitlab_main_clusterwide
-allow_cross_transactions:
-- gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:

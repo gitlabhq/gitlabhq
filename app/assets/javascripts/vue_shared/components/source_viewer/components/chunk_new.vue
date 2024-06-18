@@ -92,13 +92,13 @@ export default {
         class="gl-p-0! gl-z-3 diff-line-num gl-border-r gl-display-flex line-links line-numbers"
       >
         <a
-          class="gl-select-none gl-shadow-none! file-line-blame"
+          class="gl-select-none !gl-shadow-none file-line-blame"
           data-event-tracking="click_chunk_blame_on_blob_page"
           :href="`${blamePath}${pageSearchString}#L${calculateLineNumber(index)}`"
         ></a>
         <a
           :id="`L${calculateLineNumber(index)}`"
-          class="gl-select-none gl-shadow-none! file-line-num"
+          class="gl-select-none !gl-shadow-none file-line-num"
           :href="`#L${calculateLineNumber(index)}`"
           :data-line-number="calculateLineNumber(index)"
         >
@@ -113,7 +113,7 @@ export default {
 
     <gl-intersection-observer class="gl-w-full" @appear="handleChunkAppear">
       <pre
-        class="gl-m-0 gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-line-height-0"
+        class="gl-m-0 gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-leading-0"
       ><code v-if="shouldHighlight" v-safe-html="highlightedContent" :style="codeStyling" data-testid="content"></code><code v-else v-once class="line gl-white-space-pre-wrap! gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
     </gl-intersection-observer>
   </div>

@@ -52,7 +52,7 @@ class ProjectsController < Projects::ApplicationController
 
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
   end
 
   layout :determine_layout
@@ -73,7 +73,7 @@ class ProjectsController < Projects::ApplicationController
   # TODO: Set high urgency for #show https://gitlab.com/gitlab-org/gitlab/-/issues/334444
 
   urgency :low, [:refs, :show, :toggle_star, :transfer, :archive, :destroy, :update, :create,
-                 :activity, :edit, :new, :export, :remove_export, :generate_new_export, :download_export]
+    :activity, :edit, :new, :export, :remove_export, :generate_new_export, :download_export]
 
   urgency :high, [:unfoldered_environment_names]
 
@@ -194,7 +194,7 @@ class ProjectsController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
-    flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
+    flash[:toast] = format(_("Project '%{project_name}' is being deleted."), project_name: @project.full_name)
 
     redirect_to dashboard_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => e

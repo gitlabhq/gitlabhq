@@ -4,9 +4,10 @@ import { GlTabs, GlDrawer } from '@gitlab/ui';
 import KubernetesTabs from '~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue';
 import KubernetesPods from '~/environments/environment_details/components/kubernetes/kubernetes_pods.vue';
 import KubernetesServices from '~/environments/environment_details/components/kubernetes/kubernetes_services.vue';
+import KubernetesSummary from '~/environments/environment_details/components/kubernetes/kubernetes_summary.vue';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
-import { mockKasTunnelUrl } from 'jest/environments/mock_data';
+import { mockKasTunnelUrl, fluxKustomization } from 'jest/environments/mock_data';
 import { mockPodsTableItems } from 'jest/kubernetes_dashboard/graphql/mock_data';
 
 describe('~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue', () => {
@@ -19,45 +20,71 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
       headers: { 'GitLab-Agent-Id': '1' },
     },
   };
+
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findKubernetesPods = () => wrapper.findComponent(KubernetesPods);
   const findKubernetesServices = () => wrapper.findComponent(KubernetesServices);
+  const findKubernetesSummary = () => wrapper.findComponent(KubernetesSummary);
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findWorkloadDetails = () => wrapper.findComponent(WorkloadDetails);
 
-  const createWrapper = (activeTab = k8sResourceType.k8sPods) => {
+  const createWrapper = ({
+    activeTab = k8sResourceType.k8sPods,
+    k8sTreeViewEnabled = false,
+  } = {}) => {
     wrapper = shallowMount(KubernetesTabs, {
-      propsData: { configuration, namespace, value: activeTab },
+      provide: {
+        glFeatures: { k8sTreeView: k8sTreeViewEnabled },
+      },
+      propsData: { configuration, namespace, fluxKustomization, value: activeTab },
       stubs: { GlDrawer },
     });
   };
 
   describe('mounted', () => {
-    beforeEach(() => {
+    describe('when `k8sTreeView feature flag is enabled', () => {
+      beforeEach(() => {
+        createWrapper({ k8sTreeViewEnabled: true });
+      });
+
+      it('shows tabs', () => {
+        expect(findTabs().exists()).toBe(true);
+      });
+
+      it('renders pods tab', () => {
+        expect(findKubernetesPods().props()).toEqual({ namespace, configuration });
+      });
+
+      it('renders services tab', () => {
+        expect(findKubernetesServices().props()).toEqual({ namespace, configuration });
+      });
+
+      it('renders summary tab', () => {
+        expect(findKubernetesSummary().props()).toEqual({
+          namespace,
+          configuration,
+          fluxKustomization,
+        });
+      });
+    });
+
+    it('renders summary tab if the feature flag is disabled', () => {
       createWrapper();
-    });
 
-    it('shows tabs', () => {
-      expect(findTabs().exists()).toBe(true);
-    });
-
-    it('renders pods tab', () => {
-      expect(findKubernetesPods().props()).toEqual({ namespace, configuration });
-    });
-
-    it('renders services tab', () => {
-      expect(findKubernetesServices().props()).toEqual({ namespace, configuration });
+      expect(findKubernetesSummary().exists()).toBe(false);
     });
   });
 
   describe('active tab tracking', () => {
+    const summaryTab = 'summary';
     it.each([
-      [k8sResourceType.k8sPods, 0, 1, k8sResourceType.k8sServices],
-      [k8sResourceType.k8sServices, 1, 0, k8sResourceType.k8sPods],
+      [k8sResourceType.k8sPods, 1, 2, k8sResourceType.k8sServices],
+      [k8sResourceType.k8sServices, 2, 1, k8sResourceType.k8sPods],
+      [summaryTab, 0, 2, k8sResourceType.k8sServices],
     ])(
       'when activeTab is %s, it activates the right tab and emit the correct tab name when switching',
       async (activeTab, tabIndex, newTabIndex, newActiveTab) => {
-        createWrapper(activeTab);
+        createWrapper({ activeTab });
         const tabsComponent = findTabs();
         expect(tabsComponent.props('value')).toBe(tabIndex);
 

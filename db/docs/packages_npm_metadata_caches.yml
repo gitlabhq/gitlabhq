@@ -7,4 +7,7 @@ feature_categories:
 description: Store the metadata of npm packages to use later as a cache
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114312
 milestone: '15.11'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461787

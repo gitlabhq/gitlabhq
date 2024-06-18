@@ -10,7 +10,9 @@ feature_categories:
 - groups_and_projects
 - source_code_management
 - team_planning
-description: For tracking blob metadata. Single table inheritance is used to relate this table to many other tables.
+description: For tracking blob metadata. Single table inheritance is used to relate
+  this table to many other tables.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/4c622b71fd284058deee483bf0009f8179b792bc
 milestone: '9.0'
 gitlab_schema: gitlab_main_cell
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/398199

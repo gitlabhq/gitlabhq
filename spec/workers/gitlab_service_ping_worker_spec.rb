@@ -28,19 +28,11 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
   end
 
   it 'delegates to ServicePing::SubmitService' do
-    expect_next_instance_of(ServicePing::SubmitService, payload: payload, skip_db_write: false) do |service|
+    expect_next_instance_of(ServicePing::SubmitService, payload: payload) do |service|
       expect(service).to receive(:execute)
     end
 
     subject.perform
-  end
-
-  it 'passes Hash arguments to ServicePing::SubmitService' do
-    expect_next_instance_of(ServicePing::SubmitService, payload: payload, skip_db_write: true) do |service|
-      expect(service).to receive(:execute)
-    end
-
-    subject.perform('skip_db_write' => true)
   end
 
   context 'payload computation' do
@@ -60,7 +52,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
       allow(::ServicePing::BuildPayload).to receive(:new).and_raise(error)
 
       expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
-      expect_next_instance_of(::ServicePing::SubmitService, payload: nil, skip_db_write: false) do |service|
+      expect_next_instance_of(::ServicePing::SubmitService, payload: nil) do |service|
         expect(service).to receive(:execute)
       end
 

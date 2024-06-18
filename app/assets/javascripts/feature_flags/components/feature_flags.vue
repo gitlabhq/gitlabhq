@@ -176,7 +176,7 @@ export default {
       @token="rotateInstanceId()"
     />
     <div :class="topAreaBaseClasses">
-      <div class="gl-display-flex gl-flex-direction-column gl-md-display-none!">
+      <div class="gl-flex md:!gl-hidden gl-flex-direction-column">
         <gl-button
           v-if="userListPath"
           :href="userListPath"
@@ -222,9 +222,7 @@ export default {
             >{{ countBadgeContents }}</gl-badge
           >
         </div>
-        <div
-          class="gl-display-none gl-md-display-flex gl-align-items-center gl-justify-content-end"
-        >
+        <div class="gl-hidden md:gl-flex gl-align-items-center gl-justify-content-end">
           <gl-button
             v-if="userListPath"
             :href="userListPath"

@@ -5,14 +5,14 @@ import { s__, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { PIPELINE_ID_KEY, PIPELINE_IID_KEY, TRACKING_CATEGORIES } from '~/ci/constants';
 import { keepLatestDownstreamPipelines } from '~/ci/pipeline_details/utils/parsing_utils';
-import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import PipelineFailedJobsWidget from '~/ci/pipelines_page/components/failure_widget/pipeline_failed_jobs_widget.vue';
 import PipelineOperations from '../pipelines_page/components/pipeline_operations.vue';
 import PipelineTriggerer from '../pipelines_page/components/pipeline_triggerer.vue';
 import PipelineUrl from '../pipelines_page/components/pipeline_url.vue';
 import PipelineStatusBadge from '../pipelines_page/components/pipeline_status_badge.vue';
 
-const HIDE_TD_ON_MOBILE = 'gl-display-none! gl-lg-display-table-cell!';
+const HIDE_TD_ON_MOBILE = '!gl-hidden lg:!gl-table-cell';
 
 /**
  * Pipelines Table
@@ -129,6 +129,9 @@ export default {
     getProjectPath(item) {
       return cleanLeadingSeparator(item.project.full_path);
     },
+    getStages(item) {
+      return item?.details?.stages || [];
+    },
     failedJobsCount(pipeline) {
       return pipeline?.failed_builds_count || 0;
     },
@@ -162,7 +165,7 @@ export default {
       fixed
     >
       <template #head(actions)>
-        <span class="gl-display-block gl-lg-display-none!">{{ s__('Pipeline|Actions') }}</span>
+        <span class="gl-block lg:!gl-hidden">{{ s__('Pipeline|Actions') }}</span>
         <slot name="table-header-actions"></slot>
       </template>
 
@@ -190,7 +193,7 @@ export default {
         <legacy-pipeline-mini-graph
           :downstream-pipelines="getDownstreamPipelines(item)"
           :pipeline-path="item.path"
-          :stages="item.details.stages"
+          :stages="getStages(item)"
           :update-dropdown="updateGraphDropdown"
           :upstream-pipeline="item.triggered_by"
           @miniGraphStageClick="trackPipelineMiniGraph"

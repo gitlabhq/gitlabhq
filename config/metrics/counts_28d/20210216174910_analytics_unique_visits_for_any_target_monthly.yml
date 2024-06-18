@@ -2,8 +2,6 @@
 data_category: optional
 key_path: analytics_unique_visits.analytics_unique_visits_for_any_target_monthly
 description: Unique visitors to any analytics feature by month
-product_section: dev
-product_stage: manage
 product_group: optimize
 value_type: number
 status: active
@@ -64,8 +62,6 @@ events:
 - name: g_analytics_ci_cd_time_to_restore_service
   unique: user.id
 - name: g_analytics_ci_cd_change_failure_rate
-  unique: user.id
-- name: g_metrics_comparison_page
   unique: user.id
 distribution:
 - ce

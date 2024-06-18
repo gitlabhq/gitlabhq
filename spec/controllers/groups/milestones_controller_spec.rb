@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
-  let(:group) { create(:group, :public) }
-  let!(:project) { create(:project, :public, group: group) }
-  let!(:project2) { create(:project, group: group) }
-  let(:user)    { create(:user) }
+  let_it_be(:group) { create(:group, :public) }
+  let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:project2) { create(:project, group: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:milestone) { create(:milestone, project: project) }
   let(:title) { '肯定不是中文的问题' }
-  let(:milestone) { create(:milestone, project: project) }
 
   let(:milestone_params) do
     {
@@ -86,13 +86,13 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
           end
         end
 
-        let!(:public_group) { create(:group, :public) }
+        let_it_be(:public_group) { create(:group, :public) }
 
-        let!(:public_project_with_private_issues_and_mrs) do
+        let_it_be(:public_project_with_private_issues_and_mrs) do
           create(:project, :public, :issues_private, :merge_requests_private, group: public_group)
         end
 
-        let!(:private_milestone) { create(:milestone, project: public_project_with_private_issues_and_mrs, title: 'project milestone') }
+        let_it_be(:private_milestone) { create(:milestone, project: public_project_with_private_issues_and_mrs, title: 'project milestone') }
 
         context 'when anonymous user' do
           before do
@@ -165,17 +165,19 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
     end
 
     context 'as JSON' do
-      let!(:milestone) { create(:milestone, group: group, title: 'group milestone') }
-      let!(:project_milestone1) { create(:milestone, project: project, title: 'same name') }
-      let!(:project_milestone2) { create(:milestone, project: project2, title: 'same name') }
+      before do
+        create(:milestone, group: group, title: 'group milestone')
+        create(:milestone, project: project, title: 'same name')
+        create(:milestone, project: project2, title: 'same name')
+      end
 
       it 'lists project and group milestones' do
         get :index, params: { group_id: group.to_param }, format: :json
 
         milestones = json_response
 
-        expect(milestones.count).to eq(3)
-        expect(milestones.collect { |m| m['title'] }).to match_array(['same name', 'same name', 'group milestone'])
+        expect(milestones.count).to eq(4)
+        expect(milestones.collect { |m| m['title'] }).to match_array([milestone.name, 'same name', 'same name', 'group milestone'])
         expect(response).to have_gitlab_http_status(:ok)
         expect(response.media_type).to eq 'application/json'
       end
@@ -189,8 +191,8 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
           milestones = json_response
 
           milestone_titles = milestones.map { |m| m['title'] }
-          expect(milestones.count).to eq(4)
-          expect(milestone_titles).to match_array(['same name', 'same name', 'group milestone', 'subgroup milestone'])
+          expect(milestones.count).to eq(5)
+          expect(milestone_titles).to match_array([milestone.name, 'same name', 'same name', 'group milestone', 'subgroup milestone'])
         end
       end
 
@@ -245,7 +247,7 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
   end
 
   describe "#update" do
-    let(:milestone) { create(:milestone, group: group) }
+    let_it_be_with_reload(:milestone) { create(:milestone, group: group) }
 
     subject do
       put :update, params: {
@@ -299,7 +301,7 @@ RSpec.describe Groups::MilestonesController, feature_category: :team_planning do
           }
       end
 
-      it "responds :no_content (204) without content body and updates milestone sucessfully" do
+      it "responds :no_content (204) without content body and updates milestone successfully" do
         subject
 
         expect(response).to have_gitlab_http_status(:no_content)

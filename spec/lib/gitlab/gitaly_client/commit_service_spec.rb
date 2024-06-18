@@ -152,8 +152,8 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
 
     it 'sends an RPC request and returns the stats' do
       request = Gitaly::DiffStatsRequest.new(repository: repository_message,
-                                             left_commit_id: left_commit_id,
-                                             right_commit_id: right_commit_id)
+        left_commit_id: left_commit_id,
+        right_commit_id: right_commit_id)
 
       diff_stat_response = Gitaly::DiffStatsResponse.new(
         stats: [{ additions: 1, deletions: 2, path: 'test' }])
@@ -626,7 +626,7 @@ RSpec.describe Gitlab::GitalyClient::CommitService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::CommitService::Stub)
         .to receive(:count_commits)
         .with(gitaly_request_with_path(storage_name, relative_path),
-              kind_of(Hash))
+          kind_of(Hash))
         .and_return([])
     end
 

@@ -2,8 +2,6 @@
 key_path: counts.service_usage_data_download_payload_click
 description: Count Download Payload button clicks
 data_category: optional
-product_section: analytics
-product_stage: analytics
 product_group: analytics_instrumentation
 value_type: number
 status: active

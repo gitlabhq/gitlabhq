@@ -2,6 +2,9 @@
 
 module Routing
   module PseudonymizationHelper
+    PSEUDONOMIZED_NAMESPACE = "namespace"
+    PSEUDONOMIZED_PROJECT = "project"
+
     class MaskHelper
       QUERY_PARAMS_TO_NOT_MASK = %w[
         scope
@@ -90,6 +93,50 @@ module Routing
     # We rescue all exception for time being till we test this helper extensively.
     # Check https://gitlab.com/gitlab-org/gitlab/-/merge_requests/72864#note_711515501
     rescue => e # rubocop:disable Style/RescueStandardError
+      Gitlab::ErrorTracking.track_exception(e, url: request.original_fullpath)
+      nil
+    end
+
+    def masked_referrer_url(url)
+      return unless url
+
+      params = referrer_params(url)
+
+      return unless params && params[:controller]
+      return if params[:action] == "route_not_found"
+
+      case params[:controller]
+      when 'groups'
+        params[:id] = PSEUDONOMIZED_NAMESPACE
+      when 'projects'
+        params[:id] = PSEUDONOMIZED_PROJECT
+        params[:namespace_id] = PSEUDONOMIZED_NAMESPACE
+      else
+        params[:project_id] = PSEUDONOMIZED_PROJECT if params[:project_id]
+        params[:namespace_id] = PSEUDONOMIZED_NAMESPACE if params[:namespace_id]
+      end
+
+      masked_query_params = masked_query_params(URI.parse(url))
+
+      Gitlab::Routing.url_helpers.url_for(params.merge(params: masked_query_params))
+    end
+
+    def masked_query_params(uri)
+      query_params = CGI.parse(uri.query.to_s)
+      query_params.transform_keys!(&:downcase)
+
+      return if query_params.empty?
+
+      query_params.each do |key, _|
+        query_params[key] = ["masked_#{key}"] unless MaskHelper::QUERY_PARAMS_TO_NOT_MASK.include?(key)
+      end
+
+      query_params
+    end
+
+    def referrer_params(url)
+      Rails.application.routes.recognize_path(url)
+    rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, url: request.original_fullpath)
       nil
     end

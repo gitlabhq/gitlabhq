@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Instrumentation::ConnectionPool, feature_category: :redis
 
     it 'sets the size gauge only once' do
       expect(::Gitlab::Metrics.gauge(*size_gauge_args)).to receive(:set).with(
-        { pool_name: 'test', pool_key: anything, connection_class: "String" }, 5).once
+        { pool_name: 'test', connection_class: "String" }, 5).once
 
       checkout_pool
       checkout_pool
@@ -49,9 +49,9 @@ RSpec.describe Gitlab::Instrumentation::ConnectionPool, feature_category: :redis
         expect(::Gitlab::Metrics).not_to receive(:gauge).with(*available_gauge_args)
 
         expect(pool.instance_variable_get(:@size_gauge)).not_to receive(:set)
-          .with({ pool_name: 'test', pool_key: anything, connection_class: "String" }, 5)
+          .with({ pool_name: 'test', connection_class: "String" }, 5)
         expect(pool.instance_variable_get(:@available_gauge)).to receive(:set)
-          .with({ pool_name: 'test', pool_key: anything, connection_class: "String" }, 4)
+          .with({ pool_name: 'test', connection_class: "String" }, 4)
 
         checkout_pool
       end
@@ -61,9 +61,9 @@ RSpec.describe Gitlab::Instrumentation::ConnectionPool, feature_category: :redis
 
         it 'uses unknown name' do
           expect(pool.instance_variable_get(:@size_gauge)).not_to receive(:set)
-            .with({ pool_name: 'unknown', pool_key: anything, connection_class: "String" }, 5)
+            .with({ pool_name: 'unknown', connection_class: "String" }, 5)
           expect(pool.instance_variable_get(:@available_gauge)).to receive(:set)
-            .with({ pool_name: 'unknown', pool_key: anything, connection_class: "String" }, 4)
+            .with({ pool_name: 'unknown', connection_class: "String" }, 4)
 
           checkout_pool
         end

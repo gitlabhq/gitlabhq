@@ -3,7 +3,7 @@
 module Gitlab
   module BackgroundMigration
     # rubocop:disable Style/Documentation
-    class PurgeStaleSecurityScans # rubocop:disable Migration/BackgroundMigrationBaseClass
+    class PurgeStaleSecurityScans # rubocop:disable Migration/BatchedMigrationBaseClass
       class SecurityScan < ::ApplicationRecord
         include EachBatch
 
@@ -17,7 +17,7 @@ module Gitlab
         enum status: { succeeded: 1, purged: 6 }
 
         scope :to_purge, -> { where('id <= ?', last_stale_record_id) }
-        scope :by_range, -> (range) { where(id: range) }
+        scope :by_range, ->(range) { where(id: range) }
 
         def self.last_stale_record_id
           where('created_at < ?', STALE_AFTER.ago).order(created_at: :desc).first

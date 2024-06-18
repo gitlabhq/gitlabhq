@@ -243,8 +243,12 @@ module ApplicationHelper
     ApplicationHelper.community_forum
   end
 
-  def promo_url
+  def self.promo_url
     "https://#{promo_host}"
+  end
+
+  def promo_url
+    ApplicationHelper.promo_url
   end
 
   def support_url

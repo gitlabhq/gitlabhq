@@ -18,7 +18,10 @@ class ProjectExportWorker # rubocop:disable Scalability/IdempotentWorker
     params.symbolize_keys!
 
     project = Project.find(project_id)
-    export_job = project.export_jobs.safe_find_or_create_by(jid: self.jid)
+    export_job = project.export_jobs.safe_find_or_create_by(jid: self.jid) do |job|
+      job.user = current_user
+      job.exported_by_admin = !!params[:exported_by_admin]
+    end
     after_export = build!(after_export_strategy)
 
     export_job&.start

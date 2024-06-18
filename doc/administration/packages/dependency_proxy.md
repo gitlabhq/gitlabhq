@@ -265,8 +265,9 @@ The default expiration and the expiration on GitLab.com is 15 minutes.
 
    ```ruby
    gitlab_workhorse['env'] = {
-    "http_proxy" => "http://USERNAME:PASSWORD@example.com:8080",
-    "https_proxy" => "http://USERNAME:PASSWORD@example.com:8080"
+     "http_proxy" => "http://USERNAME:PASSWORD@example.com:8080",
+     "https_proxy" => "http://USERNAME:PASSWORD@example.com:8080"
+   }
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.

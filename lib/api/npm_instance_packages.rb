@@ -18,6 +18,7 @@ module API
 
     namespace 'packages/npm' do
       include ::API::Concerns::Packages::NpmEndpoints
+      include ::API::Concerns::Packages::NpmNamespaceEndpoints
     end
   end
 end

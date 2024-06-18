@@ -72,4 +72,5 @@ export const OVERVIEW_TABS_ARCHIVED_PROJECTS_SORTING_ITEMS = [
 
 export const FORM_FIELD_NAME = 'name';
 export const FORM_FIELD_PATH = 'path';
+export const FORM_FIELD_ID = 'id';
 export const FORM_FIELD_VISIBILITY_LEVEL = 'visibilityLevel';

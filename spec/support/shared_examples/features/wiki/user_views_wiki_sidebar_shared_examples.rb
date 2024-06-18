@@ -25,14 +25,15 @@ RSpec.shared_examples 'User views wiki sidebar' do
       it 'renders a default sidebar' do
         within('.right-sidebar') do
           expect(page).to have_content('another')
-          expect(page).not_to have_link('View All Pages')
+          expect(page).to have_link('View all pages')
+          expect(page).not_to have_css("[data-testid='expand-pages-list']")
         end
       end
 
       it 'can create a custom sidebar', :js do
-        click_on 'Edit sidebar'
+        click_on 'Add custom sidebar'
         fill_in :wiki_content, with: 'My custom sidebar'
-        click_on 'Create page'
+        click_on 'Create custom sidebar'
 
         within('.right-sidebar') do
           expect(page).to have_content('My custom sidebar')
@@ -48,15 +49,23 @@ RSpec.shared_examples 'User views wiki sidebar' do
         visit wiki_path(wiki)
       end
 
-      it 'renders the custom sidebar instead of the default one' do
+      it 'renders both the custom sidebar and the default one' do
         within('.right-sidebar') do
+          expect(page).to have_css("[data-testid='expand-pages-list']")
           expect(page).to have_content('My custom sidebar')
-          expect(page).not_to have_content('another')
+        end
+      end
+
+      it 'can expand list of pages in sidebar', :js do
+        find("[data-testid='expand-pages-list']").click
+
+        within('.right-sidebar') do
+          expect(page).to have_content('another')
         end
       end
 
       it 'can edit the custom sidebar', :js do
-        click_on 'Edit sidebar'
+        click_on 'Edit custom sidebar'
 
         expect(page).to have_field(:wiki_content, with: 'My custom sidebar')
 
@@ -81,7 +90,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
       visit wiki_path(wiki)
 
       (1..15).each { |i| expect(page).to have_content("my page #{i}") }
-      expect(page).not_to have_link('View All Pages')
+      expect(page).to have_link('View all pages')
     end
 
     it 'shows all collapse buttons in the sidebar' do
@@ -113,10 +122,10 @@ RSpec.shared_examples 'User views wiki sidebar' do
 
       within('.right-sidebar') do
         first_wiki_list = first("[data-testid='wiki-list']")
-        wiki_link = first("[data-testid='wiki-list'] a:last-of-type")['href']
+        wiki_link = first("[data-testid='wiki-list'] a:first-of-type")['href']
 
         first_wiki_list.hover
-        wiki_new_page_link = first("[data-testid='wiki-list'] a")['href']
+        wiki_new_page_link = first(".wiki-list-create-child-button")['href']
 
         expect(wiki_new_page_link).to eq "#{wiki_link}/%7Bnew_page_title%7D"
       end
@@ -131,7 +140,7 @@ RSpec.shared_examples 'User views wiki sidebar' do
         visit wiki_path(wiki)
 
         expect(page).to have_text('my page', count: 15)
-        expect(page).to have_link('View All Pages')
+        expect(page).to have_link('View all pages')
       end
     end
   end

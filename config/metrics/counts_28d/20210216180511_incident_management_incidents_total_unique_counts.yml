@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts_monthly.aggregated_metrics.incident_management_incidents_total_unique_counts
 description: Count of unique users per month to take an action on an incident
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

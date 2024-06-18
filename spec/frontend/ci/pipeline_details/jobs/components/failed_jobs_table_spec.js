@@ -6,7 +6,7 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import FailedJobsTable from '~/ci/pipeline_details/jobs/components/failed_jobs_table.vue';
 import RetryFailedJobMutation from '~/ci/pipeline_details/jobs/graphql/mutations/retry_failed_job.mutation.graphql';
 import { TRACKING_CATEGORIES } from '~/ci/constants';
@@ -104,7 +104,7 @@ describe('Failed Jobs Table', () => {
 
     await waitForPromises();
 
-    expect(redirectTo).toHaveBeenCalledWith(job.detailedStatus.detailsPath); // eslint-disable-line import/no-deprecated
+    expect(visitUrl).toHaveBeenCalledWith(job.detailedStatus.detailsPath);
   });
 
   it('shows error message if the retry failed job mutation fails', async () => {

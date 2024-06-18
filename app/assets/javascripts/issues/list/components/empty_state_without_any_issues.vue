@@ -1,4 +1,5 @@
 <script>
+import emptyStateSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-issues-md.svg';
 import { GlButton, GlDisclosureDropdown, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
@@ -14,7 +15,9 @@ export default {
       'JiraService|%{jiraDocsLinkStart}Enable the Jira integration%{jiraDocsLinkEnd} to view your Jira issues in GitLab.',
     ),
   },
+  emptyStateSvg,
   issuesHelpPagePath: helpPagePath('user/project/issues/index'),
+  jiraIntegrationPath: helpPagePath('integration/jira/issues', { anchor: 'view-jira-issues' }),
   components: {
     CsvImportExportButtons,
     GlButton,
@@ -29,9 +32,7 @@ export default {
   mixins: [hasNewIssueDropdown()],
   inject: [
     'canCreateProjects',
-    'emptyStateSvgPath',
     'isSignedIn',
-    'jiraIntegrationPath',
     'newIssuePath',
     'newProjectPath',
     'showNewIssueLink',
@@ -89,7 +90,7 @@ export default {
         <div>
           <gl-empty-state
             :title="__('Use issues to collaborate on ideas, solve problems, and plan work')"
-            :svg-path="emptyStateSvgPath"
+            :svg-path="$options.emptyStateSvg"
             :svg-height="150"
             data-testid="issuable-empty-state"
           >
@@ -157,14 +158,14 @@ export default {
             </template>
           </gl-empty-state>
           <hr />
-          <p class="gl-text-center gl-font-weight-bold gl-mb-0">
+          <p class="gl-text-center gl-font-bold gl-mb-0">
             {{ s__('JiraService|Using Jira for issue tracking?') }}
           </p>
           <p class="gl-text-center gl-mb-0">
             <gl-sprintf :message="$options.i18n.jiraIntegrationMessage">
               <template #jiraDocsLink="{ content }">
                 <gl-link
-                  :href="jiraIntegrationPath"
+                  :href="$options.jiraIntegrationPath"
                   :data-track-action="isProject && 'click_jira_int_project_issues_empty_list_page'"
                   :data-track-label="isProject && 'jira_int_project_issues_empty_list'"
                   :data-track-experiment="isProject && 'issues_mrs_empty_state'"
@@ -185,7 +186,7 @@ export default {
   <gl-empty-state
     v-else
     :title="__('Use issues to collaborate on ideas, solve problems, and plan work')"
-    :svg-path="emptyStateSvgPath"
+    :svg-path="$options.emptyStateSvg"
     :svg-height="null"
     :primary-button-text="__('Register / Sign In')"
     :primary-button-link="signInPath"

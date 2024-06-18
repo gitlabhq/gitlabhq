@@ -34,12 +34,10 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   desc "User owns the group's organization"
   condition(:organization_owner) do
-    if @user.is_a?(User)
-      @user.owns_organization?(@subject.organization_id)
-    else
-      false
-    end
+    owns_group_organization?
   end
+
+  rule { admin | organization_owner }.enable :admin_organization
 
   with_options scope: :subject, score: 0
   condition(:request_access_enabled) { @subject.request_access_enabled }
@@ -259,6 +257,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :maintainer_access
     enable :read_upload
     enable :destroy_upload
+    enable :admin_push_rules
   end
 
   rule { owner }.policy do
@@ -266,6 +265,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_namespace
     enable :admin_group_member
     enable :admin_package
+    enable :admin_runner
+    enable :admin_integrations
     enable :change_visibility_level
 
     enable :read_usage_quotas
@@ -291,6 +292,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :edit_billing
 
     enable :remove_group
+    enable :manage_merge_request_settings
   end
 
   rule { can?(:read_nested_project_resources) }.policy do
@@ -430,10 +432,6 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   private
 
-  def user_is_user?
-    user.is_a?(User)
-  end
-
   def group
     @subject
   end
@@ -459,6 +457,21 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   def valid_dependency_proxy_deploy_token
     @user.is_a?(DeployToken) && @user&.valid_for_dependency_proxy? && @user&.has_access_to_group?(@subject)
   end
+
+  # rubocop:disable Cop/UserAdmin -- specifically check the admin attribute
+  def owns_group_organization?
+    return false unless @user
+    return false unless user_is_user?
+    return false unless @subject.organization
+    # Ensure admins can't bypass admin mode.
+    return false if @user.admin? && !can?(:admin)
+
+    # Load the owners with a single query.
+    @subject.organization
+            .owner_user_ids
+            .include?(@user.id)
+  end
+  # rubocop:enable Cop/UserAdmin
 end
 
 GroupPolicy.prepend_mod_with('GroupPolicy')

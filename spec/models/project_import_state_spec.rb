@@ -85,7 +85,7 @@ RSpec.describe ProjectImportState, type: :model, feature_category: :importers do
     it 'logs error when update column fails' do
       allow(import_state).to receive(:update_column).and_raise(ActiveRecord::ActiveRecordError)
 
-      expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+      expect_next_instance_of(::Import::Framework::Logger) do |logger|
         expect(logger).to receive(:error).with(
           {
             error: 'ActiveRecord::ActiveRecordError',

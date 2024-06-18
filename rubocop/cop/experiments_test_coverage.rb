@@ -41,26 +41,22 @@ module RuboCop
       end
 
       def test_files_code(node)
-        # haml-lint add .rb extension to *.haml files
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/415330#caveats
         test_file_path = filepath(node).gsub('app/', 'spec/').gsub('.rb', '_spec.rb')
+        test_file_path << '_spec.rb' if test_file_path.end_with?('.haml')
+
         "#{read_file(test_file_path)}\n#{additional_tests_code(test_file_path)}"
       end
 
       def additional_tests_code(test_file_path)
-        # rubocop:disable Gitlab/NoCodeCoverageComment
-        # :nocov: File paths stubed in tests
         if test_file_path.include?('/controllers/')
           read_file(test_file_path.gsub('/controllers/', '/requests/'))
         elsif test_file_path.include?('/lib/api/')
           read_file(test_file_path.gsub('/lib/', '/spec/requests/'))
         end
-        # :nocov:
-        # rubocop:enable Gitlab/NoCodeCoverageComment
       end
 
       def read_file(file_path)
-        File.exist?(file_path) ? File.new(file_path).read : ''
+        File.exist?(file_path) ? File.read(file_path) : ''
       end
 
       def experiment_name(node)

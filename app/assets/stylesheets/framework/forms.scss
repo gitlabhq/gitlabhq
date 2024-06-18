@@ -64,7 +64,7 @@ input[type='search'] {
   margin-top: 0;
   margin-bottom: -$gl-padding;
   padding: $gl-padding;
-  background-color: $gray-light;
+  background-color: $gray-10;
   border-top: 1px solid $border-color;
 }
 
@@ -138,7 +138,7 @@ label {
 
 .form-control {
   @include box-shadow(none);
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   padding: $gl-vert-padding $gl-input-padding;
 
   &.input-short {

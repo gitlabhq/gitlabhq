@@ -21,9 +21,16 @@ module API
         documentation: { type: 'Hash', example: { "token" => "secr3t" }, is_array: true }
 
       expose :custom_webhook_template, documentation: { type: 'string', example: '{"event":"{{object_kind}}"}' }
+      expose :custom_headers,
+        if: ->(_, options) { options[:with_custom_headers] != false },
+        documentation: { type: 'Hash', example: { "X-Custom-Header" => "value" }, is_array: true }
 
       def url_variables
         object.url_variables.keys.map { { key: _1 } }
+      end
+
+      def custom_headers
+        object.custom_headers.keys.map { { key: _1 } }
       end
     end
   end

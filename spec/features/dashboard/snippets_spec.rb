@@ -27,7 +27,7 @@ RSpec.describe 'Dashboard snippets', :js, feature_category: :source_code_managem
     it_behaves_like 'paginated snippets'
 
     it 'shows new snippet button in header' do
-      parent_element = page.find('.page-title-controls')
+      parent_element = find_by_testid('page-heading-actions')
       expect(parent_element).to have_link('New snippet')
     end
   end

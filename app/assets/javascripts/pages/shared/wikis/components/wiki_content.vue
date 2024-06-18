@@ -1,11 +1,11 @@
 <script>
 import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
-import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert } from '~/alert';
-import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import SafeHtml from '~/vue_shared/directives/safe_html';
+import { __ } from '~/locale';
 
 export default {
   components: {
@@ -15,17 +15,13 @@ export default {
   directives: {
     SafeHtml,
   },
-  props: {
-    getWikiContentUrl: {
-      type: String,
-      required: true,
-    },
-  },
+
+  inject: ['contentApi'],
   data() {
     return {
+      content: '',
       isLoadingContent: false,
       loadingContentFailed: false,
-      content: null,
     };
   },
   mounted() {
@@ -39,7 +35,7 @@ export default {
       try {
         const {
           data: { content },
-        } = await axios.get(this.getWikiContentUrl, { params: { render_html: true } });
+        } = await axios.get(this.contentApi, { params: { render_html: true } });
         this.content = content;
 
         this.$nextTick()

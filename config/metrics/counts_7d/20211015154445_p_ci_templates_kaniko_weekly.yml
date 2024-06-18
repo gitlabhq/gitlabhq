@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_kaniko_weekly
 description: ''
-product_section: ops
-product_stage: release
 product_group: environments
 value_type: number
 status: active

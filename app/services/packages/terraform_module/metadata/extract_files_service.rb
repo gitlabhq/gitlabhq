@@ -85,19 +85,22 @@ module Packages
         end
 
         def root?(path)
-          File.dirname(path).exclude?('/')
+          File.dirname(path).exclude?('/') || (File.dirname(path).count('/') == 1 && path.start_with?('./'))
         end
 
         def submodule?(path)
-          File.dirname(path).match?(SUBMODULES_REGEX) &&
-            File.dirname(path).count('/').in?([1, 2]) &&
-            !File.dirname(path).end_with?('modules')
+          match_directory_pattern?(path, SUBMODULES_REGEX, 'modules')
         end
 
         def example?(path)
-          File.dirname(path).match?(EXAMPLES_REGEX) &&
-            File.dirname(path).count('/').in?([1, 2]) &&
-            !File.dirname(path).end_with?('examples')
+          match_directory_pattern?(path, EXAMPLES_REGEX, 'examples')
+        end
+
+        def match_directory_pattern?(path, regex, suffix)
+          File.dirname(path).match?(regex) &&
+            !File.dirname(path).end_with?(suffix) &&
+            (File.dirname(path).count('/').in?([1, 2]) ||
+            (File.dirname(path).count('/') == 3 && path.start_with?('./')))
         end
 
         def parse_and_merge_metadata(file, entry_name, module_type)
@@ -128,9 +131,9 @@ module Packages
           ensure_root_metadata_exists
 
           data.each_value do |val|
-            metadata[:root][:resources] |= val[:resources]
-            metadata[:root][:dependencies][:modules] |= val.dig(:dependencies, :modules)
-            metadata[:root][:dependencies][:providers] |= val.dig(:dependencies, :providers)
+            metadata[:root][:resources] |= val[:resources] || []
+            metadata[:root][:dependencies][:modules] |= val.dig(:dependencies, :modules) || []
+            metadata[:root][:dependencies][:providers] |= val.dig(:dependencies, :providers) || []
 
             val.except!(:resources, :dependencies) if clear_data
           end

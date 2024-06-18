@@ -9,20 +9,27 @@ module Integrations
     end
 
     def execute
-      if integration.instance_level?
-        update_inherited_integrations
-        create_integration_for_groups_without_integration
-        create_integration_for_projects_without_integration
+      return propagate_instance_level_integration if integration.instance_level?
+
+      if integration.class.instance_specific?
+        update_descendant_integrations
       else
         update_inherited_descendant_integrations
-        create_integration_for_groups_without_integration_belonging_to_group
-        create_integration_for_projects_without_integration_belonging_to_group
       end
+
+      create_integration_for_groups_without_integration_belonging_to_group
+      create_integration_for_projects_without_integration_belonging_to_group
     end
 
     private
 
     attr_reader :integration
+
+    def propagate_instance_level_integration
+      update_inherited_integrations
+      create_integration_for_groups_without_integration
+      create_integration_for_projects_without_integration
+    end
 
     def create_integration_for_projects_without_integration
       propagate_integrations(
@@ -35,6 +42,13 @@ module Integrations
       propagate_integrations(
         Integration.by_type(integration.type).inherit_from_id(integration.id),
         PropagateIntegrationInheritWorker
+      )
+    end
+
+    def update_descendant_integrations
+      propagate_integrations(
+        Integration.descendants_from_self_or_ancestors_from(integration),
+        PropagateIntegrationDescendantWorker
       )
     end
 

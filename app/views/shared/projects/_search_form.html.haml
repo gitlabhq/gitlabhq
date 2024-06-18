@@ -38,7 +38,7 @@
           = link_to filter_projects_path(language: language.id, name: nil), class: language_state_class(language) do
             = language.name
 
-  = submit_tag nil, class: 'gl-display-none!'
+  = submit_tag nil, class: '!gl-hidden'
 
   = render 'shared/projects/dropdown'
 

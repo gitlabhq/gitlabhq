@@ -138,6 +138,11 @@ FactoryBot.define do
       noteable { association(:work_item, project: project) }
     end
 
+    trait :on_group_work_item do
+      project { nil }
+      noteable { association(:work_item, :group_level) }
+    end
+
     trait :on_merge_request do
       noteable { association(:merge_request, source_project: project) }
     end

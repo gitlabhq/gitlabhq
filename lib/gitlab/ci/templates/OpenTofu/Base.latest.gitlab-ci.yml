@@ -34,20 +34,25 @@ opentofu:use-component-instead-of-template:
   image: alpine:3.19
   script:
     - |
-      echo "You are using the OpenTofu CI/CD template on GitLab.com, which is not recommended."
-      echo "This template is available for self-managed users only until CI/CD components are "
-      echo "available. See https://gitlab.com/gitlab-org/gitlab/-/issues/415638"
+      echo "You are using the OpenTofu CI/CD template on GitLab.com, which is deprecated."
+      echo "This template won't be updated."
+      echo "This template is deprecated because CI/CD components are usable for GitLab self-managed."
       echo " "
       echo "You should use the OpenTofu CI/CD component instead."
       echo "To include the CI/CD component with a default configuration:"
       echo " "
       echo "include:"
-      echo "  - component: gitlab.com/components/opentofu/full-pipeline@<VERSION>"
+      echo "  - component: $CI_SERVER_FQDN/$CI_PROJECT_PATH/full-pipeline@<VERSION>"
       echo "    inputs:"
       echo "      version: <VERSION>"
       echo "      opentofu_version: 1.6.0"
       echo ""
       echo "stages: [validate, build, deploy, cleanup]"
+      echo " "
+      echo "For GitLab self-managed follow the documentation at:"
+      echo "    https://docs.gitlab.com/ee/ci/components/#use-a-gitlabcom-component-in-a-self-managed-instance"
+      echo "and:"
+      echo "    https://gitlab.com/components/opentofu#usage-on-self-managed"
       echo " "
       echo "You can read about more about the OpenTofu CI/CD component here:"
       echo "https://gitlab.com/components/opentofu"
@@ -61,12 +66,14 @@ opentofu:use-component-instead-of-template:
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
-  # allow_failure: true
   allow_failure: true
   cache:
-    key: "$TF_ROOT"
+    key: "$__CACHE_KEY_HACK"
     paths:
       - $TF_ROOT/.terraform/
+  variables:
+    # FIXME: work around to make slashes work in `cache:key`. see https://gitlab.com/gitlab-org/gitlab/-/issues/439898
+    __CACHE_KEY_HACK: "$TF_ROOT"
   image:
     name: '$GITLAB_OPENTOFU_IMAGE_REGISTRY_BASE/gitlab-opentofu:$GITLAB_OPENTOFU_VERSION-opentofu$OPENTOFU_VERSION'
   script:
@@ -80,9 +87,12 @@ opentofu:use-component-instead-of-template:
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
   cache:
-    key: "$TF_ROOT"
+    key: "$__CACHE_KEY_HACK"
     paths:
       - $TF_ROOT/.terraform/
+  variables:
+    # FIXME: work around to make slashes work in `cache:key`. see https://gitlab.com/gitlab-org/gitlab/-/issues/439898
+    __CACHE_KEY_HACK: "$TF_ROOT"
   image:
     name: '$GITLAB_OPENTOFU_IMAGE_REGISTRY_BASE/gitlab-opentofu:$GITLAB_OPENTOFU_VERSION-opentofu$OPENTOFU_VERSION'
   script:
@@ -112,9 +122,12 @@ opentofu:use-component-instead-of-template:
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
   cache:
-    key: "$TF_ROOT"
+    key: "$__CACHE_KEY_HACK"
     paths:
       - $TF_ROOT/.terraform/
+  variables:
+    # FIXME: work around to make slashes work in `cache:key`. see https://gitlab.com/gitlab-org/gitlab/-/issues/439898
+    __CACHE_KEY_HACK: "$TF_ROOT"
   image:
     name: '$GITLAB_OPENTOFU_IMAGE_REGISTRY_BASE/gitlab-opentofu:$GITLAB_OPENTOFU_VERSION-opentofu$OPENTOFU_VERSION'
   script:
@@ -128,13 +141,16 @@ opentofu:use-component-instead-of-template:
     action: start
   resource_group: $TF_STATE_NAME
   rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && "$_TF_AUTO_APPLY" == "true"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $_TF_AUTO_APPLY == "true"'
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
   cache:
-    key: "$TF_ROOT"
+    key: "$__CACHE_KEY_HACK"
     paths:
       - $TF_ROOT/.terraform/
+  variables:
+    # FIXME: work around to make slashes work in `cache:key`. see https://gitlab.com/gitlab-org/gitlab/-/issues/439898
+    __CACHE_KEY_HACK: "$TF_ROOT"
   image:
     name: '$GITLAB_OPENTOFU_IMAGE_REGISTRY_BASE/gitlab-opentofu:$GITLAB_OPENTOFU_VERSION-opentofu$OPENTOFU_VERSION'
   script:
@@ -147,12 +163,15 @@ opentofu:use-component-instead-of-template:
     action: stop
   resource_group: $TF_STATE_NAME
   rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && "$_TF_AUTO_DESTROY" == "true"'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $_TF_AUTO_DESTROY == "true"'
     - when: manual
   cache:
-    key: "$TF_ROOT"
+    key: "$__CACHE_KEY_HACK"
     paths:
       - $TF_ROOT/.terraform/
+  variables:
+    # FIXME: work around to make slashes work in `cache:key`. see https://gitlab.com/gitlab-org/gitlab/-/issues/439898
+    __CACHE_KEY_HACK: "$TF_ROOT"
   image:
     name: '$GITLAB_OPENTOFU_IMAGE_REGISTRY_BASE/gitlab-opentofu:$GITLAB_OPENTOFU_VERSION-opentofu$OPENTOFU_VERSION'
   script:

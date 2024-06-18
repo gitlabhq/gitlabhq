@@ -169,7 +169,7 @@ describe('Design management design index page', () => {
     it('passes correct props to sidebar component', () => {
       expect(findSidebar().props()).toEqual({
         design: expect.any(Object),
-        markdownPreviewPath: '/project-path/preview_markdown?target_type=Issue',
+        markdownPreviewPath: '/project-path/-/preview_markdown?target_type=Issue',
         resolvedDiscussionsExpanded: false,
         isLoading: false,
         isOpen: true,

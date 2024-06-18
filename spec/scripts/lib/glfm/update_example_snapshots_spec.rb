@@ -678,7 +678,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
             canonical: |
               <p><a href="groups-test-file">groups-test-file</a></p>
             static: |-
-              <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
+              <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/-/group/66666/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
             wysiwyg: |-
               <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/groups-test-file">groups-test-file</a></p>
           06_02_00__api_request_overrides__project_repo_link__001:
@@ -692,7 +692,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
             canonical: |
               <p>This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888">$88888</a>
             static: |-
-              <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-project="77777" data-snippet="88888" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
+              <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-snippet="88888" data-project="77777" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
             wysiwyg: |-
               <p dir="auto">This project snippet ID reference IS filtered: $88888</p>
           06_04_00__api_request_overrides__personal_snippet_ref__001:

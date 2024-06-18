@@ -9,51 +9,46 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Ultimate
 **Offering:** Self-managed
-**Status:** Experiment
 
-> - Introduced in GitLab 15.9 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
+> - Introduced in GitLab 15.9 as an [experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards`. Disabled by default.
 > - `combined_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/389067) by default in GitLab 16.11.
+> - `combined_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454350) in GitLab 17.1.
 
 Analytics dashboards help you visualize the collected data.
-You can use built-in dashboards or create your own with custom visualizations.
+You can use built-in dashboards by GitLab or create your own dashboards with custom visualizations.
 
 ## Data sources
 
 A data source is a connection to a database or collection of data which can be used by your dashboard
 filters and visualizations to query and retrieve results.
 
-The following data sources are configured for analytics dashboards:
+Analytics dashboards use the following data sources:
 
 - [Product analytics](../product_analytics/index.md)
 - [Value Stream Management](../analytics/value_streams_dashboard.md)
 
-To contribute, see [adding a new visualization data source](../../development/fe_guide/customizable_dashboards.md#adding-a-new-visualization-data-source).
+You can also add [custom visualization data sources](../../development/fe_guide/customizable_dashboards.md#adding-a-new-visualization-data-source).
 
 ## Built-in dashboards
 
 To help you get started with analytics, GitLab provides built-in dashboards with predefined visualizations.
-These dashboards are labeled **By GitLab**, and you cannot edit them.
-Instead, you can create a custom dashboard with a similar style.
+These dashboards are labeled **By GitLab**.
+You cannot edit the built-in dashboards, but you can create custom dashboards with a similar style.
 
-### Product analytics
+### Product analytics dashboards
 
-When [product analytics](../product_analytics/index.md) is enabled and onboarded, two built-in dashboard are added:
+When [product analytics](../product_analytics/index.md) is enabled and onboarded, two built-in dashboards are available:
 
 - **Audience** displays metrics related to traffic, such as the number of users and sessions.
 - **Behavior** displays metrics related to user activity, such as the number of page views and events.
 
-For more information about the development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/). To leave feedback about bugs or functionality:
-
-- Comment on issue [391970](https://gitlab.com/gitlab-org/gitlab/-/issues/391970).
-- Create an issue with the `group::product analytics` label.
-
-### Value Stream Management
+### Value Stream Management dashboard
 
 - **Value Streams Dashboard** displays metrics related to [DevOps performance, security exposure, and workstream optimization](../analytics/value_streams_dashboard.md#devsecops-metrics-comparison-panel).
 
 ## Custom dashboards
 
-With custom dashboards, you can design and create visualizations for the metrics that are most relevant to your use case.
+Use custom dashboards to design and create visualizations for the metrics that are most relevant to your use case.
 You can create custom dashboards with the dashboard designer.
 
 - Each project can have an unlimited number of dashboards.
@@ -85,7 +80,7 @@ You can use the dashboard designer to:
 NOTE:
 This feature is only compatible with the [product analytics](../product_analytics/index.md) data source.
 
-You can use the dashboard designer to:
+You can use the visualization designer to:
 
 - [Create custom visualizations](#create-a-custom-visualization).
 - [Generate custom visualizations with GitLab Duo](#generate-a-custom-visualization-with-gitlab-duo).
@@ -103,27 +98,11 @@ To view a list of dashboards (both built-in and custom) for a project:
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
-### View the value streams dashboard
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
-
-Prerequisites:
-
-- You must have at least the Reporter role for the project.
-- Overview background aggregation for Value Streams Dashboards must be enabled.
-
-To view the Value Streams Dashboard as an analytics dashboard for a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Analyze > Analytics dashboards**.
-1. From the list of available dashboards, select **Value Streams Dashboard**.
-
 ## View group dashboards
 
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Experiment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390542) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/416970) in GitLab 16.8.
@@ -139,7 +118,7 @@ To view a list of dashboards (both built-in and custom) for a group:
 1. Select **Analyze > Analytics dashboards**.
 1. From the list of available dashboards, select the dashboard you want to view.
 
-### View the value streams dashboard
+### View the Value Streams Dashboard
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132839) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/432185) in GitLab 17.0.
@@ -162,7 +141,7 @@ Prerequisites:
 ### Group dashboards
 
 NOTE:
-This feature will be connected to group-level dashboards as part of [issue #411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572).
+[Issue 411572](https://gitlab.com/gitlab-org/gitlab/-/issues/411572) proposes connecting this feature to group-level dashboards.
 
 To change the location of a group's dashboards:
 
@@ -203,10 +182,10 @@ To define a dashboard:
 1. In the new directory, create a `.yaml` file with the same name as the directory, for example `.gitlab/analytics/dashboards/my_dashboard/my_dashboard.yaml`.
 
    This file contains the dashboard definition. It must conform to the JSON schema defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
-1. Optional. To create new visualizations to add to your dashboard see [defining a chart visualization](#define-a-chart-visualization).
+1. Optional. To create new visualizations to add to your dashboard, see [defining a chart visualization](#define-a-chart-visualization).
 
 For [example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/analytics/product_analytics/dashboards/audience.yaml), if you want to create three dashboards (Conversion funnels, Demographic breakdown, and North star metrics)
-and one visualization (line chart) that applies to all dashboards, the file structure would be:
+and one visualization (line chart) that applies to all dashboards, the file structure looks like this:
 
 ```plaintext
 .gitlab/analytics/dashboards
@@ -222,14 +201,14 @@ and one visualization (line chart) that applies to all dashboards, the file stru
 
 ## Define a chart visualization
 
-You can define different charts, and add visualization options to some of them:
+You can define different charts and add visualization options to some of them, such as:
 
 - Line chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
 - Column chart, with the options listed in the [ECharts documentation](https://echarts.apache.org/en/option.html).
 - Data table.
 - Single stat, with the only option to set `decimalPlaces` (number, default value is 0).
 
-To define a chart for your dashboards:
+To define a chart visualization for your dashboards:
 
 1. In the `.gitlab/analytics/dashboards/visualizations/` directory, create a `.yaml` file.
    The filename should be descriptive of the visualization it defines.
@@ -291,15 +270,16 @@ After you saved a visualization, you can add it to a new or existing custom dash
 ### Generate a custom visualization with GitLab Duo
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - Introduced in GitLab 16.11 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `generate_cube_query`. Disabled by default.
+> - Introduced in GitLab 16.11 as an [experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `generate_cube_query`. Disabled by default.
 
 Prerequisites:
 
-- The parent group of the project must have [experiment and beta features enabled](../group/manage.md#enable-experiment-and-beta-features).
+- The top-level group of the project must have GitLab Duo
+  [experiment and beta features enabled](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
 
 To generate a custom visualization with GitLab Duo using a natural language query:
 
@@ -318,27 +298,34 @@ To generate a custom visualization with GitLab Duo using a natural language quer
 1. Select **Generate with GitLab Duo**.
 1. Select **Save**.
 
-After you saved a visualization, you can add it to a new or existing custom dashboard in the same project.
+After you save a visualization, you can add it to a new or existing custom dashboard in the same project.
 
 ## Troubleshooting
 
 ### `Something went wrong while loading the dashboard.`
 
-If the dashboard displays a global error message that data could not be loaded, first try reloading the page. If the error persists:
+If the dashboard displays a global error message that data could not be loaded, first try reloading the page.
+If the error persists:
 
 - Check that your configurations match the [dashboard JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
-- For product analytics, check your [admin and project settings](../product_analytics/index.md#project-level-settings), and make sure they are set up correctly.
+- For product analytics, make sure your [admin and project settings](../product_analytics/index.md#project-level-settings) are set up correctly.
+
+### `Invalid dashboard configuration`
+
+If the dashboard displays a global error message that the configuration is invalid, check that your configurations match the [dashboard JSON schema](#define-a-dashboard) defined in `ee/app/validators/json_schemas/analytics_dashboard.json`.
 
 ### `Invalid visualization configuration`
 
-If a dashboard panel displays a message that the visualization configuration is invalid, check that your visualization configurations match the [visualization JSON schema](#define-a-chart-visualization) defined in `ee/app/validators/json_schemas/analytics_visualization.json`.
+If a dashboard panel displays a message that the visualization configuration is invalid,
+check that your visualization configurations match the [visualization JSON schema](#define-a-chart-visualization)
+defined in `ee/app/validators/json_schemas/analytics_visualization.json`.
 
 ### Dashboard panel error
 
 If a dashboard panel displays an error message:
 
-- Check your [Cube query](../product_analytics/index.md#product-analytics-dashboards) and [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization)
-  configurations, and make sure they are set up correctly.
+- Make sure your [Cube query](../product_analytics/index.md#product-analytics-dashboards) and
+  [visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization) configurations are set up correctly.
 - For [product analytics](../product_analytics/index.md), also check that your visualization's Cube query is valid.
 
 ### Generate visualization with GitLab Duo returns unexpected results
@@ -347,4 +334,4 @@ If GitLab Duo doesn't return the expected or a useful result, try editing your q
 
 - Specify a date range. For example: _number of unique users in 2023 to 2024, grouped monthly_.
 - Use the same names for metrics and dimensions as shown in the visualization designer.
-For example: _returning users_ instead of _existing customers_.
+  For example: _returning users_ instead of _existing customers_.

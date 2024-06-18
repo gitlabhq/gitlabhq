@@ -115,12 +115,14 @@ Use Zuora custom metadata (introduced in iteration 2) to resolve `ProductRatePla
 - Cron job to refresh the Product Catalog every day as a first iteration and add immediate value.
 - Create a Finance Systems issue to request:
   - New custom event for when custom fields are updated for records from the Zuora Product Catalog.
-      | Base object               | Custom event name                      |
-      | ------------------------- | -------------------------------------- |
-      | Product                   | CatalogProductUpdate                   |
-      | ProductRatePlan           | CatalogProductRatePlanUpdate           |
-      | ProductRatePlanCharge     | CatalogProductRatePlanChargeUpdate     |
-      | ProductRatePlanChargeTier | CatalogProductRatePlanChargeTierUpdate |
+
+    | Base object               | Custom event name                      |
+    | ------------------------- | -------------------------------------- |
+    | Product                   | CatalogProductUpdate                   |
+    | ProductRatePlan           | CatalogProductRatePlanUpdate           |
+    | ProductRatePlanCharge     | CatalogProductRatePlanChargeUpdate     |
+    | ProductRatePlanChargeTier | CatalogProductRatePlanChargeTierUpdate |
+
   - New callout under the `Billing` component for when records from the Zuora Product Catalog are added, deleted or updated.
 - Create a new controller in CustomersDot based on `ActionController::Metal` to not include redundant middlewares, callbacks, additional Rails stuff and make this controller as fast as possible.
 

@@ -34,7 +34,7 @@ module BulkImports
     end
 
     def re_enqueue
-      self.class.perform_in(REENQUEUE_DELAY.ago, export.id)
+      self.class.perform_in(REENQUEUE_DELAY, export.id)
     end
 
     def export_timeout?

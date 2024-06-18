@@ -19,7 +19,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
     expect(page).to have_content("Copy user ID: #{user.id}")
   end
 
-  it 'shows name on breadcrumbs' do
+  it 'shows name on breadcrumbs', :js do
     subject
 
     within_testid('breadcrumb-links') do

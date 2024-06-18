@@ -58,53 +58,44 @@ RSpec.describe ExtractsRef, feature_category: :source_code_management do
   end
 
   describe '#ref_type' do
-    let(:params) { ActionController::Parameters.new(ref_type: 'heads') }
+    subject { ref_type }
 
-    it 'delegates to .ref_type' do
-      expect(described_class).to receive(:ref_type).with('heads')
-      ref_type
-    end
-  end
-
-  describe '.ref_type' do
-    subject { described_class.ref_type(ref_type) }
+    let(:params) { ActionController::Parameters.new(ref_type: ref) }
 
     context 'when ref_type is nil' do
-      let(:ref_type) { nil }
+      let(:ref) { nil }
 
       it { is_expected.to eq(nil) }
     end
 
     context 'when ref_type is heads' do
-      let(:ref_type) { 'heads' }
+      let(:ref) { 'heads' }
 
       it { is_expected.to eq('heads') }
     end
 
     context 'when ref_type is tags' do
-      let(:ref_type) { 'tags' }
+      let(:ref) { 'tags' }
 
       it { is_expected.to eq('tags') }
     end
 
     context 'when case does not match' do
-      let(:ref_type) { 'tAgS' }
+      let(:ref) { 'tAgS' }
 
       it { is_expected.to(eq('tags')) }
     end
 
     context 'when ref_type is invalid' do
-      let(:ref_type) { 'invalid' }
+      let(:ref) { 'invalid' }
 
       it { is_expected.to eq(nil) }
     end
 
     context 'when ref_type is a hash' do
-      let(:ref_type) { { 'just' => 'hash' } }
+      let(:ref) { { 'just' => 'hash' } }
 
       it { is_expected.to eq(nil) }
     end
   end
-
-  it_behaves_like 'extracts refs'
 end

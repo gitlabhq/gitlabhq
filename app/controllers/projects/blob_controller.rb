@@ -169,8 +169,10 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def assign_blob_vars
+    ref_extractor = ExtractsRef::RefExtractor.new(@project, {})
     @id = params[:id]
-    @ref, @path = extract_ref(@id)
+
+    @ref, @path = ref_extractor.extract_ref(@id)
   rescue InvalidPathError
     render_404
   end

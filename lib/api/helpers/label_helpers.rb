@@ -37,10 +37,10 @@ module API
 
       def get_labels(parent, entity, params = {})
         present paginate(available_labels_for(parent, params)),
-                with: entity,
-                current_user: current_user,
-                parent: parent,
-                with_counts: params[:with_counts]
+          with: entity,
+          current_user: current_user,
+          parent: parent,
+          with_counts: params[:with_counts]
       end
 
       def get_label(parent, entity, params = {})

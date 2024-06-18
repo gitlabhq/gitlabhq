@@ -29,10 +29,10 @@ RSpec.describe Gitlab::Email::Hook::SmimeSignatureInterceptor do
 
   let(:mail) do
     ActionMailer::Base.mail(to: 'test@example.com',
-                            from: 'info@example.com',
-                            content_transfer_encoding: 'quoted-printable',
-                            content_type: 'text/plain; charset=UTF-8',
-                            body: mail_body)
+      from: 'info@example.com',
+      content_transfer_encoding: 'quoted-printable',
+      content_type: 'text/plain; charset=UTF-8',
+      body: mail_body)
   end
 
   before do

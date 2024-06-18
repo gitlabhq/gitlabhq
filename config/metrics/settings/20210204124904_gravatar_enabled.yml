@@ -2,8 +2,6 @@
 data_category: optional
 key_path: gravatar_enabled
 description: Whether gravatar is enabled
-product_section: sec
-product_stage: govern
 product_group: authentication
 value_type: boolean
 status: active

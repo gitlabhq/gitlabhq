@@ -75,7 +75,7 @@ export default {
 
 <template>
   <div v-if="hasBuckets" class="language-filter-checkbox">
-    <div class="gl-mb-2 gl-font-weight-bold gl-font-sm">
+    <div class="gl-mb-2 gl-font-bold gl-font-sm">
       {{ $options.languageFilterData.header }}
     </div>
     <div

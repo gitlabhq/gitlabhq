@@ -259,8 +259,8 @@ Each runner has a tag identifier unique to that runner, e.g. `DiscoveryOne`, `tu
 
 1. Expand `preparing` state to engage the validation process via the `prerequsite` interface.
 1. Amend `preparing` state to indicate to user, via the UI and API, the status of job preparation with regard to the job prerequisites
-    1. Should indicate status of each prerequisite resource for the job separately as they are asynchronous
-    1. Should indicate overall prerequisite status
+   1. Should indicate status of each prerequisite resource for the job separately as they are asynchronous
+   1. Should indicate overall prerequisite status
 1. Introduce a 1 hr timeout to the entire `preparing` state
 1. Add an `AdmissionValidation` prerequisite to the `preparing` status dependencies via `Gitlab::Ci::Build::Prerequisite::Factory`
 1. Convert the Prerequisite factory and `preparing` status to operate asynchronously
@@ -268,11 +268,11 @@ Each runner has a tag identifier unique to that runner, e.g. `DiscoveryOne`, `tu
 1. `PreparingBuildService` transitions the job from preparing to failed or pending depending on success of validation.
 1. AdmissionValidation performs a reasonable amount of retries when sending request
 1. Add API endpoint for Webhook/Admission Controller response callback
-    1. Accepts Parameters:
-        - Acceptance/Rejection
-        - Reason String
-        - Tag mutations (if accepted, otherwise ignored)
-    1. Callback encodes one time auth token
+   1. Accepts Parameters:
+      - Acceptance/Rejection
+      - Reason String
+      - Tag mutations (if accepted, otherwise ignored)
+   1. Callback encodes one time auth token
 1. Introduce new failure reasoning on validation rejection
 1. Admission controller impacts on job should be persisted
 1. Runner selection filtering per job as a function of the response from the Admission controller (mutating web hook) should be added

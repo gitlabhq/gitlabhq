@@ -339,6 +339,7 @@ module Types
       Types::Packages::Protection::RuleType.connection_type,
       null: true,
       description: 'Packages protection rules for the project.',
+      alpha: { milestone: '16.6' },
       resolver: Resolvers::ProjectPackagesProtectionRulesResolver
 
     field :jobs,
@@ -346,7 +347,8 @@ module Types
       null: true,
       authorize: :read_build,
       description: 'Jobs of a project. This field can only be resolved for one project in any single request.',
-      resolver: Resolvers::ProjectJobsResolver
+      resolver: Resolvers::ProjectJobsResolver,
+      connection_extension: ::Gitlab::Graphql::Extensions::ExternallyPaginatedArrayExtension
 
     field :job,
       type: Types::Ci::JobType,
@@ -729,6 +731,11 @@ module Types
           required: false,
           description: 'Term by which to search deploy key titles'
       end
+
+    field :pages_deployments, Types::PagesDeploymentType.connection_type, null: true,
+      resolver: Resolvers::PagesDeploymentsResolver,
+      connection: true,
+      description: "List of the project's Pages Deployments."
 
     def protectable_branches
       ProtectableDropdown.new(project, :branches).protectable_ref_names

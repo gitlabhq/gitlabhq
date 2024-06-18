@@ -75,6 +75,11 @@ export default {
       required: false,
       default: false,
     },
+    deleteAllFiles: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     packageId: {
       type: String,
       required: true,
@@ -265,7 +270,7 @@ export default {
     },
     handleFileDelete(files) {
       this.track(REQUEST_DELETE_PACKAGE_FILE_TRACKING_ACTION);
-      if (files.length === this.packageFiles.length && this.isLastPage) {
+      if (!this.deleteAllFiles && files.length === this.packageFiles.length && this.isLastPage) {
         this.$emit(
           'delete-all-files',
           this.hasOneItem(files)
@@ -322,6 +327,9 @@ export default {
       if (focusable) {
         focusable.focus();
       }
+    },
+    refetchPackageFiles() {
+      this.$apollo.getClient().refetchQueries({ include: [getPackageFilesQuery] });
     },
   },
   i18n: {
@@ -420,7 +428,7 @@ export default {
             :aria-label="detailsShowing ? __('Collapse') : __('Expand')"
             data-testid="toggle-details-button"
             category="tertiary"
-            class="gl-mt-n2!"
+            class="!-gl-mt-2"
             size="small"
             @click="
               toggleDetails();
@@ -451,7 +459,7 @@ export default {
             category="tertiary"
             icon="ellipsis_v"
             placement="bottom-end"
-            class="gl-my-n3!"
+            class="!-gl-my-3"
             :toggle-text="$options.i18n.moreActionsText"
             text-sr-only
             no-caret
@@ -491,6 +499,7 @@ export default {
           @next="fetchNextFilesPage"
         />
       </div>
+      <slot name="upload" :refetch="refetchPackageFiles"></slot>
     </template>
 
     <gl-modal

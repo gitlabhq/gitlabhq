@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Learn about the GitLab tools for building, tracking, and delivering the code for your project."
 ---
 
 # Get started managing code
@@ -103,7 +104,7 @@ For details, see:
 
 - [Request a review of your merge request](../project/merge_requests/reviews/index.md#request-a-review)
 - [Add suggestions to a merge request](../project/merge_requests/reviews/suggestions.md#create-suggestions)
-- [How approvals work](../project/merge_requests/approvals/index.md#how-approvals-work)
+- [Merge request approvals](../project/merge_requests/approvals/index.md)
 
 ## Step 5: Merge the merge request
 

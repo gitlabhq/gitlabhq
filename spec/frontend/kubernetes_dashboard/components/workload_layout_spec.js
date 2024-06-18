@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { GlLoadingIcon, GlAlert, GlDrawer } from '@gitlab/ui';
 import WorkloadLayout from '~/kubernetes_dashboard/components/workload_layout.vue';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
@@ -97,16 +98,27 @@ describe('Workload layout component', () => {
       expect(findErrorAlert().exists()).toBe(false);
     });
 
-    it('renders workload-stats component with the correct props', () => {
-      expect(findWorkloadStats().props('stats')).toBe(mockPodStats);
-    });
-
     it('renders workload-table component with the correct props', () => {
       expect(findWorkloadTable().props('items')).toBe(mockPodsTableItems);
     });
 
     it('renders a drawer', () => {
       expect(findDrawer().exists()).toBe(true);
+    });
+
+    describe('stats', () => {
+      it('renders workload-stats component with the correct props', () => {
+        expect(findWorkloadStats().props('stats')).toBe(mockPodStats);
+      });
+
+      it('filters items when receives a stat select event', async () => {
+        const status = 'Failed';
+        findWorkloadStats().vm.$emit('select', status);
+        await nextTick();
+
+        const filteredItems = mockPodsTableItems.filter((item) => item.status === status);
+        expect(findWorkloadTable().props('items')).toMatchObject(filteredItems);
+      });
     });
 
     describe('drawer', () => {

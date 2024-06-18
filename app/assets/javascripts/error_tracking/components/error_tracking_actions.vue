@@ -44,45 +44,37 @@ export default {
 
 <template>
   <div>
-    <gl-button-group class="gl-flex-direction-column gl-md-flex-direction-row gl-ml-n6">
+    <gl-button-group class="gl-flex-direction-column gl-md-flex-direction-row -gl-ml-6">
       <gl-button
         :key="ignoreBtn.status"
         :ref="`${ignoreBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="gl-display-block gl-mb-4 gl-md-mb-0 gl-w-full"
+        class="gl-block gl-mb-4 gl-md-mb-0 gl-w-full"
         :title="ignoreBtn.title"
         :aria-label="ignoreBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: ignoreBtn.status })"
       >
-        <gl-icon
-          class="gl-display-none gl-md-display-inline gl-m-0"
-          :name="ignoreBtn.icon"
-          :size="12"
-        />
-        <span class="gl-md-display-none">{{ ignoreBtn.title }}</span>
+        <gl-icon class="gl-hidden md:gl-inline gl-m-0" :name="ignoreBtn.icon" :size="12" />
+        <span class="md:gl-hidden">{{ ignoreBtn.title }}</span>
       </gl-button>
       <gl-button
         :key="resolveBtn.status"
         :ref="`${resolveBtn.title.toLowerCase()}Error`"
         v-gl-tooltip.hover
-        class="gl-display-block gl-mb-4 gl-md-mb-0 gl-w-full"
+        class="gl-block gl-mb-4 gl-md-mb-0 gl-w-full"
         :title="resolveBtn.title"
         :aria-label="resolveBtn.title"
         @click="$emit('update-issue-status', { errorId: error.id, status: resolveBtn.status })"
       >
-        <gl-icon
-          class="gl-display-none gl-md-display-inline gl-m-0"
-          :name="resolveBtn.icon"
-          :size="12"
-        />
-        <span class="gl-md-display-none">{{ resolveBtn.title }}</span>
+        <gl-icon class="gl-hidden md:gl-inline gl-m-0" :name="resolveBtn.icon" :size="12" />
+        <span class="md:gl-hidden">{{ resolveBtn.title }}</span>
       </gl-button>
     </gl-button-group>
     <gl-button
       :href="detailsLink"
       category="primary"
       variant="confirm"
-      class="gl-display-block gl-md-display-none! gl-mb-4 gl-md-mb-0"
+      class="gl-block md:!gl-hidden gl-mb-4 gl-md-mb-0"
     >
       {{ __('More details') }}
     </gl-button>

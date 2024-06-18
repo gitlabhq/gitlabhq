@@ -9,8 +9,8 @@ module Gitlab
         #
         class Inherit
           class Default < ::Gitlab::Config::Entry::Simplifiable
-            strategy :BooleanStrategy, if: -> (config) { [true, false].include?(config) }
-            strategy :ArrayStrategy, if: -> (config) { config.is_a?(Array) }
+            strategy :BooleanStrategy, if: ->(config) { [true, false].include?(config) }
+            strategy :ArrayStrategy, if: ->(config) { config.is_a?(Array) }
 
             class BooleanStrategy < ::Gitlab::Config::Entry::Boolean
               def inherit?(_key)

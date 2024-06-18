@@ -216,7 +216,6 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'app/serializers/jira_connect/app_data_serializer.rb' | [:import_integrate_be, :backend]
       'lib/api/github/entities.rb' | [:import_integrate_be, :backend]
       'lib/api/v3/github.rb' | [:import_integrate_be, :backend]
-      'app/controllers/clusters/integrations_controller.rb' | [:backend]
       'app/services/clusters/integrations/prometheus_health_check_service.rb' | [:backend]
       'app/graphql/types/alert_management/integration_type.rb' | [:backend]
 

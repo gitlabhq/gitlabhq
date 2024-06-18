@@ -87,7 +87,7 @@ export default {
         >
           <gl-badge :variant="statusVariant">
             <gl-icon :name="statusIcon" />
-            <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ statusText }}</span>
+            <span class="gl-block gl-ml-2">{{ statusText }}</span>
           </gl-badge>
           <confidentiality-badge
             v-if="isConfidential"
@@ -99,7 +99,7 @@ export default {
           <imported-badge v-if="isImported" :importable-type="issuableType" />
 
           <gl-link
-            class="gl-font-weight-bold gl-text-black-normal gl-text-truncate"
+            class="gl-font-bold gl-text-black-normal gl-text-truncate"
             href="#top"
             :title="title"
           >

@@ -143,13 +143,8 @@ export default {
     isRunnerOnline() {
       return this.runner?.status === STATUS_ONLINE;
     },
-    showGoogleCloudPlatformOption() {
-      return this.glFeatures?.googleCloudSupportFeatureFlag;
-    },
     showGoogleCloudRegistration() {
-      return (
-        this.glFeatures?.googleCloudSupportFeatureFlag && this.platform === GOOGLE_CLOUD_PLATFORM
-      );
+      return this.platform === GOOGLE_CLOUD_PLATFORM;
     },
   },
   watch: {
@@ -196,7 +191,7 @@ export default {
       {{ s__('Runners|Platform') }}
     </h2>
     <runner-platforms-radio-group :value="platform" @input="onSelectPlatform">
-      <template v-if="showGoogleCloudPlatformOption" #cloud-options>
+      <template #cloud-options>
         <runner-google-cloud-option :checked="platform" @input="onSelectPlatform" />
       </template>
     </runner-platforms-radio-group>
@@ -250,7 +245,7 @@ export default {
                 />
               </template>
               <template #bold="{ content }"
-                ><span class="gl-font-weight-bold">{{ content }}</span></template
+                ><span class="gl-font-bold">{{ content }}</span></template
               >
               <template #code="{ content }"
                 ><code>{{ content }}</code></template
@@ -311,7 +306,7 @@ export default {
       <p class="gl-pl-6">
         <gl-sprintf :message="s__('Runners|To view the runner, go to %{runnerListName}.')">
           <template #runnerListName>
-            <span class="gl-font-weight-bold"><slot name="runner-list-name"></slot></span>
+            <span class="gl-font-bold"><slot name="runner-list-name"></slot></span>
           </template>
         </gl-sprintf>
       </p>

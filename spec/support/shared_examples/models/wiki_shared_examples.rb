@@ -306,44 +306,6 @@ RSpec.shared_examples 'wiki model' do
     it_behaves_like 'wiki model #list_pages'
   end
 
-  describe '#sidebar_entries' do
-    before do
-      (1..5).each { |i| create(:wiki_page, wiki: wiki, title: "my page #{i}") }
-      (6..10).each { |i| create(:wiki_page, wiki: wiki, title: "parent/my page #{i}") }
-      (11..15).each { |i| create(:wiki_page, wiki: wiki, title: "grandparent/parent/my page #{i}") }
-    end
-
-    def total_pages(entries)
-      entries.sum do |entry|
-        entry.is_a?(WikiDirectory) ? total_pages(entry.entries) : 1
-      end
-    end
-
-    context 'when the number of pages does not exceed the limit' do
-      it 'returns all pages grouped by directory and limited is false' do
-        entries, limited = subject.sidebar_entries
-
-        expect(entries.size).to be(7)
-        expect(total_pages(entries)).to be(15)
-        expect(limited).to be(false)
-      end
-    end
-
-    context 'when the number of pages exceeds the limit' do
-      before do
-        create(:wiki_page, wiki: wiki, title: 'my page 16')
-      end
-
-      it 'returns 15 pages grouped by directory and limited is true' do
-        entries, limited = subject.sidebar_entries
-
-        expect(entries.size).to be(8)
-        expect(total_pages(entries)).to be(15)
-        expect(limited).to be(true)
-      end
-    end
-  end
-
   describe '#find_page' do
     shared_examples 'wiki model #find_page' do
       before do
@@ -938,7 +900,7 @@ RSpec.shared_examples 'wiki model' do
 
       it 'returns false and sets error message', :aggregate_failures do
         expect(subject.repository)
-          .to receive(:update_file)
+          .to receive(:commit_files)
           .and_raise(Gitlab::Git::Index::IndexError.new)
 
         expect(subject.update_page(page.page, content: 'new content', format: :markdown))
@@ -956,7 +918,7 @@ RSpec.shared_examples 'wiki model' do
           path = 'test-page.markdown'
           page.page.instance_variable_set(:@path, path)
 
-          expect(subject.repository).to receive(:update_file).with(user, path, anything, anything)
+          expect(subject.repository).to receive(:update_file_actions).with(path, anything, anything).and_return([])
 
           subject.update_page(page.page, content: 'new content', format: :markdown)
         end

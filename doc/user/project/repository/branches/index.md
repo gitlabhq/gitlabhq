@@ -318,7 +318,8 @@ GitLab uses the issue number to import data into the merge request:
   [default closing pattern](../../issues/managing_issues.md#default-closing-pattern),
   merging the merge request [also closes](../../issues/managing_issues.md#closing-issues-automatically)
   the related issue.
-- Issue milestone and labels are copied to the merge request.
+- If the merge request is in the same project, and not a fork, the issue milestone
+  and labels are copied to the merge request.
 
 ## Compare branches
 
@@ -460,6 +461,8 @@ on branch `A`:
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 gitGraph
+    accTitle: Diagram of multiple branches with the same commit
+    accDescr: Branches A and B contain the same commit, but branch B also contains other commits. Merging branch B makes branch A appear as merged, because all its commits are merged.
     commit id:"a"
     branch "branch A"
     commit id:"b"

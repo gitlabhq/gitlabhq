@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts_monthly.projects_with_alerts_created
 description: Monthly count of unique projects with HTTP alerting enabled
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

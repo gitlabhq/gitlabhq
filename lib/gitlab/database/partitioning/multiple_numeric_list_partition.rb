@@ -65,6 +65,10 @@ module Gitlab
           values <=> other.values
         end
 
+        def before?(partition_id)
+          partition_id > values.max
+        end
+
         private
 
         delegate :execute, :quote, :quote_table_name, to: :conn, private: true

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ObjectCounter, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe BulkImports::ObjectCounter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:tracker) { build(:bulk_import_tracker, id: non_existing_record_id) }
   let_it_be(:cache_key) { "bulk_imports/object_counter/#{tracker.id}" }
 

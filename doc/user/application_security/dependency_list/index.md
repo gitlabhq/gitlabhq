@@ -81,9 +81,12 @@ The dependency list shows only dependencies that match your filters.
 If a dependency has known vulnerabilities, view them by selecting the arrow next to the
 dependency's name or the badge that indicates how many known vulnerabilities exist. For each
 vulnerability, its severity and description appears below it. To view more details of a vulnerability,
-select the vulnerability's description. The [vulnerability's details](../vulnerabilities) page is opened.
+select the vulnerability's description. The [vulnerability's details](../vulnerabilities/index.md) page is opened.
 
 ## Dependency paths
+
+> - Dependency path information from CycloneDX SBOM was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393061) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `project_level_sbom_occurrences`. Disabled by default.
+> - Dependency path information from CycloneDX SBOM was [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/434371) in GitLab 17.0.
 
 The dependency list shows the path between a dependency and a top-level dependency it's connected
 to, if any. Multiple paths may connect a transient dependency to top-level
@@ -91,12 +94,6 @@ dependencies, but the user interface shows only one of the shortest paths.
 
 NOTE:
 The dependency path is only displayed for dependencies that have vulnerabilities.
-
-WARNING:
-The dependency path based on the `dependency_files` property from the Dependency Scanning report was
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/396376) in GitLab
-16.9 and is planned for removal in 17.0.
-This will be replaced with data from the [CycloneDX report](https://gitlab.com/gitlab-org/gitlab/-/issues/441118).
 
 ![Dependency path](img/yarn_dependency_path_v13_6.png)
 

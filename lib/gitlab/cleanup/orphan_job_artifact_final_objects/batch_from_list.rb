@@ -4,7 +4,10 @@ module Gitlab
   module Cleanup
     module OrphanJobArtifactFinalObjects
       class BatchFromList
+        include Gitlab::Utils::StrongMemoize
         include StorageHelpers
+
+        GOOGLE_PROVIDER = 'google'
 
         def initialize(entries, logger: Gitlab::AppLogger)
           @entries = entries
@@ -50,8 +53,9 @@ module Gitlab
           entries.each do |entry|
             # NOTE: If the object store is configured to use bucket prefix, the GenerateList task
             # would have included the bucket_prefix in paths in the orphans list CSV.
-            path_with_bucket_prefix, _ = entry.split(',')
-            fog_file = artifacts_directory.files.get(path_with_bucket_prefix)
+            path_with_bucket_prefix, size = entry.split(',')
+
+            fog_file = build_fog_file(path_with_bucket_prefix, size)
 
             if fog_file
               yield fog_file
@@ -60,6 +64,23 @@ module Gitlab
             end
           end
         end
+
+        def build_fog_file(path, size)
+          if google_provider?
+            # For Google provider, we support rollback of deletions, thus we need to fetch
+            # the `generation` attribute of the object before we delete it.
+            # Here we use `metadata` instead of `get` because we only want to get the metadata and
+            # not download the object content. Note that `files.metadata` is only available in `fog-google`.
+            artifacts_directory.files.metadata(path)
+          else
+            artifacts_directory.files.new(key: path, content_length: size)
+          end
+        end
+
+        def google_provider?
+          configuration.connection.provider.downcase == GOOGLE_PROVIDER
+        end
+        strong_memoize_attr :google_provider?
 
         def path_without_bucket_prefix(path)
           # `path` contains the fog file's key. It is the object path relative to the artifacts bucket, for example:

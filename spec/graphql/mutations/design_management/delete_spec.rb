@@ -88,6 +88,7 @@ RSpec.describe Mutations::DesignManagement::Delete do
 
         it 'runs no more than 34 queries' do
           allow(Gitlab::Tracking).to receive(:event) # rubocop:disable RSpec/ExpectGitlabTracking
+          allow(Gitlab::InternalEvents).to receive(:track_event)
 
           filenames.each(&:present?) # ignore setup
           # Queries: as of 2022-12-01

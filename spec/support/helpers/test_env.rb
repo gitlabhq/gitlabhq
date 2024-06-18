@@ -112,6 +112,7 @@ module TestEnv
     'Ääh-test-utf-8' => '7975be0',
     'ssh-signed-commit' => '7b5160f',
     'changes-with-whitespace' => 'f2d141fadb33ceaafc95667c1a0a308ad5edc5f9',
+    'changes-with-only-whitespace' => '80cffbb2ad86202171dd3c05b38b5b4523b447d3',
     'lock-detection' => '1ada92f78a19f27cb442a0a205f1c451a3a15432'
   }.freeze
 
@@ -172,8 +173,6 @@ module TestEnv
       end
     end
 
-    FileUtils.mkdir_p(GitalySetup.storage_path)
-    FileUtils.mkdir_p(GitalySetup.second_storage_path)
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)
     FileUtils.mkdir_p(artifacts_path)
@@ -181,6 +180,7 @@ module TestEnv
     FileUtils.mkdir_p(terraform_state_path)
     FileUtils.mkdir_p(packages_path)
     FileUtils.mkdir_p(ci_secure_files_path)
+    FileUtils.mkdir_p(external_diffs_path)
   end
 
   def setup_gitlab_shell
@@ -359,6 +359,10 @@ module TestEnv
     Gitlab.config.ci_secure_files.storage_path
   end
 
+  def external_diffs_path
+    Gitlab.config.external_diffs.storage_path
+  end
+
   # When no cached assets exist, manually hit the root path to create them
   #
   # Otherwise they'd be created by the first test, often timing out and
@@ -398,16 +402,18 @@ module TestEnv
 
   # These are directories that should be preserved at cleanup time
   def test_dirs
-    @test_dirs ||= %w[
-      frontend
-      gitaly
-      gitlab-shell
-      gitlab-test
-      gitlab-test.bundle
-      gitlab-test-fork
-      gitlab-test-fork.bundle
-      gitlab-workhorse
-      gitlab_workhorse_secret
+    @test_dirs ||= [
+      'frontend',
+      'gitaly',
+      'gitlab-shell',
+      'gitlab-test',
+      'gitlab-test.bundle',
+      'gitlab-test-fork',
+      'gitlab-test-fork.bundle',
+      'gitlab-workhorse',
+      'gitlab_workhorse_secret',
+      File.basename(GitalySetup.storage_path),
+      File.basename(GitalySetup.second_storage_path)
     ]
   end
 

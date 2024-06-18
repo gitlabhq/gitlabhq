@@ -8,9 +8,16 @@ RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :import
   end
 
   describe '#author' do
-    it { expect(described_class.new({ 'author' => { 'nickname' => 'Ben' } }).author).to eq('Ben') }
+    it { expect(described_class.new({ 'author' => { 'uuid' => '{123}' } }).author).to eq('{123}') }
+    it { expect(described_class.new({ 'author' => { 'nickname' => 'Ben' } }).author).to be_nil }
     it { expect(described_class.new({}).author).to be_nil }
     it { expect(described_class.new({ 'author' => nil }).author).to be_nil }
+  end
+
+  describe '#author_nickname' do
+    it { expect(described_class.new({ 'author' => { 'nickname' => 'Ben' } }).author_nickname).to eq('Ben') }
+    it { expect(described_class.new({}).author_nickname).to be_nil }
+    it { expect(described_class.new({ 'author' => nil }).author_nickname).to be_nil }
   end
 
   describe '#description' do
@@ -67,7 +74,7 @@ RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :import
       raw = {
         'id' => 11,
         'description' => 'description',
-        'author' => { 'nickname' => 'user-1' },
+        'author' => { 'nickname' => 'user-1', 'uuid' => '{123}' },
         'state' => 'MERGED',
         'created_on' => 'created-at',
         'updated_on' => 'updated-at',
@@ -91,7 +98,8 @@ RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :import
       }
 
       expected_hash = {
-        author: 'user-1',
+        author: '{123}',
+        author_nickname: 'user-1',
         created_at: 'created-at',
         description: 'description',
         iid: 11,

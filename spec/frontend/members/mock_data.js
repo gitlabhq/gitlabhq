@@ -1,5 +1,5 @@
 import {
-  MEMBER_TYPES,
+  MEMBERS_TAB_TYPES,
   MEMBER_STATE_CREATED,
   MEMBER_MODEL_TYPE_GROUP_MEMBER,
 } from '~/members/constants';
@@ -52,7 +52,6 @@ export const member = {
     'Minimal access': 5,
   },
   customRoles: [],
-  customPermissions: [],
 };
 
 export const group = {
@@ -114,10 +113,9 @@ export const accessRequest = {
 
 export const members = [member];
 
-export const membersJsonString = JSON.stringify(members);
-
 export const directMember = { ...member, isDirectMember: true };
 export const inheritedMember = { ...member, isDirectMember: false };
+export const updateableMember = { ...directMember, canUpdate: true };
 
 export const member2faEnabled = { ...member, user: { ...member.user, twoFactorEnabled: true } };
 
@@ -138,7 +136,7 @@ export const pagination = {
 };
 
 export const dataAttribute = JSON.stringify({
-  [MEMBER_TYPES.user]: {
+  [MEMBERS_TAB_TYPES.user]: {
     members,
     pagination: paginationData,
     member_path: '/groups/foo-bar/-/group_members/:id',

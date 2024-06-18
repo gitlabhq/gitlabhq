@@ -7,6 +7,7 @@ module IdeHelper
       'use-new-web-ide' => use_new_web_ide?.to_s,
       'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index', anchor: 'vscode-reimplementation'),
       'sign-in-path' => new_session_path(current_user),
+      'sign-out-path' => destroy_user_session_path,
       'user-preferences-path' => profile_preferences_path
     }.merge(use_new_web_ide? ? new_ide_data(project: project) : legacy_ide_data(project: project))
 
@@ -18,6 +19,18 @@ module IdeHelper
       'file-path' => params[:path],
       'merge-request' => params[:merge_request_id]
     )
+  end
+
+  def show_web_ide_oauth_callback_mismatch_callout?
+    return false unless ::Gitlab::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
+
+    callback_urls = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application_callback_urls
+    callback_url_domains = callback_urls.map { |url| URI.parse(url).origin }
+    callback_url_domains.any? && callback_url_domains.exclude?(request.base_url)
+  end
+
+  def web_ide_oauth_application_id
+    ::Gitlab::WebIde::DefaultOauthApplication.oauth_application_id
   end
 
   def use_new_web_ide?
@@ -57,11 +70,11 @@ module IdeHelper
     return {} unless ::Gitlab::WebIde::DefaultOauthApplication.oauth_application
 
     client_id = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application.uid
-    callback_url = ::Gitlab::WebIde::DefaultOauthApplication.oauth_callback_url
+    callback_urls = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application_callback_urls
 
     {
       'client-id' => client_id,
-      'callback-url' => callback_url
+      'callback-urls' => callback_urls
     }
   end
 

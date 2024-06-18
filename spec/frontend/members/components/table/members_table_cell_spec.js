@@ -3,7 +3,7 @@ import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import MembersTableCell from '~/members/components/table/members_table_cell.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBERS_TAB_TYPES } from '~/members/constants';
 import { canRemoveBlockedByLastOwner } from '~/members/utils';
 import {
   member as memberMock,
@@ -100,10 +100,10 @@ describe('MembersTableCell', () => {
 
   it.each`
     member           | expectedMemberType
-    ${memberMock}    | ${MEMBER_TYPES.user}
-    ${group}         | ${MEMBER_TYPES.group}
-    ${invite}        | ${MEMBER_TYPES.invite}
-    ${accessRequest} | ${MEMBER_TYPES.accessRequest}
+    ${memberMock}    | ${MEMBERS_TAB_TYPES.user}
+    ${group}         | ${MEMBERS_TAB_TYPES.group}
+    ${invite}        | ${MEMBERS_TAB_TYPES.invite}
+    ${accessRequest} | ${MEMBERS_TAB_TYPES.accessRequest}
   `(
     'sets scoped slot prop `memberType` to $expectedMemberType',
     ({ member, expectedMemberType }) => {

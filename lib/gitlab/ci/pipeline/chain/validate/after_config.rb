@@ -8,8 +8,7 @@ module Gitlab
           class AfterConfig < Chain::Base
             include Chain::Helpers
 
-            def perform!
-            end
+            def perform!; end
 
             def break?
               @pipeline.errors.any?

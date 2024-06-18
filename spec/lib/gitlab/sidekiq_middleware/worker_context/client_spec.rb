@@ -74,8 +74,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
 
       TestWithContextWorker.bulk_perform_async_with_contexts(
         %w[job1 job2],
-        arguments_proc: -> (name) { [name, 1, 2, 3] },
-        context_proc: -> (name) { { user: user_per_job[name] } }
+        arguments_proc: ->(name) { [name, 1, 2, 3] },
+        context_proc: ->(name) { { user: user_per_job[name] } }
       )
 
       job1 = TestWithContextWorker.job_for_args(['job1', 1, 2, 3])
@@ -89,8 +89,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
       it 'takes the feature category from the worker, not the caller' do
         TestWithContextWorker.bulk_perform_async_with_contexts(
           %w[job1 job2],
-          arguments_proc: -> (name) { [name, 1, 2, 3] },
-          context_proc: -> (_) { { feature_category: 'code_review' } }
+          arguments_proc: ->(name) { [name, 1, 2, 3] },
+          context_proc: ->(_) { { feature_category: 'code_review' } }
         )
 
         job1 = TestWithContextWorker.job_for_args(['job1', 1, 2, 3])
@@ -103,8 +103,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
       it 'takes the feature category from the caller if the worker is not owned' do
         TestNotOwnedWithContextWorker.bulk_perform_async_with_contexts(
           %w[job1 job2],
-          arguments_proc: -> (name) { [name, 1, 2, 3] },
-          context_proc: -> (_) { { feature_category: 'code_review' } }
+          arguments_proc: ->(name) { [name, 1, 2, 3] },
+          context_proc: ->(_) { { feature_category: 'code_review' } }
         )
 
         job1 = TestNotOwnedWithContextWorker.job_for_args(['job1', 1, 2, 3])
@@ -126,8 +126,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
         Gitlab::ApplicationContext.with_context(feature_category: 'system_access') do
           TestWithContextWorker.bulk_perform_async_with_contexts(
             %w[job1 job2],
-            arguments_proc: -> (name) { [name, 1, 2, 3] },
-            context_proc: -> (_) { {} }
+            arguments_proc: ->(name) { [name, 1, 2, 3] },
+            context_proc: ->(_) { {} }
           )
         end
 
@@ -142,8 +142,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::WorkerContext::Client do
         Gitlab::ApplicationContext.with_context(feature_category: 'system_access') do
           TestNotOwnedWithContextWorker.bulk_perform_async_with_contexts(
             %w[job1 job2],
-            arguments_proc: -> (name) { [name, 1, 2, 3] },
-            context_proc: -> (_) { {} }
+            arguments_proc: ->(name) { [name, 1, 2, 3] },
+            context_proc: ->(_) { {} }
           )
         end
 

@@ -1,6 +1,7 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlEmptyState, GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import organizationGroupsGraphQlResponse from 'test_fixtures/graphql/organizations/groups.query.graphql.json';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import NewGroupButton from '~/organizations/shared/components/new_group_button.vue';
@@ -19,12 +20,19 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { organizationGroups as nodes } from '~/organizations/mock_data';
 import {
   pageInfoMultiplePages,
   pageInfoEmpty,
   pageInfoOnePage,
 } from 'jest/organizations/mock_data';
+
+const {
+  data: {
+    organization: {
+      groups: { nodes },
+    },
+  },
+} = organizationGroupsGraphQlResponse;
 
 const MOCK_DELETE_PARAMS = {
   testParam: true,

@@ -290,7 +290,6 @@ export default {
       lfsEnabled: true,
       requestAccessEnabled: true,
       enforceAuthChecksOnUploads: true,
-      highlightChangesClass: false,
       emailsEnabled: true,
       showDiffPreviewInEmail: true,
       cveIdRequestEnabled: true,
@@ -483,7 +482,6 @@ export default {
           // When from Internal->Private narrow access for only members
           this.pagesAccessLevel = featureAccessLevel.PROJECT_MEMBERS;
         }
-        this.highlightChanges();
       } else if (oldValue === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
         // if changing away from private, make enabled features more permissive
         if (this.issuesAccessLevel > featureAccessLevel.NOT_ENABLED)
@@ -518,8 +516,6 @@ export default {
           this.monitorAccessLevel = featureAccessLevel.EVERYONE;
         if (this.containerRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.containerRegistryAccessLevel = featureAccessLevel.EVERYONE;
-
-        this.highlightChanges();
       } else if (
         value === VISIBILITY_LEVEL_PUBLIC_INTEGER &&
         this.packageRegistryAccessLevel === featureAccessLevel.EVERYONE
@@ -550,13 +546,6 @@ export default {
   },
 
   methods: {
-    highlightChanges() {
-      this.highlightChangesClass = true;
-      this.$nextTick(() => {
-        this.highlightChangesClass = false;
-      });
-    },
-
     visibilityAllowed(option) {
       return this.allowedVisibilityOptions.includes(option);
     },
@@ -630,14 +619,14 @@ export default {
         </div>
         <span
           v-if="!visibilityAllowed(visibilityLevel)"
-          class="gl-display-block gl-text-gray-500 gl-mt-2"
+          class="gl-block gl-text-gray-500 gl-mt-2"
           >{{
             s__(
               'ProjectSettings|Visibility options for this fork are limited by the current visibility of the source project.',
             )
           }}</span
         >
-        <span class="gl-display-block gl-text-gray-500 gl-mt-2">
+        <span class="gl-block gl-text-gray-500 gl-mt-2">
           <gl-sprintf :message="visibilityLevelDescription">
             <template #membersPageLink="{ content }">
               <gl-link class="gl-link" :href="membersPagePath">{{ content }}</gl-link>
@@ -645,10 +634,10 @@ export default {
           </gl-sprintf>
         </span>
         <div class="gl-mt-4">
-          <strong class="gl-display-block">{{ s__('ProjectSettings|Additional options') }}</strong>
+          <strong class="gl-block">{{ s__('ProjectSettings|Additional options') }}</strong>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PRIVATE_INTEGER"
-            class="gl-line-height-28 gl-font-weight-normal gl-mb-0"
+            class="gl-leading-28 gl-font-normal gl-mb-0"
           >
             <input
               :value="requestAccessEnabled"
@@ -660,7 +649,7 @@ export default {
           </label>
           <label
             v-if="visibilityLevel !== $options.VISIBILITY_LEVEL_PUBLIC_INTEGER"
-            class="gl-line-height-28 gl-font-weight-normal gl-display-block gl-mb-0"
+            class="gl-leading-28 gl-font-normal gl-block gl-mb-0"
           >
             <input
               :value="enforceAuthChecksOnUploads"
@@ -669,7 +658,7 @@ export default {
             />
             <input v-model="enforceAuthChecksOnUploads" type="checkbox" />
             {{ s__('ProjectSettings|Require authentication to view media files') }}
-            <span class="gl-text-gray-500 gl-display-block gl-ml-5 gl-mt-n3">{{
+            <span class="gl-text-gray-500 gl-block gl-ml-5 -gl-mt-3">{{
               s__('ProjectSettings|Prevents direct linking to potentially sensitive media files')
             }}</span>
           </label>
@@ -677,7 +666,6 @@ export default {
       </project-setting-row>
     </div>
     <div
-      :class="{ 'highlight-changes': highlightChangesClass }"
       class="gl-border-1 gl-border-solid gl-border-t-none gl-border-gray-100 gl-mb-5 gl-py-3 gl-px-5 gl-bg-gray-10"
     >
       <project-setting-row
@@ -777,7 +765,7 @@ export default {
               "
             >
               <template #link="{ content }">
-                <span class="d-block">
+                <span class="gl-display-block">
                   <gl-link :href="lfsObjectsRemovalHelpPath" target="_blank">
                     {{ content }}
                   </gl-link>

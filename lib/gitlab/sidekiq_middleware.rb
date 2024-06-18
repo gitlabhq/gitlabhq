@@ -32,6 +32,7 @@ module Gitlab
         chain.add ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata
         chain.add ::Gitlab::SidekiqMiddleware::BatchLoader
         chain.add ::Gitlab::SidekiqMiddleware::InstrumentationLogger
+        chain.add ::Gitlab::SidekiqMiddleware::SetIpAddress
         chain.add ::Gitlab::SidekiqMiddleware::AdminMode::Server
         chain.add ::Gitlab::SidekiqMiddleware::QueryAnalyzer
         chain.add ::Gitlab::SidekiqVersioning::Middleware

@@ -1,3 +1,3 @@
 - find_file_title = "Go to file, press <kbd class='flat ml-1' aria-hidden=true>/~</kbd> or <kbd class='flat ml-1' aria-hidden=true>t</kbd>"
-= render Pajamas::ButtonComponent.new(button_options: { class: 'has-tooltip shortcuts-find-file', title: find_file_title, 'aria-keyshortcuts': "/+~ t", 'data-html': true }) do
+= render Pajamas::ButtonComponent.new(button_options: { class: 'has-tooltip shortcuts-find-file', title: find_file_title, 'aria-keyshortcuts': "/+~ t", 'data-html': true, 'data-event-tracking': 'click_find_file_button_on_repository_pages' }) do
   =  _('Find file')

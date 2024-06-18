@@ -294,6 +294,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/clusters.css"
     config.assets.precompile << "page_bundles/commits.css"
     config.assets.precompile << "page_bundles/commit_description.css"
+    config.assets.precompile << "page_bundles/commit_rapid_diffs.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
     config.assets.precompile << "page_bundles/dashboard.css"
     config.assets.precompile << "page_bundles/dashboard_projects.css"
@@ -323,6 +324,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/merge_conflicts.css"
     config.assets.precompile << "page_bundles/merge_request_analytics.css"
     config.assets.precompile << "page_bundles/merge_request.css"
+    config.assets.precompile << "page_bundles/merge_request_rapid_diffs.css"
     config.assets.precompile << "page_bundles/merge_requests.css"
     config.assets.precompile << "page_bundles/milestone.css"
     config.assets.precompile << "page_bundles/ml_experiment_tracking.css"
@@ -377,6 +379,7 @@ module Gitlab
     config.assets.precompile << "emoji_sprites.css"
     config.assets.precompile << "errors.css"
     config.assets.precompile << "jira_connect.js"
+    config.assets.precompile << "xterm.css"
 
     config.assets.precompile << "themes/*.css"
 
@@ -399,10 +402,6 @@ module Gitlab
     config.assets.precompile << "file_icons/file_icons.json"
     config.assets.precompile << "illustrations/*.svg"
     config.assets.precompile << "illustrations/*.png"
-
-    # Import css for xterm
-    config.assets.paths << "#{config.root}/node_modules/xterm/src/"
-    config.assets.precompile << "xterm.css"
 
     # Import path for EE specific SCSS entry point
     # In CE it will import a noop file, in EE a functioning file

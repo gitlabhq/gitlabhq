@@ -7,9 +7,8 @@ module Issuables
     FILTER_NONE = 'none'
     FILTER_ANY = 'any'
 
-    def initialize(params:, or_filters_enabled: false)
+    def initialize(params:)
       @params = params
-      @or_filters_enabled = or_filters_enabled
     end
 
     def filter
@@ -24,10 +23,6 @@ module Issuables
 
     def not_params
       params[:not]
-    end
-
-    def or_filters_enabled?
-      @or_filters_enabled
     end
   end
 end

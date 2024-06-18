@@ -1,7 +1,9 @@
 - wiki_path = wiki_page_path(@wiki, wiki_page)
 
-%li{ class: active_when(params[:id] == wiki_page.slug) }
-  .gl-relative.gl-display-flex.gl-align-items-center.js-wiki-list-toggle.wiki-list{ data: { testid: 'wiki-list' } }
-    = render Pajamas::ButtonComponent.new(icon: 'plus', size: :small, href: "#{wiki_path}/{new_page_title}", button_options: { class: 'wiki-list-create-child-button gl-bg-transparent! gl-hover-bg-gray-50! gl-focus-bg-gray-50! gl-absolute gl-top-1/2 -gl-translate-y-1/2 gl-cursor-pointer gl-right-2' })
-    = link_to wiki_path, data: { testid: 'wiki-page-link', qa_page_name: wiki_page.human_title } do
+%li
+  .gl-relative.gl-flex.gl-items-center.js-wiki-list-toggle.wiki-list.gl-px-3.gl-rounded-base{ data: { testid: 'wiki-list' }, class: active_when(params[:id] == wiki_page.slug) }
+    = link_to wiki_path, class: 'gl-str-truncated', data: { testid: 'wiki-page-link', qa_page_name: wiki_page.human_title } do
       = wiki_page.human_title
+    - plus_tooltip_title = safe_format(s_('Wiki|Create a new page under "%{page_title}"'), { page_title: wiki_page.human_title })
+    - if can?(current_user, :create_wiki, @wiki)
+      = render Pajamas::ButtonComponent.new(icon: 'plus', size: :small, category: :tertiary, href: "#{wiki_path}/{new_page_title}", button_options: { class: 'wiki-list-create-child-button gl-ml-2 has-tooltip', title: plus_tooltip_title, aria: { label: plus_tooltip_title } })

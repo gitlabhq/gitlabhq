@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.package_events_i_package_maven_push_package
 description: A count of Maven packages that have been published
-product_section: ops
-product_stage: package
 product_group: package_registry
 value_type: number
 status: active

@@ -35,7 +35,7 @@ export default {
       :status="status"
       :show-tooltip="false"
       :use-link="false"
-      class="gl-line-height-0"
+      class="gl-leading-0"
     />
     <span class="gl-text-truncate mw-70p gl-pl-3 gl-display-inline-block" :title="name">
       {{ name }}

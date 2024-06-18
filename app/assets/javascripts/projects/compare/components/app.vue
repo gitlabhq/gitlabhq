@@ -141,9 +141,7 @@ export default {
         </template>
       </gl-sprintf>
     </p>
-    <div
-      class="gl-lg-flex-direction-row gl-lg-display-flex gl-align-items-center compare-revision-cards"
-    >
+    <div class="gl-lg-flex-direction-row lg:gl-flex gl-align-items-center compare-revision-cards">
       <revision-card
         data-testid="sourceRevisionCard"
         :refs-project-path="to.refsProjectPath"

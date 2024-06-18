@@ -29,7 +29,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillCatalogResourceVersionSemVer
 
   before do
     tag_to_expected_semver.each_key do |tag|
-      releases_table.create!(tag: tag, released_at: Time.zone.now)
+      releases_table.create!(project_id: project.id, tag: tag, released_at: Time.zone.now)
     end
 
     releases_table.find_each do |release|

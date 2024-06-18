@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Boards focus mode', :js, feature_category: :team_planning do
+RSpec.describe 'Issue Boards focus mode', :js, feature_category: :portfolio_management do
   let(:project) { create(:project, :public) }
 
   before do

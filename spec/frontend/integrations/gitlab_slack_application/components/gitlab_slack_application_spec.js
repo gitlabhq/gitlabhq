@@ -9,7 +9,7 @@ import ProjectsDropdown from '~/integrations/gitlab_slack_application/components
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import { mockProjects } from '../mock_data';
 
 jest.mock('~/integrations/gitlab_slack_application/api');
@@ -97,7 +97,7 @@ describe('GitlabSlackApplication', () => {
 
           await waitForPromises();
 
-          expect(redirectTo).toHaveBeenCalledWith(redirectLink); // eslint-disable-line import/no-deprecated
+          expect(visitUrl).toHaveBeenCalledWith(redirectLink);
         });
       });
     });

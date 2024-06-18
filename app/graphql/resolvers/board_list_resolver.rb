@@ -20,7 +20,7 @@ module Resolvers
 
     def resolve(id: nil, issue_filters: {})
       Gitlab::Graphql::Lazy.with_value(find_list(id: id)) do |list|
-        context.scoped_set!(:issue_filters, item_filters(issue_filters, list&.board&.resource_parent))
+        context.scoped_set!(:issue_filters, item_filters(issue_filters))
         list if authorized_resource?(list)
       end
     end

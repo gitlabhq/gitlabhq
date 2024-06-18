@@ -80,8 +80,6 @@ module Namespaces
 
     def sort(items)
       return items.projects_order_id_desc unless params[:sort]
-      return items.order_by_storage_size(:asc) if params[:sort] == :storage_size_asc
-      return items.order_by_storage_size(:desc) if params[:sort] == :storage_size_desc
 
       if params[:sort] == :similarity && params[:search].present?
         return items.sorted_by_similarity_desc(params[:search])

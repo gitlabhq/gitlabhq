@@ -49,7 +49,7 @@ To add a merge request approval rule:
 1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section, select
    **Add approval rule**.
-1. Complete the fields:
+1. On the right sidebar, complete the fields:
    - In **Approvals required**, a value of `0` makes
      [the rule optional](#configure-optional-approval-rules), and any number greater than `0`
      creates a required rule.
@@ -57,7 +57,7 @@ To add a merge request approval rule:
    - From **Add approvers**, select users or groups that are
      [eligible to approve](#eligible-approvers).
      GitLab suggests approvers based on previous authors of the files changed by the merge request.
-1. Select **Add approval rule**. You can add [multiple approval rules](#multiple-approval-rules).
+1. Select **Save changes**. You can add [multiple approval rules](#multiple-approval-rules).
 
 Your configuration for approval rule overrides determines if the new rule is applied
 to existing merge requests:
@@ -83,14 +83,14 @@ To edit a merge request approval rule:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.
 1. In the **Merge request approvals** section, in the **Approval rules** section, next to the rule you want to edit, select **Edit**.
-1. Edit the fields:
+1. On the right sidebar, edit the fields:
    - In **Approvals required**, a value of `0` makes
-    [the rule optional](#configure-optional-approval-rules), and any number greater than `0`
-    creates a required rule.
-    Maximum number of required approvals is `100`.
+     [the rule optional](#configure-optional-approval-rules), and any number greater than `0`
+     creates a required rule.
+     Maximum number of required approvals is `100`.
    - To remove users or groups, identify the group or user to remove, and select **Remove**
      (**{remove}**).
-1. Select **Update approval rule**.
+1. Select **Save changes**.
 
 ## Delete an approval rule
 
@@ -213,8 +213,8 @@ To enable approval permissions for these users without granting them push access
 1. In the **Merge request approvals** section, in the **Approval rules** section:
    - For a new rule, select **Add approval rule** and target the protected branch.
    - For an existing rule, select **Edit** and target the protected branch.
-1. In **Add approvers**, select the group you created.
-1. Select **Add approval rule** or **Update approval rule**.
+1. On the right sidebar, in **Add approvers**, select the group you created.
+1. Select **Save changes**.
 
 ## Edit or override merge request approval rules
 
@@ -301,21 +301,6 @@ on the merge request to indicate which steps are needed to proceed.
 ![Security Approvals](img/security_approvals_v15_0.png)
 
 These policies are both created and edited in the [security policy editor](../../../application_security/policies/index.md#policy-editor).
-
-## Edit approval rules in a drawer
-
-DETAILS:
-**Status:** Beta
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439397) in GitLab 16.11 [with a flag](../../../../administration/feature_flags.md) named `approval_rules_drawer`. Enabled by default. This feature is in [Beta](../../../../policy/experiment-beta-support.md).
-
-FLAG:
-On self-managed GitLab, by default this feature is available.
-To hide the feature, an administrator can [disable the feature flag](../../../../administration/feature_flags.md) named `approval_rules_drawer`.
-On GitLab.com and GitLab Dedicated, this feature is available.
-
-When this feature is enabled, the dialog to [add](#add-an-approval-rule) or
-[edit an approval](#edit-an-approval-rule) rule opens in a drawer on the right.
 
 ## Troubleshooting
 

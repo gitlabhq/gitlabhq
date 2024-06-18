@@ -18,15 +18,12 @@
 
 - if merge_request_dashboard_enabled?(current_user)
   #js-merge-request-dashboard{ data: { initial_data: merge_request_dashboard_data.to_json } }
-    .page-title-holder
-      %h1.page-title.gl-font-size-h-display= _('Merge Requests')
+    = render ::Layouts::PageHeadingComponent.new(_('Merge requests'))
     = gl_loading_icon(size: 'lg')
 - else
-  .page-title-holder.d-flex.align-items-start.flex-column.flex-sm-row.align-items-sm-center
-    %h1.page-title.gl-font-size-h-display= title
-
-    - if current_user
-      .page-title-controls.ml-0.mb-3.ml-sm-auto.mb-sm-0
+  = render ::Layouts::PageHeadingComponent.new(title) do |c|
+    - c.with_actions do
+      - if current_user
         = render 'shared/new_project_item_vue_select'
 
   .top-area

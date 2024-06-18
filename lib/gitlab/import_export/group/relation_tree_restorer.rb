@@ -311,7 +311,8 @@ module Gitlab
             members_mapper: @members_mapper,
             object_builder: @object_builder,
             user: @user,
-            excluded_keys: excluded_keys_for_relation(relation_key)
+            excluded_keys: excluded_keys_for_relation(relation_key),
+            import_source: ::Import::SOURCE_GROUP_EXPORT_IMPORT
           }
         end
 

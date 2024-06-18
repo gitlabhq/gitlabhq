@@ -122,7 +122,6 @@ The following languages and dependency managers are supported when using the Dep
       <td>
         <ul>
           <li><code>go.mod</code></li>
-          <li><code>go.sum</code></li>
         </ul>
       </td>
       <td>Y</td>
@@ -181,7 +180,7 @@ The following languages and dependency managers are supported when using the Dep
     <tr>
       <td rowspan="4">Python</td>
       <td rowspan="4">3.11<sup><b><a href="#notes-regarding-supported-languages-and-package-managers-7">7</a></b></sup></td>
-      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
+      <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a><sup><b><a href="#notes-regarding-supported-languages-and-package-managers-8">8</a></b></sup></td>
       <td><code>setup.py</code></td>
       <td>N</td>
     </tr>
@@ -279,6 +278,12 @@ The following languages and dependency managers are supported when using the Dep
       Support for prior Python versions was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/441201">deprecated</a> in GitLab 16.9 and <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/441491">removed</a> in GitLab 17.0.
     </p>
   </li>
+  <li>
+    <a id="notes-regarding-supported-languages-and-package-managers-8"></a>
+    <p>
+      Excludes both <code>pip</code> and <code>setuptools</code> from the report as they are required by the installer.
+    </p>
+  </li>
 </ol>
 <!-- markdownlint-enable MD044 -->
 
@@ -367,19 +372,19 @@ The following package managers use lockfiles that GitLab analyzers are capable o
       <td>Go</td>
       <td>Not applicable</td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/gosum/default/go.sum">1.x</a><sup><b><a href="#notes-regarding-parsing-lockfiles-1">1</a></b></sup>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/go-modules/gosum/default/go.sum">1.x</a>
       </td>
     </tr>
     <tr>
       <td>NuGet</td>
-      <td>v1, v2<sup><b><a href="#notes-regarding-parsing-lockfiles-2">2</a></b></sup></td>
+      <td>v1, v2<sup><b><a href="#notes-regarding-parsing-lockfiles-1">1</a></b></sup></td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/csharp-nuget-dotnetcore/default/src/web.api/packages.lock.json#L2">4.9</a>
       </td>
     </tr>
     <tr>
       <td>npm</td>
-      <td>v1, v2, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-3">3</a></b></sup></td>
+      <td>v1, v2, v3<sup><b><a href="#notes-regarding-parsing-lockfiles-2">2</a></b></sup></td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/default/package-lock.json#L4">6.x</a>,
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-npm/lockfileVersion2/package-lock.json#L4">7.x</a>,
@@ -388,15 +393,16 @@ The following package managers use lockfiles that GitLab analyzers are capable o
     </tr>
     <tr>
       <td>pnpm</td>
-      <td>v5, v6</td>
+      <td>v5, v6, v9</td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-pnpm/default/pnpm-lock.yaml#L1">7.x</a>,
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/pnpm/fixtures/v6/simple/pnpm-lock.yaml#L1">8.x</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/scanner/parser/pnpm/fixtures/v9/simple/pnpm-lock.yaml#L1">9.x</a>
       </td>
     </tr>
     <tr>
       <td>yarn</td>
-      <td>versions 1, 2, 3, 4<sup><b><a href="#notes-regarding-parsing-lockfiles-4">4</a></b></sup></td>
+      <td>versions 1, 2, 3, 4<sup><b><a href="#notes-regarding-parsing-lockfiles-3">3</a></b></sup></td>
       <td>
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/classic/default/yarn.lock#L2">1.x</a>,
         <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/master/qa/fixtures/js-yarn/berry/v2/default/yarn.lock">2.x</a>,
@@ -417,24 +423,17 @@ The following package managers use lockfiles that GitLab analyzers are capable o
   <li>
     <a id="notes-regarding-parsing-lockfiles-1"></a>
     <p>
-      Dependency Scanning only parses <code>go.sum</code> if it's unable to generate the build list
-      used by the Go project.
+      Support for NuGet version 2 lock files was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/398680">introduced</a> in GitLab 16.2.
     </p>
   </li>
   <li>
     <a id="notes-regarding-parsing-lockfiles-2"></a>
     <p>
-      Support for NuGet version 2 lock files was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/398680">introduced</a> in GitLab 16.2.
-    </p>
-  </li>
-  <li>
-    <a id="notes-regarding-parsing-lockfiles-3"></a>
-    <p>
       Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
     </p>
   </li>
   <li>
-    <a id="notes-regarding-parsing-lockfiles-4"></a>
+    <a id="notes-regarding-parsing-lockfiles-3"></a>
     <p>
       Support for Yarn version 4 was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/431752">introduced</a> in GitLab 16.11.
     </p>
@@ -658,8 +657,9 @@ The `gemnasium` analyzer scans supports JavaScript projects for vendored librari
 #### Go
 
 Multiple files are supported. When a `go.mod` file is detected, the analyzer attempts to generate a [build list](https://go.dev/ref/mod#glos-build-list) using
-[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection). If a non-fatal error is encountered, the analyzer falls back to parsing the
-available `go.sum` file. The process is repeated for every detected `go.mod` and `go.sum` file.
+[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection).
+
+As a requirement, the `go.mod` file should be cleaned up using the command `go mod tidy` to ensure proper management of dependencies. The process is repeated for every detected `go.mod` file.
 
 #### PHP, C, C++, .NET, C&#35;, Ruby, JavaScript
 
@@ -750,7 +750,7 @@ Pipelines now include a dependency scanning job.
 
 ### Enabling dependency scanning by using CI/CD components
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [Experiment](../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [experiment](../../../policy/experiment-beta-support.md).
 > - The dependency scanning CI/CD component only supports Android projects.
 
 Use [CI/CD components](../../../ci/components/index.md) to perform dependency scanning of your application. For instructions, see the respective component's README file.
@@ -828,7 +828,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
 | `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
 | `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise Dependency Scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). |
-| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, npm, pnpm, Pipenv or Poetry are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
+| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, Maven, npm, pnpm, Pipenv or Poetry are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
 | `GOOS`                               | `gemnasium`        | `"linux"`                    | The operating system for which to compile Go code. |
 | `GOARCH`                             | `gemnasium`        | `"amd64"`                    | The architecture of the processor for which to compile Go code. |
 | `GOFLAGS`                            | `gemnasium`        |                              | The flags passed to the `go build` tool. |
@@ -1236,9 +1236,13 @@ project for an example of how this can be done.
 
 We recommend that you use the most recent version of all containers, and the most recent supported version of all package managers and languages. Using previous versions carries an increased security risk because unsupported versions may no longer benefit from active security reporting and backporting of security fixes.
 
+### Gradle projects
+
+Do not override the `reports.html.destination` or `reports.html.outputLocation` properties when generating an HTML dependency report for Gradle projects. Doing so prevents Dependency Scanning from functioning correctly.
+
 ### Python projects
 
-Extra care needs to be taken when using the [`PIP_EXTRA_INDEX_URL`](https://pipenv.pypa.io/en/latest/cli/#envvar-PIP_EXTRA_INDEX_URL)
+Extra care needs to be taken when using the [`PIP_EXTRA_INDEX_URL`](https://pipenv.pypa.io/en/latest/indexes.html)
 environment variable due to a possible exploit documented by [CVE-2018-20225](https://nvd.nist.gov/vuln/detail/CVE-2018-20225):
 
 > An issue was discovered in pip (all versions) because it installs the version with the highest version number, even if the user had

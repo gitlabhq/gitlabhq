@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::MergeRequestsResolver do
+RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_workflow do
   include GraphqlHelpers
   include SortingHelper
 
@@ -237,6 +237,62 @@ RSpec.describe Resolvers::MergeRequestsResolver do
         result = resolve_mr(project, merged_after: 2.days.ago)
 
         expect(result).to be_empty
+      end
+    end
+
+    context 'when filtering by the merge request deployments' do
+      let_it_be(:gstg) { create(:environment, project: project, name: 'gstg') }
+      let_it_be(:gprd) { create(:environment, project: project, name: 'gprd') }
+
+      let_it_be(:deploy1) do
+        create(
+          :deployment,
+          :success,
+          deployable: nil,
+          environment: gstg,
+          project: project,
+          sha: merge_request_1.diff_head_sha,
+          finished_at: 10.days.ago
+        )
+      end
+
+      let_it_be(:deploy2) do
+        create(
+          :deployment,
+          :success,
+          deployable: nil,
+          environment: gprd,
+          project: project,
+          sha: merge_request_2.diff_head_sha,
+          finished_at: 3.days.ago
+        )
+      end
+
+      before do
+        deploy1.link_merge_requests(MergeRequest.where(id: merge_request_1.id))
+        deploy2.link_merge_requests(MergeRequest.where(id: merge_request_2.id))
+      end
+
+      context 'with deployed_after and deployed_before arguments' do
+        it 'returns merge requests deployed between the given period' do
+          result = resolve_mr(project, deployed_after: 20.days.ago, deployed_before: 5.days.ago)
+
+          expect(result).to contain_exactly(merge_request_1)
+        end
+
+        it 'does not return anything when there are no merge requests within the given period' do
+          result = resolve_mr(project, deployed_after: 2.days.ago)
+
+          expect(result).to be_empty
+        end
+      end
+
+      context 'with deployment' do
+        it 'returns merge request with matching deployment' do
+          result = resolve_mr(project, deployment_id: deploy2.id)
+
+          expect(result).to contain_exactly(merge_request_2)
+        end
       end
     end
 

@@ -48,11 +48,39 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromList, :o
     subject(:orphan_objects) { batch.orphan_objects }
 
     shared_examples_for 'returning orphan final job artifact objects' do
-      it 'returns all existing orphan Fog files from the given CSV entries' do
-        expect(orphan_objects).to contain_exactly(orphan_final_object_1, orphan_final_object_2)
+      context 'when the configured object storage provider is google' do
+        before do
+          allow(Gitlab.config.artifacts.object_store.connection).to receive(:provider).and_return('Google')
 
-        expect_skipping_non_existent_object_log_message(non_existent_object)
-        expect_skipping_object_with_job_artifact_record_log_message(object_with_job_artifact_record)
+          # Given Fog doesn't have mock implementation for Google provider, we can only
+          # check that the metadata method is properly called with the correct parameters.
+          allow(batch).to receive_message_chain(:artifacts_directory, :files, :metadata)
+            .with(orphan_final_object_1.key).and_return(orphan_final_object_1)
+
+          allow(batch).to receive_message_chain(:artifacts_directory, :files, :metadata)
+            .with(orphan_final_object_2.key).and_return(orphan_final_object_2)
+
+          allow(batch).to receive_message_chain(:artifacts_directory, :files, :metadata)
+            .with(non_existent_object.key).and_return(nil)
+
+          allow(batch).to receive_message_chain(:artifacts_directory, :files, :metadata)
+            .with(object_with_job_artifact_record.key).and_return(object_with_job_artifact_record)
+        end
+
+        it 'only returns existing orphan Fog files from the given CSV entries' do
+          expect(orphan_objects).to contain_exactly(orphan_final_object_1, orphan_final_object_2)
+
+          expect_skipping_non_existent_object_log_message(non_existent_object)
+          expect_skipping_object_with_job_artifact_record_log_message(object_with_job_artifact_record)
+        end
+      end
+
+      context 'when the configured object storage provider is not google' do
+        it 'returns all orphan Fog files from the given CSV entries' do
+          expect(orphan_objects).to contain_exactly(orphan_final_object_1, orphan_final_object_2, non_existent_object)
+
+          expect_skipping_object_with_job_artifact_record_log_message(object_with_job_artifact_record)
+        end
       end
     end
 

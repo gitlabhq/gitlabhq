@@ -218,7 +218,7 @@ module Kramdown
         # a valid username in our system.  This gives us an
         # opportunity to replace it later. Mention name can have
         # spaces, so double quote it
-        mention_text = ast_node.dig('attrs', 'text')&.gsub('@', '')
+        mention_text = ast_node.dig('attrs', 'text')&.delete('@')
         mention_text = %("#{mention_text}") if mention_text&.include?(' ')
         mention_text = %(@adf-mention:#{mention_text})
 

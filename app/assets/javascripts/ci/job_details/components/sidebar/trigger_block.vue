@@ -63,12 +63,12 @@ export default {
       :class="{ 'gl-mb-2': hasVariables, 'gl-mb-0': !hasVariables }"
       data-testid="trigger-short-token"
     >
-      <span class="gl-font-weight-bold">{{ __('Trigger token:') }}</span> {{ trigger.short_token }}
+      <span class="gl-font-bold">{{ __('Trigger token:') }}</span> {{ trigger.short_token }}
     </p>
 
     <template v-if="hasVariables">
       <p class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-        <span class="gl-display-flex gl-font-weight-bold">{{ __('Trigger variables') }}</span>
+        <span class="gl-display-flex gl-font-bold">{{ __('Trigger variables') }}</span>
 
         <gl-button
           v-if="hasValues"
@@ -82,11 +82,11 @@ export default {
 
       <gl-table-lite :items="trigger.variables" :fields="$options.fields" small bordered fixed>
         <template #cell(key)="{ item }">
-          <span class="gl-overflow-break-word">{{ item.key }}</span>
+          <span class="gl-break-words gl-hyphens-auto">{{ item.key }}</span>
         </template>
 
         <template #cell(value)="data">
-          <span class="gl-overflow-break-word">{{ getDisplayValue(data.value) }}</span>
+          <span class="gl-break-words gl-hyphens-auto">{{ getDisplayValue(data.value) }}</span>
         </template>
       </gl-table-lite>
     </template>

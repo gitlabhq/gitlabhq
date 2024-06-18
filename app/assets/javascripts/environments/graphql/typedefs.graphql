@@ -70,9 +70,29 @@ type LocalK8sNamespaces {
   metadata: k8sNamespaceMetadata
 }
 
-type LocalFluxResourceStatus {
+type LocalFluxResourceMetadata {
+  name: String
+}
+
+type LocalFluxResourceConditions {
+  message: String
+  reason: String
   status: String
   type: String
+}
+
+type LocalFluxResourceInventoryItem {
+  id: String
+}
+
+type LocalFluxKustomization {
+  kind: String
+  metadata: LocalFluxResourceMetadata
+  conditions: [LocalFluxResourceConditions]
+  inventory: [LocalFluxResourceInventoryItem]
+}
+type LocalFluxHelmReleaseStatus {
+  conditions: [LocalFluxResourceConditions]
 }
 
 type K8sResources {
@@ -81,6 +101,19 @@ type K8sResources {
 }
 type K8sResource {
   connectionStatus: String
+}
+type LocalK8sDeploymentMetadata {
+  name: String
+}
+
+type LocalK8sDeployment {
+  metadata: LocalK8sDeploymentMetadata
+  status: JSON
+}
+
+type K8sLogsData {
+  logs: [String]
+  error: JSON
 }
 
 extend type Query {
@@ -95,14 +128,16 @@ extend type Query {
   k8sPods(configuration: LocalConfiguration, namespace: String): [LocalWorkloadItem]
   k8sServices(configuration: LocalConfiguration, namespace: String): [LocalWorkloadItem]
   k8sConnection(configuration: LocalConfiguration): K8sResources
-  fluxKustomizationStatus(
+  fluxKustomization(
     configuration: LocalConfiguration
     fluxResourcePath: String
-  ): LocalFluxResourceStatus
+  ): LocalFluxKustomization
   fluxHelmReleaseStatus(
     configuration: LocalConfiguration
     fluxResourcePath: String
-  ): LocalFluxResourceStatus
+  ): LocalFluxHelmReleaseStatus
+  k8sDeployments(configuration: LocalConfiguration, namespace: String): [LocalK8sDeployment]
+  k8sLogs(configuration: LocalConfiguration, namespace: String, podName: String): [K8sLogsData]
 }
 
 input ResourceTypeParam {

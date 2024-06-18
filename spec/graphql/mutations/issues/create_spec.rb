@@ -135,17 +135,6 @@ RSpec.describe Mutations::Issues::Create do
   end
 
   describe "#ready?" do
-    context 'when passing in both labels and label_ids' do
-      before do
-        mutation_params.merge!(label_ids: [project_label1.to_global_id, project_label2.to_global_id])
-      end
-
-      it 'raises exception when mutually exclusive params are given' do
-        expect { mutation.ready?(**mutation_params) }
-          .to raise_error(Gitlab::Graphql::Errors::ArgumentError, /one and only one of/)
-      end
-    end
-
     context 'when passing only `discussion_to_resolve` param' do
       before do
         mutation_params.merge!(discussion_to_resolve: 'abc')

@@ -11,7 +11,7 @@ module Ci
 
       def perform(group_id, update_params)
         ::Group.find_by_id(group_id).try do |group|
-          ::Ci::UpdatePendingBuildService.new(group, update_params).execute
+          ::Ci::UpdateGroupPendingBuildService.new(group, update_params).execute
         end
       end
     end

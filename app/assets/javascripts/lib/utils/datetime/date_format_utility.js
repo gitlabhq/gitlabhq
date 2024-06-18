@@ -87,24 +87,25 @@ export const dateInWords = (date, abbreviated = false, hideYear = false) => {
  * The largest supported unit is "days".
  *
  * @param {Number} intervalInSeconds The time interval in seconds
+ * @param {Object} params.abbreviated - Abbreviate the returned units (seconds = s, days = d, etc)
  * @returns {String} A humanized description of the time interval
  */
-export const humanizeTimeInterval = (intervalInSeconds) => {
+export const humanizeTimeInterval = (intervalInSeconds, { abbreviated = false } = {}) => {
   if (intervalInSeconds < 60 /* = 1 minute */) {
     const seconds = Math.round(intervalInSeconds * 10) / 10;
-    return n__('%d second', '%d seconds', seconds);
+    return abbreviated ? `${seconds}s` : n__('%d second', '%d seconds', seconds);
   }
   if (intervalInSeconds < 3600 /* = 1 hour */) {
     const minutes = Math.round(intervalInSeconds / 6) / 10;
-    return n__('%d minute', '%d minutes', minutes);
+    return abbreviated ? `${minutes}min` : n__('%d minute', '%d minutes', minutes);
   }
   if (intervalInSeconds < 86400 /* = 1 day */) {
     const hours = Math.round(intervalInSeconds / 360) / 10;
-    return n__('%d hour', '%d hours', hours);
+    return abbreviated ? `${hours}h` : n__('%d hour', '%d hours', hours);
   }
 
   const days = Math.round(intervalInSeconds / 8640) / 10;
-  return n__('%d day', '%d days', days);
+  return abbreviated ? `${days}d` : n__('%d day', '%d days', days);
 };
 
 /**

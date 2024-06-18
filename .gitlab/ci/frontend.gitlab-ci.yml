@@ -77,12 +77,6 @@ compile-test-assets:
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
 
-compile-test-assets as-if-foss:
-  extends:
-    - compile-test-assets
-    - .frontend:rules:compile-test-assets-as-if-foss
-    - .as-if-foss
-
 update-assets-compile-production-cache:
   extends:
     - compile-production-assets
@@ -180,23 +174,6 @@ rspec-all frontend_fixture:
     - "compile-test-assets"
   parallel: 7
 
-# Builds FOSS fixtures in the EE project, with the `ee/` folder removed (due to `as-if-foss`).
-rspec-all frontend_fixture as-if-foss:
-  extends:
-    - .frontend-fixtures-base
-    - .frontend:rules:frontend_fixture-as-if-foss
-    - .as-if-foss
-  variables:
-    # We explicitly disable Crystalball here so as even in scheduled pipelines we don't need it
-    # since it's already enabled for `rspec-all frontend_fixture` there.
-    CRYSTALBALL: "false"
-    WEBPACK_VENDOR_DLL: "true"
-    KNAPSACK_GENERATE_REPORT: ""
-    FLAKY_RSPEC_GENERATE_REPORT: ""
-  needs:
-    - !reference [.frontend-fixtures-base, needs]
-    - "compile-test-assets as-if-foss"
-
 # Uploads EE fixtures in the EE project.
 # Uploads FOSS fixtures in the FOSS project.
 upload-frontend-fixtures:
@@ -257,13 +234,44 @@ graphql-schema-dump:
 .jest-base:
   extends: .frontend-test-base
   script:
-    - run_timed_command "yarn jest:ci"
+    - run_timed_command "yarn jest:ci:without-fixtures"
 
-jest:
+jest-build-cache:
+  extends:
+    - .frontend-test-base
+    - .frontend:rules:jest
+  needs: []
+  artifacts:
+    name: jest-cache
+    expire_in: 12h
+    when: always
+    paths:
+      - tmp/cache/jest/
+  script:
+    - run_timed_command "yarn jest:ci:build-cache"
+  variables:
+    # Propagate exit code correctly. See https://gitlab.com/groups/gitlab-org/-/epics/6074.
+    FF_USE_NEW_BASH_EVAL_STRATEGY: 'true'
+    FORCE_COLOR: '1'
+  allow_failure:
+    # In merge requests, failures exit with 2, so fail the pipeline. Otherwise,
+    # they exit with 1, so as not to break master and other pipelines.
+    exit_codes: 1
+
+jest-build-cache-vue3:
+  extends:
+    - jest-build-cache
+    - .frontend:rules:jest-vue3
+    - .vue3
+
+jest-with-fixtures:
   extends:
     - .jest-base
     - .frontend:rules:jest
-  needs: ["rspec-all frontend_fixture"]
+  needs:
+    - "rspec-all frontend_fixture"
+    - job: jest-build-cache
+      optional: true
   artifacts:
     name: coverage-frontend
     expire_in: 31d
@@ -274,13 +282,47 @@ jest:
       - tmp/tests/frontend/
     reports:
       junit: junit_jest.xml
-  parallel: 12
+  parallel: 2
+  script:
+    - run_timed_command "yarn jest:ci:with-fixtures"
+
+jest:
+  extends:
+    - .jest-base
+    - .frontend:rules:jest
+  needs:
+    - job: jest-build-cache
+      optional: true
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    when: always
+    paths:
+      - coverage-frontend/
+      - junit_jest.xml
+      - tmp/tests/frontend/
+    reports:
+      junit: junit_jest.xml
+  parallel: 11
+
+jest-with-fixtures vue3:
+  extends:
+    - jest-with-fixtures
+    - .frontend:rules:jest-vue3
+    - .vue3
+  needs:
+    - "rspec-all frontend_fixture"
+    - job: jest-build-cache-vue3
+      optional: true
 
 jest vue3:
   extends:
     - jest
     - .frontend:rules:jest-vue3
     - .vue3
+  needs:
+    - job: jest-build-cache-vue3
+      optional: true
 
 jest predictive:
   extends:
@@ -290,16 +332,17 @@ jest predictive:
     - !reference [jest, needs]
     - "detect-tests"
   script:
-    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive"; fi
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive-without-fixtures"; fi
 
-jest predictive as-if-foss:
+jest-with-fixtures predictive:
   extends:
-    - jest predictive
-    - .frontend:rules:jest:predictive-as-if-foss
-    - .as-if-foss
+    - jest-with-fixtures
+    - .frontend:rules:jest:predictive
   needs:
-    - "rspec-all frontend_fixture as-if-foss"
+    - !reference [jest-with-fixtures, needs]
     - "detect-tests"
+  script:
+    - if [[ -s "$RSPEC_CHANGED_FILES_PATH" ]] || [[ -s "$RSPEC_MATCHING_JS_FILES_PATH" ]]; then run_timed_command "yarn jest:ci:predictive-with-fixtures"; fi
 
 jest-integration:
   extends:
@@ -353,6 +396,8 @@ coverage-frontend:
     - .frontend:rules:coverage-frontend
   needs:
     - job: "jest"
+      optional: true
+    - job: "jest-with-fixtures"
       optional: true
     - job: "jest predictive"
       optional: true

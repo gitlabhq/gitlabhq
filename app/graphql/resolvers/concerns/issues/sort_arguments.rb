@@ -5,16 +5,16 @@ module Issues
     extend ActiveSupport::Concern
 
     NON_STABLE_CURSOR_SORTS = %i[priority_asc priority_desc
-                                 popularity_asc popularity_desc
-                                 label_priority_asc label_priority_desc
-                                 milestone_due_asc milestone_due_desc
-                                 escalation_status_asc escalation_status_desc].freeze
+      popularity_asc popularity_desc
+      label_priority_asc label_priority_desc
+      milestone_due_asc milestone_due_desc
+      escalation_status_asc escalation_status_desc].freeze
 
     included do
       argument :sort, Types::IssueSortEnum,
-                description: 'Sort issues by this criteria.',
-                required: false,
-                default_value: :created_desc
+        description: 'Sort issues by the criteria.',
+        required: false,
+        default_value: :created_desc
     end
 
     private

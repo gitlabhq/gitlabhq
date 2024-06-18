@@ -14,7 +14,24 @@ module Gitlab
   class Shell
     Error = Class.new(StandardError)
 
+    API_HEADER = 'Gitlab-Shell-Api-Request'
+    JWT_ISSUER = 'gitlab-shell'
+
     class << self
+      def verify_api_request(headers)
+        payload, header = JSONWebToken::HMACToken.decode(headers[API_HEADER], secret_token)
+        return unless payload['iss'] == JWT_ISSUER
+
+        [payload, header]
+      rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature => ex
+        Gitlab::ErrorTracking.track_exception(ex)
+        nil
+      end
+
+      def header_set?(headers)
+        headers[API_HEADER].present?
+      end
+
       # Retrieve GitLab Shell secret token
       #
       # @return [String] secret token

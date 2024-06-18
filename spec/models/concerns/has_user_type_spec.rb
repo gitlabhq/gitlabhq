@@ -152,7 +152,7 @@ RSpec.describe User, feature_category: :system_access do
       end
     end
 
-    describe 'resource_bot_owners' do
+    describe 'resource_bot_owners_and_maintainers' do
       it 'returns nil when user is not a project bot' do
         expect(human.resource_bot_resource).to be_nil
       end
@@ -161,10 +161,10 @@ RSpec.describe User, feature_category: :system_access do
         let(:user1) { create(:user) }
         let(:user2) { create(:user) }
 
-        subject(:owners) { project_bot.resource_bot_owners }
+        subject(:owners_and_maintainers) { project_bot.resource_bot_owners_and_maintainers }
 
         it 'returns an empty array when there is no owning resource' do
-          expect(owners).to match_array([])
+          expect(owners_and_maintainers).to match_array([])
         end
 
         it 'returns group owners when owned by a group' do
@@ -172,15 +172,23 @@ RSpec.describe User, feature_category: :system_access do
           group.add_developer(project_bot)
           group.add_owner(user1)
 
-          expect(owners).to match_array([user1])
+          expect(owners_and_maintainers).to match_array([user1])
         end
 
-        it 'returns project maintainers when owned by a project' do
+        it 'returns project owners and maintainers when owned by a project' do
           project = create(:project)
           project.add_developer(project_bot)
           project.add_maintainer(user2)
 
-          expect(owners).to match_array([user2])
+          expect(owners_and_maintainers).to match_array([project.owner, user2])
+        end
+
+        it 'does not returns any other role than owner or maintainer' do
+          project = create(:project)
+          project.add_developer(project_bot)
+          project.add_maintainer(user2)
+
+          expect(owners_and_maintainers).not_to include(project_bot)
         end
       end
     end

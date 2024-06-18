@@ -52,6 +52,22 @@ RSpec.describe Gitlab::ImportExport::Project::RelationTreeRestorer, feature_cate
         expect(project.snippets.count).to eq(1)
         expect(project.commit_notes.count).to eq(3)
       end
+
+      it 'assigns the correct import source' do
+        expect(subject).to eq(true)
+
+        project = Project.find_by_path('project')
+
+        issues = project.issues
+        snippets = project.snippets
+        merge_requests = project.merge_requests
+        notes = project.notes
+
+        expect(issues.map).to all(have_attributes(imported_from: 'gitlab_project'))
+        expect(snippets.map).to all(have_attributes(imported_from: 'gitlab_project'))
+        expect(merge_requests.map).to all(have_attributes(imported_from: 'gitlab_project'))
+        expect(notes.map).to all(have_attributes(imported_from: 'gitlab_project'))
+      end
     end
   end
 

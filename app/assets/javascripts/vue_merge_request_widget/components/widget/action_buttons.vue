@@ -95,7 +95,7 @@ export default {
       text-sr-only
       size="small"
       toggle-class="gl-p-2!"
-      class="gl-display-block gl-md-display-none!"
+      class="gl-block md:!gl-hidden"
     >
       <template #list-item="{ item }">
         <span class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
@@ -123,7 +123,7 @@ export default {
       :disabled="btn.loading"
       category="tertiary"
       size="small"
-      class="gl-display-none gl-md-display-block gl-float-left"
+      class="gl-hidden md:gl-block gl-float-left"
       @click="onClickAction(btn)"
     >
       <template v-if="btn.text">

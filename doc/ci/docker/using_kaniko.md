@@ -26,7 +26,7 @@ method:
 To use kaniko with GitLab, [a runner](https://docs.gitlab.com/runner/) with one
 of the following executors is required:
 
-- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes.html).
+- [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/index.html).
 - [Docker](https://docs.gitlab.com/runner/executors/docker.html).
 - [Docker Machine](https://docs.gitlab.com/runner/executors/docker_machine.html).
 
@@ -147,7 +147,7 @@ video is a walkthrough of the [Kaniko Docker Build](https://gitlab.com/guided-ex
 Guided Exploration project pipeline. It was tested on:
 
 - [GitLab.com instance runners](../runners/index.md)
-- [The Kubernetes runner executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
+- [The Kubernetes runner executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html)
 
 The example can be copied to your own group or instance for testing. More details
 on what other GitLab CI patterns are demonstrated are available at the project page.

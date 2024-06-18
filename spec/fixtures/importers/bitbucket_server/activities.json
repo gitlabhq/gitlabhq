@@ -1203,6 +1203,27 @@
         "username": "username",
         "type": "NORMAL"
       }
+    },
+    {
+      "id": 18,
+      "createdDate": 1715685900849,
+      "user": {
+        "name": "root",
+        "emailAddress": "test.user@example.com",
+        "active": true,
+        "displayName": "root",
+        "id": 1,
+        "slug": "slug",
+        "type": "NORMAL",
+        "links": {
+          "self": [
+            {
+              "href": "http://localhost:7990/users/root"
+            }
+          ]
+        }
+      },
+      "action": "DECLINED"
     }
   ]
 }

@@ -1,0 +1,75 @@
+# To contribute improvements to CI/CD templates, please follow the Development guide at:
+# https://docs.gitlab.com/ee/development/cicd/templates.html
+# This specific template is located at:
+# https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dast-API.latest.gitlab-ci.yml
+
+# To use this template, add the following to your .gitlab-ci.yml file:
+#
+# include:
+#   template: API-Security.latest.gitlab-ci.yml
+#
+# You also need to add a `dast` stage to your `stages:` configuration. A sample configuration for DAST API:
+#
+# stages:
+#   - build
+#   - test
+#   - deploy
+#   - dast
+
+# Read more about this feature here: https://docs.gitlab.com/ee/user/application_security/dast_api/index.html
+
+# Configure API Security scanning with CI/CD variables (https://docs.gitlab.com/ee/ci/variables/index.html).
+# List of available variables: https://docs.gitlab.com/ee/user/application_security/dast_api/index.html#available-cicd-variables
+
+variables:
+  # Setting this variable affects all Security templates
+  # (SAST, Dependency Scanning, ...)
+  SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
+  #
+  APISEC_VERSION: "5"
+  APISEC_IMAGE_SUFFIX: ""
+  APISEC_IMAGE: api-security
+
+api_security:
+  stage: dast
+  image: $SECURE_ANALYZERS_PREFIX/$APISEC_IMAGE:$APISEC_VERSION$APISEC_IMAGE_SUFFIX
+  allow_failure: true
+  rules:
+    - if: $APISEC_DISABLED == 'true' || $APISEC_DISABLED == '1'
+      when: never
+    - if: $APISEC_DISABLED_FOR_DEFAULT_BRANCH == 'true' &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $APISEC_DISABLED_FOR_DEFAULT_BRANCH == '1' &&
+          $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+
+    # Add the job to merge request pipelines if there's an open merge request.
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        APISEC_IMAGE_SUFFIX: "-fips"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+    # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+    - if: $CI_OPEN_MERGE_REQUESTS
+      when: never
+
+    # Add the job to branch pipelines.
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+        APISEC_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH
+  script:
+    - /peach/analyzer-api-security
+  artifacts:
+    when: always
+    paths:
+      - gl-assets
+      - gl-api-security-report.json
+      - gl-*.log
+    reports:
+      dast: gl-api-security-report.json
+
+# end

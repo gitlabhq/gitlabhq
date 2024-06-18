@@ -393,6 +393,10 @@ RSpec.describe ::SystemNotes::TimeTrackingService, feature_category: :team_plann
           let(:event) { Gitlab::UsageDataCounters::IssueActivityUniqueCounter::ISSUE_TIME_SPENT_CHANGED }
           let(:user) { author }
           let(:namespace) { project.namespace }
+
+          before do
+            spend_time!(277200)
+          end
         end
       end
 

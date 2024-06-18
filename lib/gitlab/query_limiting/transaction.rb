@@ -39,12 +39,14 @@ module Gitlab
       #
       #     retval # => 10
       def self.run
+        previous_transaction = current
+
         transaction = new
         Thread.current[THREAD_KEY] = transaction
 
         [transaction, yield]
       ensure
-        Thread.current[THREAD_KEY] = nil
+        Thread.current[THREAD_KEY] = previous_transaction
       end
 
       def initialize
@@ -69,6 +71,7 @@ module Gitlab
       GEO_NODES_LOAD = 'SELECT 1 AS one FROM "geo_nodes" LIMIT 1'
       LICENSES_LOAD = 'SELECT "licenses".* FROM "licenses" ORDER BY "licenses"."id"'
       SCHEMA_INTROSPECTION = %r{SELECT.*(FROM|JOIN) (pg_attribute|pg_class)}m
+      SAVEPOINT = %r{(RELEASE )?SAVEPOINT}m
 
       # queries can be safely ignored if they are amoritized in regular usage
       # (i.e. only requested occasionally and otherwise cached).
@@ -76,6 +79,7 @@ module Gitlab
         return true if sql&.include?(GEO_NODES_LOAD)
         return true if sql&.include?(LICENSES_LOAD)
         return true if SCHEMA_INTROSPECTION.match?(sql)
+        return true if SAVEPOINT.match?(sql)
 
         false
       end

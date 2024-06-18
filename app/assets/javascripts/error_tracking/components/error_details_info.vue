@@ -4,11 +4,11 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TrackEventDirective from '~/vue_shared/directives/track_event';
 import { trackClickErrorLinkToSentryOptions } from '../events_tracking';
 
-const CARD_CLASS = 'gl-mr-7 gl-w-3/20 gl-min-w-fit-content';
+const CARD_CLASS = 'gl-mr-7 gl-w-3/20 gl-min-w-fit';
 const HEADER_CLASS =
-  'gl-p-2 gl-font-weight-bold gl-display-flex gl-justify-content-center gl-align-items-center';
+  'gl-p-2 gl-font-bold gl-display-flex gl-justify-content-center gl-align-items-center';
 const BODY_CLASS =
-  'gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column gl-my-0 gl-p-4 gl-font-weight-bold gl-text-center gl-flex-grow-1 gl-font-lg';
+  'gl-display-flex gl-justify-content-center gl-align-items-center gl-flex-direction-column gl-my-0 gl-p-4 gl-font-bold gl-text-center gl-flex-grow-1 gl-font-lg';
 
 export default {
   components: {
@@ -57,7 +57,7 @@ export default {
   <div>
     <div
       v-if="error"
-      class="gl-display-flex gl-flex-wrap gl-justify-content-center gl-my-7 gl-row-gap-6"
+      class="gl-display-flex gl-flex-wrap gl-justify-content-center gl-my-7 gl-gap-y-6"
     >
       <gl-card
         :class="$options.CARD_CLASS"
@@ -158,7 +158,7 @@ export default {
       </gl-card>
     </div>
     <div v-if="!error.integrated" class="py-3">
-      <span class="gl-font-weight-bold">{{ __('Sentry event') }}:</span>
+      <span class="gl-font-bold">{{ __('Sentry event') }}:</span>
       <gl-link
         v-track-event="trackClickErrorLinkToSentryOptions(error.externalUrl)"
         :href="error.externalUrl"

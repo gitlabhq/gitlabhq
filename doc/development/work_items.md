@@ -231,6 +231,7 @@ Keep the following in mind when you write your migration:
     instead of having to wait for the next release.
 
     **Important:** Because we use a regular migration, we need to make sure it does two things:
+
     1. Don't exceed the [time guidelines](migration_style_guide.md#how-long-a-migration-should-take) of regular migrations.
     1. Make sure the migration is [backwards-compatible](multi_version_compatibility.md).
        This means that deployed code should continue to work even if the MR that introduced this migration is
@@ -268,7 +269,7 @@ Keep the following in mind when you write your migration:
 - Use shared examples for migrations specs.
 
   There are different shared examples you should use for the different migration types (new work item type, new widget definition, etc) in
-    [`add_work_item_widget_shared_examples.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/14c0a4df57a562a7c2dd4baed98f26d208a2e6ce/spec/support/shared_examples/migrations/add_work_item_widget_shared_examples.rb).
+  [`add_work_item_widget_shared_examples.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/14c0a4df57a562a7c2dd4baed98f26d208a2e6ce/spec/support/shared_examples/migrations/add_work_item_widget_shared_examples.rb).
 
 ##### Example of adding a ticket work item
 
@@ -456,3 +457,7 @@ in [GitLab.com](https://gitlab.com).
 For implementation details, this [MR](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93231) can be used
 as a reference. The MR covers the definition of new unique actions, event tracking in the code and also
 adding the new unique actions to the required aggregate counters.
+
+## Related topics
+
+- [Design management](../user/project/issues/design_management.md)

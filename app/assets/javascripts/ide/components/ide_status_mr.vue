@@ -22,7 +22,7 @@ export default {
 <template>
   <div class="d-flex-center gl-flex-nowrap text-nowrap js-ide-status-mr">
     <gl-icon name="merge-request" />
-    <span class="ml-1 d-none d-sm-block">{{ s__('WebIDE|Merge request') }}</span>
+    <span class="ml-1 gl-hidden sm:gl-block">{{ s__('WebIDE|Merge request') }}</span>
     <gl-link class="ml-1" :href="url">{{ text }}</gl-link>
   </div>
 </template>

@@ -12,7 +12,29 @@ description: 'Pipeline data partitioning design'
 
 # Pipeline data partitioning design
 
+## Context
+
+Even if we move CI/CD metadata to a different store, or reduce the rate of
+metadata growth in a different way, the problem of having billions of rows
+describing pipelines, builds and artifacts, remains. We still may need to keep
+reference to the metadata we might store in object storage and we still do need
+to be able to retrieve this information reliably in bulk (or search through
+it).
+
+It means that by moving data to object storage we might not be able to reduce
+the number of rows in CI/CD tables. Moving data to object storage should help
+with reducing the data size, but not the quantity of entries describing this
+data. Because of this limitation, we still want to partition CI/CD data to
+reduce the impact on the database (indices size, auto-vacuum time and
+frequency).
+
+Epic: [Partition CI/CD pipelines database tables](https://gitlab.com/groups/gitlab-org/-/epics/5417).
+
 ## What problem are we trying to solve?
+
+Our intent here is not to move this data out of our primary database elsewhere.
+What want to divide very large database tables, that store CI/CD data, into
+multiple smaller ones, using PostgreSQL partitioning features.
 
 We want to partition the CI/CD dataset, because some of the database tables are
 extremely large, which might be challenging in terms of scaling single node
@@ -21,8 +43,6 @@ reads, even after we ship the CI/CD database decomposition.
 We want to reduce the risk of database performance degradation by transforming
 a few of the largest database tables into smaller ones using PostgreSQL
 declarative partitioning.
-
-See more details about this effort in [the parent blueprint](index.md).
 
 ![pipeline data time decay](pipeline_data_time_decay.png)
 

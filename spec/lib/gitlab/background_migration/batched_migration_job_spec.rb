@@ -237,7 +237,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob, feature_categor
           def perform(*job_arguments)
             each_sub_batch(
               batching_arguments: { order_hint: :updated_at },
-              batching_scope: -> (relation) { relation.where.not(bar: nil) }
+              batching_scope: ->(relation) { relation.where.not(bar: nil) }
             ) do |sub_batch|
               sub_batch.update_all('to_column = from_column')
             end
@@ -282,7 +282,7 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob, feature_categor
             def perform(*job_arguments)
               each_sub_batch(
                 batching_arguments: { order_hint: :updated_at },
-                batching_scope: -> (relation) { relation.where.not(bar: nil) }
+                batching_scope: ->(relation) { relation.where.not(bar: nil) }
               ) do |sub_batch|
                 sub_batch.update_all('to_column = from_column')
               end

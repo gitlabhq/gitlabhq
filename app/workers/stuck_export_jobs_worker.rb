@@ -44,6 +44,11 @@ class StuckExportJobsWorker
     )
 
     completed_jobs.each do |job|
+      # Parallel export job completes and keeps 'started' state because it has
+      # multiple relation exports running in parallel. Don't mark it as failed
+      # until 6 hours mark
+      next if job.relation_exports.any? && job.created_at > EXPORT_JOBS_EXPIRATION.seconds.ago
+
       job.fail_op
     end.count
   end

@@ -1,0 +1,10 @@
+query getK8sDeployments($configuration: LocalConfiguration, $namespace: String) {
+  k8sDeployments(configuration: $configuration, namespace: $namespace) @client {
+    metadata {
+      name
+    }
+    status {
+      conditions
+    }
+  }
+}

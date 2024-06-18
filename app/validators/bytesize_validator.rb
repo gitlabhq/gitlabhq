@@ -21,9 +21,9 @@ class BytesizeValidator < ActiveModel::EachValidator
     return if size <= max_size
 
     error_message = format(_('is too long (%{size}). The maximum size is %{max_size}.'), {
-                             size: ActiveSupport::NumberHelper.number_to_human_size(size),
-                             max_size: ActiveSupport::NumberHelper.number_to_human_size(max_size)
-                           })
+      size: ActiveSupport::NumberHelper.number_to_human_size(size),
+      max_size: ActiveSupport::NumberHelper.number_to_human_size(max_size)
+    })
 
     record.errors.add(attr, error_message)
   end

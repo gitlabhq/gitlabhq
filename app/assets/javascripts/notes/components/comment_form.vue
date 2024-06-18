@@ -190,6 +190,11 @@ export default {
 
       return null;
     },
+    commentNowButtonTitle() {
+      return this.noteType === constants.COMMENT
+        ? this.$options.i18n.addCommentNow
+        : this.$options.i18n.addThreadNow;
+    },
   },
   watch: {
     noteIsInternal(val) {
@@ -301,7 +306,9 @@ export default {
       toggleState()
         .then(() => {
           fetchUserCounts();
-          return badgeState?.updateStatus();
+          // badgeState is only initialized for MR type
+          // To avoid undefined error added an optional chaining to function
+          return badgeState?.updateStatus?.();
         })
         .catch(() =>
           createAlert({
@@ -398,29 +405,31 @@ export default {
                 />
               </gl-form-checkbox>
               <template v-if="hasDrafts">
-                <gl-button
-                  :disabled="disableSubmitButton"
-                  data-testid="add-to-review-button"
-                  type="submit"
-                  category="primary"
-                  variant="confirm"
+                <comment-type-dropdown
+                  v-model="noteType"
                   class="gl-mr-3"
-                  @click.prevent="handleSaveDraft()"
-                  >{{ __('Add to review') }}</gl-button
-                >
+                  data-testid="add-to-review-dropdown"
+                  :disabled="disableSubmitButton"
+                  :tracking-label="trackingLabel"
+                  is-review-dropdown
+                  :noteable-display-name="noteableDisplayName"
+                  :discussions-require-resolution="discussionsRequireResolution"
+                  @click="handleSaveDraft()"
+                />
                 <gl-button
                   :disabled="disableSubmitButton"
                   data-testid="add-comment-now-button"
                   category="secondary"
                   class="gl-mr-3"
                   @click.prevent="handleSave()"
-                  >{{ __('Add comment now') }}</gl-button
+                  >{{ commentNowButtonTitle }}</gl-button
                 >
               </template>
               <template v-else>
                 <comment-type-dropdown
                   v-model="noteType"
                   class="gl-mr-3"
+                  data-testid="comment-button"
                   :disabled="disableSubmitButton"
                   :tracking-label="trackingLabel"
                   :is-internal-note="noteIsInternal"

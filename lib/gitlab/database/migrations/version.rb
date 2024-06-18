@@ -17,7 +17,7 @@ module Gitlab
 
         def initialize(timestamp, milestone, type)
           @timestamp = timestamp
-          @milestone = milestone
+          @milestone = Gitlab::VersionInfo.parse_from_milestone(milestone)
           self.type = type
         end
 
@@ -29,6 +29,10 @@ module Gitlab
           @type_value = TYPE_VALUES.fetch(value.to_sym) { raise InvalidTypeError }
         end
 
+        def milestone=(milestone_str)
+          @milestone = Gitlab::VersionInfo.parse_from_milestone(milestone_str)
+        end
+
         def regular?
           @type_value == TYPE_VALUES[:regular]
         end
@@ -38,9 +42,12 @@ module Gitlab
         end
 
         def <=>(other)
+          return 0 if other.is_a?(Integer) && @timestamp == other
+
           return 1 unless other.is_a?(self.class)
 
-          return milestone <=> other.milestone if milestone != other.milestone
+          compare_milestones = milestone <=> other.milestone
+          return compare_milestones if compare_milestones != 0
 
           return @type_value <=> other.type_value if @type_value != other.type_value
 
@@ -55,7 +62,7 @@ module Gitlab
           @timestamp.to_i
         end
 
-        def coerce(_other)
+        def coerce(_)
           [-1, timestamp.to_i]
         end
 
@@ -68,7 +75,7 @@ module Gitlab
         end
 
         def hash
-          [timestamp, milestone, @type_value].hash
+          timestamp.hash
         end
       end
     end

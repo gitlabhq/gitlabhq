@@ -66,7 +66,7 @@ func TestUploadPackTimesOut(t *testing.T) {
 	r := httptest.NewRequest("GET", "/", body)
 	a := &api.Response{GitalyServer: api.GitalyServer{Address: addr}}
 
-	_, err := handleUploadPack(NewHttpResponseWriter(w), r, a)
+	_, err := handleUploadPack(NewHTTPResponseWriter(w), r, a)
 	require.True(t, errors.Is(err, context.DeadlineExceeded))
 }
 

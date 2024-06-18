@@ -1,0 +1,17 @@
+query getFluxKustomizationQuery($configuration: LocalConfiguration, $fluxResourcePath: String) {
+  fluxKustomization(configuration: $configuration, fluxResourcePath: $fluxResourcePath) @client {
+    kind
+    metadata {
+      name
+    }
+    conditions {
+      message
+      reason
+      status
+      type
+    }
+    inventory {
+      id
+    }
+  }
+}

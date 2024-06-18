@@ -131,7 +131,7 @@ export default {
             </template>
           </gl-alert>
 
-          <div class="gl-layout-w-limited gl-mx-auto gl-px-5 gl-mb-7">
+          <div class="gl-max-w-limited gl-mx-auto gl-px-5 gl-mb-7">
             <sign-in-page
               v-show="!userSignedIn"
               :has-subscriptions="hasSubscriptions"

@@ -8,10 +8,6 @@ description: Stores custom attributes per group
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14593
 milestone: '10.2'
 gitlab_schema: gitlab_main_cell
-allow_cross_joins:
-- gitlab_main_clusterwide
-allow_cross_transactions:
-- gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:

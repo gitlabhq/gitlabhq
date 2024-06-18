@@ -125,4 +125,4 @@ For requests:
   - SSH:
     - `git clone git@git.example.com:foo/bar.git` is directed to the **secondary**.
     - `git push` is initially directed to the **secondary**, which automatically
-       proxies the request to `primary.example.com`.
+      proxies the request to `primary.example.com`.

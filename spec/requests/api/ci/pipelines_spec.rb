@@ -542,7 +542,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
   end
 
   describe 'GET /projects/:id/pipelines/:pipeline_id/bridges' do
-    let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline) }
+    let_it_be(:bridge) { create(:ci_bridge, pipeline: pipeline, user: pipeline.user) }
 
     let(:downstream_pipeline) { create(:ci_pipeline) }
 
@@ -666,7 +666,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
         end
       end
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', :use_sql_query_cache, :request_store do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
         end
@@ -675,7 +675,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
 
         expect do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/bridges", api_user), params: query
-        end.not_to exceed_all_query_limit(control)
+        end.to issue_same_number_of_queries_as(control)
       end
     end
 
@@ -720,7 +720,7 @@ RSpec.describe API::Ci::Pipelines, feature_category: :continuous_integration do
     end
 
     def create_bridge(pipeline, status = :created)
-      create(:ci_bridge, status: status, pipeline: pipeline).tap do |bridge|
+      create(:ci_bridge, status: status, pipeline: pipeline, user: pipeline.user).tap do |bridge|
         downstream_pipeline = create(:ci_pipeline)
         create(
           :ci_sources_pipeline,

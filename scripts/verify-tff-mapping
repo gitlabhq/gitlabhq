@@ -81,9 +81,36 @@ tests = [
   },
 
   {
+    explanation: 'Map Ruby config to respective specs',
+    changed_file: 'config/application.rb',
+    expected: ['spec/config/application_spec.rb']
+  },
+  {
+    explanation: 'Map YAML config to respective specs',
+    changed_file: 'config/mail_room.yml',
+    expected: ['spec/config/mail_room_spec.rb']
+  },
+
+  {
     explanation: 'Initializers should map to respective spec',
     changed_file: 'config/initializers/action_mailer_hooks.rb',
     expected: ['spec/initializers/action_mailer_hooks_spec.rb']
+  },
+
+  {
+    explanation: 'FOSS Snowplow definitions map to event validation spec',
+    changed_file: 'config/events/status_page_incident_unpublished.yml',
+    expected: ['spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb']
+  },
+  {
+    explanation: 'EE Snowplow definitions map to event validation spec',
+    changed_file: 'ee/config/events/licenses_list_viewed.yml',
+    expected: ['spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb']
+  },
+  {
+    explanation: 'Snowplow schema maps to event validation spec',
+    changed_file: 'config/events/schema.json',
+    expected: ['spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb']
   },
 
   {
@@ -364,6 +391,17 @@ tests = [
       ee/spec/graphql/types/remote_development/workspace_type_spec.rb
       ee/spec/requests/api/graphql/remote_development/workspace/with_id_arg_spec.rb
     ]
+  },
+  {
+    explanation: 'Run database dictionary related specs on db/docs changes.',
+    changed_file: 'db/docs/design_management_repositories.yml',
+    expected: %w[
+      ee/spec/lib/gitlab/database/desired_sharding_key_spec.rb
+      spec/db/docs_spec.rb
+      spec/lib/gitlab/database/dictionary_spec.rb
+      spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb
+      spec/lib/gitlab/database/sharding_key_spec.rb
+    ]
   }
 ]
 
@@ -421,8 +459,8 @@ if failed_tests.any?
   exit 1
 end
 
-bad_sources = YAML.load_file(mapping_file)['mapping'].filter_map do |map|
-  Array(map['source']).any? { |source| source.match(/(?<!\\)\.\w+\z/)&.string }
+bad_sources = YAML.load_file(mapping_file)['mapping'].flat_map do |map|
+  Array(map['source']).filter_map { |source| source.match(/(?<!\\)\.\w+\z/)&.string }
 end
 
 if bad_sources.any?

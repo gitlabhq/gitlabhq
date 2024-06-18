@@ -70,7 +70,7 @@ Supported input rules:
 | `**bold**` or `__bold__`                                  | Bold text            |
 | `_italics_` or `*italics*`                                | Italicized text      |
 | `~~strike~~`                                              | Strikethrough        |
-| `[link](url)`                                             | Hyperlink            |
+| `[link](https://example.com)`                             | Hyperlink            |
 | `code`                                                    | Inline code          |
 | <code>&#96;&#96;&#96;rb</code> + <kbd>Enter</kbd> <br> <code>&#96;&#96;&#96;js</code> + <kbd>Enter</kbd> | Code block           |
 | `* List item`, or<br> `- List item`, or<br> `+ List item` | Unordered list       |

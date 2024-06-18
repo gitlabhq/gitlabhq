@@ -17,7 +17,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
   describe 'GET /admin/users', :js do
     before do
-      visit admin_users_path
+      visit admin_users_path(filter: 'active')
     end
 
     it "is ok" do
@@ -520,7 +520,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
     end
   end
 
-  describe 'show breadcrumbs' do
+  describe 'show breadcrumbs', :js do
     it do
       visit admin_user_path(user)
 
@@ -554,7 +554,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
     end
 
     def check_breadcrumb(content)
-      expect(find_by_testid('breadcrumb-current-link')).to have_content(content)
+      expect(find_by_testid('breadcrumb-links').find('li:last-of-type')).to have_content(content)
     end
   end
 

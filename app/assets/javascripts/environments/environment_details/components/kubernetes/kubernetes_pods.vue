@@ -69,6 +69,7 @@ export default {
   data() {
     return {
       error: '',
+      filterOption: '',
     };
   },
   computed: {
@@ -100,6 +101,12 @@ export default {
     podsCount() {
       return this.k8sPods?.length || 0;
     },
+    filteredPods() {
+      if (!this.k8sPods) return [];
+      if (!this.filterOption) return this.k8sPods;
+
+      return this.k8sPods.filter((pod) => pod.status === this.filterOption);
+    },
   },
   methods: {
     countPodsByPhase(phase) {
@@ -115,6 +122,9 @@ export default {
     },
     onRemoveSelection() {
       this.$emit('remove-selection');
+    },
+    filterPods(status) {
+      this.filterOption = status;
     },
   },
   i18n: {
@@ -133,10 +143,10 @@ export default {
     <gl-loading-icon v-if="loading" />
 
     <template v-else-if="!error">
-      <workload-stats v-if="podStats" :stats="podStats" class="gl-mt-3" />
+      <workload-stats v-if="podStats" :stats="podStats" class="gl-mt-3" @select="filterPods" />
       <workload-table
         v-if="k8sPods"
-        :items="k8sPods"
+        :items="filteredPods"
         :page-size="$options.PAGE_SIZE"
         class="gl-mt-8"
         @select-item="onItemSelect"

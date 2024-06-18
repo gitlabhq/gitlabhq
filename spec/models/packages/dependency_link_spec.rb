@@ -84,19 +84,20 @@ RSpec.describe Packages::DependencyLink, type: :model, feature_category: :packag
       result = Gitlab::Json.parse(subject.to_json)
 
       expect(result.count).to eq(2)
-      expect(result).to include(
+
+      expect(result).to contain_exactly(
         hash_including(
           'package_id' => package1.id,
-          'dependency_ids_by_type' => {
-            '1' => [dependency2.id],
-            '2' => [dependency1.id]
-          }
+          'dependency_ids_by_type' => a_hash_including(
+            '1' => contain_exactly(dependency2.id),
+            '2' => contain_exactly(dependency1.id)
+          )
         ),
         hash_including(
           'package_id' => package2.id,
-          'dependency_ids_by_type' => {
-            '1' => [dependency1.id, dependency2.id]
-          }
+          'dependency_ids_by_type' => a_hash_including(
+            '1' => contain_exactly(dependency1.id, dependency2.id)
+          )
         )
       )
     end

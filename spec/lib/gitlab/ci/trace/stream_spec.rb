@@ -450,14 +450,14 @@ RSpec.describe Gitlab::Ci::Trace::Stream, :clean_gitlab_redis_cache do
       end
 
       context 'long line' do
-        let(:data) { 'a' * 80000 + '100%' + 'a' * 80000 }
+        let(:data) { ('a' * 80000) + '100%' + ('a' * 80000) }
         let(:regex) { '\d+\%' }
 
         it { is_expected.to eq('100') }
       end
 
       context 'many lines' do
-        let(:data) { "foo\n" * 80000 + "100%\n" + "foo\n" * 80000 }
+        let(:data) { ("foo\n" * 80000) + "100%\n" + ("foo\n" * 80000) }
         let(:regex) { '\d+\%' }
 
         it { is_expected.to eq('100') }

@@ -43,10 +43,7 @@ export default {
       return false;
     },
     shouldShowMergeImmediatelyDropdown() {
-      if (window.gon?.features?.autoMergeWhenIncompletePipelineSucceeds) {
-        return this.isAutoMergeAvailable && this.isMergeAllowed;
-      }
-      return this.isPipelineActive && !this.state.onlyAllowMergeIfPipelineSucceeds;
+      return this.isAutoMergeAvailable && this.isMergeAllowed;
     },
     isMergeImmediatelyDangerous() {
       return false;

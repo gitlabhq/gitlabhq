@@ -59,9 +59,9 @@ RSpec.describe Mailgun::WebhooksController, feature_category: :team_planning do
 
     let(:event_data) do
       {
-        'event': 'failed',
-        'severity': 'permanent',
-        'tags': [Members::Mailgun::INVITE_EMAIL_TAG],
+        event: 'failed',
+        severity: 'permanent',
+        tags: [Members::Mailgun::INVITE_EMAIL_TAG],
         'user-variables': {
           Members::Mailgun::INVITE_EMAIL_TOKEN_KEY => member.raw_invite_token
         }
@@ -96,51 +96,51 @@ RSpec.describe Mailgun::WebhooksController, feature_category: :team_planning do
 
   def standard_params
     {
-      "signature": valid_signature,
+      signature: valid_signature,
       "event-data": {
-        "severity": "permanent",
-        "tags": ["invite_email"],
-        "timestamp": 1521233195.375624,
-        "storage": {
-          "url": "_anything_",
-          "key": "_anything_"
+        severity: "permanent",
+        tags: ["invite_email"],
+        timestamp: 1521233195.375624,
+        storage: {
+          url: "_anything_",
+          key: "_anything_"
         },
         "log-level": "error",
-        "id": "_anything_",
-        "campaigns": [],
-        "reason": "suppress-bounce",
+        id: "_anything_",
+        campaigns: [],
+        reason: "suppress-bounce",
         "user-variables": {
-          "invite_token": '12345'
+          invite_token: '12345'
         },
-        "flags": {
+        flags: {
           "is-routed": false,
           "is-authenticated": true,
           "is-system-test": false,
           "is-test-mode": false
         },
         "recipient-domain": "example.com",
-        "envelope": {
-          "sender": "bob@mg.gitlab.com",
-          "transport": "smtp",
-          "targets": "alice@example.com"
+        envelope: {
+          sender: "bob@mg.gitlab.com",
+          transport: "smtp",
+          targets: "alice@example.com"
         },
-        "message": {
-          "headers": {
-            "to": "Alice <alice@example.com>",
+        message: {
+          headers: {
+            to: "Alice <alice@example.com>",
             "message-id": "20130503192659.13651.20287@mg.gitlab.com",
-            "from": "Bob <bob@mg.gitlab.com>",
-            "subject": "Test permanent_fail webhook"
+            from: "Bob <bob@mg.gitlab.com>",
+            subject: "Test permanent_fail webhook"
           },
-          "attachments": [],
-          "size": 111
+          attachments: [],
+          size: 111
         },
-        "recipient": "alice@example.com",
-        "event": "failed",
+        recipient: "alice@example.com",
+        event: "failed",
         "delivery-status": {
           "attempt-no": 1,
-          "message": "",
-          "code": 605,
-          "description": "Not delivering to previously bounced address",
+          message: "",
+          code: 605,
+          description: "Not delivering to previously bounced address",
           "session-seconds": 0
         }
       }.merge(event_data)

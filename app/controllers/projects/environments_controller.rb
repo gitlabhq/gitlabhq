@@ -10,12 +10,12 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   layout 'project'
 
-  before_action only: [:show] do
-    push_frontend_feature_flag(:k8s_watch_api, project)
-  end
-
   before_action only: [:folder] do
     push_frontend_feature_flag(:environments_folder_new_look, project)
+  end
+
+  before_action only: [:show] do
+    push_frontend_feature_flag(:k8s_tree_view, project)
   end
 
   before_action :authorize_read_environment!
@@ -23,13 +23,13 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   before_action :authorize_stop_environment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update, :cancel_auto_stop]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
-  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :cancel_auto_stop]
+  before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :cancel_auto_stop, :k8s]
   before_action :verify_api_request!, only: :terminal_websocket_authorize
   before_action :expire_etag_cache, only: [:index], unless: -> { request.format.json? }
-  before_action :set_kas_cookie, only: [:edit, :new, :show], if: -> { current_user && request.format.html? }
+  before_action :set_kas_cookie, only: [:edit, :new, :show, :k8s], if: -> { current_user && request.format.html? }
   after_action :expire_etag_cache, only: [:cancel_auto_stop]
 
-  track_event :index, :folder, :show, :new, :edit, :create, :update, :stop, :cancel_auto_stop, :terminal,
+  track_event :index, :folder, :show, :new, :edit, :create, :update, :stop, :cancel_auto_stop, :terminal, :k8s,
     name: 'users_visiting_environments_pages'
 
   feature_category :continuous_delivery
@@ -85,7 +85,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def show
-    @deployments = deployments
   end
 
   def new
@@ -93,6 +92,10 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   end
 
   def edit
+  end
+
+  def k8s
+    render action: :show
   end
 
   def create
@@ -134,7 +137,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def cancel_auto_stop
     result = Environments::ResetAutoStopService.new(project, current_user)
-      .execute(environment)
+                                               .execute(environment)
 
     if result[:status] == :success
       respond_to do |format|

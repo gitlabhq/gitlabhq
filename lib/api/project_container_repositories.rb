@@ -215,7 +215,7 @@ module API
       def obtain_new_cleanup_container_lease
         Gitlab::ExclusiveLease
           .new("container_repository:cleanup_tags:#{repository.id}",
-               timeout: 1.hour)
+            timeout: 1.hour)
           .try_obtain
       end
 

@@ -8,6 +8,7 @@ import Shortcuts from '~/behaviors/shortcuts/shortcuts';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import ShortcutsBlob from '~/behaviors/shortcuts/shortcuts_blob';
+import { shortcircuitPermalinkButton } from '~/blob/utils';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import {
   keysFor,
@@ -15,6 +16,8 @@ import {
   PROJECT_FILES_GO_TO_PERMALINK,
 } from '~/behaviors/shortcuts/keybindings';
 import { sanitize } from '~/lib/dompurify';
+import { InternalEvents } from '~/tracking';
+import { FIND_FILE_BUTTON_CLICK } from '~/tracking/constants';
 import { updateElementsVisibility } from '../utils/dom';
 import blobControlsQuery from '../queries/blob_controls.query.graphql';
 
@@ -133,15 +136,8 @@ export default {
   },
   methods: {
     initShortcuts() {
-      const fileBlobPermalinkUrlElement = document.querySelector(
-        '.js-data-file-blob-permalink-url',
-      );
-      const fileBlobPermalinkUrl =
-        fileBlobPermalinkUrlElement && fileBlobPermalinkUrlElement.getAttribute('href');
-      addShortcutsExtension(ShortcutsBlob, {
-        fileBlobPermalinkUrl,
-        fileBlobPermalinkUrlElement,
-      });
+      shortcircuitPermalinkButton();
+      addShortcutsExtension(ShortcutsBlob);
     },
     initLinksUpdate() {
       // eslint-disable-next-line no-new
@@ -152,6 +148,7 @@ export default {
       );
     },
     handleFindFile() {
+      InternalEvents.trackEvent(FIND_FILE_BUTTON_CLICK);
       Shortcuts.focusSearchFile();
     },
   },

@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.user_container_registry.i_container_registry_delete_tag_deploy_token_weekly
 description: A weekly count of deploy tokens that have deleted a tag from the registry
-product_section: ops
-product_stage: package
 product_group: container_registry
 value_type: number
 status: active

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Users::ActivityService, feature_category: :user_profile do
+  include ExclusiveLeaseHelpers
+
   let(:user) { create(:user, last_activity_on: last_activity_on) }
 
   subject { described_class.new(author: user) }
@@ -37,6 +39,12 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
           .to change(user, :last_activity_on)
                 .from(last_activity_on)
                 .to(Date.today)
+      end
+
+      it 'tries to obtain ExclusiveLease' do
+        expect(Gitlab::ExclusiveLease).to receive(:new).with("activity_service:#{user.id}", anything).and_call_original
+
+        subject.execute
       end
 
       it 'tracks RedisHLL event' do
@@ -82,6 +90,12 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
       let(:last_activity_on) { Date.today }
 
       it_behaves_like 'does not update last_activity_on'
+
+      it 'does not try to obtain ExclusiveLease' do
+        expect(Gitlab::ExclusiveLease).not_to receive(:new).with("activity_service:#{user.id}", anything)
+
+        subject.execute
+      end
     end
 
     context 'when in GitLab read-only instance' do
@@ -89,6 +103,16 @@ RSpec.describe Users::ActivityService, feature_category: :user_profile do
 
       before do
         allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      end
+
+      it_behaves_like 'does not update last_activity_on'
+    end
+
+    context 'when a lease could not be obtained' do
+      let(:last_activity_on) { nil }
+
+      before do
+        stub_exclusive_lease_taken("activity_service:#{user.id}", timeout: 1.minute.to_i)
       end
 
       it_behaves_like 'does not update last_activity_on'

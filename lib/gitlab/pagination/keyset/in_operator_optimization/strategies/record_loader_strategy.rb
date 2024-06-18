@@ -24,7 +24,7 @@ module Gitlab
             def columns
               query = finder_query
                 .call(*order_by_columns.array_lookup_expressions_by_position(QueryBuilder::RECURSIVE_CTE_NAME))
-                .select("#{table_name}")
+                .select(table_name.to_s)
                 .limit(1)
 
               ["(#{query.to_sql})"]

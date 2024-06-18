@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.code_review.i_code_review_total_suggestions_applied_weekly
 description: Total number of weekly suggestions applied
-product_section: dev
-product_stage: create
 product_group: code_review
 value_type: number
 status: active
@@ -14,7 +12,7 @@ instrumentation_class: RedisHLLMetric
 options:
   events:
     - i_code_review_total_suggestions_applied
-data_category: Optional
+data_category: optional
 performance_indicator_type: []
 distribution:
 - ce

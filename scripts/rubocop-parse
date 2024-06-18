@@ -107,7 +107,7 @@ parser = OptionParser.new do |opts|
   end
 
   opts.on('-v RUBY_VERSION', '--ruby-version RUBY_VERSION',
-          'Parse as Ruby would. Defaults to RuboCop TargetRubyVersion setting.') do |ruby_version|
+    'Parse as Ruby would. Defaults to RuboCop TargetRubyVersion setting.') do |ruby_version|
     Helper.ruby_version = Float(ruby_version)
   end
 

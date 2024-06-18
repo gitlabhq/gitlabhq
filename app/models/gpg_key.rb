@@ -15,6 +15,7 @@ class GpgKey < ApplicationRecord
 
   scope :with_subkeys, -> { includes(:subkeys) }
   scope :externally_invalid, -> { where(externally_verified: false) }
+  scope :externally_valid, -> { where(externally_verified: true) }
 
   validates :user, presence: true
 

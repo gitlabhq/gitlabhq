@@ -42,9 +42,9 @@ module InternalEventsCli
     def run
       prompt_for_description
       prompt_for_action
-      prompt_for_identifiers
+      prompt_for_context
       prompt_for_url
-      prompt_for_product_ownership
+      prompt_for_product_group
       prompt_for_tier
 
       outcome = create_event_file
@@ -80,8 +80,17 @@ module InternalEventsCli
       end
     end
 
-    def prompt_for_identifiers
+    def prompt_for_context
       new_page!(3, 7, STEPS)
+      cli.say format_prompt("EVENT CONTEXT #{counter(0, 2)}")
+      prompt_for_identifiers
+
+      new_page!(3, 7, STEPS) # Same "step" but increment counter
+      cli.say format_prompt("EVENT CONTEXT #{counter(1, 2)}")
+      prompt_for_additional_properties
+    end
+
+    def prompt_for_identifiers
       cli.say Text::EVENT_IDENTIFIERS_INTRO % event.action
 
       identifiers = prompt_for_array_selection(
@@ -99,22 +108,68 @@ module InternalEventsCli
       "#{formatted_choice}#{' ' * buffer} -- #{IDENTIFIER_OPTIONS[choice]}"
     end
 
+    def prompt_for_additional_properties
+      cli.say Text::ADDITIONAL_PROPERTIES_INTRO
+
+      available_props = [:label, :property, :value]
+
+      while available_props.any?
+        disabled = format_warning('(already defined)')
+
+        # rubocop:disable Rails/NegateInclude -- this isn't Rails
+        options = [
+          { value: :none, name: 'None! Continue to next section!' },
+          disableable_option(
+            value: :label,
+            name: 'String 1 (aka label)',
+            disabled: disabled
+          ) { !available_props.include?(:label) },
+          disableable_option(
+            value: :property,
+            name: 'String 2 (aka property)',
+            disabled: disabled
+          ) { !available_props.include?(:property) },
+          disableable_option(
+            value: :value,
+            name: 'Number (aka value)',
+            disabled: disabled
+          ) { !available_props.include?(:value) }
+        ]
+        # rubocop:enable Rails/NegateInclude
+
+        selected_property = cli.select(
+          "Which additional property do you want to add to the event?",
+          options,
+          help: format_help("(will reprompt for multiple)"),
+          **select_opts
+        )
+
+        if selected_property == :none
+          available_props.clear
+        else
+          available_props.delete(selected_property)
+          property_description = prompt_for_text('Describe what the field will include:')
+
+          event.additional_properties ||= {}
+          event.additional_properties[selected_property.to_s] = {
+            'description' => property_description || 'TODO'
+          }
+        end
+      end
+    end
+
     def prompt_for_url
       new_page!(4, 7, STEPS)
 
       event.introduced_by_url = prompt_for_text('Which MR URL will merge the event definition?')
     end
 
-    def prompt_for_product_ownership
+    def prompt_for_product_group
       new_page!(5, 7, STEPS)
 
-      ownership = prompt_for_group_ownership({
-        product_section: 'Which section will own the event?',
-        product_stage: 'Which stage will own the event?',
-        product_group: 'Which group will own the event?'
-      })
+      product_group = prompt_for_group_ownership('Which group will own the event?')
 
-      event.bulk_assign(ownership)
+      event.product_group = product_group
     end
 
     def prompt_for_tier

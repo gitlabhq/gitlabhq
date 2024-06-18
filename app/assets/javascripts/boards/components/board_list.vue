@@ -412,7 +412,6 @@ export default {
               boardId: this.boardId,
               itemToMove,
             }),
-            withColor: this.isEpicBoard && this.glFeatures.epicColorHighlight,
           },
           update: (cache, { data: { issuableMoveList } }) =>
             this.updateCacheAfterMovingItem({
@@ -505,7 +504,6 @@ export default {
               itemToMove: item,
             }),
             positionInList,
-            withColor: this.isEpicBoard && this.glFeatures.epicColorHighlight,
           },
           optimisticResponse: {
             issuableMoveList: {
@@ -558,7 +556,6 @@ export default {
           mutation: listIssuablesQueries[this.issuableType].createMutation,
           variables: {
             input: this.isEpicBoard ? input : { ...input, moveAfterId: this.boardListItems[0]?.id },
-            withColor: this.isEpicBoard && this.glFeatures.epicColorHighlight,
           },
           update: (cache, { data: { createIssuable } }) => {
             issuable = createIssuable.issuable;

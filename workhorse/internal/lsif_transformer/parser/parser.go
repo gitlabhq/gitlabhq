@@ -1,3 +1,4 @@
+// Package parser provides functionality for parsing, serializing, and managing ranges of data
 package parser
 
 import (
@@ -12,15 +13,18 @@ import (
 )
 
 var (
+	// Lsif contains the lsif string name
 	Lsif = "lsif"
 )
 
+// Parser is responsible for parsing LSIF data
 type Parser struct {
 	Docs *Docs
 
 	pr *io.PipeReader
 }
 
+// NewParser creates a new Parser instance and initializes it with the provided reader
 func NewParser(ctx context.Context, r io.Reader) (io.ReadCloser, error) {
 	docs, err := NewDocs()
 	if err != nil {
@@ -33,10 +37,10 @@ func NewParser(ctx context.Context, r io.Reader) (io.ReadCloser, error) {
 		return nil, err
 	}
 
-	defer tempFile.Close()
+	defer func() { _ = tempFile.Close() }()
 
-	if err := os.Remove(tempFile.Name()); err != nil {
-		return nil, err
+	if osRemoveErr := os.Remove(tempFile.Name()); osRemoveErr != nil {
+		return nil, osRemoveErr
 	}
 
 	size, err := io.Copy(tempFile, r)
@@ -59,7 +63,7 @@ func NewParser(ctx context.Context, r io.Reader) (io.ReadCloser, error) {
 		return nil, err
 	}
 
-	defer file.Close()
+	defer func() { _ = file.Close() }()
 
 	if err := docs.Parse(file); err != nil {
 		return nil, err
@@ -71,34 +75,35 @@ func NewParser(ctx context.Context, r io.Reader) (io.ReadCloser, error) {
 		pr:   pr,
 	}
 
-	go parser.transform(pw)
+	go func() { _ = parser.transform(pw) }()
 
 	return parser, nil
 }
 
+// Read reads data from the parser's pipe reader
 func (p *Parser) Read(b []byte) (int, error) {
 	return p.pr.Read(b)
 }
 
-func (p *Parser) Close() error {
-	p.pr.Close()
+// Close closes the parser and its associated resources
 
-	return p.Docs.Close()
+func (p *Parser) Close() error {
+	return errors.Join(p.pr.Close(), p.Docs.Close())
 }
 
-func (p *Parser) transform(pw *io.PipeWriter) {
+func (p *Parser) transform(pw *io.PipeWriter) error {
 	zw := zip.NewWriter(pw)
 
 	if err := p.Docs.SerializeEntries(zw); err != nil {
-		zw.Close() // Free underlying resources only
+		_ = zw.Close() // Free underlying resources only
 		pw.CloseWithError(fmt.Errorf("lsif parser: Docs.SerializeEntries: %v", err))
-		return
+		return err
 	}
 
 	if err := zw.Close(); err != nil {
 		pw.CloseWithError(fmt.Errorf("lsif parser: ZipWriter.Close: %v", err))
-		return
+		return err
 	}
 
-	pw.Close()
+	return pw.Close()
 }

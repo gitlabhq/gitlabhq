@@ -225,7 +225,7 @@ Some key details about runners:
 - You can use the [`tags` keyword](../runners/configure_runners.md#control-jobs-that-a-runner-can-run)
   for finer control, and associate runners with specific jobs. For example, you can use a tag for jobs that
   require dedicated, more powerful, or specific hardware.
-- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/runner_autoscale).
+- GitLab has [autoscaling for runners](https://docs.gitlab.com/runner/runner_autoscale/).
   Use autoscaling to provision runners only when needed and scale down when not needed.
 
 ### TeamCity build features & plugins

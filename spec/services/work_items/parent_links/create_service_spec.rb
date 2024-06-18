@@ -105,11 +105,28 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
     context 'when there are tasks to relate' do
       let(:params) { { issuable_references: [task1, task2] } }
 
+      it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+        let(:trigger_call_counter) { 2 }
+
+        subject(:execute_service) { described_class.new(work_item, user, params).execute }
+      end
+
       it 'creates relationships', :aggregate_failures do
         expect { subject }.to change(parent_link_class, :count).by(2)
 
         tasks_parent = parent_link_class.where(work_item: [task1, task2]).map(&:work_item_parent).uniq
         expect(tasks_parent).to match_array([work_item])
+      end
+
+      context 'when relative_position is set' do
+        let(:params) { { issuable_references: [task1, task2], relative_position: 1337 } }
+
+        it 'creates relationships with given relative_position' do
+          result = subject
+
+          expect(result[:created_references].first.relative_position).to eq(1337)
+          expect(result[:created_references].second.relative_position).to eq(1337)
+        end
       end
 
       it 'returns success status and created links', :aggregate_failures do
@@ -170,6 +187,10 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       context 'when task is already assigned' do
         let(:params) { { issuable_references: [task, task2] } }
 
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { described_class.new(work_item, user, params).execute }
+        end
+
         it 'creates links only for non related tasks', :aggregate_failures do
           expect { subject }
             .to change(parent_link_class, :count).by(1)
@@ -195,23 +216,23 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
         let(:params) { { issuable_references: [task1, issue, other_project_task] } }
 
         it 'creates links only for valid children' do
-          expect { subject }.to change { parent_link_class.count }.by(1)
+          expect { subject }.to change { parent_link_class.count }.by(2)
         end
 
-        it 'returns error status' do
+        it 'does not return error status' do
           error = "#{issue.to_reference} cannot be added: is not allowed to add this type of parent. " \
             "#{other_project_task.to_reference} cannot be added: parent must be in the same project or group as child."
 
-          is_expected.to eq(service_error(error, http_status: 422))
+          is_expected.not_to eq(service_error(error, http_status: 422))
         end
 
-        it 'creates notes for valid links' do
+        it 'creates notes for valid links', :aggregate_failures do
           subject
 
-          expect(work_item.notes.last.note).to eq("added #{task1.to_reference} as child task")
+          expect(work_item.notes.last.note).to eq("added #{other_project_task.to_reference(full: true)} as child task")
           expect(task1.notes.last.note).to eq("added #{work_item.to_reference} as parent issue")
           expect(issue.notes).to be_empty
-          expect(other_project_task.notes).to be_empty
+          expect(other_project_task.notes).not_to be_empty
         end
       end
 

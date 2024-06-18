@@ -6,8 +6,6 @@ property_description: "`diff_toggle_external`"
 value_description: ""
 extra_properties:
 identifiers:
-product_section: ""
-product_stage: ""
 product_group: ""
 milestone:
 introduced_by_url:

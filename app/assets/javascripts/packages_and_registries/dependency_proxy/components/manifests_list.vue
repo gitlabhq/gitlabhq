@@ -53,14 +53,14 @@ export default {
     <manifests-empty-state v-else-if="manifests.length === 0" />
 
     <div v-else data-testid="main-area">
-      <div class="gl-display-flex gl-flex-direction-column">
-        <manifest-row
-          v-for="(manifest, index) in manifests"
-          :key="index"
-          :dependency-proxy-image-prefix="dependencyProxyImagePrefix"
-          :manifest="manifest"
-        />
-      </div>
+      <ul class="gl-pl-0">
+        <li v-for="(manifest, index) in manifests" :key="index">
+          <manifest-row
+            :dependency-proxy-image-prefix="dependencyProxyImagePrefix"
+            :manifest="manifest"
+          />
+        </li>
+      </ul>
       <div class="gl-display-flex gl-justify-content-center">
         <gl-keyset-pagination
           v-bind="pagination"

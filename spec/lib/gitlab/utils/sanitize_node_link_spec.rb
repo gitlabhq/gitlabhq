@@ -13,6 +13,15 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
     struct
   end
 
+  let_it_be(:nodes_with_children) do
+    <<~TEXT
+      <details><summary>test</summary>
+      <a href="javascript://test">Javascript</a>
+      <a href="data://example">Data</a>
+      </details>
+    TEXT
+  end
+
   subject(:object) { klass.new(:value) }
 
   invalid_schemes = [
@@ -39,22 +48,22 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
           a: {
             doc: HTML::Pipeline.parse("<a href='#{scheme}alert(1);'>foo</a>"),
             attr: "href",
-            node_to_check: -> (doc) { doc.children.first }
+            node_to_check: ->(doc) { doc.children.first }
           },
           img: {
             doc: HTML::Pipeline.parse("<img src='#{scheme}alert(1);'>"),
             attr: "src",
-            node_to_check: -> (doc) { doc.children.first }
+            node_to_check: ->(doc) { doc.children.first }
           },
           video: {
             doc: HTML::Pipeline.parse("<video><source src='#{scheme}alert(1);'></video>"),
             attr: "src",
-            node_to_check: -> (doc) { doc.children.first.children.filter("source").first }
+            node_to_check: ->(doc) { doc.children.first.children.filter("source").first }
           },
           audio: {
             doc: HTML::Pipeline.parse("<audio><source src='#{scheme}alert(1);'></audio>"),
             attr: "src",
-            node_to_check: -> (doc) { doc.children.first.children.filter("source").first }
+            node_to_check: ->(doc) { doc.children.first.children.filter("source").first }
           }
         }
 
@@ -69,6 +78,25 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
             end
           end
         end
+      end
+    end
+
+    context 'handling child nodes' do
+      let(:doc) { HTML::Pipeline.parse(nodes_with_children) }
+      let(:node) { doc.children.first }
+
+      it 'santizes child nodes' do
+        object.remove_unsafe_links(env, sanitize_children: true)
+
+        expect(doc.to_html).to include '<a>Javascript</a>'
+        expect(doc.to_html).to include '<a>Data</a>'
+      end
+
+      it 'does not sanitize child nodes if sanitize_children is false' do
+        object.remove_unsafe_links(env, sanitize_children: false)
+
+        expect(doc.to_html).to include '<a href="javascript://test">Javascript</a>'
+        expect(doc.to_html).to include '<a href="data://example">Data</a>'
       end
     end
 
@@ -121,12 +149,18 @@ RSpec.describe Gitlab::Utils::SanitizeNodeLink do
   end
 
   describe '#sanitize_unsafe_links' do
-    let(:env) { { node: 'node' } }
+    it 'sanitizes all nodes without specifically recursing children' do
+      doc = HTML::Pipeline.parse(nodes_with_children)
+      allowlist = { elements: %w[details summary a], attributes: { 'a' => ['href'] },
+                    transformers: [object.method(:sanitize_unsafe_links)] }
 
-    it 'makes a call to #remove_unsafe_links_method' do
-      expect(object).to receive(:remove_unsafe_links).with(env)
+      expect(object).to receive(:remove_unsafe_links).with(anything, sanitize_children: false)
+        .at_least(4).times.and_call_original
 
-      object.sanitize_unsafe_links(env)
+      Sanitize.clean_node!(doc, allowlist)
+
+      expect(doc.to_html).to include '<a>Javascript</a>'
+      expect(doc.to_html).to include '<a>Data</a>'
     end
   end
 end

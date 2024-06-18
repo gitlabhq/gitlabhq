@@ -5,7 +5,7 @@ description: 'Cells Stateless Router Proposal'
 status: rejected
 ---
 
-_This proposal was superseded by the [routing service proposal](../routing-service.md)_
+_This proposal was superseded by the [routing service proposal](../http_routing_service.md)_
 
 <!-- vale gitlab.FutureTense = NO -->
 

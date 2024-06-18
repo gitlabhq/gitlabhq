@@ -30,20 +30,20 @@ If an application is successfully deployed to an
 [review app](../../../ci/review_apps/index.md) are both shown.
 
 NOTE:
-When the pipeline fails in a merge request but it can still be merged,
-the **Merge** button is colored red.
+When the pipeline fails in a merge request but it can still merge,
+GitLab shows the **Merge** button in red.
 
 ## Post-merge pipeline status
 
-When a merge request is merged, you can see the post-merge pipeline status of
-the branch the merge request was merged into. For example, when a merge request
-is merged into the [default branch](../repository/branches/default.md) and then triggers a deployment to the staging
-environment.
+When you merge a merge request, you can see the post-merge pipeline status of
+the branch the merge request merged into. For example, when a merge request
+merges into the [default branch](../repository/branches/default.md), and then
+triggers a deployment to the staging environment.
 
-Ongoing deployments are shown, and the state (deploying or deployed)
-for environments. If it's the first time the branch is deployed, the link
-returns a `404` error until done. During the deployment, the stop button is
-disabled. If the pipeline fails to deploy, the deployment information is hidden.
+GitLab shows ongoing deployments, and the state (deploying or deployed)
+for environments. If it's the first deployment of the branch, the link
+returns a `404` error until done. During the deployment, GitLab disables the
+stop button. If the pipeline fails to deploy, GitLab hides the deployment information.
 
 ![Merge request pipeline](img/post_merge_pipeline_v16_0.png)
 
@@ -56,8 +56,8 @@ Set a merge request that looks ready to merge to
 
 ## Live preview with review apps
 
-If you configured [review apps](../../../ci/review_apps/index.md) for your project,
-you can preview the changes submitted to a feature branch through a merge request
+Configure [review apps](../../../ci/review_apps/index.md) for your project
+to preview the changes submitted to a feature branch through a merge request
 on a per-branch basis. You don't need to check out the branch, install, and preview locally.
 All your changes are available to preview by anyone with the review apps link.
 
@@ -73,7 +73,9 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-If you have configured [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/index.md) for your project, then you can view a list of licenses that are detected for your project's dependencies.
+To view a list of licenses that detected for your project's dependencies,
+configure [License Compliance](../../compliance/license_scanning_of_cyclonedx_files/index.md)
+for your project.
 
 ![Merge request pipeline](img/license_compliance_widget_v15_3.png)
 
@@ -89,6 +91,6 @@ see the status of these checks in merge requests
 
 ## Application security scanning
 
-If you have enabled any application security scanning tools, the results are shown in the security
+If you enable any application security scanning tools, GitLab shows the results in the security
 scanning widget. For more information, see
 [security scanning output in merge request widget](../../application_security/index.md#merge-request).

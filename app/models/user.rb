@@ -279,6 +279,8 @@ class User < MainClusterwide::ApplicationRecord
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
     disable_joins: true
+  has_many :owned_organizations, -> { where(organization_users: { access_level: Gitlab::Access::OWNER }) },
+    through: :organization_users, source: :organization, class_name: 'Organizations::Organization'
 
   has_one :status, class_name: 'UserStatus'
   has_one :user_preference
@@ -309,6 +311,8 @@ class User < MainClusterwide::ApplicationRecord
 
   has_many :requested_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'requested_by_id'
   has_many :reviewed_member_approvals, class_name: 'Members::MemberApproval', foreign_key: 'reviewed_by_id'
+
+  has_many :broadcast_message_dismissals, class_name: 'Users::BroadcastMessageDismissal'
 
   #
   # Validations
@@ -583,32 +587,26 @@ class User < MainClusterwide::ApplicationRecord
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :active, -> { with_state(:active).non_internal }
   scope :active_without_ghosts, -> { with_state(:active).without_ghosts }
+  scope :all_without_ghosts, -> { without_ghosts }
   scope :deactivated, -> { with_state(:deactivated).non_internal }
   scope :without_projects, -> do
     joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id')
     .where(project_authorizations: { user_id: nil })
     .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/422045')
   end
-  scope :by_username, -> (usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
-  scope :by_name, -> (names) { iwhere(name: Array(names)) }
-  scope :by_login, -> (login) do
+  scope :by_username, ->(usernames) { iwhere(username: Array(usernames).map(&:to_s)) }
+  scope :by_name, ->(names) { iwhere(name: Array(names)) }
+  scope :by_login, ->(login) do
     return none if login.blank?
 
     login.include?('@') ? iwhere(email: login) : iwhere(username: login)
   end
-  scope :by_user_email, -> (emails) { iwhere(email: Array(emails)) }
-  scope :by_emails, -> (emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
-  scope :for_todos, -> (todos) { where(id: todos.select(:user_id).distinct) }
+  scope :by_user_email, ->(emails) { iwhere(email: Array(emails)) }
+  scope :by_emails, ->(emails) { joins(:emails).where(emails: { email: Array(emails).map(&:downcase) }) }
+  scope :for_todos, ->(todos) { where(id: todos.select(:user_id).distinct) }
   scope :with_emails, -> { preload(:emails) }
-  scope :with_dashboard, -> (dashboard) { where(dashboard: dashboard) }
+  scope :with_dashboard, ->(dashboard) { where(dashboard: dashboard) }
   scope :with_public_profile, -> { where(private_profile: false) }
-  scope :with_expiring_and_not_notified_personal_access_tokens, ->(at) do
-    where('EXISTS (?)', ::PersonalAccessToken
-      .where('personal_access_tokens.user_id = users.id')
-      .without_impersonation
-      .expiring_and_not_notified(at).select(1)
-    )
-  end
   scope :with_personal_access_tokens_expired_today, -> do
     where('EXISTS (?)', ::PersonalAccessToken
       .select(1)
@@ -639,7 +637,8 @@ class User < MainClusterwide::ApplicationRecord
   scope :dormant, -> { with_state(:active).human_or_service_user.where('last_activity_on <= ?', Gitlab::CurrentSettings.deactivate_dormant_users_period.day.ago.to_date) }
   scope :with_no_activity, -> { with_state(:active).human_or_service_user.where(last_activity_on: nil).where('created_at <= ?', MINIMUM_DAYS_CREATED.day.ago.to_date) }
   scope :by_provider_and_extern_uid, ->(provider, extern_uid) { joins(:identities).merge(Identity.with_extern_uid(provider, extern_uid)) }
-  scope :by_ids_or_usernames, -> (ids, usernames) { where(username: usernames).or(where(id: ids)) }
+  scope :by_ids, ->(ids) { where(id: ids) }
+  scope :by_ids_or_usernames, ->(ids, usernames) { where(username: usernames).or(where(id: ids)) }
   scope :without_forbidden_states, -> { where.not(state: FORBIDDEN_SEARCH_STATES) }
   scope :trusted, -> do
     where('EXISTS (?)', ::UserCustomAttribute
@@ -656,6 +655,7 @@ class User < MainClusterwide::ApplicationRecord
     .includes(:projects)
   end
 
+  scope :left_join_user_detail, -> { left_joins(:user_detail) }
   scope :preload_user_detail, -> { preload(:user_detail) }
 
   def self.supported_keyset_orderings
@@ -803,6 +803,11 @@ class User < MainClusterwide::ApplicationRecord
 
       items = [from_users, from_emails]
 
+      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/461885
+      # What about private commit emails with capitalized username, we'd never find them and
+      # since the private_commit_email derives from the username, it can
+      # be uppercase in parts. So we'll never find an existing user during the invite
+      # process by email if that is true as we are case sensitive in this case.
       user_ids = Gitlab::PrivateCommitEmail.user_ids_for_emails(Array(emails).map(&:downcase))
       items << where(id: user_ids) if user_ids.present?
 
@@ -837,8 +842,10 @@ class User < MainClusterwide::ApplicationRecord
         deactivated
       when "trusted"
         trusted
-      else
+      when "active"
         active_without_ghosts
+      else
+        all_without_ghosts
       end
     end
 
@@ -848,6 +855,7 @@ class User < MainClusterwide::ApplicationRecord
     #
     # query - The search query as a String
     # with_private_emails - include private emails in search
+    # partial_email_search - only for admins to preserve email privacy. Only for self-managed instances.
     #
     # Returns an ActiveRecord::Relation.
     def search(query, **options)
@@ -869,8 +877,18 @@ class User < MainClusterwide::ApplicationRecord
 
       sanitized_order_sql = Arel.sql(sanitize_sql_array([order, { query: query }]))
 
-      scope = options[:with_private_emails] ? with_primary_or_secondary_email(query) : with_public_email(query)
-      scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: options[:use_minimum_char_limit]))
+      use_minimum_char_limit = options[:use_minimum_char_limit]
+
+      scope =
+        if options[:with_private_emails]
+          with_primary_or_secondary_email(
+            query, use_minimum_char_limit: use_minimum_char_limit, partial_email_search: options[:partial_email_search]
+          )
+        else
+          with_public_email(query)
+        end
+
+      scope = scope.or(search_by_name_or_username(query, use_minimum_char_limit: use_minimum_char_limit))
 
       order = Gitlab::Pagination::Keyset::Order.build(
         [
@@ -942,16 +960,25 @@ class User < MainClusterwide::ApplicationRecord
       where(public_email: email_address)
     end
 
-    def with_primary_or_secondary_email(email_address)
+    def with_primary_or_secondary_email(query, use_minimum_char_limit: true, partial_email_search: false)
       email_table = Email.arel_table
+
+      if partial_email_search
+        email_table_matched_by_email = Email.fuzzy_arel_match(:email, query, use_minimum_char_limit: use_minimum_char_limit)
+        matched_by_email = User.fuzzy_arel_match(:email, query, use_minimum_char_limit: use_minimum_char_limit)
+      else
+        email_table_matched_by_email = email_table[:email].eq(query)
+        matched_by_email = arel_table[:email].eq(query)
+      end
+
       matched_by_email_user_id = email_table
         .project(email_table[:user_id])
-        .where(email_table[:email].eq(email_address))
+        .where(email_table_matched_by_email)
         .where(email_table[:confirmed_at].not_eq(nil))
         .take(1) # at most 1 record as there is a unique constraint
 
       where(
-        arel_table[:email].eq(email_address)
+        matched_by_email
         .or(arel_table[:id].eq(matched_by_email_user_id))
       )
     end
@@ -974,9 +1001,9 @@ class User < MainClusterwide::ApplicationRecord
       by_username(username).take!
     end
 
-    # Returns a user for the given SSH key.
+    # Returns a user for the given SSH key. Deploy keys are excluded.
     def find_by_ssh_key_id(key_id)
-      find_by('EXISTS (?)', Key.select(1).where('keys.user_id = users.id').auth.where(id: key_id))
+      find_by('EXISTS (?)', Key.select(1).where('keys.user_id = users.id').auth.regular_keys.where(id: key_id))
     end
 
     def find_by_full_path(path, follow_redirects: false)
@@ -1240,10 +1267,26 @@ class User < MainClusterwide::ApplicationRecord
     gpg_keys.each(&:update_invalid_gpg_signatures)
   end
 
-  # Returns the groups a user has access to, either through a membership or a project authorization
+  # Returns the groups a user has access to, either through direct or inherited membership or a project authorization
   def authorized_groups
     Group.unscoped do
-      authorized_groups_with_shared_membership
+      direct_groups_cte = Gitlab::SQL::CTE.new(:direct_groups, groups)
+      direct_groups_cte_alias = direct_groups_cte.table.alias(Group.table_name)
+
+      groups_from_membership = if Feature.enabled?(:include_subgroups_in_authorized_groups, self)
+                                 Group.from(direct_groups_cte_alias).self_and_descendants
+                               else
+                                 Group.from(direct_groups_cte_alias)
+                               end
+
+      Group
+        .with(direct_groups_cte.to_arel)
+        .from_union([
+          groups_from_membership,
+          Group.id_in(authorized_projects.select(:namespace_id)),
+          Group.joins(:shared_with_group_links)
+            .where(group_group_links: { shared_with_group_id: Group.from(direct_groups_cte_alias) })
+        ])
     end
   end
 
@@ -1463,8 +1506,8 @@ class User < MainClusterwide::ApplicationRecord
   def several_namespaces?
     union_sql = ::Gitlab::SQL::Union.new(
       [owned_groups,
-       maintainers_groups,
-       groups_with_developer_maintainer_project_access]).to_sql
+        maintainers_groups,
+        groups_with_developer_maintainer_project_access]).to_sql
 
     ::Group.from("(#{union_sql}) #{::Group.table_name}").any?
   end
@@ -1602,6 +1645,24 @@ class User < MainClusterwide::ApplicationRecord
       .where_exists(counts)
   end
 
+  # All organizations that are owned by this user, and only this user.
+  def solo_owned_organizations
+    ownerships_cte = Gitlab::SQL::CTE.new(:ownerships, organization_users.owners, materialized: false)
+
+    owned_orgs_from_cte = Organizations::Organization
+      .joins('INNER JOIN ownerships ON ownerships.organization_id = organizations.id')
+
+    counts = Organizations::OrganizationUser
+      .owners
+      .joins('INNER JOIN ownerships ON ownerships.organization_id = organization_users.organization_id')
+      .having('count(organization_users.user_id) = 1')
+
+    Organizations::Organization
+      .with(ownerships_cte.to_arel)
+      .from(owned_orgs_from_cte, :organizations)
+      .where_exists(counts)
+  end
+
   def can_leave_project?(project)
     project.namespace != namespace &&
       project.member(self)
@@ -1644,7 +1705,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def pending_invitations
-    Member.where(invite_email: verified_emails).invite
+    Members::PendingInvitationsFinder.new(verified_emails).execute
   end
 
   def all_emails(include_private_email: true)
@@ -1852,7 +1913,7 @@ class User < MainClusterwide::ApplicationRecord
     if include_groups_with_developer_maintainer_access
       union_sql = ::Gitlab::SQL::Union.new(
         [owned_and_maintainer_group_hierarchy,
-         groups_with_developer_maintainer_project_access]).to_sql
+          groups_with_developer_maintainer_project_access]).to_sql
 
       ::Group.from("(#{union_sql}) #{::Group.table_name}")
     else
@@ -1915,8 +1976,8 @@ class User < MainClusterwide::ApplicationRecord
   def ci_owned_runners
     @ci_owned_runners ||= Ci::Runner
         .from_union([ci_owned_project_runners_from_project_members,
-                     ci_owned_project_runners_from_group_members,
-                     ci_owned_group_runners])
+          ci_owned_project_runners_from_group_members,
+          ci_owned_group_runners])
   end
 
   def owns_runner?(runner)
@@ -2107,7 +2168,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def can_admin_organization?(organization)
-    owns_organization?(organization)
+    can?(:admin_organization, organization)
   end
 
   def update_two_factor_requirement
@@ -2524,28 +2585,6 @@ class User < MainClusterwide::ApplicationRecord
 
   def group_callouts_by_feature_name
     @group_callouts_by_feature_name ||= group_callouts.index_by(&:source_feature_name)
-  end
-
-  def authorized_groups_without_shared_membership
-    Group.from_union(
-      [
-        groups,
-        Group.id_in(authorized_projects.select(:namespace_id))
-      ]
-    )
-  end
-
-  def authorized_groups_with_shared_membership
-    cte = Gitlab::SQL::CTE.new(:direct_groups, authorized_groups_without_shared_membership)
-    cte_alias = cte.table.alias(Group.table_name)
-
-    Group
-      .with(cte.to_arel)
-      .from_union([
-                    Group.from(cte_alias),
-                    Group.joins(:shared_with_group_links)
-                         .where(group_group_links: { shared_with_group_id: Group.from(cte_alias) })
-                  ])
   end
 
   def has_current_license?

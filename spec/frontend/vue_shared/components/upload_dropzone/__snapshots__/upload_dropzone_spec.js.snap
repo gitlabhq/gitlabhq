@@ -16,6 +16,7 @@ exports[`Upload dropzone component correctly overrides description and drop mess
         class="gl-mb-2"
         name="upload"
         size="24"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -83,6 +84,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         class="gl-mb-2"
         name="upload"
         size="24"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -152,6 +154,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         class="gl-mb-2"
         name="upload"
         size="24"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -221,6 +224,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         class="gl-mb-2"
         name="upload"
         size="24"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -291,6 +295,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         class="gl-mb-2"
         name="upload"
         size="24"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -361,6 +366,7 @@ exports[`Upload dropzone component when dragging renders correct template when d
         class="gl-mb-2"
         name="upload"
         size="24"
+        variant="current"
       />
       <p
         class="gl-mb-0"
@@ -431,6 +437,7 @@ exports[`Upload dropzone component when no slot provided renders default dropzon
         class="gl-mb-2"
         name="upload"
         size="24"
+        variant="current"
       />
       <p
         class="gl-mb-0"

@@ -56,7 +56,7 @@ export default {
     role="region"
     :aria-label="__('Merge request reports')"
     data-testid="mr-widget-app"
-    class="mr-widget-section"
+    class="mr-section-container"
   >
     <component
       :is="widget"
@@ -64,6 +64,7 @@ export default {
       :key="widget.name || index"
       :mr="mr"
       class="mr-widget-section"
+      :class="{ 'gl-border-t': index > 0 }"
     />
   </section>
 </template>

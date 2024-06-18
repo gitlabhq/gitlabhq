@@ -74,7 +74,6 @@ export default {
         fallbackOnBody: false,
         group: 'sortable-container',
         tag: 'ul',
-        'ghost-class': 'tree-item-drag-active',
         'data-parent-id': this.workItemId,
         value: this.children,
         delay: DRAG_DELAY,

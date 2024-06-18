@@ -8,7 +8,7 @@ module DependencyProxy
 
     data_consistency :always
 
-    feature_category :dependency_proxy
+    feature_category :virtual_registry
 
     def perform
       DependencyProxy::ImageTtlGroupPolicy.enabled.each do |policy|

@@ -30,7 +30,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     reached_max_pipeline_hierarchy_size: 'The downstream pipeline tree is too large',
     project_deleted: 'The job belongs to a deleted project',
     user_blocked: 'The user who created this job is blocked',
-    ci_quota_exceeded: 'No more CI minutes available',
+    ci_quota_exceeded: 'No more compute minutes available',
     no_matching_runner: 'No matching runner available',
     trace_size_exceeded: 'The job log size limit was reached',
     builds_disabled: 'The CI/CD is disabled for this project',

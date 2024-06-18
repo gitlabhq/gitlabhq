@@ -164,7 +164,17 @@ apifuzzer_v2:
 
 In the case of one or two slow operations, the team might decide to skip testing the operations, or exclude them from feature branch tests, but include them for default branch tests. Excluding the operation is done using the `FUZZAPI_EXCLUDE_PATHS` configuration [variable as explained in this section.](configuration/customizing_analyzer_settings.md#exclude-paths)
 
-In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `FUZZAPI_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`. Our configuration disables the main `apifuzzer_fuzz` job and creates two new jobs `apifuzzer_main` and `apifuzzer_branch`. The `apifuzzer_branch` is set up to exclude the long operation and only run on non-default branches (for example, feature branches). The `apifuzzer_main` branch is set up to only execute on the default branch (`main` in this example). The `apifuzzer_branch` jobs run faster, allowing for quick development cycles, while the `apifuzzer_main` job which only runs on default branch builds, takes longer to run.
+In this example, we have an operation that returns a large amount of data. The
+operation is `GET http://target:7777/api/large_response_json`. To exclude it we
+provide the `FUZZAPI_EXCLUDE_PATHS` configuration variable with the path portion
+of our operation URL `/api/large_response_json`. Our configuration disables the
+main `apifuzzer_fuzz` job and creates two new jobs `apifuzzer_main` and
+`apifuzzer_branch`. The `apifuzzer_branch` is set up to exclude the long
+operation and only run on non-default branches (for example, feature branches).
+The `apifuzzer_main` branch is set up to only execute on the default branch
+(`main` in this example). The `apifuzzer_branch` jobs run faster, allowing for
+quick development cycles, while the `apifuzzer_main` job which only runs on
+default branch builds, takes longer to run.
 
 To verify the operation is excluded, run the API Fuzzing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
 

@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.incident_management.timeline_event_total_unique_counts_monthly
 description: Counts unique users for timeline events create, edit and delete events per month
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

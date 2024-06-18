@@ -145,8 +145,8 @@ RSpec.describe Oauth::AuthorizationsController do
               expect(response).to have_gitlab_http_status(:ok)
               expect(response).to render_template('doorkeeper/authorizations/new')
               # See: config/locales/doorkeeper.en.yml
-              expect(response.body).to include("Read the authenticated user&#39;s personal information")
-              expect(response.body).not_to include("Access the authenticated user&#39;s API")
+              expect(response.body).to include("Read your personal information")
+              expect(response.body).not_to include("Access the API on your behalf")
             end
           end
 

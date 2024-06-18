@@ -60,8 +60,7 @@ class Gitlab::Seeder::TriageOps
     master-broken::pipeline-skipped-before-merge
     master-broken::test-selection-gap
     master-broken::undetermined
-    pipeline:expedite
-    pipeline:expedite-master-fixing
+    pipeline::expedited
     pipeline:mr-approved
     pipeline:run-all-jest
     pipeline:run-all-rspec

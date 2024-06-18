@@ -5,9 +5,9 @@
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: "Remove the double slash from this relative link."
+message: "Do not use double slashes '//' or '../doc' in the link path"
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#links
 level: error
 scope: raw
 raw:
-  - '\.//'
+  - '(\.//)|(\.\.\/doc\/)'

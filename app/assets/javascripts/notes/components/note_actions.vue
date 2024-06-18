@@ -272,7 +272,7 @@ export default {
     <user-access-role-badge
       v-if="isAuthor"
       v-gl-tooltip
-      class="gl-mr-3 gl-display-none gl-sm-display-block"
+      class="gl-mr-3 gl-hidden sm:gl-block"
       :title="displayAuthorBadgeText"
     >
       {{ __('Author') }}
@@ -280,7 +280,7 @@ export default {
     <user-access-role-badge
       v-if="accessLevel"
       v-gl-tooltip
-      class="gl-mr-3 gl-display-none gl-sm-display-block"
+      class="gl-mr-3 gl-hidden sm:gl-block"
       :title="displayMemberBadgeText"
     >
       {{ accessLevel }}
@@ -288,7 +288,7 @@ export default {
     <user-access-role-badge
       v-else-if="isContributor"
       v-gl-tooltip
-      class="gl-mr-3 gl-display-none gl-sm-display-block"
+      class="gl-mr-3 gl-hidden sm:gl-block"
       :title="displayContributorBadgeText"
     >
       {{ __('Contributor') }}
@@ -333,7 +333,7 @@ export default {
       :aria-label="$options.i18n.editCommentLabel"
       icon="pencil"
       category="tertiary"
-      class="note-action-button js-note-edit gl-display-none gl-sm-display-block"
+      class="note-action-button js-note-edit"
       data-testid="note-edit-button"
       @click="onEdit"
     />
@@ -359,15 +359,6 @@ export default {
         class="note-action-button more-actions-toggle"
         no-caret
       >
-        <gl-disclosure-dropdown-item
-          v-if="canEdit"
-          class="js-note-edit gl-sm-display-none!"
-          @action="onEdit"
-        >
-          <template #list-item>
-            {{ __('Edit comment') }}
-          </template>
-        </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item
           v-if="canReportAsAbuse"
           data-testid="report-abuse-button"

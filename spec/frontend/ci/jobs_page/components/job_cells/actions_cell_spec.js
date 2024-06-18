@@ -4,7 +4,7 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import ActionsCell from '~/ci/jobs_page/components/job_cells/actions_cell.vue';
 import eventHub from '~/ci/jobs_page/event_hub';
 import JobPlayMutation from '~/ci/jobs_page/graphql/mutations/job_play.mutation.graphql';
@@ -19,7 +19,9 @@ import {
   unscheduleMutationResponse,
   cancelMutationResponse,
 } from 'jest/ci/jobs_mock_data';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_action');
 jest.mock('~/lib/utils/url_utility');
 
 Vue.use(VueApollo);
@@ -64,6 +66,10 @@ describe('Job actions cell', () => {
     show: jest.fn(),
   };
 
+  const mockConfirmAction = ({ confirmed }) => {
+    confirmAction.mockResolvedValueOnce(confirmed);
+  };
+
   const createMockApolloProvider = (requestHandlers) => {
     return createMockApollo(requestHandlers);
   };
@@ -80,6 +86,10 @@ describe('Job actions cell', () => {
       },
     });
   };
+
+  afterEach(() => {
+    confirmAction.mockReset();
+  });
 
   it('displays the artifacts download button with correct link', () => {
     createComponent(jobWithArtifact);
@@ -148,7 +158,7 @@ describe('Job actions cell', () => {
       await waitForPromises();
 
       expect(eventHub.$emit).toHaveBeenCalledWith('jobActionPerformed');
-      expect(redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).not.toHaveBeenCalled();
     },
   );
 
@@ -167,7 +177,7 @@ describe('Job actions cell', () => {
 
       await waitForPromises();
 
-      expect(redirectTo).toHaveBeenCalledWith(redirectLink); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).toHaveBeenCalledWith(redirectLink);
       expect(eventHub.$emit).not.toHaveBeenCalled();
     },
   );
@@ -237,6 +247,60 @@ describe('Job actions cell', () => {
       await nextTick();
 
       expect(findModal().exists()).toBe(true);
+    });
+  });
+  describe('Job with manual confirmation message', () => {
+    let manualConfirmationPlayableJob;
+
+    beforeEach(() => {
+      manualConfirmationPlayableJob = JSON.parse(JSON.stringify(playableJob));
+      manualConfirmationPlayableJob.detailedStatus.action.confirmationMessage = 'Please confirm';
+    });
+
+    it('show manual confirmation modal before action', async () => {
+      createComponent(manualConfirmationPlayableJob);
+
+      findPlayButton().vm.$emit('click');
+
+      await nextTick();
+
+      expect(confirmAction).toHaveBeenCalledWith(
+        null,
+        expect.objectContaining({
+          primaryBtnText: `Yes, run ${manualConfirmationPlayableJob.name}`,
+          title: `Are you sure you want to run ${manualConfirmationPlayableJob.name}?`,
+          modalHtmlMessage: expect.stringContaining('Please confirm'),
+        }),
+      );
+    });
+
+    it('perform the action mutation if click on primary button', async () => {
+      const handler = playMutationHandler;
+      createComponent(manualConfirmationPlayableJob, [[JobPlayMutation, handler]]);
+      mockConfirmAction({ confirmed: true });
+
+      findPlayButton().vm.$emit('click');
+
+      await nextTick();
+      await waitForPromises();
+      expect(handler).toHaveBeenCalledWith({ id: manualConfirmationPlayableJob.id });
+    });
+
+    it.each`
+      button      | action
+      ${'cancel'} | ${'hide'}
+      ${'close'}  | ${'close'}
+    `('not perform the action mutation if click on $action button', async () => {
+      const handler = playMutationHandler;
+      createComponent(manualConfirmationPlayableJob, [[JobPlayMutation, handler]]);
+      await mockConfirmAction({ confirmed: false });
+
+      findPlayButton().vm.$emit('click');
+
+      await nextTick();
+      await waitForPromises();
+
+      expect(handler).not.toHaveBeenCalledWith({ id: manualConfirmationPlayableJob.id });
     });
   });
 });

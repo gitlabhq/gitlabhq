@@ -73,6 +73,9 @@ are very appreciative of the work done by translators and proofreaders!
 - Japanese
   - Tomo Dote - [GitLab](https://gitlab.com/fu7mu4), [Crowdin](https://crowdin.com/profile/fu7mu4)
   - Tsukasa Komatsubara - [GitLab](https://gitlab.com/tkomatsubara), [Crowdin](https://crowdin.com/profile/tkomatsubara)
+  - Noriko Akiyama - [GitLab](https://gitlab.com/nakiyama-ext), [Crowdin](https://crowdin.com/profile/norikoakiyama)
+  - Naoko Shirakuni - [GitLab](https://gitlab.com/SNaoko), [Crowdin](https://crowdin.com/profile/tamongen)
+  - Megumi Uchikawa - [GitLab](https://gitlab.com/muchikawa), [Crowdin](https://crowdin.com/profile/muchikawa)
 - Korean
   - Sunjung Park - [GitLab](https://gitlab.com/sunjungp), [Crowdin](https://crowdin.com/profile/sunjungp)
   - Hwanyong Lee - [GitLab](https://gitlab.com/hwan_ajou), [Crowdin](https://crowdin.com/profile/grbear)

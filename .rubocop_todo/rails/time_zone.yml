@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Rails/TimeZone:
-  Details: grace period
   Exclude:
     - 'ee/lib/delay.rb'
     - 'ee/lib/gitlab/elastic/indexer.rb'
@@ -38,7 +37,6 @@ Rails/TimeZone:
     - 'lib/grafana/time_window.rb'
     - 'lib/json_web_token/token.rb'
     - 'lib/object_storage/direct_upload.rb'
-    - 'lib/quality/seeders/issues.rb'
     - 'lib/tasks/gitlab/assets.rake'
     - 'lib/tasks/gitlab/cleanup.rake'
     - 'spec/lib/api/helpers_spec.rb'

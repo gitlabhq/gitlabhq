@@ -115,7 +115,7 @@ importer progresses. Here's what to do:
       attr_accessor :logger
 
       def initialize
-        @logger = Gitlab::Import::Logger.build
+        @logger = ::Import::Framework::Logger.build
       end
       ```
 
@@ -189,7 +189,7 @@ logger.info(a_list: ["foo", 1, true])
 Resources:
 
 - [Elasticsearch mapping - avoiding type gotchas](https://www.elastic.co/guide/en/elasticsearch/guide/current/mapping.html#_avoiding_type_gotchas)
-- [Elasticsearch mapping types]( https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html)
+- [Elasticsearch mapping types](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html)
 
 #### Include a class attribute
 

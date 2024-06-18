@@ -92,7 +92,7 @@ export default {
 <template>
   <widget-wrapper v-if="hasDesigns" data-testid="designs-root" :error="error">
     <template #header>
-      <span class="gl-font-weight-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
+      <span class="gl-font-bold gl-mr-3">{{ s__('DesignManagement|Designs') }}</span>
     </template>
     <template #header-suffix>
       <design-version-dropdown :all-versions="allVersions" />
@@ -107,7 +107,7 @@ export default {
           <design v-bind="design" class="gl-bg-white" :is-uploading="false" />
         </li>
       </ol>
-      <router-view :key="$route.fullPath" />
+      <router-view :key="$route.fullPath" :all-designs="designs" />
     </template>
   </widget-wrapper>
 </template>

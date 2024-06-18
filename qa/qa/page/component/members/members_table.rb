@@ -38,7 +38,7 @@ module QA
               element 'approve-access-request-button'
             end
 
-            base.view 'app/assets/javascripts/members/constants.js' do
+            base.view 'app/assets/javascripts/members/tabs_metadata.js' do
               element 'groups-list-tab'
             end
 

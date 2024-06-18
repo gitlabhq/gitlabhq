@@ -101,6 +101,9 @@ module Types
     field :starred_projects,
       description: 'Projects starred by the user.',
       resolver: Resolvers::UserStarredProjectsResolver
+    field :contributed_projects,
+      description: 'Projects the user has contributed to.',
+      resolver: Resolvers::Projects::UserContributedProjectsResolver
     field :namespace,
       type: Types::NamespaceType,
       null: true,

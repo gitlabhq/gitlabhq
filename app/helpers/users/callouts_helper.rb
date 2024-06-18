@@ -10,13 +10,13 @@ module Users
     REGISTRATION_ENABLED_CALLOUT = 'registration_enabled_callout'
     UNFINISHED_TAG_CLEANUP_CALLOUT = 'unfinished_tag_cleanup_callout'
     SECURITY_NEWSLETTER_CALLOUT = 'security_newsletter_callout'
-    MERGE_REQUEST_SETTINGS_MOVED_CALLOUT = 'merge_request_settings_moved_callout'
     PAGES_MOVED_CALLOUT = 'pages_moved_callout'
     REGISTRATION_ENABLED_CALLOUT_ALLOWED_CONTROLLER_PATHS = [/^root/, /^dashboard\S*/, /^admin\S*/].freeze
     WEB_HOOK_DISABLED = 'web_hook_disabled'
     BRANCH_RULES_INFO_CALLOUT = 'branch_rules_info_callout'
     NEW_NAV_FOR_EVERYONE_CALLOUT = 'new_nav_for_everyone_callout'
     TRANSITION_TO_JIHU_CALLOUT = 'transition_to_jihu_callout'
+    PERIOD_IN_TERRAFORM_STATE_NAME_ALERT = 'period_in_terraform_state_name_alert'
 
     def show_gke_cluster_integration_callout?(project)
       active_nav_link?(controller: sidebar_operations_paths) &&
@@ -68,10 +68,6 @@ module Users
       user_dismissed?(WEB_HOOK_DISABLED, object.last_webhook_failure, object: object)
     end
 
-    def show_merge_request_settings_callout?(project)
-      !user_dismissed?(MERGE_REQUEST_SETTINGS_MOVED_CALLOUT) && project.merge_requests_enabled?
-    end
-
     def show_branch_rules_info?
       !user_dismissed?(BRANCH_RULES_INFO_CALLOUT)
     end
@@ -89,6 +85,10 @@ module Users
         current_user&.can_admin_all_resources? &&
         %w[Asia/Hong_Kong Asia/Shanghai Asia/Macau Asia/Chongqing].include?(current_user.timezone) &&
         !user_dismissed?(TRANSITION_TO_JIHU_CALLOUT)
+    end
+
+    def show_period_in_terraform_state_name_alert_callout?
+      !user_dismissed?(PERIOD_IN_TERRAFORM_STATE_NAME_ALERT)
     end
 
     private

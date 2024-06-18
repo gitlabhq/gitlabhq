@@ -3,15 +3,11 @@ table_name: project_repository_storage_moves
 classes:
 - Projects::RepositoryStorageMove
 feature_categories:
-- gitaly
+- source_code_management
 description: Stores status of project repository moves
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29095
 milestone: '13.0'
 gitlab_schema: gitlab_main_cell
-allow_cross_joins:
-- gitlab_main_clusterwide
-allow_cross_transactions:
-- gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:

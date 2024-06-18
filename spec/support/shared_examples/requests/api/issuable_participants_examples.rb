@@ -24,11 +24,17 @@ RSpec.shared_examples 'issuable participants endpoint' do
   end
 
   it 'returns a 404 when id is used instead of iid' do
-    # Make sure other entities don't exist with a matching iid
-    entity.class.where.not(id: entity.id).delete_all
+    # Make sure other issues don't exist with a matching id or iid to avoid flakyness
+    max_id = [entity.class.maximum(:iid), entity.class.maximum(:id)].max + 10
+    new_entity = entity.dup.tap { |e| e.id = max_id }
+    entity.class.where(id: entity.id).delete_all
+    new_entity.save!
 
-    get api("/projects/#{project.id}/#{area}/#{entity.id}/participants", user)
+    # make sure it does work with iid
+    get api("/projects/#{project.id}/#{area}/#{new_entity.iid}/participants", user)
+    expect(response).to have_gitlab_http_status(:ok)
 
+    get api("/projects/#{project.id}/#{area}/#{new_entity.id}/participants", user)
     expect(response).to have_gitlab_http_status(:not_found)
   end
 end

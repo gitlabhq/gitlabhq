@@ -19,7 +19,7 @@ module Ci
     include FastDestroyAll::Helpers
 
     include IgnorableColumns
-    ignore_column :id_convert_to_bigint, remove_with: '16.3', remove_after: '2023-08-22'
+    ignore_column :id_convert_to_bigint, remove_with: '17.2', remove_after: '2024-06-15'
 
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
@@ -167,6 +167,7 @@ module Ci
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
     validates :source, exclusion: { in: %w[unknown], unless: :importing? }, on: :create
+    validates :project, presence: true, on: :create
 
     after_create :keep_around_commits, unless: :importing?
     after_commit :track_ci_pipeline_created_event, on: :create, if: :internal_pipeline?
@@ -576,7 +577,9 @@ module Ci
 
     def self.current_partition_value(project = nil)
       Gitlab::SafeRequestStore.fetch(:ci_current_partition_value) do
-        if Feature.enabled?(:ci_current_partition_value_102, project)
+        if Feature.enabled?(:ci_partitioning_automation, project)
+          Ci::Partition.current&.id || NEXT_PARTITION_VALUE
+        elsif Feature.enabled?(:ci_current_partition_value_102, project)
           NEXT_PARTITION_VALUE
         elsif Feature.enabled?(:ci_current_partition_value_101, project)
           SECOND_PARTITION_VALUE
@@ -831,8 +834,8 @@ module Ci
 
     # Like #drop!, but does not persist the pipeline nor trigger any state
     # machine callbacks.
-    def set_failed(drop_reason)
-      self.failure_reason = drop_reason.to_s
+    def set_failed(failure_reason)
+      self.failure_reason = failure_reason.to_s
       self.status = 'failed'
     end
 
@@ -1235,7 +1238,9 @@ module Ci
     end
 
     def modified_paths_since(compare_to_sha)
-      project.repository.diff_stats(project.repository.merge_base(compare_to_sha, sha), sha).paths
+      strong_memoize_with(:modified_paths_since, compare_to_sha) do
+        project.repository.diff_stats(project.repository.merge_base(compare_to_sha, sha), sha).paths
+      end
     end
 
     def all_worktree_paths

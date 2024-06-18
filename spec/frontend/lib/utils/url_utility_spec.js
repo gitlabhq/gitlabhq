@@ -433,20 +433,24 @@ describe('URL utility', () => {
     let originalLocation;
     const mockUrl = 'http://example.com/page';
 
-    beforeAll(() => {
+    beforeEach(() => {
       originalLocation = window.location;
 
+      const { protocol, host, href } = new URL(mockUrl);
       Object.defineProperty(window, 'location', {
         writable: true,
         value: {
           assign: jest.fn(),
-          protocol: 'http:',
-          host: TEST_HOST,
+          protocol,
+          host,
+          href,
         },
       });
+
+      gon.gitlab_url = 'http://example.com';
     });
 
-    afterAll(() => {
+    afterEach(() => {
       window.location = originalLocation;
     });
 
@@ -455,7 +459,6 @@ describe('URL utility', () => {
       ${'?scope=all&state=merged'} | ${'?scope=all&state=merged'}
       ${'?'}                       | ${'?'}
     `('handles query string: $inputQuery', ({ inputQuery, expectedQuery }) => {
-      window.location.href = mockUrl;
       urlUtils.visitUrl(inputQuery);
       expect(window.location.assign).toHaveBeenCalledWith(`${mockUrl}${expectedQuery}`);
     });
@@ -475,42 +478,65 @@ describe('URL utility', () => {
       expect(window.location.assign).toHaveBeenCalledWith(mockUrl);
     });
 
-    it('navigates to a new page', () => {
-      const otherWindow = {
-        location: {
-          assign: jest.fn(),
-        },
-      };
-
+    it('opens a new window', () => {
       Object.defineProperty(window, 'open', {
         writable: true,
-        value: jest.fn().mockReturnValue(otherWindow),
+        value: jest.fn(),
       });
 
       urlUtils.visitUrl(mockUrl, true);
 
-      expect(otherWindow.opener).toBe(null);
-      expect(otherWindow.location.assign).toHaveBeenCalledWith(mockUrl);
+      expect(window.open).toHaveBeenCalledWith(mockUrl);
+    });
+
+    describe('when the URL is external', () => {
+      beforeEach(() => {
+        gon.gitlab_url = 'http://other.com';
+      });
+
+      it('navigates (on the same window) with no referrer or opener information', () => {
+        Object.defineProperty(window, 'open', {
+          writable: true,
+          value: jest.fn(),
+        });
+
+        urlUtils.visitUrl(mockUrl);
+
+        expect(window.open).toHaveBeenCalledWith(mockUrl, '_self', 'noreferrer');
+      });
+
+      it('opens a new window with no referrer or opener information', () => {
+        Object.defineProperty(window, 'open', {
+          writable: true,
+          value: jest.fn(),
+        });
+
+        urlUtils.visitUrl(mockUrl, true);
+
+        expect(window.open).toHaveBeenCalledWith(mockUrl, '_blank', 'noreferrer');
+      });
     });
   });
 
   describe('visitUrlWithAlerts', () => {
     let originalLocation;
 
-    beforeAll(() => {
+    beforeEach(() => {
       originalLocation = window.location;
 
+      const { protocol, host, href } = new URL(TEST_HOST);
       Object.defineProperty(window, 'location', {
         writable: true,
         value: {
           assign: jest.fn(),
-          protocol: 'http:',
-          host: TEST_HOST,
+          protocol,
+          host,
+          href,
         },
       });
     });
 
-    afterAll(() => {
+    afterEach(() => {
       window.location = originalLocation;
     });
 
@@ -633,21 +659,68 @@ describe('URL utility', () => {
     });
   });
 
-  describe('isExternal', () => {
-    const gitlabUrl = 'https://gitlab.com/';
+  describe('pathSegments', () => {
+    it.each`
+      url                              | segments
+      ${'https://foo.test'}            | ${[]}
+      ${'https://foo.test/'}           | ${[]}
+      ${'https://foo.test/..'}         | ${[]}
+      ${'https://foo.test//'}          | ${['']}
+      ${'https://foo.test/bar'}        | ${['bar']}
+      ${'https://foo.test/bar//'}      | ${['bar', '']}
+      ${'https://foo.test/bar/qux'}    | ${['bar', 'qux']}
+      ${'https://foo.test/bar/../qux'} | ${['qux']}
+      ${'https://foo.test/bar/.'}      | ${['bar']}
+    `('returns $segments for $url', ({ url, segments }) => {
+      expect(urlUtils.pathSegments(new URL(url))).toEqual(segments);
+    });
+  });
 
-    beforeEach(() => {
-      gon.gitlab_url = gitlabUrl;
+  describe('isExternal', () => {
+    describe('when installed on the root path', () => {
+      const gitlabUrl = 'https://gitlab.com';
+
+      beforeEach(() => {
+        setWindowLocation(gitlabUrl);
+        gon.gitlab_url = gitlabUrl;
+      });
+
+      it.each`
+        url                                           | urlType                    | external
+        ${'/gitlab-org/gitlab-test/-/issues/2'}       | ${'relative'}              | ${false}
+        ${gitlabUrl}                                  | ${'absolute and internal'} | ${false}
+        ${`${gitlabUrl}/gitlab-org/gitlab-test`}      | ${'absolute and internal'} | ${false}
+        ${`${gitlabUrl}:8080/gitlab-org/gitlab-test`} | ${'absolute and internal'} | ${true}
+        ${'http://jira.atlassian.net/browse/IG-1'}    | ${'absolute and external'} | ${true}
+      `('returns $external for $url ($urlType)', ({ url, external }) => {
+        expect(urlUtils.isExternal(url)).toBe(external);
+      });
     });
 
-    it.each`
-      url                                        | urlType                    | external
-      ${'/gitlab-org/gitlab-test/-/issues/2'}    | ${'relative'}              | ${false}
-      ${gitlabUrl}                               | ${'absolute and internal'} | ${false}
-      ${`${gitlabUrl}/gitlab-org/gitlab-test`}   | ${'absolute and internal'} | ${false}
-      ${'http://jira.atlassian.net/browse/IG-1'} | ${'absolute and external'} | ${true}
-    `('returns $external for $url ($urlType)', ({ url, external }) => {
-      expect(urlUtils.isExternal(url)).toBe(external);
+    describe('when installed on a relative path', () => {
+      const gitlabUrl = 'https://foo.test/gitlab';
+
+      beforeEach(() => {
+        setWindowLocation(gitlabUrl);
+        gon.gitlab_url = gitlabUrl;
+      });
+
+      it.each`
+        url                                        | urlType                    | external
+        ${'/gitlab-org/gitlab-test/-/issues/2'}    | ${'relative'}              | ${true}
+        ${'../'}                                   | ${'relative'}              | ${true}
+        ${'a'}                                     | ${'relative'}              | ${true}
+        ${'#test'}                                 | ${'relative'}              | ${false}
+        ${'?test'}                                 | ${'relative'}              | ${false}
+        ${'/gitlab/a/..'}                          | ${'relative'}              | ${false}
+        ${gitlabUrl}                               | ${'absolute and internal'} | ${false}
+        ${`${gitlabUrl}/gitlab-org/gitlab-test`}   | ${'absolute and internal'} | ${false}
+        ${'http://jira.atlassian.net/browse/IG-1'} | ${'absolute and external'} | ${true}
+        ${'https://foo.test/'}                     | ${'absolute and external'} | ${true}
+        ${'https://foo.test/not-gitlab'}           | ${'absolute and external'} | ${true}
+      `('returns $external for $url ($urlType)', ({ url, external }) => {
+        expect(urlUtils.isExternal(url)).toBe(external);
+      });
     });
   });
 

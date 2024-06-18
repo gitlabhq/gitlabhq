@@ -199,7 +199,7 @@ export default {
           <gl-alert
             v-if="alertMessage"
             variant="warning"
-            class="gl-mt-n5 gl-mb-4 gl-mx-n5"
+            class="-gl-mt-5 gl-mb-4 -gl-mx-5"
             @dismiss="dismissAlert"
           >
             {{ alertMessage }}

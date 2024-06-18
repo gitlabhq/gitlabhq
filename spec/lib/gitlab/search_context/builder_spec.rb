@@ -15,19 +15,19 @@ RSpec.describe Gitlab::SearchContext::Builder, type: :controller do
     return {} if project.nil?
 
     a_hash_including(project_path: project.path,
-                     name: project.name,
-                     issues_path: a_string_including("/issues"),
-                     mr_path: a_string_including("/merge_requests"),
-                     issues_disabled: !project.issues_enabled?)
+      name: project.name,
+      issues_path: a_string_including("/issues"),
+      mr_path: a_string_including("/merge_requests"),
+      issues_disabled: !project.issues_enabled?)
   end
 
   def expected_group_metadata(group)
     return {} if group.nil?
 
     a_hash_including(group_path: group.path,
-                     name: group.name,
-                     issues_path: a_string_including("/issues"),
-                     mr_path: a_string_including("/merge_requests"))
+      name: group.name,
+      issues_path: a_string_including("/issues"),
+      mr_path: a_string_including("/merge_requests"))
   end
 
   def expected_search_url(project, group)

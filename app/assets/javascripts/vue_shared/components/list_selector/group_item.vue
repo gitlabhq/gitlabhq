@@ -7,6 +7,7 @@ export default {
   components: {
     GlAvatar,
     GlButton,
+    HiddenGroupsItem: () => import('ee_component/approvals/components/hidden_groups_item.vue'),
   },
   props: {
     data: {
@@ -24,7 +25,7 @@ export default {
       return sprintf(__('Delete %{name}'), { name: this.name });
     },
     fullName() {
-      return this.data.fullName;
+      return this.data.fullName || this.data.name;
     },
     name() {
       return this.data.name;
@@ -32,31 +33,36 @@ export default {
     avatarUrl() {
       return this.data.avatarUrl;
     },
+    isHiddenGroups() {
+      return this.data.type === 'hidden_groups';
+    },
   },
 };
 </script>
 
 <template>
-  <span class="gl-display-flex gl-align-items-center gl-gap-3" @click="$emit('select', name)">
-    <gl-avatar
-      :alt="fullName"
-      :entity-name="fullName"
-      :size="32"
-      shape="rect"
-      :src="avatarUrl"
-      fallback-on-error
-    />
-    <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1">
-      <span class="gl-font-weight-bold">{{ name }}</span>
-      <span class="gl-text-gray-600">{{ fullName }}</span>
-    </span>
+  <span class="gl-display-flex gl-align-items-center gl-gap-3">
+    <hidden-groups-item v-if="isHiddenGroups" class="gl-flex-grow-1" />
+    <div v-else class="gl-display-flex gl-align-items-center gl-gap-2 gl-flex-grow-1">
+      <gl-avatar
+        :alt="fullName"
+        :entity-name="fullName"
+        :size="32"
+        :src="avatarUrl"
+        fallback-on-error
+      />
+      <span class="gl-display-flex gl-flex-direction-column">
+        <span class="gl-font-bold">{{ fullName }}</span>
+        <span class="gl-text-gray-600">@{{ name }}</span>
+      </span>
+    </div>
 
     <gl-button
       v-if="canDelete"
       icon="remove"
       :aria-label="deleteButtonLabel"
       category="tertiary"
-      @click="$emit('delete', name)"
+      @click="$emit('delete', data.id)"
     />
   </span>
 </template>

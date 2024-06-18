@@ -20,7 +20,7 @@ module Peek
         cmd = call[:commands].map { |command| command.join(' ') }.join(', ')
 
         super.merge(cmd: cmd,
-                    instance: call[:storage])
+          instance: call[:storage])
       end
 
       def format_command(cmd)

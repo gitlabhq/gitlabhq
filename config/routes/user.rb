@@ -83,6 +83,7 @@ scope '-/users', module: :users do
   resources :callouts, only: [:create]
   resources :group_callouts, only: [:create]
   resources :project_callouts, only: [:create]
+  resources :broadcast_message_dismissals, only: [:create]
 
   resource :pins, only: [:update]
 end

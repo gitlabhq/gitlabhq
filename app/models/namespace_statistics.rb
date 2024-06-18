@@ -7,7 +7,7 @@ class NamespaceStatistics < ApplicationRecord # rubocop:disable Gitlab/Namespace
 
   validates :namespace, presence: true
 
-  scope :for_namespaces, -> (namespaces) { where(namespace: namespaces) }
+  scope :for_namespaces, ->(namespaces) { where(namespace: namespaces) }
 
   before_save :update_storage_size
   after_destroy :update_root_storage_statistics

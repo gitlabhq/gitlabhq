@@ -3,7 +3,8 @@ import { GlTabs, GlTab, GlBadge, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { queryToObject } from '~/lib/utils/url_utility';
-import { MEMBER_TYPES, TABS, ACTIVE_TAB_QUERY_PARAM_NAME } from 'ee_else_ce/members/constants';
+import { MEMBERS_TAB_TYPES, ACTIVE_TAB_QUERY_PARAM_NAME } from 'ee_else_ce/members/constants';
+import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersApp from './app.vue';
 
 const countComputed = (state, namespace) => state[namespace]?.pagination?.totalItems || 0;
@@ -21,7 +22,7 @@ export default {
   },
   computed: {
     ...mapState(
-      Object.values(MEMBER_TYPES).reduce((getters, memberType) => {
+      Object.values(MEMBERS_TAB_TYPES).reduce((getters, memberType) => {
         return {
           ...getters,
           // eslint-disable-next-line @gitlab/require-i18n-strings
@@ -40,6 +41,12 @@ export default {
           this.urlParams.includes(urlParam),
         );
       });
+    },
+    shouldShowExportButton() {
+      return this.canExportMembers && !this.tabs[this.selectedTabIndex].hideExportButton;
+    },
+    tabs() {
+      return this.$options.TABS.filter(this.showTab);
     },
   },
   methods: {
@@ -61,7 +68,7 @@ export default {
       return this[`${namespace}Count`];
     },
     showTab(tab, index) {
-      if (tab.namespace === MEMBER_TYPES.user) {
+      if (tab.namespace === MEMBERS_TAB_TYPES.user) {
         return true;
       }
 
@@ -84,33 +91,27 @@ export default {
     sync-active-tab-with-query-params
     :query-param-name="$options.ACTIVE_TAB_QUERY_PARAM_NAME"
   >
-    <template v-for="(tab, index) in $options.TABS">
-      <gl-tab
-        v-if="showTab(tab, index)"
-        :key="tab.namespace"
-        :title-link-attributes="tab.attrs"
-        :query-param-value="tab.queryParamValue"
-      >
-        <template #title>
-          <span>{{ tab.title }}</span>
-          <gl-badge size="sm" class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
-        </template>
-        <component
-          :is="tab.component"
-          v-if="tab.component"
-          :namespace="tab.namespace"
-          :tab-query-param-value="tab.queryParamValue"
-        />
-        <members-app
-          v-else
-          :namespace="tab.namespace"
-          :tab-query-param-value="tab.queryParamValue"
-        />
-      </gl-tab>
-    </template>
+    <gl-tab
+      v-for="tab in tabs"
+      :key="tab.namespace"
+      :title-link-attributes="tab.attrs"
+      :query-param-value="tab.queryParamValue"
+    >
+      <template #title>
+        <span>{{ tab.title }}</span>
+        <gl-badge size="sm" class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
+      </template>
+      <component
+        :is="tab.component"
+        v-if="tab.component"
+        :namespace="tab.namespace"
+        :tab-query-param-value="tab.queryParamValue"
+      />
+      <members-app v-else :namespace="tab.namespace" :tab-query-param-value="tab.queryParamValue" />
+    </gl-tab>
     <template #tabs-end>
       <gl-button
-        v-if="canExportMembers"
+        v-if="shouldShowExportButton"
         class="gl-align-self-center gl-ml-auto"
         icon="export"
         :href="exportCsvPath"

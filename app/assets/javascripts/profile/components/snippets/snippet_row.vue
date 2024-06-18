@@ -65,7 +65,7 @@ export default {
       <gl-link
         data-testid="snippet-url"
         :href="snippet.webUrl"
-        class="gl-text-gray-900 gl-font-weight-bold gl-mb-2"
+        class="gl-text-gray-900 gl-font-bold gl-mb-2"
         >{{ snippet.title }}</gl-link
       >
       <span class="gl-text-gray-500">

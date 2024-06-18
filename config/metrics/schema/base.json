@@ -6,8 +6,6 @@
     "value_type",
     "status",
     "product_group",
-    "product_section",
-    "product_stage",
     "time_frame",
     "data_source",
     "distribution",
@@ -15,22 +13,13 @@
     "data_category",
     "milestone"
   ],
+  "additionalProperties": false,
   "properties": {
     "key_path": {
       "type": "string"
     },
     "description": {
       "type": "string"
-    },
-    "product_section": {
-      "type": [
-        "string"
-      ]
-    },
-    "product_stage": {
-      "type": [
-        "string"
-      ]
     },
     "product_group": {
       "$ref": "product_groups.json"
@@ -113,10 +102,6 @@
     "data_category": {
       "type": "string",
       "enum": [
-        "Operational",
-        "Optional",
-        "Subscription",
-        "Standard",
         "operational",
         "optional",
         "subscription",
@@ -146,7 +131,8 @@
           "smau",
           "paid_gmau",
           "umau",
-          "customer_health_score"
+          "customer_health_score",
+          "devops_report"
         ]
       }
     },
@@ -167,6 +153,14 @@
     },
     "value_json_schema": {
       "type": "string"
+    },
+    "product_category": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "events": {
     }
   },
   "allOf": [

@@ -224,6 +224,7 @@ This method should return an array of hashes for each field, where the keys can 
 | `placeholder:` | string  | false    |                              | A placeholder for the form field. |
 | `help:`        | string  | false    |                              | A help text that displays below the form field. |
 | `api_only:`    | boolean | false    | `false`                      | Specify if the field should only be available through the API, and excluded from the frontend form. |
+| `description`  | string  | false   |                               | Description of the API field. |
 | `if:`          | boolean or lambda | false | `true`                | Specify if the field should be available. The value can be a boolean or a lambda. |
 
 ### Additional keys for `type: :checkbox`
@@ -292,7 +293,7 @@ If the existing sections do not meet your requirements for UI customization, you
    module Integrations
      class FooBar < Integration
        SECTION_TYPE_SUPER = :my_custom_section
- 
+
        def sections
          [
            {
@@ -353,7 +354,12 @@ end
 To expose the integration in the [REST API](../../api/integrations.md):
 
 1. Add the integration's class (`::Integrations::FooBar`) to `API::Helpers::IntegrationsHelpers.integration_classes`.
-1. Add all properties that should be exposed to `API::Helpers::IntegrationsHelpers.integrations`.
+1. Add the integration's API arguments to `API::Helpers::IntegrationsHelpers.integrations`, for example:
+
+   ```ruby
+   'foo-bar' => ::Integrations::FooBar.api_arguments
+   ```
+
 1. Update the reference documentation in `doc/api/integrations.md`, add a new section for your integration, and document all properties.
 
 You can also refer to our [REST API style guide](../api_styleguide.md).

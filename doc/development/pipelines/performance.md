@@ -152,7 +152,7 @@ and `public/assets`).
 
 ## `compile-*-assets`
 
-We also changed the `compile-test-assets`, `compile-test-assets as-if-foss`,
+We also changed the `compile-test-assets`,
 and `compile-production-assets` jobs to:
 
 1. First download the "native" cache assets, which contain:

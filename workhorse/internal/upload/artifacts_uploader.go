@@ -72,8 +72,15 @@ func (a *artifactsUploadProcessor) generateMetadataFromZip(ctx context.Context, 
 		fileName = file.RemoteURL
 	}
 
+	logWriter := log.ContextLogger(ctx).Writer()
+	defer func() {
+		if closeErr := logWriter.Close(); closeErr != nil {
+			log.ContextLogger(ctx).WithError(closeErr).Error("failed to close gitlab-zip-metadata log writer")
+		}
+	}()
+
 	zipMd := exec.CommandContext(ctx, "gitlab-zip-metadata", "-zip-reader-limit", strconv.FormatInt(readerLimit, 10), fileName)
-	zipMd.Stderr = log.ContextLogger(ctx).Writer()
+	zipMd.Stderr = logWriter
 	zipMd.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 
 	zipMdOut, err := zipMd.StdoutPipe()

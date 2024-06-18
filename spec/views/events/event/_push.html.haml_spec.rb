@@ -23,7 +23,7 @@ RSpec.describe 'events/event/_push.html.haml' do
     end
 
     context 'that has been deleted' do
-      it 'does not link to the branch' do
+      it 'does not link to the branch', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/462538' do
         render partial: 'events/event/push', locals: { event: event_presenter }
 
         expect(rendered).not_to have_link(event.ref_name)

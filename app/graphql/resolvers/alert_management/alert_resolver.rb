@@ -15,7 +15,7 @@ module Resolvers
         description: 'Alerts with the specified statues. For example, `[TRIGGERED]`.'
 
       argument :sort, Types::AlertManagement::AlertSortEnum,
-        description: 'Sort alerts by this criteria.',
+        description: 'Sort alerts by the criteria.',
         required: false
 
       argument :domain, Types::AlertManagement::DomainFilterEnum,

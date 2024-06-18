@@ -210,7 +210,7 @@ export default {
         </template>
 
         <template #list-item="{ item }">
-          <label class="gl-display-flex gl-font-weight-normal gl-overflow-break-word gl-mb-0">
+          <label class="gl-display-flex gl-font-normal gl-break-words gl-hyphens-auto gl-mb-0">
             <span
               class="dropdown-label-box gl-top-0 gl-flex-shrink-0"
               :style="{

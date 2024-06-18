@@ -6,6 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 
 import getPipelineStageQuery from '~/ci/pipeline_mini_graph/graphql/queries/get_pipeline_stage.query.graphql';
 import PipelineStage from '~/ci/pipeline_mini_graph/pipeline_stage.vue';
+import { pipelineStage } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -15,7 +16,7 @@ describe('PipelineStage', () => {
 
   const defaultProps = {
     pipelineEtag: '/etag',
-    stageId: '1',
+    stage: pipelineStage,
   };
 
   const createComponent = ({ pipelineStageHandler = pipelineStageResponse } = {}) => {
@@ -39,7 +40,7 @@ describe('PipelineStage', () => {
       createComponent();
     });
 
-    it('renders job item', () => {
+    it('renders the pipeline stage', () => {
       expect(findPipelineStage().exists()).toBe(true);
     });
   });

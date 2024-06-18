@@ -413,6 +413,24 @@ RSpec.describe ProjectPresenter do
 
         it { expect(presenter.terraform_states_anchor_data).to match(expected_result) }
       end
+
+      context 'terraform warning icon' do
+        let(:label) { presenter.terraform_states_anchor_data.label }
+        let(:title) do
+          Regexp.quote(s_('Terraform|Support for periods (`.`) in Terraform state names might break existing states.'))
+        end
+
+        let(:expected) do
+          %r{<span title="#{title}" class=".+" data-toggle="tooltip"><svg .+ data-testid="error-icon">.+</svg></span>}
+        end
+
+        it 'is present' do
+          allow(project.terraform_states).to receive(:exists?).and_return(true)
+          allow(presenter).to receive(:can?).with(user, :read_terraform_state, project).and_return(true)
+
+          expect(label).to match(expected)
+        end
+      end
     end
 
     describe '#tags_anchor_data' do

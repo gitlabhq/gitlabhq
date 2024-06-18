@@ -35,7 +35,7 @@ describe('~/notebook/cells/output/DataframeOutput', () => {
 
     it('sets the correct fields', () => {
       expect(findTable().props().fields).toEqual([
-        { key: 'index0', label: '', sortable: true, class: 'gl-font-weight-bold' },
+        { key: 'index0', label: '', sortable: true, class: 'gl-font-bold' },
         { key: 'column0', label: 'column_1', sortable: true, class: '' },
         { key: 'column1', label: 'column_2', sortable: true, class: '' },
       ]);

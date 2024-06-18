@@ -82,7 +82,7 @@ describe('~/environments/components/environments_folder.vue', () => {
         expect(collapse.props('visible')).toBe(false);
         const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
         expect(iconNames).toEqual(['chevron-lg-right', 'folder-o']);
-        expect(folderName.classes('gl-font-weight-bold')).toBe(false);
+        expect(folderName.classes('gl-font-bold')).toBe(false);
         expect(link.exists()).toBe(false);
       });
 
@@ -99,7 +99,7 @@ describe('~/environments/components/environments_folder.vue', () => {
         expect(collapse.props('visible')).toBe(true);
         const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
         expect(iconNames).toEqual(['chevron-lg-down', 'folder-open']);
-        expect(folderName.classes('gl-font-weight-bold')).toBe(true);
+        expect(folderName.classes('gl-font-bold')).toBe(true);
         expect(link.attributes('href')).toBe(nestedEnvironment.latest.folderPath);
 
         expect(environmentFolderMock).toHaveBeenCalledTimes(2);

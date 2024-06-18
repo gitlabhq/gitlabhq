@@ -27,7 +27,9 @@ ActionCable::SubscriptionAdapter::Redis.redis_connector = lambda do |config|
   args = config.except(:adapter, :channel_prefix)
     .merge(custom: { instrumentation_class: "ActionCable" })
 
-  ::Redis.new(args)
+  final_config = Gitlab::Redis::ConfigGenerator.new('ActionCable').generate(args)
+
+  ::Redis.new(final_config)
 end
 
 Gitlab::ActionCable::RequestStoreCallbacks.install

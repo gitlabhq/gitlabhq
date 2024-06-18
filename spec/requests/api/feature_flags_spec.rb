@@ -370,7 +370,7 @@ RSpec.describe API::FeatureFlags, feature_category: :feature_flags do
           version: 'new_version_flag',
           strategies: [{
             name: 'userWithId',
-            parameters: { 'userIds': 'user1' }
+            parameters: { userIds: 'user1' }
           }]
         }
 

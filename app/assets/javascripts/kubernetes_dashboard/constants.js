@@ -34,7 +34,7 @@ export const DEFAULT_WORKLOAD_TABLE_FIELDS = [
   {
     key: 'name',
     label: s__('KubernetesDashboard|Name'),
-    tdClass: 'gl-md-w-half gl-lg-w-40p gl-word-break-word',
+    tdClass: 'gl-md-w-half gl-lg-w-40p gl-break-anywhere',
   },
   {
     key: 'status',
@@ -44,7 +44,7 @@ export const DEFAULT_WORKLOAD_TABLE_FIELDS = [
   {
     key: 'namespace',
     label: s__('KubernetesDashboard|Namespace'),
-    tdClass: 'gl-md-w-30p gl-lg-w-40p gl-word-break-word',
+    tdClass: 'gl-md-w-30p gl-lg-w-40p gl-break-anywhere',
   },
   {
     key: 'age',

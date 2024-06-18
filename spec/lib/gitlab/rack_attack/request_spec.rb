@@ -57,36 +57,6 @@ RSpec.describe Gitlab::RackAttack::Request, feature_category: :rate_limiting do
         it { is_expected.to eq(expected) }
       end
     end
-
-    context 'when rate_limit_oauth_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_oauth_api: false)
-      end
-
-      where(:path, :expected) do
-        '/'        | false
-        '/groups'  | false
-        '/foo/api' | false
-
-        '/api'             | true
-        '/api/v4/groups/1' | true
-
-        '/oauth/tokens'    | false
-        '/oauth/userinfo'  | false
-      end
-
-      with_them do
-        it { is_expected.to eq(expected) }
-
-        context 'when the application is mounted at a relative URL' do
-          before do
-            stub_config_setting(relative_url_root: '/gitlab/root')
-          end
-
-          it { is_expected.to eq(expected) }
-        end
-      end
-    end
   end
 
   describe '#api_internal_request?' do

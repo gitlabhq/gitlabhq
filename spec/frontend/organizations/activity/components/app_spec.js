@@ -1,18 +1,33 @@
-import { GlEmptyState, GlPagination, GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlPagination, GlLoadingIcon, GlFilteredSearchToken } from '@gitlab/ui';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import events from 'test_fixtures/controller/users/activity.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { DEFAULT_PER_PAGE } from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import OrganizationsActivityApp from '~/organizations/activity/components/app.vue';
+import {
+  CONTRIBUTION_TYPE_FILTER_TYPE,
+  RECENT_SEARCHES_STORAGE_KEY,
+  FILTERED_SEARCH_NAMESPACE,
+} from '~/organizations/activity/filters';
+import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
+import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import ContributionEvents from '~/contribution_events/components/contribution_events.vue';
 import { createAlert } from '~/alert';
 import waitForPromises from 'helpers/wait_for_promises';
+import {
+  MOCK_ALL_EVENT,
+  MOCK_EVENT_TYPES,
+  MOCK_SELECTED_CONTRIBUTION_TYPE,
+  MOCK_CONTRIBUTION_TYPE_VALUE,
+} from '../mock_data';
 
 jest.mock('~/alert');
 
 const defaultProps = {
   organizationActivityPath: '/-/organizations/default/activity.json',
+  organizationActivityEventTypes: MOCK_EVENT_TYPES,
+  organizationActivityAllEvent: MOCK_ALL_EVENT,
 };
 
 describe('OrganizationsActivityApp', () => {
@@ -37,6 +52,7 @@ describe('OrganizationsActivityApp', () => {
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findGlPagination = () => wrapper.findComponent(GlPagination);
   const findContributionEvents = () => wrapper.findComponent(ContributionEvents);
+  const findFilteredSearch = () => wrapper.findComponent(FilteredSearch);
 
   describe('mounted', () => {
     beforeEach(() => {
@@ -50,6 +66,7 @@ describe('OrganizationsActivityApp', () => {
         params: {
           offset: 0,
           limit: DEFAULT_PER_PAGE,
+          event_filter: MOCK_ALL_EVENT,
         },
       });
     });
@@ -64,6 +81,8 @@ describe('OrganizationsActivityApp', () => {
 
       createComponent();
       await waitForPromises();
+
+      axios.get.mockClear();
     });
 
     it('when new page is fetched, calls API with correct params, and does not set page until after call resolves', async () => {
@@ -73,12 +92,63 @@ describe('OrganizationsActivityApp', () => {
         params: {
           offset: 2 * DEFAULT_PER_PAGE,
           limit: DEFAULT_PER_PAGE,
+          event_filter: MOCK_ALL_EVENT,
         },
       });
 
       expect(findGlPagination().props('value')).toBe(1);
       await waitForPromises();
       expect(findGlPagination().props('value')).toBe(3);
+    });
+
+    it('when filter is updated with empty value, calls API with event_filter: all', () => {
+      findFilteredSearch().vm.$emit('onFilter', []);
+
+      expect(axios.get).toHaveBeenCalledWith(defaultProps.organizationActivityPath, {
+        params: {
+          offset: 0,
+          limit: DEFAULT_PER_PAGE,
+          event_filter: MOCK_ALL_EVENT,
+        },
+      });
+    });
+
+    it(`when filter is updated with ${MOCK_SELECTED_CONTRIBUTION_TYPE.type}: ${MOCK_CONTRIBUTION_TYPE_VALUE.data}, calls API with event_filter: ${MOCK_CONTRIBUTION_TYPE_VALUE.data}`, () => {
+      findFilteredSearch().vm.$emit('onFilter', [MOCK_SELECTED_CONTRIBUTION_TYPE]);
+
+      expect(axios.get).toHaveBeenCalledWith(defaultProps.organizationActivityPath, {
+        params: {
+          offset: 0,
+          limit: DEFAULT_PER_PAGE,
+          event_filter: MOCK_CONTRIBUTION_TYPE_VALUE.data,
+        },
+      });
+    });
+  });
+
+  describe('filtered search', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('renders with correct params and available tokens', () => {
+      const expectedTokens = [
+        {
+          title: 'Contribution type',
+          icon: 'comparison',
+          type: CONTRIBUTION_TYPE_FILTER_TYPE,
+          unique: true,
+          token: GlFilteredSearchToken,
+          operators: OPERATORS_IS,
+          options: MOCK_EVENT_TYPES,
+        },
+      ];
+
+      expect(findFilteredSearch().props('recentSearchesStorageKey')).toBe(
+        RECENT_SEARCHES_STORAGE_KEY,
+      );
+      expect(findFilteredSearch().props('namespace')).toBe(FILTERED_SEARCH_NAMESPACE);
+      expect(findFilteredSearch().props('tokens')).toStrictEqual(expectedTokens);
     });
   });
 
@@ -93,6 +163,10 @@ describe('OrganizationsActivityApp', () => {
 
     it('renders loading icon', () => {
       expect(findGlLoadingIcon().exists()).toBe(true);
+    });
+
+    it('renders filtered search bar', () => {
+      expect(findFilteredSearch().exists()).toBe(true);
     });
 
     it('does not render pagination', () => {
@@ -118,6 +192,10 @@ describe('OrganizationsActivityApp', () => {
       expect(findGlLoadingIcon().exists()).toBe(false);
     });
 
+    it('renders filtered search bar', () => {
+      expect(findFilteredSearch().exists()).toBe(true);
+    });
+
     it('does not render pagination', () => {
       expect(findGlPagination().exists()).toBe(false);
     });
@@ -139,6 +217,10 @@ describe('OrganizationsActivityApp', () => {
 
     it('does not render loading icon', () => {
       expect(findGlLoadingIcon().exists()).toBe(false);
+    });
+
+    it('renders filtered search bar', () => {
+      expect(findFilteredSearch().exists()).toBe(true);
     });
 
     it('renders pagination', () => {

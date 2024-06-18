@@ -90,7 +90,7 @@
   release: 15.0  # XX.Y
 - name: Limited Availability GitLab SaaS runners on macOS (x86-64)  # Match the release post entry
   description: |   # Do not modify this line, instead modify the lines below.
-    GitLab SaaS runners on macOS are now in [Limited Availability](https://about.gitlab.com/handbook/product/gitlab-the-product/#limited-availability-la). If you use GitLab SaaS and have a Premium or Ultimate subscription, you can build applications that require macOS in a secure, on-demand GitLab Runner build environment that's fully integrated with GitLab CI/CD. As part of the Limited Availability release, CI jobs that run on the macOS runners will count toward your CI/CD minutes quota at a [cost factor](https://docs.gitlab.com/ee/ci/pipelines/cicd_minutes.html#cost-factor) of 6.
+    GitLab SaaS runners on macOS are now in [Limited Availability](https://about.gitlab.com/handbook/product/gitlab-the-product/#limited-availability-la). If you use GitLab SaaS and have a Premium or Ultimate subscription, you can build applications that require macOS in a secure, on-demand GitLab Runner build environment that's fully integrated with GitLab CI/CD. As part of the Limited Availability release, CI jobs that run on the macOS runners will count toward your CI/CD minutes quota at a [cost factor](https://docs.gitlab.com/ee/ci/pipelines/compute_minutes.html#cost-factor) of 6.
   stage: verify  # String value of the stage that the feature was created in. e.g., Growth
   self-managed: false  # Boolean value (true or false)
   gitlab-com: true  # Boolean value (true or false)

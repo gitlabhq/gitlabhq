@@ -71,7 +71,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
       end
     end
 
-    it 'unverified signature' do
+    it 'unverified signature', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444982' do
       visit project_commit_path(project, GpgHelpers::SIGNED_COMMIT_SHA)
       wait_for_all_requests
 

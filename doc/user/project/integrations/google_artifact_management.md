@@ -12,12 +12,10 @@ DETAILS:
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named
-`google_cloud_support_feature_flag`. This feature is in [Beta](../../../policy/experiment-beta-support.md).
+`google_cloud_support_feature_flag`. This feature is in [beta](../../../policy/experiment-beta-support.md).
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
-FLAG:
-On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
-
-This feature is in [Beta](../../../policy/experiment-beta-support.md).
+This feature is in [beta](../../../policy/experiment-beta-support.md).
 
 You can use the Google Artifact Management integration to
 configure and connect a [Google Artifact Registry](https://cloud.google.com/artifact-registry) repository to your GitLab project.

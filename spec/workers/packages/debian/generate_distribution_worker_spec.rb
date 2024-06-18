@@ -53,7 +53,7 @@ RSpec.describe Packages::Debian::GenerateDistributionWorker, type: :worker, feat
         end
 
         context 'with valid parameters' do
-          it_behaves_like 'an idempotent worker' do
+          it_behaves_like 'an idempotent worker', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446272' do
             let(:job_args) { [container_type_as_string, distribution_id] }
 
             it_behaves_like 'Generate Debian Distribution and component files'

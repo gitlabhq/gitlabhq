@@ -13,10 +13,16 @@
     "admin_group_member": {
       "type": "boolean"
     },
+    "admin_integrations": {
+      "type": "boolean"
+    },
     "admin_merge_request": {
       "type": "boolean"
     },
     "admin_push_rules": {
+      "type": "boolean"
+    },
+    "admin_runners": {
       "type": "boolean"
     },
     "admin_terraform_state": {
@@ -37,6 +43,9 @@
     "manage_group_access_tokens": {
       "type": "boolean"
     },
+    "manage_merge_request_settings": {
+      "type": "boolean"
+    },
     "manage_project_access_tokens": {
       "type": "boolean"
     },
@@ -44,6 +53,9 @@
       "type": "boolean"
     },
     "read_code": {
+      "type": "boolean"
+    },
+    "read_crm_contact": {
       "type": "boolean"
     },
     "read_dependency": {

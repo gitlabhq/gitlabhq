@@ -45,23 +45,29 @@ Prerequisites:
 PUT /projects/:id/packages/generic/:package_name/:package_version/:file_name?status=:status
 ```
 
-| Attribute          | Type            | Required | Description                                                                                                                      |
-| -------------------| --------------- | ---------| -------------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding).                                              |
-| `package_name`     | string          | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`). |
-| `package_version`  | string          | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8). |
-| `file_name`        | string          | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`). |
-| `status`           | string          | no       | The package status. It can be `default` or `hidden`. Hidden packages do not appear in the UI or [package API list endpoints](../../../api/packages.md). |
-| `select`           | string          | no       | The response payload. By default, the response is empty. Valid values are: `package_file`. `package_file` returns details of the package file record created by this request. |
+| Attribute         | Type           | Required | Description |
+|-------------------|----------------|----------|-------------|
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding). |
+| `package_name`    | string         | yes      | The package name. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), or underscores (`_`). |
+| `package_version` | string         | yes      | The package version. The following regex validates this: `\A(\.?[\w\+-]+\.?)+\z`. You can test your version strings on [Rubular](https://rubular.com/r/aNCV0wG5K14uq8). |
+| `file_name`       | string         | yes      | The filename. It can contain only lowercase letters (`a-z`), uppercase letter (`A-Z`), numbers (`0-9`), dots (`.`), hyphens (`-`), underscores (`_`), or slashes (`/`). |
+| `status`          | string         | no       | The package status. It can be `default` or `hidden`. Hidden packages do not appear in the UI or [package API list endpoints](../../../api/packages.md). |
+| `select`          | string         | no       | The response payload. By default, the response is empty. Valid values are: `package_file`. `package_file` returns details of the package file record created by this request. |
 
 Provide the file context in the request body.
 
 Example request using a personal access token:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
+
+<!-- Or with a full path file -->
+
+curl --fail-with-body --user "user:<your_access_token>" \
+     --upload-file path/to/file.txt \
+     "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/path/to/file.txt"
 ```
 
 Example response without attribute `select`:
@@ -75,7 +81,7 @@ Example response without attribute `select`:
 Example request with attribute `select = package_file`:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
      --user "<username>:<Project Access Token>" \
      --upload-file path/to/file.txt \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt?select=package_file"
@@ -146,17 +152,19 @@ Prerequisites:
 - You need to [authenticate with the API](../../../api/rest/index.md#authentication).
   - If authenticating with a deploy token, it must be configured with the `read_package_registry` and/or `write_package_registry` scope.
   - Project access tokens require the `read_api` scope and at least the `Reporter` role.
+- If you use cURL to download artifacts from a GitLab instance with object storage enabled,
+  use the `--location` parameter, as the request might be redirected.
 
 ```plaintext
 GET /projects/:id/packages/generic/:package_name/:package_version/:file_name
 ```
 
-| Attribute          | Type            | Required | Description                                                                         |
-| -------------------| --------------- | ---------| ------------------------------------------------------------------------------------|
-| `id`               | integer/string  | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding). |
-| `package_name`     | string          | yes      | The package name.                                                                   |
-| `package_version`  | string          | yes      | The package version.                                                                |
-| `file_name`        | string          | yes      | The filename.                                                                      |
+| Attribute         | Type           | Required | Description |
+|-------------------|----------------|----------|-------------|
+| `id`              | integer/string | yes      | The ID or [URL-encoded path of the project](../../../api/rest/index.md#namespaced-path-encoding). |
+| `package_name`    | string         | yes      | The package name. |
+| `package_version` | string         | yes      | The package version. |
+| `file_name`       | string         | yes      | The filename. |
 
 The file context is served in the response body. The response content type is `application/octet-stream`.
 
@@ -168,11 +176,11 @@ Example request that uses a personal access token:
 
 ```shell
 # Header authentication
-curl --header "PRIVATE-TOKEN: <your_access_token>" \
+curl --fail-with-body --output file.txt --header "PRIVATE-TOKEN: <your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 
 # Basic authentication
-curl --user "user:<your_access_token>" \
+curl --fail-with-body --output file.txt --user "user:<your_access_token>" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 ```
 
@@ -182,11 +190,11 @@ Example request that uses a `CI_JOB_TOKEN`:
 
 ```shell
 # Header authentication
-curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+curl --fail-with-body --output file.txt --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 
 # Basic authentication
-curl --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
+curl --fail-with-body --output file.txt --user "gitlab-ci-token:${CI_JOB_TOKEN}" \
      "https://gitlab.example.com/api/v4/projects/24/packages/generic/my_package/0.0.1/file.txt"
 ```
 
@@ -209,7 +217,7 @@ stages:
 upload:
   stage: upload
   script:
-    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file path/to/file.txt "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt"'
+    - 'curl --fail-with-body --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file path/to/file.txt "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/my_package/0.0.1/file.txt"'
 
 download:
   stage: download
@@ -258,7 +266,7 @@ gitlab_rails['object_store']['connection'] = {
   # Other connection settings
   'aws_signature_version' => '4'
 }
-# OR 
+# OR
 # Storage-specific form settings
 gitlab_rails['packages_object_store_connection'] = {
   # Other connection settings

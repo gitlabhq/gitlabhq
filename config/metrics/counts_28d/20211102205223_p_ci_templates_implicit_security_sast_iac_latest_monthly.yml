@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_implicit_security_sast_iac_latest_monthly
 description: Count of pipelines with implicit runs using the latest SAST IaC template
-product_section: sec
-product_stage: secure
 product_group: static_analysis
 value_type: number
 status: removed

@@ -10,16 +10,11 @@ module QA
           super
 
           base.view 'app/views/shared/wikis/show.html.haml' do
-            element 'wiki-page-title'
-            element 'wiki-edit-button'
+            element 'wiki-page-content-app'
           end
 
           base.view 'app/views/shared/wikis/_wiki_content.html.haml' do
             element 'wiki-page-content'
-          end
-
-          base.view 'app/views/shared/wikis/_main_links.html.haml' do
-            element 'new-page-button'
           end
 
           base.view 'app/views/shared/empty_states/_wikis.html.haml' do
@@ -32,7 +27,8 @@ module QA
         end
 
         def click_new_page
-          click_element('new-page-button')
+          click_element('wiki-more-dropdown')
+          click_element('page-new-button')
         end
 
         def click_page_history
@@ -45,7 +41,7 @@ module QA
         end
 
         def has_title?(title)
-          has_element?('wiki-page-title', title)
+          has_element?('page-heading', title)
         end
 
         def has_content?(content)

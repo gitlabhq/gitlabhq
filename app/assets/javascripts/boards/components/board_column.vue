@@ -69,7 +69,7 @@ export default {
       'board-type-assignee': list.listType === 'assignee',
     }"
     :data-list-id="list.id"
-    class="board gl-display-inline-block gl-h-full gl-px-3 gl-align-top gl-white-space-normal is-expandable"
+    class="board gl-display-inline-block gl-h-full gl-px-3 gl-align-top gl-whitespace-normal is-expandable"
     data-testid="board-list"
   >
     <div

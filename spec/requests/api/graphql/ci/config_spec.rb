@@ -360,7 +360,8 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
           { local: 'other_file.yml' },
           { remote: 'https://gitlab.com/gitlab-org/gitlab/raw/1234/.hello.yml' },
           { file: 'other_project_file.yml', project: other_project.full_path },
-          { template: 'Jobs/Build.gitlab-ci.yml' }
+          { template: 'Jobs/Build.gitlab-ci.yml' },
+          { component: "gitlab.com/#{other_project.full_path}/my_component@#{other_project.default_branch}" }
         ],
         rspec: {
           script: 'rspec'
@@ -387,10 +388,11 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
 
     let(:other_project_files) do
       {
-        'other_project_file.yml' => <<~YAML
+        'other_project_file.yml' => <<~YAML,
         other_project_test:
           script: other_project_test
         YAML
+        'templates/my_component.yml' => "my-job:\n  script: echo"
       }
     end
 
@@ -404,6 +406,9 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
 
     before do
       stub_full_request('https://gitlab.com/gitlab-org/gitlab/raw/1234/.hello.yml').to_return(body: remote_file_content)
+
+      settings = GitlabSettings::Options.build({ 'server_fqdn' => 'gitlab.com' })
+      allow(::Settings).to receive(:gitlab_ci).and_return(settings)
 
       post_graphql_query
     end
@@ -446,6 +451,15 @@ RSpec.describe 'Query.ciConfig', feature_category: :continuous_integration do
             "location" => "Jobs/Build.gitlab-ci.yml",
             "blob" => nil,
             "raw" => "https://gitlab.com/gitlab-org/gitlab/-/raw/master/lib/gitlab/ci/templates/Jobs/Build.gitlab-ci.yml",
+            "extra" => {},
+            "contextProject" => project.full_path,
+            "contextSha" => project.commit.sha
+          },
+          {
+            "type" => "component",
+            "location" => "gitlab.com/#{other_project.full_path}/my_component@#{other_project.default_branch}",
+            "blob" => "http://localhost/#{other_project.full_path}/-/blob/#{other_project.commit.sha}/templates/my_component.yml",
+            "raw" => nil,
             "extra" => {},
             "contextProject" => project.full_path,
             "contextSha" => project.commit.sha

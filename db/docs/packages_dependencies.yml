@@ -4,7 +4,11 @@ classes:
 - Packages::Dependency
 feature_categories:
 - package_registry
-description: Information about package dependencies for a set of supported package types
+description: Information about package dependencies for a set of supported package
+  types
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20549
 milestone: '12.6'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+allow_cross_foreign_keys:
+- gitlab_main_clusterwide
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465276

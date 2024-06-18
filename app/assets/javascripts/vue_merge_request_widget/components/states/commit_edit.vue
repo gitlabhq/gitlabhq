@@ -5,6 +5,10 @@ export default {
   components: {
     GlFormTextarea,
   },
+  model: {
+    prop: 'value',
+    event: 'input',
+  },
   props: {
     value: {
       type: String,
@@ -19,20 +23,13 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      messageText: this.value,
-    };
-  },
 };
 </script>
 
 <template>
   <li>
     <div class="commit-message-editor">
-      <div
-        class="gl-display-flex gl-flex-wrap gl-align-items-center justify-content-between gl-mb-3"
-      >
+      <div class="gl-flex gl-flex-wrap gl-align-items-center justify-content-between gl-mb-3">
         <label class="col-form-label" :for="inputId">
           <strong>{{ label }}</strong>
         </label>
@@ -40,13 +37,14 @@ export default {
       </div>
       <gl-form-textarea
         :id="inputId"
-        v-model="messageText"
+        :value="value"
         class="form-control js-gfm-input gl-mb-3 commit-message-edit !gl-font-monospace"
         dir="auto"
         required="required"
         rows="7"
         max-rows="32"
-        @input="$emit('input', messageText)"
+        no-resize
+        @input="(val) => $emit('input', val)"
       />
     </div>
   </li>

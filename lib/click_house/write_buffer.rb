@@ -2,13 +2,27 @@
 
 module ClickHouse
   module WriteBuffer
-    BUFFER_KEY = 'clickhouse_write_buffer'
+    BUFFER_KEY_PREFIX = 'clickhouse_write_buffer_'
 
     class << self
-      def write_event(event_hash)
+      def add(table_name, event_hash)
         Gitlab::Redis::SharedState.with do |redis|
-          redis.lpush(BUFFER_KEY, event_hash.to_json)
+          redis.rpush(buffer_key(table_name), event_hash.to_json)
         end
+      end
+
+      def pop(table_name, limit)
+        Gitlab::Redis::SharedState.with do |redis|
+          Array.wrap(redis.lpop(buffer_key(table_name), limit)).map do |hash|
+            Gitlab::Json.parse(hash, symbolize_names: true)
+          end
+        end
+      end
+
+      private
+
+      def buffer_key(table_name)
+        "#{BUFFER_KEY_PREFIX}#{table_name}"
       end
     end
   end

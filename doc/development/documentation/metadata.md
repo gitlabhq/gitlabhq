@@ -70,6 +70,23 @@ For other pages, descriptions are not actively maintained. However, if you want 
 use a short description of what the page is about.
 See the Google [Best practices for creating quality meta descriptions](https://developers.google.com/search/docs/appearance/snippet#meta-descriptions) for tips.
 
+## Avoid pages being added to global navigation
+
+If a specific page shouldn't be added to the global navigation (have an entry added to
+[`navigation.yaml`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml)), add
+the following to the page's metadata:
+
+```yaml
+ignore_in_report: true
+```
+
+When this metadata is set on a page:
+
+- The [`pages_not_in_nav.js`](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/scripts/pages_not_in_nav.js)
+  script ignores the page when processing the documentation.
+- Technical writers doing the Technical Writing team's monthly tasks aren't prompted to add the page to the global
+  navigation.
+
 ## Additional metadata
 
 The following metadata is optional and is not actively maintained.

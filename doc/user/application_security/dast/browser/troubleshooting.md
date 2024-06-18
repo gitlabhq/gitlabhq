@@ -286,3 +286,7 @@ dast:
   variables:
     DAST_PAGE_MAX_RESPONSE_SIZE_MB: "25"
 ```
+
+### Crawler doesn't reach expected pages
+
+If DAST incorrectly caches your application pages, it can lead to DAST being unable to properly crawl your application. If you see that some pages are unexpectedly not found by the crawler, try setting `DAST_USE_CACHE: "false"` variable to see if that helps. Note that it can significantly decrease the performance of the scan. Make sure to only disable cache when absolutely necessary. If you have a subscription, [create a support ticket](https://about.gitlab.com/support/) to investigate why cache is preventing your website from being crawled.

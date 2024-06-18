@@ -8,9 +8,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
       {
         scan: {
           scanner: {
-              id: "gemnasium",
-              name: "Gemnasium",
-              version: "2.1.0"
+            id: "gemnasium",
+            name: "Gemnasium",
+            version: "2.1.0"
           }
         }
       }
@@ -425,14 +425,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
           context 'with invalid tracking information' do
             let(:tracking_data) do
               {
-              'type' => 'source',
-              'items' => [
-                'signatures' => [
-                  { 'algorithm' => 'hash', 'value' => 'hash_value' },
-                  { 'algorithm' => 'location', 'value' => 'location_value' },
-                  { 'algorithm' => 'INVALID', 'value' => 'scope_offset_value' }
+                'type' => 'source',
+                'items' => [
+                  'signatures' => [
+                    { 'algorithm' => 'hash', 'value' => 'hash_value' },
+                    { 'algorithm' => 'location', 'value' => 'location_value' },
+                    { 'algorithm' => 'INVALID', 'value' => 'scope_offset_value' }
+                  ]
                 ]
-              ]
               }
             end
 
@@ -445,14 +445,14 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
           context 'with valid tracking information' do
             let(:tracking_data) do
               {
-              'type' => 'source',
-              'items' => [
-                'signatures' => [
-                  { 'algorithm' => 'hash', 'value' => 'hash_value' },
-                  { 'algorithm' => 'location', 'value' => 'location_value' },
-                  { 'algorithm' => 'scope_offset', 'value' => 'scope_offset_value' }
+                'type' => 'source',
+                'items' => [
+                  'signatures' => [
+                    { 'algorithm' => 'hash', 'value' => 'hash_value' },
+                    { 'algorithm' => 'location', 'value' => 'location_value' },
+                    { 'algorithm' => 'scope_offset', 'value' => 'scope_offset_value' }
+                  ]
                 ]
-              ]
               }
             end
 

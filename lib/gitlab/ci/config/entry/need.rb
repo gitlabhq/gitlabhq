@@ -5,13 +5,13 @@ module Gitlab
     class Config
       module Entry
         class Need < ::Gitlab::Config::Entry::Simplifiable
-          strategy :JobString, if: -> (config) { config.is_a?(String) }
+          strategy :JobString, if: ->(config) { config.is_a?(String) }
 
           strategy :JobHash,
-            if: -> (config) { config.is_a?(Hash) && same_pipeline_need?(config) }
+            if: ->(config) { config.is_a?(Hash) && same_pipeline_need?(config) }
 
           strategy :CrossPipelineDependency,
-            if: -> (config) { config.is_a?(Hash) && cross_pipeline_need?(config) }
+            if: ->(config) { config.is_a?(Hash) && cross_pipeline_need?(config) }
 
           def self.same_pipeline_need?(config)
             config.key?(:job) &&
@@ -102,11 +102,9 @@ module Gitlab
           end
 
           class UnknownStrategy < ::Gitlab::Config::Entry::Node
-            def type
-            end
+            def type; end
 
-            def value
-            end
+            def value; end
 
             def errors
               ["#{location} has an unsupported type"]

@@ -11,20 +11,20 @@ module Mutations
     DOC
 
     argument :errors,
-             type: [::GraphQL::Types::String],
-             required: false,
-             description: 'Errors to return to the user.'
+      type: [::GraphQL::Types::String],
+      required: false,
+      description: 'Errors to return to the user.'
 
     argument :messages,
-             type: [::GraphQL::Types::String],
-             as: :echoes,
-             required: false,
-             description: 'Messages to return to the user.'
+      type: [::GraphQL::Types::String],
+      as: :echoes,
+      required: false,
+      description: 'Messages to return to the user.'
 
     field :echoes,
-          type: [::GraphQL::Types::String],
-          null: true,
-          description: 'Messages returned to the user.'
+      type: [::GraphQL::Types::String],
+      null: true,
+      description: 'Messages returned to the user.'
 
     def resolve(**args)
       args

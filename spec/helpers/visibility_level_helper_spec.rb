@@ -3,80 +3,81 @@
 require 'spec_helper'
 
 RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
+  using RSpec::Parameterized::TableSyntax
+
   include ProjectForksHelper
+
+  public_vis = Gitlab::VisibilityLevel::PUBLIC
+  internal_vis = Gitlab::VisibilityLevel::INTERNAL
+  private_vis = Gitlab::VisibilityLevel::PRIVATE
 
   let(:project)          { build(:project) }
   let(:group)            { build(:group) }
   let(:personal_snippet) { build(:personal_snippet) }
   let(:project_snippet)  { build(:project_snippet) }
 
-  describe 'visibility_icon_description' do
+  describe '#visibility_icon_description' do
     context 'used with a Project' do
       it 'delegates projects to #project_visibility_icon_description' do
-        expect(visibility_icon_description(project))
-          .to match /project/i
+        expect(visibility_icon_description(project)).to match(/project/i)
       end
+    end
 
-      context 'used with a ProjectPresenter' do
-        it 'delegates projects to #project_visibility_icon_description' do
-          expect(visibility_icon_description(project.present))
-            .to match /project/i
-        end
+    context 'used with a ProjectPresenter' do
+      it 'delegates projects to #project_visibility_icon_description' do
+        expect(visibility_icon_description(project.present)).to match(/project/i)
       end
+    end
 
-      context 'used with a Group' do
-        it 'delegates groups to #group_visibility_icon_description' do
-          expect(visibility_icon_description(group))
-            .to match /group/i
-        end
+    context 'used with a Group' do
+      it 'delegates groups to #group_visibility_icon_description' do
+        expect(visibility_icon_description(group)).to match(/group/i)
       end
     end
   end
 
-  describe 'visibility_level_label' do
-    using RSpec::Parameterized::TableSyntax
-
+  describe '#visibility_level_label' do
     where(:level_value, :level_name) do
-      Gitlab::VisibilityLevel::PRIVATE | 'Private'
-      Gitlab::VisibilityLevel::INTERNAL | 'Internal'
-      Gitlab::VisibilityLevel::PUBLIC | 'Public'
+      private_vis  | 'Private'
+      internal_vis | 'Internal'
+      public_vis   | 'Public'
     end
 
     with_them do
-      it 'returns the name of the visibility level' do
-        expect(visibility_level_label(level_value)).to eq(level_name)
-      end
+      subject { visibility_level_label(level_value) }
+
+      it { is_expected.to eq(level_name) }
     end
   end
 
-  describe 'visibility_level_description' do
+  describe '#visibility_level_description' do
     context 'used with a Project' do
       let(:descriptions) do
         [
-          visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, project),
-          visibility_level_description(Gitlab::VisibilityLevel::INTERNAL, project),
-          visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, project)
+          visibility_level_description(private_vis, project),
+          visibility_level_description(internal_vis, project),
+          visibility_level_description(public_vis, project)
         ]
       end
 
       it 'returns different project related descriptions depending on visibility level' do
         expect(descriptions.uniq.size).to eq(descriptions.size)
-        expect(descriptions).to all match /project/i
+        expect(descriptions).to all match(/project/i)
       end
     end
 
     context 'used with a Group' do
       let(:descriptions) do
         [
-          visibility_level_description(Gitlab::VisibilityLevel::PRIVATE, group),
-          visibility_level_description(Gitlab::VisibilityLevel::INTERNAL, group),
-          visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, group)
+          visibility_level_description(private_vis, group),
+          visibility_level_description(internal_vis, group),
+          visibility_level_description(public_vis, group)
         ]
       end
 
       it 'returns different group related descriptions depending on visibility level' do
         expect(descriptions.uniq.size).to eq(descriptions.size)
-        expect(descriptions).to all match /group/i
+        expect(descriptions).to all match(/group/i)
       end
 
       it 'returns default description for public group' do
@@ -85,28 +86,28 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
 
       context 'when application setting `should_check_namespace_plan` is true', if: Gitlab.ee? do
         let(:group) { create(:group) }
-        let(:public_option_description) { visibility_level_description(Gitlab::VisibilityLevel::PUBLIC, group) }
+        let(:public_option_description) { visibility_level_description(public_vis, group) }
 
         before do
           allow(Gitlab::CurrentSettings.current_application_settings).to receive(:should_check_namespace_plan?) { true }
         end
 
         it 'returns updated description for public visibility option in group general settings' do
-          expect(public_option_description).to match /^The group, any public projects, and any of their members, issues, and merge requests can be viewed without authentication./
+          expect(public_option_description).to match(/^The group, any public projects, and any of their members, issues, and merge requests can be viewed without authentication./)
         end
       end
     end
   end
 
-  describe "disallowed_visibility_level?" do
+  describe '#disallowed_visibility_level?' do
     describe "forks" do
       let(:project) { create(:project, :internal) }
       let(:forked_project) { fork_project(project) }
 
       it "disallows levels" do
-        expect(disallowed_visibility_level?(forked_project, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
-        expect(disallowed_visibility_level?(forked_project, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
-        expect(disallowed_visibility_level?(forked_project, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+        expect(disallowed_visibility_level?(forked_project, public_vis)).to be_truthy
+        expect(disallowed_visibility_level?(forked_project, internal_vis)).to be_falsey
+        expect(disallowed_visibility_level?(forked_project, private_vis)).to be_falsey
       end
     end
 
@@ -114,9 +115,9 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
       let(:project) { create(:project, :internal) }
 
       it "disallows levels" do
-        expect(disallowed_visibility_level?(project, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
-        expect(disallowed_visibility_level?(project, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
-        expect(disallowed_visibility_level?(project, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+        expect(disallowed_visibility_level?(project, public_vis)).to be_falsey
+        expect(disallowed_visibility_level?(project, internal_vis)).to be_falsey
+        expect(disallowed_visibility_level?(project, private_vis)).to be_falsey
       end
     end
 
@@ -124,9 +125,9 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
       let(:group) { create(:group, :internal) }
 
       it "disallows levels" do
-        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
-        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
-        expect(disallowed_visibility_level?(group, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+        expect(disallowed_visibility_level?(group, public_vis)).to be_falsey
+        expect(disallowed_visibility_level?(group, internal_vis)).to be_falsey
+        expect(disallowed_visibility_level?(group, private_vis)).to be_falsey
       end
     end
 
@@ -135,9 +136,9 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
       let(:subgroup) { create(:group, :private, parent: group) }
 
       it "disallows levels" do
-        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::PUBLIC)).to be_truthy
-        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::INTERNAL)).to be_truthy
-        expect(disallowed_visibility_level?(subgroup, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+        expect(disallowed_visibility_level?(subgroup, public_vis)).to be_truthy
+        expect(disallowed_visibility_level?(subgroup, internal_vis)).to be_truthy
+        expect(disallowed_visibility_level?(subgroup, private_vis)).to be_falsey
       end
     end
 
@@ -145,36 +146,94 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
       let(:snippet) { create(:snippet, :internal) }
 
       it "disallows levels" do
-        expect(disallowed_visibility_level?(snippet, Gitlab::VisibilityLevel::PUBLIC)).to be_falsey
-        expect(disallowed_visibility_level?(snippet, Gitlab::VisibilityLevel::INTERNAL)).to be_falsey
-        expect(disallowed_visibility_level?(snippet, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
+        expect(disallowed_visibility_level?(snippet, public_vis)).to be_falsey
+        expect(disallowed_visibility_level?(snippet, internal_vis)).to be_falsey
+        expect(disallowed_visibility_level?(snippet, private_vis)).to be_falsey
       end
     end
   end
 
-  describe "selected_visibility_level" do
-    let(:group) { create(:group, :public) }
-    let!(:project) { create(:project, :internal, group: group) }
+  describe '#disallowed_visibility_level_by_parent?' do
+    let(:parent_group) { create(:group, parent_group_visibility_level) }
+    let(:group) { build(:group, :private, parent: parent_group) }
+
+    subject { helper.disallowed_visibility_level_by_parent?(group, visibility_level) }
+
+    where(:parent_group_visibility_level, :visibility_level, :expected) do
+      :public   | public_vis   | false
+      :public   | internal_vis | false
+      :public   | private_vis  | false
+      :internal | public_vis   | true
+      :internal | internal_vis | false
+      :internal | private_vis  | false
+      :private  | public_vis   | true
+      :private  | internal_vis | true
+      :private  | private_vis  | false
+    end
+
+    with_them do
+      it { is_expected.to eq expected }
+    end
+  end
+
+  shared_examples_for 'disallowed visibility level by child' do
+    where(:child_visibility_level, :visibility_level, :expected) do
+      public_vis   | public_vis   | false
+      public_vis   | internal_vis | true
+      public_vis   | private_vis  | true
+      internal_vis | public_vis   | false
+      internal_vis | internal_vis | false
+      internal_vis | private_vis  | true
+      private_vis  | public_vis   | false
+      private_vis  | internal_vis | false
+      private_vis  | private_vis  | false
+    end
+
+    with_them do
+      before do
+        child.update!(visibility_level: child_visibility_level)
+      end
+
+      it { is_expected.to eq expected }
+    end
+  end
+
+  describe '#disallowed_visibility_level_by_projects?' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be_with_reload(:child) { create(:project, group: group) }
+
+    subject { helper.disallowed_visibility_level_by_projects?(group, visibility_level) }
+
+    it_behaves_like 'disallowed visibility level by child'
+  end
+
+  describe '#disallowed_visibility_level_by_sub_groups?' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be_with_reload(:child) { create(:group, parent: group) }
+
+    subject { helper.disallowed_visibility_level_by_sub_groups?(group, visibility_level) }
+
+    it_behaves_like 'disallowed visibility level by child'
+  end
+
+  describe '#selected_visibility_level' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be_with_reload(:project) { create(:project, :internal, group: group) }
+
     let!(:forked_project) { fork_project(project) }
-
-    using RSpec::Parameterized::TableSyntax
-
-    public_vis = Gitlab::VisibilityLevel::PUBLIC
-    internal_vis = Gitlab::VisibilityLevel::INTERNAL
-    private_vis = Gitlab::VisibilityLevel::PRIVATE
 
     # This is a subset of all the permutations
     where(:requested_level, :max_allowed, :global_default_level, :restricted_levels, :expected) do
-      public_vis | public_vis | public_vis | [] | public_vis
-      public_vis | public_vis | public_vis | [public_vis] | internal_vis
-      internal_vis | public_vis | public_vis | [] | internal_vis
-      internal_vis | private_vis | private_vis | [] | private_vis
-      private_vis | public_vis | public_vis | [] | private_vis
-      public_vis | private_vis | internal_vis | [] | private_vis
-      public_vis | internal_vis | public_vis | [] | internal_vis
-      public_vis | private_vis | public_vis | [] | private_vis
-      public_vis | internal_vis | internal_vis | [] | internal_vis
-      public_vis | public_vis | internal_vis | [] | public_vis
+      public_vis   | public_vis   | public_vis   | []           | public_vis
+      public_vis   | public_vis   | public_vis   | [public_vis] | internal_vis
+      internal_vis | public_vis   | public_vis   | []           | internal_vis
+      internal_vis | private_vis  | private_vis  | []           | private_vis
+      private_vis  | public_vis   | public_vis   | []           | private_vis
+      public_vis   | private_vis  | internal_vis | []           | private_vis
+      public_vis   | internal_vis | public_vis   | []           | internal_vis
+      public_vis   | private_vis  | public_vis   | []           | private_vis
+      public_vis   | internal_vis | internal_vis | []           | internal_vis
+      public_vis   | public_vis   | internal_vis | []           | public_vis
     end
 
     before do
@@ -201,27 +260,21 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
   end
 
   shared_examples_for 'available visibility level' do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:user) { create(:user) }
+    let(:user) { build(:user) }
 
     subject { helper.available_visibility_levels(form_model) }
 
-    public_vis = Gitlab::VisibilityLevel::PUBLIC
-    internal_vis = Gitlab::VisibilityLevel::INTERNAL
-    private_vis = Gitlab::VisibilityLevel::PRIVATE
-
     where(:restricted_visibility_levels, :expected) do
-      [] | [private_vis, internal_vis, public_vis]
-      [private_vis] | [internal_vis, public_vis]
+      []                          | [private_vis, internal_vis, public_vis]
+      [private_vis]               | [internal_vis, public_vis]
       [private_vis, internal_vis] | [public_vis]
-      [private_vis, public_vis] | [internal_vis]
-      [internal_vis] | [private_vis, public_vis]
+      [private_vis, public_vis]   | [internal_vis]
+      [internal_vis]              | [private_vis, public_vis]
       [internal_vis, private_vis] | [public_vis]
-      [internal_vis, public_vis] | [private_vis]
-      [public_vis] | [private_vis, internal_vis]
-      [public_vis, private_vis] | [internal_vis]
-      [public_vis, internal_vis] | [private_vis]
+      [internal_vis, public_vis]  | [private_vis]
+      [public_vis]                | [private_vis, internal_vis]
+      [public_vis, private_vis]   | [internal_vis]
+      [public_vis, internal_vis]  | [private_vis]
     end
 
     before do
@@ -265,62 +318,147 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
   end
 
   describe '#snippets_selected_visibility_level' do
-    let(:available_levels) { [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] }
+    let(:available_levels) { [public_vis, internal_vis] }
 
     it 'returns the selected visibility level' do
-      expect(helper.snippets_selected_visibility_level(available_levels, Gitlab::VisibilityLevel::PUBLIC))
-        .to eq(Gitlab::VisibilityLevel::PUBLIC)
+      expect(helper.snippets_selected_visibility_level(available_levels, public_vis)).to eq(public_vis)
     end
 
     it "fallbacks using the lowest available visibility level when selected level isn't available" do
-      expect(helper.snippets_selected_visibility_level(available_levels, Gitlab::VisibilityLevel::PRIVATE))
-       .to eq(Gitlab::VisibilityLevel::INTERNAL)
+      expect(helper.snippets_selected_visibility_level(available_levels, private_vis)).to eq(internal_vis)
     end
   end
 
-  describe 'multiple_visibility_levels_restricted?' do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:user) { create(:user) }
+  describe '#multiple_visibility_levels_restricted?' do
+    let(:user) { build(:user) }
 
     subject { helper.multiple_visibility_levels_restricted? }
 
     where(:restricted_visibility_levels, :expected) do
-      [Gitlab::VisibilityLevel::PUBLIC] | false
-      [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] | true
-      [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PRIVATE] | true
+      [public_vis]                            | false
+      [public_vis, internal_vis]              | true
+      [public_vis, internal_vis, private_vis] | true
     end
 
     with_them do
       before do
         allow(helper).to receive(:current_user) { user }
-        allow(Gitlab::CurrentSettings.current_application_settings).to receive(:restricted_visibility_levels) { restricted_visibility_levels }
+        stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
       end
 
       it { is_expected.to eq(expected) }
     end
   end
 
-  describe 'all_visibility_levels_restricted?' do
-    using RSpec::Parameterized::TableSyntax
-
-    let(:user) { create(:user) }
+  describe '#all_visibility_levels_restricted?' do
+    let(:user) { build(:user) }
 
     subject { helper.all_visibility_levels_restricted? }
 
     where(:restricted_visibility_levels, :expected) do
-      [Gitlab::VisibilityLevel::PUBLIC] | false
-      [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL] | false
+      [public_vis]                   | false
+      [public_vis, internal_vis]     | false
       Gitlab::VisibilityLevel.values | true
     end
 
     with_them do
       before do
         allow(helper).to receive(:current_user) { user }
-        allow(Gitlab::CurrentSettings.current_application_settings).to receive(:restricted_visibility_levels) { restricted_visibility_levels }
+        stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
       end
 
       it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#all_visibility_levels' do
+    subject { helper.all_visibility_levels }
+
+    it 'returns all visibility levels' do
+      is_expected.to match_array [private_vis, internal_vis, public_vis]
+    end
+  end
+
+  describe '#disabled_visibility_level?' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be_with_reload(:child) { create(:project, group: group) }
+
+    let(:user) { build(:user) }
+
+    subject { helper.disabled_visibility_level?(group, visibility_level) }
+
+    where(:restricted_visibility_levels, :child_visibility_level, :visibility_level, :expected) do
+      []                             | public_vis   | public_vis   | false
+      []                             | public_vis   | internal_vis | true
+      []                             | public_vis   | private_vis  | true
+      []                             | internal_vis | public_vis   | false
+      []                             | internal_vis | internal_vis | false
+      []                             | internal_vis | private_vis  | true
+      []                             | private_vis  | public_vis   | false
+      []                             | private_vis  | internal_vis | false
+      []                             | private_vis  | private_vis  | false
+
+      [public_vis]                   | public_vis   | public_vis   | true
+      [public_vis]                   | public_vis   | internal_vis | true
+      [public_vis]                   | public_vis   | private_vis  | true
+      [public_vis]                   | internal_vis | public_vis   | true
+      [public_vis]                   | internal_vis | internal_vis | false
+      [public_vis]                   | internal_vis | private_vis  | true
+
+      [internal_vis]                 | public_vis   | public_vis   | false
+      [internal_vis]                 | public_vis   | internal_vis | true
+      [internal_vis]                 | public_vis   | private_vis  | true
+      [internal_vis]                 | internal_vis | public_vis   | false
+      [internal_vis]                 | internal_vis | internal_vis | true
+      [internal_vis]                 | internal_vis | private_vis  | true
+
+      [public_vis, internal_vis]     | public_vis   | public_vis   | true
+      [public_vis, internal_vis]     | public_vis   | internal_vis | true
+      [public_vis, internal_vis]     | public_vis   | internal_vis | true
+
+      Gitlab::VisibilityLevel.values | public_vis   | public_vis   | true
+      Gitlab::VisibilityLevel.values | public_vis   | internal_vis | true
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive(:current_user) { user }
+        stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
+
+        child.update!(visibility_level: child_visibility_level)
+      end
+
+      it { is_expected.to eq expected }
+    end
+  end
+
+  describe '#restricted_visibility_level?' do
+    let(:user) { build(:user) }
+
+    subject { helper.restricted_visibility_level?(visibility_level) }
+
+    where(:restricted_visibility_levels, :visibility_level, :expected) do
+      []                             | public_vis   | false
+      []                             | internal_vis | false
+      []                             | private_vis  | false
+      [public_vis]                   | public_vis   | true
+      [public_vis]                   | internal_vis | false
+      [public_vis]                   | private_vis  | false
+      [public_vis, internal_vis]     | public_vis   | true
+      [public_vis, internal_vis]     | internal_vis | true
+      [public_vis, internal_vis]     | private_vis  | false
+      Gitlab::VisibilityLevel.values | public_vis   | true
+      Gitlab::VisibilityLevel.values | internal_vis | true
+      Gitlab::VisibilityLevel.values | private_vis  | true
+    end
+
+    with_them do
+      before do
+        allow(helper).to receive(:current_user) { user }
+        stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
+      end
+
+      it { is_expected.to eq expected }
     end
   end
 end

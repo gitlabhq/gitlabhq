@@ -120,7 +120,7 @@ module MergeRequests
     end
 
     def deactivate_pages_deployments(merge_request)
-      Pages::DeactivateMrDeploymentsWorker.perform_async(merge_request)
+      Pages::DeactivateMrDeploymentsWorker.perform_async(merge_request.id)
     end
 
     private
@@ -287,6 +287,14 @@ module MergeRequests
       ::MergeRequests::UpdateReviewerStateService
             .new(project: merge_request.project, current_user: user)
             .execute(merge_request, state)
+    end
+
+    def abort_auto_merge_with_todo(merge_request, reason)
+      response = abort_auto_merge(merge_request, reason)
+      response = ServiceResponse.new(**response)
+      return unless response.success?
+
+      todo_service.merge_request_became_unmergeable(merge_request)
     end
   end
 end

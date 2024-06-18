@@ -17,7 +17,6 @@ RSpec.describe KubernetesContainerResourcesValidator, feature_category: :shared 
 
   using RSpec::Parameterized::TableSyntax
 
-  # noinspection RubyMismatchedArgumentType - https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/tracked-jetbrains-issues/#ruby-32041
   where(:resources, :validity, :errors) do
     # rubocop:disable Layout/LineLength -- The RSpec table syntax often requires long lines for errors
     nil                               | false | { resources: ["must be a hash"] }

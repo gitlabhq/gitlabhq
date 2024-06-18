@@ -80,6 +80,7 @@ The following columns are included in the CSV file.
 | Due Date          | Formatted as `YYYY-MM-DD` |
 | Created At (UTC)  | Formatted as `YYYY-MM-DD HH:MM:SS` |
 | Updated At (UTC)  | Formatted as `YYYY-MM-DD HH:MM:SS` |
+| Closed At (UTC)   | Formatted as `YYYY-MM-DD HH:MM:SS` |
 | Milestone         | Title of the issue milestone |
 | Weight            | Issue weight |
 | Labels            | Labels, separated by commas |

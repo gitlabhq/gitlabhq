@@ -241,7 +241,7 @@ export default class LabelsSelect {
 
           // We need to identify which items are actually labels
           if (label.id) {
-            const selectedLayoutClasses = ['d-flex', 'flex-row', 'text-break-word'];
+            const selectedLayoutClasses = ['gl-flex', 'flex-row', 'text-break-word'];
             selectedClass.push('label-item', ...selectedLayoutClasses);
             linkEl.dataset.labelId = label.id;
           }

@@ -3,8 +3,6 @@ data_category: optional
 key_path: counts.all_searches
 description: Total Searches for All Basic Search and Advanced Search in self-managed
   and SaaS
-product_section: enablement
-product_stage: enablement
 product_group: global_search
 value_type: number
 status: active

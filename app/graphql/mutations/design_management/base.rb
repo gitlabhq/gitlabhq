@@ -6,12 +6,12 @@ module Mutations
       include Mutations::ResolvesIssuable
 
       argument :project_path, GraphQL::Types::ID,
-               required: true,
-               description: "Project where the issue is to upload designs for."
+        required: true,
+        description: "Project where the issue is to upload designs for."
 
       argument :iid, GraphQL::Types::ID,
-               required: true,
-               description: "IID of the issue to modify designs for."
+        required: true,
+        description: "IID of the issue to modify designs for."
 
       private
 

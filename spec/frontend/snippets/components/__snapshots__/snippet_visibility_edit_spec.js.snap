@@ -13,6 +13,7 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
       <gl-icon-stub
         name="question-o"
         size="12"
+        variant="current"
       />
     </gl-link-stub>
   </label>
@@ -36,14 +37,15 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         value="private"
       >
         <div
-          class="gl-align-items-center gl-display-flex"
+          class="gl-flex gl-items-center"
         >
           <gl-icon-stub
             name="lock"
             size="16"
+            variant="current"
           />
           <span
-            class="gl-font-weight-semibold gl-ml-2 js-visibility-option"
+            class="gl-font-semibold gl-ml-2 js-visibility-option"
             data-qa-visibility="Private"
             data-testid="visibility-content"
           >
@@ -56,14 +58,15 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         value="internal"
       >
         <div
-          class="gl-align-items-center gl-display-flex"
+          class="gl-flex gl-items-center"
         >
           <gl-icon-stub
             name="shield"
             size="16"
+            variant="current"
           />
           <span
-            class="gl-font-weight-semibold gl-ml-2 js-visibility-option"
+            class="gl-font-semibold gl-ml-2 js-visibility-option"
             data-qa-visibility="Internal"
             data-testid="visibility-content"
           >
@@ -76,14 +79,15 @@ exports[`Snippet Visibility Edit component rendering matches the snapshot 1`] = 
         value="public"
       >
         <div
-          class="gl-align-items-center gl-display-flex"
+          class="gl-flex gl-items-center"
         >
           <gl-icon-stub
             name="earth"
             size="16"
+            variant="current"
           />
           <span
-            class="gl-font-weight-semibold gl-ml-2 js-visibility-option"
+            class="gl-font-semibold gl-ml-2 js-visibility-option"
             data-qa-visibility="Public"
             data-testid="visibility-content"
           >

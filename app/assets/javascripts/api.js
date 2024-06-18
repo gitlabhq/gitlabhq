@@ -27,6 +27,7 @@ const Api = {
   projectPackagePath: '/api/:version/projects/:id/packages/:package_id',
   projectPackageFilePath:
     '/api/:version/projects/:id/packages/:package_id/package_files/:package_file_id',
+  projectGroupsPath: '/api/:version/projects/:id/groups.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   groupSharePath: '/api/:version/groups/:id/share',
   projectsPath: '/api/:version/projects.json',
@@ -131,6 +132,20 @@ const Api = {
     return axios.get(url);
   },
 
+  projectGroups(id, options) {
+    const url = Api.buildUrl(this.projectGroupsPath).replace(':id', encodeURIComponent(id));
+
+    return axios
+      .get(url, {
+        params: {
+          ...options,
+        },
+      })
+      .then(({ data }) => {
+        return data;
+      });
+  },
+
   deleteProjectPackage(projectId, packageId) {
     const url = this.buildProjectPackageUrl(projectId, packageId);
     return axios.delete(url);
@@ -152,6 +167,17 @@ const Api = {
 
   groupMembers(id, options) {
     const url = Api.buildUrl(this.groupMembersPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url, {
+      params: {
+        per_page: DEFAULT_PER_PAGE,
+        ...options,
+      },
+    });
+  },
+
+  groupSubgroups(id, options) {
+    const url = Api.buildUrl(this.subgroupsPath).replace(':id', encodeURIComponent(id));
 
     return axios.get(url, {
       params: {

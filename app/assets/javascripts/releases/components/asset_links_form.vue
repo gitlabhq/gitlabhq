@@ -100,7 +100,7 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex flex-column release-assets-links-form">
+  <div class="gl-flex flex-column release-assets-links-form">
     <h2 class="text-4">{{ __('Release assets') }}</h2>
     <p class="m-0">
       <gl-sprintf
@@ -132,7 +132,7 @@ export default {
     <div
       v-for="(link, index) in release.assets.links"
       :key="link.id"
-      class="gl-sm-display-flex flex-column flex-sm-row gl-gap-5 align-items-stretch align-items-sm-start no-gutters"
+      class="sm:gl-flex flex-column flex-sm-row gl-gap-5 align-items-stretch align-items-sm-start no-gutters"
     >
       <gl-form-group
         class="url-field form-group col"
@@ -152,10 +152,10 @@ export default {
           @keydown.meta.enter="updateUrl(link, $event.target.value)"
         />
         <template #invalid-feedback>
-          <span v-if="hasEmptyUrl(link)" class="invalid-feedback d-inline">
+          <span v-if="hasEmptyUrl(link)" class="invalid-feedback gl-inline">
             {{ __('URL is required') }}
           </span>
-          <span v-else-if="hasBadFormat(link)" class="invalid-feedback d-inline">
+          <span v-else-if="hasBadFormat(link)" class="invalid-feedback gl-inline">
             <gl-sprintf
               :message="
                 __(
@@ -168,7 +168,7 @@ export default {
               </template>
             </gl-sprintf>
           </span>
-          <span v-else-if="hasDuplicateUrl(link)" class="invalid-feedback d-inline">
+          <span v-else-if="hasDuplicateUrl(link)" class="invalid-feedback gl-inline">
             {{ __('This URL already exists.') }}
           </span>
         </template>
@@ -192,10 +192,10 @@ export default {
           @keydown.meta.enter="updateName(link, $event.target.value)"
         />
         <template #invalid-feedback>
-          <span v-if="hasEmptyName(link)" class="invalid-feedback d-inline">
+          <span v-if="hasEmptyName(link)" class="invalid-feedback gl-inline">
             {{ __('Link title is required') }}
           </span>
-          <span v-else-if="hasDuplicateName(link)" class="invalid-feedback d-inline">
+          <span v-else-if="hasDuplicateName(link)" class="invalid-feedback gl-inline">
             {{ __('This title already exists.') }}
           </span>
         </template>
@@ -224,7 +224,7 @@ export default {
           :title="__('Remove asset link')"
           @click="onRemoveClicked(link.id)"
         >
-          <div class="d-flex">
+          <div class="gl-flex">
             <gl-icon class="mr-1 mr-sm-0" :size="16" name="remove" />
             <span class="d-inline d-sm-none">{{ __('Remove asset link') }}</span>
           </div>

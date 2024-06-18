@@ -15,7 +15,7 @@ DETAILS:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/415218) in GitLab 16.8. Feature flag `packages_dependency_proxy_maven` removed.
 
 WARNING:
-The dependency proxy is in [Beta](../../../../policy/experiment-beta-support.md#beta). Review the documentation carefully before you use this feature.
+The dependency proxy is in [beta](../../../../policy/experiment-beta-support.md#beta). Review the documentation carefully before you use this feature.
 
 The GitLab dependency proxy for packages is a local proxy for frequently pulled packages.
 It is implemented as a pull-through cache that works at the project level.
@@ -262,7 +262,7 @@ However, you might encounter one of the following responses:
 :::TabTitle Maven
 
 ```shell
-curl --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/<group id and artifact id>/<version>/<file_name>"
+curl --fail-with-body --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/<group id and artifact id>/<version>/<file_name>"
 ```
 
 - `<username>` and `<personal access token>` are the credentials to access the dependency proxy of the GitLab instance.
@@ -280,7 +280,7 @@ For example, given a package with:
 The request to manually pull a package is:
 
 ```shell
-curl --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/com/my_company/my_package/1.2.3/my_package-1.2.3.pom"
+curl --fail-with-body --verbose "https://<username>:<personal access token>@gitlab.example.com/api/v4/projects/<project_id>/dependency_proxy/packages/maven/com/my_company/my_package/1.2.3/my_package-1.2.3.pom"
 ```
 
 ::EndTabs

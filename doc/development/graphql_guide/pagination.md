@@ -278,7 +278,7 @@ There may be times where you need to return data through the GitLab API that is 
 another system. In these cases you may have to paginate a third-party's API.
 
 An example of this is with our [Error Tracking](../../operations/error_tracking.md) implementation,
-where we proxy [Sentry errors](../../operations/error_tracking.md#sentry-error-tracking) through
+where we proxy [Sentry errors](../../operations/sentry_error_tracking.md) through
 the GitLab API. We do this by calling the Sentry API which enforces its own pagination rules.
 This means we cannot access the collection within GitLab to perform our own custom pagination.
 

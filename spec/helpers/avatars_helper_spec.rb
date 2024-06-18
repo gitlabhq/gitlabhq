@@ -527,7 +527,7 @@ RSpec.describe AvatarsHelper, feature_category: :source_code_management do
     context "when css_class option is not passed" do
       it "uses the default class" do
         expect(helper).to receive(:user_avatar).with(
-          hash_including(css_class: "gl-display-none gl-sm-display-inline-block")
+          hash_including(css_class: "gl-hidden sm:gl-inline-block")
         )
 
         subject

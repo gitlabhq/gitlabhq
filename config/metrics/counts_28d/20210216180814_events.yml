@@ -2,8 +2,6 @@
 data_category: operational
 key_path: usage_activity_by_stage_monthly.manage.events
 description: Number of distinct users who have generated a manage event by month
-product_section: dev
-product_stage: manage
 product_group: analytics_instrumentation
 value_type: number
 status: active

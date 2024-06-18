@@ -19,6 +19,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
   let(:project_keys) { %w[TEST1 TEST2] }
   let(:transition_id) { 'test27' }
   let(:server_info_results) { { 'deploymentType' => 'Cloud' } }
+  let(:client_info_results) { { 'accountType' => 'atlassian' } }
   let(:jira_integration) do
     described_class.new(
       project: project,
@@ -32,6 +33,7 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
 
   before do
     WebMock.stub_request(:get, /serverInfo/).to_return(body: server_info_results.to_json)
+    WebMock.stub_request(:get, /myself/).to_return(body: client_info_results.to_json)
   end
 
   it_behaves_like Integrations::HasAvatar
@@ -1211,23 +1213,23 @@ RSpec.describe Integrations::Jira, feature_category: :integrations do
   end
 
   describe '#test' do
-    let(:server_info_results) { { 'url' => 'http://url', 'deploymentType' => 'Cloud' } }
+    let(:test_results) { { 'accountType' => 'atlassian', "deploymentType" => "Cloud" } }
 
-    def server_info
+    def test_info
       jira_integration.test(nil)
     end
 
     context 'when the test succeeds' do
       it 'gets Jira project with URL when API URL not set' do
-        expect(server_info).to eq(success: true, result: server_info_results)
-        expect(WebMock).to have_requested(:get, /jira.example.com/)
+        expect(test_info).to eq(success: true, result: test_results)
+        expect(WebMock).to have_requested(:get, /jira.example.com/).times(2)
       end
 
       it 'gets Jira project with API URL if set' do
         jira_integration.update!(api_url: 'http://jira.api.com')
 
-        expect(server_info).to eq(success: true, result: server_info_results)
-        expect(WebMock).to have_requested(:get, /jira.api.com/)
+        expect(test_info).to eq(success: true, result: test_results)
+        expect(WebMock).to have_requested(:get, /jira.api.com/).times(2)
       end
     end
 

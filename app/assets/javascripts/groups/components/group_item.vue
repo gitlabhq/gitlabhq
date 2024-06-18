@@ -159,9 +159,9 @@ export default {
   >
     <div
       :class="{ 'project-row-contents': !isGroup }"
-      class="group-row-contents d-flex gl-align-items-center py-2 pr-3"
+      class="group-row-contents gl-flex gl-items-center py-2 pr-3"
     >
-      <div class="folder-toggle-wrap gl-mr-2 d-flex gl-align-items-center">
+      <div class="folder-toggle-wrap gl-mr-2 !gl-flex gl-items-center">
         <gl-button
           v-if="hasChildren"
           :aria-label="toggleAriaLabel"
@@ -177,11 +177,11 @@ export default {
       <gl-loading-icon
         v-if="group.isChildrenLoading"
         size="lg"
-        class="d-none d-sm-inline-flex flex-shrink-0 gl-mr-3"
+        class="gl-hidden sm:gl-inline-flex flex-shrink-0 gl-mr-3"
       />
       <a
-        :class="{ 'gl-sm-display-flex': !group.isChildrenLoading }"
-        class="gl-display-none gl-text-decoration-none! gl-mr-3"
+        :class="{ 'sm:gl-flex': !group.isChildrenLoading }"
+        class="gl-hidden gl-text-decoration-none! gl-mr-3"
         :href="group.relativePath"
         :aria-label="group.name"
       >
@@ -193,17 +193,17 @@ export default {
           :project-name="group.name"
         />
       </a>
-      <div class="group-text-container d-flex flex-fill gl-align-items-center">
+      <div class="group-text-container !gl-flex flex-fill gl-align-items-center">
         <div class="group-text flex-grow-1 flex-shrink-1">
           <div
-            class="gl-display-flex gl-align-items-center gl-flex-wrap title namespace-title gl-font-weight-bold gl-mr-3"
+            class="gl-flex gl-align-items-center gl-flex-wrap title namespace-title gl-font-bold gl-mr-3"
           >
             <a
               v-gl-tooltip.bottom
               data-testid="group-name"
               :href="group.relativePath"
               :title="group.fullName"
-              class="no-expand gl-mr-3 gl-text-gray-900! gl-word-break-word"
+              class="no-expand gl-mr-3 gl-text-gray-900! gl-break-anywhere"
               :itemprop="microdata.nameItemprop"
             >
               <!-- ending bracket must be by closing tag to prevent -->
@@ -266,11 +266,11 @@ export default {
           <gl-badge variant="info">{{ __('Archived') }}</gl-badge>
         </div>
         <div
-          class="metadata gl-display-flex gl-flex-grow-1 gl-flex-shrink-0 gl-flex-wrap justify-content-md-between"
+          class="metadata gl-flex gl-flex-grow-1 gl-flex-shrink-0 gl-flex-wrap justify-content-md-between"
         >
           <item-stats
             :item="group"
-            class="group-stats gl-display-none gl-md-display-flex gl-align-items-center"
+            class="group-stats gl-hidden md:gl-flex gl-align-items-center"
           />
           <item-actions
             v-if="showActionsMenu"
@@ -281,6 +281,7 @@ export default {
         </div>
       </div>
     </div>
+    <!-- eslint-disable-next-line vue/no-undef-components -->
     <group-folder
       v-if="group.isOpen && hasChildren"
       :parent-group="group"

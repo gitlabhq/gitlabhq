@@ -1,14 +1,27 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import { GlDrawer } from '@gitlab/ui';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import ReviewerDrawer from '~/merge_requests/components/reviewers/reviewer_drawer.vue';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import getMergeRequestReviewers from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
+import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
 
 jest.mock('~/lib/utils/dom_utils', () => ({ getContentWrapperHeight: jest.fn() }));
 
 let wrapper;
 
+Vue.use(VueApollo);
+
 function createComponent(propsData = {}) {
+  const apolloProvider = createMockApollo([
+    [getMergeRequestReviewers, jest.fn().mockResolvedValue({ data: { workspace: null } })],
+    [userPermissionsQuery, jest.fn().mockResolvedValue({ data: { project: null } })],
+  ]);
+
   wrapper = shallowMount(ReviewerDrawer, {
+    apolloProvider,
     propsData,
     provide: {
       projectPath: 'gitlab-org/gitlab',

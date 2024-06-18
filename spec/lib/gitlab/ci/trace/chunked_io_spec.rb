@@ -326,9 +326,9 @@ RSpec.describe Gitlab::Ci::Trace::ChunkedIO, :clean_gitlab_redis_cache do
       end
 
       it 'has known length' do
-        expect(sample_trace_raw_utf8.bytesize).to eq(4 * 4 + 3 * 1)
-        expect(sample_trace_raw.bytesize).to eq(4 * 4 + 3 * 1)
-        expect(chunked_io.size).to eq(4 * 4 + 3 * 1)
+        expect(sample_trace_raw_utf8.bytesize).to eq((4 * 4) + (3 * 1))
+        expect(sample_trace_raw.bytesize).to eq((4 * 4) + (3 * 1))
+        expect(chunked_io.size).to eq((4 * 4) + (3 * 1))
       end
 
       it_behaves_like 'all line matching'

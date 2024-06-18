@@ -178,7 +178,7 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
       context 'with unknown event' do
         it 'returns status ok' do
-          expect(Gitlab::Redis::HLL).not_to receive(:add).with(hash_including(key: unknown_event))
+          expect(Gitlab::Redis::HLL).not_to receive(:add)
 
           post api(endpoint, user), params: { event: unknown_event }
 
@@ -213,7 +213,7 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
     end
 
-    context 'with authentication' do
+    context 'with usage ping enabled' do
       let_it_be(:namespace) { create(:namespace) }
       let_it_be(:project) { create(:project) }
       let_it_be(:additional_properties) do
@@ -225,7 +225,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
 
       before do
         stub_application_setting(usage_ping_enabled: true)
-        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
       end
 
       context 'with correct params' do

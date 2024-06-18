@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.keys
 description: Number of keys.
-product_section: sec
-product_stage: govern
 product_group: authentication
 value_type: number
 status: active

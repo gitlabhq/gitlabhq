@@ -8,8 +8,8 @@ class Projects::LabelsController < Projects::ApplicationController
   before_action :find_labels, only: [:index, :set_priorities, :remove_priority, :toggle_subscription]
   before_action :authorize_read_label!
   before_action :authorize_admin_labels!, only: [:new, :create, :edit, :update,
-                                                 :generate, :destroy, :remove_priority,
-                                                 :set_priorities]
+    :generate, :destroy, :remove_priority,
+    :set_priorities]
   before_action :authorize_admin_group_labels!, only: [:promote]
 
   respond_to :js, :html

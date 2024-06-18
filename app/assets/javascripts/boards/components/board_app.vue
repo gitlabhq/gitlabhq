@@ -1,11 +1,18 @@
 <script>
 import { omit } from 'lodash';
-import { refreshCurrentPage, queryToObject } from '~/lib/utils/url_utility';
+import AccessorUtilities from '~/lib/utils/accessor';
+import { historyPushState, parseBoolean } from '~/lib/utils/common_utils';
+import {
+  refreshCurrentPage,
+  queryToObject,
+  mergeUrlParams,
+  removeParams,
+} from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import BoardContent from '~/boards/components/board_content.vue';
 import BoardSettingsSidebar from '~/boards/components/board_settings_sidebar.vue';
 import BoardTopBar from '~/boards/components/board_top_bar.vue';
-import { listsQuery, FilterFields } from 'ee_else_ce/boards/constants';
+import { listsQuery, FilterFields, GroupByParamType } from 'ee_else_ce/boards/constants';
 import { formatBoardLists, filterVariables, FiltersInfo } from 'ee_else_ce/boards/boards_util';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
 import errorQuery from '../graphql/client/error.query.graphql';
@@ -38,7 +45,7 @@ export default {
       boardId: this.initialBoardId,
       filterParams: { ...this.initialFilterParams },
       addColumnFormVisible: false,
-      isShowingEpicsSwimlanes: Boolean(queryToObject(window.location.search).group_by),
+      isShowingEpicsSwimlanes: false,
       error: null,
     };
   },
@@ -109,9 +116,13 @@ export default {
         filterFields: FilterFields,
       });
     },
+    isShowingEpicSwimlanesLocalStorageKey() {
+      return `board.${this.fullPath}.${this.boardId}.isShowingEpicSwimlanes`;
+    },
   },
   created() {
     window.addEventListener('popstate', refreshCurrentPage);
+    this.initIsShowingEpicSwimlanes();
   },
   destroyed() {
     window.removeEventListener('popstate', refreshCurrentPage);
@@ -126,10 +137,63 @@ export default {
     switchBoard(id) {
       this.boardId = id;
       this.setActiveId('');
+      this.setIsShowingEpicSwimlanesFromLocalStorage();
     },
     setFilters(filters) {
       const filterParams = { ...filters };
       this.filterParams = filterParams;
+    },
+    setIsShowingEpicSwimlanes(value) {
+      this.isShowingEpicsSwimlanes = value;
+      this.saveIsShowingEpicSwimlanes();
+    },
+    getIsShowingEpicSwimlanesFromUrl() {
+      return queryToObject(window.location.search).group_by === GroupByParamType.epic;
+    },
+    getIsShowingEpicSwimlanesFromLocalStorage() {
+      return parseBoolean(localStorage.getItem(this.isShowingEpicSwimlanesLocalStorageKey));
+    },
+    setIsShowingEpicSwimlanesFromLocalStorage() {
+      if (AccessorUtilities.canUseLocalStorage()) {
+        this.isShowingEpicsSwimlanes = this.getIsShowingEpicSwimlanesFromLocalStorage();
+        if (this.isShowingEpicsSwimlanes) {
+          historyPushState(
+            mergeUrlParams({ group_by: GroupByParamType.epic }, window.location.href, {
+              spreadArrays: true,
+            }),
+          );
+        } else {
+          this.removeGroupByParam();
+        }
+      }
+    },
+    initIsShowingEpicSwimlanes() {
+      if (this.isIssueBoard) {
+        const urlHasEpicSwimlanes = this.getIsShowingEpicSwimlanesFromUrl();
+        this.setIsShowingEpicSwimlanes(urlHasEpicSwimlanes);
+        if (urlHasEpicSwimlanes) {
+          return;
+        }
+        if (this.getIsShowingEpicSwimlanesFromLocalStorage()) {
+          this.setIsShowingEpicSwimlanes(true);
+        }
+      } else {
+        this.removeGroupByParam();
+      }
+    },
+    saveIsShowingEpicSwimlanes() {
+      if (AccessorUtilities.canUseLocalStorage()) {
+        const currentLocalStorageValue = this.getIsShowingEpicSwimlanesFromLocalStorage();
+        if (currentLocalStorageValue !== this.isShowingEpicsSwimlanes) {
+          localStorage.setItem(
+            this.isShowingEpicSwimlanesLocalStorageKey,
+            this.isShowingEpicsSwimlanes,
+          );
+        }
+      }
+    },
+    removeGroupByParam() {
+      historyPushState(removeParams(['group_by']), window.location.href, true);
     },
   },
 };
@@ -144,7 +208,7 @@ export default {
       @switchBoard="switchBoard"
       @setFilters="setFilters"
       @setAddColumnFormVisibility="addColumnFormVisible = $event"
-      @toggleSwimlanes="isShowingEpicsSwimlanes = $event"
+      @toggleSwimlanes="setIsShowingEpicSwimlanes"
       @updateBoard="refetchLists"
     />
     <board-content

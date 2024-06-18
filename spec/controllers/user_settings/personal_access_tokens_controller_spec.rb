@@ -106,6 +106,16 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
       expect(json_response.count).to eq(1)
     end
 
+    it 'returns an iCalendar after redirect for ics format' do
+      get :index, params: { format: :ics }
+
+      expect(response).to redirect_to(%r{/-/user_settings/personal_access_tokens\?feed_token=})
+
+      get :index, params: { format: :ics, feed_token: response.location.split('=').last }
+
+      expect(response.body).to include('BEGIN:VCALENDAR')
+    end
+
     it 'sets available scopes' do
       expect(assigns(:scopes)).to eq(Gitlab::Auth.available_scopes_for(access_token_user))
     end

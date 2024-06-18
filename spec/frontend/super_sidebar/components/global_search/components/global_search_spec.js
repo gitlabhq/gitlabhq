@@ -12,9 +12,18 @@ import FakeSearchInput from '~/super_sidebar/components/global_search/command_pa
 import CommandPaletteItems from '~/super_sidebar/components/global_search/command_palette/command_palette_items.vue';
 import CommandsOverviewDropdown from '~/super_sidebar/components/global_search/command_palette/command_overview_dropdown.vue';
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import {
   SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
   COMMON_HANDLES,
+  COMMAND_HANDLE,
+  USER_HANDLE,
+  PROJECT_HANDLE,
+  PATH_HANDLE,
+  MODAL_CLOSE_ESC,
+  MODAL_CLOSE_BACKGROUND,
+  MODAL_CLOSE_HEADERCLOSE,
 } from '~/super_sidebar/components/global_search/command_palette/constants';
 import {
   SEARCH_INPUT_DESCRIPTION,
@@ -44,6 +53,14 @@ Vue.use(Vuex);
 
 jest.mock('~/lib/utils/url_utility', () => ({
   visitUrl: jest.fn(),
+  queryToObject: jest.fn(),
+  objectToQuery: jest.fn(() => 'search=test'),
+  isRootRelative: jest.fn(),
+  getBaseURL: jest.fn(() => 'https://gdk.test:3000'),
+}));
+
+jest.mock('~/search/store/utils.js', () => ({
+  injectRegexSearch: jest.fn(() => '/search?search=test'),
 }));
 
 const triggerKeydownEvent = (target, code, metaKey = false) => {
@@ -60,6 +77,8 @@ const triggerKeydownEvent = (target, code, metaKey = false) => {
 describe('GlobalSearchModal', () => {
   let wrapper;
   let store;
+  let handleClosingSpy;
+  let onKeyComboDownSpy;
 
   const actionSpies = {
     setSearch: jest.fn(),
@@ -113,6 +132,16 @@ describe('GlobalSearchModal', () => {
     });
   };
 
+  beforeEach(() => {
+    handleClosingSpy = jest.spyOn(GlobalSearchModal.methods, 'handleClosing');
+    onKeyComboDownSpy = jest.spyOn(GlobalSearchModal.methods, 'onKeyComboDown');
+  });
+
+  afterEach(() => {
+    handleClosingSpy.mockRestore();
+    onKeyComboDownSpy.mockRestore();
+  });
+
   const findGlobalSearchModal = () => wrapper.findComponent(GlModal);
 
   const findGlobalSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
@@ -128,6 +157,9 @@ describe('GlobalSearchModal', () => {
   const findCommandPaletteDropdown = () => wrapper.findComponent(CommandsOverviewDropdown);
 
   describe('template', () => {
+    beforeEach(() => {
+      useMockLocationHelper();
+    });
     describe('always renders', () => {
       beforeEach(() => {
         createComponent();
@@ -317,7 +349,7 @@ describe('GlobalSearchModal', () => {
         const submitSearch = () =>
           findGlobalSearchInput().vm.$emit(
             'keydown',
-            new KeyboardEvent('keydown', { key: ENTER_KEY }),
+            new KeyboardEvent('keydown', { code: ENTER_KEY }),
           );
 
         describe.each`
@@ -370,6 +402,8 @@ describe('GlobalSearchModal', () => {
 
           it('will submit a search with the sufficient number of characters', () => {
             createComponent();
+            findGlobalSearchInput().vm.$emit('input', MOCK_SEARCH);
+
             submitSearch();
             expect(visitUrl).toHaveBeenCalledWith(MOCK_SEARCH_QUERY);
           });
@@ -378,15 +412,6 @@ describe('GlobalSearchModal', () => {
     });
 
     describe('Modal events', () => {
-      const openSpy = jest.fn();
-      const closeSpy = jest.fn();
-
-      CommandsOverviewDropdown.methods = {
-        open: openSpy,
-        close: closeSpy,
-        emitSelected: jest.fn(),
-      };
-
       beforeEach(() => {
         createComponent({
           initialState: { search: '', commandChar: '' },
@@ -399,27 +424,48 @@ describe('GlobalSearchModal', () => {
             GlSearchBoxByType,
           },
         });
-
-        wrapper.vm.$refs.commandDropdown.open = openSpy;
-        wrapper.vm.$refs.commandDropdown.close = closeSpy;
-
-        findGlobalSearchModal().vm.$emit('shown');
       });
 
       describe('when combination shortcut is pressed', () => {
-        it('Command+k opens commands dropdown', async () => {
-          await triggerKeydownEvent(window, KEY_K, true);
+        it('calls handleClosing when hidden event is emitted', () => {
+          findCommandPaletteDropdown().vm.$emit('hidden');
+          expect(handleClosingSpy).toHaveBeenCalled();
+        });
 
-          expect(openSpy).toHaveBeenCalledTimes(1);
-          expect(closeSpy).toHaveBeenCalledTimes(0);
+        it('key combination triggers correctly', async () => {
+          const openSpy = jest.fn();
+          const closeSpy = jest.fn();
+
+          wrapper.vm.$refs.commandDropdown.open = openSpy;
+          wrapper.vm.$refs.commandDropdown.close = closeSpy;
+
+          await findGlobalSearchModal().vm.$emit('shown');
+          await triggerKeydownEvent(window, KEY_K, true);
           await triggerKeydownEvent(window, KEY_K, true);
 
           expect(openSpy).toHaveBeenCalledTimes(1);
           expect(closeSpy).toHaveBeenCalledTimes(1);
         });
+
+        it('opens correctly after esc dismiss of open dropdown', async () => {
+          const openSpy = jest.fn();
+          const closeSpy = jest.fn();
+
+          wrapper.vm.$refs.commandDropdown.open = openSpy;
+          wrapper.vm.$refs.commandDropdown.close = closeSpy;
+
+          await findGlobalSearchModal().vm.$emit('shown');
+          await triggerKeydownEvent(window, KEY_K, true);
+          findCommandPaletteDropdown().vm.$emit('hidden');
+          await triggerKeydownEvent(window, KEY_K, true);
+
+          expect(openSpy).toHaveBeenCalledTimes(2);
+          expect(closeSpy).toHaveBeenCalledTimes(0);
+        });
       });
 
       it('should emit `shown` event when modal shown`', () => {
+        findGlobalSearchModal().vm.$emit('shown');
         expect(wrapper.emitted('shown')).toHaveLength(1);
       });
 
@@ -428,6 +474,69 @@ describe('GlobalSearchModal', () => {
         expect(wrapper.emitted('hidden')).toHaveLength(1);
         expect(actionSpies.setSearch).toHaveBeenCalledWith(expect.any(Object), '');
       });
+    });
+  });
+
+  describe('Track events', () => {
+    beforeEach(() => {
+      createComponent({
+        initialState: { search: '', commandChar: '' },
+        mockGetters: {
+          ...defaultMockGetters,
+          isCommandMode: () => Boolean(''),
+        },
+        stubs: {
+          GlModal,
+          GlSearchBoxByType,
+        },
+      });
+    });
+
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it.each`
+      dropdownEvent     | trackingEvent
+      ${COMMAND_HANDLE} | ${'press_greater_than_in_command_palette'}
+      ${USER_HANDLE}    | ${'press_at_symbol_in_command_palette'}
+      ${PROJECT_HANDLE} | ${'press_colon_in_command_palette'}
+      ${PATH_HANDLE}    | ${'press_forward_slash_in_command_palette'}
+    `('triggers and tracks command dropdown $dropdownEvent', ({ dropdownEvent, trackingEvent }) => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findCommandPaletteDropdown().vm.$emit('selected', dropdownEvent);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(trackingEvent, {}, undefined);
+    });
+
+    it.each`
+      modalEvent                 | trackingEvent
+      ${MODAL_CLOSE_ESC}         | ${'press_escape_in_command_palette'}
+      ${MODAL_CLOSE_BACKGROUND}  | ${'click_outside_of_command_palette'}
+      ${MODAL_CLOSE_HEADERCLOSE} | ${'press_escape_in_command_palette'}
+    `('triggers and tracks modal event $modalEvent', async ({ modalEvent, trackingEvent }) => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      await findGlobalSearchModal().vm.$emit('hide', { trigger: modalEvent });
+
+      expect(trackEventSpy).toHaveBeenCalledWith(trackingEvent, {}, undefined);
+    });
+
+    it('triggers and tracks key event', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      const event = {
+        code: ENTER_KEY,
+        target: '',
+        stopPropagation: jest.fn(),
+        preventDefault: jest.fn(),
+      };
+
+      findGlobalSearchInput().vm.$emit('keydown', event);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'press_enter_to_advanced_search',
+        { label: 'command_palette' },
+        undefined,
+      );
     });
   });
 

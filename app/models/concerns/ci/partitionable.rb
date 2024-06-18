@@ -81,13 +81,18 @@ module Ci
         partitioned_by :partition_id,
           strategy: :ci_sliding_list,
           next_partition_if: ->(latest_partition) do
-            latest_partition.blank? ||
-              ::Ci::Partitionable::Organizer.new_partition_required?(latest_partition.values.max)
+            latest_partition.blank? || create_database_partition?(latest_partition)
           end,
           detach_partition_if: proc { false },
-          # Most of the db tasks are run in a weekly basis, e.g. execute_batched_migrations.
-          # Therefore, let's start with 1.week and see how it'd go.
-          analyze_interval: 1.week
+          analyze_interval: 3.days
+      end
+
+      def create_database_partition?(database_partition)
+        if Feature.enabled?(:ci_partitioning_automation, :instance)
+          Ci::Partition.provisioning(database_partition.values.max).present?
+        else
+          database_partition.before?(Ci::Pipeline::NEXT_PARTITION_VALUE)
+        end
       end
     end
   end

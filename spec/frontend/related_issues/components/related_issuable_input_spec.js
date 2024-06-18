@@ -34,7 +34,7 @@ describe('RelatedIssuableInput', () => {
         mountComponent();
 
         expect(wrapper.findComponent({ ref: 'input' }).element.placeholder).toBe(
-          'Paste issue link or <#issue id>',
+          'Enter issue URL or <#issue ID>',
         );
       });
 

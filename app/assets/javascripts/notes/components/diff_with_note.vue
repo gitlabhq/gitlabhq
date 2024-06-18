@@ -129,7 +129,7 @@ export default {
             <td v-if="error" class="js-error-lazy-load-diff diff-loading-error-block">
               {{ __('Unable to load the diff') }}
               <gl-button
-                class="btn-link-retry gl-font-regular js-toggle-lazy-diff-retry-button"
+                class="gl-font-regular js-toggle-lazy-diff-retry-button"
                 @click="fetchDiff"
               >
                 {{ __('Try again') }}

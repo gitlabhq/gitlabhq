@@ -35,7 +35,11 @@ Indirect membership can be inherited, shared, or inherited shared.
 | [Inherited shared](../../group/manage.md#share-a-group-with-another-group) | The user is a member of a parent of a group or project invited to the current group or project. |
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart RL
+  accTitle: Membership types
+  accDescr: Describes membership types and their inheritance
+
   subgraph Group A
     A(Direct member)
     B{{Shared member}}
@@ -325,9 +329,7 @@ To sort members:
 GitLab users can request to become a member of a project.
 
 1. On the left sidebar, select **Search or go to** and find the project you want to be a member of.
-1. By the project's name, select **Request Access**.
-
-![Request access button](img/request_access_button.png)
+1. In the top right, select the vertical ellipsis (**{ellipsis_v}**) and select **Request Access**.
 
 An email is sent to the most recently active project Maintainers or Owners.
 Up to ten project Maintainers or Owners are notified.
@@ -397,7 +399,10 @@ In the following example, `User` is a:
 - Indirect inherited member of `subsubgroup-2` and `subsubgroup-3`.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+  accTitle: Diagram of group inheritance
+  accDescr: User inheritance, both direct and indirect through subgroups
   classDef user stroke:green,color:green;
 
   root --> subgroup --> subsubgroup

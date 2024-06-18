@@ -112,7 +112,7 @@ RSpec.shared_examples '#valid_level_roles' do |entity_name|
 end
 
 RSpec.shared_examples_for "member creation" do
-  let_it_be(:admin) { create(:admin, :without_default_org) }
+  let_it_be(:admin) { create(:admin) }
 
   it 'returns a Member object', :aggregate_failures do
     member = described_class.add_member(source, user, :maintainer)
@@ -385,8 +385,8 @@ RSpec.shared_examples_for "member creation" do
 end
 
 RSpec.shared_examples_for "bulk member creation" do
-  let_it_be(:admin) { create(:admin, :without_default_org) }
-  let_it_be(:user1) { create(:user) }
+  let_it_be(:admin) { create(:admin) }
+  let_it_be(:user1) { create(:user, email: 'bob@example.com') }
   let_it_be(:user2) { create(:user) }
 
   context 'when current user does not have permission' do
@@ -478,6 +478,45 @@ RSpec.shared_examples_for "bulk member creation" do
     expect(members.map(&:user)).to contain_exactly(user1)
     expect(members).to all(be_a(member_type))
     expect(members).to all(be_persisted)
+  end
+
+  context 'with uppercased email with user in same invite' do
+    it 'only creates the one member' do
+      members = described_class.add_members(source, [user1, user1.email.upcase], :maintainer)
+
+      expect(members.map(&:user)).to contain_exactly(user1)
+      expect(members).to all(be_a(member_type))
+      expect(members).to all(be_persisted)
+    end
+  end
+
+  context 'with same email with different cases' do
+    let(:email) { 'bobby@example.com' }
+
+    context 'when the lowercased email is invited first' do
+      it 'invites the first and errors on the uppercase one' do
+        expect do
+          members = described_class.add_members(source, [email, email.upcase], :maintainer)
+
+          expect(source.members.invite.pluck(:invite_email)).to include(email)
+          expect(members.size).to eq(2)
+          expect(members.first).to be_persisted
+          expect(members.last).to be_invalid
+        end.to change { Member.count }.by(1)
+      end
+    end
+
+    context 'when the lowercased email is invited last' do
+      it 'invites the first and finds updates that record for the second one' do
+        expect do
+          members = described_class.add_members(source, [email.upcase, email], :maintainer)
+
+          expect(source.members.invite.pluck(:invite_email)).to include(email)
+          expect(members.size).to eq(2)
+          expect(members).to all(be_persisted)
+        end.to change { Member.count }.by(1)
+      end
+    end
   end
 
   context 'when a member already exists' do

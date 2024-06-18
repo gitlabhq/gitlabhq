@@ -815,12 +815,21 @@ export const k8sNamespacesMock = [
   { metadata: { name: 'agent' } },
 ];
 
-export const fluxKustomizationsMock = [
-  {
-    status: 'True',
-    type: 'Ready',
-  },
-];
+const fluxResourceStatusMock = [{ status: 'True', type: 'Ready', message: '', reason: '' }];
+export const fluxKustomizationMock = {
+  kind: 'Kustomization',
+  metadata: { name: 'custom-resource', namespace: 'custom-namespace' },
+  status: { conditions: fluxResourceStatusMock, inventory: { entries: [{ id: 'test_resource' }] } },
+};
+export const fluxKustomizationMapped = {
+  kind: 'Kustomization',
+  metadata: { name: 'custom-resource' },
+  conditions: fluxResourceStatusMock,
+  inventory: [{ id: 'test_resource' }],
+};
+export const fluxHelmReleaseMapped = {
+  conditions: fluxResourceStatusMock,
+};
 
 export const fluxResourcePathMock = 'kustomize.toolkit.fluxcd.io/v1/path/to/flux/resource';
 

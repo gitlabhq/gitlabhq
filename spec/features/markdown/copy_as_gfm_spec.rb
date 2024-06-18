@@ -656,7 +656,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
     end
 
     def project_media_uri(project, media_path)
-      "#{project_path(project)}#{media_path}"
+      "/-/project/#{project.id}#{media_path}"
     end
 
     def verify_media_with_partial_path(gfm, media_uri)

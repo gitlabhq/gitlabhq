@@ -79,6 +79,7 @@ describe('WikiForm', () => {
     wrapper = extendedWrapper(
       mountFn(WikiForm, {
         provide: {
+          isEditingPath: true,
           templates,
           formatOptions,
           glFeatures,
@@ -86,6 +87,10 @@ describe('WikiForm', () => {
             ...(persisted ? pageInfoPersisted : pageInfoNew),
             ...pageInfo,
           },
+          wikiUrl: '',
+          pageHeading: '',
+          csrfToken: '',
+          pagePersisted: false,
           ...provide,
         },
         stubs: {
@@ -365,9 +370,8 @@ describe('WikiForm', () => {
       title          | content        | buttonState   | disabledAttr
       ${'something'} | ${'something'} | ${'enabled'}  | ${false}
       ${''}          | ${'something'} | ${'disabled'} | ${true}
-      ${'something'} | ${''}          | ${'disabled'} | ${true}
+      ${'something'} | ${''}          | ${'disabled'} | ${false}
       ${''}          | ${''}          | ${'disabled'} | ${true}
-      ${'   '}       | ${'   '}       | ${'disabled'} | ${true}
     `(
       "when title='$title', content='$content', then the button is $buttonState'",
       async ({ title, content, disabledAttr }) => {

@@ -60,7 +60,7 @@ module Users
       namespace_storage_limit_alert_alert_threshold: 57, # EE-only
       namespace_storage_limit_alert_error_threshold: 58, # EE-only
       project_quality_summary_feedback: 59, # EE-only
-      merge_request_settings_moved_callout: 60,
+      # 60 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154140
       new_top_level_group_alert: 61,
       # 62, removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131314
       # 63 and 64 were removed with https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120233
@@ -85,10 +85,10 @@ module Users
       joining_a_project_alert: 83, # EE-only
       transition_to_jihu_callout: 84,
       summarize_code_changes: 85, # EE-only
-      duo_pro_trial_alert: 86, # EE-only
+      # 86 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152619
       deployment_details_feedback: 87,
-      duo_chat_ga_alert: 88, # EE-only
-      board_add_new_column_trigger_popover: 89,
+      # 88 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152999
+      # 89 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152981
       deployment_approvals_empty_state: 90,
       period_in_terraform_state_name_alert: 91
     }
@@ -98,6 +98,6 @@ module Users
       uniqueness: { scope: :user_id },
       inclusion: { in: Users::Callout.feature_names.keys }
 
-    scope :with_feature_name, -> (feature_name) { where(feature_name: feature_name) }
+    scope :with_feature_name, ->(feature_name) { where(feature_name: feature_name) }
   end
 end

@@ -231,7 +231,7 @@ To define which option should be used, the runner process reads the configuratio
 
 ### Requirements and limitations
 
-- Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes.html)
+- Available for [Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/index.html)
   in GitLab Runner 13.1 and later.
 - [Credentials Store](#use-a-credentials-store) and [Credential Helpers](#use-credential-helpers)
   require binaries to be added to the GitLab Runner `$PATH`, and require access to do so. Therefore,
@@ -296,6 +296,9 @@ Use one of the following methods to determine the value for `DOCKER_AUTH_CONFIG`
   # Example output to copy
   bXlfdXNlcm5hbWU6bXlfcGFzc3dvcmQ=
   ```
+
+NOTE:
+If your username includes special characters like `@`, you must escape them with a backslash (`\`) to prevent authentication problems.
 
   Create the Docker JSON configuration content as follows:
 
@@ -492,67 +495,67 @@ and update Docker images on Amazon ECR, without using manual credential manageme
 1. [Authenticate GitLab with AWS](../cloud_deployment/index.md#authenticate-gitlab-with-aws).
 1. Create a `Dockerfile` with the following content:
 
-    ```Dockerfile
-      # Control package versions
-      ARG GITLAB_RUNNER_VERSION=v16.4.0
-      ARG AWS_CLI_VERSION=2.2.30
+   ```Dockerfile
+   # Control package versions
+   ARG GITLAB_RUNNER_VERSION=v16.4.0
+   ARG AWS_CLI_VERSION=2.2.30
 
-      # AWS CLI and Amazon ECR Credential Helper
-      FROM amazonlinux as aws-tools
-      RUN set -e \
-          && yum update -y \
-          && yum install -y --allowerasing git make gcc curl unzip \
-          && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" --output "awscliv2.zip" \
-          && unzip awscliv2.zip && ./aws/install -i /usr/local/bin \
-          && yum clean all
+   # AWS CLI and Amazon ECR Credential Helper
+   FROM amazonlinux as aws-tools
+   RUN set -e \
+       && yum update -y \
+       && yum install -y --allowerasing git make gcc curl unzip \
+       && curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" --output "awscliv2.zip" \
+       && unzip awscliv2.zip && ./aws/install -i /usr/local/bin \
+       && yum clean all
 
-      # Download and install ECR Credential Helper
-      RUN curl --location --output  /usr/local/bin/docker-credential-ecr-login "https://github.com/awslabs/amazon-ecr-credential-helper/releases/latest/download/docker-credential-ecr-login-linux-amd64"
-      RUN chmod +x /usr/local/bin/docker-credential-ecr-login
+   # Download and install ECR Credential Helper
+   RUN curl --location --output  /usr/local/bin/docker-credential-ecr-login "https://github.com/awslabs/amazon-ecr-credential-helper/releases/latest/download/docker-credential-ecr-login-linux-amd64"
+   RUN chmod +x /usr/local/bin/docker-credential-ecr-login
 
-      # Configure the ECR Credential Helper
-      RUN mkdir -p /root/.docker
-      RUN echo '{ "credsStore": "ecr-login" }' > /root/.docker/config.json
+   # Configure the ECR Credential Helper
+   RUN mkdir -p /root/.docker
+   RUN echo '{ "credsStore": "ecr-login" }' > /root/.docker/config.json
 
-      # Final image based on GitLab Runner
-      FROM gitlab/gitlab-runner:${GITLAB_RUNNER_VERSION}
+   # Final image based on GitLab Runner
+   FROM gitlab/gitlab-runner:${GITLAB_RUNNER_VERSION}
 
-      # Install necessary packages
-      RUN apt-get update \
-          && apt-get install -y --no-install-recommends jq procps curl unzip groff libgcrypt20 tar gzip less openssh-client \
-          && apt-get clean && rm -rf /var/lib/apt/lists/*
+   # Install necessary packages
+   RUN apt-get update \
+       && apt-get install -y --no-install-recommends jq procps curl unzip groff libgcrypt20 tar gzip less openssh-client \
+       && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-      # Copy AWS CLI and Amazon ECR Credential Helper binaries
-      COPY --from=aws-tools /usr/local/bin/ /usr/local/bin/
+   # Copy AWS CLI and Amazon ECR Credential Helper binaries
+   COPY --from=aws-tools /usr/local/bin/ /usr/local/bin/
 
-      # Copy ECR Credential Helper Configuration
-      COPY --from=aws-tools /root/.docker/config.json /root/.docker/config.json
-    ```
+   # Copy ECR Credential Helper Configuration
+   COPY --from=aws-tools /root/.docker/config.json /root/.docker/config.json
+   ```
 
 1. To build the custom GitLab Runner Docker image within a `.gitlab-ci.yml`, include the following example below:
 
-    ```yaml
-    variables:
-      DOCKER_DRIVER: overlay2
-      IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
-      GITLAB_RUNNER_VERSION: v16.4.0
-      AWS_CLI_VERSION: 2.13.21
+   ```yaml
+   variables:
+     DOCKER_DRIVER: overlay2
+     IMAGE_NAME: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+     GITLAB_RUNNER_VERSION: v16.4.0
+     AWS_CLI_VERSION: 2.13.21
 
-    stages:
-      - build
+   stages:
+     - build
 
-    build-image:
-      stage: build
-      script:
-        - echo "Logging into GitLab container registry..."
-        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-        - echo "Building Docker image..."
-        - docker build --build-arg GITLAB_RUNNER_VERSION=${GITLAB_RUNNER_VERSION} --build-arg AWS_CLI_VERSION=${AWS_CLI_VERSION} -t ${IMAGE_NAME} .
-        - echo "Pushing Docker image to GitLab container registry..."
-        - docker push ${IMAGE_NAME}
-      rules:
-        - changes:
-            - Dockerfile
-    ```
+   build-image:
+     stage: build
+     script:
+       - echo "Logging into GitLab container registry..."
+       - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+       - echo "Building Docker image..."
+       - docker build --build-arg GITLAB_RUNNER_VERSION=${GITLAB_RUNNER_VERSION} --build-arg AWS_CLI_VERSION=${AWS_CLI_VERSION} -t ${IMAGE_NAME} .
+       - echo "Pushing Docker image to GitLab container registry..."
+       - docker push ${IMAGE_NAME}
+     rules:
+       - changes:
+           - Dockerfile
+   ```
 
 1. [Register the runner](https://docs.gitlab.com/runner/register/index.html#docker).

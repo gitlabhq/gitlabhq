@@ -1,3 +1,4 @@
+import { GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import TitleField from '~/issues/show/components/fields/title.vue';
 import eventHub from '~/issues/show/event_hub';
@@ -5,7 +6,7 @@ import eventHub from '~/issues/show/event_hub';
 describe('Title field component', () => {
   let wrapper;
 
-  const findInput = () => wrapper.findComponent({ ref: 'input' });
+  const findInput = () => wrapper.findComponent(GlFormInput);
 
   beforeEach(() => {
     jest.spyOn(eventHub, '$emit');
@@ -14,11 +15,15 @@ describe('Title field component', () => {
       propsData: {
         value: 'test',
       },
+      stubs: {
+        GlFormGroup,
+        GlFormInput,
+      },
     });
   });
 
   it('renders form control with formState title', () => {
-    expect(findInput().element.value).toBe('test');
+    expect(findInput().attributes('value')).toBe('test');
   });
 
   it('triggers update with meta+enter', () => {

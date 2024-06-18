@@ -2,6 +2,7 @@
 stage: Create
 group: Code Creation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Code Suggestions helps you write code in GitLab more efficiently by using AI to suggest code as you type."
 ---
 
 # Code Suggestions
@@ -128,23 +129,10 @@ When using Code Suggestions, [code review best practice](../../../../development
 ## Disable Code Suggestions
 
 To disable Code Suggestions, disable the feature in your IDE editor extension.
+For details, see the documentation for your extension.
 
-### Disable Code Suggestions for a project
-
-DETAILS:
-**Status:** Experiment
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/12404) in GitLab 16.10. This feature is an [Experiment](../../../../policy/experiment-beta-support.md).
-
-Prerequisites:
-
-- You must have at least the Maintainer role in the project.
-
-You can disable Code Suggestions for specific projects.
-
-To do so, use the GraphQL API to [update the `duoFeaturesEnabled` setting in your project](../../../../api/graphql/getting_started.md#update-project-settings).
-
-For more information on this setting, see the [API documentation on the `projectSettingsUpdate` mutation](../../../../api/graphql/reference/index.md#mutationprojectsettingsupdate).
+If you'd prefer, you can
+[turn off GitLab Duo for a group, project, or instance](../../../../user/gitlab_duo/turn_on_off.md).
 
 ## Feedback
 

@@ -5,6 +5,7 @@ module Types
     graphql_name 'WorkItem'
 
     implements Types::TodoableInterface
+    connection_type_class Types::CountableConnectionType
 
     authorize :read_work_item
 
@@ -21,7 +22,7 @@ module Types
       description: 'Description of the work item.'
     field :id, Types::GlobalIDType[::WorkItem], null: false,
       description: 'Global ID of the work item.'
-    field :iid, GraphQL::Types::ID, null: false,
+    field :iid, GraphQL::Types::String, null: false,
       description: 'Internal ID of the work item.'
     field :lock_version,
       GraphQL::Types::Int,

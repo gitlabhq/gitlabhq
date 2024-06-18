@@ -63,6 +63,12 @@
     "tag_list": {
       "type": "array"
     },
+    "runner_manager": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "runner_manager.json" }
+      ]
+    },
     "runner": {
       "oneOf": [
         { "type": "null" },

@@ -112,9 +112,9 @@ the components outlined above and the pre-loaded demo runbook.
                  return
 
               spawner.environment['GITLAB_ACCESS_TOKEN'] = auth_state['access_token']
-              spawner.environment['GITLAB_USER_LOGIN'] = auth_state['gitlab_user']['username']
-              spawner.environment['GITLAB_USER_ID'] = str(auth_state['gitlab_user']['id'])
               spawner.environment['GITLAB_USER_EMAIL'] = auth_state['gitlab_user']['email']
+              spawner.environment['GITLAB_USER_ID'] = str(auth_state['gitlab_user']['id'])
+              spawner.environment['GITLAB_USER_LOGIN'] = auth_state['gitlab_user']['username']
               spawner.environment['GITLAB_USER_NAME'] = auth_state['gitlab_user']['name']
 
            c.KubeSpawner.pre_spawn_hook = add_auth_env

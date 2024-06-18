@@ -116,7 +116,7 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
     describe 'GET projects/:id/packages/debian/pool/:codename/:letter/:package_name/:package_version/:file_name' do
       using RSpec::Parameterized::TableSyntax
 
-      let(:url) { "/projects/#{container.id}/packages/debian/pool/#{package.debian_distribution.codename}/#{letter}/#{package.name}/#{package.version}/#{file_name}" }
+      let(:url) { "/projects/#{container.id}/packages/debian/pool/#{package.distribution.codename}/#{letter}/#{package.name}/#{package.version}/#{file_name}" }
       let(:file_name) { params[:file_name] }
 
       where(:file_name, :success_body) do

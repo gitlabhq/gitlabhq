@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.testing.i_testing_coverage_report_uploaded_monthly
 description: "MAU of coverage test reports uploaded by customers per pipeline"
-product_section: ops
-product_stage: verify
 product_group: pipeline_execution
 value_type: number
 status: active

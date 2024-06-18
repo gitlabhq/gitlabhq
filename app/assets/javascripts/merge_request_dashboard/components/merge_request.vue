@@ -1,6 +1,8 @@
 <script>
 import { GlLink, GlSprintf, GlIcon, GlLabel, GlTooltipDirective } from '@gitlab/ui';
+import ApprovalCount from 'ee_component/merge_request_dashboard/components/approval_count.vue';
 import { __, sprintf } from '~/locale';
+import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -8,6 +10,12 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 
 export default {
+  apollo: {
+    isShowingLabels: {
+      query: isShowingLabelsQuery,
+      update: (data) => data.isShowingLabels,
+    },
+  },
   components: {
     GlLink,
     GlSprintf,
@@ -16,6 +24,7 @@ export default {
     CiIcon,
     TimeAgoTooltip,
     UserAvatarLink,
+    ApprovalCount,
   },
   directives: {
     SafeHtml,
@@ -26,6 +35,11 @@ export default {
       type: Object,
       required: true,
     },
+  },
+  data() {
+    return {
+      isShowingLabels: true,
+    };
   },
   methods: {
     showScopedLabel(label) {
@@ -43,7 +57,10 @@ export default {
 
 <template>
   <div class="gl-bg-white gl-p-5 gl-rounded-base">
-    <div class="gl-display-flex" :class="{ 'gl-mb-2': mergeRequest.labels.length }">
+    <div
+      class="gl-display-flex"
+      :class="{ 'gl-mb-2': mergeRequest.labels.length && isShowingLabels }"
+    >
       <div class="gl-display-flex gl-flex-direction-column">
         <h4 class="gl-mb-0 gl-mt-0 gl-font-base">
           <gl-link
@@ -101,6 +118,12 @@ export default {
             />
           </li>
           <li
+            v-if="mergeRequest.approvalsRequired || mergeRequest.approved"
+            class="gl-ml-4 gl-display-flex gl-align-self-center"
+          >
+            <approval-count :merge-request="mergeRequest" />
+          </li>
+          <li
             v-if="mergeRequest.userDiscussionsCount"
             v-gl-tooltip="__('Comments')"
             class="gl-align-self-center gl-ml-4"
@@ -119,7 +142,7 @@ export default {
         </div>
       </div>
     </div>
-    <div>
+    <div v-if="isShowingLabels">
       <gl-label
         v-for="label in mergeRequest.labels.nodes"
         :key="label.id"

@@ -44,6 +44,10 @@ module Users
       end
     end
 
+    def relation_at_search_limit?(users_relation)
+      params[:search] && users_relation.size >= SEARCH_LIMIT
+    end
+
     def groups
       return [] unless current_user
 

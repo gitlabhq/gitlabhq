@@ -418,22 +418,24 @@ RSpec.describe API::Invitations, feature_category: :user_profile do
     end
 
     it 'does not exceed expected queries count with secondary emails', :request_store, :use_sql_query_cache do
-      create(:email, email: email, user: create(:user))
+      create(:email, :confirmed, email: email, user: create(:user))
 
       post invitations_url(project, maintainer), params: { email: email, access_level: Member::DEVELOPER }
 
-      create(:email, email: email2, user: create(:user))
+      create(:email, :confirmed, email: email2, user: create(:user))
 
       control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         post invitations_url(project, maintainer), params: { email: email2, access_level: Member::DEVELOPER }
       end
 
-      create(:email, email: 'email4@example.com', user: create(:user))
-      create(:email, email: 'email6@example.com', user: create(:user))
+      create(:email, :confirmed, email: 'email4@example.com', user: create(:user))
+      create(:email, :confirmed, email: 'email6@example.com', user: create(:user))
+      create(:email, :confirmed, email: 'email8@example.com', user: create(:user))
 
-      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com'
+      emails = 'email3@example.com,email4@example.com,email5@example.com,email6@example.com,email7@example.com,' \
+        'EMAIL8@EXamPle.com'
 
-      unresolved_n_plus_ones = 59 # currently there are 10 queries added per email
+      unresolved_n_plus_ones = 77 # currently there are 10 queries added per email
 
       expect do
         post invitations_url(project, maintainer), params: { email: emails, access_level: Member::DEVELOPER }

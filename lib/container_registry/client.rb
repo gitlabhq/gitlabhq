@@ -19,7 +19,7 @@ module ContainerRegistry
       clear_authorization_header: true,
       limit: 3,
       cookies: [],
-      callback: -> (response_env, request_env) do
+      callback: ->(response_env, request_env) do
         request_env.request_headers.delete(::FaradayMiddleware::FollowRedirects::AUTH_HEADER)
 
         redirect_to = request_env.url

@@ -39,11 +39,11 @@ module Gitlab
     def self.start(queues, env: :development, directory: Dir.pwd, concurrency: 20, timeout: DEFAULT_SOFT_TIMEOUT_SECONDS, dryrun: false)
       queues.map.with_index do |pair, index|
         start_sidekiq(pair, env: env,
-                            directory: directory,
-                            concurrency: concurrency,
-                            worker_id: index,
-                            timeout: timeout,
-                            dryrun: dryrun)
+          directory: directory,
+          concurrency: concurrency,
+          worker_id: index,
+          timeout: timeout,
+          dryrun: dryrun)
       end
     end
 

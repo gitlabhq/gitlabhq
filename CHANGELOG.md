@@ -897,6 +897,32 @@ entry.
 - [Migrate self-managed custom roles to the instance-level roles](gitlab-org/gitlab@46ab664a1877f8b761c2b25e13e01561d56cf6fd) ([merge request](gitlab-org/gitlab!147829))
 - [Feature cleanup flag wiki_content_background_job](gitlab-org/gitlab@c39a37db4a6112456052c11bf5fd1afa9c23bd6d) by @ivantedja ([merge request](gitlab-org/gitlab!148820))
 
+## 16.11.4 (2024-06-11)
+
+### Security (4 changes)
+
+- [XSS and content injection raw XHTML files on IOS devices](gitlab-org/security/gitlab@5df472ac0deefe1e59ecfc0ffae7fa489cb6c9ab) ([merge request](gitlab-org/security/gitlab!4094))
+- [Improve go_package_regex to prevent ReDoS attacks](gitlab-org/security/gitlab@d0b04b06f59e81bc57f6b33e26a0399b4b86ee80) ([merge request](gitlab-org/security/gitlab!4097))
+- [Fix ReDoS in CI Interpolation](gitlab-org/security/gitlab@b013996a0612c9cc1e43bcd0be4b47d98eaf92f4) ([merge request](gitlab-org/security/gitlab!4082))
+- [Verify Asana access token when testing Asana integration](gitlab-org/security/gitlab@6db47bd6ace0904869f56f035ff408855f3f4c9b) ([merge request](gitlab-org/security/gitlab!4060))
+
+## 16.11.3 (2024-05-21)
+
+### Fixed (2 changes)
+
+- [Ensure BLPOP/BRPOP returns nil instead of raising ReadTimeoutError](gitlab-org/security/gitlab@53de79ac43f81963a15be27b94bc67f7bbf036b6)
+- [Fix Sidekiq migration timeout](gitlab-org/security/gitlab@32cf49a634b4cb15f065c3e112a693ea30dadda5)
+
+### Security (7 changes)
+
+- [Prevent PDF.js from evaluating scripts](gitlab-org/security/gitlab@b5f9843d9b54ca45817c16cbb706697bf9d44d81) ([merge request](gitlab-org/security/gitlab!4070))
+- [Caching test_report api response to reduce calculations](gitlab-org/security/gitlab@63299beda6e61653070c279ad6838a99a29dc33f) ([merge request](gitlab-org/security/gitlab!4027))
+- [Restrict access to Secure artifacts to developer role](gitlab-org/security/gitlab@63855780157d740d1c8e731b90eecae4d5f1c8c2) ([merge request](gitlab-org/security/gitlab!4045))
+- [Fail create commit status on pipeline_id / sha mismatch](gitlab-org/security/gitlab@a1a4f80bee205fedfd3da27978bed810afe78555) ([merge request](gitlab-org/security/gitlab!4032))
+- [Use UntrustedRegexp for gollum pattern](gitlab-org/security/gitlab@fafda23db9f0c34408b155ddc089872b55e1fd8b) ([merge request](gitlab-org/security/gitlab!4040))
+- [Patch @gitlab/web-ide to fix XSS webWorkerExtensionHostIframe.html](gitlab-org/security/gitlab@7b2acad244d55455a0bba1fd8cbad28b22704756) ([merge request](gitlab-org/security/gitlab!4056))
+- [Add text limit to ci_runners text fields](gitlab-org/security/gitlab@d78c5995f6651e54ed97340a1446822d185f02f5) ([merge request](gitlab-org/security/gitlab!4036))
+
 ## 16.11.2 (2024-05-07)
 
 ### Fixed (1 change)
@@ -1533,6 +1559,34 @@ entry.
 - [Drop promote_ultimate_features_at column](gitlab-org/gitlab@b5dbcc83686be21fbf90d176bfd07707f21d1518) ([merge request](gitlab-org/gitlab!145706))
 - [Finalize the backfill migration for onboarding status step url](gitlab-org/gitlab@f986c1b1cf00968ff106136893bfe68d47895c69) ([merge request](gitlab-org/gitlab!147278))
 - [Remove ClusterRepositoryCache migration helper class](gitlab-org/gitlab@f71a7a94ce8d70d9d378ebc225b802b58f0ae006) ([merge request](gitlab-org/gitlab!147244))
+
+## 16.10.7 (2024-06-11)
+
+### Security (4 changes)
+
+- [XSS and content injection raw XHTML files on IOS devices](gitlab-org/security/gitlab@bd477c1d019b3f758a38a4b7182b86f2d4668df4) ([merge request](gitlab-org/security/gitlab!4095))
+- [Improve go_package_regex to prevent ReDoS attacks](gitlab-org/security/gitlab@56f50979b62a982e572d5695a87d19a36e0a9ef6) ([merge request](gitlab-org/security/gitlab!4098))
+- [Fix ReDoS in CI Interpolation](gitlab-org/security/gitlab@045cf00aa56d545bdfb828c6131af89c37164946) ([merge request](gitlab-org/security/gitlab!4083))
+- [Verify Asana access token when testing Asana integration](gitlab-org/security/gitlab@233b152dfea572b19b1803174c4604f4c0e04851) ([merge request](gitlab-org/security/gitlab!4061))
+
+### Other (1 change)
+
+- [Quarantine a flaky test](gitlab-org/security/gitlab@45242cdf1d36c89aff59e3ce7ee3d2e2f5b16471)
+
+## 16.10.6 (2024-05-21)
+
+### Fixed (1 change)
+
+- [Ensure BLPOP/BRPOP returns nil instead of raising ReadTimeoutError](gitlab-org/security/gitlab@78c11d44cf01757221da8bb01f6fbdefb352f619)
+
+### Security (6 changes)
+
+- [Prevent PDF.js from evaluating scripts](gitlab-org/security/gitlab@db5b63e4a26889f09f72b582b7777909efd4cd4d) ([merge request](gitlab-org/security/gitlab!4071))
+- [Caching test_report api response to reduce calculations](gitlab-org/security/gitlab@8b67dde95712b74c3ff0ae9d8bc73d7cd0a350cf) ([merge request](gitlab-org/security/gitlab!4030))
+- [Fail create commit status on pipeline_id / sha mismatch](gitlab-org/security/gitlab@36c5070a2ad812f52747241321aaae81345aaee0) ([merge request](gitlab-org/security/gitlab!4033))
+- [Use UntrustedRegexp for gollum pattern](gitlab-org/security/gitlab@3fee24aca41a5db9135e8f3003335d1754beb636) ([merge request](gitlab-org/security/gitlab!4041))
+- [Patch @gitlab/web-ide to fix XSS webWorkerExtensionHostIframe.html](gitlab-org/security/gitlab@29cc8769daee74938155dd7e3b5a2f3a3bda5b71) ([merge request](gitlab-org/security/gitlab!4057))
+- [Add text limit to ci_runners text fields](gitlab-org/security/gitlab@5af28a81f6c11d9627f1a359a7c3a7d85e7fb4d9) ([merge request](gitlab-org/security/gitlab!4037))
 
 ## 16.10.5 (2024-05-07)
 

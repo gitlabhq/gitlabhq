@@ -394,7 +394,11 @@ provider for Mattermost. You can use this to troubleshoot errors
 in getting the integration to work:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+accTitle: GitLab as OAuth 2.0 provider
+accDescr: Sequence of actions that happen when a user authenticates to GitLab through Mattermost.
+
     User->>Mattermost: GET https://mm.domain.com
     Note over Mattermost, GitLab: Obtain access code
     Mattermost->>GitLab: GET https://gitlab.domain.com/oauth/authorize
@@ -420,4 +424,4 @@ sequenceDiagram
 For help and support around your GitLab Mattermost deployment, see:
 
 - [Troubleshooting Mattermost issues](https://docs.mattermost.com/install/troubleshooting.html).
-- [Mattermost GitLab Issues Support Handbook](https://docs.mattermost.com/process/support.html?highlight=omnibus#gitlab-issues).
+- [Mattermost forum](https://forum.mattermost.com/search?q=gitlab).

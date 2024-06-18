@@ -75,7 +75,7 @@ export default {
       @switch="$emit('enableContentEditor')"
     />
     <div class="gl-display-flex">
-      <div v-if="canAttachFile" class="uploading-container gl-font-sm gl-line-height-32 gl-mr-3">
+      <div v-if="canAttachFile" class="uploading-container gl-font-sm gl-leading-32 gl-mr-3">
         <span class="uploading-progress-container hide">
           <gl-icon name="paperclip" />
           <span class="attaching-file-message"></span>

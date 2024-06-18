@@ -26,7 +26,7 @@ module WebHooks
     end
 
     def can_access_web_hooks?(object)
-      Ability.allowed?(current_user, :admin_project, object)
+      Ability.allowed?(current_user, :admin_web_hook, object)
     end
   end
 end

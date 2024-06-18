@@ -16,13 +16,7 @@ module Resolvers
       required: false,
       description: 'Username of the User.'
 
-    def ready?(id: nil, username: nil)
-      unless id.present? ^ username.present?
-        raise Gitlab::Graphql::Errors::ArgumentError, 'Provide either a single username or id'
-      end
-
-      super
-    end
+    validates exactly_one_of: [:id, :username]
 
     def resolve(id: nil, username: nil)
       authorize!

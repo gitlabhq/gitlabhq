@@ -161,7 +161,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-rounded-0!">
+  <div>
     <state-container
       :is-loading="isLoading"
       :status="statusIcon"

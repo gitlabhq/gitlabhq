@@ -7,5 +7,11 @@ module Integrations
 
       "#{integration.to_param}_integration".to_sym
     end
+
+    def integration_factory(integration_name)
+      integration_klass = Integration.integration_name_to_model(integration_name)
+      integration_instance = integration_klass.new
+      factory_for(integration_instance)
+    end
   end
 end

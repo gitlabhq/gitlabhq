@@ -38,7 +38,8 @@ trusted_cidrs_for_x_forwarded_for = ["127.0.0.1/8", "192.168.0.1/8"]
 trusted_cidrs_for_propagation = ["10.0.0.1/8"]
 
 [redis]
-password = "redis password"
+Password = "redis password"
+SentinelUsername = "sentinel-user"
 SentinelPassword = "sentinel password"
 [object_storage]
 provider = "test provider"
@@ -74,6 +75,7 @@ key = "/path/to/private/key"
 	// fields in each section; that should happen in the tests of the
 	// internal/config package.
 	require.Equal(t, "redis password", cfg.Redis.Password)
+	require.Equal(t, "sentinel-user", cfg.Redis.SentinelUsername)
 	require.Equal(t, "sentinel password", cfg.Redis.SentinelPassword)
 	require.Equal(t, "test provider", cfg.ObjectStorageCredentials.Provider)
 	require.Equal(t, uint32(123), cfg.ImageResizerConfig.MaxScalerProcs, "image resizer max_scaler_procs")
@@ -85,7 +87,7 @@ key = "/path/to/private/key"
 		{
 			Network: "tcp",
 			Addr:    "localhost:3445",
-			Tls: &config.TlsConfig{
+			Tls: &config.TLSConfig{
 				Certificate: "/path/to/certificate",
 				Key:         "/path/to/private/key",
 			},
@@ -93,7 +95,7 @@ key = "/path/to/private/key"
 		{
 			Network: "tcp",
 			Addr:    "localhost:3443",
-			Tls: &config.TlsConfig{
+			Tls: &config.TLSConfig{
 				Certificate: "/path/to/certificate",
 				Key:         "/path/to/private/key",
 				MinVersion:  "tls1.1",
@@ -560,7 +562,7 @@ func TestLoadConfigCommand(t *testing.T) {
 							{
 								Network: "tcp",
 								Addr:    "127.0.0.1:3443",
-								Tls: &config.TlsConfig{
+								Tls: &config.TLSConfig{
 									Certificate: "/path/to/certificate",
 									Key:         "/path/to/private/key",
 								},

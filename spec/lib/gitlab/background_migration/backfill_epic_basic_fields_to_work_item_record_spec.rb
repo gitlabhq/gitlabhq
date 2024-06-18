@@ -15,14 +15,6 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillEpicBasicFieldsToWorkItemRec
 
   before do
     (1..5).each do |idx|
-      table(:epics).create!(**epic_data(idx, namespace1))
-    end
-
-    (6..10).each do |idx|
-      table(:epics).create!(**epic_data(idx, namespace2))
-    end
-
-    (11..15).each do |idx|
       epic_data = epic_data(idx, namespace1)
       issue_id = issues.create!(
         title: "epic #{idx}", iid: idx, namespace_id: namespace1.id, work_item_type_id: epic_work_item_type_id
@@ -34,7 +26,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillEpicBasicFieldsToWorkItemRec
       table(:work_item_colors).create!(color_data) if idx % 3 == 0
     end
 
-    (16..20).each do |idx|
+    (6..10).each do |idx|
       issue_id = issues.create!(
         title: "epic #{idx}", iid: idx, namespace_id: namespace2.id, work_item_type_id: epic_work_item_type_id
       ).id
@@ -64,7 +56,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillEpicBasicFieldsToWorkItemRec
       migration.perform
 
       backfilled_epics = epics.where.not(issue_id: nil)
-      expect(backfilled_epics.count).to eq(20)
+      expect(backfilled_epics.count).to eq(10)
       expect(backfilled_epics.map(&:group_id).uniq).to match_array([namespace1.id, namespace2.id])
 
       epic_wis = table(:issues).where(work_item_type_id: epic_work_item_type_id)

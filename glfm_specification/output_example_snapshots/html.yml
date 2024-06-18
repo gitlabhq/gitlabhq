@@ -1551,7 +1551,7 @@
     </p></pre>
     </td></tr></table>
   wysiwyg: |-
-    <table><tbody><tr><td colspan="1" rowspan="1"><pre><p dir="auto">**Hello**,
+    <table style="minWidth: 25px"><colgroup><col></colgroup><tbody><tr><td colspan="1" rowspan="1"><pre><p dir="auto">**Hello**,
     </p><p dir="auto"><em>world</em>.
     </p></pre><p dir="auto"></p></td></tr></tbody></table>
 04_06_00__leaf_blocks__html_blocks__002:
@@ -1574,7 +1574,7 @@
     </table>
     <p data-sourcepos="9:1-9:5" dir="auto">okay.</p>
   wysiwyg: |-
-    <table><tbody><tr><td colspan="1" rowspan="1"><p dir="auto">
+    <table style="minWidth: 25px"><colgroup><col></colgroup><tbody><tr><td colspan="1" rowspan="1"><p dir="auto">
                hi
         </p></td></tr></tbody></table>
     <p dir="auto">okay.</p>
@@ -1688,7 +1688,7 @@
     foo
     </td></tr></table>
   wysiwyg: |-
-    <table><tbody><tr><td colspan="1" rowspan="1"><p dir="auto">
+    <table style="minWidth: 25px"><colgroup><col></colgroup><tbody><tr><td colspan="1" rowspan="1"><p dir="auto">
     foo
     </p></td></tr></tbody></table>
 04_06_00__leaf_blocks__html_blocks__014:
@@ -2093,7 +2093,7 @@
     </tr>
     </table>
   wysiwyg: |-
-    <table><tbody><tr><td colspan="1" rowspan="1"><p dir="auto">
+    <table style="minWidth: 25px"><colgroup><col></colgroup><tbody><tr><td colspan="1" rowspan="1"><p dir="auto">
     Hi
     </p></td></tr></tbody></table>
 04_06_00__leaf_blocks__html_blocks__043:
@@ -2121,7 +2121,7 @@
     <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>&lt;td&gt;
       Hi
     &lt;/td&gt;</code></pre>
-    <table><tbody><tr></tr></tbody></table>
+    <table style="width: 0px"><colgroup></colgroup><tbody><tr></tr></tbody></table>
 04_07_00__leaf_blocks__link_reference_definitions__001:
   canonical: |
     <p><a href="/url" title="title">foo</a></p>
@@ -2546,7 +2546,7 @@
     </tbody>
     </table>
   wysiwyg: |-
-    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">foo</p></th><th colspan="1" rowspan="1"><p dir="auto">bar</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">baz</p></td><td colspan="1" rowspan="1"><p dir="auto">bim</p></td></tr></tbody></table>
+    <table style="minWidth: 50px"><colgroup><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">foo</p></th><th colspan="1" rowspan="1"><p dir="auto">bar</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">baz</p></td><td colspan="1" rowspan="1"><p dir="auto">bim</p></td></tr></tbody></table>
 04_10_00__leaf_blocks__tables_extension__002:
   canonical: |
     <table>
@@ -2579,7 +2579,7 @@
     </tbody>
     </table>
   wysiwyg: |-
-    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">defghi</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto">baz</p></td></tr></tbody></table>
+    <table style="minWidth: 50px"><colgroup><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">defghi</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto">baz</p></td></tr></tbody></table>
 04_10_00__leaf_blocks__tables_extension__003:
   canonical: |
     <table>
@@ -2614,7 +2614,7 @@
     </tbody>
     </table>
   wysiwyg: |-
-    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">f|oo</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">b <code>|</code> az</p></td></tr><tr><td colspan="1" rowspan="1"><p dir="auto">b <strong>|</strong> im</p></td></tr></tbody></table>
+    <table style="minWidth: 25px"><colgroup><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">f|oo</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">b <code>|</code> az</p></td></tr><tr><td colspan="1" rowspan="1"><p dir="auto">b <strong>|</strong> im</p></td></tr></tbody></table>
 04_10_00__leaf_blocks__tables_extension__004:
   canonical: |
     <table>
@@ -2653,7 +2653,7 @@
     <p data-sourcepos="4:3-4:5">bar</p>
     </blockquote>
   wysiwyg: |-
-    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">def</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto">baz</p></td></tr></tbody></table>
+    <table style="minWidth: 50px"><colgroup><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">def</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto">baz</p></td></tr></tbody></table>
     <blockquote dir="auto" multiline="false"><p dir="auto">bar</p></blockquote>
 04_10_00__leaf_blocks__tables_extension__005:
   canonical: |
@@ -2697,7 +2697,7 @@
     </table>
     <p data-sourcepos="6:1-6:3" dir="auto">bar</p>
   wysiwyg: |-
-    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">def</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto">baz</p></td></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto"></p></td></tr></tbody></table>
+    <table style="minWidth: 50px"><colgroup><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">def</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto">baz</p></td></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto"></p></td></tr></tbody></table>
     <p dir="auto">bar</p>
 04_10_00__leaf_blocks__tables_extension__006:
   canonical: |
@@ -2752,7 +2752,7 @@
     </tbody>
     </table>
   wysiwyg: |-
-    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">def</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto"></p></td></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto">baz</p></td></tr></tbody></table>
+    <table style="minWidth: 50px"><colgroup><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">def</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto"></p></td></tr><tr><td colspan="1" rowspan="1"><p dir="auto">bar</p></td><td colspan="1" rowspan="1"><p dir="auto">baz</p></td></tr></tbody></table>
 04_10_00__leaf_blocks__tables_extension__008:
   canonical: |
     <table>
@@ -2773,7 +2773,7 @@
     </thead>
     </table>
   wysiwyg: |-
-    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">def</p></th></tr></tbody></table>
+    <table style="minWidth: 50px"><colgroup><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">abc</p></th><th colspan="1" rowspan="1"><p dir="auto">def</p></th></tr></tbody></table>
 05_01_00__container_blocks__block_quotes__001:
   canonical: |
     <blockquote>
@@ -6762,7 +6762,7 @@
   canonical: |
     <p>[<a href="/url" title="title"><em>foo</em> bar</a>]</p>
   static: |-
-    <p data-sourcepos="1:1-1:13" dir="auto">[<a data-sourcepos="1:2-1:12" href="/url" title="title"><em data-sourcepos="1:3-1:7">foo</em> bar</a>]</p>
+    <p data-sourcepos="1:1-1:13" dir="auto"><a data-sourcepos="1:1-1:13" href="*foo*%20bar" data-wikilink="true">*foo* bar</a></p>
   wysiwyg: |-
     <p dir="auto">[<a target="_blank" rel="noopener noreferrer nofollow" href="/url" title="title"><em>foo</em> bar</a>]</p>
     <pre>[*foo* bar]: /url "title"</pre>
@@ -7011,7 +7011,7 @@
     <p>[[foo]]: /url &quot;title&quot;</p>
   static: |-
     <p data-sourcepos="1:1-1:8" dir="auto">![[foo]]</p>
-    <p data-sourcepos="3:1-3:21" dir="auto">[[foo]]: /url "title"</p>
+    <p data-sourcepos="3:1-3:21" dir="auto"><a data-sourcepos="3:1-3:7" href="foo" data-wikilink="true">foo</a>: /url "title"</p>
   wysiwyg: |-
     <p dir="auto">![[foo]]</p>
     <p dir="auto">[[foo]]: /url "title"</p>
@@ -7822,7 +7822,7 @@
     <p>[[<em>TOC</em>]]text</p>
     <p>text[TOC]</p>
   static: |-
-    <p data-sourcepos="1:1-2:4" dir="auto">[[<em data-sourcepos="1:3-1:7">TOC</em>]]
+    <p data-sourcepos="1:1-2:4" dir="auto"><a data-sourcepos="1:1-1:9" href="_TOC_" data-wikilink="true">_TOC_</a>
     text</p>
     <p data-sourcepos="4:1-5:5" dir="auto">text
     [TOC]</p>
@@ -7880,7 +7880,7 @@
   canonical: |
     <p><a href="groups-test-file">groups-test-file</a></p>
   static: |-
-    <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/groups/glfm_group/-/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
+    <p data-sourcepos="1:1-1:45" dir="auto"><a data-sourcepos="1:1-1:45" href="/-/group/66666/uploads/groups-test-file" data-canonical-src="/uploads/groups-test-file" data-link="true" class="gfm">groups-test-file</a></p>
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__002:
   canonical: |
     <p><a href="projects-test-file">projects-test-file</a></p>
@@ -7890,7 +7890,7 @@
   canonical: |
     <p>This project snippet ID reference IS filtered: $88888</p>
   static: |-
-    <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-project="77777" data-snippet="88888" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
+    <p data-sourcepos="1:1-1:53" dir="auto">This project snippet ID reference IS filtered: <a href="/glfm_group/glfm_project/-/snippets/88888" data-reference-type="snippet" data-original="$88888" data-link="false" data-link-reference="false" data-snippet="88888" data-project="77777" data-container="body" data-placement="top" title="glfm_project_snippet" class="gfm gfm-snippet has-tooltip">$88888</a></p>
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__004:
   canonical: |
     <p>This personal snippet ID reference is not filtered: $99999</p>
@@ -7910,14 +7910,14 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
+    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/-/group/66666/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/-/group/66666/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" alt="test-file"></p>
 08_04_02__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
+    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/-/project/77777/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img data-sourcepos="1:1-1:69" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/-/project/77777/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
   wysiwyg: |-
     <p dir="auto"><img src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" alt="test-file"></p>
 08_04_03__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project_wiki__001:
@@ -7931,14 +7931,14 @@
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
+    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/-/group/66666/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip">test-file</a></p>
 08_04_05__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project__001:
   canonical: |
     TODO: Write canonical HTML for this example
   static: |-
-    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
+    <p data-sourcepos="1:1-1:68" dir="auto"><a data-sourcepos="1:1-1:68" href="/-/project/77777/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
   wysiwyg: |-
     <p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip">test-file</a></p>
 08_04_06__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project_wiki__001:
@@ -8519,7 +8519,7 @@
     <h1 data-sourcepos="6:1-6:21" dir="auto">
     <a href="#content-after-table" aria-hidden="true" class="anchor" id="user-content-content-after-table"></a>content after table</h1>
   wysiwyg: |-
-    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">header</p></th><th colspan="1" rowspan="1"><p dir="auto">header</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto"><code>code</code></p></td><td colspan="1" rowspan="1"><p dir="auto">cell with <strong>bold</strong></p></td></tr><tr><td colspan="1" rowspan="1"><p dir="auto"><s>strike</s></p></td><td colspan="1" rowspan="1"><p dir="auto">cell with <em>italic</em></p></td></tr></tbody></table>
+    <table style="minWidth: 50px"><colgroup><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">header</p></th><th colspan="1" rowspan="1"><p dir="auto">header</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto"><code>code</code></p></td><td colspan="1" rowspan="1"><p dir="auto">cell with <strong>bold</strong></p></td></tr><tr><td colspan="1" rowspan="1"><p dir="auto"><s>strike</s></p></td><td colspan="1" rowspan="1"><p dir="auto">cell with <em>italic</em></p></td></tr></tbody></table>
     <h1 dir="auto">content after table</h1>
 08_04_49__gitlab_internal_extension_markdown__migrated_golden_master_examples__table_of_contents__001:
   canonical: |
@@ -8813,7 +8813,7 @@
     </tbody>
     </table>
   wysiwyg: |-
-    <table><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">a</p></th><th colspan="1" rowspan="1"><p dir="auto">b</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="https://github.com">https://github.com</a><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.github.com">www.github.com</a></p></td><td colspan="1" rowspan="1"><p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://pokemon.com">http://pokemon.com</a></p></td></tr></tbody></table>
+    <table style="minWidth: 50px"><colgroup><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p dir="auto">a</p></th><th colspan="1" rowspan="1"><p dir="auto">b</p></th></tr><tr><td colspan="1" rowspan="1"><p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="https://github.com">https://github.com</a><a target="_blank" rel="noopener noreferrer nofollow" href="http://www.github.com">www.github.com</a></p></td><td colspan="1" rowspan="1"><p dir="auto"><a target="_blank" rel="noopener noreferrer nofollow" href="http://pokemon.com">http://pokemon.com</a></p></td></tr></tbody></table>
 09_04_00__gfm_undocumented_extensions_and_more_robust_test__task_lists__001:
   canonical: |
     <ul>

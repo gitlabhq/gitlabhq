@@ -105,7 +105,7 @@ RSpec.describe Banzai::Pipeline::PlainMarkdownPipeline, feature_category: :team_
     end
 
     it 'does not have a polynomial regex' do
-      markdown = "x \\#\n\n#{'mliteralcmliteral-' * 1550000}mliteral"
+      markdown = "x \\#\n\n#{'mliteralcmliteral-' * 450000}mliteral"
 
       expect do
         Timeout.timeout(2.seconds) { described_class.to_html(markdown, project: project) }

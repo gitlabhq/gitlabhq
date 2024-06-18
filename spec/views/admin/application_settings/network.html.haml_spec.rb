@@ -21,11 +21,26 @@ RSpec.describe 'admin/application_settings/network.html.haml', feature_category:
     end
   end
 
-  context 'for Projects API rate limit' do
+  context 'for Projects API rate limits' do
     it 'renders the `projects_api_rate_limit_unauthenticated` field' do
       render
 
       expect(rendered).to have_field('application_setting_projects_api_rate_limit_unauthenticated')
+      expect(rendered).to have_field('application_setting_projects_api_limit')
+      expect(rendered).to have_field('application_setting_project_api_limit')
+      expect(rendered).to have_field('application_setting_user_projects_api_limit')
+      expect(rendered).to have_field('application_setting_user_contributed_projects_api_limit')
+      expect(rendered).to have_field('application_setting_user_starred_projects_api_limit')
+    end
+  end
+
+  context 'for Groups API rate limits' do
+    it 'renders the `projects_api_rate_limit_unauthenticated` field' do
+      render
+
+      expect(rendered).to have_field('application_setting_groups_api_limit')
+      expect(rendered).to have_field('application_setting_group_api_limit')
+      expect(rendered).to have_field('application_setting_group_projects_api_limit')
     end
   end
 

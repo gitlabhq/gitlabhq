@@ -234,13 +234,13 @@ describe('PackageTitle', () => {
 
   describe('badge "protected"', () => {
     const createComponentForBadgeProtected = async ({
-      packageEntityPackageProtectionRuleExists = true,
+      packageEntityProtectionRuleExists = true,
       glFeaturesPackagesProtectedPackages = true,
     } = {}) => {
       await createComponent(
         {
           ...packageWithTags,
-          packageProtectionRuleExists: packageEntityPackageProtectionRuleExists,
+          protectionRuleExists: packageEntityProtectionRuleExists,
         },
         {
           ...defaultProvide,
@@ -274,9 +274,7 @@ describe('PackageTitle', () => {
 
     describe('when no protection rule exists for the given package', () => {
       it('does not show badge', () => {
-        createComponentForBadgeProtected({
-          packageEntityPackageProtectionRuleExists: false,
-        });
+        createComponentForBadgeProtected({ packageEntityProtectionRuleExists: false });
 
         expect(findBadgeProtected().exists()).toBe(false);
       });

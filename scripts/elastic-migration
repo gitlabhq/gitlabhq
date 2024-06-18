@@ -132,7 +132,6 @@ end
     "# frozen_string_literal: true
 
 require 'spec_helper'
-require_relative 'migration_shared_examples'
 require File.expand_path('#{file_path}')
 
 RSpec.describe #{options.name}, feature_category: :#{options.group.parameterize.underscore} do

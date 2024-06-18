@@ -54,7 +54,7 @@ describe('Diff File Row component', () => {
 
   it.each`
     fileType  | isViewed | expected
-    ${'blob'} | ${false} | ${'gl-font-weight-bold'}
+    ${'blob'} | ${false} | ${'gl-font-bold'}
     ${'blob'} | ${true}  | ${''}
     ${'tree'} | ${false} | ${''}
     ${'tree'} | ${true}  | ${''}

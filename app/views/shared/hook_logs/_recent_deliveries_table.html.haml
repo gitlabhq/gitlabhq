@@ -2,7 +2,7 @@
   %thead
     %tr
       %th= _('Status')
-      %th.d-none.d-sm-table-cell= _('Trigger')
+      %th.gl-hidden.sm:gl-table-cell= _('Trigger')
       %th= _('Elapsed time')
       %th= _('Request time')
       %th
@@ -12,7 +12,7 @@
       %tr
         %td
           = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
-        %td.d-none.d-sm-table-cell
+        %td.gl-hidden.sm:gl-table-cell
           = gl_badge_tag hook_log.trigger.singularize.titleize, { size: :sm }
         %td
           #{number_with_precision(hook_log.execution_duration, precision: 2)} sec
@@ -28,6 +28,6 @@
   .gl-text-center.gl-mt-7
     %h4= _('No webhook events')
     %p
-      %span.gl-display-block= _('Webhook events will be displayed here.')
+      %span.gl-block= _('Webhook events will be displayed here.')
       %span= _('Use the %{strongStart}Test%{strongEnd} option above to create an event.').html_safe % { strongStart: '<strong>'.html_safe, strongEnd: '</strong>'.html_safe }
 

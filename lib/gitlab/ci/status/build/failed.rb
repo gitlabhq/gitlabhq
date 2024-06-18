@@ -35,7 +35,7 @@ module Gitlab
             reached_max_pipeline_hierarchy_size: 'downstream pipeline tree is too large',
             project_deleted: 'pipeline project was deleted',
             user_blocked: 'pipeline user was blocked',
-            ci_quota_exceeded: 'no more CI minutes available',
+            ci_quota_exceeded: 'no more compute minutes available',
             no_matching_runner: 'no matching runner available',
             trace_size_exceeded: 'log size limit exceeded',
             builds_disabled: 'project builds are disabled',

@@ -619,3 +619,13 @@ include:
 variables:
   SAST_RULESET_GIT_REFERENCE: "group_2504721_bot_7c9311ffb83f2850e794d478ccee36f5:$PERSONAL_ACCESS_TOKEN@gitlab.com/example-group/example-ruleset-project@c8ea7e3ff126987fb4819cc35f2310755511c2ab"
 ```
+
+### Demo Projects
+
+There are [demonstration projects](https://gitlab.com/gitlab-org/security-products/demos/SAST-analyzer-configurations) that illustrate some of these configuration options.
+
+Many of these projects illustrate using remote rulesets to override or disable rules and are grouped together by which analyzer they are for.
+
+There are also some video demonstrations walking through setting up remote rulesets:
+
+- [IaC analyzer with a remote ruleset](https://youtu.be/VzJFyaKpA-8)

@@ -14,7 +14,7 @@ const createStory = ({ ...options }) => {
       props: Object.keys(argTypes),
       template: `
         <div class="gl-bg-blue-50" :style="{ width }">
-          <tooltip-on-truncate :title="title" :placement="placement" class="gl-display-block gl-text-truncate">
+          <tooltip-on-truncate :title="title" :placement="placement" class="gl-block gl-text-truncate">
             {{title}}
           </tooltip-on-truncate>
         </div>

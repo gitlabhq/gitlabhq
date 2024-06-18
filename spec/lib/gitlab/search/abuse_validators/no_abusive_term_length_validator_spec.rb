@@ -36,11 +36,11 @@ RSpec.describe Gitlab::Search::AbuseValidators::NoAbusiveTermLengthValidator do
     let(:double_limit) { limit * 2 }
     let(:terms) do
       [
-        'http://' + 'x' * (double_limit - 12) + '.com',
-        'https://' + 'x' * (double_limit - 13) + '.com',
-        'sftp://' + 'x' * (double_limit - 12) + '.com',
-        'ftp://' + 'x' * (double_limit - 11) + '.com',
-        'http://' + 'x' * (double_limit - 8) # no tld is OK
+        'http://' + ('x' * (double_limit - 12)) + '.com',
+        'https://' + ('x' * (double_limit - 13)) + '.com',
+        'sftp://' + ('x' * (double_limit - 12)) + '.com',
+        'ftp://' + ('x' * (double_limit - 11)) + '.com',
+        'http://' + ('x' * (double_limit - 8)) # no tld is OK
       ]
     end
 

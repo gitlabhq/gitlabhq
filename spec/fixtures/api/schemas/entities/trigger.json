@@ -9,6 +9,11 @@
     "can_access_project"
   ],
   "properties": {
+    "id": {
+      "type": [
+        "integer"
+      ]
+    },
     "description": {
       "type": [
         "string",
@@ -34,9 +39,6 @@
     },
     "can_access_project": {
       "type": "boolean"
-    },
-    "edit_project_trigger_path": {
-      "type": "string"
     },
     "project_trigger_path": {
       "type": "string"

@@ -28,7 +28,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   feature_category :instance_resiliency
 
-  helper_method :arkose_labs_enabled?, :registration_path_params, :registration_tracking_label
+  helper_method :arkose_labs_enabled?, :registration_path_params, :preregistration_tracking_label
 
   def new
     @resource = build_resource
@@ -42,7 +42,7 @@ class RegistrationsController < Devise::RegistrationsController
       if new_user.persisted?
         after_successful_create_hook(new_user)
       else
-        track_weak_password_error(new_user, self.class.name, 'create')
+        track_error(new_user)
       end
     end
 
@@ -315,8 +315,13 @@ class RegistrationsController < Devise::RegistrationsController
     false
   end
 
-  def registration_tracking_label
+  def preregistration_tracking_label
     # overridden by EE module
+  end
+
+  # overridden by EE module
+  def track_error(new_user)
+    track_weak_password_error(new_user, self.class.name, 'create')
   end
 end
 

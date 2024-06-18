@@ -5,9 +5,15 @@ import GlobalSearchDefaultPlaces from '~/super_sidebar/components/global_search/
 import FrequentProjects from '~/super_sidebar/components/global_search/components/frequent_projects.vue';
 import FrequentGroups from '~/super_sidebar/components/global_search/components/frequent_groups.vue';
 import GlobalSearchDefaultIssuables from '~/super_sidebar/components/global_search/components/global_search_default_issuables.vue';
+import { mockTracking } from 'helpers/tracking_helper';
+import {
+  FREQUENTLY_VISITED_PROJECTS_HANDLE,
+  FREQUENTLY_VISITED_GROUPS_HANDLE,
+} from '~/super_sidebar/components/global_search/command_palette/constants';
 
 describe('GlobalSearchDefaultItems', () => {
   let wrapper;
+  let trackingSpy;
 
   const createComponent = () => {
     wrapper = shallowMount(GlobalSearchDefaultItems);
@@ -23,6 +29,7 @@ describe('GlobalSearchDefaultItems', () => {
   });
 
   beforeEach(() => {
+    trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
     createComponent();
   });
 
@@ -71,6 +78,30 @@ describe('GlobalSearchDefaultItems', () => {
       const groups = findGroups();
       expect(receivedAttrs(groups)).toEqual({ bordered: true });
       expect(groups.classes()).toEqual(['gl-mt-3']);
+    });
+  });
+
+  describe('events', () => {
+    it('tracks internal event on default projects component', () => {
+      findProjects().vm.$emit('action', FREQUENTLY_VISITED_PROJECTS_HANDLE);
+
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(
+        undefined,
+        'click_frequent_project_in_command_palette',
+        expect.anything(),
+      );
+    });
+
+    it('tracks internal event on default group component', () => {
+      findProjects().vm.$emit('action', FREQUENTLY_VISITED_GROUPS_HANDLE);
+
+      expect(trackingSpy).toHaveBeenCalledTimes(1);
+      expect(trackingSpy).toHaveBeenCalledWith(
+        undefined,
+        'click_frequent_group_in_command_palette',
+        expect.anything(),
+      );
     });
   });
 });

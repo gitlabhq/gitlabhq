@@ -5,15 +5,15 @@
         = render Pajamas::AvatarComponent.new(user, size: 32, alt: '')
         .gl-ml-3{ class: 'gl-text-left!' }
           = link_to user_path(user), class: 'gl-text-body' do
-            .gl-display-inline-block.gl-font-weight-bold= simple_search_highlight_and_truncate(user.name, @search_term)
+            .gl-display-inline-block.gl-font-bold= simple_search_highlight_and_truncate(user.name, @search_term)
             = user_status(user)
             %div{ class: 'gl-text-left!' }= simple_search_highlight_and_truncate(user.to_reference, @search_term)
   %td.gl-text-right{ data: { label: _('Activity') } }
     %div
-      %span.gl-font-weight-bold= _('User created:')
+      %span.gl-font-bold= _('User created:')
       = l(user.created_at.to_date, format: :long)
     %div
-      %span.gl-font-weight-bold= _('Last activity:')
+      %span.gl-font-bold= _('Last activity:')
       - if user.last_activity_on
         = l(user.last_activity_on.to_date, format: :long)
       - else

@@ -87,16 +87,19 @@ The following items are changed when they are imported:
 
 > - Importing approvals by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23586) in GitLab 16.7.
 > - Matching user mentions with GitLab users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to import approvals only by email address in GitLab 17.1.
 
 FLAG:
 On self-managed GitLab, matching user mentions with GitLab users is not available. To make it available per user,
 an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `bitbucket_server_import_stage_import_users`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
-When issues and pull requests are importing, the importer tries to find the author's email address
-with a confirmed email address in the GitLab user database. If no such user is available, the
-project creator is set as the author. The importer appends a note in the comment to mark the
-original creator.
+When issues and pull requests are importing, the importer tries to match a Bitbucket Server user's email address
+with a confirmed email address in the GitLab user database. If no such user is found:
+
+- The project creator is used instead. The importer appends a note in the comment to mark the original creator.
+- For pull request reviewers, no reviewer is assigned.
+- For pull request approvers, no approval is added.
 
 `@mentions` on pull request descriptions and notes are matched to user profiles on a Bitbucket Server by using the user's email address.
 If a user with the same email address is not found on GitLab, the `@mention` is made static.
@@ -107,11 +110,6 @@ If the project is public, GitLab only matches users who are invited to the proje
 The importer creates any new namespaces (groups) if they don't exist. If the namespace is taken, the
 repository imports under the namespace of the user who started the import process.
 
-The importer attempts to find:
-
-- Reviewers by their email address in the GitLab user database. If they don't exist in GitLab, they are not added as reviewers to a merge request.
-- Approvers by username or email. If they don't exist in GitLab, the approval is not added to a merge request.
-
 ### User assignment by username
 
 > - Not recommended for production use.
@@ -121,14 +119,12 @@ On self-managed GitLab and GitLab.com, by default this feature is not available.
 available, an administrator can [enable the feature flag](../../../administration/feature_flags.md)
 named `bitbucket_server_user_mapping_by_username`. This feature is not ready for production use.
 
-With this feature enabled, the importer tries to find a user in the GitLab user database with the
-author's:
+With this feature enabled, user email address matching is disabled.
+Instead, the importer matches users in the GitLab user database with the Bitbucket Server user's:
 
 - `username`
 - `slug`
 - `displayName`
-
-If no user matches these properties, the project creator is set as the author.
 
 ## Troubleshooting
 

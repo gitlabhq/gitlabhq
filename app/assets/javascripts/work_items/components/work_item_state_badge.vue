@@ -34,6 +34,6 @@ export default {
 <template>
   <gl-badge :variant="workItemStateVariant" class="gl-align-middle">
     <gl-icon :name="workItemStateIcon" :size="16" />
-    <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ stateText }}</span>
+    <span class="gl-hidden sm:gl-block gl-ml-2">{{ stateText }}</span>
   </gl-badge>
 </template>

@@ -62,7 +62,7 @@ export default {
   >
     <template #before-data-segment-input="{ submitValue }">
       <gl-datepicker
-        class="gl-display-none!"
+        class="!gl-hidden"
         target="#glfs-datepicker"
         :container="null"
         @input="selectValue($event)"

@@ -20,7 +20,7 @@ This includes but is not limited to:
   - files in [`ee/config/metrics`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/config/metrics).
   - [`schema.json`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
 - Internal events, for example files in [`config/events`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/events).
-- Analytics Instrumentation tooling, for example [`InternalEventsGenerator`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/generators/gitlab/analytics/internal_events_generator.rb).
+- Analytics Instrumentation tooling, for example [`Internal events CLI`](https://gitlab.com/gitlab-org/gitlab/blob/master/scripts/internal_events/cli.rb).
 
 In most cases, an Analytics Instrumentation review is automatically added, but it can also be requested manually if the automations miss the relevant change.
 
@@ -53,7 +53,7 @@ In most cases, an Analytics Instrumentation review is automatically added, but i
   - For a metric's YAML definition:
     - Check the metric's `description`.
     - Check the metric's `key_path`.
-    - Check the `product_section`, `product_stage`, and `product_group` fields.
+    - Check the `product_group` field.
       They should correspond to the [stages file](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml).
     - Check the file location. Consider the time frame, and if the file should be under `ee`.
     - Check the tiers.

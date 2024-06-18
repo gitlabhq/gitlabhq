@@ -6,6 +6,7 @@ import FrequentProjects from '~/super_sidebar/components/global_search/component
 import createMockApollo from 'helpers/mock_apollo_helper';
 import currentUserFrecentProjectsQuery from '~/super_sidebar/graphql/queries/current_user_frecent_projects.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
+import { FREQUENTLY_VISITED_PROJECTS_HANDLE } from '~/super_sidebar/components/global_search/command_palette/constants';
 import { frecentProjectsMock } from '../../../mock_data';
 
 Vue.use(VueApollo);
@@ -83,5 +84,16 @@ describe('FrequentlyVisitedProjects', () => {
     findFrequentItems().vm.$emit('nothing-to-render');
 
     expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  describe('events', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('emits action on click', () => {
+      findFrequentItems().vm.$emit('action');
+      expect(wrapper.emitted('action')).toStrictEqual([[FREQUENTLY_VISITED_PROJECTS_HANDLE]]);
+    });
   });
 });

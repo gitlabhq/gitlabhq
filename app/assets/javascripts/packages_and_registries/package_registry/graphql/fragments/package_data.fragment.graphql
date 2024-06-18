@@ -24,7 +24,7 @@ fragment PackageData on Package {
       }
     }
   }
-  packageProtectionRuleExists
+  protectionRuleExists
   _links {
     webPath
   }

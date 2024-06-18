@@ -267,12 +267,6 @@ class Environment < ApplicationRecord
     last_deployment&.deployable
   end
 
-  # TODO: remove this method when legacy_last_deployment_group is removed
-  #       in https://gitlab.com/gitlab-org/gitlab/-/issues/439141
-  def last_deployment_pipeline
-    last_deployable&.pipeline
-  end
-
   def last_finished_deployable
     last_finished_deployment&.deployable
   end
@@ -283,21 +277,6 @@ class Environment < ApplicationRecord
 
   def latest_finished_jobs
     last_finished_pipeline&.latest_finished_jobs
-  end
-
-  # This method returns the deployment records of the last deployment pipeline, that successfully executed to this environment.
-  # e.g.
-  # A pipeline contains
-  #   - deploy job A => production environment
-  #   - deploy job B => production environment
-  # In this case, `legacy_last_deployment_group` returns both deployments, whereas `last_deployable` returns only B.
-  #
-  # TODO: to be removed in https://gitlab.com/gitlab-org/gitlab/-/issues/439141
-  def legacy_last_deployment_group
-    return Deployment.none unless last_deployment_pipeline
-
-    successful_deployments.where(
-      deployable_id: last_deployment_pipeline.latest_builds.pluck(:id))
   end
 
   def last_visible_deployable

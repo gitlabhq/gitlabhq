@@ -176,6 +176,7 @@ export default {
       :number-of-reviewers="reviewers.length"
       :loading="isLoading"
       :editable="canUpdate"
+      @request-review="requestReview"
     />
     <reviewers
       v-if="!initialLoading"

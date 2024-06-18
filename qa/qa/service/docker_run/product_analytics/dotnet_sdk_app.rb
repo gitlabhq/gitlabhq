@@ -10,14 +10,16 @@ module QA
           def initialize(sdk_host, sdk_app_id)
             # Below is an image of a sample app that uses Product Analytics .NET SDK.
             # The image is created in https://gitlab.com/gitlab-org/analytics-section/product-analytics/gl-application-sdk-dotnet
-            # It's buit on every merge to main branch in the repository.
-            # Note: set @host_name = 'localhost' here when running locally against GDK.
+            # It's built on every merge to main branch in the repository.
+            # @name should not contain _ (underscores) as it is used to generate host_name
+            # and _ are not allowed for domain names.
             @image = 'registry.gitlab.com/gitlab-org/analytics-section/product-analytics/' \
                      'gl-application-sdk-dotnet/example-app:main'
-            @name = 'dotnet_sdk'
+            @name = 'dotnet-sdk'
             @sdk_host = URI(sdk_host)
             @sdk_app_id = sdk_app_id
             @port = '5171'
+            @host_name = 'localhost' unless Runtime::Env.running_in_ci?
 
             super()
           end

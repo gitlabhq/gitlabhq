@@ -2,6 +2,7 @@
 
 module Projects
   class ParticipantsService < BaseService
+    include Gitlab::Utils::StrongMemoize
     include Users::ParticipableService
 
     def execute(noteable)
@@ -11,8 +12,9 @@ module Projects
         noteable_owner +
         participants_in_noteable +
         all_members +
-        project_members +
-        groups
+        project_members
+
+      participants += groups unless relation_at_search_limit?(project_members)
 
       render_participants_as_hash(participants.uniq)
     end
@@ -20,6 +22,7 @@ module Projects
     def project_members
       filter_and_sort_users(project_members_relation)
     end
+    strong_memoize_attr :project_members
 
     def all_members
       return [] if Feature.enabled?(:disable_all_mention)

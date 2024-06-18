@@ -2,6 +2,9 @@
 import { escape, isEmpty } from 'lodash';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
 import { reportToSentry } from '~/ci/utils';
+import { __, s__, sprintf } from '~/locale';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { sanitize } from '~/lib/dompurify';
 import RootGraphLayout from './root_graph_layout.vue';
 import JobGroupDropdown from './job_group_dropdown.vue';
 import JobItem from './job_item.vue';
@@ -12,6 +15,13 @@ export default {
     JobGroupDropdown,
     JobItem,
     RootGraphLayout,
+  },
+  i18n: {
+    confirmationModal: {
+      title: s__('PipelineGraph|Are you sure you want to run %{stageName}?'),
+      actionCancel: { text: __('Cancel') },
+      actionPrimary: { text: __('Confirm') },
+    },
   },
   props: {
     groups: {
@@ -75,6 +85,12 @@ export default {
     'gl-hover-text-gray-900',
     'gl-focus-text-gray-900',
   ],
+  data() {
+    return {
+      showConfirmationModal: false,
+      shouldTriggerActionClick: false,
+    };
+  },
   computed: {
     canUpdatePipeline() {
       return this.userPermissions.updatePipeline;
@@ -87,6 +103,14 @@ export default {
     },
     showStageName() {
       return !this.isStageView;
+    },
+    withConfirmationModal() {
+      return this.action.confirmationMessage !== null;
+    },
+    confirmationTitle() {
+      return sprintf(this.$options.i18n.confirmationModal.title, {
+        stageName: this.name,
+      });
     },
   },
   errorCaptured(err, _vm, info) {
@@ -117,6 +141,33 @@ export default {
 
       return group.size === 1 && firstJobDefined;
     },
+    showActionConfirmationModal() {
+      this.showConfirmationModal = true;
+    },
+    executePendingAction() {
+      this.shouldTriggerActionClick = true;
+    },
+    async actionClicked() {
+      if (this.action.confirmationMessage !== null) {
+        const confirmed = await confirmAction(null, {
+          title: sprintf(this.$options.i18n.confirmationModal.title, {
+            stageName: sanitize(this.name),
+          }),
+          modalHtmlMessage: `
+            <p>${sprintf(__('Custom confirmation message: %{message}'), {
+              message: sanitize(this.action.confirmationMessage),
+            })}</p>
+            <p>${s__('PipelineGraph|Do you want to continue?')}</p>
+          `,
+          primaryBtnText: sprintf(__('Yes, run all manual')),
+        });
+
+        if (!confirmed) {
+          return;
+        }
+      }
+      this.executePendingAction();
+    },
   },
 };
 </script>
@@ -129,17 +180,20 @@ export default {
     <template #stages>
       <div
         data-testid="stage-column-title"
-        class="stage-column-title gl-display-flex gl-justify-content-space-between gl-relative gl-font-weight-bold gl-pipeline-job-width gl-text-truncate gl-line-height-36 gl-pl-4 -gl-mb-2"
+        class="stage-column-title gl-display-flex gl-justify-content-space-between gl-relative gl-font-bold gl-pipeline-job-width gl-text-truncate gl-leading-36 gl-pl-4 -gl-mb-2"
       >
         <span :title="name" class="gl-text-truncate gl-pr-3 gl-w-17/20">
           {{ name }}
         </span>
         <action-component
           v-if="hasAction && canUpdatePipeline"
+          :should-trigger-click="shouldTriggerActionClick"
           :action-icon="action.icon"
           :tooltip-text="action.title"
           :link="action.path"
+          :with-confirmation-modal="withConfirmationModal"
           class="js-stage-action"
+          @click.native="actionClicked"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
         />
       </div>
@@ -150,7 +204,7 @@ export default {
         :id="groupId(group)"
         :key="getGroupId(group)"
         data-testid="stage-column-group"
-        class="gl-relative gl-white-space-normal gl-pipeline-job-width gl-mb-2"
+        class="gl-relative gl-whitespace-normal gl-pipeline-job-width gl-mb-2"
         @mouseenter="$emit('jobHover', group.name)"
         @mouseleave="$emit('jobHover', '')"
       >
@@ -168,7 +222,6 @@ export default {
             { 'gl-opacity-3': isFadedOut(group.name) },
             'gl-transition-duration-slow gl-transition-timing-function-ease',
           ]"
-          data-testid="job-item-container"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
           @setSkipRetryModal="$emit('setSkipRetryModal')"
         />

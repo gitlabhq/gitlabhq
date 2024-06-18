@@ -48,7 +48,7 @@ WARNING:
 In GitLab 16.1 and earlier, you should **not** use direct transfer with [scheduled scan execution policies](../../user/application_security/policies/scan-execution-policies.md). If using direct transfer, first upgrade to GitLab 16.2 and ensure security policy bots are enabled in the projects you are enforcing.
 
 WARNING:
-This feature is in [Beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
+This feature is in [beta](../../policy/experiment-beta-support.md#beta) and subject to change without notice.
 This feature is not ready for production use.
 
 Migration of groups and projects by direct transfer is disabled by default.
@@ -65,6 +65,23 @@ To enable migration of groups and projects by direct transfer:
 The same setting
 [is available](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) in the API as the
 `bulk_import_enabled` attribute.
+
+## Enable silent admin exports
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151278) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `export_audit_events`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153351) in GitLab 17.1. Feature flag `export_audit_events` removed.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152143) for file export downloads in GitLab 17.1.
+
+Enable silent admin exports to prevent [audit events](../audit_event_reports.md) when
+instance administrators trigger a [project or group file export](../../user/project/settings/import_export.md) or download the export file.
+Exports from non-administrators still generate audit events.
+
+To enable silent admin project and group file exports:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**, then expand **Import and export settings**.
+1. Scroll to **Silent exports by admins**.
+1. Select the **Enabled** checkbox.
 
 ## Max export size
 
@@ -182,3 +199,14 @@ To modify this setting:
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Set another value for **Maximum number of simultaneous import jobs** for the desired importer.
+
+## Troubleshooting
+
+## Error: `Help page documentation base url is blocked: execution expired`
+
+While enabling application settings like [import source](#configure-allowed-import-sources), you might get a `Help page documentation base url is blocked: execution expired`
+error. To work around this error:
+
+1. Add `docs.gitlab.com`, or [the redirect help documentation pages URL](help_page.md#redirect-help-pages), to the
+   [allowlist](../../security/webhooks.md#allow-outbound-requests-to-certain-ip-addresses-and-domains).
+1. Select **Save Changes**.

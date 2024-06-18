@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::Strategies::RecordLoaderStrategy do
-  let(:finder_query) { -> (created_at_value, id_value) { model.where(model.arel_table[:id].eq(id_value)) } }
+  let(:finder_query) { ->(created_at_value, id_value) { model.where(model.arel_table[:id].eq(id_value)) } }
   let(:model) { Project }
 
   let(:keyset_scope) do

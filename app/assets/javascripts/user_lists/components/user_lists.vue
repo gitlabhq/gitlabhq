@@ -76,7 +76,7 @@ export default {
 <template>
   <div>
     <div class="gl-display-flex gl-flex-direction-column">
-      <div class="gl-display-flex gl-flex-direction-column gl-md-display-none!">
+      <div class="gl-flex md:!gl-hidden gl-flex-direction-column">
         <gl-button v-if="hasNewPath" :href="newUserListPath" variant="confirm">
           {{ s__('UserLists|New user list') }}
         </gl-button>

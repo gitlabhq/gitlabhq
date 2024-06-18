@@ -48,8 +48,8 @@ module API
 
     params do
       requires :id, types: [String, Integer],
-                    desc: 'The ID or URL-encoded path of the project',
-                    documentation: { example: 1 }
+        desc: 'The ID or URL-encoded path of the project',
+        documentation: { example: 1 }
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
@@ -107,8 +107,8 @@ module API
       end
       params do
         optional :ref, type: String,
-                       desc: 'The name of a repository branch or tag, if not given the default branch is used',
-                       documentation: { example: 'main' }
+          desc: 'The name of a repository branch or tag, if not given the default branch is used',
+          documentation: { example: 'main' }
         optional :path, type: String, desc: 'The path of the tree', documentation: { example: 'files/html' }
         optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
 
@@ -117,8 +117,8 @@ module API
 
         given pagination: ->(value) { value == 'keyset' } do
           optional :page_token, type: String,
-                                desc: 'Record from which to start the keyset pagination',
-                                documentation: { example: 'a1e8f8d745cc87e3a9248358d9352bb7f9a0aeba' }
+            desc: 'Record from which to start the keyset pagination',
+            documentation: { example: 'a1e8f8d745cc87e3a9248358d9352bb7f9a0aeba' }
         end
 
         given pagination: ->(value) { value == 'none' } do
@@ -143,7 +143,7 @@ module API
       desc 'Get raw blob contents from the repository'
       params do
         requires :sha, type: String,
-                       desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
+          desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
       end
       get ':id/repository/blobs/:sha/raw' do
         # Load metadata enough to ask Workhorse to load the whole blob
@@ -157,7 +157,7 @@ module API
       desc 'Get a blob from the repository'
       params do
         requires :sha, type: String,
-                       desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
+          desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
       end
       get ':id/repository/blobs/:sha' do
         assign_blob_vars!(limit: -1)
@@ -173,11 +173,11 @@ module API
       desc 'Get an archive of the repository'
       params do
         optional :sha, type: String,
-                       desc: 'The commit sha of the archive to be downloaded',
-                       documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
+          desc: 'The commit sha of the archive to be downloaded',
+          documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
         optional :format, type: String, desc: 'The archive format', documentation: { example: 'tar.gz' }
         optional :path, type: String,
-                        desc: 'Subfolder of the repository to be downloaded', documentation: { example: 'files/archives' }
+          desc: 'Subfolder of the repository to be downloaded', documentation: { example: 'files/archives' }
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         check_archive_rate_limit!(current_user, user_project) do
@@ -196,11 +196,11 @@ module API
       end
       params do
         requires :from, type: String,
-                        desc: 'The commit, branch name, or tag name to start comparison',
-                        documentation: { example: 'main' }
+          desc: 'The commit, branch name, or tag name to start comparison',
+          documentation: { example: 'main' }
         requires :to, type: String,
-                      desc: 'The commit, branch name, or tag name to stop comparison',
-                      documentation: { example: 'feature' }
+          desc: 'The commit, branch name, or tag name to stop comparison',
+          documentation: { example: 'feature' }
         optional :from_project_id, type: Integer, desc: 'The project to compare from', documentation: { example: 1 }
         optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
         use :with_unidiff
@@ -249,9 +249,9 @@ module API
       end
       params do
         requires :refs, type: Array[String],
-                        coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-                        desc: 'The refs to find the common ancestor of, multiple refs can be passed',
-                        documentation: { example: 'main' }
+          coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+          desc: 'The refs to find the common ancestor of, multiple refs can be passed',
+          documentation: { example: 'main' }
       end
       get ':id/repository/merge_base' do
         refs = params[:refs]

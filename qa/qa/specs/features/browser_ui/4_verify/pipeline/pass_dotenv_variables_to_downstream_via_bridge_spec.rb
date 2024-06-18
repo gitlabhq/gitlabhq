@@ -8,14 +8,7 @@ module QA
       let(:group) { create(:group) }
       let(:upstream_project) { create(:project, group: group, name: 'upstream-project-with-bridge') }
       let(:downstream_project) { create(:project, group: group, name: 'downstream-project-with-bridge') }
-
-      let!(:runner) do
-        Resource::GroupRunner.fabricate! do |runner|
-          runner.name = executor
-          runner.tags = [executor]
-          runner.group = group
-        end
-      end
+      let!(:runner) { create(:group_runner, group: group, name: executor, tags: [executor]) }
 
       before do
         Flow::Login.sign_in

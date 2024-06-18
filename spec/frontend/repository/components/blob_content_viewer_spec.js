@@ -535,12 +535,12 @@ describe('Blob content viewer component', () => {
 
     it('simple edit redirects to the simple editor', () => {
       findBlobHeader().vm.$emit('edit', 'simple');
-      expect(urlUtility.redirectTo).toHaveBeenCalledWith(simpleViewerMock.editBlobPath); // eslint-disable-line import/no-deprecated
+      expect(urlUtility.visitUrl).toHaveBeenCalledWith(simpleViewerMock.editBlobPath);
     });
 
     it('IDE edit redirects to the IDE editor', () => {
       findBlobHeader().vm.$emit('edit', 'ide');
-      expect(urlUtility.redirectTo).toHaveBeenCalledWith(simpleViewerMock.ideEditPath); // eslint-disable-line import/no-deprecated
+      expect(urlUtility.visitUrl).toHaveBeenCalledWith(simpleViewerMock.ideEditPath);
     });
 
     it.each`

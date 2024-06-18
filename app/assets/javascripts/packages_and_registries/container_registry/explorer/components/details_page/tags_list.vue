@@ -21,6 +21,7 @@ import {
   GRAPHQL_PAGE_SIZE,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   NAME_SORT_FIELD,
+  PUBLISHED_SORT_FIELD,
   NO_TAGS_TITLE,
   NO_TAGS_MESSAGE,
   NO_TAGS_MATCHING_FILTERS_TITLE,
@@ -66,7 +67,6 @@ export default {
       required: false,
     },
   },
-  sortableFields: [NAME_SORT_FIELD],
   i18n: {
     REMOVE_TAGS_BUTTON_TITLE,
     TAGS_LIST_TITLE,
@@ -97,6 +97,13 @@ export default {
     };
   },
   computed: {
+    defaultSort() {
+      return this.config.isMetadataDatabaseEnabled ? 'desc' : 'asc';
+    },
+    sortableFields() {
+      const fields = this.config.isMetadataDatabaseEnabled ? [PUBLISHED_SORT_FIELD] : [];
+      return fields.concat(NAME_SORT_FIELD);
+    },
     listTitle() {
       return n__('%d tag', '%d tags', this.tags.length);
     },
@@ -198,21 +205,19 @@ export default {
       this.pageParams = getPageParams(pageInfo);
       this.sort = sort;
 
-      const parsed = {
-        name: '',
-      };
-
       // This takes in account the fact that we will be adding more filters types
       // this is why is an object and not an array or a simple string
-      this.filters = filters.reduce((acc, filter) => {
-        if (filter.type === FILTERED_SEARCH_TERM) {
-          return {
-            ...acc,
-            name: `${acc.name} ${filter.value.data}`.trim(),
-          };
-        }
-        return acc;
-      }, parsed);
+      this.filters = filters
+        .filter((filter) => filter.value?.data)
+        .reduce((acc, filter) => {
+          if (filter.type === FILTERED_SEARCH_TERM) {
+            return {
+              ...acc,
+              name: filter.value.data.trim(),
+            };
+          }
+          return acc;
+        }, {});
     },
   },
 };
@@ -221,9 +226,9 @@ export default {
 <template>
   <div>
     <persisted-search
-      :sortable-fields="$options.sortableFields"
-      :default-order="$options.sortableFields[0].orderBy"
-      default-sort="asc"
+      :sortable-fields="sortableFields"
+      :default-order="sortableFields[0].orderBy"
+      :default-sort="defaultSort"
       @update="handleSearchUpdate"
     />
     <tags-loader v-if="isLoading" />

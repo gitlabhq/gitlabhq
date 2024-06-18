@@ -25,6 +25,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     container_registry_import_target_plan
     container_registry_import_created_before
   ], remove_with: '17.2', remove_after: '2024-06-24'
+  ignore_column %i[sign_in_text help_text], remove_with: '17.3', remove_after: '2024-08-15'
+  ignore_columns %i[toggle_security_policies_policy_scope lock_toggle_security_policies_policy_scope], remove_with: '17.2', remove_after: '2024-07-12'
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
@@ -580,7 +582,11 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :container_registry_expiration_policies_worker_capacity,
       :decompress_archive_file_timeout,
       :dependency_proxy_ttl_group_policy_worker_capacity,
+      :downstream_pipeline_trigger_limit_per_project_user_sha,
       :gitlab_shell_operation_limit,
+      :group_api_limit,
+      :group_projects_api_limit,
+      :groups_api_limit,
       :inactive_projects_min_size_mb,
       :issues_create_limit,
       :jobs_per_stage_page_size,
@@ -595,6 +601,8 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :package_registry_cleanup_policies_worker_capacity,
       :packages_cleanup_package_file_worker_capacity,
       :pipeline_limit_per_project_user_sha,
+      :project_api_limit,
+      :projects_api_limit,
       :projects_api_rate_limit_unauthenticated,
       :raw_blob_request_limit,
       :search_rate_limit,
@@ -603,16 +611,26 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :sidekiq_job_limiter_compression_threshold_bytes,
       :sidekiq_job_limiter_limit_bytes,
       :terminal_max_session_time,
-      :users_get_by_id_limit,
-      :downstream_pipeline_trigger_limit_per_project_user_sha
+      :user_contributed_projects_api_limit,
+      :user_projects_api_limit,
+      :user_starred_projects_api_limit,
+      :users_get_by_id_limit
   end
 
   jsonb_accessor :rate_limits,
-    members_delete_limit: [:integer, { default: 60 }],
-    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
-    concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
     concurrent_bitbucket_import_jobs_limit: [:integer, { default: 100 }],
-    concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }]
+    concurrent_bitbucket_server_import_jobs_limit: [:integer, { default: 100 }],
+    concurrent_github_import_jobs_limit: [:integer, { default: 1000 }],
+    downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
+    group_api_limit: [:integer, { default: 400 }],
+    group_projects_api_limit: [:integer, { default: 600 }],
+    groups_api_limit: [:integer, { default: 200 }],
+    members_delete_limit: [:integer, { default: 60 }],
+    project_api_limit: [:integer, { default: 400 }],
+    projects_api_limit: [:integer, { default: 2000 }],
+    user_contributed_projects_api_limit: [:integer, { default: 100 }],
+    user_projects_api_limit: [:integer, { default: 300 }],
+    user_starred_projects_api_limit: [:integer, { default: 100 }]
 
   jsonb_accessor :service_ping_settings,
     gitlab_environment_toolkit_instance: [:boolean, { default: false }]
@@ -756,9 +774,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   attr_encrypted :telesign_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :product_analytics_configurator_connection_string, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :openai_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
-  attr_encrypted :vertex_ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :anthropic_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false) # Deprecated. See https://gitlab.com/gitlab-org/gitlab/-/issues/466161
+  attr_encrypted :vertex_ai_credentials, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false) # Deprecated. See https://gitlab.com/gitlab-org/gitlab/-/issues/466161
+  attr_encrypted :vertex_ai_access_token, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false) # Deprecated. See https://gitlab.com/gitlab-org/gitlab/-/issues/466161
 
   # Restricting the validation to `on: :update` only to avoid cyclical dependencies with
   # License <--> ApplicationSetting. This method calls a license check when we create

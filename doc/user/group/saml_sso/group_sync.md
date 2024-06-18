@@ -35,8 +35,8 @@ When SAML is enabled, users with the Owner role see a new menu
 item in group **Settings > SAML Group Links**.
 
 - You can configure one or more **SAML Group Links** to map a SAML identity
-  provider group name to a GitLab role.
-- Members of the SAML identity provider group are added as members of the GitLab
+  provider (IdP) group name to a GitLab role.
+- Members of the SAML IdP group are added as members of the GitLab
   group on their next SAML sign-in.
 - Group membership is evaluated each time a user signs in using SAML.
 - SAML Group Links can be configured for a top-level group or any subgroup.
@@ -55,10 +55,29 @@ To link the SAML groups:
 
 ![SAML Group Links](img/saml_group_links_v13_9.png)
 
+### Self-managed GitLab with multiple SAML IdPs
+
+When a user signs in, GitLab:
+
+- Checks all the configured SAML group links.
+- Adds that user to the corresponding GitLab groups based on the SAML groups the user belongs to across the different IdPs. 
+
+For this to work correctly, you must configure all SAML IdPs to contain group attributes in the SAML response.
+
+For example, if you have two SAML IdPs and you configure a group link named `GTLB-Owners` mapped to the Owner role,
+the SAML response from either SAML IdP must contain a group attribute `GTLB-Owners`. If one of the SAML IdPs does not return the group attribute,
+when the user signs in with that SAML IdP, that user is removed from the group.
+
+### How role conflicts are resolved
+
+#### Members of multiple mapped SAML groups
+
 If a user is a member of multiple SAML groups mapped to the same GitLab group,
 the user gets the highest role from the groups. For example, if one group
 is linked as Guest and another Maintainer, a user in both groups gets the Maintainer
 role.
+
+#### Parent group role is higher than child group
 
 Users granted:
 
@@ -142,7 +161,7 @@ group overage claim attribute in the SAML response. Then group memberships must 
 The [Graph API endpoint](https://learn.microsoft.com/en-us/graph/api/user-list-transitivememberof?view=graph-rest-1.0&tabs=http#http-request) supports only a
 [user object ID](https://learn.microsoft.com/en-us/partner-center/find-ids-and-domain-names#find-the-user-object-id) or
 [userPrincipalName](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/plan-connect-userprincipalname#what-is-userprincipalname)
-as the [configured](../../../user/group/saml_sso/index.md#azure) Unique User Identifier (Name identifier) attribute. 
+as the [configured](../../../user/group/saml_sso/index.md#azure) Unique User Identifier (Name identifier) attribute.
 
 When the integration processes Group Sync, only Group Links configured with
 group unique identifiers (like `12345678-9abc-def0-1234-56789abcde`) are supported.
@@ -249,7 +268,11 @@ For example, in the following diagram:
   not yet signed in.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+accTitle: Automatic member removal
+accDescr: How group membership of users is determined before sign in if group sync is set up.
+
    subgraph SAML users
       SAMLUserA[Sidney Jones]
       SAMLUserB[Zhang Wei]
@@ -274,7 +297,11 @@ graph TB
 ```
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+accTitle: Automatic member removal
+accDescr: User membership for Sidney when she has not signed into group C, and group B has not configured group links.
+
     subgraph GitLab users
       GitLabUserA[Sidney Jones]
       GitLabUserB[Zhang Wei]
@@ -283,9 +310,9 @@ graph TB
     end
 
    subgraph GitLab groups
-      GitLabGroupA["Group A (SAML configured)"] --> GitLabGroupB["Group B (SAML Group Link not configured)"]
-      GitLabGroupA --> GitLabGroupC["Group C (SAML Group Link configured)"]
-      GitLabGroupA --> GitLabGroupD["Group D (SAML Group Link configured)"]
+      GitLabGroupA["Group A<br> (SAML configured)"] --> GitLabGroupB["Group B<br> (SAML Group Link not configured)"]
+      GitLabGroupA --> GitLabGroupC["Group C<br> (SAML Group Link configured)"]
+      GitLabGroupA --> GitLabGroupD["Group D<br> (SAML Group Link configured)"]
    end
 
    GitLabGroupB --> |Member|GitLabUserA
@@ -298,7 +325,11 @@ graph TB
 ```
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+accTitle: Automatic member removal
+accDescr: How membership of Alex Garcia works once she has signed into a group that has group links enabled.
+
    subgraph GitLab users
       GitLabUserA[Sidney Jones]
       GitLabUserB[Zhang Wei]
@@ -308,9 +339,9 @@ graph TB
 
    subgraph GitLab groups after Alex Garcia signs in
       GitLabGroupA[Group A]
-      GitLabGroupA["Group A (SAML configured)"] --> GitLabGroupB["Group B (SAML Group Link not configured)"]
-      GitLabGroupA --> GitLabGroupC["Group C (SAML Group Link configured)"]
-      GitLabGroupA --> GitLabGroupD["Group D (SAML Group Link configured)"]
+      GitLabGroupA["Group A<br> (SAML configured)"] --> GitLabGroupB["Group B<br> (SAML Group Link not configured)"]
+      GitLabGroupA --> GitLabGroupC["Group C<br> (SAML Group Link configured)"]
+      GitLabGroupA --> GitLabGroupD["Group D<br> (SAML Group Link configured)"]
    end
 
    GitLabGroupB --> |Member|GitLabUserA

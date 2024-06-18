@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Once the tailwind migration is done, we can remove this
+# and remove the `viteBinPath` entrypoint in config/vite.json
+echo "Ensure that css_in_js exists to aid tailwind migration"
+yarn run tailwindcss:build
+
+echo "Starting vite"
+exec node_modules/.bin/vite "$@"

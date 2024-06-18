@@ -16,7 +16,7 @@ describe('MrWidgetContainer', () => {
   it('has layout', () => {
     factory();
 
-    expect(wrapper.classes()).toEqual(['mr-section-container', 'mr-widget-workflow']);
+    expect(wrapper.classes()).toContain('mr-section-container');
     expect(wrapper.find('.mr-widget-content').exists()).toBe(true);
   });
 

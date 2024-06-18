@@ -22,9 +22,10 @@ exports[`Design management toolbar component renders design and updated data 1`]
           class="gl-flex-shrink-0 gl-text-gray-200"
           name="chevron-right"
           size="16"
+          variant="current"
         />
         <span
-          class="gl-font-weight-normal gl-text-truncate"
+          class="gl-font-normal gl-text-truncate"
         >
           test.jpg
         </span>
@@ -41,7 +42,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
       </small>
     </div>
     <close-button-stub
-      class="gl-md-display-none gl-ml-auto"
+      class="gl-ml-auto md:gl-hidden"
     />
   </div>
   <div
@@ -89,7 +90,7 @@ exports[`Design management toolbar component renders design and updated data 1`]
     />
   </div>
   <close-button-stub
-    class="gl-display-none gl-md-display-flex"
+    class="gl-hidden md:gl-flex"
   />
 </header>
 `;

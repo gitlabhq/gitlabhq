@@ -3,6 +3,9 @@ workhorse:verify:
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}golang:${GO_VERSION}
   stage: test
   needs: []
+  parallel:
+    matrix:
+      - GO_VERSION: ["1.21", "1.22"]
   script:
     - go version
     - make -C workhorse  # test build

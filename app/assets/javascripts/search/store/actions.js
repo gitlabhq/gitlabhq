@@ -1,23 +1,18 @@
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import {
-  visitUrl,
-  setUrlParams,
-  getBaseURL,
-  queryToObject,
-  objectToQuery,
-} from '~/lib/utils/url_utility';
+import { visitUrl, setUrlParams, getNormalizedURL } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
+import { SCOPE_BLOB } from '~/search/sidebar/constants';
 import {
   GROUPS_LOCAL_STORAGE_KEY,
   PROJECTS_LOCAL_STORAGE_KEY,
   SIDEBAR_PARAMS,
-  PRESERVED_PARAMS,
-  LOCAL_STORAGE_NAME_SPACE_EXTENSION,
-} from './constants';
+  REGEX_PARAM,
+  LS_REGEX_HANDLE,
+} from '~/search/store/constants';
 import * as types from './mutation_types';
 import {
   loadDataFromLS,
@@ -114,8 +109,8 @@ export const setQuery = ({ state, commit }, { key, value }) => {
     commit(types.SET_SIDEBAR_DIRTY, isSidebarDirty(state.query, state.urlQuery));
   }
 
-  if (PRESERVED_PARAMS.includes(key)) {
-    setDataToLS(`${key}_${LOCAL_STORAGE_NAME_SPACE_EXTENSION}`, value);
+  if (key === REGEX_PARAM) {
+    setDataToLS(LS_REGEX_HANDLE, value);
   }
 };
 
@@ -152,25 +147,23 @@ export const setLabelFilterSearch = ({ commit }, { value }) => {
   commit(types.SET_LABEL_SEARCH_STRING, value);
 };
 
-const injectWildCardSearch = (state, link) => {
-  const urlObject = new URL(`${getBaseURL()}${link}`);
-  if (!state.urlQuery.search) {
-    const queryObject = queryToObject(urlObject.search);
-    urlObject.search = objectToQuery({ ...queryObject, search: '*' });
-  }
-
-  return urlObject.href;
-};
-
 export const fetchSidebarCount = ({ commit, state }) => {
   const items = Object.values(state.navigation)
     .filter((navigationItem) => !navigationItem.active && navigationItem.count_link)
     .map((navItem) => {
       const navigationItem = { ...navItem };
+      const modifications = {
+        search: state.query?.search || '*',
+      };
 
-      if (navigationItem.count_link) {
-        navigationItem.count_link = injectWildCardSearch(state, navigationItem.count_link);
+      if (navigationItem.scope === SCOPE_BLOB && loadDataFromLS(LS_REGEX_HANDLE)) {
+        modifications[REGEX_PARAM] = true;
       }
+
+      navigationItem.count_link = setUrlParams(
+        modifications,
+        getNormalizedURL(navigationItem.count_link),
+      );
 
       return navigationItem;
     });

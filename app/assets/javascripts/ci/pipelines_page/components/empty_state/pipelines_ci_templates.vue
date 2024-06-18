@@ -66,7 +66,7 @@ export default {
       >
         <gl-card class="gl-bg-blue-50">
           <div class="gl-flex-direction-row">
-            <div class="gl-py-5"><gl-emoji class="gl-font-size-h2-xl" data-name="rocket" /></div>
+            <div class="gl-py-5"><gl-emoji class="gl-text-size-h2-xl" data-name="rocket" /></div>
             <div class="gl-mb-3">
               <strong class="gl-text-gray-800 gl-mb-2">{{
                 $options.I18N.learnBasics.migrateFromJenkins.title
@@ -92,7 +92,7 @@ export default {
       <div class="gl-lg-w-25p gl-md-w-half gl-w-full gl-pb-8">
         <gl-card>
           <div class="gl-flex-direction-row">
-            <div class="gl-py-5"><gl-emoji class="gl-font-size-h2-xl" data-name="wave" /></div>
+            <div class="gl-py-5"><gl-emoji class="gl-text-size-h2-xl" data-name="wave" /></div>
             <div class="gl-mb-3">
               <strong class="gl-text-gray-800 gl-mb-2">
                 {{ $options.I18N.learnBasics.gettingStarted.title }}

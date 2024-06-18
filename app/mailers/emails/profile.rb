@@ -71,7 +71,7 @@ module Emails
         @reason_text = _('You are receiving this email because you are an Owner of the Group.')
       else
         @target_url = project_settings_access_tokens_url(resource)
-        @reason_text = _('You are receiving this email because you are a Maintainer of the Project.')
+        @reason_text = _('You are receiving this email because you are either an Owner or Maintainer of the project.')
       end
 
       mail_with_locale(

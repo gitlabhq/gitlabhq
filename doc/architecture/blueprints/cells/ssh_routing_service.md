@@ -84,7 +84,7 @@ in edge-case scenarios and make the solution unreliable and vulnerable to Git up
 ### Cells: Route SSH requests to the right cell
 
 With the development of [Cells Architecture](infrastructure/index.md#architecture)
-and introduction of its [Routing Service](routing-service.md), a similar challenge is encountered.
+and introduction of its [Routing Service](http_routing_service.md), a similar challenge is encountered.
 When an SSH request is performed, it must be [routed](https://gitlab.com/gitlab-org/gitlab/-/issues/438826)
 to the cell that contains the data related to this request.
 

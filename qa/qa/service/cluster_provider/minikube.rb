@@ -8,8 +8,7 @@ module QA
           find_executable('minikube') || raise("You must first install `minikube` executable to run these tests.")
         end
 
-        def set_credentials(admin_user)
-        end
+        def set_credentials(admin_user); end
 
         def setup
           shell 'minikube stop'

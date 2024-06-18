@@ -33,6 +33,10 @@ FactoryBot.define do
       batched { true }
     end
 
+    trait :canceled do
+      status { -3 }
+    end
+
     trait :stale do
       created_at { 1.day.ago }
     end

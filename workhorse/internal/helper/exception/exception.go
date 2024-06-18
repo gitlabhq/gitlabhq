@@ -1,3 +1,4 @@
+// Package exception provides utility functions for handling exceptions
 package exception
 
 import (
@@ -17,6 +18,7 @@ var ravenHeaderBlacklist = []string{
 	"Private-Token",
 }
 
+// Track captures and reports an exception
 func Track(r *http.Request, err error, fields log.Fields) {
 	client := raven.DefaultClient
 	extra := raven.Extra{}
@@ -45,6 +47,7 @@ func Track(r *http.Request, err error, fields log.Fields) {
 	client.Capture(packet, nil)
 }
 
+// CleanHeaders redacts sensitive headers in the request
 func CleanHeaders(r *http.Request) {
 	if r == nil {
 		return

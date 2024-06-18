@@ -39,7 +39,7 @@ Rails.application.configure do
   # Include generic and useful information about system operation, but avoid logging too much
   # information to avoid inadvertent exposure of personally identifiable information (PII).
   # Note: This configuration does not affect the log level of `Gitlab::Logger` and its subclasses.
-  config.log_level = :info
+  config.log_level = Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :info)
 
   # Suppress 'Rendered template ...' messages in the log
   # source: http://stackoverflow.com/a/16369363

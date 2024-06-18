@@ -47,8 +47,10 @@ This diagram describes how a post-processing hook revokes a secret in the GitLab
 
 ```mermaid
 %%{init: { "fontFamily": "GitLab Sans" }}%%
-
 sequenceDiagram
+accTitle: Architecture diagram
+accDescr: How a post-processing hook revokes a secret in the GitLab application.
+
     autonumber
     GitLab Rails-->+GitLab Rails: gl-secret-detection-report.json
     GitLab Rails->>+GitLab Sidekiq: StoreScansService
@@ -86,7 +88,11 @@ body. We strongly recommend that you verify incoming requests using this signatu
 request from GitLab. The diagram below details the necessary steps to receive, verify, and revoke leaked tokens:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+accTitle: Partner API data flow
+accDescr: How a Partner API should receive and respond to leaked token revocation requests.
+
     autonumber
     GitLab Token Revocation API-->>+Partner API: Send new leaked credentials
     Partner API-->>+GitLab Public Keys endpoint: Get active public keys

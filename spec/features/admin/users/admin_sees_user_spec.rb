@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin::Users::User', feature_category: :user_management do
+RSpec.describe 'Admin::Users::User', feature_category: :user_management, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/441334' do
   include Features::AdminUsersHelpers
   include Spec::Support::Helpers::ModalHelpers
 

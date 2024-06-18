@@ -19,7 +19,10 @@ describe('pages/shared/wikis/components/wiki_content', () => {
 
   function buildWrapper(propsData = {}) {
     wrapper = shallowMount(WikiContent, {
-      propsData: { getWikiContentUrl: PATH, ...propsData },
+      provide: {
+        contentApi: PATH,
+      },
+      propsData: { ...propsData },
       stubs: {
         GlSkeletonLoader,
         GlAlert,

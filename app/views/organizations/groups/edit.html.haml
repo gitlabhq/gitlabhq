@@ -1,0 +1,5 @@
+- page_title _("Edit"), @group.name, _("Edit")
+- add_to_breadcrumbs _('Groups and projects'), groups_and_projects_organization_path(@organization, { display: 'groups' })
+- add_to_breadcrumbs @group.name, group_path(@group)
+
+#js-organizations-groups-edit{ data: { app_data: organization_groups_edit_app_data(@organization, @group) } }

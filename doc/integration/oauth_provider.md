@@ -106,6 +106,7 @@ different actions. See the following table for all available scopes.
 | `profile`          | Grants read-only access to the user's profile data using [OpenID Connect](openid_connect_provider.md). |
 | `email`            | Grants read-only access to the user's primary email address using [OpenID Connect](openid_connect_provider.md). |
 | `create_runner`    | Grants permission to create runners. |
+| `manage_runner`    | Grants permission to manage runners. |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes. |
 
 At any time you can revoke any access by selecting **Revoke**.

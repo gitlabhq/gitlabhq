@@ -281,11 +281,17 @@ Check that the `Provision Role ARN` is correct. An example of a valid ARN:
 arn:aws:iam::123456789012:role/gitlab-eks-provision'
 ```
 
-### Access denied: User `arn:aws:iam::x` is not authorized to perform: `sts:AssumeRole` on resource: `arn:aws:iam::y`
+### Access denied: User is not authorized to perform: `sts:AssumeRole` on resource: `arn:aws:iam::y`
 
 This error occurs when the credentials defined in the
 [Configure Amazon authentication](#configure-amazon-authentication) cannot assume the role defined by the
-Provision Role ARN. Check that:
+Provision Role ARN:
+
+```plaintext
+User `arn:aws:iam::x` is not authorized to perform: `sts:AssumeRole` on resource: `arn:aws:iam::y`
+```
+
+Check that:
 
 1. The initial set of AWS credentials [has the AssumeRole policy](#additional-requirements-for-self-managed-instances).
 1. The Provision Role has access to create clusters in the given region.

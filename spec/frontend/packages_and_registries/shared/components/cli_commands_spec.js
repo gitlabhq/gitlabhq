@@ -13,7 +13,7 @@ import {
   PUSH_COMMAND_LABEL,
   COPY_PUSH_TITLE,
 } from '~/packages_and_registries/container_registry/explorer/constants';
-import Tracking from '~/tracking';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
 import { dockerCommands } from 'jest/packages_and_registries/container_registry/explorer/mock_data';
@@ -35,7 +35,6 @@ describe('cli_commands', () => {
   };
 
   beforeEach(() => {
-    jest.spyOn(Tracking, 'event');
     mountComponent();
   });
 
@@ -43,13 +42,25 @@ describe('cli_commands', () => {
     expect(findDropdownButton().text()).toContain(QUICK_START);
   });
 
-  it('clicking on the dropdown emit a tracking event', () => {
-    findDropdownButton().vm.$emit('shown');
-    expect(Tracking.event).toHaveBeenCalledWith(
-      undefined,
-      'click_dropdown',
-      expect.objectContaining({ label: 'quickstart_dropdown' }),
-    );
+  describe('tracking', () => {
+    let trackingSpy;
+
+    beforeEach(() => {
+      trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('clicking on the dropdown emit a tracking event', () => {
+      findDropdownButton().vm.$emit('shown');
+      expect(trackingSpy).toHaveBeenCalledWith(
+        undefined,
+        'click_dropdown',
+        expect.objectContaining({ label: 'quickstart_dropdown' }),
+      );
+    });
   });
 
   describe.each`

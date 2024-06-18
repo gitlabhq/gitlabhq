@@ -4,7 +4,7 @@ import { GlButton, GlLoadingIcon, GlFormInput, GlFormGroup } from '@gitlab/ui';
 
 import eventHub from '~/blob/components/eventhub';
 import { createAlert } from '~/alert';
-import { redirectTo, joinPaths } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl, joinPaths } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import {
   SNIPPET_MARK_EDIT_APP_START,
@@ -193,7 +193,7 @@ export default {
           if (errors?.length) {
             this.alertAPIFailure(errors[0]);
           } else {
-            redirectTo(baseObj.snippet.webUrl); // eslint-disable-line import/no-deprecated
+            visitUrl(baseObj.snippet.webUrl);
           }
         })
         .catch((e) => {

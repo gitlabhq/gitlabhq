@@ -9,6 +9,7 @@ module API
     }.freeze
 
     helpers ::API::Helpers::Packages::Npm
+    helpers ::API::Helpers::Packages::DependencyProxyHelpers
 
     feature_category :package_registry
     urgency :low
@@ -31,6 +32,8 @@ module API
       requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     namespace 'projects/:id/packages/npm' do
+      include ::API::Concerns::Packages::NpmEndpoints
+
       desc 'Download the NPM tarball' do
         detail 'This feature was introduced in GitLab 11.8'
         success code: 200
@@ -97,7 +100,57 @@ module API
         end
       end
 
-      include ::API::Concerns::Packages::NpmEndpoints
+      # Caution: This is a globbing wildcard for GET requests
+      # Do not put other GET routes below this one
+      desc 'NPM registry metadata endpoint' do
+        detail 'This feature was introduced in GitLab 11.8'
+        success [
+          { code: 200, model: ::API::Entities::NpmPackage, message: 'Ok' },
+          { code: 302, message: 'Found (redirect)' }
+        ]
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[npm_packages]
+      end
+      params do
+        use :package_name
+      end
+      route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true,
+        authenticate_non_public: true
+      get '*package_name', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
+        package_name = declared_params[:package_name]
+        packages = ::Packages::Npm::PackageFinder.new(package_name, project: project_or_nil).execute
+
+        # In order to redirect a request, packages should not exist (without taking the user into account).
+        redirect_request = project_or_nil.blank? || packages.empty?
+
+        redirect_registry_request(
+          forward_to_registry: redirect_request,
+          package_type: :npm,
+          target: project_or_nil,
+          package_name: package_name
+        ) do
+          authorize_read_package!(project)
+
+          not_found!('Packages') if packages.empty?
+
+          if metadata_cache&.file&.exists?
+            metadata_cache.touch_last_downloaded_at
+            present_carrierwave_file!(metadata_cache.file)
+
+            break
+          end
+
+          enqueue_sync_metadata_cache_worker(project, package_name)
+
+          metadata = generate_metadata_service(packages).execute.payload
+          present metadata, with: ::API::Entities::NpmPackage
+        end
+      end
     end
   end
 end

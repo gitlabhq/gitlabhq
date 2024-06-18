@@ -12,7 +12,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let_it_be(:developer) { create(:user, developer_of: group) }
   let_it_be(:maintainer) { create(:user, maintainer_of: group) }
   let_it_be(:owner) { create(:user, owner_of: group) }
-  let_it_be(:admin) { create(:admin, :without_default_org) }
+  let_it_be(:admin) { create(:admin) }
   let_it_be(:non_group_member) { create(:user) }
 
   let_it_be(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
@@ -66,16 +66,19 @@ RSpec.shared_context 'GroupPolicy context' do
       admin_achievement
       award_achievement
       read_group_runners
+      admin_push_rules
     ]
   end
 
   let(:owner_permissions) do
     %i[
       owner_access
+      admin_cicd_variables
       admin_group
       admin_namespace
       admin_group_member
       admin_package
+      admin_runner
       change_visibility_level
       set_note_created_at
       create_subgroup
@@ -89,10 +92,12 @@ RSpec.shared_context 'GroupPolicy context' do
       update_git_access_protocol
       remove_group
       view_edit_page
+      manage_merge_request_settings
+      admin_integrations
     ]
   end
 
-  let(:admin_permissions) { %i[read_confidential_issues read_internal_note] }
+  let(:admin_permissions) { %i[admin_organization read_confidential_issues read_internal_note] }
 
   subject { described_class.new(current_user, group) }
 end

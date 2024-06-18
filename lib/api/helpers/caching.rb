@@ -42,7 +42,7 @@ module API
       # @param expires_in [ActiveSupport::Duration, Integer] an expiry time for the cache entry
       # @param presenter_args [Hash] keyword arguments to be passed to the entity
       # @return [Gitlab::Json::PrecompiledJson]
-      def present_cached(obj_or_collection, with:, cache_context: -> (_) { current_user&.cache_key }, expires_in: Gitlab::Cache::Helpers::DEFAULT_EXPIRY, **presenter_args)
+      def present_cached(obj_or_collection, with:, cache_context: ->(_) { current_user&.cache_key }, expires_in: Gitlab::Cache::Helpers::DEFAULT_EXPIRY, **presenter_args)
         json =
           if obj_or_collection.is_a?(Enumerable)
             cached_collection(

@@ -4,20 +4,14 @@ import { Mousetrap } from '~/lib/mousetrap';
 import DiffsFileTree from '~/diffs/components/diffs_file_tree.vue';
 import TreeList from '~/diffs/components/tree_list.vue';
 import PanelResizer from '~/vue_shared/components/panel_resizer.vue';
-import { SET_SHOW_TREE_LIST } from '~/diffs/store/mutation_types';
-import createDiffsStore from '../create_diffs_store';
 
 describe('DiffsFileTree', () => {
   let wrapper;
-  let store;
 
-  const createComponent = ({ renderDiffFiles = true, showTreeList = true } = {}) => {
-    store = createDiffsStore();
-    store.commit(`diffs/${SET_SHOW_TREE_LIST}`, showTreeList);
+  const createComponent = ({ visible = true } = {}) => {
     wrapper = shallowMount(DiffsFileTree, {
-      store,
       propsData: {
-        renderDiffFiles,
+        visible,
       },
     });
   };
@@ -35,7 +29,7 @@ describe('DiffsFileTree', () => {
 
     describe('when renderDiffFiles and showTreeList are false', () => {
       beforeEach(() => {
-        createComponent({ renderDiffFiles: false, showTreeList: false });
+        createComponent({ visible: false });
       });
 
       it('tree list is hidden', () => {
@@ -44,18 +38,11 @@ describe('DiffsFileTree', () => {
     });
   });
 
-  it('emits toggled event', async () => {
-    createComponent();
-    store.commit(`diffs/${SET_SHOW_TREE_LIST}`, false);
-    await nextTick();
-    expect(wrapper.emitted('toggled')).toStrictEqual([[]]);
-  });
-
   it('toggles when "f" hotkey is pressed', async () => {
     createComponent();
     Mousetrap.trigger('f');
     await nextTick();
-    expect(wrapper.findComponent(TreeList).exists()).toBe(false);
+    expect(wrapper.emitted('toggled')).toStrictEqual([[]]);
   });
 
   describe('size', () => {
@@ -82,13 +69,6 @@ describe('DiffsFileTree', () => {
       localStorage.setItem('mr_tree_list_width', '200');
       createComponent();
       checkWidth(200);
-    });
-
-    it('sets width of tree list', () => {
-      createComponent({}, ({ state }) => {
-        state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
-      });
-      checkWidth(320);
     });
 
     it('updates width', async () => {

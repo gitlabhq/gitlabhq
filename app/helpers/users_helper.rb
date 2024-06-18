@@ -23,11 +23,11 @@ module UsersHelper
     return _('We also use email for avatar detection if no avatar is uploaded.') unless user.unconfirmed_email.present?
 
     confirmation_link = link_to _('Resend confirmation e-mail'), user_confirmation_path(user: { email: user.unconfirmed_email }), method: :post
-    h(_('Please click the link in the confirmation email before continuing. It was sent to %{html_tag_strong_start}%{email}%{html_tag_strong_end}.')) % {
+    (h(_('Please click the link in the confirmation email before continuing. It was sent to %{html_tag_strong_start}%{email}%{html_tag_strong_end}.')) % {
       html_tag_strong_start: '<strong>'.html_safe,
       html_tag_strong_end: '</strong>'.html_safe,
       email: user.unconfirmed_email
-    } + content_tag(:p) { confirmation_link }
+    }) + content_tag(:p) { confirmation_link }
   end
 
   def profile_tabs
@@ -125,6 +125,7 @@ module UsersHelper
       badges << blocked_user_badge(user) if user.blocked?
       badges << { text: s_('AdminUsers|Admin'), variant: 'success' } if user.admin? # rubocop:disable Cop/UserAdmin
       badges << { text: s_('AdminUsers|Bot'), variant: 'muted' } if user.bot?
+      badges << { text: s_('AdminUsers|Deactivated'), variant: 'danger' } if user.deactivated?
       badges << { text: s_('AdminUsers|External'), variant: 'secondary' } if user.external?
       badges << { text: s_("AdminUsers|It's you!"), variant: 'muted' } if current_user == user
       badges << { text: s_("AdminUsers|Locked"), variant: 'warning' } if user.access_locked?

@@ -1,0 +1,21 @@
+query relatedProjectsForLinksWidget($fullPath: ID!, $projectSearch: String) {
+  project(fullPath: $fullPath) {
+    id
+    group {
+      id
+      projects(search: $projectSearch, includeSubgroups: true) {
+        nodes {
+          id
+          name
+          avatarUrl
+          nameWithNamespace
+          fullPath
+          namespace {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+}

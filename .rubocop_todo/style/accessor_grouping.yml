@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Style/AccessorGrouping:
-  Details: grace period
   Exclude:
     - 'app/finders/template_finder.rb'
     - 'app/models/commit.rb'
@@ -35,7 +34,6 @@ Style/AccessorGrouping:
     - 'ee/lib/gitlab/ci/reports/security/locations/dependency_scanning.rb'
     - 'lib/feature/definition.rb'
     - 'lib/gitlab/audit/type/definition.rb'
-    - 'lib/gitlab/ci/config/external/context.rb'
     - 'lib/gitlab/ci/reports/security/finding.rb'
     - 'lib/gitlab/ci/reports/security/identifier.rb'
     - 'lib/gitlab/ci/reports/security/locations/sast.rb'
@@ -59,7 +57,6 @@ Style/AccessorGrouping:
     - 'lib/gitlab/sidekiq_middleware/duplicate_jobs/duplicate_job.rb'
     - 'lib/gitlab/suggestions/file_suggestion.rb'
     - 'lib/gitlab/tracking/event_definition.rb'
-    - 'lib/gitlab/usage/metric_definition.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/base_metric.rb'
     - 'lib/gitlab/usage/service_ping/instrumented_payload.rb'
     - 'lib/json_web_token/token.rb'

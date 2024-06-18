@@ -160,7 +160,7 @@ RSpec.describe PipelineTestReportBuilder, feature_category: :tooling do
 
         context 'when receiving a server error' do
           let(:response) { instance_double('Net::HTTPResponse') }
-          let(:error) { Net::HTTPServerException.new('server error', response) }
+          let(:error) { Net::HTTPClientException.new('server error', response) }
           let(:test_report_for_pipeline) { subject.test_report_for_pipeline }
 
           before do

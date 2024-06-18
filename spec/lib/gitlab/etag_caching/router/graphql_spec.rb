@@ -27,7 +27,7 @@ RSpec.describe Gitlab::EtagCaching::Router::Graphql do
   def match_route(path, header)
     described_class.match(
       double(path_info: path,
-             headers: { 'X-GITLAB-GRAPHQL-RESOURCE-ETAG' => header }))
+        headers: { 'X-GITLAB-GRAPHQL-RESOURCE-ETAG' => header }))
   end
 
   describe '.cache_key' do

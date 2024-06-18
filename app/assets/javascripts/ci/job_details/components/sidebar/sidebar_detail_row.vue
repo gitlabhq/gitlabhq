@@ -39,7 +39,7 @@ export default {
 };
 </script>
 <template>
-  <p class="build-sidebar-item gl-line-height-normal gl-display-flex gl-mb-3">
+  <p class="build-sidebar-item gl-leading-normal gl-display-flex gl-mb-3">
     <b v-if="hasTitle" class="gl-mr-3">{{ title }}:</b>
     <gl-link
       v-if="path"

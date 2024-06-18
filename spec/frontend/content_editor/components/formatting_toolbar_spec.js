@@ -2,7 +2,7 @@ import { GlTabs, GlTab } from '@gitlab/ui';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vue';
-import CommentTemplatesDropdown from '~/vue_shared/components/markdown/comment_templates_dropdown.vue';
+import CommentTemplatesModal from '~/vue_shared/components/markdown/comment_templates_modal.vue';
 import {
   TOOLBAR_CONTROL_TRACKING_ACTION,
   CONTENT_EDITOR_TRACKING_LABEL,
@@ -117,9 +117,7 @@ describe('content_editor/components/formatting_toolbar', () => {
       });
 
       const commands = mockChainedCommands(tiptapEditor, ['focus', 'pasteContent', 'run']);
-      await wrapper
-        .findComponent(CommentTemplatesDropdown)
-        .vm.$emit('select', 'Some saved comment');
+      await wrapper.findComponent(CommentTemplatesModal).vm.$emit('select', 'Some saved comment');
 
       expect(commands.focus).toHaveBeenCalled();
       expect(commands.pasteContent).toHaveBeenCalledWith('Some saved comment');
@@ -129,7 +127,7 @@ describe('content_editor/components/formatting_toolbar', () => {
     it('does not show the saved replies icon if newCommentTemplatePath is not provided', () => {
       buildWrapper();
 
-      expect(wrapper.findComponent(CommentTemplatesDropdown).exists()).toBe(false);
+      expect(wrapper.findComponent(CommentTemplatesModal).exists()).toBe(false);
     });
   });
 

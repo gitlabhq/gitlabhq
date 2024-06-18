@@ -10,7 +10,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'ee/spec/models/gitlab_subscriptions/upcoming_reconciliation_spec.rb'
     - 'ee/spec/models/software_license_spec.rb'
     - 'ee/spec/policies/app_sec/fuzzing/coverage/corpus_policy_spec.rb'
-    - 'ee/spec/policies/group_policy_spec.rb'
     - 'ee/spec/requests/api/graphql/mutations/compliance_management/frameworks/update_spec.rb'
     - 'ee/spec/requests/groups/security/credentials_controller_spec.rb'
     - 'ee/spec/services/app_sec/dast/profiles/create_associations_service_spec.rb'

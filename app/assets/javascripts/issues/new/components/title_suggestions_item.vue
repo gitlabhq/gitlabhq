@@ -66,7 +66,7 @@ export default {
 
 <template>
   <div class="suggestion-item">
-    <div class="d-flex gl-align-items-center">
+    <div class="gl-flex gl-align-items-center">
       <gl-icon
         v-if="suggestion.confidential"
         v-gl-tooltip.bottom
@@ -85,7 +85,7 @@ export default {
     <div class="text-secondary suggestion-footer">
       <gl-icon ref="state" :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
       <gl-tooltip :target="() => $refs.state" placement="bottom">
-        <span class="d-block">
+        <span class="gl-block">
           <span class="bold"> {{ stateTitle }} </span> {{ timeFormatted(closedOrCreatedDate) }}
         </span>
         <span class="text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
@@ -103,9 +103,9 @@ export default {
           :size="16"
           css-classes="mr-0 float-none"
           tooltip-placement="bottom"
-          class="d-inline-block"
+          class="gl-inline-block"
         >
-          <span class="bold d-block">{{ __('Author') }}</span> {{ suggestion.author.name }}
+          <span class="bold gl-block">{{ __('Author') }}</span> {{ suggestion.author.name }}
           <span class="text-tertiary">@{{ suggestion.author.username }}</span>
         </user-avatar-image>
       </gl-link>

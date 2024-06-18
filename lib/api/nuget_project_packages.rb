@@ -201,7 +201,7 @@ module API
             end
             get 'index', format: :json, urgency: :low do
               present ::Packages::Nuget::PackagesVersionsPresenter.new(find_packages(params[:package_name])),
-                      with: ::API::Entities::Nuget::PackagesVersions
+                with: ::API::Entities::Nuget::PackagesVersions
             end
 
             desc 'The NuGet Content Service - content request' do
@@ -382,7 +382,7 @@ module API
 
     params do
       requires :project_id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
-               regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
+        regexp: ::API::Concerns::Packages::Nuget::PrivateEndpoints::POSITIVE_INTEGER_REGEX
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':project_id/packages/nuget/v2' do
@@ -399,8 +399,8 @@ module API
 
         params do
           requires :id, as: :package_name, type: String, allow_blank: false, coerce_with: ->(val) { val.delete("'") },
-                   desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
-                   documentation: { example: 'mynugetpkg' }
+            desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
+            documentation: { example: 'mynugetpkg' }
         end
         get 'FindPackagesById\(\)', urgency: :low do
           present_odata_entry
@@ -419,9 +419,9 @@ module API
 
         params do
           requires :$filter, as: :package_name, type: String, allow_blank: false,
-                   coerce_with: ->(val) { val.match(/tolower\(Id\) eq '(.+?)'/)&.captures&.first },
-                   desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
-                   documentation: { example: 'mynugetpkg' }
+            coerce_with: ->(val) { val.match(/tolower\(Id\) eq '(.+?)'/)&.captures&.first },
+            desc: 'The NuGet package name', regexp: Gitlab::Regex.nuget_package_name_regex,
+            documentation: { example: 'mynugetpkg' }
         end
         get 'Packages\(\)', urgency: :low do
           present_odata_entry
@@ -439,9 +439,9 @@ module API
         end
         params do
           requires :package_name, type: String, allow_blank: false, desc: 'The NuGet package name',
-                   regexp: Gitlab::Regex.nuget_package_name_regex, documentation: { example: 'mynugetpkg' }
+            regexp: Gitlab::Regex.nuget_package_name_regex, documentation: { example: 'mynugetpkg' }
           requires :package_version, type: String, allow_blank: false, desc: 'The NuGet package version',
-                   regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.3.0.17' }
+            regexp: Gitlab::Regex.nuget_version_regex, documentation: { example: '1.3.0.17' }
         end
         get 'Packages\(Id=\'*package_name\',Version=\'*package_version\'\)', urgency: :low do
           present_odata_entry

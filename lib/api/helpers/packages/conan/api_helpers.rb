@@ -136,15 +136,15 @@ module API
           strong_memoize_attr :project
 
           def package
-            project.packages
-                .conan
-                .with_name(params[:package_name])
-                .with_version(params[:package_version])
-                .with_conan_username(params[:package_username])
-                .with_conan_channel(params[:package_channel])
-                .order_created
-                .not_pending_destruction
-                .last
+            ::Packages::Conan::Package
+              .for_projects(project)
+              .with_name(params[:package_name])
+              .with_version(params[:package_version])
+              .with_conan_username(params[:package_username])
+              .with_conan_channel(params[:package_channel])
+              .order_created
+              .not_pending_destruction
+              .last
           end
           strong_memoize_attr :package
 

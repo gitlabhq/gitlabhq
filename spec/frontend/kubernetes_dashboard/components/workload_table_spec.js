@@ -37,7 +37,7 @@ describe('Workload table component', () => {
         key: 'name',
         label: 'Name',
         sortable: true,
-        tdClass: 'gl-md-w-half gl-lg-w-40p gl-word-break-word',
+        tdClass: 'gl-md-w-half gl-lg-w-40p gl-break-anywhere',
       },
       {
         key: 'status',
@@ -49,7 +49,7 @@ describe('Workload table component', () => {
         key: 'namespace',
         label: 'Namespace',
         sortable: true,
-        tdClass: 'gl-md-w-30p gl-lg-w-40p gl-word-break-word',
+        tdClass: 'gl-md-w-30p gl-lg-w-40p gl-break-anywhere',
       },
       {
         key: 'age',

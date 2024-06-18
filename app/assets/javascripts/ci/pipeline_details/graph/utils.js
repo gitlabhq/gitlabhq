@@ -4,6 +4,9 @@ import { reportToSentry } from '~/ci/utils';
 
 import { listByLayers } from '~/ci/pipeline_details/utils/parsing_utils';
 import { unwrapStagesWithNeedsAndLookup } from '~/ci/pipeline_details/utils/unwrapping_utils';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { sanitize } from '~/lib/dompurify';
+import { __, s__, sprintf } from '~/locale';
 import { beginPerfMeasure, finishPerfMeasureAndSend } from './perf_utils';
 
 export { toggleQueryPollingByVisibility } from '~/graphql_shared/utils';
@@ -107,6 +110,23 @@ const unwrapPipelineData = (mainPipelineProjectPath, data) => {
 
 const validateConfigPaths = (value) => value.graphqlResourceEtag?.length > 0;
 
+const confirmJobConfirmationMessage = (jobName, message) => {
+  return confirmAction(null, {
+    title: sprintf(s__('PipelineGraph|Are you sure you want to run %{jobName}?'), {
+      jobName: sanitize(jobName),
+    }),
+    modalHtmlMessage: `
+      <p>${sprintf(__('Custom confirmation message: %{message}'), {
+        message: sanitize(message),
+      })}</p>
+      <p>${s__('PipelineGraph|Do you want to continue?')}</p>
+    `,
+    primaryBtnText: sprintf(__('Yes, run %{jobName}'), {
+      jobName: sanitize(jobName),
+    }),
+  });
+};
+
 export {
   calculatePipelineLayersInfo,
   getQueryHeaders,
@@ -114,4 +134,5 @@ export {
   serializeLoadErrors,
   unwrapPipelineData,
   validateConfigPaths,
+  confirmJobConfirmationMessage,
 };

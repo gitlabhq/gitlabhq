@@ -19,7 +19,7 @@ RSpec.describe API::ProjectDebianDistributions, feature_category: :package_regis
     describe 'POST projects/:id/debian_distributions' do
       let(:method) { :post }
       let(:url) { "/projects/#{container.id}/debian_distributions" }
-      let(:api_params) { { 'codename': 'my-codename' } }
+      let(:api_params) { { codename: 'my-codename' } }
 
       it_behaves_like 'Debian distributions write endpoint', 'POST', :created, /^{.*"codename":"my-codename",.*"components":\["main"\],.*"architectures":\["all","amd64"\]/
 

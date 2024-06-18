@@ -43,6 +43,12 @@
     max-width: 100%;
   }
 
+  img[width][height] {
+    object-fit: contain;
+    object-position: top;
+    height: auto;
+  }
+
   img:not(.emoji) {
     margin: 0 0 8px;
   }
@@ -50,7 +56,7 @@
   img.lazy {
     min-width: 200px;
     min-height: 100px;
-    background-color: $gray-lightest;
+    background-color: $gray-10;
   }
 
   img.js-lazy-loaded,
@@ -333,7 +339,7 @@
     &.stripes-odd tr:nth-of-type(odd),
     &.stripes-even tr:nth-of-type(even),
     &.stripes-hover tr:hover {
-      background: $gray-light;
+      background: $gray-10;
     }
   }
 
@@ -345,7 +351,7 @@
     margin-bottom: 16px;
     line-height: 1.6em;
     overflow-x: auto;
-    border-radius: $border-radius-default;
+    border-radius: $gl-border-radius-base;
 
     // Multi-line code blocks should scroll horizontally
     code {
@@ -607,7 +613,7 @@
   }
 
   .sidebarblock {
-    background: $gray-darker;
+    background: $gray-50;
     padding: $gl-padding-12 $gl-padding-24;
     border-radius: $gl-border-radius-large;
 
@@ -727,7 +733,7 @@ pre {
   word-break: break-all;
   word-wrap: break-word;
   color: $gl-text-color;
-  background-color: $gray-light;
+  background-color: $gray-10;
   border: 1px solid $gray-100;
   border-radius: $border-radius-small;
 

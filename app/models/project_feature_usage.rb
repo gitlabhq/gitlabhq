@@ -12,7 +12,7 @@ class ProjectFeatureUsage < ApplicationRecord
   belongs_to :project
   validates :project, presence: true
 
-  scope :with_jira_dvcs_integration_enabled, -> (cloud: true) do
+  scope :with_jira_dvcs_integration_enabled, ->(cloud: true) do
     where.not(jira_dvcs_integration_field(cloud: cloud) => nil)
   end
 

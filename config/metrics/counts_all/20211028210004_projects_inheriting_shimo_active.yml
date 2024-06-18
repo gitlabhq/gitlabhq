@@ -1,8 +1,6 @@
 ---
 key_path: counts.projects_inheriting_shimo_active
 description: Count of projects that inherit active Shimo integrations
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: removed

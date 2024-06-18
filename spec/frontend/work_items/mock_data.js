@@ -1,4 +1,4 @@
-import { WIDGET_TYPE_LINKED_ITEMS } from '~/work_items/constants';
+import { WIDGET_TYPE_LINKED_ITEMS, NEW_WORK_ITEM_IID } from '~/work_items/constants';
 
 export const mockAssignees = [
   {
@@ -685,6 +685,202 @@ export const mockLinkedItems = {
   __typename: 'WorkItemWidgetLinkedItems',
 };
 
+export const workItemDevelopmentNodes = [
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '13',
+      id: 'gid://gitlab/MergeRequest/121',
+      title: 'Karma configuration',
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/13',
+      state: 'opened',
+      project: {
+        name: 'Flight',
+        id: 'gid://gitlab/Project/1',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [
+          {
+            webUrl: 'http://127.0.0.1:3000/root',
+            id: 'gid://gitlab/User/1',
+            name: 'Administrator',
+            webPath: '/root',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+        ],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '15',
+      id: 'gid://gitlab/MergeRequest/123',
+      title: 'got immutability working end to end.  Scope for some cleanup/optimization',
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/15',
+      state: 'opened',
+      project: {
+        id: 'gid://gitlab/Project/1',
+        name: 'Flight',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '14',
+      id: 'gid://gitlab/MergeRequest/122',
+      title: "Draft: Always call registry's trigger method from withRegistration",
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/14',
+      state: 'opened',
+      project: {
+        id: 'gid://gitlab/Project/1',
+        name: 'Flight',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '12',
+      id: 'gid://gitlab/MergeRequest/120',
+      title: 'got immutability working and other changes and end to end',
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/12',
+      state: 'closed',
+      project: {
+        id: 'gid://gitlab/Project/1',
+        name: 'Flight',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [
+          {
+            webUrl: 'http://127.0.0.1:3000/root',
+            id: 'gid://gitlab/User/1',
+            name: 'Administrator',
+            webPath: '/root',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+        ],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+  {
+    fromMrDescription: true,
+    mergeRequest: {
+      iid: '11',
+      id: 'gid://gitlab/MergeRequest/119',
+      title: '[UX] Work items: Development widget (MRs, branches, feature flags)',
+      webUrl: 'http://127.0.0.1:3000/flightjs/Flight/-/merge_requests/11',
+      state: 'opened',
+      project: {
+        id: 'gid://gitlab/Project/1',
+        name: 'Flight',
+        namespace: {
+          path: 'flightjs',
+          __typename: 'Namespace',
+        },
+        __typename: 'Project',
+      },
+      assignees: {
+        nodes: [
+          {
+            webUrl: 'http://127.0.0.1:3000/contributor_001',
+            id: 'gid://gitlab/User/50',
+            name: 'Contributor',
+            webPath: '/contributor_001',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/0425546bf992b09bf77c16afe53f3824a919c5f4a5ef3355d493155740dfaaf5?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+          {
+            webUrl: 'http://127.0.0.1:3000/reported_user_17',
+            id: 'gid://gitlab/User/40',
+            name: "Amira O'Keefe",
+            webPath: '/reported_user_17',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/4650f7f452b5606f219ac12ed4c2869705752e62b94e28d3263aa9a5598c6ab8?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+          {
+            webUrl: 'http://127.0.0.1:3000/reported_user_5',
+            id: 'gid://gitlab/User/28',
+            name: 'Echo Littel',
+            webPath: '/reported_user_5',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/3dcc93993fcf6705adb708f460d314d0994463ec2cb0a693e1e0597111acd3c7?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+          {
+            webUrl: 'http://127.0.0.1:3000/root',
+            id: 'gid://gitlab/User/1',
+            name: 'Administrator',
+            webPath: '/root',
+            avatarUrl:
+              'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+            __typename: 'MergeRequestAssignee',
+          },
+        ],
+        __typename: 'MergeRequestAssigneeConnection',
+      },
+      __typename: 'MergeRequest',
+    },
+    __typename: 'WorkItemClosingMergeRequest',
+  },
+];
+
+export const workItemDevelopmentFragmentResponse = (nodes = workItemDevelopmentNodes) => {
+  return {
+    type: 'DEVELOPMENT',
+    closingMergeRequests: {
+      nodes,
+      __typename: 'WorkItemClosingMergeRequestConnection',
+    },
+    __typename: 'WorkItemWidgetDevelopment',
+  };
+};
+
 export const workItemResponseFactory = ({
   iid = '1',
   canUpdate = false,
@@ -709,6 +905,7 @@ export const workItemResponseFactory = ({
   healthStatusWidgetPresent = true,
   notesWidgetPresent = true,
   designWidgetPresent = true,
+  developmentWidgetPresent = true,
   confidential = false,
   discussionLocked = false,
   canInviteMembers = false,
@@ -728,6 +925,7 @@ export const workItemResponseFactory = ({
   awardEmoji = mockAwardsWidget,
   state = 'OPEN',
   linkedItems = mockEmptyLinkedItems,
+  developmentItems = workItemDevelopmentFragmentResponse(),
   color = '#1068bf',
 } = {}) => ({
   data: {
@@ -1023,6 +1221,13 @@ export const workItemResponseFactory = ({
               type: 'DESIGNS',
             }
           : { type: 'MOCK TYPE' },
+        developmentWidgetPresent
+          ? {
+              ...developmentItems,
+            }
+          : {
+              type: 'MOCK TYPE',
+            },
       ],
     },
   },
@@ -3970,6 +4175,29 @@ export const groupWorkItemsQueryResponse = {
   },
 };
 
+export const emptyGroupWorkItemsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/3',
+      workItemStateCounts: {
+        all: 0,
+        closed: 0,
+        opened: 0,
+      },
+      workItems: {
+        pageInfo: {
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: 'startCursor',
+          endCursor: 'endCursor',
+          __typename: 'PageInfo',
+        },
+        nodes: [],
+      },
+    },
+  },
+};
+
 export const updateWorkItemMutationResponseFactory = (options) => {
   const response = workItemResponseFactory(options);
   return {
@@ -4037,3 +4265,286 @@ export const allowedChildrenTypesResponse = {
 
 export const generateWorkItemsListWithId = (count) =>
   Array.from({ length: count }, (_, i) => ({ id: `gid://gitlab/WorkItem/${i + 1}` }));
+
+export const groupProjectsList = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
+      projects: {
+        nodes: [
+          {
+            id: 'gid://gitlab/Project/1',
+            name: 'Example project A',
+            avatarUrl: null,
+            nameWithNamespace: 'Group A / Example project A',
+            fullPath: 'group-a/example-project-a',
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              name: 'Group A',
+              __typename: 'Namespace',
+            },
+            __typename: 'Project',
+          },
+          {
+            id: 'gid://gitlab/Project/2',
+            name: 'Example project B',
+            avatarUrl: null,
+            nameWithNamespace: 'Group A / Example project B',
+            fullPath: 'group-a/example-project-b',
+            namespace: {
+              id: 'gid://gitlab/Group/1',
+              name: 'Group A',
+              __typename: 'Namespace',
+            },
+            __typename: 'Project',
+          },
+        ],
+        __typename: 'ProjectConnection',
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const relatedProjectsList = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/1',
+      group: {
+        id: 'gid://gitlab/Group/33',
+        projects: {
+          nodes: [
+            {
+              id: 'gid://gitlab/Project/1',
+              name: 'Example project A',
+              avatarUrl: null,
+              nameWithNamespace: 'Group A / Example project A',
+              fullPath: 'group-a/example-project-a',
+              namespace: {
+                id: 'gid://gitlab/Group/1',
+                name: 'Group A',
+                __typename: 'Namespace',
+              },
+              __typename: 'Project',
+            },
+            {
+              id: 'gid://gitlab/Project/2',
+              name: 'Example project B',
+              avatarUrl: null,
+              nameWithNamespace: 'Group A / Example project B',
+              fullPath: 'group-a/example-project-b',
+              namespace: {
+                id: 'gid://gitlab/Group/1',
+                name: 'Group A',
+                __typename: 'Namespace',
+              },
+              __typename: 'Project',
+            },
+          ],
+          __typename: 'ProjectConnection',
+        },
+        __typename: 'Group',
+      },
+      __typename: 'Project',
+    },
+  },
+};
+
+export const mockFrequentlyUsedProjects = [
+  {
+    id: 1,
+    name: 'Example project B',
+    namespace: 'Group A / Example project B',
+    webUrl: '/group-a/example-project-b',
+    avatarUrl: null,
+    lastAccessedOn: 123,
+    frequency: 4,
+  },
+  {
+    id: 2,
+    name: 'Example project A',
+    namespace: 'Group A / Example project A',
+    webUrl: '/group-a/example-project-a',
+    avatarUrl: null,
+    lastAccessedOn: 124,
+    frequency: 3,
+  },
+];
+
+export const createWorkItemQueryResponse = {
+  data: {
+    workspace: {
+      id: 'new-workspace-workitem-id',
+      workItem: {
+        id: 'gid://gitlab/WorkItem/new',
+        iid: NEW_WORK_ITEM_IID,
+        archived: false,
+        title: '',
+        state: 'OPEN',
+        description: '',
+        confidential: false,
+        createdAt: '2024-05-09T05:57:05Z',
+        updatedAt: '2024-05-09T09:35:32Z',
+        closedAt: null,
+        webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/new',
+        reference: 'gitlab-org#56',
+        createNoteEmail: null,
+        namespace: {
+          id: 'gid://gitlab/Group/24',
+          fullPath: 'full-path',
+          name: 'Gitlab Org',
+          __typename: 'Namespace',
+        },
+        author: {
+          id: 'gid://gitlab/User/1',
+          avatarUrl:
+            'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+          name: 'Administrator',
+          username: 'root',
+          webUrl: 'http://127.0.0.1:3000/root',
+          webPath: '/root',
+          __typename: 'UserCore',
+        },
+        workItemType: {
+          id: 'gid://gitlab/WorkItems::Type/8',
+          name: 'Epic',
+          iconName: 'issue-type-epic',
+          __typename: 'WorkItemType',
+        },
+        userPermissions: {
+          deleteWorkItem: true,
+          updateWorkItem: true,
+          adminParentLink: true,
+          setWorkItemMetadata: true,
+          createNote: true,
+          adminWorkItemLink: true,
+          __typename: 'WorkItemPermissions',
+        },
+        widgets: [
+          {
+            type: 'ASSIGNEES',
+            allowsMultipleAssignees: true,
+            canInviteMembers: false,
+            assignees: {
+              nodes: [],
+              __typename: 'UserCoreConnection',
+            },
+            __typename: 'WorkItemWidgetAssignees',
+          },
+          {
+            type: 'DESCRIPTION',
+            description: '',
+            descriptionHtml: '',
+            lastEditedAt: '2024-05-09T05:57:04Z',
+            lastEditedBy: {
+              name: 'Administrator',
+              webPath: '/root',
+              __typename: 'UserCore',
+            },
+            __typename: 'WorkItemWidgetDescription',
+          },
+          {
+            type: 'HIERARCHY',
+            hasChildren: false,
+            parent: null,
+            children: {
+              nodes: [],
+              __typename: 'WorkItemConnection',
+            },
+            __typename: 'WorkItemWidgetHierarchy',
+          },
+          {
+            type: 'LABELS',
+            allowsScopedLabels: true,
+            labels: {
+              nodes: [],
+              __typename: 'LabelConnection',
+            },
+            __typename: 'WorkItemWidgetLabels',
+          },
+          {
+            type: 'NOTES',
+            discussionLocked: null,
+            __typename: 'WorkItemWidgetNotes',
+          },
+          {
+            type: 'START_AND_DUE_DATE',
+            dueDate: null,
+            startDate: null,
+            __typename: 'WorkItemWidgetStartAndDueDate',
+          },
+          {
+            type: 'HEALTH_STATUS',
+            healthStatus: 'needsAttention',
+            __typename: 'WorkItemWidgetHealthStatus',
+          },
+          {
+            type: 'STATUS',
+            __typename: 'WorkItemWidgetStatus',
+          },
+          {
+            type: 'NOTIFICATIONS',
+            subscribed: true,
+            __typename: 'WorkItemWidgetNotifications',
+          },
+          {
+            type: 'AWARD_EMOJI',
+            __typename: 'WorkItemWidgetAwardEmoji',
+          },
+          {
+            type: 'LINKED_ITEMS',
+            linkedItems: {
+              nodes: [],
+              __typename: 'LinkedWorkItemTypeConnection',
+            },
+            __typename: 'WorkItemWidgetLinkedItems',
+          },
+          {
+            type: 'CURRENT_USER_TODOS',
+            currentUserTodos: {
+              nodes: [],
+              __typename: 'TodoConnection',
+            },
+            __typename: 'WorkItemWidgetCurrentUserTodos',
+          },
+          {
+            type: 'COLOR',
+            color: '#b7a0fd',
+            textColor: '#1F1E24',
+            __typename: 'WorkItemWidgetColor',
+          },
+          {
+            type: 'ROLLEDUP_DATES',
+            dueDate: null,
+            dueDateFixed: null,
+            dueDateIsFixed: null,
+            startDate: null,
+            startDateFixed: null,
+            startDateIsFixed: null,
+            __typename: 'WorkItemWidgetRolledupDates',
+          },
+          {
+            type: 'PARTICIPANTS',
+            participants: {
+              nodes: [],
+              __typename: 'UserCoreConnection',
+            },
+            __typename: 'WorkItemWidgetParticipants',
+          },
+          {
+            type: 'TIME_TRACKING',
+            timeEstimate: 0,
+            timelogs: {
+              nodes: [],
+              __typename: 'WorkItemTimelogConnection',
+            },
+            totalTimeSpent: 0,
+            __typename: 'WorkItemWidgetTimeTracking',
+          },
+        ],
+        __typename: 'WorkItem',
+      },
+      __typename: 'Namespace',
+    },
+  },
+};

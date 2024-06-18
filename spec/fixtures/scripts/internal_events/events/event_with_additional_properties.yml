@@ -1,0 +1,23 @@
+---
+description: Engineer uses Internal Event CLI to define a new event
+internal_events: true
+action: internal_events_cli_used
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: TODO
+  value:
+    description: Time the CLI ran before closing (seconds)
+product_group: analytics_instrumentation
+milestone: '16.6'
+introduced_by_url: TODO
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

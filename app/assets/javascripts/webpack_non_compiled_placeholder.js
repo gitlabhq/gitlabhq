@@ -39,7 +39,7 @@ div.innerHTML = `
   ${reloadMessage}<br />
   If it doesn't, please <a href="">reload the page manually</a>.
 </p>
-<div class="gl-card gl-layout-w-limited gl-m-auto">
+<div class="gl-card gl-max-w-limited gl-m-auto">
   <div class="gl-card-body">
     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 410 404" width="100">
       <path fill="url(#a)" d="m399.641 59.525-183.998 329.02c-3.799 6.793-13.559 6.833-17.415.073L10.582 59.556C6.38 52.19 12.68 43.266 21.028 44.76l184.195 32.923c1.175.21 2.378.208 3.553-.006l180.343-32.87c8.32-1.517 14.649 7.337 10.522 14.719Z"/>

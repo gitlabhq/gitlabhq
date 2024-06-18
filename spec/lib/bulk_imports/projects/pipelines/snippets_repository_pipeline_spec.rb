@@ -59,8 +59,8 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, fea
     end
   end
 
-  describe '#run', :clean_gitlab_redis_cache do
-    let(:validation_response) { double(Hash, 'error?': false) }
+  describe '#run', :clean_gitlab_redis_shared_state do
+    let(:validation_response) { double(Hash, error?: false) }
 
     before do
       allow_next_instance_of(BulkImports::Common::Extractors::GraphqlExtractor) do |extractor|
@@ -172,7 +172,7 @@ RSpec.describe BulkImports::Projects::Pipelines::SnippetsRepositoryPipeline, fea
       end
 
       context 'when snippet is invalid' do
-        let(:validation_response) { double(Hash, 'error?': true) }
+        let(:validation_response) { double(Hash, error?: true) }
 
         before do
           allow_next_instance_of(Repository) do |repository|

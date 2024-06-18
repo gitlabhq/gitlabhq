@@ -5,6 +5,14 @@ import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
 import GlobalSearchDefaultIssuables from '~/super_sidebar/components/global_search/components/global_search_default_issuables.vue';
 import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import {
+  EVENT_CLICK_ISSUES_ASSIGNED_TO_ME_IN_COMMAND_PALETTE,
+  EVENT_CLICK_ISSUES_I_CREATED_IN_COMMAND_PALETTE,
+  EVENT_CLICK_MERGE_REQUESTS_ASSIGNED_TO_ME_IN_COMMAND_PALETTE,
+  EVENT_CLICK_MERGE_REQUESTS_THAT_IM_A_REVIEWER_IN_COMMAND_PALETTE,
+  EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE,
+} from '~/super_sidebar/components/global_search/tracking_constants';
 import {
   MOCK_SEARCH_CONTEXT,
   MOCK_PROJECT_SEARCH_CONTEXT,
@@ -156,6 +164,30 @@ describe('GlobalSearchDefaultPlaces', () => {
       it('renders the expected header', () => {
         expect(wrapper.text()).toContain('MockGroup');
       });
+    });
+  });
+
+  describe('Track events', () => {
+    beforeEach(() => {
+      createComponent({
+        searchContext: MOCK_PROJECT_SEARCH_CONTEXT,
+        mockDefaultSearchOptions: MOCK_DEFAULT_SEARCH_OPTIONS,
+      });
+    });
+
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it.each`
+      eventTrigger                            | event
+      ${'Issues assigned to me'}              | ${EVENT_CLICK_ISSUES_ASSIGNED_TO_ME_IN_COMMAND_PALETTE}
+      ${"Issues I've created"}                | ${EVENT_CLICK_ISSUES_I_CREATED_IN_COMMAND_PALETTE}
+      ${'Merge requests assigned to me'}      | ${EVENT_CLICK_MERGE_REQUESTS_ASSIGNED_TO_ME_IN_COMMAND_PALETTE}
+      ${"Merge requests that I'm a reviewer"} | ${EVENT_CLICK_MERGE_REQUESTS_THAT_IM_A_REVIEWER_IN_COMMAND_PALETTE}
+      ${"Merge requests I've created"}        | ${EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE}
+    `('triggers and tracks command dropdown $event', ({ eventTrigger, event }) => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      findGroup().vm.$emit('action', { text: eventTrigger });
+      expect(trackEventSpy).toHaveBeenCalledWith(event, {}, undefined);
     });
   });
 });

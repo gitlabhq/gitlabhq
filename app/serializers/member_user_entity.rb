@@ -20,11 +20,11 @@ class MemberUserEntity < UserEntity
     user.bot?
   end
 
-  expose :two_factor_enabled, if: -> (user) { current_user_can_manage_members? || current_user?(user) } do |user|
+  expose :two_factor_enabled, if: ->(user) { current_user_can_manage_members? || current_user?(user) } do |user|
     user.two_factor_enabled?
   end
 
-  expose :status, if: -> (user) { user.status.present? } do
+  expose :status, if: ->(user) { user.status.present? } do
     expose :emoji do |user|
       user.status.emoji
     end

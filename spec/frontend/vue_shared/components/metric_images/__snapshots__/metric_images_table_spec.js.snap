@@ -22,41 +22,12 @@ exports[`Metrics upload item render the metrics image component 1`] = `
       Are you sure you wish to delete this image?
     </p>
   </gl-modal-stub>
-  <gl-modal-stub
-    actioncancel="[object Object]"
-    actionprimary="[object Object]"
-    arialabel=""
-    data-testid="metric-image-edit-modal"
-    dismisslabel="Close"
-    modalclass=""
-    modalid="edit-metric-modal"
-    size="sm"
-    titletag="h4"
-  >
-    <gl-form-group-stub
-      label="Text (optional)"
-      label-for="upload-text-input"
-      labeldescription=""
-      optionaltext="(optional)"
-    >
-      <gl-form-input-stub
-        data-testid="metric-image-text-field"
-        id="reference-0"
-      />
-    </gl-form-group-stub>
-    <gl-form-group-stub
-      description="Must start with http or https"
-      label="Link (optional)"
-      label-for="upload-url-input"
-      labeldescription=""
-      optionaltext="(optional)"
-    >
-      <gl-form-input-stub
-        data-testid="metric-image-url-field"
-        id="reference-1"
-      />
-    </gl-form-group-stub>
-  </gl-modal-stub>
+  <metric-image-details-modal-stub
+    edit="true"
+    filename="test_file_name"
+    imagefiles=""
+    imageid="1"
+  />
   <div
     class="gl-display-flex gl-flex-direction-column"
     data-testid="metric-image-body"

@@ -9,16 +9,8 @@ module QA
 
       let(:branch) { "push-options-test-#{SecureRandom.hex(8)}" }
       let(:title) { "MR push options test #{SecureRandom.hex(8)}" }
-
       let(:project) { create(:project, :with_readme, name: 'merge-request-push-options') }
-
-      let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = project
-          runner.name = "runner-for-#{project.name}"
-          runner.tags = ["runner-for-#{project.name}"]
-        end
-      end
+      let!(:runner) { create(:project_runner, project: project, name: "runner-for-#{project.name}", tags: ["runner-for-#{project.name}"]) }
 
       after do |example|
         runner.remove_via_api!

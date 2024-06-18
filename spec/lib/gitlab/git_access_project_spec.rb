@@ -18,8 +18,8 @@ RSpec.describe Gitlab::GitAccessProject do
   let(:pull_access_check) { access.check('git-upload-pack', changes) }
   let(:access) do
     described_class.new(actor, container, protocol,
-                        authentication_abilities: authentication_abilities,
-                        repository_path: repository_path)
+      authentication_abilities: authentication_abilities,
+      repository_path: repository_path)
   end
 
   describe '#check_namespace!' do

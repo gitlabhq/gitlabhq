@@ -165,7 +165,7 @@ DETAILS:
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
   [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ## 15.9.0
 
@@ -215,7 +215,7 @@ DETAILS:
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
   [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ## 15.8.2
 
@@ -259,7 +259,7 @@ DETAILS:
 - We discovered an issue where [replication and verification of projects and wikis was not keeping up](https://gitlab.com/gitlab-org/gitlab/-/issues/387980) on small number of Geo installations. Your installation may be affected if you see some projects and/or wikis persistently in the "Queued" state for verification. This can lead to data loss after a failover.
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
   - Versions containing fix: GitLab 15.8.3 and later.
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ## 15.7.6
 
@@ -396,7 +396,7 @@ DETAILS:
   contents printed. For example, if they were printed in an echo output. For more information,
   see [Understanding the file type variable expansion change in GitLab 15.7](https://about.gitlab.com/blog/2023/02/13/impact-of-the-file-type-variable-change-15-7/).
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ### Geo installations
 
@@ -550,7 +550,7 @@ DETAILS:
   - Affected versions: GitLab versions 15.6.x, 15.7.x, and 15.8.0 - 15.8.2.
   - Versions containing fix: GitLab 15.8.3 and later.
 - Due to [a bug introduced in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/390155), if one or more Git repositories in Gitaly Cluster is [unavailable](../../administration/gitaly/recovery.md#unavailable-repositories), then [Repository checks](../../administration/repository_checks.md#repository-checks) and [Geo replication and verification](../../administration/geo/index.md) stop running for all project or project wiki repositories in the affected Gitaly Cluster. The bug was fixed by [reverting the change in GitLab 15.9.0](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110823). Before upgrading to this version, check if you have any "unavailable" repositories. See [the bug issue](https://gitlab.com/gitlab-org/gitlab/-/issues/390155) for more information.
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ## 15.5.5
 
@@ -616,7 +616,7 @@ DETAILS:
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
   [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ## 15.4.6
 
@@ -695,7 +695,7 @@ DETAILS:
 
 - `pg_upgrade` fails to upgrade the bundled PostregSQL database to version 13. See
   [the details and workaround](#pg_upgrade-fails-to-upgrade-the-bundled-postregsql-database-to-version-13).
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ## 15.3.4
 
@@ -790,7 +790,7 @@ This issue is resolved in GitLab 15.3.3, so customers with the following configu
 - LFS is enabled.
 - LFS objects are being replicated across Geo sites.
 - Repositories are being pulled by using a Geo secondary site.
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 #### Incorrect object storage LFS file deletion on secondary sites
 
@@ -851,7 +851,7 @@ DETAILS:
   [the details and workaround](#lfs-transfers-redirect-to-primary-from-secondary-site-mid-session).
 - Incorrect object storage LFS files deletion on Geo secondary sites. See
   [the details and workaround](#incorrect-object-storage-lfs-file-deletion-on-secondary-sites).
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ## 15.1.0
 
@@ -894,7 +894,7 @@ DETAILS:
   [the details and workaround](#lfs-transfers-redirect-to-primary-from-secondary-site-mid-session).
 - Incorrect object storage LFS files deletion on Geo secondary sites. See
   [the details and workaround](#incorrect-object-storage-lfs-file-deletion-on-secondary-sites).
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](gitlab_16_changes.md#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ## 15.0.0
 

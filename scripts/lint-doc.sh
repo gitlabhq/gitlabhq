@@ -104,8 +104,8 @@ then
 fi
 
 # Do not use dashes (-) in filenames, use underscores (_) instead.
-# Number of filenames with dashes as of 2024-03-29
-FILE_NUMBER_DASHES=73
+# Number of filenames with dashes as of 2024-06-17
+FILE_NUMBER_DASHES=70
 FILE_FIND_DASHES=$(find doc -type f -name "*-*.md" | wc -l)
 # shellcheck disable=2059
 printf "${COLOR_GREEN}INFO: Checking for filenames containing dashes...${COLOR_RESET}\n"
@@ -185,7 +185,7 @@ function run_locally_or_in_container() {
   local cmd=$1
   local args=$2
   local files=$3
-  local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.19-vale-3.0.7-markdownlint-0.39.0-markdownlint2-0.12.1"
+  local registry_url="registry.gitlab.com/gitlab-org/gitlab-docs/lint-markdown:alpine-3.20-vale-3.4.2-markdownlint2-0.13.0-lychee-0.15.1"
 
   if hash "${cmd}" 2>/dev/null
   then

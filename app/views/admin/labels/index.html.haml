@@ -20,7 +20,7 @@
     - c.with_body do
       %ul.manage-labels-list.js-other-labels.gl-px-3.gl-rounded-base
         = render @labels
-.js-admin-labels-empty-state{ class: ('gl-display-none' if @labels.present?) }
+.js-admin-labels-empty-state{ class: ('gl-hidden' if @labels.present?) }
   = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-labels-md.svg',
     title: s_('AdminLabels|Define your default set of project labels'),
     primary_button_text: _('New label'),

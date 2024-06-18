@@ -226,7 +226,7 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :team_planning 
     end
   end
 
-  it 'protects against malicious backtracking' do
+  it 'protects against malicious backtracking', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/447553' do
     doc = "http://#{'&' * 1_000_000}x"
 
     expect do

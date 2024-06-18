@@ -21,6 +21,7 @@
         { "type": "null" }
       ]
     },
+    "runner_manager": { "$ref": "runner_manager.json" },
     "runner": { "$ref": "runner.json" },
     "runners": { "$ref": "runners.json" },
     "has_trace": { "type": "boolean" },

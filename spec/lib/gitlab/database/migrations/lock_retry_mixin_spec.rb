@@ -113,7 +113,9 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin, feature_category: :
 
       let(:migration) do
         Class.new(Gitlab::Database::Migration[2.2]) do
-          milestone 16.10
+          milestone '16.10'
+
+          @_defining_file = 'db/migrate/1_test.rb'
 
           def change
             # no-op

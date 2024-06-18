@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.ci_pipeline_schedules
 description: Pipeline schedules in GitLab
-product_section: ops
-product_stage: verify
 product_group: pipeline_execution
 value_type: number
 status: active

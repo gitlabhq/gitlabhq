@@ -270,7 +270,7 @@ The following section enlists how we intend to implement the aforementioned prop
 - Develop support for OpenTelemetry-based ingestion.
 - Develop support for querying data; begin with an API to list all ingested metrics scoped to a given tenant.
 - Develop support for displaying a list of ingested metrics within GitLab UI.
-- Release Experimental version.
+- Release experimental version.
 
 ### 16.7
 

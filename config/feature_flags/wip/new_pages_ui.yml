@@ -1,0 +1,9 @@
+---
+name: new_pages_ui
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454320
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148534
+rollout_issue_url:
+milestone: '17.1'
+group: group::knowledge
+type: wip
+default_enabled: false

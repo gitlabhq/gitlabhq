@@ -5,9 +5,9 @@ require 'fast_spec_helper'
 RSpec.describe Gitlab::SidekiqSignals do
   describe '.install' do
     let(:result) { Hash.new { |h, k| h[k] = 0 } }
-    let(:int_handler) { -> (_) { result['INT'] += 1 } }
-    let(:term_handler) { -> (_) { result['TERM'] += 1 } }
-    let(:other_handler) { -> (_) { result['OTHER'] += 1 } }
+    let(:int_handler) { ->(_) { result['INT'] += 1 } }
+    let(:term_handler) { ->(_) { result['TERM'] += 1 } }
+    let(:other_handler) { ->(_) { result['OTHER'] += 1 } }
     let(:signals) { { 'INT' => int_handler, 'TERM' => term_handler, 'OTHER' => other_handler } }
 
     context 'not a process group leader' do

@@ -34,7 +34,7 @@ module RuboCop
           return unless ambiguous_page?(node)
 
           add_offense(node.arguments.each_node(:arg).first,
-                      message: MESSAGE % page_object_name(node))
+            message: MESSAGE % page_object_name(node))
         end
 
         private

@@ -129,15 +129,15 @@ See [database guidelines](database/index.md).
 ## Integration guides
 
 - [Integrations development guide](integrations/index.md)
-- [Jira Connect app](integrations/jira_connect.md)
+- [GitLab for Jira Cloud app](integrations/jira_connect.md)
 - [Security Scanners](integrations/secure.md)
 - [Secure Partner Integration](integrations/secure_partner_integration.md)
 - [How to run Jenkins in development environment](integrations/jenkins.md)
 
 The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
 
-- [Jira app development](https://gitlab.com/gitlab-org/manage/integrate/team/-/blob/main/integrations/jira.md)
-- [GitLab for Slack app development](https://gitlab.com/gitlab-org/manage/integrate/team/-/blob/main/integrations/slack.md)
+- [Jira integration development](https://gitlab.com/gitlab-org/manage/import-and-integrate/team/-/blob/main/integrations/jira.md)
+- [GitLab for Slack app development](https://gitlab.com/gitlab-org/manage/import-and-integrate/team/-/blob/main/integrations/slack.md)
 
 ## Testing guides
 

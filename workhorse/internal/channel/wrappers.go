@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// Wrap wraps the provided connection with the specified subprotocol.
 func Wrap(conn Connection, subprotocol string) Connection {
 	switch subprotocol {
 	case "channel.k8s.io":

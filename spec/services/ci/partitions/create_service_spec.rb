@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Partitions::CreateService, feature_category: :continuous_integration do
+RSpec.describe Ci::Partitions::CreateService, feature_category: :ci_scaling do
   let_it_be(:ci_partition) { create(:ci_partition, :current) }
   let(:service) { described_class.new(ci_partition) }
 
@@ -33,7 +33,7 @@ RSpec.describe Ci::Partitions::CreateService, feature_category: :continuous_inte
 
     context 'when all conditions are satistied' do
       before do
-        stub_const("#{described_class}::MAX_PARTITION_SIZE", 1.byte)
+        allow(service).to receive(:should_create_next?).and_return(true)
       end
 
       it 'creates the next ci_partition' do
@@ -47,7 +47,7 @@ RSpec.describe Ci::Partitions::CreateService, feature_category: :continuous_inte
 
     context 'when database_partition sizes are above the threshold' do
       before do
-        stub_const("#{described_class}::MAX_PARTITION_SIZE", 1.byte)
+        stub_const("Ci::Partition::MAX_PARTITION_SIZE", 1.byte)
       end
 
       context 'when no more headroom available' do

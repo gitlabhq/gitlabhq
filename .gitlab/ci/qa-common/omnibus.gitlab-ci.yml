@@ -1,0 +1,86 @@
+trigger-omnibus-env:
+  stage: .pre
+  extends:
+    - .ruby-image
+    - .rules:trigger-omnibus
+  needs:
+    # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream omnibus-gitlab pipeline.
+    - pipeline: $PARENT_PIPELINE_ID
+      job: compile-production-assets
+  variables:
+    BUILD_ENV: build.env
+  before_script:
+    - source scripts/utils.sh
+  script:
+    # Note that OMNIBUS_GITLAB_CACHE_UPDATE is not used in the code, but it is actually used in the 2-hourly maintenance pipeline schedule.
+    - |
+      SECURITY_SOURCES=$([[ ! "$CI_PROJECT_NAMESPACE" =~ ^gitlab-org\/security ]] || echo "true")
+      echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
+      echo "OMNIBUS_GITLAB_CACHE_UPDATE=${OMNIBUS_GITLAB_CACHE_UPDATE:-false}" >> $BUILD_ENV
+      echo "OMNIBUS_GITLAB_CACHE_EDITION=${OMNIBUS_GITLAB_CACHE_EDITION}" >> $BUILD_ENV
+      for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
+      echo "OMNIBUS_GITLAB_BUILD_ON_ALL_OS=${OMNIBUS_GITLAB_BUILD_ON_ALL_OS:-false}" >> $BUILD_ENV
+      ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> $BUILD_ENV
+      echo "SHORT_RUBY_VERSION=${RUBY_VERSION}" >> $BUILD_ENV
+      echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
+      echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
+      define_trigger_branch_in_build_env
+    - |
+      echo "Built environment file for omnibus build:"
+      cat $BUILD_ENV
+  artifacts:
+    expire_in: 3 days
+    reports:
+      dotenv: $BUILD_ENV
+    paths:
+      - $BUILD_ENV
+
+trigger-omnibus-env as-if-foss:
+  extends:
+    - trigger-omnibus-env
+    - .rules:trigger-omnibus as-if-foss
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: compile-production-assets as-if-foss
+
+trigger-omnibus:
+  stage: .pre
+  extends:
+    - .rules:trigger-omnibus
+  needs:
+    - trigger-omnibus-env
+  inherit:
+    variables: false
+  variables:
+    GITALY_SERVER_VERSION: $GITALY_SERVER_VERSION
+    GITLAB_ELASTICSEARCH_INDEXER_VERSION: $GITLAB_ELASTICSEARCH_INDEXER_VERSION
+    GITLAB_KAS_VERSION: $GITLAB_KAS_VERSION
+    GITLAB_PAGES_VERSION: $GITLAB_PAGES_VERSION
+    GITLAB_SHELL_VERSION: $GITLAB_SHELL_VERSION
+    GITLAB_WORKHORSE_VERSION: $GITLAB_WORKHORSE_VERSION
+    GITLAB_VERSION: $CI_COMMIT_SHA
+    GITLAB_ASSETS_TAG: $GITLAB_ASSETS_TAG
+    IMAGE_TAG: "${CI_COMMIT_SHA}-ruby${SHORT_RUBY_VERSION}"
+    TOP_UPSTREAM_SOURCE_PROJECT: $CI_PROJECT_PATH
+    SECURITY_SOURCES: $SECURITY_SOURCES
+    CACHE_UPDATE: $OMNIBUS_GITLAB_CACHE_UPDATE
+    CACHE_EDITION: $OMNIBUS_GITLAB_CACHE_EDITION
+    USE_SPECIFIED_RUBY_VERSION: "true"
+    RUBY_VERSION: $FULL_RUBY_VERSION
+    BUILD_ON_ALL_OS: $OMNIBUS_GITLAB_BUILD_ON_ALL_OS
+    SKIP_QA_TEST: "true"
+    ee: $EE
+  trigger:
+    project: gitlab-org/build/omnibus-gitlab-mirror
+    branch: $TRIGGER_BRANCH
+    strategy: depend
+
+trigger-omnibus as-if-foss:
+  extends:
+    - trigger-omnibus
+    - .rules:trigger-omnibus as-if-foss
+  needs:
+    - trigger-omnibus-env as-if-foss
+  variables:
+    # Override gitlab repository so that omnibus doesn't use foss repository for CE build
+    GITLAB_ALTERNATIVE_REPO: $CI_PROJECT_URL

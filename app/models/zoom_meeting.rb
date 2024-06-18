@@ -20,7 +20,7 @@ class ZoomMeeting < ApplicationRecord
 
   scope :added_to_issue, -> { where(issue_status: :added) }
   scope :removed_from_issue, -> { where(issue_status: :removed) }
-  scope :canonical, -> (issue) { where(issue: issue).added_to_issue }
+  scope :canonical, ->(issue) { where(issue: issue).added_to_issue }
 
   def self.canonical_meeting(issue)
     canonical(issue)&.take

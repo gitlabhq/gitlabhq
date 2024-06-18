@@ -19,6 +19,46 @@
       "minimum": 1,
       "description": "Maximum number of simultaneous import jobs for GitHub importer"
     },
+    "group_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/groups/:id API."
+    },
+    "group_projects_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/groups/:id/projects API."
+    },
+    "groups_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/groups API."
+    },
+    "project_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/projects/:id API."
+    },
+    "projects_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/projects API."
+    },
+    "user_contributed_projects_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/users/:user_id/contributed_projects API."
+    },
+    "user_projects_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/users/:user_id/projects API."
+    },
+    "user_starred_projects_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/users/:user_id/starred_projects."
+    },
     "members_delete_limit": {
       "type": "integer",
       "minimum": 0,

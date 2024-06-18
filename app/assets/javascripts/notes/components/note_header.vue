@@ -129,7 +129,7 @@ export default {
         'author-name-link': true,
         'js-user-link': true,
         'gl-overflow-hidden': true,
-        'gl-overflow-wrap-break': true,
+        'gl-break-words': true,
       };
     },
     authorName() {
@@ -189,7 +189,7 @@ export default {
     <template v-if="hasAuthor">
       <span
         v-if="emailParticipant"
-        class="note-header-author-name gl-font-weight-bold"
+        class="note-header-author-name gl-font-bold"
         data-testid="author-name"
         v-text="authorName"
       ></span>
@@ -202,7 +202,7 @@ export default {
         :data-username="author.username"
       >
         <span
-          class="note-header-author-name gl-font-weight-bold"
+          class="note-header-author-name gl-font-bold"
           data-testid="author-name"
           v-text="authorName"
         ></span>
@@ -217,7 +217,7 @@ export default {
           :href="authorHref"
           @mouseenter="handleUsernameMouseEnter"
           @mouseleave="handleUsernameMouseLeave"
-          ><span class="note-headline-light">@{{ author.username }}</span>
+          ><span class="note-headline-light gl-hidden md:gl-inline">@{{ author.username }}</span>
         </a>
         <slot name="note-header-info"></slot>
       </span>

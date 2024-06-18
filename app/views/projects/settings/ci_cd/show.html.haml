@@ -34,6 +34,7 @@
 
   = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
+- if can?(current_user, :admin_runner, @project)
   - expand_runners = expanded || params[:expand_runners]
   %section.settings.no-animate#js-runners-settings{ class: ('expanded' if expand_runners), data: { testid: 'runners-settings-content' } }
     .settings-header
@@ -47,6 +48,7 @@
     .settings-content
       = render 'projects/runners/settings'
 
+- if can?(current_user, :admin_pipeline, @project)
   - if Gitlab::CurrentSettings.current_application_settings.keep_latest_artifact?
     %section.settings.no-animate#js-artifacts-settings{ class: ('expanded' if expanded) }
       .settings-header

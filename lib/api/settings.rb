@@ -72,7 +72,7 @@ module API
       optional :domain_denylist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
       optional :domain_allowlist, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce, desc: 'ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Enter multiple entries on separate lines. Ex: domain.com, *.domain.com'
       optional :eks_integration_enabled, type: Boolean, desc: 'Enable integration with Amazon EKS'
-      given eks_integration_enabled: -> (val) { val } do
+      given eks_integration_enabled: ->(val) { val } do
         requires :eks_account_id, type: String, desc: 'Amazon account ID for EKS integration'
         requires :eks_access_key_id, type: String, desc: 'Access key ID for the EKS integration IAM user'
         requires :eks_secret_access_key, type: String, desc: 'Secret access key for the EKS integration IAM user'
@@ -109,8 +109,8 @@ module API
       end
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
       optional :import_sources, type: Array[String], coerce_with: Validations::Types::CommaSeparatedToArray.coerce,
-                                values: %w[github bitbucket bitbucket_server fogbugz git gitlab_project gitea manifest],
-                                desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
+        values: %w[github bitbucket bitbucket_server fogbugz git gitlab_project gitea manifest],
+        desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
       optional :invisible_captcha_enabled, type: Boolean, desc: 'Enable Invisible Captcha spam detection during signup.'
       optional :max_artifacts_size, type: Integer, desc: "Set the maximum file size for each job's artifacts"
       optional :max_attachment_size, type: Integer, desc: 'Maximum attachment size in MB'
@@ -223,7 +223,7 @@ module API
       optional :ci_max_includes, type: Integer, desc: 'Maximum number of includes per pipeline'
       optional :security_policy_global_group_approvers_enabled, type: Boolean, desc: 'Query scan result policy approval groups globally'
       optional :slack_app_enabled, type: Grape::API::Boolean, desc: 'Enable the GitLab for Slack app'
-      given slack_app_enabled: -> (val) { val } do
+      given slack_app_enabled: ->(val) { val } do
         requires :slack_app_id, type: String, desc: 'The client ID of the GitLab for Slack app'
         requires :slack_app_secret, type: String, desc: 'The client secret of the GitLab for Slack app. Used for authenticating OAuth requests from the app'
         requires :slack_app_signing_secret, type: String, desc: 'The signing secret of the GitLab for Slack app. Used for authenticating API requests from the app'
@@ -236,9 +236,9 @@ module API
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",
-                 type: Integer,
-                 values: KeyRestrictionValidator.supported_key_restrictions(type),
-                 desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
+          type: Integer,
+          values: KeyRestrictionValidator.supported_key_restrictions(type),
+          desc: "Restrictions on the complexity of uploaded #{type.upcase} keys. A value of #{ApplicationSetting::FORBIDDEN_KEY_VALUE} disables all #{type.upcase} keys."
       end
 
       use :optional_params_ee

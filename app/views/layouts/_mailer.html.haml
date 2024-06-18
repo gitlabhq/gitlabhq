@@ -15,6 +15,12 @@
     = stylesheet_link_tag 'mailer.css'
   %body
     = yield :preview_text
+    -# Test stub for RSpec testing of Notify and associated modules
+    -# Sometimes we override the choosen layout via `determine_layout` in our Notify mailer
+    -# but ActionMailer doesn't support testing layout in pure Ruby so this HTML comment is
+    -# used for testing the determined layout
+    - if Rails.env.test?
+      / determine_layout returned template mailer
     %table#body{ border: "0", cellpadding: "0", cellspacing: "0" }
       %tbody
         %tr.line

@@ -36,7 +36,7 @@ RSpec.describe 'User creates branch', :js, feature_category: :source_code_manage
     end
 
     it 'renders the breadcrumbs' do
-      within('.breadcrumbs') do
+      within_testid('breadcrumb-links') do
         expect(page).to have_content("#{project.creator.name} #{project.name} Branches New Branch")
 
         expect(page).to have_link(project.creator.name, href: user_path(project.creator))
@@ -108,7 +108,7 @@ RSpec.describe 'User creates branch', :js, feature_category: :source_code_manage
             click_button("Create branch")
 
             expect(page).to have_content('Branch name is invalid')
-            expect(page).to have_content("can't contain spaces")
+            expect(page).to have_content("Branch name cannot contain spaces")
             expect(page).to have_selector('.js-branch-name.gl-border-red-500')
           end
         end

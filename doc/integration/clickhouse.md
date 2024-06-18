@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Status:** Experiment
 
-This feature is an [Experiment](../policy/experiment-beta-support.md).
+This feature is an [experiment](../policy/experiment-beta-support.md).
 
 Instructions about how to set up integration between GitLab and ClickHouse database.
 
@@ -45,6 +45,7 @@ To create necessary user and database objects:
     CREATE USER gitlab IDENTIFIED WITH sha256_password BY 'PASSWORD_HERE';
     CREATE ROLE gitlab_app;
     GRANT SELECT, INSERT, ALTER, CREATE, UPDATE, DROP, TRUNCATE, OPTIMIZE ON gitlab_clickhouse_main_production.* TO gitlab_app;
+    GRANT SELECT ON information_schema.* TO gitlab_app;
     GRANT gitlab_app TO gitlab;
     ```
 

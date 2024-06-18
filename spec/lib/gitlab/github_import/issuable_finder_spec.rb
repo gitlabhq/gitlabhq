@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::GithubImport::IssuableFinder, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let(:project) { build(:project, id: 20, import_data_attributes: import_data_attributes) }
   let(:single_endpoint_optional_stage) { false }
   let(:import_data_attributes) do

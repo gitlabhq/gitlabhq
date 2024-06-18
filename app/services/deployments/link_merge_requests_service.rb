@@ -93,10 +93,15 @@ module Deployments
 
     def link_fast_forward_merge_requests(commits)
       deployment.link_merge_requests(merge_requests_by_head_commit_sha(commits))
+      deployment.link_merge_requests(merge_requests_by_squash_commit_sha(commits))
     end
 
     def merge_requests_by_merge_commit_sha(commits)
       project.merge_requests.merged.by_merge_commit_sha(commits)
+    end
+
+    def merge_requests_by_squash_commit_sha(commits)
+      project.merge_requests.merged.by_squash_commit_sha(commits)
     end
 
     def merge_requests_by_head_commit_sha(commits)

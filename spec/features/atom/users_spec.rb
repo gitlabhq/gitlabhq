@@ -79,7 +79,7 @@ RSpec.describe "User Feed", feature_category: :devops_reports do
       end
 
       it 'has XHTML summaries in notes' do
-        expect(body).to match /Bug confirmed <gl-emoji[^>]*>/
+        expect(body).to match(/Bug confirmed <gl-emoji[^>]*>/)
       end
 
       it 'has XHTML summaries in merge request descriptions' do

@@ -96,6 +96,15 @@ INSERT/UPDATE/DELETE timings by 10 milliseconds. In this case, the new index may
 it. A new index is more valuable when SELECT timings are reduced and INSERT/UPDATE/DELETE
 timings are unaffected.
 
+### Some tables should not have any more indexes
+
+We have RuboCop checks (`PreventIndexCreation`) against further new indexes on selected tables
+that are frequently accessed.
+This is due to [LockManager LWLock contention](https://gitlab.com/groups/gitlab-org/-/epics/11543).
+
+For the same reason, there are also RuboCop checks (`AddColumnsToWideTables`) against adding
+new columns to these tables.
+
 ### Add index and make application code change together if possible
 
 To minimize the risk of creating unnecessary indexes, do these in the same merge request if possible:
@@ -492,6 +501,29 @@ def down
 end
 ```
 
+For partitioned table, use:
+
+```ruby
+# in db/post_migrate/
+
+include Gitlab::Database::PartitioningMigrationHelpers
+
+PARTITIONED_INDEX_NAME = 'index_p_ci_builds_on_some_column'
+
+# TODO: Partitioned index to be created synchronously in https://gitlab.com/gitlab-org/gitlab/-/issues/XXXXX
+def up
+  prepare_partitioned_async_index :p_ci_builds, :some_column, name: PARTITIONED_INDEX_NAME
+end
+
+def down
+  unprepare_partitioned_async_index :p_ci_builds, :some_column, name: PARTITIONED_INDEX_NAME
+end
+```
+
+NOTE:
+`prepare_partitioned_async_index` only creates the indexes for partitions asynchronously. It doesn't attach the partition indexes to the partitioned table.
+In the [next step for the partitioned table](#create-the-index-synchronously-for-partitioned-table), `add_concurrent_partitioned_index` will not only add the index synchronously but also attach the partition indexes to the partitioned table.
+
 ### Verify the MR was deployed and the index exists in production
 
 1. Verify that the post-deploy migration was executed on GitLab.com using ChatOps with
@@ -531,6 +563,26 @@ end
 
 def down
   remove_concurrent_index_by_name :ci_builds, INDEX_NAME
+end
+```
+
+#### Create the index synchronously for partitioned table
+
+```ruby
+# in db/post_migrate/
+
+include Gitlab::Database::PartitioningMigrationHelpers
+
+PARTITIONED_INDEX_NAME = 'index_p_ci_builds_on_some_column'
+
+disable_ddl_transaction!
+
+def up
+  add_concurrent_partitioned_index :p_ci_builds, :some_column, name: PARTITIONED_INDEX_NAME
+end
+
+def down
+  remove_concurrent_partitioned_index_by_name :p_ci_builds, PARTITIONED_INDEX_NAME
 end
 ```
 

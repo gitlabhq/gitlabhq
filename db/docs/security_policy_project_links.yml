@@ -1,0 +1,12 @@
+---
+table_name: security_policy_project_links
+classes:
+- Security::PolicyProjectLink
+feature_categories:
+- security_policy_management
+description: Project/policy join table.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154742
+milestone: '17.1'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

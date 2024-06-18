@@ -36,8 +36,8 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
 
       it 'uses secure connection' do
         expect(Spamcheck::SpamcheckService::Stub).to receive(:new).with(endpoint.sub(%r{^tls://}, ''),
-                                                                               instance_of(GRPC::Core::ChannelCredentials),
-                                                                               anything).and_return(stub)
+          instance_of(GRPC::Core::ChannelCredentials),
+          anything).and_return(stub)
         subject
       end
     end
@@ -45,8 +45,8 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
     context 'is grpc' do
       it 'uses insecure connection' do
         expect(Spamcheck::SpamcheckService::Stub).to receive(:new).with(endpoint.sub(%r{^grpc://}, ''),
-                                                                               :this_channel_is_insecure,
-                                                                               anything).and_return(stub)
+          :this_channel_is_insecure,
+          anything).and_return(stub)
         subject
       end
     end
@@ -118,8 +118,8 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
     it 'builds the expected issue protobuf object' do
       cxt = { action: :create }
       issue_pb, _ = described_class.new.send(:build_protobuf,
-                                          spammable: issue, user: user,
-                                          context: cxt, extra_features: {})
+        spammable: issue, user: user,
+        context: cxt, extra_features: {})
       expect(issue_pb.title).to eq issue.title
       expect(issue_pb.description).to eq issue.description
       expect(issue_pb.user_in_project).to be false
@@ -134,8 +134,8 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
     it 'builds the expected snippet protobuf object' do
       cxt = { action: :create }
       snippet_pb, _ = described_class.new.send(:build_protobuf,
-                                          spammable: snippet, user: user,
-                                          context: cxt, extra_features: { files: [{ path: 'first.rb' }, { path: 'second.rb' }] })
+        spammable: snippet, user: user,
+        context: cxt, extra_features: { files: [{ path: 'first.rb' }, { path: 'second.rb' }] })
       expect(snippet_pb.title).to eq snippet.title
       expect(snippet_pb.description).to eq snippet.description
       expect(snippet_pb.created_at).to eq timestamp_to_protobuf_timestamp(snippet.created_at)
@@ -219,6 +219,6 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
 
   def timestamp_to_protobuf_timestamp(timestamp)
     Google::Protobuf::Timestamp.new(seconds: timestamp.to_time.to_i,
-                                    nanos: timestamp.to_time.nsec)
+      nanos: timestamp.to_time.nsec)
   end
 end

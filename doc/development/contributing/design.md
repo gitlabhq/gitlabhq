@@ -74,7 +74,7 @@ Check visual design properties using your browser's elements inspector ([Chrome]
 
 ### Dark Mode
 
-You're not required to design for dark mode while the feature is an [Experiment](../../policy/experiment-beta-support.md#experiment). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
+You're not required to design for dark mode while the feature is an [experiment](../../policy/experiment-beta-support.md#experiment). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
 
 ### States
 
@@ -86,7 +86,7 @@ like `:hover` and others ([Chrome](https://developer.chrome.com/docs/devtools/cs
 - Account for states dependent on data size ([empty](https://design.gitlab.com/patterns/empty-states),
   some data, and lots of data).
 - Account for states dependent on user role, user preferences, and subscription.
-- Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/product-foundations/motion/).
+- Consider animations and transitions, and follow their [guidelines](https://design.gitlab.com/brand-design/motion).
 
 ### Responsive
 
@@ -115,6 +115,7 @@ When the design is ready, _before_ starting its implementation:
   or [GitLab Designs feature](../../user/project/issues/design_management.md).
   See [when you should use each tool](https://handbook.gitlab.com/handbook/product/ux/product-designer/#deliver).
 - Document user flow and states (for example, using [Mermaid flowcharts in Markdown](../../user/markdown.md#mermaid)).
+- Document [design tokens](https://design.gitlab.com/product-foundations/design-tokens) (for example using the [design token annotation](https://www.figma.com/file/dWP1ldkBU4jeUqx5rO3jrn/Annotations-and-utilities?type=design&node-id=2002-34) in Figma).
 - Document animations and transitions.
 - Document responsive behaviors.
 - Document non-evident behaviors (for example, field is auto-focused).

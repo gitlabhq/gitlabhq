@@ -235,7 +235,7 @@ export default {
     </div>
     <fieldset v-if="isEditing" data-testid="datepicker-wrapper">
       <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-        <legend class="gl-mb-0 gl-border-b-0 gl-font-weight-bold gl-font-base">
+        <legend class="gl-mb-0 gl-border-b-0 gl-font-bold gl-font-base">
           {{ $options.i18n.dates }}
         </legend>
         <gl-button
@@ -252,7 +252,7 @@ export default {
           class="gl-m-0"
           :label="$options.i18n.startDate"
           :label-for="$options.startDateInputId"
-          label-class="gl-font-weight-normal! gl-pb-2!"
+          label-class="!gl-font-normal gl-pb-2!"
         >
           <gl-datepicker
             ref="startDatePicker"
@@ -272,7 +272,7 @@ export default {
           class="gl-m-0 gl-pl-3 gl-pr-2"
           :label="$options.i18n.dueDate"
           :label-for="$options.dueDateInputId"
-          label-class="gl-font-weight-normal! gl-pb-2!"
+          label-class="!gl-font-normal gl-pb-2!"
         >
           <gl-datepicker
             v-model="dirtyDueDate"

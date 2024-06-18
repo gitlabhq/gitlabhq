@@ -9,6 +9,7 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
     let_it_be(:pipeline) { create(:ci_pipeline, user: user, project: project) }
     let_it_be(:model) { create(:ml_models, user: user, project: project) }
     let_it_be(:model_version) { create(:ml_model_versions, :with_package, model: model, version: '0.1.0') }
+    let_it_be(:package) { model_version.package }
 
     let(:build) { instance_double(Ci::Build, pipeline: pipeline) }
 
@@ -28,10 +29,10 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
       FileUtils.rm_f(temp_file)
     end
 
-    context 'when model version is nil' do
+    context 'when package is nil' do
       let(:params) do
         {
-          model_version: nil,
+          package: nil,
           file: file,
           file_name: file_name
         }
@@ -47,7 +48,7 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
 
       let(:params) do
         {
-          model_version: model_version,
+          package: package,
           file: file,
           file_name: file_name,
           status: :hidden
@@ -59,10 +60,10 @@ RSpec.describe Packages::MlModel::CreatePackageFileService, feature_category: :m
       end
     end
 
-    context 'with existing model version' do
+    context 'with existing package' do
       let(:params) do
         {
-          model_version: model_version,
+          package: package,
           file: file,
           file_name: file_name,
           status: :hidden,

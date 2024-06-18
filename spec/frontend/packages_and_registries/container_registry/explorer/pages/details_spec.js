@@ -24,7 +24,7 @@ import {
 import getContainerRepositoryDetailsQuery from '~/packages_and_registries/container_registry/explorer/graphql/queries/get_container_repository_details.query.graphql';
 
 import component from '~/packages_and_registries/container_registry/explorer/pages/details.vue';
-import Tracking from '~/tracking';
+import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 
 import {
   graphQLImageDetailsMock,
@@ -100,10 +100,6 @@ describe('Details Page', () => {
     });
   };
 
-  beforeEach(() => {
-    jest.spyOn(Tracking, 'event');
-  });
-
   describe('when isLoading is true', () => {
     it('shows the loader', () => {
       mountComponent();
@@ -173,6 +169,16 @@ describe('Details Page', () => {
     });
 
     describe('cancel event', () => {
+      let trackingSpy;
+
+      beforeEach(() => {
+        trackingSpy = mockTracking(undefined, undefined, jest.spyOn);
+      });
+
+      afterEach(() => {
+        unmockTracking();
+      });
+
       it('tracks cancel_delete', async () => {
         mountComponent();
 
@@ -180,7 +186,7 @@ describe('Details Page', () => {
 
         findDeleteModal().vm.$emit('cancel');
 
-        expect(Tracking.event).toHaveBeenCalledWith(undefined, 'cancel_delete', {
+        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'cancel_delete', {
           label: 'registry_image_delete',
         });
       });

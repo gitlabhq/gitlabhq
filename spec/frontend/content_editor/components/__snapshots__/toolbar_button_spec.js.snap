@@ -14,6 +14,7 @@ exports[`content_editor/components/toolbar_button displays tertiary, medium butt
     class="gl-button-icon"
     name="bold"
     size="16"
+    variant="current"
   />
 </b-button-stub>
 `;

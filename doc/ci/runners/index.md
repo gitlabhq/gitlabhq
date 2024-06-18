@@ -8,20 +8,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, GitLab Dedicated
 
 You can run your CI/CD jobs on GitLab.com and GitLab Dedicated using GitLab-hosted runners to seamlessly build, test and deploy
 your application on different environments.
 
 ## Hosted runners for GitLab.com
 
+DETAILS:
+**Offering:** GitLab.com
+
 These runners fully integrated with GitLab.com and are enabled by default for all projects, with no configuration required.
 Your jobs can run on:
 
 - [Hosted runners on Linux](hosted_runners/linux.md)
 - [GPU-enabled hosted runners](hosted_runners/gpu_enabled.md)
-- [Hosted runners on Windows](hosted_runners/windows.md) ([Beta](../../policy/experiment-beta-support.md#beta))
-- [Hosted runners on macOS](hosted_runners/macos.md) ([Beta](../../policy/experiment-beta-support.md#beta))
+- [Hosted runners on Windows](hosted_runners/windows.md) ([beta](../../policy/experiment-beta-support.md#beta))
+- [Hosted runners on macOS](hosted_runners/macos.md) ([beta](../../policy/experiment-beta-support.md#beta))
 
 ### How hosted runners for GitLab.com work
 
@@ -84,10 +87,10 @@ For more information about how caching works, see [Architecture diagram of hoste
 
 ### Pricing of hosted runners for GitLab.com
 
-Jobs that run on hosted runners for GitLab.com consume [compute minutes](../pipelines/cicd_minutes.md) allocated to your namespace.
-The number of minutes you can use on these runners depends on the included compute minutes in your [subscription plan](https://about.gitlab.com/pricing/) or [additionally purchased compute minutes](../pipelines/cicd_minutes.md#purchase-additional-compute-minutes).
+Jobs that run on hosted runners for GitLab.com consume [compute minutes](../pipelines/compute_minutes.md) allocated to your namespace.
+The number of minutes you can use on these runners depends on the included compute minutes in your [subscription plan](https://about.gitlab.com/pricing/) or [additionally purchased compute minutes](../pipelines/compute_minutes.md#purchase-additional-compute-minutes).
 
-For more information about the cost factor applied to the machine type based on size, see [cost factor](../../ci/pipelines/cicd_minutes.md#gitlab-hosted-runner-costs).
+For more information about the cost factor applied to the machine type based on size, see [cost factor](../../ci/pipelines/compute_minutes.md#gitlab-hosted-runner-costs).
 
 ### SLO & Release cycle for hosted runners for GitLab.com
 
@@ -97,6 +100,9 @@ We aim to update to the latest version of [GitLab Runner](https://docs.gitlab.co
 You can find all GitLab Runner breaking changes under [Deprecations and removals](../../update/deprecations.md).
 
 ## Hosted runners for GitLab community contributions
+
+DETAILS:
+**Offering:** GitLab.com
 
 If you want to [contribute to GitLab](https://about.gitlab.com/community/contribute/), jobs will be picked up by the
 `gitlab-shared-runners-manager-X.gitlab.com` fleet of runners, dedicated for GitLab projects and related community forks.
@@ -108,10 +114,12 @@ As we want to encourage people to contribute, these runners are free of charge.
 
 ## Hosted runners for GitLab Dedicated
 
-These runners are created on-demand for GitLab Dedicated customers and are fully integrated with your GitLab Dedicated instance.
-Your jobs can run on:
+DETAILS:
+**Offering:** GitLab Dedicated
+**Status:** Beta
 
-- [Hosted runners on Linux](hosted_runners/linux.md) ([Beta](../../policy/experiment-beta-support.md#beta))
+These runners are created on demand for GitLab Dedicated customers and are fully integrated with your GitLab Dedicated instance.
+For more information, see [hosted runners for GitLab Dedicated](../../subscriptions/gitlab_dedicated/index.md#gitlab-runners).
 
 ## Supported image lifecycle
 
@@ -120,22 +128,22 @@ Supported images have the following lifecycle:
 
 ### Beta
 
-New images are released as Beta. This allows us to gather feedback and address potential issues before General Availablility (GA).
-Any jobs running on Beta images are not covered by the service-level agreement.
-If you use Beta images, you can provide feedback by creating an issue.
+New images are released as beta. This allows us to gather feedback and address potential issues before general availablility (GA).
+Any jobs running on beta images are not covered by the service-level agreement.
+If you use beta images, you can provide feedback by creating an issue.
 
-### General Availablility (GA)
+### General availability (GA)
 
-A image becomes generally available after the image completes the Beta phase and is considered stable.
+A image becomes generally available after the image completes the beta phase and is considered stable.
 To become GA, the image must fulfill the following requirements:
 
-- Successful completion of a Beta phase by resolving all reported significant bugs
+- Successful completion of a beta phase by resolving all reported significant bugs
 - Compatibility of installed software with the underlying OS
 
 Jobs that run on GA images are covered by the defined service-level agreement.
 
 ### Deprecated
 
-A maximum of two Generally Available (GA) images are supported at a time. After a new GA image is released,
+A maximum of two generally available (GA) images are supported at a time. After a new GA image is released,
 the oldest GA image becomes deprecated. A deprecated image is no longer updated and is deleted after 3 months
 in accordance with the [deprecation guidelines](../../development/deprecation_guidelines/index.md).

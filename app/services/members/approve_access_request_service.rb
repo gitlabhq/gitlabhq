@@ -25,7 +25,7 @@ module Members
       raise Gitlab::Access::AccessDeniedError unless can_approve_access_requester?(access_requester)
 
       if approving_member_with_owner_access_level?(access_requester) &&
-        cannot_assign_owner_responsibilities_to_member_in_project?(access_requester)
+          cannot_assign_owner_responsibilities_to_member_in_project?(access_requester)
         raise Gitlab::Access::AccessDeniedError
       end
     end

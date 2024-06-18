@@ -474,9 +474,10 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
             widgets {
               type
               ... on WorkItemWidgetDevelopment {
-                relatedMergeRequests {
+                closingMergeRequests {
                   nodes {
-                    closesWorkItem
+                    id
+                    fromMrDescription
                     mergeRequest { id }
                   }
                 }

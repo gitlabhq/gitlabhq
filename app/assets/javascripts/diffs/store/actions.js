@@ -21,7 +21,6 @@ import {
   DIFF_VIEW_COOKIE_NAME,
   MR_TREE_SHOW_KEY,
   TREE_LIST_STORAGE_KEY,
-  TREE_LIST_WIDTH_STORAGE_KEY,
   OLD_LINE_KEY,
   NEW_LINE_KEY,
   TYPE_KEY,
@@ -757,10 +756,6 @@ export const setShowWhitespace = async (
 
 export const toggleFileFinder = ({ commit }, visible) => {
   commit(types.TOGGLE_FILE_FINDER_VISIBLE, visible);
-};
-
-export const cacheTreeListWidth = (_, size) => {
-  localStorage.setItem(TREE_LIST_WIDTH_STORAGE_KEY, size);
 };
 
 export const receiveFullDiffError = ({ commit }, filePath) => {

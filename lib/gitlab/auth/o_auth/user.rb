@@ -12,18 +12,8 @@ module Gitlab
         class << self
           # rubocop: disable CodeReuse/ActiveRecord
 
-          # `auth_hash` argument should be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/456424
-          def find_by_uid_and_provider(uid, provider, auth_hash = nil)
+          def find_by_uid_and_provider(uid, provider)
             identity = ::Identity.with_extern_uid(provider, uid).take
-
-            # This fallback should be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/456424
-            if provider == 'bitbucket' && !auth_hash.nil?
-              identity ||= ::Identity.with_extern_uid(provider, auth_hash.username).take
-
-              if identity && !identity.trusted_extern_uid? && identity.user && identity.user.email == auth_hash.email
-                identity.update(extern_uid: uid, trusted_extern_uid: true)
-              end
-            end
 
             return unless identity
             raise IdentityWithUntrustedExternUidError unless identity.trusted_extern_uid?
@@ -227,7 +217,7 @@ module Gitlab
         end
 
         def find_by_uid_and_provider
-          self.class.find_by_uid_and_provider(auth_hash.uid, auth_hash.provider, auth_hash)
+          self.class.find_by_uid_and_provider(auth_hash.uid, auth_hash.provider)
         end
 
         def build_new_user(skip_confirmation: true)
@@ -260,12 +250,7 @@ module Gitlab
         end
 
         def sanitize_username(username)
-          if Feature.enabled?(:extra_slug_path_sanitization)
-            ExternalUsernameSanitizer.new(username).sanitize
-          else
-            valid_username = ::Namespace.clean_path(username)
-            Gitlab::Utils::Uniquify.new.string(valid_username) { |s| !NamespacePathValidator.valid_path?(s) }
-          end
+          ExternalUsernameSanitizer.new(username).sanitize
         end
 
         def sync_profile_from_provider?

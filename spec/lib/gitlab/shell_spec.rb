@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'stringio'
 
-RSpec.describe Gitlab::Shell do
+RSpec.describe Gitlab::Shell, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
 
   let(:repository) { project.repository }
@@ -11,6 +11,51 @@ RSpec.describe Gitlab::Shell do
 
   before do
     described_class.instance_variable_set(:@secret_token, nil)
+  end
+
+  describe '.verify_api_request' do
+    subject { described_class.verify_api_request(headers) }
+
+    let(:encoded_token) { JWT.encode(payload, described_class.secret_token, 'HS256') }
+    let(:payload) { { 'iss' => described_class::JWT_ISSUER } }
+    let(:headers) { { described_class::API_HEADER => encoded_token } }
+
+    it 'returns the decoded JWT' do
+      is_expected.to eq([
+        { 'iss' => described_class::JWT_ISSUER },
+        { 'alg' => 'HS256' }
+      ])
+    end
+
+    context 'when secret is wrong' do
+      let(:encoded_token) { JWT.encode(payload, 'wrong secret', 'HS256') }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+
+    context 'when issuer is wrong' do
+      let(:payload) { { 'iss' => 'wrong issuer' } }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
+  end
+
+  describe '.header_set?' do
+    subject { described_class.header_set?(headers) }
+
+    let(:headers) { { described_class::API_HEADER => 'token' } }
+
+    it { is_expected.to be_truthy }
+
+    context 'when header is missing' do
+      let(:headers) { { 'another_header' => 'token' } }
+
+      it { is_expected.to be_falsey }
+    end
   end
 
   describe '.secret_token' do

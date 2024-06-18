@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11908) in GitLab 17.0. This feature is an [Experiment](../../policy/experiment-beta-support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11908) in GitLab 17.0. This feature is an [experiment](../../policy/experiment-beta-support.md) and subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 This tool is under development and is ultimately meant to replace [the Rake tasks used for backing up and restoring GitLab](backup_gitlab.md). You can follow the development of this tool in the epic: [Next Gen Scalable Backup and Restore](https://gitlab.com/groups/gitlab-org/-/epics/11577).
 
@@ -83,14 +83,21 @@ For example, if the backup directory name is `1714053314_2024_04_25_17.0.0-pre`,
 }
 ```
 
-## Limitations
+## Known issues
 
-- The tool has only been tested on the [1K architecture](../reference_architectures/1k_users.md) 
-  and therefore only recommended to be used on relevant environments.
-- The initial version doesn't use the [copy strategy](backup_gitlab.md#backup-strategy-option),
-  so as long as there is nothing changing existing files while you perform the backup, you should be fine.
-  
-  For that reason, you need to either put the GitLab instance into [Maintenance Mode](../maintenance_mode/index.md),
-  or ensure your instance is not being used by restricting traffic to the servers.
+When working with `gitlab-backup-cli`, you might encounter the following issues.
 
-  See [issue 428520](https://gitlab.com/gitlab-org/gitlab/-/issues/428520) where an alternative to the copy strategy is discussed.
+### Architecture compatibility
+
+If you use the `gitlab-backup-cli` tool on architectures other than the [1K architecture](../reference_architectures/1k_users.md), you might experience issues. This tool is supported only on 1K architecture and is recommended only for relevant environments.
+
+### Backup strategy
+
+Changes to existing files during backup might cause issues on the GitLab instance. This issue occurs because the tool's initial version does not use the [copy strategy](backup_gitlab.md#backup-strategy-option).
+
+A workaround of this issue, is either to:
+
+- Transition the GitLab instance into [Maintenance Mode](../maintenance_mode/index.md).
+- Restrict traffic to the servers during backup to preserve instance resources.
+
+We're investigating an alternative to the copy strategy, see [issue 428520](https://gitlab.com/gitlab-org/gitlab/-/issues/428520).

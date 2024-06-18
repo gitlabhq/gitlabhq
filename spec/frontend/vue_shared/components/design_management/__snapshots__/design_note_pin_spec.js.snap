@@ -21,6 +21,7 @@ exports[`Design note pin component should match the snapshot of note without ind
   <gl-icon-stub
     name="image-comment-dark"
     size="24"
+    variant="current"
   />
 </button>
 `;
@@ -35,6 +36,7 @@ exports[`Design note pin component should match the snapshot when pin is resolve
   <gl-icon-stub
     name="image-comment-dark"
     size="24"
+    variant="current"
   />
 </button>
 `;
@@ -48,6 +50,7 @@ exports[`Design note pin component should match the snapshot when position is ab
   <gl-icon-stub
     name="image-comment-dark"
     size="24"
+    variant="current"
   />
 </button>
 `;

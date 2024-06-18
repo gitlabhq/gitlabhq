@@ -98,26 +98,6 @@ RSpec.describe Gitlab::Database::Partitioning::CiSlidingListStrategy, feature_ca
     end
   end
 
-  describe '#partition_for_id' do
-    subject(:partition_for_id) { strategy.partition_for_id(id) }
-
-    context 'when partition_id matches any partition' do
-      let(:id) { 101 }
-
-      it 'returns the partition' do
-        expect(partition_for_id).to eq(strategy.active_partition)
-      end
-    end
-
-    context 'when partition_id does not match any partition' do
-      let(:id) { non_existing_record_id }
-
-      it 'returns nil' do
-        expect(partition_for_id).to be_nil
-      end
-    end
-  end
-
   describe '#missing_partitions' do
     context 'when next_partition_if returns true' do
       let(:next_partition_if) { proc { |partition| partition.values.max < 102 } }

@@ -9,7 +9,7 @@ import GettingStartedCard from './cards/getting_started_card.vue';
 import PipelineConfigReferenceCard from './cards/pipeline_config_reference_card.vue';
 import VisualizeAndLintCard from './cards/visualize_and_lint_card.vue';
 
-const DRAWER_CARD_STYLES = ['gl-border-bottom-0', 'gl-pt-6!', 'gl-pb-0!', 'gl-line-height-20'];
+const DRAWER_CARD_STYLES = ['gl-border-bottom-0', 'gl-pt-6!', 'gl-pb-0!', 'gl-leading-20'];
 
 export default {
   DRAWER_CARD_STYLES,

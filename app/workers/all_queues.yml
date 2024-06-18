@@ -246,6 +246,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: cronjob:ci_catalog_resources_aggregate_last30_day_usage
+  :worker_name: Ci::Catalog::Resources::AggregateLast30DayUsageWorker
+  :feature_category: :pipeline_composition
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_catalog_resources_process_sync_events
   :worker_name: Ci::Catalog::Resources::ProcessSyncEventsWorker
   :feature_category: :pipeline_composition
@@ -258,6 +267,15 @@
 - :name: cronjob:ci_delete_unit_tests
   :worker_name: Ci::DeleteUnitTestsWorker
   :feature_category: :code_testing
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: cronjob:ci_partitioning
+  :worker_name: Ci::PartitioningWorker
+  :feature_category: :ci_scaling
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -455,7 +473,7 @@
   :tags: []
 - :name: cronjob:dependency_proxy_cleanup_dependency_proxy
   :worker_name: DependencyProxy::CleanupDependencyProxyWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -464,7 +482,7 @@
   :tags: []
 - :name: cronjob:dependency_proxy_image_ttl_group_policy
   :worker_name: DependencyProxy::ImageTtlGroupPolicyWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -995,7 +1013,7 @@
   :tags: []
 - :name: dependency_proxy:purge_dependency_proxy_cache
   :worker_name: PurgeDependencyProxyCacheWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1004,7 +1022,7 @@
   :tags: []
 - :name: dependency_proxy_blob:dependency_proxy_cleanup_blob
   :worker_name: DependencyProxy::CleanupBlobWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1013,7 +1031,7 @@
   :tags: []
 - :name: dependency_proxy_manifest:dependency_proxy_cleanup_manifest
   :worker_name: DependencyProxy::CleanupManifestWorker
-  :feature_category: :dependency_proxy
+  :feature_category: :virtual_registry
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1533,6 +1551,15 @@
   :weight: 2
   :idempotent: true
   :tags: []
+- :name: jira_connect:integrations_jira_connect_remove_branch
+  :worker_name: Integrations::JiraConnect::RemoveBranchWorker
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: jira_connect:jira_connect_forward_event
   :worker_name: JiraConnect::ForwardEventWorker
   :feature_category: :integrations
@@ -2012,7 +2039,7 @@
   :tags: []
 - :name: pipeline_creation:ci_external_pull_requests_create_pipeline
   :worker_name: Ci::ExternalPullRequests::CreatePipelineWorker
-  :feature_category: :continuous_integration
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
@@ -2021,7 +2048,7 @@
   :tags: []
 - :name: pipeline_creation:create_pipeline
   :worker_name: CreatePipelineWorker
-  :feature_category: :continuous_integration
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
@@ -2030,7 +2057,7 @@
   :tags: []
 - :name: pipeline_creation:merge_requests_create_pipeline
   :worker_name: MergeRequests::CreatePipelineWorker
-  :feature_category: :continuous_integration
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :cpu
@@ -2039,7 +2066,7 @@
   :tags: []
 - :name: pipeline_creation:run_pipeline_schedule
   :worker_name: RunPipelineScheduleWorker
-  :feature_category: :continuous_integration
+  :feature_category: :pipeline_composition
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2136,15 +2163,6 @@
   :weight: 5
   :idempotent: false
   :tags: []
-- :name: pipeline_processing:build_success
-  :worker_name: BuildSuccessWorker
-  :feature_category: :continuous_integration
-  :has_external_dependencies: false
-  :urgency: :high
-  :resource_boundary: :unknown
-  :weight: 5
-  :idempotent: false
-  :tags: []
 - :name: pipeline_processing:ci_build_finished
   :worker_name: Ci::BuildFinishedWorker
   :feature_category: :continuous_integration
@@ -2183,6 +2201,15 @@
   :tags: []
 - :name: pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
   :worker_name: Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
+  :feature_category: :continuous_delivery
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 5
+  :idempotent: true
+  :tags: []
+- :name: pipeline_processing:ci_resource_groups_assign_resource_from_resource_group_worker_v2
+  :worker_name: Ci::ResourceGroups::AssignResourceFromResourceGroupWorkerV2
   :feature_category: :continuous_delivery
   :has_external_dependencies: false
   :urgency: :low
@@ -2748,6 +2775,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: bulk_imports_user_contributions_export
+  :worker_name: BulkImports::UserContributionsExportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :memory
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: chat_notification
   :worker_name: ChatNotificationWorker
   :feature_category: :integrations
@@ -3243,6 +3279,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: integrations_propagate_integration_descendant
+  :worker_name: Integrations::PropagateIntegrationDescendantWorker
+  :feature_category: :integrations
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: integrations_slack_event
   :worker_name: Integrations::SlackEventWorker
   :feature_category: :integrations
@@ -3353,7 +3398,7 @@
   :tags: []
 - :name: merge
   :worker_name: MergeWorker
-  :feature_category: :source_code_management
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown
@@ -3416,7 +3461,7 @@
   :tags: []
 - :name: merge_requests_delete_source_branch
   :worker_name: MergeRequests::DeleteSourceBranchWorker
-  :feature_category: :source_code_management
+  :feature_category: :code_review_workflow
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown

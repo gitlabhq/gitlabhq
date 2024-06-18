@@ -11,7 +11,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   let_it_be_with_refind(:project) { create(:project, namespace: group) }
   let_it_be(:user) { create(:user) }
   let_it_be(:admin_with_admin_mode) { create(:admin) }
-  let_it_be(:admin_without_admin_mode) { create(:admin, :without_default_org) }
+  let_it_be(:admin_without_admin_mode) { create(:admin) }
   let_it_be(:group_member) { create(:group_member, group: group, user: user) }
   let_it_be(:owner) { group.add_owner(create(:user)).user }
   let_it_be(:maintainer) { group.add_maintainer(create(:user)).user }
@@ -698,6 +698,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       it 'redirects to the root path' do
         delete :destroy, params: { id: group.to_param }
 
+        expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
         expect(response).to redirect_to(root_path)
       end
     end
@@ -1199,12 +1200,6 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
   end
 
   describe 'POST #export' do
-    let(:admin) { create(:admin) }
-
-    before do
-      enable_admin_mode!(admin)
-    end
-
     context 'when the user does not have permission to export the group' do
       before do
         sign_in(guest)
@@ -1217,13 +1212,13 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
     end
 
-    context 'when supplied valid params' do
+    context 'when the user has permission to export the group' do
       before do
-        sign_in(admin)
+        sign_in(user)
       end
 
       it 'triggers the export job' do
-        expect(GroupExportWorker).to receive(:perform_async).with(admin.id, group.id, {})
+        expect(GroupExportWorker).to receive(:perform_async).with(user.id, group.id, { exported_by_admin: false })
 
         post :export, params: { id: group.to_param }
       end
@@ -1235,9 +1230,21 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       end
     end
 
+    context 'when user is admin' do
+      before do
+        sign_in(admin_with_admin_mode)
+      end
+
+      it 'triggers the export job, and passes `exported_by_admin` correctly in the `params` hash' do
+        expect(GroupExportWorker).to receive(:perform_async).with(admin_with_admin_mode.id, group.id, { exported_by_admin: true })
+
+        post :export, params: { id: group.to_param }
+      end
+    end
+
     context 'when the endpoint receives requests above the rate limit' do
       before do
-        sign_in(admin)
+        sign_in(user)
 
         allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
           allow(strategy)

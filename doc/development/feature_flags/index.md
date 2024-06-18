@@ -30,6 +30,21 @@ For an [overview of the feature flag lifecycle](https://handbook.gitlab.com/hand
 
 Moved to the ["When to use feature flags"](https://handbook.gitlab.com/handbook/product-development-flow/feature-flag-lifecycle/#when-to-use-feature-flags) section in the handbook.
 
+### Do not use feature flags for long lived settings
+
+Feature flags are meant to be short lived. If you are intending on adding a
+feature flag so that something can be enabled per user/group/project for a long
+period of time, consider introducing
+[Cascading Settings](../cascading_settings.md) or [Application Settings](../application_settings.md)
+instead. Settings
+offer a way for customers to enable or disable features for themselves on
+GitLab.com or self-managed and can remain in the codebase as long as needed. In
+contrast users have no way to enable or disable feature flags for themselves on
+GitLab.com and only self-managed admins can change the feature flags.
+Also note that
+[feature flags are not supported in GitLab Dedicated](../enabling_features_on_dedicated.md#feature-flags)
+which is another reason you should not use them as a replacement for settings.
+
 ## Feature flags in GitLab development
 
 The following highlights should be considered when deciding if feature flags
@@ -165,15 +180,13 @@ push_frontend_feature_flag(:my_wip_flag, project)
 
 ### `beta` type
 
-We might
-[not be confident we'll be able to scale, support, and maintain a feature](https://handbook.gitlab.com/handbook/product/gitlab-the-product/#experiment-beta-ga)
-in its current form for every designed use case ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/336070#note_1523983444)).
+We might [not be confident we'll be able to scale, support, and maintain a feature](../../policy/experiment-beta-support.md) in its current form for every designed use case ([example](https://gitlab.com/gitlab-org/gitlab/-/issues/336070#note_1523983444)).
 There are also scenarios where a feature is not complete enough to be considered an MVC.
 Providing a flag in this case allows engineers and customers to disable the new feature until it's performant enough.
 
 #### Constraints
 
-- `default_enabled`: Can be set to `true` so that a feature can be "released" to everyone in Beta with the
+- `default_enabled`: Can be set to `true` so that a feature can be "released" to everyone in beta with the
   possibility to disable it in the case of scalability issues (ideally it should only be disabled for this
   reason on specific on-premise installations)
 - Maximum Lifespan: 6 months after it's merged into the default branch
@@ -234,7 +247,7 @@ push_frontend_feature_flag(:my_ops_flag, project)
 
 An `experiment` feature flag should conform to the same standards as a `beta` feature flag,
 although the interface has some differences. An experiment feature flag should have a rollout issue,
-created using the [Experiment Tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Experiment%20Rollout.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
+created using the [Experiment tracking template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Experiment%20Rollout.md). More information can be found in the [experiment guide](../experiment_guide/index.md).
 
 #### Constraints
 
@@ -361,7 +374,7 @@ When choosing a name for a new feature flag, consider the following guidelines:
   with double negatives. Consider starting the name with `hide_`, `remove_`, or `disallow_`.
 
   In software engineering this problem is known as
-  ["negative names for boolean variables"](https://www.serendipidata.com/posts/naming-guidelines-for-boolean-variables).
+  ["negative names for boolean variables"](https://www.serendipidata.com/posts/naming-guidelines-for-boolean-variables/).
   But we can't forbid negative words altogether, to be able to introduce flags as
   [disabled by default](#feature-flags-in-gitlab-development), use them to remove a feature by moving it behind a flag, or to [selectively disable a flag by actor](controls.md#selectively-disable-by-actor).
 

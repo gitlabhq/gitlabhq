@@ -7,7 +7,7 @@ module Ci
     included do
       prepend_mod_with('Ci::DeployablePolicy') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
-      condition(:has_outdated_deployment) do
+      condition(:has_outdated_deployment, scope: :subject) do
         @subject.has_outdated_deployment?
       end
 

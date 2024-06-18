@@ -68,6 +68,9 @@ class ProjectPolicy < BasePolicy
   desc "Project is archived"
   condition(:archived, scope: :subject, score: 0) { project.archived? }
 
+  desc "Project user pipeline variables minimum override role"
+  condition(:project_pipeline_override_role_owner) { project.ci_pipeline_variables_minimum_override_role == 'owner' }
+
   desc "Project is in the process of being deleted"
   condition(:pending_delete) { project.pending_delete? }
 
@@ -80,8 +83,8 @@ class ProjectPolicy < BasePolicy
   condition(:container_registry_disabled) do
     if user.is_a?(DeployToken)
       (!user.read_registry? && !user.write_registry?) ||
-      user.revoked? ||
-      !project.container_registry_enabled?
+        user.revoked? ||
+        !project.container_registry_enabled?
     else
       !access_allowed_to?(:container_registry)
     end
@@ -240,7 +243,11 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:user_defined_variables_allowed) do
-    !@subject.restrict_user_defined_variables?
+    @subject.override_pipeline_variables_allowed?(team_access_level)
+  end
+
+  condition(:push_repository_for_job_token_allowed) do
+    @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
   end
 
   condition(:packages_disabled, scope: :subject) { !@subject.packages_enabled }
@@ -308,6 +315,8 @@ class ProjectPolicy < BasePolicy
   rule { developer }.enable :developer_access
   rule { maintainer }.enable :maintainer_access
   rule { owner | admin | organization_owner }.enable :owner_access
+
+  rule { project_pipeline_override_role_owner & ~can?(:owner_access) }.prevent :change_restrict_user_defined_variables
 
   rule { can?(:owner_access) }.policy do
     enable :guest_access
@@ -560,6 +569,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_note
     enable :admin_wiki
     enable :admin_project
+    enable :admin_integrations
     enable :admin_commit_status
     enable :admin_build
     enable :admin_container_image
@@ -605,7 +615,10 @@ class ProjectPolicy < BasePolicy
     enable :read_import_error
     enable :admin_cicd_variables
     enable :admin_push_rules
+    enable :admin_runner
     enable :manage_deploy_tokens
+    enable :manage_merge_request_settings
+    enable :change_restrict_user_defined_variables
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger
@@ -696,6 +709,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { repository_disabled }.policy do
+    prevent :build_push_code
     prevent :push_code
     prevent :download_code
     prevent :build_download_code
@@ -734,6 +748,10 @@ class ProjectPolicy < BasePolicy
 
   rule { public_project & ~project_allowed_for_job_token }.policy do
     prevent :public_user_access
+  end
+
+  rule { can?(:developer_access) & push_repository_for_job_token_allowed }.policy do
+    enable :build_push_code
   end
 
   rule { public_or_internal & job_token_container_registry }.policy do
@@ -942,7 +960,7 @@ class ProjectPolicy < BasePolicy
     prevent :manage_resource_access_tokens
   end
 
-  rule { user_defined_variables_allowed | can?(:maintainer_access) }.policy do
+  rule { user_defined_variables_allowed }.policy do
     enable :set_pipeline_variables
   end
 
@@ -1020,10 +1038,6 @@ class ProjectPolicy < BasePolicy
   end
 
   private
-
-  def user_is_user?
-    user.is_a?(User)
-  end
 
   def team_member?
     return false if @user.nil?
@@ -1106,7 +1120,7 @@ class ProjectPolicy < BasePolicy
       false
     when ProjectFeature::PRIVATE
       can?(:read_all_resources) ||
-      can?(:read_all_organization_resources) ||
+        can?(:read_all_organization_resources) ||
         team_access_level >= ProjectFeature.required_minimum_access_level(feature)
     else
       true

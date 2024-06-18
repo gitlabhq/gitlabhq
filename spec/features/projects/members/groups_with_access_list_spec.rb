@@ -18,6 +18,7 @@ RSpec.describe 'Projects > Members > Groups with access list', :js, feature_cate
 
   before do
     travel_to Time.now.utc.beginning_of_day
+    stub_feature_flags(show_role_details_in_drawer: false)
 
     project.add_maintainer(user)
     sign_in(user)

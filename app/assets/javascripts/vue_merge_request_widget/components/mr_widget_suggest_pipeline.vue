@@ -90,7 +90,7 @@ export default {
     </template>
     <div class="row">
       <div
-        class="col-md-5 order-md-last col-12 gl-mt-5 gl-md-mt-n2! gl-md-pt-2 svg-content svg-225"
+        class="col-md-5 order-md-last col-12 gl-mt-5 md:!-gl-mt-2 gl-md-pt-2 svg-content svg-225"
       >
         <img data-testid="pipeline-image" :src="pipelineSvgPath" />
       </div>

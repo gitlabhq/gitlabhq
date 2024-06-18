@@ -12,6 +12,7 @@ RSpec.describe Gitlab::PrivateCommitEmail, feature_category: :shared do
     subject { described_class.regex }
 
     it { is_expected.to match("1-foo@#{hostname}") }
+    it { is_expected.to match("1-BLAH@#{hostname}") }
     it { is_expected.not_to match("1-foo@#{hostname}.foo") }
     it { is_expected.not_to match('1-foo@users.noreply.gitlab.com') }
     it { is_expected.not_to match('foo-1@users.noreply.gitlab.com') }
@@ -52,6 +53,12 @@ RSpec.describe Gitlab::PrivateCommitEmail, feature_category: :shared do
       user = create(:user)
 
       expect(described_class.for_user(user)).to eq("#{user.id}-#{user.username}@#{hostname}")
+    end
+
+    it 'stores the private commit email with uppercase' do
+      user = create(:user, username: 'BOBBY_TABLES')
+
+      expect(described_class.for_user(user)).to eq("#{user.id}-BOBBY_TABLES@#{hostname}")
     end
   end
 end

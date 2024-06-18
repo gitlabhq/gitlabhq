@@ -39,7 +39,7 @@ function labelsToFields(labels, isIndex = true) {
     key: isIndex ? `index${counter}` : `column${counter}`,
     label,
     sortable: true,
-    class: isIndex ? 'gl-font-weight-bold' : '',
+    class: isIndex ? 'gl-font-bold' : '',
   }));
 }
 

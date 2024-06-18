@@ -166,7 +166,7 @@ export default {
     <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2">
       <gl-badge :variant="badgeVariant" data-testid="issue-state-badge">
         <gl-icon v-if="statusIcon" :name="statusIcon" :class="statusIconClass" />
-        <span class="gl-display-none gl-sm-display-block" :class="{ 'gl-ml-2': statusIcon }">
+        <span class="gl-block" :class="{ 'gl-ml-2': statusIcon }">
           <slot name="status-badge">{{ badgeText }}</slot>
         </span>
       </gl-badge>
@@ -192,12 +192,8 @@ export default {
           {{ serviceDeskReplyTo }}
         </template>
         <template #author>
-          <gl-link
-            class="gl-font-weight-bold js-user-link"
-            :href="author.webUrl"
-            :data-user-id="authorId"
-          >
-            <span :class="[{ 'gl-display-none': !isAuthorExternal }, 'gl-sm-display-inline']">
+          <gl-link class="gl-font-bold js-user-link" :href="author.webUrl" :data-user-id="authorId">
+            <span :class="[{ 'gl-hidden': !isAuthorExternal }, 'sm:gl-inline']">
               {{ author.name }}
             </span>
             <gl-icon
@@ -205,7 +201,7 @@ export default {
               name="external-link"
               :aria-label="__('external link')"
             />
-            <strong v-if="author.username" class="author gl-display-inline gl-sm-display-none!"
+            <strong v-if="author.username" class="author gl-inline sm:!gl-hidden"
               >@{{ author.username }}</strong
             >
           </gl-link>
@@ -220,12 +216,12 @@ export default {
       />
       <span
         v-if="taskCompletionStatus && hasTasks"
-        class="gl-display-none gl-md-display-block gl-lg-display-inline-block"
+        class="gl-hidden md:gl-block lg:gl-inline-block"
         >{{ taskStatusString }}</span
       >
       <gl-button
         icon="chevron-double-lg-left"
-        class="gl-ml-auto gl-display-block gl-sm-display-none! js-sidebar-toggle"
+        class="gl-ml-auto gl-block sm:!gl-hidden js-sidebar-toggle"
         :aria-label="__('Expand sidebar')"
         @click="handleRightSidebarToggleClick"
       />

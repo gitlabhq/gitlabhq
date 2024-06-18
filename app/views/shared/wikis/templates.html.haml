@@ -3,23 +3,40 @@
 - page_title s_("Wiki|Templates"), _("Wiki")
 - add_page_specific_style 'page_bundles/wiki'
 
-.wiki-page-header.top-area.flex-column.flex-lg-row
-  %h1.page-title.gl-font-size-h-display.gl-flex-grow-1
-    = s_("Wiki|Wiki Templates")
+.wiki-page-header
+  = render ::Layouts::PageHeadingComponent.new(s_("Wiki|Wiki templates")) do |c|
+    - c.with_actions do
+      .dropdown.inline.wiki-sort-dropdown
+        .btn-group{ role: 'group' }
+          = wiki_sort_controls(@wiki, params[:direction], action: :templates)
 
-  .nav-controls.pb-md-3.pb-lg-0
-    = link_button_to wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true), icon: 'plus' do
-      = s_("Wiki|New template")
+      #js-vue-wiki-more-actions{ data: {
+        clone_ssh_url: ssh_clone_url_to_repo(@wiki),
+        clone_http_url: http_clone_url_to_repo(@wiki),
+        wiki_url: wiki_path(@wiki),
+        new_url: wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true),
+        templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+      } }
 
-    .dropdown.inline.wiki-sort-dropdown
-      .btn-group{ role: 'group' }
-        = wiki_sort_controls(@wiki, params[:direction], action: :templates)
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-mt-0' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+  - c.with_header do
+    .gl-new-card-title-wrapper.gl-flex-col
+      %h3.gl-new-card-title
+        = s_("Wiki|Templates")
+        .gl-new-card-count
+          = sprite_icon('template', css_class: 'gl-mr-2')
+          = @wiki_entries_count
 
-%ul.wiki-pages-list.content-list
-  - if @templates_list.empty?
-    %li.no-wiki-pages
-      = s_("Wiki|No templates found")
-  - @wiki_entries.each do |entry|
-    = render partial: entry.to_partial_path, object: entry, locals: { context: 'pages' }
+    .gl-new-card-actions
+      = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, "#{Wiki::TEMPLATES_DIR}/#{SecureRandom.uuid}", random_title: true), size: :small) do
+        = s_("Wiki|New template")
+  - c.with_body do
+    %ul.wiki-pages-list.content-list.wiki-templates-list
+      - if @templates_list.empty?
+        %li.no-wiki-pages{ class: '!gl-px-5' }
+          = s_("Wiki|No templates found")
+      - @wiki_entries.each do |entry|
+        = render partial: entry.to_partial_path, object: entry, locals: { context: 'pages' }
 
-= paginate @templates_list, theme: 'gitlab'
+.gl-pt-3
+  = paginate @templates_list, theme: 'gitlab'

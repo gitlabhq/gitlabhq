@@ -87,7 +87,7 @@ of this file. You can do this with a command like:
 kubectl create configmap docker-client-config --namespace gitlab-runner --from-file /opt/.docker/config.json
 ```
 
-Update the [volume mounts](https://docs.gitlab.com/runner/executors/kubernetes.html#using-volumes)
+Update the [volume mounts](https://docs.gitlab.com/runner/executors/kubernetes/index.html#custom-volume-mount)
 to include the file.
 
 ```toml

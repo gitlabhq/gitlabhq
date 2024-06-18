@@ -10,27 +10,27 @@
           = link_to issue.title, issue_path(issue), class: 'js-prefetch-document'
         = render_if_exists 'projects/issues/subepic_flag', issue: issue
         - if issue.tasks?
-          %span.task-status.gl-display-none.gl-sm-display-inline-block
+          %span.task-status.gl-hidden.sm:gl-inline-block
             &nbsp;
             = issue.task_status
 
       .issuable-info
         %span.issuable-reference
           #{issuable_reference(issue)}
-        %span.issuable-authored.gl-display-none.gl-sm-display-inline-block
+        %span.issuable-authored.gl-hidden.sm:gl-inline-block
           &middot;
           - if issue.service_desk_reply_to
             #{_('created %{timeAgoString} by %{email} via %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), email: issue.present(current_user: current_user).service_desk_reply_to, user: link_to_member(@project, issue.author, avatar: false) }}
           - else
             #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), user: link_to_member(@project, issue.author, avatar: false) }}
         - if issue.milestone
-          %span.issuable-milestone.gl-display-none.gl-sm-display-inline-block
+          %span.issuable-milestone.gl-hidden.sm:gl-inline-block
             &nbsp;
             = link_to project_issues_path(issue.project, milestone_title: issue.milestone.title), data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(issue.milestone) } do
               = sprite_icon('milestone', css_class: 'gl-vertical-align-text-bottom')
               = issue.milestone.title
         - if issue.due_date
-          %span.issuable-due-date.gl-display-none.gl-sm-display-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue? && !issue.closed?}", title: _('Due date') }
+          %span.issuable-due-date.gl-hidden.sm:gl-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue? && !issue.closed?}", title: _('Due date') }
             &nbsp;
             = sprite_icon('calendar')
             = issue.due_date.to_fs(:medium)
@@ -59,7 +59,7 @@
 
         = render 'shared/issuable_meta_data', issuable: issue
 
-      .gl-float-right.issuable-timestamp.gl-display-none.gl-sm-display-inline-block
+      .gl-float-right.issuable-timestamp.gl-hidden.sm:gl-inline-block
         %span
           - if issue.closed? && issue.closed_at
             = _('closed %{timeago}').html_safe % { timeago: time_ago_with_tooltip(issue.closed_at, placement: 'bottom') }

@@ -16,15 +16,14 @@ RSpec.describe PropagateIntegrationInheritDescendantWorker, feature_category: :i
         .with(group_integration, match_array(subgroup_integration)).twice
         .and_return(double(execute: nil))
 
-      subject
+      perform_idempotent_work
     end
   end
 
   context 'with an invalid integration id' do
     it 'returns without failure' do
       expect(Integrations::Propagation::BulkUpdateService).not_to receive(:new)
-
-      subject.perform(0, subgroup_integration.id, subgroup_integration.id)
+      described_class.new.perform(0, subgroup_integration.id, subgroup_integration.id)
     end
   end
 end

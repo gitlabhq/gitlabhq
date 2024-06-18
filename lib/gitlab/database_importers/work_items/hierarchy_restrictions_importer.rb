@@ -18,25 +18,25 @@ module Gitlab
               parent_type_id: objective.id,
               child_type_id: objective.id,
               maximum_depth: 9,
-              cross_hierarchy_enabled: false
+              cross_hierarchy_enabled: true
             },
             {
               parent_type_id: objective.id,
               child_type_id: key_result.id,
               maximum_depth: 1,
-              cross_hierarchy_enabled: false
+              cross_hierarchy_enabled: true
             },
             {
               parent_type_id: issue.id,
               child_type_id: task.id,
               maximum_depth: 1,
-              cross_hierarchy_enabled: false
+              cross_hierarchy_enabled: true
             },
             {
               parent_type_id: incident.id,
               child_type_id: task.id,
               maximum_depth: 1,
-              cross_hierarchy_enabled: false
+              cross_hierarchy_enabled: true
             },
             {
               parent_type_id: epic.id,
@@ -54,7 +54,7 @@ module Gitlab
               parent_type_id: ticket.id,
               child_type_id: task.id,
               maximum_depth: 1,
-              cross_hierarchy_enabled: false
+              cross_hierarchy_enabled: true
             }
           ]
 

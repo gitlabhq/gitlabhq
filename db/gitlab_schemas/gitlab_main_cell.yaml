@@ -11,4 +11,5 @@ allow_cross_transactions:
   - gitlab_main_clusterwide
 allow_cross_foreign_keys:
   - gitlab_main
+  - gitlab_main_clusterwide
 cell_local: true

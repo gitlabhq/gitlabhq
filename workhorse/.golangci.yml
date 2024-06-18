@@ -52,13 +52,16 @@ run:
 # output configuration options
 output:
   # colored-line-number|line-number|json|tab|checkstyle|code-climate, default is "colored-line-number"
-  format: line-number
+  formats:
+    - format: line-number
 
   # print lines of code with issue, default is true
   print-issued-lines: true
 
   # print linter name in the end of issue text, default is true
   print-linter-name: true
+
+  sort-results: true
 
 # all available settings of specific linters
 linters-settings:
@@ -75,6 +78,7 @@ linters-settings:
     # the regex is used to ignore names within pkg. (default "fmt:.*").
     # see https://github.com/kisielk/errcheck#the-deprecated-method for details
     # ignore: fmt:.*,io/ioutil:^Read.*
+    ignore: ''
 
     # path to a file containing a list of functions to exclude from checking
     # see https://github.com/kisielk/errcheck#excluding-functions for details
@@ -90,8 +94,8 @@ linters-settings:
     statements: 40
 
   govet:
-    # report about shadowed variables
-    check-shadowing: true
+    enable:
+      - shadow
 
     # settings per analyzer
     settings:

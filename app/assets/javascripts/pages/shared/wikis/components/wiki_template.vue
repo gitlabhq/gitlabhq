@@ -79,6 +79,7 @@ export default {
     v-model="selectedTemplate"
     :items="templatesList"
     searchable
+    block
     :toggle-text="toggleText"
     :search-placeholder="$options.i18n.searchTemplates"
     :no-results-text="$options.i18n.noMatchingTemplates"

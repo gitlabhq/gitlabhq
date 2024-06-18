@@ -3,13 +3,11 @@ import { GlFilteredSearchToken } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 
-import PlaceholdersTabApp from './components/placeholders/app.vue';
-
 // Overridden in EE
-export const EE_GROUPS_APP_OPTIONS = {};
-export const EE_PROJECTS_APP_OPTIONS = {};
+export const GROUPS_APP_OPTIONS = {};
+export const PROJECTS_APP_OPTIONS = {};
 
-export const EE_ACTION_BUTTONS = {};
+export const ACTION_BUTTONS = {};
 
 export const FIELD_KEY_ACCOUNT = 'account';
 export const FIELD_KEY_SOURCE = 'source';
@@ -163,7 +161,7 @@ export const AVAILABLE_FILTERED_SEARCH_TOKENS = [
 
 export const AVATAR_SIZE = 48;
 
-export const MEMBER_TYPES = Object.freeze({
+export const MEMBERS_TAB_TYPES = Object.freeze({
   user: 'user',
   group: 'group',
   invite: 'invite',
@@ -183,38 +181,6 @@ export const TAB_QUERY_PARAM_VALUES = Object.freeze({
   accessRequest: 'access_requests',
   placeholder: 'placeholders',
 });
-
-// Overridden in EE
-export const TABS = [
-  {
-    namespace: MEMBER_TYPES.user,
-    title: __('Members'),
-  },
-  {
-    namespace: MEMBER_TYPES.group,
-    title: __('Groups'),
-    attrs: { 'data-testid': 'groups-list-tab' },
-    queryParamValue: TAB_QUERY_PARAM_VALUES.group,
-  },
-  {
-    namespace: MEMBER_TYPES.invite,
-    title: s__('Members|Pending invitations'),
-    requiredPermissions: ['canManageMembers'],
-    queryParamValue: TAB_QUERY_PARAM_VALUES.invite,
-  },
-  {
-    namespace: MEMBER_TYPES.accessRequest,
-    title: __('Access requests'),
-    requiredPermissions: ['canManageAccessRequests'],
-    queryParamValue: TAB_QUERY_PARAM_VALUES.accessRequest,
-  },
-  {
-    namespace: MEMBER_TYPES.placeholder,
-    title: s__('UserMapping|Placeholders'),
-    queryParamValue: TAB_QUERY_PARAM_VALUES.placeholder,
-    component: PlaceholdersTabApp,
-  },
-];
 
 /**
  * This user state value comes from the User model

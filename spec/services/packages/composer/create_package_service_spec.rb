@@ -22,7 +22,7 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
 
     subject { described_class.new(project, user, params).execute }
 
-    let(:created_package) { Packages::Package.composer.last }
+    let(:created_package) { ::Packages::Composer::Package.last }
 
     context 'without an existing package' do
       context 'with a branch' do
@@ -30,7 +30,7 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
 
         it 'creates the package' do
           expect { subject }
-            .to change { Packages::Package.composer.count }.by(1)
+            .to change { ::Packages::Composer::Package.count }.by(1)
             .and change { Packages::Composer::Metadatum.count }.by(1)
 
           expect(created_package.name).to eq package_name
@@ -56,7 +56,7 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
 
         it 'creates the package' do
           expect { subject }
-            .to change { Packages::Package.composer.count }.by(1)
+            .to change { ::Packages::Composer::Package.count }.by(1)
             .and change { Packages::Composer::Metadatum.count }.by(1)
 
           expect(created_package.name).to eq package_name
@@ -82,7 +82,7 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
 
         it 'does not create a new package' do
           expect { subject }
-            .to change { Packages::Package.composer.count }.by(0)
+            .to change { ::Packages::Composer::Package.count }.by(0)
             .and change { Packages::Composer::Metadatum.count }.by(0)
         end
       end
@@ -101,7 +101,7 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
 
           it 'creates the package' do
             expect { subject }
-              .to change { Packages::Package.composer.count }.by(1)
+              .to change { ::Packages::Composer::Package.count }.by(1)
               .and change { Packages::Composer::Metadatum.count }.by(1)
           end
         end
@@ -113,7 +113,7 @@ RSpec.describe Packages::Composer::CreatePackageService, feature_category: :pack
 
         it 'creates the package' do
           expect { subject }
-            .to change { Packages::Package.composer.count }.by(1)
+            .to change { ::Packages::Composer::Package.count }.by(1)
             .and change { Packages::Composer::Metadatum.count }.by(1)
         end
       end

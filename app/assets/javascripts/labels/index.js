@@ -137,10 +137,10 @@ export function initAdminLabels() {
   const emptyState = document.querySelector('.js-admin-labels-empty-state');
 
   function removeLabelSuccessCallback(labelId) {
-    document.getElementById(`label_${labelId}`).classList.add('gl-display-none!');
+    document.getElementById(`label_${labelId}`).classList.add('!gl-hidden');
 
     const labelsCount = document.querySelectorAll(
-      'ul.manage-labels-list .js-label-list-item:not(.gl-display-none\\!)',
+      'ul.manage-labels-list .js-label-list-item:not(.\\!gl-hidden)',
     ).length;
 
     // update labels count in UI
@@ -148,8 +148,8 @@ export function initAdminLabels() {
 
     // display the empty state if there are no more labels
     if (labelsCount < 1 && !pagination && emptyState) {
-      emptyState.classList.remove('gl-display-none');
-      labelsContainer.classList.add('gl-display-none');
+      emptyState.classList.remove('gl-hidden');
+      labelsContainer.classList.add('gl-hidden');
     }
   }
 

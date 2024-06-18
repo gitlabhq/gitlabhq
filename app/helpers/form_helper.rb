@@ -6,11 +6,11 @@ module FormHelper
 
     return unless errors.any?
 
-    headline = custom_headline || n_(
+    headline = custom_headline || (n_(
       'The %{type} contains the following error:',
       'The %{type} contains the following errors:',
       errors.count
-    ) % { type: type }
+    ) % { type: type })
 
     truncate = Array.wrap(truncate)
 
@@ -79,8 +79,8 @@ module FormHelper
 
     type = issuable_type.to_s
 
-    if type == 'issue' && issue_supports_multiple_assignees? ||
-        type == 'merge_request' && merge_request_supports_multiple_assignees?
+    if (type == 'issue' && issue_supports_multiple_assignees?) ||
+        (type == 'merge_request' && merge_request_supports_multiple_assignees?)
       dropdown_data = multiple_assignees_dropdown_options(dropdown_data)
     end
 

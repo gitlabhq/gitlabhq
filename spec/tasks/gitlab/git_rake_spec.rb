@@ -16,6 +16,14 @@ RSpec.describe 'gitlab:git rake tasks', :silence_stdout do
     it 'outputs the integrity check for a repo' do
       expect { run_rake_task('gitlab:git:fsck') }.to output(/Performed integrity check for/).to_stdout
     end
+
+    it 'raises StandardError for fsck task' do
+      allow_next_found_instance_of(Project) do |project|
+        allow(project.repository).to receive(:fsck).and_raise(StandardError)
+      end
+
+      expect { run_rake_task('gitlab:git:fsck') }.to raise_error(StandardError)
+    end
   end
 
   describe 'checksum_projects' do

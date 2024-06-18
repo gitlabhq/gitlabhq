@@ -199,7 +199,7 @@ module API
       end
       post ":id/deploy_keys/:key_id/enable" do
         key = ::Projects::EnableDeployKeyService.new(user_project,
-                                                      current_user, declared_params).execute
+          current_user, declared_params).execute
 
         if key
           present key, with: Entities::DeployKey

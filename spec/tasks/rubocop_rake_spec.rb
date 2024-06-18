@@ -128,7 +128,7 @@ RSpec.describe 'rubocop rake tasks', :silence_stdout do
     context 'without arguments' do
       let(:run_task) { run_rake_task('rubocop:todo:generate') }
 
-      it 'generates TODOs for all RuboCop rules' do
+      it 'generates TODOs for all RuboCop rules', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/437144' do
         expect { run_task }.to output(<<~OUTPUT).to_stdout
           Generating RuboCop TODOs with:
             rubocop --parallel --format RuboCop::Formatter::TodoFormatter

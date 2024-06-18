@@ -1,4 +1,4 @@
-%h4.gl-heading-4= _('Repository cleanup')
+%h5.gl-heading-4= _('Repository cleanup')
 %p.gl-text-secondary
   - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
   - git_filter_link_start = link_start % { url: 'https://github.com/newren/git-filter-repo' }
@@ -17,7 +17,7 @@
 = gitlab_ui_form_for @project, url: url, method: :post, authenticity_token: true, html: { class: 'js-requires-input' } do |f|
   %fieldset.gl-mt-0.gl-mb-3
     .gl-mb-3
-      %h5.gl-mt-0
+      %h6.gl-mt-0
         = _("Upload commit-map file")
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-choose-file' }) do
         = _("Choose a file")

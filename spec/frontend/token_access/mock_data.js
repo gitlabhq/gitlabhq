@@ -1,7 +1,7 @@
 export const enabledJobTokenScope = {
   data: {
     project: {
-      id: '1',
+      id: 1,
       ciCdSettings: {
         jobTokenScopeEnabled: true,
         __typename: 'ProjectCiCdSetting',
@@ -14,7 +14,7 @@ export const enabledJobTokenScope = {
 export const disabledJobTokenScope = {
   data: {
     project: {
-      id: '1',
+      id: 1,
       ciCdSettings: {
         jobTokenScopeEnabled: false,
         __typename: 'ProjectCiCdSetting',
@@ -28,14 +28,14 @@ export const projectsWithScope = {
   data: {
     project: {
       __typename: 'Project',
-      id: '1',
+      id: 1,
       ciJobTokenScope: {
         __typename: 'CiJobTokenScopeType',
         projects: {
           __typename: 'ProjectConnection',
           nodes: [
             {
-              id: '2',
+              id: 2,
               fullPath: 'root/332268-test',
               name: 'root/332268-test',
               namespace: {
@@ -141,7 +141,7 @@ export const mockFields = [
 export const inboundJobTokenScopeEnabledResponse = {
   data: {
     project: {
-      id: '1',
+      id: 1,
       ciCdSettings: {
         inboundJobTokenScopeEnabled: true,
         __typename: 'ProjectCiCdSetting',
@@ -154,7 +154,7 @@ export const inboundJobTokenScopeEnabledResponse = {
 export const inboundJobTokenScopeDisabledResponse = {
   data: {
     project: {
-      id: '1',
+      id: 1,
       ciCdSettings: {
         inboundJobTokenScopeEnabled: false,
         __typename: 'ProjectCiCdSetting',
@@ -168,7 +168,7 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
   data: {
     project: {
       __typename: 'Project',
-      id: '1',
+      id: 1,
       ciJobTokenScope: {
         __typename: 'CiJobTokenScopeType',
         inboundAllowlist: {
@@ -179,7 +179,7 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
               fullPath: 'root/ci-project',
               id: 'gid://gitlab/Project/23',
               name: 'ci-project',
-              namespace: { id: 'gid://gitlab/Namespaces::UserNamespace/1', fullPath: 'root' },
+              avatarUrl: '',
             },
           ],
         },
@@ -191,6 +191,43 @@ export const inboundGroupsAndProjectsWithScopeResponse = {
               fullPath: 'root/ci-group',
               id: 'gid://gitlab/Group/45',
               name: 'ci-group',
+              avatarUrl: '',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
+
+export const inboundGroupsAndProjectsWithScopeResponseWithAddedItem = {
+  data: {
+    project: {
+      ...inboundGroupsAndProjectsWithScopeResponse.data.project,
+      ciJobTokenScope: {
+        inboundAllowlist: {
+          nodes: [
+            ...inboundGroupsAndProjectsWithScopeResponse.data.project.ciJobTokenScope
+              .inboundAllowlist.nodes,
+            {
+              __typename: 'Project',
+              fullPath: 'root/test',
+              id: 'gid://gitlab/Project/25',
+              name: 'test',
+              avatarUrl: '',
+            },
+          ],
+        },
+        groupsAllowlist: {
+          nodes: [
+            ...inboundGroupsAndProjectsWithScopeResponse.data.project.ciJobTokenScope
+              .groupsAllowlist.nodes,
+            {
+              __typename: 'Group',
+              fullPath: 'gitlab-org',
+              id: 'gid://gitlab/Group/49',
+              name: 'gitlab-org',
+              avatarUrl: '',
             },
           ],
         },

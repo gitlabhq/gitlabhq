@@ -11,12 +11,10 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [Beta](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141127) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../policy/experiment-beta-support.md).
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
-FLAG:
-On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
-
-This feature is in [Beta](../policy/experiment-beta-support.md).
+This feature is in [beta](../policy/experiment-beta-support.md).
 
 To use Google Cloud integrations like the
 [Google Artifact Management integration](../user/project/integrations/google_artifact_management.md),
@@ -77,7 +75,7 @@ Prerequisites:
    ```
 
 1. Add an OIDC provider to the workload identity pool with the following
-  command. Replace these values:
+   command. Replace these values:
 
    - `<your_identity_provider_id>` with the ID to use for the provider, which
      must be 4 to 32 lowercase letters, digits, or hyphens. To avoid
@@ -134,10 +132,10 @@ After you create the workload identity pool and provider, to complete the setup 
 1. Select **Manual setup**
 1. Complete the fields.
    - **[Project ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)**
-   for the Google Cloud project in which you created the workload identity.
-   pool and provider. Example: `my-sample-project-191923`.
+     for the Google Cloud project in which you created the workload identity.
+     pool and provider. Example: `my-sample-project-191923`.
    - **[Project number](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects)**
-   for the same Google Cloud project. Example: `314053285323`.
+     for the same Google Cloud project. Example: `314053285323`.
    - **Pool ID** of the workload identity pool you created for this integration.
    - **Provider ID** of the workload identity provider you created for this integration.
 

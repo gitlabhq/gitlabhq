@@ -4,8 +4,25 @@ require 'spec_helper'
 
 RSpec.describe ::Gitlab::GitPostReceive do
   let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:identifier) { "key-#{project.id}" }
 
-  subject { described_class.new(project, "project-#{project.id}", changes.dup, {}) }
+  subject { described_class.new(project, identifier, changes.dup, {}) }
+
+  describe '#identify?' do
+    context 'when identifier is a deploy key' do
+      let_it_be(:deploy_key) { create(:deploy_key, user: project.first_owner) }
+      let_it_be(:identifier) { "key-#{deploy_key.id}" }
+      let(:changes) do
+        <<~EOF
+          654322 210986 refs/tags/test1
+        EOF
+      end
+
+      it 'returns false' do
+        expect(subject.identify).to eq(project.first_owner)
+      end
+    end
+  end
 
   describe '#includes_branches?' do
     context 'with no branches' do

@@ -23,7 +23,10 @@ module QA
         Flow::Login.sign_in
       end
 
-      it 'user archives a design', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347713' do
+      it(
+        'user archives a design', :blocking,
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347713'
+      ) do
         third_design.issue.visit!
 
         Page::Project::Issue::Show.perform do |issue|

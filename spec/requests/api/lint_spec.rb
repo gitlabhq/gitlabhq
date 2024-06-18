@@ -270,6 +270,101 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
         end
       end
 
+      context 'when including a component' do
+        let_it_be(:component_project_files) do
+          {
+            'templates/component-x.yml' => <<~YAML
+              job:
+                script: echo 1
+            YAML
+          }
+        end
+
+        let_it_be(:component_project) { create(:project, :public, :custom_repo, files: component_project_files) }
+
+        let_it_be(:project_files) do
+          {
+            '.gitlab-ci.yml' => <<~YAML
+              include:
+                - component: #{Gitlab.config.gitlab.host}/#{component_project.full_path}/component-x@master
+            YAML
+          }
+        end
+
+        let_it_be(:project) { create(:project, :custom_repo, files: project_files) }
+
+        it 'passes validation' do
+          ci_lint
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['merged_yaml']).to include("script: echo 1")
+          expect(json_response['includes']).to contain_exactly(
+            {
+              'type' => 'component',
+              'location' => "#{Gitlab.config.gitlab.host}/#{component_project.full_path}/component-x@master",
+              'blob' => "http://#{Gitlab.config.gitlab.host}/#{component_project.full_path}/-/blob/#{component_project.repository.head_commit.sha}/templates/component-x.yml",
+              'raw' => nil,
+              'extra' => {},
+              'context_project' => project.full_path,
+              'context_sha' => project.repository.head_commit.sha
+            }
+          )
+          expect(json_response['valid']).to eq(true)
+          expect(json_response['warnings']).to eq([])
+          expect(json_response['errors']).to eq([])
+        end
+      end
+
+      context 'when including a project file' do
+        let_it_be(:other_project_files) do
+          {
+            'tests.yml' => <<~YAML
+              job:
+                script: echo 1
+            YAML
+          }
+        end
+
+        let_it_be(:other_project) { create(:project, :public, :custom_repo, files: other_project_files) }
+
+        let_it_be(:project_files) do
+          {
+            '.gitlab-ci.yml' => <<~YAML
+              include:
+                - project: #{other_project.full_path}
+                  ref: master
+                  file: tests.yml
+            YAML
+          }
+        end
+
+        let_it_be(:project) { create(:project, :custom_repo, files: project_files) }
+
+        it 'passes validation' do
+          ci_lint
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['merged_yaml']).to include("script: echo 1")
+          expect(json_response['includes']).to contain_exactly(
+            {
+              'type' => 'file',
+              'location' => "tests.yml",
+              'blob' => "http://#{Gitlab.config.gitlab.host}/#{other_project.full_path}/-/blob/#{other_project.repository.head_commit.sha}/tests.yml",
+              'raw' => "http://#{Gitlab.config.gitlab.host}/#{other_project.full_path}/-/raw/#{other_project.repository.head_commit.sha}/tests.yml",
+              'extra' => {
+                'project' => other_project.full_path,
+                'ref' => 'master'
+              },
+              'context_project' => project.full_path,
+              'context_sha' => project.repository.head_commit.sha
+            }
+          )
+          expect(json_response['valid']).to eq(true)
+          expect(json_response['warnings']).to eq([])
+          expect(json_response['errors']).to eq([])
+        end
+      end
+
       context 'with invalid .gitlab-ci.yml content' do
         let(:yaml_content) do
           { image: 'image:1.0', services: ['postgres'] }.deep_stringify_keys.to_yaml

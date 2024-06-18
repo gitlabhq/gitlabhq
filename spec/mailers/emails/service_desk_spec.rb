@@ -311,7 +311,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     let_it_be(:expected_html) { expected_text }
 
-    before do
+    before_all do
       issue.update!(external_author: email)
     end
 
@@ -325,6 +325,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       subject { Notify.service_desk_thank_you_email(issue_id) }
 
       it_behaves_like 'a service desk notification email that uses custom email'
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template service_desk')
     end
   end
 
@@ -389,7 +393,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           end
         end
 
-        let_it_be(:expected_html) { %(a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
+        let_it_be(:expected_html) { %(a new comment with <a href="#{root_url}-/project/#{project.id}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
         let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
         it_behaves_like 'a service desk notification email'
@@ -455,7 +459,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           context 'when not all uploads processed correct' do # rubocop:disable RSpec/MultipleMemoizedHelpers -- Avoid duplication with heavy use of helpers
             let(:attachments_count) { 1 }
 
-            let_it_be(:expected_html) { %(a new comment with <strong>#{filename}</strong> <a href="#{project.web_url}#{upload_path_1}" data-canonical-src="#{upload_path_1}" data-link="true" class="gfm">#{filename_1}</a>) }
+            let_it_be(:expected_html) { %(a new comment with <strong>#{filename}</strong> <a href="#{root_url}-/project/#{project.id}#{upload_path_1}" data-canonical-src="#{upload_path_1}" data-link="true" class="gfm">#{filename_1}</a>) }
             let_it_be(:expected_template_html) { %(some text #{expected_html}) }
 
             it_behaves_like 'a service desk notification email'
@@ -472,7 +476,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).with(StandardError, project_id: note.project_id)
         end
 
-        let_it_be(:expected_template_html) { %(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
+        let_it_be(:expected_template_html) { %(some text a new comment with <a href="#{root_url}-/project/#{project.id}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
 
         it_behaves_like 'a service desk notification email with template content'
       end
@@ -485,7 +489,7 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
           expect(Gitlab::ErrorTracking).to receive(:track_exception).with(StandardError, project_id: note.project_id)
         end
 
-        let_it_be(:expected_template_html) { %(some text a new comment with <a href="#{project.web_url}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
+        let_it_be(:expected_template_html) { %(some text a new comment with <a href="#{root_url}-/project/#{project.id}#{upload_path}" data-canonical-src="#{upload_path}" data-link="true" class="gfm">#{filename}</a>) }
 
         it_behaves_like 'a service desk notification email with template content'
       end
@@ -495,6 +499,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       subject { Notify.service_desk_new_note_email(issue_id, note.id, issue_email_participant) }
 
       it_behaves_like 'a service desk notification email that uses custom email'
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template service_desk')
     end
   end
 
@@ -519,6 +527,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
       subject { Notify.service_desk_new_participant_email(issue_id, issue_email_participant) }
 
       it_behaves_like 'a service desk notification email that uses custom email'
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template service_desk')
     end
   end
 
@@ -577,6 +589,10 @@ RSpec.describe Emails::ServiceDesk, feature_category: :service_desk do
 
     it 'contains triggerer username' do
       is_expected.to have_body_text("@#{user.username}")
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template mailer')
     end
   end
 

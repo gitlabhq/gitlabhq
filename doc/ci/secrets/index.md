@@ -265,3 +265,24 @@ You have two options to solve this error:
          - name: VAULT_CACERT
            value: "/home/gitlab-runner/.gitlab-runner/certs/<VAULT_CERTIFICATE>"
        ```
+
+## Troubleshooting
+
+### `resolving secrets: secret not found: MY_SECRET` error
+
+When GitLab is unable to find the secret in the vault, you might receive this error:
+
+```plaintext
+ERROR: Job failed (system failure): resolving secrets: secret not found: MY_SECRET
+```
+
+Check that the `vault` value is [correctly configured in the CI/CD job](#use-vault-secrets-in-a-ci-job).
+
+You can use the [`kv` command with the Vault CLI](https://developer.hashicorp.com/vault/docs/commands/kv)
+to check if the secret is retrievable to help determine the syntax for the `vault`
+value in your CI/CD configuration. For example, to retrieve the secret:
+
+```shell
+$ vault kv get -field=password -namespace=admin -mount=ops "production/db"
+this-is-a-password
+```

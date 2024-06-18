@@ -14,6 +14,8 @@ class UpdateMergeRequestsWorker # rubocop:disable Scalability/IdempotentWorker
   loggable_arguments 2, 3, 4
 
   def perform(project_id, user_id, oldrev, newrev, ref, params = {})
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/24907')
+
     project = Project.find_by_id(project_id)
     return unless project
 

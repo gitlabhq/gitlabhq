@@ -1,8 +1,6 @@
 ---
 key_path: counts.groups_inheriting_zentao_active
 description: Count of groups that inherit active Zentao integrations
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active
@@ -10,7 +8,7 @@ milestone: "14.4"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/issues/338178
 time_frame: all
 data_source: database
-data_category: Operational
+data_category: operational
 distribution:
 - ce
 - ee

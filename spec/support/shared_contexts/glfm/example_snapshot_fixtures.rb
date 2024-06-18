@@ -2,7 +2,7 @@
 
 RSpec.shared_context 'with GLFM example snapshot fixtures' do
   let_it_be(:user) { create(:user) }
-  let_it_be(:group) { create(:group, name: 'glfm_group', owners: user) }
+  let_it_be(:group) { create(:group, name: 'glfm_group', owners: user, id: 66666) }
 
   let_it_be(:project) do
     # NOTE: We hardcode the IDs on all fixtures to prevent variability in the
@@ -23,5 +23,11 @@ RSpec.shared_context 'with GLFM example snapshot fixtures' do
 
     stub_licensed_features(group_wikis: true)
     sign_in(user)
+  end
+
+  after(:all) do
+    # We need to clean up the repository explicitly as we're using a static project ID. If two tests
+    # use this fixture, they'd attempt to create repositories with the same disk path and conflict.
+    ::Gitlab::GitalyClient::RepositoryService.new(project.repository).remove
   end
 end

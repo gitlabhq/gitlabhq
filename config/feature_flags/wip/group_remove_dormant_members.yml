@@ -1,0 +1,9 @@
+---
+name: group_remove_dormant_members
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461339
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153118
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461567
+milestone: '17.1'
+group: group::utilization
+type: wip
+default_enabled: false

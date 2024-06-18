@@ -53,7 +53,7 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 | [RubyGems](#3-rubygems) | `3.5.x`         | A specific RubyGems version is not required, but you should update to benefit from some known performance improvements. |
 | [Go](#4-go)             | `1.20.x`        | From GitLab 16.4, Go 1.20 or later is required.                                                                                                                                                                                                                                        |
 | [Git](#git)             | `2.42.x`        | From GitLab 16.5, Git 2.42.x and later is required. You should use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
-| [Node.js](#5-node)      | `18.17.x`       | From GitLab 16.3, Node.js 18.17 or later is required.                                                                                                                                                                                                                                  |
+| [Node.js](#5-node)      | `20.13.x`       | From GitLab 17.0, Node.js 20.13 or later is required.                                                                                                                                                                                                                                  |
 
 ## GitLab directory structure
 
@@ -266,8 +266,8 @@ GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` 18.x releases (v18.17.0 or later).
-  [Other LTS versions of Node.js](https://github.com/nodejs/release#release-schedule) might be able to build assets, but we only guarantee Node.js 18.x.
+- `node` 20.x releases (v20.13.0 or later).
+  [Other LTS versions of Node.js](https://github.com/nodejs/release#release-schedule) might be able to build assets, but we only guarantee Node.js 20.x.
 - `yarn` = v1.22.x (Yarn 2 is not supported yet)
 
 In many distributions,
@@ -275,8 +275,8 @@ the versions provided by the official package repositories are out of date, so
 we must install through the following commands:
 
 ```shell
-# install node v18.x
-curl --location "https://deb.nodesource.com/setup_18.x" | sudo bash -
+# install node v20.x
+curl --location "https://deb.nodesource.com/setup_20.x" | sudo bash -
 sudo apt-get install -y nodejs
 
 npm install --global yarn

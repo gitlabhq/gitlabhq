@@ -1,4 +1,5 @@
 ---
+# Cop supports --autocorrect.
 Naming/InclusiveLanguage:
   Exclude:
     - 'app/controllers/concerns/requires_allowlisted_monitoring_client.rb'
@@ -26,7 +27,6 @@ Naming/InclusiveLanguage:
     - 'lib/banzai/filter/asset_proxy_filter.rb'
     - 'lib/gitlab/asset_proxy.rb'
     - 'lib/gitlab/auth/ip_rate_limiter.rb'
-    - 'lib/gitlab/ci/config/external/file/base.rb'
     - 'lib/gitlab/github_import/markdown/attachment.rb'
     - 'lib/gitlab/markdown_cache/active_record/extension.rb'
     - 'lib/gitlab/markdown_cache/field_data.rb'

@@ -40,6 +40,20 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
       end
     end
 
+    context 'Repository maintenance', :js do
+      before do
+        visit project_settings_repository_path(project)
+      end
+
+      it 'does not render remove blobs section' do
+        expect(page).not_to have_content('Remove blobs')
+      end
+
+      it 'does not render redact text section' do
+        expect(page).not_to have_content('Redact text')
+      end
+    end
+
     context 'Branch rules', :js do
       it 'renders branch rules settings' do
         visit project_settings_repository_path(project)
@@ -344,6 +358,18 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
       let(:mirror_available) { false }
 
       include_examples 'shows mirror settings'
+    end
+
+    context 'Repository maintenance', :enable_admin_mode do
+      let(:mirror_available) { false }
+
+      it 'renders remove blobs section' do
+        expect(page).to have_content('Remove blobs')
+      end
+
+      it 'renders redact text section' do
+        expect(page).to have_content('Redact text')
+      end
     end
   end
 end

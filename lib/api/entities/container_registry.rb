@@ -22,7 +22,7 @@ module API
         expose :tags_count, if: ->(_, options) { options[:tags_count] }, documentation: { type: 'integer', example: 3 }
         expose :tags, using: Tag, if: ->(_, options) { options[:tags] }
         expose :delete_api_path, if: ->(object, options) { Ability.allowed?(options[:user], :admin_container_image, object) },
-                                 documentation: { type: 'string', example: 'delete/api/path' }
+          documentation: { type: 'string', example: 'delete/api/path' }
         expose :size, if: ->(_, options) { options[:size] }, documentation: { type: 'integer', example: 12345 }
         expose :status, documentation: { type: 'string', example: 'delete_scheduled' }
 

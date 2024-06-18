@@ -209,7 +209,7 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
     end
 
     it 'strips words containing @ with length >= 500' do
-      model = model_class.create!(project: project, namespace: project.project_namespace, title: 'title', description: 'description ' + '@user1' * 100)
+      model = model_class.create!(project: project, namespace: project.project_namespace, title: 'title', description: 'description ' + ('@user1' * 100))
       model.update_search_data!
 
       expect(model.search_data.search_vector).to match(/'titl':1A/)
@@ -218,8 +218,8 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
     end
 
     context 'with long words' do
-      let(:long_word) { 'long/sequence' * 5 + ' ' }
-      let(:model) { model_class.create!(project: project, namespace: project.project_namespace, title: 'title', description: 'description ' + long_word * 51) }
+      let(:long_word) { ('long/sequence' * 5) + ' ' }
+      let(:model) { model_class.create!(project: project, namespace: project.project_namespace, title: 'title', description: 'description ' + (long_word * 51)) }
 
       it 'strips words with length >= 50 when there are more than 50 instances' do
         model.update_search_data!
@@ -231,7 +231,7 @@ RSpec.describe PgFullTextSearchable, feature_category: :global_search do
       end
 
       it 'does not strip long words when there are less than 51 instances' do
-        model.update!(description: 'description ' + long_word * 50)
+        model.update!(description: 'description ' + (long_word * 50))
         model.update_search_data!
 
         expect(model.search_data.search_vector).to match(/'titl':1A/)

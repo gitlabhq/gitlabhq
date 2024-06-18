@@ -753,12 +753,14 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             stub_ci_pipeline_to_return_yaml_file
           end
 
+          subject(:run_pipeline) do
+            find_by_testid('run-pipeline-button', text: 'Run pipeline').click
+
+            wait_for_requests
+          end
+
           it 'creates a new pipeline' do
-            expect do
-              find_by_testid('run-pipeline-button', text: 'Run pipeline').click
-              wait_for_requests
-            end
-              .to change { Ci::Pipeline.count }.by(1)
+            expect { run_pipeline }.to change { Ci::Pipeline.count }.by(1)
 
             expect(Ci::Pipeline.last).to be_web
           end

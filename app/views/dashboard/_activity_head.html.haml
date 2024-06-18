@@ -1,5 +1,4 @@
-.page-title-holder.d-flex.gl-align-items-center
-  %h1.page-title.gl-font-size-h-display= _('Activity')
+= render ::Layouts::PageHeadingComponent.new(_('Activity'))
 
 .top-area
   = gl_tabs_nav({ class: 'gl-border-b-0', data: { testid: 'dashboard-activity-tabs' } }) do

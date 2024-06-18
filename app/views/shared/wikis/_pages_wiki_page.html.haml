@@ -1,11 +1,7 @@
-%li{ class: 'gl-display-flex!' }
-  %div
-    = link_to wiki_page.human_title, wiki_page_path(@wiki, wiki_page), data: { testid: 'wiki-page-link', qa_page_name: wiki_page.slug }
-    %small.gl-pr-2 (#{wiki_page.format})
+%li{ class: "!gl-px-5 #{ '!gl-border-b-0' if !wiki_page.template? }" }
+  .gl-flex.gl-items-center.gl-justify-between.gl-gap-5
+    .gl-flex.gl-items-baseline.gl-gap-5.gl-w-full
+      .gl-flex.gl-items-baseline.gl-grow.gl-gap-2
+        = link_to wiki_page.human_title, wiki_page_path(@wiki, wiki_page), data: { testid: 'wiki-page-link', qa_page_name: wiki_page.slug }
     - if can?(current_user, :create_wiki, @wiki) && wiki_page.template?
-      = render Pajamas::ButtonComponent.new(category: :secondary, icon: 'pencil', href: wiki_page_path(@wiki, wiki_page, action: :edit), button_options: { title: s_('Edit template') })
-  .gl-flex-grow-1.gl-text-right
-    - if wiki_page.last_version
-      %small
-        = (s_("Last edited %{date}") % { date: time_ago_with_tooltip(wiki_page.last_version.authored_date) }).html_safe
-
+      = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'pencil', size: 'small', href: wiki_page_path(@wiki, wiki_page, action: :edit), button_options: { title: s_('Edit template'), class: 'has-tooltip' })

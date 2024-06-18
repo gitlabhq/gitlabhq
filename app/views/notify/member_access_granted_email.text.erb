@@ -1,5 +1,8 @@
 <% source_type = member_source.model_name.singular %>
-<%= _('You have been granted %{access_level} access to the %{source_name} %{source_type}.') % { access_level: member.human_access, source_name: member_source.human_name, source_type: source_type  } %>
+<% role_name = member.present.human_access %>
+<% role_type = member.present.role_type %>
+<%= _('You have been granted access to the %{source_name} %{source_type} with the following role: %{role_name}.') % { source_name: member_source.human_name, source_type: source_type, role_name: role_name  } %>
+<%= _('This is a %{role_type} role.') % { role_type: role_type }  %>
 
 <%= member_source.web_url %>
 

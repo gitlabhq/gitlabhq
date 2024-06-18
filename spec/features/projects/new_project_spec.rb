@@ -69,7 +69,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       end
     end
 
-    it 'shows a message if multiple levels are restricted' do
+    it 'disables the radio button for visibility levels "Private" and "Internal"' do
       stub_application_setting(default_project_visibility: Gitlab::VisibilityLevel::PUBLIC)
       stub_application_setting(
         restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL]
@@ -78,21 +78,25 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
       visit new_project_path
       click_link 'Create blank project'
 
-      expect(page).to have_content 'Other visibility settings have been disabled by the administrator.'
+      expect(page).to have_field("Private",  checked: false, disabled: true)
+      expect(page).to have_field("Internal", checked: false, disabled: true)
+      expect(page).to have_field("Public",   checked: true,  disabled: false)
     end
 
-    it 'shows a message if all levels are restricted' do
+    it 'disables all radio button for visibility levels' do
       stub_application_setting(restricted_visibility_levels: Gitlab::VisibilityLevel.values)
 
       visit new_project_path
       click_link 'Create blank project'
 
-      expect(page).to have_content 'Visibility settings have been disabled by the administrator.'
+      expect(page).to have_field("Private",  checked: true, disabled: true)
+      expect(page).to have_field("Internal", checked: false, disabled: true)
+      expect(page).to have_field("Public",   checked: false, disabled: true)
     end
   end
 
   context 'as an admin' do
-    let(:user) { create(:admin, :without_default_org) }
+    let(:user) { create(:admin) }
 
     it_behaves_like 'shows correct navigation'
 

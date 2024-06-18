@@ -31,18 +31,21 @@ the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#ac
 ## Explaining a vulnerability
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
-> - Promoted to [Beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - Promoted to [beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
 
 GitLab can help you with a vulnerability by using a large language model to:
 
 - Summarize the vulnerability.
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
+
+For a click-through demo, see [Resolving vulnerabilities with GitLab Duo (AI)](https://tech-marketing.gitlab.io/static-demos/pt-explain-vulnerability.html).
+<!-- Demo published on 2024-02-24 -->
 
 ### Vulnerability explanation
 
@@ -89,11 +92,11 @@ The following data is shared with third-party AI APIs:
 ## Vulnerability resolution
 
 DETAILS:
-**Tier:** Ultimate
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [Experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability.
@@ -311,7 +314,7 @@ To manually apply the patch that GitLab generated for a vulnerability:
 
 NOTE:
 Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Specifically, the GitLab server needs the ability to query the API endpoints for any training provider you choose to enable. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
-any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/).
+any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/index.html).
 GitLab does not send any user information to these third-party vendors; we do send the CWE or OWASP identifier and the language name of the file extension.
 
 Security training helps your developers learn how to fix vulnerabilities. Developers can view security training from selected educational providers, relevant to the detected vulnerability.

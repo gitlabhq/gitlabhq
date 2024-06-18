@@ -10,7 +10,7 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
 
     subject(:response) { described_class.new(current_user, token, group).execute }
 
-    shared_examples_for 'rotates the token succesfully' do
+    shared_examples_for 'rotates the token successfully' do
       it 'rotates the token and sets the bot user expires at', :freeze_time do
         expect(response).to be_success
 
@@ -35,7 +35,7 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
     context 'when the user is an admin', :enable_admin_mode do
       let(:current_user) { create(:admin) }
 
-      it_behaves_like 'rotates the token succesfully'
+      it_behaves_like 'rotates the token successfully'
     end
 
     context 'when the user is an owner' do
@@ -43,7 +43,7 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
         group.add_owner(current_user)
       end
 
-      it_behaves_like 'rotates the token succesfully'
+      it_behaves_like 'rotates the token successfully'
     end
 
     context 'when the user is not an owner' do
@@ -59,7 +59,7 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
           allow(current_user).to receive(:can?).with(:manage_resource_access_tokens, group).and_return(true)
         end
 
-        it_behaves_like 'rotates the token succesfully'
+        it_behaves_like 'rotates the token successfully'
 
         context 'when the user has an access level lower than the token access level' do
           before_all do

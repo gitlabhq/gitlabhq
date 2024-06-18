@@ -17,6 +17,10 @@ module API
         not_found! unless ::Gitlab.config.dependency_proxy.enabled
       end
 
+      def authorize_admin_package!(subject = user_project)
+        authorize!(:admin_package, subject)
+      end
+
       def authorize_read_package!(subject = user_project)
         authorize!(:read_package, subject.try(:packages_policy_subject) || subject)
       end

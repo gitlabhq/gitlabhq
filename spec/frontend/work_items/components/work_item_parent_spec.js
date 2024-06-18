@@ -292,6 +292,7 @@ describe('WorkItemParent component', () => {
         isNumber: false,
         searchByIid: false,
         searchByText: true,
+        includeAncestors: true,
       });
 
       await findCollapsibleListbox().vm.$emit('search', 'Objective 101');
@@ -305,6 +306,7 @@ describe('WorkItemParent component', () => {
         isNumber: false,
         searchByIid: false,
         searchByText: true,
+        includeAncestors: true,
       });
 
       await nextTick();

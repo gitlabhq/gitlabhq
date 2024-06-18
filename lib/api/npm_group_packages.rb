@@ -23,6 +23,7 @@ module API
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/-/packages/npm' do
         include ::API::Concerns::Packages::NpmEndpoints
+        include ::API::Concerns::Packages::NpmNamespaceEndpoints
       end
     end
   end

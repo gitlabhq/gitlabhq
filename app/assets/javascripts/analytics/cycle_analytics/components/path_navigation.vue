@@ -69,7 +69,7 @@ export default {
             <div class="gl-pr-4 gl-pb-3">
               {{ s__('ValueStreamEvent|Stage time (median)') }}
             </div>
-            <div class="gl-pb-3 gl-font-weight-bold">{{ pathItem.metric }}</div>
+            <div class="gl-pb-3 gl-font-bold">{{ pathItem.metric }}</div>
           </div>
         </div>
         <div class="gl-px-4">
@@ -77,7 +77,7 @@ export default {
             <div class="gl-pr-4 gl-pb-3">
               {{ s__('ValueStreamEvent|Items in stage') }}
             </div>
-            <div class="gl-pb-3 gl-font-weight-bold">
+            <div class="gl-pb-3 gl-font-bold">
               <formatted-stage-count :stage-count="pathItem.stageCount" />
             </div>
           </div>

@@ -163,3 +163,15 @@ Error response from daemon: Get "https://gitlab.company.com:4567/v2/": denied: a
 
 To avoid this error, ensure the `Authorization` header is not stripped from the request.
 For example, a proxy in front of GitLab might be redirecting to the `/jwt/auth` endpoint.
+
+## `OCI manifest found, but accept header does not support OCI manifests` error
+
+If you are unable to pull an image, the registry logs could have an error similar to:
+
+```plaintext
+manifest unknown: OCI manifest found, but accept header does not support OCI manifests
+```
+
+This error happens when a client does not submit the correct `Accept: application/vnd.oci.image.manifest.v1+json`
+header. Make sure your Docker client version is up to date. If you are using a third party tool,
+make sure it can handle OCI manifests.

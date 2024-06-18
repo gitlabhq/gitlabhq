@@ -2,7 +2,7 @@ import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { shallowMount } from '@vue/test-utils';
 import MetricTile from '~/analytics/shared/components/metric_tile.vue';
 import MetricPopover from '~/analytics/shared/components/metric_popover.vue';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/lib/utils/url_utility');
 
@@ -33,7 +33,7 @@ describe('MetricTile', () => {
         wrapper = createComponent({ metric });
 
         findSingleStat().vm.$emit('click');
-        expect(redirectTo).toHaveBeenCalledWith('foo/bar'); // eslint-disable-line import/no-deprecated
+        expect(visitUrl).toHaveBeenCalledWith('foo/bar');
       });
 
       it("when the metric doesn't have links, it won't the user on click", () => {
@@ -41,7 +41,7 @@ describe('MetricTile', () => {
         wrapper = createComponent({ metric });
 
         findSingleStat().vm.$emit('click');
-        expect(redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+        expect(visitUrl).not.toHaveBeenCalled();
       });
     });
 

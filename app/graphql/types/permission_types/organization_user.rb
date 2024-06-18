@@ -5,7 +5,7 @@ module Types
     class OrganizationUser < BasePermissionType
       graphql_name 'OrganizationUserPermissions'
 
-      abilities :remove_user
+      abilities :remove_user, :delete_user
     end
   end
 end

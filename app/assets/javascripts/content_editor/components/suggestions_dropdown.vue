@@ -139,7 +139,7 @@ export default {
           return `${this.char}${item.username}`;
         case 'issue':
         case 'merge_request':
-          return `${this.char}${item.iid}`;
+          return item.reference || `${this.char}${item.iid}`;
         case 'snippet':
           return `${this.char}${item.id}`;
         case 'milestone':
@@ -268,10 +268,7 @@ export default {
 
 <template>
   <div class="gl-new-dropdown content-editor-suggestions-dropdown">
-    <div
-      v-if="!loading && items.length > 0"
-      class="gl-new-dropdown-panel gl-display-block! gl-absolute"
-    >
+    <div v-if="!loading && items.length > 0" class="gl-new-dropdown-panel !gl-block gl-absolute">
       <div class="gl-new-dropdown-inner">
         <ul class="gl-new-dropdown-contents" data-testid="content-editor-suggestions-dropdown">
           <li
@@ -305,8 +302,13 @@ export default {
                   </span>
                 </span>
                 <span v-if="isIssue || isMergeRequest">
+                  <gl-icon
+                    v-if="item.icon_name"
+                    class="gl-mr-2 gl-text-secondary"
+                    :name="item.icon_name"
+                  />
                   <small
-                    v-safe-html:[$options.safeHtmlConfig]="highlight(item.iid)"
+                    v-safe-html:[$options.safeHtmlConfig]="highlight(item.reference || item.iid)"
                     class="gl-text-gray-500"
                   ></small>
                   <span v-safe-html:[$options.safeHtmlConfig]="highlight(item.title)"></span>
@@ -377,7 +379,7 @@ export default {
         </ul>
       </div>
     </div>
-    <div v-if="loading" class="gl-new-dropdown-panel gl-display-block! gl-absolute">
+    <div v-if="loading" class="gl-new-dropdown-panel !gl-block gl-absolute">
       <div class="gl-new-dropdown-inner">
         <div class="gl-px-4 gl-py-3">
           <gl-loading-icon size="sm" class="gl-display-inline-block" /> {{ __('Loading...') }}

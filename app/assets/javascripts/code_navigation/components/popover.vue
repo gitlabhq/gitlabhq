@@ -90,7 +90,7 @@ export default {
     class="popover code-navigation-popover popover-font-size-normal gl-popover bs-popover-bottom show"
   >
     <div :style="{ left: `${offsetLeft}px` }" class="arrow"></div>
-    <gl-tabs nav-class="gl-hidden" content-class="gl-py-0">
+    <gl-tabs content-class="gl-py-0">
       <gl-tab :title="__('Definition')">
         <div class="overflow-auto code-navigation-popover-container">
           <div
@@ -110,7 +110,7 @@ export default {
           </div>
         </div>
         <div v-if="definitionPath || isCurrentDefinition" class="popover-body border-top">
-          <span v-if="isCurrentDefinition" class="gl-font-weight-bold gl-font-base">
+          <span v-if="isCurrentDefinition" class="gl-font-bold gl-font-base">
             {{ s__('CodeIntelligence|This is the definition') }}
           </span>
           <gl-button

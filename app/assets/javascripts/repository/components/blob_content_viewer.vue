@@ -8,7 +8,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { isLoggedIn, handleLocationHash } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import { redirectTo, getLocationHash } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl, getLocationHash } from '~/lib/utils/url_utility';
 import CodeIntelligence from '~/code_navigation/components/app.vue';
 import LineHighlighter from '~/blob/line_highlighter';
 import blobInfoQuery from 'shared_queries/repository/blob_info.query.graphql';
@@ -272,7 +272,7 @@ export default {
       }
 
       const { ideEditPath, editBlobPath } = this.blobInfo;
-      redirectTo(target === 'ide' ? ideEditPath : editBlobPath); // eslint-disable-line import/no-deprecated
+      visitUrl(target === 'ide' ? ideEditPath : editBlobPath);
     },
     setForkTarget(target) {
       this.forkTarget = target;

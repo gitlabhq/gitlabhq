@@ -37,6 +37,16 @@
 
     > .gl-icon {
       margin-left: 0;
+
+      // Issuables status adjustments
+      // Adjust left alignment for issuables
+      // status open & closed
+      // We have to rely on the testid
+      // until Gitlab UI MR !3307 is merged
+      &[data-testid="issue-open-m-icon"],
+      &[data-testid="issue-close-icon"] {
+        @apply -gl-ml-2;
+      }
     }
   }
 

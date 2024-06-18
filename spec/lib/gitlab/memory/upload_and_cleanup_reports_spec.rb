@@ -24,7 +24,7 @@ RSpec.describe Gitlab::Memory::UploadAndCleanupReports, :aggregate_failures do
     context 'when sleep_time_seconds is passed through the initializer' do
       it 'initializes with these settings' do
         upload_and_cleanup = described_class.new(uploader: uploader, reports_path: reports_path, sleep_time_seconds: 60,
-                                                 logger: logger)
+          logger: logger)
 
         expect(upload_and_cleanup.sleep_time_seconds).to eq(60)
       end
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Memory::UploadAndCleanupReports, :aggregate_failures do
   describe '#call' do
     let(:upload_and_cleanup) do
       described_class.new(sleep_time_seconds: 600, reports_path: dir, uploader: uploader,
-                          logger: logger).tap do |instance|
+        logger: logger).tap do |instance|
         allow(instance).to receive(:loop).and_yield
         allow(instance).to receive(:sleep)
       end
@@ -66,9 +66,9 @@ RSpec.describe Gitlab::Memory::UploadAndCleanupReports, :aggregate_failures do
       expect(logger)
         .to receive(:info)
         .with(hash_including(:pid,
-                             message: "Diagnostic reports",
-                             class: 'Gitlab::Memory::UploadAndCleanupReports',
-                             perf_report_status: 'started'))
+          message: "Diagnostic reports",
+          class: 'Gitlab::Memory::UploadAndCleanupReports',
+          perf_report_status: 'started'))
 
       reports.each do |report|
         expect(upload_and_cleanup.uploader).to receive(:upload).with(report.path)
@@ -86,9 +86,9 @@ RSpec.describe Gitlab::Memory::UploadAndCleanupReports, :aggregate_failures do
         expect(logger)
           .to receive(:info)
           .with(hash_including(:pid,
-                               message: "Diagnostic reports",
-                               class: 'Gitlab::Memory::UploadAndCleanupReports',
-                               perf_report_status: 'started'))
+            message: "Diagnostic reports",
+            class: 'Gitlab::Memory::UploadAndCleanupReports',
+            perf_report_status: 'started'))
           .ordered
 
         expect(upload_and_cleanup.uploader)
@@ -99,7 +99,7 @@ RSpec.describe Gitlab::Memory::UploadAndCleanupReports, :aggregate_failures do
         expect(logger)
           .to receive(:error)
           .with(hash_including(:pid, message: "Diagnostic reports", class: 'Gitlab::Memory::UploadAndCleanupReports',
-                                     perf_report_status: 'error', error: 'Error Message'))
+            perf_report_status: 'error', error: 'Error Message'))
           .ordered
 
         expect { upload_and_cleanup.call }.not_to raise_error

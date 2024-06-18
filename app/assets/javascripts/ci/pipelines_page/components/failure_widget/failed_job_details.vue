@@ -115,7 +115,7 @@ export default {
 };
 </script>
 <template>
-  <div class="container-fluid gl-grid-tpl-rows-auto">
+  <div class="container-fluid gl-grid-rows-auto">
     <div
       class="row gl-my-3 gl-cursor-pointer gl-display-flex gl-align-items-center"
       :aria-pressed="isJobLogVisible"
@@ -128,7 +128,7 @@ export default {
       @mouseover="setActiveRow"
       @mouseout="resetActiveRow"
     >
-      <div class="col-6 gl-text-gray-900 gl-font-weight-bold gl-text-left">
+      <div class="col-6 gl-text-gray-900 gl-font-bold gl-text-left">
         <gl-icon :name="jobChevronName" />
         <ci-icon :status="job.detailedStatus" />
         {{ job.name }}

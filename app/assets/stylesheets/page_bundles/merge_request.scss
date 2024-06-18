@@ -11,18 +11,6 @@ $comparison-empty-state-height: 62px;
   }
 }
 
-.space-children {
-  @include clearfix;
-
-  > * {
-    float: left;
-  }
-
-  > *:not(:first-child) {
-    margin-left: 10px;
-  }
-}
-
 .media-section {
   @include media-breakpoint-down(md) {
     align-items: flex-start;
@@ -265,23 +253,6 @@ $comparison-empty-state-height: 62px;
 
 .fork-sprite {
   margin-right: -5px;
-}
-
-// Hack alert: we've rewritten `btn` class in a way that
-// we've broken it and it is not possible to use with `btn-link`
-// which causes a blank button when it's disabled and hovering
-// The css in here is the boostrap one
-.btn-link-retry {
-  &[disabled] {
-    cursor: not-allowed;
-    box-shadow: none;
-    opacity: 0.65;
-
-    &:hover {
-      color: var(--gray-500, $gray-500);
-      text-decoration: none;
-    }
-  }
 }
 
 .merge-request-details .file-finder-overlay.diff-file-finder {

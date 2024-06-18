@@ -61,6 +61,10 @@
             - @emails.reject(&:user_primary_email?).each do |email|
               %li{ class: 'gl-px-5!', data: { testid: 'email-row-content' } }
                 .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-gap-3
+                  - unless email.confirmed?
+                    = render Pajamas::AlertComponent.new(dismissible: false, variant: :warning, alert_options: { class: 'gl-w-full' }) do |c|
+                      = c.with_body do
+                        = s_('Profiles|Unverified secondary email addresses are automatically deleted after three days')
                   %div
                     = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
                     %ul

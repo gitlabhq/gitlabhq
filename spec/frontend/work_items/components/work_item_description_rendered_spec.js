@@ -20,7 +20,7 @@ describe('WorkItemDescription', () => {
     workItemDescription = defaultWorkItemDescription,
     canEdit = false,
     mockComputed = {},
-    hasWorkItemsMvc2 = false,
+    hasWorkItemsBeta = false,
   } = {}) => {
     wrapper = shallowMount(WorkItemDescriptionRendered, {
       propsData: {
@@ -29,7 +29,7 @@ describe('WorkItemDescription', () => {
       },
       computed: mockComputed,
       provide: {
-        workItemsMvc2: hasWorkItemsMvc2,
+        workItemsBeta: hasWorkItemsBeta,
       },
     });
   };
@@ -54,7 +54,7 @@ describe('WorkItemDescription', () => {
             return true;
           },
         },
-        hasWorkItemsMvc2: true,
+        hasWorkItemsBeta: true,
       });
 
       expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(true);
@@ -73,7 +73,7 @@ describe('WorkItemDescription', () => {
             return false;
           },
         },
-        hasWorkItemsMvc2: true,
+        hasWorkItemsBeta: true,
       });
 
       expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
@@ -103,6 +103,7 @@ describe('WorkItemDescription', () => {
 
       const updatedDescription = `- [x] todo 1\n- [x] todo 2`;
       expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
+      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
     });
 
     it('disables checkbox while updating', async () => {
@@ -120,6 +121,7 @@ describe('WorkItemDescription', () => {
 
       const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
       expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
+      expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
     });
   });
 });

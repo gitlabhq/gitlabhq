@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RunPipelineScheduleWorker, feature_category: :continuous_integration do
+RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_composition do
   it 'has an until_executed deduplicate strategy' do
     expect(described_class.get_deduplicate_strategy).to eq(:until_executed)
   end

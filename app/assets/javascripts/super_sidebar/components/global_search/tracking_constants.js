@@ -1,0 +1,40 @@
+export const EVENT_CLICK_ISSUES_ASSIGNED_TO_ME_IN_COMMAND_PALETTE =
+  'click_issues_assigned_to_me_in_command_palette';
+export const EVENT_CLICK_ISSUES_I_CREATED_IN_COMMAND_PALETTE =
+  'click_issues_i_created_in_command_palette';
+export const EVENT_CLICK_MERGE_REQUESTS_ASSIGNED_TO_ME_IN_COMMAND_PALETTE =
+  'click_merge_requests_assigned_to_me_in_command_palette';
+export const EVENT_CLICK_MERGE_REQUESTS_THAT_IM_A_REVIEWER_IN_COMMAND_PALETTE =
+  'click_merge_requests_that_im_a_reviewer_in_command_palette';
+export const EVENT_CLICK_MERGE_REQUESTS_I_CREATED_IN_COMMAND_PALETTE =
+  'click_merge_requests_i_created_in_command_palette';
+export const EVENT_CLICK_YOUR_WORK_IN_COMMAND_PALETTE = 'click_your_work_in_command_palette';
+export const EVENT_CLICK_EXPLORE_IN_COMMAND_PALETTE = 'click_explore_in_command_palette';
+export const EVENT_CLICK_PROFILE_IN_COMMAND_PALETTE = 'click_profile_in_command_palette';
+export const EVENT_CLICK_PREFERENCES_IN_COMMAND_PALETTE = 'click_preferences_in_command_palette';
+
+export const EVENT_CLICK_ALL_GITLAB_SCOPED_SEARCH_TO_ADVANCED_SEARCH =
+  'click_all_gitlab_scoped_search_to_advanced_search';
+export const EVENT_CLICK_GROUP_SCOPED_SEARCH_TO_ADVANCED_SEARCH =
+  'click_group_scoped_search_to_advanced_search';
+export const EVENT_CLICK_PROJECT_SCOPED_SEARCH_TO_ADVANCED_SEARCH =
+  'click_project_scoped_search_to_advanced_search';
+export const EVENT_CLICK_PROJECT_RESULT_IN_COMMAND_PALETTE =
+  'click_project_result_in_command_palette';
+export const EVENT_CLICK_GROUP_RESULT_IN_COMMAND_PALETTE = 'click_group_result_in_command_palette';
+export const EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE =
+  'click_merge_request_result_in_command_palette';
+export const EVENT_CLICK_ISSUE_RESULT_IN_COMMAND_PALETTE = 'click_issue_result_in_command_palette';
+export const EVENT_CLICK_RECENT_ISSUE_RESULT_IN_COMMAND_PALETTE =
+  'click_recent_issue_result_in_command_palette';
+export const EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE =
+  'click_recent_epic_result_in_command_palette';
+export const EVENT_CLICK_RECENT_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE =
+  'click_recent_merge_request_result_in_command_palette';
+export const EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE = 'click_user_result_in_command_palette';
+export const EVENT_CLICK_FREQUENT_PROJECT_IN_COMMAND_PALETTE =
+  'click_frequent_project_in_command_palette';
+export const EVENT_CLICK_FREQUENT_GROUP_IN_COMMAND_PALETTE =
+  'click_frequent_group_in_command_palette';
+export const EVENT_CLICK_COMMANDS_SUB_MENU_IN_COMMAND_PALETTE =
+  'click_commands_sub_menu_in_command_palette';

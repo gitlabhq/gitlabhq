@@ -9,12 +9,18 @@ export default {
     PackageFiles: () =>
       import('~/packages_and_registries/package_registry/components/details/package_files.vue'),
     CandidateDetail,
+    ImportArtifactZone: () => import('./import_artifact_zone.vue'),
   },
-  inject: ['projectPath'],
+  inject: ['projectPath', 'canWriteModelRegistry', 'importPath'],
   props: {
     modelVersion: {
       type: Object,
       required: true,
+    },
+    allowArtifactImport: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -26,6 +32,9 @@ export default {
     },
     packageId() {
       return this.modelVersion.packageId;
+    },
+    showImportArtifactZone() {
+      return this.canWriteModelRegistry && this.importPath && this.allowArtifactImport;
     },
   },
   i18n,
@@ -46,13 +55,22 @@ export default {
     <template v-if="modelVersion.packageId">
       <package-files
         :package-id="packageId"
+        :can-delete="canWriteModelRegistry"
+        :delete-all-files="true"
         :project-path="projectPath"
         :package-type="packageType"
-      />
+      >
+        <template v-if="showImportArtifactZone" #upload="{ refetch }">
+          <h3 data-testid="uploadHeader" class="gl-text-lg gl-mt-5">
+            {{ __('Upload artifacts') }}
+          </h3>
+          <import-artifact-zone :path="importPath" @change="refetch" />
+        </template>
+      </package-files>
     </template>
 
     <div class="gl-mt-5">
-      <span class="gl-font-weight-bold">{{ $options.i18n.MLFLOW_ID_LABEL }}:</span>
+      <span class="gl-font-bold">{{ $options.i18n.MLFLOW_ID_LABEL }}:</span>
       {{ candidate.info.eid }}
     </div>
 

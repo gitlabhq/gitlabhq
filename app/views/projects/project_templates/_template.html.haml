@@ -1,4 +1,4 @@
-.template-option.d-flex.gl-align-items-center{ data: { testid: 'template-option-container' } }
+.template-option.gl-items-center{ class: '!gl-flex', data: { testid: 'template-option-container' } }
   .logo.gl-mr-3.px-1
     = image_tag template.logo, size: 32, class: "btn-template-icon icon-#{template.name}"
   .description
@@ -7,7 +7,7 @@
     %br
     .text-muted
       = template.description
-  .controls.d-flex.gl-align-items-center
+  .controls.gl-items-center{ class: '!gl-flex' }
     = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-mr-3', data: { track_label: "template_preview", track_property: template.name, track_action: "click_button", track_value: "" } }, href: template.preview, target: '_blank') do
       = _("Preview")
     %label.btn.gl-button.btn-confirm.template-button.choose-template.gl-mb-0{ for: template.name,

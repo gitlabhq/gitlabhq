@@ -836,8 +836,8 @@ RSpec.describe Gitlab::GitalyClient, feature_category: :gitaly do
   describe '.decode_detailed_error' do
     let(:detailed_error) do
       new_detailed_error(GRPC::Core::StatusCodes::INVALID_ARGUMENT,
-                         "error message",
-                         Gitaly::InvalidRefFormatError.new)
+        "error message",
+        Gitaly::InvalidRefFormatError.new)
     end
 
     let(:error_without_details) do

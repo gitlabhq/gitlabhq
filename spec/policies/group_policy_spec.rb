@@ -253,6 +253,18 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       expect_allowed(*owner_permissions)
       expect_allowed(*admin_permissions)
     end
+
+    context 'when user is also an admin' do
+      before do
+        organization_owner.update!(admin: true)
+      end
+
+      it { expect_disallowed(:admin_organization) }
+
+      context 'with admin mode', :enable_admin_mode do
+        it { expect_allowed(:admin_organization) }
+      end
+    end
   end
 
   context 'migration bot' do
@@ -1207,8 +1219,16 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         end
       end
 
+      context 'placeholder user' do
+        let_it_be(:placeholder_user) { create(:user, user_type: :placeholder, developer_of: group) }
+
+        subject { described_class.new(placeholder_user, group) }
+
+        it_behaves_like 'disallows all dependency proxy access'
+      end
+
       context 'all other user types' do
-        User::USER_TYPES.except(:human, :project_bot).each_value do |user_type|
+        User::USER_TYPES.except(:human, :project_bot, :placeholder).each_value do |user_type|
           context "with user_type #{user_type}" do
             before do
               current_user.update!(user_type: user_type)

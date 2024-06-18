@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :importers do
+RSpec.describe Gitlab::GithubImport::ReschedulingMethods, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let(:worker) do
     Class.new do
       def self.name
@@ -32,7 +32,7 @@ RSpec.describe Gitlab::GithubImport::ReschedulingMethods, feature_category: :imp
       end
     end
 
-    context 'with an existing project', :clean_gitlab_redis_cache do
+    context 'with an existing project' do
       let(:project) { create(:project, import_url: 'https://t0ken@github.com/repo/repo.git') }
 
       before do

@@ -48,9 +48,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between gl-w-full">
+  <div class="gl-flex gl-items-center gl-justify-content-space-between gl-w-full">
     <h2
-      class="gl-new-card-title gl-heading-3 gl-m-0! gl-display-flex gl-gap-3"
+      class="gl-new-card-title gl-heading-3 gl-m-0! gl-flex gl-gap-3"
       data-testid="release-block-title"
     >
       <gl-link v-if="selfLink" class="gl-text-black-normal" :href="selfLink">

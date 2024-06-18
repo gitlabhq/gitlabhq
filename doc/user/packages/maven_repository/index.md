@@ -293,7 +293,7 @@ For the instance-level endpoint, ensure the relevant section of your `pom.xml` i
 
 | Endpoint | Endpoint URL for `pom.xml`                                               | Additional information |
 |----------|--------------------------------------------------------------------------|------------------------|
-| Project  | `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven` | Replace `gitlab.example.com` with your domain name. Replace `<project_id>` with your project ID, found on your [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id). |
+| Project  | `https://gitlab.example.com/api/v4/projects/<project_id>/packages/maven` | Replace `gitlab.example.com` with your domain name. Replace `<project_id>` with your project ID, found on your [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id). |
 | Group    | `https://gitlab.example.com/api/v4/groups/<group_id>/-/packages/maven`   | Replace `gitlab.example.com` with your domain name. Replace `<group_id>` with your group ID, found on your group's homepage. |
 | Instance | `https://gitlab.example.com/api/v4/packages/maven`                       | Replace `gitlab.example.com` with your domain name. |
 

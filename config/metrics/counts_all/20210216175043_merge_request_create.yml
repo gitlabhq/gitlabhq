@@ -2,17 +2,13 @@
 data_category: optional
 key_path: counts.merge_request_create
 description: Count of the number of merge requests created
-product_section: dev
-product_stage: create
 product_group: code_review
 value_type: number
 status: active
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
-options:
-  prefix: merge_request
-  event: create
+data_source: internal_events
+events:
+- name: create_merge_request
 distribution:
 - ce
 - ee

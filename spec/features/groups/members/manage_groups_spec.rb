@@ -11,6 +11,7 @@ RSpec.describe 'Groups > Members > Manage groups', :js, feature_category: :group
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(show_role_details_in_drawer: false)
     sign_in(user)
   end
 

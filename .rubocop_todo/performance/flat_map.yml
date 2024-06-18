@@ -2,14 +2,11 @@
 # Cop supports --autocorrect.
 Performance/FlatMap:
   Exclude:
-    - 'app/presenters/packages/nuget/service_index_presenter.rb'
     - 'app/services/projects/apple_target_platform_detector_service.rb'
     - 'ee/app/models/burndown.rb'
     - 'ee/app/models/geo_node_status.rb'
     - 'ee/app/serializers/dashboard_environments_serializer.rb'
     - 'ee/app/services/elastic/process_bookkeeping_service.rb'
-    - 'ee/lib/elastic/latest/issue_class_proxy.rb'
-    - 'ee/spec/lib/elastic/latest/user_class_proxy_spec.rb'
     - 'ee/spec/requests/api/members_spec.rb'
     - 'ee/spec/support/helpers/license_scanning_report_helpers.rb'
     - 'ee/spec/support/shared_examples/finders/security/findings_finder_shared_examples.rb'
@@ -19,13 +16,11 @@ Performance/FlatMap:
     - 'lib/gitlab/instrumentation/redis_cluster_validator.rb'
     - 'lib/gitlab/testing/request_inspector_middleware.rb'
     - 'lib/gitlab/usage_data_counters/hll_redis_counter.rb'
-    - 'qa/qa/resource/base.rb'
     - 'qa/qa/tools/ci/non_empty_suites.rb'
     - 'spec/controllers/projects/issues_controller_spec.rb'
     - 'spec/lib/bulk_imports/groups/stage_spec.rb'
     - 'spec/lib/bulk_imports/projects/stage_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/test/junit_spec.rb'
-    - 'spec/models/ci/pipeline_spec.rb'
     - 'spec/requests/api/graphql/ci/pipelines_spec.rb'
     - 'spec/services/ci/create_pipeline_service/evaluate_runner_tags_spec.rb'
     - 'spec/services/git/process_ref_changes_service_spec.rb'

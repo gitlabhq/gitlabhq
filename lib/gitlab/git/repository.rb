@@ -164,9 +164,9 @@ module Gitlab
         nil
       end
 
-      def replicate(source_repository)
+      def replicate(source_repository, partition_hint: "")
         wrapped_gitaly_errors do
-          gitaly_repository_client.replicate(source_repository)
+          gitaly_repository_client.replicate(source_repository, partition_hint: partition_hint)
         end
       end
 
@@ -428,7 +428,7 @@ module Gitlab
 
         wrapped_gitaly_errors do
           gitaly_blob_client.list_blobs(revisions, limit: REV_LIST_COMMIT_LIMIT,
-                                                   with_paths: with_paths, dynamic_timeout: dynamic_timeout)
+            with_paths: with_paths, dynamic_timeout: dynamic_timeout)
         end
       end
 
@@ -668,20 +668,20 @@ module Gitlab
       def merge(user, source_sha:, target_branch:, message:, target_sha: nil, &block)
         wrapped_gitaly_errors do
           gitaly_operation_client.user_merge_branch(user,
-                                                    source_sha: source_sha,
-                                                    target_branch: target_branch,
-                                                    message: message,
-                                                    target_sha: target_sha,
-                                                    &block)
+            source_sha: source_sha,
+            target_branch: target_branch,
+            message: message,
+            target_sha: target_sha,
+            &block)
         end
       end
 
       def ff_merge(user, source_sha:, target_branch:, target_sha: nil)
         wrapped_gitaly_errors do
           gitaly_operation_client.user_ff_branch(user,
-                                                 source_sha: source_sha,
-                                                 target_branch: target_branch,
-                                                 target_sha: target_sha)
+            source_sha: source_sha,
+            target_branch: target_branch,
+            target_sha: target_sha)
         end
       end
 
@@ -831,10 +831,10 @@ module Gitlab
           break nil if response.license_short_name.empty?
 
           ::Gitlab::Git::DeclaredLicense.new(key: response.license_short_name,
-                                             name: response.license_name,
-                                             nickname: response.license_nickname.presence,
-                                             url: response.license_url.presence,
-                                             path: response.license_path)
+            name: response.license_name,
+            nickname: response.license_nickname.presence,
+            url: response.license_url.presence,
+            path: response.license_path)
         end
       rescue Licensee::InvalidLicense => e
         Gitlab::ErrorTracking.track_exception(e)
@@ -1016,8 +1016,8 @@ module Gitlab
 
         wrapped_gitaly_errors do
           gitaly_operation_client.user_commit_files(user, branch_name,
-              message, actions, author_email, author_name,
-              start_branch_name, start_repository, force, start_sha, sign)
+            message, actions, author_email, author_name,
+            start_branch_name, start_repository, force, start_sha, sign)
         end
       end
       # rubocop:enable Metrics/ParameterLists

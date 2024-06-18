@@ -19,7 +19,7 @@ You can change when synchronization occurs.
 
 ## User sync
 
-> - Preventing LDAP user's profile name synchronization [introduced](<https://gitlab.com/gitlab-org/gitlab/-/issues/11336>) in GitLab 15.11.
+> - Preventing LDAP user's profile name synchronization [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11336) in GitLab 15.11.
 
 Once per day, GitLab runs a worker to check and update GitLab
 users against LDAP.

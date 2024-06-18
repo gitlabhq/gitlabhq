@@ -10,6 +10,7 @@ import EmojiPicker from '~/emoji/components/picker.vue';
 import DesignNoteAwardsList from '~/design_management/components/design_notes/design_note_awards_list.vue';
 import DesignNote from '~/design_management/components/design_notes/design_note.vue';
 import DesignReplyForm from '~/design_management/components/design_notes/design_reply_form.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import designNoteAwardEmojiToggleMutation from '~/design_management/graphql/mutations/design_note_award_emoji_toggle.mutation.graphql';
 import { mockAwardEmoji } from '../../mock_data/apollo_mock';
@@ -25,6 +26,7 @@ const note = {
   },
   awardEmoji: mockAwardEmoji,
   body: 'test',
+  imported: false,
   userPermissions: {
     adminNote: false,
     awardEmoji: true,
@@ -43,6 +45,7 @@ describe('Design note component', () => {
 
   const findUserAvatar = () => wrapper.findComponent(GlAvatar);
   const findUserAvatarLink = () => wrapper.findComponent(GlAvatarLink);
+  const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findUserLink = () => wrapper.findByTestId('user-link');
   const findDesignNoteAwardsList = () => wrapper.findComponent(DesignNoteAwardsList);
   const findReplyForm = () => wrapper.findComponent(DesignReplyForm);
@@ -136,6 +139,10 @@ describe('Design note component', () => {
       expect(wrapper.findComponent(TimeAgoTooltip).exists()).toBe(true);
     });
 
+    it('should not render imported badge', () => {
+      expect(findImportedBadge().exists()).toBe(false);
+    });
+
     it('should render emoji awards list', () => {
       expect(findDesignNoteAwardsList().exists()).toBe(true);
     });
@@ -171,6 +178,21 @@ describe('Design note component', () => {
 
     it('should render a `Deleted user` header', () => {
       expect(wrapper.text()).toContain('A deleted user');
+    });
+  });
+
+  describe('when note is imported', () => {
+    it('should render imported badge', () => {
+      createComponent({
+        props: {
+          note: {
+            ...note,
+            imported: true,
+          },
+        },
+      });
+
+      expect(findImportedBadge().props('importableType')).toBe('comment');
     });
   });
 
@@ -272,7 +294,7 @@ describe('Design note component', () => {
       expect(findEditDropdownItem().exists()).toBe(true);
       expect(findCopyLinkDropdownItem().exists()).toBe(true);
       expect(findDeleteDropdownItem().exists()).toBe(true);
-      expect(findDropdown().props('items')[0].extraAttrs.class).toBe('gl-sm-display-none!');
+      expect(findDropdown().props('items')[0].extraAttrs.class).toBe('sm:!gl-hidden');
     });
   });
 

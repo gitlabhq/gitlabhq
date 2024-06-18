@@ -112,11 +112,23 @@ module Members
         # de-duplicate just in case as there is no controlling if user records and ids are sent multiple times
         users.uniq!
 
-        users_by_emails = source.users_by_emails(emails) # preloads our request store for all emails
+        # We need to downcase any input of emails here for our caching so that emails sent in with uppercase
+        # are also found since all emails are stored in users, emails tables downcase. user.private_commit_emails are
+        # not though, so we'll never cache those I guess at this layer for now.
+        # Since there is possibility of duplicate values once we downcase, we'll de-duplicate.
+        # Uniq call here has no current testable impact as it will get the same parsed_emails
+        # result without it, but it merely helps it do a bit less work.
+        case_insensitive_emails = emails.map(&:downcase).uniq
+        users_by_emails = source.users_by_emails(case_insensitive_emails) # preloads our request store for all emails
         # in case emails belong to a user that is being invited by user or user_id, remove them from
         # emails and let users/user_ids handle it.
+        # parsed_emails have to preserve casing due to the invite process also being used to update
+        # existing members and we have to let them be found if not lowercased.
         parsed_emails = emails.select do |email|
-          user = users_by_emails[email]
+          # Since we are caching by lowercased emails as a key for the users as they only
+          # ever have lowercased emails(except for private_commit_emails), we need to then
+          # operate against that cache for lookups like here with a matching lowercase.
+          user = users_by_emails[email.downcase]
           !user || (users.exclude?(user) && user_ids.exclude?(user.id))
         end
 

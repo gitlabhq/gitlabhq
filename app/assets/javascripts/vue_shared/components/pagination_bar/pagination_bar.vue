@@ -89,7 +89,7 @@ export default {
     <pagination-links :change="setPage" :page-info="pageInfo" class="gl-m-0" />
     <gl-disclosure-dropdown category="tertiary" class="gl-ml-auto" data-testid="page-size">
       <template #toggle>
-        <gl-button class="gl-font-weight-bold" category="tertiary">
+        <gl-button class="gl-font-bold" category="tertiary">
           <gl-sprintf :message="__('%{count} items per page')">
             <template #count>
               {{ pageInfo.perPage }}

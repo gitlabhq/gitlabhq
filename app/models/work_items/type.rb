@@ -62,9 +62,14 @@ module WorkItems
       inverse_of: :work_item_type, class_name: 'WorkItems::WidgetDefinition'
     has_many :child_restrictions, class_name: 'WorkItems::HierarchyRestriction', foreign_key: :parent_type_id,
       inverse_of: :parent_type
+    has_many :parent_restrictions, class_name: 'WorkItems::HierarchyRestriction', foreign_key: :child_type_id,
+      inverse_of: :child_type
     has_many :allowed_child_types_by_name, -> { order_by_name_asc },
       through: :child_restrictions, class_name: 'WorkItems::Type',
       foreign_key: :child_type_id, source: :child_type
+    has_many :allowed_parent_types_by_name, -> { order_by_name_asc },
+      through: :parent_restrictions, class_name: 'WorkItems::Type',
+      foreign_key: :parent_type_id, source: :parent_type
 
     before_validation :strip_whitespace
     after_save :clear_reactive_cache!
@@ -133,13 +138,22 @@ module WorkItems
     end
 
     def calculate_reactive_cache
-      allowed_child_types_by_name
+      {
+        allowed_child_types_by_name: allowed_child_types_by_name,
+        allowed_parent_types_by_name: allowed_parent_types_by_name
+      }
     end
 
     def allowed_child_types(cache: false)
-      cached_data = cache ? with_reactive_cache { |query_data| query_data } : nil
+      cached_data = cache ? with_reactive_cache { |query_data| query_data[:allowed_child_types_by_name] } : nil
 
       cached_data || allowed_child_types_by_name
+    end
+
+    def allowed_parent_types(cache: false)
+      cached_data = cache ? with_reactive_cache { |query_data| query_data[:allowed_parent_types_by_name] } : nil
+
+      cached_data || allowed_parent_types_by_name
     end
 
     private

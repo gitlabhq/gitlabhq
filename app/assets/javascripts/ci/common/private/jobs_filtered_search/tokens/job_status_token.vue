@@ -101,7 +101,7 @@ export default {
     <template #view>
       <div class="gl-display-flex gl-align-items-center">
         <div :class="findActiveStatus.class">
-          <gl-icon :name="findActiveStatus.icon" class="gl-mr-2 gl-display-block" />
+          <gl-icon :name="findActiveStatus.icon" class="gl-mr-2 gl-block" />
         </div>
         <span>{{ findActiveStatus.text }}</span>
       </div>

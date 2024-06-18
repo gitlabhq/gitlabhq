@@ -64,12 +64,20 @@ export const autocompleteDataSources = ({ fullPath, iid, isGroup = false }) => (
   labels: autocompleteSourcesPath({ autocompleteType: 'labels', fullPath, iid, isGroup }),
   members: autocompleteSourcesPath({ autocompleteType: 'members', fullPath, iid, isGroup }),
   commands: autocompleteSourcesPath({ autocompleteType: 'commands', fullPath, iid, isGroup }),
+  issues: autocompleteSourcesPath({ autocompleteType: 'issues', fullPath, iid, isGroup }),
+  mergeRequests: autocompleteSourcesPath({
+    autocompleteType: 'merge_requests',
+    fullPath,
+    iid,
+    isGroup,
+  }),
+  epics: autocompleteSourcesPath({ autocompleteType: 'epics', fullPath, iid, isGroup }),
 });
 
 export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-  return `${domain}/${basePath}/preview_markdown?target_type=WorkItem&target_id=${iid}`;
+  return `${domain}/${basePath}/-/preview_markdown?target_type=WorkItem&target_id=${iid}`;
 };
 
 export const isReference = (input) => {
@@ -97,4 +105,9 @@ export const sortNameAlphabetically = (a, b) => {
 export const workItemRoadmapPath = (fullPath, iid) => {
   const domain = gon.relative_url_root || '';
   return `${domain}/groups/${fullPath}/-/roadmap?epic_iid=${iid}`;
+};
+
+export const newWorkItemFullPath = (fullPath) => {
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  return `${fullPath}-id`;
 };

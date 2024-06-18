@@ -335,4 +335,106 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
       expect(described_class.find_by(id: pipeline_schedule.id)).to be_nil
     end
   end
+
+  describe '#sort' do
+    before do
+      travel_to(Time.zone.local(2024, 3, 2, 1, 0))
+    end
+
+    let!(:pipeline1) do
+      create(:ci_pipeline_schedule, description: :aab, ref: :masterb, cron: ' 0 5 * * *   ',
+        created_at: Time.zone.local(2024, 3, 2, 1, 0), updated_at: Time.zone.local(2024, 1, 2, 1, 0),
+        project: project)
+    end
+
+    let!(:pipeline2) do
+      create(:ci_pipeline_schedule, description: :aaa, ref: :masterz, cron: ' 0 6 * * *   ',
+        created_at: Time.zone.local(2023, 3, 2, 1, 0), updated_at: Time.zone.local(2024, 3, 2, 1, 0),
+        project: project)
+    end
+
+    let!(:pipeline3) do
+      create(:ci_pipeline_schedule, description: :zzz, ref: :mastera, cron: ' 0 8 * * *   ',
+        created_at: Time.zone.local(2022, 3, 2, 1, 0), updated_at: Time.zone.local(2024, 4, 2, 1, 0),
+        project: project)
+    end
+
+    let!(:pipeline4) do
+      create(:ci_pipeline_schedule, description: :zza, ref: :mastery, cron: ' 0 7 * * *   ',
+        created_at: Time.zone.local(2021, 3, 2, 1, 0), updated_at: Time.zone.local(2024, 2, 2, 1, 0),
+        project: project)
+    end
+
+    context "by id" do
+      it "sorts desc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:id_desc)
+        expect(pipeline_schedules).to eq([pipeline4, pipeline3, pipeline2, pipeline1])
+      end
+
+      it "sorts asc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:id_asc)
+        expect(pipeline_schedules).to eq([pipeline1, pipeline2, pipeline3, pipeline4])
+      end
+    end
+
+    context "by description" do
+      it "sorts desc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:description_desc)
+        expect(pipeline_schedules).to eq([pipeline3, pipeline4, pipeline1, pipeline2])
+      end
+
+      it "sorts asc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:description_asc)
+        expect(pipeline_schedules).to eq([pipeline2, pipeline1, pipeline4, pipeline3])
+      end
+    end
+
+    context "by ref" do
+      it "sorts desc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:ref_desc)
+        expect(pipeline_schedules).to eq([pipeline2, pipeline4, pipeline1, pipeline3])
+      end
+
+      it "sorts asc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:ref_asc)
+        expect(pipeline_schedules).to eq([pipeline3, pipeline1, pipeline4, pipeline2])
+      end
+    end
+
+    context "by next_run_at" do
+      it "sorts desc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:next_run_at_desc)
+        expect(pipeline_schedules).to eq([pipeline3, pipeline4, pipeline2, pipeline1])
+      end
+
+      it "sorts asc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:next_run_at_asc)
+        expect(pipeline_schedules).to eq([pipeline1, pipeline2, pipeline4, pipeline3])
+      end
+    end
+
+    context "by created_at" do
+      it "sorts desc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:created_at_desc)
+        expect(pipeline_schedules).to eq([pipeline1, pipeline2, pipeline3, pipeline4])
+      end
+
+      it "sorts asc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:created_at_asc)
+        expect(pipeline_schedules).to eq([pipeline4, pipeline3, pipeline2, pipeline1])
+      end
+    end
+
+    context "by updated_at" do
+      it "sorts desc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:updated_at_desc)
+        expect(pipeline_schedules).to eq([pipeline3, pipeline2, pipeline4, pipeline1])
+      end
+
+      it "sorts asc" do
+        pipeline_schedules = project.pipeline_schedules.sort_by_attribute(:updated_at_asc)
+        expect(pipeline_schedules).to eq([pipeline1, pipeline4, pipeline2, pipeline3])
+      end
+    end
+  end
 end

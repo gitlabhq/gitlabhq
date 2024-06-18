@@ -3,8 +3,6 @@ data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_unlabel_specific_weekly
 description: Count of WAU using the `/unlabel` or `/remove_label` quick action to
   remove one or more specific labels
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active

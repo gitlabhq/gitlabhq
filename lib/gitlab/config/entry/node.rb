@@ -118,8 +118,7 @@ module Gitlab
           @config.is_a?(Integer)
         end
 
-        def self.default(**)
-        end
+        def self.default(**); end
 
         def self.aspects
           @aspects ||= []
@@ -139,9 +138,9 @@ module Gitlab
 
           if project && user
             Gitlab::AppJsonLogger.info(event: 'ci_used_deprecated_keyword',
-                                       entry: entry.key.to_s,
-                                       user_id: user.id,
-                                       project_id: project.id)
+              entry: entry.key.to_s,
+              user_id: user.id,
+              project_id: project.id)
           end
 
           deprecation = entry.deprecation

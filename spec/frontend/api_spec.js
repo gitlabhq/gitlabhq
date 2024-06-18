@@ -51,6 +51,23 @@ describe('Api', () => {
     });
   });
 
+  describe('projectGroups', () => {
+    const projectId = '123';
+    const options = { search: 'foo' };
+    const apiResponse = [{ id: 1, name: 'foo' }];
+
+    it('fetch all project groups', () => {
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${projectId}/groups.json`;
+      jest.spyOn(axios, 'get');
+      mock.onGet(expectedUrl).replyOnce(HTTP_STATUS_OK, apiResponse);
+
+      return Api.projectGroups(projectId, options).then((data) => {
+        expect(data).toEqual(apiResponse);
+        expect(axios.get).toHaveBeenCalledWith(expectedUrl, { params: { ...options } });
+      });
+    });
+  });
+
   describe('packages', () => {
     const projectId = 'project_a';
     const packageId = 'package_b';
@@ -183,6 +200,19 @@ describe('Api', () => {
       mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, expectedData);
 
       return Api.groupMembers(groupId).then(({ data }) => {
+        expect(data).toEqual(expectedData);
+      });
+    });
+  });
+
+  describe('groupSubgroups', () => {
+    it('fetches group subgroups', () => {
+      const groupId = '54321';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/groups/${groupId}/subgroups`;
+      const expectedData = [{ id: 7 }];
+      mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, expectedData);
+
+      return Api.groupSubgroups(groupId).then(({ data }) => {
         expect(data).toEqual(expectedData);
       });
     });

@@ -72,11 +72,11 @@ class IssueEntity < IssuableEntity
     preview_markdown_path(issue.project, target_type: 'Issue', target_id: issue.iid)
   end
 
-  expose :confidential_issues_docs_path, if: -> (issue) { issue.confidential? } do |issue|
+  expose :confidential_issues_docs_path, if: ->(issue) { issue.confidential? } do |issue|
     help_page_path('user/project/issues/confidential_issues')
   end
 
-  expose :locked_discussion_docs_path, if: -> (issue) { issue.discussion_locked? } do |issue|
+  expose :locked_discussion_docs_path, if: ->(issue) { issue.discussion_locked? } do |issue|
     help_page_path('user/discussions/index', anchor: 'prevent-comments-by-locking-an-issue')
   end
 
@@ -84,7 +84,7 @@ class IssueEntity < IssuableEntity
     issue.project.archived?
   end
 
-  expose :archived_project_docs_path, if: -> (issue) { issue.project.archived? } do |issue|
+  expose :archived_project_docs_path, if: ->(issue) { issue.project.archived? } do |issue|
     help_page_path('user/project/settings/index', anchor: 'archive-a-project')
   end
 

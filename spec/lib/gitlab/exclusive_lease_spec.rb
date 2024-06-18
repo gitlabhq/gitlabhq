@@ -27,7 +27,7 @@ RSpec.describe Gitlab::ExclusiveLease, :request_store,
       subject(:lease_attempt) { lease.try_obtain }
 
       context 'in development/test environment' do
-        it 'raises error within ci db' do
+        it 'raises error within ci db', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446120' do
           expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).and_call_original
 
           Ci::Pipeline.transaction do

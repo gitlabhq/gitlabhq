@@ -213,4 +213,24 @@ RSpec.describe Users::CalloutsHelper, feature_category: :navigation do
       it { is_expected.to be expected_result }
     end
   end
+
+  describe '.show_period_in_terraform_state_name_alert_callout?' do
+    subject { helper.show_period_in_terraform_state_name_alert_callout? }
+
+    before do
+      allow(helper).to receive(:user_dismissed?).with(described_class::PERIOD_IN_TERRAFORM_STATE_NAME_ALERT) { dismissed }
+    end
+
+    context 'when user has not dismissed' do
+      let(:dismissed) { false }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user dismissed' do
+      let(:dismissed) { true }
+
+      it { is_expected.to be false }
+    end
+  end
 end

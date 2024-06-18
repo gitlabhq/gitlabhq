@@ -9,9 +9,9 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_categor
 
   subject(:seeder) do
     described_class.new(NULL_LOGGER,
-                        username: user.username,
-                        registration_prefix: registration_prefix,
-                        runner_count: runner_count)
+      username: user.username,
+      registration_prefix: registration_prefix,
+      runner_count: runner_count)
   end
 
   describe '#seed', :enable_admin_mode do

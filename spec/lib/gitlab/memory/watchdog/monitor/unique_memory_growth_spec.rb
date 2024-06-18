@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Monitor::UniqueMemoryGrowth do
     end
 
     context 'when process exceeds threshold' do
-      let(:worker_memory) { max_mem_growth * primary_memory + 1 }
+      let(:worker_memory) { (max_mem_growth * primary_memory) + 1 }
       let(:payload) do
         {
           message: 'memory limit exceeded',
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Monitor::UniqueMemoryGrowth do
     end
 
     context 'when process does not exceed threshold' do
-      let(:worker_memory) { max_mem_growth * primary_memory - 1 }
+      let(:worker_memory) { (max_mem_growth * primary_memory) - 1 }
       let(:payload) { {} }
 
       include_examples 'returns Watchdog Monitor result', threshold_violated: false

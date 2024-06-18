@@ -124,7 +124,11 @@ describe('TagToken', () => {
     });
 
     it('suggestions are loaded from a correct key', () => {
-      expect(getRecentlyUsedSuggestions).toHaveBeenCalledWith(mockStorageKey);
+      expect(getRecentlyUsedSuggestions).toHaveBeenCalledWith(
+        mockStorageKey,
+        expect.anything(),
+        expect.anything(),
+      );
     });
 
     it('displays stored tags suggestions', () => {

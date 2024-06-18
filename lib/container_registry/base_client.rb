@@ -23,7 +23,7 @@ module ContainerRegistry
     }.freeze
 
     ERROR_CALLBACK_OPTIONS = {
-      callback: -> (env, exception) do
+      callback: ->(env, exception) do
         Gitlab::ErrorTracking.log_exception(
           exception,
           class: name,

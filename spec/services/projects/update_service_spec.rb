@@ -26,6 +26,87 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
   describe '#execute' do
     let(:admin) { create(:admin) }
 
+    let_it_be(:maintainer) { create(:user) }
+    let_it_be(:developer) { create(:user) }
+    let_it_be(:owner) { create(:user) }
+
+    context 'when changing restrict_user_defined_variables' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:current_user_role, :project_minimum_role, :from_value, :to_value, :status) do
+        :owner      | :developer  | true  | false | :success
+        :owner      | :maintainer | true  | false | :success
+        :owner      | :developer  | false | true  | :success
+        :owner      | :maintainer | false | true  | :success
+        :maintainer | :developer  | true  | false | :success
+        :maintainer | :maintainer | true  | false | :success
+        :maintainer | :owner      | true  | false | :api_error
+        :maintainer | :owner      | false | true  | :api_error
+        :maintainer | :owner      | true  | true  | :success
+        :developer  | :owner      | true  | false | :api_error
+        :developer  | :developer  | true  | false | :api_error
+        :developer  | :maintainer | true  | false | :api_error
+      end
+
+      with_them do
+        let(:current_user) { public_send(current_user_role) }
+
+        before do
+          project.add_maintainer(maintainer)
+          project.add_developer(developer)
+          project.add_owner(owner)
+
+          ci_cd_settings = project.ci_cd_settings
+          ci_cd_settings.pipeline_variables_minimum_override_role = project_minimum_role
+          ci_cd_settings.restrict_user_defined_variables = from_value
+          ci_cd_settings.save!
+        end
+
+        it 'allows/disallows to change restrict_user_defined_variables' do
+          result = update_project(project, current_user, restrict_user_defined_variables: to_value)
+          expect(result[:status]).to eq(status)
+        end
+      end
+    end
+
+    context 'when changing ci_pipeline_variables_minimum_override_role' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:current_user_role, :restrict_user_defined_variables, :from_value, :to_value, :status) do
+        :owner      | true  | :owner      | :developer  | :success
+        :owner      | true  | :owner      | :maintainer | :success
+        :owner      | true  | :developer  | :maintainer | :success
+        :owner      | true  | :maintainer | :owner      | :success
+        :maintainer | true  | :owner      | :developer  | :api_error
+        :maintainer | true  | :owner      | :maintainer | :api_error
+        :maintainer | true  | :developer  | :maintainer | :success
+        :maintainer | true  | :maintainer | :owner      | :api_error
+        :owner      | false | :owner      | :maintainer | :success
+        :maintainer | false | :owner      | :developer  | :api_error
+        :maintainer | false | :maintainer | :owner      | :api_error
+      end
+
+      with_them do
+        let(:current_user) { public_send(current_user_role) }
+
+        before do
+          project.add_maintainer(maintainer)
+          project.add_developer(developer)
+          project.add_owner(owner)
+
+          ci_cd_settings = project.ci_cd_settings
+          ci_cd_settings.pipeline_variables_minimum_override_role = from_value
+          ci_cd_settings.restrict_user_defined_variables = restrict_user_defined_variables
+          ci_cd_settings.save!
+        end
+
+        it 'allows/disallows to change ci_pipeline_variables_minimum_override_role' do
+          result = update_project(project, current_user, ci_pipeline_variables_minimum_override_role: to_value.to_s)
+          expect(result[:status]).to eq(status)
+        end
+      end
+    end
+
     context 'when changing visibility level' do
       it_behaves_like 'publishing Projects::ProjectAttributesChangedEvent',
         params: { visibility_level: Gitlab::VisibilityLevel::INTERNAL },

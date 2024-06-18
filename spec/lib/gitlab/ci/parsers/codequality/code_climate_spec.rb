@@ -10,27 +10,27 @@ RSpec.describe Gitlab::Ci::Parsers::Codequality::CodeClimate do
     let(:code_climate) do
       [
         {
-          "categories": [
+          categories: [
             "Complexity"
           ],
-          "check_name": "argument_count",
-          "content": {
-            "body": ""
+          check_name: "argument_count",
+          content: {
+            body: ""
           },
-          "description": "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-          "fingerprint": "15cdb5c53afd42bc22f8ca366a08d547",
-          "location": {
-            "path": "foo.rb",
-            "lines": {
-              "begin": 10,
-              "end": 10
+          description: "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
+          fingerprint: "15cdb5c53afd42bc22f8ca366a08d547",
+          location: {
+            path: "foo.rb",
+            lines: {
+              begin: 10,
+              end: 10
             }
           },
-          "other_locations": [],
-          "remediation_points": 900000,
-          "severity": "major",
-          "type": "issue",
-          "engine_name": "structure"
+          other_locations: [],
+          remediation_points: 900000,
+          severity: "major",
+          type: "issue",
+          engine_name: "structure"
         }
       ].to_json
     end
@@ -68,27 +68,27 @@ RSpec.describe Gitlab::Ci::Parsers::Codequality::CodeClimate do
       let(:code_climate) do
         [
           {
-            "categories": [
+            categories: [
               "Complexity"
             ],
-            "check_name": "argument_count",
-            "content": {
-              "body": ""
+            check_name: "argument_count",
+            content: {
+              body: ""
             },
-            "description": "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-            "fingerprint": "15cdb5c53afd42bc22f8ca366a08d547",
-            "location": {
-              "path": "foo.rb",
-              "lines": {
-                "begin": 10,
-                "end": 10
+            description: "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
+            fingerprint: "15cdb5c53afd42bc22f8ca366a08d547",
+            location: {
+              path: "foo.rb",
+              lines: {
+                begin: 10,
+                end: 10
               }
             },
-            "other_locations": [],
-            "remediation_points": 900000,
-            "severity": "major",
-            "type": "issue",
-            "engine_name": "structure"
+            other_locations: [],
+            remediation_points: 900000,
+            severity: "major",
+            type: "issue",
+            engine_name: "structure"
           }
         ]
       end
@@ -104,34 +104,34 @@ RSpec.describe Gitlab::Ci::Parsers::Codequality::CodeClimate do
       let(:code_climate) do
         [
           {
-          "type": "Issue",
-          "check_name": "Rubocop/Metrics/ParameterLists",
-          "description": "Avoid parameter lists longer than 5 parameters. [12/5]",
-          "fingerprint": "ab5f8b935886b942d621399aefkaehfiaehf",
-          "severity": "minor"
+            type: "Issue",
+            check_name: "Rubocop/Metrics/ParameterLists",
+            description: "Avoid parameter lists longer than 5 parameters. [12/5]",
+            fingerprint: "ab5f8b935886b942d621399aefkaehfiaehf",
+            severity: "minor"
           },
           {
-            "categories": [
+            categories: [
               "Complexity"
             ],
-            "check_name": "argument_count",
-            "content": {
-              "body": ""
+            check_name: "argument_count",
+            content: {
+              body: ""
             },
-            "description": "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-            "fingerprint": "15cdb5c53afd42bc22f8ca366a08d547",
-            "location": {
-              "path": "foo.rb",
-              "lines": {
-                "begin": 10,
-                "end": 10
+            description: "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
+            fingerprint: "15cdb5c53afd42bc22f8ca366a08d547",
+            location: {
+              path: "foo.rb",
+              lines: {
+                begin: 10,
+                end: 10
               }
             },
-            "other_locations": [],
-            "remediation_points": 900000,
-            "severity": "major",
-            "type": "issue",
-            "engine_name": "structure"
+            other_locations: [],
+            remediation_points: 900000,
+            severity: "major",
+            type: "issue",
+            engine_name: "structure"
           }
         ].to_json
       end
@@ -147,27 +147,27 @@ RSpec.describe Gitlab::Ci::Parsers::Codequality::CodeClimate do
       let(:code_climate) do
         [
           {
-            "categories": [
+            categories: [
               "Complexity"
             ],
-            "check_name": "argument_count",
-            "content": {
-              "body": ""
+            check_name: "argument_count",
+            content: {
+              body: ""
             },
-            "description": "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
-            "fingerprint": "15cdb5c53afd42bc22f8ca366a08d547",
-            "location": {
-              "path": "foo.rb",
-              "lines": {
-                "begin": 10,
-                "end": 10
+            description: "Method `new_array` has 12 arguments (exceeds 4 allowed). Consider refactoring.",
+            fingerprint: "15cdb5c53afd42bc22f8ca366a08d547",
+            location: {
+              path: "foo.rb",
+              lines: {
+                begin: 10,
+                end: 10
               }
             },
-            "other_locations": [],
-            "remediation_points": 900000,
-            "severity": "major",
-            "type": "issue",
-            "engine_name": "structure"
+            other_locations: [],
+            remediation_points: 900000,
+            severity: "major",
+            type: "issue",
+            engine_name: "structure"
           }
         ].to_json
       end

@@ -2,7 +2,7 @@ import { identity } from 'lodash';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import { DEFAULT_BRANCH } from '~/ide/constants';
+import { DEFAULT_BRANCH, IDE_ELEMENT_ID } from '~/ide/constants';
 import PerformancePlugin from '~/performance/vue_performance_plugin';
 import Translate from '~/vue_shared/translate';
 import { parseBoolean } from '../lib/utils/common_utils';
@@ -11,6 +11,7 @@ import ide from './components/ide.vue';
 import { createRouter } from './ide_router';
 import { DEFAULT_THEME } from './lib/themes';
 import { createStore } from './stores';
+import { OAuthCallbackDomainMismatchErrorApp } from './oauth_callback_domain_mismatch_error';
 
 Vue.use(Translate);
 
@@ -93,9 +94,19 @@ export const initLegacyWebIDE = (el, options = {}) => {
  * @param {Objects} options - Extra options for the IDE (Used by EE).
  */
 export async function startIde(options) {
-  const ideElement = document.getElementById('ide');
+  const ideElement = document.getElementById(IDE_ELEMENT_ID);
 
   if (!ideElement) {
+    return;
+  }
+
+  const oAuthCallbackDomainMismatchApp = new OAuthCallbackDomainMismatchErrorApp(
+    ideElement,
+    ideElement.dataset.callbackUrls,
+  );
+
+  if (oAuthCallbackDomainMismatchApp.isVisitingFromNonRegisteredOrigin()) {
+    oAuthCallbackDomainMismatchApp.renderError();
     return;
   }
 

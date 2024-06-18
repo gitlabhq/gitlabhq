@@ -18,6 +18,8 @@ module WorkItems
 
     before_validation :set_namespace
 
+    scope :work_items_in, ->(work_items) { where(work_item: work_items) }
+
     private
 
     def set_namespace

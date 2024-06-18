@@ -7,6 +7,7 @@
 = render_if_exists 'shared/submit_license_usage_data_banner'
 = render_if_exists 'shared/qrtly_reconciliation_alert'
 = render 'admin/dashboard/security_newsletter_callout'
+= render 'admin/dashboard/web_ide_oauth_callback_mismatch_callout'
 
 - if show_transition_to_jihu_callout?
   .js-jh-transition-banner{ data: { feature_name: Users::CalloutsHelper::TRANSITION_TO_JIHU_CALLOUT,
@@ -46,7 +47,7 @@
               - c.with_stat_value do
                 .gl-display-flex.gl-align-items-center.gl-gap-3
                   %span= approximate_count_with_delimiters(@counts, User)
-                  %a.gl-display-flex.gl-outline-0.gl-cursor-pointer{ tabindex: "0", data: { container: "body",
+                  %a.gl-display-flex.gl-cursor-pointer{ tabindex: "0", data: { container: "body",
                     toggle: "popover",
                     placement: "top",
                     html: "true",
@@ -61,7 +62,7 @@
           .gl-display-flex.gl-flex-wrap.gl-align-items-center.gl-gap-2
             = link_to(s_('AdminArea|View latest users'), admin_users_path({ sort: 'created_desc' }))
             %span.gl-text-secondary= "/"
-            = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "gl-font-base gl-font-weight-normal gl-text-capitalize")
+            = link_to(s_('AdminArea|Users statistics'), admin_dashboard_stats_path, class: "gl-font-base gl-font-normal gl-text-capitalize")
     .col-md-4.gl-mb-6
       = render Pajamas::CardComponent.new(**component_params) do |c|
         - c.with_body do

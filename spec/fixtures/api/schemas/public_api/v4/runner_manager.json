@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "system_id",
+    "version",
+    "revision",
+    "platform",
+    "architecture",
+    "created_at",
+    "contacted_at",
+    "ip_address",
+    "status"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "system_id": {
+      "type": "string"
+    },
+    "version": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "string"
+    },
+    "platform": {
+      "type": "string"
+    },
+    "architecture": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "contacted_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

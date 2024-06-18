@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::CreatePipelineService,
-  :yaml_processor_feature_flag_corectness, feature_category: :pipeline_composition do
+  :ci_config_feature_flag_correctness, feature_category: :pipeline_composition do
   include RepoHelpers
 
   context 'include:' do
@@ -183,34 +183,6 @@ RSpec.describe Ci::CreatePipelineService,
 
           expect(pipeline).to be_created_successfully
           expect(pipeline.processables.pluck(:name)).to contain_exactly('job', 'rspec')
-        end
-
-        context 'when the FF ci_rules_exists_pattern_matches_cache is disabled' do
-          before do
-            stub_feature_flags(ci_rules_exists_pattern_matches_cache: false)
-          end
-
-          it 'does not use the cache' do
-            expect(File).to receive(:fnmatch?)
-              .with('docs/*.md', anything, anything)
-              .exactly(2 * number_of_files).times # it iterates all files
-              .and_call_original
-            expect(File).to receive(:fnmatch?)
-              .with('config/*.rb', anything, anything)
-              .exactly(number_of_files).times # it iterates all files
-              .and_call_original
-            expect(File).to receive(:fnmatch?)
-              .with('**/app.rb', anything, anything)
-              .exactly(2 * number_of_files).times # it iterates all files
-              .and_call_original
-            expect(File).to receive(:fnmatch?)
-              .with('spec/fixtures/gitlab/ci/*/.gitlab-ci-template-1.yml', anything, anything)
-              .exactly(39).times # it iterates files until it finds a match
-              .and_call_original
-
-            expect(pipeline).to be_created_successfully
-            expect(pipeline.processables.pluck(:name)).to contain_exactly('job', 'rspec')
-          end
         end
       end
     end

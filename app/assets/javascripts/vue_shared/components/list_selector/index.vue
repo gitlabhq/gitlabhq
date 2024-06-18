@@ -1,8 +1,10 @@
 <script>
 import { GlCard, GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
+import { ACCESS_LEVEL_DEVELOPER_INTEGER } from '~/access_level/constants';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import Api from '~/api';
 import { getProjects } from '~/rest_api';
@@ -43,7 +45,22 @@ export default {
       required: false,
       default: null,
     },
+    groupId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     autofocus: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    usersQueryOptions: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
+    isProjectOnlyNamespace: {
       type: Boolean,
       required: false,
       default: false,
@@ -61,6 +78,9 @@ export default {
   computed: {
     config() {
       return CONFIG[this.type];
+    },
+    showNamespaceDropdown() {
+      return this.config.showNamespaceDropdown && !this.isProjectOnlyNamespace;
     },
     namespaceDropdownText() {
       return parseBoolean(this.isProjectNamespace)
@@ -108,17 +128,42 @@ export default {
       }
     },
     async fetchUsersBySearchTerm(search) {
-      let users = [];
+      const users = await Api.projectUsers(this.projectPath, search, this.usersQueryOptions);
+
+      return users?.map((user) => ({
+        text: user.name,
+        value: user.username,
+        ...this.convertToCamelCase(user),
+      }));
+    },
+    async fetchGroupsBySearchTerm(search) {
+      let groups = [];
+      if (this.groupId) {
+        groups = await this.fetchSubgroupsBySearchTerm(search);
+        return groups;
+      }
       if (parseBoolean(this.isProjectNamespace)) {
-        users = await Api.projectUsers(this.projectPath, search);
+        groups = await this.fetchProjectGroups(search);
       } else {
-        const groupMembers = await Api.groupMembers(this.groupPath, { query: search });
-        users = groupMembers?.data || [];
+        groups = await this.fetchAllGroups(search);
       }
 
-      return users?.map((user) => ({ text: user.name, value: user.username, ...user }));
+      return groups;
     },
-    fetchGroupsBySearchTerm(search) {
+    fetchProjectGroups(search) {
+      return Api.projectGroups(this.projectPath, {
+        search,
+        with_shared: true,
+        shared_min_access_level: ACCESS_LEVEL_DEVELOPER_INTEGER,
+      }).then((data) =>
+        data?.map((group) => ({
+          text: group.full_name,
+          value: group.name,
+          ...this.convertToCamelCase(group),
+        })),
+      );
+    },
+    fetchAllGroups(search) {
       return this.$apollo
         .query({
           query: groupsAutocompleteQuery,
@@ -128,10 +173,21 @@ export default {
           data?.groups.nodes.map((group) => ({
             text: group.fullName,
             value: group.name,
-            type: 'group',
             ...group,
+            id: getIdFromGraphQLId(group.id),
           })),
         );
+    },
+    async fetchSubgroupsBySearchTerm(search) {
+      let groups = [];
+      const subgroups = await Api.groupSubgroups(this.groupId, search);
+      groups = subgroups?.data || [];
+      return groups?.map((group) => ({
+        text: group.fullName,
+        value: group.name,
+        type: 'group',
+        ...group,
+      }));
     },
     fetchDeployKeysBySearchTerm() {
       // TODO - implement API request (follow-up)
@@ -187,7 +243,7 @@ export default {
     <div class="gl-display-flex gl-gap-3" :class="{ 'gl-mb-4': selectedItems.length }">
       <gl-collapsible-listbox
         ref="results"
-        class="list-selector gl-display-block gl-flex-grow-1"
+        class="list-selector gl-block gl-flex-grow-1"
         :items="filteredItems"
         @select="handleSelectItem"
         @shown="handleSearchInput"
@@ -210,10 +266,11 @@ export default {
       </gl-collapsible-listbox>
 
       <gl-collapsible-listbox
-        v-if="config.showNamespaceDropdown"
+        v-if="showNamespaceDropdown"
         v-model="isProjectNamespace"
         :toggle-text="namespaceDropdownText"
         :items="$options.namespaceOptions"
+        data-testid="namespace-dropdown"
         @select="handleSelectNamespace"
       />
     </div>

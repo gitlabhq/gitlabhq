@@ -282,7 +282,7 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
 
     context 'when the merge request is not created from the web ide' do
       it 'counter is not increased' do
-        expect(Gitlab::UsageDataCounters::WebIdeCounter).not_to receive(:increment_merge_requests_count)
+        expect(Gitlab::InternalEvents).not_to receive(:track_event)
 
         post_request(params)
       end
@@ -291,10 +291,24 @@ RSpec.describe Projects::MergeRequests::CreationsController, feature_category: :
     context 'when the merge request is created from the web ide' do
       let(:nav_source) { { nav_source: 'webide' } }
 
-      it 'counter is increased' do
-        expect(Gitlab::UsageDataCounters::WebIdeCounter).to receive(:increment_merge_requests_count)
+      let(:base_params) do
+        { project_id: project, namespace_id: project.namespace.to_param }
+      end
 
-        post_request(params.merge(nav_source))
+      let(:params) do
+        base_params.merge(
+          merge_request: {
+            title: 'Test merge request',
+            source_branch: 'remove-submodule',
+            target_branch: 'master'
+          }
+        )
+      end
+
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'create_merge_request_from_web_ide' }
+
+        subject { post_request(params.merge(nav_source)) }
       end
     end
 

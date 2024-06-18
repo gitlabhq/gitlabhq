@@ -168,7 +168,7 @@ export default {
       v-if="showEditor"
       class="design-description-form common-note-form"
       :label="$options.i18n.descriptionLabel"
-      label-class="gl-line-height-20! gl-font-lg!"
+      label-class="!gl-leading-20 gl-font-lg!"
     >
       <div v-if="errorMessage" class="gl-pb-3">
         <gl-alert variant="danger" @dismiss="errorMessage = null">
@@ -220,7 +220,7 @@ export default {
         <div
           class="design-description-header gl-display-flex gl-justify-content-space-between gl-mb-2"
         >
-          <h3 class="gl-line-height-20! gl-font-lg gl-m-0">
+          <h3 class="!gl-leading-20 gl-font-lg gl-m-0">
             {{ $options.i18n.descriptionLabel }}
           </h3>
           <gl-button

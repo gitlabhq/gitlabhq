@@ -59,7 +59,7 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
         let(:expected_error) { ArgumentError }
 
         let(:expected_message) do
-          "Debian package sample 1.2.3~alpha2 exists in distribution #{matching_package.debian_distribution.codename}"
+          "Debian package sample 1.2.3~alpha2 exists in distribution #{matching_package.distribution.codename}"
         end
 
         it_behaves_like 'raises error'
@@ -111,7 +111,7 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
           .and change { package.reload.name }.to('sample')
           .and change { package.version }.to('1.2.3~alpha2')
           .and change { package.status }.from('processing').to('default')
-          .and change { package.debian_publication }.from(nil)
+          .and change { package.publication }.from(nil)
           .and change { debian_file_metadatum.file_type }.from('unknown').to('changes')
           .and not_change { debian_file_metadatum.component }
       end
@@ -129,7 +129,7 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
           .and change { package.reload.name }.to('sample')
           .and change { package.version }.to('1.2.3~alpha2')
           .and change { package.status }.from('processing').to('default')
-          .and change { package.debian_publication }.from(nil)
+          .and change { package.publication }.from(nil)
           .and change { debian_file_metadatum.file_type }.from('unknown').to(expected_file_type)
           .and change { debian_file_metadatum.component }.from(nil).to(component_name)
       end
@@ -138,7 +138,8 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
     context 'with a changes file' do
       let!(:incoming) { create(:debian_incoming, project: distribution.project) }
       let!(:temporary_with_changes) { create(:debian_temporary_with_changes, project: distribution.project) }
-      let(:package) { temporary_with_changes }
+      # Reload factory to reset associations cache for package files
+      let(:package) { temporary_with_changes.reload }
 
       let(:package_file) { temporary_with_changes.package_files.first }
       let(:distribution_name) { nil }
@@ -268,7 +269,8 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
 
     context 'with a package file' do
       let!(:temporary_with_files) { create(:debian_temporary_with_files, project: distribution.project) }
-      let(:package) { temporary_with_files }
+      # Reload factory to reset associations cache for package files
+      let(:package) { temporary_with_files.reload }
 
       let(:package_file) { package.package_files.with_file_name('libsample0_1.2.3~alpha2_amd64.deb').first }
       let(:distribution_name) { distribution.codename }
@@ -387,7 +389,8 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
     context 'with a changes file' do
       let!(:incoming) { create(:debian_incoming, project: distribution.project) }
       let!(:temporary_with_changes) { create(:debian_temporary_with_changes, project: distribution.project) }
-      let(:package) { temporary_with_changes }
+      # Reload factory to reset associations cache for package files
+      let(:package) { temporary_with_changes.reload }
 
       let(:package_file) { temporary_with_changes.package_files.first }
       let(:distribution_name) { nil }
@@ -398,7 +401,8 @@ RSpec.describe Packages::Debian::ProcessPackageFileService, feature_category: :p
 
     context 'with a package file' do
       let!(:temporary_with_files) { create(:debian_temporary_with_files, project: distribution.project) }
-      let(:package) { temporary_with_files }
+      # Reload factory to reset associations cache for package files
+      let(:package) { temporary_with_files.reload }
 
       let(:package_file) { package.package_files.with_file_name('libsample0_1.2.3~alpha2_amd64.deb').first }
       let(:distribution_name) { distribution.codename }

@@ -1,8 +1,6 @@
 ---
 key_path: container_registry_server.db_enabled
 description: Is the Container Registry metadata database enabled
-product_section: ops
-product_stage: package
 product_group: container_registry
 value_type: boolean
 status: active

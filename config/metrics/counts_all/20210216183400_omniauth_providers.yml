@@ -2,8 +2,6 @@
 data_category: optional
 key_path: usage_activity_by_stage.manage.omniauth_providers
 description: List of unique OmniAuth providers
-product_section: sec
-product_stage: govern
 product_group: authentication
 value_type: object
 status: active

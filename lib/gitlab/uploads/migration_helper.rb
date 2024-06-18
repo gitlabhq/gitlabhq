@@ -28,7 +28,7 @@ module Gitlab
       end
 
       def prepare_variables(args, logger)
-        @mounted_as     = args.mounted_as&.gsub(':', '')
+        @mounted_as     = args.mounted_as&.delete(':')
         @uploader_class = args.uploader_class
         @model_class    = args.model_class&.constantize
         @logger         = logger

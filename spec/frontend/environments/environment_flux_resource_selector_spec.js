@@ -1,4 +1,4 @@
-import { GlCollapsibleListbox, GlAlert } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlAlert, GlFormGroup } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
@@ -66,6 +66,7 @@ describe('~/environments/components/flux_resource_selector.vue', () => {
 
   const findFluxResourceSelector = () => wrapper.findComponent(GlCollapsibleListbox);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findFormGroup = () => wrapper.findComponent(GlFormGroup);
 
   describe('default', () => {
     const kustomizationValue = `${kustomizationItem.apiVersion}/namespaces/${kustomizationItem.metadata.namespace}/kustomizations/${kustomizationItem.metadata.name}`;
@@ -107,6 +108,12 @@ describe('~/environments/components/flux_resource_selector.vue', () => {
           options: [{ value: helmReleaseValue, text: helmReleaseItem.metadata.name }],
         },
       ]);
+    });
+
+    it('renders description', () => {
+      expect(findFormGroup().attributes('description')).toBe(
+        'If a Flux resource is specified, its reconciliation status is reflected in GitLab.',
+      );
     });
 
     it('filters the flux resources list on user search', async () => {

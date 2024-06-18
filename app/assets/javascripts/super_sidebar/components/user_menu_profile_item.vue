@@ -50,7 +50,7 @@ export default {
     <template #list-item>
       <span class="gl-display-flex gl-flex-direction-column">
         <span>
-          <span class="gl-font-weight-bold">
+          <span class="gl-font-bold">
             {{ user.name }}
           </span>
           <gl-badge v-if="user.status.busy" size="sm" variant="warning">

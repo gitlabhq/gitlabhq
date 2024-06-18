@@ -32,7 +32,6 @@
       = render_if_exists 'groups/settings/wiki', f: f, group: @group
     = render 'groups/settings/lfs', f: f
     = render_if_exists 'groups/settings/auto_assign_duo_pro', f: f, group: @group
-    = render_if_exists 'groups/settings/code_suggestions', f: f, group: @group
     = render_if_exists 'groups/settings/security/security_policy_management', f: f, group: @group
     = render_if_exists 'groups/settings/duo_features_enabled', f: f, group: @group
     = render_if_exists 'groups/settings/experimental_settings', f: f, group: @group
@@ -46,6 +45,7 @@
     = render 'groups/settings/two_factor_auth', f: f, group: @group
     = render_if_exists 'groups/personal_access_token_expiration_policy', f: f, group: @group
     = render 'groups/settings/membership', f: f, group: @group
+    = render 'groups/settings/remove_dormant_members', f: f, group: @group
     = render_if_exists 'groups/settings/personal_access_tokens', f: f, group: @group
 
     %h5= _('Customer relations')

@@ -15,7 +15,7 @@ module Gitlab
             def perform!
               return unless limits.exceeded?(LIMIT_NAME, count_jobs_in_alive_pipelines)
 
-              error(MESSAGE, drop_reason: :job_activity_limit_exceeded)
+              error(MESSAGE, failure_reason: :job_activity_limit_exceeded)
 
               Gitlab::AppLogger.info(
                 class: self.class.name,

@@ -26,5 +26,5 @@ export default {
 };
 </script>
 <template>
-  <gl-link :href="historyPathWithId">{{ __('View details') }}</gl-link>
+  <gl-link :href="historyPathWithId">{{ s__('BulkImport|Migration details') }} &gt;</gl-link>
 </template>

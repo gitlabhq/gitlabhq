@@ -19,10 +19,10 @@ class Route < MainClusterwide::ApplicationRecord
   after_update :create_redirect_for_old_path
   after_update :rename_descendants
 
-  scope :by_paths, -> (paths) { where(arel_table[:path].lower.in(paths.map(&:downcase))) }
-  scope :inside_path, -> (path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
-  scope :for_routable, -> (routable) { where(source: routable) }
-  scope :for_routable_type, -> (routable_type) { where(source_type: routable_type) }
+  scope :by_paths, ->(paths) { where(arel_table[:path].lower.in(paths.map(&:downcase))) }
+  scope :inside_path, ->(path) { where('routes.path LIKE ?', "#{sanitize_sql_like(path)}/%") }
+  scope :for_routable, ->(routable) { where(source: routable) }
+  scope :for_routable_type, ->(routable_type) { where(source_type: routable_type) }
   scope :sort_by_path_length, -> { order('LENGTH(routes.path)', :path) }
 
   def rename_descendants

@@ -9,7 +9,7 @@ module Atlassian
         expose :name
         expose :email
 
-        with_options(unless: -> (user) { user.is_a?(CommitEntity::CommitAuthor) }) do
+        with_options(unless: ->(user) { user.is_a?(CommitEntity::CommitAuthor) }) do
           expose :username
           expose :url do |user|
             user_url(user)

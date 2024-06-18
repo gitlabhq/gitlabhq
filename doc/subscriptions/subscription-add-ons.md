@@ -72,16 +72,16 @@ Prerequisites:
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **GitLab Duo Pro**.
    - If the **GitLab Duo Pro** menu item is not available, synchronize your subscription
-   after purchase:
+     after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
-     synchronize subscription (**{retry}**).
+        synchronize subscription (**{retry}**).
 1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
 
 #### Configure network and proxy settings
 
 For self-managed instances, to enable GitLab Duo features,
-You must [enable network connectivity](../user/ai_features_enable.md#configure-gitlab-duo-on-a-self-managed-instance).
+you must [enable network connectivity](../user/ai_features_enable.md).
 
 ## Assign and remove GitLab Duo Pro seats in bulk
 
@@ -147,7 +147,7 @@ DETAILS:
 
 Prerequisites:
 
-- You must have an active paid Premium or Ultimate subscription.
+- You must be an owner of a top-level group that has an active paid subscription or Ultimate trial.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Billing**.
@@ -162,7 +162,7 @@ Prerequisites:
 
 Prerequisites:
 
-- You must have an active paid Premium or Ultimate subscription.
+- You must have an active paid Premium or Ultimate subscription. GitLab Duo Pro trials are not available to free users of self-managed at this time.
 - You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
 
 1. Go to the [GitLab Duo Pro trial page](https://about.gitlab.com/solutions/gitlab-duo-pro/self-managed-and-gitlab-dedicated-trial/).

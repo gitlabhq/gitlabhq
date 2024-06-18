@@ -41,7 +41,7 @@ export default {
       fallback-on-error
     />
     <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-max-w-30">
-      <span class="gl-font-weight-bold">{{ name }}</span>
+      <span class="gl-font-bold">{{ name }}</span>
       <span class="gl-text-gray-600">{{ data.nameWithNamespace }}</span>
     </span>
 

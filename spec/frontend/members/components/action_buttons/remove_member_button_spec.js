@@ -6,7 +6,7 @@ import Vuex from 'vuex';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { modalData } from 'jest/members/mock_data';
 import RemoveMemberButton from '~/members/components/action_buttons/remove_member_button.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBERS_TAB_TYPES } from '~/members/constants';
 
 Vue.use(Vuex);
 
@@ -20,7 +20,7 @@ describe('RemoveMemberButton', () => {
   const createStore = (state = {}) => {
     return new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.user]: {
+        [MEMBERS_TAB_TYPES.user]: {
           namespaced: true,
           state: {
             memberPath: '/groups/foo-bar/-/group_members/:id',
@@ -36,7 +36,7 @@ describe('RemoveMemberButton', () => {
     wrapper = shallowMount(RemoveMemberButton, {
       store: createStore(state),
       provide: {
-        namespace: MEMBER_TYPES.user,
+        namespace: MEMBERS_TAB_TYPES.user,
       },
       propsData: {
         memberId: 1,

@@ -42,6 +42,7 @@ exports[`Design management large image component renders media broken icon on er
   class="gl-text-gray-200"
   name="media-broken"
   size="48"
+  variant="current"
 />
 `;
 

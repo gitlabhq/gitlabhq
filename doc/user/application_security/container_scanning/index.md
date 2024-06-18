@@ -235,7 +235,7 @@ including a large number of false positives.
 | `ADDITIONAL_CA_CERT_BUNDLE`    | `""`          | Bundle of CA certs that you want to trust. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. | All |
 | `CI_APPLICATION_REPOSITORY`    | `$CI_REGISTRY_IMAGE/$CI_COMMIT_REF_SLUG` | Docker repository URL for the image to be scanned. | All |
 | `CI_APPLICATION_TAG`           | `$CI_COMMIT_SHA` | Docker repository tag for the image to be scanned. | All |
-| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:7` | Docker image of the analyzer. | All |
+| `CS_ANALYZER_IMAGE`            | `registry.gitlab.com/security-products/container-scanning:7` | Docker image of the analyzer. Do not use the `:latest` tag with analyzer images provided by GitLab. | All |
 | `CS_DEFAULT_BRANCH_IMAGE`      | `""` | The name of the `CS_IMAGE` on the default branch. See [Setting the default branch image](#setting-the-default-branch-image) for more details. | All |
 | `CS_DISABLE_DEPENDENCY_LIST`   | `"false"`      | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439782)** in GitLab 17.0. | All |
 | `CS_DISABLE_LANGUAGE_VULNERABILITY_SCAN` | `"true"` | Disable scanning for language-specific packages installed in the scanned image. | All |
@@ -252,6 +252,7 @@ including a large number of false positives.
 | `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are `UNKNOWN`, `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`. | Trivy |
 | `CS_TRIVY_JAVA_DB`             | `"ghcr.io/aquasecurity/trivy-java-db"` | Specify an alternate location for the [trivy-java-db](https://github.com/aquasecurity/trivy-java-db) vulnerability database. | Trivy |
 | `SECURE_LOG_LEVEL`             | `info`        | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`. | All |
+| `TRIVY_TIMEOUT`             | `5m0s`        | Set the timeout for the scan. | Trivy |
 
 <ol>
   <li>
@@ -691,6 +692,31 @@ This report can be viewed in the [Dependency List](../dependency_list/index.md).
 
 You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
+## Container Scanning For Registry
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `container_scanning_for_registry_flag`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+When an image is pushed with the `latest` tag, a container scanning job is automatically triggered against the default branch of the project.
+
+Unlike regular Container Scanning, the scan results do not include a security report. Instead, Container Scanning for Registry relies on [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/index.md) to inspect the components detected by the scan.
+
+When security findings are identified, GitLab generates vulnerabilities in the project. These vulnerabilities can be viewed under `Container registry vulnerabilities` tab on the [Vulnerability Report](../vulnerability_report/index.md) page.
+
+By default there is a limit of `50` scans per project per day.
+
+### Prerequisites
+
+- Ensure that the security configuration [Container Scanning For Registry](../configuration#security-testing) is enabled.
+- The project must contain a repository. Note that if you are utilizing an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project has an initial commit on the default branch.
+
 ## Security Dashboard
 
 The [Security Dashboard](../security_dashboard/index.md) shows you an overview of all
@@ -792,6 +818,20 @@ variables:
 The compressed Trivy database is stored in the `/tmp` folder of the container and it is extracted to `/home/gitlab/.cache/trivy/{ee|ce}/db` at runtime. This error can happen if you have a volume mount for `/tmp` directory in your runner configuration.
 
 To resolve this, instead of binding the `/tmp` folder, bind specific files or folders in `/tmp` (for example `/tmp/myfile.txt`).
+
+### Resolving `context deadline exceeded` error
+
+This error means a timeout occurred. To resolve it, add the `TRIVY_TIMEOUT` environment variable to the `container_scanning` job with a sufficiently long duration.
+
+### Max allowed age is 5 days error
+
+When you try to use the Grype scanner, you might encounter the following error:
+
+```shell
+1 error occurred: db could not be loaded: the vulnerability database was built 1 week ago (max allowed age is 5 days)
+```
+
+To resolve this issue, in the Container_Scanning job, set the variable `GRYPE_DB_VALIDATE_AGE` to `false`.
 
 ## Changes
 

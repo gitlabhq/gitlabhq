@@ -4,7 +4,9 @@ classes:
 - GeoNodeStatus
 feature_categories:
 - geo_replication
-description: Contains sites status and metadata for each Geo site, updated async through a scheduled worker.
+description: Contains sites status and metadata for each Geo site, updated async through
+  a scheduled worker.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3230
 milestone: '10.2'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true # Geo nodes are an infrastructure-level concern, and are not org-specific.

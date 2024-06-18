@@ -96,13 +96,7 @@ export default {
 </script>
 
 <template>
-  <gl-form
-    ref="form"
-    class="gl-sm-display-inline-block"
-    method="post"
-    :action="action"
-    @submit.prevent
-  >
+  <gl-form ref="form" class="sm:gl-inline-block" method="post" :action="action" @submit.prevent>
     <input type="hidden" name="_method" data-testid="test-2fa-method-field" :value="method" />
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
 

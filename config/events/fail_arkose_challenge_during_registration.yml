@@ -1,0 +1,16 @@
+---
+description: Tracks when user fails arkose labs challenge during registration
+internal_events: true
+action: fail_arkose_challenge_during_registration
+identifiers:
+- user
+product_group: acquisition
+milestone: '17.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154803
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

@@ -211,7 +211,7 @@ end
 
 RSpec.describe Ci::Build, 'TokenAuthenticatable' do
   let(:token_field) { :token }
-  let(:build) { FactoryBot.build(:ci_build, :created) }
+  let(:build) { FactoryBot.build(:ci_build, :created, ci_stage: create(:ci_stage)) }
 
   it_behaves_like 'TokenAuthenticatable'
 

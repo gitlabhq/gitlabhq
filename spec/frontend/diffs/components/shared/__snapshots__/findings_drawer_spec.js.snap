@@ -20,7 +20,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
         >
           <svg
             aria-hidden="true"
-            class="!gl-align-baseline gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
+            class="!gl-align-baseline gl-fill-current gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
             data-testid="severity-low-icon"
             role="img"
           >
@@ -42,7 +42,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
         >
           <svg
             aria-hidden="true"
-            class="gl-button-icon gl-icon s16"
+            class="gl-button-icon gl-fill-current gl-icon s16"
             data-testid="close-icon"
             role="img"
           >
@@ -64,10 +64,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           data-testid="findings-drawer-title"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Name
@@ -83,10 +83,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Status
@@ -102,10 +102,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Description
@@ -121,10 +121,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Project
@@ -141,10 +141,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               File
@@ -158,10 +158,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Identifiers
@@ -180,10 +180,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Tool
@@ -199,10 +199,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Engine
@@ -240,7 +240,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
         >
           <svg
             aria-hidden="true"
-            class="!gl-align-baseline gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
+            class="!gl-align-baseline gl-fill-current gl-icon gl-text-orange-300 inline-findings-severity-icon s12"
             data-testid="severity-low-icon"
             role="img"
           >
@@ -262,7 +262,7 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
         >
           <svg
             aria-hidden="true"
-            class="gl-button-icon gl-icon s16"
+            class="gl-button-icon gl-fill-current gl-icon s16"
             data-testid="close-icon"
             role="img"
           >
@@ -284,10 +284,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           data-testid="findings-drawer-title"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Name
@@ -303,10 +303,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Status
@@ -322,10 +322,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Description
@@ -341,10 +341,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Project
@@ -361,10 +361,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               File
@@ -378,10 +378,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Identifiers
@@ -400,10 +400,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Tool
@@ -419,10 +419,10 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
           class="gl-mb-4"
         >
           <p
-            class="gl-line-height-20"
+            class="gl-leading-20"
           >
             <span
-              class="gl-display-block gl-font-weight-bold gl-mb-1"
+              class="gl-block gl-font-bold gl-mb-1"
               data-testid="findings-drawer-item-description"
             >
               Engine

@@ -18,6 +18,7 @@ exports[`IntegrationHelpText component should render the help text 1`] = `
       class="gl-align-middle"
       name="external-link"
       size="12"
+      variant="current"
     />
   </gl-link-stub>
   !

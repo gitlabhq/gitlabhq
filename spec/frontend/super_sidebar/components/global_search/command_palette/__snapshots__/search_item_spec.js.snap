@@ -31,9 +31,10 @@ exports[`SearchItem should render the item 2`] = `
   class="gl-align-items-center gl-display-flex"
 >
   <gl-icon-stub
-    class="gl-mr-3"
+    class="gl-flex-shrink-0 gl-mr-3"
     name="users"
     size="16"
+    variant="current"
   />
   <span
     class="gl-display-flex gl-flex-direction-column"

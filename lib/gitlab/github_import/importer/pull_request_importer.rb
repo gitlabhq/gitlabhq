@@ -7,7 +7,7 @@ module Gitlab
         include Gitlab::Import::MergeRequestHelpers
 
         attr_reader :pull_request, :project, :client, :user_finder,
-                    :milestone_finder, :issuable_finder
+          :milestone_finder, :issuable_finder
 
         # pull_request - An instance of
         #                `Gitlab::GithubImport::Representation::PullRequest`.

@@ -10,10 +10,10 @@ module Gitlab
           description: 'Permissions for the current user on the resource',
           &block)
           field :user_permissions, permission_type,
-                description: description,
-                null: false,
-                method: :itself,
-                &block
+            description: description,
+            null: false,
+            method: :itself,
+            &block
         end
       end
     end

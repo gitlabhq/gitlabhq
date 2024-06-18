@@ -118,7 +118,7 @@ group level, Debian packages are aggregated from the projects in the group provi
 To create a project-level distribution using a personal access token:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <personal_access_token>" \
+curl --fail-with-body --request POST --header "PRIVATE-TOKEN: <personal_access_token>" \
   "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions?codename=<codename>"
 ```
 
@@ -186,7 +186,7 @@ your [credentials](#authenticate-to-the-debian-package-repositories).
 For example, to upload to component `main` of distribution `sid` using a personal access token:
 
 ```shell
-curl --request PUT --user "<username>:<personal_access_token>" \
+curl --fail-with-body --request PUT --user "<username>:<personal_access_token>" \
   "https://gitlab.example.com/api/v4/projects/<project_id>/packages/debian/your.deb?distribution=sid&component=main" \
   --upload-file  /path/to/your.deb
 ```
@@ -208,7 +208,7 @@ To install a package:
 
    ```shell
    sudo mkdir -p /usr/local/share/keyrings
-   curl --header "PRIVATE-TOKEN: <your_access_token>" \
+   curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
         "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc" \
         | \
         gpg --dearmor \
@@ -248,7 +248,7 @@ To download a source package:
 
    ```shell
    sudo mkdir -p /usr/local/share/keyrings
-   curl --header "PRIVATE-TOKEN: <your_access_token>" \
+   curl --fail-with-body --header "PRIVATE-TOKEN: <your_access_token>" \
         "https://gitlab.example.com/api/v4/projects/<project_id>/debian_distributions/<codename>/key.asc" \
         | \
         gpg --dearmor \

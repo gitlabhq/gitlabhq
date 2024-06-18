@@ -32,8 +32,8 @@ class UsersController < ApplicationController
   end
 
   feature_category :user_profile, [:show, :activity, :groups, :projects, :contributed, :starred,
-                            :followers, :following, :calendar, :calendar_activities,
-                            :exists, :activity, :follow, :unfollow, :ssh_keys]
+    :followers, :following, :calendar, :calendar_activities,
+    :exists, :activity, :follow, :unfollow, :ssh_keys]
 
   feature_category :source_code_management, [:snippets, :gpg_keys]
 

@@ -1,5 +1,5 @@
-mutation destroyModel($projectPath: ID!, $id: MlModelID!) {
-  mlModelDestroy(input: { projectPath: $projectPath, id: $id }) {
+mutation deleteModel($projectPath: ID!, $id: MlModelID!) {
+  mlModelDelete(input: { projectPath: $projectPath, id: $id }) {
     errors
   }
 }

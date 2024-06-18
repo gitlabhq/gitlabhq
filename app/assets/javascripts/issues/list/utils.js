@@ -1,4 +1,6 @@
 import produce from 'immer';
+import { TYPENAME_ITERATIONS_CADENCE } from '~/graphql_shared/constants';
+import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -9,6 +11,7 @@ import {
   OPERATOR_AFTER,
   OPERATORS_TO_GROUP,
   TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_DRAFT,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -18,6 +21,8 @@ import {
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_HEALTH,
   TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_EPIC,
+  TOKEN_TYPE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
 import {
@@ -283,12 +288,16 @@ export function groupMultiSelectFilterTokens(filterTokensToGroup, tokenDefs) {
 export const isNotEmptySearchToken = (token) =>
   !(token.type === FILTERED_SEARCH_TERM && !token.value.data);
 
-export const isSpecialFilter = (type, data) => {
-  const isAssigneeIdParam =
+export const isAssigneeIdParam = (type, data) => {
+  return (
     type === TOKEN_TYPE_ASSIGNEE &&
     isPositiveInteger(data) &&
-    getParameterByName(PARAM_ASSIGNEE_ID) === data;
-  return specialFilterValues.includes(data) || isAssigneeIdParam;
+    getParameterByName(PARAM_ASSIGNEE_ID) === data
+  );
+};
+
+export const isIterationCadenceIdParam = (type, data) => {
+  return type === TOKEN_TYPE_ITERATION && data?.includes('&');
 };
 
 const getFilterType = ({ type, value: { data, operator } }) => {
@@ -296,16 +305,31 @@ const getFilterType = ({ type, value: { data, operator } }) => {
   const isUnionedLabel = type === TOKEN_TYPE_LABEL && operator === OPERATOR_OR;
   const isAfter = operator === OPERATOR_AFTER;
 
-  if (isUnionedAuthor || isUnionedLabel || isAfter) {
+  if (
+    isUnionedAuthor ||
+    isUnionedLabel ||
+    isAssigneeIdParam(type, data) ||
+    isIterationCadenceIdParam(type, data) ||
+    isAfter
+  ) {
     return ALTERNATIVE_FILTER;
   }
-  if (isSpecialFilter(type, data)) {
+  if (specialFilterValues.includes(data)) {
     return SPECIAL_FILTER;
   }
+
   return NORMAL_FILTER;
 };
 
-const wildcardTokens = [TOKEN_TYPE_ITERATION, TOKEN_TYPE_MILESTONE, TOKEN_TYPE_RELEASE];
+const wildcardTokens = [
+  TOKEN_TYPE_ITERATION,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_EPIC,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_REVIEWER,
+  TOKEN_TYPE_WEIGHT,
+];
 
 const isWildcardValue = (tokenType, value) =>
   wildcardTokens.includes(tokenType) && specialFilterValues.includes(value);
@@ -329,6 +353,14 @@ const formatData = (token) => {
   return token.value.data;
 };
 
+function fullIterationCadenceId(id) {
+  if (!id) {
+    return null;
+  }
+
+  return convertToGraphQLId(TYPENAME_ITERATIONS_CADENCE, getIdFromGraphQLId(id));
+}
+
 export const convertToApiParams = (filterTokens) => {
   const params = new Map();
   const not = new Map();
@@ -346,7 +378,21 @@ export const convertToApiParams = (filterTokens) => {
       obj = params;
     }
     const data = formatData(token);
-    obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
+    if (isIterationCadenceIdParam(token.type, token.value.data)) {
+      const [iteration, cadence] = data.split('&');
+      const cadenceId = fullIterationCadenceId(cadence);
+      const iterationWildCardId = iteration.toUpperCase();
+      obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), cadenceId].flat() : cadenceId);
+      const secondApiField = filtersMap[token.type][API_PARAM][SPECIAL_FILTER];
+      obj.set(
+        secondApiField,
+        obj.has(secondApiField)
+          ? [obj.get(secondApiField), iterationWildCardId].flat()
+          : iterationWildCardId,
+      );
+    } else {
+      obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), data].flat() : data);
+    }
   });
 
   if (not.size) {
@@ -379,7 +425,7 @@ export const convertToSearchQuery = (filterTokens) =>
     .map((token) => token.value.data)
     .join(' ') || undefined;
 
-function findWidget(type, workItem) {
+export function findWidget(type, workItem) {
   return workItem?.widgets?.find((widget) => widget.type === type);
 }
 

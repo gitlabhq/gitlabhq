@@ -18,19 +18,44 @@ module Resolvers
       required: false,
       description: 'Filter by artifacts presence.'
 
+    argument :name, GraphQL::Types::String,
+      required: false,
+      alpha: { milestone: '17.1' },
+      description: 'Filter jobs by name.'
+
     alias_method :project, :object
 
-    def resolve_with_lookahead(statuses: nil, with_artifacts: nil)
+    def resolve_with_lookahead(**args)
       jobs = ::Ci::JobsFinder.new(
         current_user: current_user, project: project, params: {
-          scope: statuses, with_artifacts: with_artifacts
+          scope: args[:statuses], with_artifacts: args[:with_artifacts]
         }
       ).execute
+
+      if Feature.enabled?(:populate_and_use_build_names_table, project)
+        jobs = ::Ci::BuildNameFinder.new(
+          relation: jobs,
+          name: args[:name],
+          project: project,
+          params: {
+            before: decode_cursor(args[:before]), after: decode_cursor(args[:after]),
+            asc: args[:last].present?, invert_ordering: true
+          }
+        ).execute
+      end
 
       apply_lookahead(jobs)
     end
 
     private
+
+    def decode_cursor(encoded)
+      return unless encoded.present?
+
+      Gitlab::Json.parse(context.schema.cursor_encoder.decode(encoded, nonce: true))&.fetch('id')
+    rescue JSON::ParserError
+      raise Gitlab::Graphql::Errors::ArgumentError, "Please provide a valid cursor"
+    end
 
     def preloads
       {

@@ -26,6 +26,7 @@ module Gitlab
         scope :queue_order, -> { order(id: :asc) }
         scope :queued, -> { with_statuses(:active, :paused) }
         scope :finalizing, -> { with_status(:finalizing) }
+        scope :unfinished, -> { without_status(:finished, :finalized) }
         scope :ordered_by_created_at_desc, -> { order(created_at: :desc) }
 
         # on_hold_until is a temporary runtime status which puts execution "on hold"
@@ -208,11 +209,11 @@ module Gitlab
           efficiencies = jobs.map(&:time_efficiency).reject(&:nil?).each_with_index
 
           dividend = efficiencies.reduce(0) do |total, (job_eff, i)|
-            total + job_eff * (1 - alpha)**i
+            total + (job_eff * ((1 - alpha)**i))
           end
 
           divisor = efficiencies.reduce(0) do |total, (job_eff, i)|
-            total + (1 - alpha)**i
+            total + ((1 - alpha)**i)
           end
 
           return if divisor == 0

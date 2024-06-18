@@ -5,7 +5,7 @@ import Vuex from 'vuex';
 import FilterSortContainer from '~/members/components/filter_sort/filter_sort_container.vue';
 import MembersFilteredSearchBar from '~/members/components/filter_sort/members_filtered_search_bar.vue';
 import SortDropdown from '~/members/components/filter_sort/sort_dropdown.vue';
-import { MEMBER_TYPES } from '~/members/constants';
+import { MEMBERS_TAB_TYPES } from '~/members/constants';
 
 Vue.use(Vuex);
 
@@ -15,7 +15,7 @@ describe('FilterSortContainer', () => {
   const createComponent = (state) => {
     const store = new Vuex.Store({
       modules: {
-        [MEMBER_TYPES.user]: {
+        [MEMBERS_TAB_TYPES.user]: {
           namespaced: true,
           state: {
             filteredSearchBar: {
@@ -35,7 +35,7 @@ describe('FilterSortContainer', () => {
     wrapper = shallowMount(FilterSortContainer, {
       store,
       provide: {
-        namespace: MEMBER_TYPES.user,
+        namespace: MEMBERS_TAB_TYPES.user,
       },
     });
   };

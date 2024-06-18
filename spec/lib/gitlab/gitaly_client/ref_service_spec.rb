@@ -125,11 +125,11 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
         expect_any_instance_of(Gitaly::RefService::Stub)
           .to receive(:find_tag)
           .and_raise(new_detailed_error(GRPC::Core::StatusCodes::NOT_FOUND,
-                                        "tag was not found",
-                                        Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))
+            "tag was not found",
+            Gitaly::FindTagError.new(tag_not_found: Gitaly::ReferenceNotFoundError.new)))
 
         expect { client.find_tag('v1.0.0') }.to raise_error(Gitlab::Git::ReferenceNotFoundError,
-                                                            'tag does not exist: v1.0.0')
+          'tag does not exist: v1.0.0')
       end
     end
   end
@@ -529,8 +529,8 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_refs_by_oid)
         .with(gitaly_request_with_params(sort_field: 'refname',
-                                         oid: oid,
-                                         limit: 1), kind_of(Hash))
+          oid: oid,
+          limit: 1), kind_of(Hash))
         .and_call_original
 
       refs = client.find_refs_by_oid(oid: oid, limit: 1)
@@ -542,9 +542,9 @@ RSpec.describe Gitlab::GitalyClient::RefService, feature_category: :gitaly do
       expect_any_instance_of(Gitaly::RefService::Stub)
         .to receive(:find_refs_by_oid)
         .with(gitaly_request_with_params(sort_field: 'refname',
-                                         oid: oid,
-                                         limit: 1,
-                                         ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]), kind_of(Hash))
+          oid: oid,
+          limit: 1,
+          ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]), kind_of(Hash))
         .and_call_original
 
       refs = client.find_refs_by_oid(oid: oid, limit: 1, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX])

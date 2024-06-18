@@ -19,14 +19,14 @@ module RepoHelpers
     OpenStruct.new(
       oid: '5f53439ca4b009096571d3c8bc3d09d30e7431b3',
       path: "files/js/commit.js.coffee",
-      data: <<eos
+      data: <<EOS
 class Commit
   constructor: ->
     $('.files .diff-file').each ->
       new CommitFile(this)
 
 @Commit = Commit
-eos
+EOS
     )
   end
 
@@ -42,10 +42,10 @@ eos
       line_code_path: 'files/ruby/popen.rb',
       del_line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_13_13',
       referenced_by: [],
-      message: <<eos
+      message: <<EOS
 Change some files
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
-eos
+EOS
     )
   end
 
@@ -58,7 +58,7 @@ eos
       author_email: "sytse@gitlab.com",
       files_changed_count: 1,
       referenced_by: [],
-      message: <<eos
+      message: <<EOS
 Add directory structure for tree_helper spec
 
 This directory structure is needed for a testing the method flatten_tree(tree) in the TreeHelper module
@@ -66,7 +66,7 @@ This directory structure is needed for a testing the method flatten_tree(tree) i
 See [merge request #275](https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/275#note_732774)
 
 See merge request !2
-eos
+EOS
     )
   end
 
@@ -77,10 +77,10 @@ eos
       author_full_name: "Dmitriy Zaporozhets",
       author_email: "dmitriy.zaporozhets@gmail.com",
       referenced_by: [],
-      message: <<eos
+      message: <<EOS
 Files, encoding and much more
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
-eos
+EOS
     )
   end
 
@@ -93,10 +93,10 @@ eos
       old_blob_id: '33f3729a45c02fc67d00adb1b8bca394b0e761d9',
       new_blob_id: '2f63565e7aac07bcdadb654e253078b727143ec4',
       referenced_by: [],
-      message: <<eos
+      message: <<EOS
 Modified image
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
-eos
+EOS
     )
   end
 

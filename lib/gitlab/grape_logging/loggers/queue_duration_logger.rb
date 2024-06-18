@@ -11,7 +11,7 @@ module Gitlab
 
           return {} unless duration_s
 
-          { 'queue_duration_s': duration_s }
+          { queue_duration_s: duration_s }
         end
       end
     end

@@ -156,7 +156,7 @@ export default {
         <gl-form-input v-model="dir" :disabled="loading" name="dir_name" />
       </gl-form-group>
       <gl-form-group :label="$options.i18n.COMMIT_LABEL" label-for="commit_message">
-        <gl-form-textarea v-model="commit" name="commit_message" :disabled="loading" />
+        <gl-form-textarea v-model="commit" name="commit_message" :disabled="loading" no-resize />
       </gl-form-group>
       <gl-form-group
         v-if="canPushCode"

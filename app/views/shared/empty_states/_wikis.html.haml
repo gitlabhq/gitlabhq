@@ -19,14 +19,6 @@
     - secondary_button_text = s_('WikiEmpty|Enable the Confluence Wiki integration')
     - secondary_button_link = edit_project_settings_integration_path(@project, :confluence)
 
-- elsif @project && can?(current_user, :read_issue, @project)
-  - title = messages.dig(:issuable, :title)
-  - issues_link = link_to s_('WikiEmptyIssueMessage|issue tracker'), project_issues_path(@project)
-  - description = messages.dig(:issuable, :body).html_safe % { issues_link: issues_link }
-  - if show_new_issue_link?(@project)
-    - primary_button_text = s_('WikiEmpty|Suggest wiki improvement')
-    - primary_button_link = new_project_issue_path(@project)
-
 = render Pajamas::EmptyStateComponent.new(svg_path: illustration,
   title: title,
   primary_button_text: primary_button_text,

@@ -18,7 +18,7 @@ kbd {
     background-color: $gray-100;
     border-color: var(--gray-10, $gray-10) var(--gray-10, $gray-10) var(--gray-50, $gray-50);
     box-shadow: none;
-    border-radius: $border-radius-default;
+    border-radius: $gl-border-radius-base;
     font-family: $monospace-font;
     font-size: $gl-font-size-small;
     line-height: 1;

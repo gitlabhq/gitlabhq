@@ -23,7 +23,7 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
     it 'handles network timeouts' do
       actual_retries = 0
       retry_options_with_block = retry_options.merge(
-        retry_block: -> (_, _, _, _) { actual_retries += 1 }
+        retry_block: ->(_, _, _, _) { actual_retries += 1 }
       )
 
       stub_const('ContainerRegistry::BaseClient::RETRY_OPTIONS', retry_options_with_block)
@@ -75,10 +75,10 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
     it 'GET /v2/:name/manifests/mytag' do
       stub_request(method, url)
         .with(headers: {
-                'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
-                'Authorization' => "bearer #{token}",
-                'User-Agent' => "GitLab/#{Gitlab::VERSION}"
-              })
+          'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+          'Authorization' => "bearer #{token}",
+          'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+        })
         .to_return(status: 200, body: manifest.to_json, headers: { content_type: manifest_type })
 
       expect_new_faraday
@@ -163,9 +163,9 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
     let(:url) { 'http://container-registry/v2/group/test/blobs/sha256:0123456789012345' }
     let(:blob_headers) do
       {
-          'Accept' => 'application/octet-stream',
-          'Authorization' => "bearer #{token}",
-          'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+        'Accept' => 'application/octet-stream',
+        'Authorization' => "bearer #{token}",
+        'User-Agent' => "GitLab/#{Gitlab::VERSION}"
       }
     end
 
@@ -199,7 +199,7 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
         # https://github.com/bblimke/webmock/blob/master/lib/webmock/matchers/hash_excluding_matcher.rb
         stub_request(:get, redirect_location)
           .with(headers: redirect_header) do |request|
-            !request.headers.include?('Authorization')
+            request.headers.exclude?('Authorization')
           end
           .to_return(status: 200, body: "Successfully redirected")
       end
@@ -287,10 +287,10 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
   describe '#put_tag' do
     let(:manifest_headers) do
       {
-          'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
-          'Authorization' => "bearer #{token}",
-          'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json',
-          'User-Agent' => "GitLab/#{Gitlab::VERSION}"
+        'Accept' => 'application/vnd.docker.distribution.manifest.v2+json, application/vnd.oci.image.manifest.v1+json',
+        'Authorization' => "bearer #{token}",
+        'Content-Type' => 'application/vnd.docker.distribution.manifest.v2+json',
+        'User-Agent' => "GitLab/#{Gitlab::VERSION}"
       }
     end
 

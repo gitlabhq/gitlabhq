@@ -1,13 +1,5 @@
 <script>
-import {
-  GlAlert,
-  GlFormGroup,
-  GlForm,
-  GlButton,
-  GlFormInput,
-  GlFormCheckbox,
-  GlTooltip,
-} from '@gitlab/ui';
+import { GlFormGroup, GlForm, GlButton, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import { addHierarchyChild } from '../../graphql/cache_utils';
@@ -24,12 +16,13 @@ import {
   I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
+  WORK_ITEM_TYPE_VALUE_EPIC,
   sprintfWorkItem,
 } from '../../constants';
+import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
 
 export default {
   components: {
-    GlAlert,
     GlForm,
     GlButton,
     GlFormGroup,
@@ -37,6 +30,7 @@ export default {
     GlFormCheckbox,
     GlTooltip,
     WorkItemTokenInput,
+    WorkItemProjectsListbox,
   },
   inject: ['hasIterationsFeature', 'isGroup'],
   props: {
@@ -110,21 +104,36 @@ export default {
       workItemsToAdd: [],
       error: null,
       search: '',
+      selectedProject: null,
       childToCreateTitle: null,
       confidential: this.parentConfidential,
     };
   },
   computed: {
+    workItemChildIsEpic() {
+      return this.childrenTypeName === WORK_ITEM_TYPE_VALUE_EPIC;
+    },
     workItemInput() {
       let workItemInput = {
         title: this.search?.title || this.search,
-        projectPath: this.fullPath,
         workItemTypeId: this.childWorkItemType,
         hierarchyWidget: {
           parentId: this.issuableGid,
         },
         confidential: this.parentConfidential || this.confidential,
       };
+
+      if (this.selectedProject) {
+        workItemInput = {
+          ...workItemInput,
+          namespacePath: this.selectedProject.fullPath,
+        };
+      } else {
+        workItemInput = {
+          ...workItemInput,
+          projectPath: this.fullPath,
+        };
+      }
 
       if (this.parentMilestoneId) {
         workItemInput = {
@@ -192,11 +201,14 @@ export default {
     parentMilestoneId() {
       return this.parentMilestone?.id;
     },
-    isSubmitButtonDisabled() {
+    canSubmitForm() {
       if (this.isCreateForm) {
-        return this.search.length === 0;
+        if (this.isGroup && !this.workItemChildIsEpic) {
+          return this.search.length > 0 && this.selectedProject !== null;
+        }
+        return this.search.length > 0;
       }
-      return this.workItemsToAdd.length === 0 || !this.areWorkItemsToAddValid;
+      return this.workItemsToAdd.length > 0 && this.areWorkItemsToAddValid;
     },
     invalidWorkItemsToAdd() {
       return this.parentConfidential
@@ -260,6 +272,9 @@ export default {
         });
     },
     createChild() {
+      if (!this.canSubmitForm) {
+        return;
+      }
       this.$apollo
         .mutate({
           mutation: createWorkItemMutation,
@@ -293,15 +308,17 @@ export default {
     },
   },
   i18n: {
-    inputLabel: __('Title'),
+    titleInputLabel: __('Title'),
+    projectInputLabel: __('Project'),
     addChildErrorMessage: s__(
       'WorkItem|Something went wrong when trying to add a child. Please try again.',
     ),
     createChildErrorMessage: s__(
       'WorkItem|Something went wrong when trying to create a child. Please try again.',
     ),
-    createPlaceholder: s__('WorkItem|Add a title'),
-    fieldValidationMessage: __('Maximum of 255 characters'),
+    titleInputPlaceholder: s__('WorkItem|Add a title'),
+    projectInputPlaceholder: s__('WorkItem|Select a project'),
+    titleInputValidationMessage: __('Maximum of 255 characters'),
   },
 };
 </script>
@@ -312,41 +329,53 @@ export default {
     data-testid="add-item-form"
     @submit.prevent="addOrCreateMethod"
   >
-    <gl-alert v-if="error" variant="danger" class="gl-mb-3" @dismiss="unsetError">
-      {{ error }}
-    </gl-alert>
-    <gl-form-group
-      v-if="isCreateForm"
-      :label="$options.i18n.inputLabel"
-      :description="$options.i18n.fieldValidationMessage"
-    >
-      <gl-form-input
-        ref="wiTitleInput"
-        v-model="search"
-        :placeholder="$options.i18n.createPlaceholder"
-        maxlength="255"
-        class="gl-mb-3"
-        autofocus
-      />
-    </gl-form-group>
-    <gl-form-checkbox
-      v-if="isCreateForm"
-      ref="confidentialityCheckbox"
-      v-model="confidential"
-      name="isConfidential"
-      class="gl-md-mt-5 gl-mb-5 gl-md-mb-3!"
-      :disabled="parentConfidential"
-      >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
-    >
-    <gl-tooltip
-      v-if="showConfidentialityTooltip"
-      :target="getConfidentialityTooltipTarget"
-      triggers="hover"
-      >{{ confidentialityCheckboxTooltip }}</gl-tooltip
-    >
-    <div class="gl-mb-4">
+    <template v-if="isCreateForm">
+      <div class="gl-display-flex gl-gap-x-3">
+        <gl-form-group
+          class="gl-w-full"
+          :label="$options.i18n.titleInputLabel"
+          :description="$options.i18n.titleInputValidationMessage"
+        >
+          <gl-form-input
+            ref="wiTitleInput"
+            v-model="search"
+            :placeholder="$options.i18n.titleInputPlaceholder"
+            maxlength="255"
+            class="gl-mb-3"
+            autofocus
+          />
+        </gl-form-group>
+        <gl-form-group
+          v-if="!workItemChildIsEpic"
+          class="gl-w-full"
+          :label="$options.i18n.projectInputLabel"
+          :description="$options.i18n.projectValidationMessage"
+        >
+          <work-item-projects-listbox
+            v-model="selectedProject"
+            class="gl-w-full"
+            :full-path="fullPath"
+            :is-group="isGroup"
+          />
+        </gl-form-group>
+      </div>
+      <gl-form-checkbox
+        ref="confidentialityCheckbox"
+        v-model="confidential"
+        name="isConfidential"
+        class="gl-md-mt-5 gl-mb-5 gl-md-mb-3!"
+        :disabled="parentConfidential"
+        >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
+      >
+      <gl-tooltip
+        v-if="showConfidentialityTooltip"
+        :target="getConfidentialityTooltipTarget"
+        triggers="hover"
+        >{{ confidentialityCheckboxTooltip }}</gl-tooltip
+      >
+    </template>
+    <div v-else class="gl-mb-4">
       <work-item-token-input
-        v-if="!isCreateForm"
         v-model="workItemsToAdd"
         :is-create-form="isCreateForm"
         :parent-work-item-id="issuableGid"
@@ -362,13 +391,16 @@ export default {
       >
         {{ workItemsToAddInvalidMessage }}
       </div>
+      <div v-if="error" class="gl-text-red-500">
+        {{ error }}
+      </div>
     </div>
     <gl-button
       category="primary"
       variant="confirm"
       size="small"
       type="submit"
-      :disabled="isSubmitButtonDisabled"
+      :disabled="!canSubmitForm"
       data-testid="add-child-button"
       class="gl-mr-2"
     >

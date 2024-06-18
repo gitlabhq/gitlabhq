@@ -19,7 +19,7 @@ module Gitlab
             ref: "refs/heads/master"
           }
         ],
-        "refs": ["refs/heads/master"]
+        refs: ["refs/heads/master"]
       }.freeze
 
       # Produce a hash of post-receive data

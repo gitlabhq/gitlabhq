@@ -57,7 +57,7 @@ module Gitlab
       private
 
       attr_reader :source_model, :target_model, :source_columns, :target_columns,
-                  :source_sort_column, :target_sort_column, :start_time, :result
+        :source_sort_column, :target_sort_column, :start_time, :result
 
       def build_result(next_start_id:)
         { next_start_id: next_start_id }.merge(result)

@@ -195,6 +195,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout') }
+    it { is_expected.to have_many(:broadcast_message_dismissals).class_name('Users::BroadcastMessageDismissal') }
     it { is_expected.to have_many(:created_projects).dependent(:nullify).class_name('Project') }
     it { is_expected.to have_many(:created_namespace_details).class_name('Namespace::Detail') }
     it { is_expected.to have_many(:user_achievements).class_name('Achievements::UserAchievement').inverse_of(:user) }
@@ -222,6 +223,11 @@ RSpec.describe User, feature_category: :user_profile do
     it do
       is_expected.to have_many(:organizations)
                        .through(:organization_users).class_name('Organizations::Organization').inverse_of(:users)
+    end
+
+    it do
+      is_expected.to have_many(:owned_organizations)
+                      .through(:organization_users).class_name('Organizations::Organization')
     end
 
     it do
@@ -1371,37 +1377,6 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
-    describe '.with_expiring_and_not_notified_personal_access_tokens' do
-      let_it_be(:user1) { create(:user) }
-      let_it_be(:user2) { create(:user) }
-      let_it_be(:user3) { create(:user) }
-
-      let_it_be(:expired_token) { create(:personal_access_token, user: user1, expires_at: 2.days.ago) }
-      let_it_be(:revoked_token) { create(:personal_access_token, user: user1, revoked: true) }
-      let_it_be(:impersonation_token) { create(:personal_access_token, :impersonation, user: user1, expires_at: 2.days.from_now) }
-      let_it_be(:valid_token_and_notified) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now, expire_notification_delivered: true) }
-      let_it_be(:valid_token1) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
-      let_it_be(:valid_token2) { create(:personal_access_token, user: user2, expires_at: 2.days.from_now) }
-
-      let(:users) { described_class.with_expiring_and_not_notified_personal_access_tokens(from) }
-
-      context 'in one day' do
-        let(:from) { 1.day.from_now }
-
-        it "doesn't include an user" do
-          expect(users).to be_empty
-        end
-      end
-
-      context 'in three days' do
-        let(:from) { 3.days.from_now }
-
-        it 'only includes user2' do
-          expect(users).to contain_exactly(user2)
-        end
-      end
-    end
-
     describe '.with_personal_access_tokens_expired_today' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:expired_today) { create(:personal_access_token, user: user1, expires_at: Date.current) }
@@ -1479,6 +1454,18 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    describe '.all_without_ghosts' do
+      let_it_be(:user1) { create(:user, :external) }
+      let_it_be(:user2) { create(:user, state: 'blocked') }
+      let_it_be(:user3) { create(:user, :ghost) }
+      let_it_be(:user4) { create(:user) }
+      let_it_be(:user5) { create(:user, :deactivated) }
+
+      it 'returns all users but ghost users' do
+        expect(described_class.all_without_ghosts).to match_array([user1, user2, user4, user5])
+      end
+    end
+
     describe '.without_ghosts' do
       let_it_be(:user1) { create(:user, :external) }
       let_it_be(:user2) { create(:user, state: 'blocked') }
@@ -1553,6 +1540,18 @@ RSpec.describe User, feature_category: :user_profile do
 
       it 'returns only the trusted users' do
         expect(described_class.trusted).to match_array([trusted_user1, trusted_user2])
+      end
+    end
+
+    describe '.by_ids' do
+      let_it_be(:first_user) { create(:user) }
+      let_it_be(:second_user) { create(:user) }
+      let_it_be(:third_user) { create(:user) }
+
+      it 'returns users for the given ids' do
+        user_ids = [first_user, second_user].map(&:id)
+
+        expect(described_class.by_ids(user_ids)).to contain_exactly(first_user, second_user)
       end
     end
   end
@@ -3040,7 +3039,8 @@ RSpec.describe User, feature_category: :user_profile do
     let(:user) { double }
 
     where(:scope, :filter_name) do
-      :active_without_ghosts    | nil
+      :all_without_ghosts       | nil
+      :active_without_ghosts    | 'active'
       :admins                   | 'admins'
       :blocked                  | 'blocked'
       :banned                   | 'banned'
@@ -3446,20 +3446,62 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'with private emails search' do
+        let(:options) { { with_private_emails: true } }
+
         it 'returns users with matching private primary email' do
-          expect(described_class.search(user.email, with_private_emails: true)).to match_array([user])
+          expect(described_class.search(user.email, **options)).to match_array([user])
         end
 
         it 'returns users with matching private unconfirmed primary email' do
-          expect(described_class.search(unconfirmed_user.email, with_private_emails: true)).to match_array([unconfirmed_user])
+          expect(described_class.search(unconfirmed_user.email, **options)).to match_array([unconfirmed_user])
         end
 
         it 'returns users with matching private confirmed secondary email' do
-          expect(described_class.search(confirmed_secondary_email.email, with_private_emails: true)).to match_array([user])
+          expect(described_class.search(confirmed_secondary_email.email, **options)).to match_array([user])
         end
 
         it 'does not return users with matching private unconfirmed secondary email' do
-          expect(described_class.search(unconfirmed_secondary_email.email, with_private_emails: true)).to be_empty
+          expect(described_class.search(unconfirmed_secondary_email.email, **options)).to be_empty
+        end
+
+        context 'with partial email search' do
+          let(:options) { super().merge(partial_email_search: true) }
+
+          before do
+            user.emails.each { |email| email.update! confirmed_at: nil }
+          end
+
+          it 'returns users with partially matching private primary email' do
+            expect(described_class.search(user.email[1...-1], **options)).to match_array([user, user2])
+          end
+
+          it 'returns users with partially matching private unconfirmed primary email' do
+            expect(described_class.search(unconfirmed_user.email[1...-1], **options)).to match_array([unconfirmed_user])
+          end
+
+          it 'returns users with partially matching private confirmed secondary email' do
+            expect(described_class.search(confirmed_secondary_email.email[1...-1], **options)).to match_array([user])
+          end
+
+          context 'when search is less than minimum char limit' do
+            subject(:users) { described_class.search(user.public_email[1..2], **options) }
+
+            context 'and use_minimum_char_limit is false' do
+              let(:options) { super().merge(use_minimum_char_limit: false) }
+
+              it 'ignores minimum char limit and returns users with a partially matching public email' do
+                expect(users).to match_array([user])
+              end
+            end
+
+            context 'and use_minimum_char_limit is true' do
+              let(:options) { super().merge(use_minimum_char_limit: true) }
+
+              it 'respects minimum char limit and does not return any users' do
+                expect(users).to be_empty
+              end
+            end
+          end
         end
       end
     end
@@ -3576,6 +3618,12 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(described_class.find_by_ssh_key_id(signing_key.id)).to be_nil
       expect(described_class.find_by_ssh_key_id(auth_and_signing_key.id)).to eq(user)
+    end
+
+    it 'does not return a user for a deploy key' do
+      deploy_key = create(:deploy_key)
+
+      expect(described_class.find_by_ssh_key_id(deploy_key.id)).to be_nil
     end
   end
 
@@ -3794,6 +3842,47 @@ RSpec.describe User, feature_category: :user_profile do
 
       expect(project_member_invite_via_unconfirmed_secondary_email.reload).to be_invite
       expect(group_member_invite_via_unconfirmed_secondary_email.reload).to be_invite
+    end
+
+    context 'with an uppercase version of the email matches another member' do
+      let!(:uppercase_existing_invite) do
+        create(:project_member, :invited, source: project_member_invite.project, invite_email: user.email.upcase)
+      end
+
+      it 'accepts only one of the invites' do
+        travel_to 10.minutes.ago do
+          project_member_invite.touch # in past, so shouldn't get accepted over the one created
+        end
+
+        uppercase_existing_invite.touch # ensure updated_at is being verified. This one should be first now.
+
+        travel_to 10.minutes.from_now do
+          project_member_invite.touch # now we'll make the original first so we are verifying updated_at
+
+          result = [
+            project_member_invite,
+            group_member_invite,
+            project_member_invite_via_confirmed_secondary_email,
+            group_member_invite_via_confirmed_secondary_email
+          ]
+
+          accepted_members = user.accept_pending_invitations!
+
+          expect(accepted_members).to match_array(result)
+          expect(uppercase_existing_invite.reset.user).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#pending_invitations' do
+    let_it_be(:user, reload: true) { create(:user, email: 'user@email.com') }
+    let_it_be(:invited_member) do
+      create(:project_member, :invited, invite_email: user.email)
+    end
+
+    it 'finds the invite' do
+      expect(user.pending_invitations).to match_array([invited_member])
     end
   end
 
@@ -4723,6 +4812,46 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
+  describe '#solo_owned_organizations' do
+    let_it_be_with_refind(:user) { create(:user) }
+
+    subject(:solo_owned_organizations) { user.solo_owned_organizations }
+
+    context 'no owned organizations' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'has owned organizations' do
+      let(:organization) { create(:organization) }
+
+      before do
+        organization.add_owner(user)
+      end
+
+      context 'not solo owner' do
+        let_it_be(:user2) { create(:user) }
+
+        before do
+          organization.add_owner(user2)
+        end
+
+        it { is_expected.to be_empty }
+      end
+
+      context 'solo owner' do
+        it { is_expected.to include(organization) }
+      end
+
+      context 'solo owner with other members' do
+        before do
+          create(:organization_user, organization: organization)
+        end
+
+        it { is_expected.to include(organization) }
+      end
+    end
+  end
+
   describe '#can_remove_self?' do
     let(:user) { create(:user) }
 
@@ -4754,33 +4883,45 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#authorized_groups' do
-    let!(:user) { create(:user) }
-    let!(:private_group) { create(:group) }
-    let!(:child_group) { create(:group, parent: private_group) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:private_group) { create(:group) }
+    let_it_be(:child_group) { create(:group, parent: private_group) }
 
-    let!(:project_group) { create(:group) }
-    let!(:project) { create(:project, group: project_group) }
+    let_it_be(:project_group) { create(:group) }
+    let_it_be(:project) { create(:project, group: project_group) }
 
-    before do
+    before_all do
       private_group.add_member(user, Gitlab::Access::MAINTAINER)
       project.add_maintainer(user)
     end
 
     subject { user.authorized_groups }
 
-    it { is_expected.to contain_exactly private_group, project_group }
+    it { is_expected.to contain_exactly private_group, child_group, project_group }
+
+    context 'when include_subgroups_in_authorized_groups is disabled' do
+      before do
+        stub_feature_flags(include_subgroups_in_authorized_groups: false)
+      end
+
+      it 'omits subgroups with inherited membership' do
+        is_expected.to contain_exactly private_group, project_group
+      end
+    end
 
     context 'with shared memberships' do
-      let!(:shared_group) { create(:group) }
-      let!(:other_group) { create(:group) }
+      let_it_be(:shared_group) { create(:group) }
+      let_it_be(:other_group) { create(:group) }
+      let_it_be(:shared_with_project_group) { create(:group) }
 
-      before do
+      before_all do
         create(:group_group_link, shared_group: shared_group, shared_with_group: private_group)
         create(:group_group_link, shared_group: private_group, shared_with_group: other_group)
+        create(:group_group_link, shared_group: shared_with_project_group, shared_with_group: project_group)
       end
 
       it { is_expected.to include shared_group }
-      it { is_expected.not_to include other_group }
+      it { is_expected.not_to include other_group, shared_with_project_group }
     end
 
     context 'when a new column is added to namespaces table' do

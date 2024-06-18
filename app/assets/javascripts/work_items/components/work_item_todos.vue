@@ -182,6 +182,6 @@ export default {
     :aria-label="buttonLabel"
     @click="onToggle"
   >
-    <gl-icon :class="{ 'gl-fill-blue-500': pendingTodo }" :name="buttonIcon" />
+    <gl-icon :class="{ '!gl-fill-blue-500': pendingTodo }" :name="buttonIcon" />
   </gl-button>
 </template>

@@ -5,12 +5,20 @@ RSpec.shared_context 'with service desk mailer' do
     stub_const('ServiceEmailClass', Class.new(ApplicationMailer))
 
     ServiceEmailClass.class_eval do
+      mattr_accessor :override_layout_lookup_table, default: {}
+
       include GitlabRoutingHelper
       include EmailsHelper
       include Emails::ServiceDesk
 
       helper GitlabRoutingHelper
       helper EmailsHelper
+
+      layout :determine_layout
+
+      def determine_layout
+        override_layout_lookup_table[action_name&.to_sym]
+      end
 
       # this method is implemented in Notify class, we don't need to test it
       def reply_key

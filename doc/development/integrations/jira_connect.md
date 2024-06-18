@@ -4,7 +4,16 @@ group: Import and Integrate
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Set up a Jira development environment
+# GitLab for Jira Cloud app development
+
+Developers have two options for how set up a development environment for the GitLab for Jira app:
+
+1. A full environment [with Jira](#set-up-with-jira). Use this when you need to test interactions with Jira.
+1. A local environment [without Jira](#setup-without-jira). You can use this quicker setup if you do not require Jira, for example when testing the GitLab frontend.
+
+## Set up with Jira
+
+### Install the app in Jira
 
 The following are required to install and test the app:
 
@@ -14,22 +23,20 @@ The following are required to install and test the app:
   recommend using Gitpod or a similar cloud development environment. For more
   information on using Gitpod with GDK, see the:
 
-  - [GDK in Gitpod](https://www.loom.com/share/9c9711d4876a40869b9294eecb24c54d)
-    video.
   - [GDK with Gitpod](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitpod.md)
     documentation.
+  - [GDK in Gitpod](https://www.loom.com/share/9c9711d4876a40869b9294eecb24c54d)
+    video.
 
   <!-- vale gitlab.Spelling = NO -->
 
-  You **must not** use tunneling tools such as Serveo or `ngrok`. These are
-  security risks, and must not be run on developer laptops.
+  GitLab team members **must not** use tunneling tools such as Serveo or `ngrok`. These are
+  security risks, and must not be run on GitLab developer laptops.
 
   <!-- vale gitlab.Spelling = YES -->
 
   Jira requires all connections to the app host to be over SSL. If you set up
   your own environment, remember to enable SSL and an appropriate certificate.
-
-## Install the app in Jira
 
 To install the app in Jira:
 
@@ -58,27 +65,9 @@ To install the app in Jira:
    You can also select **Getting Started** to open the configuration page rendered from your GitLab instance.
 
    _Note that any changes to the app descriptor requires you to uninstall then reinstall the app._
+1. You can now [set up the OAuth authentication flow](#set-up-the-gitlab-oauth-authentication-flow).
 
-## Simple setup
-
-To avoid external dependencies like Gitpod and a Jira Cloud instance, use the [Jira connect test tool](https://gitlab.com/gitlab-org/manage/integrations/jira-connect-test-tool) and your local GDK:
-
-1. Clone the [**Jira-connect-test-tool**](https://gitlab.com/gitlab-org/manage/integrations/jira-connect-test-tool) `git clone git@gitlab.com:gitlab-org/manage/integrations/jira-connect-test-tool.git`.
-1. Start the app `bundle exec rackup`. (The app requires your GDK GitLab to be available on `http://127.0.0.1:3000`.).
-1. Open `config/gitlab.yml` and uncomment the `jira_connect` config.
-1. If running GDK on a domain other than `localhost`, you must add the domain to `additional_iframe_ancestors`. For example:
-
-   ```yaml
-   additional_iframe_ancestors: ['localhost:*', '127.0.0.1:*', 'gdk.test:*']
-   ```
-
-1. Restart GDK.
-1. Go to `http://127.0.0.1:3000/-/user_settings/personal_access_tokens`.
-1. Create a new token with the `api` scope and copy the token.
-1. Go to `http://localhost:9292`.
-1. Paste the token and select **Install GitLab.com Jira Cloud app**.
-
-## Test the GitLab OAuth authentication flow
+### Set up the GitLab OAuth authentication flow
 
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117648) in GitLab 16.0. Feature flag `jira_connect_oauth` removed.
 
@@ -102,9 +91,13 @@ The following steps describe setting up an environment to test the GitLab OAuth 
 1. Select **Enable public key storage**.
 1. Select **Save changes**.
 
-## Troubleshooting
+### Setting up GitPod
 
-### App installation fails
+If you are using [Gitpod](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitpod.md) you must [make port `3000` public](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitpod.md#make-the-rails-web-server-publicly-accessible).
+
+### Troubleshooting
+
+#### App installation fails
 
 If the app installation fails, you might need to delete `jira_connect_installations` from your database.
 
@@ -113,9 +106,23 @@ If the app installation fails, you might need to delete `jira_connect_installati
 
 ### Not authorized to access the file
 
-If you use Gitpod and you get an error about Jira not being able to access the descriptor file, you might need to make the GDK port public by following these steps:
+If you use Gitpod and you get an error about Jira not being able to access the descriptor file, you will need to [make GitPod port public](#setting-up-gitpod).
 
-1. Open your GitLab workspace in Gitpod.
-1. When the GDK is running, select **Ports** in the bottom-right corner.
-1. On the left sidebar, select the port the GDK is listening to (typically `3000`).
-1. If the port is marked as private, select the lock icon to make it public.
+## Setup without Jira
+
+If you do not require Jira to test with, you can use the [Jira connect test tool](https://gitlab.com/gitlab-org/manage/import-and-integrate/jira-connect-test-tool) and your local GDK.
+
+1. Clone the [**Jira-connect-test-tool**](https://gitlab.com/gitlab-org/manage/import-and-integrate/jira-connect-test-tool) `git clone git@gitlab.com:gitlab-org/manage/integrations/jira-connect-test-tool.git`.
+1. Start the app `bundle exec rackup`. (The app requires your GDK GitLab to be available on `http://127.0.0.1:3000`.).
+1. Open `config/gitlab.yml` and uncomment the `jira_connect` config.
+1. If running GDK on a domain other than `localhost`, you must add the domain to `additional_iframe_ancestors`. For example:
+
+   ```yaml
+   additional_iframe_ancestors: ['localhost:*', '127.0.0.1:*', 'gdk.test:*']
+   ```
+
+1. Restart GDK.
+1. Go to `http://127.0.0.1:3000/-/user_settings/personal_access_tokens`.
+1. Create a new token with the `api` scope and copy the token.
+1. Go to `http://localhost:9292`.
+1. Paste the token and select **Install GitLab.com Jira Cloud app**.

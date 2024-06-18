@@ -2,11 +2,20 @@
 
 module ProtectedBranchHelpers
   def set_allowed_to(operation, option = 'Maintainers', form: '.js-new-protected-branch')
+    # Maximize window to accommodate dropdown
+    page.driver.browser.manage.window.maximize
+
+    # Make sure dropdown is in view
+    execute_script('window.scrollTo(0,0)')
+
     within(form) do
       within_select(".js-allowed-to-#{operation}:not([disabled])") do
         Array(option).each { |opt| click_on(opt) }
       end
     end
+
+    # Close dropdown
+    find('body').click
   end
 
   def show_add_form

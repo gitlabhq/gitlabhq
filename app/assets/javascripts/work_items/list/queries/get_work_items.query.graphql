@@ -16,12 +16,13 @@ query getWorkItems(
 ) {
   group(fullPath: $fullPath) {
     id
-    workItemStateCounts(sort: $sort, state: $state, types: $types) {
+    workItemStateCounts(includeDescendants: true, sort: $sort, state: $state, types: $types) {
       all
       closed
       opened
     }
     workItems(
+      includeDescendants: true
       search: $search
       sort: $sort
       state: $state

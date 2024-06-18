@@ -3,18 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_projects do
-  let!(:user) { create :user }
-  let(:com?) { false }
-
-  before do
-    allow(Gitlab).to receive(:com?).and_return(com?)
-  end
+  let_it_be(:user) { create(:user) }
 
   context 'when there are groups to show' do
-    let!(:group) { create(:group) }
-    let!(:public_group) { create(:group, :public) }
-    let!(:private_group) { create(:group, :private) }
-    let!(:empty_project) { create(:project, group: public_group) }
+    let_it_be(:group) { create(:group, created_at: 5.days.ago) }
+    let_it_be(:public_group) { create(:group, :public, created_at: 4.days.ago) }
+    let_it_be(:private_group) { create(:group, :private, created_at: 3.days.ago) }
+    let_it_be(:empty_project) { create(:project, group: public_group) }
 
     before do
       group.add_owner(user)
@@ -83,21 +78,43 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
       ).to have_text("1")
     end
 
-    context 'when on gitlab.com' do
-      let(:com?) { true }
-
-      it 'renders page description' do
-        expect(page).to have_content(
-          'Below you will find all the groups that are public. Contribute by requesting to join a group.'
-        )
-      end
+    it 'renders page description' do
+      expect(page).to have_content(
+        'Below you will find all the groups that are public or internal. Contribute by requesting to join a group.'
+      )
     end
 
-    context 'when on self-managed' do
-      it 'renders page description' do
-        expect(page).to have_content(
-          'Below you will find all the groups that are public or internal. Contribute by requesting to join a group.'
-        )
+    context 'when using pagination' do
+      before do
+        group.add_owner(user)
+        public_group.add_owner(user)
+
+        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+
+        sign_in(user)
+        visit explore_groups_path
+        wait_for_requests
+      end
+
+      it 'loads results for next page' do
+        expect(page).to have_selector('.gl-pagination .page-item a.page-link', count: 3)
+
+        # Check first page
+        expect(page).to have_content(public_group.full_name)
+        expect(page).to have_selector("#group-#{public_group.id}")
+        expect(page).not_to have_content(group.full_name)
+        expect(page).not_to have_selector("#group-#{group.id}")
+
+        # Go to next page
+        find('.gl-pagination .page-item:last-of-type a.page-link').click
+
+        wait_for_requests
+
+        # Check second page
+        expect(page).to have_content(group.full_name)
+        expect(page).to have_selector("#group-#{group.id}")
+        expect(page).not_to have_content(public_group.full_name)
+        expect(page).not_to have_selector("#group-#{public_group.id}")
       end
     end
   end
@@ -110,18 +127,8 @@ RSpec.describe 'Explore Groups page', :js, feature_category: :groups_and_project
       wait_for_requests
     end
 
-    context 'when on gitlab.com' do
-      let(:com?) { true }
-
-      it 'shows empty state' do
-        expect(page).to have_content(_('No public groups'))
-      end
-    end
-
-    context 'when on self-managed' do
-      it 'shows empty state' do
-        expect(page).to have_content(_('No public or internal groups'))
-      end
+    it 'shows empty state' do
+      expect(page).to have_content(_('No public or internal groups'))
     end
   end
 

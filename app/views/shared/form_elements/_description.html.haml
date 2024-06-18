@@ -8,7 +8,7 @@
 
 .form-group
   .gl-display-flex
-    = form.label :description, _('Description'), class: 'gl-display-block'
+    = form.label :description, _('Description'), class: 'gl-block'
     - if model.is_a?(MergeRequest)
       = render_if_exists "/shared/form_elements/summarize_merge_request"
   - if model.is_a?(MergeRequest)

@@ -3,13 +3,13 @@ import { mount } from '@vue/test-utils';
 import { GlModal } from '@gitlab/ui';
 import { TEST_HOST } from 'helpers/test_constants';
 import axios from '~/lib/utils/axios_utils';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import CancelJobsModal from '~/ci/admin/jobs_table/components/cancel_jobs_modal.vue';
 import { setVueErrorHandler } from '../../../../__helpers__/set_vue_error_handler';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
-  redirectTo: jest.fn(),
+  visitUrl: jest.fn(),
 }));
 
 describe('Cancel jobs modal', () => {
@@ -42,7 +42,7 @@ describe('Cancel jobs modal', () => {
       wrapper.findComponent(GlModal).vm.$emit('primary');
       await nextTick();
 
-      expect(redirectTo).toHaveBeenCalledWith(responseURL); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).toHaveBeenCalledWith(responseURL);
     });
 
     it('displays error if canceling jobs failed', async () => {
@@ -60,7 +60,7 @@ describe('Cancel jobs modal', () => {
       wrapper.findComponent(GlModal).vm.$emit('primary');
       await nextTick();
 
-      expect(redirectTo).not.toHaveBeenCalled(); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).not.toHaveBeenCalled();
     });
   });
 });

@@ -34,12 +34,14 @@ export default {
     setRowsAndCols(rows, cols) {
       this.rows = rows;
       this.cols = cols;
-      this.maxRows = clamp(rows + 1, MIN_ROWS, MAX_ROWS);
-      this.maxCols = clamp(cols + 1, MIN_COLS, MAX_COLS);
+      this.maxRows = clamp(rows + 1, this.maxRows, MAX_ROWS);
+      this.maxCols = clamp(cols + 1, this.maxCols, MAX_COLS);
     },
     resetState() {
       this.rows = 1;
       this.cols = 1;
+      this.maxRows = MIN_ROWS;
+      this.maxCols = MIN_COLS;
     },
     insertTable() {
       this.tiptapEditor
@@ -74,6 +76,8 @@ export default {
       this.setRowsAndCols(rows, cols);
     },
     setFocus(row, col) {
+      this.resetState();
+
       this.$refs[`table-${row}-${col}`][0].$el.focus();
     },
   },
@@ -97,6 +101,7 @@ export default {
       text-sr-only
       :fluid-width="true"
       @shown="setFocus(1, 1)"
+      @hidden="resetState"
     >
       <div
         class="gl-p-3 gl-pt-2"
@@ -110,7 +115,7 @@ export default {
               :ref="`table-${r}-${c}`"
               :class="{ 'active gl-bg-blue-50!': r <= rows && c <= cols }"
               :aria-label="getButtonLabel(r, c)"
-              class="table-creator-grid-item gl-display-inline gl-rounded-0! gl-w-6! gl-h-6! gl-p-0!"
+              class="table-creator-grid-item gl-display-inline gl-rounded-0! !gl-w-6 gl-h-6! gl-p-0!"
               @mouseover="setRowsAndCols(r, c)"
               @focus="setRowsAndCols(r, c)"
               @click="insertTable()"

@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [Beta](../../../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9302) in GitLab 15.9. The API Discovery feature is in [beta](../../../../policy/experiment-beta-support.md).
 
 API Discovery analyzes your application and produces an OpenAPI document describing the web APIs it exposes. This schema document can then be used by [DAST API](../../dast_api/index.md) or [API Fuzzing](../../api_fuzzing/index.md) to perform security scans of the web API.
 
@@ -46,7 +46,7 @@ Major version 3 is planned to be supported in the future. Support for major vers
 
 API Discovery is tested with and officially supports LTS versions of the Java runtime. Other versions may work also, and bug reports from non-LTS versions are welcome.
 
-Only applications that are built as Spring Boot [executable JARs](https://docs.spring.io/spring-boot/docs/current/reference/html/executable-jar.html#appendix.executable-jar.nested-jars.jar-structure) are supported.
+Only applications that are built as Spring Boot [executable JARs](https://docs.spring.io/spring-boot/redirect.html?page=executable-jar#appendix.executable-jar.nested-jars.jar-structure) are supported.
 
 ### Configure as pipeline job
 

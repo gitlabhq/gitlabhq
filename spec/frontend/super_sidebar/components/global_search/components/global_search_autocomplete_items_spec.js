@@ -13,6 +13,18 @@ import GlobalSearchAutocompleteItems from '~/super_sidebar/components/global_sea
 import SearchResultHoverLayover from '~/super_sidebar/components/global_search/components/global_search_hover_overlay.vue';
 import GlobalSearchNoResults from '~/super_sidebar/components/global_search/components/global_search_no_results.vue';
 
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import {
+  EVENT_CLICK_PROJECT_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_GROUP_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_ISSUE_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_RECENT_ISSUE_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_RECENT_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE,
+  EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE,
+} from '~/super_sidebar/components/global_search/tracking_constants';
+
 import {
   MOCK_GROUPED_AUTOCOMPLETE_OPTIONS,
   MOCK_SCOPED_SEARCH_OPTIONS,
@@ -49,6 +61,7 @@ describe('GlobalSearchAutocompleteItems', () => {
     });
   };
 
+  const findGlDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
   const findItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
   const findItemTitles = () =>
     findItems().wrappers.map((w) => w.find('[data-testid="autocomplete-item-name"]').text());
@@ -65,6 +78,7 @@ describe('GlobalSearchAutocompleteItems', () => {
   const findNoResults = () => wrapper.findComponent(GlobalSearchNoResults);
 
   describe('template', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
     describe('when loading is true', () => {
       beforeEach(() => {
         createComponent({ loading: true });
@@ -101,7 +115,7 @@ describe('GlobalSearchAutocompleteItems', () => {
 
     describe('when loading is false', () => {
       beforeEach(() => {
-        createComponent({ loading: false });
+        createComponent();
       });
 
       it('does not render GlLoadingIcon', () => {
@@ -171,6 +185,28 @@ describe('GlobalSearchAutocompleteItems', () => {
         it('renders correct layover text', () => {
           expect(findLayover().props('textMessage')).toBe(text);
         });
+      });
+
+      describe('tracking', () => {
+        it.each`
+          action                     | event
+          ${'Projects'}              | ${EVENT_CLICK_PROJECT_RESULT_IN_COMMAND_PALETTE}
+          ${'Groups'}                | ${EVENT_CLICK_GROUP_RESULT_IN_COMMAND_PALETTE}
+          ${'Merge Requests'}        | ${EVENT_CLICK_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
+          ${'Issues'}                | ${EVENT_CLICK_ISSUE_RESULT_IN_COMMAND_PALETTE}
+          ${'Recent issues'}         | ${EVENT_CLICK_RECENT_ISSUE_RESULT_IN_COMMAND_PALETTE}
+          ${'Recent epics'}          | ${EVENT_CLICK_RECENT_EPIC_RESULT_IN_COMMAND_PALETTE}
+          ${'Recent merge requests'} | ${EVENT_CLICK_RECENT_MERGE_REQUEST_RESULT_IN_COMMAND_PALETTE}
+          ${undefined}               | ${EVENT_CLICK_USER_RESULT_IN_COMMAND_PALETTE}
+        `(
+          "triggers tracking event '$event' after emiting action '$action'",
+          ({ action, event }) => {
+            const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+            findGlDisclosureDropdownGroup().vm.$emit('action', { name: action });
+            expect(trackEventSpy).toHaveBeenCalledWith(event, {}, undefined);
+          },
+        );
       });
     });
   });

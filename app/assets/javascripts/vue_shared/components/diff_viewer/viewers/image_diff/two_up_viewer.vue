@@ -29,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <div class="two-up view d-flex">
+  <div class="two-up view gl-flex">
     <image-viewer
       :path="oldPath"
       :file-size="oldSize"

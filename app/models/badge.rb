@@ -11,8 +11,15 @@ class Badge < ApplicationRecord
     'project_title' => :title,
     'project_name' => :path,
     'project_id' => :id,
+    'project_namespace' => ->(project) { project.project_namespace.to_param },
+    'group_name' => ->(project) { project.group&.to_param },
+    'gitlab_server' => proc { Gitlab.config.gitlab.host },
+    'gitlab_pages_domain' => proc { Gitlab.config.pages.host },
     'default_branch' => :default_branch,
-    'commit_sha' => ->(project) { project.commit&.sha }
+    'commit_sha' => ->(project) { project.commit&.sha },
+    'latest_tag' => ->(project) do
+      TagsFinder.new(project.repository, per_page: 1, sort: 'updated_desc').execute.first&.name if project.repository
+    end
   }.freeze
 
   # This regex is built dynamically using the keys from the PLACEHOLDER struct.

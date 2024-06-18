@@ -194,7 +194,7 @@ export default {
         readonly
         :value="dependencyProxyImagePrefix"
         select-on-click
-        class="gl-layout-w-limited"
+        class="gl-max-w-limited"
         data-testid="proxy-url"
       >
         <template #append>

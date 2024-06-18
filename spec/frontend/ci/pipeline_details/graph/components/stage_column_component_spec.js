@@ -1,7 +1,14 @@
 import { mount, shallowMount } from '@vue/test-utils';
+import MockAdapter from 'axios-mock-adapter';
 import JobItem from '~/ci/pipeline_details/graph/components/job_item.vue';
 import StageColumnComponent from '~/ci/pipeline_details/graph/components/stage_column_component.vue';
 import ActionComponent from '~/ci/common/private/job_action_component.vue';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import axios from '~/lib/utils/axios_utils';
+import waitForPromises from 'helpers/wait_for_promises';
+
+jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_action');
 
 const mockJob = {
   id: 4250,
@@ -53,6 +60,10 @@ describe('stage column component', () => {
       },
     });
   };
+
+  afterEach(() => {
+    confirmAction.mockReset();
+  });
 
   describe('when mounted', () => {
     beforeEach(() => {
@@ -169,6 +180,7 @@ describe('stage column component', () => {
         icon: 'play',
         title: 'Play all',
         path: 'action',
+        confirmationMessage: null,
       },
     };
 
@@ -195,6 +207,66 @@ describe('stage column component', () => {
       });
 
       expect(findActionComponent().exists()).toBe(false);
+    });
+
+    describe('confirmation modal', () => {
+      it('not render modal when action is clicked and stage has no confirmation message', async () => {
+        const mock = new MockAdapter(axios);
+        createComponent({
+          method: mount,
+          props: {
+            ...defaults,
+          },
+        });
+
+        findActionComponent().trigger('click');
+        await waitForPromises();
+
+        expect(confirmAction).not.toHaveBeenCalled();
+        expect(mock.history.post[0].url).toBe('action.json');
+      });
+
+      describe('stage has confirmation message', () => {
+        const stageWithConfirmationMessage = JSON.parse(JSON.stringify(defaults));
+        const confirmationMessage = 'Please Confirm';
+        stageWithConfirmationMessage.action.confirmationMessage = confirmationMessage;
+        stageWithConfirmationMessage.name = 'Manual Stage';
+
+        it('render modal when action is clicked and stage has confirmation message', () => {
+          createComponent({
+            method: mount,
+            props: {
+              ...stageWithConfirmationMessage,
+            },
+          });
+          findActionComponent().trigger('click');
+
+          expect(confirmAction).toHaveBeenCalledWith(
+            null,
+            expect.objectContaining({
+              primaryBtnText: `Yes, run all manual`,
+              title: `Are you sure you want to run ${stageWithConfirmationMessage.name}?`,
+              modalHtmlMessage: expect.stringContaining(confirmationMessage),
+            }),
+          );
+        });
+
+        it('execute post action modal is confirmed', async () => {
+          createComponent({
+            method: mount,
+            props: {
+              ...stageWithConfirmationMessage,
+            },
+          });
+          confirmAction.mockResolvedValue(true);
+          const mock = new MockAdapter(axios);
+
+          findActionComponent().trigger('click');
+
+          await waitForPromises();
+          expect(mock.history.post[0].url).toBe('action.json');
+        });
+      });
     });
   });
 

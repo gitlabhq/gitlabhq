@@ -31,7 +31,6 @@ module MergeRequests
       merge_request.in_locked_state do
         if commit
           after_merge
-          clean_merge_jid
           success
         end
       end
@@ -102,19 +101,20 @@ module MergeRequests
     end
 
     def after_merge
-      log_info("Post merge started on JID #{merge_jid} with state #{state}")
-      MergeRequests::PostMergeService.new(project: project, current_user: current_user).execute(merge_request)
-      log_info("Post merge finished on JID #{merge_jid} with state #{state}")
+      # Need to store `merge_jid` in a variable since `MergeRequests::PostMergeService`
+      # will call `MergeRequest#mark_as_merged` and will unset `merge_jid`.
+      jid = merge_jid
+
+      log_info("Post merge started on JID #{jid} with state #{state}")
+      MergeRequests::PostMergeService.new(project: project, current_user: current_user, params: { delete_source_branch:
+                                          delete_source_branch? }).execute(merge_request)
+      log_info("Post merge finished on JID #{jid} with state #{state}")
 
       if delete_source_branch?
         MergeRequests::DeleteSourceBranchWorker.perform_async(@merge_request.id, @merge_request.source_branch_sha, branch_deletion_user.id)
       end
 
       merge_request_merge_param
-    end
-
-    def clean_merge_jid
-      merge_request.update_column(:merge_jid, nil)
     end
 
     def branch_deletion_user

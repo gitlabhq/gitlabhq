@@ -46,7 +46,7 @@
  * The fire sequence argument (for the callback function) is useful for 'pagination'-like features.
  */
 
-(function($){
+export const setupEndlessScroll = ($) => {
 
   $.fn.endlessScroll = function(options) {
 
@@ -112,5 +112,4 @@
       });
     }
   };
-
-})(jQuery);
+};

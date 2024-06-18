@@ -609,7 +609,11 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         create(:project, :repository, :in_group, creator: bridge_creator_user, group: bridge_group)
       end
 
-      let(:bridge) { build(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project) }
+      let(:ci_stage) { create(:ci_stage, pipeline: pipeline, project: pipeline.project) }
+      let(:bridge) do
+        build(:ci_bridge, :playable, pipeline: pipeline, downstream: downstream_project, ci_stage: ci_stage)
+      end
+
       let!(:pipeline) { create(:ci_pipeline, project: project) }
 
       let!(:ci_variable) do
@@ -1059,9 +1063,10 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
   describe 'metadata partitioning', :ci_partitionable do
     let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
+    let(:ci_stage) { create(:ci_stage, pipeline: pipeline) }
 
     let(:bridge) do
-      build(:ci_bridge, pipeline: pipeline)
+      build(:ci_bridge, pipeline: pipeline, ci_stage: ci_stage)
     end
 
     it 'creates the metadata record and assigns its partition' do

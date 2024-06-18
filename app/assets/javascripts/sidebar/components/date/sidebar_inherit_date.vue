@@ -74,7 +74,7 @@ export default {
         :disabled="!canUpdate || isLoading"
         class="gl-pr-2"
       >
-        <span :class="dateIsFixed ? 'gl-text-gray-900 gl-font-weight-bold' : 'gl-text-gray-500'">
+        <span :class="dateIsFixed ? 'gl-text-gray-900 gl-font-bold' : 'gl-text-gray-500'">
           {{ $options.i18n.fixed }}
         </span>
       </gl-form-radio>
@@ -84,7 +84,7 @@ export default {
         :reset-text="$options.i18n.remove"
         :is-loading="isLoading"
         :can-delete="dateIsFixed && hasFixedDate"
-        class="gl-line-height-normal"
+        class="gl-leading-normal"
         @reset-date="$emit('reset-date', $event)"
       />
     </div>
@@ -95,7 +95,7 @@ export default {
         :disabled="!canUpdate || isLoading"
         class="gl-pr-2"
       >
-        <span :class="!dateIsFixed ? 'gl-text-gray-900 gl-font-weight-bold' : 'gl-text-gray-500'">
+        <span :class="!dateIsFixed ? 'gl-text-gray-900 gl-font-bold' : 'gl-text-gray-500'">
           {{ $options.i18n.inherited }}
         </span>
       </gl-form-radio>
@@ -105,7 +105,7 @@ export default {
         :reset-text="$options.i18n.remove"
         :is-loading="isLoading"
         :can-delete="false"
-        class="gl-line-height-normal"
+        class="gl-leading-normal"
       />
     </div>
   </div>

@@ -1,42 +1,37 @@
 - editing ||= false
+- edit_sidebar_text = @sidebar_page ? s_('Wiki|Edit custom sidebar') : s_('Wiki|Add custom sidebar')
+- has_wiki_pages = @wiki_pages_count && @wiki_pages_count > 0
 
 %aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
   .sidebar-container
-    .block.wiki-sidebar-header.gl-mb-3.gl-w-full
-      %a.gutter-toggle.gl-float-right.d-block.d-md-none.js-sidebar-wiki-toggle{ href: "#" }
+    .block.gl-mb-3.gl-mx-5.gl-block.sm:gl-hidden{ class: '!gl-pt-0' }
+      %a.gutter-toggle.gl-float-right.gl-block.md:gl-hidden.js-sidebar-wiki-toggle{ href: "#" }
         = sprite_icon('chevron-double-lg-right', css_class: 'gl-icon')
-
-      .gl-display-flex.gl-flex-direction-column.gl-gap-3
-        - git_access_url = wiki_path(@wiki, action: :git_access)
-        = link_to git_access_url, class: (active_nav_link?(path: 'wikis#git_access') ? ' active' : ''), data: { testid: 'clone-repository-link' } do
-          = sprite_icon('download', css_class: 'gl-mr-2')
-          %span= _("Clone repository")
-
-        - templates_url = wiki_page_path(@wiki, Wiki::TEMPLATES_DIR)
-        - templates_link_class = (@page&.slug == Wiki::TEMPLATES_DIR) ? 'active' : ''
-        = link_to templates_url, class: templates_link_class do
-          = sprite_icon('template', css_class: 'gl-mr-2')
-          %span= _("Templates")
-
-        - if can?(current_user, :create_wiki, @wiki)
-          - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
-          - sidebar_link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
-          = link_to edit_sidebar_url, class: sidebar_link_class do
-            = sprite_icon('pencil', css_class: 'gl-mr-2')
-            %span= _("Edit sidebar")
 
     - if @sidebar_error.present?
       = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')
 
-    .blocks-container
-      .block.block-first.gl-w-full
-        - if @sidebar_page
+    .blocks-container{ class: '!gl-px-3' }
+      .gl-flex.gl-place-content-between.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-expand-pages-list wiki-list collapsed gl-pl-0' : 'gl-pl-3') }
+        .gl-flex.gl-items-center
+          - if @sidebar_page
+            = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-right', button_options: { class: "js-wiki-list-expand-button wiki-list-expand-button !gl-static gl-mr-2", data: { testid: 'expand-pages-list' } })
+            = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-down', button_options: { class: "js-wiki-list-collapse-button wiki-list-collapse-button !gl-static gl-mr-2", data: { testid: 'expand-pages-list' } })
+          %h2.gl-text-lg.gl-my-0.gl-mr-3= s_('Wiki|Pages')
+          = gl_badge_tag @wiki_pages_count
+
+        - if has_wiki_pages && can?(current_user, :create_wiki, @wiki)
+          - edit_sidebar_url = wiki_page_path(@wiki, Wiki::SIDEBAR, action: :edit)
+          - sidebar_link_class = (editing && @page&.slug == Wiki::SIDEBAR) ? 'active' : ''
+          = render Pajamas::ButtonComponent.new(href: edit_sidebar_url, category: :tertiary, size: :small, icon: 'settings', button_options: { class: "gl-border-l gl-pl-3 has-tooltip #{sidebar_link_class}", title: edit_sidebar_text, aria: { label: edit_sidebar_text }})
+
+      #js-wiki-sidebar-entries{
+        data: {
+          has_custom_sidebar: @sidebar_page ? 'true' : 'false',
+          can_create: can?(current_user, :create_wiki, @wiki).to_s,
+          view_all_pages_path: wiki_path(@wiki, action: :pages),
+        }
+      }
+      - if @sidebar_page
+        .gl-px-3.gl-pt-4.gl-pb-2
           = render_wiki_content(@sidebar_page)
-        - elsif @sidebar_wiki_entries
-          %ul.wiki-pages
-            - @sidebar_wiki_entries.each do |entry|
-              = render partial: entry.to_partial_path, object: entry, locals: { context: 'sidebar' }
-      .block.gl-w-full
-        - if @sidebar_limited
-          = link_button_to wiki_path(@wiki, action: :pages), data: { testid: 'view-all-pages-button' }, block: true do
-            = s_("Wiki|View All Pages")

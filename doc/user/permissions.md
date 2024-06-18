@@ -342,6 +342,7 @@ The following table lists group permissions available for each role:
 | Change group visibility level                                                           |       |          |           |            | ✓     |       |
 | Create and manage compliance frameworks                                                 |       |          |           |            | ✓     |       |
 | Create/Delete group deploy tokens                                                       |       |          |           |            | ✓     |       |
+| Create/Delete [group access tokens](group/settings/group_access_tokens.md)              |       |          |           |            | ✓     |       |
 | Delete group                                                                            |       |          |           |            | ✓     |       |
 | Delete group [epic](group/epics/index.md)                                               |       |          |           |            | ✓     |       |
 | Disable notification emails                                                             |       |          |           |            | ✓     |       |
@@ -391,12 +392,14 @@ You can use the Minimal Access role to give the same member more than one role i
 1. Add the member to the root group with a Minimal Access role.
 1. Invite the member as a direct member with a specific role in any subgroup or project in that group.
 
+### Minimal access users receive 404 errors
+
 Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when a user with the Minimal Access role:
 
 - Signs in with standard web authentication, they receive a `404` error when accessing the parent group.
 - Signs in with Group SSO, they receive a `404` error immediately because they are redirected to the parent group page.
 
-To work around the issue, give these users the Guest role or higher to any project or subgroup within the parent group.
+To work around the issue, give these users the Guest role or higher to any project or subgroup in the parent group. Guest users consume a license seat in the Premium tier but do not in the Ultimate tier.
 
 ## Related topics
 

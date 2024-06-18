@@ -32,7 +32,7 @@
       = f.label :screenshot do
         %span
           = s_('ReportAbuse|Screenshot')
-        .gl-font-weight-normal
+        .gl-font-normal
           = s_('ReportAbuse|Screenshot of abuse')
       %div
         = render 'shared/file_picker_button', f: f, field: :screenshot, help_text: _("Screenshot must be less than 1 MB."), mime_types: valid_image_mimetypes

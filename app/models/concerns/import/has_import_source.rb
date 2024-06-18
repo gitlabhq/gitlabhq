@@ -2,6 +2,8 @@
 
 module Import
   SOURCE_DIRECT_TRANSFER = :gitlab_migration # aka BulkImports
+  SOURCE_PROJECT_EXPORT_IMPORT = :gitlab_project
+  SOURCE_GROUP_EXPORT_IMPORT = :gitlab_group
 
   module HasImportSource
     extend ActiveSupport::Concern
@@ -9,15 +11,16 @@ module Import
     IMPORT_SOURCES = {
       none: 0, # not imported
       SOURCE_DIRECT_TRANSFER => 1,
-      gitlab_project: 2, # aka gitlab import/export
-      github: 3,
-      bitbucket: 4, # aka bitbucket cloud
-      bitbucket_server: 5,
-      fogbugz: 6,
-      gitea: 7,
-      git: 8, # aka repository by url
-      manifest: 9, # aka manifest file
-      custom_template: 10 # aka gitlab custom project template export
+      SOURCE_PROJECT_EXPORT_IMPORT => 2,
+      SOURCE_GROUP_EXPORT_IMPORT => 3,
+      github: 4,
+      bitbucket: 5, # aka bitbucket cloud
+      bitbucket_server: 6,
+      fogbugz: 7,
+      gitea: 8,
+      git: 9, # aka repository by url
+      manifest: 10, # aka manifest file
+      custom_template: 11 # aka gitlab custom project template export
     }.freeze
 
     included do

@@ -31,6 +31,10 @@ module Types
       field :created_by, Types::UserType, null: true,
         description: 'User that created this runner.',
         method: :creator
+      field :creation_method, Types::Ci::RunnerCreationMethodEnum, null: true,
+        method: :registration_type,
+        description: 'Type of runner registration.',
+        alpha: { milestone: '17.0' }
       field :description, GraphQL::Types::String, null: true,
         description: 'Description of the runner.'
       field :edit_admin_url, GraphQL::Types::String, null: true,
@@ -66,8 +70,7 @@ module Types
         description: 'Runner\'s maintenance notes.'
       field :managers, ::Types::Ci::RunnerManagerType.connection_type, null: true,
         description: 'Runner managers associated with the runner configuration.',
-        resolver: Resolvers::Ci::RunnerManagersResolver,
-        alpha: { milestone: '15.10' }
+        resolver: Resolvers::Ci::RunnerManagersResolver
       field :maximum_timeout, GraphQL::Types::Int, null: true,
         description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
       field :owner_project, ::Types::ProjectType, null: true,

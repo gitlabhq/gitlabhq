@@ -107,7 +107,7 @@ The following metrics are available:
 | `gitlab_transaction_db_<role>_wal_cached_count_total`            | Counter     | 14.1    | Counter for total number of cached WAL (write ahead log location) queries, grouped by database roles (primary/replica)| `controller`, `action`, `endpoint_id`                                    |
 | `http_elasticsearch_requests_duration_seconds`   | Histogram   | 13.1    | Elasticsearch requests duration during web transactions. Premium and Ultimate only.                                                               | `controller`, `action`, `endpoint_id`                                    |
 | `http_elasticsearch_requests_total`               | Counter     | 13.1    | Elasticsearch requests count during web transactions. Premium and Ultimate only.                                                                  | `controller`, `action`, `endpoint_id`                                    |
-| `pipelines_created_total`                                        | Counter     | 9.4     | Counter of pipelines created                                                                                          |                                                           |
+| `pipelines_created_total`                                        | Counter     | 9.4     | Counter of pipelines created                                                                                          | `source`, `partition_id`                                  |
 | `rack_uncaught_errors_total`                                     | Counter     | 9.4     | Rack connections handling uncaught errors count                                                                       |                                                           |
 | `user_session_logins_total`                                      | Counter     | 9.4     | Counter of how many users have logged in since GitLab was started or restarted                                        |                                                           |
 | `upload_file_does_not_exist`                                     | Counter     | 10.7    | Number of times an upload record could not find its file. |                                                           |
@@ -513,6 +513,19 @@ instance. For example, `cache` or `shared_state`.
 | `gitlab_redis_client_redirections_total` | Counter | 15.10 | Number of Redis Cluster MOVED/ASK redirections, broken down by redirection type |
 | `gitlab_redis_client_requests_pipelined_commands` | Histogram | 16.4 | Number of commands per pipeline sent to a single Redis server |
 | `gitlab_redis_client_pipeline_redirections_count` | Histogram | 17.0 | Number of Redis Cluster redirections in a pipeline |
+
+## Git LFS metrics
+
+Metrics to track various [Git LFS](https://git-lfs.com/) functionality.
+
+| Metric                                             | Type    | Since | Description |
+|:-------------------------------------------------- |:------- |:----- |:----------- |
+| `gitlab_sli_lfs_update_objects_total`              | Counter | 16.10 | Number of updated LFS objects in total |
+| `gitlab_sli_lfs_update_objects_error_total`        | Counter | 16.10 | Number of updated LFS object errors in total |
+| `gitlab_sli_lfs_check_objects_total`               | Counter | 16.10 | Number of check LFS objects in total |
+| `gitlab_sli_lfs_check_objects_error_total`         | Counter | 16.10 | Number of check LFS object errors in total |
+| `gitlab_sli_lfs_validate_link_objects_total`       | Counter | 16.10 | Number of validated LFS linked objects in total |
+| `gitlab_sli_lfs_validate_link_objects_error_total` | Counter | 16.10 | Number of validated LFS linked object errors in total |
 
 ## Metrics shared directory
 

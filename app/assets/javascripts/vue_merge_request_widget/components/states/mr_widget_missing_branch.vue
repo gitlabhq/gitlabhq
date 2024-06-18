@@ -62,9 +62,9 @@ export default {
   <div class="mr-widget-body media">
     <status-icon :show-disabled-button="true" status="failed" />
 
-    <div class="media-body space-children">
+    <div class="media-body">
       <span class="js-branch-text" data-testid="widget-content">
-        <span class="gl-font-weight-bold">
+        <span class="gl-font-bold">
           <gl-sprintf :message="warning">
             <template #code="{ content }">
               <code>{{ content }}</code>

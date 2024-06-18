@@ -344,9 +344,11 @@ continue to listen on the old address after a `sudo gitlab-ctl reconfigure`.
 When this occurs, run `sudo gitlab-ctl restart` to resolve the issue. This should no longer be
 necessary because [this issue](https://gitlab.com/gitlab-org/gitaly/-/issues/2521) is resolved.
 
-## Permission denied errors appearing in Gitaly logs when accessing repositories from a standalone Gitaly node
+## Errors in Gitaly logs when accessing repositories from a standalone Gitaly node
 
-If this error occurs even though file permissions are correct, it's likely that the Gitaly node is
+You might see permission-denied errors in the Gitaly logs when you access a repository
+from a standalone Gitaly node. This error occurs even though file permissions are correct.
+It's likely that the Gitaly node is
 experiencing [clock drift](https://en.wikipedia.org/wiki/Clock_drift).
 
 Ensure that the GitLab and Gitaly nodes are synchronized and use an NTP time
@@ -438,9 +440,14 @@ To resolve this, remove the `noexec` option from the file system mount. An alter
 1. Add `gitaly['runtime_dir'] = '<PATH_WITH_EXEC_PERM>'` to `/etc/gitlab/gitlab.rb` and specify a location without `noexec` set.
 1. Run `sudo gitlab-ctl reconfigure`.
 
-## Commit signing fails with `invalid argument: signing key is encrypted` or `invalid data: tag byte does not have MSB set.`
+## Commit signing fails with `invalid argument` or `invalid data`
 
-Because Gitaly commit signing is headless and not associated with a specific user, the GPG signing key must be created without a passphrase, or the passphrase must be removed before export.
+If commit signing fails with either of these errors:
+
+- `invalid argument: signing key is encrypted`
+- `invalid data: tag byte does not have MSB set`
+
+This error happens because Gitaly commit signing is headless and not associated with a specific user. The GPG signing key must be created without a passphrase, or the passphrase must be removed before export.
 
 ## Gitaly logs show errors in `info` messages
 
@@ -586,3 +593,54 @@ To create a rule to allow Gitaly binary execution:
    ```
 
 The new rule takes effect after the daemon restarts.
+
+## Update repositories after removing a storage with a duplicate path
+
+> - Rake task `gitlab:gitaly:update_removed_storage_projects` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153008) in GitLab 17.1.
+
+In GitLab 17.0, support for configuring storages with duplicate paths [was removed](https://gitlab.com/gitlab-org/gitaly/-/issues/5598). This can mean that you
+must remove duplicate storage configuration from `gitaly` configuration.
+
+WARNING:
+Only use this Rake task when the old and new storages share the same disk path on the same Gitaly server. Using the this Rake task in any other situation
+causes the repository to become unavailable. Use the [project repository storage moves API](../../api/project_repository_storage_moves.md) to transfer
+projects between storages in all other situations.
+
+When removing from the Gitaly configuration a storage that used the same path as another storage,
+the projects associated with the old storage must be reassigned to the new one.
+
+For example, you might have configuration similar to the following:
+
+```ruby
+gitaly['configuration'] = {
+  storage: [
+    {
+       name: 'default',
+       path: '/var/opt/gitlab/git-data/repositories',
+    },
+    {
+       name: 'duplicate-path',
+       path: '/var/opt/gitlab/git-data/repositories',
+    },
+  ],
+}
+```
+
+If you were removing `duplicate-path` from the configuration, you would run the following
+Rake task to associate any projects assigned to it to `default` instead:
+
+::Tabs
+
+:::TabTitle Linux package installations
+
+```shell
+sudo gitlab-rake "gitlab:gitaly:update_removed_storage_projects[duplicate-path, default]"
+```
+
+:::TabTitle Self-compiled installations
+
+```shell
+sudo -u git -H bundle exec rake "gitlab:gitaly:update_removed_storage_projects[duplicate-path, default]" RAILS_ENV=production
+```
+
+::EndTabs

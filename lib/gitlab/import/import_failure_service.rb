@@ -72,7 +72,7 @@ module Gitlab
           external_identifiers: external_identifiers
         }
 
-        Gitlab::Import::Logger.error(
+        ::Import::Framework::Logger.error(
           attributes.merge(
             message: 'importer failed',
             'exception.message': exception.message

@@ -20,6 +20,10 @@ describe('content_editor/extensions/image', () => {
     }));
   });
 
+  it('sets the draggable option to true', () => {
+    expect(Image.config.draggable).toBe(true);
+  });
+
   it('adds data-canonical-src attribute when rendering to HTML', () => {
     const initialDoc = doc(
       p(

@@ -30,6 +30,10 @@ API security testing can test the following web API types:
 - GraphQL
 - Form bodies, JSON, or XML
 
+NOTE:
+DAST API has been re-branded to API Security Testing. As part of this re-branding the template
+name and variable prefixes have also been updated. The old template and variable names continue to work until the next major release, 18.0 in May 2025.
+
 ## When API security testing scans run
 
 When run in your CI/CD pipeline, API security testing scanning runs in the `dast` stage by default. To ensure

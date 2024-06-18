@@ -16,14 +16,14 @@ module API
         requires :name, type: String, desc: 'Name of the application.', documentation: { example: 'MyApplication' }
         requires :redirect_uri, type: String, desc: 'Redirect URI of the application.', documentation: { example: 'https://redirect.uri' }
         requires :scopes, type: String,
-                          desc: 'Scopes of the application. You can specify multiple scopes by separating\
+          desc: 'Scopes of the application. You can specify multiple scopes by separating\
                                  each scope using a space',
-                          allow_blank: false
+          allow_blank: false
 
         optional :confidential,
-                 type: Boolean,
-                 default: true,
-                 desc: 'The application is used where the client secret can be kept confidential. Native mobile apps \
+          type: Boolean,
+          default: true,
+          desc: 'The application is used where the client secret can be kept confidential. Native mobile apps \
                         and Single Page Apps are considered non-confidential. Defaults to true if not supplied'
       end
       post do

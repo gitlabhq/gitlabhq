@@ -2,6 +2,16 @@
 
 module Emails
   module MergeRequests
+    extend ActiveSupport::Concern
+
+    included do
+      override_layout_lookup_table.merge!({
+        merge_when_pipeline_succeeds_email: 'mailer',
+        approved_merge_request_email: 'mailer',
+        unapproved_merge_request_email: 'mailer'
+      })
+    end
+
     def new_merge_request_email(recipient_id, merge_request_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id, present: true)
 

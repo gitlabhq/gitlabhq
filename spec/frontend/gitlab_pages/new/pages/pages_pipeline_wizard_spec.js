@@ -7,7 +7,7 @@ import PagesPipelineWizard, { i18n } from '~/gitlab_pages/components/pages_pipel
 import PipelineWizard from '~/pipeline_wizard/pipeline_wizard.vue';
 import pagesTemplate from '~/pipeline_wizard/templates/pages.yml';
 import pagesMarkOnboardingComplete from '~/gitlab_pages/queries/mark_onboarding_complete.graphql';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 
 Vue.use(VueApollo);
 
@@ -92,7 +92,7 @@ describe('PagesPipelineWizard', () => {
 
       await waitForPromises();
 
-      expect(redirectTo).toHaveBeenCalledWith(props.redirectToWhenDone); // eslint-disable-line import/no-deprecated
+      expect(visitUrl).toHaveBeenCalledWith(props.redirectToWhenDone);
     });
   });
 });

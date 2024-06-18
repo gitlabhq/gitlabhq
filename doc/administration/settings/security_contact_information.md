@@ -24,10 +24,9 @@ required to view this file.
 
 To configure a `security.txt` file:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
-1. Expand the **Add security contact information** section.
+1. Expand **Add security contact information**.
 1. In **Content for security.txt**, enter security contact information in the
    format documented at <https://securitytxt.org/>.
 1. Select **Save changes**.

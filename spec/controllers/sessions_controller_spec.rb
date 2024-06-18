@@ -234,8 +234,73 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
       end
 
+      context 'when user has dismissed broadcast_messages' do
+        let_it_be(:user) { create(:user) }
+        let_it_be(:message_banner) { create(:broadcast_message, broadcast_type: :banner, message: 'banner') }
+        let_it_be(:message_notification) { create(:broadcast_message, broadcast_type: :notification, message: 'notification') }
+        let_it_be(:other_message) { create(:broadcast_message, broadcast_type: :banner, message: 'other') }
+
+        before_all do
+          create(:broadcast_message_dismissal, broadcast_message: message_banner, user: user)
+          create(:broadcast_message_dismissal, broadcast_message: message_notification, user: user)
+          create(:broadcast_message_dismissal, broadcast_message: other_message, user: build(:user))
+        end
+
+        context 'when new_broadcast_message_dismissal feature flag is not enabled' do
+          before do
+            stub_feature_flags(new_broadcast_message_dismissal: false)
+          end
+
+          it 'does not create dismissed cookies based on db records' do
+            expect(cookies["hide_broadcast_message_#{message_banner.id}"]).to be_nil
+            expect(cookies["hide_broadcast_message_#{message_notification.id}"]).to be_nil
+            expect(cookies["hide_broadcast_message_#{other_message.id}"]).to be_nil
+
+            post_action
+
+            expect(cookies["hide_broadcast_message_#{message_banner.id}"]).to be_nil
+            expect(cookies["hide_broadcast_message_#{message_notification.id}"]).to be_nil
+            expect(cookies["hide_broadcast_message_#{other_message.id}"]).to be_nil
+          end
+        end
+
+        context 'when new_broadcast_message_dismissal feature flag is enabled' do
+          before do
+            stub_feature_flags(new_broadcast_message_dismissal: true)
+          end
+
+          it 'creates dismissed cookies based on db records' do
+            expect(cookies["hide_broadcast_message_#{message_banner.id}"]).to be_nil
+            expect(cookies["hide_broadcast_message_#{message_notification.id}"]).to be_nil
+            expect(cookies["hide_broadcast_message_#{other_message.id}"]).to be_nil
+
+            post_action
+
+            expect(cookies["hide_broadcast_message_#{message_banner.id}"]).to be(true)
+            expect(cookies["hide_broadcast_message_#{message_notification.id}"]).to be(true)
+            expect(cookies["hide_broadcast_message_#{other_message.id}"]).to be_nil
+          end
+
+          context 'when dismissal is expired' do
+            let_it_be(:message) { create(:broadcast_message, broadcast_type: :banner, message: 'banner') }
+
+            before do
+              create(:broadcast_message_dismissal, :expired, broadcast_message: message, user: user)
+            end
+
+            it 'does not create cookie' do
+              expect(cookies["hide_broadcast_message_#{message.id}"]).to be_nil
+
+              post_action
+
+              expect(cookies["hide_broadcast_message_#{message.id}"]).to be_nil
+            end
+          end
+        end
+      end
+
       context 'with reCAPTCHA' do
-        def unsuccesful_login(user_params, sesion_params: {})
+        def unsuccessful_login(user_params, sesion_params: {})
           # Without this, `verify_recaptcha` arbitrarily returns true in test env
           Recaptcha.configuration.skip_verify_env.delete('test')
           counter = double(:counter)
@@ -248,7 +313,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
           post(:create, params: { user: user_params }, session: sesion_params)
         end
 
-        def succesful_login(user_params, sesion_params: {})
+        def successful_login(user_params, sesion_params: {})
           # Avoid test ordering issue and ensure `verify_recaptcha` returns true
           Recaptcha.configuration.skip_verify_env << 'test'
           counter = double(:counter)
@@ -273,7 +338,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
           context 'when the reCAPTCHA is not solved' do
             it 'displays an error' do
-              unsuccesful_login(user_params)
+              unsuccessful_login(user_params)
 
               expect(response).to render_template(:new)
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
@@ -283,7 +348,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
             it 'sets gon variables' do
               Gon.clear
 
-              unsuccesful_login(user_params)
+              unsuccessful_login(user_params)
 
               expect(response).to render_template(:new)
               expect(Gon.all_variables).not_to be_empty
@@ -291,7 +356,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
           end
 
           it 'successfully logs in a user when reCAPTCHA is solved' do
-            succesful_login(user_params)
+            successful_login(user_params)
 
             expect(subject.current_user).to eq user
           end
@@ -307,7 +372,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
 
           context 'when user tried to login 5 times' do
             it 'displays an error when the reCAPTCHA is not solved' do
-              unsuccesful_login(user_params, sesion_params: { failed_login_attempts: 6 })
+              unsuccessful_login(user_params, sesion_params: { failed_login_attempts: 6 })
 
               expect(response).to render_template(:new)
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
@@ -315,7 +380,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
             end
 
             it 'successfully logs in a user when reCAPTCHA is solved' do
-              succesful_login(user_params, sesion_params: { failed_login_attempts: 6 })
+              successful_login(user_params, sesion_params: { failed_login_attempts: 6 })
 
               expect(subject.current_user).to eq user
             end
@@ -327,7 +392,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
             end
 
             it 'displays an error when the reCAPTCHA is not solved' do
-              unsuccesful_login(user_params)
+              unsuccessful_login(user_params)
 
               expect(response).to render_template(:new)
               expect(flash[:alert]).to include _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
@@ -337,7 +402,7 @@ RSpec.describe SessionsController, feature_category: :system_access do
             it 'successfully logs in a user when reCAPTCHA is solved' do
               expect(Gitlab::AnonymousSession).to receive_message_chain(:new, :cleanup_session_per_ip_count)
 
-              succesful_login(user_params)
+              successful_login(user_params)
 
               expect(subject.current_user).to eq user
             end

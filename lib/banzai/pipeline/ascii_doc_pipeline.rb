@@ -8,6 +8,7 @@ module Banzai
           Filter::AsciiDocSanitizationFilter,
           Filter::CodeLanguageFilter,
           Filter::GollumTagsFilter,
+          Filter::WikiLinkGollumFilter,
           Filter::AssetProxyFilter,
           Filter::ExternalLinkFilter,
           Filter::PlantumlFilter,

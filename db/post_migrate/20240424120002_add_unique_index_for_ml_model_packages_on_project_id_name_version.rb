@@ -12,6 +12,7 @@ class AddUniqueIndexForMlModelPackagesOnProjectIdNameVersion < Gitlab::Database:
   # https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/packages/package.rb#L33
   PACKAGE_STATUS_PENDING_DESTRUCTION = 4
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     add_concurrent_index(
       :packages_packages,
@@ -21,6 +22,7 @@ class AddUniqueIndexForMlModelPackagesOnProjectIdNameVersion < Gitlab::Database:
       where: "package_type = #{PACKAGE_TYPE_ML_MODEL} AND status <> #{PACKAGE_STATUS_PENDING_DESTRUCTION}"
     )
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name :packages_packages, INDEX_NAME

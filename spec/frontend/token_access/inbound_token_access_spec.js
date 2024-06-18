@@ -16,6 +16,7 @@ import {
   inboundJobTokenScopeEnabledResponse,
   inboundJobTokenScopeDisabledResponse,
   inboundGroupsAndProjectsWithScopeResponse,
+  inboundGroupsAndProjectsWithScopeResponseWithAddedItem,
   inboundAddGroupOrProjectSuccessResponse,
   inboundRemoveGroupSuccess,
   inboundRemoveProjectSuccess,
@@ -232,7 +233,7 @@ describe('TokenAccess component', () => {
     type         | testPath
     ${'group'}   | ${testGroupPath}
     ${'project'} | ${testProjectPath}
-  `('add $type', ({ testPath }) => {
+  `('add $type', ({ type, testPath }) => {
     it(`calls add group or project mutation`, async () => {
       createComponent(
         [
@@ -259,6 +260,44 @@ describe('TokenAccess component', () => {
         projectPath,
         targetPath: testPath,
       });
+    });
+
+    it(`increments the ${type} count`, async () => {
+      createComponent(
+        [
+          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
+          [
+            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+            jest
+              .fn()
+              .mockResolvedValueOnce(inboundGroupsAndProjectsWithScopeResponse)
+              .mockResolvedValueOnce(inboundGroupsAndProjectsWithScopeResponseWithAddedItem),
+          ],
+          [
+            inboundAddGroupOrProjectCIJobTokenScopeMutation,
+            inboundAddGroupOrProjectSuccessResponseHandler,
+          ],
+        ],
+        mountExtended,
+      );
+
+      await waitForPromises();
+
+      expect(wrapper.findByTestId(`${type}-count`).text()).toBe('1');
+      expect(wrapper.findByTestId(`${type}-count`).attributes('title')).toBe(
+        `1 ${type} has access`,
+      );
+
+      await findToggleFormBtn().trigger('click');
+      await findProjectInput().vm.$emit('input', testPath);
+      findAddProjectBtn().trigger('click');
+
+      await waitForPromises();
+
+      expect(wrapper.findByTestId(`${type}-count`).text()).toBe('2');
+      expect(wrapper.findByTestId(`${type}-count`).attributes('title')).toBe(
+        `2 ${type}s have access`,
+      );
     });
 
     it('add group or project handles error correctly', async () => {
@@ -341,6 +380,39 @@ describe('TokenAccess component', () => {
         projectPath,
         [target]: expect.any(String),
       });
+    });
+
+    it(`decrements the ${type} count`, async () => {
+      createComponent(
+        [
+          [inboundGetCIJobTokenScopeQuery, inboundJobTokenScopeEnabledResponseHandler],
+          [
+            inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery,
+            jest
+              .fn()
+              .mockResolvedValueOnce(inboundGroupsAndProjectsWithScopeResponseWithAddedItem)
+              .mockResolvedValueOnce(inboundGroupsAndProjectsWithScopeResponse),
+          ],
+          [mutation, handler],
+        ],
+        mountExtended,
+      );
+
+      await waitForPromises();
+
+      expect(wrapper.findByTestId(`${type}-count`).text()).toBe('2');
+      expect(wrapper.findByTestId(`${type}-count`).attributes('title')).toBe(
+        `2 ${type}s have access`,
+      );
+
+      findRemoveProjectBtnAt(index).trigger('click');
+
+      await waitForPromises();
+
+      expect(wrapper.findByTestId(`${type}-count`).text()).toBe('1');
+      expect(wrapper.findByTestId(`${type}-count`).attributes('title')).toBe(
+        `1 ${type} has access`,
+      );
     });
 
     it(`remove ${type} handles error correctly`, async () => {

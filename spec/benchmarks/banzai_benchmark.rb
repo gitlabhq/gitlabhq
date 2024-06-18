@@ -65,7 +65,7 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
     it 'benchmarks several pipelines' do
       name = 'example.jpg'
       path = "images/#{name}"
-      blob = double(name: name, path: path, mime_type: 'image/jpeg', data: nil)
+      blob = instance_double('Gitlab::Git::Blob', name: name, path: path, mime_type: 'image/jpeg', data: nil)
       allow(wiki).to receive(:find_file).with(path, load_content: false).and_return(Gitlab::Git::WikiFile.new(blob))
       allow(wiki).to receive(:wiki_base_path) { '/namespace1/gitlabhq/wikis' }
 
@@ -122,15 +122,15 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
 
         x.report('Markdown-glfm') do
           filter = filter_klass.new(filter_source[filter_klass][:input_text],
-                                    context.merge(markdown_engine: glfm_engine),
-                                    filter_source[filter_klass][:input_result])
+            context.merge(markdown_engine: glfm_engine),
+            filter_source[filter_klass][:input_result])
           filter.call
         end
 
         x.report('Markdown-cmark') do
           filter = filter_klass.new(filter_source[filter_klass][:input_text],
-                                    context.merge(markdown_engine: cmark_engine),
-                                    filter_source[filter_klass][:input_result])
+            context.merge(markdown_engine: cmark_engine),
+            filter_source[filter_klass][:input_result])
           filter.call
         end
 
@@ -197,8 +197,8 @@ RSpec.describe 'GitLab Markdown Benchmark', :aggregate_failures, feature_categor
 
         x.report(label) do
           filter = filter_klass.new(filter_source[filter_klass][:input_text],
-                                    context,
-                                    filter_source[filter_klass][:input_result])
+            context,
+            filter_source[filter_klass][:input_result])
           filter.call
         end
       end

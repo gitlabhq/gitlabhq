@@ -175,9 +175,9 @@ export const setIdTypePreferenceMutationResponseWithErrors = {
 export const locationSearch = [
   '?search=find+issues',
   'author_username=homer',
-  'not[author_username]=marge',
-  'or[author_username]=burns',
-  'or[author_username]=smithers',
+  'not[author_username][]=marge',
+  'or[author_username][]=burns',
+  'or[author_username][]=smithers',
   'assignee_username[]=bart',
   'assignee_username[]=lisa',
   'assignee_username[]=5',
@@ -221,7 +221,7 @@ export const locationSearch = [
 ].join('&');
 
 export const locationSearchWithSpecialValues = [
-  'assignee_id=123',
+  'assignee_id=Any',
   'assignee_username=bart',
   'my_reaction_emoji=None',
   'iteration_id=Current',
@@ -312,7 +312,7 @@ export const filteredTokens = makeFilteredTokens({ grouped: false });
 export const groupedFilteredTokens = makeFilteredTokens({ grouped: true });
 
 export const filteredTokensWithSpecialValues = [
-  { type: TOKEN_TYPE_ASSIGNEE, value: { data: '123', operator: OPERATOR_IS } },
+  { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'Any', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'bart', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_MY_REACTION, value: { data: 'None', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ITERATION, value: { data: 'Current', operator: OPERATOR_IS } },
@@ -361,23 +361,23 @@ export const apiParams = {
 };
 
 export const apiParamsWithSpecialValues = {
-  assigneeId: '123',
+  assigneeWildcardId: 'ANY',
   assigneeUsernames: 'bart',
   labelName: 'None',
   myReactionEmoji: 'None',
   releaseTagWildcardId: 'NONE',
   iterationWildcardId: 'CURRENT',
   milestoneWildcardId: 'UPCOMING',
-  epicId: 'None',
-  weight: 'None',
+  epicWildcardId: 'NONE',
+  weightWildcardId: 'NONE',
   healthStatusFilter: 'NONE',
 };
 
 export const urlParams = {
   search: 'find issues',
   author_username: 'homer',
-  'not[author_username]': 'marge',
-  'or[author_username]': ['burns', 'smithers'],
+  'not[author_username][]': 'marge',
+  'or[author_username][]': ['burns', 'smithers'],
   'assignee_username[]': ['bart', 'lisa', '5'],
   'not[assignee_username][]': ['patty', 'selma'],
   'or[assignee_username][]': ['carl', 'lenny'],
@@ -406,7 +406,7 @@ export const urlParams = {
 };
 
 export const urlParamsWithSpecialValues = {
-  assignee_id: '123',
+  assignee_id: 'Any',
   'assignee_username[]': 'bart',
   'label_name[]': 'None',
   release_tag: 'None',

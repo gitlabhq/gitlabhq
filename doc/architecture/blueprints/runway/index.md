@@ -187,7 +187,7 @@ The following high level diagram shows the proposed setup of secrets within Vaul
 
 ![Runway Vault Architecture](img/runway_vault_4_.drawio.png)
 
-[Diagram Source](img/runway_vault_4_.drawio)
+Diagram Source: `https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/architecture/blueprints/runway/img/runway_vault_4_.drawio`
 
 ### Identity Management, Authentication, Authorization across Runway Components
 

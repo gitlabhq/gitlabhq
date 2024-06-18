@@ -180,7 +180,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
         update_pins_url: pins_path,
         shortcut_links: global_shortcut_links,
         track_visits_path: track_namespace_visits_path,
-        work_items: { full_path: group.full_path }
+        work_items: { full_path: group.full_path, has_issuable_health_status_feature: "false" }
       })
     end
 

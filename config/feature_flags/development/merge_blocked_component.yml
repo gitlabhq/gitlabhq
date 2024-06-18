@@ -1,8 +1,0 @@
----
-name: merge_blocked_component
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136454
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432033
-milestone: '16.6'
-type: development
-group: group::code review
-default_enabled: true

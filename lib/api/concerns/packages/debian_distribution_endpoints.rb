@@ -33,15 +33,15 @@ module API
                 optional :valid_time_duration_seconds, type: Integer, desc: 'The duration before the Release file should be considered expired by the client', documentation: { example: 604800 }
 
                 optional :components, type: Array[String],
-                                      coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-                                      regexp: Gitlab::Regex.debian_component_regex,
-                                      desc: 'The list of Components',
-                                      documentation: { example: 'main' }
+                  coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+                  regexp: Gitlab::Regex.debian_component_regex,
+                  desc: 'The list of Components',
+                  documentation: { example: 'main' }
                 optional :architectures, type: Array[String],
-                                         coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-                                         regexp: Gitlab::Regex.debian_architecture_regex,
-                                         desc: 'The list of Architectures',
-                                         documentation: { example: 'amd64' }
+                  coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+                  regexp: Gitlab::Regex.debian_architecture_regex,
+                  desc: 'The list of Architectures',
+                  documentation: { example: 'amd64' }
               end
             end
 

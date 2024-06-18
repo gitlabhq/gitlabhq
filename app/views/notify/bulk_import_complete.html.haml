@@ -1,0 +1,20 @@
+- header_style = 'font-size:24px; text-align:center; line-height:30px;'
+- text_style = 'font-size:16px; text-align:center; line-height:24px; margin-top: 24px;'
+- button_style = 'border: 1px solid #694cc0; border-radius: 4px; font-size: 14px; padding: 8px 16px; background-color: #7b58cf; color: #fff; cursor: pointer;'
+
+- strong_tag_pair = tag_pair(tag.strong, :strong_open, :strong_close)
+- start_date = l(@bulk_import.created_at.to_date, format: :long)
+
+%h1{ style: header_style }
+  = s_('BulkImport|Import completed')
+
+%p{ style: text_style }
+  = safe_format(s_('BulkImport|The import you started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed. You can now review your import results.'),
+    strong_tag_pair,
+    hostname: @hostname,
+    start_date: start_date)
+
+%p{ style: text_style }
+  = link_to history_import_bulk_import_url(@bulk_import.id), target: '_blank', rel: 'noopener noreferrer' do
+    %button{ type: 'button', style: button_style }
+      = s_('BulkImport|View import results')

@@ -44,10 +44,10 @@ module API
           # Example: http://127.0.0.1:3000/api/v4/projects/20/packages/generic/ml_experiment_1/1/
           # Note: legacy format
           def generic_package_uri
-            path = api_v4_projects_packages_generic_package_version_path(
+            path = api_v4_projects_packages_generic_package_version___path___path(
               id: object.project.id, package_name: '', file_name: ''
             )
-            path = path.delete_suffix('/package_version')
+            path = path.delete_suffix('/package_version/(/path/)')
 
             [path, object.artifact_root].join('')
           end

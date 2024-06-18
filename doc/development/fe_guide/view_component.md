@@ -1,6 +1,6 @@
 ---
 stage: Manage
-group: Foundations
+group: Design System
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
@@ -210,6 +210,21 @@ For the full list of options, see its
 Layout components can be used to create common layout patterns used in GitLab.
 
 ### Available components
+
+#### Page heading
+
+A standard page header with a page title and optional actions.
+
+**Example:**
+
+```haml
+= render ::Layouts::PageHeadingComponent.new(_('Page title')) do |c|
+  - c.with_actions do
+    = buttons
+```
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/page_heading_component.rb).
 
 #### Horizontal section
 

@@ -8,7 +8,7 @@ module DependencyProxy
     data_consistency :always
     idempotent!
 
-    feature_category :dependency_proxy
+    feature_category :virtual_registry
 
     def perform
       enqueue_blob_cleanup_job if DependencyProxy::Blob.pending_destruction.any?

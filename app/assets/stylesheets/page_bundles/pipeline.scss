@@ -335,7 +335,7 @@
 
     .menu-item {
       background-color: var(--gray-50, $gray-50);
-      border-radius: $border-radius-default;
+      border-radius: $gl-border-radius-base;
       box-shadow: inset 0 0 0 2px $blue-400,
         inset 0 0 0 3px var(--white, $white);
       outline: none;
@@ -352,4 +352,11 @@
   .scan-reports-summary-grid :nth-child(3n+1) {
     grid-column: 1 / -1;
   }
+}
+
+// Temporary fix to make tooltip appear correctly
+// until we refactor the tooltip handling in
+// https://gitlab.com/gitlab-org/gitlab/-/issues/463629
+.ci-job-component-tooltip::first-letter {
+  text-transform: uppercase;
 }

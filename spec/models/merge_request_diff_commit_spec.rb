@@ -44,26 +44,26 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
     let(:rows) do
       [
         {
-          "message": "Add submodule from gitlab.com\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-          "authored_date": "2014-02-27T10:01:38.000+01:00".to_time,
-          "committed_date": "2014-02-27T10:01:38.000+01:00".to_time,
-          "commit_author_id": an_instance_of(Integer),
-          "committer_id": an_instance_of(Integer),
-          "merge_request_diff_id": merge_request_diff_id,
-          "relative_order": 0,
-          "sha": Gitlab::Database::ShaAttribute.serialize("5937ac0a7beb003549fc5fd26fc247adbce4a52e"),
-          "trailers": {}.to_json
+          message: "Add submodule from gitlab.com\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
+          authored_date: "2014-02-27T10:01:38.000+01:00".to_time,
+          committed_date: "2014-02-27T10:01:38.000+01:00".to_time,
+          commit_author_id: an_instance_of(Integer),
+          committer_id: an_instance_of(Integer),
+          merge_request_diff_id: merge_request_diff_id,
+          relative_order: 0,
+          sha: Gitlab::Database::ShaAttribute.serialize("5937ac0a7beb003549fc5fd26fc247adbce4a52e"),
+          trailers: {}.to_json
         },
         {
-          "message": "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
-          "authored_date": "2014-02-27T09:57:31.000+01:00".to_time,
-          "committed_date": "2014-02-27T09:57:31.000+01:00".to_time,
-          "commit_author_id": an_instance_of(Integer),
-          "committer_id": an_instance_of(Integer),
-          "merge_request_diff_id": merge_request_diff_id,
-          "relative_order": 1,
-          "sha": Gitlab::Database::ShaAttribute.serialize("570e7b2abdd848b95f2f578043fc23bd6f6fd24d"),
-          "trailers": {}.to_json
+          message: "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
+          authored_date: "2014-02-27T09:57:31.000+01:00".to_time,
+          committed_date: "2014-02-27T09:57:31.000+01:00".to_time,
+          commit_author_id: an_instance_of(Integer),
+          committer_id: an_instance_of(Integer),
+          merge_request_diff_id: merge_request_diff_id,
+          relative_order: 1,
+          sha: Gitlab::Database::ShaAttribute.serialize("570e7b2abdd848b95f2f578043fc23bd6f6fd24d"),
+          trailers: {}.to_json
         }
       ]
     end
@@ -101,15 +101,15 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
       let(:timestamp) { Time.zone.at((1 << 31) - 1) }
       let(:rows) do
         [{
-          "message": "Weird commit date\n",
-          "authored_date": timestamp,
-          "committed_date": timestamp,
-          "commit_author_id": an_instance_of(Integer),
-          "committer_id": an_instance_of(Integer),
-          "merge_request_diff_id": merge_request_diff_id,
-          "relative_order": 0,
-          "sha": Gitlab::Database::ShaAttribute.serialize("ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69"),
-          "trailers": {}.to_json
+          message: "Weird commit date\n",
+          authored_date: timestamp,
+          committed_date: timestamp,
+          commit_author_id: an_instance_of(Integer),
+          committer_id: an_instance_of(Integer),
+          merge_request_diff_id: merge_request_diff_id,
+          relative_order: 0,
+          sha: Gitlab::Database::ShaAttribute.serialize("ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69"),
+          trailers: {}.to_json
         }]
       end
 

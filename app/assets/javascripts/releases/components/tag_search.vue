@@ -108,7 +108,7 @@ export default {
       >
         <gl-sprintf :message="createText">
           <template #tag>
-            <span class="gl-font-weight-bold">{{ query }}</span>
+            <span class="gl-font-bold">{{ query }}</span>
           </template>
         </gl-sprintf>
       </gl-button>

@@ -21,9 +21,9 @@ module Gitlab
 
         def git_repository(gitaly_repository)
           Gitlab::Git::Repository.new(gitaly_repository.storage_name,
-                                      gitaly_repository.relative_path,
-                                      gitaly_repository.gl_repository,
-                                      gitaly_repository.gl_project_path)
+            gitaly_repository.relative_path,
+            gitaly_repository.gl_repository,
+            gitaly_repository.gl_project_path)
         end
       end
     end

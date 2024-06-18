@@ -125,7 +125,7 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Global do
 
     describe '#errors' do
       it 'returns error about invalid type' do
-        expect(global.errors.first).to match /should be a hash/
+        expect(global.errors.first).to match(/should be a hash/)
       end
     end
   end

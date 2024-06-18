@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com
 
 Enterprise users have user accounts that are administered by an organization that
-has [verified their email domain](../project/pages/custom_domains_ssl_tls_certification/index.md) and purchased a [GitLab subscription](../../subscriptions/index.md).
+has [verified their email domain](#verified-domains-for-groups) and purchased a [GitLab subscription](../../subscriptions/index.md).
 
 Enterprise users are identified by the **Enterprise** badge
 next to their names on the [Members list](../group/index.md#filter-and-sort-members-in-a-group).
@@ -60,7 +60,7 @@ Providing the ability to group Owners to change their enterprise users' primary 
 
 ## Verified domains for groups
 
-The following automated processes use [verified domains](../project/pages/custom_domains_ssl_tls_certification/index.md) to run:
+The following automated processes use verified domains to run:
 
 - [Automatic claims of enterprise users](#automatic-claims-of-enterprise-users).
 - [Bypass email confirmation for provisioned users](#bypass-email-confirmation-for-provisioned-users).

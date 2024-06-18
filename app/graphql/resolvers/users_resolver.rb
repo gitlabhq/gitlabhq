@@ -15,7 +15,7 @@ module Resolvers
       description: 'List of usernames.'
 
     argument :sort, Types::SortEnum,
-      description: 'Sort users by this criteria.',
+      description: 'Sort users by the criteria.',
       required: false,
       default_value: :created_desc
 

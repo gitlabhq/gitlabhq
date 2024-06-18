@@ -12,7 +12,7 @@ Documentation at GitLab follows a workflow.
 
 Ensure your documentation includes:
 
-- [Product badges](styleguide/index.md#product-tier-badges).
+- [Product availability details](styleguide/availability_details.md).
 - The GitLab [version](versions.md) that introduced the feature.
 - Accurate [links](styleguide/index.md#links).
 - Accurate [user permissions](../../user/permissions.md).
@@ -53,7 +53,7 @@ and link to it from the merged merge request that introduced the documentation c
 Circumstances in which a regular pre-merge Technical Writer review might be skipped include:
 
 - There is a short amount of time left before the milestone release. If fewer than three
- days are remaining, seek a post-merge review and ping the writer via Slack to ensure the review is
+  days are remaining, seek a post-merge review and ping the writer via Slack to ensure the review is
   completed as soon as possible.
 - The size of the change is small and you have a high degree of confidence
   that early users of the feature (for example, GitLab.com users) can easily
@@ -79,7 +79,9 @@ and merged by the Solutions Architect team.
 
 ## AI-generated content
 
-You can make AI-generated contributions to GitLab documentation, provided you follow the guidelines in our [DCO or our CLA terms](https://about.gitlab.com/community/contribute/dco-cla/).
+Community members can make AI-generated contributions to GitLab documentation, provided they follow the guidelines in our [DCO or our CLA terms](https://about.gitlab.com/community/contribute/dco-cla/).
+
+GitLab team members must follow the guidelines documented in the [internal handbook](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/legal_restrictions/).
 
 ## Related topics
 

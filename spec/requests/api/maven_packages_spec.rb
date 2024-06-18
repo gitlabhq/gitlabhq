@@ -830,7 +830,7 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response.media_type).to eq('text/plain')
-          expect(response.body).to eq(package_file.send("file_#{format}".to_sym))
+          expect(response.body).to eq(package_file.send(:"file_#{format}"))
         end
       end
 

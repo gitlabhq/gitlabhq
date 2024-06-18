@@ -19,6 +19,8 @@ RSpec.describe Clusters::Agent, feature_category: :deployment_management do
   it { is_expected.to validate_length_of(:name).is_at_most(63) }
   it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id) }
 
+  it { is_expected.to define_enum_for(:connection_mode).with_values(outgoing: 0, incoming: 1).with_prefix }
+
   describe 'scopes' do
     describe '.ordered_by_name' do
       let(:names) { %w[agent-d agent-b agent-a agent-c] }

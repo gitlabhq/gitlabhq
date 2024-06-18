@@ -273,6 +273,40 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.with_case_insensitive_invite_emails' do
+      let_it_be(:email) { 'bob@example.com' }
+
+      context 'when the invite_email is the same case' do
+        let_it_be(:invited_member) do
+          create(:project_member, :invited, invite_email: email)
+        end
+
+        it 'finds the members' do
+          expect(described_class.with_case_insensitive_invite_emails([email])).to match_array([invited_member])
+        end
+      end
+
+      context 'when the invite_email is lowercased and we have an uppercase email for searching' do
+        let_it_be(:invited_member) do
+          create(:project_member, :invited, invite_email: email)
+        end
+
+        it 'finds the members' do
+          expect(described_class.with_case_insensitive_invite_emails([email.upcase])).to match_array([invited_member])
+        end
+      end
+
+      context 'when the invite_email is non lower cased' do
+        let_it_be(:invited_member) do
+          create(:project_member, :invited, invite_email: email.upcase)
+        end
+
+        it 'finds the members' do
+          expect(described_class.with_case_insensitive_invite_emails([email])).to match_array([invited_member])
+        end
+      end
+    end
+
     describe '.invite' do
       it { expect(described_class.invite).not_to include @maintainer }
       it { expect(described_class.invite).to include @invited_member }
@@ -799,22 +833,19 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   describe 'callbacks' do
     describe '#send_invite' do
       context 'with an invited group member' do
-        it 'sends an invite email' do
-          expect_next_instance_of(NotificationService) do |instance|
-            expect(instance).to receive(:invite_member)
-          end
+        it 'enqueues initial invite email' do
+          allow(Members::InviteMailer).to receive(:initial_email).and_call_original
 
-          create(:group_member, :invited)
+          expect do
+            member = create(:group_member, :invited)
+            expect(Members::InviteMailer).to have_received(:initial_email).with(member, member.raw_invite_token)
+          end.to have_enqueued_mail(Members::InviteMailer, :initial_email)
         end
       end
 
       context 'with an uninvited member' do
-        it 'does not send an invite email' do
-          expect_next_instance_of(NotificationService) do |instance|
-            expect(instance).not_to receive(:invite_member)
-          end
-
-          create(:group_member)
+        it 'does not enqueue the initial invite email' do
+          expect { create(:group_member) }.not_to have_enqueued_mail(Members::InviteMailer, :initial_email)
         end
       end
     end
@@ -844,6 +875,46 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     context 'when the user type is invalid' do
       it 'returns nil' do
         expect(described_class.filter_by_user_type('invalid_type')).to eq(nil)
+      end
+    end
+  end
+
+  describe '.distinct_on_source_and_case_insensitive_invite_email' do
+    it 'finds distinct members on email' do
+      email = 'bob@example.com'
+      project = create(:project)
+      project_owner_member = project.members.first
+      member = create(:project_member, :invited, source: project, invite_email: email)
+      # The one below is the duplicate and will not be returned.
+      create(:project_member, :invited, source: project, invite_email: email.upcase)
+
+      another_project = create(:project)
+      another_project_owner_member = another_project.members.first
+      another_project_member = create(:project_member, :invited, source: another_project, invite_email: email)
+      # The one below is the duplicate and will not be returned.
+      create(:project_member, :invited, source: another_project, invite_email: email.upcase)
+
+      expect(described_class.distinct_on_source_and_case_insensitive_invite_email)
+        .to match_array([project_owner_member, member, another_project_owner_member, another_project_member])
+    end
+  end
+
+  describe '.order_updated_desc' do
+    it 'contains only the latest updated case insensitive email invite' do
+      project = create(:project)
+      member = project.members.first
+      another_member = create(:project_member, source: member.project)
+
+      travel_to 10.minutes.ago do
+        another_member.touch # in past, so shouldn't get accepted over the one created
+      end
+
+      member.touch # ensure updated_at is being verified. This one should be first now.
+
+      travel_to 10.minutes.from_now do
+        another_member.touch # now we'll make the original first so we are verifying updated_at
+
+        expect(described_class.order_updated_desc).to eq([another_member, member])
       end
     end
   end
@@ -893,8 +964,9 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#accept_request' do
+  describe '#accept_request', :freeze_time do
     let(:member) { create(:project_member, requested_at: Time.current.utc) }
+    let(:current_time) { Time.current.utc }
 
     it { expect(member.accept_request(@owner_user)).to be_truthy }
     it { expect(member.accept_request(nil)).to be_truthy }
@@ -909,6 +981,12 @@ RSpec.describe Member, feature_category: :groups_and_projects do
       member.accept_request(@owner_user)
 
       expect(member.created_by).to eq(@owner_user)
+    end
+
+    it 'sets the request accepted timestamp' do
+      member.accept_request(@owner_user)
+
+      expect(member.request_accepted_at).to eq(current_time)
     end
 
     it 'calls #after_accept_request' do

@@ -18,7 +18,7 @@ RSpec.describe 'Sentry', feature_category: :error_tracking do
     visit new_user_session_path
 
     expect(has_requested_sentry).to eq(true)
-    expect(evaluate_script('window._Sentry.SDK_VERSION')).to match(%r{^7\.})
+    expect(evaluate_script('window._Sentry.SDK_VERSION')).to match(%r{^8\.})
   end
 
   def has_requested_sentry

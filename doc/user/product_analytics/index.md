@@ -10,19 +10,27 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - Introduced in GitLab 15.4 as an [Experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+> - Introduced in GitLab 15.4 as an [experiment](../../policy/experiment-beta-support.md#experiment) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 > - `cube_api_proxy` changed to reference only the [product analytics API](../../api/product_analytics.md) in GitLab 15.6.
 > - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 > - Snowplow integration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/398253) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `product_analytics_snowplow_support`. Disabled by default.
 > - Snowplow integration feature flag `product_analytics_snowplow_support` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130228) in GitLab 16.4.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/414865) from GitLab self-managed to GitLab.com in 16.7.
-> - Enabled in GitLab 16.7 as a [Beta](../../policy/experiment-beta-support.md#beta) feature.
+> - Enabled in GitLab 16.7 as a [beta](../../policy/experiment-beta-support.md#beta) feature.
 > - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
 > - [Enabled on self-managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/444345) in GitLab 16.11.
+> - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
 
-FLAG:
-The availability of this feature is controlled by feature flags. For more information, see the history.
+The product analytics feature empowers you to track user behavior and gain insights into how your
+applications are used and how users interact with your product.
+By using the data collected with product analytics in GitLab, you can better understand your users,
+identify friction points in funnels, make data-driven product decisions, and ultimately build better
+products that drive user engagement and business growth.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+For an overview of the product analytics setup and functionality,
+watch the [Product Analytics walkthrough videos](https://www.youtube.com/playlist?list=PL05JrBw4t0Kqfb4oLOFKkXxNrBJzDQ3sL&feature=shared).
 
 For more information about the vision and development of product analytics, see the [group direction page](https://about.gitlab.com/direction/monitor/product-analytics/).
 To leave feedback about product analytics bugs or functionality:
@@ -41,10 +49,11 @@ Product analytics uses the following tools:
 The following diagram illustrates the product analytics flow:
 
 ```mermaid
----
-title: Product Analytics flow
----
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TB
+accTitle: Product Analytics flow
+accDescr: How data is collected, processed, and visualized in dashboards.
+
     subgraph Event collection
         A([SDK]) --Send user data--> B[Snowplow Collector]
         B --Pass data--> C[Snowplow Enricher]
@@ -70,6 +79,7 @@ flowchart TB
 > - Feature flag `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 > - Feature flag `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 > - Feature flag `product_analytics_admin_settings` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/385602) by default in GitLab 16.11.
+> - Feature flag `product_analytics_admin_settings` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454342) in GitLab 17.1.
 
 To track events in your project's applications,
 you must enable and configure product analytics.
@@ -87,7 +97,7 @@ process, store and query your analytics data.
 DETAILS:
 **Offering:** GitLab.com
 
-On GitLab.com, if you signed up for Beta, you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`.
+On GitLab.com, if you signed up for beta, you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`.
 To sign up, contact the GitLab [sales team](https://about.gitlab.com/sales/).
 
 If GitLab manages your product analytics provider, then your analytics data is retained for one year.
@@ -138,7 +148,7 @@ These group-level settings are available for top-level groups and cascade to all
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. Check **Use Experiment and Beta features** checkbox.
+1. Check **Use experiment and beta features** checkbox.
 1. Select **Save changes**.
 
 ### Project-level settings
@@ -158,9 +168,11 @@ Prerequisites:
 
 ## Onboard a GitLab project
 
+> - Minimum required role [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154089/) in GitLab 17.1.
+
 Prerequisites:
 
-- You must have at least the Developer role for the project or group the project belongs to.
+- You must have at least the Maintainer role for the project or group the project belongs to.
 
 Onboarding a GitLab project means preparing it to receive events that are used for product analytics.
 
@@ -170,9 +182,7 @@ To onboard a project:
 1. Select **Analyze > Analytics dashboards**.
 1. Under **Product analytics**, select **Set up**.
 
-Then continue with the setup depending on your environment.
-
-### On GitLab.com
+Then continue with the setup depending on the provider type.
 
 ::Tabs
 
@@ -209,13 +219,6 @@ Your instance is being created, and the project onboarded.
 
 ::EndTabs
 
-### On GitLab self-managed or GitLab Dedicated
-
-- Select **Set up product analytics**.
-  Project-level settings are used if defined, otherwise [instance-level settings](#instance-level-settings).
-
-Your instance is being created, and the project onboarded.
-
 ## Instrument your application
 
 You can instrument code to collect data by using [tracking SDKs](instrumentation/index.md).
@@ -250,26 +253,40 @@ The autofill approach has both benefits and limitations.
   - Data exports have rows for the entire date range, making data analysis easier.
 - Limitations:
   - The `day` [granularity](https://cube.dev/docs/product/apis-integrations/rest-api/query-format) must be used.
-  All other granularities are not supported.
+    All other granularities are not supported.
   - Only date ranges defined by the [`inDateRange`](https://cube.dev/docs/product/apis-integrations/rest-api/query-format#indaterange) filter are filled.
     - The date selector in the UI already uses this filter.
   - The filling of data ignores the query-defined limit. If you set a limit of 10 data points over 20 days, it
-  returns 20 data points, with the missing data filled by `0`. [Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
+    returns 20 data points, with the missing data filled by `0`. [Issue 417231](https://gitlab.com/gitlab-org/gitlab/-/issues/417231) proposes a solution to this limitation.
 
 ## Funnel analysis
 
 Use funnel analysis to understand the flow of users through your application, and where
 users drop out of a predefined flow (for example, a checkout process or ticket purchase).
 
-Each product can also define an unlimited number of funnels.
+Each project can define an unlimited number of funnels.
 Like dashboards, funnels are defined with the GitLab YAML schema
 and stored in the `.gitlab/analytics/funnels/` directory of a project repository.
+If a repository has a custom dashboards pointer project that points to another repository,
+funnels must be defined in the pointer project.
 
-Funnel definitions must include the keys `name` and `seconds_to_convert`, and an array of `steps`.
+### Create a funnel dashboard
+
+To create a funnel dashboard, you must first create a funnel definition file and a visualization.
+Each funnel must have a custom visualization defined for it.
+When funnel definitions and visualizations are ready,
+you can [create a custom dashboard](../analytics/analytics_dashboards.md#create-a-custom-dashboard)
+to visualize funnel analysis behavior.
+
+#### Create a funnel definition
+
+1. In the `.gitlab/analytics/` directory, create a directory named `funnels`.
+1. In the new `.gitlab/analytics/funnels` directory, create a funnel definition YAML file.
+
+Funnel definitions must include the key `seconds_to_convert` and an array of `steps`.
 
 | Key                  | Description                                              |
 |----------------------|----------------------------------------------------------|
-| `name`               | The name of the funnel.                                  |
 | `seconds_to_convert` | The number of seconds a user has to complete the funnel. |
 | `steps`              | An array of funnel steps.                                |
 
@@ -281,12 +298,9 @@ Each step must include the keys `name`, `target`, and `action`.
 | `action` | The action performed. (Only `pageview` is supported.)                          |
 | `target` | The target of the step. (Because only `pageview` is supported, this should be a path.) |
 
-### Example funnel definition
-
 The following example defines a funnel that tracks users who completed a purchase within one hour by going through three target pages:
 
 ```yaml
-name: completed_purchase
 seconds_to_convert: 3600
 steps:
   - name: view_page_1
@@ -300,10 +314,50 @@ steps:
     action: 'pageview'
 ```
 
+#### Create a funnel visualization
+
+To create funnel visualizations, follow the steps for [defining a chart visualization](../analytics/analytics_dashboards.md#define-a-chart-visualization).
+Funnel visualizations support the measure `count` and the dimension `step`.
+
+The following example defines a column chart that visualizes the number of users who reached different steps in a funnel:
+
+```yaml
+version: 1
+type: ColumnChart
+data:
+  type: cube_analytics
+  query:
+    measures:
+      - FUNNEL_NAME.count
+    dimensions:
+      - FUNNEL_NAME.step
+    limit: 100
+    timezone: UTC
+    timeDimensions: []
+options:
+  xAxis:
+    name: Step
+    type: category
+  yAxis:
+    name: Total
+    type: value
+```
+
+NOTE:
+The funnel name defined in the YAML definition is converted to a slug that can be referenced in visualization definitions.
+For example, the funnel name `Successful Conversions` is converted to `successful_conversions`.
+
 ### Query a funnel
 
 You can [query the funnel data with the REST API](../../api/product_analytics.md#send-query-request-to-cube).
 To do this, you can use the example query body below, where you need to replace `FUNNEL_NAME` with your funnel's name.
+
+NOTE:
+The name of a funnel is generated from the filename of the funnel definition YAML file,
+by separating words with underscores and removing special characters.
+For example, for a funnel definition file in `.gitlab/analytics/funnels/Successful Conversions.yaml`
+the funnel name is `successful_conversions`.
+This funnel name can be referenced in visualization definitions.
 
 NOTE:
 The `afterDate` filter is not supported. Use `beforeDate` or `inDateRange`.
@@ -315,7 +369,7 @@ The `afterDate` filter is not supported. Use `beforeDate` or `inDateRange`.
         "FUNNEL_NAME.count"
       ],
       "order": {
-        "completed_purchase.count": "desc"
+        "FUNNEL_NAME.count": "desc"
       },
       "filters": [
         {

@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillSbomOccurrencesVulnerabilitiesProjectId
+description: Backfills sharding key `sbom_occurrences_vulnerabilities.project_id` from `sbom_occurrences`.
+feature_category: dependency_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156129
+milestone: '17.1'
+queued_migration_version: 20240612075305
+finalize_after: '2024-07-22'
+finalized_by: # version of the migration that finalized this BBM

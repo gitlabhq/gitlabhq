@@ -1,0 +1,28 @@
+- header_style = 'font-size:24px; text-align:center; line-height:30px;'
+- text_style = 'font-size:16px; text-align:center; line-height:24px; margin-top: 24px;'
+- error_style = 'color:#c91c00;'
+- button_style = 'border: 1px solid #694cc0; border-radius: 4px; font-size: 14px; padding: 8px 16px; background-color: #7b58cf; color: #fff; cursor: pointer;'
+
+- strong_tag_pair = tag_pair(tag.strong(style: 'color: #7b58cf'), :strong_open, :strong_close)
+
+%h1{ style: header_style }
+  = @title
+
+%p{ style: text_style }
+  - if @has_errors
+    = safe_format(s_('BulkImport|Items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
+  - else
+    = safe_format(s_('BulkImport|All items assigned to placeholder users were reassigned to users in %{strong_open}%{group}%{strong_close} according to the uploaded CSV file.'), strong_tag_pair, group: @group.name)
+
+%ul
+  %li
+    %span= safe_format(s_('BulkImport|%{count} placeholder users matched to users.'), count: @success_count)
+  - if @has_errors
+    %li{ style: error_style }
+      %strong= safe_format(s_('BulkImport|%{count} placeholder users not matched to users.'), count: @failed_count)
+
+%p{ style: text_style }
+  - extra_params = @has_errors ? { status: 'failed' } : {}
+  = link_to group_group_members_url(@group, tab: 'placeholders', **extra_params), target: '_blank', rel: 'noopener noreferrer' do
+    %button{ type: 'button', style: button_style }
+      = s_('BulkImport|Review results')

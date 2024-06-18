@@ -8,8 +8,9 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
   let_it_be(:user) { create(:user) }
   let_it_be(:merge_request, reload: true) { create(:merge_request, assignees: [user]) }
   let_it_be(:project) { merge_request.project }
+  let(:params) { {} }
 
-  subject { described_class.new(project: project, current_user: user).execute(merge_request) }
+  subject { described_class.new(project: project, current_user: user, params: params).execute(merge_request) }
 
   before do
     project.add_maintainer(user)
@@ -158,11 +159,58 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
       it 'performs Pages::DeactivateMrDeploymentWorker asynchronously' do
         expect(Pages::DeactivateMrDeploymentsWorker)
           .to receive(:perform_async)
-          .with(merge_request)
+          .with(merge_request.id)
 
         subject
 
         expect(merge_request.reload).to be_merged
+      end
+    end
+  end
+
+  context 'when there are auto merge MRs with the branch as target' do
+    context 'when merge_when_checks_pass is disabled and when source branch is to be deleted' do
+      let(:params) { { delete_source_branch: true } }
+
+      it 'aborts no non MWCP auto merges' do
+        mr_1 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: merge_request.source_branch,
+          source_branch: "test", source_project: merge_request.project)
+        mr_2 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
+          source_branch: 'second', source_project: merge_request.project)
+
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+        subject
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+      end
+    end
+
+    context 'when source branch is not be deleted' do
+      it 'aborts no non MWCP auto merges' do
+        mr_1 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: merge_request.source_branch,
+          source_branch: "test", source_project: merge_request.project)
+        mr_2 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
+          source_branch: 'second', source_project: merge_request.project)
+
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+        subject
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+      end
+    end
+
+    context 'when merge_when_checks_pass is disabled' do
+      before do
+        stub_feature_flags(merge_when_checks_pass: false)
+      end
+
+      it 'aborts no non MWCP auto merges' do
+        mr_1 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: merge_request.source_branch,
+          source_branch: "test", source_project: merge_request.project)
+        mr_2 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
+          source_branch: 'second', source_project: merge_request.project)
+
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+        subject
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
       end
     end
   end

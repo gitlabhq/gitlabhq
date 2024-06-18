@@ -52,7 +52,7 @@ in the catalog.
    or ask one of the group owners to create an empty project for you.
 1. Follow the [standard guide for creating components](../../ci/components/index.md).
 1. Add a concise project description that clearly describes the capabilities offered by the component project.
-1. Ensure that the [general best practices](../../ci/components/index.md#best-practices) are followed as well as
+1. Ensure to follow the general guidance to [write a component](../../ci/components/index.md#write-a-component) as well as
    [those for the official components](#best-practices-for-official-components).
 1. Add a `LICENSE.md` file with the MIT license.
 1. The project must have a `.gitlab-ci.yml` file that:
@@ -103,7 +103,7 @@ Requirements for becoming a maintainer:
 
 - Have a an in-depth understanding of the [CI/CD YAML syntax](../../ci/yaml/index.md) and features.
 - Understand how CI components work and demonstrate experience developing them.
-- Have a solid understanding of the components [best practices](../../ci/components/index.md#best-practices).
+- Have a solid understanding of how to [write a component](../../ci/components/index.md#write-a-component).
 
 How to join the `gitlab-components` group of general maintainers:
 

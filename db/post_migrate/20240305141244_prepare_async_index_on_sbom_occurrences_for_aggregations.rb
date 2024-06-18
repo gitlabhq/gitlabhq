@@ -5,9 +5,11 @@ class PrepareAsyncIndexOnSbomOccurrencesForAggregations < Gitlab::Database::Migr
 
   milestone '16.11'
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     prepare_async_index :sbom_occurrences, [:traversal_ids, :component_id, :component_version_id], name: INDEX_NAME
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     unprepare_async_index :sbom_occurrences, INDEX_NAME

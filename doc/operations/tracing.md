@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`. Disabled by default. This feature is in [Beta](../policy/experiment-beta-support.md#beta).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with flags](../administration/feature_flags.md) named `observability_group_tab` and `observability_tracing`. Disabled by default. This feature is in [beta](../policy/experiment-beta-support.md#beta).
 > - Feature flag `observability_group_tab` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133264) in GitLab 16.5.
 
 FLAG:
@@ -21,7 +21,7 @@ This feature is not ready for production use.
 
 With distributed tracing, you can troubleshoot application performance issues by inspecting how a request moves through different services and systems, the timing of each operation, and any errors or logs as they occur. Tracing is particularly useful in the context of microservice applications, which group multiple independent services collaborating to fulfill user requests.
 
-This feature is in [Beta](../policy/experiment-beta-support.md). For more information, see the [group direction page](https://about.gitlab.com/direction/monitor/observability/). To leave feedback about tracing bugs or functionality, comment in the [feedback issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2590) or open a [new issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/new).
+This feature is in [beta](../policy/experiment-beta-support.md). For more information, see the [group direction page](https://about.gitlab.com/direction/monitor/observability/). To leave feedback about tracing bugs or functionality, comment in the [feedback issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2590) or open a [new issue](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/new).
 
 ## Configure distributed tracing for a project
 

@@ -1,5 +1,5 @@
 <script>
-import { MEMBER_TYPES, EE_ACTION_BUTTONS } from 'ee_else_ce/members/constants';
+import { MEMBERS_TAB_TYPES, ACTION_BUTTONS } from 'ee_else_ce/members/constants';
 import AccessRequestActionButtons from '../action_buttons/access_request_action_buttons.vue';
 import GroupActionButtons from '../action_buttons/group_action_buttons.vue';
 import InviteActionButtons from '../action_buttons/invite_action_buttons.vue';
@@ -36,11 +36,11 @@ export default {
   computed: {
     actionButtonComponent() {
       const dictionary = {
-        [MEMBER_TYPES.user]: 'user-action-dropdown',
-        [MEMBER_TYPES.group]: 'group-action-buttons',
-        [MEMBER_TYPES.invite]: 'invite-action-buttons',
-        [MEMBER_TYPES.accessRequest]: 'access-request-action-buttons',
-        ...EE_ACTION_BUTTONS,
+        [MEMBERS_TAB_TYPES.user]: 'user-action-dropdown',
+        [MEMBERS_TAB_TYPES.group]: 'group-action-buttons',
+        [MEMBERS_TAB_TYPES.invite]: 'invite-action-buttons',
+        [MEMBERS_TAB_TYPES.accessRequest]: 'access-request-action-buttons',
+        ...ACTION_BUTTONS,
       };
 
       return dictionary[this.memberType];

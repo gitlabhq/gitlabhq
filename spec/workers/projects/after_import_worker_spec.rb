@@ -78,7 +78,7 @@ RSpec.describe Projects::AfterImportWorker, feature_category: :importers do
           expect(instance).to receive(:execute).and_raise(exception)
         end
 
-        expect(Gitlab::Import::Logger).to receive(:info).with(
+        expect(::Import::Framework::Logger).to receive(:info).with(
           {
             message: 'Project housekeeping failed',
             project_full_path: project.full_path,

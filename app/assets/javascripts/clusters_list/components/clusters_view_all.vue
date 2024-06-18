@@ -98,7 +98,7 @@ export default {
         footer-class="gl-text-right"
       >
         <template #header>
-          <h3 data-testid="agent-card-title" class="gl-my-0 gl-font-weight-normal gl-font-size-h2">
+          <h3 data-testid="agent-card-title" class="gl-my-0 gl-font-normal gl-font-size-h2">
             <gl-sprintf :message="agentsCardTitle.message"
               ><template #number>{{ agentsCardTitle.number }}</template>
               <template #total>{{ agentsCardTitle.total }}</template>
@@ -158,10 +158,7 @@ export default {
         footer-class="gl-text-right"
       >
         <template #header>
-          <h3
-            class="gl-my-1 gl-font-weight-normal gl-font-size-h2"
-            data-testid="clusters-card-title"
-          >
+          <h3 class="gl-my-1 gl-font-normal gl-font-size-h2" data-testid="clusters-card-title">
             <gl-sprintf :message="clustersCardTitle.message"
               ><template #number>{{ clustersCardTitle.number }}</template>
               <template #total>{{ clustersCardTitle.total }}</template>

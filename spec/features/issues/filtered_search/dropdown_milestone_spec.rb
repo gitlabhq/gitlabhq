@@ -12,7 +12,6 @@ RSpec.describe 'Dropdown milestone', :js, feature_category: :team_planning do
   let_it_be(:issue) { create(:issue, project: project) }
 
   before do
-    stub_feature_flags(or_issuable_queries: false)
     project.add_maintainer(user)
     sign_in(user)
 

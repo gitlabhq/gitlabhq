@@ -17,7 +17,7 @@ RSpec.describe 'Merge request > Context commits', :js, feature_category: :code_r
     wait_for_requests
   end
 
-  it 'opens modal' do
+  it 'opens modal', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/443415' do
     click_button 'Add previously merged commits'
 
     expect(page).to have_selector('#add-review-item')

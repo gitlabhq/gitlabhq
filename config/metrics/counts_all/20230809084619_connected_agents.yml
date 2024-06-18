@@ -1,8 +1,6 @@
 ---
 key_path: counts.connected_agents
 description: Count of connected cluster agents
-product_section: ops
-product_stage: deploy
 product_group: environments
 value_type: number
 status: active

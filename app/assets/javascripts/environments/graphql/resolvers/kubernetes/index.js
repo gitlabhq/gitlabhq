@@ -1,4 +1,4 @@
-import { CoreV1Api, Configuration } from '@gitlab/cluster-client';
+import { CoreV1Api, AppsV1Api, Configuration } from '@gitlab/cluster-client';
 import {
   getK8sPods,
   watchWorkloadItems,
@@ -13,7 +13,9 @@ import {
 import { humanizeClusterErrors } from '../../../helpers/k8s_integration_helper';
 import k8sPodsQuery from '../../queries/k8s_pods.query.graphql';
 import k8sServicesQuery from '../../queries/k8s_services.query.graphql';
+import k8sDeploymentsQuery from '../../queries/k8s_deployments.query.graphql';
 import { k8sResourceType } from './constants';
+import { k8sLogs } from './k8s_logs';
 
 const watchServices = ({ configuration, namespace, client }) => {
   const query = k8sServicesQuery;
@@ -26,6 +28,14 @@ const watchPods = ({ configuration, namespace, client }) => {
   const query = k8sPodsQuery;
   const watchPath = buildWatchPath({ resource: 'pods', namespace });
   const queryField = k8sResourceType.k8sPods;
+  watchWorkloadItems({ client, query, configuration, namespace, watchPath, queryField });
+};
+
+const watchDeployments = ({ configuration, namespace, client }) => {
+  const query = k8sDeploymentsQuery;
+  const watchPath = buildWatchPath({ resource: 'deployments', api: 'apis/apps/v1', namespace });
+  const queryField = k8sResourceType.k8sDeployments;
+
   watchWorkloadItems({ client, query, configuration, namespace, watchPath, queryField });
 };
 
@@ -59,8 +69,7 @@ export const kubernetesMutations = {
 export const kubernetesQueries = {
   k8sPods(_, { configuration, namespace }, { client }) {
     const query = k8sPodsQuery;
-    const enableWatch = gon.features?.k8sWatchApi;
-    return getK8sPods({ client, query, configuration, namespace, enableWatch });
+    return getK8sPods({ client, query, configuration, namespace });
   },
   k8sServices(_, { configuration, namespace }, { client }) {
     const coreV1Api = new CoreV1Api(new Configuration(configuration));
@@ -72,11 +81,33 @@ export const kubernetesQueries = {
       .then((res) => {
         const items = res?.items || [];
 
-        if (gon.features?.k8sWatchApi) {
-          watchServices({ configuration, namespace, client });
-        }
+        watchServices({ configuration, namespace, client });
 
         return items.map(mapWorkloadItem);
+      })
+      .catch(async (err) => {
+        try {
+          await handleClusterError(err);
+        } catch (error) {
+          throw new Error(error.message);
+        }
+      });
+  },
+  k8sDeployments(_, { configuration, namespace }, { client }) {
+    const appsV1Api = new AppsV1Api(new Configuration(configuration));
+    const deploymentsApi = namespace
+      ? appsV1Api.listAppsV1NamespacedDeployment({ namespace })
+      : appsV1Api.listAppsV1DeploymentForAllNamespaces();
+
+    return deploymentsApi
+      .then((res) => {
+        const items = res?.items || [];
+
+        watchDeployments({ configuration, namespace, client });
+
+        return items.map((item) => {
+          return { metadata: item.metadata, status: item.status || {} };
+        });
       })
       .catch(async (err) => {
         try {
@@ -102,4 +133,5 @@ export const kubernetesQueries = {
         }
       });
   },
+  k8sLogs,
 };

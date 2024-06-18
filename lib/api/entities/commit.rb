@@ -7,7 +7,7 @@ module API
       expose :short_id, documentation: { type: 'string', example: '2695effb' }
       expose :created_at, documentation: { type: 'dateTime', example: '2017-07-26T11:08:53.000+02:00' }
       expose :parent_ids,
-             documentation: { type: 'string', is_array: true, example: '2a4b78934375d7f53875269ffd4f45fd83a84ebe' }
+        documentation: { type: 'string', is_array: true, example: '2a4b78934375d7f53875269ffd4f45fd83a84ebe' }
       expose :full_title, as: :title, documentation: { type: 'string', example: 'Initial commit' }
       expose :safe_message, as: :message, documentation: { type: 'string', example: 'Initial commit' }
       expose :author_name, documentation: { type: 'string', example: 'John Smith' }
@@ -23,10 +23,10 @@ module API
       }
 
       expose :web_url,
-             documentation: {
-               type: 'string',
-               example: 'https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746'
-             } do |commit, _options|
+        documentation: {
+          type: 'string',
+          example: 'https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746'
+        } do |commit, _options|
         c = commit
         c = c.__subject__ if c.is_a?(Gitlab::View::Presenter::Base)
         Gitlab::UrlBuilder.build(c)

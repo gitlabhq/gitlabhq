@@ -30,8 +30,6 @@ RSpec.describe 'IDE', :js, feature_category: :web_ide do
 
   shared_examples "new Web IDE" do
     it 'loads new Web IDE', :aggregate_failures do
-      expect(page).not_to have_selector('.context-header')
-
       iframe = find(ide_iframe_selector)
 
       page.within_frame(iframe) do

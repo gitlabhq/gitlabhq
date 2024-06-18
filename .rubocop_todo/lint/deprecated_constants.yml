@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Lint/DeprecatedConstants:
-  Exclude:
-    - 'scripts/pipeline_test_report_builder.rb'
-    - 'spec/scripts/pipeline_test_report_builder_spec.rb'

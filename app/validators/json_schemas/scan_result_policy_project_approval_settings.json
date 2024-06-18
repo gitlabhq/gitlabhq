@@ -15,6 +15,9 @@
     "require_password_to_approve": {
       "type": "boolean"
     },
+    "require_reauthentication_to_approve": {
+      "type": "boolean"
+    },
     "block_branch_modification": {
       "type": "boolean"
     },

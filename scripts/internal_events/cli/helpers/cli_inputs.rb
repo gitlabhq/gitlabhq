@@ -55,6 +55,17 @@ module InternalEventsCli
       def input_required_text
         format_help("(leave blank for help)")
       end
+
+      def disableable_option(value:, disabled:, name: nil)
+        should_disable = yield
+        name ||= value
+
+        {
+          value: value,
+          name: (should_disable ? format_help(name) : name),
+          disabled: (disabled if should_disable)
+        }
+      end
     end
   end
 end

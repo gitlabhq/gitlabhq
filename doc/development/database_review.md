@@ -213,7 +213,7 @@ Include in the MR description:
 - Add foreign keys to any columns pointing to data in other tables, including [an index](migration_style_guide.md#adding-foreign-key-constraints).
 - Add indexes for fields that are used in statements such as `WHERE`, `ORDER BY`, `GROUP BY`, and `JOIN`s.
 - New tables must be seeded by a file in `db/fixtures/development/`. These fixtures are also used
-  to ensure that [upgrades complete successfully](database/dbmigrate:multi-version-upgrade-job.md),
+  to ensure that [upgrades complete successfully](database/dbmigrate_multi_version_upgrade_job.md),
   so it's important that new tables are always populated.
 - New tables and columns are not necessarily risky, but over time some access patterns are inherently
   difficult to scale. To identify these risky patterns in advance, we must document expectations for

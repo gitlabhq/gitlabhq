@@ -49,7 +49,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
       helper.cascading_namespace_settings_popover_data(
         attribute,
         subgroup1,
-        -> (locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }
+        ->(locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }
       )
     end
 

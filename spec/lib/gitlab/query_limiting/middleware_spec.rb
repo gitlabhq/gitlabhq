@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::QueryLimiting::Middleware do
   describe '#call' do
     it 'runs the application with query limiting in place' do
-      middleware = described_class.new(-> (env) { env })
+      middleware = described_class.new(->(env) { env })
 
       expect_next_instance_of(Gitlab::QueryLimiting::Transaction) do |instance|
         expect(instance).to receive(:act_upon_results)
@@ -17,7 +17,7 @@ RSpec.describe Gitlab::QueryLimiting::Middleware do
   end
 
   describe '#action_name' do
-    let(:middleware) { described_class.new(-> (env) { env }) }
+    let(:middleware) { described_class.new(->(env) { env }) }
 
     context 'using a Rails request' do
       it 'returns the name of the controller and action' do

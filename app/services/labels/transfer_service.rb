@@ -17,7 +17,7 @@ module Labels
 
       # rubocop: disable CodeReuse/ActiveRecord
       link_ids = group_labels_applied_to_issues.pluck("label_links.id") +
-                 group_labels_applied_to_merge_requests.pluck("label_links.id")
+        group_labels_applied_to_merge_requests.pluck("label_links.id")
       # rubocop: disable CodeReuse/ActiveRecord
 
       Label.transaction do
@@ -40,9 +40,9 @@ module Labels
     def labels_to_transfer
       Label
         .from_union([
-                      group_labels_applied_to_issues,
-                      group_labels_applied_to_merge_requests
-                    ])
+          group_labels_applied_to_issues,
+          group_labels_applied_to_merge_requests
+        ])
         .reorder(nil)
         .distinct
     end

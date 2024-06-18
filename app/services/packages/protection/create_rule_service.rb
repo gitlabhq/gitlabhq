@@ -6,7 +6,7 @@ module Packages
       ALLOWED_ATTRIBUTES = %i[
         package_name_pattern
         package_type
-        push_protected_up_to_access_level
+        minimum_access_level_for_push
       ].freeze
 
       def execute

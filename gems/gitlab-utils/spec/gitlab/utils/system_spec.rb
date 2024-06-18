@@ -227,13 +227,13 @@ RSpec.describe Gitlab::Utils::System do
 
     describe '.summary' do
       it 'contains a selection of the available fields' do
-        stub_const('RUBY_DESCRIPTION', 'ruby-3.0-patch1')
+        stub_const('RUBY_DESCRIPTION', 'ruby-3.2-patch1')
         mock_existing_proc_file('/proc/self/status', proc_status)
         mock_existing_proc_file('/proc/self/smaps_rollup', proc_smaps_rollup)
 
         summary = described_class.summary
 
-        expect(summary[:version]).to eq('ruby-3.0-patch1')
+        expect(summary[:version]).to eq('ruby-3.2-patch1')
         expect(summary[:gc_stat].keys).to eq(GC.stat.keys)
         expect(summary[:memory_rss]).to eq(2527232)
         expect(summary[:memory_uss]).to eq(475136)

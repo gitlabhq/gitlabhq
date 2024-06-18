@@ -56,6 +56,9 @@ module Projects
       namespace_id = params[:namespace_id] || current_user.namespace_id
       @project.namespace_id = namespace_id.to_i
 
+      organization_id = params[:organization_id] || @project.namespace.organization_id
+      @project.organization_id = organization_id.to_i
+
       @project.check_personal_projects_limit
       return @project if @project.errors.any?
 
@@ -240,7 +243,7 @@ module Projects
           Namespaces::ProjectNamespace.create_from_project!(@project) if @project.valid?
 
           if @project.saved?
-            Integration.create_from_active_default_integrations(@project, :project_id)
+            Integration.create_from_default_integrations(@project, :project_id)
 
             @project.create_labels unless @project.gitlab_project_import?
 
@@ -312,6 +315,9 @@ module Projects
       return if @params[:import_export_upload].present? && import_type == 'gitlab_project'
 
       unless ::Gitlab::CurrentSettings.import_sources&.include?(import_type)
+        return if import_type == 'github' && Feature.enabled?(:override_github_disabled, current_user, type: :ops)
+        return if import_type == 'bitbucket_server' && Feature.enabled?(:override_bitbucket_server_disabled, current_user, type: :ops)
+
         raise ImportSourceDisabledError, "#{import_type} import source is disabled"
       end
     end

@@ -9,9 +9,9 @@ module Types
       present_using MergeRequestPresenter
 
       PERMISSION_FIELDS = %i[push_to_source_branch
-                             remove_source_branch
-                             cherry_pick_on_current_merge_request
-                             revert_on_current_merge_request].freeze
+        remove_source_branch
+        cherry_pick_on_current_merge_request
+        revert_on_current_merge_request].freeze
 
       abilities :read_merge_request, :admin_merge_request,
         :update_merge_request, :create_note

@@ -6,8 +6,7 @@ module QA
   module Service
     module DockerRun
       class GitlabRunner < Base
-        attr_reader :tags
-        attr_accessor :token, :address, :image, :run_untagged
+        attr_accessor :token, :address, :image
         attr_writer :config, :executor, :executor_image
 
         CONFLICTING_VARIABLES_MESSAGE = <<~MSG
@@ -18,7 +17,6 @@ module QA
         def initialize(name)
           @image = "#{QA::Runtime::Env.container_registry_host}/#{QA::Runtime::Env.runner_container_namespace}/#{QA::Runtime::Env.runner_container_image}" # rubocop:disable Layout/LineLength
           @name = name || "qa-runner-#{SecureRandom.hex(4)}"
-          @run_untagged = true
           @executor = :shell
           @executor_image = "#{QA::Runtime::Env.container_registry_host}/#{QA::Runtime::Env.runner_container_namespace}/#{QA::Runtime::Env.gitlab_qa_build_image}" # rubocop:disable Layout/LineLength
           super()
@@ -52,11 +50,6 @@ module QA
           shell("docker exec #{@name} sh -c '#{prove_airgap}'") if network == 'airgapped'
         end
 
-        def tags=(tags)
-          @tags = tags
-          @run_untagged = false
-        end
-
         def restart
           super
 
@@ -70,23 +63,7 @@ module QA
           args << '--non-interactive'
           args << "--name #{@name}"
           args << "--url #{@address}"
-
-          if @token.starts_with?('glrt-')
-            args << "--token #{@token}"
-          else
-            args << "--registration-token #{@token}"
-
-            args << if run_untagged
-                      raise format(CONFLICTING_VARIABLES_MESSAGE, :tags=, :run_untagged, run_untagged) if @tags&.any?
-
-                      '--run-untagged=true'
-                    else
-                      raise 'You must specify tags to run!' unless @tags&.any?
-
-                      "--tag-list #{@tags.join(',')}"
-                    end
-          end
-
+          args << "--token #{@token}"
           args << "--executor #{@executor}"
 
           if @executor == :docker

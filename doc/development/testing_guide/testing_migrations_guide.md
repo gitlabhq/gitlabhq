@@ -106,7 +106,7 @@ application code which can change after the migration has run, and cause the tes
 to fail. For example, to create a record in the `projects` table:
 
 ```ruby
-project = table(:projects).create!(id: 1, name: 'gitlab1', path: 'gitlab1')
+project = table(:projects).create!(name: 'gitlab1', path: 'gitlab1')
 ```
 
 #### `migrate!`

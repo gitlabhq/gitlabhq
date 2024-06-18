@@ -14,6 +14,10 @@ module Bitbucket
       end
 
       def author
+        raw.dig('reporter', 'uuid')
+      end
+
+      def author_nickname
         raw.dig('reporter', 'nickname')
       end
 
@@ -52,6 +56,7 @@ module Bitbucket
           description: description,
           state: state,
           author: author,
+          author_nickname: author_nickname,
           milestone: milestone,
           created_at: created_at,
           updated_at: updated_at

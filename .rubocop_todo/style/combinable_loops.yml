@@ -1,4 +1,5 @@
 ---
+# Cop supports --autocorrect.
 Style/CombinableLoops:
   Exclude:
     - 'ee/db/fixtures/development/30_customizable_cycle_analytics.rb'
@@ -7,4 +8,3 @@ Style/CombinableLoops:
     - 'spec/features/merge_request/user_suggests_changes_on_diff_spec.rb'
     - 'spec/finders/packages/group_packages_finder_spec.rb'
     - 'spec/requests/api/members_spec.rb'
-    - 'spec/support/shared_examples/features/protected_branches_access_control_ce_shared_examples.rb'

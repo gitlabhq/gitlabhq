@@ -36,7 +36,7 @@
     [Supply-chain Levels for Software Artifacts (SLSA)](https://github.com/slsa-framework/slsa) is a security framework that helps ensure the security and integrity of your software supply chain. By default, GitLab Runner is now capable of generating and producing SLSA-2 compliant attestation metadata for build artifacts.
         If the artifact is stored in a registry, then the attestation metadata is stored alongside the artifact in that registry. Otherwise, the metadata is in rendered in a plain text `.json` file that's stored with the artifact.
         This new attestation information can help you more easily verify that your build artifacts have not been tampered with. To enable this feature, simply set `RUNNER_GENERATE_ARTIFACTS_METADATA = "true"` in your `.gitlab-ci.yml` file.
-        As part of the Limited Availability release, CI jobs that run on the macOS runners will count toward your CI/CD minutes quota at a [cost factor](https://docs.gitlab.com/ee/ci/pipelines/cicd_minutes.html#cost-factor) of 6.
+        As part of the Limited Availability release, CI jobs that run on the macOS runners will count toward your CI/CD minutes quota at a [cost factor](https://docs.gitlab.com/ee/ci/pipelines/compute_minutes.html#cost-factor) of 6.
   stage: verify
   self-managed: true
   gitlab-com: true

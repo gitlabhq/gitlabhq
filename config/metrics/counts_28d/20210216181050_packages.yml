@@ -2,8 +2,6 @@
 data_category: operational
 key_path: counts_monthly.packages
 description: A monthly count of packages published to the registry
-product_section: ops
-product_stage: package
 product_group: package_registry
 value_type: number
 status: active

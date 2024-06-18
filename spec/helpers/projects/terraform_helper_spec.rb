@@ -54,4 +54,38 @@ RSpec.describe Projects::TerraformHelper do
       end
     end
   end
+
+  describe '#show_period_in_terraform_state_name_alert?' do
+    let_it_be(:project) { create(:project) }
+
+    context 'when user dismissed' do
+      it 'returns false' do
+        allow(helper).to receive(:show_period_in_terraform_state_name_alert_callout?).and_return(true)
+
+        expect(helper.show_period_in_terraform_state_name_alert?(project)).to eq(false)
+      end
+    end
+
+    context 'when user has not dismissed' do
+      before do
+        allow(helper).to receive(:show_period_in_terraform_state_name_alert_callout?).and_return(true)
+      end
+
+      context 'and terraform state exists' do
+        it 'returns true' do
+          allow(project.terraform_states).to receive(:exists?).and_return(true)
+
+          expect(helper.show_period_in_terraform_state_name_alert?(project)).to eq(true)
+        end
+      end
+
+      context 'and terraform state does not exist' do
+        it 'returns false' do
+          allow(project.terraform_states).to receive(:exists?).and_return(false)
+
+          expect(helper.show_period_in_terraform_state_name_alert?(project)).to eq(false)
+        end
+      end
+    end
+  end
 end

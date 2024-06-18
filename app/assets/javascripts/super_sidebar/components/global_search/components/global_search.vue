@@ -1,8 +1,9 @@
 <script>
-import { GlSearchBoxByType, GlOutsideDirective as Outside, GlModal } from '@gitlab/ui';
+import { GlSearchBoxByType, GlModal } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions, mapGetters } from 'vuex';
-import { debounce, clamp } from 'lodash';
+import { debounce } from 'lodash';
+import { InternalEvents } from '~/tracking';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { sprintf } from '~/locale';
@@ -13,6 +14,7 @@ import {
   HOME_KEY,
   ESC_KEY,
   NUMPAD_ENTER_KEY,
+  ENTER_KEY,
 } from '~/lib/utils/keys';
 import {
   COMMAND_PALETTE,
@@ -23,26 +25,51 @@ import {
   SEARCH_RESULTS_LOADING,
   COMMAND_PALETTE_TIP,
 } from '~/vue_shared/global_search/constants';
+import modalKeyboardNavigationMixin from '~/vue_shared/mixins/modal_keyboard_navigation_mixin';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
 import ScrollScrim from '~/super_sidebar/components/scroll_scrim.vue';
+import { injectRegexSearch } from '~/search/store/utils';
+import {
+  EVENT_PRESS_ENTER_TO_ADVANCED_SEARCH,
+  EVENT_PRESS_ESCAPE_IN_COMMAND_PALETTE,
+  EVENT_CLICK_OUTSIDE_OF_COMMAND_PALETTE,
+  EVENT_PRESS_GREATER_THAN_IN_COMMAND_PALETTE,
+  EVENT_PRESS_AT_SYMBOL_IN_COMMAND_PALETTE,
+  EVENT_PRESS_COLON_IN_COMMAND_PALETTE,
+  EVENT_PRESS_FORWARD_SLASH_IN_COMMAND_PALETTE,
+  LABEL_COMMAND_PALETTE,
+} from '~/super_sidebar/tracking_constants';
 import {
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
   SEARCH_SHORTCUTS_MIN_CHARACTERS,
   SEARCH_MODAL_ID,
+  KEY_K,
   SEARCH_INPUT_SELECTOR,
   SEARCH_RESULTS_ITEM_SELECTOR,
-  KEY_K,
 } from '../constants';
 import CommandPaletteItems from '../command_palette/command_palette_items.vue';
 import FakeSearchInput from '../command_palette/fake_search_input.vue';
-import { COMMON_HANDLES, SEARCH_OR_COMMAND_MODE_PLACEHOLDER } from '../command_palette/constants';
+import {
+  COMMON_HANDLES,
+  SEARCH_OR_COMMAND_MODE_PLACEHOLDER,
+  COMMAND_HANDLE,
+  USER_HANDLE,
+  PROJECT_HANDLE,
+  ISSUE_HANDLE,
+  PATH_HANDLE,
+  MODAL_CLOSE_ESC,
+  MODAL_CLOSE_BACKGROUND,
+  MODAL_CLOSE_HEADERCLOSE,
+} from '../command_palette/constants';
 import CommandPaletteLottery from '../command_palette/command_palette_lottery.vue';
 import CommandsOverviewDropdown from '../command_palette/command_overview_dropdown.vue';
 import { commandPaletteDropdownItems } from '../utils';
 import GlobalSearchAutocompleteItems from './global_search_autocomplete_items.vue';
 import GlobalSearchDefaultItems from './global_search_default_items.vue';
 import GlobalSearchScopedItems from './global_search_scoped_items.vue';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'GlobalSearchModal',
@@ -58,7 +85,6 @@ export default {
     COMMAND_PALETTE_TIP,
     COMMON_HANDLES,
   },
-  directives: { Outside },
   components: {
     GlSearchBoxByType,
     GlobalSearchDefaultItems,
@@ -71,6 +97,7 @@ export default {
     ScrollScrim,
     CommandsOverviewDropdown,
   },
+  mixins: [trackingMixin, modalKeyboardNavigationMixin],
   data() {
     return {
       nextFocusedItemIndex: null,
@@ -157,15 +184,27 @@ export default {
         this.$refs.resultsList?.querySelectorAll(SEARCH_RESULTS_ITEM_SELECTOR) || [],
       );
     },
+    handleSubmitSearch(event) {
+      this.submitSearch();
+      this.trackEvent(EVENT_PRESS_ENTER_TO_ADVANCED_SEARCH, { label: LABEL_COMMAND_PALETTE });
+      event.stopPropagation();
+      event.preventDefault();
+    },
     onKeydown(event) {
       const { code, target } = event;
 
       let stop = true;
 
+      if (code === ENTER_KEY) {
+        this.handleSubmitSearch(event);
+        return;
+      }
+
       const elements = this.getFocusableOptions();
+
       if (elements.length < 1) return;
 
-      const isSearchInput = target.matches(SEARCH_INPUT_SELECTOR);
+      const isSearchInput = target?.matches(SEARCH_INPUT_SELECTOR);
 
       if (code === HOME_KEY) {
         if (isSearchInput) return;
@@ -199,30 +238,18 @@ export default {
     },
     onKeyComboDown(event) {
       const { code, metaKey } = event;
-
       if (code === KEY_K && metaKey) {
         if (!this.commandPaletteDropdownOpen) {
           this.$refs.commandDropdown.open();
+          this.commandPaletteDropdownOpen = true;
         } else {
           this.$refs.commandDropdown.close();
+          this.commandPaletteDropdownOpen = false;
         }
-        this.commandPaletteDropdownOpen = !this.commandPaletteDropdownOpen;
       }
     },
-    focusSearchInput() {
-      this.$refs.searchInput.$el.querySelector('input')?.focus();
-    },
-    focusNextItem(event, elements, offset) {
-      const { target } = event;
-      const currentIndex = elements.indexOf(target);
-      const nextIndex = clamp(currentIndex + offset, 0, elements.length - 1);
-
-      this.focusItem(nextIndex, elements);
-    },
-    focusItem(index, elements) {
-      this.nextFocusedItemIndex = index;
-
-      elements[index]?.focus();
+    handleClosing() {
+      this.commandPaletteDropdownOpen = false;
     },
     submitSearch() {
       if (this.isCommandMode) {
@@ -232,7 +259,8 @@ export default {
       if (this.search?.length <= SEARCH_SHORTCUTS_MIN_CHARACTERS) {
         return;
       }
-      visitUrl(this.searchQuery);
+
+      visitUrl(injectRegexSearch(this.searchQuery));
     },
     runFirstCommand() {
       this.getFocusableOptions()[0]?.firstChild.click();
@@ -242,11 +270,28 @@ export default {
 
       window.addEventListener('keydown', this.onKeyComboDown);
     },
-    onSearchModalHidden() {
+    onSearchModalHidden({ trigger } = {}) {
       this.searchText = '';
       this.$emit('hidden');
 
       window.removeEventListener('keydown', this.onKeyComboDown);
+
+      switch (trigger) {
+        case this.$options.MODAL_CLOSE_ESC:
+        case this.$options.MODAL_CLOSE_HEADERCLOSE: {
+          // when esc is pressed with focus
+          // in the input field modal issues headerclose
+          this.trackEvent(EVENT_PRESS_ESCAPE_IN_COMMAND_PALETTE);
+          break;
+        }
+        case this.$options.MODAL_CLOSE_BACKGROUND: {
+          this.trackEvent(EVENT_CLICK_OUTSIDE_OF_COMMAND_PALETTE);
+          break;
+        }
+        default: {
+          /* empty */
+        }
+      }
     },
     highlightFirstCommand() {
       if (this.isCommandMode) {
@@ -263,6 +308,28 @@ export default {
         : `${selected}${this.searchText}`;
 
       this.focusSearchInput();
+
+      switch (selected) {
+        case this.$options.COMMAND_HANDLE: {
+          this.trackEvent(EVENT_PRESS_GREATER_THAN_IN_COMMAND_PALETTE);
+          break;
+        }
+        case this.$options.USER_HANDLE: {
+          this.trackEvent(EVENT_PRESS_AT_SYMBOL_IN_COMMAND_PALETTE);
+          break;
+        }
+        case this.$options.PROJECT_HANDLE: {
+          this.trackEvent(EVENT_PRESS_COLON_IN_COMMAND_PALETTE);
+          break;
+        }
+        case this.$options.PATH_HANDLE: {
+          this.trackEvent(EVENT_PRESS_FORWARD_SLASH_IN_COMMAND_PALETTE);
+          break;
+        }
+        default: {
+          /* empty */
+        }
+      }
     },
     stringHasCommand(string) {
       const isHandle = (handle) => handle === string?.trim().charAt(0);
@@ -278,12 +345,20 @@ export default {
   },
   SEARCH_INPUT_DESCRIPTION,
   SEARCH_RESULTS_DESCRIPTION,
+  COMMAND_HANDLE,
+  USER_HANDLE,
+  PROJECT_HANDLE,
+  ISSUE_HANDLE,
+  PATH_HANDLE,
+  MODAL_CLOSE_ESC,
+  MODAL_CLOSE_BACKGROUND,
+  MODAL_CLOSE_HEADERCLOSE,
 };
 </script>
 
 <template>
   <gl-modal
-    ref="searchModal"
+    ref="modal"
     :modal-id="$options.SEARCH_MODAL_ID"
     hide-header
     hide-header-close
@@ -300,7 +375,7 @@ export default {
       :aria-label="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
       class="gl-relative gl-rounded-lg gl-w-full gl-pb-0"
     >
-      <div class="input-box-wrapper gl-bg-white gl-border-b gl-mb-n1 gl-p-2">
+      <div class="input-box-wrapper gl-bg-white gl-border-b -gl-mb-1 gl-p-2">
         <gl-search-box-by-type
           id="search"
           ref="searchInput"
@@ -312,7 +387,6 @@ export default {
           :aria-describedby="$options.SEARCH_INPUT_DESCRIPTION"
           borderless
           @input="getAutocompleteOptions"
-          @keydown.enter.stop.prevent="submitSearch"
           @keydown="onKeydown"
         />
         <span :id="$options.SEARCH_INPUT_DESCRIPTION" role="region" class="gl-sr-only">
@@ -393,6 +467,7 @@ export default {
             ref="commandDropdown"
             :items="commandPaletteDropdownItems"
             @selected="handleCommandSelection"
+            @hidden="handleClosing"
         /></span>
       </div>
     </template>

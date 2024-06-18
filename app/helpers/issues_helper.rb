@@ -135,14 +135,12 @@ module IssuesHelper
     {
       autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       calendar_path: url_for(safe_params.merge(calendar_url_options)),
-      empty_state_svg_path: image_path('illustrations/empty-state/empty-service-desk-md.svg'),
       full_path: namespace.full_path,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_issue_repositioning_disabled: issue_repositioning_disabled?.to_s,
       is_public_visibility_restricted:
         Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
       is_signed_in: current_user.present?.to_s,
-      jira_integration_path: help_page_url('integration/jira/issues', anchor: 'view-jira-issues'),
       rss_path: url_for(safe_params.merge(rss_url_options)),
       sign_in_path: new_user_session_path,
       has_issue_date_filter_feature: has_issue_date_filter_feature?(namespace, current_user).to_s
@@ -183,7 +181,8 @@ module IssuesHelper
       reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
       show_new_issue_link: show_new_issue_link?(project).to_s,
       report_abuse_path: add_category_abuse_reports_path,
-      register_path: new_user_registration_path(redirect_to_referer: 'yes')
+      register_path: new_user_registration_path(redirect_to_referer: 'yes'),
+      issues_list_path: project_issues_path(project)
     )
   end
 
@@ -195,7 +194,8 @@ module IssuesHelper
       has_any_issues: @has_issues.to_s,
       has_any_projects: @has_projects.to_s,
       new_project_path: new_project_path(namespace_id: group.id),
-      group_id: group.id
+      group_id: group.id,
+      issues_list_path: issues_group_path(group)
     )
   end
 

@@ -1,0 +1,18 @@
+---
+description: User clicks on a dismiss button for a Jenkins migration callout
+internal_events: true
+action: click_dismiss_button_jenkins_migration_callout
+identifiers:
+- project
+- namespace
+- user
+product_group: pipeline_execution
+milestone: '17.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153344
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

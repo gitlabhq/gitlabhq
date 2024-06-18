@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Gitlab/Rails/SafeFormat:
-  Details: grace period
   Exclude:
     - 'app/controllers/profiles/two_factor_auths_controller.rb'
     - 'app/graphql/types/project_type.rb'

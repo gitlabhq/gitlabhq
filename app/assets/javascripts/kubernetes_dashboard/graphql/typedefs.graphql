@@ -20,7 +20,7 @@ input K8sDashboardConfig {
 extend type Query {
   k8sCronJobs(configuration: K8sDashboardConfig): [LocalWorkloadItem]
   k8sDaemonSets(configuration: K8sDashboardConfig): [LocalWorkloadItem]
-  k8sDeployments(configuration: K8sDashboardConfig): [LocalWorkloadItem]
+  k8sDashboardDeployments(configuration: K8sDashboardConfig): [LocalWorkloadItem]
   k8sJobs(configuration: K8sDashboardConfig): [LocalWorkloadItem]
   k8sDashboardPods(configuration: K8sDashboardConfig): [LocalWorkloadItem]
   k8sReplicaSets(configuration: K8sDashboardConfig): [LocalWorkloadItem]

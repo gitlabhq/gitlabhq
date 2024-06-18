@@ -16,22 +16,22 @@ export const linkedIssueTypesTextMap = {
 export const autoCompleteTextMap = {
   true: {
     [TYPE_ISSUE]: sprintf(
-      __(' or %{emphasisStart}#issue id%{emphasisEnd}'),
+      __(' or %{emphasisStart}#issue ID%{emphasisEnd}'),
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
     ),
     [TYPE_INCIDENT]: sprintf(
-      __(' or %{emphasisStart}#id%{emphasisEnd}'),
+      __(' or %{emphasisStart}#ID%{emphasisEnd}'),
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
     ),
     [TYPE_EPIC]: sprintf(
-      __(' or %{emphasisStart}&epic id%{emphasisEnd}'),
+      __(' or %{emphasisStart}&epic ID%{emphasisEnd}'),
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
     ),
     [TYPE_MERGE_REQUEST]: sprintf(
-      __(' or %{emphasisStart}!merge request id%{emphasisEnd}'),
+      __(' or %{emphasisStart}!merge request ID%{emphasisEnd}'),
       { emphasisStart: '<', emphasisEnd: '>' },
       false,
     ),
@@ -44,15 +44,15 @@ export const autoCompleteTextMap = {
 };
 
 export const inputPlaceholderTextMap = {
-  [TYPE_ISSUE]: __('Paste issue link'),
-  [TYPE_INCIDENT]: __('Paste link'),
-  [TYPE_EPIC]: __('Paste epic link'),
+  [TYPE_ISSUE]: __('Enter issue URL'),
+  [TYPE_INCIDENT]: __('Enter URL'),
+  [TYPE_EPIC]: __('Enter epic URL'),
   [TYPE_MERGE_REQUEST]: __('Enter merge request URLs'),
 };
 
 export const inputPlaceholderConfidentialTextMap = {
-  [TYPE_ISSUE]: __('Paste confidential issue link'),
-  [TYPE_EPIC]: __('Paste confidential epic link'),
+  [TYPE_ISSUE]: __('Enter confidential issue URL'),
+  [TYPE_EPIC]: __('Enter confidential epic URL'),
   [TYPE_MERGE_REQUEST]: __('Enter merge request URLs'),
 };
 

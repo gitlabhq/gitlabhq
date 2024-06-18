@@ -262,7 +262,7 @@ Some text editors could insert a BOM character if configured to do so.
 
 If your pipeline has confusing behavior, you can check for the presence of BOM characters
 with a tool capable of displaying them. The pipeline editor cannot display the characters,
-so you must use an external tool. See [issue 35402](https://gitlab.com/gitlab-org/gitlab/-/issues/354026)
+so you must use an external tool. See [issue 354026](https://gitlab.com/gitlab-org/gitlab/-/issues/354026)
 for more details.
 
 ### A job with the `changes` keyword runs unexpectedly
@@ -378,8 +378,8 @@ This issue is [resolved](https://gitlab.com/gitlab-org/gitlab/-/issues/229352) i
 
 ### `Checking pipeline status` message
 
-This message displays when the merge request does not yet have a pipeline associated with the
-latest commit. This might be because:
+This message displays with a spinning status icon (**{spinner}**) when the merge request
+does not yet have a pipeline associated with the latest commit. This might be because:
 
 - GitLab hasn't finished creating the pipeline yet.
 - You are using an external CI service and GitLab hasn't heard back from the service yet.
@@ -389,6 +389,11 @@ latest commit. This might be because:
 - The source branch of the merge request is on a private fork.
 
 After the pipeline is created, the message updates with the pipeline status.
+
+In some of these cases, the message might get stuck with the icon spinning endlessly
+if the [**Pipelines must succeed**](../user/project/merge_requests/auto_merge.md#require-a-successful-pipeline-for-merge)
+setting is enabled. See [issue 334281](https://gitlab.com/gitlab-org/gitlab/-/issues/334281)
+for more details.
 
 ### `Project <group/project> not found or access denied` message
 
@@ -478,4 +483,19 @@ You might receive the following pipeline errors:
 
 These errors can happen if records of internal IDs become out of sync after a project is imported.
 
-To resolve this, see the [Workaround](https://gitlab.com/gitlab-org/gitlab/-/issues/352382#workaround) in issue #352382.
+To resolve this, see the [workaround in issue 352382](https://gitlab.com/gitlab-org/gitlab/-/issues/352382#workaround).
+
+### `config should be an array of hashes` error message
+
+You might see an error similar to the following when using [`!reference` tags](../ci/yaml/yaml_optimization.md#reference-tags)
+with the [`parallel:matrix` keyword](../ci/yaml/index.md#parallelmatrix):
+
+```plaintext
+This GitLab CI configuration is invalid: jobs:my_job_name:parallel:matrix config should be an array of hashes.
+```
+
+The `parallel:matrix` keyword does not support multiple `!reference` tags at the same time.
+Try using [YAML anchors](yaml/yaml_optimization.md#anchors) instead.
+
+[Issue 439828](https://gitlab.com/gitlab-org/gitlab/-/issues/439828) proposes improving
+`!reference` tag support in `parallel:matrix`.

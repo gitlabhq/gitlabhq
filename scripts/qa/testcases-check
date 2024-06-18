@@ -74,7 +74,8 @@ else
   puts missing_message % missing_testcases.join("\n") unless missing_testcases.empty?
   puts format_message % testcase_format_errors.join("\n") unless testcase_format_errors.empty?
   puts "\n*** Please link a unique test case from the GitLab project for the errors listed above.\n"
-  puts "    See: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/best_practices.html#link-a-test-to-its-test-case"\
-       " for further details on how to create test cases"
+  puts "    See: https://docs.gitlab.com/ee/development/testing_guide/end_to_end/" \
+       "best_practices.html#link-a-test-to-its-test-case " \
+       "for further details on how to create test cases"
   exit 1
 end

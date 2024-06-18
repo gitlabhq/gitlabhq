@@ -188,7 +188,7 @@ export default {
               issuable.reference
             }}</gl-link>
             <p
-              class="gl-display-block!"
+              class="!gl-block"
               :class="{
                 'gl-mb-3': index < displayedIssuables.length - 1,
                 'gl-mb-0': index === displayedIssuables.length - 1,

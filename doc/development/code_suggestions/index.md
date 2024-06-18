@@ -2,6 +2,7 @@
 stage: Create
 group: Code Creation
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+description: "Code Suggestions documentation for developers interested in contributing features or bugfixes."
 ---
 
 # Code Suggestions development guidelines
@@ -28,34 +29,15 @@ This should enable everyone to see locally any change in an IDE being sent to th
         1. Inside the new window, in the built in terminal select the "Output" tab then "GitLab Language Server" from the drop down menu on the right.
         1. Open a new file inside of this VS Code window and begin typing to see code suggestions in action.
         1. You will see completion request URLs being fetched that match the Git remote URL for your GDK.
+
 1. Main Application (GDK):
    1. Install the [GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/index.md#one-line-installation).
    1. Enable Feature Flag ```ai_duo_code_suggestions_switch```:
       1. In your terminal, go to your `gitlab-development-kit` > `gitlab` directory.
       1. Run `gdk rails console` or `bundle exec rails c` to start a Rails console.
       1. [Enable the Feature Flag](../../administration/feature_flags.md#enable-or-disable-the-feature) for the code suggestions tokens API by calling `Feature.enable(:ai_duo_code_suggestions_switch)` from the console.
-   1. Set the AI Gateway URL environmental variable by running `export AI_GATEWAY_URL=http://localhost:5052`.
+   1. [Setup AI Gateway](../ai_features/index.md#local-setup).
    1. Run your GDK server with `gdk start` if it's not already running.
-1. [Setup AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist):
-   1. Run the AI Gateway as part of your GDK 
-      1. Follow the "How to set up and validate locally" steps in [this MR](https://gitlab.com/gitlab-org/gitlab-development-kit/-/merge_requests/3646#how-to-set-up-and-validate-locally)
-      1. Be sure to add your `ANTHROPIC_API_KEY` to your GDK's `gitlab-ai-gateway/.env` file
-   1. Run the AI Gateway externally
-      1. Complete the steps to [run the server locally](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
-      1. Uncomment or add the following variables in the `.env` file for all debugging insights.
-         You may need to adjust the filepath (remove `..`) for this log to show in the `ai-assist` root directory.
-
-         ```plaintext
-         AIGW_LOGGING__LEVEL=debug
-         AIGW_LOGGING__FORMAT_JSON=false
-         AIGW_LOGGING__TO_FILE=../modelgateway_debug.log
-         ```
-
-      1. Watch the new log file `modelgateway_debug.log`.
-
-         ```shell
-         tail -f modelgateway_debug.log | fblog -a prefix -a suffix -a current_file_name -a suggestion -a language -a input -a parameters -a score -a exception
-         ```
 
 ### Setup instructions to use staging AI Gateway
 
@@ -73,28 +55,35 @@ with the deployed staging AI Gateway. To do this:
    ```
 
 1. Restart the GDK.
-1. Ensure you followed the necessary [steps to enable the Code Suggestions feature](../../user/project/repository/code_suggestions/self_managed.md).
+1. Ensure you followed the necessary [steps to enable the Code Suggestions feature](../../user/project/repository/code_suggestions/index.md).
 1. Test out the Code Suggestions feature by opening the Web IDE for a project.
 
 ### Setup instructions to use GDK with the Code Suggestions Add-on
 
-On February 15, 2023 we will require the code suggestions add-on subscription to be able to use code suggestions.
-To set up your GDK for local development using the add-on, please follow these steps:
+1. Add a **GitLab Ultimate Self-Managed** subscription with a [Duo Pro subscription add-on](../../subscriptions/subscription-add-ons.md) to your GDK instance.
 
-1. Drop a note in the `#s_fulfillment` or `s_fulfillment_engineering` internal Slack channel to request an activation code with the Code Suggestions add-on.
-1. Someone will reach out to you with a code.
+   [Self-purchase your own subscription](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/30a6670d39da223565081cbe46ba17d8e610aad1/doc/flows/buy_subscription.md#buy-subscription) for GitLab Ultimate Self-Managed from the [staging Customers Portal](https://customers.staging.gitlab.com).
+   To do this, send a message to the `#s_fulfillment` or `s_fulfillment_engineering` Slack channels. The team will:
+
+   - Give you instructions or set your account so you do not have to pay for a subscription.
+   - Add the Duo Pro add-on to your account.
+
+   After this step is complete, you will have an activation code for a _GitLab Ultimate Self-Managed subscription with a Duo Pro add-on_.
+
 1. Follow the [activation instructions](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/main/doc/license/cloud_license.md?ref_type=heads#testing-activation):
+
    1. Set environment variables.
 
-   ```shell
-   export GITLAB_LICENSE_MODE=test
-   export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
-   export GITLAB_SIMULATE_SAAS=0
-   ```
+      ```shell
+      export GITLAB_LICENSE_MODE=test
+      export CUSTOMER_PORTAL_URL=https://customers.staging.gitlab.com
+      export GITLAB_SIMULATE_SAAS=0
+      ```
 
    1. Restart your GDK.
    1. Go to `/admin/subscription`.
-   1. Remove any active license.
+   1. Optional. Remove any active license.
    1. Add the new activation code.
+
 1. Inside your GDK, navigate to Admin Area > GitLab Duo Pro, go to `/admin/code_suggestions`
-1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user 
+1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user

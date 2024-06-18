@@ -45,7 +45,8 @@ RSpec.describe Projects::ProjectMembersHelper do
           can_manage_members: true,
           can_manage_access_requests: true,
           group_name: project.group.name,
-          group_path: project.group.path
+          group_path: project.group.path,
+          can_approve_access_requests: true
         }.as_json
 
         expect(subject).to include(expected)

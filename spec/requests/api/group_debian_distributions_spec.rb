@@ -9,7 +9,7 @@ RSpec.describe API::GroupDebianDistributions, feature_category: :package_registr
     describe 'POST groups/:id/-/debian_distributions' do
       let(:method) { :post }
       let(:url) { "/groups/#{container.id}/-/debian_distributions" }
-      let(:api_params) { { 'codename': 'my-codename' } }
+      let(:api_params) { { codename: 'my-codename' } }
 
       it_behaves_like 'Debian distributions write endpoint', 'POST', :created, /^{.*"codename":"my-codename",.*"components":\["main"\],.*"architectures":\["all","amd64"\]/
     end

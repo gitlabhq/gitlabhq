@@ -22,7 +22,7 @@ The flow for using GitLab with GCP Secret Manager is:
 1. GCP verifies the ID token with GitLab.
 1. GCP issues a short-lived access token.
 1. The runner accesses the secret data using the access token.
-1. GCP checks IAM permission on the access token's principal.
+1. GCP checks IAM secret permission on the access token's principal.
 1. GCP returns the secret data to the runner.
 
 To use GitLab with GCP Secret Manager, you must:
@@ -56,8 +56,9 @@ The principal is used to authorize access to the Secret Manager resources:
 
 After setting up WIF, you must grant the WIF principal access to the secrets in Secret Manager.
 
-1. In GCP Console, go to **IAM & Admin > IAM**.
-1. Select **GRANT ACCESS** to grant access to the principal set created through the WIF provider.
+1. In GCP Console, go to **Security > Secret Manager**.
+1. Select the name of the secret you wish to grant access to, to view the secret's details.
+1. From the **PERMISSIONS** tab, select **GRANT ACCESS** to grant access to the principal set created through the WIF provider.
    The external identity format is:
 
    ```plaintext
@@ -70,22 +71,9 @@ After setting up WIF, you must grant the WIF principal access to the secrets in 
      [Project's dashboard](https://console.cloud.google.com/home/dashboard).
    - `POOL_ID`: The ID (not name) of the Workload Identity Pool created in the first section,
      for example `gitlab-pool`.
-   - `GITLAB_PROJECT_ID`: The GitLab project ID found on the [project overview page](../../user/project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+   - `GITLAB_PROJECT_ID`: The GitLab project ID found on the [project overview page](../../user/project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
 1. Assign the role **Secret Manager Secret Accessor**.
-1. (Optional) Select **IAM condition (Optional)** to add an IAM condition.
-   Under **Condition Builder**, you can add conditions. For example, you could add two `AND` conditions:
-   - First condition:
-     - **Condition type**: `Type`
-     - **Operator**: `is`
-     - **Resource type**: `secretmanager.googleapis.com/SecretVersion`
-   - Second condition:
-     - **Condition type**: `Name`
-     - **Operator**: `Starts with`
-     - **Value**: The pattern of secrets that you want to grant access to.
-
-You can add additional IAM conditions for fine-grained access controls, including
-accessing secrets with names starting with the project name.
 
 ## Configure GitLab CI/CD to use GCP Secret Manager secrets
 

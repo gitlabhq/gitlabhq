@@ -4,15 +4,14 @@ import {
   GlFormCheckbox,
   GlIcon,
   GlLink,
-  GlSprintf,
   GlTooltipDirective,
   GlTruncate,
 } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import PackageTags from '~/packages_and_registries/shared/components/package_tags.vue';
+import PublishMessage from '~/packages_and_registries/shared/components/publish_message.vue';
 import PublishMethod from '~/packages_and_registries/shared/components/publish_method.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import {
   DELETE_PACKAGE_TEXT,
   ERRORED_PACKAGE_TEXT,
@@ -28,12 +27,11 @@ export default {
     GlFormCheckbox,
     GlIcon,
     GlLink,
-    GlSprintf,
     GlTruncate,
     PackageTags,
+    PublishMessage,
     PublishMethod,
     ListItem,
-    TimeAgoTooltip,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -62,7 +60,7 @@ export default {
     errorPackageStyle() {
       return {
         'gl-text-red-500': this.errorStatusRow,
-        'gl-font-weight-normal': this.errorStatusRow,
+        'gl-font-normal': this.errorStatusRow,
       };
     },
     dropdownItems() {
@@ -144,13 +142,7 @@ export default {
     </template>
 
     <template #right-secondary>
-      <span>
-        <gl-sprintf :message="__('Created %{timestamp}')">
-          <template #timestamp>
-            <time-ago-tooltip :time="packageEntity.createdAt" />
-          </template>
-        </gl-sprintf>
-      </span>
+      <publish-message :publish-date="packageEntity.createdAt" />
     </template>
 
     <template v-if="packageEntity.userPermissions.destroyPackage" #right-action>

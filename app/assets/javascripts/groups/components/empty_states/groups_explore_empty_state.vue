@@ -8,9 +8,7 @@ export default {
   inject: ['groupsEmptyStateIllustration'],
   computed: {
     title() {
-      return window.gon?.dot_com
-        ? s__('GroupsEmptyState|No public groups')
-        : s__('GroupsEmptyState|No public or internal groups');
+      return s__('GroupsEmptyState|No public or internal groups');
     },
   },
 };

@@ -14,7 +14,8 @@ module Types
 
         field :labels, Types::LabelType.connection_type,
           null: true,
-          description: 'Labels assigned to the work item.'
+          description: 'Labels assigned to the work item.',
+          resolver: Resolvers::BulkLabelsResolver
 
         field :allows_scoped_labels, GraphQL::Types::Boolean,
           null: true,

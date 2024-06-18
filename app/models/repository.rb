@@ -787,12 +787,16 @@ class Repository
     Commit.order_by(collection: commits, order_by: order_by, sort: sort)
   end
 
-  def branch_names_contains(sha, limit: 0)
-    raw_repository.branch_names_contains_sha(sha, limit: limit)
+  def branch_names_contains(sha, limit: 0, exclude_refs: [])
+    refs = raw_repository.branch_names_contains_sha(sha, limit: adjust_containing_limit(limit: limit, exclude_refs: exclude_refs))
+
+    adjust_containing_refs(limit: limit, refs: refs - exclude_refs)
   end
 
-  def tag_names_contains(sha, limit: 0)
-    raw_repository.tag_names_contains_sha(sha, limit: limit)
+  def tag_names_contains(sha, limit: 0, exclude_refs: [])
+    refs = raw_repository.tag_names_contains_sha(sha, limit: adjust_containing_limit(limit: limit, exclude_refs: exclude_refs))
+
+    adjust_containing_refs(limit: limit, refs: refs - exclude_refs)
   end
 
   def local_branches
@@ -811,38 +815,34 @@ class Repository
     commit_files(user, **options)
   end
 
+  def create_file_actions(path, content, execute_filemode: nil)
+    actions = [{ action: :create, file_path: path, content: content }]
+    actions << { action: :chmod, file_path: path, execute_filemode: execute_filemode } unless execute_filemode.nil?
+    actions
+  end
+
   def create_file(user, path, content, **options)
-    options[:actions] = [{ action: :create, file_path: path, content: content }]
+    actions = create_file_actions(path, content, execute_filemode: options.delete(:execute_filemode))
+    commit_files(user, **options.merge(actions: actions))
+  end
 
-    execute_filemode = options.delete(:execute_filemode)
-
-    unless execute_filemode.nil?
-      options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
-    end
-
-    commit_files(user, **options)
+  def update_file_actions(path, content, previous_path: nil, execute_filemode: nil)
+    action = previous_path && previous_path != path ? :move : :update
+    actions = [{ action: action, file_path: path, content: content, previous_path: previous_path }]
+    actions << { action: :chmod, file_path: path, execute_filemode: execute_filemode } unless execute_filemode.nil?
+    actions
   end
 
   def update_file(user, path, content, **options)
-    previous_path = options.delete(:previous_path)
-    action = previous_path && previous_path != path ? :move : :update
-
-    options[:actions] = [{ action: action, file_path: path, previous_path: previous_path, content: content }]
-
-    execute_filemode = options.delete(:execute_filemode)
-
-    unless execute_filemode.nil?
-      options[:actions].push({ action: :chmod, file_path: path, execute_filemode: execute_filemode })
-    end
-
-    commit_files(user, **options)
+    actions = update_file_actions(path, content, previous_path: options.delete(:previous_path), execute_filemode: options.delete(:execute_filemode))
+    commit_files(user, **options.merge(actions: actions))
   end
 
-  def move_dir_files(user, path, previous_path, **options)
+  def move_dir_files_actions(path, previous_path, branch_name: nil)
     regex = Regexp.new("^#{Regexp.escape(previous_path + '/')}", 'i')
-    files = ls_files(options[:branch_name])
+    files = ls_files(branch_name)
 
-    options[:actions] = files.each_with_object([]) do |item, list|
+    files.each_with_object([]) do |item, list|
       next unless regex.match?(item)
 
       list.push(
@@ -852,10 +852,13 @@ class Repository
         infer_content: true
       )
     end
+  end
 
-    return if options[:actions].blank?
+  def move_dir_files(user, path, previous_path, **options)
+    actions = move_dir_files_actions(path, previous_path, branch_name: options[:branch_name])
+    return if actions.blank?
 
-    commit_files(user, **options)
+    commit_files(user, **options.merge(actions: actions))
   end
 
   def delete_file(user, path, **options)
@@ -1306,6 +1309,22 @@ class Repository
   end
 
   private
+
+  # Increase the limit by number of excluded refs
+  # to prevent a situation when we return less refs than requested
+  def adjust_containing_limit(limit:, exclude_refs:)
+    return limit if limit == 0
+
+    limit + exclude_refs.size
+  end
+
+  # Limit number of returned refs
+  # in case the result has more refs than requested
+  def adjust_containing_refs(limit:, refs:)
+    return refs if limit == 0
+
+    refs.take(limit)
+  end
 
   def ancestor_cache_key(ancestor_id, descendant_id)
     "ancestor:#{ancestor_id}:#{descendant_id}"

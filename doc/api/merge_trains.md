@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Every API call for [merge train](../ci/pipelines/merge_trains.md) must be authenticated with at lease the Developer [role](../user/permissions.md).
+Every API call for [merge train](../ci/pipelines/merge_trains.md) must be authenticated with at least the Developer [role](../user/permissions.md).
 
 If a user is not a member of a project and the project is private, a `GET` request on that project returns a `404` status code.
 
@@ -21,7 +21,7 @@ If Merge Trains is not available for the project, a `403` status code is returne
 By default, `GET` requests return 20 results at a time because the API results
 are paginated.
 
-Read more on [pagination](rest/index.md#pagination).
+For more information, see [pagination](rest/index.md#pagination).
 
 ## List Merge Trains for a project
 

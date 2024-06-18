@@ -63,9 +63,9 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex gl-flex-direction-column">
+  <div class="gl-flex gl-flex-direction-column">
     <gl-form-group>
-      <div class="gl-display-flex gl-align-items-center">
+      <div class="gl-flex gl-align-items-center">
         <h4 class="gl-pr-3 gl-m-0">{{ s__('ClusterIntegration|GitLab Integration') }}</h4>
 
         <div class="js-cluster-enable-toggle-area">
@@ -136,7 +136,7 @@ export default {
         </gl-sprintf>
       </div>
     </gl-form-group>
-    <div v-if="editable" class="form group gl-display-flex gl-justify-content-end">
+    <div v-if="editable" class="form group gl-flex gl-justify-content-end">
       <gl-button
         category="primary"
         variant="confirm"

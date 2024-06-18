@@ -1,7 +1,9 @@
 import $ from 'jquery';
-import 'vendor/jquery.endless-scroll';
+import { setupEndlessScroll } from 'vendor/jquery.endless-scroll';
 import axios from '~/lib/utils/axios_utils';
 import { removeParams, getParameterByName } from '~/lib/utils/url_utility';
+
+setupEndlessScroll($);
 
 const ENDLESS_SCROLL_BOTTOM_PX = 400;
 const ENDLESS_SCROLL_FIRE_DELAY_MS = 1000;

@@ -57,7 +57,7 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Terminal do
         it 'is not valid' do
           expect(entry).not_to be_valid
           expect(entry.errors.first)
-            .to match /port config contains unknown keys: invalid_key/
+            .to match(/port config contains unknown keys: invalid_key/)
         end
       end
     end

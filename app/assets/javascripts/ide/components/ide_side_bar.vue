@@ -45,7 +45,7 @@ export default {
     </template>
     <template v-else>
       <ide-project-header :project="currentProject" />
-      <div class="ide-context-body d-flex flex-fill">
+      <div class="ide-context-body gl-flex flex-fill">
         <activity-bar />
         <div class="multi-file-commit-panel-inner" data-testid="ide-side-bar-inner">
           <div class="multi-file-commit-panel-inner-content">

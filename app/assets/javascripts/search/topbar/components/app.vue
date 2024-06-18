@@ -10,10 +10,10 @@ import {
   ZOEKT_SEARCH_TYPE,
   ADVANCED_SEARCH_TYPE,
   REGEX_PARAM,
-  LOCAL_STORAGE_NAME_SPACE_EXTENSION,
+  LS_REGEX_HANDLE,
 } from '~/search/store/constants';
+import { loadDataFromLS } from '~/search/store/utils';
 import { SYNTAX_OPTIONS_ADVANCED_DOCUMENT, SYNTAX_OPTIONS_ZOEKT_DOCUMENT } from '../constants';
-import { loadDataFromLS } from '../../store/utils';
 
 import SearchTypeIndicator from './search_type_indicator.vue';
 import GlSearchBoxByType from './search_box_by_type.vue';
@@ -72,20 +72,10 @@ export default {
         this.glFeatures.zoektExactSearch
       );
     },
-    localstorageReguralExpressionItem() {
-      return `${REGEX_PARAM}_${LOCAL_STORAGE_NAME_SPACE_EXTENSION}`;
-    },
-    loadRegexStateFromLocalStorage() {
-      return loadDataFromLS(this.localstorageReguralExpressionItem);
-    },
   },
   created() {
     this.preloadStoredFrequentItems();
-    this.regexEnabled = this.loadRegexStateFromLocalStorage;
-
-    if (!this.urlQuery?.[REGEX_PARAM] && this.regexEnabled) {
-      this.addReguralExpressionToQuery(this.regexEnabled);
-    }
+    this.regexEnabled = loadDataFromLS(LS_REGEX_HANDLE);
   },
   methods: {
     ...mapActions(['applyQuery', 'setQuery', 'preloadStoredFrequentItems']),

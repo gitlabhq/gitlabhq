@@ -14,9 +14,11 @@ import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
   SUPPORTED_PARENT_TYPE_MAP,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
 } from '../constants';
 
 export default {
+  name: 'WorkItemParent',
   inputId: 'work-item-parent-listbox-value',
   noWorkItemId: 'no-work-item-id',
   i18n: {
@@ -57,6 +59,11 @@ export default {
       required: false,
       default: false,
     },
+    groupPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -72,6 +79,9 @@ export default {
   computed: {
     hasParent() {
       return this.parent !== null;
+    },
+    isIssue() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE;
     },
     isLoading() {
       return this.$apollo.queries.availableWorkItems.loading;
@@ -105,16 +115,19 @@ export default {
   apollo: {
     availableWorkItems: {
       query() {
-        return this.isGroup ? groupWorkItemsQuery : projectWorkItemsQuery;
+        // TODO: Remove the this.isIssue check once issues are migrated to work items
+        return this.isGroup || this.isIssue ? groupWorkItemsQuery : projectWorkItemsQuery;
       },
       variables() {
+        // TODO: Remove the this.isIssue check once issues are migrated to work items
         return {
-          fullPath: this.fullPath,
+          fullPath: this.isIssue ? this.groupPath : this.fullPath,
           searchTerm: this.search,
           types: this.parentType,
           in: this.search ? 'TITLE' : undefined,
           iid: null,
           isNumber: false,
+          includeAncestors: true,
         };
       },
       skip() {
@@ -242,42 +255,39 @@ export default {
           >{{ __('Apply') }}</gl-button
         >
       </div>
-      <div>
-        <!-- wrapper for the form input so the borders fit inside the sidebar -->
-        <div class="gl-pr-2 gl-relative">
-          <gl-collapsible-listbox
-            id="$options.inputId"
-            ref="input"
-            class="gl-display-block"
-            data-testid="work-item-parent-listbox"
-            block
-            searchable
-            start-opened
-            is-check-centered
-            category="primary"
-            fluid-width
-            :searching="isLoading"
-            :header-text="$options.i18n.assignParentLabel"
-            :no-results-text="$options.i18n.noMatchingResults"
-            :loading="updateInProgress"
-            :items="workItems"
-            :toggle-text="listboxText"
-            :selected="localSelectedItem"
-            :reset-button-label="$options.i18n.unAssign"
-            @reset="unassignParent"
-            @search="debouncedSearchKeyUpdate"
-            @select="handleItemClick"
-            @shown="onListboxShown"
-            @hidden="onListboxHide"
-          >
-            <template #list-item="{ item }">
-              <div @click="handleItemClick(item.value, $event)">
-                {{ item.text }}
-              </div>
-            </template>
-          </gl-collapsible-listbox>
-        </div>
-      </div>
+      <gl-collapsible-listbox
+        id="$options.inputId"
+        ref="input"
+        class="gl-block"
+        data-testid="work-item-parent-listbox"
+        block
+        searchable
+        start-opened
+        is-check-centered
+        category="primary"
+        fluid-width
+        toggle-class="work-item-sidebar-dropdown-toggle"
+        positioning-strategy="fixed"
+        :searching="isLoading"
+        :header-text="$options.i18n.assignParentLabel"
+        :no-results-text="$options.i18n.noMatchingResults"
+        :loading="updateInProgress"
+        :items="workItems"
+        :toggle-text="listboxText"
+        :selected="localSelectedItem"
+        :reset-button-label="$options.i18n.unAssign"
+        @reset="unassignParent"
+        @search="debouncedSearchKeyUpdate"
+        @select="handleItemClick"
+        @shown="onListboxShown"
+        @hidden="onListboxHide"
+      >
+        <template #list-item="{ item }">
+          <div @click="handleItemClick(item.value, $event)">
+            {{ item.text }}
+          </div>
+        </template>
+      </gl-collapsible-listbox>
     </gl-form>
     <template v-else-if="hasParent">
       <gl-link

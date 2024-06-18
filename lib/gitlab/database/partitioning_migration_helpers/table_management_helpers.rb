@@ -8,7 +8,8 @@ module Gitlab
         include ::Gitlab::Database::MigrationHelpers
         include ::Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
-        ALLOWED_TABLES = %w[audit_events web_hook_logs merge_request_diff_files merge_request_diff_commits].freeze
+        ALLOWED_TABLES = %w[group_audit_events project_audit_events instance_audit_events user_audit_events
+          audit_events web_hook_logs merge_request_diff_files merge_request_diff_commits].freeze
 
         ERROR_SCOPE = 'table partitioning'
 
@@ -59,7 +60,7 @@ module Gitlab
 
           max_id = Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
             Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection.with_suppressed do
-              define_batchable_model(table_name, connection: connection).maximum(column_name) || partition_size * PARTITION_BUFFER
+              define_batchable_model(table_name, connection: connection).maximum(column_name) || (partition_size * PARTITION_BUFFER)
             end
           end
 
@@ -100,7 +101,7 @@ module Gitlab
           max_date ||= Date.today + 1.month
 
           Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
-            min_date ||= connection.select_one(<<~SQL)['minimum'] || max_date - 1.month
+            min_date ||= connection.select_one(<<~SQL)['minimum'] || (max_date - 1.month)
               SELECT date_trunc('MONTH', MIN(#{column_name})) AS minimum
               FROM #{table_name}
             SQL
@@ -389,8 +390,8 @@ module Gitlab
 
         def create_range_id_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_keys)
           if table_exists?(partitioned_table_name)
-            Gitlab::AppLogger.warn "Partitioned table not created because it already exists" \
-              " (this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
+            Gitlab::AppLogger.warn "Partitioned table not created because it already exists " \
+              "(this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
             return
           end
 
@@ -417,8 +418,8 @@ module Gitlab
 
         def create_range_partitioned_copy(source_table_name, partitioned_table_name, partition_column, primary_key)
           if table_exists?(partitioned_table_name)
-            Gitlab::AppLogger.warn "Partitioned table not created because it already exists" \
-              " (this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
+            Gitlab::AppLogger.warn "Partitioned table not created because it already exists " \
+              "(this may be due to an aborted migration or similar): table_name: #{partitioned_table_name} "
             return
           end
 
@@ -469,7 +470,7 @@ module Gitlab
           lower_bound = min_id
           upper_bound = min_id + partition_size
 
-          end_id = max_id + PARTITION_BUFFER * partition_size # Adds a buffer of 6 partitions
+          end_id = max_id + (PARTITION_BUFFER * partition_size) # Adds a buffer of 6 partitions
 
           while lower_bound < end_id
             create_range_partition_safely("#{table_name}_#{lower_bound}", table_name, lower_bound, upper_bound)
@@ -485,8 +486,8 @@ module Gitlab
 
         def create_range_partition_safely(partition_name, table_name, lower_bound, upper_bound)
           if table_exists?(table_for_range_partition(partition_name))
-            Gitlab::AppLogger.warn "Partition not created because it already exists" \
-              " (this may be due to an aborted migration or similar): partition_name: #{partition_name}"
+            Gitlab::AppLogger.warn "Partition not created because it already exists " \
+              "(this may be due to an aborted migration or similar): partition_name: #{partition_name}"
             return
           end
 
@@ -503,8 +504,8 @@ module Gitlab
 
         def create_sync_function(name, partitioned_table_name, unique_key)
           if function_exists?(name)
-            Gitlab::AppLogger.warn "Partitioning sync function not created because it already exists" \
-              " (this may be due to an aborted migration or similar): function name: #{name}"
+            Gitlab::AppLogger.warn "Partitioning sync function not created because it already exists " \
+              "(this may be due to an aborted migration or similar): function name: #{name}"
             return
           end
 
@@ -549,8 +550,8 @@ module Gitlab
 
         def create_sync_trigger(table_name, trigger_name, function_name)
           if trigger_exists?(table_name, trigger_name)
-            Gitlab::AppLogger.warn "Partitioning sync trigger not created because it already exists" \
-              " (this may be due to an aborted migration or similar): trigger name: #{trigger_name}"
+            Gitlab::AppLogger.warn "Partitioning sync trigger not created because it already exists " \
+              "(this may be due to an aborted migration or similar): trigger name: #{trigger_name}"
             return
           end
 

@@ -132,6 +132,7 @@ export default {
     },
     async submitReview() {
       this.isSubmitting = true;
+      if (this.userLastNoteWatcher) this.userLastNoteWatcher();
 
       trackSavedUsingEditor(this.$refs.markdownEditor.isContentEditorActive, 'MergeRequest_review');
 
@@ -146,26 +147,40 @@ export default {
         this.noteData.reviewer_state = 'reviewed';
         this.noteData.approval_password = '';
 
-        if (window.mrTabs && (note || reviewerState === 'approved')) {
-          if (note) {
-            window.location.hash = `note_${this.getCurrentUserLastNote.id}`;
+        if (note) {
+          this.userLastNoteWatcher = this.$watch(
+            'getCurrentUserLastNote',
+            () => {
+              if (note) {
+                window.location.hash = `note_${this.getCurrentUserLastNote.id}`;
+              }
+
+              window.mrTabs?.tabShown('show');
+
+              setTimeout(() => {
+                scrollToElement(document.getElementById(`note_${this.getCurrentUserLastNote.id}`));
+
+                this.clearDrafts();
+              });
+
+              this.userLastNoteWatcher();
+            },
+            { deep: true },
+          );
+        } else {
+          if (reviewerState === 'approved') {
+            window.mrTabs?.tabShown('show');
           }
 
-          window.mrTabs.tabShown('show');
-
-          setTimeout(() =>
-            scrollToElement(document.getElementById(`note_${this.getCurrentUserLastNote.id}`)),
-          );
+          this.clearDrafts();
         }
-
-        this.clearDrafts();
       } catch (e) {
         if (e.data?.message) {
           createAlert({ message: e.data.message, captureError: true });
         }
-      }
 
-      this.isSubmitting = false;
+        this.isSubmitting = false;
+      }
     },
     updateNote(note) {
       this.noteData.note = note;

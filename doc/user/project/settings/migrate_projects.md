@@ -17,6 +17,8 @@ All of the project's components (such as issues, merge requests, pipelines, and 
 move with the transferred project.
 The project's [path also changes](../repository/index.md#what-happens-when-a-repository-path-changes), so make sure to update the URLs to the project components where necessary.
 
+New project-level labels are created for issues and merge requests if matching group labels don't already exist in the target namespace.
+
 WARNING:
 Errors during the transfer process may lead to data loss of the project's components or dependencies of end users.
 

@@ -22,23 +22,23 @@ class Timelog < ApplicationRecord
   belongs_to :note
   belongs_to :timelog_category, optional: true, class_name: 'TimeTracking::TimelogCategory'
 
-  scope :in_group, -> (group) do
+  scope :in_group, ->(group) do
     joins(:project).where(projects: { namespace: group.self_and_descendants })
   end
 
-  scope :in_project, -> (project) do
+  scope :in_project, ->(project) do
     where(project: project)
   end
 
-  scope :for_user, -> (user) do
+  scope :for_user, ->(user) do
     where(user: user)
   end
 
-  scope :at_or_after, -> (start_time) do
+  scope :at_or_after, ->(start_time) do
     where('spent_at >= ?', start_time)
   end
 
-  scope :at_or_before, -> (end_time) do
+  scope :at_or_before, ->(end_time) do
     where('spent_at <= ?', end_time)
   end
 

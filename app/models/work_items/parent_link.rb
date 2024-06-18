@@ -6,7 +6,7 @@ module WorkItems
 
     self.table_name = 'work_item_parent_links'
 
-    MAX_CHILDREN = 100
+    MAX_CHILDREN = 5000
 
     belongs_to :work_item
     belongs_to :work_item_parent, class_name: 'WorkItem'
@@ -106,7 +106,7 @@ module WorkItems
       end
 
       if work_item_parent.ancestors.detect { |ancestor| work_item.id == ancestor.id }
-        errors.add :work_item, _('is already present in ancestors')
+        errors.add :work_item, _("it's already present in this item's hierarchy")
       end
     end
 

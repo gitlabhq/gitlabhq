@@ -48,7 +48,7 @@ export default {
     :class="{
       [iconClassNameText]: !isLoading,
       [`mr-widget-status-icon-level-${level}`]: !isLoading,
-      'gl-w-6 gl-h-6 gl--flex-center': level === 1,
+      'gl-w-6 gl-h-6 gl-flex gl-justify-center gl-items-center': level === 1,
     }"
     class="gl-relative gl-rounded-full gl-mr-3"
   >

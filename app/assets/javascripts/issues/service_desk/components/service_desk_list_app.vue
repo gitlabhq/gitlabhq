@@ -21,10 +21,7 @@ import {
   getFilterTokens,
   getSortOptions,
 } from '~/issues/list/utils';
-import {
-  OPERATORS_IS_NOT,
-  OPERATORS_IS_NOT_OR,
-} from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPERATORS_IS_NOT_OR } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   CLOSED_MOVED,
   CLOSED,
@@ -247,9 +244,6 @@ export default {
     canShowIssuesList() {
       return this.isLoading || this.issuesError.length || this.hasAnyServiceDeskIssue;
     },
-    hasOrFeature() {
-      return this.glFeatures.orIssuableQueries;
-    },
     hasSearch() {
       return Boolean(
         this.searchQuery ||
@@ -285,7 +279,7 @@ export default {
         },
         {
           ...assigneeTokenBase,
-          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           fetchUsers: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
           preloadedUsers,
@@ -297,7 +291,7 @@ export default {
         },
         {
           ...labelTokenBase,
-          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
@@ -575,7 +569,6 @@ export default {
       :search-tokens="searchTokens"
       :issuables-loading="isLoading"
       :initial-filter-value="filterTokens"
-      :show-filtered-search-friendly-text="hasOrFeature"
       :show-pagination-controls="showPaginationControls"
       :show-page-size-change-controls="showPageSizeControls"
       :sort-options="sortOptions"
@@ -588,6 +581,7 @@ export default {
       :default-page-size="pageSize"
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
+      show-filtered-search-friendly-text
       sync-filter-and-sort
       use-keyset-pagination
       @click-tab="handleClickTab"

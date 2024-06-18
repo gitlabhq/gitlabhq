@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.kubernetes_agent.k8s_api_proxy_requests_unique_agents_via_ci_access_monthly
 description: MAU of the unique Agents using the CI/CD Tunnel via Ci Access
-product_section: ops
-product_stage: deploy
 product_group: environments
 value_type: number
 status: active

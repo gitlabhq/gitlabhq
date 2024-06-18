@@ -36,14 +36,14 @@ RSpec.describe ::Ml::DestroyModelService, feature_category: :mlops do
 
         before do
           allow_next_instance_of(Packages::MarkPackagesForDestructionService) do |instance|
-            allow(instance).to receive(:execute).and_return ServiceResponse.error(message: "")
+            allow(instance).to receive(:execute).and_return ServiceResponse.error(message: "An error")
           end
         end
 
         it 'returns success with warning', :aggregate_failures do
-          expect { service_result }.to change { Ml::Model.count }.by(-1).and change { Ml::ModelVersion.count }.by(-1)
-          expect(service_result).to be_success
-          expect(service_result.message).to eq('Model deleted but failed to remove associated packages')
+          expect { service_result }.not_to change { Ml::Model.count }
+          expect(service_result).to be_error
+          expect(service_result.message).to eq("An error")
         end
       end
     end

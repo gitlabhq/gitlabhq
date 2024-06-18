@@ -286,7 +286,7 @@ RSpec.describe 'Project', feature_category: :source_code_management do
 
     it 'deletes a project', :sidekiq_inline do
       expect { remove_with_confirm('Delete project', project.path_with_namespace, 'Yes, delete project') }.to change { Project.count }.by(-1)
-      expect(page).to have_content "Project '#{project.full_name}' is in the process of being deleted."
+      expect(page).to have_content "Project '#{project.full_name}' is being deleted."
       expect(Project.all.count).to be_zero
       expect(project.issues).to be_empty
       expect(project.merge_requests).to be_empty

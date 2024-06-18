@@ -41,6 +41,11 @@ export default {
       :class="`s${imgSize}`"
       class="avatar avatar-inline m-0"
     />
-    <gl-icon v-if="hasMergeIcon" name="warning-solid" aria-hidden="true" class="merge-icon" />
+    <gl-icon
+      v-if="hasMergeIcon"
+      name="warning-solid"
+      aria-hidden="true"
+      class="merge-icon reviewer-merge-icon"
+    />
   </span>
 </template>

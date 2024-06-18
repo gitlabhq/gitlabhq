@@ -196,6 +196,25 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
     end
   end
 
+  describe '.namespace_transfer_params' do
+    let(:group) { create(:group) }
+    let(:new_parent_group) { create(:group) }
+    let(:expected_transfer_params) do
+      {
+        namespace_traversal_ids: [new_parent_group.id, group.id],
+        namespace_id: group.id
+      }
+    end
+
+    it 'updates all pending builds with namespace_transfer_params', :aggregate_failures do
+      expect do
+        group.update!(parent: new_parent_group)
+        # reload is called to make sure traversal_ids are reloaded
+      end.to change { Ci::PendingBuild.namespace_transfer_params(group.reload) }.to(expected_transfer_params)
+        .and not_change { Ci::PendingBuild.namespace_transfer_params(new_parent_group.reload) }
+    end
+  end
+
   describe 'partitioning', :ci_partitionable do
     include Ci::PartitioningHelpers
 

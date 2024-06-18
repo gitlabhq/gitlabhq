@@ -1,11 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`MemberActivity with a member that does not have all of the fields renders \`User created\` field 1`] = `
-<div>
-  <div>
-    <strong>
-      Access granted:
-    </strong>
+<div
+  class="gl-display-flex gl-flex-direction-column gl-gap-2"
+>
+  <div
+    class="gl-display-flex gl-gap-3"
+  >
+    <svg
+      aria-hidden="true"
+      class="gl-fill-current gl-icon gl-text-gray-500 s16"
+      data-testid="check-icon"
+      role="img"
+      title="Access granted"
+    >
+      <use
+        href="file-mock#check"
+      />
+    </svg>
     <span>
       Aug 06, 2020
     </span>
@@ -14,27 +26,59 @@ exports[`MemberActivity with a member that does not have all of the fields rende
 `;
 
 exports[`MemberActivity with a member that has all fields renders \`User created\`, \`Access granted\`, and \`Last activity\` fields 1`] = `
-<div>
-  <div>
-    <strong>
-      User created:
-    </strong>
+<div
+  class="gl-display-flex gl-flex-direction-column gl-gap-2"
+>
+  <div
+    class="gl-display-flex gl-gap-3"
+  >
+    <svg
+      aria-hidden="true"
+      class="-gl-mr-2 gl-fill-current gl-icon gl-ml-2 gl-text-gray-500 s16"
+      data-testid="assignee-icon"
+      role="img"
+      title="User created"
+    >
+      <use
+        href="file-mock#assignee"
+      />
+    </svg>
     <span>
       Mar 10, 2022
     </span>
   </div>
-  <div>
-    <strong>
-      Access granted:
-    </strong>
+  <div
+    class="gl-display-flex gl-gap-3"
+  >
+    <svg
+      aria-hidden="true"
+      class="gl-fill-current gl-icon gl-text-gray-500 s16"
+      data-testid="check-icon"
+      role="img"
+      title="Access granted"
+    >
+      <use
+        href="file-mock#check"
+      />
+    </svg>
     <span>
       Jul 17, 2020
     </span>
   </div>
-  <div>
-    <strong>
-      Last activity:
-    </strong>
+  <div
+    class="gl-display-flex gl-gap-3"
+  >
+    <svg
+      aria-hidden="true"
+      class="gl-fill-current gl-icon gl-text-gray-500 s16"
+      data-testid="hourglass-icon"
+      role="img"
+      title="Last activity"
+    >
+      <use
+        href="file-mock#hourglass"
+      />
+    </svg>
     <span>
       Mar 15, 2022
     </span>

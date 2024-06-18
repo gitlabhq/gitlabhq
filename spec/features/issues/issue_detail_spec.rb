@@ -106,6 +106,7 @@ RSpec.describe 'Issue Detail', :js, feature_category: :team_planning do
       click_button 'Save changes'
       wait_for_requests
 
+      visit_blank_page # Prevent CSRF errors from AJAX requests when we are switching users
       Users::DestroyService.new(user_to_be_deleted).execute(user_to_be_deleted)
 
       sign_in(user)

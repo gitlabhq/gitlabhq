@@ -70,7 +70,7 @@ module Gitlab
       end
 
       def valid_access_token?(scopes: [])
-        validate_access_token!(scopes: scopes)
+        validate_and_save_access_token!(scopes: scopes)
 
         true
       rescue Gitlab::Auth::AuthenticationError

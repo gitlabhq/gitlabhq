@@ -60,7 +60,7 @@ module Gitlab
           num_zero_buckets = TOTAL_BUCKETS - buckets.size
 
           num_uniques = (
-            ((TOTAL_BUCKETS**2) * (0.7213 / (1 + 1.079 / TOTAL_BUCKETS))) /
+            ((TOTAL_BUCKETS**2) * (0.7213 / (1 + (1.079 / TOTAL_BUCKETS)))) /
             (num_zero_buckets + buckets.values.sum { |bucket_hash| 2**(-1 * bucket_hash) })
           ).to_i
 

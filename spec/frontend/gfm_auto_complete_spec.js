@@ -188,22 +188,6 @@ describe('GfmAutoComplete', () => {
       mock.restore();
     });
 
-    describe('already loading data', () => {
-      beforeEach(() => {
-        const context = {
-          isLoadingData: { '[vulnerability:': true },
-          dataSources: {},
-          cachedData: {},
-        };
-        fetchData.call(context, {}, '[vulnerability:', '');
-      });
-
-      it('should not call either axios nor AjaxCache', () => {
-        expect(axios.get).not.toHaveBeenCalled();
-        expect(AjaxCache.retrieve).not.toHaveBeenCalled();
-      });
-    });
-
     describe('backend filtering', () => {
       describe('data is not in cache', () => {
         let context;
@@ -221,6 +205,26 @@ describe('GfmAutoComplete', () => {
 
           expect(axios.get).toHaveBeenCalledWith('vulnerabilities_autocomplete_url', {
             params: { search: 'query' },
+            signal: expect.any(AbortSignal),
+          });
+        });
+
+        it('should abort previous request and call axios again with another search query', () => {
+          const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+
+          fetchData.call(context, {}, '[vulnerability:', 'query');
+          fetchData.call(context, {}, '[vulnerability:', 'query2');
+
+          expect(axios.get).toHaveBeenCalledWith('vulnerabilities_autocomplete_url', {
+            params: { search: 'query' },
+            signal: expect.any(AbortSignal),
+          });
+
+          expect(abortSpy).toHaveBeenCalled();
+
+          expect(axios.get).toHaveBeenCalledWith('vulnerabilities_autocomplete_url', {
+            params: { search: 'query2' },
+            signal: expect.any(AbortSignal),
           });
         });
 
@@ -639,6 +643,17 @@ describe('GfmAutoComplete', () => {
           reference: 'grp/proj#5',
         }),
       ).toBe('<li><small>grp/proj#5</small> Some Issue</li>');
+    });
+
+    it('should include an svg image when iconName is provided', () => {
+      const expectedHtml = `<li><svg class="gl-text-secondary s16 gl-mr-2"><use xlink:href="/icons.svg#example-icon" /></svg><small>5</small> Some Issue</li>`;
+      expect(
+        GfmAutoComplete.Issues.templateFunction({
+          id: 5,
+          title: 'Some Issue',
+          iconName: 'example-icon',
+        }),
+      ).toBe(expectedHtml);
     });
 
     it('escapes title in the template as it is user input', () => {

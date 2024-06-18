@@ -82,7 +82,7 @@ export default {
       :copy-button-title="$options.COPY_SECRET"
       :value="secret"
       readonly
-      class="gl-mt-n3 gl-mb-0"
+      class="-gl-mt-3 gl-mb-0"
     >
       <template #description>
         {{ $options.DESCRIPTION_SECRET }}

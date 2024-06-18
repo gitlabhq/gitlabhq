@@ -1211,22 +1211,98 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#related_issues' do
+    subject(:related_issues) { merge_request.related_issues(user) }
+
+    let_it_be(:issue_referenced_in_mr_title) { create(:issue) }
+    let_it_be(:issue_referenced_in_mr_desc) { create(:issue) }
+    let_it_be(:issue_referenced_in_mr_commit_msg) { create(:issue) }
+    let_it_be(:issue_referenced_in_mr_note) { create(:issue) }
+    let_it_be(:issue_referenced_in_internal_mr_note) { create(:issue) }
+    let_it_be(:confidential_issue_in_mr_desc) { create(:issue, :confidential) }
+
+    let_it_be(:merge_request) do
+      create(
+        :merge_request,
+        title: "MR for #{issue_referenced_in_mr_title.to_reference}",
+        description: "Fix #{issue_referenced_in_mr_desc.to_reference}, #{confidential_issue_in_mr_desc.to_reference}"
+      )
+    end
+
+    before do
+      commit_stub = double('commit1', safe_message: "Fixes #{issue_referenced_in_mr_commit_msg.to_reference}")
+      allow(merge_request).to receive(:commits).and_return([commit_stub])
+
+      create(:note, noteable: merge_request, note: "See #{issue_referenced_in_mr_note.to_reference}")
+      create(:note, :internal, noteable: merge_request, note: issue_referenced_in_internal_mr_note.to_reference)
+    end
+
+    context 'for guest' do
+      let_it_be(:user) { create(:user, guest_of: project) }
+
+      it 'returns authorized related issues' do
+        expect(related_issues).to contain_exactly(
+          issue_referenced_in_mr_title,
+          issue_referenced_in_mr_desc,
+          issue_referenced_in_mr_note,
+          issue_referenced_in_mr_commit_msg
+        )
+      end
+    end
+
+    context 'for developer' do
+      let_it_be(:user) { create(:user, developer_of: project) }
+
+      it 'returns authorized related issues' do
+        expect(related_issues).to contain_exactly(
+          issue_referenced_in_mr_title,
+          issue_referenced_in_mr_desc,
+          confidential_issue_in_mr_desc,
+          issue_referenced_in_mr_note,
+          issue_referenced_in_internal_mr_note,
+          issue_referenced_in_mr_commit_msg
+        )
+      end
+    end
+  end
+
   describe '#cache_merge_request_closes_issues!' do
+    let(:issue) { create(:issue, project: subject.project) }
+
     before do
       subject.project.add_developer(subject.author)
       subject.target_branch = subject.project.default_branch
     end
 
     it 'caches closed issues' do
-      issue  = create :issue, project: subject.project
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
 
       expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change(subject.merge_requests_closing_issues, :count).by(1)
+      expect(subject.merge_requests_closing_issues.last).to have_attributes(
+        issue: issue,
+        merge_request_id: subject.id,
+        from_mr_description: true
+      )
+    end
+
+    it 'updates existing records if they were not created from MR description' do
+      existing_association = create(
+        :merge_requests_closing_issues,
+        issue: issue,
+        merge_request: subject,
+        from_mr_description: false
+      )
+
+      expect do
+        subject.update_columns(description: "Fixes #{issue.to_reference}")
+        subject.cache_merge_request_closes_issues!(subject.author)
+      end.to not_change { subject.merge_requests_closing_issues.count }.from(1).and(
+        change { existing_association.reload.from_mr_description }.from(false).to(true)
+      )
     end
 
     it 'does not cache closed issues when merge request is closed' do
-      issue  = create :issue, project: subject.project
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
 
       allow(subject).to receive(:commits).and_return([commit])
@@ -1236,7 +1312,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     it 'does not cache closed issues when merge request is merged' do
-      issue  = create :issue, project: subject.project
       commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
       allow(subject).to receive(:commits).and_return([commit])
       allow(subject).to receive(:state_id).and_return(described_class.available_states[:merged])
@@ -1260,7 +1335,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it 'caches an internal issue' do
-        issue  = create(:issue, project: subject.project)
         commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
         allow(subject).to receive(:commits).and_return([commit])
 
@@ -1289,7 +1363,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it 'does not cache an internal issue' do
-        issue  = create(:issue, project: subject.project)
         commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
         allow(subject).to receive(:commits).and_return([commit])
 
@@ -3721,10 +3794,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     let(:feature_flag) { true }
 
-    before do
-      stub_feature_flags(additional_merge_when_checks_ready: feature_flag)
-    end
-
     where(:options, :skip_ci_check) do
       {}                              | false
       { auto_merge_requested: false } | false
@@ -3738,18 +3807,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let(:options) { { auto_merge_requested: true, auto_merge_strategy: auto_merge_strategy } }
 
       where(:auto_merge_strategy, :skip_approved_check, :skip_draft_check, :skip_blocked_check,
-        :skip_discussions_check, :skip_external_status_check, :skip_requested_changes_check, :feature_flag) do
-        ''                                                      | false | false | false | false | false | false | true
-        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false | false | false | false | false | false | true
+        :skip_discussions_check, :skip_external_status_check, :skip_requested_changes_check, :skip_jira_check) do
+        ''                                                      | false | false | false | false | false | false | false
+        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false | false | false | false | false | false | false
         AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | true | true | true | true | true | true
-        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | false | false | false | false | false | false
       end
 
       with_them do
         it do
           is_expected.to include(skip_approved_check: skip_approved_check, skip_draft_check: skip_draft_check,
             skip_blocked_check: skip_blocked_check, skip_discussions_check: skip_discussions_check,
-            skip_external_status_check: skip_external_status_check, skip_requested_changes_check: skip_requested_changes_check)
+            skip_external_status_check: skip_external_status_check, skip_requested_changes_check: skip_requested_changes_check,
+            skip_jira_check: skip_jira_check)
         end
       end
     end
@@ -3993,6 +4062,53 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#has_ci_enabled?' do
+    subject { build(:merge_request, source_project: project) }
+
+    let(:project) { build(:project, :auto_devops, only_allow_merge_if_pipeline_succeeds: false) }
+    let(:mr_ci) { true }
+    let(:project_ci) { true }
+
+    before do
+      allow(subject).to receive(:has_ci?).and_return(mr_ci)
+      allow(project).to receive(:has_ci?).and_return(project_ci)
+    end
+
+    context 'when MR has_ci? is true' do
+      context 'when project has_ci? is true' do
+        it 'returns true' do
+          expect(subject.has_ci_enabled?).to eq(true)
+        end
+      end
+
+      context 'when project has_ci? is false' do
+        let(:project_ci) { false }
+
+        it 'returns false' do
+          expect(subject.has_ci_enabled?).to eq(true)
+        end
+      end
+    end
+
+    context 'when MR has_ci? is false' do
+      let(:mr_ci) { false }
+
+      context 'when project has_ci? is true' do
+        it 'returns true' do
+          expect(subject.has_ci_enabled?).to eq(true)
+        end
+      end
+
+      context 'when project has_ci? is false' do
+        let(:project_ci) { false }
+
+        it 'returns false' do
+          expect(subject.has_ci_enabled?).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '#mergeable_ci_state?' do
     let(:pipeline) { build(:ci_empty_pipeline) }
 
@@ -4004,6 +4120,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       subject { build(:merge_request, source_project: project, auto_merge_strategy: ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS, auto_merge_enabled: true) }
 
       let(:project) { build(:project, :auto_devops, only_allow_merge_if_pipeline_succeeds: false) }
+
+      before do
+        allow(subject).to receive(:has_ci_enabled?).and_return(true)
+      end
 
       context 'and a failed pipeline is associated' do
         before do
@@ -6517,6 +6637,52 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     it { is_expected.to eq(false) }
   end
 
+  describe '#has_jira_issue_keys?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    subject(:has_jira_issue_keys) { merge_request.has_jira_issue_keys? }
+
+    context 'when project has jira integration' do
+      let(:jira_integration) { build(:jira_integration) }
+
+      before do
+        allow(merge_request.project).to receive(:jira_integration).and_return(jira_integration)
+      end
+
+      context 'when the merge request title has a key' do
+        before do
+          merge_request.title = 'PROJECT-1'
+        end
+
+        it 'returns true' do
+          expect(has_jira_issue_keys).to be_truthy
+        end
+      end
+
+      context 'when the merge request title has a key' do
+        before do
+          merge_request.description = 'PROJECT-1'
+        end
+
+        it 'returns true' do
+          expect(has_jira_issue_keys).to be_truthy
+        end
+      end
+
+      context 'when the merge request does not have a key' do
+        it 'returns false' do
+          expect(has_jira_issue_keys).to be_falsey
+        end
+      end
+    end
+
+    context 'when project does not have jira integration' do
+      it 'returns false' do
+        expect(has_jira_issue_keys).to be_falsey
+      end
+    end
+  end
+
   describe '#allows_multiple_assignees?' do
     let(:merge_request) { build_stubbed(:merge_request) }
 
@@ -6622,32 +6788,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       with_them do
         it { is_expected.to be expected }
-      end
-
-      context 'when FF auto_merge_when_incomplete_pipeline_succeeds is disabled' do
-        before do
-          stub_feature_flags(auto_merge_when_incomplete_pipeline_succeeds: false)
-        end
-
-        let(:pipelines_must_succeed) { false }
-
-        where(:pipeline_status, :expected) do
-          # completed statuses
-          'success'   | false
-          'failed'    | false
-          'canceled'  | false
-          'skipped'   | false
-          # not completed statuses
-          'created'   | false
-          'pending'   | true
-          'running'   | true
-          'scheduled' | false
-          'manual'    | false
-        end
-
-        with_them do
-          it { is_expected.to be expected }
-        end
       end
     end
   end

@@ -24,7 +24,7 @@ levels are defined in the `Gitlab::Access` module. Currently, these levels are v
 - Reporter (`20`)
 - Developer (`30`)
 - Maintainer (`40`)
-- Owner (`50`). Valid for projects in [GitLab 14.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/21432).
+- Owner (`50`)
 
 ## Add a member to a group or project
 

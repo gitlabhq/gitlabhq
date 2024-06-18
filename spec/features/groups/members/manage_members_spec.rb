@@ -13,6 +13,7 @@ RSpec.describe 'Groups > Members > Manage members', feature_category: :groups_an
   let_it_be(:group) { create(:group) }
 
   before do
+    stub_feature_flags(show_role_details_in_drawer: false)
     sign_in(user1)
   end
 

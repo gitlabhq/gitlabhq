@@ -38,8 +38,9 @@ function parseDatasetToProps(data) {
     jiraIssueTransitionAutomatic,
     jiraIssueTransitionId,
     artifactRegistryPath,
-    personalAccessTokensPath,
     workloadIdentityFederationPath,
+    workloadIdentityFederationProjectNumber,
+    workloadIdentityPoolId,
     wlifIssuer,
     redirectTo,
     upgradeSlackUrl,
@@ -74,7 +75,6 @@ function parseDatasetToProps(data) {
     testPath,
     resetPath,
     formPath,
-    personalAccessTokensPath,
     triggerFieldsProps: {
       initialTriggerCommit: commitEvents,
       initialTriggerMergeRequest: mergeRequestEvents,
@@ -95,6 +95,8 @@ function parseDatasetToProps(data) {
     googleArtifactManagementProps: {
       artifactRegistryPath,
       workloadIdentityFederationPath,
+      workloadIdentityFederationProjectNumber,
+      workloadIdentityPoolId,
     },
     learnMorePath,
     aboutPricingUrl,

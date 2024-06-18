@@ -18,7 +18,7 @@ export default {
     :title="$options.translations.emptyStateTitle"
     :primary-button-text="$options.translations.emptyStatePrimaryButton"
     :primary-button-link="$options.actionButtonUrl"
-    class="gl-line-height-20"
+    class="gl-leading-20"
   >
     <template #description>
       <gl-sprintf :message="$options.translations.emptyStateDescription">

@@ -83,7 +83,7 @@ module Gitlab
       end
 
       def logger
-        @logger ||= Gitlab::Import::Logger.build
+        @logger ||= ::Import::Framework::Logger.build
       end
     end
   end

@@ -41,4 +41,36 @@ RSpec.describe Members::InviteMemberBuilder, feature_category: :groups_and_proje
       expect(member.invite_email).to eq email
     end
   end
+
+  context 'with email downcase' do
+    let_it_be(:email) { 'TEST@eXAMPle.com' }
+    let(:invitee) { email }
+
+    subject(:resulting_member) { described_class.new(source, invitee, {}).execute }
+
+    it 'builds a new member and downcases the input' do
+      expect(resulting_member).to be_new_record
+      expect(resulting_member.invite_email).to eq 'test@example.com'
+    end
+
+    context 'with existing member' do
+      before_all do
+        create(:group_member, :invited, invite_email: email, source: source)
+      end
+
+      it 'finds the member with non downcased value' do
+        expect(resulting_member).not_to be_new_record
+        expect(resulting_member.invite_email).to eq email
+      end
+
+      context 'with downcased invite email input' do
+        let(:invitee) { email.downcase }
+
+        it 'does not find the existing member that has different casing' do
+          expect(resulting_member).to be_new_record
+          expect(resulting_member.invite_email).to eq invitee
+        end
+      end
+    end
+  end
 end

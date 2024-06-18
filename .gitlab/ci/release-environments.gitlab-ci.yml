@@ -10,6 +10,8 @@ start-release-environments-pipeline:
   # https://gitlab.com/gitlab-org/gitlab/-/issues/387183
   inherit:
     variables:
+      - RUBY_VERSION_DEFAULT
+      - RUBY_VERSION_NEXT
       - RUBY_VERSION
 
   # These variables are set in the pipeline schedules.

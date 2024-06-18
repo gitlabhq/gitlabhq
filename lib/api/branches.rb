@@ -64,7 +64,13 @@ module API
             project: user_project,
             merged_branch_names: merged_branch_names,
             expires_in: 60.minutes,
-            cache_context: -> (branch) { [current_user&.cache_key, merged_branch_names.include?(branch.name)] }
+            cache_context: ->(branch) {
+              [
+                current_user&.cache_key,
+                merged_branch_names.include?(branch.name),
+                user_project.default_branch
+              ]
+            }
           )
         end
       end
@@ -180,9 +186,9 @@ module API
 
         if result[:status] == :success
           present result[:branch],
-                  with: Entities::Branch,
-                  current_user: current_user,
-                  project: user_project
+            with: Entities::Branch,
+            current_user: current_user,
+            project: user_project
         else
           render_api_error!(result[:message], 400)
         end

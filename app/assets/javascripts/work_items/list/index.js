@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import WorkItemsListApp from 'ee_else_ce/work_items/list/components/work_items_list_app.vue';
+import { apolloProvider } from '~/graphql_shared/issuable_client';
 
 export const mountWorkItemsListApp = () => {
   const el = document.querySelector('.js-work-items-list-root');
@@ -20,15 +20,15 @@ export const mountWorkItemsListApp = () => {
     hasIssueWeightsFeature,
     initialSort,
     isSignedIn,
+    showNewIssueLink,
     workItemType,
+    canCreateEpic,
   } = el.dataset;
 
   return new Vue({
     el,
     name: 'WorkItemsListRoot',
-    apolloProvider: new VueApollo({
-      defaultClient: createDefaultClient(),
-    }),
+    apolloProvider,
     provide: {
       fullPath,
       hasEpicsFeature: parseBoolean(hasEpicsFeature),
@@ -37,7 +37,9 @@ export const mountWorkItemsListApp = () => {
       initialSort,
       isSignedIn: parseBoolean(isSignedIn),
       isGroup: true,
+      showNewIssueLink: parseBoolean(showNewIssueLink),
       workItemType,
+      canCreateEpic: parseBoolean(canCreateEpic),
     },
     render: (createComponent) => createComponent(WorkItemsListApp),
   });

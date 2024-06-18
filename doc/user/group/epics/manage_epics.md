@@ -265,15 +265,10 @@ To filter:
 ### Filter with the OR operator
 
 > - OR filtering for labels and authors was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382969) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104292) in GitLab 15.9.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/296031) in GitLab 17.0. Feature flag `or_issuable_queries` removed.
 
-FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-This feature is not ready for production use.
-
-When this feature is enabled, you can use the OR operator (**is one of: `||`**)
-when you [filter the list of epics](#filter-the-list-of-epics) by:
+You can use the OR operator (**is one of: `||`**) when you [filter the list of epics](#filter-the-list-of-epics) by:
 
 - Authors
 - Labels
@@ -342,17 +337,39 @@ You can always view the issues assigned to the epic if they are in the group's c
 It's possible because the visibility setting of a project must be the same as or less restrictive than
 of its parent group.
 
-### View count of issues in an epic
+### View count and weight of issues in an epic
 
-On the **Child issues and epics** section, under each epic name, hover over the total counts.
+On the **Child issues and epics** section header, the number of descendant epics and issues and their total
+weight is displayed.
 
-The number indicates all epics associated with the project, including issues
-you might not have permission to.
+To see the number of open and closed epics and issues:
 
-### Add a new issue to an epic
+- In the section header or under each epic name, hover over the total counts.
+
+The numbers reflect all child issues and epics associated with the epic, including those you might
+not have permission to view.
+
+### View epic progress
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/5163) in GitLab 17.1.
+
+On the **Child issues and epics** section header, the epic progress percentage is displayed.
+
+To see the completed and total weight of child issues:
+
+1. In the section header, hover over the percentage.
+
+The weights and progress reflect all issues associated with the epic, including issues you might
+not have permission to view.
+
+### Add an issue to an epic
+
+> - Maximum number of child issues and epics [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/452111) to 5000 in GitLab 17.1.
 
 Add an existing issue to an epic, or create a new issue that's automatically
 added to the epic.
+
+The maximum number of direct child issues and epics is 5000.
 
 #### Add an existing issue to an epic
 

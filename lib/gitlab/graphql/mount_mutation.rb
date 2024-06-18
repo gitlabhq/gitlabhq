@@ -7,11 +7,14 @@ module Gitlab
 
       class_methods do
         def mount_mutation(mutation_class, **custom_kwargs)
+          custom_kwargs[:scopes] ||= [:api]
+
           # Using an underscored field name symbol will make `graphql-ruby`
           # standardize the field name
+
           field mutation_class.graphql_name.underscore.to_sym,
-                mutation: mutation_class,
-                **custom_kwargs
+            mutation: mutation_class,
+            **custom_kwargs
         end
 
         def mount_aliased_mutation(alias_name, mutation_class, **custom_kwargs)

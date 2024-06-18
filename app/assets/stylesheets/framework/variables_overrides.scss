@@ -3,18 +3,18 @@
  * Please add any new variables to variables.scss
  */
 
-$secondary: $gray-light;
-$input-disabled-bg: $gray-light;
+$secondary: $gray-10;
+$input-disabled-bg: $gray-10;
 $input-border-color: $gray-400;
 $input-color: $gl-text-color;
 $input-font-size: $gl-font-size;
 $font-family-sans-serif: $regular-font;
 $font-family-monospace: $monospace-font;
 $btn-line-height: 20px;
-$table-accent-bg: $gray-light;
+$table-accent-bg: $gray-10;
 $table-border-color: $gray-100;
 $card-border-color: $border-color;
-$card-cap-bg: $gray-light !default;
+$card-cap-bg: $gray-10 !default;
 $success: $green-500;
 $info: $blue-500;
 $warning: $orange-500;
@@ -27,8 +27,8 @@ $dropdown-item-padding-x: 12px;
 $popover-max-width: 300px;
 $popover-border-width: 1px;
 $popover-border-color: $border-color;
-$popover-box-shadow: 0 $border-radius-small $border-radius-default 0 $shadow-color;
-$popover-arrow-outer-color: $shadow-color;
+$popover-box-shadow: 0 $border-radius-small $gl-border-radius-base 0 $t-gray-a-08;
+$popover-arrow-outer-color: $t-gray-a-08;
 $h1-font-size: 14px * 2.5;
 $h2-font-size: 14px * 2;
 $h3-font-size: 14px * 1.75;

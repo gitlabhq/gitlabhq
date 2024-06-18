@@ -1,0 +1,20 @@
+- page_title _("Wiki")
+- @right_sidebar = true
+- add_page_specific_style 'page_bundles/wiki'
+
+- if @error.present?
+  = render Pajamas::AlertComponent.new(alert_options: { id: 'error_explanation', class: 'gl-mb-3'},
+    dismissible: false,
+    variant: :danger) do |c|
+    - c.with_body do
+      %ul.gl-pl-4
+        = @error
+
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-wiki-md.svg',
+  title: _('Sorry, this page doesn\'t exist'),
+  empty_state_options: { data: { testid: 'wiki-404' } }) do |c|
+
+  - c.with_description do
+    = s_('Wiki|Use the sidebar to find a different page.')
+
+= render 'shared/wikis/sidebar'

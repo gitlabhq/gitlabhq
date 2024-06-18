@@ -172,7 +172,7 @@ export default {
 };
 </script>
 <template>
-  <div class="d-flex flex-column">
+  <div class="gl-flex flex-column">
     <p class="pt-3 js-subtitle-text">
       <gl-sprintf
         :message="
@@ -262,7 +262,7 @@ export default {
 
       <asset-links-form />
 
-      <div class="d-flex gl-gap-x-3 pt-3">
+      <div class="gl-flex gl-gap-x-3 pt-3">
         <gl-button
           class="js-no-auto-disable"
           category="primary"

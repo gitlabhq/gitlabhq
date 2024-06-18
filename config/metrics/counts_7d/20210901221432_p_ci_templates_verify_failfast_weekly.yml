@@ -1,9 +1,7 @@
 ---
 key_path: redis_hll_counters.ci_templates.p_ci_templates_verify_failfast_weekly
 description: ''
-product_section: ''
-product_stage: ''
-product_group: pipeline_execution
+product_group: pipeline_authoring
 value_type: number
 status: active
 milestone: '14.3'

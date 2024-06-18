@@ -1,0 +1,9 @@
+---
+name: track_ai_metrics_in_usage_data
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457504
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155973
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/466664
+milestone: '17.1'
+group: group::optimize
+type: beta
+default_enabled: false

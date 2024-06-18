@@ -28,9 +28,9 @@ class FeatureFlagStrategiesValidator < ActiveModel::EachValidator
 
   def strategy_validations(record, attribute, strategy)
     validate_name(record, attribute, strategy) &&
-    validate_parameters_type(record, attribute, strategy) &&
-    validate_parameters_keys(record, attribute, strategy) &&
-    validate_parameters_values(record, attribute, strategy)
+      validate_parameters_type(record, attribute, strategy) &&
+      validate_parameters_keys(record, attribute, strategy) &&
+      validate_parameters_values(record, attribute, strategy)
   end
 
   def validate_name(record, attribute, strategy)
@@ -79,13 +79,13 @@ class FeatureFlagStrategiesValidator < ActiveModel::EachValidator
 
   def valid_ids?(user_ids)
     user_ids.uniq.length == user_ids.length &&
-    user_ids.all? { |id| valid_id?(id) }
+      user_ids.all? { |id| valid_id?(id) }
   end
 
   def valid_id?(user_id)
     user_id.present? &&
-    user_id.strip == user_id &&
-    user_id.length <= USERID_MAX_LENGTH
+      user_id.strip == user_id &&
+      user_id.length <= USERID_MAX_LENGTH
   end
 
   def error(record, attribute, msg)

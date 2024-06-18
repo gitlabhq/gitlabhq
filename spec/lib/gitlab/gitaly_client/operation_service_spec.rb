@@ -448,13 +448,13 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
     context 'with ReferenceUpdateError' do
       let(:reference_update_error) do
         new_detailed_error(GRPC::Core::StatusCodes::FAILED_PRECONDITION,
-                           "some ignored error message",
-                           Gitaly::UserMergeBranchError.new(
-                             reference_update: Gitaly::ReferenceUpdateError.new(
-                               reference_name: "refs/heads/something",
-                               old_oid: "1234",
-                               new_oid: "6789"
-                             )))
+          "some ignored error message",
+          Gitaly::UserMergeBranchError.new(
+            reference_update: Gitaly::ReferenceUpdateError.new(
+              reference_name: "refs/heads/something",
+              old_oid: "1234",
+              new_oid: "6789"
+            )))
       end
 
       it 'returns nil' do

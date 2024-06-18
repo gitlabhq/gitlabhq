@@ -31,7 +31,7 @@ module InternalEventsCli
         format_prefix "    ", <<~TEXT
           #{format_selection(verb)} #{filepath}
 
-          #{errors.map { |e| [format_warning('!! WARNING: '), JSONSchemer::Errors.pretty(e)].join }.join}
+          #{errors.map { |e| [format_warning('!! WARNING: '), JSONSchemer::Errors.pretty(e)].join }.join("\n")}
 
             These errors will cause one of the following specs to fail and should be resolved before merging your changes:
               - spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb

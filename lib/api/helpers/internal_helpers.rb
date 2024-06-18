@@ -44,6 +44,8 @@ module API
         response_with_status(code: 503, success: false, message: e.message)
       rescue Gitlab::GitAccess::NotFoundError => e
         response_with_status(code: 404, success: false, message: e.message)
+      rescue Gitlab::GitAccessProject::CreationError => e
+        response_with_status(code: 422, success: false, message: e.message)
       end
 
       # rubocop:disable Gitlab/ModuleWithInstanceVariables

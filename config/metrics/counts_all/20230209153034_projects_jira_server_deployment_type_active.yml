@@ -1,8 +1,6 @@
 ---
 key_path: counts.projects_jira_server_deployment_type_active
 description: Count of active integrations with Jira Software with server deployment type
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active

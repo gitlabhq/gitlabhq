@@ -38,7 +38,12 @@ export default {
   },
   methods: {
     getActiveEmoji(emojis, data) {
-      return emojis.find((emoji) => emoji.name.toLowerCase() === stripQuotes(data).toLowerCase());
+      return emojis.find(
+        (emoji) => this.getEmojiName(emoji).toLowerCase() === stripQuotes(data).toLowerCase(),
+      );
+    },
+    getEmojiName(emoji) {
+      return emoji.name;
     },
     fetchEmojis(searchTerm) {
       this.loading = true;
@@ -67,24 +72,24 @@ export default {
     :suggestions="emojis"
     :suggestions-loading="loading"
     :get-active-token-value="getActiveEmoji"
-    value-identifier="name"
+    :value-identifier="getEmojiName"
     v-bind="$attrs"
     @fetch-suggestions="fetchEmojis"
     v-on="$listeners"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
-      <gl-emoji v-if="activeTokenValue" :data-name="activeTokenValue.name" />
+      <gl-emoji v-if="activeTokenValue" :data-name="getEmojiName(activeTokenValue)" />
       <template v-else>{{ inputValue }}</template>
     </template>
     <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion
         v-for="emoji in suggestions"
-        :key="emoji.name"
-        :value="emoji.name"
+        :key="getEmojiName(emoji)"
+        :value="getEmojiName(emoji)"
       >
         <div class="gl-display-flex">
-          <gl-emoji class="gl-mr-3" :data-name="emoji.name" />
-          {{ emoji.name }}
+          <gl-emoji class="gl-mr-3" :data-name="getEmojiName(emoji)" />
+          {{ getEmojiName(emoji) }}
         </div>
       </gl-filtered-search-suggestion>
     </template>

@@ -116,7 +116,7 @@ export default {
       </gl-form-group>
 
       <gl-form-group :label="$options.i18n.DESCRIPTION_LABEL" optional>
-        <gl-form-textarea v-model="modelDescription" />
+        <gl-form-textarea v-model="modelDescription" no-resize />
       </gl-form-group>
 
       <gl-button type="submit" variant="confirm" class="js-no-auto-disable">{{

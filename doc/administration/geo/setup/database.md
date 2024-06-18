@@ -757,6 +757,7 @@ frontend internal-postgresql-tcp-in
     default_backend postgresql
 
 backend postgresql
+    mode tcp
     option httpchk
     http-check expect status 200
 

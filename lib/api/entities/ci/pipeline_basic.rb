@@ -15,10 +15,10 @@ module API
         expose :updated_at, documentation: { type: 'dateTime', example: '2022-10-21T16:49:48.000+02:00' }
 
         expose :web_url,
-               documentation: {
-                 type: 'string',
-                 example: 'https://gitlab.example.com/gitlab-org/gitlab-foss/-/pipelines/61'
-               } do |pipeline, _options|
+          documentation: {
+            type: 'string',
+            example: 'https://gitlab.example.com/gitlab-org/gitlab-foss/-/pipelines/61'
+          } do |pipeline, _options|
           Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline)
         end
       end

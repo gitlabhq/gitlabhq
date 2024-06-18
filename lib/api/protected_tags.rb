@@ -70,10 +70,10 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the protected tag', documentation: { example: 'release-1-0' }
         optional :create_access_level,
-                 type: Integer,
-                 values: ProtectedTag::CreateAccessLevel.allowed_access_levels,
-                 desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)',
-                 documentation: { example: 30 }
+          type: Integer,
+          values: ProtectedTag::CreateAccessLevel.allowed_access_levels,
+          desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)',
+          documentation: { example: 30 }
         use :optional_params_ee
       end
       post ':id/protected_tags' do
@@ -83,8 +83,8 @@ module API
         }
 
         protected_tag = ::ProtectedTags::CreateService.new(user_project,
-                                                           current_user,
-                                                           protected_tags_params).execute
+          current_user,
+          protected_tags_params).execute
 
         if protected_tag.persisted?
           present protected_tag, with: Entities::ProtectedTag, project: user_project

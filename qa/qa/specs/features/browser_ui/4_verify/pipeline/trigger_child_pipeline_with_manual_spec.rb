@@ -5,13 +5,7 @@ module QA
     describe "Trigger child pipeline with 'when:manual'" do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'project-with-pipeline') }
-      let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = project
-          runner.name = executor
-          runner.tags = [executor]
-        end
-      end
+      let!(:runner) { create(:project_runner, project: project, name: executor, tags: [executor]) }
 
       before do
         Flow::Login.sign_in

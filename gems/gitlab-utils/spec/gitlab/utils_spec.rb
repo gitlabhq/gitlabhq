@@ -529,4 +529,146 @@ RSpec.describe Gitlab::Utils, feature_category: :shared do
       expect { raise_if_concurrent_ruby! }.not_to raise_error
     end
   end
+
+  describe '.to_rails_log_level' do
+    context 'with valid user input' do
+      where(:input, :expected_level) do
+        ::Logger::DEBUG   | :debug
+        ::Logger::INFO    | :info
+        ::Logger::WARN    | :warn
+        ::Logger::ERROR   | :error
+        ::Logger::FATAL   | :fatal
+        ::Logger::UNKNOWN | :unknown
+        0                 | :debug
+        1                 | :info
+        2                 | :warn
+        3                 | :error
+        4                 | :fatal
+        5                 | :unknown
+        '0'               | :debug
+        '1'               | :info
+        '2'               | :warn
+        '3'               | :error
+        '4'               | :fatal
+        '5'               | :unknown
+        'debug'           | :debug
+        'info'            | :info
+        'warn'            | :warn
+        'error'           | :error
+        'fatal'           | :fatal
+        'unknown'         | :unknown
+        'DEBUG'           | :debug
+        'INFO'            | :info
+        'WARN'            | :warn
+        'ERROR'           | :error
+        'FATAL'           | :fatal
+        'UNKNOWN'         | :unknown
+        :debug            | :debug
+        :info             | :info
+        :warn             | :warn
+        :error            | :error
+        :fatal            | :fatal
+        :unknown          | :unknown
+      end
+
+      with_them do
+        it 'returns the corresponding Rails log level' do
+          expect(described_class.to_rails_log_level(input)).to eq(expected_level)
+        end
+
+        it 'ignores the fallback' do
+          expect(described_class.to_rails_log_level(input, :debug)).to eq(expected_level)
+        end
+      end
+    end
+
+    context 'with invalid user input' do
+      context 'without a fallback' do
+        where(:input, :fallback, :expected_level) do
+          6     | nil | :info
+          'foo' | nil | :info
+          ''    | nil | :info
+          nil   | nil | :info
+        end
+
+        with_them do
+          it 'returns :info' do
+            expect(described_class.to_rails_log_level(input, fallback)).to eq(expected_level)
+          end
+        end
+      end
+
+      context 'with a valid fallback' do
+        where(:input, :fallback, :expected_level) do
+          6     | :debug          | :debug
+          'foo' | :debug          | :debug
+          ''    | :debug          | :debug
+          nil   | :debug          | :debug
+          6     | :info           | :info
+          'foo' | :info           | :info
+          ''    | :info           | :info
+          nil   | :info           | :info
+          6     | ::Logger::DEBUG | :debug
+          'foo' | 'warn'          | :warn
+          ''    | 'ERROR'         | :error
+        end
+
+        with_them do
+          it 'returns the fallback' do
+            expect(described_class.to_rails_log_level(input, fallback)).to eq(expected_level)
+          end
+        end
+      end
+
+      context 'with an invalid fallback' do
+        where(:input, :fallback, :expected_level) do
+          6     | 6     | :info
+          'foo' | 'foo' | :info
+          ''    | ''    | :info
+          nil   | nil   | :info
+        end
+
+        with_them do
+          it 'returns :info' do
+            expect(described_class.to_rails_log_level(input, fallback)).to eq(expected_level)
+          end
+        end
+      end
+    end
+  end
+
+  describe '.deep_sort_hash' do
+    it 'recursively sorts a hash' do
+      hash = {
+        z: "record-z",
+        e: { y: "nested-record-y", a: "nested-record-a", b: "nested-record-b" },
+        c: {
+          m: {
+            p: "doubly-nested-record-p",
+            o: "doubly-nested-record-o"
+          },
+          k: {
+            v: "doubly-nested-record-v",
+            u: "doubly-nested-record-u"
+          }
+        }
+      }
+      expect(JSON.generate(described_class.deep_sort_hash(hash))).to eq(JSON.generate({
+        c: {
+          k: {
+            u: "doubly-nested-record-u",
+            v: "doubly-nested-record-v"
+          },
+          m: {
+            o: "doubly-nested-record-o",
+            p: "doubly-nested-record-p"
+          }
+
+        },
+        e: { a: "nested-record-a", b: "nested-record-b",
+             y: "nested-record-y" },
+        z: "record-z"
+      }))
+    end
+  end
 end

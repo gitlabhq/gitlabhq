@@ -15,12 +15,7 @@ export default {
 };
 </script>
 <template>
-  <state-container
-    status="loading"
-    is-collapsible
-    :collapsed="mr.mergeDetailsCollapsed"
-    @toggle="() => mr.toggleMergeDetails()"
-  >
+  <state-container status="loading" is-collapsible>
     {{ s__('mrWidget|Checking if merge request can be merged…') }}
   </state-container>
 </template>

@@ -50,7 +50,8 @@ RSpec.describe Gitlab::Instrumentation::Redis do
       Gitlab::Redis::Queues.with { |redis| redis.set('shared-state-test', 123) }
     end
 
-    it 'returns payload filtering out zeroed values' do
+    it 'returns payload filtering out zeroed values',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446221' do
       expected_payload = {
         # Aggregated results
         redis_calls: 3,

@@ -73,7 +73,6 @@ module API
         optional :merge_commit_template, type: String, desc: 'Template used to create merge commit message'
         optional :squash_commit_template, type: String, desc: 'Template used to create squash commit message'
         optional :issue_branch_template, type: String, desc: 'Template used to create a branch from an issue'
-        optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
         optional :auto_devops_enabled, type: Boolean, desc: 'Flag indication if Auto DevOps is enabled'
         optional :auto_devops_deploy_strategy, type: String, values: %w[continuous manual timed_incremental], desc: 'Auto Deploy strategy'
         optional :autoclose_referenced_issues, type: Boolean, desc: 'Flag indication if referenced issues auto-closing is enabled'
@@ -82,7 +81,6 @@ module API
         optional :squash_option, type: String, values: %w[never always default_on default_off], desc: 'Squash default for project. One of `never`, `always`, `default_on`, or `default_off`.'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about potentially unwanted characters'
-        optional :repository_object_format, type: String, values: %w[sha1 sha256], desc: 'The object format of the project repository'
       end
 
       params :optional_project_params_ee do
@@ -93,11 +91,17 @@ module API
         use :optional_project_params_ee
       end
 
+      params :optional_create_project_params_ce do
+        optional :repository_object_format, type: String, values: %w[sha1 sha256], desc: 'The object format of the project repository'
+        optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
+      end
+
       params :optional_create_project_params_ee do
       end
 
       params :optional_create_project_params do
         use :optional_project_params
+        use :optional_create_project_params_ce
         use :optional_create_project_params_ee
       end
 
@@ -112,6 +116,7 @@ module API
         optional :ci_allow_fork_pipelines_to_run_in_parent_project, type: Boolean, desc: 'Allow fork merge request pipelines to run in parent project'
         optional :ci_separated_caches, type: Boolean, desc: 'Enable or disable separated caches based on branch protection.'
         optional :restrict_user_defined_variables, type: Boolean, desc: 'Restrict use of user-defined variables when triggering a pipeline'
+        optional :ci_pipeline_variables_minimum_override_role, values: %w[no_one_allowed developer maintainer owner], type: String, desc: 'Limit ability to override CI/CD variables when triggering a pipeline to only users with at least the set minimum role'
       end
 
       params :optional_update_params_ee do
@@ -204,6 +209,7 @@ module API
           :model_experiments_access_level,
           :model_registry_access_level,
           :warn_about_potentially_unwanted_characters,
+          :ci_pipeline_variables_minimum_override_role,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

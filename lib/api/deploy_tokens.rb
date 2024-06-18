@@ -87,10 +87,10 @@ module API
       params do
         requires :name, type: String, desc: "New deploy token's name"
         requires :scopes,
-                 type: Array[String],
-                 coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-                 values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
-                 desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`.'
+          type: Array[String],
+          coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+          values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
+          desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`.'
         optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).'
         optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end
@@ -194,10 +194,10 @@ module API
       params do
         requires :name, type: String, desc: "New deploy token's name"
         requires :scopes,
-                 type: Array[String],
-                 coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
-                 values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
-                 desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`'
+          type: Array[String],
+          coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+          values: ::DeployToken::AVAILABLE_SCOPES.map(&:to_s),
+          desc: 'Indicates the deploy token scopes. Must be at least one of `read_repository`, `read_registry`, `write_registry`, `read_package_registry`, or `write_package_registry`'
         optional :expires_at, type: DateTime, desc: 'Expiration date for the deploy token. Does not expire if no value is provided. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)'
         optional :username, type: String, desc: 'Username for deploy token. Default is `gitlab+deploy-token-{n}`'
       end

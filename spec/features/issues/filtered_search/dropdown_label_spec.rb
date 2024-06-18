@@ -11,7 +11,6 @@ RSpec.describe 'Dropdown label', :js, feature_category: :team_planning do
   let_it_be(:label) { create(:label, project: project, title: 'bug-label') }
 
   before do
-    stub_feature_flags(or_issuable_queries: false)
     project.add_maintainer(user)
     sign_in(user)
 

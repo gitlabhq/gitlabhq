@@ -46,7 +46,7 @@ module Groups
       @children = GroupDescendantsFinder.new(
         current_user: current_user,
         parent_group: parent,
-        params: group_descendants_params
+        params: safe_params
       ).execute.page(params[:page])
     end
 

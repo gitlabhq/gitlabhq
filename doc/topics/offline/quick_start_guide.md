@@ -151,13 +151,14 @@ Updating CA certificates...
 Runtime platform                                    arch=amd64 os=linux pid=7 revision=1b659122 version=12.8.0
 Running in system-mode.
 
-Please enter the gitlab-ci coordinator URL (for example, https://gitlab.com/):
+Enter the GitLab instance URL (for example, https://gitlab.com/):
 https://my-host.internal
-Please enter the gitlab-ci token for this runner:
+Enter the registration token:
 XXXXXXXXXXX
-Please enter the gitlab-ci description for this runner:
+Enter a description for the runner:
 [eb18856e13c0]:
-Please enter the gitlab-ci tags for this runner (comma separated):
+Enter tags for the runner (comma-separated):
+Enter optional maintenance note for the runner:
 
 Registering runner... succeeded                     runner=FSMwkvLZ
 Please enter the executor: custom, docker, virtualbox, kubernetes, docker+machine, docker-ssh+machine, docker-ssh, parallels, shell, ssh:
@@ -209,6 +210,13 @@ users are on the most up-to-date instances of GitLab. These two services can be 
 environments so that they do not attempt and fail to reach out to GitLab services.
 
 For more information, see [Enable or disable service ping](../../administration/settings/usage_statistics.md#enable-or-disable-service-ping).
+
+### Disable runner version management
+
+Runner version management retrieves the latest runner versions from GitLab to
+[determine which runners in your environment are out of date](../../ci/runners/runners_scope.md#determine-which-runners-need-to-be-upgraded).
+You must [disable runner version management](../../administration/settings/continuous_integration.md#disable-runner-version-management)
+for offline environments.
 
 ### Configure NTP
 

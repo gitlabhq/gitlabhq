@@ -38,8 +38,7 @@ module QA
           @k3s&.remove!
         end
 
-        def set_credentials(admin_user)
-        end
+        def set_credentials(admin_user); end
 
         # Fetch "real" certificate
         # See https://github.com/rancher/k3s/issues/27

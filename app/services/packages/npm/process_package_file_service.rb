@@ -4,7 +4,7 @@ module Packages
   module Npm
     class ProcessPackageFileService
       ExtractionError = Class.new(StandardError)
-      PACKAGE_JSON_ENTRY_PATH = 'package/package.json'
+      PACKAGE_JSON_ENTRY_PATH = '*/package.json'
       MAX_FILE_SIZE = 4.megabytes
 
       delegate :package, to: :package_file
@@ -37,15 +37,12 @@ module Packages
       end
 
       def with_package_json_entry
-        entry = package_file.file.use_open_file(unlink_early: false) do |open_file|
+        package_file.file.use_open_file(unlink_early: false) do |open_file|
           Zlib::GzipReader.open(open_file.file_path) do |gz|
-            Gem::Package::TarReader.new(gz).seek(PACKAGE_JSON_ENTRY_PATH) do |entry|
-              next entry
-            end
+            entry = Gem::Package::TarReader.new(gz).find { |e| File.fnmatch(PACKAGE_JSON_ENTRY_PATH, e.full_name) }
+            yield entry
           end
         end
-
-        yield entry
       end
     end
   end

@@ -37,11 +37,6 @@ To review a merge request:
    1. [Summarize your review](#summarize-your-review)
 1. [Perform cleanup tasks](#perform-cleanup-tasks)
 
-## Before you begin
-
-- You need permission to view merge requests in the project.
-- You need a merge request that's ready for review.
-
 ## Go to the merge request
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -88,9 +83,8 @@ to a problem or a feature request in an issue.
 - **What's the goal?** Read the description to understand the author's intent.
 - **Is it a draft?** Drafts are often incomplete or theoretical solutions. A draft merge request might require
   a different level of scrutiny than fully-finished merge requests.
-- **How can you reproduce the problem?** If this merge request is a bugfix, does the
-  description explain how to reproduce the problem? Does it explain how to test the changes?
-  Does it include screenshots to guide you?
+- **How can you reproduce the problem?** Does the description explain how to reproduce
+  the problem, test the changes, or try out the new feature? Does it include screenshots to guide you?
 
 Below the description, check the merge request widget to understand the
 current status of this work. This example shows a merge widget for a merge request
@@ -181,7 +175,7 @@ When you first open the **Changes** page, focus on the broader details first:
   of work to expect in your deeper read: a new feature, a removed feature, or changes in behavior?
 - **Were any tests changed?** Are any of the files part of your testing suite?
   If not, you might need to nudge the author to update tests.
-- **Are feature flags used?** If you see feature flags, plan to check their
+- **Are feature flags used?** If you see feature flags, make a note to check their
   use in your deeper read-through.
 
 When you've finished skimming the changes, you're ready to read the changes line by line!
@@ -302,12 +296,16 @@ you'll probably also start taking on more complex reviews.
 
 ### Write your review comments
 
-The **Start a review** feature enables you to write your thoughts privately, in
-pending comments. You can take your time on your comments, knowing they can't be
-read until you publish them at the end of your review. Remember to be constructive
-and kind.
+The **Start a review** feature enables you to write your thoughts down in
+pending comments. These comments aren't visible to anyone else until you submit
+your review. This avoids message overload to your recipients, and gives you a chance
+to recheck (and change) your words before you publish.
 
-First, write your comments that should be attached to specific lines or files:
+Remember to be constructive and kind. The structure of
+[Conventional comments](https://conventionalcomments.org/) can help you write
+comments that are both thoughtful _and_ constructive.
+
+First, write your comments you want to attach to specific lines or files:
 
 1. Select the **Changes** tab.
 1. When you find lines you want to ask questions about, or provide feedback on,
@@ -321,15 +319,17 @@ First, write your comments that should be attached to specific lines or files:
 
 1. In the text area, write your first comment. To keep your comments private until
    the end of your review, select **Start a review** below your comment.
-1. Provide suggestions, when the fixes are easy for you to draft, or if you want to
+1. [Provide suggestions](../../user/project/merge_requests/reviews/suggestions.md)
+   when the fixes are easy for you to draft, or if you want to
    show the author a better approach. If the code changes are too big or complex
    for the suggestion format, leave a comment requesting changes.
 1. Continue commenting on files and individual lines of code. After each comment,
    select **Add to review**.
 
 As you work, you can use [quick actions](../../user/project/quick_actions.md), like
-`/approve` or `/assign_reviewer`, in your review comments. Your pending comments
+`/label` or `/assign_reviewer`, in your review comments. Your pending comments
 show your requested actions, but the actions aren't performed until you submit your review.
+(Later, you can submit your review with the `/submit_review` quick action, too!)
 
 ### Summarize your review
 
@@ -354,7 +354,9 @@ your review. It's time to think broadly, one last time.
    - What's your overall finding?
    - Are you finished reviewing, or do you want to see this merge request again after more work is done?
 1. Select [**Submit your review**](../../user/project/merge_requests/reviews/index.md#submit-a-review)
-   to publish all of your comments and run any [quick actions](../../user/project/quick_actions.md) they contain.
+   (or use the `/submit_review` quick action) to publish all comments in your review.
+   Submitting your review also runs any [quick actions](../../user/project/quick_actions.md)
+   those review comments contain.
    - If the changes look good, select **Approve**.
    - If the changes need more work, select **Request changes**.
 
@@ -378,6 +380,7 @@ After you provide your feedback, tidy up.
 
 ## Related topics
 
+- [Conventional comments](https://conventionalcomments.org/) provide helpful structure for comments.
 - [Code review guidelines](https://handbook.gitlab.com/handbook/engineering/workflow/code-review/) in the GitLab handbook
 - [Merge request coaches](https://handbook.gitlab.com/job-families/expert/merge-request-coach/) in the GitLab handbook
 - [Merge requests workflow](../../development/contributing/merge_request_workflow.md) for GitLab team members

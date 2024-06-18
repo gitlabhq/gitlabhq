@@ -41,7 +41,7 @@
 
   .sidebar-collapsed-icon {
     .btn {
-      background-color: $gray-light;
+      background-color: $gray-10;
     }
 
     &:not(.disabled) {
@@ -228,24 +228,24 @@
       }
     }
 
-    $line-height: map-get($spacers, 4) + px-to-rem(2px);
+    $line-height: map-get($spacers, 4);
 
     &-icon {
-      /**
-      * 2px extra is to give a little more height than needed
-      * to hide timeline line before/after the element starts/ends
-      */
       height: $line-height;
       z-index: 1;
       position: relative;
       padding: $gl-padding-4 0;
-
+      
       &.opened {
         color: $green-500;
       }
 
       &.closed {
         color: $blue-500;
+      }
+      
+      svg {
+        vertical-align: baseline;
       }
     }
 
@@ -774,15 +774,14 @@
   }
 }
 
-.assignee,
-.reviewer {
-  .merge-icon {
-    color: $orange-400;
-    position: absolute;
-    bottom: -3px;
-    right: -3px;
-    filter: drop-shadow(0 0 0.5px $white) drop-shadow(0 0 1px $white) drop-shadow(0 0 2px $white);
-  }
+.reviewer-merge-icon,
+.assignee .merge-icon,
+.reviewer .merge-icon {
+  color: $orange-400;
+  position: absolute;
+  bottom: -3px;
+  right: -3px;
+  filter: drop-shadow(0 0 0.5px $white) drop-shadow(0 0 1px $white) drop-shadow(0 0 2px $white);
 }
 
 .sidebar-help-wrap {

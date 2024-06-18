@@ -42,6 +42,10 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_html_part_content(reviewer.name)
       end
     end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template notify')
+    end
   end
 
   describe '#merge_request_unmergeable_email' do
@@ -73,6 +77,10 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_html_part_content(reviewer.name)
       end
     end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template notify')
+    end
   end
 
   describe '#closed_merge_request_email' do
@@ -102,6 +110,10 @@ RSpec.describe Emails::MergeRequests do
         expect(subject.text_part).to have_content(assignee.name)
         expect(subject.text_part).to have_content(reviewer.name)
       end
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template notify')
     end
   end
 
@@ -135,6 +147,10 @@ RSpec.describe Emails::MergeRequests do
         expect(subject.text_part).to have_content(reviewer.name)
       end
     end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template notify')
+    end
   end
 
   describe '#merge_request_status_email' do
@@ -167,6 +183,10 @@ RSpec.describe Emails::MergeRequests do
         expect(subject.text_part).to have_content(reviewer.name)
       end
     end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template notify')
+    end
   end
 
   describe "#merge_when_pipeline_succeeds_email" do
@@ -185,6 +205,10 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_html_part_content(reviewer.name)
       end
     end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template mailer')
+    end
   end
 
   describe '#approved_merge_request_email' do
@@ -199,6 +223,10 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_text_part_content(reviewer.name)
         is_expected.to have_html_part_content(reviewer.name)
       end
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template mailer')
     end
   end
 
@@ -215,6 +243,10 @@ RSpec.describe Emails::MergeRequests do
         is_expected.to have_html_part_content(reviewer.name)
       end
     end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template mailer')
+    end
   end
 
   describe "#resolved_all_discussions_email" do
@@ -222,6 +254,10 @@ RSpec.describe Emails::MergeRequests do
 
     it "includes the name of the resolver" do
       expect(subject).to have_body_text current_user_sanitized
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template notify')
     end
   end
 
@@ -254,6 +290,10 @@ RSpec.describe Emails::MergeRequests do
       end
 
       it { expect(subject).to have_content('attachment has been truncated to avoid exceeding the maximum allowed attachment size of 15 MiB.') }
+    end
+
+    it "uses the correct layout template" do
+      is_expected.to have_html_part_content('determine_layout returned template mailer')
     end
   end
 

@@ -511,7 +511,7 @@ export default {
         class="gl-text-truncate"
         @click.native.capture.stop="onItemClick(key)"
       >
-        <div class="gl-text-truncate gl-font-weight-bold">{{ key.title }}</div>
+        <div class="gl-text-truncate gl-font-bold">{{ key.title }}</div>
         <div class="gl-text-gray-700 gl-text-truncate">
           <gl-sprintf :message="$options.i18n.ownedBy">
             <template #image_tag>

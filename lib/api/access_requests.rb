@@ -13,7 +13,7 @@ module API
     %w[group project].each do |source_type|
       params do
         requires :id, type: String,
-                      desc: "The ID or URL-encoded path of the #{source_type} owned by the authenticated user"
+          desc: "The ID or URL-encoded path of the #{source_type} owned by the authenticated user"
       end
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc "Gets a list of access requests for a #{source_type}." do
@@ -92,7 +92,7 @@ module API
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the access requester'
           optional :access_level, type: Integer, desc: 'A valid access level (defaults: `30`, the Developer role)',
-                                  default: 30
+            default: 30
         end
         # rubocop: disable CodeReuse/ActiveRecord
         put ':id/access_requests/:user_id/approve' do

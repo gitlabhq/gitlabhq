@@ -1,5 +1,5 @@
 ---
-status: proposed
+status: rejected
 creation-date: "2021-05-19"
 authors: [ "@ayufan", "@mkaeppler" ]
 coach: "@glopezfernandez"
@@ -13,7 +13,7 @@ participating-stages: []
 # Composable GitLab Codebase
 
 NOTE:
-Due to our focus on improving the overall availability of GitLab.com and reducing tech debt, we do not have capacity to act on this blueprint. We will re-evaluate in Q1-FY23.
+This architecture design document has been superseded by [GitLab Modular Monolith](../modular_monolith/index.md).
 
 The one of the major risks of a single codebase is an infinite growth of the whole
 application. The more code being added results in not only ever increasing resource requirements

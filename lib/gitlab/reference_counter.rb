@@ -51,8 +51,8 @@ module Gitlab
       redis_cmd do |redis|
         current_value = redis.decr(key)
         if current_value < 0
-          Gitlab::AppLogger.warn("Reference counter for #{gl_repository} decreased" \
-            " when its value was less than 1. Resetting the counter.")
+          Gitlab::AppLogger.warn("Reference counter for #{gl_repository} decreased " \
+            "when its value was less than 1. Resetting the counter.")
           redis.del(key)
         end
       end

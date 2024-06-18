@@ -124,7 +124,7 @@ module MergeRequestsHelper
     return if merge_request.can_allow_collaboration?(current_user)
 
     minimum_visibility = [merge_request.target_project.visibility_level,
-                          merge_request.source_project.visibility_level].min
+      merge_request.source_project.visibility_level].min
 
     if minimum_visibility < Gitlab::VisibilityLevel::INTERNAL
       _('Not available for private projects')
@@ -258,6 +258,10 @@ module MergeRequestsHelper
     }
   end
 
+  def identity_verification_alert_data(_)
+    { identity_verification_required: 'false' }
+  end
+
   private
 
   def review_requested_merge_requests_count
@@ -271,7 +275,7 @@ module MergeRequestsHelper
   def merge_request_source_branch(merge_request)
     fork_icon = if merge_request.for_fork?
                   title = _('The source project is a fork')
-                  content_tag(:span, class: 'gl-align-middle gl-mr-n2 has-tooltip', title: title) do
+                  content_tag(:span, class: 'gl-align-middle -gl-mr-2 has-tooltip', title: title) do
                     sprite_icon('fork', size: 12, css_class: 'gl-ml-1 has-tooltip')
                   end
                 else
@@ -300,11 +304,11 @@ module MergeRequestsHelper
   end
 
   def merge_request_header(project, merge_request)
-    link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-weight-bold gl-mr-2', avatar: false)
+    link_to_author = link_to_member(project, merge_request.author, size: 24, extra_class: 'gl-font-bold gl-mr-2', avatar: false)
     copy_action_description = _('Copy branch name')
     copy_action_shortcut = 'b'
     copy_button_title = "#{copy_action_description} <kbd class='flat ml-1' aria-hidden=true>#{copy_action_shortcut}</kbd>"
-    copy_button = clipboard_button(text: merge_request.source_branch, title: copy_button_title, aria_keyshortcuts: copy_action_shortcut, aria_label: copy_action_description, class: 'gl-display-none! gl-md-display-inline-block! js-source-branch-copy gl-mx-1')
+    copy_button = clipboard_button(text: merge_request.source_branch, title: copy_button_title, aria_keyshortcuts: copy_action_shortcut, aria_label: copy_action_description, class: '!gl-hidden md:!gl-inline-block gl-mx-1 js-source-branch-copy')
 
     target_branch = link_to merge_request.target_branch, project_tree_path(merge_request.target_project, merge_request.target_branch), title: merge_request.target_branch, class: 'ref-container gl-display-inline-block gl-text-truncate gl-max-w-26 gl-mx-2'
 
@@ -380,7 +384,7 @@ module MergeRequestsHelper
           title: _('Waiting for reviewers'),
           query: 'assignedMergeRequests',
           variables: {
-            reviewState: 'UNREVIEWED'
+            reviewStates: %w[UNREVIEWED UNAPPROVED]
           }
         },
         {

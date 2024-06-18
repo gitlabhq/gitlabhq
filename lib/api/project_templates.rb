@@ -47,16 +47,16 @@ module API
       end
       params do
         requires :name, type: String,
-                        desc: 'The key of the template, as obtained from the collection endpoint.', documentation: { example: 'MIT' }
+          desc: 'The key of the template, as obtained from the collection endpoint.', documentation: { example: 'MIT' }
         optional :source_template_project_id, type: Integer,
-                                              desc: 'The project id where a given template is being stored. This is useful when multiple templates from different projects have the same name',
-                                              documentation: { example: 1 }
+          desc: 'The project id where a given template is being stored. This is useful when multiple templates from different projects have the same name',
+          documentation: { example: 1 }
         optional :project, type: String,
-                           desc: 'The project name to use when expanding placeholders in the template. Only affects licenses',
-                           documentation: { example: 'GitLab' }
+          desc: 'The project name to use when expanding placeholders in the template. Only affects licenses',
+          documentation: { example: 'GitLab' }
         optional :fullname, type: String,
-                            desc: 'The full name of the copyright holder to use when expanding placeholders in the template. Only affects licenses',
-                            documentation: { example: 'GitLab B.V.' }
+          desc: 'The full name of the copyright holder to use when expanding placeholders in the template. Only affects licenses',
+          documentation: { example: 'GitLab B.V.' }
       end
 
       get ':id/templates/:type/:name', requirements: TEMPLATE_NAMES_ENDPOINT_REQUIREMENTS do

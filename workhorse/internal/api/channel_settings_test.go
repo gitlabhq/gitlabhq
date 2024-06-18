@@ -9,7 +9,7 @@ import (
 
 func channel(url string, subprotocols ...string) *ChannelSettings {
 	return &ChannelSettings{
-		Url:            url,
+		WsURL:          url,
 		Subprotocols:   subprotocols,
 		MaxSessionTime: 0,
 	}
@@ -128,12 +128,12 @@ func TestDialer(t *testing.T) {
 func TestIsEqual(t *testing.T) {
 	chann := channel("ws:", "foo")
 
-	chann_header2 := header(chann, "extra")
-	chann_header3 := header(chann)
-	chann_header3.Header.Add("Extra", "extra")
+	channHeader2 := header(chann, "extra")
+	channHeader3 := header(chann)
+	channHeader3.Header.Add("Extra", "extra")
 
-	chann_ca2 := ca(chann)
-	chann_ca2.CAPem = "other value"
+	channCa2 := ca(chann)
+	channCa2.CAPem = "other value"
 
 	for i, tc := range []struct {
 		channelA *ChannelSettings
@@ -146,19 +146,19 @@ func TestIsEqual(t *testing.T) {
 		{chann, chann, true},
 		{chann.Clone(), chann.Clone(), true},
 		{chann, channel("foo:"), false},
-		{chann, channel(chann.Url), false},
+		{chann, channel(chann.WsURL), false},
 		{header(chann), header(chann), true},
-		{chann_header2, chann_header2, true},
-		{chann_header3, chann_header3, true},
-		{header(chann), chann_header2, false},
-		{header(chann), chann_header3, false},
+		{channHeader2, channHeader2, true},
+		{channHeader3, channHeader3, true},
+		{header(chann), channHeader2, false},
+		{header(chann), channHeader3, false},
 		{header(chann), chann, false},
 		{chann, header(chann), false},
 		{ca(chann), ca(chann), true},
 		{ca(chann), chann, false},
 		{chann, ca(chann), false},
 		{ca(header(chann)), ca(header(chann)), true},
-		{chann_ca2, ca(chann), false},
+		{channCa2, ca(chann), false},
 		{chann, timeout(chann), false},
 	} {
 		if actual := tc.channelA.IsEqual(tc.channelB); tc.expected != actual {

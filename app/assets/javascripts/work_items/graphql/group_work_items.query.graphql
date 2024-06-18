@@ -3,10 +3,11 @@ query groupWorkItems(
   $fullPath: ID!
   $types: [IssueType!]
   $in: [IssuableSearchableField!]
+  $includeAncestors: Boolean = false
 ) {
   workspace: group(fullPath: $fullPath) {
     id
-    workItems(search: $searchTerm, types: $types, in: $in) {
+    workItems(search: $searchTerm, types: $types, in: $in, includeAncestors: $includeAncestors) {
       nodes {
         id
         iid

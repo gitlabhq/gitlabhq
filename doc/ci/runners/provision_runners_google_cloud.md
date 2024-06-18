@@ -13,21 +13,19 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438316) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [Beta](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438316) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/experiment-beta-support.md).
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
-FLAG:
-On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
-
-This feature is in [Beta](../../policy/experiment-beta-support.md).
+This feature is in [beta](../../policy/experiment-beta-support.md).
 
 ## Creating a runner provisioned in Google Cloud
 
 Prerequisites:
 
 - You must have [billing enabled](https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#confirm_billing_is_enabled_on_a_project)
-for your Google Cloud project.
+  for your Google Cloud project.
 - You must have a working [`gcloud` CLI tool](https://cloud.google.com/sdk/docs/install) that is authenticated with the
-[Owner](https://cloud.google.com/iam/docs/understanding-roles#owner) IAM role on the Google Cloud project.
+  [Owner](https://cloud.google.com/iam/docs/understanding-roles#owner) IAM role on the Google Cloud project.
 - You must have the [Terraform CLI tool](https://developer.hashicorp.com/terraform/install) installed.
 
 You can create a project or group runner for GitLab.com and provision it on your Google Cloud project.
@@ -52,22 +50,22 @@ To create a group runner and provision it on Google Cloud:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
 1. Select **New group runner**.
-1. In the **Platform** section, select **Google Cloud**.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
    If there are no job tags for this runner, select **Run untagged**.
 1. Optional. In the **Runner description** field, add a runner description
    that displays in GitLab.
 1. Optional. In the **Configuration** section, add additional configurations.
 1. Select **Create runner**.
-1. Complete the form in the **Step 1: Specify environment** section to specify the environment in Google Cloud where
-   runners execute CI/CD jobs.
-1. In **Step 2: Set up GitLab Runner**, select **Setup instructions**. In the modal:
+1. In the **Platform** section, select **Google Cloud**.
+1. To specify the environment in Google Cloud where
+   runners execute jobs, in **Step 1: Specify environment**, complete the form.
+1. In **Step 2: Set up GitLab Runner**, select **Setup instructions**. In the dialog:
 
    - **Step 1: Configure Google Cloud project** must be executed once per Google Cloud project,
-      to ensure it meets the necessary prerequisites. Namely, the required services, service account, and permissions.
-   - **Step 2: Install and register GitLab Runner** displays the Terraform script that leverages
-      [GitLab Runner Infrastructure Toolkit](https://gitlab.com/gitlab-org/ci-cd/runner-tools/grit/-/blob/main/docs/scenarios/google/linux/docker-autoscaler-default/index.md)
-      (GRIT) to provision the required infrastructure on the selected Google Cloud project to execute your runner manager.
+     to ensure it meets the prerequisites for the required services, service account, and permissions.
+   - **Step 2: Install and register GitLab Runner** displays the Terraform script that uses the
+     [GitLab Runner Infrastructure Toolkit](https://gitlab.com/gitlab-org/ci-cd/runner-tools/grit/-/blob/main/docs/scenarios/google/linux/docker-autoscaler-default/index.md)
+     (GRIT) to provision the infrastructure on the Google Cloud project to execute your runner manager.
 
 After you execute the scripts, a runner manager connects with the runner authentication token. The runner manager might
 take up to one minute to show as online and start receiving jobs.
@@ -84,22 +82,22 @@ To create a project runner and provision it on Google Cloud:
 1. Select **Settings > CI/CD**.
 1. Expand the **Runners** section.
 1. Select **New project runner**.
-1. In the **Platform** section, select **Google Cloud**.
 1. In the **Tags** section, in the **Tags** field, enter the job tags to specify jobs the runner can run.
    If there are no job tags for this runner, select **Run untagged**.
 1. Optional. In the **Runner description** field, add a description for the runner
    that displays in GitLab.
 1. Optional. In the **Configuration** section, add additional configurations.
 1. Select **Create runner**.
-1. Complete the form in the **Step 1: Specify environment** section to specify the environment in Google Cloud where
-   runners execute CI/CD jobs.
-1. In **Step 2: Set up GitLab Runner**, select **Setup instructions**. In the modal:
+1. In the **Platform** section, select **Google Cloud**.
+1. To specify the environment in Google Cloud where
+   runners execute jobs, in **Step 1: Specify environment**, complete the form.
+1. In **Step 2: Set up GitLab Runner**, select **Setup instructions**. In the dialog:
 
    - **Step 1: Configure Google Cloud project** must be executed once per Google Cloud project,
-      to ensure it meets the necessary prerequisites. Namely, the required services, service account, and permissions.
-   - **Step 2: Install and register GitLab Runner** displays the Terraform script that leverages
-      [`GRIT`](https://gitlab.com/gitlab-org/ci-cd/runner-tools/grit/-/blob/main/docs/scenarios/google/linux/docker-autoscaler-default/index.md)
-      to provision the required infrastructure on the selected Google Cloud project to execute your runner manager.
+     to ensure it meets the prerequisites for the required services, service account, and permissions.
+   - **Step 2: Install and register GitLab Runner** displays the Terraform script that uses the
+     [GitLab Runner Infrastructure Toolkit](https://gitlab.com/gitlab-org/ci-cd/runner-tools/grit/-/blob/main/docs/scenarios/google/linux/docker-autoscaler-default/index.md) (GRIT)
+     to provision the infrastructure on the Google Cloud project to execute your runner manager.
 
 After you execute the scripts, a runner manager connects with the runner authentication token. The runner manager might
 take up to one minute to show as online and start receiving jobs.

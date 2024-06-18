@@ -78,6 +78,7 @@ class Wiki
   HOMEPAGE = 'home'
   SIDEBAR = '_sidebar'
   TEMPLATES_DIR = 'templates'
+  REDIRECTS_YML = '.gitlab/redirects.yml'
 
   TITLE_ORDER = 'title'
   CREATED_AT_ORDER = 'created_at'
@@ -234,17 +235,6 @@ class Wiki
     pages
   end
 
-  def sidebar_entries(limit: Gitlab::WikiPages::MAX_SIDEBAR_PAGES, **options)
-    pages = list_pages(**options.merge(limit: limit + 1))
-    limited = pages.size > limit
-    pages = pages.first(limit) if limited
-
-    # remove page from list if path starts with templates
-    pages.reject! { |page| page.path.start_with?(TEMPLATES_DIR) }
-
-    [WikiDirectory.group_pages(pages), limited]
-  end
-
   # Finds a page within the repository based on a title
   # or slug.
   #
@@ -303,7 +293,13 @@ class Wiki
       capture_git_error(:created) do
         create_wiki_repository unless repository_exists?
         sanitized_path = sluggified_full_path(title, default_extension)
-        repository.create_file(user, sanitized_path, content, **multi_commit_options(:created, message, title))
+        options = multi_commit_options(:created, message, title)
+        actions =
+          repository.create_file_actions(sanitized_path, content) +
+          update_redirection_actions(sluggified_title(title))
+
+        repository.commit_files(user, **options.merge({ actions: actions }))
+
         repository.expire_status_cache if repository.empty?
         after_wiki_activity
 
@@ -326,17 +322,15 @@ class Wiki
       capture_git_error(:updated) do
         create_wiki_repository unless repository_exists?
         sanitized_path = sluggified_full_path(title, extension)
-        repository.update_file(
-          user,
-          sanitized_path,
-          content,
-          previous_path: page.path,
-          **multi_commit_options(:updated, message, title))
-        repository.move_dir_files(
-          user,
-          sluggified_title(title),
-          page.url_path,
-          **multi_commit_options(:moved, message, title))
+        options = multi_commit_options(:updated, message, title)
+        new_url_path = sluggified_title(title)
+        branch = repository.root_ref || default_branch
+        actions =
+          repository.update_file_actions(sanitized_path, content, previous_path: page.path) +
+          repository.move_dir_files_actions(new_url_path, page.url_path, branch_name: branch) +
+          update_redirection_actions(new_url_path, page.url_path)
+
+        repository.commit_files(user, **options.merge(actions: actions))
 
         after_wiki_activity
 
@@ -442,6 +436,22 @@ class Wiki
   end
 
   private
+
+  def update_redirection_actions(new_path, old_path = nil, **options)
+    return [] unless Feature.enabled?(:wiki_redirection, container) && old_path != new_path
+
+    old_contents = repository.blob_at(default_branch, REDIRECTS_YML)
+    redirects = old_contents ? YAML.safe_load(old_contents.data).to_h : {}
+    redirects[old_path] = new_path if old_path
+    redirects.except!(new_path)
+    new_contents = YAML.dump(redirects)
+
+    if old_contents
+      repository.update_file_actions(REDIRECTS_YML, new_contents)
+    else
+      repository.create_file_actions(REDIRECTS_YML, new_contents)
+    end
+  end
 
   def multi_commit_options(action, message = nil, title = nil)
     commit_message = build_commit_message(action, message, title)

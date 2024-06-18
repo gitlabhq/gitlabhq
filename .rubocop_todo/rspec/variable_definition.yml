@@ -1,4 +1,0 @@
----
-# Cop supports --autocorrect.
-RSpec/VariableDefinition:
-  Exclude:

@@ -6,8 +6,8 @@ module Gitlab
       # Configuration settings for a single LoadBalancer instance.
       class Configuration
         attr_accessor :hosts, :max_replication_difference,
-                      :max_replication_lag_time, :replica_check_interval,
-                      :service_discovery
+          :max_replication_lag_time, :replica_check_interval,
+          :service_discovery
 
         # Creates a configuration object for the given ActiveRecord model.
         def self.for_model(model)

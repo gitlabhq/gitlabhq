@@ -19,7 +19,7 @@ RSpec.describe Types::Repository::BlobType, feature_category: :source_code_manag
       :size,
       :raw_size,
       :raw_blob,
-      :unicode_escaped_blob,
+      :base64_encoded_blob,
       :raw_text_blob,
       :file_type,
       :edit_blob_path,

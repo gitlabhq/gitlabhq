@@ -60,9 +60,9 @@ module Gitlab
     def self.redirect_legacy_paths(router, *paths)
       paths.each do |path|
         router.match "/#{path}(/*rest)",
-                     via: [:get, :post, :patch, :delete],
-                     to: router.redirect(LegacyRedirector.new(path)),
-                     as: "legacy_#{path}_redirect"
+          via: [:get, :post, :patch, :delete],
+          to: router.redirect(LegacyRedirector.new(path)),
+          as: "legacy_#{path}_redirect"
       end
     end
   end

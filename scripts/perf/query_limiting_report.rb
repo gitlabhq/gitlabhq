@@ -66,17 +66,17 @@ class QueryLimitingReport
     puts "\n\nFound #{total_issues.length} total issues with '#{ISSUES_SEARCH_LABEL}' search label, #{issues.length} are still opened..."
     puts "\n\nFound #{code_lines.length} total occurrences of '#{CODE_LINES_SEARCH_STRING}' in code..."
 
-    puts "\n" + '-' * 80
+    puts "\n" + ('-' * 80)
 
     puts "\n\nIssues without any '#{CODE_LINES_SEARCH_STRING}' code references (#{issues_without_code_references.length} total):"
     pp issues_without_code_references
 
-    puts "\n" + '-' * 80
+    puts "\n" + ('-' * 80)
 
     puts "\n\n'#{CODE_LINES_SEARCH_STRING}' calls with references to an issue which doesn't have '#{ISSUES_SEARCH_LABEL}' search label (#{code_lines_with_missing_issues.length} total):"
     pp code_lines_with_missing_issues
 
-    puts "\n" + '-' * 80
+    puts "\n" + ('-' * 80)
 
     puts "\n\n'#{CODE_LINES_SEARCH_STRING}' calls with no issue iid (#{code_lines_without_issue_iid&.length || 0} total):"
     pp code_lines_without_issue_iid

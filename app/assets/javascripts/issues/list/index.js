@@ -2,11 +2,23 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import IssuesListApp from 'ee_else_ce/issues/list/components/issues_list_app.vue';
+import { resolvers, config } from '~/graphql_shared/issuable_client';
+import createDefaultClient, { createApolloClientWithCaching } from '~/lib/graphql';
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import JiraIssuesImportStatusApp from './components/jira_issues_import_status_app.vue';
 import { gqlClient } from './graphql';
+
+let issuesClient;
+
+export async function issuesListClient() {
+  if (issuesClient) return issuesClient;
+  issuesClient = gon.features?.frontendCaching
+    ? await createApolloClientWithCaching(resolvers, { localCacheKey: 'issues_list', ...config })
+    : createDefaultClient(resolvers, config);
+  return issuesClient;
+}
 
 export async function mountJiraIssuesListApp() {
   const el = document.querySelector('.js-jira-issues-import-status-root');
@@ -68,7 +80,6 @@ export async function mountIssuesListApp() {
     canReadCrmOrganization,
     email,
     emailsHelpPagePath,
-    emptyStateSvgPath,
     exportCsvPath,
     fullPath,
     groupPath,
@@ -89,7 +100,6 @@ export async function mountIssuesListApp() {
     isProject,
     isPublicVisibilityRestricted,
     isSignedIn,
-    jiraIntegrationPath,
     markdownHelpPath,
     maxAttachmentSize,
     newIssuePath,
@@ -104,13 +114,14 @@ export async function mountIssuesListApp() {
     groupId = '',
     reportAbusePath,
     registerPath,
+    issuesListPath,
   } = el.dataset;
 
   return new Vue({
     el,
     name: 'IssuesListRoot',
     apolloProvider: new VueApollo({
-      defaultClient: await gqlClient(),
+      defaultClient: await issuesListClient(),
     }),
     router: new VueRouter({
       base: window.location.pathname,
@@ -125,7 +136,6 @@ export async function mountIssuesListApp() {
       canCreateProjects: parseBoolean(canCreateProjects),
       canReadCrmContact: parseBoolean(canReadCrmContact),
       canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
-      emptyStateSvgPath,
       fullPath,
       projectPath: fullPath,
       groupPath,
@@ -147,7 +157,6 @@ export async function mountIssuesListApp() {
       isProject: parseBoolean(isProject),
       isPublicVisibilityRestricted: parseBoolean(isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(isSignedIn),
-      jiraIntegrationPath,
       newIssuePath,
       newProjectPath,
       releasesPath,
@@ -171,6 +180,7 @@ export async function mountIssuesListApp() {
       quickActionsHelpPath,
       resetPath,
       groupId,
+      issuesListPath,
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

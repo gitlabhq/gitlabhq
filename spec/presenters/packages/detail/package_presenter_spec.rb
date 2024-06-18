@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::Detail::PackagePresenter do
+RSpec.describe ::Packages::Detail::PackagePresenter, feature_category: :package_registry do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, creator: user) }
   let_it_be(:package) { create(:npm_package, :with_build, project: project) }
@@ -130,6 +130,17 @@ RSpec.describe ::Packages::Detail::PackagePresenter do
       let(:expected_package_details) { super().merge(nuget_metadatum: nuget_metadatum) }
 
       it 'returns nuget_metadatum' do
+        expect(presenter.detail_view).to eq expected_package_details
+      end
+    end
+
+    context 'with terraform module metadata' do
+      let(:package) { build_stubbed(:terraform_module_package, without_package_files: true, project: project) }
+      let(:terraform_module_metadatum) { build_stubbed(:terraform_module_metadatum, package: package) }
+
+      let(:expected_package_details) { super().merge(terraform_module_metadatum: terraform_module_metadatum) }
+
+      it 'returns terraform_module_metadatum' do
         expect(presenter.detail_view).to eq expected_package_details
       end
     end

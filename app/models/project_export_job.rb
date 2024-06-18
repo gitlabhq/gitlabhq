@@ -2,10 +2,12 @@
 
 class ProjectExportJob < ApplicationRecord
   include EachBatch
+  include AfterCommitQueue
 
   EXPIRES_IN = 7.days
 
   belongs_to :project
+  belongs_to :user
   has_many :relation_exports, class_name: 'Projects::ImportExport::RelationExport'
 
   validates :project, :jid, :status, presence: true
@@ -37,5 +39,27 @@ class ProjectExportJob < ApplicationRecord
     state :started, value: STATUS[:started]
     state :finished, value: STATUS[:finished]
     state :failed, value: STATUS[:failed]
+
+    after_transition any => :finished do |export_job|
+      export_job.run_after_commit_or_now do
+        audit_project_exported
+      end
+    end
+  end
+
+  private
+
+  def audit_project_exported
+    return if exported_by_admin? && Gitlab::CurrentSettings.silent_admin_exports_enabled?
+
+    audit_context = {
+      name: 'project_export_created',
+      author: user,
+      scope: project,
+      target: project,
+      message: 'Profile file export was created'
+    }
+
+    ::Gitlab::Audit::Auditor.audit(audit_context)
   end
 end

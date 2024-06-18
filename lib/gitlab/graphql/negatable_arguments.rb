@@ -42,11 +42,11 @@ module Gitlab
         definer.define!
 
         argument param_key, definer.negated_params_type,
-                 required: false,
-                 description: <<~MD
+          required: false,
+          description: <<~MD
                      List of negated arguments.
                      Warning: this argument is experimental and a subject to change in future.
-                 MD
+          MD
       end
     end
   end

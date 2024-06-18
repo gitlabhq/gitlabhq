@@ -158,7 +158,6 @@ Updates to example must be made at:
    #######################################
    ###      Sidekiq configuration      ###
    #######################################
-   sidekiq['enable'] = true
    sidekiq['listen_address'] = "0.0.0.0"
 
    ## Set number of Sidekiq queue processes to the same number as available CPUs

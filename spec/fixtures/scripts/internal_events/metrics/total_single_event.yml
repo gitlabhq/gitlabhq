@@ -1,8 +1,6 @@
 ---
 key_path: counts.count_total_internal_events_cli_used
 description: Total count of when an event was defined using the CLI
-product_section: analytics
-product_stage: monitor
 product_group: analytics_instrumentation
 performance_indicator_type: []
 value_type: number

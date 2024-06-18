@@ -45,19 +45,40 @@ Settings and configurations applied at the group level cascade down to child pro
 standardize labels, boards, and iterations across multiple projects:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
+    accTitle: GitLab inheritance model diagram
+    accDescr: Shows how groups, projects, issues, labels, milestones, iterations, tasks, and epics relate to one another in GitLab
+
     Group -->|Contains| Project
     Group -->|Contains| Epics
     Group -->|Contains| Labels
     Group -->|Contains| Boards
     Group -->|Contains| Iterations
+    Group -->|Contains| Milestones
+    Group -->|Contains| Roadmaps
     Project -->|Contains| Issues
+    Project -->|Contains| Templates
+    Project -->|Contains| Tasks
+    Project -->|Contains| Milestones
+    Project -->|Contains| Labels
     Labels .->|Cascades To| Project
-    Issues .->|Rolls Up To| Group
-    Iterations .->|Cascades To| Project
-    Issues .->|Assigned To| Epics
-    Issues .->|Visible In| Boards
-    Issues .->|Assigned To| Iterations
+    Issues .->|Rolls up to| Group
+    Iterations .->|Cascades to| Project
+    Milestones .->|Cascades to| Project
+    Templates .->|Cascades to| Project
+    Templates .->|Configured in| Group
+    Issues .->|Child of| Epics
+    Issues .->|Visible in| Boards
+    Issues .->|Visible in| Lists
+    Issues .->|Assigned to| Iterations
+    Issues .->|Assigned to| Milestones
+    Tasks  .->|Child of| Issues
+    Tasks .->|Assigned to| Iterations
+    Tasks .->|Assigned to| Milestones
+    Epics .->|Visible in| Boards
+    Epics .->|Visible in| Roadmaps
+    Epics .->|Visible in| Lists
 ```
 
 - Groups contain one or more projects, epics, boards, labels, and iterations.
@@ -204,7 +225,11 @@ GitLab is extensible to support different flavors of backlog management.
 For this tutorial, we will structure our deliverables in the following way:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
+    accTitle: Deliverables structure
+    accDescr: Flowchart of features (epics) to job stories (issues) to implementation steps (tasks)
+
     Epic["Feature (Epic)"] --> Issue["Job Story (Issue)"]
     Issue --> Task["Implementation Step (Task)"]
 ```
@@ -238,10 +263,14 @@ Here's an example of breaking a feature into vertically sliced job stories based
 journey:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
-Epic["Epic: When using the application, I need to create an <br> account, so that I can use the application features"] --> Issue1["Issue: When creating my account, I need to specify my email address,<br> so that I can receive future updates from the application"]
-    Epic --> Issue2["Issue: When creating my account, I need to <br>specify a password, so that my account remains secure"]
-    Epic --> Issue3["Issue: When creating my account and entering the required info, I need to <br>finalize creating my account, so that I can log in"]
+  accTitle: Slicing a feature
+  accDescr: Use the end user's journey to identify slices of work to be completed in iterations
+
+Epic["Epic: When using the application,<br>I need to create an account,<br> so I can use the application features"] --> Issue1["Issue: When creating my account,<br> I need to specify my email address,<br> so I can receive future updates from the application"]
+    Epic --> Issue2["Issue: When creating my account,<br> I need to specify a password,<br> so my account remains secure"]
+    Epic --> Issue3["Issue: When creating my account<br> and entering the required info,<br> I need to finalize creating my account,<br> so I can log in"]
 ```
 
 You've taken the feature of an unmodified account sign-up for an application and broke it down into
@@ -255,12 +284,16 @@ After you have broken down a feature into stories, you can further break down th
 implementation steps:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
-  Issue1["Issue: When creating my account, I need to specify my email address,<br> so that I can receive future updates from the application"]
-  Issue1 --> Task2["Task: Backend - Validate email formatting"]
-  Issue1 --> Task3["Task: Backend - API endpoint to accept POST request from client"]
-  Issue1 --> Task4["Task: Frontend - Display email input"]
-  Issue1 --> Task5["Task: Frontend - Display error message when validation fails"]
+  accTitle: Break the story down further
+  accDescr: Split apart a story into smaller steps
+
+  Issue1["Issue: When creating my account,<br> I need to specify my email address,<br> so I can receive future updates from the application"]
+  Issue1 --> Task2["Task: Backend<br> Validate email formatting"]
+  Issue1 --> Task3["Task: Backend<br> API endpoint to accept<br> POST request from client"]
+  Issue1 --> Task4["Task: Frontend<br> Display email input"]
+  Issue1 --> Task5["Task: Frontend<br> Display error message when validation fails"]
 ```
 
 ### Set up a release planning board

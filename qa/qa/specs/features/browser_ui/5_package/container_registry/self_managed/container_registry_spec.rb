@@ -20,12 +20,11 @@ module QA
       end
 
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.name = "qa-runner-#{Time.now.to_i}"
-          runner.tags = ["runner-for-#{project.name}"]
-          runner.executor = :docker
-          runner.project = project
-        end
+        create(:project_runner,
+          name: "qa-runner-#{Time.now.to_i}",
+          tags: ["runner-for-#{project.name}"],
+          executor: :docker,
+          project: project)
       end
 
       let(:personal_access_token) { Runtime::Env.personal_access_token }
@@ -38,56 +37,17 @@ module QA
       context "when tls is disabled" do
         where do
           {
-            'using docker:20.10.23 and a personal access token' => {
-              docker_client_version: 'docker:20.10.23',
-              authentication_token_type: :personal_access_token,
-              token_name: 'Personal Access Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412807'
-            },
-            'using docker:20.10.23 and a project deploy token' => {
-              docker_client_version: 'docker:20.10.23',
-              authentication_token_type: :project_deploy_token,
-              token_name: 'Deploy Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412808'
-            },
-            'using docker:20.10.23 and a ci job token' => {
-              docker_client_version: 'docker:20.10.23',
-              authentication_token_type: :ci_job_token,
-              token_name: 'Job Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412809'
-            },
-            'using docker:23.0.6 and a personal access token' => {
-              docker_client_version: 'docker:23.0.6',
-              authentication_token_type: :personal_access_token,
-              token_name: 'Personal Access Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412810'
-            },
-            'using docker:23.0.6 and a project deploy token' => {
-              docker_client_version: 'docker:23.0.6',
-              authentication_token_type: :project_deploy_token,
-              token_name: 'Deploy Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412813'
-            },
-            'using docker:23.0.6 and a ci job token' => {
-              docker_client_version: 'docker:23.0.6',
-              authentication_token_type: :ci_job_token,
-              token_name: 'Job Token',
-              testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412814'
-            },
             'using docker:24.0.1 and a personal access token' => {
-              docker_client_version: 'docker:24.0.1',
               authentication_token_type: :personal_access_token,
               token_name: 'Personal Access Token',
               testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412817'
             },
             'using docker:24.0.1 and a project deploy token' => {
-              docker_client_version: 'docker:24.0.1',
               authentication_token_type: :project_deploy_token,
               token_name: 'Deploy Token',
               testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412818'
             },
             'using docker:24.0.1 and a ci job token' => {
-              docker_client_version: 'docker:24.0.1',
               authentication_token_type: :ci_job_token,
               token_name: 'Job Token',
               testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412819'
@@ -118,7 +78,7 @@ module QA
             end
           end
 
-          it "pushes image and deletes tag", :registry, testcase: params[:testcase] do
+          it "pushes image and deletes tag", :blocking, :registry, testcase: params[:testcase] do
             Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
               create(:commit, project: project, commit_message: 'Add .gitlab-ci.yml', actions: [
                 {
@@ -126,10 +86,10 @@ module QA
                   file_path: '.gitlab-ci.yml',
                   content: <<~YAML
                     build:
-                      image: "#{docker_client_version}"
+                      image: "docker:24.0.1"
                       stage: build
                       services:
-                      - name: "#{docker_client_version}-dind"
+                      - name: "docker:24.0.1-dind"
                         command: ["--insecure-registry=gitlab.test:5050"]
                       variables:
                         IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
@@ -179,10 +139,10 @@ module QA
                 file_path: '.gitlab-ci.yml',
                 content: <<~YAML
                   build:
-                    image: docker:23.0.6
+                    image: "docker:24.0.1"
                     stage: build
                     services:
-                      - name: docker:23.0.6-dind
+                      - name: "docker:24.0.1-dind"
                         command:
                           - /bin/sh
                           - -c

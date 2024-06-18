@@ -29,11 +29,7 @@ module Gitlab
         @inject_edge_stages = inject_edge_stages
 
         @context = self.logger.instrument(:config_build_context, once: true) do
-          pipeline ||= if ::Feature.enabled?(:project_ref_name_in_pipeline, project)
-                         ::Ci::Pipeline.new(project: project, sha: sha, ref: ref, user: user, source: source)
-                       else
-                         ::Ci::Pipeline.new(project: project, sha: sha, user: user, source: source)
-                       end
+          pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, ref: ref, user: user, source: source)
 
           build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline, pipeline_config: pipeline_config)
         end
@@ -42,7 +38,7 @@ module Gitlab
 
         @source = source
 
-        Gitlab::Ci::YamlProcessor::FeatureFlags.with_actor(project) do
+        Gitlab::Ci::Config::FeatureFlags.with_actor(project) do
           @config = self.logger.instrument(:config_expand, once: true) do
             expand_config(config)
           end
@@ -120,7 +116,7 @@ module Gitlab
       end
 
       def included_components
-        @context.includes.filter_map { |i| i[:extra] if i[:type] == :component }.uniq
+        @context.includes.filter_map { |i| i[:component] if i[:type] == :component }.uniq
       end
 
       def metadata

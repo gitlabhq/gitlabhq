@@ -4,7 +4,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
 <div>
   <gl-base-dropdown-stub
     category="tertiary"
-    class="gl-disclosure-dropdown gl-display-none gl-md-display-block!"
+    class="gl-disclosure-dropdown gl-hidden md:!gl-block"
     icon="ellipsis_v"
     nocaret="true"
     offset="[object Object]"
@@ -29,7 +29,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
     </ul>
   </gl-base-dropdown-stub>
   <b-button-stub
-    class="btn-danger-secondary gl-button gl-display-block gl-md-display-none!"
+    class="btn-danger-secondary gl-block gl-button md:!gl-hidden"
     data-testid="delete-merged-branches-button"
     size="md"
     tag="button"
@@ -45,6 +45,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
   <div>
     <form
       action="/namespace/project/-/merged_branches"
+      id="reference-1"
       method="post"
     >
       <p>
@@ -72,7 +73,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
         .
       </p>
       <p>
-        Plese type the following to confirm:
+        Please type the following to confirm:
         <code>
           delete
         </code>
@@ -84,6 +85,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
           debounce="0"
           formatter="[Function]"
           nowheel="true"
+          required="true"
           type="text"
           value=""
         />
@@ -120,9 +122,10 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
         class="gl-button"
         data-testid="delete-merged-branches-confirmation-button"
         disabled="true"
+        form="delete-merged-branches-form"
         size="md"
         tag="button"
-        type="button"
+        type="submit"
         variant="danger"
       >
         <span

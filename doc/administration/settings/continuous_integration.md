@@ -62,7 +62,7 @@ you can enable runner registration tokens. This setting and support for runner r
 ## Instance runners compute quota
 
 As an administrator you can set either a global or namespace-specific
-limit on the number of [compute minutes](../../ci/pipelines/cicd_minutes.md) you can use.
+limit on the number of [compute minutes](../../ci/pipelines/compute_minutes.md) you can use.
 
 ## Enable a project runner for multiple projects
 

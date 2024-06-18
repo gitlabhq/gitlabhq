@@ -593,6 +593,31 @@ RSpec.describe Integration, feature_category: :integrations do
     end
   end
 
+  describe '.create_from_default_integrations' do
+    let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
+    let!(:instance_level_instance_specific_integration) { create(:beyond_identity_integration) }
+
+    it 'creates integrations from default integrations' do
+      expect(described_class).to receive(:create_from_active_default_integrations)
+        .with(project, :project_id).and_call_original
+      expect(described_class).to receive(:create_from_default_instance_specific_integrations)
+        .with(project, :project_id).and_call_original
+
+      expect(described_class.create_from_default_integrations(project, :project_id)).to eq(2)
+    end
+
+    context 'when called with a group' do
+      it 'creates integrations from default integrations' do
+        expect(described_class).to receive(:create_from_active_default_integrations)
+          .with(group, :group_id).and_call_original
+        expect(described_class).to receive(:create_from_default_instance_specific_integrations)
+          .with(group, :group_id).and_call_original
+
+        expect(described_class.create_from_default_integrations(group, :group_id)).to eq(2)
+      end
+    end
+  end
+
   describe '.create_from_active_default_integrations' do
     context 'with an active instance-level integration' do
       let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
@@ -651,9 +676,10 @@ RSpec.describe Integration, feature_category: :integrations do
         end
 
         context 'with an active subgroup' do
+          let_it_be(:subgroup) { create(:group, parent: group) }
+          let_it_be(:project) { create(:project, group: subgroup) }
+
           let!(:subgroup_integration) { create(:prometheus_integration, :group, group: subgroup, api_url: 'https://prometheus.subgroup.com/') }
-          let!(:subgroup) { create(:group, parent: group) }
-          let(:project) { create(:project, group: subgroup) }
 
           it 'creates an integration from the subgroup-level integration' do
             described_class.create_from_active_default_integrations(project, :project_id)
@@ -701,6 +727,131 @@ RSpec.describe Integration, feature_category: :integrations do
           end
         end
       end
+
+      context 'when the integration is instance specific' do
+        let!(:instance_integration) { create(:beyond_identity_integration) }
+
+        it 'does not create an integration from the instance level instance specific integration' do
+          described_class.create_from_active_default_integrations(project, :project_id)
+
+          expect(project.reload.integrations).to be_blank
+        end
+      end
+    end
+  end
+
+  describe '.create_from_default_instance_specific_integrations' do
+    context 'with an active instance-level integration' do
+      let!(:instance_integration) { create(:beyond_identity_integration) }
+
+      it 'creates an integration from the instance-level integration' do
+        described_class.create_from_default_instance_specific_integrations(project, :project_id)
+        expect(project.reload.integrations.size).to eq(1)
+        expect(project.reload.integrations.first.inherit_from_id).to eq(instance_integration.id)
+      end
+
+      context 'when passing a group' do
+        it 'creates an integration from the instance-level integration' do
+          described_class.create_from_default_instance_specific_integrations(group, :group_id)
+
+          expect(group.reload.integrations.size).to eq(1)
+          expect(group.reload.integrations.first.inherit_from_id).to eq(instance_integration.id)
+        end
+      end
+
+      context 'with active group-level integration' do
+        let!(:group_integration) { create(:beyond_identity_integration, group: group, instance: false) }
+
+        it 'creates an integration from the group-level integration' do
+          described_class.create_from_default_instance_specific_integrations(project, :project_id)
+
+          expect(project.reload.integrations.size).to eq(1)
+          expect(project.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
+        end
+
+        context 'when group level integration is not active' do
+          let!(:group_integration) do
+            create(:beyond_identity_integration, group: group, instance: false, active: false)
+          end
+
+          it 'creates an integration from the group-level integration' do
+            described_class.create_from_default_instance_specific_integrations(project, :project_id)
+
+            expect(project.reload.integrations.size).to eq(1)
+            expect(project.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
+            expect(project.reload.integrations.first).not_to be_active
+          end
+        end
+
+        context 'when passing a group' do
+          let!(:subgroup) { create(:group, parent: group) }
+
+          it 'creates an integration from the group-level integration' do
+            described_class.create_from_default_instance_specific_integrations(subgroup, :group_id)
+
+            expect(subgroup.reload.integrations.size).to eq(1)
+            expect(subgroup.reload.integrations.first.inherit_from_id).to eq(group_integration.id)
+          end
+        end
+
+        context 'with an active subgroup' do
+          let_it_be(:subgroup) { create(:group, parent: group) }
+          let_it_be(:project) { create(:project, group: subgroup) }
+          let!(:subgroup_integration) { create(:beyond_identity_integration, group: subgroup, instance: false) }
+
+          it 'creates an integration from the subgroup-level integration' do
+            described_class.create_from_default_instance_specific_integrations(project, :project_id)
+
+            expect(project.reload.integrations.size).to eq(1)
+            expect(project.reload.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
+          end
+
+          context 'when passing a group' do
+            let!(:sub_subgroup) { create(:group, parent: subgroup) }
+
+            context 'with traversal queries' do
+              shared_examples 'correct ancestor order' do
+                it 'creates an integration from the subgroup-level integration' do
+                  described_class.create_from_default_instance_specific_integrations(sub_subgroup, :group_id)
+
+                  sub_subgroup.reload
+
+                  expect(sub_subgroup.integrations.size).to eq(1)
+                  expect(sub_subgroup.integrations.first.inherit_from_id).to eq(subgroup_integration.id)
+                end
+
+                context 'when having an integration inheriting settings' do
+                  let!(:subgroup_integration) do
+                    create(:beyond_identity_integration, group: subgroup, inherit_from_id: group_integration.id,
+                      instance: false)
+                  end
+
+                  it 'creates an integration from the group-level integration' do
+                    described_class.create_from_default_instance_specific_integrations(sub_subgroup, :group_id)
+
+                    sub_subgroup.reload
+
+                    expect(sub_subgroup.integrations.size).to eq(1)
+                    expect(sub_subgroup.integrations.first.inherit_from_id).to eq(group_integration.id)
+                  end
+                end
+              end
+
+              include_examples 'correct ancestor order'
+            end
+          end
+        end
+      end
+
+      context 'when the integration is not instance specific' do
+        let!(:instance_integration) { create(:prometheus_integration, :instance) }
+
+        it 'does not create an integration from the instance level instance specific integration' do
+          described_class.create_from_default_instance_specific_integrations(project, :project_id)
+
+          expect(project.reload.integrations).to be_blank
+        end
+      end
     end
   end
 
@@ -728,6 +879,25 @@ RSpec.describe Integration, feature_category: :integrations do
         .to eq([subgroup_integration_1, project_integration_1])
       expect(described_class.inherited_descendants_from_self_or_ancestors_from(subgroup_integration_2))
         .to eq([project_integration_2])
+    end
+  end
+
+  describe '.descendants_from_self_or_ancestors_from' do
+    let_it_be(:project) { create(:project, :in_subgroup) }
+    let(:group) { project.root_namespace }
+    let(:subgroup) { project.group }
+    let!(:group_integration) { create(:prometheus_integration, :group, group: group) }
+    let!(:subgroup_integration) do
+      create(:prometheus_integration, :group, group: subgroup, inherit_from_id: group_integration.id)
+    end
+
+    let!(:project_custom_settings_integration) do
+      create(:prometheus_integration, project: project, inherit_from_id: nil)
+    end
+
+    it 'returns integrations for descendants of the group of the integration' do
+      expect(described_class.descendants_from_self_or_ancestors_from(group_integration))
+        .to contain_exactly(subgroup_integration, project_custom_settings_integration)
     end
   end
 
@@ -1534,5 +1704,11 @@ RSpec.describe Integration, feature_category: :integrations do
         async_execute
       end
     end
+  end
+
+  describe '.instance_specific_integration_types' do
+    subject { described_class.instance_specific_integration_types }
+
+    it { is_expected.to eq(['Integrations::BeyondIdentity']) }
   end
 end

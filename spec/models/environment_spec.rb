@@ -1848,7 +1848,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching, feature_categ
     where(:value, :expected_result) do
       '2 days'   | 2.days.to_i
       '1 week'   | 1.week.to_i
-      '2h20min'  | 2.hours.to_i + 20.minutes.to_i
+      '2h20min'  | (2.hours.to_i + 20.minutes.to_i)
       'abcdef'   | ChronicDuration::DurationParseError
       ''         | nil
       nil        | nil

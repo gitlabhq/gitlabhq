@@ -5,6 +5,6 @@ FactoryBot.define do
     project
     package_name_pattern { '@my_scope/my_package' }
     package_type { :npm }
-    push_protected_up_to_access_level { :developer }
+    minimum_access_level_for_push { :maintainer }
   end
 end

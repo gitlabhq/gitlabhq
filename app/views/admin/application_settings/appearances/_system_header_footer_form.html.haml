@@ -16,7 +16,7 @@
     = form.gitlab_ui_checkbox_component :email_header_and_footer_enabled,
       _('Enable header and footer in emails'),
       help_text: _('Add header and footer to emails. Please note that color settings will only be applied within the application interface'),
-      label_options: { class: 'gl-font-weight-bold!' }
+      label_options: { class: '!gl-font-bold' }
 
   .form-group.js-toggle-colors-container
     = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-toggle-colors-link' }) do

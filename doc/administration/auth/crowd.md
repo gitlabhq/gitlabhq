@@ -11,8 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369117) in GitLab 15.3 and is planned for
-removal in 17.0.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/369117) in GitLab 15.3 and is [planned for removal in 18.0](https://gitlab.com/gitlab-org/gitlab/-/issues/457241).
 
 Authenticate to GitLab using the Atlassian Crowd OmniAuth provider. Enabling
 this provider also allows Crowd authentication for Git-over-https requests.

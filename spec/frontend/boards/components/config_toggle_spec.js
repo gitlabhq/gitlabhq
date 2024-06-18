@@ -17,14 +17,14 @@ describe('ConfigToggle', () => {
 
   const findButton = () => wrapper.findComponent(GlButton);
 
-  it('renders a button with label `View scope` when `canAdminList` is `false`', () => {
+  it('renders a button with label `Board configuration` when `canAdminList` is `false`', () => {
     wrapper = createComponent({ canAdminList: false });
-    expect(findButton().text()).toBe('View scope');
+    expect(findButton().attributes('title')).toBe('Board configuration');
   });
 
-  it('renders a button with label `Edit board` when `canAdminList` is `true`', () => {
+  it('renders a button with label `Configure board` when `canAdminList` is `true`', () => {
     wrapper = createComponent();
-    expect(findButton().text()).toBe('Edit board');
+    expect(findButton().element.title).toBe('Configure board');
   });
 
   it('emits `showBoardModal` when button is clicked', () => {

@@ -6,6 +6,8 @@ import { __ } from '~/locale';
 import eventHub from '~/ci/jobs_page/event_hub';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import { JOBS_TAB_FIELDS } from '~/ci/jobs_page/constants';
+import { getQueryHeaders } from '../graph/utils';
+import { POLL_INTERVAL } from '../graph/constants';
 import getPipelineJobs from './graphql/queries/get_pipeline_jobs.query.graphql';
 
 export default {
@@ -23,10 +25,17 @@ export default {
     pipelineIid: {
       default: '',
     },
+    graphqlResourceEtag: {
+      default: '',
+    },
   },
   apollo: {
     jobs: {
+      context() {
+        return getQueryHeaders(this.graphqlResourceEtag);
+      },
       query: getPipelineJobs,
+      pollInterval: POLL_INTERVAL,
       variables() {
         return {
           ...this.queryVariables,

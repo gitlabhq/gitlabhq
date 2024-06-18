@@ -50,7 +50,7 @@ module Git
       strong_memoize(:commits_count) do
         next threshold_commits.count if
           strong_memoized?(:threshold_commits) &&
-          threshold_commits.count <= PROCESS_COMMIT_LIMIT
+            threshold_commits.count <= PROCESS_COMMIT_LIMIT
 
         if creating_default_branch?
           project.repository.commit_count_for_ref(ref)
@@ -99,6 +99,7 @@ module Git
     end
 
     def branch_remove_hooks
+      enqueue_jira_connect_remove_branches
       project.repository.after_remove_branch(expire_cache: false)
     end
 
@@ -166,6 +167,20 @@ module Git
           Atlassian::JiraConnect::Client.generate_update_sequence_id
         )
       end
+    end
+
+    def enqueue_jira_connect_remove_branches
+      return unless Feature.enabled?(:jira_connect_remove_branches, project)
+      return unless project.jira_subscription_exists?
+
+      return unless Atlassian::JiraIssueKeyExtractors::Branch.has_keys?(project, branch_name)
+
+      Integrations::JiraConnect::RemoveBranchWorker.perform_async(
+        project.id,
+        {
+          branch_name: branch_name
+        }
+      )
     end
 
     def filtered_commit_shas

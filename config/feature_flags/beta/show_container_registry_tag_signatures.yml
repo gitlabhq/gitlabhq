@@ -1,0 +1,9 @@
+---
+name: show_container_registry_tag_signatures
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442848
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152135
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460226
+milestone: '17.1'
+group: group::container registry
+type: beta
+default_enabled: true

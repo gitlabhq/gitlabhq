@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineMessage do
+RSpec.describe Ci::PipelineMessage, feature_category: :continuous_integration do
   describe 'validations' do
     subject { described_class.new(pipeline: pipeline, content: content) }
 
@@ -48,6 +48,21 @@ RSpec.describe Ci::PipelineMessage do
         expect(subject.severity).to eq('warning')
         expect(subject).to be_warning
       end
+    end
+  end
+
+  describe 'partitioning', :ci_partitionable do
+    include Ci::PartitioningHelpers
+
+    let(:pipeline) { create(:ci_pipeline) }
+    let(:pipeline_message) { create(:ci_pipeline_message, pipeline: pipeline) }
+
+    before do
+      stub_current_partition_id
+    end
+
+    it 'assigns the same partition id as the one that pipeline has' do
+      expect(pipeline_message.partition_id).to eq(ci_testing_partition_id)
     end
   end
 end

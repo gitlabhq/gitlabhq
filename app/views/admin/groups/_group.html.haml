@@ -12,7 +12,7 @@
       .description
         = markdown_field(group, :description)
 
-  .stats.gl-text-gray-500.gl-flex-shrink-0.gl-display-none.gl-sm-display-flex
+  .stats.gl-text-gray-500.gl-flex-shrink-0.gl-hidden.sm:gl-flex
     = gl_badge_tag storage_counter(group.storage_size), size: :sm
 
     = render_if_exists 'admin/namespace_plan_badge', namespace: group, css_class: 'gl-ml-5 gl-mr-0'

@@ -2,13 +2,19 @@
 import { GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
-import { VERIFICATION_LEVELS } from '../../constants';
+import {
+  VERIFICATION_LEVELS,
+  VERIFICATION_LEVEL_VERIFIED_CREATOR_MAINTAINED,
+} from '../../constants';
 
 export default {
   i18n: {
+    verifiedCreatorPopoverLink: s__('CiCatalog|What are verified component creators?'),
     verificationLevelPopoverLink: s__('CiCatalog|Learn more about designated creators'),
   },
-  verificationHelpPagePath: helpPagePath('ci/components/index', { anchor: 'verified-components' }),
+  verificationHelpPagePath: helpPagePath('ci/components/index', {
+    anchor: 'verified-component-creators',
+  }),
   verificationLevelOptions: VERIFICATION_LEVELS,
   components: {
     GlIcon,
@@ -32,6 +38,11 @@ export default {
     },
   },
   computed: {
+    popoverLink() {
+      return this.verificationLevel === VERIFICATION_LEVEL_VERIFIED_CREATOR_MAINTAINED
+        ? this.$options.i18n.verifiedCreatorPopoverLink
+        : this.$options.i18n.verificationLevelPopoverLink;
+    },
     popoverTarget() {
       return `${this.resourceId}-verification-icon`;
     },
@@ -49,7 +60,7 @@ export default {
       <span
         v-if="showText"
         data-testid="verification-badge-text"
-        class="gl-text-blue-500 gl-font-weight-bold gl-cursor-default"
+        class="gl-text-blue-500 gl-font-bold gl-cursor-default"
       >
         {{ $options.verificationLevelOptions[verificationLevel].badgeText }}
       </span>
@@ -66,7 +77,7 @@ export default {
           </gl-sprintf>
         </span>
         <gl-link :href="$options.verificationHelpPagePath" target="_blank">
-          {{ $options.i18n.verificationLevelPopoverLink }}
+          {{ popoverLink }}
         </gl-link>
       </div>
     </gl-popover>

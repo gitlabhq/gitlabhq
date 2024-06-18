@@ -6,7 +6,7 @@ class Projects::HooksController < Projects::ApplicationController
   # Authorize
   before_action :authorize_read_hook!, only: [:index, :show]
   before_action :authorize_admin_hook!, except: [:index, :show]
-  before_action -> { check_rate_limit!(:project_testing_hook, scope: [@project, current_user]) }, only: :test
+  before_action -> { check_rate_limit!(:web_hook_test, scope: [@project, current_user]) }, only: :test
 
   respond_to :html
 

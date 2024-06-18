@@ -17,7 +17,7 @@ RSpec.describe "Help Dropdown", :js, feature_category: :shared do
 
         expect(page).not_to have_text('Your GitLab version')
         expect(page).not_to have_text("#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}")
-        expect(page).not_to have_selector('.version-check-badge')
+        expect(page).not_to have_selector('[data-testid="check-version-badge"]')
         expect(page).not_to have_text('Up to date')
       end
     end
@@ -43,7 +43,7 @@ RSpec.describe "Help Dropdown", :js, feature_category: :shared do
           expect(page).to have_text("#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}")
 
           within page.find_link(href: help_page_path('update/index')) do
-            expect(page).to have_selector(".version-check-badge.badge-#{severity}", text: ui_text)
+            expect(page).to have_selector(".badge-#{severity}", text: ui_text)
           end
         end
       end

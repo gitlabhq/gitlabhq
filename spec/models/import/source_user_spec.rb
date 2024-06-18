@@ -54,6 +54,12 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         .to change { source_user.reload.reassign_to_user }
               .from(an_instance_of(User)).to(nil)
     end
+
+    it 'unsets reassign_to_user when kept as placeholder' do
+      expect { source_user.keep_as_placeholder! }
+        .to change { source_user.reload.reassign_to_user }
+        .from(an_instance_of(User)).to(nil)
+    end
   end
 
   describe '.find_source_user' do

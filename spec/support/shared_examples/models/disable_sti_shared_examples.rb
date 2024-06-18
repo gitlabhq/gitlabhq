@@ -11,6 +11,8 @@ RSpec.shared_examples 'Model disables STI' do
     models.each do |model|
       next unless model
       next unless model < ApplicationRecord
+      next unless model.name # skip unnamed/anonymous models
+      next if model.table_name&.start_with?('_test') # skip test models that define the tables in specs
       next if model == model.base_class
       next if model.allow_legacy_sti_class
 

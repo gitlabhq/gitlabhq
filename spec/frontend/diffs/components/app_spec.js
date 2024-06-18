@@ -1,5 +1,5 @@
 import { GlLoadingIcon, GlPagination } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { createWrapper, shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -31,7 +31,7 @@ import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { Mousetrap } from '~/lib/mousetrap';
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as commonUtils from '~/lib/utils/common_utils';
-import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { BV_HIDE_TOOLTIP, DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import { getDiffFileMock } from 'jest/diffs/mock_data/diff_file';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -590,18 +590,42 @@ describe('diffs/components/app', () => {
       expect(wrapper.findComponent(DiffsFileTree).exists()).toBe(true);
     });
 
-    it('should pass renderDiffFiles to file tree as true when files are present', () => {
+    it('should pass visible to file tree as true when files are present', () => {
       createComponent({
         extendStore: ({ state }) => {
           state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
         },
       });
-      expect(wrapper.findComponent(DiffsFileTree).props('renderDiffFiles')).toBe(true);
+      expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(true);
     });
 
-    it('should pass renderDiffFiles to file tree as false without files', () => {
+    it('should pass visible to file tree as false without files', () => {
       createComponent({});
-      expect(wrapper.findComponent(DiffsFileTree).props('renderDiffFiles')).toBe(false);
+      expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(false);
+    });
+
+    it('should hide file tree when toggled', async () => {
+      createComponent({
+        extendStore: ({ state }) => {
+          state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+        },
+      });
+      wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
+      await nextTick();
+      expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(false);
+    });
+
+    it('should show file tree when toggled', async () => {
+      createComponent({
+        extendStore: ({ state }) => {
+          state.diffs.treeEntries = { 111: { type: 'blob', fileHash: '111', path: '111.js' } };
+        },
+      });
+      wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
+      await nextTick();
+      wrapper.findComponent(DiffsFileTree).vm.$emit('toggled');
+      await nextTick();
+      expect(wrapper.findComponent(DiffsFileTree).props('visible')).toBe(true);
     });
   });
 
@@ -1023,6 +1047,28 @@ describe('diffs/components/app', () => {
           expect.any(Object),
         );
       });
+    });
+  });
+
+  describe('tooltips', () => {
+    const scroll = () => {
+      const scrollEvent = document.createEvent('Event');
+      scrollEvent.initEvent('scroll', true, true, window, 1);
+      window.dispatchEvent(scrollEvent);
+    };
+
+    it('hides tooltips on scroll', () => {
+      createComponent({ props: { shouldShow: true } });
+      const rootWrapper = createWrapper(wrapper.vm.$root);
+      scroll();
+      expect(rootWrapper.emitted(BV_HIDE_TOOLTIP)).toStrictEqual([[]]);
+    });
+
+    it('does not hide tooltips on scroll when invisible', () => {
+      createComponent({ props: { shouldShow: false } });
+      const rootWrapper = createWrapper(wrapper.vm.$root);
+      scroll();
+      expect(rootWrapper.emitted(BV_HIDE_TOOLTIP)).toStrictEqual(undefined);
     });
   });
 });

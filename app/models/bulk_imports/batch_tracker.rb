@@ -27,6 +27,7 @@ module BulkImports
       state :timeout, value: 3
       state :failed, value: -1
       state :skipped, value: -2
+      state :canceled, value: -3
 
       event :start do
         transition created: :started
@@ -52,6 +53,10 @@ module BulkImports
 
       event :cleanup_stale do
         transition [:created, :started] => :timeout
+      end
+
+      event :cancel do
+        transition any => :canceled
       end
     end
   end

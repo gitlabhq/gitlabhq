@@ -5,7 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DesignDiscussion from '~/design_management/components/design_notes/design_discussion.vue';
 import DesignNoteSignedOut from '~/design_management/components/design_notes/design_note_signed_out.vue';
 import DesignSidebar from '~/design_management/components/design_sidebar.vue';
-import DesignDisclosure from '~/design_management/components/design_disclosure.vue';
+import DesignDisclosure from '~/vue_shared/components/design_management/design_disclosure.vue';
 import DescriptionForm from '~/design_management/components/design_description/description_form.vue';
 import updateActiveDiscussionMutation from '~/design_management/graphql/mutations/update_active_discussion.mutation.graphql';
 import design from '../mock_data/design';

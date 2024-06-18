@@ -1,8 +1,6 @@
 <script>
 import {
   GlButton,
-  GlFormGroup,
-  GlFormInput,
   GlCard,
   GlIcon,
   GlLink,
@@ -13,6 +11,7 @@ import {
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
+import MetricImageDetailsModal from './metric_image_details_modal.vue';
 
 export default {
   i18n: {
@@ -20,20 +19,18 @@ export default {
     modalDescription: s__('Incident|Are you sure you wish to delete this image?'),
     modalCancel: __('Cancel'),
     modalTitle: s__('Incident|Deleting %{filename}'),
-    editModalUpdate: __('Update'),
-    editModalTitle: s__('Incident|Editing %{filename}'),
     editIconTitle: s__('Incident|Edit image text or link'),
     deleteIconTitle: s__('Incident|Delete image'),
+    editButtonLabel: __('Edit'),
   },
   components: {
     GlButton,
-    GlFormGroup,
-    GlFormInput,
     GlCard,
     GlIcon,
     GlLink,
     GlModal,
     GlSprintf,
+    MetricImageDetailsModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -67,11 +64,8 @@ export default {
     return {
       isCollapsed: false,
       isDeleting: false,
-      isUpdating: false,
       modalVisible: false,
       editModalVisible: false,
-      modalUrl: this.url,
-      modalUrlText: this.urlText,
     };
   },
   computed: {
@@ -83,17 +77,6 @@ export default {
           disabled: this.isDeleting,
           category: 'primary',
           variant: 'danger',
-        },
-      };
-    },
-    updateActionPrimaryProps() {
-      return {
-        text: this.$options.i18n.editModalUpdate,
-        attributes: {
-          loading: this.isUpdating,
-          disabled: this.isUpdating,
-          category: 'primary',
-          variant: 'confirm',
         },
       };
     },
@@ -110,15 +93,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['deleteImage', 'updateImage']),
+    ...mapActions(['deleteImage']),
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed;
-    },
-    resetEditFields() {
-      this.modalUrl = this.url;
-      this.modalUrlText = this.urlText;
-      this.editModalVisible = false;
-      this.modalVisible = false;
     },
     async onDelete() {
       try {
@@ -127,21 +104,6 @@ export default {
       } finally {
         this.isDeleting = false;
         this.modalVisible = false;
-      }
-    },
-    async onUpdate() {
-      try {
-        this.isUpdating = true;
-        await this.updateImage({
-          imageId: this.id,
-          url: this.modalUrl,
-          urlText: this.modalUrlText,
-        });
-      } finally {
-        this.isUpdating = false;
-        this.modalUrl = '';
-        this.modalUrlText = '';
-        this.editModalVisible = false;
       }
     },
   },
@@ -164,7 +126,7 @@ export default {
         text: $options.i18n.modalCancel,
       } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
       @primary.prevent="onDelete"
-      @hidden="resetEditFields"
+      @hidden="modalVisible = false"
     >
       <template #modal-title>
         <gl-sprintf :message="$options.i18n.modalTitle">
@@ -176,52 +138,21 @@ export default {
       <p>{{ $options.i18n.modalDescription }}</p>
     </gl-modal>
 
-    <gl-modal
-      modal-id="edit-metric-modal"
-      size="sm"
-      :action-primary="updateActionPrimaryProps"
-      :action-cancel="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-        text: $options.i18n.modalCancel,
-      } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+    <metric-image-details-modal
+      edit
+      :image-id="id"
+      :filename="filename"
+      :url="url"
+      :url-text="urlText"
       :visible="editModalVisible"
-      data-testid="metric-image-edit-modal"
-      @hidden="resetEditFields"
-      @primary.prevent="onUpdate"
-    >
-      <template #modal-title>
-        <gl-sprintf :message="$options.i18n.editModalTitle">
-          <template #filename>
-            {{ filename }}
-          </template>
-        </gl-sprintf>
-      </template>
-
-      <gl-form-group :label="__('Text (optional)')" label-for="upload-text-input">
-        <gl-form-input
-          id="upload-text-input"
-          v-model="modalUrlText"
-          data-testid="metric-image-text-field"
-        />
-      </gl-form-group>
-
-      <gl-form-group
-        :label="__('Link (optional)')"
-        label-for="upload-url-input"
-        :description="s__('Incidents|Must start with http or https')"
-      >
-        <gl-form-input
-          id="upload-url-input"
-          v-model="modalUrl"
-          data-testid="metric-image-url-field"
-        />
-      </gl-form-group>
-    </gl-modal>
+      @hidden="editModalVisible = false"
+    />
 
     <template #header>
       <div class="gl-w-full gl-display-flex gl-flex-direction-row gl-justify-content-space-between">
         <div class="gl-display-flex gl-flex-direction-row gl-align-items-center gl-w-full">
           <gl-button
-            class="collapsible-card-btn gl-display-flex gl-text-decoration-none gl-reset-color! gl-hover-text-blue-800! gl-shadow-none!"
+            class="collapsible-card-btn gl-display-flex gl-text-decoration-none !gl-text-inherit gl-hover-text-blue-800! !gl-shadow-none"
             :aria-label="filename"
             variant="link"
             category="tertiary"
@@ -242,7 +173,7 @@ export default {
               v-if="canUpdate"
               v-gl-tooltip.bottom
               icon="pencil"
-              :aria-label="__('Edit')"
+              :aria-label="$options.i18n.editButtonLabel"
               :title="$options.i18n.editIconTitle"
               data-testid="edit-button"
               @click="editModalVisible = true"
@@ -251,7 +182,7 @@ export default {
               v-if="canUpdate"
               v-gl-tooltip.bottom
               icon="remove"
-              :aria-label="__('Delete')"
+              :aria-label="$options.i18n.modalDelete"
               :title="$options.i18n.deleteIconTitle"
               data-testid="delete-button"
               @click="modalVisible = true"

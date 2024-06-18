@@ -12,7 +12,7 @@ instances. The following documents the internal requirements for maintaining
 Arkose Protect on GitLab.com. While this feature is theoretically usable in self-managed instances, it
 is not recommended at the moment.
 
-GitLab integrates [Arkose Protect](https://www.arkoselabs.com/arkose-protect/) to guard against
+GitLab integrates [Arkose Protect](https://www.arkoselabs.com/arkose-bot-manager/) to guard against
 malicious users from creating accounts.
 
 ## How does it work?
@@ -23,7 +23,11 @@ attempt. If Arkose Protect trusts the user, the challenge runs in transparent mo
 user doesn't need to take any additional action and can sign in as usual.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+accTitle: Sequence of an Arkose Protect challenge
+accDescr: How GitLab sends data to Arkose Labs to determine whether to present a challenge during the sign-in attempt.
+
     participant U as User
     participant G as GitLab
     participant A as Arkose Labs
@@ -127,7 +131,7 @@ index 191ae0b5cf82..b2d888b98c95 100644
 +++ b/ee/lib/arkose/data_exchange_payload.rb
 @@ -35,6 +35,7 @@ def json_data
        now = Time.current.to_i
- 
+
        data = {
 +        interactive: 'false',
          timestamp: now.to_s, # required to be a string

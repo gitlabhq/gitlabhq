@@ -7,12 +7,14 @@ class AddPreparedAtCreatedAtIndex < Gitlab::Database::Migration[2.1]
 
   # TODO: Issue for sync deletion: https://gitlab.com/gitlab-org/gitlab/-/issues/419918
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     prepare_async_index(:merge_requests,
       [:created_at, :id],
       name: INDEX_NAME,
       where: "prepared_at IS NULL")
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     unprepare_async_index(:merge_requests, [:created_at, :id], name: INDEX_NAME)

@@ -4,7 +4,7 @@ module Packages
   module MlModel
     class CreatePackageFileService < BaseService
       def execute
-        @package = params[:model_version]&.package
+        @package = params[:package]
 
         return unless @package
 

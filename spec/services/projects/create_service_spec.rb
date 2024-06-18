@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_and_projects do
   include ExternalAuthorizationServiceHelpers
 
-  let(:user) { create :user }
+  let_it_be(:user) { create(:user) }
   let(:project_name) { 'GitLab' }
   let(:opts) do
     {
@@ -82,6 +82,28 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
         expect(project.name).to eq('one.two_three-four and five')
         expect(project.path).to eq('one-two_three-four-and-five')
         expect(project.project_namespace).to be_in_sync_with_project(project)
+      end
+    end
+  end
+
+  describe 'setting organization' do
+    subject(:project) { create_project(user, opts) }
+
+    context 'with group namespace' do
+      let_it_be(:namespace) { create(:group) }
+
+      before do
+        opts[:namespace_id] = namespace.id
+      end
+
+      it 'sets correct organization' do
+        expect(project.organization).to eq(namespace.organization)
+      end
+    end
+
+    context 'with user namespace' do
+      it 'sets correct organization' do
+        expect(project.organization).to eq(user.namespace.organization)
       end
     end
   end
@@ -695,7 +717,15 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
 
         before do
           allow(Digest::SHA2).to receive(:hexdigest) { hash }
-          raw_fake_repo.create_repository
+
+          begin
+            raw_fake_repo.create_repository
+          rescue Gitlab::Git::Repository::RepositoryExists
+            # Likely, a previous project record with id=1 had its repository created,
+            # but the repository was not cleaned up properly.
+            #
+            # So we can do nothing for now.
+          end
         end
 
         after do
@@ -838,6 +868,41 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
   describe 'create integration for the project' do
     subject(:project) { create_project(user, opts) }
 
+    context 'when an instance-level instance specific integration' do
+      let!(:instance_specific_integration) { create(:beyond_identity_integration) }
+
+      it 'creates integration inheriting from the instance level integration' do
+        expect(project.integrations.count).to eq(1)
+        expect(project.integrations.first.active).to eq(instance_specific_integration.active)
+        expect(project.integrations.first.inherit_from_id).to eq(instance_specific_integration.id)
+      end
+
+      context 'when there is a group-level exclusion' do
+        let(:opts) do
+          {
+            name: project_name,
+            namespace_id: group.id
+          }
+        end
+
+        let!(:group) do
+          create(:group).tap do |group|
+            group.add_owner(user)
+          end
+        end
+
+        let!(:group_integration) do
+          create(:beyond_identity_integration, group: group, instance: false, active: false)
+        end
+
+        it 'creates a service from the group-level integration' do
+          expect(project.integrations.count).to eq(1)
+          expect(project.integrations.first.active).to eq(group_integration.active)
+          expect(project.integrations.first.inherit_from_id).to eq(group_integration.id)
+        end
+      end
+    end
+
     context 'with an active instance-level integration' do
       let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
 
@@ -961,6 +1026,62 @@ RSpec.describe Projects::CreateService, '#execute', feature_category: :groups_an
       expect(project).to respond_to(:errors)
       expect(project.errors).to have_key(:import_source_disabled)
       expect(project.saved?).to be_falsey
+    end
+  end
+
+  context 'when github import source is disabled' do
+    before do
+      stub_application_setting(import_sources: [])
+      stub_feature_flags(override_github_disabled: false)
+      opts[:import_type] = 'github'
+    end
+
+    it 'does not create the project' do
+      project = create_project(user, opts)
+
+      expect(project.errors[:import_source_disabled]).to include('github import source is disabled')
+      expect(project).not_to be_persisted
+    end
+
+    context 'when override_github_disabled ops flag is enabled for the user' do
+      before do
+        stub_feature_flags(override_github_disabled: user)
+      end
+
+      it 'creates the project' do
+        project = create_project(user, opts)
+
+        expect(project.errors).to be_blank
+        expect(project).to be_persisted
+      end
+    end
+  end
+
+  context 'when bitbucket server import source is disabled' do
+    before do
+      stub_application_setting(import_sources: [])
+      stub_feature_flags(override_bitbucket_server_disabled: false)
+      opts[:import_type] = 'bitbucket_server'
+    end
+
+    it 'does not create the project' do
+      project = create_project(user, opts)
+
+      expect(project.errors[:import_source_disabled]).to include('bitbucket_server import source is disabled')
+      expect(project).not_to be_persisted
+    end
+
+    context 'when override_bitbucket_server_disabled ops flag is enabled for the user' do
+      before do
+        stub_feature_flags(override_bitbucket_server_disabled: user)
+      end
+
+      it 'creates the project' do
+        project = create_project(user, opts)
+
+        expect(project.errors).to be_blank
+        expect(project).to be_persisted
+      end
     end
   end
 

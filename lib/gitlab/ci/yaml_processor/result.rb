@@ -9,9 +9,9 @@ module Gitlab
         include Gitlab::Utils::StrongMemoize
 
         attr_reader :errors, :warnings,
-                    :root_variables, :root_variables_with_prefill_data,
-                    :stages, :jobs,
-                    :workflow_rules, :workflow_name, :workflow_auto_cancel
+          :root_variables, :root_variables_with_prefill_data,
+          :stages, :jobs,
+          :workflow_rules, :workflow_name, :workflow_auto_cancel
 
         def initialize(ci_config: nil, errors: [], warnings: [])
           @ci_config = ci_config
@@ -66,6 +66,10 @@ module Gitlab
 
         def config_metadata
           @ci_config&.metadata || {}
+        end
+
+        def clear_jobs!
+          @jobs = {}
         end
 
         private

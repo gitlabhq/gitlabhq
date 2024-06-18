@@ -111,9 +111,12 @@ module API
         end
         params do
           requires :access_level, type: Integer, desc: 'A valid access level (defaults: `30`, developer access level)'
-          requires :user_id, types: [Integer, String], desc: 'The user ID of the new member or multiple IDs separated by commas.'
+          optional :user_id, types: [Integer, String], desc: 'The user ID of the new member or multiple IDs separated by commas.'
+          optional :username, type: String, desc: 'The username of the new member or multiple usernames separated by commas.'
           optional :expires_at, type: DateTime, desc: 'Date string in the format YEAR-MONTH-DAY'
           optional :invite_source, type: String, desc: 'Source that triggered the member creation process', default: 'members-api'
+          mutually_exclusive :user_id, :username
+          at_least_one_of :user_id, :username
         end
 
         post ":id/members", feature_category: feature_category do
@@ -121,10 +124,10 @@ module API
 
           create_service_params = params.merge(source: source)
 
-          if add_multiple_members?(params[:user_id].to_s)
+          if add_multiple_members?(params[:user_id].to_s, params[:username])
             ::Members::CreateService.new(current_user, create_service_params).execute
-          elsif add_single_member?(params[:user_id].to_s)
-            add_single_member_by_user_id(create_service_params)
+          else
+            add_single_member(create_service_params)
           end
         end
 
@@ -165,9 +168,9 @@ module API
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the member'
           optional :skip_subresources, type: Boolean, default: false,
-                                       desc: 'Flag indicating if the deletion of direct memberships of the removed member in subgroups and projects should be skipped'
+            desc: 'Flag indicating if the deletion of direct memberships of the removed member in subgroups and projects should be skipped'
           optional :unassign_issuables, type: Boolean, default: false,
-                                        desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
+            desc: 'Flag indicating if the removed member should be unassigned from any issues or merge requests within given group or project'
         end
         # rubocop: disable CodeReuse/ActiveRecord
         delete ":id/members/:user_id", feature_category: feature_category do

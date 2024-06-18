@@ -105,8 +105,6 @@ You must define the following variables:
 
 Variable names must contain only lowercase letters (`a-z`), numbers (`0-9`), or underscores (`_`).
 You can define URL variables directly with the REST API.
-The host portion of the URL (such as `webhook.example.com`) must remain valid without using a mask variable.
-Otherwise, a `URI is invalid` or `Url is blocked` error occurs.
 
 ### Custom headers
 
@@ -130,11 +128,13 @@ Custom headers appear in [**Recent events**](#view-webhook-request-history) with
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_template`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439610) in GitLab 17.0. Feature flag `custom_webhook_template` removed.
 
-You can set a custom payload template in the webhook configuration. The request body is rendered from the template
-with the data for the current event. The template must render as valid JSON.
+You can set a custom payload template in the webhook configuration.
+The request body is rendered from the template with data for the current event.
+The template must render as valid JSON.
 
-You can use any field from the [payload of any event](webhook_events.md), such as `{{build_name}}` for a job event and `{{deployable_url}}`
-for a deployment event. To access properties nested in objects, specify the path segments separated with `.`. For example:
+You can use any field from the [payload of an event](webhook_events.md), such as
+`{{build_name}}` for a job event or `{{deployable_url}}` for a deployment event.
+To access properties nested in objects, specify the path segments separated by periods.
 
 Given this custom payload template:
 
@@ -145,7 +145,7 @@ Given this custom payload template:
 }
 ```
 
-You'll have this request payload that combines the template with a `push` event:
+The request payload combines the template with a `push` event:
 
 ```json
 {
@@ -153,6 +153,9 @@ You'll have this request payload that combines the template with a `push` event:
   "project_name": "Example"
 }
 ```
+
+Custom webhook templates cannot access properties in arrays.
+Support for this feature is proposed in [issue 463332](https://gitlab.com/gitlab-org/gitlab/-/issues/463332).
 
 ### Filter push events by branch
 
@@ -227,20 +230,21 @@ If the webhook URL has changed, you cannot resend the request.
 
 Webhook receiver endpoints should be fast and stable.
 Slow and unstable receivers might be [disabled automatically](#auto-disabled-webhooks) to ensure system reliability.
-Webhooks that [time out](../../../user/gitlab_com/index.md#webhooks) might lead to duplicate events.
+Webhooks that [time out](../../../user/gitlab_com/index.md#other-limits) might lead to duplicate events.
 
 Endpoints should follow these best practices:
 
 - **Respond quickly with a `200` or `201` status response.**
   Avoid any significant processing of webhooks in the same request.
   Instead, implement a queue to handle webhooks after they are received.
-  Webhook receivers that do not respond before the timeout limit
+  Webhook receivers that do not respond before the [timeout limit](../../../user/gitlab_com/index.md#other-limits)
   might be disabled automatically on GitLab.com.
 - **Be prepared to handle duplicate events.**
   If a webhook has timed out, the same event might be sent twice.
   To mitigate this issue, ensure your endpoint is reliably fast and stable.
 - **Keep the response headers and body minimal.**
-  GitLab stores the response headers and body so you can examine them later in the logs to help diagnose problems.
+  GitLab stores the response headers and body so you can
+  [inspect them later in the webhook request history](#inspect-request-and-response-details) to help diagnose problems.
   You should limit the number and size of returned headers.
   You can also respond to the webhook request with an empty body.
 - Only return client error status responses (in the `4xx` range) to indicate the webhook is misconfigured.
@@ -450,7 +454,7 @@ Image URLs are not rewritten if:
 ## Configure webhooks to support mutual TLS
 
 DETAILS:
-**Offering:** Self-managed, GitLab Dedicated
+**Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/27450) in GitLab 16.9.
 
@@ -527,6 +531,14 @@ To configure the certificate:
    ```
 
 ::EndTabs
+
+## Configuring firewalls for webhook traffic
+
+When configuring firewalls for webhooks traffic, you can configure assuming that webhooks are usually sent asynchronously from Sidekiq nodes. However, there are cases
+when webhooks are sent synchronously from Rails nodes, including when:
+
+- [Testing a Webhook](#test-a-webhook) in the UI.
+- [Retrying a Webhook](#inspect-request-and-response-details) in the UI.
 
 ## Related topics
 

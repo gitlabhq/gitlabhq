@@ -51,6 +51,7 @@ module Sidebars
                   organizations/organizations#groups_and_projects
                   organizations/groups#new
                   organizations/projects#edit
+                  organizations/groups#edit
                 ]
               },
               item_id: :organization_groups_and_projects

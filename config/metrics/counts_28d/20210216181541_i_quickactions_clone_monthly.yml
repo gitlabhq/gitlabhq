@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_clone_monthly
 description: Count of MAU using the `/clone` quick action to clone an issue.
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active

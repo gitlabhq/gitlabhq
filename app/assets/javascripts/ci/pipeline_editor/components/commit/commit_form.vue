@@ -115,6 +115,7 @@ export default {
           v-model="message"
           class="!gl-font-monospace"
           required
+          no-resize
           :placeholder="defaultMessage"
         />
       </gl-form-group>

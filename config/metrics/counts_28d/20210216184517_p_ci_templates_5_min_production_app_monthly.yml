@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_5_min_production_app_monthly
 description: Number of projects using 5 min production app CI template in last 7 days.
-product_section: seg
-product_stage: deploy
 product_group: 5-min-app
 value_type: number
 status: removed

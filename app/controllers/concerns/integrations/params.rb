@@ -50,6 +50,7 @@ module Integrations
       :google_play_protected_refs,
       :group_confidential_mention_events,
       :group_mention_events,
+      :hostname,
       :incident_events,
       :inherit_from_id,
       # We're using `issues_events` and `merge_requests_events`

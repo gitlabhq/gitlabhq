@@ -63,7 +63,23 @@ Let's use an example. Let's say we want to change feature flag `lorem_ipsum_dola
 
 > `/chatops run feature set lorem_ipsum_dolar ayufan`
 
-The command only change the flag for that actor on our Primary Cell. All other cells will be ignored. We may be able to expand Chatops to be able to accept an added flag such that we could directly set the actor on a particular Cell. Doing so will require the Engineer to know which Cell an actor resides. The reason for these limitations is to account for the fact that users and projects may be spread across a multitude of Cells. Cells are also being designed such that we can migrate data from one Cell to another. Feature Flag data is stored as a setting on a Cell and thus the metadata associated with what flags are set are not part of the knowledge associated with an actor. This introduces risk that if we target an actor, and later that actor is moved, the flag would no longer be set properly. This will lead to differing behavior for a given actor, but normally these types of changes happen to internal customers to GitLab reducing risk that users will notice a behavioral change as they switch between Cells. This implementation is also simplistic, removing the need to query _some service_ which hosts the Cells and actor resides, and needing to develop a specialized rollout procedure when the resulting target may be more than a single Cell. This is discussed a bit more in the next section.
+The command only change the flag for that actor on our Primary Cell. All other
+cells will be ignored. We may be able to expand Chatops to be able to accept an
+added flag such that we could directly set the actor on a particular Cell. Doing
+so will require the Engineer to know which Cell an actor resides. The reason for
+these limitations is to account for the fact that users and projects may be spread
+across a multitude of Cells. Cells are also being designed such that we can migrate
+data from one Cell to another. Feature Flag data is stored as a setting on a Cell
+and thus the metadata associated with what flags are set are not part of the
+knowledge associated with an actor. This introduces risk that if we target an
+actor, and later that actor is moved, the flag would no longer be set properly.
+This will lead to differing behavior for a given actor, but normally these types
+of changes happen to internal customers to GitLab reducing risk that users will
+notice a behavioral change as they switch between Cells. This implementation is
+also simplistic, removing the need to query _some service_ which hosts the Cells
+and actor resides, and needing to develop a specialized rollout procedure when
+the resulting target may be more than a single Cell. This is discussed a bit more
+in the next section.
 
 ##### Engagement on Environments
 
@@ -73,7 +89,20 @@ Let's use an example. Let's say we want to enable the flag `lorem_ipsum_dolar` o
 
 > `/chatops run feature set lorem_ipsum_dolar true --production`
 
-This command will need to perform a lot of work. Firstly, it needs to gather all Cells where this feature flag exists. If the flag does not exist on any Cell, we must not change this as this introduces an consistency issue between the Engineer expectations and that of the Production environment. We may consider an override in the case we are attempting to leverage this to mitigate an incident of a deployment that is not fully completed, however. If the flag does exist across all Cells of a given environment, we then begin to roll that change out across all Cells. It would be inadvisable to change all Cells at the same time. Chatops now needs the ability to have some mechanism to make the change to a given list of Cells, wait for some signal, then proceeding to the next list of Cells. Repeating until completion. We may need a mechanism to bypass this intentionally built slow rollout if we are targeting a flag that may remediate an incident across all Cells. The Delivery team plan on using a Ring style of deployments for Cells, we may be able to leverage similar metadata to assist in rollouts for this use case.
+This command will need to perform a lot of work. Firstly, it needs to gather all
+Cells where this feature flag exists. If the flag does not exist on any Cell, we
+must not change this as this introduces an consistency issue between the Engineer
+expectations and that of the Production environment. We may consider an override
+in the case we are attempting to leverage this to mitigate an incident of a
+deployment that is not fully completed, however. If the flag does exist across
+all Cells of a given environment, we then begin to roll that change out across
+all Cells. It would be inadvisable to change all Cells at the same time. Chatops
+now needs the ability to have some mechanism to make the change to a given list
+of Cells, wait for some signal, then proceeding to the next list of Cells. Repeating
+until completion. We may need a mechanism to bypass this intentionally built slow
+rollout if we are targeting a flag that may remediate an incident across all Cells.
+The Delivery team plan on using a Ring style of deployments for Cells, we may be
+able to leverage similar metadata to assist in rollouts for this use case.
 
 #### Requirements
 

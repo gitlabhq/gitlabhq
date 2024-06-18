@@ -13,7 +13,7 @@ module AccessMatchersForController
   def emulate_user(role, membership = nil)
     case role
     when :admin
-      user = create(:admin, :without_default_org)
+      user = create(:admin)
       sign_in(user)
     when :user
       user = create(:user)

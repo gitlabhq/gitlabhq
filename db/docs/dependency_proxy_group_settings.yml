@@ -3,7 +3,7 @@ table_name: dependency_proxy_group_settings
 classes:
 - DependencyProxy::GroupSetting
 feature_categories:
-- dependency_proxy
+- virtual_registry
 description: Group-level settings for the dependency proxy
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/10676
 milestone: '11.11'

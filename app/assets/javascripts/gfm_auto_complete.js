@@ -155,6 +155,7 @@ class GfmAutoComplete {
     this.cachedData = {};
     this.isLoadingData = {};
     this.previousQuery = undefined;
+    this.currentBackendFilterRequestController = null;
   }
 
   setup(input, enableMap = defaultAutocompleteConfig) {
@@ -320,7 +321,7 @@ class GfmAutoComplete {
       displayTpl({ name }) {
         const reviewState = REVIEW_STATES[name];
 
-        return `<li><span class="name gl-font-weight-bold">${reviewState.header}</span><small class="description"><em>${reviewState.description}</em></small></li>`;
+        return `<li><span class="name gl-font-bold">${reviewState.header}</span><small class="description"><em>${reviewState.description}</em></small></li>`;
       },
     });
   }
@@ -513,6 +514,7 @@ class GfmAutoComplete {
               title: i.title,
               reference: i.reference,
               search: `${i.iid} ${i.title}`,
+              iconName: i.icon_name,
             };
           });
         },
@@ -930,7 +932,7 @@ class GfmAutoComplete {
   }
 
   fetchData($input, at, search) {
-    if (this.isLoadingData[at]) return;
+    if (this.isLoadingData[at] && !GfmAutoComplete.isTypeWithBackendFiltering(at)) return;
 
     this.isLoadingData[at] = true;
     const dataSource = this.dataSources[GfmAutoComplete.atTypeMap[at]];
@@ -939,13 +941,25 @@ class GfmAutoComplete {
       if (this.cachedData[at]?.[search]) {
         this.loadData($input, at, this.cachedData[at][search], { search });
       } else {
+        if (this.currentBackendFilterRequestController) {
+          this.currentBackendFilterRequestController.abort();
+        }
+
+        this.currentBackendFilterRequestController = new AbortController();
+
         axios
-          .get(dataSource, { params: { search } })
+          .get(dataSource, {
+            params: { search },
+            signal: this.currentBackendFilterRequestController.signal,
+          })
           .then(({ data }) => {
             this.loadData($input, at, data, { search });
           })
           .catch(() => {
             this.isLoadingData[at] = false;
+          })
+          .finally(() => {
+            this.currentBackendFilterRequestController = null;
           });
       }
     } else if (this.cachedData[at]) {
@@ -1142,8 +1156,9 @@ GfmAutoComplete.Issues = {
     // eslint-disable-next-line no-template-curly-in-string
     return value.reference || '${atwho-at}${id}';
   },
-  templateFunction({ id, title, reference }) {
-    return `<li><small>${escape(reference || id)}</small> ${escape(title)}</li>`;
+  templateFunction({ id, title, reference, iconName }) {
+    const icon = iconName ? spriteIcon(iconName, 'gl-text-secondary s16 gl-mr-2') : '';
+    return `<li>${icon}<small>${escape(reference || id)}</small> ${escape(title)}</li>`;
   },
 };
 // Milestones

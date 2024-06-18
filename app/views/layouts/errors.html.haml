@@ -3,8 +3,11 @@
   %head
     %meta{ :content => "width=device-width, initial-scale=1", :name => "viewport" }
     %title= yield(:title)
-    %style
-      = error_css
+    - if vite_enabled?
+      = universal_stylesheet_link_tag 'errors'
+    - else
+      %style
+        = error_css
   %body
     .page-container
       = yield

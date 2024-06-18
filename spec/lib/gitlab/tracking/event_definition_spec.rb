@@ -12,8 +12,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       property_description: 'The string "issue_id"',
       value_description: 'ID of the issue',
       extra_properties: { confidential: false },
-      product_stage: 'growth',
-      product_section: 'dev',
       product_group: 'group::product analytics',
       distributions: %w[ee ce],
       tiers: %w[free premium ultimate],
@@ -63,9 +61,9 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
   end
 
   it 'has event definitions for all events used in Internal Events metric definitions', :aggregate_failures do
-    from_metric_definitions = Gitlab::Usage::MetricDefinition.definitions
+    from_metric_definitions = Gitlab::Usage::MetricDefinition.not_removed
       .values
-      .select { |m| m.attributes[:data_source] == 'internal_events' }
+      .select(&:internal_events?)
       .flat_map { |m| m.events&.keys }
       .compact
       .uniq
@@ -89,8 +87,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       :property_description | 1
       :value_description    | 1
       :extra_properties     | 'smth'
-      :product_stage        | 1
-      :product_section      | nil
       :product_group        | nil
       :distributions        | %(be eb)
       :tiers                | %(pro)
@@ -146,6 +142,30 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
       it 'does not read any files' do
         expect(Dir).not_to receive(:glob)
         described_class.definitions
+      end
+    end
+  end
+
+  describe '.find' do
+    let(:event_definition1) { described_class.new(nil, { action: 'event1' }) }
+    let(:event_definition2) { described_class.new(nil, { action: 'event2' }) }
+
+    before do
+      described_class.clear_memoization(:find)
+      allow(described_class).to receive(:definitions).and_return([event_definition1, event_definition2])
+    end
+
+    it 'finds the event definition by action' do
+      expect(described_class.find('event1')).to eq(event_definition1)
+    end
+
+    it 'memorizes results' do
+      expect(described_class).to receive(:definitions).exactly(3).times.and_call_original
+
+      10.times do
+        described_class.find('event1')
+        described_class.find('event2')
+        described_class.find('non-existing-event')
       end
     end
   end

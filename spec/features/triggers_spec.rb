@@ -74,26 +74,29 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
     describe 'edit trigger workflow' do
       let(:new_trigger_title) { 'new trigger' }
 
-      it 'click on edit trigger opens edit trigger page' do
+      it 'click on edit trigger opens edit trigger modal' do
         create(:ci_trigger, owner: user, project: @project, description: trigger_title)
         visit project_settings_ci_cd_path(@project)
 
-        # See if edit page has correct descrption
-        find('a[title="Edit"]').send_keys(:return)
-        expect(page.find('#trigger_description').value).to have_content 'trigger desc'
+        # See if edit modal has correct descrption
+        find('button[title="Edit"]').send_keys(:return)
+        page.within('[id="edit-trigger-modal"]') do
+          expect(page.find('#edit_trigger_description').value).to have_content 'trigger desc'
+        end
       end
 
       it 'edit trigger and save' do
         create(:ci_trigger, owner: user, project: @project, description: trigger_title)
         visit project_settings_ci_cd_path(@project)
 
-        # See if edit page opens, then fill in new description and save
-        find('a[title="Edit"]').send_keys(:return)
-        fill_in 'trigger_description', with: new_trigger_title
-        click_button 'Save trigger'
+        # See if edit modal opens, then fill in new description and save
+        find('button[title="Edit"]').send_keys(:return)
+        page.within('[id="edit-trigger-modal"]') do
+          fill_in 'edit_trigger_description', with: new_trigger_title
+          click_button 'OK'
+        end
 
         aggregate_failures 'display update notice and trigger is updated' do
-          expect(find_by_testid('alert-info')).to have_content 'Trigger token was successfully updated.'
           expect(page.find('.triggers-list')).to have_content new_trigger_title
           expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
         end
@@ -107,7 +110,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
       end
 
       it 'button "Revoke" has correct alert' do
-        expected_alert = 'By revoking a trigger you will break any processes making use of it. Are you sure?'
+        expected_alert = 'By revoking a trigger token you will break any processes making use of it. Are you sure?'
         expect(find_by_testid('trigger_revoke_button')['data-confirm']).to eq expected_alert
       end
 
@@ -199,7 +202,7 @@ RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
           expect(page.find('.triggers-list')).to have_content @project.triggers.first.token
           expect(page.find('.triggers-list')).to have_selector('[data-testid="clipboard-btn"]')
           expect(page.find('.triggers-list .trigger-owner')).to have_content user.name
-          expect(page.find('.triggers-list')).to have_selector('a[title="Edit"]')
+          expect(page.find('.triggers-list')).to have_selector('button[title="Edit"]')
         end
       end
     end

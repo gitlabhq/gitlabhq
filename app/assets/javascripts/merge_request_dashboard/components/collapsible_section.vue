@@ -14,12 +14,13 @@ export default {
     },
     count: {
       type: Number,
-      required: true,
+      required: false,
+      default: null,
     },
   },
   data() {
     return {
-      open: this.count > 0,
+      open: true,
     };
   },
   computed: {

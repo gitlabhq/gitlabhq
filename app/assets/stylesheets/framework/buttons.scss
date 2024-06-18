@@ -21,7 +21,7 @@
 }
 
 @mixin btn-default {
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
   font-size: $gl-font-size;
   font-weight: $gl-font-weight-normal;
   padding: $gl-vert-padding $gl-btn-padding;
@@ -300,7 +300,7 @@ fieldset[disabled] .btn,
 [disabled].dropdown-menu-toggle {
   &,
   &:hover {
-    background-color: $gray-light;
+    background-color: $gray-10;
     border-color: $gray-100;
     color: $gl-text-color-disabled;
     opacity: 1;
@@ -327,7 +327,7 @@ fieldset[disabled] .btn,
 
 copy-code {
   position: absolute;
-  @include gl-transition-medium;
+  @apply gl-transition-all;
   opacity: 0;
 
   top: 7px;

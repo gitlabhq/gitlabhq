@@ -10,17 +10,24 @@ RSpec.describe Repositories::ReplicateService, feature_category: :source_code_ma
   subject { described_class.new(repository) }
 
   it 'replicates repository' do
-    expect(new_repository).to receive(:replicate).with(repository)
+    expect(new_repository).to receive(:replicate).with(repository, partition_hint: "")
     expect(new_repository).not_to receive(:remove)
 
     expect { subject.execute(new_repository, :project) }.not_to raise_error
+  end
+
+  it 'replicates repository with partition_hint' do
+    expect(new_repository).to receive(:replicate).with(repository, partition_hint: "partition_hint_path")
+    expect(new_repository).not_to receive(:remove)
+
+    expect { subject.execute(new_repository, :project, partition_hint: "partition_hint_path") }.not_to raise_error
   end
 
   context 'when checksum does not match' do
     let(:new_checksum) { 'does not match' }
 
     it 'raises an error and removes new repository' do
-      expect(new_repository).to receive(:replicate).with(repository)
+      expect(new_repository).to receive(:replicate).with(repository, partition_hint: "")
       expect(new_repository).to receive(:remove)
 
       expect do
@@ -33,7 +40,7 @@ RSpec.describe Repositories::ReplicateService, feature_category: :source_code_ma
     it 'raises the error and removes new repository' do
       error = StandardError.new
 
-      expect(new_repository).to receive(:replicate).with(repository)
+      expect(new_repository).to receive(:replicate).with(repository, partition_hint: "")
       expect(new_repository).to receive(:checksum).and_raise(error)
       expect(new_repository).to receive(:remove)
 

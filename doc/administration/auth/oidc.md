@@ -287,7 +287,7 @@ To migrate to the Generic OpenID Connect configuration, you must change the conf
 
 ::Tabs
 
-:::Azure OAuth 2.0
+:::TabTitle Azure OAuth 2.0
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [
@@ -295,7 +295,7 @@ gitlab_rails['omniauth_providers'] = [
     name: "azure_oauth2",
     label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
     args: {
-      name: "azure_activedirectory_v2",
+      name: "azure_oauth2",
       strategy_class: "OmniAuth::Strategies::OpenIDConnect",
       scope: ["openid", "profile", "email"],
       response_type: "code",
@@ -314,12 +314,12 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-:::Azure Active Directory v2
+:::TabTitle Azure Active Directory v2
 
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    name: "azure_oauth2",
+    name: "azure_activedirectory_v2",
     label: "Azure OIDC", # optional label for login button, defaults to "Openid Connect"
     args: {
       name: "azure_activedirectory_v2",

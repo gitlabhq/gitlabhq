@@ -71,9 +71,8 @@ module QA
           element 'revert-button'
         end
 
-        view 'app/assets/javascripts/vue_merge_request_widget/components/states/mr_widget_rebase.vue' do
+        view 'app/assets/javascripts/vue_merge_request_widget/components/checks/rebase.vue' do
           element 'standard-rebase-button'
-          element 'rebase-message'
         end
 
         view 'app/assets/javascripts/vue_merge_request_widget/components/states/ready_to_merge.vue' do
@@ -222,22 +221,6 @@ module QA
           # Change back to regular click_element when moved_mr_sidebar FF is removed
           # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/385460
           click_by_javascript(find_element('edit-title-button', skip_finished_loading_check: true))
-        end
-
-        def fast_forward_not_possible?
-          has_element?('rebase-message')
-        end
-
-        def merge_blocked_component_ff_enabled?
-          element = within_element('.mr-widget-section') do
-            feature_flag_controlled_element(
-              :merge_blocked_component,
-              'chevron-lg-down-icon',
-              'standard-rebase-button'
-            )
-          end
-
-          !(element == 'standard-rebase-button')
         end
 
         def expand_merge_checks
@@ -510,6 +493,14 @@ module QA
 
         def has_artifact_with_name?(name)
           has_text?(name)
+        end
+
+        def has_artifacts_dropdown?
+          has_element?('artifacts-dropdown')
+        end
+
+        def has_no_artifacts_dropdown?
+          has_no_element?('artifacts-dropdown')
         end
 
         def open_exposed_artifacts_list

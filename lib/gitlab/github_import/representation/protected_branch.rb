@@ -7,7 +7,7 @@ module Gitlab
         include Representable
 
         expose_attribute :id, :allow_force_pushes, :required_conversation_resolution, :required_signatures,
-                         :required_pull_request_reviews, :require_code_owner_reviews, :allowed_to_push_users
+          :required_pull_request_reviews, :require_code_owner_reviews, :allowed_to_push_users
 
         # Builds a Branch Protection info from a GitHub API response.
         # Resource structure details:
@@ -17,8 +17,8 @@ module Gitlab
           branch_name = branch_protection[:url].match(%r{/branches/(\S{1,255})/protection$})[1]
 
           allowed_to_push_users = branch_protection.dig(:required_pull_request_reviews,
-                                                        :bypass_pull_request_allowances,
-                                                        :users)
+            :bypass_pull_request_allowances,
+            :users)
           allowed_to_push_users &&= allowed_to_push_users.map do |u|
             Representation::User.from_api_response(u)
           end
@@ -29,7 +29,7 @@ module Gitlab
             required_signatures: branch_protection.dig(:required_signatures, :enabled),
             required_pull_request_reviews: branch_protection[:required_pull_request_reviews].present?,
             require_code_owner_reviews: branch_protection.dig(:required_pull_request_reviews,
-                                                              :require_code_owner_reviews).present?,
+              :require_code_owner_reviews).present?,
             allowed_to_push_users: allowed_to_push_users.to_a
           }
 

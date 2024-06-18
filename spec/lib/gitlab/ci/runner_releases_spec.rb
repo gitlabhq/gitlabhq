@@ -75,7 +75,7 @@ RSpec.describe Gitlab::Ci::RunnerReleases, feature_category: :fleet_visibility d
 
         http_call_timestamp_offsets = []
         allow(Gitlab::HTTP).to receive(:get).with(runner_releases_url, anything) do
-          http_call_timestamp_offsets << Time.now.utc - start_time
+          http_call_timestamp_offsets << (Time.now.utc - start_time)
 
           err_class = opts&.dig(:raise_error)
           raise err_class if err_class

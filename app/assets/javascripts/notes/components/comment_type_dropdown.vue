@@ -49,6 +49,11 @@ export default {
       type: String,
       required: true,
     },
+    isReviewDropdown: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     isNoteTypeComment() {
@@ -69,10 +74,16 @@ export default {
     },
     commentButtonTitle() {
       const { comment, internalComment, startThread, startInternalThread } = this.$options.i18n;
+      const { saveThread, saveComment } = this.$options.i18n.addToReviewButton;
 
       if (this.isInternalNote) {
         return this.noteType === constants.COMMENT ? internalComment : startInternalThread;
       }
+
+      if (this.isReviewDropdown) {
+        return this.noteType === constants.COMMENT ? saveComment : saveThread;
+      }
+
       return this.noteType === constants.COMMENT ? comment : startThread;
     },
     startDiscussionDescription() {

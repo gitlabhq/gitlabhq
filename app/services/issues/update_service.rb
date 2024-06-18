@@ -100,8 +100,8 @@ module Issues
       target_project = params.delete(:target_project)
 
       return unless target_project &&
-          issue.can_move?(current_user, target_project) &&
-          target_project != issue.project
+        issue.can_move?(current_user, target_project) &&
+        target_project != issue.project
 
       update(issue)
       Issues::MoveService.new(container: project, current_user: current_user).execute(issue, target_project)

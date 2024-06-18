@@ -182,11 +182,16 @@ that works for this problem. Follow these steps to use the tool in Auto DevOps:
 
 1. Continue the deployments as usual.
 
-## `Error: error initializing: Looks like "https://kubernetes-charts.storage.googleapis.com" is not a valid chart repository or cannot be reached`
+## `Error: not a valid chart repository or cannot be reached`
 
 As [announced in the official CNCF blog post](https://www.cncf.io/blog/2020/10/07/important-reminder-for-all-helm-users-stable-incubator-repos-are-deprecated-and-all-images-are-changing-location/),
 the stable Helm chart repository was deprecated and removed on November 13th, 2020.
-You may encounter this error after that date.
+You may encounter this error after that date:
+
+```plaintext
+Error: error initializing: Looks like "https://kubernetes-charts.storage.googleapis.com"
+is not a valid chart repository or cannot be reached
+```
 
 Some GitLab features had dependencies on the stable chart. To mitigate the impact, we changed them
 to use new official repositories or the [Helm Stable Archive repository maintained by GitLab](https://gitlab.com/gitlab-org/cluster-integration/helm-stable-archive).

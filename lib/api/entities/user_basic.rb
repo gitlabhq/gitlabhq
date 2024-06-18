@@ -20,7 +20,7 @@ module API
       )
 
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes,
-                                 documentation: { is_array: true }
+        documentation: { is_array: true }
 
       expose :web_url, documentation: { type: 'string', example: 'https://gitlab.example.com/root' } do |user, options|
         Gitlab::Routing.url_helpers.user_url(user)

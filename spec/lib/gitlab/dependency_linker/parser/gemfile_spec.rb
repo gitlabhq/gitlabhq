@@ -29,16 +29,16 @@ RSpec.describe Gitlab::DependencyLinker::Parser::Gemfile do
 
     it 'packages respond to name and external_ref accordingly' do
       expect(fetch_package('rails')).to have_attributes(name: 'rails',
-                                                        github_ref: 'rails/rails',
-                                                        git_ref: nil)
+        github_ref: 'rails/rails',
+        git_ref: nil)
 
       expect(fetch_package('sprockets')).to have_attributes(name: 'sprockets',
-                                                            github_ref: nil,
-                                                            git_ref: 'https://gitlab.example.com/gems/sprockets')
+        github_ref: nil,
+        git_ref: 'https://gitlab.example.com/gems/sprockets')
 
       expect(fetch_package('default_value_for')).to have_attributes(name: 'default_value_for',
-                                                                    github_ref: nil,
-                                                                    git_ref: nil)
+        github_ref: nil,
+        git_ref: nil)
     end
   end
 end

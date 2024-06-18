@@ -28,7 +28,11 @@ The following example shows a typical purchase flow of request and response betw
 - Salesforce
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+accTitle: Purchase flow
+accDescr: Shows the flow of a purchase from the customer, through the customer portal, Zuora, and Salesforce.
+
     participant Customer
     participant Marketplace partner system
     participant Customers Portal
@@ -72,7 +76,7 @@ own resources, instead of accessing resources on behalf of a user.
 
 ### Step 1: Request access
 
-Before you can use the Marketplace API, you must contact your Marketplace partner Manager or email [`partnerorderops`](mailto:partnerorderops@gitlab.com)
+Before you can use the Marketplace API, you must contact your Marketplace partner Manager or email `partnerorderops@gitlab.com`
 to request access. After you request access, GitLab configures the following accounts and credentials for you:
 
 1. Client credentials. Marketplace APIs are secured with OAuth 2.0. The client credentials include the client ID and client secret

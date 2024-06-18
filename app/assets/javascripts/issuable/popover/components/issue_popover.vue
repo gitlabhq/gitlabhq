@@ -16,7 +16,7 @@ export default {
     GlSkeletonLoader,
     IssueDueDate,
     IssueMilestone,
-    IssueWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
+    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
     StatusBadge,
     WorkItemTypeIcon,
   },
@@ -114,12 +114,7 @@ export default {
         class="gl-mr-4"
         css-class="gl-display-flex gl-whitespace-nowrap"
       />
-      <issue-weight
-        v-if="issue.weight"
-        :weight="issue.weight"
-        tag-name="span"
-        class="gl-display-flex gl-mr-4"
-      />
+      <issue-weight v-if="issue.weight" :weight="issue.weight" class="gl-flex gl-mr-4" />
       <issue-milestone
         v-if="issue.milestone"
         :milestone="issue.milestone"

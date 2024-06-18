@@ -91,10 +91,10 @@ export default {
 <template>
   <li :class="{ 'js-toggle-container': collapsible }" class="commit">
     <div
-      class="d-block d-sm-flex flex-row-reverse justify-content-between align-items-start flex-lg-row-reverse"
+      class="gl-block sm:gl-flex flex-row-reverse justify-content-between align-items-start flex-lg-row-reverse"
     >
       <div
-        class="commit-actions flex-row d-none d-sm-flex gl-align-items-center gl-flex-wrap justify-content-end"
+        class="commit-actions flex-row gl-hidden sm:gl-flex gl-align-items-center gl-flex-wrap justify-content-end"
       >
         <div
           v-if="commit.signature_html"
@@ -103,7 +103,7 @@ export default {
         <commit-pipeline-status
           v-if="commit.pipeline_status_path"
           :endpoint="commit.pipeline_status_path"
-          class="d-inline-flex mb-2"
+          class="gl-inline-flex mb-2"
         />
         <gl-button-group class="gl-ml-4" data-testid="commit-sha-group">
           <gl-button label class="gl-font-monospace" data-testid="commit-sha-short-id">{{
@@ -117,7 +117,7 @@ export default {
         </gl-button-group>
       </div>
       <div>
-        <div class="d-flex float-left gl-align-items-center align-self-start">
+        <div class="gl-flex float-left gl-items-center align-self-start">
           <gl-form-checkbox
             v-if="isSelectable"
             :checked="checked"
@@ -129,7 +129,7 @@ export default {
             :img-src="authorAvatar"
             :img-alt="authorName"
             :img-size="32"
-            class="avatar-cell d-none d-sm-block gl-my-2 gl-mr-4"
+            class="avatar-cell gl-hidden sm:gl-block gl-my-2 gl-mr-4"
           />
         </div>
         <div
@@ -142,7 +142,9 @@ export default {
               class="commit-row-message item-title"
             ></a>
 
-            <span class="commit-row-message d-block d-sm-none">&middot; {{ commit.short_id }}</span>
+            <span class="commit-row-message !gl-block sm:!gl-hidden"
+              >&middot; {{ commit.short_id }}</span
+            >
 
             <gl-button
               v-if="commit.description_html && collapsible"
@@ -172,7 +174,7 @@ export default {
       <pre
         v-if="commit.description_html"
         v-safe-html:[$options.safeHtmlConfig]="commitDescription"
-        :class="{ 'js-toggle-content': collapsible, 'd-block': !collapsible }"
+        :class="{ 'js-toggle-content': collapsible, '!gl-block': !collapsible }"
         class="commit-row-description gl-mb-3 gl-text-body gl-white-space-pre-wrap"
       ></pre>
     </div>

@@ -2,8 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter,
-  :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:merge_request) { create(:merge_request) }

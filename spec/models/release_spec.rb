@@ -178,7 +178,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
       context 'when there are no releases' do
         it 'returns nil' do
-          project.releases.delete_all
+          project.releases.delete_all(:delete_all)
 
           expect(latest).to eq(nil)
         end
@@ -214,8 +214,8 @@ RSpec.describe Release, feature_category: :release_orchestration do
 
       context 'when there are no releases' do
         it 'returns empty response' do
-          project.releases.delete_all
-          project2.releases.delete_all
+          project.releases.delete_all(:delete_all)
+          project2.releases.delete_all(:delete_all)
 
           expect(latest_for_projects).to be_empty
         end
@@ -279,7 +279,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
           { links_attributes: [{ name: 'test', url: 'https://www.google.com/' }] }
         end
 
-        it 'creates a link successfuly' do
+        it 'creates a link successfully' do
           is_expected.to eq(true)
 
           expect(release.links.count).to eq(1)
@@ -315,7 +315,7 @@ RSpec.describe Release, feature_category: :release_orchestration do
           { links_attributes: [{ id: link1.id, _destroy: true }] }
         end
 
-        it 'removes the link successfuly' do
+        it 'removes the link successfully' do
           is_expected.to eq(true)
 
           expect(release.links.count).to eq(1)

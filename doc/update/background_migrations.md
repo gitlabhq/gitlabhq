@@ -358,7 +358,7 @@ end
 
 Non-batched migrations are superseded by batched background migrations. Non-batched
 migrations were gradually phased out during GitLab 14, with the last one
-used in GitLab 15.0. 
+used in GitLab 15.0.
 
 ### Check for pending background migrations
 

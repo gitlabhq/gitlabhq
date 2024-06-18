@@ -43,6 +43,12 @@ For example, GitLab [adds a `glpat-` prefix](../../../../administration/settings
 
 To provide more reliable, high-confidence results, Pipeline Secret Detection only looks for passwords or other unstructured secrets in specific contexts like URLs.
 
+A detected secret remains in the vulnerability report as "Still
+detected" even after the secret is removed from the scanned file. This
+is because the secret remains in the Git repository's history. To
+address a detected secret, remediate the leak, then triage the
+vulnerability.
+
 ## Coverage
 
 Pipeline Secret Detection scans different aspects of your code, depending on the situation. For all methods
@@ -321,7 +327,7 @@ You can customize which [secrets are reported in the GitLab UI](#pipeline-secret
 However, the `secret_detection` job logs always include the number
 of secrets detected by the default Pipeline Secret Detection rules.
 
-The following customization options can be used separately, or in combination (except for disabling or overriding rules when using a remote configuration file):
+The following customization options can be used separately, or in combination (except for synthesizing a custom configuration with a remote configuration file):
 
 - [Disable predefined rules](#disable-predefined-analyzer-rules).
 - [Override predefined rules](#override-predefined-analyzer-rules).
@@ -333,8 +339,12 @@ The following customization options can be used separately, or in combination (e
 You can use passthroughs to override the default Pipeline Secret Detection ruleset. The
 following passthrough types are supported by the `secrets` analyzer:
 
-- `raw`
-- `file`
+- `raw`: Include custom rules directly in the `secret-detection-ruleset.toml` file.
+- `file`: Include custom rules in a separate file in the project's repository.
+
+NOTE:
+The `file` option can only be used to synthesize a custom configuration from
+a file in the project's repository, not [a remote configuration file](#specify-a-remote-configuration-file).
 
 To define a passthrough, add _one_ of the following to the
 `secret-detection-ruleset.toml` file:
@@ -356,9 +366,6 @@ To define a passthrough, add _one_ of the following to the
   regex = '''Custom Raw Ruleset T[est]{3}'''
   """
   ```
-
-NOTE:
-The `file` passthrough only works with an external file that is committed to the current repository. It cannot be used to synthesize a custom configuration from [a remote configuration file](#specify-a-remote-configuration-file).
 
 - Using an external `file` committed to the current repository:
 
@@ -597,6 +604,16 @@ variable, or as a CI/CD variable.
 
 - If using a variable, set the value of `ADDITIONAL_CA_CERT_BUNDLE` to the text
   representation of the certificate.
+
+### Demo Projects
+
+There are [demonstration projects](https://gitlab.com/gitlab-org/security-products/demos/SAST-analyzer-configurations) that illustrate some of these configuration options.
+
+Many of the demo projects illustrate using remote rulesets to override or disable rules and are grouped together by which analyzer they are for.
+
+There are also some video demonstrations walking through setting up remote rulesets:
+
+- [Secret Detection with local and remote ruleset](https://youtu.be/rsN1iDug5GU)
 
 ## FIPS-enabled images
 

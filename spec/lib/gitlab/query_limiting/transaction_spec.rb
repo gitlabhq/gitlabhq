@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::QueryLimiting::Transaction do
+RSpec.describe Gitlab::QueryLimiting::Transaction, feature_category: :database do
   after do
     Thread.current[described_class::THREAD_KEY] = nil
   end
@@ -35,6 +35,18 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
       end
 
       expect(Thread.current[described_class::THREAD_KEY]).to be_nil
+    end
+
+    it 'restores the previous transaction upon completion' do
+      original_transaction = described_class.new
+      Thread.current[described_class::THREAD_KEY] = original_transaction
+
+      new_transaction, _ret = described_class.run do
+        10
+      end
+
+      expect(new_transaction).not_to eq(original_transaction)
+      expect(Thread.current[described_class::THREAD_KEY]).to eq(original_transaction)
     end
   end
 
@@ -87,6 +99,8 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
         transaction.increment(described_class::LICENSES_LOAD)
         transaction.increment('SELECT a.attname, a.other_column FROM pg_attribute a')
         transaction.increment('SELECT x.foo, a.attname FROM some_table x JOIN pg_attribute a')
+        transaction.increment('SAVEPOINT active_record_2')
+        transaction.increment('RELEASE SAVEPOINT active_record_2')
         transaction.increment(<<-SQL)
         SELECT a.attname, a.other_column
           FROM pg_attribute a

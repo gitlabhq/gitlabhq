@@ -8,8 +8,8 @@ module Gitlab
         # Entry that represents a key.
         #
         class Key < ::Gitlab::Config::Entry::Simplifiable
-          strategy :SimpleKey, if: -> (config) { config.is_a?(String) || config.is_a?(Symbol) }
-          strategy :ComplexKey, if: -> (config) { config.is_a?(Hash) }
+          strategy :SimpleKey, if: ->(config) { config.is_a?(String) || config.is_a?(Symbol) }
+          strategy :ComplexKey, if: ->(config) { config.is_a?(Hash) }
 
           class SimpleKey < ::Gitlab::Config::Entry::Node
             include ::Gitlab::Config::Entry::Validatable

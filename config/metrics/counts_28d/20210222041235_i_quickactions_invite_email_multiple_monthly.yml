@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.quickactions.i_quickactions_invite_email_multiple_monthly
 description: Unique users using the /invite_email quick action to add a multiple email participants to an issue within 28 days
-product_section: dev
-product_stage: plan
 product_group: product_planning
 value_type: number
 status: active

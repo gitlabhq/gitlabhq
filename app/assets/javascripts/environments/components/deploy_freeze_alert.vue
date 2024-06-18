@@ -66,10 +66,10 @@ export default {
   <gl-alert v-if="shouldShowDeployFreezeAlert" :dismissible="false" class="gl-mt-4">
     <gl-sprintf :message="$options.i18n.deployFreezeAlert">
       <template #startTime
-        ><span class="gl-font-weight-bold">{{ deployFreezeStartTime }}</span></template
+        ><span class="gl-font-bold">{{ deployFreezeStartTime }}</span></template
       >
       <template #endTime
-        ><span class="gl-font-weight-bold">{{ deployFreezeEndTime }}</span></template
+        ><span class="gl-font-bold">{{ deployFreezeEndTime }}</span></template
       >
       <template #docsLink="{ content }"
         ><gl-link :href="$options.deployFreezeDocsPath">{{ content }}</gl-link></template

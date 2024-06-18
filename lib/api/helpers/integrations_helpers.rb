@@ -97,11 +97,11 @@ module API
 
       def self.integrations
         {
-          'apple-app-store' => ::Integrations::AppleAppStore.api_fields,
-          'asana' => ::Integrations::Asana.api_fields,
-          'assembla' => ::Integrations::Assembla.api_fields,
-          'bamboo' => ::Integrations::Bamboo.api_fields,
-          'bugzilla' => ::Integrations::Bugzilla.api_fields,
+          'apple-app-store' => ::Integrations::AppleAppStore.api_arguments,
+          'asana' => ::Integrations::Asana.api_arguments,
+          'assembla' => ::Integrations::Assembla.api_arguments,
+          'bamboo' => ::Integrations::Bamboo.api_arguments,
+          'bugzilla' => ::Integrations::Bugzilla.api_arguments,
           'buildkite' => [
             {
               required: true,
@@ -122,9 +122,9 @@ module API
               desc: 'DEPRECATED: This parameter has no effect since SSL verification will always be enabled'
             }
           ],
-          'campfire' => ::Integrations::Campfire.api_fields,
-          'confluence' => ::Integrations::Confluence.api_fields,
-          'custom-issue-tracker' => ::Integrations::CustomIssueTracker.api_fields,
+          'campfire' => ::Integrations::Campfire.api_arguments,
+          'confluence' => ::Integrations::Confluence.api_arguments,
+          'custom-issue-tracker' => ::Integrations::CustomIssueTracker.api_arguments,
           'datadog' => [
             {
               required: true,
@@ -169,9 +169,9 @@ module API
               desc: 'Custom tags in Datadog. Specify one tag per line in the format: "key:value\nkey2:value2"'
             }
           ],
-          'diffblue-cover' => ::Integrations::DiffblueCover.api_fields,
+          'diffblue-cover' => ::Integrations::DiffblueCover.api_arguments,
           'discord' => [
-            ::Integrations::Discord.api_fields,
+            ::Integrations::Discord.api_arguments,
             chat_notification_flags,
             chat_notification_channels
           ].flatten,
@@ -221,12 +221,12 @@ module API
               desc: 'Branches for which notifications are to be sent'
             }
           ],
-          'external-wiki' => ::Integrations::ExternalWiki.api_fields,
+          'external-wiki' => ::Integrations::ExternalWiki.api_arguments,
           'gitlab-slack-application' => [
-            ::Integrations::GitlabSlackApplication.api_fields,
+            ::Integrations::GitlabSlackApplication.api_arguments,
             chat_notification_channels
           ].flatten,
-          'google-play' => ::Integrations::GooglePlay.api_fields,
+          'google-play' => ::Integrations::GooglePlay.api_arguments,
           'hangouts-chat' => [
             {
               required: true,
@@ -241,7 +241,7 @@ module API
               desc: 'Branches for which notifications are to be sent'
             }
           ].flatten,
-          'harbor' => ::Integrations::Harbor.api_fields,
+          'harbor' => ::Integrations::Harbor.api_arguments,
           'irker' => [
             {
               required: true,
@@ -380,7 +380,7 @@ module API
               desc: 'Enable comments inside Jira issues on each GitLab event (commit / merge request)'
             }
           ],
-          'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_fields,
+          'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_arguments,
           'slack-slash-commands' => [
             {
               required: true,
@@ -409,7 +409,7 @@ module API
               desc: 'The server'
             }
           ],
-          'phorge' => ::Integrations::Phorge.api_fields,
+          'phorge' => ::Integrations::Phorge.api_arguments,
           'pipelines-email' => [
             {
               required: true,
@@ -516,12 +516,12 @@ module API
               desc: 'The sound of the notification'
             }
           ],
-          'redmine' => ::Integrations::Redmine.api_fields,
-          'ewm' => ::Integrations::Ewm.api_fields,
-          'youtrack' => ::Integrations::Youtrack.api_fields,
-          'clickup' => ::Integrations::Clickup.api_fields,
+          'redmine' => ::Integrations::Redmine.api_arguments,
+          'ewm' => ::Integrations::Ewm.api_arguments,
+          'youtrack' => ::Integrations::Youtrack.api_arguments,
+          'clickup' => ::Integrations::Clickup.api_arguments,
           'slack' => [
-            ::Integrations::Slack.api_fields,
+            ::Integrations::Slack.api_arguments,
             chat_notification_channels
           ].flatten,
           'microsoft-teams' => [
@@ -540,7 +540,7 @@ module API
             chat_notification_flags
           ].flatten,
           'mattermost' => [
-            ::Integrations::Mattermost.api_fields,
+            ::Integrations::Mattermost.api_arguments,
             chat_notification_channels
           ].flatten,
           'teamcity' => [
@@ -575,33 +575,7 @@ module API
               desc: 'The password of the user'
             }
           ],
-          'telegram' => [
-            {
-              required: true,
-              name: :token,
-              type: String,
-              desc: 'The Telegram chat token. For example, 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11'
-            },
-            {
-              required: true,
-              name: :room,
-              type: String,
-              desc: 'Unique identifier for the target chat or username of the target channel (in the format @channelusername)'
-            },
-            {
-              required: false,
-              name: :thread,
-              type: Integer,
-              desc: 'Unique identifier for the target message thread (topic in a forum supergroup)'
-            },
-            {
-              required: false,
-              name: :branches_to_be_notified,
-              type: String,
-              desc: 'Branches for which notifications are to be sent.'
-            },
-            chat_notification_flags
-          ].flatten,
+          'telegram' => ::Integrations::Telegram.api_arguments,
           'unify-circuit' => [
             {
               required: true,
@@ -610,7 +584,7 @@ module API
               desc: 'The Unify Circuit webhook. e.g. https://circuit.com/rest/v2/webhooks/incoming/…'
             }
           ].flatten,
-          'webex-teams' => ::Integrations::WebexTeams.api_fields,
+          'webex-teams' => ::Integrations::WebexTeams.api_arguments,
           'zentao' => [
             {
               required: true,
@@ -637,7 +611,7 @@ module API
               desc: 'The product ID of ZenTao project'
             }
           ],
-          'squash-tm' => ::Integrations::SquashTm.api_fields
+          'squash-tm' => ::Integrations::SquashTm.api_arguments
         }
       end
 

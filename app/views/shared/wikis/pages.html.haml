@@ -3,17 +3,23 @@
 - page_title s_("Wiki|Pages"), _("Wiki")
 - add_page_specific_style 'page_bundles/wiki'
 
-.wiki-page-header.top-area.flex-column.flex-lg-row
-  %h1.page-title.gl-font-size-h-display.gl-flex-grow-1
-    = s_("Wiki|Wiki Pages")
+.wiki-page-header
+  = render ::Layouts::PageHeadingComponent.new(s_("Wiki|Wiki pages")) do |c|
+    - c.with_actions do
+      .dropdown.inline.wiki-sort-dropdown
+        .btn-group{ role: 'group' }
+          = wiki_sort_controls(@wiki, params[:direction])
 
-  .nav-controls.pb-md-3.pb-lg-0
-    = link_button_to wiki_path(@wiki, action: :git_access), icon: 'download' do
-      = _("Clone repository")
+        - if can?(current_user, :create_wiki, @project)
+          = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, SecureRandom.uuid, random_title: true), variant: :confirm) do
+            = s_("Wiki|New page")
 
-    .dropdown.inline.wiki-sort-dropdown
-      .btn-group{ role: 'group' }
-        = wiki_sort_controls(@wiki, params[:direction])
+      #js-vue-wiki-more-actions{ data: {
+        clone_ssh_url: ssh_clone_url_to_repo(@wiki),
+        clone_http_url: http_clone_url_to_repo(@wiki),
+        wiki_url: wiki_path(@wiki),
+        templates_url: wiki_page_path(@wiki, Wiki::TEMPLATES_DIR),
+      } }
 
 %ul.wiki-pages-list.content-list
   - @wiki_entries.each do |entry|

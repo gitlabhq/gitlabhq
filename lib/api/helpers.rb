@@ -2,6 +2,7 @@
 
 module API
   module Helpers
+    include Gitlab::Allowable
     include Gitlab::Utils
     include Helpers::Caching
     include Helpers::Pagination
@@ -12,11 +13,8 @@ module API
 
     SUDO_HEADER = "HTTP_SUDO"
     GITLAB_SHARED_SECRET_HEADER = "Gitlab-Shared-Secret"
-    GITLAB_SHELL_API_HEADER = "Gitlab-Shell-Api-Request"
-    GITLAB_SHELL_JWT_ISSUER = "gitlab-shell"
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'
-    API_TOKEN_ENV = 'gitlab.api.token'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
     INTEGER_ID_REGEX = /^-?\d+$/
@@ -85,11 +83,9 @@ module API
 
       sudo!
 
-      validate_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
+      validate_and_save_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
 
       save_current_user_in_env(@current_user) if @current_user
-
-      save_current_token_in_env
 
       if @current_user
         load_balancer_stick_request(::ApplicationRecord, :user, @current_user.id)
@@ -101,13 +97,6 @@ module API
 
     def save_current_user_in_env(user)
       env[API_USER_ENV] = { user_id: user.id, username: user.username }
-    end
-
-    def save_current_token_in_env
-      token = access_token
-      env[API_TOKEN_ENV] = { token_id: token.id, token_type: token.class } if token
-
-    rescue Gitlab::Auth::UnauthorizedError
     end
 
     def sudo?
@@ -341,15 +330,11 @@ module API
     end
 
     def authenticate_by_gitlab_shell_token!
-      payload, _ = JSONWebToken::HMACToken.decode(headers[GITLAB_SHELL_API_HEADER], secret_token)
-      unauthorized! unless payload['iss'] == GITLAB_SHELL_JWT_ISSUER
-    rescue JWT::DecodeError, JWT::ExpiredSignature, JWT::ImmatureSignature => ex
-      Gitlab::ErrorTracking.track_exception(ex)
-      unauthorized!
+      unauthorized! unless Gitlab::Shell.verify_api_request(headers)
     end
 
     def authenticate_by_gitlab_shell_or_workhorse_token!
-      return require_gitlab_workhorse! unless headers[GITLAB_SHELL_API_HEADER].present?
+      return require_gitlab_workhorse! unless Gitlab::Shell.header_set?(headers)
 
       authenticate_by_gitlab_shell_token!
     end
@@ -368,6 +353,10 @@ module API
       forbidden!(reason) unless can?(current_user, action, subject)
     end
 
+    def authorize_any!(abilities, subject = :global, reason = nil)
+      forbidden!(reason) unless can_any?(current_user, abilities, subject)
+    end
+
     def authorize_push_project
       authorize! :push_code, user_project
     end
@@ -378,6 +367,10 @@ module API
 
     def authorize_admin_project
       authorize! :admin_project, user_project
+    end
+
+    def authorize_admin_integrations
+      authorize! :admin_integrations, user_project
     end
 
     def authorize_admin_group
@@ -446,10 +439,6 @@ module API
 
     def require_pages_config_enabled!
       not_found! unless Gitlab.config.pages.enabled
-    end
-
-    def can?(object, action, subject = :global)
-      Ability.allowed?(object, action, subject)
     end
 
     # Checks the occurrences of required attributes, each attribute must be present in the params hash
@@ -773,12 +762,12 @@ module API
       finder_params.merge!(
         params
           .slice(:search,
-                 :custom_attributes,
-                 :last_activity_after,
-                 :last_activity_before,
-                 :topic,
-                 :topic_id,
-                 :repository_storage)
+            :custom_attributes,
+            :last_activity_after,
+            :last_activity_before,
+            :topic,
+            :topic_id,
+            :repository_storage)
           .symbolize_keys
           .compact
       )
@@ -838,7 +827,7 @@ module API
         forbidden!('Must be authenticated using an OAuth or Personal Access Token to use sudo')
       end
 
-      validate_access_token!(scopes: [:sudo])
+      validate_and_save_access_token!(scopes: [:sudo])
 
       sudoed_user = find_user(sudo_identifier)
       not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user

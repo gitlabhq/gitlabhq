@@ -88,7 +88,7 @@ View the [template-archive](https://gitlab.com/gitlab-org/configure/template-arc
 
 ## Troubleshooting Terraform state
 
-### Unable to lock Terraform state files in CI jobs for `terraform apply` using a plan created in a previous job
+### Can't lock Terraform state files in CI jobs for `terraform apply` with a previous job's plan
 
 When passing `-backend-config=` to `terraform init`, Terraform persists these values inside the plan
 cache file. This includes the `password` value.

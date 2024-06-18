@@ -33,8 +33,13 @@ module Clusters
     has_many :environments, class_name: '::Environment', inverse_of: :cluster_agent, foreign_key: :cluster_agent_id
 
     scope :ordered_by_name, -> { order(:name) }
-    scope :with_name, -> (name) { where(name: name) }
-    scope :has_vulnerabilities, -> (value = true) { where(has_vulnerabilities: value) }
+    scope :with_name, ->(name) { where(name: name) }
+    scope :has_vulnerabilities, ->(value = true) { where(has_vulnerabilities: value) }
+
+    enum connection_mode: {
+      outgoing: 0, # agentk -> kas
+      incoming: 1  # kas -> agentk
+    }, _prefix: true
 
     validates :name,
       presence: true,
@@ -95,7 +100,7 @@ module Clusters
                .joins(:namespace)
                .where(agent_project_authorizations: { agent_id: id })
                .where(project_authorizations: { user_id: user.id, access_level: Gitlab::Access::DEVELOPER.. })
-               .where('namespaces.traversal_ids @> ARRAY[?]', root_namespace.id)
+               .where("namespaces.traversal_ids @> '{?}'", root_namespace.id)
     end
 
     def all_ci_access_authorized_namespaces_for(user)
@@ -112,9 +117,9 @@ module Clusters
     def all_ci_access_authorized_namespaces
       Namespace.select("traversal_ids[array_length(traversal_ids, 1)] AS id")
                .joins("INNER JOIN agent_group_authorizations ON " \
-                      "namespaces.traversal_ids @> ARRAY[agent_group_authorizations.group_id::integer]")
+                      "agent_group_authorizations.group_id = ANY(namespaces.traversal_ids)")
                .where(agent_group_authorizations: { agent_id: id })
-               .where('namespaces.traversal_ids @> ARRAY[?]', root_namespace.id)
+               .where("namespaces.traversal_ids @> '{?}'", root_namespace.id)
     end
 
     def root_namespace

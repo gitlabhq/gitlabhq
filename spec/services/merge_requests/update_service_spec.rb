@@ -885,7 +885,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           update_merge_request(title: 'New title')
         end
 
-        context 'when additional_merge_when_checks_ready is enabled' do
+        context 'when merge_when_checks_pass is enabled' do
           it 'publishes a DraftStateChangeEvent' do
             expected_data = {
               current_user_id: user.id,
@@ -896,9 +896,9 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           end
         end
 
-        context 'when additional_merge_when_checks_ready is disabled' do
+        context 'when merge_when_checks_pass is disabled' do
           before do
-            stub_feature_flags(additional_merge_when_checks_ready: false)
+            stub_feature_flags(merge_when_checks_pass: false)
           end
 
           it 'does not publish a DraftStateChangeEvent' do
@@ -932,7 +932,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           should_not_email(non_subscriber)
         end
 
-        context 'when additional_merge_when_checks_ready is enabled' do
+        context 'when merge_when_checks_pass is enabled' do
           it 'publishes a DraftStateChangeEvent' do
             expected_data = {
               current_user_id: user.id,
@@ -943,9 +943,9 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
           end
         end
 
-        context 'when additional_merge_when_checks_ready is disabled' do
+        context 'when merge_when_checks_pass is disabled' do
           before do
-            stub_feature_flags(additional_merge_when_checks_ready: false)
+            stub_feature_flags(merge_when_checks_pass: false)
           end
 
           it 'does not publish a DraftStateChangeEvent' do
@@ -1074,7 +1074,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       let(:first_issue) { create(:issue, project: project) }
       let(:second_issue) { create(:issue, project: project) }
 
-      it 'creates a `MergeRequestsClosingIssues` record marked as closes_work_item for each issue' do
+      it 'creates a `MergeRequestsClosingIssues` record marked as from_mr_description for each issue' do
         issue_closing_opts = { description: "Closes #{first_issue.to_reference} and #{second_issue.to_reference}" }
         service = described_class.new(project: project, current_user: user, params: issue_closing_opts)
         allow(service).to receive(:execute_hooks)
@@ -1084,25 +1084,26 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         end.to change { MergeRequestsClosingIssues.count }.by(2)
 
         expect(MergeRequestsClosingIssues.where(merge_request: merge_request)).to contain_exactly(
-          have_attributes(issue_id: first_issue.id, closes_work_item: true),
-          have_attributes(issue_id: second_issue.id, closes_work_item: true)
+          have_attributes(issue_id: first_issue.id, from_mr_description: true),
+          have_attributes(issue_id: second_issue.id, from_mr_description: true)
         )
       end
 
-      it 'removes `MergeRequestsClosingIssues` records marked as closes_work_item' do
+      it 'removes `MergeRequestsClosingIssues` records marked as from_mr_description' do
+        third_issue = create(:issue, project: project)
         create(:merge_requests_closing_issues, issue: first_issue, merge_request: merge_request)
         create(:merge_requests_closing_issues, issue: second_issue, merge_request: merge_request)
         create(
           :merge_requests_closing_issues,
-          issue: second_issue,
+          issue: third_issue,
           merge_request: merge_request,
-          closes_work_item: false
+          from_mr_description: false
         )
 
         service = described_class.new(project: project, current_user: user, params: { description: "not closing any issues" })
         allow(service).to receive(:execute_hooks)
 
-        # Does not delete the one marked as closes_work_item: false
+        # Does not delete the one marked as from_mr_description: false
         expect do
           service.execute(merge_request.reload)
         end.to change { MergeRequestsClosingIssues.count }.from(3).to(1)

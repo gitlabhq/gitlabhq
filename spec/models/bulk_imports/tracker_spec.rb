@@ -206,4 +206,24 @@ RSpec.describe BulkImports::Tracker, type: :model, feature_category: :importers 
       end
     end
   end
+
+  describe 'tracker canceling' do
+    let(:tracker) { create(:bulk_import_tracker) }
+
+    it 'marks tracker as canceled' do
+      tracker.cancel!
+
+      expect(tracker.canceled?).to eq(true)
+    end
+
+    context 'when tracker has batches' do
+      it 'marks batches as canceled' do
+        batch = create(:bulk_import_batch_tracker, tracker: tracker)
+
+        tracker.cancel!
+
+        expect(batch.reload.canceled?).to eq(true)
+      end
+    end
+  end
 end

@@ -13,9 +13,24 @@ the [Elasticsearch integration documentation](../integration/advanced_search/ela
 
 ## Deep Dive
 
-In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/-/issues/1`) on the GitLab [Elasticsearch integration](../integration/advanced_search/elasticsearch.md) to share his domain specific knowledge with anyone who may work in this part of the codebase in the future. You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on [Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf). Everything covered in this deep dive was accurate as of GitLab 12.0, and while specific details might have changed, it should still serve as a good introduction.
+In June 2019, Mario de la Ossa hosted a Deep Dive (GitLab team members only:
+`https://gitlab.com/gitlab-org/create-stage/-/issues/1`) on the GitLab
+[Elasticsearch integration](../integration/advanced_search/elasticsearch.md) to
+share his domain specific knowledge with anyone who may work in this part of the
+codebase in the future. You can find the
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[recording on YouTube](https://www.youtube.com/watch?v=vrvl-tN2EaA), and the slides on
+[Google Slides](https://docs.google.com/presentation/d/1H-pCzI_LNrgrL5pJAIQgvLX8Ji0-jIKOg1QeJQzChug/edit) and in
+[PDF](https://gitlab.com/gitlab-org/create-stage/uploads/c5aa32b6b07476fa8b597004899ec538/Elasticsearch_Deep_Dive.pdf).
+Everything covered in this deep dive was accurate as of GitLab 12.0, and while
+specific details might have changed, it should still serve as a good introduction.
 
-In August 2020, a second Deep Dive was hosted, focusing on [GitLab-specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices). The <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg) and the [slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available. Everything covered in this deep dive was accurate as of GitLab 13.3.
+In August 2020, a second Deep Dive was hosted, focusing on
+[GitLab-specific architecture for multi-indices support](#zero-downtime-reindexing-with-multiple-indices). The
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+[recording on YouTube](https://www.youtube.com/watch?v=0WdPR9oB2fg) and the
+[slides](https://lulalala.gitlab.io/gitlab-elasticsearch-deepdive/) are available.
+Everything covered in this deep dive was accurate as of GitLab 13.3.
 
 ## Supported Versions
 
@@ -36,11 +51,24 @@ Additionally, if you need large repositories or multiple forks for testing, cons
 
 ## How does it work?
 
-The Elasticsearch integration depends on an external indexer. We ship an [indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer). The user must trigger the initial indexing via a Rake task but, after this is done, GitLab itself will trigger reindexing when required via `after_` callbacks on create, update, and destroy that are inherited from [`/ee/app/models/concerns/elastic/application_versioned_search.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/concerns/elastic/application_versioned_search.rb).
+The Elasticsearch integration depends on an external indexer. We ship an
+[indexer written in Go](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
+The user must trigger the initial indexing via a Rake task but, after this is done,
+GitLab itself will trigger reindexing when required via `after_` callbacks on create,
+update, and destroy that are inherited from
+[`/ee/app/models/concerns/elastic/application_versioned_search.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/concerns/elastic/application_versioned_search.rb).
 
-After initial indexing is complete, create, update, and delete operations for all models except projects (see [#207494](https://gitlab.com/gitlab-org/gitlab/-/issues/207494)) are tracked in a Redis [`ZSET`](https://redis.io/docs/latest/develop/data-types/#sorted-sets). A regular `sidekiq-cron` `ElasticIndexBulkCronWorker` processes this queue, updating many Elasticsearch documents at a time with the [Bulk Request API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html).
+After initial indexing is complete, create, update, and delete operations for all
+models except projects (see [#207494](https://gitlab.com/gitlab-org/gitlab/-/issues/207494))
+are tracked in a Redis [`ZSET`](https://redis.io/docs/latest/develop/data-types/#sorted-sets).
+A regular `sidekiq-cron` `ElasticIndexBulkCronWorker` processes this queue, updating
+many Elasticsearch documents at a time with the
+[Bulk Request API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html).
 
-Search queries are generated by the concerns found in [`ee/app/models/concerns/elastic`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/models/concerns/elastic). These concerns are also in charge of access control, and have been a historic source of security bugs so pay close attention to them!
+Search queries are generated by the concerns found in
+[`ee/app/models/concerns/elastic`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/ee/app/models/concerns/elastic).
+These concerns are also in charge of access control, and have been a historic
+source of security bugs so pay close attention to them!
 
 ### Custom routing
 
@@ -54,7 +82,8 @@ during indexing and searching operations. Some of the benefits and tradeoffs to 
 
 ## Existing analyzers and tokenizers
 
-The following analyzers and tokenizers are defined in [`ee/lib/elastic/latest/config.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
+The following analyzers and tokenizers are defined in
+[`ee/lib/elastic/latest/config.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/elastic/latest/config.rb).
 
 ### Analyzers
 
@@ -72,7 +101,9 @@ See the `sha_tokenizer` explanation later below for an example.
 
 #### `code_analyzer`
 
-Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer and the [`word_delimiter_graph`](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-word-delimiter-graph-tokenfilter.html), `lowercase`, and `asciifolding` filters.
+Used when indexing a blob's filename and content. Uses the `whitespace` tokenizer
+and the [`word_delimiter_graph`](https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-word-delimiter-graph-tokenfilter.html),
+`lowercase`, and `asciifolding` filters.
 
 The `whitespace` tokenizer was selected to have more control over how tokens are split. For example the string `Foo::bar(4)` needs to generate tokens like `Foo` and `bar(4)` to be properly searched.
 
@@ -85,7 +116,9 @@ The [Elasticsearch `code_analyzer` doesn't account for all code cases](../integr
 
 #### `sha_tokenizer`
 
-This is a custom tokenizer that uses the [`edgeNGram` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-edgengram-tokenizer.html) to allow SHAs to be searchable by any sub-set of it (minimum of 5 chars).
+This is a custom tokenizer that uses the
+[`edgeNGram` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-edgengram-tokenizer.html)
+to allow SHAs to be searchable by any sub-set of it (minimum of 5 chars).
 
 Example:
 
@@ -100,7 +133,9 @@ Example:
 
 #### `path_tokenizer`
 
-This is a custom tokenizer that uses the [`path_hierarchy` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pathhierarchy-tokenizer.html) with `reverse: true` to allow searches to find paths no matter how much or how little of the path is given as input.
+This is a custom tokenizer that uses the
+[`path_hierarchy` tokenizer](https://www.elastic.co/guide/en/elasticsearch/reference/5.5/analysis-pathhierarchy-tokenizer.html)
+with `reverse: true` to allow searches to find paths no matter how much or how little of the path is given as input.
 
 Example:
 
@@ -115,6 +150,172 @@ Example:
 
 - Searches can have their own analyzers. Remember to check when editing analyzers.
 - `Character` filters (as opposed to token filters) always replace the original character. These filters can hinder exact searches.
+
+## Add a new document type to Elasticsearch
+
+If data cannot be added to one of the [existing indices in Elasticsearch](../integration/advanced_search/elasticsearch.md#advanced-search-index-scopes), follow these instructions to set up a new index and populate it.
+
+### Recommendations
+
+- Ensure [Elasticsearch is running](#setting-up-development-environment):
+
+  ```shell
+  curl "http://localhost:9200"
+  ```
+
+- [Run Kibana](https://www.elastic.co/guide/en/kibana/current/install.html#_install_kibana_yourself) to interact
+  with your local Elasticsearch cluster. Alternatively, you can use [Cerebro](https://github.com/lmenezes/cerebro) or a similar tool.
+- To tail the logs for Elasticsearch, run this command:
+
+  ```shell
+  tail -f log/elasticsearch.log`
+  ```
+
+See [Recommended process for adding a new document type](#recommended-process-for-adding-a-new-document-type) for how to structure the rollout.
+
+### Create the index
+
+1. Create a `Search::Elastic::Types::` class in `ee/lib/search/elastic/types/`.
+1. Define the following class methods:
+   - `index_name`: in the format `gitlab-<env>-<type>` (for example, `gitlab-production-work_items`).
+   - `mappings`: a hash containing the index schema such as fields, data types, and analyzers.
+   - `settings`: a hash containing the index settings such as replicas and tokenizers.
+     The default is good enough for most cases.
+1. Add a new [advanced search migration](search/advanced_search_migration_styleguide.md) to create the index
+   by executing `scripts/elastic-migration` and following the instructions.
+   The migration name must be in the format `Create<Name>Index`.
+1. Use the [`Elastic::MigrationCreateIndex`](search/advanced_search_migration_styleguide.md#elasticmigrationcreateindex)
+   helper and the `'migration creates a new index'` shared example for the specification file created.
+1. Add the target class to `Gitlab::Elastic::Helper::ES_SEPARATE_CLASSES`.
+1. To test the index creation, run `Elastic::MigrationWorker.new.perform` in a console and check that the index
+   has been created with the correct mappings and settings:
+
+   ```shell
+   curl "http://localhost:9200/gitlab-development-<type>/_mappings" | jq .`
+   ```
+
+   ```shell
+   curl "http://localhost:9200/gitlab-development-<type>/_settings" | jq .`
+   ```
+
+### Create a new Elastic Reference
+
+Create a `Search::Elastic::References::` class in `ee/lib/search/elastic/references/`.
+
+The reference is used to perform bulk operations in Elasticsearch.
+The file must inherit from `Search::Elastic::Reference` and define the following methods:
+
+```ruby
+include Search::Elastic::Concerns::DatabaseReference # if there is a corresponding database record for every document
+
+override :serialize
+def self.serialize(record)
+   # a string representation of the reference
+end
+
+override :instantiate
+def self.instantiate(string)
+   # deserialize the string and call initialize
+end
+
+override :preload_indexing_data
+def self.preload_indexing_data(refs)
+   # remove this method if `Search::Elastic::Concerns::DatabaseReference` is included
+   # otherwise return refs
+end
+
+def initialize
+   # initialize with instance variables
+end
+
+override :identifier
+def identifier
+   # a way to identify the reference
+end
+
+override :routing
+def routing
+   # Optional: an identifier to route the document in Elasticsearch
+end
+
+override :operation
+def operation
+   # one of `:index`, `:upsert` or `:delete`
+end
+
+override :serialize
+def serialize
+   # a string representation of the reference
+end
+
+override :as_indexed_json
+def as_indexed_json
+   # a hash containing the document represenation for this reference
+end
+
+override :index_name
+def index_name
+   # index name
+end
+
+def model_klass
+   # set to the model class if `Search::Elastic::Concerns::DatabaseReference` is included
+end
+```
+
+To add data to the index, an instance of the new reference class is called in
+`Elastic::ProcessBookkeepingService.track!()` to add the data to a queue of
+references for indexing.
+A cron worker pulls queued references and bulk-indexes the items into Elasticsearch.
+
+To test that the indexing operation works, call `Elastic::ProcessBookkeepingService.track!()`
+with an instance of the reference class and run `Elastic::ProcessBookkeepingService.new.execute`.
+The logs show the updates. To check the document in the index, run this command:
+
+```shell
+curl "http://localhost:9200/gitlab-development-<type>/_search"
+```
+
+### Data consistency
+
+Now that we have an index and a way to bulk index the new document type into Elasticsearch, we need to add data into the index. This consists of doing a backfill and doing continuous updates to ensure the index data is up to date.
+
+The backfill is done by calling `Elastic::ProcessInitialBookkeepingService.track!()` with an instance of `Search::Elastic::Reference` for every document that should be indexed.
+
+The continuous update is done by calling `Elastic::ProcessBookkeepingService.track!()` with an instance of `Search::Elastic::Reference` for every document that should be created/updated/deleted.
+
+#### Backfilling data
+
+Add a new [Advanced Search migration](search/advanced_search_migration_styleguide.md) to backfill data by executing `scripts/elastic-migration` and following the instructions.
+
+The backfill should execute `Elastic::ProcessInitialBookkeepingService.track!()` with an instance of the `Search::Elastic::Reference` created before for every document that should be indexed. The `BackfillEpics` migration can be used as an example.
+
+To test the backfill, run `Elastic::MigrationWorker.new.perform` in a console a couple of times and see that the index was populated.
+
+Tail the logs to see the progress of the migration:
+
+```shell
+tail -f log/elasticsearch.log
+```
+
+#### Continuous updates
+
+For `ActiveRecord` objects, the `ApplicationVersionedSearch` concern can be included on the model to index data based on callbacks. If that's not suitable, call `Elastic::ProcessBookkeepingService.track!()` with an instance of `Search::Elastic::Reference` whenever a document should be indexed.
+
+Always check for `Gitlab::CurrentSettings.elasticsearch_indexing?` and `use_elasticsearch?` because some self-managed instances do not have Elasticsearch enabled and [namespace limiting](../integration/advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index) can be enabled.
+
+Also check that the index is able to handle the index request. For example, check that the index exists if it was added in the current major release by verifying that the migration to add the index was completed: `Elastic::DataMigrationService.migration_has_finished?`.
+
+### Recommended process for adding a new document type
+
+Create the following MRs and have them reviewed by a member of the Global Search team:
+
+1. [Create the index](#create-the-index).
+1. [Create a new Elasticsearch reference](#create-a-new-elastic-reference).
+1. Perform [continuous updates](#continuous-updates) behind a feature flag. Enable the flag fully before the backfill.
+1. [Backfill the data](#backfilling-data).
+
+After indexing is done, the index is ready for search.
 
 ## Zero-downtime reindexing with multiple indices
 

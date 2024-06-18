@@ -244,5 +244,20 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
           Users::GhostUserMigration.where(user: other_user, initiator_user: user).exists?
         end.from(false).to(true))
     end
+
+    describe 'user is the only organization owner' do
+      let(:organization) { create(:organization) }
+
+      before do
+        organization.add_owner(user)
+      end
+
+      it 'returns the user with attached errors' do
+        described_class.new(user).execute(user)
+
+        expect(user.errors.full_messages).to(
+          contain_exactly('You must transfer ownership of organizations before you can remove user'))
+      end
+    end
   end
 end

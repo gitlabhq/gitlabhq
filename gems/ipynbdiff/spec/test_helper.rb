@@ -20,6 +20,10 @@ def test_case_input_path(test_case)
   File.join(BASE_PATH, test_case, 'input.ipynb')
 end
 
+def test_case_input_path_test(test_case)
+  File.join(BASE_PATH, test_case, 'input.ipynb.test')
+end
+
 def test_case_symbols_path(test_case)
   File.join(BASE_PATH, test_case, 'expected_symbols.txt')
 end
@@ -38,7 +42,8 @@ end
 
 def read_test_case(test_case_name)
   {
-    input: read_file_if_exists(test_case_input_path(test_case_name)),
+    input: read_file_if_exists(test_case_input_path(test_case_name)) ||
+      read_file_if_exists(test_case_input_path_test(test_case_name)),
     expected_markdown: read_file_if_exists(test_case_md_path(test_case_name)),
     expected_symbols: read_file_if_exists(test_case_symbols_path(test_case_name)),
     expected_line_numbers: read_file_if_exists(test_case_line_numbers_path(test_case_name))

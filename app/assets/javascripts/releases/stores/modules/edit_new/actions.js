@@ -1,7 +1,7 @@
 import { omit } from 'lodash';
 import { getTag } from '~/rest_api';
 import { createAlert } from '~/alert';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { HTTP_STATUS_NOT_FOUND } from '~/lib/utils/http_status';
 import { s__ } from '~/locale';
@@ -116,7 +116,7 @@ export const removeAssetLink = updateDraft(({ commit }, linkIdToRemove) =>
 export const receiveSaveReleaseSuccess = ({ commit, dispatch }, urlToRedirectTo) => {
   commit(types.RECEIVE_SAVE_RELEASE_SUCCESS);
   dispatch('clearDraftRelease');
-  redirectTo(urlToRedirectTo); // eslint-disable-line import/no-deprecated
+  visitUrl(urlToRedirectTo);
 };
 
 export const saveRelease = ({ commit, dispatch, state }) => {

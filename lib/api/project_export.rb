@@ -75,7 +75,7 @@ module API
           optional :upload, type: Hash do
             optional :url, type: String, desc: 'The URL to upload the project'
             optional :http_method, type: String, default: 'PUT', values: %w[PUT POST],
-                                   desc: 'HTTP method to upload the exported project'
+              desc: 'HTTP method to upload the exported project'
           end
         end
         post ':id/export' do
@@ -97,8 +97,8 @@ module API
           else
             begin
               user_project.add_export_job(current_user: current_user,
-                                          after_export_strategy: export_strategy,
-                                          params: project_export_params)
+                after_export_strategy: export_strategy,
+                params: project_export_params)
             rescue Project::ExportLimitExceeded => e
               render_api_error!(e.message, 400)
             end

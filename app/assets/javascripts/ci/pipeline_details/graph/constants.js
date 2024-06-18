@@ -24,3 +24,11 @@ export const ACTION_FAILURE = 'action_failure';
 export const IID_FAILURE = 'missing_iid';
 
 export const RETRY_ACTION_TITLE = 'Retry';
+export const MANUAL_ACTION_TITLE = 'Run';
+
+/*
+  this poll interval is shared between the graph,
+  pipeline header, jobs tab and failed jobs tab to
+  keep all the data relatively in sync
+*/
+export const POLL_INTERVAL = 10000;

@@ -38,7 +38,7 @@ The following video gives you an overview of GitLab merge request approval polic
 ## Requirements and limitations
 
 - You must add the respective [security scanning tools](../index.md#application-coverage).
-  Otherwise, merge request approval policies cannot get evaluated and the corresonding approvals stay required.
+  Otherwise, merge request approval policies cannot get evaluated and the corresponding approvals stay required.
 - The maximum number of merge request approval policies is five per security policy project.
 - Each policy can have a maximum of five rules.
 - All configured scanners must be present in the merge request's latest pipeline. If not, approvals are required even if some vulnerability criteria have not been met.
@@ -50,9 +50,7 @@ The following video gives you an overview of GitLab merge request approval polic
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/409482) in GitLab 16.3. Feature flag `multi_pipeline_scan_result_policies` removed.
 > - Support for parent-child pipelines [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428591) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `approval_policy_parent_child_pipeline`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/451597) in GitLab 17.0.
-
-FLAG:
-On self-managed GitLab, by default support for parent-child pipelines is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `approval_policy_parent_child_pipeline`.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/428591) in GitLab 17.1. Feature flag `approval_policy_parent_child_pipeline` removed.
 
 A project can have multiple pipeline types configured. A single commit can initiate multiple
 pipelines, each of which may contain a security scan.
@@ -125,21 +123,22 @@ the following sections and tables provide an alternative.
 > - The merge request approval policy field `vulnerability_attributes` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123052) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `enforce_vulnerability_attributes_rules`. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/418784) in GitLab 16.3. Feature flag removed.
 > - The merge request approval policy field `vulnerability_age` was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123956) in GitLab 16.2.
 > - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
+> - The `vulnerability_states` option `newly_detected` was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/422414) in GitLab 17.0 and the options `new_needs_triage` and `new_dismissed` were added to replace it.
 
 This rule enforces the defined actions based on security scan findings.
 
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
-| `type` | `string` | true | `scan_finding` | The rule's type. |
-| `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field. |
-| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`. |
-| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule. |
-| `scanners` | `array` of `string` | true | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. `sast` includes results from both SAST and SAST IaC scanners. |
-| `vulnerabilities_allowed` | `integer` | true | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered. |
-| `severity_levels` | `array` of `string` | true | `info`, `unknown`, `low`, `medium`, `high`, `critical` | The severity levels for this rule to consider. |
-| `vulnerability_states` | `array` of `string` | true | `[]` or `newly_detected`, `detected`, `confirmed`, `resolved`, `dismissed`, `new_needs_triage`, `new_dismissed` | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - the `newly_detected` policy option covers vulnerabilities identified in the merge request branch itself but that do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline and necessary security scans are complete. The `newly_detected` option considers both of the following statuses:<br><br> • Detected<br> • Dismissed<br><br> The `new_needs_triage` option considers the status<br><br> • Detected<br><br> The `new_dismissed` option considers the status<br><br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. <br><br>An empty array, `[]`, covers the same statuses as `newly_detected`. It is equivalent to specifying `['new_needs_triage', 'new_dismissed']`. |
-| `vulnerability_attributes` | `object` | false | `{false_positive: boolean, fix_available: boolean}` | All vulnerability findings are considered by default. But filters can be applied for attributes to consider only vulnerability findings: <br><br> • With a fix available (`fix_available: true`)<br><br> • With no fix available (`fix_available: false`)<br> • That are false positive (`false_positive: true`)<br> • That are not false positive (`false_positive: false`)<br> • Or a combination of both. For example (`fix_available: true, false_positive: false`) |
-| `vulnerability_age` | `object` | false | N/A | Filter pre-existing vulnerability findings by age. A vulnerability's age is calculated as the time since it was detected in the project. The criteria are `operator`, `value`, and  `interval`.<br>- The `operator` criterion specifies if the age comparison used is older than (`greater_than`) or younger than (`less_than`).<br>- The `value` criterion specifies the numeric value representing the vulnerability's age.<br>- The `interval` criterion specifies the unit of measure of the vulnerability's age: `day`, `week`, `month`, or `year`.<br><br>Example: `operator: greater_than`, `value: 30`, `interval: day`. |
+| Field | Type | Required | Possible values | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+|-------|------|----------|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `type` | `string` | true | `scan_finding` | The rule's type.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `branches` | `array` of `string` | true if `branch_type` field does not exist | `[]` or the branch's name | Applicable only to protected target branches. An empty array, `[]`, applies the rule to all protected target branches. Cannot be used with the `branch_type` field.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `branch_type` | `string` | true if `branches` field does not exist | `default` or `protected` | The types of protected branches the given policy applies to. Cannot be used with the `branches` field. Default branches must also be `protected`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `branch_exceptions` | `array` of `string` | false |  Names of branches | Branches to exclude from this rule.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `scanners` | `array` of `string` | true | `sast`, `secret_detection`, `dependency_scanning`, `container_scanning`, `dast`, `coverage_fuzzing`, `api_fuzzing` | The security scanners for this rule to consider. `sast` includes results from both SAST and SAST IaC scanners.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `vulnerabilities_allowed` | `integer` | true | Greater than or equal to zero | Number of vulnerabilities allowed before this rule is considered.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `severity_levels` | `array` of `string` | true | `info`, `unknown`, `low`, `medium`, `high`, `critical` | The severity levels for this rule to consider.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `vulnerability_states` | `array` of `string` | true | `[]` or `detected`, `confirmed`, `resolved`, `dismissed`, `new_needs_triage`, `new_dismissed` | All vulnerabilities fall into two categories:<br><br>**Newly Detected Vulnerabilities** - Vulnerabilities identified in the merge request branch itself but that do not currently exist on the default branch. This policy option requires a pipeline to complete before the rule is evaluated so that it knows whether vulnerabilities are newly detected or not. Merge requests are blocked until the pipeline and necessary security scans are complete. The `new_needs_triage` option considers the status<br><br> • Detected<br><br> The `new_dismissed` option considers the status<br><br> • Dismissed<br><br>**Pre-Existing Vulnerabilities** - these policy options are evaluated immediately and do not require a pipeline complete as they consider only vulnerabilities previously detected in the default branch.<br><br> • `Detected` - the policy looks for vulnerabilities in the detected state.<br> • `Confirmed` - the policy looks for vulnerabilities in the confirmed state.<br> • `Dismissed` - the policy looks for vulnerabilities in the dismissed state.<br> • `Resolved` - the policy looks for vulnerabilities in the resolved state. <br><br>An empty array, `[]`, covers the same statuses as `['new_needs_triage', 'new_dismissed']`. |
+| `vulnerability_attributes` | `object` | false | `{false_positive: boolean, fix_available: boolean}` | All vulnerability findings are considered by default. But filters can be applied for attributes to consider only vulnerability findings: <br><br> • With a fix available (`fix_available: true`)<br><br> • With no fix available (`fix_available: false`)<br> • That are false positive (`false_positive: true`)<br> • That are not false positive (`false_positive: false`)<br> • Or a combination of both. For example (`fix_available: true, false_positive: false`)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `vulnerability_age` | `object` | false | N/A | Filter pre-existing vulnerability findings by age. A vulnerability's age is calculated as the time since it was detected in the project. The criteria are `operator`, `value`, and  `interval`.<br>- The `operator` criterion specifies if the age comparison used is older than (`greater_than`) or younger than (`less_than`).<br>- The `value` criterion specifies the numeric value representing the vulnerability's age.<br>- The `interval` criterion specifies the unit of measure of the vulnerability's age: `day`, `week`, `month`, or `year`.<br><br>Example: `operator: greater_than`, `value: 30`, `interval: day`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 
 ## `license_finding` rule type
 
@@ -246,7 +245,7 @@ The settings set in the policy overwrite settings in the project.
 
 ## `fallback_behavior`
 
-> - The `fallback_behavior` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. Disabled by default.
+> - The `fallback_behavior` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451784) in GitLab 17.0 [with a flag](../../../administration/feature_flags.md) named `security_scan_result_policies_unblock_fail_open_approval_rules`. Disabled by default.
 > - The `fallback_behavior` field was [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/groups/gitlab-org/-/epics/10816) in GitLab 17.0.
 
 FLAG:
@@ -255,6 +254,68 @@ On self-managed GitLab, by default the `fallback_behavior` field is available. T
 | Field  | Type     | Required | Possible values    | Description                                                                                                          |
 |--------|----------|----------|--------------------|----------------------------------------------------------------------------------------------------------------------|
 | `fail` | `string` | false    | `open` or `closed` | `closed` (default): Invalid or unenforceable rules of a policy require approval. `open`: Invalid or unenforceable rules of a policy do not require approval. |
+
+## Security policy scopes
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
+
+Security policy enforcement depends first on establishing a link between the group, subgroup, or
+project on which you want to enforce policies, and the security policy project that contains the
+policies. For example, if you are linking policies to a group, a group owner must create the link to
+the security policy project. Then, all policies in the security policy project are inherited by all
+projects in the group.
+
+You can refine a security policy's scope to:
+
+- _Include_ only projects containing a compliance framework label.
+- _Include_ or _exclude_ selected projects from enforcement.
+
+### Policy scope schema
+
+| Field | Type | Required | Possible values | Description |
+|-------|------|----------|-----------------|-------------|
+| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
+
+### `policy_scope` scope type
+
+| Field | Type | Possible values | Description |
+|-------|------|-----------------|-------------|
+| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
+| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
+
+### Example `policy.yml` with security policy scopes
+
+```yaml
+---
+approval_policy:
+- name: critical vulnerability CS approvals
+  description: critical severity level only for container scanning
+  enabled: true
+  rules:
+  - type: scan_finding
+    branches:
+    - main
+    scanners:
+    - container_scanning
+    vulnerabilities_allowed: 1
+    severity_levels:
+    - critical
+    vulnerability_states: []
+  actions:
+  - type: require_approval
+    approvals_required: 1
+    user_approvers:
+    - adalberto.dare
+  policy_scope:
+    compliance_frameworks:
+      - id: 2
+      - id: 11
+    projects:
+      including:
+        - id: 24
+        - id: 27
+```
 
 ## Example security merge request approval policies project
 
@@ -276,8 +337,7 @@ approval_policy:
     vulnerabilities_allowed: 0
     severity_levels:
     - critical
-    vulnerability_states:
-    - newly_detected
+    vulnerability_states: []
     vulnerability_attributes:
       false_positive: true
       fix_available: true
@@ -338,8 +398,7 @@ rules:
   vulnerabilities_allowed: 1
   severity_levels:
   - critical
-  vulnerability_states:
-  - newly_detected
+  vulnerability_states: []
 actions:
 - type: require_approval
   approvals_required: 1
@@ -362,7 +421,7 @@ actions:
 
 ### Accepting risk and ignoring vulnerabilities in future merge requests
 
-For merge request approval policies that are scoped to `newly_detected` findings, it's important to understand the implications of this vulnerability state. A finding is considered `newly_detected` if it exists on the merge request's branch but not on the default branch. When a merge request whose branch contains `newly_detected` findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities were detected after this time, their status would be `previously_detected` and so not be out of scope of a policy aimed at `newly_detected` findings. For example:
+For merge request approval policies that are scoped to newly detected findings(`new_needs_triage` or `new_dismissed` statuses), it's important to understand the implications of this vulnerability state. A finding is considered newly detected if it exists on the merge request's branch but not on the default branch. When a merge request whose branch contains newly detected findings is approved and merged, approvers are "accepting the risk" of those vulnerabilities. If one or more of the same vulnerabilities were detected after this time, their status would be `detected` and so not be out of scope of a policy aimed at `new_needs_triage` or `new_dismissed` findings. For example:
 
 - A merge request approval policy is created to block critical SAST findings. If a SAST finding for CVE-1234 is approved, future merge requests with the same violation will not require approval in the project.
 
@@ -402,90 +461,10 @@ Lock file tampering, for example, is outside of the scope of security policy man
 
 We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) common areas of confusion in scan result findings that need to be addressed. Below are a few of the known issues:
 
-- When using `newly_detected`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency)
+- When using `new_needs_triage` and `new_dismissed`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency)
 - Findings or errors that cause approval to be required on a merge request approval policy may not be evident in the Security MR widget. With `merge base` introduced in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases were addressed. Support for displaying more granular details about what caused security policy violations is proposed in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
 - Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
 - When merged results pipelines are enabled for the project, along with branch pipelines for created MRs, the comparison between source and target branches depends on the order in which the source branch's pipeline finishes. This can create race conditions, a resolution of which is proposed in [issue 384927](https://gitlab.com/gitlab-org/gitlab/-/issues/384927). The approvals may behave differently, depending on which target branch pipeline is selected.
-
-## Experimental features
-
-DETAILS:
-**Status:** Experiment
-
-### Security policy scopes
-
-Prerequisites:
-
-- To enable these experimental features, a group owner or administrator must enable the experimental
-  features:
-  1. On the left sidebar, select **Search or go to** and find your group.
-  1. Select **Settings > General**.
-  1. Expand **Permissions and group features**.
-  1. Select the **Security Policy Scopes** checkbox.
-  1. Optional. Select **Enforce for all subgroups**.
-
-     If the setting is not enforced for all subgroups, subgroup owners can manage the setting per subgroup.
-
-Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our
-[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
-
-Security policy enforcement depends first on establishing a link between the group, subgroup, or
-project on which you want to enforce policies, and the security policy project that contains the
-policies. For example, if you are linking policies to a group, a group owner must create the link to
-the security policy project. Then, all policies in the security policy project are inherited by all
-projects in the group.
-
-You can refine a security policy's scope to:
-
-- _Include_ only projects containing a compliance framework label.
-- _Include_ or _exclude_ selected projects from enforcement.
-
-#### Policy scope schema
-
-| Field | Type | Required | Possible values | Description |
-|-------|------|----------|-----------------|-------------|
-| `policy_scope` | `object` | false | `compliance_frameworks`, `projects` | Scopes the policy based on compliance framework labels or projects you define. |
-
-#### `policy_scope` scope type
-
-| Field | Type | Possible values | Description |
-|-------|------|-----------------|-------------|
-| `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
-| `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
-
-#### Example `policy.yml` with security policy scopes
-
-```yaml
----
-approval_policy:
-- name: critical vulnerability CS approvals
-  description: critical severity level only for container scanning
-  enabled: true
-  rules:
-  - type: scan_finding
-    branches:
-    - main
-    scanners:
-    - container_scanning
-    vulnerabilities_allowed: 1
-    severity_levels:
-    - critical
-    vulnerability_states:
-    - newly_detected
-  actions:
-  - type: require_approval
-    approvals_required: 1
-    user_approvers:
-    - adalberto.dare
-  policy_scope:
-    compliance_frameworks:
-      - id: 2
-      - id: 11
-    projects:
-      including:
-        - id: 24
-        - id: 27
-```
 
 ## Troubleshooting
 

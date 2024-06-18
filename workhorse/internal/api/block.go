@@ -8,7 +8,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 )
 
-// Prevent internal API responses intended for gitlab-workhorse from
+// Block method blocks internal API responses intended for gitlab-workhorse from
 // leaking to the end user
 func Block(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

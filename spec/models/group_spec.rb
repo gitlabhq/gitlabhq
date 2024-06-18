@@ -929,10 +929,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
           private_group.add_member(user, Gitlab::Access::DEVELOPER)
         end
 
-        it { is_expected.to match_array([private_group, internal_group, group]) }
+        it { is_expected.to contain_exactly(private_group, private_subgroup, internal_group, group) }
 
-        it 'does not have access to subgroups (see accessible_to_user scope)' do
-          is_expected.not_to include(private_subgroup)
+        context 'when include_subgroups_in_authorized_groups is disabled' do
+          before do
+            stub_feature_flags(include_subgroups_in_authorized_groups: false)
+          end
+
+          it 'does not include subgroups with inherited membership' do
+            is_expected.to contain_exactly(private_group, internal_group, group)
+          end
         end
       end
 
@@ -1983,7 +1989,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'evaluating admin access level' do
-      let_it_be(:admin) { create(:admin, :without_default_org) }
+      let_it_be(:admin) { create(:admin) }
 
       context 'when admin mode is enabled', :enable_admin_mode do
         it 'returns OWNER by default' do
@@ -2006,8 +2012,16 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     context 'when organization owner' do
       let_it_be(:admin) { create(:admin) }
 
-      it 'returns OWNER by default' do
-        expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::OWNER)
+      context 'when admin mode is enabled', :enable_admin_mode do
+        it 'returns OWNER by default' do
+          expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::OWNER)
+        end
+      end
+
+      context 'when admin mode is disabled' do
+        it 'returns NO_ACCESS by default' do
+          expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::NO_ACCESS)
+        end
       end
 
       context 'when only concrete members' do
@@ -3783,10 +3797,10 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#work_items_mvc_2_feature_flag_enabled?' do
+  describe '#work_items_alpha_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
-      let(:feature_flag) { :work_items_mvc_2 }
-      let(:feature_flag_method) { :work_items_mvc_2_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_alpha }
+      let(:feature_flag_method) { :work_items_alpha_feature_flag_enabled? }
     end
   end
 

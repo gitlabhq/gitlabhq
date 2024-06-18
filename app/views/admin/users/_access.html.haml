@@ -5,7 +5,7 @@
         = s_('AdminUsers|Access')
 
   .form-group.gl-form-group{ role: 'group' }
-    = f.label :projects_limit, class: 'gl-display-block col-form-label'
+    = f.label :projects_limit, class: 'gl-block col-form-label'
     = f.number_field :projects_limit, min: 0, max: Gitlab::Database::MAX_INT_VALUE, class: 'form-control gl-form-input gl-form-input-sm'
 
   .form-group.gl-form-group{ role: 'group' }
@@ -46,5 +46,5 @@
     = f.fields_for :credit_card_validation do |ff|
       = ff.gitlab_ui_checkbox_component :credit_card_validated_at,
         s_('AdminUsers|Validate user account'),
-        help_text: s_('AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free CI minutes on instance runners.'),
+        help_text: s_('AdminUsers|A user can validate themselves by inputting a credit/debit card, or an admin can manually validate a user. Validated users can use free compute minutes on instance runners.'),
         checkbox_options: { checked: @user.credit_card_validated_at.present? }

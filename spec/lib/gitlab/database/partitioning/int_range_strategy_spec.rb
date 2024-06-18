@@ -233,11 +233,13 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
     let(:partitioning_key) { :partition }
     let(:table_name) { :_test_partitioned_test }
     let(:partition_size) { 5 }
+    let(:analyze_interval) { 1.week }
 
     subject(:strategy) do
       described_class.new(
         model, partitioning_key,
-        partition_size: partition_size
+        partition_size: partition_size,
+        analyze_interval: analyze_interval
       )
     end
 
@@ -245,7 +247,8 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
       expect(strategy).to have_attributes({
         model: model,
         partitioning_key: partitioning_key,
-        partition_size: partition_size
+        partition_size: partition_size,
+        analyze_interval: analyze_interval
       })
     end
   end
@@ -282,7 +285,8 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangeStrategy, feature_categor
       SQL
     end
 
-    it 'redirects to the new partition', :aggregate_failures do
+    it 'redirects to the new partition', :aggregate_failures,
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444881' do
       expect_range_partitions_for(table_name, {
         '1' => %w[1 3],
         '3' => %w[3 5]

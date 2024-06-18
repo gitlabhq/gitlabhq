@@ -9,18 +9,6 @@ module NotifyHelper
     link_to(entity.to_reference(full: full), issue_url(entity, *args))
   end
 
-  def invited_to_description(source)
-    default_description =
-      case source
-      when Project
-        s_('InviteEmail|Projects are used to host and collaborate on code, track issues, and continuously build, test, and deploy your app with built-in GitLab CI/CD.')
-      when Group
-        s_('InviteEmail|Groups assemble related projects together and grant members access to several projects at once.')
-      end
-
-    (source.description || default_description).truncate(200, separator: ' ')
-  end
-
   def merge_request_hash_param(merge_request, reviewer)
     {
       mr_highlight: '<span style="font-weight: 600;color:#333333;">'.html_safe,

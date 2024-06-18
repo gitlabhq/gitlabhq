@@ -22,9 +22,9 @@ RSpec.describe BulkImports::Groups::Stage, feature_category: :importers do
 
       expect(pipelines).to include(
         hash_including({
-            pipeline: BulkImports::Groups::Pipelines::GroupPipeline,
-            stage: 0
-          }),
+          pipeline: BulkImports::Groups::Pipelines::GroupPipeline,
+          stage: 0
+        }),
         hash_including({
           pipeline: BulkImports::Groups::Pipelines::GroupAttributesPipeline,
           stage: 1

@@ -2,7 +2,7 @@
 import { GlAlert, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
 import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/ci/constants';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
-import { setUrlFragment, redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf, formatNumber } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -14,10 +14,10 @@ import cancelPipelineMutation from '../graphql/mutations/cancel_pipeline.mutatio
 import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutation.graphql';
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import { getQueryHeaders } from '../graph/utils';
+import { POLL_INTERVAL } from '../graph/constants';
 import HeaderActions from './components/header_actions.vue';
 import HeaderBadges from './components/header_badges.vue';
 import getPipelineQuery from './graphql/queries/get_pipeline_header_data.query.graphql';
-import { POLL_INTERVAL } from './constants';
 
 export default {
   name: 'PipelineHeader',
@@ -37,6 +37,8 @@ export default {
     HeaderActions,
     HeaderBadges,
     TimeAgoTooltip,
+    PipelineAccountVerificationAlert: () =>
+      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -215,9 +217,6 @@ export default {
     refText() {
       return this.pipeline?.refText;
     },
-    triggeredByPath() {
-      return this.pipeline?.triggeredByPath;
-    },
   },
   methods: {
     reportFailure(errorType, errorMessages = []) {
@@ -279,7 +278,7 @@ export default {
           this.reportFailure(DELETE_FAILURE, errors);
           this.isDeleting = false;
         } else {
-          redirectTo(setUrlFragment(this.paths.pipelinesPath, 'delete_success')); // eslint-disable-line import/no-deprecated
+          visitUrl(setUrlFragment(this.paths.pipelinesPath, 'delete_success'));
         }
       } catch {
         this.$apollo.queries.pipeline.startPolling(POLL_INTERVAL);
@@ -299,6 +298,7 @@ export default {
       :title="failure.text"
       :variant="failure.variant"
       :dismissible="false"
+      data-testid="error-alert"
     >
       <div v-for="(failureMessage, index) in failureMessages" :key="`failure-message-${index}`">
         {{ failureMessage }}
@@ -321,7 +321,7 @@ export default {
             <gl-link
               v-if="user"
               :href="user.webUrl"
-              class="gl-display-inline-block gl-text-gray-900 gl-font-weight-bold js-user-link"
+              class="gl-display-inline-block gl-text-gray-900 gl-font-bold js-user-link"
               :data-user-id="userId"
               :data-username="user.username"
               data-testid="pipeline-user-link"
@@ -412,5 +412,7 @@ export default {
         @deletePipeline="deletePipeline($event)"
       />
     </div>
+
+    <pipeline-account-verification-alert class="gl-mt-4" />
   </div>
 </template>

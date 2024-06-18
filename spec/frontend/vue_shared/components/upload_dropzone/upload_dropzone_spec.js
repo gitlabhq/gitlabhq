@@ -186,6 +186,27 @@ describe('Upload dropzone component', () => {
     expect(wrapper.element).toMatchSnapshot();
   });
 
+  it('correctly overrides single upload messages', () => {
+    createComponent({
+      props: {
+        singleFileSelection: true,
+        uploadSingleMessage: 'Drop or select file to attach',
+      },
+    });
+    expect(findUploadText()).toContain('Drop or select file to attach');
+  });
+
+  it('correctly overrides multiple upload messages', () => {
+    createComponent({
+      props: {
+        singleFileSelection: false,
+        uploadMultipleMessage: 'Drop or select files to attach',
+      },
+    });
+
+    expect(findUploadText()).toContain('Drop or select files to attach');
+  });
+
   describe('file input form name', () => {
     it('applies inputFieldName as file input name', () => {
       createComponent({ props: { inputFieldName: 'test_field_name' } });

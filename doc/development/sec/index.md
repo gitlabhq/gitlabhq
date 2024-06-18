@@ -9,7 +9,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 The Sec section is responsible for GitLab application security features, the "Sec" part of
 DevSecOps. Development guides that are specific to the Sec section are listed here.
 
-See [Terminology](../../user/application_security/terminology) for an overview of our shared terminology.
+See [Terminology](../../user/application_security/terminology/index.md) for an overview of our shared terminology.
 
 ## Architecture
 
@@ -78,7 +78,7 @@ If you are working with CI/CD templates, read the [development guide for GitLab 
 Within analyzer JSON reports, the [`identifiers` field](../integrations/secure.md#identifiers) contains a collection of types and categories by which
 a vulnerability can be described (that is, a CWE family).
 
-The first item in the `identifiers` collection is known as the [primary identifier](../../user/application_security/terminology#primary-identifier),
+The first item in the `identifiers` collection is known as the [primary identifier](../../user/application_security/terminology/index.md#primary-identifier),
 a critical component to both describing and tracking vulnerabilities.
 
 In most other cases, the `identifiers` collection is unordered, where the remaining secondary identifiers act as metadata for grouping vulnerabilities

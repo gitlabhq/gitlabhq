@@ -124,7 +124,7 @@ During import, the tarball is cached in your configured `shared_path` directory.
 disk has enough free space to accommodate both the cached tarball and the unpacked
 project files on disk.
 
-### Import is successful, but with a `Total number of not imported relations: XX` message, and issues are not created during the import
+### Import succeeds with `Total number of not imported relations: XX` message
 
 If you receive a `Total number of not imported relations: XX` message, and issues
 aren't created during the import, check [exceptions_json.log](../logs/index.md#exceptions_jsonlog).

@@ -246,6 +246,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     '%.2f' % merge_request.pipeline_coverage_delta
   end
 
+  def jenkins_integration_active
+    project.jenkins_integration_active?
+  end
+
   private
 
   def cached_can_be_reverted?

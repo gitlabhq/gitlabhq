@@ -13,6 +13,7 @@ import {
   handleTracking,
 } from './lib/gitlab_web_ide';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
+import { renderWebIdeError } from './render_web_ide_error';
 
 const buildRemoteIdeURL = (ideRemotePath, remoteHost, remotePathArg) => {
   const remotePath = cleanLeadingSeparator(remotePathArg);
@@ -55,6 +56,7 @@ export const initGitlabWebIDE = async (el) => {
     editorFont: editorFontJSON,
     codeSuggestionsEnabled,
     extensionsGallerySettings: extensionsGallerySettingsJSON,
+    signOutPath,
   } = el.dataset;
 
   const rootEl = setupRootElement(el);
@@ -75,54 +77,58 @@ export const initGitlabWebIDE = async (el) => {
         'X-Requested-With': 'XMLHttpRequest',
       };
 
-  // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
-  start(rootEl, {
-    ...getBaseConfig(),
-    nonce,
-    httpHeaders,
-    auth: oauthConfig,
-    projectPath,
-    ref,
-    filePath,
-    mrId,
-    mrTargetProject: getMRTargetProject(),
-    forkInfo,
-    username: gon.current_username,
-    links: {
-      feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
-      userPreferences: el.dataset.userPreferencesPath,
-      signIn: el.dataset.signInPath,
-    },
-    featureFlags: {
-      settingsSync: true,
-      crossOriginExtensionHost: getCrossOriginExtensionHostFlagValue(extensionsGallerySettings),
-    },
-    editorFont,
-    extensionsGallerySettings,
-    codeSuggestionsEnabled,
-    handleTracking,
-    // See https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L86
-    telemetryEnabled: Tracking.enabled(),
-    async handleStartRemote({ remoteHost, remotePath, connectionToken }) {
-      const confirmed = await confirmAction(
-        __('Are you sure you want to leave the Web IDE? All unsaved changes will be lost.'),
-        {
-          primaryBtnText: __('Start remote connection'),
-          cancelBtnText: __('Continue editing'),
-        },
-      );
+  try {
+    // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
+    await start(rootEl, {
+      ...getBaseConfig(),
+      nonce,
+      httpHeaders,
+      auth: oauthConfig,
+      projectPath,
+      ref,
+      filePath,
+      mrId,
+      mrTargetProject: getMRTargetProject(),
+      forkInfo,
+      username: gon.current_username,
+      links: {
+        feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
+        userPreferences: el.dataset.userPreferencesPath,
+        signIn: el.dataset.signInPath,
+      },
+      featureFlags: {
+        settingsSync: true,
+        crossOriginExtensionHost: getCrossOriginExtensionHostFlagValue(extensionsGallerySettings),
+      },
+      editorFont,
+      extensionsGallerySettings,
+      codeSuggestionsEnabled,
+      handleTracking,
+      // See https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L86
+      telemetryEnabled: Tracking.enabled(),
+      async handleStartRemote({ remoteHost, remotePath, connectionToken }) {
+        const confirmed = await confirmAction(
+          __('Are you sure you want to leave the Web IDE? All unsaved changes will be lost.'),
+          {
+            primaryBtnText: __('Start remote connection'),
+            cancelBtnText: __('Continue editing'),
+          },
+        );
 
-      if (!confirmed) {
-        return;
-      }
+        if (!confirmed) {
+          return;
+        }
 
-      createAndSubmitForm({
-        url: buildRemoteIdeURL(ideRemotePath, remoteHost, remotePath),
-        data: {
-          connection_token: connectionToken,
-          return_url: window.location.href,
-        },
-      });
-    },
-  });
+        createAndSubmitForm({
+          url: buildRemoteIdeURL(ideRemotePath, remoteHost, remotePath),
+          data: {
+            connection_token: connectionToken,
+            return_url: window.location.href,
+          },
+        });
+      },
+    });
+  } catch (error) {
+    renderWebIdeError({ error, signOutPath });
+  }
 };

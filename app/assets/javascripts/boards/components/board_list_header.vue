@@ -395,7 +395,7 @@ export default {
           v-gl-tooltip.hover
           :class="{
             'gl-text-gray-500': list.collapsed,
-            'gl-display-block': list.collapsed || listType === 'milestone',
+            'gl-block': list.collapsed || listType === 'milestone',
           }"
           :title="listTitle"
           class="board-title-main-text gl-text-truncate"
@@ -405,7 +405,7 @@ export default {
         <span
           v-if="listType === 'assignee'"
           v-show="!list.collapsed"
-          class="gl-ml-2 gl-font-weight-normal gl-text-secondary"
+          class="gl-ml-2 gl-font-normal gl-text-secondary"
         >
           @{{ listAssignee }}
         </span>
@@ -430,7 +430,7 @@ export default {
         <gl-icon name="information" />
       </span>
       <gl-tooltip v-if="isSwimlanesHeader && list.collapsed" :target="() => $refs.collapsedInfo">
-        <div class="gl-font-weight-bold gl-pb-2">{{ collapsedTooltipTitle }}</div>
+        <div class="gl-font-bold gl-pb-2">{{ collapsedTooltipTitle }}</div>
         <div v-if="list.maxIssueCount !== 0">
           •
           <gl-sprintf :message="__('%{issuesSize} with a limit of %{maxIssueCount}')">
@@ -452,7 +452,7 @@ export default {
         class="gl-font-sm issue-count-badge gl-display-inline-flex gl-pr-2 no-drag gl-text-secondary"
         data-testid="issue-count-badge"
         :class="{
-          'gl-display-none!': list.collapsed && isSwimlanesHeader,
+          '!gl-hidden': list.collapsed && isSwimlanesHeader,
           'gl-p-0': list.collapsed,
         }"
       >

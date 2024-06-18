@@ -184,7 +184,7 @@ gitlab:
 NOTE:
 The feature flag described in this section is planned to be deprecated and removed in a future release. Support for read-only Geo secondary sites is proposed in [issue 366810](https://gitlab.com/gitlab-org/gitlab/-/issues/366810), you can upvote and share your use cases in that issue.
 
-Geo proxying for seperate URLs is enabled by default from GitLab 15.1. This allows secondary sites to proxy actions to the primary site even if the URLS are different.
+Geo proxying for separate URLs is enabled by default from GitLab 15.1. This allows secondary sites to proxy actions to the primary site even if the URLS are different.
 
 If you run into issues, disable the `geo_secondary_proxy_separate_urls` feature flag to disable the feature.
 

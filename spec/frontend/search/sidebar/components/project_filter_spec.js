@@ -147,7 +147,7 @@ describe('ProjectFilter', () => {
         });
 
         it('sets selectedProject to the initialData', () => {
-          expect(wrapper.vm.selectedProject).toBe(MOCK_PROJECT);
+          expect(wrapper.vm.selectedProject).toEqual(MOCK_PROJECT);
         });
       });
     });

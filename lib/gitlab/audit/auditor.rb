@@ -71,6 +71,7 @@ module Gitlab
         @created_at = @context.fetch(:created_at, DateTime.current)
         @message = @context.fetch(:message, '')
         @additional_details = @context.fetch(:additional_details, {})
+        @additional_details[:event_name] = @name
         @ip_address = @context[:ip_address]
         @target_details = @context[:target_details]
         @authentication_event = @context.fetch(:authentication_event, false)

@@ -76,7 +76,7 @@ class NotificationService
   end
 
   def bot_resource_access_token_about_to_expire(bot_user, token_name)
-    recipients = bot_user.resource_bot_owners.select { |owner| owner.can?(:receive_notifications) }
+    recipients = bot_user.resource_bot_owners_and_maintainers.select { |user| user.can?(:receive_notifications) }
     resource = bot_user.resource_bot_resource
 
     recipients.each do |recipient|
@@ -524,10 +524,6 @@ class NotificationService
       member.invite_email,
       member.created_by_id
     ).deliver_later
-  end
-
-  def invite_member(member, token)
-    mailer.member_invited_email(member.real_source_type, member.id, token).deliver_later
   end
 
   def new_member(member)

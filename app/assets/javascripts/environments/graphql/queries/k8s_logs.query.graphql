@@ -1,0 +1,15 @@
+#import "~/kubernetes_dashboard/graphql/queries/workload_item.fragment.graphql"
+
+query getK8sLogs(
+  $configuration: LocalConfiguration
+  $namespace: String
+  $podName: String
+  $containerName: String
+) {
+  k8sLogs(
+    configuration: $configuration
+    namespace: $namespace
+    podName: $podName
+    containerName: $containerName
+  ) @client
+}

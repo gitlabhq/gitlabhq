@@ -3,8 +3,6 @@
   "required": [
     "description",
     "action",
-    "product_section",
-    "product_stage",
     "product_group",
     "introduced_by_url",
     "milestone",
@@ -108,15 +106,6 @@
       "additionalProperties": false
     },
     "iglu_schema_url": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "product_section": {
-      "type": "string"
-    },
-    "product_stage": {
       "type": [
         "string",
         "null"

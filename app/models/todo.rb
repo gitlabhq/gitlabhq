@@ -69,17 +69,17 @@ class Todo < ApplicationRecord
 
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }
-  scope :for_action, -> (action) { where(action: action) }
-  scope :for_author, -> (author) { where(author: author) }
-  scope :for_user, -> (user) { where(user: user) }
-  scope :for_project, -> (projects) { where(project: projects) }
-  scope :for_note, -> (notes) { where(note: notes) }
+  scope :for_action, ->(action) { where(action: action) }
+  scope :for_author, ->(author) { where(author: author) }
+  scope :for_user, ->(user) { where(user: user) }
+  scope :for_project, ->(projects) { where(project: projects) }
+  scope :for_note, ->(notes) { where(note: notes) }
   scope :for_undeleted_projects, -> { joins(:project).merge(Project.without_deleted) }
-  scope :for_group, -> (group) { where(group: group) }
-  scope :for_type, -> (type) { where(target_type: type) }
-  scope :for_target, -> (id) { where(target_id: id) }
-  scope :for_commit, -> (id) { where(commit_id: id) }
-  scope :not_in_users, -> (user_ids) { where.not('todos.user_id' => user_ids) }
+  scope :for_group, ->(group) { where(group: group) }
+  scope :for_type, ->(type) { where(target_type: type) }
+  scope :for_target, ->(id) { where(target_id: id) }
+  scope :for_commit, ->(id) { where(commit_id: id) }
+  scope :not_in_users, ->(user_ids) { where.not('todos.user_id' => user_ids) }
   scope :with_entity_associations, -> do
     preload(:target, :author, :note, group: :route, project: [:route, :group, { namespace: [:route, :owner] }, :project_setting])
   end
@@ -107,13 +107,18 @@ class Todo < ApplicationRecord
     #
     # Returns an `ActiveRecord::Relation`.
     def for_group_ids_and_descendants(group_ids)
-      groups = Group.where(id: group_ids).self_and_descendants
+      groups_and_descendants_cte = Gitlab::SQL::CTE.new(
+        :groups_and_descendants_ids,
+        Group.where(id: group_ids).self_and_descendant_ids
+      )
 
-      from_union(
-        [
-          for_project(Project.for_group(groups)),
-          for_group(groups)
-        ])
+      groups_and_descendants = Namespace.from(groups_and_descendants_cte.table)
+
+      with(groups_and_descendants_cte.to_arel)
+        .from_union([
+          for_project(Project.for_group(groups_and_descendants)),
+          for_group(groups_and_descendants)
+        ], remove_duplicates: false)
     end
 
     # Returns `true` if the current user has any todos for the given target with the optional given state.

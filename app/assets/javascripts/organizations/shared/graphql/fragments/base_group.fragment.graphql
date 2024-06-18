@@ -6,6 +6,7 @@ fragment BaseGroup on Group {
     id
   }
   webUrl
+  organizationEditPath
   descriptionHtml
   avatarUrl
   descendantGroupsCount
@@ -16,6 +17,7 @@ fragment BaseGroup on Group {
   updatedAt
   userPermissions {
     removeGroup
+    viewEditPage
   }
   maxAccessLevel {
     integerValue

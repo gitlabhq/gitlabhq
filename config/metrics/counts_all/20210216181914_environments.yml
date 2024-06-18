@@ -2,8 +2,6 @@
 data_category: operational
 key_path: counts.environments
 description: Total available and stopped environments
-product_section: ops
-product_stage: deploy
 product_group: environments
 value_type: number
 status: active
@@ -18,4 +16,5 @@ tier:
 - ultimate
 performance_indicator_type:
 - customer_health_score
+- devops_report
 milestone: "<13.9"

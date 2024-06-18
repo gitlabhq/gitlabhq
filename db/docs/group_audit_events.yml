@@ -1,0 +1,12 @@
+---
+table_name: group_audit_events
+classes:
+- AuditEvents::GroupAuditEvent
+feature_categories:
+- audit_events
+description: Stores audit events scoped to group
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152035/
+milestone: '17.1'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces

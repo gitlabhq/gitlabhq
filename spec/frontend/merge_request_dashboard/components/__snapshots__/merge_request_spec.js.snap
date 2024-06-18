@@ -88,6 +88,7 @@ exports[`Merge request dashboard merge request component renders template 1`] = 
             class="!gl-align-middle"
             name="comments"
             size="16"
+            variant="current"
           />
           5
         </li>

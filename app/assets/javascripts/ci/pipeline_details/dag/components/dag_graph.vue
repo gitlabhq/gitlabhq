@@ -139,7 +139,7 @@ export default {
         'gl-pointer-events-none',
         'gl-flex-direction-column',
         'gl-justify-content-center',
-        'gl-overflow-wrap-break',
+        'gl-break-words',
       ].join(' ');
 
       return (

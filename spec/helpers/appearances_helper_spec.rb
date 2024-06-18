@@ -234,24 +234,14 @@ RSpec.describe AppearancesHelper do
   describe '#custom_sign_in_description' do
     it 'returns an empty string if no custom description is found' do
       allow(helper).to receive(:current_appearance).and_return(nil)
-      allow(Gitlab::CurrentSettings).to receive(:sign_in_text).and_return(nil)
-      allow(Gitlab::CurrentSettings).to receive(:help_text).and_return(nil)
 
       expect(helper.custom_sign_in_description).to eq('')
     end
 
-    it 'returns a custom description if all the setting options are found' do
-      allow(helper).to receive(:markdown_field).and_return('1')
-      allow(helper).to receive(:markdown).and_return('2', '3')
+    it 'returns a markdown of the custom description' do
+      allow(helper).to receive(:markdown_field).and_return('<p>1</p>')
 
-      expect(helper.custom_sign_in_description).to eq('1<br>2<br>3')
-    end
-
-    it 'returns a custom description if only one setting options is found' do
-      allow(helper).to receive(:markdown_field).and_return('')
-      allow(helper).to receive(:markdown).and_return('2', '')
-
-      expect(helper.custom_sign_in_description).to eq('2')
+      expect(helper.custom_sign_in_description).to eq('<p>1</p>')
     end
   end
 

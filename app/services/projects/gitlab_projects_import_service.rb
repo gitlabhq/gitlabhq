@@ -72,6 +72,8 @@ module Projects
         params[:import_type] = 'gitlab_project'
       end
 
+      params[:organization_id] = current_namespace.organization_id
+
       params[:import_data] = { data: data } if data.present?
     end
   end

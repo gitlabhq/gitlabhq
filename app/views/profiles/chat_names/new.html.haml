@@ -20,7 +20,7 @@
         .gl-display-flex
           = form_tag profile_chat_names_path, method: :post do
             = hidden_field_tag :token, @chat_name_token.token
-            = render Pajamas::ButtonComponent.new(type: :submit, variant: :danger) do
+            = render Pajamas::ButtonComponent.new(type: :submit, variant: :danger, button_options: { data: { testid: 'authorize-button' } }) do
               = _('Authorize')
           = form_tag deny_profile_chat_names_path, method: :delete do
             = hidden_field_tag :token, @chat_name_token.token

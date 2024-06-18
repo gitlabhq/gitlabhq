@@ -714,6 +714,18 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
       let(:event) { 'create_snippet_note' }
       let(:category) { described_class.to_s }
 
+      context 'merge request' do
+        let(:merge_request) { create(:merge_request) }
+        let(:opts) { { note: 'reply', noteable_type: 'MergeRequest', noteable_id: merge_request.id, project: merge_request.project } }
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'create_merge_request_note' }
+          let(:project) { merge_request.project }
+
+          subject(:track_event) { described_class.new(merge_request.project, user, opts).execute }
+        end
+      end
+
       context 'snippet note' do
         let(:snippet) { create(:project_snippet, project: project) }
         let(:opts) { { note: 'reply', noteable_type: 'Snippet', noteable_id: snippet.id, project: project } }

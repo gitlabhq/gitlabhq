@@ -11,10 +11,10 @@ module API
       expose :author, using: Entities::UserBasic, if: ->(release, _) { release.author.present? }
       expose :commit, using: Entities::Commit, if: ->(_, _) { can_read_code? }
       expose :milestones,
-             using: Entities::MilestoneWithStats,
-             if: ->(release, _) { release.milestones.present? && can_read_milestone? } do |release, _|
-               release.milestones.order_by_dates_and_title
-             end
+        using: Entities::MilestoneWithStats,
+        if: ->(release, _) { release.milestones.present? && can_read_milestone? } do |release, _|
+        release.milestones.order_by_dates_and_title
+      end
 
       expose :commit_path,
         documentation: { type: 'string', example: '/root/app/commit/588440f66559714280628a4f9799f0c4eb880a4a' },

@@ -53,7 +53,13 @@ sudo -u git -H bundle exec rails console -e production
 
 :::TabTitle Helm chart (Kubernetes)
 
-The console is in the toolbox pod. Refer to our [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) for details.
+```shell
+# find the pod
+kubectl get pods --namespace <namespace> -lapp=toolbox
+
+# open the Rails console
+kubectl exec -it -c toolbox <toolbox-pod-name> -- gitlab-rails console
+```
 
 ::EndTabs
 
@@ -73,6 +79,14 @@ session by running:
 
 ```ruby
 ActiveRecord::Base.logger = Logger.new($stdout)
+```
+
+By default, the previous script logs to the standard output. You can specify a log file to redirect
+output to, by replacing `$stdout` with the desired file path. For example, this code logs everything
+to `/tmp/output.log`:
+
+```ruby
+ActiveRecord::Base.logger = Logger.new('/tmp/output.log')
 ```
 
 This shows information about database queries triggered by any Ruby code

@@ -113,6 +113,7 @@ module Gitlab
           config[:bin_dir] = File.expand_path(File.join(gitaly_dir, '_build', 'bin')) # binaries by default are in `_build/bin`
           config[:gitlab] = { url: Gitlab.config.gitlab.url }
           config[:logging] = { dir: Rails.root.join('log').to_s }
+          config[:transactions] = { enabled: true } if options[:transactions_enabled]
 
           TomlRB.dump(config)
         end
@@ -171,7 +172,7 @@ module Gitlab
                          dbname: options.fetch(:dbname, 'praefect_test') }
 
             config.merge!(database: database,
-                          failover: failover)
+              failover: failover)
           else
             failover = { enabled: false, election_strategy: 'local' }
 

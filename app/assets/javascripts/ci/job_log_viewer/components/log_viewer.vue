@@ -1,5 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 export default {
   name: 'LogViewer',
@@ -20,25 +21,38 @@ export default {
   },
   data() {
     return {
-      hiddenSections: new Set(), // Use Set instead of Array. has() is more performant than includes() and it's executed more frequently
+      collapsedSections: new Set(), // Use Set instead of Array. has() is more performant than includes() and it's executed more frequently
     };
+  },
+  watch: {
+    log: {
+      immediate: true,
+      handler() {
+        // Reset the currently collapsed sections when log is loaded
+        const collapsed = this.log
+          .filter(({ options }) => parseBoolean(options?.collapsed))
+          .map(({ header }) => header);
+
+        this.collapsedSections = new Set(collapsed);
+      },
+    },
   },
   methods: {
     isLineHidden(sections = []) {
       for (const s of sections) {
-        if (this.hiddenSections.has(s)) {
+        if (this.collapsedSections.has(s)) {
           return true;
         }
       }
       return false;
     },
     toggleSection(section) {
-      if (this.hiddenSections.has(section)) {
-        this.hiddenSections.delete(section);
+      if (this.collapsedSections.has(section)) {
+        this.collapsedSections.delete(section);
       } else {
-        this.hiddenSections.add(section);
+        this.collapsedSections.add(section);
       }
-      this.hiddenSections = new Set(this.hiddenSections); // `Set` is not reactive in Vue 2, create new instance it to trigger reactivity
+      this.collapsedSections = new Set(this.collapsedSections); // `Set` is not reactive in Vue 2, create new instance it to trigger reactivity
     },
   },
 };
@@ -62,7 +76,7 @@ export default {
       <div>
         <gl-icon
           v-if="line.header"
-          :name="hiddenSections.has(line.header) ? 'chevron-lg-right' : 'chevron-lg-down'"
+          :name="collapsedSections.has(line.header) ? 'chevron-lg-right' : 'chevron-lg-down'"
         /><a :id="`L${index + 1}`" :href="`#L${index + 1}`" class="log-line-number" @click.stop>{{
           index + 1
         }}</a>

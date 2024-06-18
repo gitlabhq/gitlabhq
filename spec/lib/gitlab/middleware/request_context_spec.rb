@@ -7,7 +7,7 @@ require 'gitlab/rspec/next_instance_of'
 RSpec.describe Gitlab::Middleware::RequestContext, feature_category: :application_instrumentation do
   include NextInstanceOf
 
-  let(:app) { -> (env) {} }
+  let(:app) { ->(env) {} }
   let(:env) { {} }
 
   around do |example|

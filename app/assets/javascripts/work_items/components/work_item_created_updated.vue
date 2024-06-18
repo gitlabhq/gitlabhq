@@ -116,7 +116,7 @@ export default {
         </template>
         <template #author>
           <gl-avatar-link
-            class="js-user-link gl-text-body gl-font-weight-bold"
+            class="js-user-link gl-text-body gl-font-bold"
             :title="author.name"
             :data-user-id="authorId"
             :href="author.webUrl"
@@ -134,7 +134,7 @@ export default {
 
     <span
       v-if="updatedAt"
-      class="gl-ml-5 gl-display-none gl-sm-display-inline-block gl-align-middle"
+      class="gl-ml-5 gl-hidden sm:gl-inline-block gl-align-middle"
       data-testid="work-item-updated"
     >
       <gl-sprintf :message="__('Updated %{timeAgo}')">

@@ -69,7 +69,7 @@ module TreeHelper
   end
 
   def edit_in_new_fork_notice_action(action)
-    edit_in_new_fork_notice + _(" Try to %{action} this file again.") % { action: action }
+    edit_in_new_fork_notice + (_(" Try to %{action} this file again.") % { action: action })
   end
 
   def commit_in_fork_help

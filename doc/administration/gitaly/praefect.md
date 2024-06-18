@@ -295,7 +295,7 @@ If you see Praefect database errors after configuring PostgreSQL, see
 
 #### Reads distribution caching
 
-Praefect performance can be improved by additionally configuring the `database_direct`
+Praefect performance can be improved by additionally configuring the `session_pooled`
 settings:
 
 ```ruby

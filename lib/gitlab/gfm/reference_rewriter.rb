@@ -91,7 +91,7 @@ module Gitlab
 
       def find_referable(reference)
         extractor = Gitlab::ReferenceExtractor.new(@source_parent,
-                                                   @current_user)
+          @current_user)
         extractor.analyze(reference)
         extractor.all.first
       end

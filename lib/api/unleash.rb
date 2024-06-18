@@ -58,7 +58,7 @@ module API
       def present_feature_flags
         present_cached feature_flags_client,
           with: ::API::Entities::Unleash::ClientFeatureFlags,
-          cache_context: -> (client) { client.unleash_api_cache_key }
+          cache_context: ->(client) { client.unleash_api_cache_key }
       end
 
       def feature_flags_client

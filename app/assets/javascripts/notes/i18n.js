@@ -46,9 +46,15 @@ export const COMMENT_FORM = {
     commentHelp: __('Add a general comment to this %{noteableDisplayName}.'),
     internalCommentHelp: __('Add a confidential internal note to this %{noteableDisplayName}.'),
   },
+  addToReviewButton: {
+    saveThread: __('Add thread to review'),
+    saveComment: __('Add comment to review'),
+  },
   attachmentMsg: s__(
     'Notes|Attachments are sent by email. Attachments over 10 MB are sent as links to your GitLab instance, and only accessible to project members.',
   ),
+  addCommentNow: __('Add comment now'),
+  addThreadNow: __('Add thread now'),
 };
 
 export const EDITED_TEXT = {

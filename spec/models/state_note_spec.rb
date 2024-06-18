@@ -38,7 +38,7 @@ RSpec.describe StateNote, feature_category: :team_planning do
           expect(subject.author).to eq(author)
           expect(subject.created_at).to eq(event.created_at)
           expect(subject.updated_at).to eq(event.created_at)
-          expect(subject.note).to eq("closed via commit #{commit.id}")
+          expect(subject.note).to eq("closed with commit #{commit.id}")
         end
       end
 
@@ -50,7 +50,7 @@ RSpec.describe StateNote, feature_category: :team_planning do
           expect(subject.author).to eq(author)
           expect(subject.created_at).to eq(event.created_at)
           expect(subject.updated_at).to eq(event.created_at)
-          expect(subject.note).to eq("closed via merge request !#{merge_request.iid}")
+          expect(subject.note).to eq("closed with merge request !#{merge_request.iid}")
         end
       end
 
@@ -77,7 +77,7 @@ RSpec.describe StateNote, feature_category: :team_planning do
             expect(subject.author).to eq(author)
             expect(subject.created_at).to eq(event.created_at)
             expect(subject.updated_at).to eq(event.created_at)
-            expect(subject.note).to eq("merged via merge request !#{merge_request.iid}")
+            expect(subject.note).to eq("merged with merge request !#{merge_request.iid}")
           end
         end
       end

@@ -1,6 +1,7 @@
 - add_page_specific_style 'page_bundles/merge_request'
 - add_to_breadcrumbs _("Merge requests"), project_merge_requests_path(@project)
-- breadcrumb_title @merge_request.to_reference
+- add_to_breadcrumbs @merge_request.to_reference, merge_request_path(@merge_request)
+- breadcrumb_title _("Edit")
 - page_title _("Edit"), "#{@merge_request.title} (#{@merge_request.to_reference}", _("Merge requests")
 
 %h1.page-title.gl-font-size-h-display

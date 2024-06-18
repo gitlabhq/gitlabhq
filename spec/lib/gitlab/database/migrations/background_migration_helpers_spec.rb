@@ -214,7 +214,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
           it 'does raise an exception' do
             expect do
               model.queue_background_migration_jobs_by_range_at_intervals(ProjectAuthorization, 'FooJob', 10.seconds)
-            end.to raise_error /use `restrict_gitlab_migration:` " with `:gitlab_shared`/
+            end.to raise_error(/use `restrict_gitlab_migration:` " with `:gitlab_shared`/)
           end
         end
       end
@@ -227,7 +227,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
         it 'does raise an exception' do
           expect do
             model.queue_background_migration_jobs_by_range_at_intervals(ProjectAuthorization, 'FooJob', 10.seconds)
-          end.to raise_error /The `#queue_background_migration_jobs_by_range_at_intervals` can not be run inside a transaction./
+          end.to raise_error(/The `#queue_background_migration_jobs_by_range_at_intervals` can not be run inside a transaction./)
         end
       end
     end
@@ -273,7 +273,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
 
           it 'does raise an exception' do
             expect { subject }
-              .to raise_error /The `#requeue_background_migration_jobs_by_range_at_intervals` cannot use `restrict_gitlab_migration:`./
+              .to raise_error(/The `#requeue_background_migration_jobs_by_range_at_intervals` cannot use `restrict_gitlab_migration:`./)
           end
         end
       end
@@ -285,7 +285,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
 
         it 'does raise an exception' do
           expect { subject }
-            .to raise_error /The `#requeue_background_migration_jobs_by_range_at_intervals` can not be run inside a transaction./
+            .to raise_error(/The `#requeue_background_migration_jobs_by_range_at_intervals` can not be run inside a transaction./)
         end
       end
 
@@ -405,7 +405,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
 
         it 'does raise an exception' do
           expect { model.finalize_background_migration(job_class_name, delete_tracking_jobs: %w[pending succeeded]) }
-            .to raise_error /The `#finalize_background_migration` can not be run inside a transaction./
+            .to raise_error(/The `#finalize_background_migration` can not be run inside a transaction./)
         end
       end
 
@@ -425,7 +425,7 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
 
           it 'does raise an exception' do
             expect { model.finalize_background_migration(job_class_name, delete_tracking_jobs: %w[pending succeeded]) }
-              .to raise_error /The `#finalize_background_migration` cannot use `restrict_gitlab_migration:`./
+              .to raise_error(/The `#finalize_background_migration` cannot use `restrict_gitlab_migration:`./)
           end
         end
       end

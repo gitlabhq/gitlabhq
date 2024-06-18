@@ -20,7 +20,7 @@ import { CopyAsGFM } from '~/behaviors/markdown/copy_as_gfm';
 import { updateText } from '~/lib/utils/text_markdown';
 import ToolbarButton from './toolbar_button.vue';
 import DrawioToolbarButton from './drawio_toolbar_button.vue';
-import CommentTemplatesDropdown from './comment_templates_dropdown.vue';
+import CommentTemplatesModal from './comment_templates_modal.vue';
 import HeaderDivider from './header_divider.vue';
 
 export default {
@@ -29,7 +29,7 @@ export default {
     GlPopover,
     GlButton,
     DrawioToolbarButton,
-    CommentTemplatesDropdown,
+    CommentTemplatesModal,
     AiActionsDropdown: () => import('ee_component/ai/components/ai_actions_dropdown.vue'),
     HeaderDivider,
   },
@@ -235,6 +235,10 @@ export default {
     },
     insertSavedReply(savedReply) {
       this.insertIntoTextarea(savedReply);
+
+      setTimeout(() => {
+        this.$el.closest('.md-area')?.querySelector('textarea')?.focus();
+      }, 500);
     },
   },
   shortcuts: {
@@ -265,22 +269,22 @@ export default {
     <div class="gl-display-flex gl-align-items-center gl-flex-wrap">
       <div
         data-testid="md-header-toolbar"
-        class="md-header-toolbar gl-display-flex gl-py-3 gl-row-gap-2 gl-flex-grow-1 gl-align-items-flex-start"
+        class="md-header-toolbar gl-display-flex gl-py-3 gl-gap-y-2 gl-flex-grow-1 gl-align-items-flex-start"
       >
-        <div class="gl-display-flex gl-flex-wrap gl-row-gap-2">
+        <div class="gl-display-flex gl-flex-wrap gl-gap-y-2">
           <gl-button
             v-if="enablePreview"
             data-testid="preview-toggle"
             :value="previewMarkdown ? 'preview' : 'edit'"
             :label="$options.i18n.previewTabTitle"
-            class="js-md-preview-button gl-flex-direction-row-reverse gl-align-items-center gl-font-weight-normal!"
+            class="js-md-preview-button gl-flex-direction-row-reverse gl-align-items-center !gl-font-normal"
             size="small"
             category="tertiary"
             @click="switchPreview"
             >{{ previewMarkdown ? $options.i18n.hidePreview : $options.i18n.preview }}</gl-button
           >
           <template v-if="!previewMarkdown && canSuggest">
-            <div class="gl-display-flex gl-row-gap-2">
+            <div class="gl-display-flex gl-gap-y-2">
               <header-divider v-if="!previewMarkdown" />
               <toolbar-button
                 ref="suggestButton"
@@ -323,10 +327,10 @@ export default {
               </gl-popover>
             </div>
           </template>
-          <div class="gl-display-flex gl-row-gap-2">
+          <div class="gl-display-flex gl-gap-y-2">
             <div
               v-if="!previewMarkdown && editorAiActions.length"
-              class="gl-display-flex gl-row-gap-2"
+              class="gl-display-flex gl-gap-y-2"
             >
               <header-divider v-if="!previewMarkdown" />
               <ai-actions-dropdown
@@ -363,7 +367,7 @@ export default {
             icon="italic"
             tracking-property="italic"
           />
-          <div class="gl-display-flex gl-row-gap-2">
+          <div class="gl-display-flex gl-gap-y-2">
             <toolbar-button
               v-if="!restrictedToolBarItems.includes('strikethrough')"
               v-show="!previewMarkdown"
@@ -471,7 +475,7 @@ export default {
             icon="list-outdent"
             tracking-property="outdent"
           />
-          <div class="gl-display-flex gl-row-gap-2">
+          <div class="gl-display-flex gl-gap-y-2">
             <toolbar-button
               v-if="!restrictedToolBarItems.includes('collapsible-section')"
               v-show="!previewMarkdown"
@@ -521,7 +525,7 @@ export default {
             icon="quick-actions"
             tracking-property="quickAction"
           />
-          <comment-templates-dropdown
+          <comment-templates-modal
             v-if="!previewMarkdown && newCommentTemplatePaths.length"
             :new-comment-template-paths="newCommentTemplatePaths"
             @select="insertSavedReply"

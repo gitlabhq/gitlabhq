@@ -1,8 +1,6 @@
 ---
 key_path: counts.instances_shimo_active
 description: Count of instances with active Shimo integrations
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: removed

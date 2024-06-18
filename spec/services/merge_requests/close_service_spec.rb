@@ -104,6 +104,14 @@ RSpec.describe MergeRequests::CloseService, feature_category: :code_review_workf
       execute
     end
 
+    it 'triggers deletion of related Pages deployments' do
+      expect(Pages::DeactivateMrDeploymentsWorker)
+        .to receive(:perform_async)
+          .with(merge_request.id)
+
+      execute
+    end
+
     it 'schedules CleanupRefsService' do
       expect(MergeRequests::CleanupRefsService).to receive(:schedule).with(merge_request)
 

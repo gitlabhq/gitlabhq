@@ -11,6 +11,7 @@ fragment DesignNote on Note {
   bodyHtml
   createdAt
   resolved
+  imported
   awardEmoji {
     nodes {
       name

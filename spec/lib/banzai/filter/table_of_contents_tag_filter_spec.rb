@@ -8,39 +8,44 @@ RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :team
   context 'table of contents' do
     shared_examples 'table of contents tag' do
       it 'replaces toc tag with ToC result' do
-        doc = filter(html, {}, { toc: "FOO" })
+        doc = pipeline_filter(markdown)
 
-        expect(doc.to_html).to eq("FOO")
-      end
-
-      it 'handles an empty ToC result' do
-        doc = filter(html)
-
-        expect(doc.to_html).to eq ''
+        expect(doc.to_html).to include('<ul class="section-nav">')
+        expect(doc.to_html).to include('<li><a href="#foo">Foo</a></li>')
       end
     end
 
     context '[[_TOC_]] as tag' do
       it_behaves_like 'table of contents tag' do
-        let(:html) { '<p>[[<em>TOC</em>]]</p>' }
+        let(:markdown) { "[[_TOC_]]\n\n# Foo" }
       end
-    end
 
-    context '[[_toc_]] as tag' do
       it_behaves_like 'table of contents tag' do
-        let(:html) { '<p>[[<em>toc</em>]]</p>' }
+        let(:markdown) { "[[_toc_]]\n\n# Foo" }
+      end
+
+      it 'does not recognize the toc' do
+        doc = pipeline_filter("this [[_toc_]]\n\n# Foo")
+
+        expect(doc.to_html).to include('this <a href="_toc_" data-wikilink="true">_toc_</a>')
+        expect(doc.to_html).to include('Foo</h1>')
       end
     end
 
     context '[TOC] as tag' do
       it_behaves_like 'table of contents tag' do
-        let(:html) { '<p>[TOC]</p>' }
+        let(:markdown) { "[TOC]\n\n# Foo" }
       end
-    end
 
-    context '[toc] as tag' do
       it_behaves_like 'table of contents tag' do
-        let(:html) { '<p>[toc]</p>' }
+        let(:markdown) { "[toc]\n\n# Foo" }
+      end
+
+      it 'does not recognize the toc' do
+        doc = pipeline_filter("this [toc]\n\n# Foo")
+
+        expect(doc.to_html).to include('this [toc]')
+        expect(doc.to_html).to include('Foo</h1>')
       end
     end
   end
@@ -125,5 +130,14 @@ RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :team
         expect(doc.inner_html).to include(content)
       end
     end
+  end
+
+  def pipeline_filter(text, context = {})
+    context = { project: nil, no_sourcepos: true }.merge(context)
+
+    doc = Banzai::Pipeline::PreProcessPipeline.call(text, {})
+    doc = Banzai::Pipeline::FullPipeline.call(doc[:output], context)
+
+    doc[:output]
   end
 end

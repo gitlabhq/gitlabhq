@@ -11,13 +11,13 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [Experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8560) in GitLab 15.11 as an [experiment](../../../../policy/experiment-beta-support.md#experiment) release [with a flag](../../../../administration/feature_flags.md) named `ml_experiment_tracking`. Disabled by default.
 
 NOTE:
-Model registry and model experiment tracking are [Experiments](../../../../policy/experiment-beta-support.md).
+Model registry and model experiment tracking are [experiments](../../../../policy/experiment-beta-support.md).
 Provide feedback [for model experiment tracking](https://gitlab.com/gitlab-org/gitlab/-/issues/381660). Provide feedback for [model registry](https://gitlab.com/gitlab-org/gitlab/-/epics/9423).
 
-[MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning Experiment Tracking.
+[MLflow](https://mlflow.org/) is a popular open source tool for Machine Learning experiment tracking.
 GitLab [Model experiment tracking](index.md) and GitLab
 [Model registry](../model_registry/index.md) are compatible with the MLflow client. The setup requires minimal changes to existing code.
 
@@ -59,6 +59,7 @@ Runs are registered as candidates, which can be explored by selecting an experim
 ### Associating a candidate to a CI/CD job
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119454) in GitLab 16.1.
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/9423) to beta in GitLab 17.1.
 
 If your training code is being run from a CI/CD job, GitLab can use that information to enhance
 candidate metadata. To associate a candidate to a CI/CD job:

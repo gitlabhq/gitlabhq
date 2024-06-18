@@ -204,7 +204,7 @@ export default {
         :checked="linkedItemType"
       />
     </gl-form-group>
-    <p class="gl-font-weight-bold gl-mb-2">
+    <p class="gl-font-bold gl-mb-2">
       {{ $options.i18n.linkItemInputLabel }}
     </p>
     <div class="gl-mb-5">

@@ -2,24 +2,19 @@
 data_category: optional
 key_path: counts.web_ide_merge_requests
 description: Count of merge requests created from the Web IDE
-product_section: dev
-product_stage: create
 product_group: ide
 value_type: number
 status: active
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
-options:
-  prefix: web_ide
-  event: merge_requests_count
-  include_usage_prefix: false
+data_source: internal_events
+events:
+  - name: create_merge_request_from_web_ide
 distribution:
-- ce
-- ee
+  - ce
+  - ee
 tier:
-- free
-- premium
-- ultimate
+  - free
+  - premium
+  - ultimate
 performance_indicator_type: []
-milestone: "<13.9"
+milestone: '<13.9'

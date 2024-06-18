@@ -5,6 +5,12 @@ module Gitlab
     module MergeRequestHelpers
       include DatabaseHelpers
 
+      # @param attributes [Hash]
+      def create_merge_request_metrics(attributes)
+        metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request) # rubocop: disable CodeReuse/ActiveRecord -- no need to move this to ActiveRecord model
+        metric.update(attributes)
+      end
+
       # rubocop: disable CodeReuse/ActiveRecord
       def create_merge_request_without_hooks(project, attributes, iid)
         # This work must be wrapped in a transaction as otherwise we can leave

@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.pipeline_authoring.count_cicd_component_usage_weekly
 description: Weekly count of CI/CD component usage
-product_section: ops
-product_stage: verify
 product_group: pipeline_authoring
 value_type: number
 status: active

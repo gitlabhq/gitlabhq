@@ -2,8 +2,6 @@
 data_category: standard
 key_path: recording_ce_finished_at
 description: When the core features were computed
-product_section: analytics
-product_stage: analytics
 product_group: analytics_instrumentation
 value_type: string
 status: active

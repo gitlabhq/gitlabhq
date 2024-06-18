@@ -4,7 +4,9 @@ classes:
 - LabelLink
 feature_categories:
 - team_planning
-description: Information linking labels with target objects that can be labelled; such as issues, MRs and epics
+description: Information linking labels with target objects that can be labelled;
+  such as issues, MRs and epics
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/03654a6abf47c88b8b980a6707874ff78080d2fe
 milestone: '7.2'
 gitlab_schema: gitlab_main
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463411

@@ -4,6 +4,8 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
+<!--- start_remove The following content will be removed on remove_date: '2025-08-01' -->
+
 # ZenTao (deprecated)
 
 DETAILS:
@@ -11,7 +13,8 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) in GitLab 15.7.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/377825) in GitLab 15.7
+and is planned for removal in 18.0.
 This change is a breaking change.
 
 [ZenTao](https://www.zentao.net/) is a web-based project management platform.
@@ -53,3 +56,5 @@ Complete these steps in GitLab:
 
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
+
+<!--- end_remove -->

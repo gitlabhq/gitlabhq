@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :dependency_proxy do
+RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :virtual_registry do
   include DependencyProxyHelpers
 
   include_context 'file upload requests helpers'
@@ -66,11 +66,68 @@ RSpec.describe 'Group Dependency Proxy for containers', :js, feature_category: :
     end
   end
 
+  shared_examples 'returns not found' do
+    it 'returns not found' do
+      expect(subject.code).to eq(404)
+    end
+  end
+
   context 'fetching a blob' do
     context 'when the blob is cached for the group' do
       let!(:dependency_proxy_blob) { create(:dependency_proxy_blob, group: group) }
 
-      it_behaves_like 'responds with the file'
+      # When authenticating with a job token, the encoded token is the same as
+      # that built when authenticating with a user
+      context 'with a user or a job token' do
+        let_it_be(:headers) { { 'Authorization' => "Bearer #{build_jwt(user).encoded}" } }
+
+        it_behaves_like 'responds with the file'
+      end
+
+      context 'with a personal access token' do
+        let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
+        let_it_be(:headers) { { 'Authorization' => "Bearer #{build_jwt(personal_access_token).encoded}" } }
+
+        it_behaves_like 'responds with the file'
+      end
+
+      context 'with a group access token' do
+        context 'when a member of the group' do
+          let_it_be(:group_bot_user) { create(:user, :project_bot, guest_of: group) }
+          let_it_be(:group_access_token) { create(:personal_access_token, user: group_bot_user) }
+          let_it_be(:headers) { { 'Authorization' => "Bearer #{build_jwt(group_access_token).encoded}" } }
+
+          it_behaves_like 'responds with the file'
+        end
+
+        context 'when not a member of the group' do
+          let_it_be(:group_bot_user) { create(:user, :project_bot) }
+          let_it_be(:group_access_token) { create(:personal_access_token, user: group_bot_user) }
+          let_it_be(:headers) { { 'Authorization' => "Bearer #{build_jwt(group_access_token).encoded}" } }
+
+          it_behaves_like 'returns not found'
+        end
+      end
+
+      context 'with a group deploy token' do
+        before do
+          create(:group_deploy_token, group: group, deploy_token: deploy_token)
+        end
+
+        context 'with sufficient scopes' do
+          let_it_be(:deploy_token) { create(:deploy_token, :group, :dependency_proxy_scopes) }
+          let_it_be(:headers) { { 'Authorization' => "Bearer #{build_jwt(deploy_token).encoded}" } }
+
+          it_behaves_like 'responds with the file'
+        end
+
+        context 'with insufficient scopes' do
+          let_it_be(:deploy_token) { create(:deploy_token, :group) }
+          let_it_be(:headers) { { 'Authorization' => "Bearer #{build_jwt(deploy_token).encoded}" } }
+
+          it_behaves_like 'returns not found'
+        end
+      end
     end
   end
 

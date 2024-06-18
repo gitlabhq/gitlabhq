@@ -41,11 +41,11 @@ module Gitlab
             requested_reviewer = User.find(requested_reviewer_id).to_reference
 
             if issue_event.event == 'review_request_removed'
-              "#{SystemNotes::IssuablesService.issuable_events[:review_request_removed]}" \
-              " #{requested_reviewer}"
+              "#{SystemNotes::IssuablesService.issuable_events[:review_request_removed]} " \
+              "#{requested_reviewer}"
             else
-              "#{SystemNotes::IssuablesService.issuable_events[:review_requested]}" \
-              " #{requested_reviewer}"
+              "#{SystemNotes::IssuablesService.issuable_events[:review_requested]} " \
+              "#{requested_reviewer}"
             end
           end
         end

@@ -18,6 +18,19 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
 
         expect { subject }.not_to change { personal_access_token.last_used_at }
       end
+
+      context 'when database load balancing is configured' do
+        let!(:service) { described_class.new(personal_access_token) }
+
+        it 'does not stick to primary' do
+          ::Gitlab::Database::LoadBalancing::Session.clear_session
+
+          expect(::Gitlab::Database::LoadBalancing::Session.current).not_to be_performed_write
+          expect { service.execute }.to change { personal_access_token.last_used_at }
+          expect(::Gitlab::Database::LoadBalancing::Session.current).to be_performed_write
+          expect(::Gitlab::Database::LoadBalancing::Session.current).not_to be_using_primary
+        end
+      end
     end
 
     context 'when the personal access token was used less than 10 minutes ago', :freeze_time do

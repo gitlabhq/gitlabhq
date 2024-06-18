@@ -2,8 +2,6 @@
 data_category: optional
 key_path: usage_activity_by_stage.release.successful_deployments
 description: Total successful deployments
-product_section: ops
-product_stage: deploy
 product_group: environments
 value_type: number
 status: active

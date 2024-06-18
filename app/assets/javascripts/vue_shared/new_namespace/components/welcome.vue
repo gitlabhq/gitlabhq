@@ -40,7 +40,7 @@ export default {
             <img aria-hidden :src="panel.imageSrc" />
           </div>
           <div class="gl-pl-4">
-            <h3 class="gl-font-size-h2 gl-reset-color">
+            <h3 class="gl-font-size-h2 gl-text-inherit">
               {{ panel.title }}
             </h3>
             <p class="gl-text-gray-900">

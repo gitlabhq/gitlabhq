@@ -18,7 +18,7 @@ For information about other tiers, see [Customer Product Usage Information](http
 
 ## Service Ping
 
-Service Ping is a process that collects and sends a weekly payload to GitLab Inc.
+Service Ping is a process that collects and sends a weekly payload to GitLab Inc. 
 For more information, see the [Service Ping guide](../../development/internal_analytics/service_ping/index.md). When Service Ping is enabled, GitLab gathers data from other instances and enables certain [instance-level analytics features](../../user/analytics/index.md)
 that are dependent on Service Ping.
 
@@ -42,7 +42,7 @@ There are several other benefits to enabling Service Ping:
 In GitLab versions 14.1 and later, GitLab Free customers with a self-managed instance running
 GitLab Enterprise Edition can receive paid features by registering with GitLab and sending us
 activity data through Service Ping. Features introduced here do not remove the feature from its paid
-tier. Instances on a paid tier are subject to our [Product Usage Data policy](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) managed by [Cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).  
+tier. Instances on a paid tier are subject to our [Product Usage Data policy](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) managed by [Cloud Licensing](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/).
 
 NOTE:
 Registration is not required for participation.
@@ -246,16 +246,21 @@ To enable or disable optional data in Service Ping:
 
 ::EndTabs
 
-## View the Service Ping payload
+## Access the Service Ping payload
 
-You can view the exact JSON payload sent to GitLab Inc. in the Admin Area. To view the payload:
+You can access the exact JSON payload sent to GitLab Inc. in the Admin Area or through the API.
+See an [example Service Ping payload](../../development/internal_analytics/service_ping/index.md#example-service-ping-payload).
+
+### In the UI
 
 1. Sign in as a user with administrator access.
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Metrics and profiling > Usage statistics**.
 1. Select **Preview payload**.
 
-For an example payload, see [Example Service Ping payload](../../development/internal_analytics/service_ping/index.md#example-service-ping-payload).
+### Through the API
+
+See [service ping API documentation](../../api/usage_data.md).
 
 ## Manually upload Service Ping payload
 

@@ -61,6 +61,17 @@ RSpec.describe Gitlab::Ci::Ansi2json::State, feature_category: :continuous_integ
       expect(new_state.current_line.section_footer).to eq(true)
     end
 
+    it 'allows specifying offset in new_line!', :aggregate_failures do
+      new_state = described_class.new('', 1000)
+      new_state.offset = Gitlab::Ci::Ansi2json::Converter::TIMESTAMP_PREFIX_LENGTH
+
+      new_state.new_line!(style: {})
+      expect(new_state.current_line.offset).to eq(Gitlab::Ci::Ansi2json::Converter::TIMESTAMP_PREFIX_LENGTH)
+
+      new_state.new_line!(offset: 0, timestamps: ['2024-05-14T11:19:20.899359Z'], style: {})
+      expect(new_state.current_line.offset).to eq(0)
+    end
+
     it 'ignores bad input', :aggregate_failures do
       expect(::Gitlab::AppLogger).to(
         receive(:warn).with(

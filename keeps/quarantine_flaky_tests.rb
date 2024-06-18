@@ -4,6 +4,18 @@ require 'gitlab-http'
 
 require_relative 'helpers/groups'
 
+Gitlab::HTTP_V2.configure do |config|
+  config.allowed_internal_uris = []
+  config.log_exception_proc = ->(exception, extra_info) do
+    p exception
+    p extra_info
+  end
+  config.silent_mode_log_info_proc = ->(message, http_method) do
+    p message
+    p http_method
+  end
+end
+
 module Keeps
   # This is an implementation of a ::Gitlab::Housekeeper::Keep.
   # This keep will fetch any `test` + `failure::flaky-test` + `flakiness::1` issues,
@@ -12,19 +24,26 @@ module Keeps
   # You can run it individually with:
   #
   # ```
+  # gdk start db
   # bundle exec gitlab-housekeeper -d \
   #   -k Keeps::QuarantineFlakyTests
   # ```
   class QuarantineFlakyTests < ::Gitlab::Housekeeper::Keep
     MINIMUM_REMAINING_RATE = 25
-    FLAKINESS_1_TEST_ISSUES_URL = "https://gitlab.com/api/v4/projects/gitlab-org%2Fgitlab/issues/?order_by=updated_at&state=opened&labels%5B%5D=test&labels%5B%5D=failure%3A%3Aflaky-test&labels%5B%5D=flakiness%3A%3A1&not%5Blabels%5D%5B%5D=QA&not%5Blabels%5D%5B%5D=quarantine&per_page=20"
-    EXAMPLE_LINE_REGEX = /([\w'",])? do$/
+    QUERY_URL_TEMPLATE = "https://gitlab.com/api/v4/projects/278964/issues/?order_by=updated_at&state=opened&labels[]=test&labels[]=failure::flaky-test&labels[]=%<flakiness_label>s&not[labels][]=QA&not[labels][]=quarantine&per_page=20"
+    # https://rubular.com/r/WnMxnDPvGGjoGE
+    EXAMPLE_LINE_REGEX = /\bit (?<description_and_metadata>[\w'",: ]*(?:,\n)?[\w\'",: ]+?) do$/m
+    FLAKINESS_LABELS = %w[flakiness::1 flakiness::2].freeze
 
     def each_change
-      each_very_flaky_issue do |flaky_issue|
-        change = prepare_change(flaky_issue)
+      FLAKINESS_LABELS.each do |flakiness_label|
+        query_url = very_flaky_issues_query_url(flakiness_label)
 
-        yield(change) if change
+        each_very_flaky_issue(query_url) do |flaky_issue|
+          change = prepare_change(flaky_issue)
+
+          yield(change) if change
+        end
       end
     end
 
@@ -34,12 +53,16 @@ module Keeps
       @groups_helper ||= ::Keeps::Helpers::Groups.new
     end
 
+    def very_flaky_issues_query_url(flakiness_label)
+      format(QUERY_URL_TEMPLATE, { flakiness_label: flakiness_label })
+    end
+
     def prepare_change(flaky_issue)
       match = flaky_issue['description'].match(%r{\| File URL \| \[`(?<filename>[\w\/\.]+)#L(?<line_number>\d+)`\]})
       return unless match
 
       filename = match[:filename]
-      line_number = match[:line_number].to_i
+      line_number = match[:line_number].to_i - 1
 
       match = flaky_issue['description'].match(%r{\| Description \| (?<description>.+) \|})
       return unless match
@@ -50,9 +73,26 @@ module Keeps
       full_file_content = File.read(file)
 
       file_lines = full_file_content.lines
-      return unless file_lines[line_number - 1].match?(EXAMPLE_LINE_REGEX)
+      test_line = file_lines[line_number]
 
-      file_lines[line_number - 1].sub!(EXAMPLE_LINE_REGEX, "\\1, quarantine: '#{flaky_issue['web_url']}' do")
+      unless test_line
+        puts "#{file} doesn't have a line #{line_number}! Skipping."
+        return
+      end
+
+      unless test_line.match?(EXAMPLE_LINE_REGEX)
+        puts "Line #{line_number} of #{file} doesn't match #{EXAMPLE_LINE_REGEX}! See the line content:"
+        puts "```\n#{test_line}\n```"
+        puts "Skipping."
+        return
+      end
+
+      puts "Quarantining #{flaky_issue['web_url']} (#{description})"
+
+      file_lines[line_number].sub!(
+        EXAMPLE_LINE_REGEX,
+        "it \\k<description_and_metadata>, quarantine: '#{flaky_issue['web_url']}' do"
+      )
 
       File.write(file, file_lines.join)
 
@@ -61,8 +101,8 @@ module Keeps
       construct_change(filename, line_number, description, flaky_issue)
     end
 
-    def each_very_flaky_issue
-      query_api(FLAKINESS_1_TEST_ISSUES_URL) do |flaky_test_issue|
+    def each_very_flaky_issue(url)
+      query_api(url) do |flaky_test_issue|
         yield(flaky_test_issue)
       end
     end
@@ -91,7 +131,7 @@ module Keeps
     end
 
     def get(url)
-      http_response = Gitlab::HTTP.get(
+      http_response = Gitlab::HTTP_V2.get(
         url,
         headers: {
           'User-Agent' => "GitLab-Housekeeper/#{self.class.name}",
@@ -140,13 +180,22 @@ module Keeps
         change.identifiers = [self.class.name.demodulize, filename, line_number.to_s]
         change.changed_files = [filename]
         change.description = <<~MARKDOWN
-        The #{description} test has the `flakiness::1` label set, which means it has more than 1000 flakiness reports.
+        The #{description}
+        test has either ~"flakiness::1" or ~"flakiness::2" label set, which means the number of reported failures
+        is at or above 95 percentile, indicating unusually high failure count.
 
-        This MR quarantines the test. This is a discussion starting point to let the responsible group know about the flakiness
-        so that they can take action:
+        This MR quarantines the test. This is a discussion starting point to let the
+        responsible group know about the flakiness so that they can take action:
 
-        - accept the merge request and schedule to improve the test
+        - accept the merge request and schedule the associated issue to improve the test
         - close the merge request in favor of another merge request to delete the test
+
+        Please follow the
+        [Flaky tests management process](https://handbook.gitlab.com/handbook/engineering/infrastructure/engineering-productivity/flaky-tests-management-and-processes/#flaky-tests-management-process)
+        to help us increase `master` stability.
+
+        Please let us know your feedback in the
+        [Engineering Productivity issue tracker](https://gitlab.com/gitlab-org/quality/engineering-productivity/team/-/issues).
 
         Related to #{flaky_issue['web_url']}.
         MARKDOWN
@@ -156,7 +205,7 @@ module Keeps
           'maintenance::refactor',
           'test',
           'failure::flaky-test',
-          'pipeline:expedite',
+          'pipeline::expedited',
           'quarantine',
           'quarantine::flaky',
           group_label

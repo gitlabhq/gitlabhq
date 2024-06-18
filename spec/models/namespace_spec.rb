@@ -3,6 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Namespace, feature_category: :groups_and_projects do
+  include ContainerRegistryHelpers
   include ProjectForksHelper
   include ReloadHelpers
 
@@ -487,6 +488,19 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
     end
 
+    describe '.group_namespaces' do
+      let_it_be(:user_namespace) { create(:user_namespace) }
+      let_it_be(:project) { create(:project) }
+      let_it_be(:project_namespace) { project.project_namespace }
+      let_it_be(:group_namespace) { create(:group) }
+
+      it 'only returns group namespaces' do
+        group_namespaces = described_class.group_namespaces
+        expect(group_namespaces).to include(group_namespace)
+        expect(group_namespaces).not_to include(project_namespace, user_namespace)
+      end
+    end
+
     describe '.without_project_namespaces' do
       let_it_be(:user_namespace) { create(:user_namespace) }
       let_it_be(:project) { create(:project) }
@@ -535,6 +549,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:math_rendering_limits_enabled).to(:namespace_settings) }
     it { is_expected.to delegate_method(:math_rendering_limits_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_math_rendering_limits_enabled?).to(:namespace_settings) }
+    it { is_expected.to delegate_method(:add_creator).to(:namespace_details) }
 
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)
@@ -918,7 +933,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     context 'when Gitlab API is not supported' do
       before do
         stub_container_registry_config(enabled: true)
-        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+        stub_gitlab_api_client_to_support_gitlab_api(supported: false)
       end
 
       it 'returns the project' do
@@ -949,7 +964,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     context 'when Gitlab API is supported' do
       before do
         allow(Gitlab).to receive(:com_except_jh?).and_return(true)
-        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+        stub_gitlab_api_client_to_support_gitlab_api(supported: true)
         stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
       end
 
@@ -975,52 +990,71 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
     subject { project_namespace.container_repositories_size }
 
-    context 'on gitlab.com' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:gitlab_api_supported, :no_container_repositories, :all_migrated, :returned_size, :expected_result) do
-        nil   | nil   | nil   | nil | nil
-        false | nil   | nil   | nil | nil
-        true  | true  | nil   | nil | 0
-        true  | false | false | nil | nil
-        true  | false | true  | 555 | 555
-        true  | false | true  | nil | nil
-      end
-
-      with_them do
+    context 'for a root' do
+      context 'when the GitLab API is supported' do
         before do
-          allow(ContainerRegistry::GitlabApiClient).to receive(:one_project_with_container_registry_tag).and_return(nil)
-          stub_container_registry_config(enabled: true, api_url: 'http://container-registry', key: 'spec/fixtures/x509_certificate_pk.key')
-          allow(Gitlab).to receive(:com_except_jh?).and_return(true)
-          allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(gitlab_api_supported)
-          allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(no_container_repositories)
-          allow(project_namespace).to receive_message_chain(:all_container_repositories, :all_migrated?).and_return(all_migrated)
-          allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project_namespace.full_path).and_return(returned_size)
+          stub_gitlab_api_client_to_support_gitlab_api(supported: true)
         end
 
-        it { is_expected.to eq(expected_result) }
+        context 'when there are non-empty container repositories' do
+          before do
+            allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(false)
+          end
 
-        it 'caches the result when all migrated' do
-          if all_migrated
-            expect(Rails.cache)
-              .to receive(:fetch)
-              .with(project_namespace.container_repositories_size_cache_key, expires_in: 7.days)
+          shared_examples "caching the result" do
+            it 'caches the result' do
+              expect(Rails.cache)
+                .to receive(:fetch)
+                .with(project_namespace.container_repositories_size_cache_key, expires_in: 7.days)
 
-            subject
+              subject
+            end
+          end
+
+          context 'when the Gitlab API client returns a value for deduplicated_size' do
+            before do
+              allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project_namespace.full_path).and_return(321)
+            end
+
+            it { is_expected.to eq(321) }
+
+            it_behaves_like 'caching the result'
+          end
+
+          context 'when the Gitlab API client returns nil for deduplicated_size' do
+            before do
+              allow(ContainerRegistry::GitlabApiClient).to receive(:deduplicated_size).with(project_namespace.full_path).and_return(nil)
+            end
+
+            it { is_expected.to be_nil }
+
+            it_behaves_like 'caching the result'
           end
         end
-      end
-    end
 
-    context 'not on gitlab.com' do
-      it { is_expected.to eq(nil) }
+        context 'when all the container repositories are empty' do
+          before do
+            allow(project_namespace).to receive_message_chain(:all_container_repositories, :empty?).and_return(true)
+          end
+
+          it { is_expected.to eq(0) }
+        end
+      end
+
+      context 'when the GitLab API is not supported' do
+        before do
+          stub_gitlab_api_client_to_support_gitlab_api(supported: false)
+        end
+
+        it { is_expected.to be_nil }
+      end
     end
 
     context 'for a sub-group' do
       let(:parent_namespace) { create(:group) }
       let(:project_namespace) { create(:group, parent: parent_namespace) }
 
-      it { is_expected.to eq(nil) }
+      it { is_expected.to be_nil }
     end
   end
 
@@ -1195,29 +1229,9 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
   describe '.with_statistics' do
     let_it_be(:namespace) { create(:namespace) }
-
-    let(:project1) do
-      create(:project,
-        namespace: namespace,
-        statistics: build(
-          :project_statistics,
-          namespace: namespace,
-          repository_size: 101,
-          wiki_size: 505,
-          lfs_objects_size: 202,
-          build_artifacts_size: 303,
-          pipeline_artifacts_size: 707,
-          packages_size: 404,
-          snippets_size: 605,
-          uploads_size: 808
-        )
-      )
-    end
-
-    let(:project2) do
+    let_it_be(:project_outside_namespace) do
       create(
         :project,
-        namespace: namespace,
         statistics: build(
           :project_statistics,
           namespace: namespace,
@@ -1233,35 +1247,85 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       )
     end
 
-    it "sums all project storage counters in the namespace" do
-      project1
-      project2
-      statistics = described_class.with_statistics.find(namespace.id)
-      expected_storage_size = project1.statistics.storage_size + project2.statistics.storage_size
+    subject(:statistics) { described_class.with_statistics.find(namespace.id) }
 
-      expect(statistics.storage_size).to eq expected_storage_size
-      expect(statistics.repository_size).to eq 111
-      expect(statistics.wiki_size).to eq 555
-      expect(statistics.lfs_objects_size).to eq 222
-      expect(statistics.build_artifacts_size).to eq 333
-      expect(statistics.pipeline_artifacts_size).to eq 777
-      expect(statistics.packages_size).to eq 444
-      expect(statistics.snippets_size).to eq 665
-      expect(statistics.uploads_size).to eq 888
+    context 'with projects' do
+      let_it_be(:project1) do
+        create(:project,
+          namespace: namespace,
+          statistics: build(
+            :project_statistics,
+            namespace: namespace,
+            repository_size: 101,
+            wiki_size: 505,
+            lfs_objects_size: 202,
+            build_artifacts_size: 303,
+            pipeline_artifacts_size: 707,
+            packages_size: 404,
+            snippets_size: 605,
+            uploads_size: 808
+          )
+        )
+      end
+
+      let_it_be(:project2) do
+        create(
+          :project,
+          namespace: namespace,
+          statistics: build(
+            :project_statistics,
+            namespace: namespace,
+            repository_size: 10,
+            wiki_size: 50,
+            lfs_objects_size: 20,
+            build_artifacts_size: 30,
+            pipeline_artifacts_size: 70,
+            packages_size: 40,
+            snippets_size: 60,
+            uploads_size: 80
+          )
+        )
+      end
+
+      shared_examples 'returns statistics' do
+        it "sums all project storage counters in the namespace" do
+          expected_storage_size = project1.statistics.storage_size + project2.statistics.storage_size
+
+          expect(statistics.storage_size).to eq expected_storage_size
+          expect(statistics.repository_size).to eq 111
+          expect(statistics.wiki_size).to eq 555
+          expect(statistics.lfs_objects_size).to eq 222
+          expect(statistics.build_artifacts_size).to eq 333
+          expect(statistics.pipeline_artifacts_size).to eq 777
+          expect(statistics.packages_size).to eq 444
+          expect(statistics.snippets_size).to eq 665
+          expect(statistics.uploads_size).to eq 888
+        end
+      end
+
+      it_behaves_like 'returns statistics'
+
+      context 'with relations having subquery' do
+        subject(:statistics) do
+          described_class.from(described_class.all, :namespaces).with_statistics.find(namespace.id)
+        end
+
+        it_behaves_like 'returns statistics'
+      end
     end
 
-    it "correctly handles namespaces without projects" do
-      statistics = described_class.with_statistics.find(namespace.id)
-
-      expect(statistics.storage_size).to eq 0
-      expect(statistics.repository_size).to eq 0
-      expect(statistics.wiki_size).to eq 0
-      expect(statistics.lfs_objects_size).to eq 0
-      expect(statistics.build_artifacts_size).to eq 0
-      expect(statistics.pipeline_artifacts_size).to eq 0
-      expect(statistics.packages_size).to eq 0
-      expect(statistics.snippets_size).to eq 0
-      expect(statistics.uploads_size).to eq 0
+    context 'without projects' do
+      it "returns correct statistics" do
+        expect(statistics.storage_size).to eq 0
+        expect(statistics.repository_size).to eq 0
+        expect(statistics.wiki_size).to eq 0
+        expect(statistics.lfs_objects_size).to eq 0
+        expect(statistics.build_artifacts_size).to eq 0
+        expect(statistics.pipeline_artifacts_size).to eq 0
+        expect(statistics.packages_size).to eq 0
+        expect(statistics.snippets_size).to eq 0
+        expect(statistics.uploads_size).to eq 0
+      end
     end
   end
 
@@ -1889,13 +1953,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
 
         context 'then the parent is deleted' do
-          before do
-            parent.delete
-            group.reload
-          end
-
-          it 'returns its own config with status based on the instance settings' do
-            expect(group.first_auto_devops_config).to eq({ scope: :instance, status: instance_autodevops_status })
+          it 'throws an InvalidForeignKey exception' do
+            expect { parent.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
           end
         end
       end

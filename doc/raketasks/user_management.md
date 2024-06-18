@@ -37,7 +37,7 @@ sudo gitlab-rake gitlab:import:all_users_to_all_projects
 bundle exec rake gitlab:import:all_users_to_all_projects RAILS_ENV=production
 ```
 
-Administrators are added as maintainers.
+Administrators are added as maintainers and all other users are added as developers.
 
 ## Add user as a developer to all groups
 

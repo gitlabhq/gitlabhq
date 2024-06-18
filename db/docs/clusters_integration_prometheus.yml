@@ -8,3 +8,4 @@ description: Persists information about prometheus cluster integration
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59091
 milestone: '13.11'
 gitlab_schema: gitlab_main
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465723

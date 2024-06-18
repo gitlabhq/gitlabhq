@@ -10,8 +10,6 @@ RSpec.describe Gitlab::Usage::Metric do
       data_category: "Operational",
       key_path: "counts.issues",
       description: "Count of Issues created",
-      product_section: "dev",
-      product_stage: "plan",
       product_group: "plan",
       value_type: "number",
       status: "active",
@@ -25,7 +23,7 @@ RSpec.describe Gitlab::Usage::Metric do
 
   let(:issue_count_metric_definiton) do
     double(:issue_count_metric_definiton,
-      attributes.merge({ attributes: attributes })
+      attributes.merge({ raw_attributes: attributes })
     )
   end
 
@@ -49,7 +47,7 @@ RSpec.describe Gitlab::Usage::Metric do
     let(:instrumentation_class) { "UnavailableMetric" }
     let(:issue_count_metric_definiton) do
       double(:issue_count_metric_definiton,
-        attributes.merge({ attributes: attributes, instrumentation_class: instrumentation_class })
+        attributes.merge({ raw_attributes: attributes, instrumentation_class: instrumentation_class })
       )
     end
 

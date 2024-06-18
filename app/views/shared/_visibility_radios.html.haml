@@ -1,17 +1,30 @@
-- available_visibility_levels = available_visibility_levels(form_model)
-- selected_level = snippets_selected_visibility_level(available_visibility_levels, selected_level)
+- all_visibility_levels.each do |level|
+  - disabled_visibility_level_icon_with_popover = capture do
+    - if disabled_visibility_level?(form_model, level)
+      - popover_content = capture do
+        - if restricted_visibility_level?(level)
+          = s_('VisibilityLevel|This visibility level has been restricted by your administrator.')
+        - elsif disallowed_visibility_level_by_parent?(form_model, level)
+          = s_('VisibilityLevel|This visibility level is not allowed because the parent group has a more restrictive visibility level.')
+        - elsif disallowed_visibility_level_by_projects?(form_model, level) || disallowed_visibility_level_by_sub_groups?(form_model, level)
+          - learn_more_link_start = '<a href="https://docs.gitlab.com/ee/user/public_access" target="_blank" rel="noopener noreferrer">'.html_safe # rubocop:disable Gitlab/DocUrl -- Not referencing this rails application; it is referencing another doc
+          - learn_more_link_end = '</a>'.html_safe
+          = s_('VisibilityLevel|This visibility level is not allowed because a child of %{group_name} has a less restrictive visibility level. %{learn_more_link_start}Learn more%{learn_more_link_end}.').html_safe % { group_name: form_model.name, learn_more_link_start: learn_more_link_start, learn_more_link_end: learn_more_link_end }
 
-- available_visibility_levels.each do |level|
+      %span{
+        data: {
+          testid: 'visibility-level-not-allowed-popover',
+          container: 'body',
+          content: popover_content,
+          html: 'true',
+          title: _('Visibility level not allowed'),
+          toggle: 'popover',
+          triggers: 'hover' }
+        }
+        = sprite_icon('lock')
 
   = form.gitlab_ui_radio_component model_method, level,
-     "#{visibility_level_icon(level)} #{visibility_level_label(level)}".html_safe,
-     help_text: '<span class="option-description">%{visibility_level_description}</span><span class="option-disabled-reason"></span>'.html_safe % { visibility_level_description: visibility_level_description(level, form_model)},
-     radio_options: { checked: (selected_level == level), data: { track_label: "blank_project", track_action: "activate_form_input", track_property: "#{model_method}_#{level}", track_value: "" } },
+     "#{visibility_level_icon(level)} #{visibility_level_label(level)} #{disabled_visibility_level_icon_with_popover}".html_safe,
+     help_text: '<span class="option-description text-muted">%{visibility_level_description}</span><span class="option-disabled-reason">%{option_disabled_reason}</span>'.html_safe % { visibility_level_description: visibility_level_description(level, form_model), option_disabled_reason: 'Not allowed by administrators' },
+     radio_options: { checked: (selected_level == level), disabled: disabled_visibility_level?(form_model, level), data: { track_label: "blank_project", track_action: "activate_form_input", track_property: "#{model_method}_#{level}", track_value: "" } },
      label_options: { class: 'js-visibility-level-radio' }
-
-
-.text-muted
-  - if all_visibility_levels_restricted?
-    = _('Visibility settings have been disabled by the administrator.')
-  - elsif multiple_visibility_levels_restricted?
-    = _('Other visibility settings have been disabled by the administrator.')

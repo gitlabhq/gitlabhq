@@ -4,8 +4,11 @@
     %meta{ :content => "width=device-width, initial-scale=1", :name => "viewport" }
     %title= yield(:title)
     = universal_stylesheet_link_tag 'application_utilities'
-    %style
-      = error_css
+    - if vite_enabled?
+      = universal_stylesheet_link_tag 'errors'
+    - else
+      %style
+        = error_css
     :css
       svg {
         width: 280px;

@@ -895,7 +895,7 @@ Stopping or restarting the Patroni service on the leader node triggers an automa
 WARNING:
 In GitLab 16.5 and earlier, PgBouncer nodes do not automatically fail over alongside
 Patroni nodes. PgBouncer services
-[must be restarted manually](../../administration/postgresql/replication_and_failover_troubleshooting.md#pgbouncer-errors-error-running-command-gitlabctlerrorsexecutionerror-and-error-database-gitlabhq_production-is-not-paused)
+[must be restarted manually](../../administration/postgresql/replication_and_failover_troubleshooting.md#pgbouncer-error-error-pgbouncer-cannot-connect-to-server)
 for a successful switchover.
 
 While Patroni supports automatic failover, you also have the ability to perform

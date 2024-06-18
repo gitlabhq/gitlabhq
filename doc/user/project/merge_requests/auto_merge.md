@@ -21,10 +21,10 @@ The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 This feature is available for testing, but not ready for production use.
 
-When the `merge_when_checks_pass` feature flag is enabled, if the content of a merge request is ready to merge,
+When you enable the `merge_when_checks_pass` feature flag, if the content of a merge request is ready to merge,
 you can select **Set to auto-merge**. The merge request auto-merges when all required checks complete successfully, and you don't need to remember to manually merge the merge request.
 
-After you set auto-merge, these checks must all pass before the merge request is merged:
+After you set auto-merge, these checks must all pass before the merge request merges:
 
 - All required approvals must be given.
 - No other merge requests block this merge request.
@@ -68,8 +68,8 @@ To do this from the GitLab user interface:
    **Squash commits**, or **Edit commit message**.
 1. Select **Auto-merge**.
 
-If you add a new comment to the merge request after you select **Auto-merge**,
-but before the pipeline completes, GitLab blocks the merge until you
+Commenting on a merge request after you select **Auto-merge**,
+but before the pipeline completes, blocks the merge until you
 resolve all existing threads.
 
 ## Pipeline success for auto-merge
@@ -134,7 +134,7 @@ To enable this setting:
 
 If [multiple pipeline types run for the same merge request](#merge-request-can-still-be-merged-despite-a-failed-pipeline),
 merge request pipelines take precedence over other pipeline types. For example,
-an older but successful merge request pipeline allows a merge request to be merged,
+an older but successful merge request pipeline allows a merge request to merge,
 despite a newer but failed branch pipeline.
 
 ### Allow merge after skipped pipelines
@@ -162,8 +162,8 @@ To change this behavior:
 
 In some cases, you can [require a successful pipeline for merge](#require-a-successful-pipeline-for-merge),
 but be unable to merge a merge request with no failed pipelines. The setting requires
-the existence of a successful pipeline, not the absence of failed pipelines. If the merge request
-has no pipelines at all, it is not considered to have a successful pipeline and cannot be merged.
+the existence of a successful pipeline, not the absence of failed pipelines. A merge request
+with no pipelines at all is not considered to have a successful pipeline, and cannot merge.
 
 When you enable this setting, use [`rules`](../../../ci/yaml/index.md#rules)
 or [`workflow:rules`](../../../ci/yaml/index.md#workflowrules) to ensure pipelines
@@ -175,14 +175,14 @@ In some cases, you can [require a successful pipeline for merge](#require-a-succ
 but still merge a merge request with a failed pipeline.
 
 Merge request pipelines have the highest priority for the **Pipelines must succeed** setting.
-If multiple pipeline types run for the same merge request, only the merge request pipelines
-are checked for success.
+If multiple pipeline types run for the same merge request, GitLab checks only the
+merge request pipelines for success.
 
-Multiple pipeline types in the same merge request can be caused by:
+Merge requests can have multiple pipelines if:
 
 - A [`rules`](../../../ci/yaml/index.md#rules) configuration that causes [duplicate pipelines](../../../ci/jobs/job_rules.md#avoid-duplicate-pipelines):
   one merge request pipeline and one branch pipeline. In this case, the status of the
-  latest merge request pipeline determines if a merge request can be merged, not the branch pipeline.
+  latest _merge request_ pipeline determines if a merge request can merge, not the branch pipeline.
 - Pipelines triggered by external tools that target the same branch as the merge request.
 
 In all cases, update your CI/CD configuration to prevent multiple pipeline types for the same merge request.

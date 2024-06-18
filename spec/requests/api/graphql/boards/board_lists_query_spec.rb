@@ -152,23 +152,6 @@ RSpec.describe 'get board lists', feature_category: :team_planning do
 
           expect(lists_data[0]['node']['issuesCount']).to eq 2
         end
-
-        context 'when feature flag is disabled' do
-          it 'returns an error' do
-            stub_feature_flags(or_issuable_queries: false)
-
-            post_graphql(
-              query(
-                id: global_id_of(label_list),
-                issueFilters: { or: { assignee_usernames: [user.username, another_user.username] } }
-              ), current_user: user
-            )
-
-            expect_graphql_errors_to_include(
-              "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
-            )
-          end
-        end
       end
     end
   end

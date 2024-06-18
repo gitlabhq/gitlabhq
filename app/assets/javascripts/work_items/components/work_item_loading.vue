@@ -58,7 +58,7 @@ export default {
 
       <!--- START work item attributes wrapper small/xs screen -->
       <div
-        class="work-item-attributes-wrapper gl-md-display-none!"
+        class="work-item-attributes-wrapper md:!gl-hidden"
         data-testid="work-item-attributes-xssm-loading"
       >
         <gl-skeleton-loader
@@ -100,7 +100,7 @@ export default {
 
     <!--- START work item attributes wrapper md/lg screens -->
     <aside
-      class="work-item-overview-right-sidebar gl-md-display-block! gl-display-none"
+      class="work-item-overview-right-sidebar gl-hidden md:!gl-block"
       data-testid="work-item-attributes-mdup-loading"
     >
       <div class="work-item-attributes-wrapper">

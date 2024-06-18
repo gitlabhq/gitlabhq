@@ -1,0 +1,7 @@
+%h5.gl-heading-4= s_('ProjectMaintenance|Redact text')
+%p.gl-text-secondary
+  = s_('ProjectMaintenance|Redact known instances of text in the repository. The provided strings will be replaced with %{code_open}***REMOVED***%{code_close}.').html_safe % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+%p.gl-text-secondary
+  = s_('ProjectMaintenance|Afterwards, run housekeeping manually to remove old versions of the string from Git history.')
+
+.js-maintenance-redact-text{ data: { project_path: @project.full_path, housekeeping_path: edit_project_path(@project, anchor: 'js-project-advanced-settings') } }

@@ -9,12 +9,11 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category
       create(:debian_package, without_package_files: true, with_changes_file: true, project: incoming.project)
     end
 
-    let(:source_file) { incoming.package_files.first }
-    let(:dsc_file) { incoming.package_files.second }
-    let(:changes_file) { temp_package.package_files.first }
-    let(:service) { described_class.new(changes_file) }
+    let_it_be_with_reload(:source_file) { incoming.package_files.find_by(file_name: 'sample_1.2.3~alpha2.tar.xz') }
+    let_it_be_with_reload(:dsc_file) { incoming.package_files.find_by(file_name: 'sample_1.2.3~alpha2.dsc') }
+    let_it_be_with_reload(:changes_file) { temp_package.package_files.find_by(file_name: 'sample_1.2.3~alpha2_amd64.changes') }
 
-    subject { service.execute }
+    subject(:service) { described_class.new(changes_file).execute }
 
     context 'with valid package file' do
       it 'extract metadata', :aggregate_failures do
@@ -27,8 +26,8 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category
       end
     end
 
-    context 'with invalid package file' do
-      let(:changes_file) { incoming.package_files.first }
+    context 'with invalid changes file' do
+      let_it_be(:changes_file) { incoming.package_files.find_by(file_name: 'sample-dev_1.2.3~binary_amd64.deb') }
 
       it 'raise ArgumentError', :aggregate_failures do
         expect { subject }.to raise_error(described_class::ExtractionError, "is not a changes file")
@@ -153,12 +152,15 @@ RSpec.describe Packages::Debian::ExtractChangesMetadataService, feature_category
     end
 
     context 'with missing package file' do
+      let(:missing_file) { source_file }
+      let(:missing_file_name) { source_file.file_name }
+
       before do
-        incoming.package_files.first.destroy!
+        missing_file.destroy!
       end
 
       it 'raise ArgumentError' do
-        expect { subject }.to raise_error(described_class::ExtractionError, "sample_1.2.3~alpha2.tar.xz is listed in Files but was not uploaded")
+        expect { subject }.to raise_error(described_class::ExtractionError, "#{missing_file_name} is listed in Files but was not uploaded")
       end
     end
   end

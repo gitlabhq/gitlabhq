@@ -76,8 +76,8 @@ a minimum implementation of `AbstractReferenceFilter` should define:
 - `#record_identifier(record)`: the inverse of `.parse_symbol`, that is, transform a domain object to an identifier (`#id` by default).
 - `#url_for_object(object, parent_object)`: generate the URL for a domain object.
 - `#find_object(parent_object, id)`: given the parent (usually a [`Project`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/models/project.rb))
- and an identifier, find the object. For example, this in a reference filter for
- merge requests, this might be `project.merge_requests.where(iid: iid)`.
+  and an identifier, find the object. For example, this in a reference filter for
+  merge requests, this might be `project.merge_requests.where(iid: iid)`.
 
 ### Add a new reference prefix and filter
 

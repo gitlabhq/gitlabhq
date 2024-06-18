@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Pagination::Keyset::InOperatorOptimization::ArrayScopeCol
   context 'when no columns are given' do
     let(:columns) { [] }
 
-    it { expect { array_scope_columns }.to raise_error /No array columns were given/ }
+    it { expect { array_scope_columns }.to raise_error(/No array columns were given/) }
   end
 
   context 'when Arel AS node is given as input' do

@@ -5,6 +5,7 @@ exports[`Design management list item component when item appears in view after i
   class="text-secondary"
   name="media-broken"
   size="32"
+  variant="current"
 />
 `;
 
@@ -22,7 +23,7 @@ exports[`Design management list item component with notes renders item with mult
     >
       <img
         alt="test"
-        class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
+        class="design-img gl-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
         data-testid="design-img-1"
         src="null"
       />
@@ -36,7 +37,7 @@ exports[`Design management list item component with notes renders item with mult
       data-testid="design-file-name"
     >
       <span
-        class="gl-font-weight-semibold str-truncated-100"
+        class="gl-font-semibold str-truncated-100"
         data-testid="design-img-filename-1"
         title="test"
       >
@@ -61,6 +62,7 @@ exports[`Design management list item component with notes renders item with mult
         class="gl-ml-2"
         name="comments"
         size="16"
+        variant="current"
       />
       <span
         aria-label="2 comments"
@@ -87,7 +89,7 @@ exports[`Design management list item component with notes renders item with sing
     >
       <img
         alt="test"
-        class="design-img gl-display-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
+        class="design-img gl-block gl-max-h-full gl-max-w-full gl-mx-auto gl-w-auto"
         data-testid="design-img-1"
         src="null"
       />
@@ -101,7 +103,7 @@ exports[`Design management list item component with notes renders item with sing
       data-testid="design-file-name"
     >
       <span
-        class="gl-font-weight-semibold str-truncated-100"
+        class="gl-font-semibold str-truncated-100"
         data-testid="design-img-filename-1"
         title="test"
       >
@@ -126,6 +128,7 @@ exports[`Design management list item component with notes renders item with sing
         class="gl-ml-2"
         name="comments"
         size="16"
+        variant="current"
       />
       <span
         aria-label="1 comment"

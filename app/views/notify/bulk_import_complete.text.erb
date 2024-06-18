@@ -1,0 +1,5 @@
+<%= s_('BulkImport|Import completed') %>
+
+<%= safe_format(s_('BulkImport|The import you started on %{start_date} from %{strong_open}%{hostname}%{strong_close} has completed. You can now review your import results.'), strong_open: '', strong_close: '', hostname: @hostname, start_date: l(@bulk_import.created_at.to_date, format: :long)) %>
+
+<%= s_('BulkImport|View import results') %>: <%= history_import_bulk_import_url(@bulk_import.id) %>

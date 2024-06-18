@@ -3,7 +3,7 @@
   .content-editor-switcher.gl-display-inline-flex.gl-align-items-center
     = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'markdown-mark', size: :small, href: help_page_path('user/markdown'), target: '_blank', button_options: { class: 'gl-px-3!' })
   - if supports_file_upload
-    %span.uploading-container.gl-line-height-32.gl-font-sm
+    %span.uploading-container.gl-leading-32.gl-font-sm
       %span.uploading-progress-container.hide
         = sprite_icon('paperclip', css_class: 'gl-icon gl-vertical-align-text-bottom')
         %span.attaching-file-message

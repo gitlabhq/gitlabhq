@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::LegacyGithubImport::WikiFormatter do
   let(:project) do
     create(:project,
-           namespace: create(:namespace, path: 'gitlabhq'),
-           import_url: 'https://xxx@github.com/gitlabhq/sample.gitlabhq.git')
+      namespace: create(:namespace, path: 'gitlabhq'),
+      import_url: 'https://xxx@github.com/gitlabhq/sample.gitlabhq.git')
   end
 
   subject(:wiki) { described_class.new(project) }

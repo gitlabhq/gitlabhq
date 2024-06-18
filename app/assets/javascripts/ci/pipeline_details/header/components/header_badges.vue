@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlSprintf, GlLink, GlTooltipDirective } from '@gitlab/ui';
 import {
   DETACHED_EVENT_TYPE,
   AUTO_DEVOPS_SOURCE,
@@ -12,6 +12,8 @@ export default {
   name: 'HeaderBadges',
   components: {
     GlBadge,
+    GlSprintf,
+    GlLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -46,6 +48,9 @@ export default {
     },
     yamlErrorMessages() {
       return this.pipeline?.yamlErrorMessages || '';
+    },
+    triggeredByPath() {
+      return this.pipeline?.triggeredByPath;
     },
     badges() {
       return {

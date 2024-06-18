@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   include RepoHelpers
 
   let_it_be(:project) do
@@ -18,7 +18,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestsImporter, f
 
   subject(:importer) { described_class.new(project) }
 
-  describe '#execute', :clean_gitlab_redis_cache, :clean_gitlab_redis_shared_state do
+  describe '#execute' do
     let(:commit_sha) { 'aaaa1' }
 
     let(:page_hash_1) do

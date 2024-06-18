@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Boards shortcut', :js, feature_category: :team_planning do
+RSpec.describe 'Issue Boards shortcut', :js, feature_category: :portfolio_management do
   context 'issues are enabled' do
     let(:project) { create(:project) }
 

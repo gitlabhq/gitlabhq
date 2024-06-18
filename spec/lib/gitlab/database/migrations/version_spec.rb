@@ -7,32 +7,35 @@ RSpec.describe Gitlab::Database::Migrations::Version, feature_category: :databas
     [
       4,
       5,
-      described_class.new(6, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular),
+      described_class.new(6, '10.3', :regular),
       7,
-      described_class.new(8, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular),
-      described_class.new(9, Gitlab::VersionInfo.parse_from_milestone('10.4'), :regular),
-      described_class.new(10, Gitlab::VersionInfo.parse_from_milestone('10.3'), :post),
-      described_class.new(11, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular)
+      described_class.new(8, '10.3', :regular),
+      described_class.new(9, '10.4', :regular),
+      described_class.new(10, '10.3', :post),
+      described_class.new(11, '10.3', :regular),
+      described_class.new(12, '10.15', :regular)
     ]
   end
 
   describe "#<=>" do
     it 'sorts by existence of milestone, then by milestone, then by type, then by timestamp when sorted by version' do
-      expect(test_versions.sort.map(&:to_i)).to eq [4, 5, 7, 6, 8, 11, 10, 9]
+      expect(test_versions.sort.map(&:to_i)).to eq [4, 5, 7, 6, 8, 11, 10, 9, 12]
     end
   end
 
   describe 'initialize' do
     context 'when the type is :post or :regular' do
       it 'does not raise an error' do
-        expect { described_class.new(4, 4, :regular) }.not_to raise_error
-        expect { described_class.new(4, 4, :post) }.not_to raise_error
+        expect { described_class.new(4, '10.3', :regular) }.not_to raise_error
+        expect { described_class.new(4, '10.3', :post) }.not_to raise_error
       end
     end
 
     context 'when the type is anything else' do
       it 'does not raise an error' do
-        expect { described_class.new(4, 4, 'foo') }.to raise_error("#{described_class}::InvalidTypeError".constantize)
+        expect do
+          described_class.new(4, '10.3', 'foo')
+        end.to raise_error("#{described_class}::InvalidTypeError".constantize)
       end
     end
   end
@@ -41,23 +44,23 @@ RSpec.describe Gitlab::Database::Migrations::Version, feature_category: :databas
     where(:version1, :version2, :expected_equality) do
       [
         [
-          described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular),
-          described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular),
+          described_class.new(4, '10.3', :regular),
+          described_class.new(4, '10.3', :regular),
           true
         ],
         [
-          described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular),
-          described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.4'), :regular),
+          described_class.new(4, '10.3', :regular),
+          described_class.new(4, '10.4', :regular),
           false
         ],
         [
-          described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular),
-          described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.3'), :post),
+          described_class.new(4, '10.3', :regular),
+          described_class.new(4, '10.3', :post),
           false
         ],
         [
-          described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular),
-          described_class.new(5, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular),
+          described_class.new(4, '10.3', :regular),
+          described_class.new(5, '10.3', :regular),
           false
         ]
       ]
@@ -75,7 +78,7 @@ RSpec.describe Gitlab::Database::Migrations::Version, feature_category: :databas
   end
 
   describe 'type' do
-    subject { described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.3'), migration_type) }
+    subject { described_class.new(4, '10.3', migration_type) }
 
     context 'when the migration is regular' do
       let(:migration_type) { :regular }
@@ -99,7 +102,7 @@ RSpec.describe Gitlab::Database::Migrations::Version, feature_category: :databas
   end
 
   describe 'to_s' do
-    subject { described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular) }
+    subject { described_class.new(4, '10.3', :regular) }
 
     it 'returns the given timestamp value as a string' do
       expect(subject.to_s).to eql('4')
@@ -107,7 +110,7 @@ RSpec.describe Gitlab::Database::Migrations::Version, feature_category: :databas
   end
 
   describe 'hash' do
-    subject { described_class.new(4, Gitlab::VersionInfo.parse_from_milestone('10.3'), :regular) }
+    subject { described_class.new(4, '10.3', :regular) }
 
     let(:expected_hash) { subject.hash }
 
@@ -115,6 +118,16 @@ RSpec.describe Gitlab::Database::Migrations::Version, feature_category: :databas
       3.times do
         expect(subject.hash).to eq(expected_hash)
       end
+    end
+  end
+
+  describe '=' do
+    subject { described_class.new(4, '10.3', :regular) }
+
+    it 'correctly assigns a new milestone object parsed from a string' do
+      subject.milestone = '14.6'
+      expect(subject.milestone.major).to be(14)
+      expect(subject.milestone.minor).to be(6)
     end
   end
 end

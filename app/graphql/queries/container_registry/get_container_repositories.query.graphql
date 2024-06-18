@@ -74,7 +74,9 @@ query getProjectContainerRepositories(
         expirationPolicyCleanupStatus
         project {
           id
+          name
           path
+          webUrl
         }
         userPermissions {
           destroyContainerRepository

@@ -101,6 +101,7 @@ export default {
           operators: OPERATORS_IS_NOT,
           token: LabelToken,
           unique: false,
+          recentSuggestionsStorageKey: `${this.fullPath}-board-recent-tokens-label`,
           symbol: '~',
           fetchLabels,
         },

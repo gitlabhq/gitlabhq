@@ -6,11 +6,6 @@
 - @force_desktop_expanded_sidebar = true
 
 - if can?(current_user, :admin_project, @project)
-  = render Pajamas::AlertComponent.new(title: _('GitLab Pages has moved'),
-    alert_options: { class: 'gl-my-5 js-hide-when-nothing-matches-search', data: { feature_id: Users::CalloutsHelper::PAGES_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-    - c.with_body do
-      = _('To go to GitLab Pages, on the left sidebar, select %{pages_link}.').html_safe % {pages_link: link_to('Deploy > Pages', project_pages_path(@project)).html_safe}
-
   %section.settings.general-settings.no-animate.expanded#js-general-settings
     .settings-header
       %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
@@ -31,15 +26,8 @@
         %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
         %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
         .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
-  - if show_merge_request_settings_callout?(@project)
-    %section.settings.expanded
-      = render Pajamas::AlertComponent.new(variant: :info,
-        title: _('Merge requests and approvals settings have moved.'),
-        alert_options: { class: 'js-merge-request-settings-callout gl-my-5', data: { feature_id: Users::CalloutsHelper::MERGE_REQUEST_SETTINGS_MOVED_CALLOUT, dismiss_endpoint: callouts_path, defer_links: 'true' } }) do |c|
-        - c.with_body do
-          = _('On the left sidebar, select %{merge_requests_link} to view them.').html_safe % { merge_requests_link: link_to('Settings > Merge requests', project_settings_merge_requests_path(@project)).html_safe }
 
-  %section.settings.no-animate{ class: ('expanded' if expanded), data: { testid: 'badges-settings-content' } }
+  %section.settings.no-animate#js-badges-settings{ class: ('expanded' if expanded), data: { testid: 'badges-settings-content' } }
     .settings-header
       %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
         = s_('ProjectSettings|Badges')

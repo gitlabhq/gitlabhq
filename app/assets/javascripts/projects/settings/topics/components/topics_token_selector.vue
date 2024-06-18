@@ -60,9 +60,7 @@ export default {
       return this.selectedTokens.length ? '' : this.$options.i18n.placeholder;
     },
     topicsHelpUrl() {
-      return helpPagePath('administration/index', {
-        anchor: 'administering-topics',
-      });
+      return helpPagePath('user/project/project_topics');
     },
   },
   methods: {

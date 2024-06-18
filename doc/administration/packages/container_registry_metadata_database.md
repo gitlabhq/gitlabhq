@@ -11,7 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [Beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
 
 WARNING:
 The metadata database is a [beta feature](../../policy/experiment-beta-support.md#beta).
@@ -38,7 +38,8 @@ You must continue to maintain an object storage solution even after migrating to
 
 - No support for online migrations.
 - Geo Support is not confirmed.
-- Registry database migrations must be ran manually when upgrading versions.
+- Registry database migrations must be run manually when upgrading versions.
+- No guarantee for registry [zero downtime during upgrades](../../update/zero_downtime.md) on multi-node Omnibus GitLab environments.
 
 ## Metadata database feature support
 
@@ -133,7 +134,6 @@ Choose the one or three step method according to your registry installation.
 
 #### One-step migration
 
-WARNING:
 WARNING:
 The registry must be shut down or remain in `read-only` mode during the migration.
 Only choose this method if you do not need to write to the registry during the migration
@@ -388,6 +388,94 @@ after this.
 
 NOTE:
 The `migrate down` command offers some extra flags. Run `sudo gitlab-ctl registry-database migrate down --help` for details.
+
+## Online garbage collection monitoring
+
+The initial runs of online garbage collection following the import process varies
+in duration based on the number of imported images. You should monitor the efficiency and
+health of your online garbage collection during this period.
+
+### Monitor database performance
+
+After completing an import, expect the database to experience a period of high load as
+the garbage collection queues drain. This high load is caused by a high number of individual database calls
+from the online garbage collector processing the queued tasks.
+
+Regularly check PostgreSQL and registry logs for any errors or warnings. In the registry logs,
+pay special attention to logs filtered by `component=registry.gc.*`.
+
+### Track metrics
+
+Use monitoring tools like Prometheus and Grafana to visualize and track garbage collection metrics,
+focusing on metrics with a prefix of `registry_gc_*`. These include the number of objects
+marked for deletion, objects successfully deleted, run intervals, and durations.
+
+### Queue monitoring
+
+Check the size of the queues by counting the rows in the `gc_blob_review_queue` and
+`gc_manifest_review_queue` tables. Large queues are expected initially, with the number of rows
+proportional to the number of imported blobs and manifests. The queues should reduce over time,
+indicating that garbage collection is successfully reviewing jobs.
+
+```sql
+SELECT COUNT(*) FROM gc_blob_review_queue;
+SELECT COUNT(*) FROM gc_manifest_review_queue;
+```
+
+Interpreting Queue Sizes:
+
+- Shrinking queues: Indicate garbage collection is successfully processing tasks.
+- Near-Zero `gc_manifest_review_queue`: Most images flagged for potential deletion
+  have been reviewed and classified either as still in use or removed.
+- Overdue Tasks: Check for overdue GC tasks by running the following queries:
+
+  ```sql
+  SELECT COUNT(*) FROM gc_blob_review_queue WHERE review_after < NOW();
+  SELECT COUNT(*) FROM gc_manifest_review_queue WHERE review_after < NOW();
+  ```
+
+  A high number of overdue tasks indicates a problem. Large queue sizes are not concerning
+  as long as they are decreasing over time and the number of overdue tasks
+  is close to zero. A high number of overdue tasks should prompt an urgent inspection of logs.
+
+Check GC logs for messages indicating that blobs are still in use, for example `msg=the blob is not dangling`,
+which implies they will not be deleted.
+
+### Adjust blobs interval
+
+If the size of your `gc_blob_review_queue` is high, and you want to increase the frequency between
+the garbage collection blob or manifest worker runs, update your interval configuration
+from the default (`5s`) to `1s`:
+
+```ruby
+registry['gc'] = {
+  'blobs' => {
+    'interval' => '1s'
+  },
+  'manifests' => {
+    'interval' => '1s'
+  }
+}
+```
+
+After the migration load has been cleared, you should fine-tune these settings for the long term
+to avoid unnecessary CPU load on the database and registry instances. You can gradually increase
+the interval to a value that balances performance and resource usage.
+
+### Validate data consistency
+
+To ensure data consistency after the import, use the [`crane validate`](https://github.com/google/go-containerregistry/blob/main/cmd/crane/doc/crane_validate.md)
+tool. This tool checks that all image layers and manifests in your container registry
+are accessible and correctly linked. By running `crane validate`, you confirm that
+the images in your registry are complete and accessible, ensuring a successful import.
+
+### Review cleanup policies
+
+If most of your images are tagged, garbage collection won't significantly reduce storage space
+because it only deletes untagged images.
+
+Implement cleanup policies to remove unneeded tags, which eventually causes images
+to be removed through garbage collection and storage space being recovered.
 
 ## Troubleshooting
 

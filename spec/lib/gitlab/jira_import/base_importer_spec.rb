@@ -43,7 +43,7 @@ RSpec.describe Gitlab::JiraImport::BaseImporter do
               it { expect(subject.send(:imported_items_cache_key)).to eq('dumb-importer-key') }
             end
 
-            describe '#mark_as_imported', :clean_gitlab_redis_cache do
+            describe '#mark_as_imported', :clean_gitlab_redis_shared_state do
               it 'stores id in redis cache' do
                 expect(Gitlab::Cache::Import::Caching).to receive(:set_add).once.and_call_original
 
@@ -53,7 +53,7 @@ RSpec.describe Gitlab::JiraImport::BaseImporter do
               end
             end
 
-            describe '#already_imported?', :clean_gitlab_redis_cache do
+            describe '#already_imported?', :clean_gitlab_redis_shared_state do
               it 'returns false if value is not in cache' do
                 expect(Gitlab::Cache::Import::Caching).to receive(:set_includes?).once.and_call_original
 

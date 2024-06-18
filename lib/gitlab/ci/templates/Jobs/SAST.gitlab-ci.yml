@@ -202,5 +202,3 @@ spotbugs-sast:
     - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.groovy'
-        - '**/*.scala'
-        - '**/*.kt'

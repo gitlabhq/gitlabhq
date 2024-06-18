@@ -23,11 +23,11 @@ module API
       end
       params do
         optional :with_counts, type: Boolean, default: false,
-                               desc: 'Include issue and merge request counts'
+          desc: 'Include issue and merge request counts'
         optional :include_ancestor_groups, type: Boolean, default: true,
-                                           desc: 'Include ancestor groups'
+          desc: 'Include ancestor groups'
         optional :search, type: String,
-                          desc: 'Keyword to filter labels by. This feature was added in GitLab 13.6'
+          desc: 'Keyword to filter labels by. This feature was added in GitLab 13.6'
         use :pagination
       end
       get ':id/labels' do
@@ -40,7 +40,7 @@ module API
       end
       params do
         optional :include_ancestor_groups, type: Boolean, default: true,
-                                           desc: 'Include ancestor groups'
+          desc: 'Include ancestor groups'
       end
       get ':id/labels/:name' do
         get_label(user_project, Entities::ProjectLabel, declared_params)

@@ -104,7 +104,7 @@ When you use `-backend-config`, the configuration is:
 - Cached in the output of the `terraform plan` command.
 - Usually passed forward to the `terraform apply` command.
 
-This configuration can lead to problems like [being unable to lock Terraform state files in CI jobs](troubleshooting.md#unable-to-lock-terraform-state-files-in-ci-jobs-for-terraform-apply-using-a-plan-created-in-a-previous-job).
+This configuration can lead to problems like [being unable to lock Terraform state files in CI jobs](troubleshooting.md#cant-lock-terraform-state-files-in-ci-jobs-for-terraform-apply-with-a-previous-jobs-plan).
 
 ## Access the state from your local machine
 

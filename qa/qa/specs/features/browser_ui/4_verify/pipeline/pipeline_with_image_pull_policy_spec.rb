@@ -7,12 +7,11 @@ module QA
       let(:job_name) { "test-job-#{pull_policies.join('-')}" }
       let(:project) { create(:project, name: 'pipeline-with-image-pull-policy') }
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = project
-          runner.name = runner_name
-          runner.tags = [runner_name]
-          runner.executor = :docker
-        end
+        create(:project_runner,
+          project: project,
+          name: runner_name,
+          tags: [runner_name],
+          executor: :docker)
       end
 
       before do
@@ -85,7 +84,11 @@ module QA
 
         it(
           'fails job with policy not allowed message', :smoke,
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853'
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/368853',
+          quarantine: {
+            type: :flaky,
+            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/462232"
+          }
         ) do
           visit_job
 

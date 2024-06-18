@@ -12,7 +12,7 @@ export default {
 
 <template>
   <tr>
-    <td class="gl-font-weight-bold">{{ label }}</td>
+    <td class="gl-font-bold">{{ label }}</td>
     <td>
       <slot></slot>
     </td>

@@ -24,6 +24,34 @@ RSpec.describe Admin::UsersController, feature_category: :user_management do
       expect(assigns(:users)).to eq([admin])
     end
 
+    context 'with search by partial email' do
+      subject(:request) { get :index, params: { search_query: user.email[1...-1] } }
+
+      context 'when Gitlab.com' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(true)
+        end
+
+        it 'does not search users by partial email' do
+          request
+
+          expect(assigns(:users)).to eq([])
+        end
+      end
+
+      context 'when not Gitlab.com' do
+        before do
+          allow(Gitlab).to receive(:com?).and_return(false)
+        end
+
+        it 'searhes users by partial email' do
+          request
+
+          expect(assigns(:users)).to eq([user])
+        end
+      end
+    end
+
     it 'eager loads authorized projects association' do
       get :index
 

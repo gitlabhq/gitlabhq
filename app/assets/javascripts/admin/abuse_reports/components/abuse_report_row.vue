@@ -67,7 +67,7 @@ export default {
     <template #left-primary>
       <gl-link
         :href="report.reportPath"
-        class="gl-font-weight-normal gl-pt-4 gl-text-gray-900"
+        class="gl-font-normal gl-pt-4 gl-text-gray-900"
         data-testid="abuse-report-title"
       >
         {{ title }}

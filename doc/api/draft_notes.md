@@ -11,7 +11,12 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Draft notes are pending, unpublished comments on merge requests. They can be either start a discussion, or be associated with an existing discussion as a reply. They are viewable only by the author until they are published.
+Draft notes are pending, unpublished comments on merge requests. They can either:
+
+- Start a discussion.
+- Continue an existing discussion as a reply.
+
+Before publishing, draft notes are visible only to the author.
 
 ## List all merge request draft notes
 
@@ -121,7 +126,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/draft_notes
 | `position[start_sha]`                    | string            | yes         | SHA referencing commit in target branch. |
 | `position[new_path]`                     | string            | yes (if the position type is `text`) | File path after change. |
 | `position[old_path]`                     | string            | yes (if the position type is `text`) | File path before change. |
-| `position[position_type]`                | string            | yes         | Type of the position reference. Allowed values: `text` or `image`. |
+| `position[position_type]`                | string            | yes         | Type of the position reference. Allowed values: `text`, `image`, or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
 | `position`                               | hash              | no          | Position when creating a diff note. |
 | `position[new_line]`                     | integer           | no          | For `text` diff notes, the line number after change. |
 | `position[old_line]`                     | integer           | no          | For `text` diff notes, the line number before change. |
@@ -155,7 +160,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/draft_notes/:draft_note_id
 | `position[start_sha]`                    | string            | yes         | SHA referencing commit in target branch. |
 | `position[new_path]`                     | string            | yes (if the position type is `text`) | File path after change. |
 | `position[old_path]`                     | string            | yes (if the position type is `text`) | File path before change. |
-| `position[position_type]`                | string            | yes         | Type of the position reference. Allowed values: `text` or `image`. |
+| `position[position_type]`                | string            | yes         | Type of the position reference. Allowed values: `text`, `image` or `file`. `file` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423046) in GitLab 16.4. |
 | `position`                               | hash              | no          | Position when creating a diff note. |
 | `position[new_line]`                     | integer           | no          | For `text` diff notes, the line number after change. |
 | `position[old_line]`                     | integer           | no          | For `text` diff notes, the line number before change. |

@@ -243,16 +243,6 @@ ping-appsec-for-sast-findings:
     - apk add ruby
     - ruby scripts/process_custom_semgrep_results.rb
 
-trigger-depsaster:
-  extends: .static-analysis:rules:trigger-depsaster
-  stage: lint
-  variables:
-    MERGE_REQUEST_PROJECT_ID: $CI_MERGE_REQUEST_PROJECT_ID
-    MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
-  trigger:
-    project: "gitlab-com/gl-security/product-security/appsec/tooling/depsaster"
-  allow_failure: true
-
 ping-appsec-for-dependency-review:
   stage: lint
   needs: []

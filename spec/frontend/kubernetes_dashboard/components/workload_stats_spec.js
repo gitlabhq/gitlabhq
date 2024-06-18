@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { GlSingleStat } from '@gitlab/ui/dist/charts';
+import { nextTick } from 'vue';
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import { mockPodStats } from '../graphql/mock_data';
 
@@ -40,4 +41,38 @@ describe('Workload stats component', () => {
       });
     },
   );
+
+  describe('selecting stat', () => {
+    it('selects stat on click and adds appropriate CSS class', async () => {
+      createWrapper();
+
+      findSingleStat(0).vm.$emit('click');
+      await nextTick();
+
+      expect(findSingleStat(0).classes()).toContain('gl-inset-border-b-2-blue-500');
+    });
+
+    it('deselects stat with the second click', async () => {
+      createWrapper();
+
+      findSingleStat(1).vm.$emit('click');
+      await nextTick();
+
+      expect(findSingleStat(1).classes()).toContain('gl-inset-border-b-2-blue-500');
+
+      findSingleStat(1).vm.$emit('click');
+      await nextTick();
+
+      expect(findSingleStat(1).classes()).not.toContain('gl-inset-border-b-2-blue-500');
+    });
+
+    it('emit a select event', async () => {
+      createWrapper();
+
+      findSingleStat(2).vm.$emit('click');
+      await nextTick();
+
+      expect(wrapper.emitted('select')).toEqual([[mockPodStats[2].title]]);
+    });
+  });
 });

@@ -9,3 +9,4 @@ description: Used to track the generation status of export batch files for group
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111708
 milestone: '15.10'
 gitlab_schema: gitlab_main
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463854

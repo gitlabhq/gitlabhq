@@ -9,12 +9,11 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
   let(:project) { create(:project, :repository) }
   let(:source_project) { nil }
   let(:target_project) { nil }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, name: "John Doe", email: "jdoe@gitlab.com") }
   let(:issue_confidential) { false }
   let(:issue) { create(:issue, project: project, title: 'A bug', confidential: issue_confidential) }
-  let(:issue_iid) { nil }
   let(:description) { nil }
-  let(:source_branch) { 'feature-branch' }
+  let(:source_branch) { 'feature' }
   let(:target_branch) { 'master' }
   let(:milestone_id) { nil }
   let(:label_ids) { [] }
@@ -63,8 +62,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
       source_project: source_project,
       target_project: target_project,
       milestone_id: milestone_id,
-      label_ids: label_ids,
-      issue_iid: issue_iid
+      label_ids: label_ids
     }
   end
 
@@ -73,6 +71,8 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
   end
 
   before do
+    project.repository.create_branch(source_branch, target_branch) if source_branch && target_branch
+
     project.add_guest(user)
   end
 
@@ -171,7 +171,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
     end
 
     context 'missing source branch' do
-      let(:source_branch) { '' }
+      let(:source_branch) { nil }
 
       it_behaves_like 'forbids the merge request from being created' do
         let(:error_message) { 'You must select source and target branch' }
@@ -237,7 +237,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
       it_behaves_like 'allows the merge request to be created'
 
       it 'adds a Draft prefix to the merge request title' do
-        expect(merge_request.title).to eq('Draft: Feature branch')
+        expect(merge_request.title).to eq('Draft: Feature')
       end
     end
 
@@ -378,7 +378,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
       it_behaves_like 'with a Default.md template'
 
       it 'uses the title of the branch as the merge request title' do
-        expect(merge_request.title).to eq('Feature branch')
+        expect(merge_request.title).to eq('Feature')
       end
 
       it 'does not add a description' do
@@ -533,34 +533,23 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
           expect(merge_request.description).to eq('Create the app')
         end
       end
-
-      context 'when the issue is created in the fork' do
-        let(:source_project) { create(:project, forked_from_project: project) }
-        let(:issue) { create(:issue, project: source_project, title: 'A bug') }
-        let(:issue_iid) { issue.iid }
-
-        it 'uses a full reference to the issue' do
-          allow(project).to receive(:get_issue).and_return issue
-          expect(merge_request.description).to include("Closes #{source_project.full_path}##{issue_iid}")
-        end
-      end
     end
 
     context 'source branch does not exist' do
       before do
-        allow(project).to receive(:commit).with(source_branch).and_return(nil)
-        allow(project).to receive(:commit).with(target_branch).and_return(commit_2)
+        allow(project).to receive(:branch_exists?).with(target_branch).and_return(true)
+        allow(project).to receive(:branch_exists?).with(source_branch).and_return(false)
       end
 
       it_behaves_like 'forbids the merge request from being created' do
-        let(:error_message) { 'Source branch "feature-branch" does not exist' }
+        let(:error_message) { 'Source branch "feature" does not exist' }
       end
     end
 
     context 'target branch does not exist' do
       before do
-        allow(project).to receive(:commit).with(source_branch).and_return(commit_2)
-        allow(project).to receive(:commit).with(target_branch).and_return(nil)
+        allow(project).to receive(:branch_exists?).with(target_branch).and_return(false)
+        allow(project).to receive(:branch_exists?).with(source_branch).and_return(true)
       end
 
       it_behaves_like 'forbids the merge request from being created' do
@@ -570,19 +559,19 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
     context 'both source and target branches do not exist' do
       before do
-        allow(project).to receive(:commit).and_return(nil)
+        allow(project).to receive(:branch_exists?).and_return(false)
       end
 
       it_behaves_like 'forbids the merge request from being created' do
         let(:error_message) do
-          ['Source branch "feature-branch" does not exist', 'Target branch "master" does not exist']
+          ['Source branch "feature" does not exist', 'Target branch "master" does not exist']
         end
       end
     end
 
     context 'upstream project has disabled merge requests' do
       let(:upstream_project) { create(:project, :merge_requests_disabled) }
-      let(:project) { create(:project, forked_from_project: upstream_project) }
+      let(:project) { create(:project, :repository, forked_from_project: upstream_project) }
       let(:commits) { Commit.decorate([commit_2], project) }
 
       it 'sets target project correctly' do
@@ -784,6 +773,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
         approved_by:%{approved_by}
         merged_by:%{merged_by}
         co_authored_by:%{co_authored_by}
+        merge_request_author:%{merge_request_author}
         all_commits:%{all_commits}
       MSG
 
@@ -796,7 +786,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
         it 'replaces the variables in the description' do
           expect(merge_request.description).to eq <<~MSG.rstrip
-            source_branch:feature-branch
+            source_branch:feature
             target_branch:master
             title:
             issues:
@@ -811,6 +801,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
             co_authored_by:Co-authored-by: Jo Example <jo@example.com>
             Co-authored-by: Alice Example <alice@example.com>
             Co-authored-by: Tom Example <tom@example.com>
+            merge_request_author:
             all_commits:* This is a bad commit message!
 
             * Closes #1234 Second commit
@@ -831,7 +822,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
 
         it 'replaces the variables in the description' do
           expect(merge_request.description).to eq <<~MSG.rstrip
-            source_branch:feature-branch
+            source_branch:feature
             target_branch:master
             title:
             issues:
@@ -842,6 +833,7 @@ RSpec.describe MergeRequests::BuildService, feature_category: :code_review_workf
             approved_by:
             merged_by:
             co_authored_by:
+            merge_request_author:
             all_commits:
           MSG
         end

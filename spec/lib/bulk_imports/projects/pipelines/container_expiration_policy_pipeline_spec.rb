@@ -19,7 +19,7 @@ RSpec.describe BulkImports::Projects::Pipelines::ContainerExpirationPolicyPipeli
       'older_than' => '1month',
       'keep_n' => 100,
       'enabled' => true
-     }
+    }
   end
 
   subject(:pipeline) { described_class.new(context) }

@@ -18,7 +18,7 @@ For a full list of reference architectures, see
 > - **Target Load:** API: 40 RPS, Web: 4 RPS, Git (Pull): 4 RPS, Git (Push): 1 RPS
 > - **High Availability:** No. For a highly-available environment, you can
 >   follow a modified [3K or 60 RPS reference architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
-> - **Estimated Costs:** [See cost table](index.md#cost-to-run)
+> - **Cost calculator template:** [See cost calculator templates section](index.md#cost-calculator-templates)
 > - **Cloud Native Hybrid:** [Yes](#cloud-native-hybrid-reference-architecture-with-helm-charts-alternative)
 > - **Unsure which Reference Architecture to use?** [Go to this guide for more info](index.md#deciding-which-architecture-to-start-with).
 
@@ -670,7 +670,6 @@ To configure the Sidekiq server, on the server node you want to use for Sidekiq:
    gitlab_rails['auto_migrate'] = false
 
    # Sidekiq
-   sidekiq['enable'] = true
    sidekiq['listen_address'] = "0.0.0.0"
 
    ## Set number of Sidekiq queue processes to the same number as available CPUs
@@ -1007,7 +1006,7 @@ running [Prometheus](../monitoring/prometheus/index.md):
         ],
      },
      {
-        'job_name': 'node',
+        'job_name': 'static-node',
         'static_configs' => [
         'targets' => ['1.1.1.1:9100', '1.1.1.2:9100', '1.1.1.3:9100', '1.1.1.4:9100', '1.1.1.5:9100'],
         ],
@@ -1120,7 +1119,7 @@ the overall makeup as desired as long as the minimum CPU and Memory requirements
 | Supporting services  | 4 vCPU<br/>15 GB memory | 2 x `n1-standard-2` | 2 x `m5.large`   |
 
 - For this setup, we **recommend** and regularly [test](index.md#validation-and-test-results)
-[Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
+  [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine) and [Amazon Elastic Kubernetes Service (EKS)](https://aws.amazon.com/eks/). Other Kubernetes services may also work, but your mileage may vary.
 - GCP and AWS examples of how to reach the Target Node Pool Total are given for convenience. These sizes are used in performance testing but following the example is not required. Different node pool designs can be used as desired as long as the targets are met, and all pods can deploy.
 - The [Webservice](#webservice) and [Sidekiq](#sidekiq) target node pool totals are given for GitLab components only. Additional resources are required for the chosen Kubernetes provider's system processes. The given examples take this into account.
 - The [Supporting](#supporting) target node pool total is given generally to accommodate several resources for supporting the GitLab deployment as well as any additional deployments you may wish to make depending on your requirements. Similar to the other node pools, the chosen Kubernetes provider's system processes also require resources. The given examples take this into account.

@@ -539,6 +539,27 @@ Gitlab/RSpec/AvoidSetup:
 RSpec/DuplicateSpecLocation:
   Enabled: true
 
+# https://docs.gitlab.com/ee/development/software_design.html#bounded-contexts
+Gitlab/BoundedContexts:
+  Enabled: true
+  Exclude:
+    - '**/lib/api/**/*'
+    - 'ee/lib/ee/api/**/*'
+    - '**/app/assets/**/*'
+    - '**/app/channels/**/*'
+    - '**/app/components/**/*'
+    - '**/app/controllers/**/*'
+    - '**/app/helpers/**/*'
+    - '**/app/presenters/**/*'
+    - '**/app/serializers/**/*'
+    - '**/lib/tasks/**/*'
+    - '**/app/views/**/*'
+  Include:
+    - 'app/**/*'
+    - 'ee/app/**/*'
+    - 'lib/**/*'
+    - 'ee/lib/**/*'
+
 Gitlab/PolicyRuleBoolean:
   Enabled: true
   Include:
@@ -934,6 +955,7 @@ Gitlab/NamespacedClass:
     - 'ee/db/**/*.rb'
     - 'ee/elastic/**/*.rb'
     - 'scripts/**/*'
+    - 'spec/fixtures/migrations/**/*.rb'
     - 'spec/migrations/**/*.rb'
     - 'app/experiments/**/*_experiment.rb'
     - 'ee/app/experiments/**/*_experiment.rb'
@@ -991,6 +1013,11 @@ QA/SelectorUsage:
   Exclude:
     - 'spec/rubocop/**/*_spec.rb'
 
+QA/FeatureFlags:
+  Enabled: true
+  Include:
+    - 'qa/qa/specs/features/**/*.rb'
+
 Performance/ActiveRecordSubtransactions:
   Exclude:
     - 'spec/**/*.rb'
@@ -1001,7 +1028,7 @@ Performance/ActiveRecordSubtransactionMethods:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
-Migration/BackgroundMigrationBaseClass:
+Migration/BatchedMigrationBaseClass:
   Enabled: false
 
 BackgroundMigration/AvoidSilentRescueExceptions:
@@ -1171,3 +1198,10 @@ Gitlab/TokenWithoutPrefix:
     - 'lib/**/*'
     - 'ee/app/**/*'
     - 'ee/lib/**/*'
+
+Rails/StrongParams:
+  Enabled: true
+  SafeAutoCorrect: false
+  Include:
+    - 'app/controllers/**/*'
+    - 'ee/app/controllers/**/*'

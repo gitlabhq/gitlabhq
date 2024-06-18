@@ -53,9 +53,8 @@ module Types
       field :raw_blob, GraphQL::Types::String, null: true, method: :data,
         description: 'Raw content of the blob.'
 
-      field :unicode_escaped_blob, GraphQL::Types::String, null: true, method: :unicode_escaped_blob,
-        alpha: { milestone: '16.11' }, description: 'Raw content of the blob where invalid UTF-8 characters are
-                  escaped to unicode. Returns `null` if the `unicode_escaped_data` feature flag is disabled.'
+      field :base64_encoded_blob, GraphQL::Types::String, null: true, method: :base64_encoded_blob,
+        alpha: { milestone: '17.1' }, description: 'Content of blob is encoded base64. Returns `null` if the `unicode_escaped_data` feature flag is disabled.'
 
       field :raw_text_blob, GraphQL::Types::String, null: true, method: :text_only_data,
         description: 'Raw content of the blob, if the blob is text data.'

@@ -61,18 +61,11 @@ export default {
       }}
     </p>
 
-    <h3 class="gl-heading-4">{{ s__('Runners|Step 1: Configure your Google Cloud project') }}</h3>
+    <h3 class="gl-heading-4">{{ s__('Runners|1. Configure your Google Cloud project') }}</h3>
     <p>
       {{
         s__(
-          `Runners|If you haven't already configured your Google Cloud project, this step enables the required services and creates a service account with the required permissions. `,
-        )
-      }}
-    </p>
-    <p>
-      {{
-        s__(
-          'Runners|Run the following on your command line. You might be prompted to sign in to Google.',
+          `Runners|Run the following command to enable the required services and create a service account with the required permissions. Only do this once for each Google Cloud project. You might be prompted to sign in to Google.`,
         )
       }}
     </p>
@@ -82,11 +75,11 @@ export default {
       modal-id="setup-instructions"
     />
 
-    <h3 class="gl-heading-4">{{ s__('Runners|Step 2: Install and register GitLab Runner') }}</h3>
+    <h3 class="gl-heading-4">{{ s__('Runners|2. Install and register GitLab Runner') }}</h3>
     <p>
       {{
         s__(
-          'Runners|This step creates the required infrastructure in Google Cloud, installs GitLab Runner, and registers it to this GitLab project. ',
+          'Runners|Use Terraform to create the required infrastructure in Google Cloud, install GitLab Runner, and register it to this GitLab project.',
         )
       }}
     </p>
@@ -94,7 +87,7 @@ export default {
       <gl-sprintf
         :message="
           s__(
-            'Runners|Use a text editor to create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration.',
+            'Runners|Create a %{codeStart}main.tf%{codeEnd} file with the following Terraform configuration.',
           )
         "
       >
@@ -112,7 +105,7 @@ export default {
     <p>
       {{
         s__(
-          'Runners|In the directory with that Terraform configuration file, run the following on your command line.',
+          'Runners|In the directory with that Terraform configuration file, run the following command to apply the configuration.',
         )
       }}
     </p>
@@ -125,7 +118,7 @@ export default {
     <p>
       {{
         s__(
-          'Runners|After GitLab Runner is installed and registered, an autoscaling fleet of runners is available to execute your CI/CD jobs in Google Cloud.',
+          'Runners|After GitLab Runner is installed and registered, an autoscaling fleet of runners can execute your CI/CD jobs in Google Cloud. Based on demand, a runner manager creates temporary runners.',
         )
       }}
     </p>

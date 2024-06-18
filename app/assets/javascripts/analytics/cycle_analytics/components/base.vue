@@ -109,9 +109,8 @@ export default {
       return Boolean(this.features?.groupLevelAnalyticsDashboard && this.groupPath);
     },
     dashboardsPath() {
-      const { fullPath } = this.namespace;
       return this.showLinkToDashboard
-        ? generateValueStreamsDashboardLink(this.groupPath, [fullPath])
+        ? generateValueStreamsDashboardLink(this.namespace.fullPath)
         : null;
     },
     query() {

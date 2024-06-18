@@ -17,6 +17,7 @@ module ResolvesMergeRequests
     end
 
     rewrite_param_name(args, :reviewer_wildcard_id, :reviewer_id)
+    rewrite_param_name(args, :assignee_wildcard_id, :assignee_id)
 
     mr_finder = MergeRequestsFinder.new(current_user, args.compact)
     finder = Gitlab::Graphql::Loaders::IssuableLoader.new(mr_parent, mr_finder)

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModalDirective } from '@gitlab/ui';
+import { GlButton, GlModalDirective, GlTooltipDirective } from '@gitlab/ui';
 import { formType } from '~/boards/constants';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -10,12 +10,13 @@ export default {
   },
   directives: {
     GlModalDirective,
+    GlTooltipDirective,
   },
   mixins: [Tracking.mixin()],
   inject: ['canAdminList'],
   computed: {
     buttonText() {
-      return this.canAdminList ? s__('Boards|Edit board') : s__('Boards|View scope');
+      return this.canAdminList ? s__('Boards|Configure board') : s__('Boards|Board configuration');
     },
   },
   methods: {
@@ -28,13 +29,13 @@ export default {
 </script>
 
 <template>
-  <div class="gl-ml-3 gl-display-flex gl-align-items-center">
-    <gl-button
-      v-gl-modal-directive="'board-config-modal'"
-      data-testid="boards-config-button"
-      @click.prevent="showPage"
-    >
-      {{ buttonText }}
-    </gl-button>
-  </div>
+  <gl-button
+    v-gl-modal-directive="'board-config-modal'"
+    v-gl-tooltip-directive
+    data-testid="boards-config-button"
+    icon="settings"
+    :title="buttonText"
+    category="tertiary"
+    @click.prevent="showPage"
+  />
 </template>

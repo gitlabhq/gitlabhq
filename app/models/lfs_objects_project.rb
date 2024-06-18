@@ -19,7 +19,7 @@ class LfsObjectsProject < ApplicationRecord
   }
 
   scope :project_id_in, ->(ids) { where(project_id: ids) }
-  scope :lfs_object_in, -> (lfs_objects) { where(lfs_object: lfs_objects) }
+  scope :lfs_object_in, ->(lfs_objects) { where(lfs_object: lfs_objects) }
 
   def self.link_to_project!(lfs_object, project)
     # We can't use an upsert here because there is no uniqueness constraint:

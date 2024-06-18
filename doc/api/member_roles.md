@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96996) in GitLab 15.4. [Deployed behind the `customizable_roles` flag](../administration/feature_flags.md), disabled by default.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
@@ -24,39 +24,186 @@ DETAILS:
 > - [Delete project introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139696) in GitLab 16.8.
 > - [Manage group access tokens introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140115) in GitLab 16.8.
 > - [Admin terraform state introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140759) in GitLab 16.8.
+> - Ability to create and remove an instance-wide custom role on GitLab self-managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
 
-## List all member roles of a group
+## Manage instance member roles
 
-Gets a list of group member roles viewable by the authenticated user.
+DETAILS:
+**Tier:** Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
+Prerequisites:
+
+- [Authenticate yourself](rest/index.md#authentication) as an administrator.
+
+You can get, create and delete instance-wide member roles.
+
+### Get all instance member roles
+
+Get all member roles in an instance.
+
+```plaintext
+GET /member_roles
+```
+
+Example request:
+
+```shell
+curl --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/member_roles"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 2,
+    "name": "Instance custom role",
+    "description": "Custom guest that can read code",
+    "group_id": null,
+    "base_access_level": 10,
+    "admin_cicd_variables": false,
+    "admin_compliance_framework": false,
+    "admin_group_member": false,
+    "admin_merge_request": false,
+    "admin_push_rules": false,
+    "admin_terraform_state": false,
+    "admin_vulnerability": false,
+    "admin_web_hook": false,
+    "archive_project": false,
+    "manage_deploy_tokens": false,
+    "manage_group_access_tokens": false,
+    "manage_merge_request_settings": false,
+    "manage_project_access_tokens": false,
+    "manage_security_policy_link": false,
+    "read_code": true,
+    "read_dependency": false,
+    "read_vulnerability": false,
+    "remove_group": false,
+    "remove_project": false
+  }
+]
+```
+
+### Create a instance member role
+
+Create an instance-wide member role.
+
+```plaintext
+POST /member_roles
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|:----------|:--------|:---------|:-------------------------------------|
+| `name`         | string         | yes      | The name of the member role. |
+| `description`  | string         | no       | The description of the member role. |
+| `base_access_level` | integer   | yes      | Base access level for configured role. Valid values are `10` (Guest), `20` (Reporter), `30` (Developer), `40` (Maintainer), or `50` (Owner).|
+| `admin_cicd_variables` | boolean | no       | Permission to create, read, update, and delete CI/CD variables. |
+| `admin_compliance_framework` | boolean | no       | Permission to administer compliance frameworks. |
+| `admin_group_member` | boolean | no       | Permission to add, remove and assign members in a group. |
+| `admin_merge_request` | boolean | no       | Permission to approve merge requests. |
+| `admin_push_rules` | boolean | no       | Permission to configure push rules for repositories at group or project level. |
+| `admin_terraform_state` | boolean | no       | Permission to administer project terraform state. |
+| `admin_vulnerability` | boolean | no       | Permission to edit the vulnerability object, including the status and linking an issue. |
+| `admin_web_hook` | boolean | no       | Permission to administer web hooks. |
+| `archive_project` | boolean | no       | Permission to archive projects. |
+| `manage_deploy_tokens` | boolean | no       | Permission to manage deploy tokens. |
+| `manage_group_access_tokens` | boolean | no       | Permission to manage group access tokens. |
+| `manage_merge_request_settings` | boolean | no       | Permission to configure merge request settings. |
+| `manage_project_access_tokens` | boolean | no       | Permission to manage project access tokens. |
+| `manage_security_policy_link` | boolean | no       | Permission to link security policy projects. |
+| `read_code`           | boolean | no       | Permission to read project code. |
+| `read_dependency`     | boolean | no       | Permission to read project dependencies. |
+| `read_vulnerability`  | boolean | no       | Permission to read project vulnerabilities. |
+| `remove_group` | boolean | no       | Permission to delete or restore a group. |
+| `remove_project` | boolean | no       | Permission to delete a project. |
+
+For more information on available permissions, see [custom permissions](../user/custom_roles/abilities.md).
+
+Example request:
+
+```shell
+ curl --request POST --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" --data '{"name" : "Custom guest (instance)", "base_access_level" : 10, "read_code" : true}' "https://gitlab.example.com/api/v4/member_roles"
+```
+
+Example response:
+
+```json
+{
+  "id": 3,
+  "name": "Custom guest (instance)",
+  "group_id": null,
+  "description": null,
+  "base_access_level": 10,
+  "admin_cicd_variables": false,
+  "admin_compliance_framework": false,
+  "admin_group_member": false,
+  "admin_merge_request": false,
+  "admin_push_rules": false,
+  "admin_terraform_state": false,
+  "admin_vulnerability": false,
+  "admin_web_hook": false,
+  "archive_project": false,
+  "manage_deploy_tokens": false,
+  "manage_group_access_tokens": false,
+  "manage_merge_request_settings": false,
+  "manage_project_access_tokens": false,
+  "manage_security_policy_link": false,
+  "read_code": true,
+  "read_dependency": false,
+  "read_vulnerability": false,
+  "remove_group": false,
+  "remove_project": false
+}
+```
+
+### Delete an instance member role
+
+Delete a member role from the instance.
+
+```plaintext
+DELETE /member_roles/:member_role_id
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|:----------|:--------|:---------|:-------------------------------------|
+| `member_role_id` | integer | yes   | The ID of the member role. |
+
+If successful, returns [`204`](rest/index.md#status-codes) and an empty response.
+
+Example request:
+
+```shell
+curl --request DELETE --header "Content-Type: application/json" --header "Authorization: Bearer <your_access_token>" "https://gitlab.example.com/api/v4/member_roles/1"
+```
+
+## Manage group member roles
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com
+
+Prerequisites:
+
+- You must have the Owner role in the group.
+
+Use this API to manage group specific member roles. You can only create member roles at the root level of the group.
+
+### Get all group member roles
 
 ```plaintext
 GET /groups/:id/member_roles
 ```
 
+Supported attributes:
+
 | Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-
-If successful, returns [`200`](rest/index.md#status-codes) and the following response attributes:
-
-| Attribute                          | Type    | Description           |
-|:-----------------------------------|:--------|:----------------------|
-| `[].id`                            | integer | The ID of the member role. |
-| `[].name`                          | string  | The name of the member role. |
-| `[].description`                   | string  | The description of the member role. |
-| `[].group_id`                      | integer | The ID of the group that the member role belongs to. |
-| `[].base_access_level`             | integer | Base access level for member role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
-| `[].admin_merge_request`           | boolean | Permission to admin project merge requests and enables the ability to `download_code`. |
-| `[].admin_terraform_state`         | boolean | Permission to admin project terraform state. |
-| `[].admin_vulnerability`           | boolean | Permission to admin project vulnerabilities. |
-| `[].read_code`                     | boolean | Permission to read project code. |
-| `[].read_dependency`               | boolean | Permission to read project dependencies. |
-| `[].read_vulnerability`            | boolean | Permission to read project vulnerabilities. |
-| `[].admin_group_member`            | boolean | Permission to admin members of a group. |
-| `[].manage_project_access_tokens`  | boolean | Permission to manage project access tokens. |
-| `[].archive_project`               | boolean | Permission to archive projects. |
-| `[].remove_project`                | boolean | Permission to delete projects. |
-| `[].manage_group_access_tokens`    | boolean | Permission to manage group access tokens. |
+|:----------|:--------|:---------|:-------------------------------------|
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) of the group |
 
 Example request:
 
@@ -70,19 +217,28 @@ Example response:
 [
   {
     "id": 2,
-    "name": "Custom + code",
+    "name": "Guest + read code",
     "description": "Custom guest that can read code",
     "group_id": 84,
     "base_access_level": 10,
+    "admin_cicd_variables": false,
+    "admin_compliance_framework": false,
+    "admin_group_member": false,
     "admin_merge_request": false,
+    "admin_push_rules": false,
     "admin_terraform_state": false,
     "admin_vulnerability": false,
+    "admin_web_hook": false,
+    "archive_project": false,
+    "manage_deploy_tokens": false,
+    "manage_group_access_tokens": false,
+    "manage_merge_request_settings": false,
+    "manage_project_access_tokens": false,
+    "manage_security_policy_link": false,
     "read_code": true,
     "read_dependency": false,
     "read_vulnerability": false,
-    "manage_group_access_tokens": false,
-    "manage_project_access_tokens": false,
-    "archive_project": false,
+    "remove_group": false,
     "remove_project": false
   },
   {
@@ -91,21 +247,30 @@ Example response:
     "description": "Custom guest that read and admin security entities",
     "group_id": 84,
     "base_access_level": 10,
-    "admin_vulnerability": true,
+    "admin_cicd_variables": false,
+    "admin_compliance_framework": false,
+    "admin_group_member": false,
     "admin_merge_request": false,
+    "admin_push_rules": false,
     "admin_terraform_state": false,
-    "read_code": false,
+    "admin_vulnerability": true,
+    "admin_web_hook": false,
+    "archive_project": false,
+    "manage_deploy_tokens": false,
+    "manage_group_access_tokens": false,
+    "manage_merge_request_settings": false,
+    "manage_project_access_tokens": false,
+    "manage_security_policy_link": false,
+    "read_code": true,
     "read_dependency": true,
     "read_vulnerability": true,
-    "manage_group_access_tokens": false,
-    "manage_project_access_tokens": false,
-    "archive_project": false,
+    "remove_group": false,
     "remove_project": false
   }
 ]
 ```
 
-## Add a member role to a group
+### Add a member role to a group
 
 > - Ability to add a name and description when creating a custom role [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126423) in GitLab 16.3.
 
@@ -115,36 +280,30 @@ Adds a member role to a group.
 POST /groups/:id/member_roles
 ```
 
-To add a member role to a group, the group must be at root-level (have no parent group).
+Parameters:
 
 | Attribute | Type                | Required | Description |
-| --------- | ------------------- | -------- | ----------- |
-| `id`      | integer/string      | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `name`         | string         | yes      | The name of the member role. |
-| `description`  | string         | no       | The description of the member role. |
-| `base_access_level` | integer   | yes      | Base access level for configured role. Valid values are 10 (Guest), 20 (Reporter), 30 (Developer), 40 (Maintainer), or 50 (Owner).|
-| `admin_merge_request` | boolean | no       | Permission to admin project merge requests. |
+|:----------|:--------|:---------|:-------------------------------------|
+| `id`      | integer/string      | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) of the group. |
+| `admin_cicd_variables` | boolean | no       | Permission to create, read, update, and delete CI/CD variables. |
+| `admin_compliance_framework` | boolean | no       | Permission to administer compliance frameworks. |
+| `admin_group_member` | boolean | no       | Permission to add, remove and assign members in a group. |
+| `admin_merge_request` | boolean | no       | Permission to approve merge requests. |
+| `admin_push_rules` | boolean | no       | Permission to configure push rules for repositories at group or project level. |
 | `admin_terraform_state` | boolean | no       | Permission to admin project terraform state. |
 | `admin_vulnerability` | boolean | no       | Permission to admin project vulnerabilities. |
+| `admin_web_hook` | boolean | no       | Permission to administer web hooks. |
+| `archive_project` | boolean | no       | Permission to archive projects. |
+| `manage_deploy_tokens` | boolean | no       | Permission to manage deploy tokens. |
+| `manage_group_access_tokens` | boolean | no       | Permission to manage group access tokens. |
+| `manage_merge_request_settings` | boolean | no       | Permission to configure merge request settings. |
+| `manage_project_access_tokens` | boolean | no       | Permission to manage project access tokens. |
+| `manage_security_policy_link` | boolean | no       | Permission to link security policy projects. |
 | `read_code`           | boolean | no       | Permission to read project code. |
 | `read_dependency`     | boolean | no       | Permission to read project dependencies. |
 | `read_vulnerability`  | boolean | no       | Permission to read project vulnerabilities. |
-
-If successful, returns [`201`](rest/index.md#status-codes) and the following attributes:
-
-| Attribute                | Type     | Description           |
-|:-------------------------|:---------|:----------------------|
-| `id`                     | integer | The ID of the member role. |
-| `name`                   | string  | The name of the member role. |
-| `description`            | string  | The description of the member role. |
-| `group_id`               | integer | The ID of the group that the member role belongs to. |
-| `base_access_level`      | integer | Base access level for member role. |
-| `admin_merge_request`    | boolean | Permission to admin project merge requests. |
-| `admin_terraform_state`    | boolean | Permission to admin project terraform state. |
-| `admin_vulnerability`    | boolean | Permission to admin project vulnerabilities. |
-| `read_code`              | boolean | Permission to read project code. |
-| `read_dependency`        | boolean | Permission to read project dependencies. |
-| `read_vulnerability`     | boolean | Permission to read project vulnerabilities. |
+| `remove_group` | boolean | no       | Permission to delete or restore a group. |
+| `remove_project` | boolean | no       | Permission to delete a project. |
 
 Example request:
 
@@ -161,11 +320,25 @@ Example response:
   "description": null,
   "group_id": 84,
   "base_access_level": 10,
-  "admin_merge_requests": false,
+  "admin_cicd_variables": false,
+  "admin_compliance_framework": false,
+  "admin_group_member": false,
+  "admin_merge_request": false,
+  "admin_push_rules": false,
+  "admin_terraform_state": false,
   "admin_vulnerability": false,
+  "admin_web_hook": false,
+  "archive_project": false,
+  "manage_deploy_tokens": false,
+  "manage_group_access_tokens": false,
+  "manage_merge_request_settings": false,
+  "manage_project_access_tokens": false,
+  "manage_security_policy_link": false,
   "read_code": true,
   "read_dependency": false,
-  "read_vulnerability": false
+  "read_vulnerability": false,
+  "remove_group": false,
+  "remove_project": false
 }
 ```
 
@@ -184,8 +357,8 @@ DELETE /groups/:id/member_roles/:member_role_id
 ```
 
 | Attribute | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+|:----------|:--------|:---------|:-------------------------------------|
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) of the group. |
 | `member_role_id` | integer | yes   | The ID of the member role. |
 
 If successful, returns [`204`](rest/index.md#status-codes) and an empty response.

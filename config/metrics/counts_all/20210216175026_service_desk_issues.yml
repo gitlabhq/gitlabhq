@@ -2,8 +2,6 @@
 data_category: operational
 key_path: counts.service_desk_issues
 description: Count of service desk issues
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active
@@ -16,4 +14,5 @@ tier:
 - free
 performance_indicator_type:
 - customer_health_score
+- devops_report
 milestone: "<13.9"

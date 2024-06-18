@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project issue boards sidebar', :js, feature_category: :team_planning do
+RSpec.describe 'Project issue boards sidebar', :js, feature_category: :portfolio_management do
   include BoardHelpers
 
   let_it_be(:user)    { create(:user) }
@@ -18,8 +18,6 @@ RSpec.describe 'Project issue boards sidebar', :js, feature_category: :team_plan
     project.add_maintainer(user)
 
     sign_in(user)
-
-    create(:callout, feature_name: :board_add_new_column_trigger_popover, user: user)
 
     visit project_board_path(project, board)
 

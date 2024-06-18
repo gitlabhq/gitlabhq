@@ -17,7 +17,8 @@ module Gitlab
         end
 
         def decrypt_public_session_id(data)
-          decrypted = encryptor.decrypt_and_verify(data, purpose: public_session_id_purpose)
+          encrypted_data = data.delete_prefix(session_cookie_token_prefix)
+          decrypted = encryptor.decrypt_and_verify(encrypted_data, purpose: public_session_id_purpose)
           ::Gitlab::Json.parse(decrypted)
         end
 
@@ -29,9 +30,10 @@ module Gitlab
 
         def cookie_data(public_session_id)
           uri = URI(::Gitlab::Kas.tunnel_url)
+          value = session_cookie_token_prefix + encrypt_public_session_id(public_session_id)
 
           cookie = {
-            value: encrypt_public_session_id(public_session_id),
+            value: value,
             expires: 1.day,
             httponly: true,
             path: uri.path.presence || '/',
@@ -62,6 +64,10 @@ module Gitlab
 
         def public_session_id_purpose
           "kas.user_public_session_id"
+        end
+
+        def session_cookie_token_prefix
+          Rails.application.config.session_options[:session_cookie_token_prefix] || ''
         end
       end
     end

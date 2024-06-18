@@ -29,7 +29,7 @@ export default {
     icon() {
       return this.canPlay
         ? { name: 'check-circle-filled', class: 'gl-fill-green-500' }
-        : { name: 'timer', class: 'gl-fill-current-color' };
+        : { name: 'timer', class: 'gl-fill-current' };
     },
     text() {
       return this.canPlay ? this.$options.i18n.ready : this.$options.i18n.waiting;
@@ -85,7 +85,7 @@ export default {
     </gl-alert>
     <template v-else>
       <gl-icon v-bind="icon" />
-      <span class="gl-ml-4 gl-font-weight-bold gl-flex-grow-1">{{ text }}</span>
+      <span class="gl-ml-4 gl-font-bold gl-flex-grow-1">{{ text }}</span>
       <gl-button v-if="canPlay" :loading="loading" variant="confirm" @click="playJob">
         {{ $options.i18n.deploy }}
       </gl-button>

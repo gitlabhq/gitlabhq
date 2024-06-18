@@ -101,7 +101,7 @@ RSpec.describe Import::FogbugzService, feature_category: :importers do
     end
   end
 
-  context 'when import starts succesfully' do
+  context 'when import starts successfully' do
     before do
       allow(client).to receive(:repo).with(repo_id).and_return(
         instance_double(Gitlab::FogbugzImport::Repository, name: 'test', raw_data: nil)

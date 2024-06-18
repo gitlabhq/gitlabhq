@@ -9,7 +9,7 @@
       = render 'shared/groups/group_name_and_path_fields', f: f
       = render 'shared/group_form_description', f: f
       .form-group.gl-form-group{ role: 'group' }
-        = f.label :avatar, _("Group avatar"), class: 'gl-display-block col-form-label'
+        = f.label :avatar, _("Group avatar"), class: 'gl-block col-form-label'
         = render 'shared/choose_avatar_button', f: f
       = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group, with_label: false
 

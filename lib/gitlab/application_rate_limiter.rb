@@ -23,21 +23,34 @@ module Gitlab
           project_repositories_archive: { threshold: 5, interval: 1.minute },
           project_generate_new_export: { threshold: -> { application_settings.project_export_limit }, interval: 1.minute },
           project_import: { threshold: -> { application_settings.project_import_limit }, interval: 1.minute },
-          project_testing_hook: { threshold: 5, interval: 1.minute },
           play_pipeline_schedule: { threshold: 1, interval: 1.minute },
           raw_blob: { threshold: -> { application_settings.raw_blob_request_limit }, interval: 1.minute },
           group_export: { threshold: -> { application_settings.group_export_limit }, interval: 1.minute },
           group_download_export: { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
           group_import: { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },
-          group_testing_hook: { threshold: 5, interval: 1.minute },
+          group_api: { threshold: -> { application_settings.group_api_limit }, interval: 1.minute },
+          group_projects_api: { threshold: -> { application_settings.group_projects_api_limit }, interval: 1.minute },
+          groups_api: { threshold: -> { application_settings.groups_api_limit }, interval: 1.minute },
+          project_api: { threshold: -> { application_settings.project_api_limit }, interval: 1.minute },
+          projects_api: { threshold: -> { application_settings.projects_api_limit }, interval: 10.minutes },
+          user_contributed_projects_api: { threshold: -> { application_settings.user_contributed_projects_api_limit }, interval: 1.minute },
+          user_projects_api: { threshold: -> { application_settings.user_projects_api_limit }, interval: 1.minute },
+          user_starred_projects_api: { threshold: -> { application_settings.user_starred_projects_api_limit }, interval: 1.minute },
           members_delete: { threshold: -> { application_settings.members_delete_limit }, interval: 1.minute },
           profile_add_new_email: { threshold: 5, interval: 1.minute },
           web_hook_calls: { interval: 1.minute },
           web_hook_calls_mid: { interval: 1.minute },
           web_hook_calls_low: { interval: 1.minute },
-          web_hook_test_api_endpoint: { threshold: 3, interval: 1.minute },
+          web_hook_test: { threshold: 5, interval: 1.minute },
           users_get_by_id: { threshold: -> { application_settings.users_get_by_id_limit }, interval: 10.minutes },
           username_exists: { threshold: 20, interval: 1.minute },
+          user_followers: { threshold: 100, interval: 1.minute },
+          user_following: { threshold: 100, interval: 1.minute },
+          user_status: { threshold: 240, interval: 1.minute },
+          user_keys: { threshold: 120, interval: 1.minute },
+          user_specific_key: { threshold: 120, interval: 1.minute },
+          user_gpg_keys: { threshold: 120, interval: 1.minute },
+          user_specific_gpg_key: { threshold: 120, interval: 1.minute },
           user_sign_up: { threshold: 20, interval: 1.minute },
           user_sign_in: { threshold: 5, interval: 10.minutes },
           profile_resend_email_confirmation: { threshold: 5, interval: 1.minute },
@@ -50,10 +63,10 @@ module Gitlab
           pipelines_create: { threshold: -> { application_settings.pipeline_limit_per_project_user_sha }, interval: 1.minute },
           temporary_email_failure: { threshold: 300, interval: 1.day },
           permanent_email_failure: { threshold: 5, interval: 1.day },
+          notification_emails: { threshold: 1000, interval: 1.day },
           project_testing_integration: { threshold: 5, interval: 1.minute },
           email_verification: { threshold: 10, interval: 10.minutes },
           email_verification_code_send: { threshold: 10, interval: 1.hour },
-          phone_verification_challenge: { threshold: 2, interval: 1.day },
           phone_verification_send_code: { threshold: 5, interval: 1.day },
           phone_verification_verify_code: { threshold: 5, interval: 1.day },
           namespace_exists: { threshold: 20, interval: 1.minute },
@@ -230,7 +243,7 @@ module Gitlab
 
         serialized = composed_key.map do |obj|
           if obj.is_a?(String) || obj.is_a?(Symbol)
-            "#{obj}"
+            obj.to_s
           else
             "#{obj.class.model_name.to_s.underscore}:#{obj.id}"
           end

@@ -27,9 +27,9 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
   it { is_expected.to belong_to(:auto_canceled_by) }
 
   it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:ci_stage) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w[pending running failed success canceled]) }
 
-  it { is_expected.to validate_length_of(:stage).is_at_most(255) }
   it { is_expected.to validate_length_of(:ref).is_at_most(255) }
   it { is_expected.to validate_length_of(:target_url).is_at_most(255) }
   it { is_expected.to validate_length_of(:description).is_at_most(255) }
@@ -277,7 +277,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     subject { job.cancel }
 
     context 'when status is scheduled' do
-      let(:job) { build(:commit_status, :scheduled) }
+      let(:job) { create(:commit_status, :scheduled) }
 
       it 'updates the status' do
         subject
@@ -855,13 +855,13 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
       context 'when commit status does not have a stage_id assigned' do
         let(:commit_status) do
-          create(:commit_status, name: 'rspec', stage: 'test', status: :success)
+          FactoryBot.build(:commit_status, name: 'rspec', stage: 'test', status: :success)
         end
 
         let(:stage) { Ci::Stage.first }
 
         it 'creates a new stage', :sidekiq_might_not_need_inline do
-          expect { commit_status }.to change { Ci::Stage.count }.by(1)
+          expect { commit_status.save! }.to change { Ci::Stage.count }.by(1)
 
           expect(stage.name).to eq 'test'
           expect(stage.project).to eq commit_status.project
@@ -877,11 +877,12 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
         end
 
         let(:commit_status) do
-          create(:commit_status, project: project, pipeline: pipeline, name: 'rspec', stage: 'test', status: :success)
+          FactoryBot.build(:commit_status, project: project, pipeline: pipeline, name: 'rspec', stage: 'test',
+            status: :success)
         end
 
         it 'uses existing stage', :sidekiq_might_not_need_inline do
-          expect { commit_status }.not_to change { Ci::Stage.count }
+          expect { commit_status.save! }.not_to change { Ci::Stage.count }
 
           expect(commit_status.stage_id).to eq stage.id
           expect(stage.reload.status).to eq commit_status.status
@@ -890,11 +891,11 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
       context 'when commit status is being imported' do
         let(:commit_status) do
-          create(:commit_status, name: 'rspec', stage: 'test', importing: true)
+          FactoryBot.build(:commit_status, name: 'rspec', stage: 'test', importing: true)
         end
 
         it 'does not create a new stage' do
-          expect { commit_status }.not_to change { Ci::Stage.count }
+          expect { commit_status.save! }.not_to change { Ci::Stage.count }
           expect(commit_status.stage_id).not_to be_present
         end
       end

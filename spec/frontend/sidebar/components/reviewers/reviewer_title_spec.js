@@ -1,17 +1,31 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { mockTracking, triggerEvent } from 'helpers/tracking_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import Component from '~/sidebar/components/reviewers/reviewer_title.vue';
+import getMergeRequestReviewers from '~/sidebar/queries/get_merge_request_reviewers.query.graphql';
+import userPermissionsQuery from '~/merge_requests/components/reviewers/queries/user_permissions.query.graphql';
+
+Vue.use(VueApollo);
 
 describe('ReviewerTitle component', () => {
   let wrapper;
 
   const findEditButton = () => wrapper.findByTestId('reviewers-edit-button');
+  const findDrawerToggle = () => wrapper.findByTestId('drawer-toggle');
 
   const createComponent = (props, { reviewerAssignDrawer = false } = {}) => {
+    const apolloProvider = createMockApollo([
+      [getMergeRequestReviewers, jest.fn().mockResolvedValue({ data: { workspace: null } })],
+      [userPermissionsQuery, jest.fn().mockResolvedValue({ data: { project: null } })],
+    ]);
+
     return mountExtended(Component, {
+      apolloProvider,
       propsData: {
         numberOfReviewers: 0,
         editable: false,
@@ -26,6 +40,7 @@ describe('ReviewerTitle component', () => {
           reviewerAssignDrawer,
         },
       },
+      stubs: ['approval-summary'],
     });
   };
 
@@ -121,7 +136,7 @@ describe('ReviewerTitle component', () => {
       resetHTMLFixture();
     });
 
-    it('sets title for dropdown toggle as `Quick assign`', () => {
+    it('sets title for drawer toggle as `Add or edit reviewers`', async () => {
       wrapper = createComponent(
         {
           editable: true,
@@ -129,7 +144,9 @@ describe('ReviewerTitle component', () => {
         { reviewerAssignDrawer: true },
       );
 
-      expect(findEditButton().attributes('title')).toBe('Quick assign');
+      await waitForPromises();
+
+      expect(findDrawerToggle().attributes('title')).toBe('Add or edit reviewers');
     });
 
     it('clicking toggle opens reviewer drawer', async () => {
@@ -142,7 +159,7 @@ describe('ReviewerTitle component', () => {
 
       expect(document.querySelector('.gl-drawer')).toBe(null);
 
-      wrapper.find('[data-testid="drawer-toggle"]').vm.$emit('click');
+      findDrawerToggle().vm.$emit('click');
 
       await waitForPromises();
 

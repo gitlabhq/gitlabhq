@@ -55,6 +55,12 @@ unresolved state or your pipelines may be dropped.
 
 ## Troubleshooting
 
+### Jobs or pipelines run unexpectedly with `rules:changes:compare_to`
+
+You might have jobs or pipelines that run unexpectedly when using `rules:changes:compare_to` with merge request pipelines.
+
+With merged results pipelines, the internal commit that GitLab creates is used as a base to compare against. This commit likely contains more changes than the tip of the MR branch, which causes unexpected outcomes.
+
 ### Merged results pipelines are not created
 
 In GitLab 13.7 and earlier, merged results pipelines might not be created due

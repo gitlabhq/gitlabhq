@@ -1,13 +1,15 @@
 <script>
-import { GlExperimentBadge, GlButton } from '@gitlab/ui';
+import { GlExperimentBadge } from '@gitlab/ui';
 import MetadataItem from '~/vue_shared/components/registry/metadata_item.vue';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import EmptyState from '../components/empty_state.vue';
+import { s__ } from '~/locale';
+import EmptyState from '../components/model_list_empty_state.vue';
 import * as i18n from '../translations';
-import { BASE_SORT_FIELDS, MODEL_ENTITIES } from '../constants';
+import { BASE_SORT_FIELDS, MODEL_CREATION_MODAL_ID } from '../constants';
 import ModelRow from '../components/model_row.vue';
+import ModelCreate from '../components/model_create.vue';
 import ActionsDropdown from '../components/actions_dropdown.vue';
 import getModelsQuery from '../graphql/queries/get_models.query.graphql';
 import { makeLoadModelErrorMessage } from '../translations';
@@ -17,10 +19,10 @@ export default {
   name: 'IndexMlModels',
   components: {
     ModelRow,
+    ModelCreate,
     MetadataItem,
     TitleArea,
     GlExperimentBadge,
-    GlButton,
     EmptyState,
     ActionsDropdown,
     SearchableList,
@@ -28,14 +30,12 @@ export default {
   provide() {
     return {
       mlflowTrackingUrl: this.mlflowTrackingUrl,
+      projectPath: this.projectPath,
+      maxAllowedFileSize: this.maxAllowedFileSize,
     };
   },
   props: {
     projectPath: {
-      type: String,
-      required: true,
-    },
-    createModelPath: {
       type: String,
       required: true,
     },
@@ -48,6 +48,10 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    maxAllowedFileSize: {
+      type: Number,
+      required: true,
     },
   },
   apollo: {
@@ -70,7 +74,7 @@ export default {
   data() {
     return {
       models: [],
-      errorMessage: undefined,
+      errorMessage: '',
       skipQueries: true,
       queryVariables: {},
     };
@@ -99,7 +103,7 @@ export default {
         sort: variables.sort?.toUpperCase() || 'DESC',
       };
 
-      this.errorMessage = null;
+      this.errorMessage = '';
       this.skipQueries = false;
 
       this.$apollo.queries.models.fetchMore({});
@@ -112,7 +116,14 @@ export default {
   i18n,
   sortableFields: BASE_SORT_FIELDS,
   docHref: helpPagePath('user/project/ml/model_registry/index.md'),
-  modelEntity: MODEL_ENTITIES.model,
+  emptyState: {
+    title: s__('MlModelRegistry|Import your machine learning models'),
+    description: s__(
+      'MlModelRegistry|Create your machine learning using GitLab directly or using the MLflow client',
+    ),
+    primaryText: s__('MlModelRegistry|Create model'),
+    modalId: MODEL_CREATION_MODAL_ID,
+  },
 };
 </script>
 
@@ -122,19 +133,14 @@ export default {
       <template #title>
         <div class="gl-flex-grow-1 gl-display-flex gl-align-items-center">
           <span>{{ $options.i18n.TITLE_LABEL }}</span>
-          <gl-experiment-badge :help-page-url="$options.docHref" />
+          <gl-experiment-badge :help-page-url="$options.docHref" type="beta" />
         </div>
       </template>
       <template #metadata-models-count>
         <metadata-item icon="machine-learning" :text="$options.i18n.modelsCountLabel(count)" />
       </template>
       <template #right-actions>
-        <gl-button
-          v-if="canWriteModelRegistry"
-          :href="createModelPath"
-          data-testid="create-model-button"
-          >{{ $options.i18n.CREATE_MODEL_LABEL }}</gl-button
-        >
+        <model-create v-if="canWriteModelRegistry" />
 
         <actions-dropdown />
       </template>
@@ -149,7 +155,12 @@ export default {
       @fetch-page="fetchPage"
     >
       <template #empty-state>
-        <empty-state :entity-type="$options.modelEntity" />
+        <empty-state
+          :title="$options.emptyState.title"
+          :description="$options.emptyState.description"
+          :primary-text="$options.emptyState.primaryText"
+          :modal-id="$options.emptyState.modalId"
+        />
       </template>
 
       <template #item="{ item }">

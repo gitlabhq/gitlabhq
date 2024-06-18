@@ -9,10 +9,10 @@
         _('Enable unauthenticated Git HTTP request rate limit'),
         help_text: _('Helps reduce unauthenticated Git HTTP request volume for git paths.')
     .form-group
-      = f.label :throttle_unauthenticated_git_http_requests_per_period, _('Maximum unauthenticated Git HTTP requests per period per IP'), class: 'gl-font-weight-bold'
+      = f.label :throttle_unauthenticated_git_http_requests_per_period, _('Maximum unauthenticated Git HTTP requests per period per IP'), class: 'gl-font-bold'
       = f.number_field :throttle_unauthenticated_git_http_requests_per_period, class: 'form-control gl-form-input'
     .form-group
-      = f.label :throttle_unauthenticated_git_http_period_in_seconds, _('Unauthenticated Git HTTP rate limit period in seconds'), class: 'gl-font-weight-bold'
+      = f.label :throttle_unauthenticated_git_http_period_in_seconds, _('Unauthenticated Git HTTP rate limit period in seconds'), class: 'gl-font-bold'
       = f.number_field :throttle_unauthenticated_git_http_period_in_seconds, class: 'form-control gl-form-input'
 
   = f.submit _('Save changes'), pajamas_button: true

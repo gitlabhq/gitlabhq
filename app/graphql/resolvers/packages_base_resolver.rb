@@ -5,7 +5,7 @@ module Resolvers
     type Types::Packages::PackageType.connection_type, null: true
 
     argument :sort, Types::Packages::PackageSortEnum,
-      description: 'Sort packages by this criteria.',
+      description: 'Sort packages by the criteria.',
       required: false,
       default_value: :created_desc
 

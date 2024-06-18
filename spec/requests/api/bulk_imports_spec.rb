@@ -488,4 +488,36 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
     it_behaves_like 'disabled feature'
   end
+
+  describe 'POST /bulk_imports/:id/cancel' do
+    let(:import) { create(:bulk_import, user: user) }
+
+    context 'when authenticated as admin' do
+      let_it_be(:admin) { create(:admin) }
+
+      it 'cancels the migration and returns 200' do
+        post api("/bulk_imports/#{import.id}/cancel", admin, admin_mode: true)
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['status']).to eq('canceled')
+      end
+
+      context 'when migration could not be found' do
+        it 'return 404' do
+          post api("/bulk_imports/#{non_existing_record_id}/cancel", admin, admin_mode: true)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when not authenticated as admin' do
+      it 'returns an error' do
+        post api("/bulk_imports/#{import.id}/cancel", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
 end

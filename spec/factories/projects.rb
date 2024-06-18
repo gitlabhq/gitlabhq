@@ -16,6 +16,7 @@ FactoryBot.define do
     has_external_wiki { false }
 
     # Associations
+    organization { namespace&.organization }
     namespace
     creator { group ? association(:user) : namespace&.owner }
 
@@ -99,6 +100,7 @@ FactoryBot.define do
         name: evaluator.name,
         path: evaluator.path,
         parent: evaluator.namespace,
+        organization: evaluator.organization,
         shared_runners_enabled: evaluator.shared_runners_enabled,
         visibility_level: evaluator.visibility_level
       }

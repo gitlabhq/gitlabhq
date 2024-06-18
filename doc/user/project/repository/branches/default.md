@@ -28,8 +28,8 @@ GitLab checks first for specific customizations, then checks at a broader level,
 using the GitLab default only if no customizations are set:
 
 1. A [project-specific](#change-the-default-branch-name-for-a-project) custom default branch name.
-1. A [subgroup-level](#group-level-custom-initial-branch-name) custom default branch name.
-1. A [group-level](#group-level-custom-initial-branch-name) custom default branch name.
+1. [Custom group default branch name](#group-level-custom-initial-branch-name) specified in project's direct subgroup.
+1. [Custom group default branch name](#group-level-custom-initial-branch-name) specified in project's root group.
 1. An [instance-level](#instance-level-custom-initial-branch-name) custom default branch name.
 1. If no custom default branch name is set at any level, GitLab defaults to `main`.
 
@@ -317,3 +317,10 @@ with the value of `endCursor`:
  }
 }
 ```
+
+### New subgroups do not inherit default branch name from a higher-level subgroup
+
+When you configured a default branch in a subgroup that contains another subgroup that contains a project,
+the default branch is not inherited.
+
+We are tracking this problem in [issue 327208](https://gitlab.com/gitlab-org/gitlab/-/issues/327208).

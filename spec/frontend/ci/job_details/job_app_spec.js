@@ -163,6 +163,9 @@ describe('Job App', () => {
               label: 'failed',
               text: 'failed',
               details_path: 'path',
+              action: {
+                confirmation_message: null,
+              },
               illustration: {
                 content: 'Retry this job in order to create the necessary resources.',
                 image: 'path',

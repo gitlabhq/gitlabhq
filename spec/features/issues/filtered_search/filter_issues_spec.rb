@@ -19,7 +19,6 @@ RSpec.describe 'Filter issues', :js, feature_category: :team_planning do
   end
 
   before do
-    stub_feature_flags(or_issuable_queries: false)
     project.add_maintainer(user)
 
     create(:issue, project: project, author: user2, title: "Bug report 1")

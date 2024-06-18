@@ -1,17 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'User views Git access wiki page' do
-  let(:wiki_page) { create(:wiki_page, wiki: wiki) }
-
   before do
     sign_in(user)
   end
 
   it 'shows the correct clone URLs', :js do
-    visit wiki_page_path(wiki, wiki_page)
-    click_link 'Clone repository'
+    visit wiki_page_path(wiki, 'git_access')
 
-    expect(page).to have_text("Clone repository #{wiki.full_path}")
+    expect(page).to have_text("Clone Wiki repository")
 
     within('.js-git-clone-holder') do
       expect(page).to have_css('#clone-dropdown', text: 'HTTP')

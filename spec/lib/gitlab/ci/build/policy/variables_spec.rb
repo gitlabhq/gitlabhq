@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Ci::Build::Policy::Variables do
   end
 
   let(:ci_build) do
-    build(:ci_build, pipeline: pipeline, project: project, ref: 'master')
+    build(:ci_build, pipeline: pipeline, project: project, ref: 'master', ci_stage: build(:ci_stage))
   end
 
   let(:seed) do

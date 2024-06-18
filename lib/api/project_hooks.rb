@@ -43,6 +43,7 @@ module API
         optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
         optional :custom_webhook_template, type: String, desc: "Custom template for the request payload"
         use :url_variables
+        use :custom_headers
       end
     end
 
@@ -52,6 +53,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/hooks' do
         mount ::API::Hooks::UrlVariables
+        mount ::API::Hooks::CustomHeaders
       end
 
       desc 'List project hooks' do
@@ -64,7 +66,7 @@ module API
         use :pagination
       end
       get ":id/hooks" do
-        present paginate(user_project.hooks), with: Entities::ProjectHook, with_url_variables: false
+        present paginate(user_project.hooks), with: Entities::ProjectHook, with_url_variables: false, with_custom_headers: false
       end
 
       desc 'Get project hook' do
@@ -99,9 +101,14 @@ module API
       end
       post ":id/hooks" do
         hook_params = create_hook_params
-        hook = user_project.hooks.new(hook_params)
 
-        save_hook(hook, Entities::ProjectHook)
+        result = WebHooks::CreateService.new(current_user).execute(hook_params, hook_scope)
+
+        if result[:status] == :success
+          present result[:hook], with: Entities::ProjectHook
+        else
+          error!(result.message, result.http_status || 422)
+        end
       end
 
       desc 'Edit project hook' do
@@ -142,36 +149,10 @@ module API
         end
       end
 
-      desc 'Triggers a project hook test' do
-        detail 'Triggers a project hook test'
-        success code: 201
-        failure [
-          { code: 400, message: 'Bad request' },
-          { code: 404, message: 'Not found' },
-          { code: 422, message: 'Unprocessable entity' },
-          { code: 429, message: 'Too many requests' }
-        ]
-      end
-      params do
-        requires :trigger,
-          type: String,
-          desc: 'The type of trigger hook',
-          values: ProjectHook.triggers.values.map(&:to_s)
-      end
-      post ":id/hooks/:hook_id/test/:trigger", urgency: :low do
-        hook = find_hook
-
-        if Feature.enabled?(:web_hook_test_api_endpoint_rate_limit)
-          check_rate_limit!(:web_hook_test_api_endpoint, scope: hook)
-        end
-
-        result = TestHooks::ProjectService.new(hook, current_user, params[:trigger]).execute
-        success = (200..299).cover?(result.payload[:http_status])
-        if success
-          created!
-        else
-          render_api_error!(result.message, 422)
-        end
+      namespace ':id/hooks/' do
+        mount ::API::Hooks::TriggerTest, with: {
+          entity: ProjectHook
+        }
       end
     end
   end

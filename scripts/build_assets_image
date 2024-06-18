@@ -52,6 +52,8 @@ COMMIT_REF_NAME_DESTINATION="${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}"
 if skopeo inspect "docker://${COMMIT_ASSETS_HASH_DESTINATION}" > /dev/null; then
   echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, no need to rebuild it."
 
+  echo "Copying assets image for destinations: ${COMMIT_REF_SLUG_DESTINATION} and ${COMMIT_SHA_DESTINATION}"
+
   skopeo copy "docker://${COMMIT_ASSETS_HASH_DESTINATION}" "docker://${COMMIT_REF_SLUG_DESTINATION}"
   skopeo copy "docker://${COMMIT_ASSETS_HASH_DESTINATION}" "docker://${COMMIT_SHA_DESTINATION}"
 

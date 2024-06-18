@@ -1,6 +1,5 @@
 <script>
 import { GlAccordion, GlAccordionItem, GlBadge, GlIcon, GlLink } from '@gitlab/ui';
-import { s__ } from '~/locale';
 
 import { STATISTIC_ITEMS } from '~/import/constants';
 import { STATUSES, STATUS_ICON_MAP } from '../constants';
@@ -99,9 +98,6 @@ export default {
   },
 
   STATISTIC_ITEMS,
-  i18n: {
-    detailsLink: s__('Import|See failures'),
-  },
 };
 </script>
 
@@ -129,9 +125,9 @@ export default {
             </div>
           </li>
         </ul>
-        <gl-link v-if="showDetails" :href="detailsPathForProject">{{
-          $options.i18n.detailsLink
-        }}</gl-link>
+        <gl-link v-if="showDetails" :href="detailsPathForProject"
+          >{{ s__('Import|Show errors') }} &gt;</gl-link
+        >
       </gl-accordion-item>
     </gl-accordion>
   </div>

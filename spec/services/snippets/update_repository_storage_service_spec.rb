@@ -31,7 +31,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
     context 'when the move succeeds' do
       it 'moves the repository to the new storage and unmarks the repository as read-only' do
         expect(snippet_repository_double).to receive(:replicate)
-          .with(snippet.repository.raw)
+          .with(snippet.repository.raw, partition_hint: "")
         expect(snippet_repository_double).to receive(:checksum)
           .and_return(checksum)
         expect(original_snippet_repository_double).to receive(:remove)
@@ -67,7 +67,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
     context 'when the move fails' do
       it 'unmarks the repository as read-only without updating the repository storage' do
         expect(snippet_repository_double).to receive(:replicate)
-          .with(snippet.repository.raw)
+          .with(snippet.repository.raw, partition_hint: "")
           .and_raise(Gitlab::Git::CommandError, 'Boom')
         expect(snippet_repository_double).to receive(:remove)
 
@@ -85,7 +85,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
     context 'when the cleanup fails' do
       it 'sets the correct state' do
         expect(snippet_repository_double).to receive(:replicate)
-          .with(snippet.repository.raw)
+          .with(snippet.repository.raw, partition_hint: "")
         expect(snippet_repository_double).to receive(:checksum)
           .and_return(checksum)
         expect(original_snippet_repository_double).to receive(:remove)
@@ -102,7 +102,7 @@ RSpec.describe Snippets::UpdateRepositoryStorageService, feature_category: :sour
     context 'when the checksum does not match' do
       it 'unmarks the repository as read-only without updating the repository storage' do
         expect(snippet_repository_double).to receive(:replicate)
-          .with(snippet.repository.raw)
+          .with(snippet.repository.raw, partition_hint: "")
         expect(snippet_repository_double).to receive(:checksum)
           .and_return('not matching checksum')
         expect(snippet_repository_double).to receive(:remove)

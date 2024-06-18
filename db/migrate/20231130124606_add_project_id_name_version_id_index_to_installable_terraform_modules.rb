@@ -8,6 +8,7 @@ class AddProjectIdNameVersionIdIndexToInstallableTerraformModules < Gitlab::Data
   PACKAGE_TYPE_TERRAFORM_MODULE = 12
   INSTALLABLE_CONDITION = 'status IN (0, 1)'
 
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     add_concurrent_index(
       :packages_packages,
@@ -16,6 +17,7 @@ class AddProjectIdNameVersionIdIndexToInstallableTerraformModules < Gitlab::Data
       where: "package_type = #{PACKAGE_TYPE_TERRAFORM_MODULE} AND #{INSTALLABLE_CONDITION}"
     )
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     remove_concurrent_index_by_name(:packages_packages, INDEX_NAME)

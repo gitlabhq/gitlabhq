@@ -349,7 +349,7 @@ export default {
           :key="props.line.left.line_code"
           :class="[
             $options.parallelViewLeftLineType(props),
-            { parallel: !props.inline, 'gl-font-weight-bold': props.line.left.isConflictMarker },
+            { parallel: !props.inline, 'gl-font-bold': props.line.left.isConflictMarker },
           ]"
           class="diff-td line_content with-coverage left-side"
           data-testid="left-content"
@@ -492,7 +492,7 @@ export default {
           :class="[
             props.line.right.type,
             {
-              'gl-font-weight-bold': props.line.right.type === $options.CONFLICT_MARKER_THEIR,
+              'gl-font-bold': props.line.right.type === $options.CONFLICT_MARKER_THEIR,
             },
             ...$options.classNameMapCellRight(props),
           ]"

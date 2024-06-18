@@ -88,6 +88,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         access_level: runner.access_level.to_s.upcase,
         run_untagged: runner.run_untagged,
         runner_type: runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
+        creation_method: runner.authenticated_user_registration_type? ? 'AUTHENTICATED_USER' : 'REGISTRATION_TOKEN',
         ephemeral_authentication_token: nil,
         maintenance_note: runner.maintenance_note,
         maintenance_note_html:
@@ -542,8 +543,8 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     it_behaves_like 'runner details fetch'
   end
 
-  describe 'for registration type' do
-    context 'when registered with registration token' do
+  describe 'for creation method' do
+    context 'when created with registration token' do
       let(:runner) do
         create(:ci_runner, registration_type: :registration_token)
       end
@@ -551,7 +552,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
       it_behaves_like 'runner details fetch'
     end
 
-    context 'when registered with authenticated user' do
+    context 'when created by authenticated user' do
       let(:runner) do
         create(:ci_runner, registration_type: :authenticated_user)
       end
@@ -688,7 +689,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     end
 
     let_it_be(:never_contacted_instance_runner) do
-      create(:ci_runner, :unregistered, description: 'Missing runner 1', created_at: 1.month.ago)
+      create(:ci_runner, :unregistered, :created_within_stale_deadline, description: 'Missing runner 1')
     end
 
     let(:query) do
@@ -1010,7 +1011,8 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
     # - createdBy: Known N+1 issues, but only on exotic fields which we don't normally use
     # - ownerProject.pipeline: Needs arguments (iid or sha)
     # - project.productAnalyticsState: Can be requested only for 1 Project(s) at a time.
-    let(:excluded_fields) { %w[createdBy jobs pipeline productAnalyticsState] }
+    # - project.mergeTrains: Is a licensed feature
+    let(:excluded_fields) { %w[createdBy jobs pipeline productAnalyticsState mergeTrains] }
 
     it 'avoids N+1 queries', :use_sql_query_cache do
       discrete_runners_control = ActiveRecord::QueryRecorder.new(skip_cached: false) do

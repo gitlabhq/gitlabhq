@@ -172,7 +172,7 @@ export default {
         v-if="node.attrs.showPreview"
         :contenteditable="false"
         data-testid="sandbox-preview"
-        class="gl-mt-n3! gl-ml-n4! gl-mr-n4! gl-mb-3 gl-bg-white! gl-p-4 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
+        class="!-gl-mt-3 !-gl-ml-4 !-gl-mr-4 gl-mb-3 gl-bg-white! gl-p-4 gl-border-b-1 gl-border-b-solid gl-border-b-gray-100"
       >
         <sandboxed-mermaid v-if="node.attrs.language === 'mermaid'" :source="diagramSource" />
         <img v-else ref="diagramContainer" :src="diagramUrl" />
@@ -191,9 +191,9 @@ export default {
         data-testid="code-suggestion-box"
       >
         <div
-          class="md-suggestion-header gl-flex-wrap gl-z-1 gl-w-full gl-border-none! gl-font-regular gl-px-4 gl-py-3 gl-border-b-1! gl-border-b-solid! gl-mr-n10!"
+          class="md-suggestion-header gl-flex-wrap gl-z-1 gl-w-full gl-border-none! gl-font-regular gl-px-4 gl-py-3 gl-border-b-1! gl-border-b-solid!"
         >
-          <div class="gl-font-weight-bold gl-pr-3">
+          <div class="gl-font-bold gl-pr-3">
             {{ __('Suggested change') }}
           </div>
 

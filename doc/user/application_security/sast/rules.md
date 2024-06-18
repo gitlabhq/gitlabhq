@@ -24,7 +24,7 @@ It combines:
 
 - the Semgrep open-source engine.
 - GitLab-managed detection rules.
-- GitLab proprietary technology for [vulnerability tracking](index.md#advanced-vulnerability-tracking) and [false positive detection](index.md#false-positive-detection).
+- GitLab proprietary technology for [vulnerability tracking](index.md#advanced-vulnerability-tracking).
 
 ### Other analyzers
 

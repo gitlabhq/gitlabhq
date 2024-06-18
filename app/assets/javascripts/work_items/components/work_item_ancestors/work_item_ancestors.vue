@@ -7,6 +7,7 @@ import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 import { formatAncestors } from '../../utils';
 import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.graphql';
+import workItemAncestorsUpdatedSubscription from '../../graphql/work_item_ancestors.subscription.graphql';
 import WorkItemStateBadge from '../work_item_state_badge.vue';
 import DisclosureHierarchy from './disclosure_hierarchy.vue';
 
@@ -55,6 +56,17 @@ export default {
           captureError: true,
           error,
         });
+      },
+      subscribeToMore: {
+        document: workItemAncestorsUpdatedSubscription,
+        variables() {
+          return {
+            id: this.workItem.id,
+          };
+        },
+        skip() {
+          return !this.workItem?.id;
+        },
       },
     },
   },

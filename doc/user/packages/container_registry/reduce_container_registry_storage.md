@@ -178,7 +178,8 @@ You can create a cleanup policy in [the API](#use-the-cleanup-policy-api) or the
 
 To create a cleanup policy in the UI:
 
-1. For your project, go to **Settings > Packages and registries**.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Packages and registries**.
 1. In the **Cleanup policies** section, select **Set cleanup rules**.
 1. Complete the fields:
 
@@ -191,6 +192,9 @@ To create a cleanup policy in the UI:
    | **Remove tags older than** | Remove only tags older than X days. |
    | **Remove tags matching**   | A regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
 
+   NOTE:
+   Both keep and remove regex patterns are automatically surrounded with `\A` and `\Z` anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.
+
 1. Select **Save**.
 
 The policy runs on the scheduled interval you selected.
@@ -202,8 +206,7 @@ If you edit the policy and select **Save** again, the interval is reset.
 
 Cleanup policies use regex patterns to determine which tags should be preserved or removed, both in the UI and the API.
 
-Regex patterns are automatically surrounded with `\A` and `\Z` anchors. Therefore, you do not need to include any
-`\A`, `\Z`, `^` or `$` tokens in the regex patterns.
+GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in the cleanup policy.
 
 Here are some examples of regex patterns you can use:
 
@@ -284,7 +287,8 @@ Examples:
   any images with the name `main`, and the policy is enabled:
 
   ```shell
-  curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" \
+  curl --fail-with-body --request PUT --header 'Content-Type: application/json;charset=UTF-8'
+       --header "PRIVATE-TOKEN: <your_access_token>" \
        --data-binary '{"container_expiration_policy_attributes":{"cadence":"1month","enabled":true,"keep_n":1,"older_than":"14d","name_regex":".*","name_regex_keep":".*-main"}}' \
        "https://gitlab.example.com/api/v4/projects/2"
   ```
@@ -338,7 +342,7 @@ Here are some other options you can use to reduce the container registry storage
 
 If you see this error message, check the regex patterns to ensure they are valid.
 
-GitLab uses [RE2 syntax](https://github.com/google/re2/wiki/Syntax) for regular expressions in the cleanup policy. You can test them with the [regex101 regex tester](https://regex101.com/) using the `Golang` flavor.
+You can test them with the [regex101 regex tester](https://regex101.com/) using the `Golang` flavor.
 View some common [regex pattern examples](#regex-pattern-examples).
 
 ### The cleanup policy doesn't delete any tags
@@ -370,7 +374,7 @@ the tags. To create the list and delete the tags:
 
    ```shell
    # Get a list of all tags in a certain container repository while considering [pagination](../../../api/rest/index.md#pagination)
-   echo -n "" > list_o_tags.out; for i in {1..N}; do curl --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
+   echo -n "" > list_o_tags.out; for i in {1..N}; do curl --fail-with-body --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags?per_page=100&page=${i}" | jq '.[].name' | sed 's:^.\(.*\).$:\1:' >> list_o_tags.out; done
    ```
 
    If you have Rails console access, you can enter the following commands to retrieve a list of tags limited by date:
@@ -431,5 +435,5 @@ the tags. To create the list and delete the tags:
 
    ```shell
    # loop over list_o_tags.out to delete a single tag at a time
-   while read -r LINE || [[ -n $LINE ]]; do echo ${LINE}; curl --request DELETE --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags/${LINE}"; sleep 0.1; echo; done < list_o_tags.out > delete.logs
+   while read -r LINE || [[ -n $LINE ]]; do echo ${LINE}; curl --fail-with-body --request DELETE --header 'PRIVATE-TOKEN: <PAT>' "https://gitlab.example.com/api/v4/projects/<Project_id>/registry/repositories/<container_repo_id>/tags/${LINE}"; sleep 0.1; echo; done < list_o_tags.out > delete.logs
    ```

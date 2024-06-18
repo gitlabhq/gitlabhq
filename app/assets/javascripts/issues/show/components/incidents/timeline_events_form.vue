@@ -204,7 +204,7 @@ export default {
             />
           </div>
         </gl-form-group>
-        <p class="gl-ml-3 gl-align-self-end gl-line-height-32">{{ __('UTC') }}</p>
+        <p class="gl-ml-3 gl-align-self-end gl-leading-32">{{ __('UTC') }}</p>
       </div>
     </div>
     <gl-form-group>
@@ -240,6 +240,7 @@ export default {
               class="note-textarea-rounded-bottom js-gfm-input js-autosize markdown-area !gl-font-monospace"
               data-testid="input-note"
               dir="auto"
+              no-resize
               data-supports-quick-actions="false"
               :aria-label="$options.i18n.description"
               aria-describedby="timeline-form-hint"

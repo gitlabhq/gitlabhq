@@ -17,10 +17,8 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
   const defaultProvide = {
     canCreateProjects: false,
-    emptyStateSvgPath: 'empty/state/svg/path',
     fullPath: 'full/path',
     isSignedIn: true,
-    jiraIntegrationPath: 'jira/integration/path',
     newIssuePath: 'new/issue/path',
     newProjectPath: 'new/project/path',
     showNewIssueLink: false,
@@ -64,10 +62,9 @@ describe('EmptyStateWithoutAnyIssues component', () => {
       it('renders empty state', () => {
         mountComponent();
 
-        expect(findGlEmptyState().props()).toMatchObject({
-          title: 'Use issues to collaborate on ideas, solve problems, and plan work',
-          svgPath: defaultProvide.emptyStateSvgPath,
-        });
+        expect(findGlEmptyState().props('title')).toBe(
+          'Use issues to collaborate on ideas, solve problems, and plan work',
+        );
       });
 
       describe('description', () => {
@@ -280,7 +277,9 @@ describe('EmptyStateWithoutAnyIssues component', () => {
       });
 
       it('renders Jira integration docs link', () => {
-        expect(findJiraDocsLink().attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
+        expect(findJiraDocsLink().attributes('href')).toBe(
+          '/help/integration/jira/issues#view-jira-issues',
+        );
       });
     });
 
@@ -308,7 +307,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     it('renders empty state', () => {
       expect(findGlEmptyState().props()).toMatchObject({
         title: 'Use issues to collaborate on ideas, solve problems, and plan work',
-        svgPath: defaultProvide.emptyStateSvgPath,
         primaryButtonText: 'Register / Sign In',
         primaryButtonLink: defaultProvide.signInPath,
       });

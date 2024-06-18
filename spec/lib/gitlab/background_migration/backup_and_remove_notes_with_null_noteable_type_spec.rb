@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackupAndRemoveNotesWithNullNoteableType, feature_category: :team_planning do
+RSpec.describe Gitlab::BackgroundMigration::BackupAndRemoveNotesWithNullNoteableType,
+  feature_category: :team_planning,
+  schema: 20240524152952 do
   let(:notes) { table(:notes) }
   let(:temp_notes_backup) { table(:temp_notes_backup) }
   let(:migration_args) do

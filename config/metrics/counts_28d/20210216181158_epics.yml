@@ -2,8 +2,6 @@
 data_category: operational
 key_path: usage_activity_by_stage_monthly.plan.epics
 description: Count distinct author ids from epics
-product_section: dev
-product_stage: plan
 product_group: product_planning
 value_type: number
 status: active

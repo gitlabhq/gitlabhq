@@ -17,13 +17,7 @@ module QA
         create(:project, :with_readme, name: 'project-to-test-component')
       end
 
-      let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = test_project
-          runner.name = executor
-          runner.tags = [executor]
-        end
-      end
+      let!(:runner) { create(:project_runner, project: test_project, name: executor, tags: [executor]) }
 
       let(:component_content) do
         <<~YAML

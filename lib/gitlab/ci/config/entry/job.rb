@@ -135,9 +135,9 @@ module Gitlab
             description: 'Pages configuration.'
 
           attributes :script, :tags, :when, :dependencies,
-                     :needs, :retry, :parallel, :start_in,
-                     :timeout, :release,
-                     :allow_failure, :publish, :pages, :manual_confirmation
+            :needs, :retry, :parallel, :start_in,
+            :timeout, :release,
+            :allow_failure, :publish, :pages, :manual_confirmation
 
           def self.matching?(name, config)
             !name.to_s.start_with?('.') &&

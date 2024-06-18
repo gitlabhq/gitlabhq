@@ -166,7 +166,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
     end
 
     context 'with [[_TOC_]] as tag' do
-      it_behaves_like 'table of contents tag', '[[_TOC_]]', '[[<em>TOC</em>]]'
+      it_behaves_like 'table of contents tag', '[[_TOC_]]', '<a href="_TOC_" data-wikilink="true">_TOC_</a>'
     end
 
     context 'with [toc] as tag' do

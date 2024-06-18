@@ -12,7 +12,7 @@ module Gitlab
       include Utils::StrongMemoize
 
       attr_reader :project, :chat_name, :name, :arguments, :response_url,
-                  :channel
+        :channel
 
       # project - The Project to schedule the command for.
       # chat_name - The ChatName belonging to the user that scheduled the

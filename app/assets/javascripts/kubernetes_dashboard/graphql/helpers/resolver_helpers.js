@@ -113,7 +113,6 @@ export const getK8sPods = ({
   query,
   configuration,
   namespace = '',
-  enableWatch = false,
   mapFn = mapWorkloadItem,
   queryField = 'k8sPods',
 }) => {
@@ -126,17 +125,15 @@ export const getK8sPods = ({
 
   return podsApi
     .then((res) => {
-      if (enableWatch) {
-        const watchPath = buildWatchPath({ resource: 'pods', namespace });
-        watchWorkloadItems({
-          client,
-          query,
-          configuration,
-          namespace,
-          watchPath,
-          queryField,
-        });
-      }
+      const watchPath = buildWatchPath({ resource: 'pods', namespace });
+      watchWorkloadItems({
+        client,
+        query,
+        configuration,
+        namespace,
+        watchPath,
+        queryField,
+      });
 
       const data = res?.items || [];
       return data.map(mapFn);

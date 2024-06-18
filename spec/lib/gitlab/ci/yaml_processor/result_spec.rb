@@ -140,6 +140,16 @@ module Gitlab
             result.included_components
           end
         end
+
+        describe '#clear_jobs!' do
+          it 'clears jobs' do
+            expect { result.clear_jobs! }.to change { result.jobs }.to eq({})
+          end
+
+          it 'keeps stages' do
+            expect { result.clear_jobs! }.not_to change { result.stages }
+          end
+        end
       end
     end
   end

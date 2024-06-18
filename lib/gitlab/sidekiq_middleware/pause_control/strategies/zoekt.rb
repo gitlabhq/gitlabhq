@@ -7,7 +7,7 @@ module Gitlab
         class Zoekt < Base
           override :should_pause?
           def should_pause?
-            ::Feature.enabled?(:zoekt_pause_indexing, type: :ops)
+            Gitlab::CurrentSettings.zoekt_indexing_paused?
           end
         end
       end

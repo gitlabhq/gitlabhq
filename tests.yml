@@ -41,9 +41,19 @@ mapping:
   - source: '.gitlab/ci/(?<rest>.+)\.gitlab-ci\.yml'
     test: 'spec/dot_gitlab_ci/%{rest}_spec.rb'
 
+  # Map config to respective specs
+  - source: 'config/(?<rest>.+)\..*'
+    test: 'spec/config/%{rest}_spec.rb'
+
   # Initializers should map to respective spec
   - source: 'config/initializers/(?<rest>.+)\.rb'
     test: 'spec/initializers/%{rest}_spec.rb'
+
+  # Snowplow definitions map to schema validation spec
+  - source:
+      - '(?<prefix>ee/)?config/events/.+\.yml'
+      - 'config/events/schema\.json'
+    test: 'spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb'
 
   # DB structure should map to schema spec
   - source: 'db/structure\.sql'
@@ -145,6 +155,17 @@ mapping:
     test:
       - 'spec/db/docs_spec.rb'
       - 'ee/spec/lib/ee/gitlab/database/docs/docs_spec.rb'
+
+  # Run database dictionary related specs on db/docs changes.
+  # https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/6276
+  - source: 'db/docs/.+\.yml'
+    test:
+      # Found via `git grep Database::Dictionary -l spec ee/spec`
+      - 'ee/spec/lib/gitlab/database/desired_sharding_key_spec.rb'
+      - 'spec/db/docs_spec.rb'
+      - 'spec/lib/gitlab/database/dictionary_spec.rb'
+      - 'spec/lib/gitlab/database/no_new_tables_with_gitlab_main_schema_spec.rb'
+      - 'spec/lib/gitlab/database/sharding_key_spec.rb'
 
   # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/1360
   - source: 'vendor/project_templates/.*'

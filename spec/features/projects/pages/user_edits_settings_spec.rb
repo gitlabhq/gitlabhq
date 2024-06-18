@@ -8,6 +8,7 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
   let_it_be(:user) { create(:user) }
 
   before do
+    stub_feature_flags(new_pages_ui: false)
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
 
     project.add_maintainer(user)

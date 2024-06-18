@@ -2,8 +2,6 @@
 data_category: optional
 key_path: settings.operating_system
 description: Information about the operating system running GitLab
-product_section: enablement
-product_stage: enablement
 product_group: distribution_deploy
 value_type: string
 status: active

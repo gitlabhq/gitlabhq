@@ -110,7 +110,8 @@ projects:
 ### Automatic linting
 
 WARNING:
-The use of `registry.gitlab.com/gitlab-org/gitlab-build-images:golangci-lint-alpine` has been [deprecated as of 16.10](https://gitlab.com/gitlab-org/gitlab-build-images/-/issues/131).
+The use of `registry.gitlab.com/gitlab-org/gitlab-build-images:golangci-lint-alpine` has been
+[deprecated as of 16.10](https://gitlab.com/gitlab-org/gitlab-build-images/-/issues/131).
 
 Use the upstream version of [golangci-lint](https://golangci-lint.run/).
 See the list of linters [enabled/disabled by default](https://golangci-lint.run/usage/linters/#enabled-by-default).
@@ -143,7 +144,8 @@ Once [recursive includes](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/568
 become available, you can share job templates like this
 [analyzer](https://gitlab.com/gitlab-org/security-products/ci-templates/raw/master/includes-dev/analyzer.yml).
 
-Go GitLab linter plugins are maintained in the [`gitlab-org/language-tools/go/linters`](https://gitlab.com/gitlab-org/language-tools/go/linters/) namespace.
+Go GitLab linter plugins are maintained in the
+[`gitlab-org/language-tools/go/linters`](https://gitlab.com/gitlab-org/language-tools/go/linters/) namespace.
 
 ### Help text style guide
 
@@ -487,13 +489,29 @@ golanci-lint rule automatically check for this.
 
 ### Analyzer Tests
 
-The conventional Secure [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/) has a [`convert` function](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/convert.go#L15-17) that converts SAST/DAST scanner reports into [GitLab Security Reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas). When writing tests for the `convert` function, we should make use of [test fixtures](https://dave.cheney.net/2016/05/10/test-fixtures-in-go) using a `testdata` directory at the root of the analyzer's repository. The `testdata` directory should contain two subdirectories: `expect` and `reports`. The `reports` directory should contain sample SAST/DAST scanner reports which are passed into the `convert` function during the test setup. The `expect` directory should contain the expected GitLab Security Report that the `convert` returns. See Secret Detection for an [example](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/160424589ef1eed7b91b59484e019095bc7233bd/convert_test.go#L13-66).
+The conventional Secure [analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/) has a
+[`convert` function](https://gitlab.com/gitlab-org/security-products/analyzers/command/-/blob/main/convert.go#L15-17)
+that converts SAST/DAST scanner reports into
+[GitLab Security Reports](https://gitlab.com/gitlab-org/security-products/security-report-schemas).
+When writing tests for the `convert` function, we should make use of
+[test fixtures](https://dave.cheney.net/2016/05/10/test-fixtures-in-go) using a `testdata`
+directory at the root of the analyzer's repository. The `testdata` directory should
+contain two subdirectories: `expect` and `reports`. The `reports` directory should
+contain sample SAST/DAST scanner reports which are passed into the `convert` function
+during the test setup. The `expect` directory should contain the expected GitLab Security Report
+that the `convert` returns. See Secret Detection for an
+[example](https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/160424589ef1eed7b91b59484e019095bc7233bd/convert_test.go#L13-66).
 
-If the scanner report is small, less than 35 lines, then feel free to [inline the report](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/blob/8bd2428a/convert/convert_test.go#L13-77) rather than use a `testdata` directory.
+If the scanner report is small, less than 35 lines, then feel free to
+[inline the report](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow/-/blob/8bd2428a/convert/convert_test.go#L13-77)
+rather than use a `testdata` directory.
 
 #### Test Diffs
 
-The [go-cmp](https://github.com/google/go-cmp) package should be used when comparing large structs in tests. It makes it possible to output a specific diff where the two structs differ, rather than seeing the whole of both structs printed out in the test logs. Here is a small example:
+The [go-cmp](https://github.com/google/go-cmp) package should be used when
+comparing large structs in tests. It makes it possible to output a specific diff
+where the two structs differ, rather than seeing the whole of both structs
+printed out in the test logs. Here is a small example:
 
 ```go
 package main
@@ -543,7 +561,9 @@ func TestHelloWorld(t *testing.T) {
 }
 ```
 
-The output demonstrates why `go-cmp` is far superior when comparing large structs. Even though you could spot the difference with this small difference, it quickly gets unwieldy as the data grows.
+The output demonstrates why `go-cmp` is far superior when comparing large
+structs. Even though you could spot the difference with this small difference,
+it quickly gets unwieldy as the data grows.
 
 ```plaintext
   main_test.go:36: reflect comparison:

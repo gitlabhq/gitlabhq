@@ -267,7 +267,7 @@ module Issuable
       return true unless assignees.size > MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS
 
       errors.add :assignees,
-        -> (_object, _data) { self.class.max_number_of_assignees_or_reviewers_message }
+        ->(_object, _data) { self.class.max_number_of_assignees_or_reviewers_message }
     end
   end
 

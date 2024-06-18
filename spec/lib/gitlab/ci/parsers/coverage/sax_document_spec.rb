@@ -629,9 +629,9 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::SaxDocument do
               expect { parse_report }.not_to raise_error
 
               expect(coverage_report.files).to eq({
-                                                    'app1/user.rb' => { 1 => 2 },
-                                                    'app2/user.rb' => { 2 => 3 }
-                                                  })
+                'app1/user.rb' => { 1 => 2 },
+                'app2/user.rb' => { 2 => 3 }
+              })
             end
           end
 

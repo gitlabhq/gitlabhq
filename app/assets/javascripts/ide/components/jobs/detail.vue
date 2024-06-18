@@ -77,13 +77,13 @@ export default {
 </script>
 
 <template>
-  <div class="ide-pipeline build-page d-flex flex-column flex-fill">
-    <header class="ide-job-header d-flex gl-align-items-center">
+  <div class="ide-pipeline build-page gl-flex flex-column flex-fill">
+    <header class="ide-job-header gl-flex gl-items-center">
       <gl-button category="secondary" icon="chevron-left" size="small" @click="setDetailJob(null)">
         {{ __('View jobs') }}
       </gl-button>
     </header>
-    <div class="top-bar d-flex border-left-0 mr-3">
+    <div class="top-bar gl-flex border-left-0 mr-3">
       <job-description :job="detailJob" />
       <div class="controllers ml-auto">
         <a

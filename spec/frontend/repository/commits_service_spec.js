@@ -47,7 +47,7 @@ describe('commits service', () => {
   });
 
   it('encodes the path and ref', async () => {
-    const encodedRef = encodeURI(refWithSpecialCharMock);
+    const encodedRef = encodeURIComponent(refWithSpecialCharMock);
     const encodedUrl = `/some-project/-/refs/${encodedRef}/logs_tree/with%20$peci@l%20ch@rs/`;
 
     await requestCommits(1, 'some-project', 'with $peci@l ch@rs/', refWithSpecialCharMock);

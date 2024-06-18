@@ -278,7 +278,7 @@ services:
     ports:
       - '8929:8929'
       - '443:443'
-      - '2424:2424'
+      - '2424:22'
     volumes:
       - '$GITLAB_HOME/config:/etc/gitlab'
       - '$GITLAB_HOME/logs:/var/log/gitlab'
@@ -286,7 +286,7 @@ services:
     shm_size: '256m'
 ```
 
-This configuration is the same as using `--publish 8929:8929 --publish 2424:2424`.
+This configuration is the same as using `--publish 8929:8929 --publish 2424:22`.
 
 ### Install GitLab using Docker swarm mode
 
@@ -475,7 +475,7 @@ port `2424`:
    sudo docker run --detach \
      --hostname gitlab.example.com \
      --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com:8929'; gitlab_rails['gitlab_shell_ssh_port'] = 2424" \
-     --publish 8929:8929 --publish 2424:2424 \
+     --publish 8929:8929 --publish 2424:22 \
      --name gitlab \
      --restart always \
      --volume $GITLAB_HOME/config:/etc/gitlab \
@@ -526,7 +526,7 @@ port `2424`:
    ```
 
 Following the above example, you will be able to reach GitLab from your
-web browser under `<hostIP>:8929` and push using SSH under the port `2289`.
+web browser under `<hostIP>:8929` and push using SSH under the port `2424`.
 
 A `docker-compose.yml` example that uses different ports can be found in the
 [Docker compose](#install-gitlab-using-docker-compose) section.
@@ -692,7 +692,7 @@ GitLab from backup. The secrets file is stored at `/etc/gitlab/gitlab-secrets.js
 
 ### Create a database backup
 
-A database backup is required to roll back GitLab upgrade if you encounter issues.
+A database backup is required to roll back a GitLab upgrade if you encounter issues.
 
 ```shell
 docker exec -t <container name> gitlab-backup create SKIP=artifacts,repositories,registry,uploads,builds,pages,lfs,packages,terraform_state

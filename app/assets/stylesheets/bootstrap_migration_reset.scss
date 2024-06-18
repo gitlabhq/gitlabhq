@@ -62,7 +62,7 @@ code {
   padding: 2px 4px;
   color: $code-color;
   background-color: $gray-50;
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
 
   .code > &,
   .build-log & {

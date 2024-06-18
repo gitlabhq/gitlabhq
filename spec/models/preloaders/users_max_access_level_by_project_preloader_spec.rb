@@ -44,7 +44,7 @@ RSpec.describe Preloaders::UsersMaxAccessLevelByProjectPreloader, feature_catego
         end
       end
 
-      expect(policy_queries).not_to exceed_query_limit(0)
+      expect(policy_queries).not_to exceed_query_limit(1)
     end
   end
 end

@@ -120,7 +120,7 @@ export default {
           'system-note-tiny-dot gl-bg-gray-900!': !isAllowedIcon,
         },
       ]"
-      class="gl-float-left gl--flex-center gl-rounded-full gl-relative"
+      class="gl-float-left gl-flex gl-justify-center gl-items-center gl-rounded-full gl-relative"
     >
       <gl-icon v-if="isAllowedIcon" :size="12" :name="note.systemNoteIconName" />
     </div>
@@ -132,7 +132,7 @@ export default {
           :note-id="noteId"
           :is-system-note="true"
         >
-          <span ref="gfm-content" v-safe-html="actionTextHtml" class="gl-word-break-word"></span>
+          <span ref="gfm-content" v-safe-html="actionTextHtml" class="gl-break-anywhere"></span>
           <template v-if="canSeeDescriptionVersion" #extra-controls>
             &middot;
             <gl-button

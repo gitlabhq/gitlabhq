@@ -11,7 +11,7 @@ module Gitlab
 
       retainer = []
       # Add `n` 1mb chunks of memory to the retainer array
-      memory_mb.times { retainer << "x" * 1.megabyte }
+      memory_mb.times { retainer << ("x" * 1.megabyte) }
 
       duration_left = [start_time + duration_s - Time.now, 0].max
       Kernel.sleep(duration_left)

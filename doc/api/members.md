@@ -74,7 +74,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-10-22T14:13:35Z",
+    "expires_at": "2012-10-22",
     "access_level": 30,
     "group_saml_identity": null
   },
@@ -94,7 +94,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-10-22T14:13:35Z",
+    "expires_at": "2012-10-22",
     "access_level": 30,
     "email": "john@example.com",
     "group_saml_identity": {
@@ -172,7 +172,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-10-22T14:13:35Z",
+    "expires_at": "2012-10-22",
     "access_level": 30,
     "group_saml_identity": null
   },
@@ -192,7 +192,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-10-22T14:13:35Z",
+    "expires_at": "2012-10-22",
     "access_level": 30,
     "email": "john@example.com",
     "group_saml_identity": {
@@ -217,7 +217,7 @@ Example response:
       "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
       "web_url": "http://192.168.1.8:3000/root"
     },
-    "expires_at": "2012-11-22T14:13:35Z",
+    "expires_at": "2012-11-22",
     "access_level": 30,
     "group_saml_identity": null
   }
@@ -328,6 +328,10 @@ Example response:
 ```
 
 ## List all billable members of a group
+
+Prerequisites:
+
+- You must have the Owner role to access the API endpoint for billing permissions, as shown in [billing permissions](../user/free_user_limit.md).
 
 Gets a list of group members that count as billable. The list includes members in subgroups and projects.
 
@@ -549,8 +553,9 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86705) in GitLab 15.0.
 
-Changes the membership state of a user in a group. The state is applied to
-all subgroups and projects.
+Changes the membership state of a user in a group.
+When a user is over [the free user limit](../user/free_user_limit.md), changing their membership state for a group or project to `awaiting` or `active` can allow them to
+access that group or project. The change is applied to applied to all subgroups and projects.
 
 ```plaintext
 PUT /groups/:id/members/:user_id/state
@@ -585,10 +590,11 @@ POST /projects/:id/members
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
-| `user_id` | integer/string | yes | The user ID of the new member or multiple IDs separated by commas |
-| `access_level` | integer | yes | [A valid access level](access_requests.md#valid-access-levels) |
-| `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY` |
+| `id`      | integer/string | yes | The ID or [URL-encoded path of the project or group](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `user_id` | integer/string | yes, if `username` is not provided | The user ID of the new member or multiple IDs separated by commas. |
+| `username` | string | yes, if `user_id` is not provided | The username of the new member or multiple usernames separated by commas. |
+| `access_level` | integer | yes | [A valid access level](access_requests.md#valid-access-levels). |
+| `expires_at` | string | no | A date string in the format `YEAR-MONTH-DAY`. |
 | `invite_source` | string | no | The source of the invitation that starts the member creation process. GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/327120>`. |
 | `member_role_id` | integer | no | The ID of a member role. Ultimate only. |
 
@@ -618,7 +624,7 @@ Example response:
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root"
   },
-  "expires_at": "2012-10-22T14:13:35Z",
+  "expires_at": "2012-10-22",
   "access_level": 30,
   "email": "john@example.com",
   "group_saml_identity": null
@@ -666,7 +672,7 @@ Example response:
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root"
   },
-  "expires_at": "2012-10-22T14:13:35Z",
+  "expires_at": "2012-10-22",
   "access_level": 40,
   "email": "john@example.com",
   "group_saml_identity": null
@@ -710,7 +716,7 @@ Example response:
     "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
     "web_url": "http://192.168.1.8:3000/root"
   },
-  "expires_at": "2012-10-22T14:13:35Z",
+  "expires_at": "2012-10-22",
   "access_level": 40,
   "email": "john@example.com",
   "override": true

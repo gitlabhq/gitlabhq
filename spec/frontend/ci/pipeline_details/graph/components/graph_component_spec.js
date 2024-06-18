@@ -204,10 +204,10 @@ describe('graph component', () => {
 
     it(`has correct titleClasses on stageColumnTitle`, () => {
       const titleClasses = [
-        'gl-font-weight-bold',
+        'gl-font-bold',
         'gl-pipeline-job-width',
         'gl-text-truncate',
-        'gl-line-height-36',
+        'gl-leading-36',
         'gl-pl-4',
         '-gl-mb-2',
       ];

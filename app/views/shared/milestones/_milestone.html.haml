@@ -35,9 +35,9 @@
       %div
         = render('shared/milestone_expired', milestone: milestone)
         - if milestone.group_milestone?
-          = gl_badge_tag milestone.group.full_name, { variant: :info }, { class: 'gl-white-space-normal gl-text-left' }
+          = gl_badge_tag milestone.group.full_name, { variant: :info }, { class: 'gl-whitespace-normal gl-text-left' }
         - if milestone.project_milestone?
-          = gl_badge_tag milestone.project.full_name, { variant: :muted }, { class: 'gl-white-space-normal gl-text-left' }
+          = gl_badge_tag milestone.project.full_name, { variant: :muted }, { class: 'gl-whitespace-normal gl-text-left' }
 
     .order-3.order-md-2.mt-2.mt-md-0.milestone-progress{ class: can_admin_milestone ? 'col-md-4' : 'col-md-5' }
       = milestone_progress_bar(milestone)
@@ -50,7 +50,7 @@
     - if can_admin_milestone
       - show_delete = @project.present? || @group.present?
       .col-1.order-2.order-md-3
-        .gl-display-flex.gl-justify-content-end
+        .gl-flex.gl-justify-content-end
           .js-vue-milestone-actions{ data: { id: milestone.id,
             title: milestone.title,
             is_active: milestone.active?.to_s,

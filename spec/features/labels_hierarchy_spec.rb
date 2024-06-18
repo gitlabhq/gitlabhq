@@ -17,7 +17,6 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   let!(:project_label_1) { create(:label, project: project_1, title: 'Label_4') }
 
   before do
-    stub_feature_flags(or_issuable_queries: false)
     grandparent.add_owner(user)
 
     sign_in(user)
@@ -61,7 +60,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
           within_testid('filtered-search-input') do
             click_filtered_search_bar
             click_on 'Label'
-            click_on '= is'
+            click_on 'is ='
             click_on label.title
             send_keys :enter
           end
@@ -112,7 +111,7 @@ RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
           within_testid('filtered-search-input') do
             click_filtered_search_bar
             click_on 'Label'
-            click_on '= is'
+            click_on 'is ='
             click_on label.title
             send_keys :enter
           end

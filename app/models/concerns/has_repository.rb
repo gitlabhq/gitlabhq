@@ -43,6 +43,10 @@ module HasRepository
     repository.commit(ref)
   end
 
+  def branch_exists?(branch)
+    repository.branch_exists?(branch)
+  end
+
   def commit_by(oid:)
     repository.commit_by(oid: oid)
   end

@@ -47,7 +47,7 @@ export const i18n = {
       placeholder: s__('AlertSettings|{ "events": [{ "application": "Name of application" }] }'),
       editPayload: s__('AlertSettings|Edit payload'),
       parsePayload: s__('AlertSettings|Parse payload fields'),
-      payloadParsedSucessMsg: s__(
+      payloadParsedSuccessMsg: s__(
         'AlertSettings|Sample payload has been parsed. You can now map the fields.',
       ),
       resetHeader: s__('AlertSettings|Reset the mapping'),

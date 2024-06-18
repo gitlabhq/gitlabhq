@@ -23,7 +23,7 @@ export default {
     GlIcon,
     GlLink,
     GlTooltip,
-    IssueWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
+    IssueWeight: () => import('ee_component/issues/components/issue_weight.vue'),
     IssueDueDate,
     GlButton,
     WorkItemDetailModal,
@@ -180,7 +180,7 @@ export default {
               v-if="itemPath"
               v-gl-tooltip
               :title="itemPath"
-              class="path-id-text d-inline-block"
+              class="path-id-text gl-inline-block"
               >{{ itemPath }}</span
             >
             <span>{{ pathIdSeparator }}{{ itemId }}</span>
@@ -191,7 +191,7 @@ export default {
           <div
             class="item-attributes-area gl-display-flex gl-align-items-center gl-flex-wrap gl-gap-3"
           >
-            <span v-if="hasPipeline" class="mr-ci-status order-md-last gl-md-ml-3 gl-mr-n2">
+            <span v-if="hasPipeline" class="mr-ci-status order-md-last gl-md-ml-3 -gl-mr-2">
               <ci-icon :status="pipelineStatus" />
             </span>
 
@@ -203,11 +203,7 @@ export default {
 
             <!-- Flex order for slots is defined in the parent component: e.g. related_issues_block.vue -->
             <span v-if="weight > 0" class="order-md-1">
-              <issue-weight
-                :weight="weight"
-                class="item-weight gl-display-flex gl-align-items-center"
-                tag-name="span"
-              />
+              <issue-weight :weight="weight" class="item-weight gl-flex gl-items-center" />
             </span>
 
             <span v-if="dueDate" class="order-md-1">
@@ -232,7 +228,7 @@ export default {
     <span
       v-if="isLocked"
       v-gl-tooltip
-      class="gl-display-inline-block gl-cursor-not-allowed"
+      class="gl-inline-block gl-cursor-not-allowed"
       :title="lockedMessage"
       data-testid="lockIcon"
     >

@@ -175,7 +175,7 @@ including:
 - Snippets
 - [Group wikis](../../user/project/wiki/group.md)
 - Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
-- Merge request diffs (Helm chart installation only)
+- External merge request diffs ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154914) in GitLab 17.1)
 
 Backups do not include:
 
@@ -443,7 +443,7 @@ Depending on your installation type, slightly different components can be skippe
 
 :::TabTitle Linux package (Omnibus) / Docker / Self-compiled
 
-<!-- source: https://gitlab.com/gitlab-org/gitlab/-/blob/31c3df7ebb65768208772da3e20d32688a6c90ef/lib/backup/manager.rb#L126 -->
+<!-- source: https://gitlab.com/gitlab-org/gitlab/-/blob/d693aa7f894c7306a0d20ab6d138a7b95785f2ff/lib/backup/manager.rb#L117-133 -->
 
 - `db` (database)
 - `repositories` (Git repositories data, including wikis)
@@ -456,6 +456,7 @@ Depending on your installation type, slightly different components can be skippe
 - `registry` (Container registry images)
 - `packages` (Packages)
 - `ci_secure_files` (Project-level Secure Files)
+- `external_diffs` (External Merge Request diffs)
 
 :::TabTitle Helm chart (Kubernetes)
 
@@ -533,9 +534,10 @@ sudo -u git -H bundle exec rake gitlab:backup:create SKIP=tar RAILS_ENV=producti
 
 #### Create server-side repository backups
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in GitLab 16.3.
-> - Server-side support for restoring a specified backup instead of the latest backup [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132188) in GitLab 16.6.
-> - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475) in GitLab 16.6.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/4941) in `gitlab-backup` in GitLab 16.3.
+> - Server-side support in `gitlab-backup` for restoring a specified backup instead of the latest backup [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132188) in GitLab 16.6.
+> - Server-side support in `gitlab-backup` for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/6475) in GitLab 16.6.
+> - Server-side support in `backup-utility` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438393) in GitLab 17.0.
 
 Instead of storing large repository backups in the backup archive, repository
 backups can be configured so that the Gitaly node that hosts each repository is
@@ -543,7 +545,7 @@ responsible for creating the backup and streaming it to object storage. This
 helps reduce the network resources required to create and restore a backup.
 
 1. [Configure a server-side backup destination in Gitaly](../gitaly/configure_gitaly.md#configure-server-side-backups).
-1. Create a back up using the `REPOSITORIES_SERVER_SIDE` variable. See the following examples.
+1. Create a back up using the repositories server-side option. See the following examples.
 
 ::Tabs
 
@@ -558,6 +560,15 @@ sudo gitlab-backup create REPOSITORIES_SERVER_SIDE=true
 ```shell
 sudo -u git -H bundle exec rake gitlab:backup:create REPOSITORIES_SERVER_SIDE=true
 ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+```shell
+kubectl exec <Toolbox pod name> -it -- backup-utility --repositories-server-side
+```
+
+When you are using [cron-based backups](https://docs.gitlab.com/charts/backup-restore/backup.html#cron-based-backup),
+add the `--repositories-server-side` flag to the extra arguments.
 
 ::EndTabs
 

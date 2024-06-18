@@ -5,17 +5,43 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p.gl-text-secondary
-      = _('Set the per-IP address rate limit applicable to unauthenticated requests for getting a list of projects via the API.')
+      = _('Set the per-user and per-IP address rate limits for the requests to Projects API.')
       = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_projects_api'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-projects-api-limits-settings'), html: { class: 'fieldset-form' } do |f|
       = form_errors(@application_setting)
 
       %fieldset
+        = _("Set to 0 to disable the limits.")
+
+      %fieldset
         .form-group
-          = f.label :projects_api_rate_limit_unauthenticated, _('Maximum requests per 10 minutes per IP address'), class: 'label-bold'
-          = f.number_field :projects_api_rate_limit_unauthenticated, class: 'form-control gl-form-input'
-          .form-text.gl-text-gray-600
-            = _("Set to 0 to disable the limit.")
+          = f.label :projects_api_rate_limit_unauthenticated, format(_('Maximum requests to the %{api_name} API per %{timeframe} per IP address for unauthenticated requests'), api_name: 'GET /projects', timeframe: '10 minutes'), class: 'label-bold'
+          = f.number_field :projects_api_rate_limit_unauthenticated,  min: 0, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
+          = f.label :projects_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user for authenticated requests'), api_name: 'GET /projects', timeframe: '10 minutes'), class: 'label-bold'
+          = f.number_field :projects_api_limit, min: 0, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
+          = f.label :project_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /projects/:id', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :project_api_limit, min: 0, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
+          = f.label :user_projects_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/projects', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :user_projects_api_limit, min: 0, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
+          = f.label :user_contributed_projects_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/contributed_projects', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :user_contributed_projects_api_limit, min: 0, class: 'form-control gl-form-input'
+
+      %fieldset
+        .form-group
+          = f.label :user_starred_projects_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /users/:user_id/starred_projects', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :user_starred_projects_api_limit, min: 0, class: 'form-control gl-form-input'
 
       = f.submit _('Save changes'), pajamas_button: true

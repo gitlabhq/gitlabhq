@@ -33,7 +33,7 @@ func TestGetInfoRefsHandler(t *testing.T) {
 	r := httptest.NewRequest("GET", "/?service=git-upload-pack", nil)
 	a := &api.Response{GitalyServer: api.GitalyServer{Address: addr}}
 
-	handleGetInfoRefs(NewHttpResponseWriter(w), r, a)
+	handleGetInfoRefs(NewHTTPResponseWriter(w), r, a)
 	require.Equal(t, 503, w.Code)
 
 	msg := "The git server, Gitaly, is not available at this time. Please contact your administrator.\n"

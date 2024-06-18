@@ -147,6 +147,16 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
             create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '1.1.2')
           end
 
+          let_it_be(:v6_0_0_pre) do
+            sha = project.repository.update_file(
+              user, 'templates/secret-detection.yml', 'image: alpine_6',
+              message: 'Updates release', branch_name: project.default_branch
+            )
+            release = create(:release, project: project, tag: '6.0.0-pre', sha: sha, released_at: Date.today)
+
+            create(:ci_catalog_resource_version, catalog_resource: resource, release: release, semver: '6.0.0-pre')
+          end
+
           it 'returns the component content of the latest semantic version', :aggregate_failures do
             result = path.fetch_content!(current_user: user)
 
@@ -181,6 +191,15 @@ RSpec.describe Gitlab::Ci::Components::InstancePath, feature_category: :pipeline
               let(:version) { '3' }
 
               it 'returns nil' do
+                result = path.fetch_content!(current_user: user)
+                expect(result).to be_nil
+              end
+            end
+
+            context 'when the version matches a pre-release' do
+              let(:version) { '6' }
+
+              it 'returns nil as shorthand should not fetch pre-release versions' do
                 result = path.fetch_content!(current_user: user)
                 expect(result).to be_nil
               end

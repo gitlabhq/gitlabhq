@@ -29,7 +29,7 @@ GitLab does not limit the number of private projects you can create.
 - [Search](../../user/search/index.md)
 - [Badges](../../user/project/badges.md)
 - [Code intelligence](../../user/project/code_intelligence.md)
-- [File finder](../../user/project/repository/file_finder.md)
+- [Files](../../user/project/repository/files/index.md)
 - [Migrate projects by using file exports](../../user/project/settings/import_export.md)
 - [System notes](../../user/project/system_notes.md)
 - [Transfer a project to another namespace](../../user/project/import/index.md)

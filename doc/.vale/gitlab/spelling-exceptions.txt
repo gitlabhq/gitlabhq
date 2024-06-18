@@ -507,8 +507,10 @@ Karma
 KCachegrind
 Kerberos
 Keycloak
+keyless
 keyset
 keyspace
+keystore
 keytab
 keytabs
 Kibana
@@ -553,8 +555,10 @@ lookbehinds
 Lookbook
 lookups
 loopback
+LSP
 Lua
 Lucene
+Lucidchart
 macOS
 Mailchimp
 Maildir
@@ -625,6 +629,7 @@ Nanoc
 NAT
 navigations
 negatable
+Neovim
 Netlify
 NGINX
 ngrok

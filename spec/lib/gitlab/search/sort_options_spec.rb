@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'gitlab/search/sort_options'
 
-RSpec.describe ::Gitlab::Search::SortOptions do
+RSpec.describe ::Gitlab::Search::SortOptions, feature_category: :global_search do
   describe '.sort_and_direction' do
     context 'using order_by and sort' do
       it 'returns matched options' do

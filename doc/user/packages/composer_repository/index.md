@@ -40,7 +40,7 @@ Prerequisites:
   error (`Validation failed: Version is invalid`) occurs when you publish.
 - A valid `composer.json` file at the project root directory.
 - The Packages feature is enabled in a GitLab repository.
-- The project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+- The project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - One of the following token types:
   - A [personal access token](../../../user/profile/personal_access_tokens.md) with the scope set to `api`.
   - A [deploy token](../../project/deploy_tokens/index.md)
@@ -53,7 +53,7 @@ To publish the package with a personal access token:
   For example, you can use `curl`:
 
   ```shell
-  curl --data tag=<tag> "https://__token__:<personal-access-token>@gitlab.example.com/api/v4/projects/<project_id>/packages/composer"
+  curl --fail-with-body --data tag=<tag> "https://__token__:<personal-access-token>@gitlab.example.com/api/v4/projects/<project_id>/packages/composer"
   ```
 
   - `<personal-access-token>` is your personal access token.
@@ -68,7 +68,7 @@ To publish the package with a deploy token:
   For example, you can use `curl`:
 
   ```shell
-  curl --data tag=<tag> --header "Deploy-Token: <deploy-token>" "https://gitlab.example.com/api/v4/projects/<project_id>/packages/composer"
+  curl --fail-with-body --data tag=<tag> --header "Deploy-Token: <deploy-token>" "https://gitlab.example.com/api/v4/projects/<project_id>/packages/composer"
   ```
 
   - `<deploy-token>` is your deploy token
@@ -93,7 +93,7 @@ You can publish a Composer package to the package registry as part of your CI/CD
      stage: deploy
      script:
        - apk add curl
-       - 'curl --header "Job-Token: $CI_JOB_TOKEN" --data tag=<tag> "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
+       - 'curl --fail-with-body --header "Job-Token: $CI_JOB_TOKEN" --data tag=<tag> "${CI_API_V4_URL}/projects/$CI_PROJECT_ID/packages/composer"'
      environment: production
    ```
 
@@ -141,15 +141,15 @@ To install a package:
 
    - Connect to the package registry for your group:
 
-   ```shell
-   composer config repositories.<group_id> composer https://gitlab.example.com/api/v4/group/<group_id>/-/packages/composer/packages.json
-   ```
+     ```shell
+     composer config repositories.<group_id> composer https://gitlab.example.com/api/v4/group/<group_id>/-/packages/composer/packages.json
+     ```
 
    - Set the required package version:
 
-   ```shell
-   composer require <package_name>:<version>
-   ```
+     ```shell
+     composer require <package_name>:<version>
+     ```
 
    Result in the `composer.json` file:
 

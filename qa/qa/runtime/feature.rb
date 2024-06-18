@@ -56,7 +56,7 @@ module QA
           feature = JSON.parse(get_features).find { |flag| flag['name'] == key.to_s }
           if feature
             feature['state'] == 'on' ||
-              feature['state'] == 'conditional' && scopes.present? && enabled_scope?(feature['gates'], **scopes)
+              (feature['state'] == 'conditional' && scopes.present? && enabled_scope?(feature['gates'], **scopes))
           else
             # The feature wasn't found via the API so we check for a default value.
             # We expand the path include both ee and jh.
@@ -122,7 +122,7 @@ module QA
 
             QA::Support::Waiter.wait_until(sleep_interval: 1) do
               is_enabled = enabled?(key, **scopes)
-              is_enabled == enable || !enable && scopes.present?
+              is_enabled == enable || (!enable && scopes.present?)
             end
 
             if is_enabled == enable

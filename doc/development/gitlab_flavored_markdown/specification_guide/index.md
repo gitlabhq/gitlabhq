@@ -2,6 +2,7 @@
 stage: Create
 group: IDE
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+description: "Specification guide for GitLab Flavored Markdown (GLFM)."
 ---
 
 <!-- vale gitlab.GitLabFlavoredMarkdown = NO -->
@@ -516,9 +517,9 @@ specification and testing infrastructure:
 
 1. There is an official specification and single source of truth for how GLFM should render Markdown to HTML.
    This source of truth is represented by three Markdown files:
-    1. [`ghfm_spec_v_?.??.md`](#github-flavored-markdown-specification) for the CommonMark + GFM examples.
-    1. [`glfm_official_specification.md`](#glfm_official_specificationmd) for the GLFM official examples.
-    1. [`glfm_internal_extensions.md`](#glfm_internal_extensionsmd) for the GLFM internal extensions.
+   1. [`ghfm_spec_v_?.??.md`](#github-flavored-markdown-specification) for the CommonMark + GFM examples.
+   1. [`glfm_official_specification.md`](#glfm_official_specificationmd) for the GLFM official examples.
+   1. [`glfm_internal_extensions.md`](#glfm_internal_extensionsmd) for the GLFM internal extensions.
 1. This official specification meets these requirements:
    1. The specification is a strict superset of the GitHub Flavored Markdown
       (GFM) specification, just as
@@ -1403,7 +1404,7 @@ This section describes how the scripts can be used to manage the GLFM specificat
 
 1. If you are working on an in-progress feature or bug, make any necessary manual updates to the [input specification files](#input-specification-files). This may include:
    1. Updating the canonical Markdown or HTML examples in
-   [`glfm_official_specification.md`](#glfm_official_specificationmd) or [`glfm_internal_extensions.md`](#glfm_internal_extensionsmd).
+      [`glfm_official_specification.md`](#glfm_official_specificationmd) or [`glfm_internal_extensions.md`](#glfm_internal_extensionsmd).
    1. Updating `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` to reflect the current status of the examples or tests.
 1. Run [`update-specification.rb`](#update-specificationrb-script) to update the `spec.txt` to reflect any changes which were made to the [input specification files](#input-specification-files).
 1. Visually inspect and confirm any resulting changes to the [output specification files](#output-specification-files).

@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Ansi2json::Result do
+RSpec.describe Gitlab::Ci::Ansi2json::Result, feature_category: :continuous_integration do
   let(:stream) { StringIO.new('hello') }
   let(:state) { Gitlab::Ci::Ansi2json::State.new(nil, stream.size) }
   let(:offset) { 0 }

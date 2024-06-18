@@ -136,13 +136,13 @@ $(document).on('markdown-preview:show', (e, $form) => {
   if (!$previewButton.parents('.js-vue-markdown-field').length) {
     $previewButton.val('edit');
     $previewButton.children('span.gl-button-text').text(__('Continue editing'));
-    $previewButton.addClass('gl-shadow-none! gl-bg-transparent!');
+    $previewButton.addClass('!gl-shadow-none gl-bg-transparent!');
   }
 
   // toggle content
   $form.find('.md-write-holder').hide();
   $form.find('.md-preview-holder').show();
-  $form.find('.haml-markdown-button, .js-zen-enter').addClass('gl-display-none!');
+  $form.find('.haml-markdown-button, .js-zen-enter').addClass('!gl-hidden');
 
   markdownPreview.showPreview($form);
 });
@@ -168,7 +168,7 @@ $(document).on('markdown-preview:hide', (e, $form) => {
   $form.find('.md-write-holder').show();
   $form.find('textarea.markdown-area').focus();
   $form.find('.md-preview-holder').hide();
-  $form.find('.haml-markdown-button, .js-zen-enter').removeClass('gl-display-none!');
+  $form.find('.haml-markdown-button, .js-zen-enter').removeClass('!gl-hidden');
 
   markdownPreview.hideReferencedCommands($form);
 });
@@ -196,7 +196,7 @@ $(document).on('click', previewButtonSelector, function (e) {
 $(document).on('mousedown', previewButtonSelector, function (e) {
   e.preventDefault();
   const $form = $(this).closest('form');
-  $form.find(previewButtonSelector).removeClass('gl-shadow-none! gl-bg-transparent!');
+  $form.find(previewButtonSelector).removeClass('!gl-shadow-none gl-bg-transparent!');
 });
 
 $(document).on('mouseenter', previewButtonSelector, function (e) {

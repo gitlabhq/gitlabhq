@@ -9,33 +9,33 @@ module Gitlab
     PROJECT = RepoType.new(
       name: :project,
       access_checker_class: Gitlab::GitAccessProject,
-      repository_resolver: -> (project) { ::Repository.new(project.full_path, project, shard: project.repository_storage, disk_path: project.disk_path) }
+      repository_resolver: ->(project) { ::Repository.new(project.full_path, project, shard: project.repository_storage, disk_path: project.disk_path) }
     ).freeze
     WIKI = RepoType.new(
       name: :wiki,
       access_checker_class: Gitlab::GitAccessWiki,
-      repository_resolver: -> (container) do
+      repository_resolver: ->(container) do
         wiki = container.is_a?(Wiki) ? container : container.wiki # Also allow passing a Project, Group, or Geo::DeletedProject
         ::Repository.new(wiki.full_path, wiki, shard: wiki.repository_storage, disk_path: wiki.disk_path, repo_type: WIKI)
       end,
       container_class: ProjectWiki,
-      project_resolver: -> (wiki) { wiki.try(:project) },
+      project_resolver: ->(wiki) { wiki.try(:project) },
       guest_read_ability: :download_wiki_code,
       suffix: :wiki
     ).freeze
     SNIPPET = RepoType.new(
       name: :snippet,
       access_checker_class: Gitlab::GitAccessSnippet,
-      repository_resolver: -> (snippet) { ::Repository.new(snippet.full_path, snippet, shard: snippet.repository_storage, disk_path: snippet.disk_path, repo_type: SNIPPET) },
+      repository_resolver: ->(snippet) { ::Repository.new(snippet.full_path, snippet, shard: snippet.repository_storage, disk_path: snippet.disk_path, repo_type: SNIPPET) },
       container_class: Snippet,
-      project_resolver: -> (snippet) { snippet&.project },
+      project_resolver: ->(snippet) { snippet&.project },
       guest_read_ability: :read_snippet
     ).freeze
     DESIGN = ::Gitlab::GlRepository::RepoType.new(
       name: :design,
       access_checker_class: ::Gitlab::GitAccessDesign,
-      repository_resolver: -> (design_management_repository) { design_management_repository.repository },
-      project_resolver: -> (design_management_repository) { design_management_repository&.project },
+      repository_resolver: ->(design_management_repository) { design_management_repository.repository },
+      project_resolver: ->(design_management_repository) { design_management_repository&.project },
       suffix: :design,
       container_class: DesignManagement::Repository
     ).freeze

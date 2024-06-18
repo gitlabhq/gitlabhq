@@ -193,7 +193,7 @@ export default {
 <template>
   <div class="top-bar gl-display-flex gl-align-items-center gl-justify-content-space-between">
     <!-- truncated log information -->
-    <div class="gl-display-none gl-sm-display-block gl-text-truncate" data-testid="showing-last">
+    <div class="gl-hidden sm:gl-block gl-text-truncate" data-testid="showing-last">
       <template v-if="isJobLogSizeVisible">
         {{ jobLogSize }}
         <gl-sprintf

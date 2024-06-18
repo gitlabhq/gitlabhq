@@ -151,7 +151,7 @@ export default {
             {{ issueTitle }}
           </span>
           <gl-icon name="chevron-right" class="gl-text-gray-200 gl-flex-shrink-0" />
-          <span class="gl-text-truncate gl-font-weight-normal">{{ filename }}</span>
+          <span class="gl-text-truncate gl-font-normal">{{ filename }}</span>
           <imported-badge
             v-if="isImported"
             :importable-type="$options.TYPE_DESIGN"
@@ -161,7 +161,7 @@ export default {
         </h2>
         <small v-if="updatedAt" class="gl-text-gray-500">{{ updatedText }}</small>
       </div>
-      <close-button class="gl-md-display-none gl-ml-auto" />
+      <close-button class="md:gl-hidden gl-ml-auto" />
     </div>
     <div class="gl-display-flex gl-md-flex-direction-row gl-flex-shrink-0 gl-md-ml-auto gl-mr-5">
       <design-todo-button
@@ -202,6 +202,6 @@ export default {
       />
       <design-navigation :id="id" class="gl-ml-auto" />
     </div>
-    <close-button class="gl-display-none gl-md-display-flex" />
+    <close-button class="gl-hidden md:gl-flex" />
   </header>
 </template>

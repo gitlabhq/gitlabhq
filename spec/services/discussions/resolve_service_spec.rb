@@ -40,40 +40,50 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
       service.execute
     end
 
-    it 'schedules an auto-merge' do
-      expect(AutoMergeProcessWorker).to receive(:perform_async).with(discussion.noteable.id)
+    context 'when all discussions are resolved' do
+      it 'publishes the discussions resolved event' do
+        expect { service.execute }
+          .to publish_event(MergeRequests::DiscussionsResolvedEvent)
+          .with(current_user_id: user.id, merge_request_id: merge_request.id)
+      end
 
-      service.execute
+      context 'when merge_when_checks_pass is false' do
+        before do
+          stub_feature_flags(merge_when_checks_pass: false)
+        end
+
+        it 'schedules an auto-merge' do
+          expect(AutoMergeProcessWorker).to receive(:perform_async)
+
+          service.execute
+        end
+      end
+    end
+
+    context 'when not all discussions are resolved' do
+      let(:other_discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
+
+      it 'does not publish the discussions resolved event' do
+        expect { service.execute }.not_to publish_event(MergeRequests::DiscussionsResolvedEvent)
+      end
+
+      context 'when merge_when_checks_pass is false' do
+        before do
+          stub_feature_flags(merge_when_checks_pass: false)
+        end
+
+        it 'schedules an auto-merge' do
+          expect(AutoMergeProcessWorker).to receive(:perform_async)
+
+          described_class.new(project, user, one_or_more_discussions: [discussion, other_discussion]).execute
+        end
+      end
     end
 
     it 'sends GraphQL triggers' do
       expect(GraphqlTriggers).to receive(:merge_request_merge_status_updated).with(discussion.noteable)
 
       service.execute
-    end
-
-    context 'with a project that requires all discussion to be resolved' do
-      before do
-        project.update!(only_allow_merge_if_all_discussions_are_resolved: true)
-      end
-
-      after do
-        project.update!(only_allow_merge_if_all_discussions_are_resolved: false)
-      end
-
-      let_it_be(:other_discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
-
-      it 'does not schedule an auto-merge' do
-        expect(AutoMergeProcessWorker).not_to receive(:perform_async)
-
-        service.execute
-      end
-
-      it 'schedules an auto-merge' do
-        expect(AutoMergeProcessWorker).to receive(:perform_async)
-
-        described_class.new(project, user, one_or_more_discussions: [discussion, other_discussion]).execute
-      end
     end
 
     it 'adds a system note to the discussion' do
@@ -125,10 +135,8 @@ RSpec.describe Discussions::ResolveService, feature_category: :code_review_workf
         service.execute
       end
 
-      it 'does not schedule an auto-merge' do
-        expect(AutoMergeProcessWorker).not_to receive(:perform_async)
-
-        service.execute
+      it 'does not publish the discussions resolved event' do
+        expect { service.execute }.not_to publish_event(MergeRequests::DiscussionsResolvedEvent)
       end
 
       it 'does not send GraphQL triggers' do

@@ -53,14 +53,14 @@ export default {
   <div class="gl-display-inline-flex gl-align-items-center">
     <gl-icon v-if="icon" :name="icon" class="gl-text-gray-500 gl-min-w-5 gl-mr-3" />
     <tooltip-on-truncate v-if="link" :title="text" class="gl-text-truncate" :class="sizeClass">
-      <gl-link :href="link" class="gl-font-weight-bold">
+      <gl-link :href="link" class="gl-font-bold">
         {{ text }}
       </gl-link>
     </tooltip-on-truncate>
     <div
       v-else
       data-testid="metadata-item-text"
-      class="gl-font-weight-bold gl-display-inline-flex"
+      class="gl-font-bold gl-display-inline-flex"
       :class="sizeClass"
     >
       <tooltip-on-truncate v-if="!textTooltip" :title="text" class="gl-text-truncate">

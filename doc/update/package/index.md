@@ -41,7 +41,7 @@ GitLab package.
 ## Version-specific changes
 
 Upgrading versions might need some manual intervention. For more information,
-check the version your are upgrading to:
+check the version you are upgrading to:
 
 - [GitLab 17](../versions/gitlab_17_changes.md)
 - [GitLab 16](../versions/gitlab_16_changes.md)

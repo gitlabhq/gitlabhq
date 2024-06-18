@@ -1,8 +1,6 @@
 ---
 key_path: counts.kubernetes_agent_flux_git_push_notifications_total
 description: Count of Flux Git Push notifications from KAS to agentk
-product_section: ops
-product_stage: deploy
 product_group: environments
 value_type: number
 status: active

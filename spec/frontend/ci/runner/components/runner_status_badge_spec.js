@@ -89,7 +89,7 @@ describe('RunnerTypeBadge', () => {
     expect(wrapper.text()).toBe(I18N_STATUS_STALE);
     expect(findBadge().props('variant')).toBe('warning');
     expect(getTooltip().value).toBe(
-      "Runner hasn't contacted GitLab in more than 3 months and last contact was 1 year ago",
+      "Runner hasn't contacted GitLab in more than 1 week and last contact was 1 year ago",
     );
   });
 
@@ -103,7 +103,7 @@ describe('RunnerTypeBadge', () => {
 
     expect(wrapper.text()).toBe(I18N_STATUS_STALE);
     expect(findBadge().props('variant')).toBe('warning');
-    expect(getTooltip().value).toBe('Runner is older than 3 months and has never contacted GitLab');
+    expect(getTooltip().value).toBe('Runner is older than 1 week and has never contacted GitLab');
   });
 
   describe('does not fail when data is missing', () => {

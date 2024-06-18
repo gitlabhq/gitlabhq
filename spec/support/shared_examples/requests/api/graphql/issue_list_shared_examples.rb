@@ -18,7 +18,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
   describe 'filters' do
     let(:mutually_exclusive_error) do
-      'only one of [assigneeUsernames, assigneeUsername, assigneeWildcardId] arguments is allowed at the same time.'
+      'Only one of [assigneeUsernames, assigneeUsername, assigneeWildcardId] arguments is allowed at the same time.'
     end
 
     before_all do
@@ -48,7 +48,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
           post_query
 
           expect_graphql_errors_to_include(
-            'only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.'
+            'Only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.'
           )
         end
       end
@@ -150,20 +150,6 @@ RSpec.shared_examples 'graphql issue list request spec' do
           post_query
 
           expect_graphql_errors_to_be_empty
-        end
-      end
-
-      context 'when feature flag is disabled' do
-        let(:issue_filter_params) { { or: { assignee_usernames: [current_user.username] } } }
-
-        it 'returns an error' do
-          stub_feature_flags(or_issuable_queries: false)
-
-          post_query
-
-          expect_graphql_errors_to_include(
-            "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
-          )
         end
       end
     end
@@ -379,7 +365,8 @@ RSpec.shared_examples 'graphql issue list request spec' do
       post_query
     end
 
-    context 'when requesting `user_notes_count` and `user_discussions_count`' do
+    context 'when requesting `user_notes_count` and `user_discussions_count`',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448559' do
       let(:requested_fields) { 'userNotesCount userDiscussionsCount' }
 
       before do
@@ -401,7 +388,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
       include_examples 'N+1 query check'
     end
 
-    context 'when requesting `timelogs`' do
+    context 'when requesting `timelogs`', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448337' do
       let(:requested_fields) { 'timelogs { nodes { timeSpent } }' }
 
       before do

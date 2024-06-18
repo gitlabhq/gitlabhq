@@ -167,8 +167,8 @@ RSpec.describe SearchController, feature_category: :global_search do
               term_limit = Gitlab::Search::Params::SEARCH_TERM_LIMIT
               term_char_limit = Gitlab::Search::AbuseDetection::ABUSIVE_TERM_SIZE
               {
-                chars_under_limit: (('a' * (term_char_limit - 1) + ' ') * (term_limit - 1))[0, char_limit],
-                chars_over_limit: (('a' * (term_char_limit - 1) + ' ') * (term_limit - 1))[0, char_limit + 1],
+                chars_under_limit: ((('a' * (term_char_limit - 1)) + ' ') * (term_limit - 1))[0, char_limit],
+                chars_over_limit: ((('a' * (term_char_limit - 1)) + ' ') * (term_limit - 1))[0, char_limit + 1],
                 terms_under_limit: ('abc ' * (term_limit - 1)),
                 terms_over_limit: ('abc ' * (term_limit + 1)),
                 term_length_over_limit: ('a' * (term_char_limit + 1)),

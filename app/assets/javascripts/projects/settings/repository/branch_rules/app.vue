@@ -177,14 +177,9 @@ export default {
         :items="getAddRuleItems"
         size="small"
       />
-      <gl-button
-        v-else
-        v-gl-modal="$options.modalId"
-        size="small"
-        class="gl-ml-3"
-        data-testid="add-branch-rule-button"
-        >{{ $options.i18n.addBranchRule }}</gl-button
-      >
+      <gl-button v-else v-gl-modal="$options.modalId" size="small" class="gl-ml-3"
+        >{{ $options.i18n.addBranchRule }}
+      </gl-button>
     </template>
     <ul class="content-list">
       <branch-rule

@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlCard, GlIcon, GlPagination } from '@gitlab/ui';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import { buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import { s__ } from '~/locale';
@@ -74,7 +74,7 @@ export default {
       // stranded on page 2 when deleting the last message.
       // Force a page reload to avoid this edge case.
       if (newVal === PER_PAGE && oldVal === PER_PAGE + 1) {
-        redirectTo(this.buildPageUrl(1)); // eslint-disable-line import/no-deprecated
+        visitUrl(this.buildPageUrl(1));
       }
     },
   },

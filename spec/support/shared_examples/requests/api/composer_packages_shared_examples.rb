@@ -79,7 +79,7 @@ RSpec.shared_examples 'Composer package creation' do |expected_status:, member_r
   include_context 'Composer user type', member_role: member_role do
     it 'creates package files' do
       expect { subject }
-          .to change { project.packages.composer.count }.by(1)
+        .to change { ::Packages::Composer::Package.for_projects(project).count }.by(1)
 
       expect(response).to have_gitlab_http_status(expected_status)
     end

@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.quickactions.i_quickactions_remove_contacts_weekly
 description: Count of WAU using the `/remove_contacts` quick action
-product_section: dev
-product_stage: plan
 product_group: product_planning
 value_type: number
 status: active

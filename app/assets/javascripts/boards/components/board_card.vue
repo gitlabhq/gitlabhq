@@ -70,14 +70,11 @@ export default {
     isDraggable() {
       return !this.isDisabled;
     },
+    itemColor() {
+      return this.item.color;
+    },
     cardStyle() {
-      return this.isColorful && this.item.color ? { borderColor: this.item.color } : '';
-    },
-    isColorful() {
-      return gon?.features?.epicColorHighlight;
-    },
-    colorClass() {
-      return this.isColorful ? 'gl-pl-4 gl-border-l-solid gl-border-4' : '';
+      return this.itemColor ? { borderColor: this.itemColor } : '';
     },
     formattedItem() {
       return {
@@ -146,8 +143,8 @@ export default {
         'is-disabled': isDisabled,
         'is-active gl-bg-blue-50': isActive,
         'gl-cursor-not-allowed gl-bg-gray-10': item.isLoading,
+        'gl-pl-4 gl-border-l-solid gl-border-4': itemColor,
       },
-      colorClass,
     ]"
     :index="index"
     :data-item-id="item.id"
@@ -155,7 +152,7 @@ export default {
     :data-item-path="item.referencePath"
     :style="cardStyle"
     data-testid="board-card"
-    class="board-card gl-p-5 gl-rounded-base gl-line-height-normal gl-relative gl-mb-3"
+    class="board-card gl-p-5 gl-rounded-base gl-leading-normal gl-relative gl-mb-3"
     @click="toggleIssue($event)"
   >
     <board-card-inner

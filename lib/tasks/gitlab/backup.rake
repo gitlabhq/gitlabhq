@@ -234,6 +234,16 @@ namespace :gitlab do
         Tasks::Gitlab::Backup.restore_task('ci_secure_files')
       end
     end
+
+    namespace :external_diffs do
+      task create: :gitlab_environment do
+        Tasks::Gitlab::Backup.create_task('external_diffs')
+      end
+
+      task restore: :gitlab_environment do
+        Tasks::Gitlab::Backup.restore_task('external_diffs')
+      end
+    end
   end
   # namespace end: backup
 end

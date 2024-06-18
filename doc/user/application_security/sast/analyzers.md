@@ -26,37 +26,45 @@ For each scanner, an analyzer:
 - Handles its execution.
 - Converts its output to a [standard format](../terminology/index.md#secure-report-format).
 
-## SAST analyzers
+## Official analyzers
 
 SAST supports the following official analyzers:
 
-- [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman)
-- [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder)
 - [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) (Kubesec)
-- [`mobsf`](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (MobSF) (**Status:** Beta)
-- [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan)
-- [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit)
 - [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex) (PMD (Apex only))
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) (Semgrep)
 - [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow) (Sobelow (Elixir Phoenix))
 - [`spotbugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) (SpotBugs with the Find Sec Bugs plugin (Ant, Gradle and wrapper, Grails, Maven and wrapper, SBT))
 
-NOTE:
-`brakeman`, `flawfinder`, `nodejs-scan`, and `phpcs-security-audit` were
-[deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/431123) in GitLab 16.9
-and are planned for removal in 17.0.
-The [Semgrep analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) is proposed as their replacement.
+The following GitLab analyzers have reached [End of Support](../../../update/terminology.md#end-of-support)
+status and do not receive updates. They were replaced by the Semgrep-based analyzer with
+GitLab-managed rules.
 
-SAST has used other analyzers in previous versions. These analyzers reached End of Support status and do not receive updates:
+- [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Bandit); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4.
+- [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman) (Brakeman); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/412060) in GitLab 17.0.
+- [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (ESLint (JavaScript and React)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4.
+- [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder) (Flawfinder); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/412060) in GitLab 17.0.
+- [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Gosec); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4.
+- [`mobsf`](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf) (MobSF); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/450925) in GitLab 17.0.
+- [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) (NodeJsScan);  [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/412060) in GitLab 17.0.
+- [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) (PHP CS security-audit)
+- [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) (Security Code Scan (.NET)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/390416) in GitLab 16.0.
 
-- [`bandit`](https://gitlab.com/gitlab-org/security-products/analyzers/bandit) (Bandit); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. Replaced by the `semgrep` analyzer with GitLab-managed rules.
-- [`eslint`](https://gitlab.com/gitlab-org/security-products/analyzers/eslint) (ESLint (JavaScript and React)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. Replaced by the `semgrep` analyzer with GitLab-managed rules.
-- [`gosec`](https://gitlab.com/gitlab-org/security-products/analyzers/gosec) (Gosec); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/352554) in GitLab 15.4. Replaced by the `semgrep` analyzer with GitLab-managed rules.
-- [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan) (Security Code Scan (.NET)); [End of Support](https://gitlab.com/gitlab-org/gitlab/-/issues/390416) in GitLab 16.0. Replaced by the `semgrep` analyzer with GitLab-managed rules.
+## GitLab Advanced SAST analyzer
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** Experiment
+
+The GitLab Advanced SAST analyzer offers a broader and more accurate static analysis for Python,
+particularly by providing cross-function and cross-file taint analysis.
+
+It is not enabled by default. To enable it, please follow the instructions on the [GitLab Advanced SAST page](gitlab_advanced_sast.md).
 
 ## SAST analyzer features
 
-For an analyzer to be considered Generally Available, it is expected to minimally
+For an analyzer to be considered generally available, it is expected to minimally
 support the following features:
 
 - [Customizable configuration](index.md#available-cicd-variables)
@@ -69,16 +77,15 @@ support the following features:
 
 ## Post analyzers
 
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 Post analyzers enrich the report output by an analyzer. A post analyzer doesn't modify report
 content directly. Instead, it enhances the results with additional properties, including:
 
 - CWEs.
 - Location tracking fields.
-- A means of identifying false positives or insignificant findings.
-
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 ## Transition to Semgrep-based scanning
 
@@ -148,19 +155,19 @@ In GitLab 15.4, we [removed the deprecated analyzers](https://gitlab.com/gitlab-
 To preview the upcoming changes to the CI/CD configuration in GitLab 15.3 or earlier:
 
 1. Open an MR to switch from the Stable CI/CD template, `SAST.gitlab-ci.yml`, to [the Latest template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml), `SAST.latest.gitlab-ci.yml`.
-    - On GitLab.com, use the latest template directly:
+   - On GitLab.com, use the latest template directly:
 
-      ```yaml
-      include:
-        template: 'Jobs/SAST.latest.gitlab-ci.yml'
-      ```
+     ```yaml
+     include:
+       template: 'Jobs/SAST.latest.gitlab-ci.yml'
+     ```
 
-    - On a self-managed instance, download the template from GitLab.com:
+   - On a self-managed instance, download the template from GitLab.com:
 
-      ```yaml
-      include:
-        remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/2851f4d5/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml'
-      ```
+     ```yaml
+     include:
+       remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/2851f4d5/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml'
+     ```
 
 1. Verify that scanning jobs succeed in the MR. You notice findings from the removed analyzers in _Fixed_ and findings from Semgrep in _New_. (Some findings may show different names, descriptions, and severities, since GitLab manages and edits the Semgrep rulesets.)
 1. Close the MR.

@@ -33,6 +33,9 @@ module Gitlab
       gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url
       gon.recaptcha_sitekey      = Gitlab::CurrentSettings.recaptcha_site_key
       gon.gitlab_url             = Gitlab.config.gitlab.url
+      gon.promo_url              = ApplicationHelper.promo_url
+      gon.forum_url              = Gitlab::Saas.community_forum_url
+      gon.docs_url               = Gitlab::Saas.doc_url
       gon.organization_http_header_name = ::Organizations::ORGANIZATION_HTTP_HEADER
       gon.revision               = Gitlab.revision
       gon.feature_category       = Gitlab::ApplicationContext.current_context_attribute(:feature_category).presence
@@ -75,7 +78,6 @@ module Gitlab
       push_frontend_feature_flag(:organization_switching, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:vue_page_breadcrumbs)
     end
 
     # Exposes the state of a feature flag to the frontend code.
@@ -127,7 +129,7 @@ module Gitlab
       # We also can't use Gitlab::Utils.append_path because the image path
       # may be an absolute URL.
       URI.join(Gitlab.config.gitlab.url,
-               ActionController::Base.helpers.image_path('no_avatar.png')).to_s
+        ActionController::Base.helpers.image_path('no_avatar.png')).to_s
     end
 
     def add_browsersdk_tracking

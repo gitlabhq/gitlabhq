@@ -6,8 +6,6 @@ import {
   GlDisclosureDropdownGroup,
   GlFilteredSearchToken,
   GlTooltipDirective,
-  GlDrawer,
-  GlLink,
 } from '@gitlab/ui';
 
 import produce from 'immer';
@@ -39,7 +37,6 @@ import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import {
   OPERATORS_IS,
-  OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
   OPERATORS_AFTER_BEFORE,
   TOKEN_TITLE_ASSIGNEE,
@@ -73,9 +70,9 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
-import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
+import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 import {
   CREATED_DESC,
@@ -133,6 +130,7 @@ const CrmOrganizationToken = () =>
 const DateToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/date_token.vue');
 
 export default {
+  name: 'IssuesListAppCE',
   i18n,
   issuableListTabs,
   ISSUES_VIEW_TYPE_KEY,
@@ -146,16 +144,14 @@ export default {
     EmptyStateWithoutAnyIssues,
     GlButton,
     GlButtonGroup,
-    GlDrawer,
     IssuableByEmail,
     IssuableList,
     IssueCardStatistics,
     IssueCardTimeInfo,
     NewResourceDropdown,
     LocalStorageSync,
-    WorkItemDetail,
-    GlLink,
     GitlabExperiment,
+    WorkItemDrawer,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -309,9 +305,6 @@ export default {
     typeTokenOptions() {
       return [...defaultTypeTokenOptions, ...this.eeTypeTokenOptions];
     },
-    hasOrFeature() {
-      return this.glFeatures.orIssuableQueries;
-    },
     hasSearch() {
       return Boolean(
         this.searchQuery ||
@@ -383,7 +376,7 @@ export default {
           token: UserToken,
           dataType: 'user',
           defaultUsers: [],
-          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           fullPath: this.fullPath,
           isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
@@ -396,7 +389,7 @@ export default {
           icon: 'user',
           token: UserToken,
           dataType: 'user',
-          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           fullPath: this.fullPath,
           isProject: this.isProject,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
@@ -418,7 +411,7 @@ export default {
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
-          operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
+          operators: OPERATORS_IS_NOT_OR,
           fetchLabels: this.fetchLabels,
           fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
@@ -909,32 +902,17 @@ export default {
 
 <template>
   <div>
-    <gl-drawer
+    <work-item-drawer
       v-if="issuesDrawerEnabled"
       :open="isIssuableSelected"
-      header-height="calc(var(--top-bar-height) + var(--performance-bar-height))"
-      class="gl-w-full gl-sm-w-40p gl-reset-line-height"
+      :active-item="activeIssuable"
       @close="activeIssuable = null"
-    >
-      <template #title>
-        <gl-link :href="activeIssuable.webUrl" class="gl-text-black-normal">{{
-          __('Open full view')
-        }}</gl-link>
-      </template>
-      <template #default>
-        <work-item-detail
-          :key="activeIssuable.iid"
-          :work-item-iid="activeIssuable.iid"
-          is-drawer
-          class="gl-pt-0! work-item-drawer"
-          @work-item-updated="updateIssuablesCache"
-          @work-item-emoji-updated="updateIssuableEmojis"
-          @addChild="refetchIssuables"
-          @deleteWorkItem="deleteIssuable"
-          @promotedToObjective="promoteToObjective"
-        />
-      </template>
-    </gl-drawer>
+      @work-item-updated="updateIssuablesCache"
+      @work-item-emoji-updated="updateIssuableEmojis"
+      @addChild="refetchIssuables"
+      @deleteWorkItem="deleteIssuable"
+      @promotedToObjective="promoteToObjective"
+    />
     <issuable-list
       v-if="hasAnyIssues"
       :namespace="fullPath"
@@ -956,12 +934,12 @@ export default {
       :show-bulk-edit-sidebar="showBulkEditSidebar"
       :show-pagination-controls="showPaginationControls"
       :default-page-size="pageSize"
+      show-filtered-search-friendly-text
       sync-filter-and-sort
       use-keyset-pagination
       :show-page-size-change-controls="showPageSizeControls"
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
-      :show-filtered-search-friendly-text="hasOrFeature"
       :is-grid-view="isGridView"
       :active-issuable="activeIssuable"
       show-work-item-type-icon

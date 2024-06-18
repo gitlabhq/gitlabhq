@@ -1,6 +1,5 @@
 ---
 Rake/Require:
-  Details: grace period
   Exclude:
     - 'ee/lib/tasks/contracts/merge_requests.rake'
     - 'lib/tasks/contracts/merge_requests.rake'
@@ -13,6 +12,5 @@ Rake/Require:
     - 'lib/tasks/gitlab/graphql.rake'
     - 'lib/tasks/gitlab/lfs/migrate.rake'
     - 'lib/tasks/gitlab/openapi.rake'
-    - 'lib/tasks/import.rake'
     - 'lib/tasks/tokens.rake'
     - 'qa/tasks/ci.rake'

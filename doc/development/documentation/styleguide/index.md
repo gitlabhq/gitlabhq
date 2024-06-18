@@ -857,13 +857,13 @@ Follow these guidelines for link text.
 
 As much as possible, use text that follows one of these patterns:
 
-- `For more information, see [LINK TEXT](LINK)`.
-- `To [DO THIS THING], see [LINK TEXT](LINK)`
+- `For more information, see [link text](link.md)`.
+- `To [DO THIS THING], see [link text](link.md)`
 
 For example:
 
-- `For more information, see [merge requests](LINK).`
-- `To create a review app, see [review apps](LINK).`
+- `For more information, see [merge requests](link.md).`
+- `To create a review app, see [review apps](link.md).`
 
 You can expand on this text by using phrases like
 `For more information about this feature, see...`
@@ -872,8 +872,8 @@ Do not use the following constructions:
 
 - `Learn more about...`
 - `To read more...`.
-- `For more information, see the [Merge requests](LINK) page.`
-- `For more information, see the [Merge requests](LINK) documentation.`
+- `For more information, see the [Merge requests](link.md) page.`
+- `For more information, see the [Merge requests](link.md) documentation.`
 
 #### Descriptive text rather than `here`
 
@@ -881,18 +881,18 @@ Use descriptive text for links, rather than words like `here` or `this page.`
 
 For example, instead of:
 
-- `For more information, see [this page](LINK).`
-- `For more information, go [here](LINK).`
+- `For more information, see [this page](link.md).`
+- `For more information, go [here](link.md).`
 
 Use:
 
-- `For more information, see [merge requests](LINK)`.
+- `For more information, see [merge requests](link.md)`.
 
 #### Links to issues
 
 When linking to an issue, include the issue number in the link. For example:
 
-- `For more information, see [issue 12345](LINK).`
+- `For more information, see [issue 12345](link.md).`
 
 Do not use the pound sign (`issue #12345`).
 
@@ -1123,13 +1123,8 @@ To describe multiple fields, use unordered list items:
 
 ## Illustrations
 
-Use illustrations only to supplement text, not replace it.
-
-Illustrations can help the reader understand:
-
-- A concept.
-- Where they are in a complicated process.
-- How they should interact with the application.
+Illustrations can help the reader understand a concept, where they are in a complicated process,
+or how they should interact with the application.
 
 Use illustrations sparingly because:
 
@@ -1139,47 +1134,10 @@ Use illustrations sparingly because:
 
 Types of illustrations used in GitLab documentation are:
 
-- Diagram. Use a diagram to illustrate a process or the relationship between entities, for example.
 - Screenshot. Use a screenshot when you need to show a portion of the GitLab user interface.
+- Diagram. Use a diagram to illustrate a process or the relationship between entities, for example.
 
-Use a diagram instead of a screenshot when possible because:
-
-- A diagram's file size is usually much smaller than that of a screenshot.
-- A screenshot often needs to be compressed, which generally reduces the image's quality.
-- A diagram in SVG format can be displayed at any size without affecting the image's quality.
-
-### Diagram
-
-Use a diagram to illustrate a process or the relationship between entities, for example.
-
-Use [Mermaid](https://mermaid.js.org/#/) to create a diagram. This method has several advantages
-over a static image format (screenshot):
-
-- The Mermaid format is easier to maintain because:
-  - Their definition is stored as a code block in the documentation's Markdown source.
-  - The diagram is rendered dynamically at runtime.
-  - Text content that may change over time, such as feature names, can be found using text search
-    tools and edited.
-- The diagram is rendered as an scalable image, better suited to various output devices and sizes.
-
-#### Create a diagram
-
-To create a diagram:
-
-1. Use the [Mermaid Live Editor](https://mermaid.live/) to create the diagram.
-1. Copy the content of the **Code** pane into a `mermaid` code block in the Markdown file. For more
-   details, see [Mermaid](../../../user/markdown.md#mermaid).
-1. To improve accessibility of diagrams, add a title and description. Add these lines on the next
-   line after declaring the type of diagram, like `flowchart` or `sequenceDiagram`:
-
-   ```yaml
-   accTitle: your diagram title here
-   accDescr: describe what your diagram does in a single sentence, with no line breaks.
-   ```
-
-The Mermaid diagram syntax can be difficult to learn. To make this a little easier, see the Mermaid
-[Beginner's Guide](https://mermaid.js.org/intro/getting-started.html) and the examples on the
-Mermaid site.
+Use illustrations only to supplement text, not replace it.
 
 ### Screenshot
 
@@ -1351,6 +1309,59 @@ You can take a screenshot of a single element.
 
 Use `spec/docs_screenshots/container_registry_docs.rb` as a guide to create your own scripts.
 
+### Diagram
+
+Use a diagram to illustrate a process or the relationship between entities, for example.
+
+Use [Mermaid](https://mermaid.js.org/#/) to create a diagram. This method has several advantages
+over a static image format (screenshot):
+
+- The Mermaid format is easier to maintain because:
+  - Their definition is stored as a code block in the documentation's Markdown source.
+  - The diagram is rendered dynamically at runtime.
+  - Text content that may change over time, such as feature names, can be found using text search
+    tools and edited.
+- The diagram is rendered as an scalable image, better suited to various output devices and sizes.
+
+#### Create a diagram
+
+To create a diagram:
+
+1. Use the [Mermaid Live Editor](https://mermaid.live/) to create the diagram.
+1. Copy the content of the **Code** pane into a `mermaid` code block in the Markdown file. For more
+   details, see [Mermaid](../../../user/markdown.md#mermaid).
+1. Optional. To add GitLab font styling to your diagram, add this line between the Mermaid
+   code block declaration and the type of diagram:
+
+   ```plaintext
+   %%{init: { "fontFamily": "GitLab Sans" }}%%
+   ```
+
+1. To improve accessibility of diagrams, add a title and description. Add these lines on the next
+   line after declaring the type of diagram, like `flowchart` or `sequenceDiagram`:
+
+   ```yaml
+   accTitle: your diagram title here
+   accDescr: describe what your diagram does in a single sentence, with no line breaks.
+   ```
+
+For example, this flowchart contains both accessibility and font information:
+
+````markdown
+```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
+flowchart TD
+    accTitle: Example diagram title
+    accDescr: A description of your diagram
+
+    A[Start here] -->|action| B[next step]
+```
+````
+
+The Mermaid diagram syntax can be difficult to learn. To make this a little easier, see the Mermaid
+[Beginner's Guide](https://mermaid.js.org/intro/getting-started.html) and the examples on the
+Mermaid site.
+
 ## Emoji
 
 Don't use the Markdown emoji format, for example `:smile:`, for any purpose. Use
@@ -1409,7 +1420,7 @@ videos that might be out-of-date.
 
 ```markdown
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [Video Title](link-to-video).
+For an overview, see [Video Title](https://link-to-video).
 <!-- Video published on YYYY-MM-DD -->
 ```
 
@@ -1478,7 +1489,7 @@ With this formatting:
 Linking to click-through demos should follow similar guidelines to [videos](#videos).
 
 ```markdown
-For a click-through demo, see [Demo Title](link-to-demo).
+For a click-through demo, see [Demo Title](https://link-to-demo).
 <!-- Demo published on YYYY-MM-DD -->
 ```
 
@@ -1604,7 +1615,7 @@ For more information, see [Legal disclaimer for future features](../versions.md#
 
 ### Details
 
-`DETAILS:` alert boxes are used for [tier badges](#product-tier-badges).
+`DETAILS:` alert boxes are used for [product availability details](#product-availability-details).
 
 ## Blockquotes
 
@@ -1704,147 +1715,11 @@ in the GitLab product documentation.
 If a feature or product name contains spaces, don't split the name with a line break.
 When names change, it is more complicated to search or grep text that has line breaks.
 
-### Product tier badges
+### Product availability details
 
-Tier badges provide information about a feature and are displayed under the topic title.
+Product availability details provide information about a feature and are displayed under the topic title.
 
-#### When to add tier badges
-
-Assign tier badges under:
-
-- Most H1 topic titles, except the pages under `doc/development/*` and `doc/solutions/*`.
-- Topic titles that don't apply to the same tier as the H1.
-
-The H1 tier badge should be the badge that applies to the lowest tier for the features on the page.
-
-#### When not to add tier badges
-
-Do not assign tier badges:
-
-- When a feature does not have one obvious subscription tier or offering.
-  For example, if a feature applies to one tier for SaaS and a different tier for self-managed.
-
-In this case, do any or all of the following:
-
-- Use a `NOTE` in an alert box to describe the tiers.
-- Add tier badges under other topic titles where this information makes more sense.
-- Do not add tier badges under the H1.
-
-##### Pages that don't need a tier badge
-
-Some pages won't have a tier badge, because no obvious tier badge applies. For example:
-
-- Tutorials.
-- Pages that compare features from different tiers.
-- Pages in the `/development` folder. These pages are automatically assigned a `Contribute` badge.
-- Pages in the `/solutions` folder. These pages are automatically assigned a `Solutions` badge.
-
-#### Available product tier badges
-
-Tier badges are how we refer to the information that's displayed under a topic title.
-
-Tier badges include the tier, offering, status, and history.
-
-The Markdown for tier badges should look like the following:
-
-```markdown
-# Topic title
-
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Experiment
-
-> - [Introduced](<link-to-issue>) in GitLab 16.3.
-> - Updated in GitLab 16.4.
-```
-
-For offering, use any combination of these words, in this order, separated by commas:
-
-- GitLab.com
-- Self-managed
-- GitLab Dedicated
-
-For example:
-
-- GitLab.com
-- GitLab.com, Self-managed
-- Self-managed
-- Self-managed, GitLab Dedicated
-
-For tier, choose one:
-
-- Free, Premium, Ultimate
-- Premium, Ultimate
-- Ultimate
-
-For status, choose one:
-
-- Beta
-- Experiment
-
-Generally available features should not have a status.
-
-##### GitLab Duo Pro add-on
-
-The add-on belongs with other subscription tiers. Document it by using the phrase `with GitLab Duo Pro`.
-For example:
-
-```markdown
-**Tier:** Premium or Ultimate with GitLab Duo Pro
-```
-
-##### Duplicating tier, offering, or status on subheadings
-
-If a subheading has the same tier, offering, or status as its parent
-topic, you don't need to repeat the information in the subheading's
-badge.
-
-For example, if the heading 1 is:
-
-```markdown
-# My title
-
-DETAILS:
-**Offering:** GitLab.com
-**Tier:** Premium, Ultimate
-```
-
-Any lower-level heading that applies to a different tier but same offering would be:
-
-```markdown
-## My title
-
-DETAILS:
-**Tier:** Ultimate
-```
-
-##### Inline tier badges
-
-Do not add tier badges inline with other text.
-The single source of truth for a feature should be the topic where the
-functionality is described.
-
-If you need to mention a tier inline, write it in plain text. For example,
-for an API topic:
-
-```markdown
-IDs of the users to assign the issue to. Ultimate only.
-```
-
-For more examples, see the [REST API style guide](../restful_api_styleguide.md).
-
-##### Administrator documentation tier badges
-
-Topics that are only for instance administrators should have the `Self-managed` tier.
-Instance administrator documentation often includes sections that mention:
-
-- Changing the `gitlab.rb` or `gitlab.yml` files.
-- Accessing the rails console or running Rake tasks.
-- Doing things in the Admin Area.
-
-These pages should also mention if the tasks can only be accomplished by an
-instance administrator.
+Read more about [product availability details](availability_details.md).
 
 ## Specific sections
 
@@ -2128,8 +2003,8 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
- - Information specific to Geo.
- - ...
+- Information specific to Geo.
+- ...
 
 ## X.Y.0
 

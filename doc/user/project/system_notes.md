@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "System notes track the history of changes made to an object, like a merge request or issue, in your GitLab project."
 ---
 
 # System notes

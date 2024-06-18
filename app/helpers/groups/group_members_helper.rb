@@ -15,7 +15,8 @@ module Groups::GroupMembersHelper
       can_manage_members: can?(current_user, :admin_group_member, group),
       can_manage_access_requests: can?(current_user, :admin_member_access_request, group),
       group_name: group.name,
-      group_path: group.full_path
+      group_path: group.full_path,
+      can_approve_access_requests: true # true for CE, overridden in EE
     }
   end
 

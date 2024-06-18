@@ -31,32 +31,32 @@ module API
       params do
         use :pagination
         optional :order_by,
-                 type: String,
-                 values: %w[created_at name version type project_path],
-                 default: 'created_at',
-                 desc: 'Return packages ordered by `created_at`, `name`, `version` or `type` fields.'
+          type: String,
+          values: %w[created_at name version type project_path],
+          default: 'created_at',
+          desc: 'Return packages ordered by `created_at`, `name`, `version` or `type` fields.'
         optional :sort,
-                 type: String,
-                 values: %w[asc desc],
-                 default: 'asc',
-                 desc: 'Return packages sorted in `asc` or `desc` order.'
+          type: String,
+          values: %w[asc desc],
+          default: 'asc',
+          desc: 'Return packages sorted in `asc` or `desc` order.'
         optional :package_type,
-                 type: String,
-                 values: Packages::Package.package_types.keys,
-                 desc: 'Return packages of a certain type'
+          type: String,
+          values: Packages::Package.package_types.keys,
+          desc: 'Return packages of a certain type'
         optional :package_name,
-                 type: String,
-                 desc: 'Return packages with this name'
+          type: String,
+          desc: 'Return packages with this name'
         optional :package_version,
-                type: String,
-                desc: 'Return packages with this version'
+          type: String,
+          desc: 'Return packages with this version'
         optional :include_versionless,
-                 type: Boolean,
-                 desc: 'Returns packages without a version'
+          type: Boolean,
+          desc: 'Returns packages without a version'
         optional :status,
-                 type: String,
-                 values: Packages::Package.statuses.keys,
-                 desc: 'Return packages with specified status'
+          type: String,
+          values: Packages::Package.statuses.keys,
+          desc: 'Return packages with specified status'
       end
       get ':id/packages' do
         packages = Packages::GroupPackagesFinder.new(
@@ -69,7 +69,7 @@ module API
         ).execute
 
         present paginate(packages), with: ::API::Entities::Package, user: current_user, group: true,
-                                    namespace: user_group
+          namespace: user_group
       end
     end
   end

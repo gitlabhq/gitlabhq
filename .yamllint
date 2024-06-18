@@ -19,7 +19,6 @@ ignore: |
 
   # Contains ruby code
   config/mail_room.yml
-  generator_templates/snowplow_event_definition/event_definition.yml
   generator_templates/usage_metric_definition/metric_definition.yml
 
   # Contains ERB code that keeps throwing syntax errors

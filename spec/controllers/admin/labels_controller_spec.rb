@@ -25,7 +25,7 @@ RSpec.describe Admin::LabelsController, feature_category: :team_planning do
         expect(label.reload).to eq label
       end
 
-      context 'when label is succesfuly destroyed' do
+      context 'when label is successfully destroyed' do
         it 'redirects to the admin labels page' do
           label = create(:admin_label)
           delete :destroy, params: { id: label.to_param }

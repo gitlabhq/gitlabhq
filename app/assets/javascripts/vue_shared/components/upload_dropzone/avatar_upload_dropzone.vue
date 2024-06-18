@@ -86,7 +86,7 @@ export default {
       :src="avatarSrc"
     />
     <div class="gl-min-w-0">
-      <p class="gl-font-weight-bold gl-line-height-1 gl-mb-3">
+      <p class="gl-font-bold gl-leading-1 gl-mb-3">
         {{ label }}
       </p>
       <div v-if="value" class="gl-display-flex gl-align-items-center gl-gap-x-3">

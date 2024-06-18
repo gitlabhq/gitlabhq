@@ -25,10 +25,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   Perform the [workaround](#undefined-column-error-upgrading-to-162-or-later) before upgrading to 16.x.
 - Starting with 16.0, GitLab self-managed installations now have two database connections by default, instead of one. This change doubles the number of PostgreSQL connections. It makes self-managed versions of GitLab behave similarly to GitLab.com, and is a step toward enabling a separate database for CI features for self-managed versions of GitLab. Before upgrading to 16.0, determine if you need to [increase max connections for PostgreSQL](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
   - This change applies to installation methods with Linux packages (Omnibus), GitLab Helm chart, GitLab Operator, GitLab Docker images, and self-compiled installations.
-  - The second database connection can be disabled:
-    - [Linux package and Docker installations](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
-    - [Helm chart and GitLab Operator installations](https://docs.gitlab.com/charts/charts/globals.html#configure-multiple-database-connections).
-    - [Self-compiled installations](../../install/installation.md#configure-gitlab-db-settings).
+  - [The second database connection can be disabled](#disable-the-second-database-connection).
 - Most installations can skip 16.0, 16.1, and 16.2, as the first required stop on the upgrade path is 16.3.
   In all cases, you should review the notes for those intermediate versions.
 
@@ -101,6 +98,23 @@ In GitLab 16.11, PostgreSQL will automatically be upgraded to 14.x except for th
 Fault-tolerant and Geo installations support manual upgrades to PostgreSQL 14,
 see [Packaged PostgreSQL deployed in an HA/Geo Cluster](https://docs.gitlab.com/omnibus/settings/database.html#packaged-postgresql-deployed-in-an-hageo-cluster).
 
+### Geo installations
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
+  | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
+
 ## 16.10.0
 
 You might encounter the following error while upgrading to GitLab 16.10 or later:
@@ -150,6 +164,23 @@ If this is your case, read [Multi-node upgrades with downtime](../../update/with
 
 For more information on the changes introduced between version 2.1.0 and version 3.0.1, see the [Patroni release notes](https://patroni.readthedocs.io/en/latest/releases.html).
 
+### Geo installations
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
+  | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
+
 ## 16.9.0
 
 You might encounter the following error while upgrading to GitLab 16.9.0:
@@ -193,6 +224,21 @@ planned for release in 16.9.1.
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
+  | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
+
 ### Linux package installations
 
 - The [Sidekiq `min_concurrency` and `max_concurrency`](../../administration/sidekiq/extra_sidekiq_processes.md#manage-thread-counts-with-min_concurrency-and-max_concurrency-fields-deprecated) options are deprecated in GitLab 16.9.0 and due for removal in GitLab 17.0.0. In GitLab 16.9.0 and later, to avoid breaking changes in GitLab 17.0.0, set the new [`concurrency`](../../administration/sidekiq/extra_sidekiq_processes.md#manage-thread-counts-with-concurrency-field) option and remove the `min_concurrency` and `max_concurrency` options.
@@ -223,12 +269,12 @@ planned for release in 16.9.1.
 ### Geo installations
 
 - PostgreSQL version 14 is the default for fresh installations of GitLab 16.7 and later. Due to a known issue, existing Geo secondary
-sites cannot be upgraded to PostgreSQL version 14. For more information, see [issue 7768](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255).
-All Geo sites must run the same version of PostgreSQL. To add a new Geo secondary site on GitLab 16.7 to 16.8.1,
-you must take one of the following actions based on your configuration:
+  sites cannot be upgraded to PostgreSQL version 14. For more information, see [issue 7768](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255).
+  All Geo sites must run the same version of PostgreSQL. To add a new Geo secondary site on GitLab 16.7 to 16.8.1,
+  you must take one of the following actions based on your configuration:
 
   - To add your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server)
-  before you set up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
+    before you set up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
   - To add a new Geo secondary site to a deployment that already has one or more Geo secondaries:
     - If all existing sites are running PostgreSQL 13, install the new Geo secondary site with [pinned PostgreSQL version 13](https://docs.gitlab.com/omnibus/settings/database.html#pin-the-packaged-postgresql-version-fresh-installs-only).
     - If all existing sites are running PostgreSQL 14: No special action is required.
@@ -256,11 +302,30 @@ you must take one of the following actions based on your configuration:
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
+  | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
+
 ## 16.7.0
 
 - GitLab 16.7 is a required upgrade stop. This ensures that all database changes introduced
   in GitLab 16.7 and earlier have been implemented on all self-managed instances. Dependent changes can then be released
   in GitLab 16.8 and later. [Issue 429611](https://gitlab.com/gitlab-org/gitlab/-/issues/429611) provides more details.
+
+  - If you skip 16.6 in your upgrade path, you might experience performance issues after upgrading to 16.7
+    when your instance processes a background database migration from the GitLab 16.6 release.
+    Read more about the `ci_builds` migration in the [16.6.0 upgrade notes](#1660).
 
 - Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
@@ -292,9 +357,9 @@ Specific information applies to Linux package installations:
 ### Geo installations
 
 - PostgreSQL version 14 is the default for fresh installations of GitLab 16.7 and later. Due to a known issue, existing Geo secondary
-sites cannot be upgraded to PostgreSQL version 14. For more information, see [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255).
-All Geo sites must run the same version of PostgreSQL. To add a new Geo secondary site based on GitLab 16.7 to 16.8.1, you must
-take one of the following actions based on your configuration:
+  sites cannot be upgraded to PostgreSQL version 14. For more information, see [issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7768#note_1652076255).
+  All Geo sites must run the same version of PostgreSQL. To add a new Geo secondary site based on GitLab 16.7 to 16.8.1, you must
+  take one of the following actions based on your configuration:
 
   - You are adding your first Geo secondary site: [Upgrade the Primary site to PostgreSQL 14](https://docs.gitlab.com/omnibus/settings/database.html#upgrade-packaged-postgresql-server) before setting up the new Geo secondary site. No special action is required if your primary site is already running PostgreSQL 14.
   - You are adding a new Geo secondary site to a deployment that already has one or more Geo secondaries:
@@ -327,7 +392,49 @@ take one of the following actions based on your configuration:
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
 
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
+  | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
+
 ## 16.6.0
+
+- GitLab 16.6 introduces a background migration that re-writes every row in the
+  CI jobs table (`ci_builds`) as part of upgrading the primary key to 64 bits.
+  `ci_builds` is one of the largest tables on most GitLab instances, so this
+  migration runs more aggressively than usual to ensure it takes a reasonable amount of time.
+  Background migrations usually pause between batches of rows, but this migration does not.
+
+  This might cause performance issues in self-managed environments:
+
+  - Disk I/O will be higher than usual. This will be a particular issue for instances
+    hosted by cloud providers where disk I/O is restricted.
+  - Autovacuum might run more frequently in the background to ensure the old
+    rows (dead tuples) are removed, and to perform other related housekeeping.
+  - Queries might run slowly, temporarily, because inefficient query plans get
+    selected by PostgreSQL. This might be triggered by the volume of change on the table.
+
+  Workarounds:
+
+  - Pause the running migration in the [Admin Area](../background_migrations.md#from-the-gitlab-ui).
+  - Recreate table statistics manually on the
+    [database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
+    to ensure the right query plan is selected:
+
+    ```sql
+    SET statement_timeout = 0;
+    VACUUM FREEZE VERBOSE ANALYZE public.ci_builds;
+    ```
 
 - Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.
 - Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
@@ -373,6 +480,21 @@ take one of the following actions based on your configuration:
   | 16.7                    |  All                    | None     |
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
+  | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
 ## 16.5.0
 
@@ -514,6 +636,21 @@ Specific information applies to installations using Geo:
   | 16.7                    |  All                    | None     |
   | 16.8                    |  16.8.0 - 16.8.3        | 16.8.4   |
   | 16.9                    |  16.9.0 - 16.9.1        | 16.9.2   |
+
+- Due to a bug introduced GitLab 16.5 and fixed in 17.0, [GitLab Pages](../../administration/pages/index.md) deployment files are being orphaned on secondary Geo sites. If Pages deployments are stored locally, then this can lead to zero remaining storage and subsequently data loss in the event of a failover.
+  See details of the problem and workaround in issue [#457159](https://gitlab.com/gitlab-org/gitlab/-/issues/457159).
+
+  **Affected releases**:
+
+  | Affected minor releases | Affected patch releases | Fixed in |
+  | ----------------------- | ----------------------- | -------- |
+  | 16.5                    |  All                    | None     |
+  | 16.6                    |  All                    | None     |
+  | 16.7                    |  All                    | None     |
+  | 16.8                    |  All                    | None     |
+  | 16.9                    |  All                    | None     |
+  | 16.10                   |  16.10.0 - 16.10.6      | 16.10.7  |
+  | 16.11                   |  16.11.0 - 16.11.3      | 16.11.4  |
 
 ## 16.4.0
 
@@ -914,7 +1051,7 @@ Specific information applies to installations using Geo:
     Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
     You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
 
-#### Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced
+#### Cloning LFS objects from secondary site downloads from the primary site
 
 A [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/410413) in the Geo proxying logic for LFS objects meant that all LFS clone requests against a secondary site are proxied to the primary even if the secondary site is up-to-date. This can result in increased load on the primary site and longer access times for LFS objects for users cloning from the secondary site.
 
@@ -999,7 +1136,7 @@ Specific information applies to installations using Geo:
   - While running an affected version, artifacts which appeared to become synced may actually be missing on the secondary site.
     Affected artifacts are automatically resynced upon upgrade to 16.1.5, 16.2.5, 16.3.1, 16.4.0, or later.
     You can [manually resync affected job artifacts](https://gitlab.com/gitlab-org/gitlab/-/issues/419742#to-fix-data) if needed.
-  - Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+  - Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 #### Wiki repositories not initialized on project creation
 
@@ -1080,7 +1217,7 @@ Specific information applies to installations using Geo:
 
 - Some project imports do not initialize wiki repositories on project creation. See
   [the details and workaround](#wiki-repositories-not-initialized-on-project-creation).
-- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site-even-when-secondary-is-fully-synced).
+- Cloning LFS objects from secondary site downloads from the primary site even when secondary is fully synced. See [the details and workaround](#cloning-lfs-objects-from-secondary-site-downloads-from-the-primary-site).
 
 ### Gitaly configuration structure change
 
@@ -1434,6 +1571,53 @@ praefect['configuration'] = {
   ]
 }
 ```
+
+### Disable the second database connection
+
+In GitLab 16.0, GitLab defaults to using two database connections that point to the same PostgreSQL database.
+
+PostgreSQL might need to be configured with a larger value for `max_connections`.
+[There is a Rake task for checking if this is necessary](https://docs.gitlab.com/omnibus/settings/database.html#configuring-multiple-database-connections).
+
+If you have PgBouncer deployed:
+
+- The frontend pools (including file handle limits and `max_client_conn`) on your PgBouncer servers [might need to be larger](../../administration/postgresql/pgbouncer.md#fine-tuning).
+- PgBouncer is single threaded. The extra connections might fully saturate a single PgBouncer daemon.
+  [We recommend running three load-balanced PgBouncer servers](../../administration/reference_architectures/5k_users.md#configure-pgbouncer) for all
+  scaled GitLab deployments, in part to address this issue.
+
+Follow the instructions for your installation type to switch back to a single database connection:
+
+::Tabs
+
+:::TabTitle Linux package and Docker
+
+1. Add this setting to `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['databases']['ci']['enable'] = false
+   ```
+
+1. Run `gitlab-ctl reconfigure`.
+
+In a multi-node environment, this setting should be updated on all Rails and Sidekiq nodes.
+
+:::TabTitle Helm chart (Kubernetes)
+
+Set the `ci.enabled` key to `false`:
+
+```yaml
+global:
+  psql:
+    ci:
+      enabled: false
+```
+
+:::TabTitle Self-compiled (source)
+
+Remove the `ci:` section from `config/database.yml`.
+
+::EndTabs
 
 ## Long-running user type data change
 

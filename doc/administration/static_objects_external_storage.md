@@ -2,6 +2,7 @@
 stage: Create
 group: IDE
 info: "To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments"
+description: "Configure external storage, such as a CDN, for static objects in your GitLab repository."
 ---
 
 # External storage for static objects
@@ -50,7 +51,10 @@ The following example shows a sequence of requests and responses between:
 - The content delivery network.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 sequenceDiagram
+    accTitle: Request and response flow
+    accDescr: Describes how requests and responses flow from the user, GitLab, and a CDN.
     User->>GitLab: GET /project/-/archive/master.zip
     GitLab->>User: 302 Found
     Note over User,GitLab: Location: https://cdn.com/project/-/archive/master.zip?token=secure-user-token

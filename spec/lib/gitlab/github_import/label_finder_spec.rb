@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::LabelFinder, :clean_gitlab_redis_cache, feature_category: :importers do
+RSpec.describe Gitlab::GithubImport::LabelFinder, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:project) { create(:project) }
   let_it_be(:finder) { described_class.new(project) }
   let_it_be(:bug) { create(:label, project: project, name: 'Bug') }

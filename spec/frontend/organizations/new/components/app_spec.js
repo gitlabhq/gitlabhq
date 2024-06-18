@@ -1,16 +1,14 @@
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
 
+import organizationCreateResponse from 'test_fixtures/graphql/organizations/organization_create.mutation.graphql.json';
+import organizationCreateResponseWithErrors from 'test_fixtures/graphql/organizations/organization_create.mutation.graphql_with_errors.json';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import App from '~/organizations/new/components/app.vue';
 import organizationCreateMutation from '~/organizations/new/graphql/mutations/organization_create.mutation.graphql';
 import NewEditForm from '~/organizations/shared/components/new_edit_form.vue';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
 import FormErrorsAlert from '~/vue_shared/components/form/errors_alert.vue';
-import {
-  organizationCreateResponse,
-  organizationCreateResponseWithErrors,
-} from '~/organizations/mock_data';
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';

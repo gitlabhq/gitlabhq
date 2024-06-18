@@ -116,6 +116,19 @@ graph TD;
     end
 ```
 
+### Configuration
+
+The Topology Service will use `config.toml` to configure all service parameters.
+
+#### List of Cells
+
+```toml
+[[cells]]
+id = 1
+address = "cell-us-1.gitlab.com"
+session_prefix = "cell1:"
+```
+
 ### Sequence Service
 
 ```proto
@@ -132,7 +145,7 @@ service SequenceService {
 }
 ```
 
-The purpose of this service is to global allocator of the [Database Sequences](impacted_features/database-sequences.md).
+The purpose of this service is to be the global allocator of [Database Sequences](decisions/008_database_sequences.md).
 
 #### Sequence Allocation workflow
 
@@ -216,6 +229,7 @@ endpoints for Claims within a transaction.
 enum ClassifyType {
     Route = 1;
     Login = 2;
+    SessionPrefix = 3;
 }
 
 message ClassifyRequest {
@@ -269,7 +283,7 @@ sequenceDiagram
     Note over Cell 1: User not found
     Cell 1->>+TS / Classify Service: Classify(Login) "john"
     TS / Classify Service-->>- Cell 1: "john": Cell 2
-    Cell 1 ->>- HTTP Router: "Cell 2". <br /> 307 Temporary Redirect 
+    Cell 1 ->>- HTTP Router: "Cell 2". <br /> 307 Temporary Redirect
     HTTP Router ->> User: Set Header Cell "Cell 2". <br /> 307 Temporary Redirect
     User->>HTTP Router: Headers: Cell: Cell 2 <br /> Sign in with Username: john, password: test123.
     HTTP Router->>+Cell 2: Sign in with Username: john, password: test123.
@@ -279,6 +293,27 @@ sequenceDiagram
 
 The sign-in request going to Cell 1 might at some point later be round-rubin routed to all Cells,
 as each Cell should be able to classify user and redirect it to correct Cell.
+
+#### Session cookie classification workflow with Classify Service
+
+```mermaid
+sequenceDiagram
+    participant User1
+    participant HTTP Router
+    participant TS / Classify Service
+    participant Cell 1
+    participant Cell 2
+
+    User1->> HTTP Router :GET "/gitlab-org/gitlab/-/issues"<br>Cookie: _gitlab_session=cell1:df1f861a9e609
+    Note over HTTP Router: Extract "cell1" from `_gitlab_session`
+    HTTP Router->> TS / Classify Service: Classify(SessionPrefix) "cell1"
+    TS / Classify Service->>HTTP Router: gitlab-org/gitlab => Cell 1
+    HTTP Router->> Cell 1: GET "/gitlab-org/gitlab/-/issues"<br>Cookie: _gitlab_session=cell1:df1f861a9e609
+    Cell 2->> HTTP Router: Issues Page Response
+    HTTP Router->>User1: Issues Page Response
+```
+
+The session cookie will be validated with `session_prefix` value.
 
 ### Metadata Service (**future**, implemented for Cells 1.5)
 
@@ -382,8 +417,6 @@ sequenceDiagram
 ```
 
 ## Reasons
-
-The original [Cells 1.0](iterations/cells-1.0.md) described [Primary Cell API](iterations/cells-1.0.md#primary-cell), this changes this decision to implement Topology Service for the following reasons:
 
 1. Provide stable and well described set of cluster-wide services that can be used
    by various services (HTTP Routing Service, SSH Routing Service, each Cell).
@@ -525,10 +558,10 @@ For this reason we are going to set up [Multi-Regional read-write deployment](#m
 Cloud Spanner provides 3 ways of recovery:
 
 1. [Backups](https://cloud.google.com/spanner/docs/backup): A backup of a database _inside_ of the instance. You can copy the backup to another instance but this requires an instance [of the same size of storage](https://cloud.google.com/spanner/docs/backup/copy-backup#prereqs) which can 2x the costs.
-    One concern with using backups is if the instance gets deleted by mistake (even with [deletion protection](https://cloud.google.com/spanner/docs/prevent-database-deletion))
+   One concern with using backups is if the instance gets deleted by mistake (even with [deletion protection](https://cloud.google.com/spanner/docs/prevent-database-deletion))
 1. [Import/Export](https://cloud.google.com/spanner/docs/import-export-overview): Export the database as a [medium priority](https://cloud.google.com/spanner/docs/cpu-utilization#task-priority) task inside of Google Cloud Storage.
 1. [Point-in-time recovery](https://cloud.google.com/spanner/docs/pitr): Version [retention period](https://cloud.google.com/spanner/docs/use-pitr#set-period) up to 7 days, this can help with recovery of a [portion of the database](https://cloud.google.com/spanner/docs/use-pitr#recover-portion) or create a backup/restore from a specific time to [recover the full database](https://cloud.google.com/spanner/docs/use-pitr#recover-entire).
-    Increasing the retention period does have [performance implications](https://cloud.google.com/spanner/docs/pitr#performance)
+   Increasing the retention period does have [performance implications](https://cloud.google.com/spanner/docs/pitr#performance)
 
 As you can see all these options only handle the data side, not the storage/compute side, this is because storage/compute is managed for us.
 This means our Disaster Recovery plan should only account for potential logical application errors where it deletes/logically corrupts the data.
@@ -592,7 +625,7 @@ Citations:
 ## Links
 
 - [Cells 1.0](iterations/cells-1.0.md)
-- [Routing Service](routing-service.md)
+- [Routing Service](http_routing_service.md)
 
 ### Topology Service discussions
 

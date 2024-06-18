@@ -2,53 +2,60 @@
 
 RSpec.describe Gitlab::Cng::CLI do
   shared_examples "command with help" do |args, help_output|
-    it "shows help" do
-      expect { cli.invoke(*args) }.to output(/#{help_output}/).to_stdout
+    it "shows help for #{args.last} command" do
+      expect { cli.start(args) }.to output(/#{help_output}/).to_stdout
     end
   end
 
-  subject(:cli) { described_class.new }
+  shared_examples "executable command" do |command_class, args|
+    let(:command_instance) { command_class.new }
+
+    before do
+      allow(command_class).to receive(:new).and_return(command_instance)
+      allow(command_instance).to receive(args.last.to_sym)
+    end
+
+    it "correctly invokes #{args} command" do
+      cli.start(args)
+
+      expect(command_instance).to have_received(args.last.to_sym)
+    end
+  end
+
+  subject(:cli) { described_class }
 
   describe "version command" do
-    it_behaves_like "command with help", [:help, ["version"]], /Print cng orchestrator version/
-
-    it "executes version command" do
-      expect { cli.invoke(:version) }.to output(/#{Gitlab::Cng::VERSION}/o).to_stdout
-    end
+    it_behaves_like "command with help", %w[help version], /Print cng orchestrator version/
+    it_behaves_like "executable command", Gitlab::Cng::Commands::Version, %w[version]
   end
 
   describe "doctor command" do
-    let(:command_instance) { Gitlab::Cng::Commands::Doctor.new }
+    it_behaves_like "command with help", %w[help doctor], /Validate presence of all required system dependencies/
+    it_behaves_like "executable command", Gitlab::Cng::Commands::Doctor, %w[doctor]
+  end
 
-    before do
-      allow(Gitlab::Cng::Commands::Doctor).to receive(:new).and_return(command_instance)
-      allow(command_instance).to receive(:doctor)
-    end
+  describe "log command" do
+    it_behaves_like "command with help", %w[log help events],
+      /Output events from the cluster for specific namespace/
+    it_behaves_like "command with help", %w[log help pods],
+      /Log application pods, where NAME is full or part of the pod name/
 
-    it_behaves_like "command with help", [:help, ["doctor"]], /Validate presence of all required system dependencies/
-
-    it "invokes doctor command" do
-      cli.invoke(:doctor)
-
-      expect(command_instance).to have_received(:doctor)
-    end
+    it_behaves_like "executable command", Gitlab::Cng::Commands::Log, %w[log pods]
+    it_behaves_like "executable command", Gitlab::Cng::Commands::Log, %w[log events]
   end
 
   describe "create command" do
     context "with cluster subcommand" do
-      let(:cluster_instance) { instance_double(Gitlab::Cng::Kind::Cluster, create: nil) }
+      it_behaves_like "command with help", %w[create help cluster], /Create kind cluster for local deployments/
+      it_behaves_like "executable command", Gitlab::Cng::Commands::Create, %w[create cluster]
+    end
 
-      before do
-        allow(Gitlab::Cng::Kind::Cluster).to receive(:new).and_return(cluster_instance)
-      end
+    context "with deployment subcommand" do
+      context "with kind deployment" do
+        it_behaves_like "command with help", %w[create deployment help kind],
+          /Create CNG deployment against local kind k8s cluster/
 
-      it_behaves_like "command with help", [:help, %w[create cluster]], /Create kind cluster for local deployments/
-
-      it "invokes cluster create command" do
-        cli.invoke(:create, %w[cluster])
-
-        expect(Gitlab::Cng::Kind::Cluster).to have_received(:new).with(ci: false, name: "gitlab")
-        expect(cluster_instance).to have_received(:create)
+        it_behaves_like "executable command", Gitlab::Cng::Commands::Subcommands::Deployment, %w[create deployment kind]
       end
     end
   end

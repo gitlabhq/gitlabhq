@@ -105,12 +105,9 @@ RSpec.shared_examples 'renders link to the feedback survey' do
 end
 
 RSpec.shared_examples 'VSD renders as an analytics dashboard' do
-  let(:legacy_vsd_testid) { "[data-testid='legacy-vsd']" }
   let(:dashboard_list_item_testid) { "[data-testid='dashboard-list-item']" }
 
   it 'renders as an analytics dashboard' do
-    expect(page).not_to have_selector legacy_vsd_testid
-
     expect(find_by_testid('gridstack-grid')).to be_visible
   end
 

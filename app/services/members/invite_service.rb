@@ -56,7 +56,14 @@ module Members
     end
 
     def invited_object(member)
-      return member.invite_email if member.invite_email
+      if member.invite_email
+        # We reverse here as the case with duplicate emails on the same request the last one is likely the issue as
+        # the first one will be committed to db first and so it will be the last instance of that email that has
+        # the error.
+        # For updates, they can still have an upper case email, so we need compare case insensitively on the both sides
+        # of this find.
+        return invites.reverse.find { |email| email.casecmp?(member.invite_email) }
+      end
 
       # There is a case where someone was invited by email, but the `user` record exists.
       # The member record returned will not have an invite_email attribute defined since
@@ -71,7 +78,11 @@ module Members
       if member.user_id.to_s.in?(invites)
         member.user.username
       else
-        member.user.all_emails.detect { |email| email.in?(invites) }
+        # We find the correct match here case insensitively user.all_emails since it can
+        # have an uppercase email for private_commit_email.
+        # We need to downcase our invites against the rest since the user could input
+        # uppercase invite and we need to find the case insensitive match on that.
+        invites.find { |email| email.downcase.in?(member.user.all_emails.map(&:downcase)) }
       end
     end
   end

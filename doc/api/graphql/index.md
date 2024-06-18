@@ -160,7 +160,7 @@ For more information, see [Deprecating GitLab features](../../development/deprec
 
 ### Breaking change exemptions
 
-Schema items labeled as Experiments in the [GraphQL API reference](reference/index.md)
+Schema items labeled as experiments in the [GraphQL API reference](reference/index.md)
 are exempt from the deprecation process. These items can be removed or changed at any
 time without notice.
 

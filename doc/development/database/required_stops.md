@@ -4,14 +4,17 @@ group: Database
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Adding required stops
+# Database required stops
+
+This page describes which database changes require GitLab upgrade stops. If you're interested
+about a comprehensive list of causes, refer to [causes of required stops](../avoiding_required_stops.md#causes-of-required-stops).
 
 [Required stops](../../update/index.md#upgrade-paths) should only be added when it is deemed absolutely necessary, because of their
 disruptive effect on customers. Before adding a required stop, consider if any
 alternative approaches exist to avoid a required stop. Sometimes a required
 stop is unavoidable. In those cases, follow the instructions below.
 
-## Common scenarios that require stops
+## Common database changes that require stops
 
 ### Long running migrations being finalized
 
@@ -67,37 +70,7 @@ to prevent these in testing, sometimes they happen.
 - **Cause:** There have been a few different causes where we recognized these too late.
 - **Mitigation:** Typically we try to backport fixes for migrations, but in some cases this is not possible.
 
-## Before the required stop is released
+## Adding a required stop
 
-Before releasing a known required stop, complete these steps. If the required stop
-is identified after release, the following steps must still be completed:
-
-1. Update [upgrade paths](../../update/index.md#upgrade-paths) to include the new
-   required stop.
-1. Communicate the changes with the customer Support and Release management teams.
-1. File an issue with the Database group to squash migrations to that version in the
-   next release. Use this template for your issue:
-
-   ```markdown
-   Title: `Squash migrations to <Required stop version>`
-   As a result of the required stop added for <required stop version> we should squash
-   migrations up to that version, and update the minimum schema version.
-
-   Deliverables:
-   - [ ] Migrations are squashed up to <required stop version>
-   - [ ] `Gitlab::Database::MIN_SCHEMA_VERSION` matches init_schema version
-
-   /label ~"group::database" ~"section::enablement" ~"devops::data_stores" ~"Category:Database" ~"type::maintenance"
-   /cc @gitlab-org/database-team/triage
-   ```
-
-## In the release following the required stop
-
-1. Update `Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION` in `lib/gitlab/database.rb` to the
-   new required stop versions. Do not change `Gitlab::Database::MIN_SCHEMA_VERSION`.
-1. In the `charts` project, update the
-   [upgrade check hook](https://gitlab.com/gitlab-org/charts/gitlab/-/blame/master/templates/_runcheck.tpl#L32)
-   to the required stop version.
-1. In the `omnibus-gitlab` project, update the
-   [pre-install version check](https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/master/config/templates/package-scripts/preinst.erb#L43)
-   to the required stop version.
+If you plan to introduce a change the falls into one of the above scenarios,
+please refer to [adding required stops](../avoiding_required_stops.md#adding-required-stops).

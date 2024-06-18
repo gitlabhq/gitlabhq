@@ -366,7 +366,7 @@ generate an error because containers in Kubernetes do not have access to the hos
 Machine clock is synchronized ... Exception: getaddrinfo: Servname not supported for ai_socktype
 ```
 
-##### Message: `ActiveRecord::StatementInvalid: PG::ReadOnlySqlTransaction: ERROR:  cannot execute INSERT in a read-only transaction`
+##### Message: `cannot execute INSERT in a read-only transaction`
 
 When this error is encountered on a secondary site, it likely affects all usages of GitLab Rails such as `gitlab-rails` or `gitlab-rake` commands, as well the Puma, Sidekiq, and Geo Log Cursor services.
 
@@ -491,14 +491,14 @@ It is risky to reuse a secondary site without resetting it because the secondary
 
 If these kinds of risks do not apply, for example in a test environment, or if you know that the main Postgres database still contains all Geo events since the Geo site was added, then you can bypass this health check:
 
-1. Get the last processed event time. In Rails console in the secondary site, run:
+1. Get the last processed event time. In Rails console in the **secondary** site, run:
 
    ```ruby
    Geo::EventLogState.last.created_at.utc
    ```
 
 1. Copy the output, for example `2024-02-21 23:50:50.676918 UTC`.
-1. Update the created time of the secondary site to make it appear older. In Rails console in the primary site, run:
+1. Update the created time of the secondary site to make it appear older. In Rails console in the **primary** site, run:
 
    ```ruby
    GeoNode.secondary_nodes.last.update_column(:created_at, DateTime.parse('2024-02-21 23:50:50.676918 UTC') - 1.second)
@@ -506,7 +506,7 @@ If these kinds of risks do not apply, for example in a test environment, or if y
 
    This command assumes that the affected secondary site is the one that was created last.
 
-1. Update the secondary site's status in **Admin > Geo > Sites**. In Rails console in the secondary site, run:
+1. Update the secondary site's status in **Admin > Geo > Sites**. In Rails console in the **secondary** site, run:
 
    ```ruby
    Geo::MetricsUpdateWorker.new.perform
@@ -517,10 +517,11 @@ If these kinds of risks do not apply, for example in a test environment, or if y
 1. Under the secondary site select **Replication Details**.
 1. Select **Reverify all** for every data type.
 
-### Geo site has a database that is writable which is an indication it is not configured for replication with the primary site
+### Geo site has a database that is writable
 
 This error message refers to a problem with the database replica on a **secondary** site,
-which Geo expects to have access to. It usually means, either:
+which Geo expects to have access to. A secondary site database that is writable
+is an indication the database is not configured for replication with the primary site. It usually means, either:
 
 - An unsupported replication method was used (for example, logical replication).
 - The instructions to set up a [Geo database replication](../../setup/database.md) were not followed correctly.

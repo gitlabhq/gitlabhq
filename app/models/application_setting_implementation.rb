@@ -277,6 +277,14 @@ module ApplicationSettingImplementation
         downstream_pipeline_trigger_limit_per_project_user_sha: 0,
         asciidoc_max_includes: 32,
         use_clickhouse_for_analytics: false,
+        group_api_limit: 400,
+        group_projects_api_limit: 600,
+        groups_api_limit: 200,
+        project_api_limit: 400,
+        projects_api_limit: 2000,
+        user_contributed_projects_api_limit: 100,
+        user_projects_api_limit: 300,
+        user_starred_projects_api_limit: 100,
         nuget_skip_metadata_url_validation: false
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?

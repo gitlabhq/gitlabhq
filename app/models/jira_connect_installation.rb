@@ -15,7 +15,7 @@ class JiraConnectInstallation < ApplicationRecord
   validates :base_url, presence: true, public_url: true
   validates :instance_url, public_url: true, allow_blank: true
 
-  scope :for_project, -> (project) {
+  scope :for_project, ->(project) {
     distinct
       .joins(:subscriptions)
       .where(jira_connect_subscriptions: {

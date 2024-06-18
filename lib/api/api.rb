@@ -13,7 +13,7 @@ module API
     USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
     LOG_FILTERS = ::Rails.application.config.filter_parameters + [/^output$/]
     LOG_FORMATTER = Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new
-    LOGGER = Logger.new(LOG_FILENAME)
+    LOGGER = Logger.new(LOG_FILENAME, level: ::Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :info))
 
     class MovedPermanentlyError < StandardError
       MSG_PREFIX = 'This resource has been moved permanently to'
@@ -28,27 +28,27 @@ module API
     end
 
     insert_before Grape::Middleware::Error,
-                  GrapeLogging::Middleware::RequestLogger,
-                  logger: LOGGER,
-                  formatter: LOG_FORMATTER,
-                  include: [
-                    Gitlab::GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
-                    Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
-                    Gitlab::GrapeLogging::Loggers::RouteLogger.new,
-                    Gitlab::GrapeLogging::Loggers::UserLogger.new,
-                    Gitlab::GrapeLogging::Loggers::TokenLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ExceptionLogger.new,
-                    Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
-                    Gitlab::GrapeLogging::Loggers::PerfLogger.new,
-                    Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ContextLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ContentLogger.new,
-                    Gitlab::GrapeLogging::Loggers::UrgencyLogger.new,
-                    Gitlab::GrapeLogging::Loggers::ResponseLogger.new
-                  ]
+      GrapeLogging::Middleware::RequestLogger,
+      logger: LOGGER,
+      formatter: LOG_FORMATTER,
+      include: [
+        Gitlab::GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
+        Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
+        Gitlab::GrapeLogging::Loggers::RouteLogger.new,
+        Gitlab::GrapeLogging::Loggers::UserLogger.new,
+        Gitlab::GrapeLogging::Loggers::TokenLogger.new,
+        Gitlab::GrapeLogging::Loggers::ExceptionLogger.new,
+        Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new,
+        Gitlab::GrapeLogging::Loggers::PerfLogger.new,
+        Gitlab::GrapeLogging::Loggers::CorrelationIdLogger.new,
+        Gitlab::GrapeLogging::Loggers::ContextLogger.new,
+        Gitlab::GrapeLogging::Loggers::ContentLogger.new,
+        Gitlab::GrapeLogging::Loggers::UrgencyLogger.new,
+        Gitlab::GrapeLogging::Loggers::ResponseLogger.new
+      ]
 
     allow_access_with_scope :api
-    allow_access_with_scope :read_api, if: -> (request) { request.get? || request.head? }
+    allow_access_with_scope :read_api, if: ->(request) { request.get? || request.head? }
     prefix :api
 
     version 'v3', using: :path do
@@ -309,9 +309,10 @@ module API
         mount ::API::ProjectImport
         mount ::API::ProjectJobTokenScope
         mount ::API::ProjectPackages
+        mount ::API::ProjectPackagesProtectionRules
         mount ::API::ProjectRepositoryStorageMoves
-        mount ::API::ProjectSnippets
         mount ::API::ProjectSnapshots
+        mount ::API::ProjectSnippets
         mount ::API::ProjectStatistics
         mount ::API::ProjectTemplates
         mount ::API::Projects
@@ -384,6 +385,7 @@ module API
     end
 
     mount ::API::Internal::Base
+    mount ::API::Internal::Coverage if Gitlab::Utils.to_boolean(ENV['COVERBAND_ENABLED'], default: false)
     mount ::API::Internal::Lfs
     mount ::API::Internal::Pages
     mount ::API::Internal::Kubernetes

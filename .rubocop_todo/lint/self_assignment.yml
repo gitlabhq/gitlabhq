@@ -1,0 +1,6 @@
+---
+Lint/SelfAssignment:
+  Exclude:
+    - 'app/models/remote_mirror.rb'
+    - 'spec/lib/gitlab/markdown_cache/active_record/extension_spec.rb'
+    - 'spec/models/ci/build_metadata_spec.rb'

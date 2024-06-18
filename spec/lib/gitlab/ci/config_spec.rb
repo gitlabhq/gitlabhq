@@ -121,24 +121,10 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
         EOS
       end
 
-      context 'when feature :project_ref_name_in_pipeline is enabled' do
-        it 'sets the ref in the pipeline' do
-          expect(Ci::Pipeline).to receive(:new).with(hash_including(ref: ref)).and_call_original
+      it 'sets the ref in the pipeline' do
+        expect(Ci::Pipeline).to receive(:new).with(hash_including(ref: ref)).and_call_original
 
-          described_class.new(yml, project: project, ref: ref, user: user)
-        end
-      end
-
-      context 'when feature is disabled' do
-        before do
-          stub_feature_flags(project_ref_name_in_pipeline: false)
-        end
-
-        it 'does not set the ref in the pipeline' do
-          expect(Ci::Pipeline).to receive(:new).with(hash_not_including(ref: ref)).and_call_original
-
-          described_class.new(yml, project: project, ref: ref, user: user)
-        end
+        described_class.new(yml, project: project, ref: ref, user: user)
       end
     end
   end
@@ -224,8 +210,8 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
     it 'returns only components included with `include:component`' do
       expect(config.metadata[:includes].size).to eq(3)
       expect(included_components).to contain_exactly(
-        { component_project: project1, component_sha: project1.commit.sha, component_name: 'dast' },
-        { component_project: project2, component_sha: project2.commit.sha, component_name: 'template' }
+        { project: project1, sha: project1.commit.sha, name: 'dast' },
+        { project: project2, sha: project2.commit.sha, name: 'template' }
       )
     end
 
@@ -241,7 +227,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
       it 'returns only unique components' do
         expect(config.metadata[:includes].size).to eq(2)
         expect(included_components).to contain_exactly(
-          { component_project: project1, component_sha: project1.commit.sha, component_name: 'dast' }
+          { project: project1, sha: project1.commit.sha, name: 'dast' }
         )
       end
     end
@@ -766,7 +752,7 @@ RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_composition do
             job1: {
               script: ["echo 'hello from main file'"],
               variables: {
-               VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
+                VARIABLE_DEFINED_IN_MAIN_FILE: 'some value'
               }
             }
           })

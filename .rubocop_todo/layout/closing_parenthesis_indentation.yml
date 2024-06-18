@@ -1,6 +1,0 @@
----
-# Cop supports --autocorrect.
-Layout/ClosingParenthesisIndentation:
-  Exclude:
-    - 'app/presenters/project_presenter.rb'
-    - 'spec/requests/api/internal/base_spec.rb'

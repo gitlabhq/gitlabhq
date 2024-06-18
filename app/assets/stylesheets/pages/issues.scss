@@ -12,19 +12,19 @@
 
 .issue-token-reference {
   margin-right: 1px;
-  background-color: $gray-lighter;
+  background-color: $gray-10;
   transition: background $general-hover-transition-duration $general-hover-transition-curve, color $general-hover-transition-duration $general-hover-transition-curve;
 
   .issue-token:hover &,
   .issue-token-link:focus > & {
-    background-color: $gray-normal;
+    background-color: $gray-50;
     color: $blue-800;
     text-decoration: none;
   }
 }
 
 .issue-token-title {
-  background-color: $gray-normal;
+  background-color: $gray-50;
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
   .issue-token:hover &,
@@ -34,7 +34,7 @@
 }
 
 .issue-token-remove-button {
-  background-color: $gray-normal;
+  background-color: $gray-50;
   transition: background $general-hover-transition-duration $general-hover-transition-curve;
 
   &:hover,
@@ -160,7 +160,7 @@ ul.related-merge-requests > li gl-emoji {
       width: auto;
 
       &.disabled {
-        background-color: $gray-light;
+        background-color: $gray-10;
         border-color: $gray-100;
         color: $gl-text-color-disabled;
       }
@@ -255,7 +255,7 @@ ul.related-merge-requests > li gl-emoji {
 
 .issuable-header-slide-enter-active,
 .issuable-header-slide-leave-active {
-  @include gl-transition-medium;
+  @apply gl-transition-all;
 }
 
 .issuable-header-slide-enter,

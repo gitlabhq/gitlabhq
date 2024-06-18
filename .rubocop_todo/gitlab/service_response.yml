@@ -68,7 +68,6 @@ Gitlab/ServiceResponse:
     - 'spec/controllers/projects/pipelines_controller_spec.rb'
     - 'spec/lib/gitlab/import_export/snippet_repo_restorer_spec.rb'
     - 'spec/requests/api/ci/pipelines_spec.rb'
-    - 'spec/requests/api/ci/runner/runners_post_spec.rb'
     - 'spec/requests/api/group_export_spec.rb'
     - 'spec/requests/api/issues/issues_spec.rb'
     - 'spec/requests/api/project_export_spec.rb'

@@ -31,6 +31,15 @@ you have removed any orphaned rows. The method `add_concurrent_foreign_key`
 does not take care of this so you must do so manually. See
 [adding foreign key constraint to an existing column](add_foreign_key_to_existing_column.md).
 
+## Use bigint for foreign keys
+
+When adding a new foreign key, you should define it as `bigint`.
+Even if the referenced table has an `integer` primary key type,
+you must reference the new foreign key as `bigint`. As we are
+migrating all primary keys to `bigint`, using `bigint` foreign keys
+saves time, and requires fewer steps, when migrating the parent table
+to `bigint` primary keys.
+
 ## Updating foreign keys in migrations
 
 Sometimes a foreign key constraint must be changed, preserving the column

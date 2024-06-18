@@ -12,12 +12,12 @@ export default {
   ITEM_LOADING: {
     id: 'loading',
     text: 'loading',
-    extraAttrs: { disabled: true, class: 'gl-shadow-none!' },
+    extraAttrs: { disabled: true, class: '!gl-shadow-none' },
   },
   ITEM_EMPTY: {
     id: 'empty',
     text: s__('Organization|No organizations available to switch to.'),
-    extraAttrs: { disabled: true, class: 'gl-shadow-none! gl-text-secondary' },
+    extraAttrs: { disabled: true, class: '!gl-shadow-none gl-text-secondary' },
   },
   i18n: {
     currentOrganization: s__('Organization|Current organization'),
@@ -132,15 +132,10 @@ export default {
 </script>
 
 <template>
-  <gl-disclosure-dropdown
-    :items="items"
-    class="gl-display-block"
-    placement="center"
-    @shown="onShown"
-  >
+  <gl-disclosure-dropdown :items="items" class="gl-block" placement="bottom" @shown="onShown">
     <template #toggle>
       <button
-        class="organization-switcher-button gl-display-flex gl-align-items-center gl-gap-3 gl-p-3 gl-rounded-base gl-border-none gl-line-height-1 gl-w-full"
+        class="organization-switcher-button gl-display-flex gl-align-items-center gl-gap-3 gl-p-3 gl-rounded-base gl-border-none gl-leading-1 gl-w-full"
         data-testid="toggle-button"
       >
         <gl-avatar
@@ -172,7 +167,7 @@ export default {
 
     <template v-if="!organizationSwitchingEnabled" #footer>
       <div class="gl-border-t gl-border-t-gray-200 gl-px-4 gl-pt-3 gl-mt-2">
-        <div class="gl-font-sm gl-font-weight-bold">
+        <div class="gl-font-sm gl-font-bold">
           {{ $options.i18n.switchOrganizations }}
         </div>
         <div class="gl-py-3">

@@ -22,10 +22,6 @@ export const SIDEBAR_PARAMS = [
 
 export const REGEX_PARAM = 'regex';
 
-export const PRESERVED_PARAMS = [REGEX_PARAM];
-
-export const LOCAL_STORAGE_NAME_SPACE_EXTENSION = 'advanced_search';
-
 export const NUMBER_FORMATING_OPTIONS = { notation: 'compact', compactDisplay: 'short' };
 
 export const ICON_MAP = {
@@ -49,3 +45,5 @@ export const BASIC_SEARCH_TYPE = 'basic';
 export const SEARCH_LEVEL_GLOBAL = 'global';
 export const SEARCH_LEVEL_PROJECT = 'project';
 export const SEARCH_LEVEL_GROUP = 'group';
+
+export const LS_REGEX_HANDLE = `${REGEX_PARAM}_advanced_search`;

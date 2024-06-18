@@ -272,7 +272,7 @@ module ReviewApps
 
       raise "days should be an integer between 1 and 365 inclusive! Got #{days_integer}" unless days_integer.between?(1, 365)
 
-      Time.now - days_integer * 24 * 3600
+      Time.now - (days_integer * 24 * 3600)
     end
 
     def ignore_exception?(exception_message, exceptions_ignored)

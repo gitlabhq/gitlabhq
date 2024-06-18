@@ -157,7 +157,7 @@ export default {
             <div class="gl-relative">
               <gl-button
                 v-gl-tooltip
-                class="gl-absolute gl-mt-n3 gl-ml-2"
+                class="gl-absolute -gl-mt-3 gl-ml-2"
                 variant="default"
                 category="tertiary"
                 size="medium"
@@ -206,7 +206,7 @@ export default {
                   variant="default"
                   size="medium"
                   category="primary"
-                  class="gl-mr-2 gl-w-auto!"
+                  class="gl-mr-2 !gl-w-auto"
                   @click.prevent.stop="showCustomLanguageInput = false"
                 >
                   {{ __('Cancel') }}
@@ -216,7 +216,7 @@ export default {
                   size="medium"
                   category="primary"
                   type="submit"
-                  class="gl-w-auto!"
+                  class="!gl-w-auto"
                 >
                   {{ __('Apply') }}
                 </gl-button>

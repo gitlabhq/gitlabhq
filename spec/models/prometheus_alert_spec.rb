@@ -81,7 +81,7 @@ RSpec.describe PrometheusAlert do
     it 'disallow invalid urls' do
       unsafe_url = %{https://replaceme.com/'><script>alert(document.cookie)</script>}
       non_ascii_url = 'http://gitlab.com/user/project1/wiki/something€'
-      excessively_long_url = 'https://gitla' + 'b' * 1024 + '.com'
+      excessively_long_url = 'https://gitla' + ('b' * 1024) + '.com'
 
       is_expected.not_to allow_values(
         unsafe_url,

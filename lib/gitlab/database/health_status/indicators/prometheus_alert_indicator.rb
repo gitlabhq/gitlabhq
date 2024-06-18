@@ -72,10 +72,28 @@ module Gitlab
           end
 
           def client
-            @client ||= Gitlab::PrometheusClient.new(
+            return mimir_client if Feature.enabled?(:db_health_check_using_mimir_client, type: :ops)
+
+            prometheus_client
+          end
+
+          def prometheus_client
+            @prometheus_client ||= Gitlab::PrometheusClient.new(
               prometheus_alert_db_indicators_settings[:prometheus_api_url],
               allow_local_requests: true,
               verify: true
+            )
+          end
+
+          def mimir_client
+            @mimir_client ||= Gitlab::MimirClient.new(
+              mimir_url: prometheus_alert_db_indicators_settings[:mimir_api_url],
+              user: ENV['GITLAB_MIMIR_AUTH_USER'],
+              password: ENV['GITLAB_MIMIR_AUTH_PASSWORD'],
+              options: {
+                allow_local_requests: true,
+                verify: true
+              }
             )
           end
 

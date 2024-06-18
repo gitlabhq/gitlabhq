@@ -53,6 +53,13 @@ const (
 	defaultIdleTimeout = 3 * time.Minute
 )
 
+// SentinelOptions contains grouped, related values
+type SentinelOptions struct {
+	SentinelUsername string
+	SentinelPassword string
+	Sentinels        []string
+}
+
 // createDialer references https://github.com/redis/go-redis/blob/b1103e3d436b6fe98813ecbbe1f99dc8d59b06c9/options.go#L214
 // it intercepts the error and tracks it via a Prometheus counter
 func createDialer(sentinels []string, tlsConfig *tls.Config) func(ctx context.Context, network, addr string) (net.Conn, error) {
@@ -172,12 +179,13 @@ func configureRedis(cfg *config.RedisConfig) (*redis.Client, error) {
 }
 
 func configureSentinel(cfg *config.RedisConfig) *redis.Client {
-	sentinelPassword, sentinels := sentinelOptions(cfg)
+	options := sentinelOptions(cfg)
 	client := redis.NewFailoverClient(&redis.FailoverOptions{
 		MasterName:       cfg.SentinelMaster,
-		SentinelAddrs:    sentinels,
+		SentinelAddrs:    options.Sentinels,
 		Password:         cfg.Password,
-		SentinelPassword: sentinelPassword,
+		SentinelUsername: options.SentinelUsername,
+		SentinelPassword: options.SentinelPassword,
 		DB:               getOrDefault(cfg.DB, 0),
 
 		PoolSize:        getOrDefault(cfg.MaxActive, defaultMaxActive),
@@ -187,7 +195,7 @@ func configureSentinel(cfg *config.RedisConfig) *redis.Client {
 		ReadTimeout:  defaultReadTimeout,
 		WriteTimeout: defaultWriteTimeout,
 
-		Dialer: createDialer(sentinels, nil),
+		Dialer: createDialer(options.Sentinels, nil),
 	})
 
 	client.AddHook(sentinelInstrumentationHook{})
@@ -195,10 +203,13 @@ func configureSentinel(cfg *config.RedisConfig) *redis.Client {
 	return client
 }
 
-// sentinelOptions extracts the sentinel password and addresses in <host>:<port> format
+// sentinelOptions extracts the sentinel username and password from the URLs
+// and addresses in <host>:<port> format.
 // the order of priority for the passwords is: SentinelPassword -> first password-in-url
-func sentinelOptions(cfg *config.RedisConfig) (string, []string) {
+// SentinelUsername will be the username associated with SentinelPassword.
+func sentinelOptions(cfg *config.RedisConfig) SentinelOptions {
 	sentinels := make([]string, len(cfg.Sentinel))
+	sentinelUsername := cfg.SentinelUsername
 	sentinelPassword := cfg.SentinelPassword
 
 	for i := range cfg.Sentinel {
@@ -208,10 +219,16 @@ func sentinelOptions(cfg *config.RedisConfig) (string, []string) {
 		if pw, exist := sentinelDetails.User.Password(); exist && len(sentinelPassword) == 0 {
 			// sets password using the first non-empty password
 			sentinelPassword = pw
+
+			// If a password is specified, a username is optional. Ensure that we use the
+			// username associated with the password.
+			if username := sentinelDetails.User.Username(); username != "" && sentinelUsername == "" {
+				sentinelUsername = username
+			}
 		}
 	}
 
-	return sentinelPassword, sentinels
+	return SentinelOptions{sentinelUsername, sentinelPassword, sentinels}
 }
 
 func getOrDefault(ptr *int, val int) int {

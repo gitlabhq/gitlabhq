@@ -1,4 +1,4 @@
-import { GlBadge } from '@gitlab/ui';
+import { GlBadge, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HeaderBadges from '~/ci/pipeline_details/header/components/header_badges.vue';
 
@@ -8,6 +8,11 @@ describe('Header badges', () => {
   let wrapper;
 
   const findAllBadges = () => wrapper.findAllComponents(GlBadge);
+  const findChildPipelineBadge = () =>
+    findAllBadges().filter((badge) => {
+      const sprintf = badge.findComponent(GlSprintf);
+      return sprintf.exists() && sprintf.attributes('message').includes('Child pipeline');
+    });
 
   const createComponent = (mockPipeline = pipelineHeaderSuccess.data.project.pipeline) => {
     wrapper = shallowMountExtended(HeaderBadges, {
@@ -44,5 +49,20 @@ describe('Header badges', () => {
     expect(wrapper.findByText('merged results').exists()).toBe(true);
     expect(wrapper.findByText('Scheduled').exists()).toBe(true);
     expect(wrapper.findByText('trigger token').exists()).toBe(true);
+  });
+
+  describe('in a child pipeline', () => {
+    const triggeredByPath = 'https://example.com';
+
+    it('displays the link to the parent', () => {
+      createComponent({
+        ...pipelineHeaderTrigger.data.project.pipeline,
+        child: true,
+        triggeredByPath,
+      });
+
+      expect(findAllBadges()).toHaveLength(4);
+      expect(findChildPipelineBadge().exists()).toBe(true);
+    });
   });
 });

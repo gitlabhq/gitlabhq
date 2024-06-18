@@ -107,7 +107,7 @@ RSpec.describe ProfilesHelper do
 
     where(:stacking, :breakpoint, :expected) do
       nil  | nil | %w[gl-mb-3 gl-display-inline-block middle-dot-divider]
-      true | nil | %w[gl-mb-3 middle-dot-divider-sm gl-display-block gl-sm-display-inline-block]
+      true | nil | %w[gl-mb-3 middle-dot-divider-sm gl-block sm:gl-inline-block]
       nil  | :sm | %w[gl-mb-3 gl-display-inline-block middle-dot-divider-sm]
     end
 

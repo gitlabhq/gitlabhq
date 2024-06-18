@@ -4,6 +4,7 @@
   --system-header-height: 0px;
   --header-height: 0px;
   --top-bar-height: 0px;
+  --broadcast-message-height: 0px;
   --system-footer-height: 0px;
   --mr-review-bar-height: 0px;
 
@@ -121,10 +122,6 @@
   color: $brand-info;
 }
 
-.bg-gray-light {
-  background-color: $gray-light;
-}
-
 .bg-white {
   background-color: $white;
 }
@@ -184,7 +181,7 @@ pre {
 
 hr {
   margin: 1.5rem 0;
-  border-top: 1px solid $gray-darker;
+  border-top: 1px solid $gray-50;
 }
 
 .str-truncated {
@@ -332,7 +329,7 @@ li.note {
   margin-bottom: $gl-padding;
 
   hr {
-    border-color: $gray-darker;
+    border-color: $gray-50;
   }
 }
 
@@ -369,14 +366,14 @@ li.note {
     clip: auto;
     text-decoration: none;
     color: $gl-text-color;
-    background: $gray-light;
+    background: $gray-10;
     z-index: 1;
   }
 }
 
 .bordered-box {
   border: 1px solid $border-color;
-  border-radius: $border-radius-default;
+  border-radius: $gl-border-radius-base;
 }
 
 .tooltip {

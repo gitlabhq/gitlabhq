@@ -15,7 +15,6 @@ RSpec.describe 'Visual tokens', :js, feature_category: :team_planning do
   let_it_be(:issue) { create(:issue, project: project) }
 
   before do
-    stub_feature_flags(or_issuable_queries: false)
     project.add_member(user, :maintainer)
     project.add_member(user_rock, :maintainer)
     sign_in(user)
@@ -91,7 +90,7 @@ RSpec.describe 'Visual tokens', :js, feature_category: :team_planning do
       expect_suggestion '='
       expect_suggestion '!='
 
-      click_on '= is'
+      click_on 'is ='
 
       expect_suggestion(user.name)
       expect_suggestion(user_rock.name)
@@ -111,10 +110,10 @@ RSpec.describe 'Visual tokens', :js, feature_category: :team_planning do
 
   it 'does retain hint token when mix of typing and clicks are performed' do
     select_tokens 'Label'
-    click_on '= is'
+    click_on 'is ='
 
     expect_token_segment 'Label'
-    expect_token_segment '='
+    expect_token_segment 'is'
   end
 
   describe 'Any/None option' do

@@ -78,7 +78,7 @@ RSpec.describe Gitlab::UsageMetricDefinition::RedisHllGenerator, :silence_stdout
     end
 
     it 'creates metric definition files' do
-      described_class.new(args, { 'ee': true }).invoke_all
+      described_class.new(args, { ee: true }).invoke_all
 
       expect(weekly_metric_definition).to include("key_path" => "redis_hll_counters.test_category.i_test_event_weekly")
       expect(weekly_metric_definition["distribution"]).to include('ee')

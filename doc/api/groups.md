@@ -42,6 +42,7 @@ Parameters:
 | `min_access_level`                    | integer           | no       | Limit to groups where current user has at least this [role (`access_level`)](members.md#roles) |
 | `top_level_only`                      | boolean           | no       | Limit to top level groups, excluding all subgroups |
 | `repository_storage`                  | string            | no       | Filter by repository storage used by the group _(administrators only)_. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419643) in GitLab 16.3. Premium and Ultimate only. |
+| `marked_for_deletion_on`              | date              | no       | Filter by date when group was marked for deletion. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429315) in GitLab 17.1. Premium and Ultimate only. |
 
 ```plaintext
 GET /groups
@@ -887,7 +888,7 @@ Parameters:
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group.                                                                                                                                                             |
 | `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11.             |
 | `default_branch_protection`                             | integer | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.             |
-| `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
+| `default_branch_protection_defaults`                    | hash    | no       | Introduced in GitLab 17.0. For available options, see [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults).                                                                                        |
 | `description`                                           | string  | no       | The group's description.                                                                                                                                                                        |
 | `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |
 | `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead.                                       |
@@ -922,15 +923,17 @@ The `default_branch_protection` attribute determines whether users with the Deve
 
 ### Options for `default_branch_protection_defaults`
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0.
+
 The `default_branch_protection_defaults` attribute describes the default branch
 protection defaults. All parameters are optional.
 
-| Key                          | Type    | Description                                                                             |
-|------------------------------|---------|-----------------------------------------------------------------------------------------|
-| `allowed_to_push`            | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40).  |
-| `allow_force_push`           | boolean | Allow force push for all users with push access.                                        |
+| Key                          | Type    | Description |
+|:-----------------------------|:--------|:------------|
+| `allowed_to_push`            | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40). |
+| `allow_force_push`           | boolean | Allow force push for all users with push access. |
 | `allowed_to_merge`           | array   | An array of access levels allowed to merge. Supports Developer (30) or Maintainer (40). |
-| `developer_can_initial_push` | boolean | Allow developers to initial push.                                                       |
+| `developer_can_initial_push` | boolean | Allow developers to initial push. |
 
 ## New Subgroup
 
@@ -1059,7 +1062,7 @@ PUT /groups/:id
 | `avatar`                                                | mixed   | no       | Image file for avatar of the group. |
 | `default_branch`                                        | string  | no       | The [default branch](../user/project/repository/branches/default.md) name for group's projects. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442298) in GitLab 16.11. |
 | `default_branch_protection`                             | integer | no       | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead. |
-| `default_branch_protection_defaults`                    | hash    | no       | See [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
+| `default_branch_protection_defaults`                    | hash    | no       | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. For available options, see [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
 | `description`                                           | string  | no       | The description of the group. |
 | `enabled_git_access_protocol`                           | string  | no       | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `all` to allow both protocols. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436618) in GitLab 16.9. |
 | `emails_disabled`                                       | boolean | no       | _([Deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/127899) in GitLab 16.5.)_ Disable email notifications. Use `emails_enabled` instead. |
@@ -1212,7 +1215,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
      --data "avatar="
 ```
 
-## Remove group
+## Delete group
 
 > - Immediately deleting subgroups was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360008) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `immediate_delete_subgroup_api`. Disabled by default.
 > - Immediately deleting subgroups was [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4.
@@ -1224,7 +1227,7 @@ Only available to group owners and administrators.
 This endpoint:
 
 - On Premium and Ultimate tiers, marks the group for deletion. The deletion happens 7 days later by default, but you can change the retention period in the [instance settings](../administration/settings/visibility_and_access_controls.md#deletion-protection).
-- On Free tier, removes the group immediately and queues a background job to delete all projects in the group.
+- On Free tier, deletes the group immediately and queues a background job to delete all projects in the group.
 - Deletes a subgroup immediately if the subgroup is marked for deletion (GitLab 15.4 and later). The endpoint does not immediately delete top-level groups.
 
 ```plaintext
@@ -1242,7 +1245,7 @@ Parameters:
 The response is `202 Accepted` if the user has authorization.
 
 NOTE:
-A GitLab.com group can't be removed if it is linked to a subscription. To remove such a group, first [link the subscription](../subscriptions/gitlab_com/index.md#change-the-linked-namespace) with a different group.
+A GitLab.com group can't be deleted if it is linked to a subscription. To delete such a group, first [link the subscription](../subscriptions/gitlab_com/index.md#change-the-linked-namespace) with a different group.
 
 ## Restore group marked for deletion
 
@@ -1363,13 +1366,13 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 16.6. This feature is an [Experiment](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 16.6. This feature is an [experiment](../policy/experiment-beta-support.md).
 
 Get a list of users for a group. This endpoint returns users that are related to a top-level group regardless
 of their current membership. For example, users that have a SAML identity connected to the group, or service accounts created
 by the group or subgroups.
 
-This endpoint is an [Experiment](../policy/experiment-beta-support.md) and might be changed or removed without notice.
+This endpoint is an [experiment](../policy/experiment-beta-support.md) and might be changed or removed without notice.
 
 Requires Owner role in the group.
 
@@ -1448,6 +1451,53 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+### List Service Account Users
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+
+Prerequisites:
+
+- You must be an administrator of the self-managed instance, or have the Owner role for the group.
+
+Lists all service account users that are provisioned by group.
+
+This function takes pagination parameters `page` and `per_page` to restrict the list of users.
+
+```plaintext
+GET /groups/:id/service_accounts
+```
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts"
+```
+
+Supported attributes:
+
+| Attribute    | Type     | Required   | Description                                                     |
+|:-------------|:---------|:-----------|:----------------------------------------------------------------|
+| `order_by`   | string   | no         | Orders list of users by `username` or `id`. Default is `id`.    |
+| `sort`       | string   | no         | Specifies sorting by `asc` or `desc`. Default is `desc`.        |
+
+Example response:
+
+```json
+[
+
+  {
+    "id": 57,
+    "username": "service_account_group_345_<random_hash>",
+    "name": "Service account user"
+  },
+  {
+  "id": 58,
+  "username": "service_account_group_345_<random_hash>",
+  "name": "Service account user"
+  }
+]
+```
+
 ### Create Service Account User
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
@@ -1481,6 +1531,31 @@ Example response:
   "name": "Service account user"
 }
 ```
+
+### Delete Service Account User
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+
+Deletes a service account user. You specify the ID of the service account user to be deleted.
+
+This API endpoint works on top-level groups only. It does not work on subgroups.
+
+```plaintext
+DELETE /groups/:id/service_accounts/:user_id
+```
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts/181"
+```
+
+Supported attributes:
+
+| Attribute                  | Type           | Required                  | Description                                                                    |
+|:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
+| `id`          | integer | yes      | ID of a service account user.                            |
+| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this service account user. |
 
 ### Create Personal Access Token for Service Account User
 
@@ -1613,7 +1688,12 @@ GET /groups/:id/hooks/:hook_id
   "url_variables": [ ],
   "created_at": "2012-10-12T17:04:47Z",
   "resource_access_token_events": true,
-  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}"
+  "custom_webhook_template": "{\"event\":\"{{object_kind}}\"}",
+  "custom_headers": [
+    {
+      "key": "Authorization"
+    }
+  ]
 }
 ```
 
@@ -1650,6 +1730,7 @@ POST /groups/:id/hooks
 | `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
 | `resource_access_token_events` | boolean         | no       | Trigger hook on project access token expiry events |
 | `custom_webhook_template`    | string         | no       | Custom webhook template for the hook |
+| `custom_headers`             | array             | No       | Custom headers for the hook. |
 
 ### Edit group hook
 
@@ -1686,10 +1767,11 @@ PUT /groups/:id/hooks/:hook_id
 | `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `resource_access_token_events` | boolean      | no       | Trigger hook on project access token expiry events. |
 | `custom_webhook_template`    | string         | no       | Custom webhook template for the hook. |
+| `custom_headers`             | array             | no       | Custom headers for the hook. |
 
 ### Delete group hook
 
-Removes a hook from a group. This is an idempotent method and can be called multiple times.
+Deletes a hook from a group. This is an idempotent method and can be called multiple times.
 Either the hook is available or not.
 
 ```plaintext
@@ -1700,6 +1782,64 @@ DELETE /groups/:id/hooks/:hook_id
 | --------- | -------------- | -------- | ----------- |
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `hook_id` | integer        | yes      | The ID of the group hook. |
+
+### Trigger a test group hook
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455589) in GitLab 17.1.
+> - Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+
+Trigger a test hook for a specified group.
+
+This endpoint has a rate limit of five requests per minute for each group and authenticated user.
+To disable this limit on self-managed GitLab and GitLab Dedicated, an administrator can
+[disable the feature flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`.
+
+```plaintext
+POST /groups/:id/hooks/:hook_id/test/:trigger
+```
+
+| Attribute | Type              | Required | Description                                                                                                                                                                                                                                                |
+|-----------|-------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `hook_id` | integer           | Yes      | The ID of the group hook.                                                                                                                                                                                                                                  |
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding).                                                                                                                                                                           |
+| `trigger` | string            | Yes      | One of `push_events`, `tag_push_events`, `issues_events`, `confidential_issues_events`, `note_events`, `merge_requests_events`, `job_events`, `pipeline_events`, `wiki_page_events`, `releases_events`, `emoji_events`, or `resource_access_token_events`. |
+
+```json
+{"message":"201 Created"}
+```
+
+### Set a custom header
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+```plaintext
+PUT /groups/:id/hooks/:hook_id/custom_headers/:key
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `hook_id` | integer           | Yes      | The ID of the group hook. |
+| `key`     | string            | Yes      | The key of the custom header. |
+| `value`   | string            | Yes      | The value of the custom header. |
+
+On success, this endpoint returns the response code `204 No Content`.
+
+### Delete a custom header
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153768) in GitLab 17.1.
+
+```plaintext
+DELETE /groups/:id/hooks/:hook_id/custom_headers/:key
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `hook_id` | integer           | Yes      | The ID of the group hook. |
+| `key`     | string            | Yes      | The key of the custom header. |
+
+On success, this endpoint returns the response code `204 No Content`.
 
 ## Group Audit Events
 
@@ -2069,6 +2209,7 @@ GET /groups/:id/push_rule
   "commit_committer_check": true,
   "commit_committer_name_check": true,
   "reject_unsigned_commits": false,
+  "reject_non_dco_commits": false,
   "commit_message_regex": "[a-zA-Z]",
   "commit_message_negative_regex": "[x+]",
   "branch_name_regex": "[a-z]",
@@ -2099,15 +2240,16 @@ POST /groups/:id/push_rule
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
 | `member_check`                                | boolean        | no       | Allows only GitLab users to author commits |
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
-| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
 | `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
 | `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
-| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/*` |
+| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*` |
 | `author_email_regex`                          | string         | no       | All commit author emails must match the regular expression provided in this attribute, for example, `@my-company.com$` |
 | `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
-| `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
-| `reject_unsigned_commits`                     | boolean        | no       | Only signed commits are allowed |
+| `commit_committer_check`                      | boolean        | no       | Users can only push commits to this repository if the committer email is one of their own verified emails |
+| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
+| `reject_unsigned_commits`                     | boolean        | no       | Reject commit when it’s not signed |
+| `reject_non_dco_commits`                      | boolean        | no       | Reject commit when it’s not DCO certified |
 
 <!-- markdownlint-enable MD056 -->
 
@@ -2121,7 +2263,10 @@ Response:
 {
     "id": 19,
     "created_at": "2020-08-31T15:53:00.073Z",
+    "commit_committer_check": false,
     "commit_committer_name_check": false,
+    "reject_unsigned_commits": false,
+    "reject_non_dco_commits": false,
     "commit_message_regex": "[a-zA-Z]",
     "commit_message_negative_regex": "[x+]",
     "branch_name_regex": null,
@@ -2152,16 +2297,16 @@ PUT /groups/:id/push_rule
 | `deny_delete_tag`                             | boolean        | no       | Deny deleting a tag |
 | `member_check`                                | boolean        | no       | Restricts commits to be authored by existing GitLab users only |
 | `prevent_secrets`                             | boolean        | no       | [Files that are likely to contain secrets](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/checks/files_denylist.yml) are rejected |
-| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
 | `commit_message_regex`                        | string         | no       | All commit messages must match the regular expression provided in this attribute, for example, `Fixed \d+\..*` |
 | `commit_message_negative_regex`               | string         | no       | Commit messages matching the regular expression provided in this attribute aren't allowed, for example, `ssh\:\/\/` |
-| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/*` |
+| `branch_name_regex`                           | string         | no       | All branch names must match the regular expression provided in this attribute, for example, `(feature|hotfix)\/.*` |
 | `author_email_regex`                          | string         | no       | All commit author emails must match the regular expression provided in this attribute, for example, `@my-company.com$` |
 | `file_name_regex`                             | string         | no       | Filenames matching the regular expression provided in this attribute are **not** allowed, for example, `(jar|exe)$` |
 | `max_file_size`                               | integer        | no       | Maximum file size (MB) allowed |
-| `commit_committer_check`                      | boolean        | no       | Only commits pushed using verified emails are allowed |
-| `reject_unsigned_commits`                     | boolean        | no       | Only signed commits are allowed |
-
+| `commit_committer_check`                      | boolean        | no       | Users can only push commits to this repository if the committer email is one of their own verified emails |
+| `commit_committer_name_check`                 | boolean        | no       | Users can only push commits to this repository if the commit author name is consistent with their GitLab account name |
+| `reject_unsigned_commits`                     | boolean        | no       | Reject commit when it’s not signed |
+| `reject_non_dco_commits`                      | boolean        | no       | Reject commit when it’s not DCO certified |
 <!-- markdownlint-enable MD056 -->
 
 ```shell
@@ -2174,7 +2319,10 @@ Response:
 {
     "id": 19,
     "created_at": "2020-08-31T15:53:00.073Z",
+     "commit_committer_check": false,
     "commit_committer_name_check": false,
+    "reject_unsigned_commits": false,
+    "reject_non_dco_commits": false,
     "commit_message_regex": "[a-zA-Z]",
     "commit_message_negative_regex": "[x+]",
     "branch_name_regex": null,

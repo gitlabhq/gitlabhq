@@ -1,8 +1,6 @@
 ---
 key_path: counts.instances_phorge_active
 description: Count of active instance-level integrations for Phorge
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active

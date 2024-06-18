@@ -53,14 +53,14 @@ export default {
 
 <template>
   <div v-if="canCreateSubgroups || canCreateProjects" class="gl-mt-5">
-    <div class="gl-display-flex gl-mx-n3 gl-my-n3 gl-flex-wrap">
+    <div class="gl-display-flex -gl-mx-3 -gl-my-3 gl-flex-wrap">
       <div v-if="canCreateSubgroups" class="gl-p-3 gl-w-full gl-sm-w-half">
         <gl-link :href="newSubgroupPath" :class="$options.linkClasses">
           <div class="svg-content gl-w-15 gl-flex-shrink-0 gl-mr-5">
             <img :src="newSubgroupIllustration" :alt="$options.i18n.withLinks.subgroup.title" />
           </div>
           <div>
-            <h4 class="gl-reset-color">{{ $options.i18n.withLinks.subgroup.title }}</h4>
+            <h4 class="gl-text-inherit">{{ $options.i18n.withLinks.subgroup.title }}</h4>
             <p class="gl-text-body">
               {{ $options.i18n.withLinks.subgroup.description }}
             </p>
@@ -73,7 +73,7 @@ export default {
             <img :src="newProjectIllustration" :alt="$options.i18n.withLinks.project.title" />
           </div>
           <div>
-            <h4 class="gl-reset-color">{{ $options.i18n.withLinks.project.title }}</h4>
+            <h4 class="gl-text-inherit">{{ $options.i18n.withLinks.project.title }}</h4>
             <p class="gl-text-body">
               {{ $options.i18n.withLinks.project.description }}
             </p>

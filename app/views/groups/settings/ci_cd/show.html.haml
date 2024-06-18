@@ -26,7 +26,7 @@
     .settings-content
       = render 'ci/variables/index', save_endpoint: group_variables_path
 
-- if can?(current_user, :admin_group, @group)
+- if can?(current_user, :admin_runner, @group)
   %section.settings#runners-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
@@ -39,6 +39,7 @@
     .settings-content
       = render 'groups/runners/settings'
 
+- if can?(current_user, :admin_group, @group)
   %section.settings#auto-devops-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only

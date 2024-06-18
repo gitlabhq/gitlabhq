@@ -6,7 +6,7 @@ module Groups
       layout 'group_settings'
       skip_cross_project_access_check :show
       before_action :authorize_admin_group!, except: :show
-      before_action :authorize_admin_cicd_variables!, only: :show
+      before_action :authorize_show_cicd_settings!, only: :show
       before_action :authorize_update_max_artifacts_size!, only: [:update]
       before_action :define_variables, only: [:show]
       before_action :push_licensed_features, only: [:show]
@@ -46,6 +46,15 @@ module Groups
       end
 
       private
+
+      def authorize_show_cicd_settings!
+        return if can_any?(current_user, [
+          :admin_cicd_variables,
+          :admin_runner
+        ], group)
+
+        access_denied!
+      end
 
       def define_variables
         define_ci_variables

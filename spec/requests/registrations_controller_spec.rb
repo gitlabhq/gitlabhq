@@ -22,5 +22,11 @@ RSpec.describe RegistrationsController, type: :request, feature_category: :syste
         expect(response).to redirect_to(users_almost_there_path(email: user_attrs[:email]))
       end
     end
+
+    context 'with user_detail built' do
+      it 'creates the user_detail record' do
+        expect { request }.to change { UserDetail.count }.by(1)
+      end
+    end
   end
 end

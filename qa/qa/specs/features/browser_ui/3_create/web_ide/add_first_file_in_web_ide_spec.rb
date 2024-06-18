@@ -28,13 +28,11 @@ module QA
       context 'when user adds a new file' do
         let(:file_name) { 'first_file.txt' }
 
-        it 'shows successfully added and visible in project',
+        it 'shows successfully added and visible in project', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/432898' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.create_new_file(file_name)
             ide.commit_and_push_to_existing_branch(file_name)
-
-            expect(ide).to have_message('Success! Your changes have been committed.')
           end
 
           project.visit!

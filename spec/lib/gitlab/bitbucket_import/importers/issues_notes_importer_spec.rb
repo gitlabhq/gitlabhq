@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Importers::IssuesNotesImporter, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketImport::Importers::IssuesNotesImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:project) { create(:project, :import_started) }
   let_it_be(:issue_1) { create(:issue, project: project) }
   let_it_be(:issue_2) { create(:issue, project: project) }
 
   subject(:importer) { described_class.new(project) }
 
-  describe '#execute', :clean_gitlab_redis_cache do
+  describe '#execute' do
     it 'imports the notes from each issue in parallel' do
       expect(Gitlab::BitbucketImport::ImportIssueNotesWorker).to receive(:perform_in).twice
 

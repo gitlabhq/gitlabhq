@@ -9,12 +9,10 @@ RSpec.shared_examples 'every metric definition' do
       testing_total_unique_counts
       user_auth_by_provider
       counts.groups_google_cloud_platform_artifact_registry_active
-      counts.groups_google_cloud_platform_workload_identity_federation_active
       counts.groups_inheriting_google_cloud_platform_artifact_registry_active
       counts.groups_inheriting_google_cloud_platform_workload_identity_federation_active
       counts.instances_google_cloud_platform_artifact_registry_active
       counts.instances_google_cloud_platform_workload_identity_federation_active
-      counts.projects_google_cloud_platform_workload_identity_federation_active
       counts.projects_inheriting_google_cloud_platform_artifact_registry_active
       counts.projects_inheriting_google_cloud_platform_workload_identity_federation_active
     ].freeze
@@ -55,7 +53,7 @@ RSpec.shared_examples 'every metric definition' do
   let(:metric_files_with_schema) do
     Gitlab::Usage::MetricDefinition
       .definitions
-      .select { |_, v| v.respond_to?(:value_json_schema) }
+      .select { |_, v| v.value_json_schema }
   end
 
   let(:expected_metric_files_key_paths) { metric_files_key_paths }
@@ -141,9 +139,6 @@ RSpec.shared_examples 'every metric definition' do
 
         case constant
         when Class
-          # This check can be removed when AggregatedMetric is removed
-          next if constant == Gitlab::Usage::Metrics::Instrumentations::AggregatedMetric
-
           metric_class_instance = instance_double(constant)
           expect(constant).to receive(:new).at_least(:once).and_return(metric_class_instance)
           allow(metric_class_instance).to receive(:available?).and_return(true)

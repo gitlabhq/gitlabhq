@@ -25,8 +25,7 @@ module QA
         @tag_name = 'master'
       end
 
-      def fabricate!
-      end
+      def fabricate!; end
 
       def fabricate_via_api!
         resource_web_url(api_get)

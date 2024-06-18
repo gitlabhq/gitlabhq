@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects Auto DevOps settings', :js, feature_category: :groups_and_projects do
+RSpec.describe 'Projects Auto DevOps settings', :js, feature_category: :auto_devops do
   let_it_be(:project) { create(:project) }
 
   let(:user) { project.first_owner }

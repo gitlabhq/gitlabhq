@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Representation::DiffNote, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::Representation::DiffNote do
   let(:hunk) do
     '@@ -1 +1 @@
     -Hello

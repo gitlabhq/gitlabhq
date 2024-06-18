@@ -212,6 +212,7 @@ The keys for a schedule rule are:
 ## `scan` action type
 
 > - Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
+> - Selection of Security templates for given action was [added](https://gitlab.com/gitlab-org/gitlab/-/issues/415427) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policies_with_latest_templates`. Disabled by default.
 
 This action executes the selected `scan` with additional parameters when conditions for at least one
 rule in the defined policy are met.
@@ -223,6 +224,7 @@ rule in the defined policy are met.
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/on-demand_scan.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
+| `template` | `string` | `default`, `latest` | CI/CD template edition to be enforced. The [`latest`](../../../development/cicd/templates.md#latest-version) edition may introduce breaking changes. |
 
 Note the following:
 
@@ -251,15 +253,15 @@ Note the following:
   SAST_EXCLUDED_PATHS: spec, test, tests, tmp
   SECRET_DETECTION_EXCLUDED_PATHS: ''
   SECRET_DETECTION_HISTORIC_SCAN: false
-  SAST_DISABLED_ANALYZERS: ''
-  DS_DISABLED_ANALYZERS: ''
+  SAST_EXCLUDED_ANALYZERS: ''
+  DS_EXCLUDED_ANALYZERS: ''
   ```
 
   In GitLab 16.9 and earlier:
 
   - If the CI/CD variables suffixed `_EXCLUDED_PATHS` were declared in a policy, their values _could_
     be overridden by group or project CI/CD variables.
-  - If the CI/CD variables suffixed `_DISABLED_ANALYZERS` were declared in a policy, their values were
+  - If the CI/CD variables suffixed `_EXCLUDED_ANALYZERS` were declared in a policy, their values were
     ignored, regardless of where they were defined: policy, group, or project.
 
 ## Security policy scopes
@@ -454,14 +456,6 @@ CI you want enforced. Scan execution policies then merge this file with the
 project's `.gitlab-ci.yml` to execute the compliance jobs for each project
 enforced by the policy.
 
-#### `ci_configuration_path` object
-
-| Field     | Type                | Required | Description |
-|-----------|---------------------|----------|-------------|
-| `project` | `string`            | true     | A project namespace path. |
-| `file`    | `string`            | true     | The filename of the CI/CD YAML file. |
-| `ref`     | `string`            | false    | The branch name, tag name, or commit SHA. If not specified, uses the default branch. |
-
 #### `scan` action type
 
 This action executes the selected `scan` with additional parameters when
@@ -472,6 +466,14 @@ conditions for at least one rule in the defined policy are met.
 | `scan`                  | `string` | `custom`        | The action's type. |
 | `ci_configuration`      | `string` |                 | GitLab CI YAML as formatted as string. |
 | `ci_configuration_path` | object   |                 | Object with project path and filename pointing to a CI configuration. |
+
+#### `ci_configuration_path` object
+
+| Field     | Type                | Required | Description |
+|-----------|---------------------|----------|-------------|
+| `project` | `string`            | true     | A project namespace path. |
+| `file`    | `string`            | true     | The filename of the CI/CD YAML file. |
+| `ref`     | `string`            | false    | The branch name, tag name, or commit SHA. If not specified, uses the default branch. |
 
 Note the following:
 

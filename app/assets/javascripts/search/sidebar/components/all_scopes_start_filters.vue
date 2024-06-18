@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-px-5 gl-pt-6">
+  <div class="gl-p-4 gl-pb-0">
     <group-filter class="gl-mb-5" />
     <project-filter class="gl-mb-5" />
   </div>

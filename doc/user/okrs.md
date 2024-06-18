@@ -12,7 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103355) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `okrs_mvc`. Disabled by default.
 
-OKRs are an [Experiment](../policy/experiment-beta-support.md#experiment).
+OKRs are an [experiment](../policy/experiment-beta-support.md#experiment).
 For the OKR feature roadmap, see [epic 7864](https://gitlab.com/groups/gitlab-org/-/epics/7864).
 
 FLAG:
@@ -178,20 +178,29 @@ To add an objective to a milestone:
    If an objective already belongs to a milestone, the dropdown list shows the current milestone.
 1. From the dropdown list, select the milestone to be associated with the objective.
 
-## Set objective progress
+## Set progress
+
+> - Setting progress for key results [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382433) in GitLab 15.8.
 
 Show how much of the work needed to achieve an objective is finished.
 
-You can only set progress manually on objectives, and it's not rolled up from child objectives or
-key results.
+You can set progress manually on objectives and key results.
+
+When you enter progress for a child item, progress of all parent items in the hierarchy is updated
+to the average of the child items' progress.
+You can override progress at any level and enter a value manually, but when a child item's progress
+value is updated, the automation updates all parents again to show the average.
 
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To set progress of an objective:
+To set progress of an objective or key result:
 
-1. [Open the objective](okrs.md#view-an-objective) that you want to edit.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**.
+1. [Filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
+   for `Type = objective` or `Type = key result` and select your item.
 1. Next to **Progress**, select the text box.
 1. Enter a number from 0 to 100.
 
@@ -292,6 +301,8 @@ below an objective's description.
 
 ### Add a child objective
 
+> - Ability to select which project to create the objective in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436255) in GitLab 17.1.
+
 Prerequisites:
 
 - You must have at least the Guest role for the project.
@@ -301,6 +312,7 @@ To add a new objective to an objective:
 1. In an objective, in the **Child objectives and key results** section, select **Add** and then
    select **New objective**.
 1. Enter a title for the new objective.
+1. Select a [project](project/organize_work_with_projects.md) to create the new objective in.
 1. Select **Create objective**.
 
 To add an existing objective to an objective:
@@ -315,6 +327,8 @@ To add an existing objective to an objective:
 
 ### Add a child key result
 
+> - Ability to select which project to create the key result in [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436255) in GitLab 17.1.
+
 Prerequisites:
 
 - You must have at least the Guest role for the project.
@@ -324,6 +338,7 @@ To add a new key result to an objective:
 1. In an objective, in the **Child objectives and key results** section, select **Add** and then
    select **New key result**.
 1. Enter a title for the new key result.
+1. Select a [project](project/organize_work_with_projects.md) to create the new key result in.
 1. Select **Create key result**.
 
 To add an existing key result to an objective:
@@ -514,7 +529,7 @@ If an OKR is closed with a locked discussion, then you cannot reopen it until th
 DETAILS:
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default. This feature is in [Beta](../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415077) in GitLab 16.2 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default. This feature is in [beta](../policy/experiment-beta-support.md).
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/446064) to feature flag named `work_items_beta` in GitLab 16.10. Disabled by default.
 
 FLAG:
@@ -526,7 +541,7 @@ When enabled, OKRs use a two-column layout, similar to issues.
 The description and threads are on the left, and attributes, such as labels
 or assignees, on the right.
 
-This feature is in [Beta](../policy/experiment-beta-support.md).
+This feature is in [beta](../policy/experiment-beta-support.md).
 If you find a bug, [comment on the feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/442090).
 
 ![OKR two column view](img/objective_two_column_view_v16_10.png)

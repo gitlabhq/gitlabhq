@@ -17,18 +17,47 @@ FactoryBot.define do
 
     # This factory was updated to help with the efforts of the removal of `ci_builds.stage`:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/364377
-    # These additions can be removed once the specs that use the stage attribute have been updated
+    # These blocks can be updated once all instances of `stage` are removed from the spec files:
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/467212
 
     transient do
       stage { 'test' }
     end
 
     after(:build) do |processable, evaluator|
+      next if processable.ci_stage || Feature.disabled?(:ci_remove_ensure_stage_service, processable.project)
+
       processable.stage = evaluator.stage
+      pipeline = processable.pipeline
+
+      existing_stage =
+        if pipeline.respond_to?(:reload) && pipeline.persisted?
+          pipeline.reload.stages.find_by(name: evaluator.stage)
+        else
+          pipeline.stages.find { |stage| stage.name == evaluator.stage }
+        end
+
+      if existing_stage.present?
+        processable.ci_stage = existing_stage
+
+        next
+      end
+
+      new_stage = build(
+        :ci_stage,
+        pipeline: processable.pipeline,
+        project: processable.project || evaluator.project,
+        name: evaluator.stage,
+        position: evaluator.stage_idx,
+        status: 'created'
+      )
+
+      pipeline.stages << new_stage
+      processable.ci_stage = new_stage
     end
 
     before(:create) do |processable, evaluator|
-      next if processable.ci_stage
+      next if processable.ci_stage || Feature.disabled?(:ci_remove_ensure_stage_service, processable.project)
 
       processable.ci_stage =
         if ci_stage = processable.pipeline.stages.find_by(name: evaluator.stage)

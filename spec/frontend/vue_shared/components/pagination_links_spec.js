@@ -11,11 +11,6 @@ import {
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 
 describe('Pagination links component', () => {
-  const pageInfo = {
-    page: 3,
-    perPage: 5,
-    total: 30,
-  };
   const translations = {
     prevText: PREV,
     nextText: NEXT,
@@ -26,44 +21,82 @@ describe('Pagination links component', () => {
   };
 
   let wrapper;
-  let glPagination;
-  let changeMock;
 
-  const createComponent = () => {
-    changeMock = jest.fn();
+  const defaultPropsData = {
+    change: jest.fn(),
+    pageInfo: {
+      page: 3,
+      perPage: 5,
+      total: 30,
+    },
+  };
+
+  const createComponent = ({ propsData = {} } = {}) => {
     wrapper = mount(PaginationLinks, {
       propsData: {
-        change: changeMock,
-        pageInfo,
+        ...defaultPropsData,
+        ...propsData,
       },
     });
   };
 
-  beforeEach(() => {
+  const findGlPagination = () => wrapper.findComponent(GlPagination);
+
+  it('sets `GlPagination` translation props', () => {
     createComponent();
-    glPagination = wrapper.findComponent(GlPagination);
+
+    expect(findGlPagination().props()).toMatchObject(translations);
   });
 
-  it('should provide translated text to GitLab UI pagination', () => {
-    Object.entries(translations).forEach((entry) => {
-      expect(glPagination.vm[entry[0]]).toBe(entry[1]);
+  describe('when page is changed', () => {
+    beforeEach(() => {
+      createComponent();
+      findGlPagination().vm.$emit('input');
+    });
+
+    it('calls `change` prop', () => {
+      expect(defaultPropsData.change).toHaveBeenCalled();
     });
   });
 
-  it('should call change when page changes', () => {
-    wrapper.find('a').trigger('click');
-    expect(changeMock).toHaveBeenCalled();
+  it('sets `GlPagination` `value` prop', () => {
+    createComponent();
+    expect(findGlPagination().props('value')).toBe(defaultPropsData.pageInfo.page);
   });
 
-  it('should pass page from pageInfo to GitLab UI pagination', () => {
-    expect(glPagination.vm.value).toBe(pageInfo.page);
+  describe('when total is available from page info', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('sets `GlPagination` `totalItems` and `perPage` props', () => {
+      expect(findGlPagination().props()).toMatchObject({
+        totalItems: defaultPropsData.pageInfo.total,
+        perPage: defaultPropsData.pageInfo.perPage,
+      });
+    });
   });
 
-  it('should pass per page from pageInfo to GitLab UI pagination', () => {
-    expect(glPagination.vm.perPage).toBe(pageInfo.perPage);
-  });
+  describe('when `total` is not available from page info', () => {
+    const pageInfo = {
+      page: 3,
+      nextPage: 4,
+      previousPage: 2,
+    };
 
-  it('should pass total items from pageInfo to GitLab UI pagination', () => {
-    expect(glPagination.vm.totalItems).toBe(pageInfo.total);
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          pageInfo,
+        },
+      });
+    });
+
+    it('sets `GlPagination` `nextPage` and `prevPage` props', () => {
+      expect(findGlPagination().props()).toMatchObject({
+        nextPage: pageInfo.nextPage,
+        prevPage: pageInfo.previousPage,
+      });
+    });
   });
 });

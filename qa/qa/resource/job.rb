@@ -25,8 +25,7 @@ module QA
         "#{api_get_path}/trace"
       end
 
-      def api_post_path
-      end
+      def api_post_path; end
 
       def api_post_body
         {

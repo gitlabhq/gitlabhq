@@ -150,17 +150,17 @@ export default {
       :title="header"
       variant="link"
     >
-      <span class="gl-font-sm gl-font-weight-semibold" data-testid="performance-bar-details-label">
+      <span class="gl-font-sm gl-font-semibold" data-testid="performance-bar-details-label">
         {{ metricDetailsLabel }}
       </span>
     </gl-button>
-    <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="d-none" scrollable>
+    <gl-modal :modal-id="modalId" :title="header" size="lg" footer-class="!gl-hidden" scrollable>
       <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
         <div class="gl-display-flex gl-align-items-center" data-testid="performance-bar-summary">
           <div v-for="(value, name) in metricDetailsSummary" :key="name" class="gl-pr-8">
             <div v-if="value" data-testid="performance-bar-summary-item">
               <div>{{ name }}</div>
-              <div class="gl-font-size-h1 gl-font-weight-semibold">{{ value }}</div>
+              <div class="gl-font-size-h1 gl-font-semibold">{{ value }}</div>
             </div>
           </div>
         </div>
@@ -188,7 +188,7 @@ export default {
                   v-for="(key, keyIndex) in keys"
                   :key="key"
                   class="text-break-word"
-                  :class="{ 'mb-3 gl-font-weight-semibold': keyIndex == 0 }"
+                  :class="{ 'mb-3 gl-font-semibold': keyIndex == 0 }"
                 >
                   {{ item[key] }}
                   <gl-button

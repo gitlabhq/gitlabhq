@@ -3635,6 +3635,99 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
   end
 
+  describe 'GET :id/merge_requests/:merge_request_iid/related_issues' do
+    subject(:request) { get api("/projects/#{project.id}/merge_requests/#{mr_iid}/related_issues", requested_by) }
+
+    let(:mr_iid) { merge_request.iid }
+    let(:requested_by) { user }
+
+    context 'when merge request does not reference any issue' do
+      it 'returns an empty array' do
+        request
+
+        expect_empty_array_response
+      end
+    end
+
+    context 'when merge request references issue in title' do
+      let(:issue) { create(:issue, project: project) }
+
+      before do
+        merge_request.update!(title: "References #{issue.to_reference}")
+      end
+
+      it 'returns related issue' do
+        request
+
+        expect_successful_response_with_paginated_array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(issue.id)
+      end
+    end
+
+    context 'when merge request references external and internal issue in title' do
+      let_it_be(:project) { create(:project, :with_jira_integration, :public, :repository, name: 'JIR_EXT1') }
+
+      let(:external_issue) { ExternalIssue.new("#{project.name}-123", project) }
+      let(:internal_issue) { create(:issue, project: project) }
+
+      before do
+        merge_request.update!(title: "References #{external_issue.to_reference} and #{internal_issue.to_reference}")
+      end
+
+      it 'returns external and internal issue' do
+        request
+
+        expect_successful_response_with_paginated_array
+        expect(json_response.length).to eq(2)
+
+        internal_issue_data = json_response.first
+        expect(internal_issue_data['id']).to eq(internal_issue.id)
+        expect(internal_issue_data['title']).to eq(internal_issue.title)
+        expect(internal_issue_data).to have_key('confidential')
+
+        external_issue_data = json_response.second
+        expect(external_issue_data['id']).to eq(external_issue.id)
+        expect(external_issue_data['title']).to eq(external_issue.title)
+        expect(external_issue_data).not_to have_key('confidential')
+      end
+    end
+
+    context 'when user has no access to the merge request' do
+      let(:requested_by) { create(:user, guest_of: project) }
+
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'returns 403' do
+        request
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when non-existing merge request iid provided' do
+      let(:mr_iid) { non_existing_record_id }
+
+      it 'returns 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when merge request id instead of iid provided' do
+      let(:mr_iid) { merge_request.id }
+
+      it 'returns 404' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'POST :id/merge_requests/:merge_request_iid/subscribe' do
     it_behaves_like 'POST request permissions for admin mode' do
       let(:path) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/subscribe" }

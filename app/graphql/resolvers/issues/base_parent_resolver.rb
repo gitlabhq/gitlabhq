@@ -8,7 +8,7 @@ module Resolvers
 
       argument :state, Types::IssuableStateEnum,
         required: false,
-        description: 'Current state of this issue.',
+        description: 'Current state of the issue.',
         prepare: ->(state, _ctx) {
           return state unless state == 'locked'
 

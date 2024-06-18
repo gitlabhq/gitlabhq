@@ -12,14 +12,29 @@ approvers: [  ]
 
 The following represents our current DR challenges and are candidates for problems that we should address in this architecture blueprint.
 
-1. Postgres replicas run close to capacity and are scaled manually. New instances must go through Terraform CI pipelines and Chef configuration. Over-provisioning to absorb a zone failure would add significant cloud-spend (see proposal section at the end of the document for details).
-1. HAProxy (load balancing) is scaled manually and must go through Terraform CI pipelines and Chef configuration.
-1. CI runner managers are present in 2 availability zones and scaled close to capacity. New instances must go through Terraform CI pipelines and Chef configuration.
-1. In a zone there are saturation limits, like the number of replicas that need to be manually adjusted if load is shifted away from a failed availability zone.
-1. Gitaly `RPO` is limited by the frequency of disk snapshots, `RTO` is limited by the time it takes to provision and configure through Terraform CI pipelines and Chef configuration.
-1. Monitoring infrastructure that collects metrics from Chef managed VMs is redundant across 2 availability zones and scaled manually. New instances must go through Terraform CI pipelines and Chef configuration.
-1. The Chef server which is responsible for all configuration of Chef managed VMs is a single point of failure located in `us-central1`. It has a local Postgres database and files on local disk.
-1. The infrastructure (`dev.gitlab.org`) that builds Docker images and packages is located in a single region, and is a single point of failure.
+1. Postgres replicas run close to capacity and are scaled manually. New
+   instances must go through Terraform CI pipelines and Chef configuration.
+   Over-provisioning to absorb a zone failure would add significant cloud-spend
+   (see proposal section at the end of the document for details).
+1. HAProxy (load balancing) is scaled manually and must go through Terraform CI
+   pipelines and Chef configuration.
+1. CI runner managers are present in 2 availability zones and scaled close to
+   capacity. New instances must go through Terraform CI pipelines and Chef
+   configuration.
+1. In a zone there are saturation limits, like the number of replicas that need
+   to be manually adjusted if load is shifted away from a failed availability
+   zone.
+1. Gitaly `RPO` is limited by the frequency of disk snapshots, `RTO` is limited
+   by the time it takes to provision and configure through Terraform CI
+   pipelines and Chef configuration.
+1. Monitoring infrastructure that collects metrics from Chef managed VMs is
+   redundant across 2 availability zones and scaled manually. New instances must
+   go through Terraform CI pipelines and Chef configuration.
+1. The Chef server which is responsible for all configuration of Chef managed
+   VMs is a single point of failure located in `us-central1`. It has a local
+   Postgres database and files on local disk.
+1. The infrastructure (`dev.gitlab.org`) that builds Docker images and packages
+   is located in a single region, and is a single point of failure.
 
 ## Zonal recovery work-streams
 
@@ -53,10 +68,14 @@ If we allow a zone to scale up rapidly, these limits need to be adjusted or re-e
 HAProxy is a fleet of Chef managed VMs that are statically allocated across 3 AZs in `us-east1`.
 In the case of a zonal outage we would need to rapidly scale this fleet, adding to our RTO.
 
-In FY24Q4 the Foundations team started working on a proof-of-concept to use [Istio in non-prod environments](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1157).
-We anticipate in FY25 to have a replacement for HAProxy using Istio and [GKE Gateway](https://cloud.google.com/kubernetes-engine/docs/concepts/gateway-api).
-Completing this work reduces the impact to our LoadBalancing layer for zonal outages, as it eliminates the need to manually scale the HAProxy fleet.
-Additionally, we spend around 17k/month on HAProxy nodes, so there may be a cloud-spend reduction if we are able to reduce this footprint.
+In FY24Q4 the Foundations team started working on a proof-of-concept to use
+[Istio in non-prod environments](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1157).
+We anticipate in FY25 to have a replacement for HAProxy using Istio and
+[GKE Gateway](https://cloud.google.com/kubernetes-engine/docs/concepts/gateway-api).
+Completing this work reduces the impact to our LoadBalancing layer for zonal outages,
+as it eliminates the need to manually scale the HAProxy fleet.
+Additionally, we spend around 17k/month on HAProxy nodes, so there may be a
+cloud-spend reduction if we are able to reduce this footprint.
 
 ### Create an HA Chef server configuration to avoid an outage for a single zone failure
 

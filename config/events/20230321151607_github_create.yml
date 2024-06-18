@@ -14,8 +14,6 @@ extra_properties:
     description: Import state
 identifiers:
 - project
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 milestone: "15.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112062

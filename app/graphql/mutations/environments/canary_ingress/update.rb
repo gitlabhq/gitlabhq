@@ -10,14 +10,14 @@ module Mutations
         authorize :update_environment
 
         argument :id,
-                 ::Types::GlobalIDType[::Environment],
-                 required: true,
-                 description: 'Global ID of the environment to update.'
+          ::Types::GlobalIDType[::Environment],
+          required: true,
+          description: 'Global ID of the environment to update.'
 
         argument :weight,
-                 GraphQL::Types::Int,
-                 required: true,
-                 description: 'Weight of the Canary Ingress.'
+          GraphQL::Types::Int,
+          required: true,
+          description: 'Weight of the Canary Ingress.'
 
         REMOVAL_ERR_MSG = 'This endpoint was deactivated as part of the certificate-based' \
           'kubernetes integration removal. See Epic:' \

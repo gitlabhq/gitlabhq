@@ -83,7 +83,7 @@ export default {
       </div>
       <div
         role="row"
-        class="gl-responsive-table-row table-row-header gl-font-weight-bold gl-fill-gray-700"
+        class="gl-responsive-table-row table-row-header gl-font-bold gl-fill-gray-700"
       >
         <div role="rowheader" class="table-section section-20">
           {{ __('Suite') }}
@@ -113,21 +113,21 @@ export default {
       >
         <div class="table-section section-20 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
-          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2 gl-overflow-wrap-break">
+          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2 gl-break-words">
             <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.classname" />
           </div>
         </div>
 
         <div class="table-section section-40 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Name') }}</div>
-          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2 gl-overflow-wrap-break">
+          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2 gl-break-words">
             <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.name" />
           </div>
         </div>
 
         <div class="table-section section-10 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Filename') }}</div>
-          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2 gl-overflow-wrap-break">
+          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2 gl-break-words">
             <gl-link v-if="testCase.file" :href="testCase.filePath" target="_blank">
               <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.file" />
             </gl-link>
@@ -146,7 +146,7 @@ export default {
 
         <div class="table-section section-10 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Status') }}</div>
-          <div class="table-mobile-content gl-md-display-flex gl-justify-content-center">
+          <div class="table-mobile-content md:gl-flex gl-justify-content-center">
             <div class="ci-status-icon" :class="`ci-status-icon-${testCase.status}`">
               <gl-icon :size="24" :name="testCase.icon" />
             </div>

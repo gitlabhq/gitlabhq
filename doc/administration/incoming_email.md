@@ -168,7 +168,7 @@ Users can use the incoming email features without having to use two-factor authe
 ### Linux package installations
 
 1. Find the `incoming_email` section in `/etc/gitlab/gitlab.rb`, enable the feature
-    and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
+   and fill in the details for your specific IMAP server and email account (see [examples](#configuration-examples) below).
 
 1. Reconfigure GitLab for the changes to take effect:
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe MergeRequestContextCommit do
+RSpec.describe MergeRequestContextCommit, feature_category: :code_review_workflow do
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }
   let(:raw_repository) { project.repository.raw_repository }
@@ -16,6 +16,12 @@ RSpec.describe MergeRequestContextCommit do
   describe 'associations' do
     it { is_expected.to belong_to(:merge_request) }
     it { is_expected.to have_many(:diff_files).class_name("MergeRequestContextCommitDiffFile") }
+  end
+
+  describe 'validations' do
+    it 'validates merge_request_id presence' do
+      expect(described_class.new).to validate_presence_of(:merge_request_id)
+    end
   end
 
   describe '.delete_bulk' do

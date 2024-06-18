@@ -82,7 +82,7 @@
 .referenced-commands {
   background: $blue-50;
   padding: $gl-padding-8 $gl-padding;
-  border-radius: 0 0 $border-radius-default-inner $border-radius-default-inner;
+  border-radius: 0 0 $gl-border-radius-base-inner $gl-border-radius-base-inner;
 
   p {
     margin: 0;
@@ -131,9 +131,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: $gray-light;
+  background-color: $gray-10;
   border: 1px solid $border-color;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
 }
 
 /* these two styles are important to prevent certain LaTeX from

@@ -53,7 +53,7 @@ export default {
       <div class="gl-display-flex gl-flex-direction-row">
         <storage-type-icon :name="item.id" :data-testid="`${item.id}-icon`" />
         <div>
-          <p class="gl-font-weight-bold gl-mb-0" :data-testid="`${item.id}-name`">
+          <p class="gl-font-bold gl-mb-0" :data-testid="`${item.id}-name`">
             <gl-link
               v-if="item.detailsPath && item.value"
               :data-testid="`${item.id}-details-link`"

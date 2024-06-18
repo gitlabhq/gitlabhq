@@ -1,7 +1,6 @@
 ---
 Metrics/PerceivedComplexity:
   Exclude:
-    - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/finders/deployments_finder.rb'
     - 'app/helpers/button_helper.rb'
     - 'app/services/projects/create_service.rb'
@@ -13,4 +12,3 @@ Metrics/PerceivedComplexity:
     - 'lib/gitlab/utils/merge_hash.rb'
     - 'qa/qa/support/repeater.rb'
     - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'
-    - 'sidekiq_cluster/cli.rb'

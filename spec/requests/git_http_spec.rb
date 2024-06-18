@@ -229,6 +229,10 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
         let(:path) { "#{user.namespace.path}/new-project.git" }
 
         context 'when authenticated' do
+          before do
+            allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+          end
+
           it 'creates a new project under the existing namespace' do
             # current scenario does not matter with the user activity case,
             # so stub/double it to escape more sql running times limit
@@ -900,7 +904,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
             it 'rejects pushes' do
               push_get(path, **env)
 
-              expect(response).to have_gitlab_http_status(:forbidden)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
 
             def pull
@@ -934,7 +938,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 push_get(path, **env)
 
                 expect(response).to have_gitlab_http_status(:forbidden)
-                expect(response.body).to eq(git_access_error(:auth_upload))
+                expect(response.body).to eq(git_access_error(:push_code))
               end
             end
 
@@ -1505,7 +1509,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
             it 'rejects pushes' do
               push_get(path, **env)
 
-              expect(response).to have_gitlab_http_status(:forbidden)
+              expect(response).to have_gitlab_http_status(:not_found)
             end
           end
 
@@ -1535,7 +1539,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
                 push_get(path, **env)
 
                 expect(response).to have_gitlab_http_status(:forbidden)
-                expect(response.body).to eq(git_access_error(:auth_upload))
+                expect(response.body).to eq(git_access_error(:push_code))
               end
             end
 

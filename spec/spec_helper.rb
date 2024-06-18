@@ -339,9 +339,6 @@ RSpec.configure do |config|
 
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
-
-      # Disable new Vue breadcrumbs while feature flag is still in wip state
-      stub_feature_flags(vue_page_breadcrumbs: false)
     else
       unstub_all_feature_flags
     end
@@ -398,8 +395,8 @@ RSpec.configure do |config|
     ::Gitlab::SafeRequestStore.ensure_request_store { example.run }
   end
 
-  config.around(:example, :yaml_processor_feature_flag_corectness) do |example|
-    ::Gitlab::Ci::YamlProcessor::FeatureFlags.ensure_correct_usage do
+  config.around(:example, :ci_config_feature_flag_correctness) do |example|
+    ::Gitlab::Ci::Config::FeatureFlags.ensure_correct_usage do
       example.run
     end
   end
@@ -439,7 +436,8 @@ RSpec.configure do |config|
         arguments_logger: false, # We're not logging the regular messages for inline jobs
         skip_jobs: false # We're not skipping jobs for inline tests
       ).call(chain)
-      chain.add DisableQueryLimit
+
+      chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, ::Gitlab::QueryLimiting::SidekiqMiddleware
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
 
       example.run
@@ -539,6 +537,9 @@ Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s
 
 # Initialize FactoryDefault to use create_default helper
 TestProf::FactoryDefault.init
+
+# Set the start of ID sequence for records initialized by `build_stubbed` to prevent conflicts
+FactoryBot::Strategy::Stub.next_id = 1_000_000_000
 
 # Exclude the Geo proxy API request from getting on_next_request Warden handlers,
 # necessary to prevent race conditions with feature tests not getting authenticated.

@@ -120,6 +120,19 @@ class SearchController < ApplicationController
     end
   end
 
+  def settings
+    return render(json: []) unless current_user
+
+    project_id = params.require(:project_id)
+    project = Project.find_by(id: project_id) # rubocop: disable CodeReuse/ActiveRecord -- Using `find_by` as `find` would raise 404s
+
+    if project && current_user.can?(:admin_project, project)
+      render json: Search::Settings.new.for_project(project)
+    else
+      render json: []
+    end
+  end
+
   def autocomplete
     term = params.require(:term)
 

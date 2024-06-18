@@ -27,7 +27,7 @@ To configure GitLab Runner to use the GKE:
 Before you can configure GitLab Runner to use the GKE you must:
 
 - Have a project where you have the Maintainer or Owner role. If you don't have a project, you can [create it](../../user/project/index.md).
-- [Obtain the project runner registration token](../../ci/runners/runners_scope.md#create-a-project-runner-with-a-registration-token-deprecated).
+- [Obtain the project runner authentication token](../../ci/runners/runners_scope.md#create-a-project-runner-with-a-runner-authentication-token).
 - Install GitLab Runner.
 
 ## Set up your environment
@@ -128,7 +128,7 @@ Now that you have a cluster, you're ready to install and configure the Kubernete
    - To use the `cert-manager`:
 
      1. Use the `certificate-issuer-install.yaml` to install a `Certificate` and `Issuer` in the default namespace, in addition
-     to the operator installation:
+        to the operator installation:
 
         ```shell
         cat > certificate-issuer-install.yaml << EOF

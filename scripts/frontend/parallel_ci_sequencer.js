@@ -1,38 +1,49 @@
+const { join, relative } = require('node:path');
 const Sequencer = require('@jest/test-sequencer').default;
 
-const sortByPath = (test1, test2) => {
-  if (test1.path < test2.path) {
+const root = join(__dirname, '..', '..');
+
+/**
+ * Strips the {ee,jh,}/spec/frontend prefix from test paths, so that tests
+ * which are likely to have many imports in common are run in the same shard.
+ */
+const stripTestPathPrefix = (path) =>
+  relative(root, path).replace(/^((ee|jh)\/)?spec\/frontend\//, '');
+
+const sortByStrippedPath = (test1, test2) => {
+  const test1Path = stripTestPathPrefix(test1.path);
+  const test2Path = stripTestPathPrefix(test2.path);
+
+  if (test1Path < test2Path) {
     return -1;
   }
-  if (test1.path > test2.path) {
+
+  if (test1Path > test2Path) {
     return 1;
   }
+
   return 0;
 };
 
 class ParallelCISequencer extends Sequencer {
-  constructor() {
-    super();
-    this.ciNodeIndex = Number(process.env.CI_NODE_INDEX || '1');
-    this.ciNodeTotal = Number(process.env.CI_NODE_TOTAL || '1');
+  // eslint-disable-next-line class-methods-use-this
+  shard(tests, { shardIndex, shardCount }) {
+    const shardSize = Math.ceil(tests.length / shardCount);
+    const shardStart = shardSize * (shardIndex - 1);
+    const shardEnd = shardSize * shardIndex;
+
+    return [...tests].sort(sortByStrippedPath).slice(shardStart, shardEnd);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   sort(tests) {
-    const sortedTests = [...tests].sort(sortByPath);
-    const testsForThisRunner = this.distributeAcrossCINodes(sortedTests);
+    // Use the sort order determined in the shard method, rather than Jest's
+    // default of slowest/largest first.
+    console.log('Will run the following specs:');
+    console.log(tests.map(({ path }) => relative(root, path)).join('\n'));
+    console.log(`${tests.length}  total specs`);
 
-    console.log(`CI_NODE_INDEX: ${this.ciNodeIndex}`);
-    console.log(`CI_NODE_TOTAL: ${this.ciNodeTotal}`);
-    console.log(`Total number of tests: ${tests.length}`);
-    console.log(`Total number of tests for this runner: ${testsForThisRunner.length}`);
-
-    return testsForThisRunner;
-  }
-
-  distributeAcrossCINodes(tests) {
-    return tests.filter((test, index) => {
-      return index % this.ciNodeTotal === this.ciNodeIndex - 1;
-    });
+    return tests;
   }
 }
 

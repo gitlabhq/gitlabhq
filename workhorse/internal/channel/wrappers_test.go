@@ -43,7 +43,7 @@ func (f *fakeConn) UnderlyingConn() net.Conn {
 }
 
 func fake(mt int, data []byte, err error) *fakeConn {
-	return &fakeConn{mt: mt, data: []byte(data), err: err}
+	return &fakeConn{mt: mt, data: data, err: err}
 }
 
 var (

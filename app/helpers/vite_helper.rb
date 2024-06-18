@@ -30,10 +30,14 @@ module ViteHelper
   end
 
   def universal_stylesheet_link_tag(path, **options)
-    stylesheet_link_tag(path, **options)
+    return stylesheet_link_tag(path, **options) unless vite_enabled?
+
+    vite_stylesheet_tag("stylesheets/styles.#{path}.scss", **options)
   end
 
-  def universal_path_to_stylesheet(path)
-    ActionController::Base.helpers.stylesheet_path(path)
+  def universal_path_to_stylesheet(path, **options)
+    return ActionController::Base.helpers.stylesheet_path(path, **options) unless vite_enabled?
+
+    ViteRuby.instance.manifest.path_for("stylesheets/styles.#{path}.scss", **options)
   end
 end

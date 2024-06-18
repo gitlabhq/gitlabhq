@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Explore::GroupsController do
-  let(:user) { create(:user) }
+RSpec.describe Explore::GroupsController, feature_category: :groups_and_projects do
+  let_it_be(:user) { create(:user) }
 
   before do
     sign_in(user)

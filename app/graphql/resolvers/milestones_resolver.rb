@@ -31,7 +31,7 @@ module Resolvers
       description: 'Date the milestone contains.'
 
     argument :sort, Types::MilestoneSortEnum,
-      description: 'Sort milestones by this criteria.',
+      description: 'Sort milestones by the criteria.',
       required: false,
       default_value: :due_date_asc
 

@@ -276,7 +276,7 @@ export default {
       type="button"
       role="button"
       :aria-label="$options.i18n.newCommentButtonLabel"
-      class="gl-absolute gl-w-full gl-h-full gl-p-0 gl-top-0 gl-left-0 gl-outline-0! btn-transparent gl-hover-cursor-crosshair"
+      class="gl-absolute gl-w-full gl-h-full gl-p-0 gl-top-0 gl-left-0 gl-outline-none btn-transparent gl-hover-cursor-crosshair"
       data-testid="design-image-button"
       @mouseup="onAddCommentMouseup"
     ></button>

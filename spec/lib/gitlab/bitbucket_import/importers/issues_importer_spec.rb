@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BitbucketImport::Importers::IssuesImporter, feature_category: :importers do
+RSpec.describe Gitlab::BitbucketImport::Importers::IssuesImporter, :clean_gitlab_redis_shared_state, feature_category: :importers do
   let_it_be(:project) do
     create(:project, :import_started,
       import_data_attributes: {
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssuesImporter, feature_categ
 
   subject(:importer) { described_class.new(project) }
 
-  describe '#execute', :clean_gitlab_redis_cache do
+  describe '#execute' do
     context 'when the repo does not have issue tracking enabled' do
       before do
         allow(client).to receive(:repo).and_return(Bitbucket::Representation::Repo.new({ 'has_issues' => false }))

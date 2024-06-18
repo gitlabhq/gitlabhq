@@ -41,12 +41,28 @@ class WorkItem < Issue
       'issues.id'
     end
 
-    # def reference_pattern
-    #   # no-op: We currently only support link_reference_pattern parsing
-    # end
+    def namespace_reference_pattern
+      %r{
+        (?<!#{Gitlab::PathRegex::PATH_START_CHAR})
+        ((?<group_or_project_namespace>#{Gitlab::PathRegex::FULL_NAMESPACE_FORMAT_REGEX}))
+      }xo
+    end
+
+    def reference_pattern
+      @reference_pattern ||= %r{
+        (?:
+          (#{namespace_reference_pattern})?#{Regexp.escape(reference_prefix)} |
+          #{Regexp.escape(alternative_reference_prefix)}
+        )#{Gitlab::Regex.work_item}
+      }x
+    end
 
     def link_reference_pattern
-      @link_reference_pattern ||= compose_link_reference_pattern('work_items', Gitlab::Regex.work_item)
+      @link_reference_pattern ||= project_or_group_link_reference_pattern(
+        'work_items',
+        namespace_reference_pattern,
+        Gitlab::Regex.work_item
+      )
     end
 
     def work_item_children_keyset_order

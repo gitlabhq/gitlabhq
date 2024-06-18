@@ -8,9 +8,11 @@ module GroupTree
 
     groups = if params[:filter].present?
                filtered_groups_with_ancestors(groups)
+             elsif params[:parent_id].present?
+               groups.where(parent_id: params[:parent_id]).page(params[:page])
              else
                # If `params[:parent_id]` is `nil`, we will only show root-groups
-               groups.where(parent_id: params[:parent_id]).page(params[:page])
+               groups.by_parent(nil).page(params[:page])
              end
 
     @groups = groups.with_selects_for_list(archived: params[:archived])

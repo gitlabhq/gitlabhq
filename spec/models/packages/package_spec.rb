@@ -17,58 +17,12 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to have_many(:tags).inverse_of(:package) }
     it { is_expected.to have_many(:build_infos).inverse_of(:package) }
     it { is_expected.to have_many(:installable_nuget_package_files).inverse_of(:package) }
-    it { is_expected.to have_one(:conan_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:maven_metadatum).inverse_of(:package) }
-    it { is_expected.to have_one(:debian_publication).inverse_of(:package).class_name('Packages::Debian::Publication') }
-    it { is_expected.to have_one(:debian_distribution).through(:debian_publication).source(:distribution).inverse_of(:packages).class_name('Packages::Debian::ProjectDistribution') }
     it { is_expected.to have_one(:nuget_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:npm_metadatum).inverse_of(:package) }
-    it { is_expected.to have_one(:rpm_metadatum).inverse_of(:package) }
     it { is_expected.to have_one(:terraform_module_metadatum).inverse_of(:package) }
     it { is_expected.to have_many(:nuget_symbols).inverse_of(:package) }
     it { is_expected.to have_many(:matching_package_protection_rules).through(:project).source(:package_protection_rules) }
-  end
-
-  describe '.with_debian_codename' do
-    let_it_be(:publication) { create(:debian_publication) }
-
-    subject { described_class.with_debian_codename(publication.distribution.codename).to_a }
-
-    it { is_expected.to contain_exactly(publication.package) }
-  end
-
-  describe '.with_debian_codename_or_suite' do
-    let_it_be(:distribution1) { create(:debian_project_distribution, :with_suite) }
-    let_it_be(:distribution2) { create(:debian_project_distribution, :with_suite) }
-
-    let_it_be(:package1) { create(:debian_package, published_in: distribution1) }
-    let_it_be(:package2) { create(:debian_package, published_in: distribution2) }
-
-    context 'with a codename' do
-      subject { described_class.with_debian_codename_or_suite(distribution1.codename).to_a }
-
-      it { is_expected.to contain_exactly(package1) }
-    end
-
-    context 'with a suite' do
-      subject { described_class.with_debian_codename_or_suite(distribution2.suite).to_a }
-
-      it { is_expected.to contain_exactly(package2) }
-    end
-  end
-
-  describe '.with_composer_target' do
-    let!(:package1) { create(:composer_package, :with_metadatum, sha: '123') }
-    let!(:package2) { create(:composer_package, :with_metadatum, sha: '123') }
-    let!(:package3) { create(:composer_package, :with_metadatum, sha: '234') }
-
-    subject { described_class.with_composer_target('123').to_a }
-
-    it 'selects packages with the specified sha' do
-      expect(subject).to include(package1)
-      expect(subject).to include(package2)
-      expect(subject).not_to include(package3)
-    end
   end
 
   describe '.sort_by_attribute' do
@@ -157,38 +111,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       it { is_expected.to allow_value("my.app-11.07.2018").for(:name) }
       it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
 
-      context 'conan package' do
-        subject { build_stubbed(:conan_package) }
-
-        let(:fifty_one_characters) { 'f_b' * 17 }
-
-        it { is_expected.to allow_value('foo+bar').for(:name) }
-        it { is_expected.to allow_value('foo_bar').for(:name) }
-        it { is_expected.to allow_value('foo.bar').for(:name) }
-        it { is_expected.not_to allow_value(fifty_one_characters).for(:name) }
-        it { is_expected.not_to allow_value('+foobar').for(:name) }
-        it { is_expected.not_to allow_value('.foobar').for(:name) }
-        it { is_expected.not_to allow_value('%foo%bar').for(:name) }
-      end
-
-      context 'debian package' do
-        subject { build(:debian_package) }
-
-        it { is_expected.to allow_value('0ad').for(:name) }
-        it { is_expected.to allow_value('g++').for(:name) }
-        it { is_expected.not_to allow_value('a_b').for(:name) }
-      end
-
-      context 'debian incoming' do
-        subject { create(:debian_incoming) }
-
-        # Only 'incoming' is accepted
-        it { is_expected.to allow_value('incoming').for(:name) }
-        it { is_expected.not_to allow_value('0ad').for(:name) }
-        it { is_expected.not_to allow_value('g++').for(:name) }
-        it { is_expected.not_to allow_value('a_b').for(:name) }
-      end
-
       context 'generic package' do
         subject { build_stubbed(:generic_package) }
 
@@ -254,59 +176,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     end
 
     describe '#version' do
-      RSpec.shared_examples 'validating version to be SemVer compliant for' do |factory_name|
-        context "for #{factory_name}" do
-          subject { build_stubbed(factory_name) }
-
-          it { is_expected.to allow_value('1.2.3').for(:version) }
-          it { is_expected.to allow_value('1.2.3-beta').for(:version) }
-          it { is_expected.to allow_value('1.2.3-alpha.3').for(:version) }
-          it { is_expected.not_to allow_value('1').for(:version) }
-          it { is_expected.not_to allow_value('1.2').for(:version) }
-          it { is_expected.not_to allow_value('1./2.3').for(:version) }
-          it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
-          it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
-        end
-      end
-
-      context 'conan package' do
-        subject { build_stubbed(:conan_package) }
-
-        let(:fifty_one_characters) { '1.2' * 17 }
-
-        it { is_expected.to allow_value('1.2').for(:version) }
-        it { is_expected.to allow_value('1.2.3-beta').for(:version) }
-        it { is_expected.to allow_value('1.2.3-pre1+build2').for(:version) }
-        it { is_expected.not_to allow_value('1').for(:version) }
-        it { is_expected.not_to allow_value(fifty_one_characters).for(:version) }
-        it { is_expected.not_to allow_value('1./2.3').for(:version) }
-        it { is_expected.not_to allow_value('.1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('+1.2.3').for(:version) }
-        it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
-      end
-
-      context 'composer package' do
-        it_behaves_like 'validating version to be SemVer compliant for', :composer_package
-
-        it { is_expected.to allow_value('dev-master').for(:version) }
-        it { is_expected.to allow_value('2.x-dev').for(:version) }
-      end
-
-      context 'debian package' do
-        subject { build(:debian_package) }
-
-        it { is_expected.to allow_value('2:4.9.5+dfsg-5+deb10u1').for(:version) }
-        it { is_expected.not_to allow_value('1_0').for(:version) }
-      end
-
-      context 'debian incoming' do
-        subject { create(:debian_incoming) }
-
-        it { is_expected.to allow_value(nil).for(:version) }
-        it { is_expected.not_to allow_value('2:4.9.5+dfsg-5+deb10u1').for(:version) }
-        it { is_expected.not_to allow_value('1_0').for(:version) }
-      end
-
       context 'maven package' do
         subject { build_stubbed(:maven_package) }
 
@@ -639,83 +508,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
     end
 
-    context "recipe uniqueness for conan packages" do
-      let_it_be(:package) { create(:conan_package) }
-
-      it "will allow a conan package with same project, name, version and package_type" do
-        new_package = build(:conan_package, project: package.project, name: package.name, version: package.version)
-        new_package.conan_metadatum.package_channel = 'beta'
-        expect(new_package).to be_valid
-      end
-
-      it "will not allow a conan package with same recipe (name, version, metadatum.package_channel, metadatum.package_username, and package_type)" do
-        new_package = build(:conan_package, project: package.project, name: package.name, version: package.version)
-        expect(new_package).not_to be_valid
-        expect(new_package.errors.to_a).to include("Package recipe already exists")
-      end
-
-      context 'with pending destruction package' do
-        let_it_be(:package) { create(:conan_package, :pending_destruction) }
-
-        it 'will allow a conan package with same recipe (name, version, metadatum.package_channel, metadatum.package_username, and package_type)' do
-          new_package = build(:conan_package, project: package.project, name: package.name, version: package.version)
-          expect(new_package).to be_valid
-        end
-      end
-    end
-
-    describe '#valid_composer_global_name' do
-      let_it_be(:package) { create(:composer_package) }
-
-      context 'with different name and different project' do
-        let(:new_package) { build(:composer_package, name: 'different_name') }
-
-        it { expect(new_package).to be_valid }
-      end
-
-      context 'with same name and different project' do
-        let(:new_package) { build(:composer_package, name: package.name) }
-
-        it 'will not validate second package' do
-          expect(new_package).not_to be_valid
-          expect(new_package.errors.to_a).to include('Name is already taken by another project')
-        end
-
-        context 'with pending destruction package' do
-          let_it_be(:package) { create(:composer_package, :pending_destruction) }
-
-          it { expect(new_package).to be_valid }
-        end
-      end
-    end
-
-    describe "uniqueness for package type debian" do
-      let!(:package) { create(:debian_package) }
-
-      it "will not allow a Debian package with same project, name, version and distribution" do
-        new_package = build(:debian_package, project: package.project, name: package.name, version: package.version)
-        new_package.debian_publication.distribution = package.debian_publication.distribution
-        expect(new_package).not_to be_valid
-        expect(new_package.errors.to_a).to include('Name has already been taken')
-      end
-
-      it "will not allow a Debian package with same project, name, version, but no distribution" do
-        new_package = build(:debian_package, project: package.project, name: package.name, version: package.version, published_in: nil)
-        expect(new_package).not_to be_valid
-        expect(new_package.errors.to_a).to include('Name has already been taken')
-      end
-
-      context 'with pending_destruction package' do
-        let!(:package) { create(:debian_package, :pending_destruction) }
-
-        it "will allow a Debian package with same project, name, version and distribution" do
-          new_package = build(:debian_package, project: package.project, name: package.name, version: package.version)
-          new_package.debian_publication.distribution = package.debian_publication.distribution
-          expect(new_package).to be_valid
-        end
-      end
-    end
-
     Packages::Package.package_types.keys.without('conan').each do |pt|
       context "project id, name, version and package type uniqueness for package type #{pt}" do
         let(:package) { create("#{pt}_package") }
@@ -764,23 +556,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
     it 'will raise error if not found' do
       expect { subject.by_name_and_file_name('foo', 'foo-5.5.5.tgz') }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-  end
-
-  describe '.debian_incoming_package!' do
-    let!(:debian_package) { create(:debian_package) }
-    let!(:debian_processing_incoming) { create(:debian_incoming, :processing) }
-
-    subject { described_class.debian_incoming_package! }
-
-    context 'when incoming exists' do
-      let!(:debian_incoming) { create(:debian_incoming) }
-
-      it { is_expected.to eq(debian_incoming) }
-    end
-
-    context 'when incoming not found' do
-      it { expect { subject }.to raise_error(ActiveRecord::RecordNotFound) }
     end
   end
 
@@ -836,38 +611,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
       it 'includes packages without the version pattern' do
         is_expected.to match_array([package2, package3])
-      end
-    end
-  end
-
-  context 'conan scopes' do
-    let!(:package) { create(:conan_package) }
-
-    describe '.with_conan_channel' do
-      subject { described_class.with_conan_channel('stable') }
-
-      it 'includes only packages with specified version' do
-        is_expected.to include(package)
-      end
-    end
-
-    describe '.with_conan_username' do
-      subject do
-        described_class.with_conan_username(
-          Packages::Conan::Metadatum.package_username_from(full_path: package.project.full_path)
-        )
-      end
-
-      it 'includes only packages with specified version' do
-        is_expected.to match_array([package])
-      end
-    end
-
-    describe '.preload_conan_metadatum' do
-      subject { described_class.preload_conan_metadatum }
-
-      it 'loads conan metadatum' do
-        expect(subject.first.association(:conan_metadatum)).to be_loaded
       end
     end
   end
@@ -1179,12 +922,12 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
 
     let_it_be(:package_protection_rule) do
       create(:package_protection_rule, project: package.project, package_name_pattern: package.name, package_type: :npm,
-        push_protected_up_to_access_level: :maintainer)
+        minimum_access_level_for_push: :maintainer)
     end
 
     let_it_be(:package_protection_rule_no_match) do
       create(:package_protection_rule, project: package.project, package_name_pattern: "other-#{package.name}", package_type: :npm,
-        push_protected_up_to_access_level: :maintainer)
+        minimum_access_level_for_push: :maintainer)
     end
 
     subject { package.matching_package_protection_rules }
@@ -1207,46 +950,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
 
       it { is_expected.to contain_exactly(*tags) }
-    end
-  end
-
-  describe '#debian_incoming?' do
-    let(:package) { build(:package) }
-
-    subject { package.debian_incoming? }
-
-    it { is_expected.to eq(false) }
-
-    context 'with debian_incoming' do
-      let(:package) { create(:debian_incoming) }
-
-      it { is_expected.to eq(true) }
-    end
-
-    context 'with debian_package' do
-      let(:package) { create(:debian_package) }
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
-  describe '#debian_package?' do
-    let(:package) { build(:package) }
-
-    subject { package.debian_package? }
-
-    it { is_expected.to eq(false) }
-
-    context 'with debian_incoming' do
-      let(:package) { create(:debian_incoming) }
-
-      it { is_expected.to eq(false) }
-    end
-
-    context 'with debian_package' do
-      let(:package) { create(:debian_package) }
-
-      it { is_expected.to eq(true) }
     end
   end
 

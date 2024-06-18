@@ -63,8 +63,8 @@ module Gitlab
             end
 
             attr_reader :metric_operation, :metric_relation, :metric_start,
-                        :metric_finish, :metric_operation_block,
-                        :column, :cache_key, :metric_timestamp_column
+              :metric_finish, :metric_operation_block,
+              :column, :cache_key, :metric_timestamp_column
           end
 
           def value
@@ -72,11 +72,11 @@ module Gitlab
 
             method(self.class.metric_operation)
               .call(relation,
-                    self.class.column,
-                    start: start,
-                    finish: finish,
-                    **self.class.metric_options,
-                    &self.class.metric_operation_block)
+                self.class.column,
+                start: start,
+                finish: finish,
+                **self.class.metric_options,
+                &self.class.metric_operation_block)
           end
 
           def to_sql

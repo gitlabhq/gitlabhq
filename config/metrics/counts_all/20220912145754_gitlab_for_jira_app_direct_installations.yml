@@ -1,8 +1,6 @@
 ---
 key_path: counts.gitlab_for_jira_app_direct_installations
 description: Count active Jira Cloud direct installations
-product_section: dev
-product_stage: manage
 product_group: import_and_integrate
 value_type: number
 status: active

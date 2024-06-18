@@ -22,9 +22,18 @@ module API
         elsif params[:username]
           new(user: UserFinder.new(params[:username]).find_by_username)
         elsif params[:identifier]
-          new(user: identify(params[:identifier]))
+          from_identifier(params[:identifier])
         else
           new
+        end
+      end
+
+      def self.from_identifier(identifier)
+        user = identify(identifier)
+        if user
+          new(user: user)
+        else
+          new(key: identify_using_deploy_key(identifier))
         end
       end
 

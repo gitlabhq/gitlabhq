@@ -27,7 +27,7 @@ module RuboCop
             before_execute = node.descendants[1].source_range
             range_to_remove = node.source_range
                                 .with(begin_pos: before_execute.end_pos,
-                                      end_pos: upto_including_execute.end_pos)
+                                  end_pos: upto_including_execute.end_pos)
 
             corrector.remove(range_to_remove)
           end

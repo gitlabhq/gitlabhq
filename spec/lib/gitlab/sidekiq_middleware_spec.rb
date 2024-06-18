@@ -66,6 +66,7 @@ RSpec.describe Gitlab::SidekiqMiddleware, feature_category: :shared do
         ::Gitlab::SidekiqMiddleware::ExtraDoneLogMetadata,
         ::Gitlab::SidekiqMiddleware::BatchLoader,
         ::Gitlab::SidekiqMiddleware::InstrumentationLogger,
+        ::Gitlab::SidekiqMiddleware::SetIpAddress,
         ::Gitlab::SidekiqMiddleware::AdminMode::Server,
         ::Gitlab::SidekiqVersioning::Middleware,
         ::Gitlab::SidekiqStatus::ServerMiddleware,

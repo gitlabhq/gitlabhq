@@ -1,9 +1,0 @@
-<% placeholders = { project_or_group_name: member_source.human_name, project_or_group: member_source.model_name.singular, role: member.human_access.downcase } %>
-
-<% if member.created_by %>
-<%= s_('InviteEmail|%{inviter} invited you to join the %{project_or_group_name} %{project_or_group} as a %{role}') % placeholders.merge({ inviter: sanitize_name(member.created_by.name) }) %>
-<% else %>
-<%= s_('InviteEmail|You have been invited to join the %{project_or_group_name} %{project_or_group} as a %{role}') % placeholders %>
-<% end %>
-
-<%= s_('InviteEmail|Join now') %>: <%= invite_url(@token) %>

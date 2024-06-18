@@ -125,11 +125,11 @@ RSpec.describe Appearance do
   context 'valid pwa attributes' do
     where(:attribute, :value) do
       :pwa_name        | nil
-      :pwa_name        | "G" * 255
+      :pwa_name        | ("G" * 255)
       :pwa_short_name  | nil
-      :pwa_short_name  | "S" * 255
+      :pwa_short_name  | ("S" * 255)
       :pwa_description | nil
-      :pwa_description | "T" * 2048
+      :pwa_description | ("T" * 2048)
     end
 
     with_them do
@@ -139,9 +139,9 @@ RSpec.describe Appearance do
 
   context 'invalid pwa attributes' do
     where(:attribute, :value, :message) do
-      :pwa_name        | "G" * 256  | 'is too long (maximum is 255 characters)'
-      :pwa_short_name  | "S" * 256  | 'is too long (maximum is 255 characters)'
-      :pwa_description | "T" * 2049 | 'is too long (maximum is 2048 characters)'
+      :pwa_name        | ("G" * 256)  | 'is too long (maximum is 255 characters)'
+      :pwa_short_name  | ("S" * 256)  | 'is too long (maximum is 255 characters)'
+      :pwa_description | ("T" * 2049) | 'is too long (maximum is 2048 characters)'
     end
 
     with_them do

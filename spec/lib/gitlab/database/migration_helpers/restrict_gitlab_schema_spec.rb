@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
   describe '#restrict_gitlab_migration' do
     it 'invalid schema raises exception' do
       expect { schema_class.restrict_gitlab_migration gitlab_schema: :gitlab_non_existing }
-        .to raise_error /Unknown 'gitlab_schema:/
+        .to raise_error(/Unknown 'gitlab_schema:/)
     end
 
     it 'does configure allowed_gitlab_schema' do
@@ -506,7 +506,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
             def down; end
           end,
           query_matcher: /FROM ci_builds/,
-          setup: -> (_) { skip_if_shared_database(:ci) },
+          setup: ->(_) { skip_if_shared_database(:ci) },
           expected: {
             no_gitlab_schema: {
               main: :cross_schema_error,

@@ -45,7 +45,7 @@ export default {
 </script>
 <template>
   <gl-empty-state
-    class="gl-layout-w-limited gl-mx-auto"
+    class="gl-max-w-limited gl-mx-auto"
     :title="title"
     :svg-path="$options.emptyEntironmentsSvgPath"
   >

@@ -441,7 +441,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         statistics = json_response.find { |p| p['id'] == project.id }['statistics']
         expect(statistics).to be_present
-        expect(statistics).to include('commit_count', 'storage_size', 'repository_size', 'wiki_size', 'lfs_objects_size', 'job_artifacts_size', 'pipeline_artifacts_size', 'snippets_size', 'packages_size', 'uploads_size')
+        expect(statistics).to include('commit_count', 'storage_size', 'repository_size', 'wiki_size', 'lfs_objects_size', 'job_artifacts_size', 'pipeline_artifacts_size', 'snippets_size', 'packages_size', 'uploads_size', 'container_registry_size')
       end
 
       it "does not include license by default" do
@@ -1184,22 +1184,20 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     context 'rate limiting' do
       let_it_be(:current_user) { create(:user) }
 
-      shared_examples_for 'does not log request and does not block the request' do
-        specify do
-          request
-          request
-
-          expect(response).not_to have_gitlab_http_status(:too_many_requests)
-          expect(Gitlab::AuthLogger).not_to receive(:error)
-        end
-      end
-
-      before do
-        stub_application_setting(projects_api_rate_limit_unauthenticated: 1)
-      end
-
       context 'when the user is signed in' do
-        it_behaves_like 'does not log request and does not block the request' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :projects_api do
+          def request
+            get api(path, current_user)
+          end
+        end
+
+        context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
+          before do
+            stub_feature_flags(rate_limit_groups_and_projects_api: false)
+          end
+
+          it_behaves_like 'unthrottled endpoint'
+
           def request
             get api(path, current_user)
           end
@@ -1735,6 +1733,24 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
     end
 
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :user_projects_api do
+      def request
+        get api("/users/#{user4.id}/projects/")
+      end
+    end
+
+    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_groups_and_projects_api: false)
+      end
+
+      it_behaves_like 'unthrottled endpoint'
+
+      def request
+        get api("/users/#{user4.id}/projects/")
+      end
+    end
+
     it 'includes container_registry_access_level' do
       get api("/users/#{user4.id}/projects/", user)
 
@@ -1876,6 +1892,24 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :user_starred_projects_api do
+      def request
+        get api(path)
+      end
+    end
+
+    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_groups_and_projects_api: false)
+      end
+
+      it_behaves_like 'unthrottled endpoint'
+
+      def request
+        get api(path)
+      end
+    end
+
     context 'with a public profile' do
       it 'returns projects filtered by user' do
         get api(path, user)
@@ -1950,6 +1984,24 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       expect(response).to have_gitlab_http_status(:not_found)
       expect(json_response['message']).to eq('404 User Not Found')
+    end
+
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :user_contributed_projects_api do
+      def request
+        get api(path)
+      end
+    end
+
+    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_groups_and_projects_api: false)
+      end
+
+      it_behaves_like 'unthrottled endpoint'
+
+      def request
+        get api(path)
+      end
     end
 
     context 'with a public profile' do
@@ -2289,7 +2341,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       expect(json_response['alt']).to eq("dk")
       expect(json_response['url']).to start_with("/uploads/")
       expect(json_response['url']).to end_with("/dk.png")
-      expect(json_response['full_path']).to start_with("/#{project.namespace.path}/#{project.path}/uploads")
+      expect(json_response['full_path']).to start_with("/-/project/#{project.id}/uploads")
     end
 
     it "does not leave the temporary file in place after uploading, even when the tempfile reaper does not run" do
@@ -2573,6 +2625,24 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       let(:failed_status_code) { :not_found }
     end
 
+    it_behaves_like 'rate limited endpoint', rate_limit_key: :project_api do
+      def request
+        get api(path)
+      end
+    end
+
+    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
+      before do
+        stub_feature_flags(rate_limit_groups_and_projects_api: false)
+      end
+
+      it_behaves_like 'unthrottled endpoint'
+
+      def request
+        get api(path)
+      end
+    end
+
     context 'when unauthenticated' do
       it 'does not return private projects' do
         private_project = create(:project, :private)
@@ -2720,6 +2790,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['allow_merge_on_skipped_pipeline']).to eq(project.allow_merge_on_skipped_pipeline)
         expect(json_response['restrict_user_defined_variables']).to eq(project.restrict_user_defined_variables?)
+        expect(json_response['ci_pipeline_variables_minimum_override_role']).to eq(project.ci_pipeline_variables_minimum_override_role.to_s)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['security_and_compliance_access_level']).to be_present
         expect(json_response['releases_access_level']).to be_present
@@ -3227,6 +3298,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           'build_git_strategy',
           'keep_latest_artifact',
           'restrict_user_defined_variables',
+          'ci_pipeline_variables_minimum_override_role',
           'runners_token',
           'runner_token_expiration_interval',
           'group_runners_enabled',
@@ -4231,6 +4303,118 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
+      context 'when ci_pipeline_variables_minimum_override_role is owner' do
+        before do
+          project3.add_maintainer(user2)
+          ci_cd_settings = project3.ci_cd_settings
+          ci_cd_settings.restrict_user_defined_variables = false
+          ci_cd_settings.pipeline_variables_minimum_override_role = 'owner'
+          ci_cd_settings.save!
+        end
+
+        context 'and current user is maintainer' do
+          let_it_be(:current_user) { user2 }
+
+          it 'rejects to change restrict_user_defined_variables' do
+            project_param = { restrict_user_defined_variables: true }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+
+          it 'rejects to change ci_pipeline_variables_minimum_override_role' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'developer' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'and current user is owner' do
+          let_it_be(:current_user) { user }
+
+          it 'successfully changes restrict_user_defined_variables' do
+            project_param = { restrict_user_defined_variables: true }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it 'successfully changes ci_pipeline_variables_minimum_override_role' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'developer' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
+      end
+
+      context 'when ci_pipeline_variables_minimum_override_role is set to maintainer' do
+        before do
+          project3.add_maintainer(user2)
+          ci_cd_settings = project3.ci_cd_settings
+          ci_cd_settings.restrict_user_defined_variables = false
+          ci_cd_settings.pipeline_variables_minimum_override_role = 'maintainer'
+          ci_cd_settings.save!
+        end
+
+        context 'and current user is maintainer' do
+          let_it_be(:current_user) { user2 }
+
+          it 'successfully changes restrict_user_defined_variables' do
+            project_param = { restrict_user_defined_variables: true }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it 'successfully changes ci_pipeline_variables_minimum_override_role' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'developer' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+
+          it 'rejects to ci_pipeline_variables_minimum_override_role to owner' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'owner' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+          end
+        end
+
+        context 'and current user is developer' do
+          let_it_be(:current_user) { user3 }
+
+          before do
+            project3.add_developer(user3)
+          end
+
+          it 'fails to change restrict_user_defined_variables' do
+            project_param = { restrict_user_defined_variables: true }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+
+          it 'fails to change ci_pipeline_variables_minimum_override_role' do
+            project_param = { ci_pipeline_variables_minimum_override_role: 'developer' }
+
+            put api("/projects/#{project3.id}", current_user), params: project_param
+
+            expect(response).to have_gitlab_http_status(:forbidden)
+          end
+        end
+      end
+
       it 'updates restrict_user_defined_variables' do
         project_param = { restrict_user_defined_variables: true }
 
@@ -4241,6 +4425,34 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         project_param.each_pair do |k, v|
           expect(json_response[k.to_s]).to eq(v)
         end
+      end
+
+      it 'updates ci_pipeline_variables_minimum_override_role' do
+        project_param = { ci_pipeline_variables_minimum_override_role: 'owner' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
+      end
+
+      it 'rejects updating ci_pipeline_variables_minimum_override_role when an invalid role is provided' do
+        project_param = { ci_pipeline_variables_minimum_override_role: 'wrong' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+
+      it 'rejects updating ci_pipeline_variables_minimum_override_role when an existing but not allowed role is provided' do
+        project_param = { ci_pipeline_variables_minimum_override_role: 'guest' }
+
+        put api("/projects/#{project3.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'updates public_builds (deprecated)' do
@@ -4521,6 +4733,23 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['error']).to eq('container_expiration_policy_attributes[keep_n] is invalid')
+      end
+    end
+
+    context 'with repository_object_format' do
+      it 'ignores repository object format field' do
+        put api(path, user), params: { name: 'new', repository_object_format: 'sha256' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['repository_object_format']).to eq 'sha1'
+      end
+    end
+
+    context 'with initialize_with_readme' do
+      it 'ignores initialize_with_readme field' do
+        put api(path, user), params: { name: 'new', initialize_with_readme: true }
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 

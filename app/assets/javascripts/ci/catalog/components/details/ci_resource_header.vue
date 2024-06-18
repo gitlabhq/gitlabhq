@@ -125,7 +125,7 @@ export default {
           </div>
           <span class="gl-display-flex">
             <gl-link
-              class="gl-font-lg gl-font-weight-bold gl-text-gray-900 gl-hover-text-gray-900"
+              class="gl-font-lg gl-font-bold gl-text-gray-900 gl-hover-text-gray-900"
               :href="resource.webPath"
             >
               {{ resource.name }}
@@ -177,7 +177,7 @@ export default {
       v-if="isLoadingData"
       class="gl-animate-skeleton-loader gl-h-4 gl-rounded-base gl-my-3 gl-max-w-20!"
     ></div>
-    <markdown v-else class="gl-mt-2" :markdown="resource.description" />
+    <markdown v-else class="gl-mb-5" :markdown="resource.description" />
     <abuse-category-selector
       v-if="hasLatestVersion && isReportAbuseDrawerOpen && reportAbusePath"
       :reported-user-id="authorId"

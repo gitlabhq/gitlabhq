@@ -62,7 +62,11 @@ You can also refer to fields of [Work Item](../../../api/graphql/reference/index
 
 ### Work Item widgets
 
-All Work Item types share the same pool of predefined widgets and are customized by which widgets are active on a specific type. The list of widgets for any certain Work Item type is currently predefined and is not customizable. However, in the future we plan to allow users to create new Work Item types and define a set of widgets for them.
+All Work Item types share the same pool of predefined widgets and are customized
+by which widgets are active on a specific type. The list of widgets for any
+certain Work Item type is currently predefined and is not customizable. However,
+in the future we plan to allow users to create new Work Item types and define a
+set of widgets for them.
 
 ### Widget types (updating)
 
@@ -72,6 +76,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetAwardEmoji](../../../api/graphql/reference/index.md#workitemwidgetawardemoji) | Emoji reactions added to work item, including support for upvote/downvote counts | |Anyone who can view|No|
 | [WorkItemWidgetCurrentUserTodos](../../../api/graphql/reference/index.md#workitemwidgetcurrentusertodos) | User todo state of work item | |Anyone who can view|No|
 | [WorkItemWidgetDescription](../../../api/graphql/reference/index.md#workitemwidgetdescription) | Description of work item, including support for edited state, timestamp, and author | |`Reporter`|No|
+| [WorkItemWidgetDesigns](../../../api/graphql/reference/index.md#workitemwidgetdesigns) | Uploaded images and designs | |`Reporter`|No|
 | [WorkItemWidgetHealthStatus](../../../api/graphql/reference/index.md#workitemwidgethealthstatus) | Health status assignment support for work item | |`Reporter`|No|
 | [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | Hierarchy of work items, including support for boolean representing presence of children. **Note:** Hierarchy is currently available only for OKRs. | `okrs_mvc` |`Guest`|No|
 | [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | Iteration assignment support for work item | |`Reporter`|No|
@@ -96,6 +101,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | [WorkItemWidgetAwardEmoji](../../../api/graphql/reference/index.md#workitemwidgetawardemoji) | ✅ | ✔️ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetCurrentUserTodos](../../../api/graphql/reference/index.md#workitemwidgetcurrentusertodos) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetDescription](../../../api/graphql/reference/index.md#workitemwidgetdescription) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetDesigns](../../../api/graphql/reference/index.md#workitemwidgetdesigns) | ❌ | ✅ | ❌ | ❌ | ❌ |
 | [WorkItemWidgetHealthStatus](../../../api/graphql/reference/index.md#workitemwidgethealthstatus) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | ✔ | ✔️ | ❌ | ✅ | ❌ |
 | [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | ❌ | ✅ | ✅ | ❌ | ❌ |
@@ -135,6 +141,16 @@ Parent-child relationships form the basis of **hierarchy** in work items. Each w
 
 As types expand, and parent items have their own parent items, the hierarchy capability can grow exponentially.
 
+Currently, following are the allowed Parent-child relationships:
+
+| Type       | Can be parent of | Can be child of  |
+|------------|------------------|------------------|
+| Epic       | Epic             | Epic             |
+| Issue      | Task             | Epic             |
+| Task       | None             | Issue            |
+| Objective  | Objective        | Objective        |
+| Key result | None             | Objective        |
+
 ### Work Item view
 
 The new frontend view that renders Work Items of any type using global Work Item `id` as an identifier.
@@ -164,15 +180,39 @@ Work Items main goal is to enhance the planning toolset to become the most popul
 
 ### Scalability
 
-Currently, different entities like issues, epics, merge requests etc share many similar features but these features are implemented separately for every entity type. This makes implementing new features or refactoring existing ones problematic: for example, if we plan to add new feature to issues and incidents, we would need to implement it separately on issue and incident types. With work items, any new feature is implemented via widgets for all existing types which makes the architecture more scalable.
+Currently, different entities like issues, epics, merge requests etc share many
+similar features but these features are implemented separately for every entity
+type. This makes implementing new features or refactoring existing ones
+problematic: for example, if we plan to add new feature to issues and incidents,
+we would need to implement it separately on issue and incident types. With work
+items, any new feature is implemented via widgets for all existing types which
+makes the architecture more scalable.
 
 ### Flexibility
 
-With existing implementation, we have a rigid structure for issuables, merge requests, epics etc. This structure is defined on both backend and frontend, so any change requires a coordinated effort. Also, it would be very hard to make this structure customizable for the user without introducing a set of flags to enable/disable any existing feature. Work Item architecture allows frontend to display Work Item widgets in a flexible way: whatever is present in Work Item widgets, will be rendered on the page. This allows us to make changes fast and makes the structure way more flexible. For example, if we want to stop displaying labels on the Incident page, we remove labels widget from Incident Work Item type on the backend. Also, in the future this will allow users to define the set of widgets they want to see on custom Work Item types.
+With existing implementation, we have a rigid structure for issuables, 
+merge requests, epics etc. This structure is defined on both backend and frontend,
+so any change requires a coordinated effort. Also, it would be very hard to make
+this structure customizable for the user without introducing a set of flags to
+enable/disable any existing feature. Work Item architecture allows frontend to
+display Work Item widgets in a flexible way: whatever is present in Work Item
+widgets, will be rendered on the page. This allows us to make changes fast and
+makes the structure way more flexible. For example, if we want to stop
+displaying labels on the Incident page, we remove labels widget from Incident
+Work Item type on the backend. Also, in the future this will allow users to
+define the set of widgets they want to see on custom Work Item types.
 
 ### A consistent experience
 
-As much as we try to have consistent behavior for similar features on different entities, we still have differences in the implementation. For example, updating labels on merge request via GraphQL API can be done with dedicated `setMergeRequestLabels` mutation, while for the issue we call more coarse-grained `updateIssue`. This provides inconsistent experience for both frontend and external API users. As a result, epics, issues, requirements, and others all have similar but just subtle enough differences in common interactions that the user needs to hold a complicated mental model of how they each behave.
+As much as we try to have consistent behavior for similar features on different
+entities, we still have differences in the implementation. For example, updating
+labels on merge request via GraphQL API can be done with dedicated
+`setMergeRequestLabels` mutation, while for the issue we call more
+coarse-grained `updateIssue`. This provides inconsistent experience for both
+frontend and external API users. As a result, epics, issues, requirements, and
+others all have similar but just subtle enough differences in common
+interactions that the user needs to hold a complicated mental model of how they
+each behave.
 
 Work Item architecture is designed with making all the features for all the types consistent, implemented as Work Item widgets.
 

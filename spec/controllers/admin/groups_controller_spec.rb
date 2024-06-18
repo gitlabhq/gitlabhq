@@ -22,14 +22,14 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:index)
-      expect(assigns(:groups)).to eq([group, group_2, group_3])
+      expect(assigns(:groups)).to match_array([group, group_2, group_3])
     end
 
     it 'renders a correct list of sort by options' do
       get :index
 
       html_rendered = Nokogiri::HTML(response.body)
-      sort_options = Gitlab::Json.parse(html_rendered.css('div.dropdown')[0]['data-items'])
+      sort_options = Gitlab::Json.parse(html_rendered.css('[data-items]')[0]['data-items'])
 
       expect(response).to render_template('shared/groups/_dropdown')
 
@@ -91,7 +91,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
         expect(assigns(:groups)).to eq([group])
       end
 
-      it 'redirects to the page' do
+      it 'redirects to the page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/464681' do
         get :index, params: { page: 2 }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -111,6 +111,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
     it 'redirects to the admin group path' do
       delete :destroy, params: { id: project.group.path }
 
+      expect(flash[:toast]).to eq(format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name))
       expect(response).to redirect_to(admin_groups_path)
     end
   end

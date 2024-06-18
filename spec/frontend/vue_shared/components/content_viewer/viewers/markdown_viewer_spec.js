@@ -37,7 +37,7 @@ describe('MarkdownViewer', () => {
   describe('success', () => {
     beforeEach(() => {
       mock
-        .onPost(`${gon.relative_url_root}/testproject/preview_markdown`)
+        .onPost(`${gon.relative_url_root}/testproject/-/preview_markdown`)
         .replyOnce(HTTP_STATUS_OK, {
           body: '<b>testing</b> {{gl_md_img_1}}',
         });
@@ -61,7 +61,7 @@ describe('MarkdownViewer', () => {
       createComponent({ filePath: 'foo/test.md', commitSha: 'abcdef' });
 
       expect(axios.post).toHaveBeenCalledWith(
-        `${gon.relative_url_root}/testproject/preview_markdown`,
+        `${gon.relative_url_root}/testproject/-/preview_markdown`,
         { path: 'foo/test.md', text: '*  Test', ref: 'abcdef' },
         expect.any(Object),
       );

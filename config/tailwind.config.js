@@ -31,6 +31,13 @@ function gitLabUIUtilities({ addUtilities }) {
         'var(--default-mono-font, "GitLab Mono"), "JetBrains Mono", "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace',
       'font-variant-ligatures': 'none',
     },
+    '.break-anywhere': {
+      'overflow-wrap': 'anywhere',
+      'word-break': 'normal',
+    },
+    '.wrap-anywhere': {
+      'overflow-wrap': 'anywhere',
+    },
   });
 }
 
@@ -61,22 +68,6 @@ module.exports = {
      */
     backgroundImage: false,
     /*
-    Our lineClamp also sets white-space: normal, which tailwind doesn't do, maybe we are okay?
-     */
-    lineClamp: false,
-    /*
-    outline-none in tailwind is 2px solid transparent, we have outline: none
-
-    I assume that tailwind has it's reasons, and we probably could enable it
-    after a UX check
-     */
-    outlineStyle: false,
-    /*
-    Our outline-0 removes the complete outline, while tailwind just sets the width to 0.
-    Maybe compatible?
-     */
-    outlineWidth: false,
-    /*
     Disable preflight styles so that `@tailwind base` compiles to CSS vars declarations without
     any of the resets which we don't need.
     More on this at https://tailwindcss.com/docs/preflight.
@@ -103,15 +94,54 @@ module.exports = {
       9: '.9',
       10: '1',
     },
+    // TODO: Backport to GitLab UI
+    zIndex: {
+      0: '0',
+      1: '1',
+      2: '2',
+      3: '3',
+      200: '200',
+      9999: '9999',
+    },
+    // TODO: Backport to GitLab UI.
+    lineHeight: {
+      reset: 'inherit',
+      0: '0',
+      1: '1',
+      normal: '1rem',
+      20: '1.25rem',
+      24: '1.5rem',
+      28: '1.75rem',
+      32: '2rem',
+      36: '2.25rem',
+      42: '2.625rem',
+    },
+    transitionDuration: {
+      DEFAULT: '200ms',
+      slow: '400ms',
+      medium: '200ms',
+      fast: '100ms',
+    },
+    // TODO: Backport to GitLab UI.
+    borderRadius: {
+      none: '0',
+      6: '1.5rem',
+      base: '.25rem',
+      full: '50%', // Tailwind gl-rounded-full is 9999px
+      small: '.125rem',
+      lg: '.5rem',
+      pill: '.75rem',
+    },
     // These extends probably should be moved to GitLab UI:
     extend: {
+      // TODO: Backport to GitLab UI. This should be part of the default colors config.
+      colors: {
+        current: 'currentColor',
+        inherit: 'inherit',
+      },
       borderWidth: {
         // We have a border-1 class, while tailwind was missing it
         1: '1px',
-      },
-      borderRadius: {
-        // Tailwind gl-rounded-full is 9999px
-        full: '50%',
       },
       boxShadow: {
         none: 'none',
@@ -123,10 +153,12 @@ module.exports = {
 
         // TODO: backport these inset box shadows to GitLab UI
         'inner-1-gray-100': 'inset 0 0 0 1px var(--gray-100, #dcdcde)',
+        'inner-b-1-gray-100': 'inset 0 -1px 0 0 var(--gray-100, #dcdcde)',
         'inner-1-gray-200': 'inset 0 0 0 1px var(--gray-200, #bfbfc3)',
         'inner-l-4-gray-100': 'inset 4px 0 0 0 var(--gray-100, #dcdcde)',
         'inner-1-red-400': 'inset 0 0 0 1px var(--red-400, #ec5941)',
         'inner-1-gray-400': 'inset 0 0 0 1px var(--gray-400, #89888d)',
+        'inner-2-blue-400': 'inset 0 0 0 2px var(--blue-400, #428fdc)',
         'inner-1-blue-500': 'inset 0 0 0 1px var(--blue-500, #1f75cb)',
         'inner-1-red-500': 'inset 0 0 0 1px var(--red-500, #dd2b0e)',
         'inner-l-3-red-600': 'inset 3px 0 0 0 var(--red-600, #c91c00)',
@@ -149,16 +181,30 @@ module.exports = {
           }, {}),
         };
       }, {}),
-      zIndex: {
-        1: '1',
-        2: '2',
-        3: '3',
-        200: '200',
-        9999: '9999',
+      maxWidth: {
+        screen: '100vw',
+        limited: '1006px',
+        '1/2': '50%',
       },
       transitionProperty: {
         stroke: 'stroke',
         'stroke-opacity': 'stroke-opacity',
+      },
+      transitionTimingFunction: {
+        DEFAULT: 'ease',
+      },
+      gridTemplateRows: {
+        auto: 'auto',
+      },
+      // The default preset already includes the primary font size scale (xs/sm/base/lg). The below
+      // sizes are non-standard and should probably be migrated to gl-heading-* utils at some point.
+      // In the meantime, we add them to GitLab's own Tailwind config.
+      fontSize: {
+        'size-h-display': '1.75rem',
+        'size-h1': '1.4375rem',
+        'size-h2': '1.1875rem',
+        'size-h1-xl': '2rem',
+        'size-h2-xl': '1.4375rem',
       },
     },
   },

@@ -12,6 +12,7 @@ import {
   OPERATOR_AFTER,
   OPERATOR_BEFORE,
   TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_CONTACT,
@@ -197,10 +198,10 @@ export const filtersMap = {
         [NORMAL_FILTER]: 'author_username',
       },
       [OPERATOR_NOT]: {
-        [NORMAL_FILTER]: 'not[author_username]',
+        [NORMAL_FILTER]: 'not[author_username][]',
       },
       [OPERATOR_OR]: {
-        [ALTERNATIVE_FILTER]: 'or[author_username]',
+        [ALTERNATIVE_FILTER]: 'or[author_username][]',
       },
     },
   },
@@ -217,7 +218,8 @@ export const filtersMap = {
   [TOKEN_TYPE_ASSIGNEE]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'assigneeUsernames',
-      [SPECIAL_FILTER]: 'assigneeId',
+      [SPECIAL_FILTER]: 'assigneeWildcardId',
+      [ALTERNATIVE_FILTER]: 'assigneeId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -230,6 +232,23 @@ export const filtersMap = {
       },
       [OPERATOR_OR]: {
         [NORMAL_FILTER]: 'or[assignee_username][]',
+      },
+    },
+  },
+  [TOKEN_TYPE_REVIEWER]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'reviewerUsername',
+      [SPECIAL_FILTER]: 'reviewerWildcardId',
+      [ALTERNATIVE_FILTER]: 'reviewerId',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'reviewer_username',
+        [SPECIAL_FILTER]: 'reviewer_id',
+        [ALTERNATIVE_FILTER]: 'reviewer_username',
+      },
+      [OPERATOR_NOT]: {
+        [NORMAL_FILTER]: 'not[reviewer_username]',
       },
     },
   },
@@ -356,11 +375,13 @@ export const filtersMap = {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'iterationId',
       [SPECIAL_FILTER]: 'iterationWildcardId',
+      [ALTERNATIVE_FILTER]: 'iterationCadenceId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'iteration_id',
         [SPECIAL_FILTER]: 'iteration_id',
+        [ALTERNATIVE_FILTER]: 'iteration_cadence_id',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[iteration_id]',
@@ -371,7 +392,7 @@ export const filtersMap = {
   [TOKEN_TYPE_EPIC]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'epicId',
-      [SPECIAL_FILTER]: 'epicId',
+      [SPECIAL_FILTER]: 'epicWildcardId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -386,7 +407,7 @@ export const filtersMap = {
   [TOKEN_TYPE_WEIGHT]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'weight',
-      [SPECIAL_FILTER]: 'weight',
+      [SPECIAL_FILTER]: 'weightWildcardId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {

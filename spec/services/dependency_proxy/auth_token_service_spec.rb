@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe DependencyProxy::AuthTokenService, feature_category: :dependency_proxy do
+RSpec.describe DependencyProxy::AuthTokenService, feature_category: :virtual_registry do
   include DependencyProxyHelpers
 
   let_it_be(:user) { create(:user) }

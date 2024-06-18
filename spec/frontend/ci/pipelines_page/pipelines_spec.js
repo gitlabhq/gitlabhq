@@ -42,7 +42,7 @@ import {
   setIdTypePreferenceMutationResponse,
   setIdTypePreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
-import { stageReply } from 'jest/ci/pipeline_mini_graph/mock_data';
+import { legacyStageReply } from 'jest/ci/pipeline_mini_graph/mock_data';
 import { users, mockSearch, branches } from '../pipeline_details/mock_data';
 
 Vue.use(VueApollo);
@@ -111,6 +111,8 @@ describe('Pipelines', () => {
           ciRunnerSettingsPath: defaultProps.ciRunnerSettingsPath,
           anyRunnersAvailable: true,
           showJenkinsCiPrompt: false,
+          identityVerificationRequired: false,
+          identityVerificationPath: '#',
         },
         propsData: {
           ...defaultProps,
@@ -767,7 +769,7 @@ describe('Pipelines', () => {
 
         mock
           .onGet(mockPipelineWithStages.details.stages[0].dropdown_path)
-          .reply(HTTP_STATUS_OK, stageReply);
+          .reply(HTTP_STATUS_OK, legacyStageReply);
 
         // cancelMock is getting overwritten in pipelines_service.js#L29
         // so we have to spy on it again here
@@ -799,7 +801,7 @@ describe('Pipelines', () => {
           expect(cancelMock.cancel).toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();
           expect(restartMock).toHaveBeenCalledWith(
-            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=build`,
+            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=test`,
           );
         });
 
@@ -811,7 +813,7 @@ describe('Pipelines', () => {
           expect(cancelMock.cancel).not.toHaveBeenCalled();
           expect(stopMock).toHaveBeenCalled();
           expect(restartMock).toHaveBeenCalledWith(
-            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=build`,
+            `${mockPipelinesResponse.pipelines[0].path}/stage.json?stage=test`,
           );
         });
       });

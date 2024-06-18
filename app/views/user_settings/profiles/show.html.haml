@@ -158,9 +158,7 @@
         %fieldset.form-group.gl-form-group
           %legend.col-form-label
             = _('Private profile')
-          - private_profile_help_link = link_to _("Learn more"), help_page_path('user/profile/index', anchor: 'make-your-user-profile-page-private')
-          - private_profile_label = safe_format(s_("Profiles|Don't display activity-related personal information on your profile. %{private_profile_help_link_start}Learn more%{private_profile_help_link_end}."), tag_pair(private_profile_help_link, :private_profile_help_link_start, :private_profile_help_link_end))
-          = f.gitlab_ui_checkbox_component :private_profile, private_profile_label
+          = render_if_exists 'user_settings/profiles/private_profile', form: f, user: @user
         %fieldset.form-group.gl-form-group
           %legend.col-form-label
             = s_("Profiles|Private contributions")

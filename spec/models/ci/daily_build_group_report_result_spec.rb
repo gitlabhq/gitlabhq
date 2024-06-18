@@ -53,7 +53,8 @@ RSpec.describe Ci::DailyBuildGroupReportResult, feature_category: :continuous_in
             last_pipeline_id: new_pipeline.id,
             date: rspec_coverage.date,
             group_name: 'rspec',
-            data: { 'coverage' => 81.0 }
+            data: { 'coverage' => 81.0 },
+            partition_id: 100
           },
           {
             project_id: rspec_coverage.project_id,
@@ -61,7 +62,8 @@ RSpec.describe Ci::DailyBuildGroupReportResult, feature_category: :continuous_in
             last_pipeline_id: new_pipeline.id,
             date: rspec_coverage.date,
             group_name: 'karma',
-            data: { 'coverage' => 87.0 }
+            data: { 'coverage' => 87.0 },
+            partition_id: 100
           }
         ])
 
@@ -180,5 +182,20 @@ RSpec.describe Ci::DailyBuildGroupReportResult, feature_category: :continuous_in
     let!(:model) { create(:ci_daily_build_group_report_result) }
 
     let!(:parent) { model.project }
+  end
+
+  describe 'partitioning', :ci_partitionable do
+    include Ci::PartitioningHelpers
+
+    let(:pipeline) { create(:ci_pipeline) }
+    let(:daily_build_group_report_result) { create(:ci_daily_build_group_report_result, last_pipeline: pipeline) }
+
+    before do
+      stub_current_partition_id
+    end
+
+    it 'assigns the same partition id as the one that pipeline has' do
+      expect(daily_build_group_report_result.partition_id).to eq(ci_testing_partition_id)
+    end
   end
 end

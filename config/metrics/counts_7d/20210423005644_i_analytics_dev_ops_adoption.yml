@@ -2,8 +2,6 @@
 data_category: operational
 key_path: analytics_unique_visits.i_analytics_dev_ops_adoption
 description: Unique users viewing analytics devops adoption
-product_section: dev
-product_stage: manage
 product_group: optimize
 value_type: number
 status: active

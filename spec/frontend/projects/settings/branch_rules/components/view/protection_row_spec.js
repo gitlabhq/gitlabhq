@@ -23,8 +23,6 @@ describe('Branch rule protection row', () => {
   const findAvatarLinks = () => wrapper.findAllComponents(GlAvatarLink);
   const findAvatars = () => wrapper.findAllComponents(GlAvatar);
   const findAccessLevels = () => wrapper.findAllByTestId('access-level');
-  const findApprovalsRequired = () =>
-    wrapper.findByText(`${protectionRowPropsMock.approvalsRequired} approvals required`);
   const findStatusChecksUrl = () => wrapper.findByText(protectionRowPropsMock.statusCheckUrl);
 
   it('renders a title', () => {
@@ -32,7 +30,10 @@ describe('Branch rule protection row', () => {
   });
 
   it('renders an avatars-inline component', () => {
-    expect(findAvatarsInline().props('avatars')).toMatchObject(protectionRowPropsMock.users);
+    expect(findAvatarsInline().props('avatars')).toMatchObject([
+      ...protectionRowPropsMock.users,
+      ...protectionRowPropsMock.groups,
+    ]);
     expect(findAvatarsInline().props('badgeSrOnlyText')).toBe('1 additional user');
   });
 
@@ -54,17 +55,9 @@ describe('Branch rule protection row', () => {
   it('renders access level descriptions', () => {
     expect(findAccessLevels().length).toBe(protectionRowPropsMock.accessLevels.length);
 
-    expect(findAccessLevels().at(0).text()).toBe(
-      protectionRowPropsMock.accessLevels[0].accessLevelDescription,
-    );
+    expect(findAccessLevels().at(0).text()).toBe('Developers and Maintainers');
 
-    expect(findAccessLevels().at(1).text()).toContain(
-      protectionRowPropsMock.accessLevels[1].accessLevelDescription,
-    );
-  });
-
-  it('renders the number of approvals required', () => {
-    expect(findApprovalsRequired().exists()).toBe(true);
+    expect(findAccessLevels().at(1).text()).toContain('Maintainers');
   });
 
   it('renders status checks URL', () => {

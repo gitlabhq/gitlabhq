@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Partition, feature_category: :continuous_integration do
+RSpec.describe Ci::Partition, feature_category: :ci_scaling do
   let_it_be_with_reload(:ci_partition) { create(:ci_partition) }
 
   describe 'validations' do
@@ -11,6 +11,14 @@ RSpec.describe Ci::Partition, feature_category: :continuous_integration do
 
     it 'is valid' do
       expect(ci_partition).to be_valid
+    end
+
+    context 'when status is current' do
+      before do
+        ci_partition.update!(status: described_class.statuses[:current])
+      end
+
+      it { is_expected.to validate_uniqueness_of(:status) }
     end
   end
 
@@ -67,6 +75,46 @@ RSpec.describe Ci::Partition, feature_category: :continuous_integration do
         expect(id_after).to match_array(ci_next_partition)
       end
     end
+
+    describe '.next_available' do
+      subject(:next_available) { described_class.next_available(ci_partition.id) }
+
+      let!(:next_ci_partition) { create(:ci_partition, :ready) }
+
+      context 'when one partition is ready' do
+        it { is_expected.to eq(next_ci_partition) }
+      end
+
+      context 'when multiple partitions are ready' do
+        before do
+          create_list(:ci_partition, 2, :ready)
+        end
+
+        it 'returns the first next partition available' do
+          expect(next_available).to eq(next_ci_partition)
+        end
+      end
+    end
+
+    describe '.provisioning' do
+      subject(:provisioning) { described_class.provisioning(ci_partition.id) }
+
+      let!(:next_ci_partition) { create(:ci_partition) }
+
+      context 'when one partition is preparing' do
+        it { is_expected.to eq(next_ci_partition) }
+      end
+
+      context 'when multiple partitions are preparing' do
+        before do
+          create_list(:ci_partition, 2)
+        end
+
+        it 'returns the first ci_partition with status preparing' do
+          expect(provisioning).to eq(next_ci_partition)
+        end
+      end
+    end
   end
 
   describe 'state machine' do
@@ -77,6 +125,20 @@ RSpec.describe Ci::Partition, feature_category: :continuous_integration do
 
       it 'status is ready' do
         expect(ci_partition).to be_ready
+      end
+    end
+
+    context 'when transitioning from current to active' do
+      let!(:next_ci_partition) { create(:ci_partition, :ready) }
+
+      before do
+        ci_partition.update!(status: described_class.statuses[:current])
+        next_ci_partition.switch_writes!
+      end
+
+      it 'updates statuses for current and next partition' do
+        expect(ci_partition.reload).to be_active
+        expect(next_ci_partition.reload).to be_current
       end
     end
   end

@@ -1,0 +1,12 @@
+---
+table_name: p_ci_build_sources
+classes:
+- Ci::BuildSource
+feature_categories:
+- continuous_integration
+description: Table that holds information for build sources
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151450
+milestone: '17.1'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

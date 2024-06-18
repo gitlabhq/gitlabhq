@@ -344,7 +344,7 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
 
         context 'when `expires_at` is set' do
           it 'returns correct json response' do
-            expect(json_response).to eq({
+            expect(json_response).to include({
               "expires_soon" => false,
               "expires_at_formatted" => expiry_date.to_time.in_time_zone.to_fs(:medium)
             })
@@ -354,8 +354,9 @@ RSpec.describe Projects::ProjectMembersController, feature_category: :groups_and
         context 'when `expires_at` is not set' do
           let(:expiry_date) { nil }
 
-          it 'returns empty json response' do
-            expect(json_response).to be_empty
+          it 'returns json response without expiration data' do
+            expect(json_response).not_to have_key(:expires_soon)
+            expect(json_response).not_to have_key(:expires_at_formatted)
           end
         end
       end

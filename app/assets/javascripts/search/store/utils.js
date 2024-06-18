@@ -1,13 +1,15 @@
-import { isEqual, orderBy } from 'lodash';
+import { isEqual, orderBy, isEmpty } from 'lodash';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { formatNumber } from '~/locale';
-import { joinPaths } from '~/lib/utils/url_utility';
+import { joinPaths, queryToObject, objectToQuery, getBaseURL } from '~/lib/utils/url_utility';
 import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import {
   MAX_FREQUENT_ITEMS,
   MAX_FREQUENCY,
   SIDEBAR_PARAMS,
   NUMBER_FORMATING_OPTIONS,
+  REGEX_PARAM,
+  LS_REGEX_HANDLE,
 } from './constants';
 
 const LANGUAGE_AGGREGATION_NAME = languageFilterData.filterParam;
@@ -163,4 +165,17 @@ export const prepareSearchAggregations = (state, aggregationData) =>
 
 export const addCountOverLimit = (count = '') => {
   return count.includes('+') ? '+' : '';
+};
+
+/** @param { string } link */
+export const injectRegexSearch = (link) => {
+  const urlObject = new URL(link, getBaseURL());
+  const queryObject = queryToObject(urlObject.search);
+  if (loadDataFromLS(LS_REGEX_HANDLE) && (queryObject.project_id || queryObject.group_id)) {
+    queryObject[REGEX_PARAM] = true;
+  }
+  if (isEmpty(queryObject)) {
+    return urlObject.pathname;
+  }
+  return `${urlObject.pathname}?${objectToQuery(queryObject)}`;
 };

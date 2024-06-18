@@ -143,6 +143,13 @@ module Ci
     scope :eager_load_job_artifacts, -> { includes(:job_artifacts) }
     scope :eager_load_tags, -> { includes(:tags) }
     scope :eager_load_for_archiving_trace, -> { preload(:project, :pending_state) }
+    scope :eager_load_for_api, -> do
+      preload(
+        :job_artifacts_archive, :job_artifacts, :runner, :tags, :runner_manager, :metadata,
+        pipeline: :project,
+        user: [:user_preference, :user_detail, :followees]
+      )
+    end
 
     scope :eager_load_everything, -> do
       includes(
@@ -187,9 +194,11 @@ module Ci
     scope :with_coverage, -> { where.not(coverage: nil) }
     scope :without_coverage, -> { where(coverage: nil) }
     scope :with_coverage_regex, -> { where.not(coverage_regex: nil) }
+    scope :id_before, ->(id) { where(arel_table[:id].lt(id)) }
+    scope :id_after, ->(id) { where(arel_table[:id].gt(id)) }
 
-    scope :in_merge_request, ->(merge_request) do
-      joins(:pipeline).where(Ci::Pipeline.arel_table[:merge_request_id].eq(merge_request))
+    scope :in_merge_request, ->(merge_request_id) do
+      joins(:pipeline).where(Ci::Pipeline.arel_table[:merge_request_id].eq(merge_request_id))
     end
 
     acts_as_taggable
@@ -220,11 +229,11 @@ module Ci
 
       def clone_accessors
         %i[pipeline project ref tag options name
-           allow_failure stage stage_idx trigger_request
-           yaml_variables when environment coverage_regex
-           description tag_list protected needs_attributes
-           job_variables_attributes resource_group scheduling_type
-           ci_stage partition_id id_tokens interruptible].freeze
+          allow_failure stage stage_idx trigger_request
+          yaml_variables when environment coverage_regex
+          description tag_list protected needs_attributes
+          job_variables_attributes resource_group scheduling_type
+          ci_stage partition_id id_tokens interruptible].freeze
       end
 
       def supported_keyset_orderings
@@ -376,8 +385,8 @@ module Ci
       end
     end
 
-    def self.ids_in_merge_request(merge_request_ids)
-      in_merge_request(merge_request_ids).pluck(:id)
+    def self.ids_in_merge_request(merge_request_id)
+      in_merge_request(merge_request_id).pluck(:id)
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
@@ -830,8 +839,8 @@ module Ci
 
     def steps
       [Gitlab::Ci::Build::Step.from_commands(self),
-       Gitlab::Ci::Build::Step.from_release(self),
-       Gitlab::Ci::Build::Step.from_after_script(self)].compact
+        Gitlab::Ci::Build::Step.from_release(self),
+        Gitlab::Ci::Build::Step.from_after_script(self)].compact
     end
 
     def runtime_hooks

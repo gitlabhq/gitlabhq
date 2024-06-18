@@ -7,15 +7,15 @@ export default {
   components: { HoverBadge },
   i18n: {
     badgeLabel: s__('ExperimentBadge|Experiment'),
-    popoverTitle: s__("ExperimentBadge|What's an Experiment?"),
+    popoverTitle: s__("ExperimentBadge|What's an experiment?"),
     descriptionParagraph: s__(
-      "ExperimentBadge|An Experiment is a feature that's in the process of being developed. It's not production-ready. We encourage users to try Experimental features and provide feedback.",
+      'ExperimentBadge|An experiment is not yet production-ready, but is released for initial testing and feedback during development.',
     ),
-    listIntroduction: s__('ExperimentBadge|An Experiment:'),
-    listItemStability: s__('ExperimentBadge|May be unstable.'),
-    listItemDataLoss: s__('ExperimentBadge|Can cause data loss.'),
-    listItemNoSupport: s__('ExperimentBadge|Has no support and might not be documented.'),
-    listItemCanBeRemoved: s__('ExperimentBadge|Can be removed at any time.'),
+    listIntroduction: s__('ExperimentBadge|Experiments:'),
+    listItemStability: s__('ExperimentBadge|Might be unstable or cause data loss.'),
+    listItemNoSupport: s__('ExperimentBadge|Are not supported and might not be documented.'),
+    listItemCanBeRemoved: s__('ExperimentBadge|Could be changed or removed at any time.'),
+    listItemTestAgreement: s__('ExperimentBadge|Are subject to the GitLab Testing Agreement.'),
   },
   props: {
     size: {
@@ -35,9 +35,9 @@ export default {
 
     <ul class="gl-pl-4">
       <li>{{ $options.i18n.listItemStability }}</li>
-      <li>{{ $options.i18n.listItemDataLoss }}</li>
       <li>{{ $options.i18n.listItemNoSupport }}</li>
       <li>{{ $options.i18n.listItemCanBeRemoved }}</li>
+      <li>{{ $options.i18n.listItemTestAgreement }}</li>
     </ul>
   </hover-badge>
 </template>

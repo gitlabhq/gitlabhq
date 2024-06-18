@@ -11,7 +11,7 @@ module Gitlab
         Rails.cache
       end
 
-      def render_cached(obj_or_collection, with:, cache_context: -> (_) { current_user&.cache_key }, expires_in: Gitlab::Cache::Helpers::DEFAULT_EXPIRY, **presenter_args)
+      def render_cached(obj_or_collection, with:, cache_context: ->(_) { current_user&.cache_key }, expires_in: Gitlab::Cache::Helpers::DEFAULT_EXPIRY, **presenter_args)
         json =
           if obj_or_collection.is_a?(Enumerable)
             cached_collection(

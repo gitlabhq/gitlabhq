@@ -2,8 +2,6 @@
 data_category: operational
 key_path: usage_activity_by_stage_monthly.create.merge_requests_users
 description: Distinct count of users performing merge request actions like closed, merged, created, commented
-product_section: dev
-product_stage: create
 product_group: code_review
 value_type: number
 status: removed

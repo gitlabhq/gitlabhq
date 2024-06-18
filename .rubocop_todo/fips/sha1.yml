@@ -8,7 +8,6 @@ Fips/SHA1:
     - 'app/models/discussion.rb'
     - 'app/models/legacy_diff_note.rb'
     - 'app/models/note.rb'
-    - 'app/models/protected_branch.rb'
     - 'app/models/repository.rb'
     - 'app/models/resource_event.rb'
     - 'app/services/packages/go/create_package_service.rb'

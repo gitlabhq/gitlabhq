@@ -126,7 +126,7 @@ export default {
 <template>
   <div
     :id="`${targetId}-flyout`"
-    class="gl-fixed gl-p-4 gl-mx-n1 gl-z-9999 gl-max-h-full gl-overflow-y-auto"
+    class="gl-fixed gl-p-4 -gl-mx-1 gl-z-9999 gl-max-h-full gl-overflow-y-auto"
     @mouseover="$emit('mouseover')"
     @mouseleave="$emit('mouseleave')"
   >

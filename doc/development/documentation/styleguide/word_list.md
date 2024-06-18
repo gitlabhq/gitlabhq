@@ -12,7 +12,7 @@ recommends these word choices. In addition:
 
 - The GitLab handbook contains a list of
   [top misused terms](https://handbook.gitlab.com/handbook/communication/top-misused-terms/).
-- The documentation [style guide](../styleguide#language) includes details
+- The documentation [style guide](../styleguide/index.md#language) includes details
   about language and capitalization.
 - The GitLab handbook provides guidance on the [use of third-party trademarks](https://handbook.gitlab.com/handbook/legal/policies/product-third-party-trademarks-guidelines/#process-for-adding-third-party-trademarks-to-gitlab).
 
@@ -179,6 +179,21 @@ However, if the UI has different capitalization, make the documentation match th
 For example:
 
 - You can view merge request analytics for a project. They are displayed on the Merge Request Analytics dashboard.
+
+## ancestor
+
+To refer to a [parent item](#parent) that's one or more level above in the hierarchy,
+use **ancestor**.
+
+Do not use **grandparent**.
+
+Examples:
+
+- An ancestor group, a group in the project's hierarchy.
+- An ancestor epic, an epic in the issue's hierarchy.
+- A group and all its ancestors.
+
+See also: [child](#child), [descendant](#descendant), and [subgroup](#subgroup).
 
 ## and/or
 
@@ -350,10 +365,26 @@ You can omit **CI/CD** when the context is clear, especially after the first use
 
 Do not use **CI/CD minutes**. This term was renamed to [**compute minutes**](#compute-minutes).
 
+## child
+
+Always use as a compound noun.
+
+Examples:
+
+- child issue
+- child epic
+- child objective
+- child key result
+- child pipeline
+
+See also: [descendant](#descendant), [parent](#parent) and [subgroup](#subgroup).
+
 ## click
 
 Do not use **click**. Instead, use **select** with buttons, links, menu items, and lists.
 **Select** applies to more devices, while **click** is more specific to a mouse.
+
+However, you can make an exception for **right-click** and **click-through demo**.
 
 ## cloud licensing
 
@@ -413,7 +444,7 @@ Use **compute** for the resources used by runners to run CI/CD jobs.
 Related terms:
 
 - [**compute minutes**](#compute-minutes): How compute usage is calculated. For example, `400 compute minutes`.
-- [**compute quota**](../../../ci/pipelines/cicd_minutes.md): The limit of compute minutes that a namespace can use each month.
+- [**compute quota**](../../../ci/pipelines/compute_minutes.md): The limit of compute minutes that a namespace can use each month.
 - **compute usage**: The number of compute minutes that the namespace has used from the monthly quota.
 
 ## compute minutes
@@ -522,6 +553,21 @@ Use title case for the GitLab Dependency Proxy.
 ## deploy board
 
 Use lowercase for **deploy board**.
+
+## descendant
+
+To refer to a [child item](#child) that's one or more level below in the hierarchy,
+use **descendant**.
+
+Do not use **grandchild**.
+
+Examples:
+
+- An descendant project, a project in the group's hierarchy.
+- An descendant issue, an issue in the epic's hierarchy.
+- A group and all its descendants.
+
+See also: [ancestor](#ancestor), [child](#child), and [subgroup](#subgroup).
 
 ## Developer
 
@@ -711,7 +757,7 @@ Use lowercase for **experiment**. For example:
 - These features are experiments.
 - This experiment is ready to test.
 
-If you must, you can use **experimental**. 
+If you must, you can use **experimental**.
 
 You might also want to link to [this topic](../../../policy/experiment-beta-support.md#experiment)
 when writing about experimental features.
@@ -1359,7 +1405,7 @@ The current product offerings are:
 - [GitLab self-managed](#gitlab-self-managed)
 - [GitLab Dedicated](#gitlab-dedicated)
 
-The [tier badges](index.md#available-product-tier-badges) reflect these offerings.
+The [availability details](availability_details.md) reflect these offerings.
 
 ## older
 
@@ -1471,6 +1517,26 @@ The docs should match the case in the UI, and the page name should be bold. For 
 
 - On the **Test cases** page, ...
 
+## parent
+
+Always use as a compound noun.
+
+Do not use **direct [ancestor](#ancestor)** or **ascendant**.
+
+Examples:
+
+- parent directory
+- parent group
+- parent project
+- parent commit
+- parent issue
+- parent item
+- parent epic
+- parent objective
+- parent pipeline
+
+See also: [child](#child), and [subgroup](#subgroup).
+
 ## permissions
 
 Do not use [**roles**](#roles) and **permissions** interchangeably. Each user is assigned a role. Each role includes a set of permissions.
@@ -1545,6 +1611,8 @@ we would talk to a colleague, and to avoid differentiation between `we` and `the
 - You should set the variable. (It's recommended.)
 - Set the variable. (It's required.)
 - You can set the variable. (It's optional.)
+
+See also [recommended steps](index.md#recommended-steps).
 
 ## register
 
@@ -1744,6 +1812,8 @@ Instead of:
 
 Use **select** with buttons, links, menu items, and lists. **Select** applies to more devices,
 while **click** is more specific to a mouse.
+
+However, you can make an exception for **right-click** and **click-through demo**.
 
 ## self-managed
 

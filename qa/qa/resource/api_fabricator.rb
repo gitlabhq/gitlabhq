@@ -15,8 +15,8 @@ module QA
       attr_accessor :api_user, :api_resource, :api_response
 
       def api_support?
-        respond_to?(:api_get_path) &&
-          (respond_to?(:api_post_path) && respond_to?(:api_post_body)) ||
+        (respond_to?(:api_get_path) &&
+          (respond_to?(:api_post_path) && respond_to?(:api_post_body))) ||
           (respond_to?(:api_put_path) && respond_to?(:api_put_body))
       end
 

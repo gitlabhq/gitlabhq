@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 export default function initDeprecatedRemoveRowBehavior() {
   $('.js-remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
-    $(this).closest('li').addClass('gl-display-none!');
+    $(this).closest('li').addClass('!gl-hidden');
   });
 
   $('.js-remove-tr').on('ajax:before', function removeTRAjaxBeforeCallback() {
@@ -10,6 +10,6 @@ export default function initDeprecatedRemoveRowBehavior() {
   });
 
   $('.js-remove-tr').on('ajax:success', function removeTRAjaxSuccessCallback() {
-    $(this).closest('tr').addClass('gl-display-none!');
+    $(this).closest('tr').addClass('!gl-hidden');
   });
 }

@@ -2,6 +2,7 @@ import { logLinesParser } from '~/ci/job_details/store/utils';
 
 import {
   mockJobLines,
+  mockJobLogWithTimestamp,
   mockEmptySection,
   mockContentSection,
   mockContentSectionClosed,
@@ -32,6 +33,33 @@ describe('Jobs Store Utils', () => {
             offset: 1001,
             content: [{ text: ' on docker-auto-scale-com 8a6210b8' }],
             lineNumber: 2,
+          },
+        ],
+        sections: {},
+      });
+    });
+
+    it('parses lines with timestamp', () => {
+      const result = logLinesParser(mockJobLogWithTimestamp);
+
+      expect(result).toEqual({
+        lines: [
+          {
+            content: [
+              {
+                style: 'term-fg-l-cyan term-bold',
+                text: 'Running with gitlab-runner 12.1.0 (de7731dd)',
+              },
+            ],
+            lineNumber: 1,
+            offset: 0,
+            time: '12:43:46Z',
+          },
+          {
+            content: [{ text: ' on docker-auto-scale-com 8a6210b8' }],
+            lineNumber: 2,
+            offset: 1001,
+            time: 'ANOTHER_TIMESTAMP_FORMAT',
           },
         ],
         sections: {},

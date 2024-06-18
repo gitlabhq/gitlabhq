@@ -287,7 +287,7 @@ RSpec.describe Project, 'Routable', :with_clean_rails_cache, feature_category: :
   end
 
   describe '.find_by_full_path' do
-    it 'does not return a record if the sources are different, but the IDs match' do
+    it 'does not return a record if the sources are different, but the IDs match', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/451914' do
       group = create(:group, id: 1992)
       project = create(:project, id: 1992)
 
@@ -298,7 +298,7 @@ RSpec.describe Project, 'Routable', :with_clean_rails_cache, feature_category: :
   end
 
   describe '.where_full_path_in' do
-    it 'does not return records if the sources are different, but the IDs match' do
+    it 'does not return records if the sources are different, but the IDs match', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/457548' do
       group = create(:group, id: 1992)
       project = create(:project, id: 1992)
 

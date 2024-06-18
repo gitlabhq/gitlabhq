@@ -24,7 +24,7 @@ class IssueBoardEntity < Grape::Entity
     API::Entities::Project.represent issue.project, only: [:id, :path, :path_with_namespace]
   end
 
-  expose :milestone, if: -> (issue) { issue.milestone } do |issue|
+  expose :milestone, if: ->(issue) { issue.milestone } do |issue|
     API::Entities::Milestone.represent issue.milestone, only: [:id, :title]
   end
 
@@ -36,23 +36,23 @@ class IssueBoardEntity < Grape::Entity
     LabelEntity.represent issue.labels, project: issue.project, only: [:id, :title, :description, :color, :priority, :text_color]
   end
 
-  expose :reference_path, if: -> (issue) { issue.project } do |issue, options|
+  expose :reference_path, if: ->(issue) { issue.project } do |issue, options|
     options[:include_full_project_path] ? issue.to_reference(full: true) : issue.to_reference
   end
 
-  expose :real_path, if: -> (issue) { issue.project } do |issue|
+  expose :real_path, if: ->(issue) { issue.project } do |issue|
     Gitlab::UrlBuilder.build(issue, only_path: true)
   end
 
-  expose :issue_sidebar_endpoint, if: -> (issue) { issue.project } do |issue|
+  expose :issue_sidebar_endpoint, if: ->(issue) { issue.project } do |issue|
     project_issue_path(issue.project, issue, format: :json, serializer: 'sidebar_extras')
   end
 
-  expose :toggle_subscription_endpoint, if: -> (issue) { issue.project } do |issue|
+  expose :toggle_subscription_endpoint, if: ->(issue) { issue.project } do |issue|
     toggle_subscription_project_issue_path(issue.project, issue)
   end
 
-  expose :assignable_labels_endpoint, if: -> (issue) { issue.project } do |issue|
+  expose :assignable_labels_endpoint, if: ->(issue) { issue.project } do |issue|
     project_labels_path(issue.project, format: :json, include_ancestor_groups: true)
   end
 

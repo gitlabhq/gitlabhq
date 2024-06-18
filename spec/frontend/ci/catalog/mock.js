@@ -95,6 +95,7 @@ export const catalogResponseBody = {
           name: 'Project-42 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-42/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -111,6 +112,7 @@ export const catalogResponseBody = {
           name: 'Project-41 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-41/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -127,6 +129,7 @@ export const catalogResponseBody = {
           name: 'Project-40 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-40/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -143,6 +146,7 @@ export const catalogResponseBody = {
           name: 'Project-39 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-39/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -159,6 +163,7 @@ export const catalogResponseBody = {
           name: 'Project-38 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-38/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -175,6 +180,7 @@ export const catalogResponseBody = {
           name: 'Project-37 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-37/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -191,6 +197,7 @@ export const catalogResponseBody = {
           name: 'Project-36 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-36/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -207,6 +214,7 @@ export const catalogResponseBody = {
           name: 'Project-35 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-35/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -223,6 +231,7 @@ export const catalogResponseBody = {
           name: 'Project-34 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-34/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -239,6 +248,7 @@ export const catalogResponseBody = {
           name: 'Project-33 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-33/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -255,6 +265,7 @@ export const catalogResponseBody = {
           name: 'Project-32 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-32/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -271,6 +282,7 @@ export const catalogResponseBody = {
           name: 'Project-31 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-31/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -287,6 +299,7 @@ export const catalogResponseBody = {
           name: 'Project-30 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-30/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -303,6 +316,7 @@ export const catalogResponseBody = {
           name: 'Project-29 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-29/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -319,6 +333,7 @@ export const catalogResponseBody = {
           name: 'Project-28 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-28/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -335,6 +350,7 @@ export const catalogResponseBody = {
           name: 'Project-27 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-27/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -351,6 +367,7 @@ export const catalogResponseBody = {
           name: 'Project-26 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-26/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -367,6 +384,7 @@ export const catalogResponseBody = {
           name: 'Project-25 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-25/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -383,6 +401,7 @@ export const catalogResponseBody = {
           name: 'Project-24 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-24/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -399,6 +418,7 @@ export const catalogResponseBody = {
           name: 'Project-23 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 0,
           starrersPath: '/frontend-fixtures/project-23/-/starrers',
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -434,6 +454,7 @@ export const catalogSinglePageResponse = {
           name: 'Project-45 Name',
           description: 'A simple component',
           starCount: 0,
+          last30DayUsageCount: 4,
           verificationLevel: 'UNVERIFIED',
           versions: {
             __typename: 'CiCatalogResourceVersionConnection',
@@ -505,6 +526,7 @@ export const catalogSharedDataMock = {
       description: 'This is the description of the repo',
       name: 'Ruby',
       starCount: 1,
+      last30DayUsageCount: 4,
       starrersPath: '/path/to/project/-/starrers',
       verificationLevel: 'UNVERIFIED',
       versions: {
@@ -543,6 +565,7 @@ const generateResourcesNodes = (count = 20, startId = 0) => {
       icon: 'my-icon',
       name: `My component #${i}`,
       starCount: 10,
+      last30DayUsageCount: 4,
       versions: {
         __typename: 'CiCatalogResourceVersionConnection',
         nodes: [

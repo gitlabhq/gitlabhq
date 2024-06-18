@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.incident_management.incident_management_incident_unrelate_monthly
 description: Count of users removing issues that are related to an incident per month
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

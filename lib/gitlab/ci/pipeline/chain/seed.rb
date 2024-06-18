@@ -29,9 +29,7 @@ module Gitlab
               pipeline_seed.errors
             end
 
-            if seed_errors
-              return error(seed_errors.join("\n"), config_error: true)
-            end
+            return error(seed_errors.join("\n"), failure_reason: :config_error) if seed_errors
 
             @command.pipeline_seed = pipeline_seed
           end
@@ -43,14 +41,13 @@ module Gitlab
           private
 
           def pipeline_seed
-            strong_memoize(:pipeline_seed) do
-              logger.instrument(:pipeline_seed_initialization, once: true) do
-                stages_attributes = @command.yaml_processor_result.stages_attributes
+            logger.instrument(:pipeline_seed_initialization, once: true) do
+              stages_attributes = @command.yaml_processor_result.stages_attributes
 
-                Gitlab::Ci::Pipeline::Seed::Pipeline.new(context, stages_attributes)
-              end
+              Gitlab::Ci::Pipeline::Seed::Pipeline.new(context, stages_attributes)
             end
           end
+          strong_memoize_attr :pipeline_seed
 
           def context
             Gitlab::Ci::Pipeline::Seed::Context.new(
@@ -61,13 +58,11 @@ module Gitlab
           end
 
           def root_variables
-            strong_memoize(:root_variables) do
-              ::Gitlab::Ci::Variables::Helpers.merge_variables(
-                @command.yaml_processor_result.root_variables,
-                @command.workflow_rules_result.variables
-              )
-            end
+            ::Gitlab::Ci::Variables::Helpers.merge_variables(
+              @command.yaml_processor_result.root_variables,
+              @command.workflow_rules_result.variables)
           end
+          strong_memoize_attr :root_variables
         end
       end
     end

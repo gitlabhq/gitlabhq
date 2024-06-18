@@ -7,7 +7,7 @@ module Labels
     # rubocop: disable CodeReuse/ActiveRecord
     def execute(label)
       return unless project.group &&
-          label.is_a?(ProjectLabel)
+        label.is_a?(ProjectLabel)
 
       ProjectLabel.transaction do
         # use the existing group label if it exists

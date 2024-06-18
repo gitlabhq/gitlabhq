@@ -136,7 +136,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-transition-medium gl-w-full">
+  <div class="gl-transition-all gl-w-full">
     <gl-modal
       v-if="showSwitchBranchModal"
       visible

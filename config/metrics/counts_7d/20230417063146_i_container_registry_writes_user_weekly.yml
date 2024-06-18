@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.user_container_registry.i_container_registry_writes_user_weekly
 description: A weekly count of unique users that have executed write operations to the registry
-product_section: ops
-product_stage: package
 product_group: container_registry
 value_type: number
 status: active

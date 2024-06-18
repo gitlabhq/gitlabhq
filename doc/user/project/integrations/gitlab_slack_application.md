@@ -148,19 +148,19 @@ To configure Slack notifications:
 1. In the **Trigger** section:
    - Select the checkbox for each GitLab [event](#notification-events) you want to receive notifications for in Slack.
    - For each checkbox you select, enter the names of the Slack channels you want to receive notifications.
-   You can enter up to 10 channel names separated by commas (for example, `#channel-one, #channel-two`).
+     You can enter up to 10 channel names separated by commas (for example, `#channel-one, #channel-two`).
 
      NOTE:
      If the Slack channel is private, you must [add the GitLab for Slack app to the channel](#receive-notifications-to-a-private-channel).
 
 1. Optional. In the **Notification settings** section:
    - Select the **Notify only broken pipelines** checkbox
-   to receive notifications for failed pipelines only.
+     to receive notifications for failed pipelines only.
    - From the **Branches for which notifications are to be sent** dropdown list,
-   select the branches you want to receive notifications for.
+     select the branches you want to receive notifications for.
    - For **Labels to be notified**, enter any or all of the labels a GitLab
-   issue, merge request, or comment must have to receive notifications for.
-   Leave blank to receive notifications for all events.
+     issue, merge request, or comment must have to receive notifications for.
+     Leave blank to receive notifications for all events.
 1. Optional. Select **Test settings**.
 1. Select **Save changes**.
 

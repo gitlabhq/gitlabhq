@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Attachments::ReleasesImporter, fe
 
   let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
-  describe '#sequential_import', :clean_gitlab_redis_cache do
+  describe '#sequential_import', :clean_gitlab_redis_shared_state do
     let_it_be(:release) { create(:release, project: project) }
 
     let_it_be(:release_with_attachment) do

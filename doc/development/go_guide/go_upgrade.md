@@ -155,6 +155,7 @@ if you need help finding the correct person or labels:
 | GitLab Compose Kit            | [Issuer Tracker](https://gitlab.com/gitlab-org/gitlab-compose-kit/-/issues) |
 | GitLab container registry     | [Issue Tracker](https://gitlab.com/gitlab-org/container-registry) |
 | GitLab Elasticsearch Indexer  | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer/-/issues) |
+| GitLab Zoekt Indexer          | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/issues) |
 | GitLab agent server for Kubernetes (KAS) | [Issue Tracker](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/issues) |
 | GitLab Pages                  | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-pages/-/issues) |
 | GitLab Quality Images         | [Issue Tracker](https://gitlab.com/gitlab-org/gitlab-build-images/-/issues) |

@@ -10,8 +10,11 @@ module Emails
     VERIFICATION_EMAIL_TIMEOUT = 7
 
     included do
-      layout 'service_desk',
-        only: [:service_desk_thank_you_email, :service_desk_new_note_email, :service_desk_new_participant_email]
+      override_layout_lookup_table.merge!({
+        service_desk_thank_you_email: 'service_desk',
+        service_desk_new_note_email: 'service_desk',
+        service_desk_new_participant_email: 'service_desk'
+      })
     end
 
     def service_desk_thank_you_email(issue_id)

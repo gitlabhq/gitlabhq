@@ -122,7 +122,7 @@ export default {
         </li>
       </ul>
     </gl-card>
-    <div class="gl-my-n2 gl-mx-n2 gl-display-flex gl-flex-wrap">
+    <div class="-gl-my-2 -gl-mx-2 gl-display-flex gl-flex-wrap">
       <div class="gl-p-2">
         <clipboard-button
           :title="$options.i18n.copyButton"

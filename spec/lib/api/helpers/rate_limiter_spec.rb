@@ -7,43 +7,45 @@ RSpec.describe API::Helpers::RateLimiter do
   let(:scope) { [:some, :scope] }
   let(:request) { instance_double('Rack::Request') }
   let(:user) { build_stubbed(:user) }
+  let(:ip) { '0.0.0.0' }
 
   let(:api_class) do
     Class.new do
       include API::Helpers::RateLimiter
 
-      attr_reader :request, :current_user
+      attr_reader :request, :current_user, :ip_address
 
-      def initialize(request, current_user)
+      def initialize(request, current_user, ip_address:)
         @request = request
         @current_user = current_user
+        @ip_address = ip_address
       end
 
       def render_api_error!(**args); end
     end
   end
 
-  subject { api_class.new(request, user) }
+  let(:rate_limiter) { api_class.new(request, user, ip_address: ip) }
 
   before do
     allow(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
     allow(::Gitlab::ApplicationRateLimiter).to receive(:log_request)
   end
 
-  describe '#check_rate_limit!' do
+  shared_examples 'checks rate limit by scope' do
     it 'calls ApplicationRateLimiter#throttled_request? with the right arguments' do
       expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled_request?).with(request, user, key, scope: scope).and_return(false)
-      expect(subject).not_to receive(:render_api_error!)
+      expect(rate_limiter).not_to receive(:render_api_error!)
 
-      subject.check_rate_limit!(key, scope: scope)
+      rate_limit
     end
 
     it 'renders api error and logs request if throttled' do
       expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(true)
       expect(::Gitlab::ApplicationRateLimiter).to receive(:log_request).with(request, "#{key}_request_limit".to_sym, user)
-      expect(subject).to receive(:render_api_error!).with({ error: _('This endpoint has been requested too many times. Try again later.') }, 429)
+      expect(rate_limiter).to receive(:render_api_error!).with({ error: _('This endpoint has been requested too many times. Try again later.') }, 429)
 
-      subject.check_rate_limit!(key, scope: scope)
+      rate_limit
     end
 
     context 'when the bypass header is set' do
@@ -55,9 +57,9 @@ RSpec.describe API::Helpers::RateLimiter do
         allow(request).to receive(:get_header).with(Gitlab::Throttle.bypass_header).and_return('1')
 
         expect(::Gitlab::ApplicationRateLimiter).not_to receive(:throttled?)
-        expect(subject).not_to receive(:render_api_error!)
+        expect(rate_limiter).not_to receive(:render_api_error!)
 
-        subject.check_rate_limit!(key, scope: scope)
+        rate_limit
       end
 
       it 'does not skip rate limit if set to something else than "1"' do
@@ -65,8 +67,31 @@ RSpec.describe API::Helpers::RateLimiter do
 
         expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?)
 
-        subject.check_rate_limit!(key, scope: scope)
+        rate_limit
       end
+    end
+  end
+
+  describe '#check_rate_limit!' do
+    subject(:rate_limit) { rate_limiter.check_rate_limit!(key, scope: scope) }
+
+    it_behaves_like 'checks rate limit by scope'
+  end
+
+  describe '#check_rate_limit_by_user_or_ip!' do
+    subject(:rate_limit) { rate_limiter.check_rate_limit_by_user_or_ip!(key) }
+
+    context 'when current user is present' do
+      let(:scope) { user }
+
+      it_behaves_like 'checks rate limit by scope'
+    end
+
+    context 'when current user is not present rate limits by IP address' do
+      let(:scope) { ip }
+      let(:user) { nil }
+
+      it_behaves_like 'checks rate limit by scope'
     end
   end
 
@@ -74,7 +99,7 @@ RSpec.describe API::Helpers::RateLimiter do
     it 'calls ApplicationRateLimiter#throttle?' do
       expect(::Gitlab::ApplicationRateLimiter).to receive(:throttled?).with(key, scope: scope).and_return(false)
 
-      subject.mark_throttle!(key, scope: scope)
+      rate_limiter.mark_throttle!(key, scope: scope)
     end
   end
 end

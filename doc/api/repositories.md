@@ -235,6 +235,8 @@ Example response:
 Get repository contributors list. This endpoint can be accessed without
 authentication if the repository is publicly accessible.
 
+The commit count returned does not include merge commits.
+
 ```plaintext
 GET /projects/:id/repository/contributors
 ```

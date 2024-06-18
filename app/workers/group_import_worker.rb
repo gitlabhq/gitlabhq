@@ -9,6 +9,8 @@ class GroupImportWorker # rubocop:disable Scalability/IdempotentWorker
   feature_category :importers
 
   def perform(user_id, group_id)
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464675')
+
     current_user = User.find(user_id)
     group = Group.find(group_id)
     group_import_state = group.import_state

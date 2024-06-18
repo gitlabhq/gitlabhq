@@ -53,3 +53,5 @@ class GraphqlChannel < ApplicationCable::Channel # rubocop:disable Gitlab/Namesp
     { channel: self, current_user: current_user, is_sessionless_user: false, scope_validator: scope_validator }
   end
 end
+
+::GraphqlChannel.prepend_mod_with('GraphqlChannel')

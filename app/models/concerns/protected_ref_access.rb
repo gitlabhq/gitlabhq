@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module ProtectedRefAccess
+  include Importable
   extend ActiveSupport::Concern
 
   class_methods do

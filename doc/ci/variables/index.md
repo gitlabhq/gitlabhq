@@ -139,7 +139,9 @@ Prerequisites:
 
 To add or update variables in the project settings:
 
-1. Go to your project's **Settings > CI/CD** and expand the **Variables** section.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
@@ -168,7 +170,9 @@ Prerequisites:
 
 To add a group variable:
 
-1. In the group, go to **Settings > CI/CD**.
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > CI/CD**.
+1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
@@ -190,7 +194,9 @@ DETAILS:
 
 To set a group CI/CD variable to only be available for certain environments:
 
-1. In the group, go to **Settings > CI/CD**.
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > CI/CD**.
+1. Expand **Variables**.
 1. To the right of the variable, select **Edit** (**{pencil}**).
 1. For **Environment scope**, select **All (default)** (`*`), a specific [environment](../environments/index.md#types-of-environments),
    or a wildcard [environment scope](../environments/index.md#limit-the-environment-scope-of-a-cicd-variable).
@@ -210,7 +216,8 @@ Prerequisites:
 To add an instance variable:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Settings > CI/CD** and expand the **Variables** section.
+1. Select **Settings > CI/CD**.
+1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: The value is limited to 10,000 characters, but also bounded by any limits in the
@@ -279,8 +286,8 @@ Prerequisites:
 
 To mask a variable:
 
-1. In the project, group, or Admin Area, go to **Settings > CI/CD**.
-1. Expand the **Variables** section.
+1. For the group, project, or in the Admin Area, select **Settings > CI/CD**.
+1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
 1. Select the **Mask variable** checkbox.
 1. Select **Update variable**.
@@ -297,6 +304,10 @@ the value can contain only:
 
 - Characters from the Base64 alphabet (RFC4648).
 - The `@`, `:`, `.`, or `~` characters.
+
+Masking a variable automatically masks the value anywhere in a job log. If another
+variable has the same value, that value is also masked, including when a variable
+references a masked variable.
 
 Different versions of [GitLab Runner](../runners/index.md) have different masking limitations:
 
@@ -320,8 +331,8 @@ Prerequisites:
 
 To set a variable as protected:
 
-1. Go to **Settings > CI/CD** in the project, group or instance Admin Area.
-1. Expand the **Variables** section.
+1. For the project or group, go to **Settings > CI/CD**.
+1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
 1. Select the **Protect variable** checkbox.
 1. Select **Update variable**.
@@ -467,9 +478,9 @@ variables:
 
 ### Pass an environment variable to another job
 
-You can create a new environment variables in a job, and pass it to another job
-in a later stage. These variables cannot be used as CI/CD variables to configure a pipeline,
-but they can be used in job scripts.
+You can create a new environment variable in a job, and pass it to another job
+in a later stage. These variables cannot be used as CI/CD variables to configure a pipeline
+(for example with the [`rules` keyword](../yaml/index.md#rules)), but they can be used in job scripts.
 
 To pass a job-created environment variable to other jobs:
 
@@ -674,8 +685,8 @@ Prerequisites:
 
 To disable variable expansion for the variable:
 
-1. In the project or group, go to **Settings > CI/CD**.
-1. Expand the **Variables** section.
+1. For the project or group, go to **Settings > CI/CD**.
+1. Expand **Variables**.
 1. Next to the variable you want to do not want expanded, select **Edit**.
 1. Clear the **Expand variable** checkbox.
 1. Select **Update variable**.
@@ -691,7 +702,8 @@ which variables take precedence.
 The order of precedence for variables is (from highest to lowest):
 
 1. [Scan Execution Policies variables](../../user/application_security/policies/scan-execution-policies.md).
-1. These variables all have the same (highest) precedence:
+1. Pipeline variables. These variables all have the same precedence:
+   - [Variables passed to downstream pipelines](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
    - [Trigger variables](../triggers/index.md#pass-cicd-variables-in-the-api-call).
    - [Scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule).
    - [Manual pipeline run variables](../pipelines/index.md#run-a-pipeline-manually).
@@ -727,7 +739,7 @@ have higher precedence than variables defined globally in the `.gitlab-ci.yml` f
 
 ### Override a defined CI/CD variable
 
-You can override the value of a variable when you:
+You can override the value of a variable, including [predefined variables](predefined_variables.md), when you:
 
 - [Run a pipeline manually](../pipelines/index.md#run-a-pipeline-manually) in the UI.
 - Create a pipeline by using [the `pipelines` API endpoint](../../api/pipelines.md#create-a-new-pipeline).
@@ -737,12 +749,11 @@ You can override the value of a variable when you:
   or [by using `dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
 - Specify variables when [running a manual job](../pipelines/index.md#run-a-pipeline-manually).
 
-You should avoid overriding [predefined variables](predefined_variables.md), as it
-can cause the pipeline to behave unexpectedly.
+You should avoid overriding predefined variables in most cases, as it can cause the pipeline to behave unexpectedly.
 
 ### Restrict who can override variables
 
-You can limit the ability to override variables to only users with the Maintainer role.
+You can limit the ability to override variables to only users with at least the Maintainer role.
 When other users try to run a pipeline with overridden variables, they receive the
 `Insufficient permissions to set pipeline variables` error message.
 
@@ -751,6 +762,28 @@ to enable the `restrict_user_defined_variables` setting. The setting is `disable
 
 If you [store your CI/CD configurations in a different repository](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
 use this setting for control over the environment the pipeline runs in.
+
+#### By minimum role
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1 
+
+When the `restrict_user_defined_variables` option is enabled, you can specify which
+[roles](../../user/permissions.md#roles) can override variables with the
+`ci_pipeline_variables_minimum_override_role` setting.
+
+To change the setting, use [the projects API](../../api/projects.md#edit-project)
+to modify `ci_pipeline_variables_minimum_override_role` to one of:
+
+- `owner`: Only users with the Owner role can override variables. You must have the Owner
+  role in the project to change the setting to this value.
+- `maintainer`: Only users with at least the Maintainer role can override variables.
+  Default when not specified.
+- `developer`: Only users with at least the Developer role can override variables.
+- `no_one_allowed`: Users cannot override variables.
+
+If you set the minimum role to `owner`, only users with at least the `owner` role
+can update the `ci_pipeline_variables_minimum_override_role` and `restrict_user_defined_variables`
+settings.
 
 ## Exporting variables
 
@@ -781,38 +814,38 @@ The runner cannot handle manual exports, shell aliases, and functions executed i
 For example, in the following `.gitlab-ci.yml` file, the following scripts are defined:
 
 ```yaml
-    job:
-     variables:
-       JOB_DEFINED_VARIABLE: "job variable"
-     before_script:
-       - echo "This is the 'before_script' script"
-       - export MY_VARIABLE="variable"
-     script:
-       - echo "This is the 'script' script"
-       - echo "JOB_DEFINED_VARIABLE's value is ${JOB_DEFINED_VARIABLE}"
-       - echo "CI_COMMIT_SHA's value is ${CI_COMMIT_SHA}"
-       - echo "MY_VARIABLE's value is ${MY_VARIABLE}"
-     after_script:
-       - echo "JOB_DEFINED_VARIABLE's value is ${JOB_DEFINED_VARIABLE}"
-       - echo "CI_COMMIT_SHA's value is ${CI_COMMIT_SHA}"
-       - echo "MY_VARIABLE's value is ${MY_VARIABLE}"
+job:
+ variables:
+   JOB_DEFINED_VARIABLE: "job variable"
+ before_script:
+   - echo "This is the 'before_script' script"
+   - export MY_VARIABLE="variable"
+ script:
+   - echo "This is the 'script' script"
+   - echo "JOB_DEFINED_VARIABLE's value is ${JOB_DEFINED_VARIABLE}"
+   - echo "CI_COMMIT_SHA's value is ${CI_COMMIT_SHA}"
+   - echo "MY_VARIABLE's value is ${MY_VARIABLE}"
+ after_script:
+   - echo "JOB_DEFINED_VARIABLE's value is ${JOB_DEFINED_VARIABLE}"
+   - echo "CI_COMMIT_SHA's value is ${CI_COMMIT_SHA}"
+   - echo "MY_VARIABLE's value is ${MY_VARIABLE}"
 ```
 
 When the runner executes the job:
 
 1. `before_script` is executed:
-    1. Prints to the output.
-    1. Defines the variable for `MY_VARIABLE`.
+   1. Prints to the output.
+   1. Defines the variable for `MY_VARIABLE`.
 1. `script` is executed:
-    1. Prints to the output.
-    1. Prints the value of `JOB_DEFINED_VARIABLE`.
-    1. Prints the value of `CI_COMMIT_SHA`.
-    1. Prints the value of `MY_VARIABLE`.
+   1. Prints to the output.
+   1. Prints the value of `JOB_DEFINED_VARIABLE`.
+   1. Prints the value of `CI_COMMIT_SHA`.
+   1. Prints the value of `MY_VARIABLE`.
 1. `after_script` is executed in a new, separate shell context:
-    1. Prints to the output.
-    1. Prints the value of `JOB_DEFINED_VARIABLE`.
-    1. Prints the value of `CI_COMMIT_SHA`.
-    1. Prints an empty value of `MY_VARIABLE`. The variable value cannot be detected because `after_script` is in a separate shell context to `before_script`.
+   1. Prints to the output.
+   1. Prints the value of `JOB_DEFINED_VARIABLE`.
+   1. Prints the value of `CI_COMMIT_SHA`.
+   1. Prints an empty value of `MY_VARIABLE`. The variable value cannot be detected because `after_script` is in a separate shell context to `before_script`.
 
 ## Related topics
 

@@ -28,18 +28,6 @@ RSpec.describe 'Projects > Snippets > Create Snippet', :js, feature_category: :s
     visit new_project_snippet_path(project)
   end
 
-  it 'shows collapsible description input' do
-    collapsed = snippet_description_field_collapsed
-
-    expect(page).not_to have_field(snippet_description_locator)
-    expect(collapsed).to be_visible
-
-    collapsed.click
-
-    expect(page).to have_field(snippet_description_locator)
-    expect(collapsed).not_to be_visible
-  end
-
   it 'creates a new snippet' do
     fill_form
     click_button('Create snippet')
@@ -63,7 +51,7 @@ RSpec.describe 'Projects > Snippets > Create Snippet', :js, feature_category: :s
     wait_for_requests
 
     link = find('a.no-attachment-icon img.js-lazy-loaded[alt="banana_sample"]')['src']
-    expect(link).to match(%r{/#{Regexp.escape(project.full_path)}/uploads/\h{32}/banana_sample\.gif\z})
+    expect(link).to match(%r{/-/project/#{project.id}/uploads/\h{32}/banana_sample\.gif\z})
   end
 
   context 'when the git operation fails' do

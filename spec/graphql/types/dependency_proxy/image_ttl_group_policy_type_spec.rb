@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['DependencyProxyImageTtlGroupPolicy'], feature_category: :dependency_proxy do
+RSpec.describe GitlabSchema.types['DependencyProxyImageTtlGroupPolicy'], feature_category: :virtual_registry do
   it { expect(described_class.graphql_name).to eq('DependencyProxyImageTtlGroupPolicy') }
 
   it { expect(described_class.description).to eq('Group-level Dependency Proxy TTL policy settings') }

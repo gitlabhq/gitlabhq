@@ -95,7 +95,7 @@ export default {
         }}</span>
       </div>
       <div class="gl-display-flex gl-justify-content-space-between gl-flex-grow-1">
-        <div class="gl-display-none gl-md-display-block gl-flex-grow-1"></div>
+        <div class="gl-hidden md:gl-block gl-flex-grow-1"></div>
         <span class="js-success-rate gl-flex-grow-1">{{
           sprintf(s__('TestReports|%{rate}%{sign} success rate'), {
             rate: successPercentage,

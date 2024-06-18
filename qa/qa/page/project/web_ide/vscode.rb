@@ -20,7 +20,17 @@ module QA
           end
 
           def has_file?(file_name)
-            has_element?("div[aria-label='#{file_name}']")
+            within_vscode_editor do
+              has_element?("div[aria-label='#{file_name}']")
+            end
+          end
+
+          def has_pending_changes?
+            within_vscode_editor do
+              all_elements('.action-item', minimum: 1).any? do |item|
+                item[:'aria-label'] =~ /Source Control .* \d+ pending changes/
+              end
+            end
           end
 
           def open_file_from_explorer(file_name)
@@ -36,7 +46,7 @@ module QA
           end
 
           def has_right_click_menu_item?
-            has_element?('div.menu-item-check')
+            has_element?('.action-menu-item')
           end
 
           def click_menu_item(item)
@@ -44,7 +54,11 @@ module QA
           end
 
           def click_upload_menu_item
-            click_element('span[aria-label="Upload..."]')
+            selector = 'span[aria-label="Upload..."]'
+            Support::Waiter.wait_until do
+              click_element(selector)
+              has_no_element?(selector, wait: 1)
+            end
           end
 
           def enter_text_for_input(name)
@@ -56,8 +70,8 @@ module QA
             find_element('input[type="file"]', visible: false).send_keys(file)
           end
 
-          def has_commit_pending_tab?
-            has_element?('.scm-viewlet-label')
+          def has_commit_pending_tab?(wait: Capybara.default_max_wait_time)
+            has_element?('.scm-viewlet-label', wait: wait)
           end
 
           def click_commit_pending_tab
@@ -104,7 +118,9 @@ module QA
           end
 
           def has_committed_successfully?
-            has_element?('.span[title="Success! Your changes have been committed."]')
+            within_vscode_editor do
+              has_text?('Success! Your changes have been committed.')
+            end
           end
 
           def has_message?(content)
@@ -117,10 +133,8 @@ module QA
             page.execute_script "window.close();" if page.current_url.include?('ide')
           end
 
-          def ide_tab_closed?
-            within_vscode_editor do
-              has_file_explorer?
-            end
+          def ide_tab_closed?(wait: Capybara.default_max_wait_time)
+            has_no_element?('#ide iframe', wait: wait)
           end
 
           def within_vscode_editor(&block)
@@ -183,16 +197,18 @@ module QA
           def commit_and_push_to_new_branch(file_name)
             commit_toggle(file_name)
             push_to_new_branch
+            Support::Waiter.wait_until { !has_text?("Loading GitLab Web IDE...", wait: 1) }
           end
 
           def commit_and_push_to_existing_branch(file_name)
             commit_toggle(file_name)
             push_to_existing_branch
+            Support::Waiter.wait_until { !has_text?("Loading GitLab Web IDE...", wait: 1) }
           end
 
           def commit_toggle(message)
             within_vscode_editor do
-              if has_commit_pending_tab?
+              if has_commit_pending_tab?(wait: 0)
                 click_commit_pending_tab
               else
                 click_commit_tab
@@ -209,8 +225,8 @@ module QA
           def push_to_existing_branch
             within_vscode_editor do
               click_continue_with_existing_branch
-              has_committed_successfully?
             end
+            raise "failed to push_to_existing_branch" unless has_committed_successfully?
           end
 
           def push_to_new_branch
@@ -219,8 +235,8 @@ module QA
               has_branch_input_field?
               # Typing enter to 'New branch name' popup to take the default branch name
               send_keys(:enter)
-              has_committed_successfully?
             end
+            raise "failed to push_to_new_branch" unless has_committed_successfully?
           end
 
           def create_merge_request
@@ -237,18 +253,9 @@ module QA
               # VSCode eagerly removes the input[type='file'] from click on Upload.
               # We need to execute a script on the iframe to stub out the iframes body.removeChild to add it back in.
               page.execute_script("document.body.removeChild = function(){};")
-
-              # Use for stability, WebIDE inside an iframe is finnicky, webdriver sometimes moves too fast
-              Support::Retrier.retry_until(
-                max_attempts: 5, retry_on_exception: true, sleep_interval: 2
-              ) do
-                right_click_file_explorer
-                has_right_click_menu_item?
-                click_upload_menu_item
-                enter_file_input(file_path)
-              end
-              # Wait for the file to be uploaded
-              has_text?(file_path)
+              right_click_file_explorer
+              click_upload_menu_item
+              enter_file_input(file_path)
             end
           end
 
@@ -318,7 +325,7 @@ module QA
                 click_menu_item(click_item)
                 # Verify the button is triggered and textbox is waiting for input
                 enter_text_for_input(item_name)
-                has_text?(item_name)
+                has_text?(item_name, wait: 1)
               end
             end
           end

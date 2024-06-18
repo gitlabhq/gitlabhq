@@ -21,7 +21,7 @@ export const NAV_LINK_DEFAULT_CLASSES = [
   ...LABEL_DEFAULT_CLASSES,
   'gl-justify-content-space-between',
 ];
-export const NAV_LINK_COUNT_DEFAULT_CLASSES = ['gl-font-sm', 'gl-font-weight-normal'];
+export const NAV_LINK_COUNT_DEFAULT_CLASSES = ['gl-font-sm', 'gl-font-normal'];
 
 export const TRACKING_ACTION_CLICK = 'search:filters:click';
 export const TRACKING_LABEL_APPLY = 'Apply Filters';

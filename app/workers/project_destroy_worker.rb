@@ -14,6 +14,8 @@ class ProjectDestroyWorker
   deduplicate :until_executed, ttl: 2.hours
 
   def perform(project_id, user_id, params)
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/333366')
+
     project = Project.find(project_id)
     user = User.find(user_id)
 

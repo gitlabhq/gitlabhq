@@ -55,16 +55,16 @@ best place to integrate your own product and its results into GitLab.
   vulnerabilities that need to be addressed in the code.
 - When the developer reads the details about a vulnerability, they are
   presented with additional information and choices on next steps:
-    1. Create Issue (Confirm finding): Creates a new issue to be prioritized.
-    1. Add Comment and Dismiss Vulnerability: When dismissing a finding, users
-       can comment to note items that they
-       have mitigated, that they accept the vulnerability, or that the
-       vulnerability is a false positive.
-    1. Auto-Remediation / Create Merge Request: A fix for the vulnerability can
-       be offered, allowing an easy solution that does not require extra effort
-       from users. This should be offered whenever possible.
-    1. Links: Vulnerabilities can link out external sites or sources for users
-       to get more data around the vulnerability.
+  1. Create Issue (Confirm finding): Creates a new issue to be prioritized.
+  1. Add Comment and Dismiss Vulnerability: When dismissing a finding, users
+     can comment to note items that they
+     have mitigated, that they accept the vulnerability, or that the
+     vulnerability is a false positive.
+  1. Auto-Remediation / Create Merge Request: A fix for the vulnerability can
+     be offered, allowing an easy solution that does not require extra effort
+     from users. This should be offered whenever possible.
+  1. Links: Vulnerabilities can link out external sites or sources for users
+     to get more data around the vulnerability.
 
 ## How to onboard
 
@@ -77,7 +77,7 @@ and complete an integration with the Secure stage.
 1. Get a test account to begin developing your integration. You can
    request a [GitLab.com Subscription Sandbox](https://about.gitlab.com/partners/technology-partners/integrate/#gitlabcom-subscription-sandbox-request)
    or an [EE Developer License](https://about.gitlab.com/partners/technology-partners/integrate/#requesting-ultimate-dev-license-for-rd).
-1. Provide a [pipeline job](../../development/pipelines)
+1. Provide a [pipeline job](../../development/pipelines/index.md)
    template that users could integrate into their own GitLab pipelines.
 1. Create a report artifact with your pipeline jobs.
 1. Ensure your pipeline jobs create a report artifact that GitLab can process
@@ -111,7 +111,7 @@ and complete an integration with the Secure stage.
    - Work with our [partner team](https://about.gitlab.com/partners/technology-partners/integrate/)
      to support your go-to-market as appropriate.
    - Examples of supported marketing could include being listed on our [Security Partner page](https://about.gitlab.com/partners/#security),
-     doing an [Unfiltered blog post](https://about.gitlab.com/handbook/marketing/blog/unfiltered/),
+     doing a [blog post](https://handbook.gitlab.com/handbook/marketing/blog/),
      doing a co-branded webinar, or producing a co-branded white paper.
 
 We have a <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [video playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KpMqYxJiOLz-uBIr5w-yP4A)

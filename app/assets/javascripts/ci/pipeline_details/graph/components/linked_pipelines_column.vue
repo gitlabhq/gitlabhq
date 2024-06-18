@@ -58,12 +58,7 @@ export default {
       pipelineExpanded: false,
     };
   },
-  titleClasses: [
-    'gl-font-weight-bold',
-    'gl-pipeline-job-width',
-    'gl-text-truncate',
-    'gl-line-height-36',
-  ],
+  titleClasses: ['gl-font-bold', 'gl-pipeline-job-width', 'gl-text-truncate', 'gl-leading-36'],
   minWidth: `${ONE_COL_WIDTH}px`,
   computed: {
     columnClass() {

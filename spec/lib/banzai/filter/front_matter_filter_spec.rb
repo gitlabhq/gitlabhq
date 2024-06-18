@@ -191,7 +191,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :team_planni
 
   describe 'protects against malicious backtracking' do
     it 'fails fast for strings with many spaces' do
-      content = "coding:" + " " * 50_000 + ";"
+      content = "coding:" + (" " * 50_000) + ";"
 
       expect do
         Timeout.timeout(3.seconds) { filter(content) }
@@ -199,7 +199,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :team_planni
     end
 
     it 'fails fast for strings with many newlines' do
-      content = "coding:\n" + ";;;" + "\n" * 10_000 + "x"
+      content = "coding:\n" + ";;;" + ("\n" * 10_000) + "x"
 
       expect do
         Timeout.timeout(3.seconds) { filter(content) }
@@ -207,7 +207,7 @@ RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :team_planni
     end
 
     it 'fails fast for strings with many `coding:`' do
-      content = "coding:" * 120_000 + "\n" * 80_000 + ";"
+      content = ("coding:" * 120_000) + ("\n" * 80_000) + ";"
 
       expect do
         Timeout.timeout(3.seconds) { filter(content) }

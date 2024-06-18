@@ -2,8 +2,6 @@
 data_category: operational
 key_path: gitlab_pages.enabled
 description: Whether GitLab Pages is enabled
-product_section: ops
-product_stage: create
 product_group: ide
 value_type: boolean
 status: active

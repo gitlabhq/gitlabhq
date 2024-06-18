@@ -7,7 +7,6 @@
 module Packages
   module GcsSignedUrlMetadata
     def url(*args, **kwargs)
-      return super if ::Feature.disabled?(:augment_gcs_signed_url_with_metadata, Feature.current_request)
       return super unless fog_credentials[:provider] == 'Google' && Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- As per https://gitlab.com/groups/gitlab-org/-/epics/8834, we are only interested in egress traffic on Gitlab.com
 
       project = model.try(:project)
@@ -19,7 +18,7 @@ module Packages
         'x-goog-custom-audit-gitlab-size-bytes' => model.try(:size) || size
       }.compact.transform_values(&:to_s)
 
-      super(*args, **kwargs.merge(query: metadata_params))
+      super(*args, **kwargs.deep_merge(query: metadata_params))
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(
         e,

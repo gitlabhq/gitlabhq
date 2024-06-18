@@ -860,18 +860,6 @@ RSpec.describe Snippet, feature_category: :source_code_management do
 
       it { is_expected.to include(project_id: snippet.project.id) }
     end
-
-    context 'when the flag is disabled' do
-      before do
-        stub_feature_flags(webhooks_static_snippet_hook_attrs: false)
-      end
-
-      it 'includes all snippet attributes' do
-        all_attributes = snippet.attributes.merge('url' => Gitlab::UrlBuilder.build(snippet))
-
-        is_expected.to match(all_attributes)
-      end
-    end
   end
 
   describe '#can_cache_field?' do

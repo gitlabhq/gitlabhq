@@ -31,7 +31,7 @@ The hard-coded rules only permit:
 
 Furthermore, configuration in Workhorse can lead to the image scaler rejecting a request if:
 
-- The image file is too large (controlled by [`max_filesize`](- we only rescale images that do not exceed a configured size in bytes (see [`max_filesize`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/workhorse/config.toml.example#L22)))).
+- The image file is too large (controlled by `max_filesize`, we only rescale images that do not exceed a configured size in bytes, see [`max_filesize`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/workhorse/config.toml.example#L22)).
 - Too many image scalers are already running (controlled by [`max_scaler_procs`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/workhorse/config.toml.example#L21)).
 
 For instance, here are two different URLs that serve the GitLab project avatar both in its

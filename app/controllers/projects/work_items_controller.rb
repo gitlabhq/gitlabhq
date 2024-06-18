@@ -11,7 +11,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_frontend_feature_flag(:notifications_todos_buttons)
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, project&.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
   end
 
   feature_category :team_planning

@@ -44,7 +44,7 @@ func gitConfigOptions(a *api.Response) []string {
 func postRPCHandler(
 	a *api.API,
 	name string,
-	handler func(*HttpResponseWriter, *http.Request, *api.Response) (*gitalypb.PackfileNegotiationStatistics, error),
+	handler func(*HTTPResponseWriter, *http.Request, *api.Response) (*gitalypb.PackfileNegotiationStatistics, error),
 	postFunc func(*api.API, *http.Request, *api.Response, *gitalypb.PackfileNegotiationStatistics),
 	errWriter func(io.Writer) error,
 ) http.Handler {
@@ -52,7 +52,7 @@ func postRPCHandler(
 		cr := &countReadCloser{ReadCloser: r.Body}
 		r.Body = cr
 
-		w := NewHttpResponseWriter(rw)
+		w := NewHTTPResponseWriter(rw)
 		defer func() {
 			w.Log(r, cr.Count())
 		}()

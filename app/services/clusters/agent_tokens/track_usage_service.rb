@@ -23,6 +23,10 @@ module Clusters
           # Use update_column so updated_at is skipped
           token.update_columns(track_values)
         end
+      rescue StandardError => e
+        Gitlab::ErrorTracking.track_exception(e, agent_id: token.agent_id)
+
+        ServiceResponse.error(message: e.message)
       end
 
       private

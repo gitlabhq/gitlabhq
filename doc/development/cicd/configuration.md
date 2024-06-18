@@ -98,7 +98,7 @@ end
 private
 
 def file_available?
-  ::Gitlab::Ci::YamlProcessor::FeatureFlags.enabled?(:secret_file_available, type: :beta)
+  ::Gitlab::Ci::Config::FeatureFlags.enabled?(:secret_file_available, type: :beta)
 end
 ```
 
@@ -108,7 +108,7 @@ In entry classes, we have no access to the current project or user. However, it'
 To solve this problem, we have three options;
 
 1. Use `Feature.enabled?(:feature_flag, Feature.current_request)`.
-1. Use `YamlProcessor::FeatureFlags.enabled?(:feature_flag)`
+1. Use `Config::FeatureFlags.enabled?(:feature_flag)`
 1. Do not use feature flags in entry classes and use them in other parts of the code.
 
 ## Testing and Validation

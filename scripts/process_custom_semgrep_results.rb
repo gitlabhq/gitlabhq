@@ -10,8 +10,16 @@ ALLOWED_PROJECT_DIRS = %w[/builds/gitlab-org/gitlab].freeze
 ALLOWED_API_URLS = %w[https://gitlab.com/api/v4].freeze
 
 # Remove this when the feature is fully working
-MESSAGE_FOOTER = "\n\nThis AppSec automation is currently under testing. " \
-                 "Please leave any feedback [here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38)."
+MESSAGE_FOOTER = <<-FOOTER
+\n
+<small>
+This AppSec automation is currently under testing.
+Use ~"appsec-sast::helpful" or ~"appsec-sast::unhelpful" for quick feedback.
+For any detailed feedback, [add a comment here](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/issues/38).
+</small>
+
+/label ~"appsec-sast::commented"
+FOOTER
 
 def perform_allowlist_check
   # Validate CI_PROJECT_DIR and CI_API_V4_URL against the
@@ -117,7 +125,7 @@ def remove_duplicate_findings(path_line_message_dict)
     puts "existing comment from BOT: #{comment}"
     existing_path = comment['position']['new_path']
     existing_line = comment['position']['new_line']
-    existing_message = comment['body']
+    existing_message = comment['body'].gsub(MESSAGE_FOOTER, '')
 
     puts "Found existing comment in file #{existing_path} for line #{existing_line}" if path_line_message_dict[existing_path].include?({ line: existing_line,
                                                                                                                                          message: existing_message })
@@ -188,8 +196,8 @@ def create_inline_comments(path_line_message_dict)
       next if response.instance_of?(Net::HTTPCreated)
 
       puts "Failed to post inline comment with status code #{response.code}: #{response.body}"
-      post_comment "SAST finding at line #{info[:line]} in file #{path}: #{info[:message]}. " \
-                   "\n\n Ping `@gitlab-com/gl-security/product-security/appsec` if you need assistance regarding this finding." + MESSAGE_FOOTER
+      post_comment "SAST finding at line #{new_line} in file #{path}: #{message}." \
+                   "\n Ping `@gitlab-com/gl-security/product-security/appsec` if you need assistance regarding this finding" + MESSAGE_FOOTER
 
       exit 0
     end

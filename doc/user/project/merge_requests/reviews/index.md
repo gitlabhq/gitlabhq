@@ -138,8 +138,8 @@ When you submit your review, GitLab:
   - **Comment**: Leave general feedback without explicit approval.
   - **Approve**: Leave feedback and approve the changes.
   - **Request changes**: Leave feedback the author should address before merging.
-    You can use this status to block the merge request from merging, if the
-    `mr_reviewer_requests_changes` feature flag is enabled.
+    You can use this status to block the merge request from merging, if you enable the
+    `mr_reviewer_requests_changes` feature flag.
 
 ### Prevent merge when you request changes
 
@@ -156,10 +156,13 @@ named `mr_reviewer_requests_changes`.
 On GitLab.com, this feature is not available.
 On GitLab Dedicated, this feature is not available.
 
-When any reviewer [requests changes](#submit-a-review), the merge request is blocked.
+Any reviewer [requesting changes](#submit-a-review) blocks the merge request.
 In the merge request reports area, it shows the message **The change requests must be completed or resolved.**
+The request for changes is resolved when the reviewer who requested changes is asked
+to [re-review](#re-request-a-review) and then approves the merge request.
 
-Users with permission to merge the merge request can override this check in the
+If the user who has previously requested changes is unable to re-review or provide an approval,
+users with permission to merge the merge request can override this check in the
 merge request reports area by selecting **Bypass**.
 
 ### See how reviewers map to approval rules
@@ -169,7 +172,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 When you create a merge request, you want to request reviews from
-subject matter experts for the type of changes you're making. To decrease the number of
+subject matter experts for the changes you're making. To decrease the number of
 review cycles for your merge request, consider requesting reviews from users
 listed in the project's approval rules.
 
@@ -253,7 +256,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [Beta](../../../../policy/experiment-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/modelops/applied-ml/review-recommender/-/epics/3) in GitLab 15.4 as a [beta](../../../../policy/experiment-beta-support.md#beta) feature [with a flag](../../../../administration/feature_flags.md) named `suggested_reviewers_control`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/368356) in GitLab 15.6.
 > - Beta designation [removed from the UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113058) in GitLab 15.10.
 > - Feature flag [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134728) in GitLab 16.6.
@@ -269,7 +272,9 @@ To suggest reviewers, GitLab uses:
 - The changes in the merge request
 - The project's contribution graph
 
-GitLab Duo Suggested Reviewers also integrates with Code Owners, profile status, and merge request rules, helping you make a more informed decision when choosing reviewers that can meet your review criteria.
+GitLab Duo Suggested Reviewers also integrates with Code Owners, profile status,
+and merge request rules. It helps you make a more informed decision when choosing
+reviewers who can meet your review criteria.
 
 ![GitLab Duo Suggested Reviewers](img/suggested_reviewers_v16_3.png)
 
@@ -314,7 +319,7 @@ Merge requests are related to these features:
 - [Revert changes](../revert_changes.md):
   Revert changes from any commit from a merge request.
 - [Keyboard shortcuts](../../../shortcuts.md#merge-requests):
-  Access and modify specific parts of a merge request with keyboard commands.
+  Access and change specific parts of a merge request with keyboard commands.
 
 ## Related topics
 

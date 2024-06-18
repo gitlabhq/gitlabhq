@@ -39,7 +39,7 @@ module Gitlab
           per_background_migration_result_dir = File.join(@result_dir, migration_name)
 
           instrumentation = Instrumentation.new(result_dir: per_background_migration_result_dir,
-                                                observer_classes: observers)
+            observer_classes: observers)
 
           batch_names = (1..).each.lazy.map { |i| "batch_#{i}" }
 
@@ -49,9 +49,9 @@ module Gitlab
             meta = { job_meta: job_meta(j) }
 
             instrumentation.observe(version: nil,
-                                    name: batch_names.next,
-                                    connection: connection,
-                                    meta: meta) do
+              name: batch_names.next,
+              connection: connection,
+              meta: meta) do
               run_job(j)
             end
           end

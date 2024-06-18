@@ -13,12 +13,12 @@ RSpec.describe Gitlab::DataBuilder::Push do
     let(:commits) { project.repository.commits_between(sample.commits.first, sample.commits.last) }
     let(:subject) do
       described_class.build(project: project,
-                            user: user,
-                            ref: sample.target_branch,
-                            commits: commits,
-                            commits_count: commits.length,
-                            message: 'test message',
-                            with_changed_files: with_changed_files)
+        user: user,
+        ref: sample.target_branch,
+        commits: commits,
+        commits_count: commits.length,
+        message: 'test message',
+        with_changed_files: with_changed_files)
     end
 
     context 'with changed files' do

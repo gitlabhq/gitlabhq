@@ -20,6 +20,7 @@ class Group < Namespace
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
   include Todoable
+  include Importable
 
   extend ::Gitlab::Utils::Override
 
@@ -728,7 +729,7 @@ class Group < Namespace
 
     unless only_concrete_membership
       return GroupMember::OWNER if user.can_admin_all_resources?
-      return GroupMember::OWNER if user.can_admin_organization?(organization_id)
+      return GroupMember::OWNER if user.can_admin_organization?(organization)
     end
 
     max_member_access(user)
@@ -766,8 +767,8 @@ class Group < Namespace
 
   def related_group_ids
     [id,
-     *ancestors.pluck(:id),
-     *shared_with_group_links.pluck(:shared_with_group_id)]
+      *ancestors.pluck(:id),
+      *shared_with_group_links.pluck(:shared_with_group_id)]
   end
 
   def hashed_storage?(_feature)
@@ -926,8 +927,8 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_beta, type: :beta)
   end
 
-  def work_items_mvc_2_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_mvc_2)
+  def work_items_alpha_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
   def work_items_rolledup_dates_feature_flag_enabled?

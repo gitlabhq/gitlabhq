@@ -42,7 +42,7 @@
     @include clearfix;
 
     padding: 10px 0;
-    border-bottom: 1px solid $gray-darker;
+    border-bottom: 1px solid $gray-50;
     display: block;
     margin: 0;
 
@@ -51,7 +51,7 @@
     }
 
     &.active {
-      background: $gray-light;
+      background: $gray-10;
 
       a {
         font-weight: $gl-font-weight-bold;
@@ -224,7 +224,7 @@
 */
 @mixin build-log($background: $black) {
   background: $background;
-  color: $gray-darkest;
+  color: $gray-200;
   white-space: pre;
   overflow-x: auto;
   font-size: 12px;
@@ -256,9 +256,9 @@
   z-index: 2;
   position: sticky;
   top: calc(#{$calc-application-header-height} - 1px);
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
   box-shadow: 0 -4px 0 0 var(--white);
-  
+
   .gl-dark & {
     box-shadow: 0 -4px 0 0 var(--gray-10);
   }
@@ -410,7 +410,7 @@
 @mixin avatar-counter($border-radius: 1em) {
   background-color: $gray-400;
   color: $white;
-  border: 1px solid $gray-normal;
+  border: 1px solid $gray-50;
   border-radius: $border-radius;
   font-family: $regular-font;
   font-size: 9px;
@@ -438,7 +438,7 @@
   transition: width $gl-transition-duration-medium;
   height: $toggle-sidebar-height;
   padding: 0 $gl-padding;
-  background-color: $gray-light;
+  background-color: $gray-10;
   border: 0;
   color: $gl-text-color-secondary;
   display: flex;

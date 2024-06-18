@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.boards
 description: Count of Boards created
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active
@@ -17,5 +15,6 @@ tier:
 - free
 - premium
 - ultimate
-performance_indicator_type: []
+performance_indicator_type:
+- devops_report
 milestone: "<13.9"

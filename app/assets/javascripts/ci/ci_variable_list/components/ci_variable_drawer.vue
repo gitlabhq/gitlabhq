@@ -473,7 +473,7 @@ export default {
       </gl-form-group>
       <gl-form-group class="gl-border-none -gl-mb-3">
         <template #label>
-          <div class="gl-mb-n3">
+          <div class="-gl-mb-3">
             {{ $options.i18n.visibility }}
           </div>
         </template>

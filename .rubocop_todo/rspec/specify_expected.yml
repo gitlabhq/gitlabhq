@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 RSpec/SpecifyExpected:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/groups/analytics/repository_analytics_controller_spec.rb'
     - 'ee/spec/graphql/ee/types/branch_protection_type_spec.rb'
@@ -10,7 +9,6 @@ RSpec/SpecifyExpected:
     - 'ee/spec/graphql/ee/types/branch_protections/unprotect_access_level_type_spec.rb'
     - 'ee/spec/graphql/mutations/boards/epic_boards/create_spec.rb'
     - 'ee/spec/graphql/mutations/boards/epic_boards/update_spec.rb'
-    - 'ee/spec/lib/code_suggestions/instructions_extractor_spec.rb'
     - 'ee/spec/lib/ee/sidebars/projects/menus/analytics_menu_spec.rb'
     - 'ee/spec/lib/ee/sidebars/projects/menus/settings_menu_spec.rb'
     - 'ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb'
@@ -32,7 +30,6 @@ RSpec/SpecifyExpected:
     - 'spec/lib/sidebars/groups/menus/ci_cd_menu_spec.rb'
     - 'spec/lib/sidebars/groups/menus/group_information_menu_spec.rb'
     - 'spec/lib/sidebars/groups/menus/issues_menu_spec.rb'
-    - 'spec/lib/sidebars/groups/menus/scope_menu_spec.rb'
     - 'spec/lib/sidebars/groups/menus/settings_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/analytics_menu_spec.rb'
     - 'spec/lib/sidebars/projects/menus/deployments_menu_spec.rb'

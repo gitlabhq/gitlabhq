@@ -62,10 +62,18 @@ module Members
 
     def invites_from_params
       # String, Nil, Array, Integer
-      return params[:user_id] if params[:user_id].is_a?(Array)
-      return [] unless params[:user_id]
+      users = param_to_array(params[:user_id] || params[:username])
+      if params.key?(:username)
+        User.by_username(users).pluck_primary_key
+      else
+        users.to_a
+      end
+    end
 
-      params[:user_id].to_s.split(',').uniq
+    def param_to_array(param)
+      return param if param.is_a?(Array)
+
+      param.to_s.split(',').uniq
     end
 
     def validate_source_type!

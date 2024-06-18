@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::RepositoryCache::Preloader, :use_clean_rails_repository_cache_store_caching,
-                                                   feature_category: :source_code_management do
+  feature_category: :source_code_management do
   let(:projects) { create_list(:project, 2, :repository) }
   let(:repositories) { projects.map(&:repository) }
   let(:cache) { Gitlab::RepositoryCache.store }

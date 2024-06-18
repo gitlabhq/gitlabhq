@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::ProjectsController do
-  let!(:project) { create(:project, :public) }
+RSpec.describe Admin::ProjectsController, feature_category: :groups_and_projects do
+  let_it_be(:project) { create(:project, :public) }
 
   before do
     sign_in(create(:admin))
@@ -105,6 +105,15 @@ RSpec.describe Admin::ProjectsController do
         expect(response).to redirect_to(admin_project_path(project))
         expect(flash[:alert]).to eq s_('TransferProject|Please select a new namespace for your project.')
       end
+    end
+  end
+
+  describe 'DELETE #destroy' do
+    it 'redirects to the admin projects path and displays the flash toast' do
+      delete :destroy, params: { namespace_id: project.namespace, id: project }
+
+      expect(flash[:toast]).to eq(format(_("Project '%{project_name}' is being deleted."), project_name: project.full_name))
+      expect(response).to redirect_to(admin_projects_path)
     end
   end
 end

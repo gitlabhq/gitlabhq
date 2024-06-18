@@ -98,6 +98,22 @@ RSpec.describe RuboCop::Formatter::TodoFormatter, feature_category: :tooling do
       YAML
     end
 
+    context 'with empty exclusions' do
+      before do
+        todo_dir.write('C/EmptyList', <<~YAML)
+          ---
+          C/EmptyList:
+            Exclude:
+        YAML
+
+        todo_dir.inspect_all
+      end
+
+      it 'does not raise an error' do
+        expect { run_formatter }.not_to raise_error
+      end
+    end
+
     context 'with existing HAML exclusions' do
       before do
         todo_dir.write('B/TooManyOffenses', <<~YAML)

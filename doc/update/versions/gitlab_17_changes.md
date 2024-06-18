@@ -18,6 +18,13 @@ Ensure you review these instructions for:
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 8.0](https://docs.gitlab.com/charts/releases/8_0.html).
 
+## 17.1.0
+
+- Bitbucket identities with untrusted `extern_uid` are deleted.
+  For more information, see [issue 452426](https://gitlab.com/gitlab-org/gitlab/-/issues/452426).
+- The default [changelog](../../user/project/changelogs.md) template generates links as full URLs instead of GitLab specific references.
+  For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
+
 ## 17.0.0
 
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.
@@ -25,6 +32,35 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   In GitLab 16.0, we introduced a new runner creation workflow that uses runner authentication tokens to register runners.
   The legacy workflow that uses registration tokens is now disabled by default in GitLab 17.0 and will be removed in GitLab 18.0.
   If registration tokens are still being used, upgrading to GitLab 17.0 will cause runner registration to fail.
+
+- Gitaly storages can no longer share the same path as in this example:
+
+  ```ruby
+  gitaly['configuration'] = {
+    storage: [
+      {
+         name: 'default',
+         path: '/var/opt/gitlab/git-data/repositories',
+      },
+      {
+         name: 'duplicate-path',
+         path: '/var/opt/gitlab/git-data/repositories',
+      },
+    ],
+  }
+  ```
+
+  In this example, the `duplicate-path` storage must be removed or relocated to a new path. If you have
+  more than one Gitaly node, you must ensure only the corresponding storage for that node is listed
+  in that node's `gitlab.rb` file.
+
+  If the storage is removed from a node's `gitlab.rb` file, then any projects associated with it must have their storage updated
+  in the GitLab database. You can update their storage using the Rails console. For example:
+
+  ```shell
+  $ sudo gitlab-rails console
+  Project.where(repository_storage: 'duplicate-path').update_all(repository_storage: 'default')
+  ```
 
 ### Linux package installations
 

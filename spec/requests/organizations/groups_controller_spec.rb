@@ -93,4 +93,105 @@ RSpec.describe Organizations::GroupsController, feature_category: :cell do
       end
     end
   end
+
+  describe 'GET #edit' do
+    let_it_be(:group) { create(:group, organization: organization) }
+
+    context 'when group exists' do
+      subject(:gitlab_request) do
+        get edit_groups_organization_path(organization, id: group.to_param)
+      end
+
+      context 'when the user is not signed in' do
+        it_behaves_like 'organization - redirects to sign in page'
+
+        context 'when `ui_for_organizations` feature flag is disabled' do
+          before do
+            stub_feature_flags(ui_for_organizations: false)
+          end
+
+          it_behaves_like 'organization - redirects to sign in page'
+        end
+      end
+
+      context 'when the user is signed in' do
+        let_it_be(:user) { create(:user) }
+
+        before do
+          sign_in(user)
+        end
+
+        context 'as as admin', :enable_admin_mode do
+          let_it_be(:user) { create(:admin) }
+
+          it_behaves_like 'organization - successful response'
+          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        end
+
+        context 'as a group owner' do
+          before_all do
+            group.add_owner(user)
+          end
+
+          it_behaves_like 'organization - successful response'
+          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        end
+
+        context 'as a user that is not an owner' do
+          it_behaves_like 'organization - not found response'
+          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        end
+
+        context 'as an organization owner' do
+          let_it_be(:user) do
+            organization_user = create(:organization_owner, organization: organization)
+            organization_user.user
+          end
+
+          it_behaves_like 'organization - successful response'
+          it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+        end
+      end
+    end
+
+    context 'when group is not in organization' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:organization_2) { create(:organization) }
+
+      subject(:gitlab_request) do
+        get edit_groups_organization_path(organization_2, id: group.to_param)
+      end
+
+      before_all do
+        group.add_owner(user)
+      end
+
+      before do
+        sign_in(user)
+      end
+
+      it_behaves_like 'organization - not found response'
+      it_behaves_like 'organization - action disabled by `ui_for_organizations` feature flag'
+    end
+
+    context 'when group does not exist' do
+      subject(:gitlab_request) do
+        get edit_groups_organization_path(organization, id: 'group-that-does-not-exist')
+      end
+
+      context 'when the user is not signed in' do
+        it_behaves_like 'organization - redirects to sign in page'
+      end
+
+      context 'when the user is signed in' do
+        let_it_be(:user) { create(:user) }
+
+        before do
+          sign_in(user)
+        end
+
+        it_behaves_like 'organization - not found response'
+      end
+    end
+  end
 end

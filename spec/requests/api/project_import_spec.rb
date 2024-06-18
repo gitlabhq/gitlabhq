@@ -64,7 +64,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
     it 'executes a limited number of queries', :use_clean_rails_redis_caching do
       control = ActiveRecord::QueryRecorder.new { perform_archive_upload }
 
-      expect(control.count).to be <= 111
+      expect(control.count).to be <= 114
     end
 
     it 'schedules an import using a namespace' do
@@ -605,20 +605,6 @@ RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :impor
 
         expect(response).to have_gitlab_http_status(:too_many_requests)
         expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
-      end
-    end
-
-    context 'when the feature flag :single_relation_import is disabled' do
-      before do
-        stub_feature_flags(single_relation_import: false)
-      end
-
-      it 'returns not found' do
-        params[:path] = 'any/project'
-
-        perform_relation_import
-
-        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

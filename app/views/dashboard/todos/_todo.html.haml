@@ -21,7 +21,7 @@
             = _("(removed)")
 
       .todo-body.gl-mb-2.gl-px-2.gl-display-flex.gl-align-items-flex-start
-        .todo-avatar.gl-display-none.gl-sm-display-inline-block
+        .todo-avatar.gl-hidden.sm:gl-inline-block
           = author_avatar(todo, size: 24)
         .todo-note
           - if todo_author_display?(todo)

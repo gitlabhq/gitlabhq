@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Auth::Atlassian::IdentityLinker do
 
   let(:credentials) do
     {
-      token: SecureRandom.alphanumeric(1254),
+      token: SecureRandom.alphanumeric(4550),
       refresh_token: SecureRandom.alphanumeric(1500),
       expires_at: 2.weeks.from_now.to_i,
       expires: true

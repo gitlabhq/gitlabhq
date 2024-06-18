@@ -58,7 +58,6 @@ Some of these services have their own environment variables to override the log 
 
 | Service              | Log level | Environment variable |
 |:---------------------|:----------|:---------------------|
-| GitLab API           | `INFO`    |                      |
 | GitLab Cleanup       | `INFO`    | `DEBUG`              |
 | GitLab Doctor        | `INFO`    | `VERBOSE`            |
 | GitLab Export        | `INFO`    | `EXPORT_DEBUG`       |
@@ -1051,6 +1050,21 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/epic_work_item_sync.log` on Linux package installations.
 - `/home/git/gitlab/log/epic_work_item_sync.log` on self-compiled installations.
+
+## `secret_detection.log`
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137812) in GitLab 16.7.
+
+The `secret_detection.log` file logs information related to [Secret Push Protection](../../user/application_security/secret_detection/secret_push_protection/index.md) feature.
+
+This file is located at:
+
+- `/var/log/gitlab/gitlab-rails/secret_detection.log` on Linux package installations.
+- `/home/git/gitlab/log/secret_detection.log` on self-compiled installations.
 
 ## Registry logs
 

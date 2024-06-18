@@ -103,6 +103,9 @@ You can also [use the API to delete a secondary email address](../../api/users.m
 
 You can make your user profile visible to only you and GitLab administrators.
 
+NOTE:
+A GitLab administrator can [disable](../../administration/settings/account_and_limit_settings.md#allow-users-to-make-their-profiles-private) this setting, forcing all profiles to be made public.
+
 To make your profile private:
 
 1. On the left sidebar, select your avatar.
@@ -146,12 +149,13 @@ To create a new project and add its README to your profile:
    - In the **Project name** field, enter the name for your new project.
    - In the **Project URL** field, select your GitLab username.
    - In the **Project slug** field, enter your GitLab username.
+     All of these fields are case sensitive. If your username has capital letters, enter it into the project slug field with the capitals included.
 1. For **Visibility Level**, select **Public**.
    ![Proper project path for an individual on the hosted product](img/personal_readme_setup_v14_5.png)
 1. For **Project Configuration**, ensure **Initialize repository with a README** is selected.
 1. Select **Create project**.
-1. Create a README file inside this project. The file can be any valid [README or index file](../project/repository/index.md#readme-and-index-files).
-1. Populate the README file with [Markdown](../markdown.md), or another [supported markup language](../project/repository/index.md#supported-markup-languages).
+1. Create a README file inside this project. The file can be any valid [README or index file](../project/repository/files/index.md#readme-and-index-files).
+1. Populate the README file with [Markdown](../markdown.md), or another [supported markup language](../project/repository/files/index.md#supported-markup-languages).
 
 GitLab displays the contents of your README below your contribution graph.
 
@@ -354,20 +358,6 @@ You can disable following and being followed by other users.
 
 NOTE:
 When this feature is being disabled, all current followed/following connections are deleted.
-
-## Advanced code search with zoekt
-
-### Disable searching code with Zoekt
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388519) as a beta feature [with a flag](../feature_flags.md) named `search_code_with_zoekt`. Enabled by default.
-
-You can disable searching with Zoekt and use Elasticsearch instead.
-
-1. On the left sidebar, select your avatar.
-1. Select **Edit profile**.
-1. Select **Preferences**.
-1. Clear the **Enable advanced code search** checkbox.
-1. Select **Save changes**.
 
 ## View a user's activity
 

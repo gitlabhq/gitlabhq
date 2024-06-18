@@ -122,6 +122,12 @@ export const MOCK_NAVIGATION = {
   blobs: {
     label: 'Code',
     scope: 'blobs',
+    link: '/search?scope=blobs&search=et&group_id=123',
+    count_link: '/search/count?scope=blobs&group_id=123&search=et',
+  },
+  blobs2: {
+    label: 'Code2',
+    scope: 'blobs',
     link: '/search?scope=blobs&search=et',
     count_link: '/search/count?scope=blobs&search=et',
   },
@@ -488,6 +494,14 @@ export const MOCK_NAVIGATION_ITEMS = [
   },
   {
     title: 'Code',
+    icon: 'code',
+    link: '/search?scope=blobs&search=et&group_id=123&regex=true',
+    is_active: false,
+    pill_count: '0',
+    items: [],
+  },
+  {
+    title: 'Code2',
     icon: 'code',
     link: '/search?scope=blobs&search=et',
     is_active: false,

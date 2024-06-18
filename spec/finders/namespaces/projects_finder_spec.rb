@@ -6,13 +6,13 @@ RSpec.describe Namespaces::ProjectsFinder, feature_category: :groups_and_project
   let_it_be(:current_user) { create(:user) }
   let_it_be(:namespace) { create(:group, :public) }
   let_it_be(:subgroup) { create(:group, parent: namespace) }
-  let_it_be(:project_1) { create(:project, :public, group: namespace, path: 'project', name: 'Project') }
-  let_it_be(:project_2) { create(:project, :public, group: namespace, path: 'test-project', name: 'Test Project') }
+  let_it_be_with_reload(:project_1) { create(:project, :public, group: namespace, path: 'project', name: 'Project') }
+  let_it_be_with_reload(:project_2) { create(:project, :public, group: namespace, path: 'test-project', name: 'Test Project') }
   let_it_be(:project_3) { create(:project, :public, :issues_disabled, path: 'sub-test-project', group: subgroup, name: 'Sub Test Project') }
-  let_it_be(:project_4) { create(:project, :public, :merge_requests_disabled, path: 'test-project-2', group: namespace, name: 'Test Project 2') }
+  let_it_be_with_reload(:project_4) { create(:project, :public, :merge_requests_disabled, path: 'test-project-2', group: namespace, name: 'Test Project 2') }
   let_it_be(:project_5) { create(:project, group: subgroup, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
-  let_it_be(:project_6) { create(:project, group: namespace, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
-  let_it_be(:project_7) { create(:project, :archived, group: namespace) }
+  let_it_be_with_reload(:project_6) { create(:project, group: namespace, marked_for_deletion_at: 1.day.ago, pending_delete: true) }
+  let_it_be_with_reload(:project_7) { create(:project, :archived, group: namespace) }
 
   let(:params) { {} }
 
@@ -153,6 +153,32 @@ RSpec.describe Namespaces::ProjectsFinder, feature_category: :groups_and_project
 
         it 'returns projects sorted by latest activity' do
           expect(projects).to eq([project_4, project_1, project_2, project_6, project_7])
+        end
+      end
+
+      context 'as storage size' do
+        before do
+          project_1.statistics.update!(repository_size: 10, packages_size: 0)
+          project_2.statistics.update!(repository_size: 12, packages_size: 2)
+          project_4.statistics.update!(repository_size: 11, packages_size: 1)
+          project_6.statistics.update!(repository_size: 13, packages_size: 3)
+          project_7.statistics.update!(repository_size: 14, packages_size: 4)
+        end
+
+        context 'in ascending order' do
+          let(:params) { { sort: :storage_size_asc } }
+
+          it 'returns projects sorted by storage size' do
+            expect(projects).to eq([project_1, project_4, project_2, project_6, project_7])
+          end
+        end
+
+        context 'in descending order' do
+          let(:params) { { sort: :storage_size_desc } }
+
+          it 'returns projects sorted by storage size' do
+            expect(projects).to eq([project_7, project_6, project_2, project_4, project_1])
+          end
         end
       end
     end

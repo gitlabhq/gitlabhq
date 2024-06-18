@@ -8,8 +8,8 @@ module Resolvers
       type Types::WorkItems::TypeType.connection_type, null: true
 
       argument :name, Types::IssueTypeEnum,
-               description: 'Filter work item types by the given name.',
-               required: false
+        description: 'Filter work item types by the given name.',
+        required: false
 
       def resolve_with_lookahead(name: nil)
         context.scoped_set!(:resource_parent, object)
@@ -32,7 +32,8 @@ module Resolvers
 
       def nested_preloads
         {
-          widget_definitions: { allowed_child_types: :allowed_child_types_by_name }
+          widget_definitions: { allowed_child_types: :allowed_child_types_by_name,
+                                allowed_parent_types: :allowed_parent_types_by_name }
         }
       end
     end

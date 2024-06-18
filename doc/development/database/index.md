@@ -72,6 +72,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 - [Foreign keys & associations](foreign_keys.md)
 - [Hash indexes](hash_indexes.md)
 - [Insert into tables in batches](insert_into_tables_in_batches.md)
+- [Batching guidelines](batching_best_practices.md)
 - [Iterating tables in batches](iterating_tables_in_batches.md)
 - [Load balancing](load_balancing.md)
 - [`NOT NULL` constraints](not_null_constraints.md)

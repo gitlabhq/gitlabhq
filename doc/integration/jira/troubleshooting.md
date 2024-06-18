@@ -68,6 +68,16 @@ curl --verbose --user "$USER:$API_TOKEN" "https://$ATLASSIAN_SUBDOMAIN.atlassian
 
 If the user can access the issue, Jira responds with a `200 OK` and the returned JSON includes the Jira issue details.
 
+## GitLab cannot create a Jira issue
+
+When you try to create a Jira issue from a vulnerability, you might see a "field is required" error. For example, `Components is required` because a field called
+"Components" is missing. This occurs because Jira has some required fields
+configured that are not passed by GitLab. To work around this issue:
+
+1. Create a new "Vulnerability" [issue type](https://support.atlassian.com/jira-cloud-administration/docs/what-are-issue-types/) in the Jira instance.
+1. Assign the new issue type to the project.
+1. Alter the field scheme to all "Vulnerabilities" in the project so they do not require the missing field.
+
 ## GitLab cannot close a Jira issue
 
 If GitLab cannot close a Jira issue:
@@ -250,18 +260,30 @@ The Jira issue list does not load if the project key contains a reserved JQL wor
 For more information, see [issue 426176](https://gitlab.com/gitlab-org/gitlab/-/issues/426176).
 Your Jira project key must not have [restricted words and characters](https://confluence.atlassian.com/jirasoftwareserver/advanced-searching-939938733.html#Advancedsearching-restrictionsRestrictedwordsandcharacters).
 
-### Jira credentials not allowed to access the data
+### Errors with Jira credentials
 
-When you try to view the Jira issue list in GitLab, you might get this message:
+When you try to view the Jira issue list in GitLab, you might see one of the following errors.
 
-```plaintext
-The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.
-```
+#### `An error occurred while requesting data from Jira: The value '<project>' does not exist for the field 'project'. Check your Jira integration configuration and try again.`
 
-This error occurs when the Jira credentials cannot access the Jira project key
-you specified in the [Jira issue integration](configure.md#configure-the-integration).
-To resolve this issue, ensure the Jira user you configured in the Jira issue integration
-has permission to view issues associated with the specified Jira project key.
+This error occurs when you use the wrong authentication credentials for your Jira installation:
+
+- **For Jira Cloud**, you must have a Jira Cloud API token
+  and the email address you used to create the token.
+- **For Jira Data Center or Jira Server**, you must have a Jira username and password
+  or, in GitLab 16.0 and later, a Jira personal access token.
+
+For more information, see [Jira issue integration](configure.md).
+
+To resolve this issue, update the authentication credentials to match your Jira installation.
+
+#### `The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.`
+
+This error occurs when the Jira credentials cannot access the Jira project key you specified in the
+[Jira issue integration](configure.md#configure-the-integration).
+
+To resolve this issue, ensure the Jira user you configured in the Jira issue integration has permission to view issues
+associated with the specified Jira project key.
 
 To verify the Jira user has this permission, do one of the following:
 
@@ -284,4 +306,5 @@ Both methods should return a JSON response:
 - `total` gives a count of the issues that match the Jira project key.
 - `issues` contains an array of the issues that match the Jira project key.
 
-For more information about returned status codes, see the [Jira Cloud platform REST API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-get-response).
+For more information about returned status codes, see the
+[Jira Cloud platform REST API documentation](https://developer.atlassian.com/cloud/jira/platform/rest/v2/api-group-issues/#api-rest-api-2-issue-issueidorkey-get-response).

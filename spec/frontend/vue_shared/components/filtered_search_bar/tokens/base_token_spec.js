@@ -130,7 +130,11 @@ describe('BaseToken', () => {
     it('calls `getRecentlyUsedSuggestions` to populate `recentSuggestions` when `recentSuggestionsStorageKey` is defined', () => {
       wrapper = createComponent();
 
-      expect(getRecentlyUsedSuggestions).toHaveBeenCalledWith(mockStorageKey);
+      expect(getRecentlyUsedSuggestions).toHaveBeenCalledWith(
+        mockStorageKey,
+        expect.anything(),
+        expect.anything(),
+      );
     });
   });
 

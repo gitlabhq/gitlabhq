@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::MergeRequestParser do
+RSpec.describe Gitlab::ImportExport::MergeRequestParser, feature_category: :importers do
   include ProjectForksHelper
 
   let(:user) { create(:user) }
@@ -51,6 +51,36 @@ RSpec.describe Gitlab::ImportExport::MergeRequestParser do
       end
 
       expect(parsed_merge_request).to eq(merge_request)
+    end
+
+    describe 'target branch' do
+      before do
+        allow_next_instance_of(described_class) do |instance|
+          allow(instance).to receive(:branch_exists?).and_call_original
+          allow(instance).to receive(:branch_exists?).with(merge_request.target_branch).and_return(false)
+          allow(instance).to receive(:fork_merge_request?).and_return(true)
+        end
+      end
+
+      it 'parses a MR that has no target branch' do
+        expect(parsed_merge_request).to eq(merge_request)
+      end
+
+      context 'when target branch fails to be created' do
+        it 'logs the error' do
+          allow(project.repository).to receive(:create_branch).and_raise(StandardError, 'Error!')
+
+          expect(::Import::Framework::Logger).to receive(:warn).with(
+            message: 'Import warning: Failed to create target branch',
+            target_branch: merge_request.target_branch,
+            diff_head_sha: anything,
+            merge_request_iid: merge_request.iid,
+            error: 'Error!'
+          )
+
+          expect(parsed_merge_request).to eq(merge_request)
+        end
+      end
     end
 
     it 'parses a MR that is closed' do

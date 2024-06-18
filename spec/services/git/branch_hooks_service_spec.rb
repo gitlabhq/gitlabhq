@@ -469,6 +469,7 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
         expect(project.repository).not_to receive(:commits)
         expect(project.repository).not_to receive(:commits_between)
         expect(ProcessCommitWorker).not_to receive(:perform_async)
+        expect(service).to receive(:branch_remove_hooks)
 
         service.execute
 
@@ -555,6 +556,69 @@ RSpec.describe Git::BranchHooksService, :clean_gitlab_redis_shared_state, featur
           expect(service).not_to receive(:branch_create_hooks)
 
           service.execute
+        end
+      end
+    end
+  end
+
+  describe '#enqueue_jira_connect_remove_branches' do
+    let(:newrev) { Gitlab::Git::SHA1_BLANK_SHA }
+
+    context 'when the feature flag is not enabled' do
+      it 'does not call JiraConnect' do
+        expect(Integrations::JiraConnect::RemoveBranchWorker).not_to receive(:perform_async)
+
+        service.execute
+      end
+    end
+
+    context 'when the feature flag is enabled' do
+      before do
+        stub_feature_flags(jira_connect_remove_branches: true)
+      end
+
+      context 'when there is no jira subscription' do
+        it 'does not call JiraConnect' do
+          expect(Integrations::JiraConnect::RemoveBranchWorker).not_to receive(:perform_async)
+
+          service.execute
+        end
+      end
+
+      context 'when there is a jira subscription' do
+        context 'when the branch does not exist on jira' do
+          before do
+            allow(Atlassian::JiraIssueKeyExtractors::Branch)
+                .to receive(:has_keys?)
+                .with(project, branch)
+                .and_return(nil)
+
+            allow(project).to receive(:jira_subscription_exists?).and_return(true)
+          end
+
+          it 'does not call JiraConnect' do
+            expect(Integrations::JiraConnect::RemoveBranchWorker).not_to receive(:perform_async)
+
+            service.execute
+          end
+        end
+
+        context 'when the branch does exist on jira' do
+          before do
+            allow(Atlassian::JiraIssueKeyExtractors::Branch)
+                .to receive(:has_keys?)
+                .with(project, branch)
+                .and_return(branch)
+
+            allow(project).to receive(:jira_subscription_exists?).and_return(true)
+          end
+
+          it 'calls JiraConnect' do
+            expect(Integrations::JiraConnect::RemoveBranchWorker)
+              .to receive(:perform_async)
+
+            service.execute
+          end
         end
       end
     end

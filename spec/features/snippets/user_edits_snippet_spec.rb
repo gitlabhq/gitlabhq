@@ -81,7 +81,7 @@ RSpec.describe 'User edits snippet', :js, feature_category: :source_code_managem
 
     it 'renders edit page and displays the error' do
       expect(page.find('.flash-container')).to have_content('Error updating the snippet - Error Message')
-      expect(page).to have_content('Edit Snippet')
+      expect(page).to have_content('Edit snippet')
     end
   end
 end

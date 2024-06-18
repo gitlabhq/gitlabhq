@@ -44,7 +44,7 @@
   .environment-information {
     border: 1px solid var(--border-color, $border-color);
     padding: 8px $gl-padding 12px;
-    border-radius: $border-radius-default;
+    border-radius: $gl-border-radius-base;
   }
 
   .build-loader-animation {
@@ -171,7 +171,7 @@
   word-break: break-all;
   word-wrap: break-word;
   color: color-yiq($builds-log-bg);
-  border-radius: 0 0 $border-radius-default $border-radius-default;
+  border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
   @include gl-min-h-8;
   background-color: $builds-log-bg;
 }
@@ -185,17 +185,17 @@
 }
 
 .job-log-line {
-  padding: 1px $gl-padding-8 1px $job-log-line-padding;
+  display: flex;
+  padding: 1px $gl-padding-8 1px $gl-padding-8;
   min-height: $gl-line-height-20;
 }
 
 .job-log-line-number {
   color: $gray-500;
-  padding: 0 1em 0 $gl-padding-8;
+  padding-right: $gl-padding-8;
+  margin-right: $gl-padding-8;
   min-width: $job-line-number-width;
-  margin-left: -$job-line-number-margin;
   user-select: none;
-  display: inline-block;
   text-align: right;
 
   &:hover,
@@ -204,6 +204,14 @@
     text-decoration: underline;
     color: $gray-500;
   }
+}
+
+.job-log-time {
+  padding-right: $gl-padding-8;
+  margin-right: $gl-padding-8;
+  color: $gray-500;
+  user-select: none;
+  flex-shrink: 0;
 }
 
 .job-log-line-header {
@@ -216,7 +224,7 @@
   }
 
   .arrow {
-    margin-left: -$job-arrow-margin;
+    left: 0;
   }
 }
 

@@ -42,6 +42,79 @@ This change makes the order distinct so we have "stable" sorting.
 NOTE:
 To make the query efficient, we need an index covering both columns: `(created_at, id)`. The order of the columns **should match** the columns in the `ORDER BY` clause.
 
+### Incremental sorting
+
+In PostgreSQL 13 incremental sorting was added which can help introducing a tie-breaker column to the `ORDER BY` clause without adding or replacing an index. Also, with incremental sorting, introducing a new keyset-paginated database query can happen before the new index is built (async indexes). Incremental sorting is enabled by default.
+
+Consider the following database query:
+
+```sql
+SELECT *
+FROM merge_requests
+WHERE author_id = 1
+ORDER BY created_at ASC
+LIMIT 20
+```
+
+The query will read 20 rows using the following index:
+
+```plaintext
+"index_merge_requests_on_author_id_and_created_at" btree (author_id, created_at)
+```
+
+Using this query with keyset pagination is not possible because the `created_at` column is not unique. Let's add a tie-breaker column:
+
+```sql
+SELECT *
+FROM merge_requests
+WHERE author_id = 1
+ORDER BY created_at ASC, id ASC
+LIMIT 20
+```
+
+Execution plan:
+
+```plaintext
+ Limit  (cost=1.99..30.97 rows=20 width=910) (actual time=1.217..1.220 rows=20 loops=1)
+   Buffers: shared hit=33 read=2
+   I/O Timings: read=0.983 write=0.000
+   ->  Incremental Sort  (cost=1.99..919.33 rows=633 width=910) (actual time=1.215..1.216 rows=20 loops=1)
+         Sort Key: merge_requests.created_at, merge_requests.id
+         Buffers: shared hit=33 read=2
+         I/O Timings: read=0.983 write=0.000
+         ->  Index Scan using index_merge_requests_on_author_id_and_created_at on public.merge_requests  (cost=0.57..890.84 rows=633 width=910) (actual time=0.038..1.139 rows=22 loops=1)
+               Index Cond: (merge_requests.author_id = 1)
+               Buffers: shared hit=24 read=2
+               I/O Timings: read=0.983 write=0.000
+```
+
+As you can see the query read 22 rows using the same index. The database compared the 20th, 21th and 22th value of the `created_at` column and determined that the 22th value differ thus checking the next record is not needed. In this example the 20th and 21th column had the same `created_at` value.
+
+Incremental sorting works well with timestamp columns where duplicated values are unlikely hence the incremental sorting will perform badly or won't be used at all when the column has very few distinct values (like an enum).
+
+As an example, when incremental sorting is disabled, the database reads all merge requests records by the author and sorts data in memory.
+
+```sql
+set enable_incremental_sort=off;
+```
+
+```plaintext
+ Limit  (cost=907.69..907.74 rows=20 width=910) (actual time=2.911..2.917 rows=20 loops=1)
+   Buffers: shared hit=1004
+   ->  Sort  (cost=907.69..909.27 rows=633 width=910) (actual time=2.908..2.911 rows=20 loops=1)
+         Sort Key: created_at, id
+         Sort Method: top-N heapsort  Memory: 52kB
+         Buffers: shared hit=1004
+         ->  Index Scan using index_merge_requests_on_author_id_and_created_at on merge_requests  (cost=0.57..890.84 rows=633 width=910) (actual time=0.042..1.974 rows=1111 loops=1)
+               Index Cond: (author_id = 1)
+               Buffers: shared hit=1111
+ Planning Time: 0.386 ms
+ Execution Time: 3.000 ms
+(11 rows)
+```
+
+In this example the database read 1111 rows and sorted the rows in memory.
+
 ## Ordering by joined table column
 
 Oftentimes, we want to order the data by a column on a joined database table. The following example orders `issues` records by the `first_mentioned_in_commit_at` metric column:

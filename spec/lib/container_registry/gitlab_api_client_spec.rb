@@ -273,16 +273,16 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
     let(:response) do
       [
         {
-          "name": "docker-alpine",
-          "path": "gitlab-org/build/cng/docker-alpine",
-          "created_at": "2022-06-07T12:11:13.633+00:00",
-          "updated_at": "2022-06-07T14:37:49.251+00:00"
+          name: "docker-alpine",
+          path: "gitlab-org/build/cng/docker-alpine",
+          created_at: "2022-06-07T12:11:13.633+00:00",
+          updated_at: "2022-06-07T14:37:49.251+00:00"
         },
         {
-          "name": "git-base",
-          "path": "gitlab-org/build/cng/git-base",
-          "created_at": "2022-06-07T12:11:13.633+00:00",
-          "updated_at": "2022-06-07T14:37:49.251+00:00"
+          name: "git-base",
+          path: "gitlab-org/build/cng/git-base",
+          created_at: "2022-06-07T12:11:13.633+00:00",
+          updated_at: "2022-06-07T14:37:49.251+00:00"
         }
       ]
     end
@@ -468,7 +468,7 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
 
   describe '.deduplicated_size' do
     let(:path) { 'foo/bar' }
-    let(:response) { { 'size_bytes': 555 } }
+    let(:response) { { size_bytes: 555 } }
     let(:registry_enabled) { true }
 
     subject { described_class.deduplicated_size(path) }
@@ -685,16 +685,16 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         let(:client_response_repositories) do
           [
             {
-              "name": "docker-alpine",
-              "path": "gitlab-org/build/cng/docker-alpine",
-              "created_at": "2022-06-07T12:11:13.633+00:00",
-              "updated_at": "2022-06-07T14:37:49.251+00:00"
+              name: "docker-alpine",
+              path: "gitlab-org/build/cng/docker-alpine",
+              created_at: "2022-06-07T12:11:13.633+00:00",
+              updated_at: "2022-06-07T14:37:49.251+00:00"
             },
             {
-              "name": "git-base",
-              "path": "gitlab-org/build/cng/git-base",
-              "created_at": "2022-06-07T12:11:13.633+00:00",
-              "updated_at": "2022-06-07T14:37:49.251+00:00"
+              name: "git-base",
+              path: "gitlab-org/build/cng/git-base",
+              created_at: "2022-06-07T12:11:13.633+00:00",
+              updated_at: "2022-06-07T14:37:49.251+00:00"
             }
           ]
         end
@@ -707,16 +707,16 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         let(:client_response_repositories1) do
           [
             {
-              "name": "docker-alpine",
-              "path": "gitlab-org/build/cng/docker-alpine",
-              "created_at": "2022-06-07T12:11:13.633+00:00",
-              "updated_at": "2022-06-07T14:37:49.251+00:00"
+              name: "docker-alpine",
+              path: "gitlab-org/build/cng/docker-alpine",
+              created_at: "2022-06-07T12:11:13.633+00:00",
+              updated_at: "2022-06-07T14:37:49.251+00:00"
             },
             {
-              "name": "git-base",
-              "path": "gitlab-org/build/cng/git-base",
-              "created_at": "2022-06-07T12:11:13.633+00:00",
-              "updated_at": "2022-06-07T14:37:49.251+00:00"
+              name: "git-base",
+              path: "gitlab-org/build/cng/git-base",
+              created_at: "2022-06-07T12:11:13.633+00:00",
+              updated_at: "2022-06-07T14:37:49.251+00:00"
             }
           ]
         end
@@ -725,16 +725,16 @@ RSpec.describe ContainerRegistry::GitlabApiClient, feature_category: :container_
         let(:client_response_repositories2) do
           [
             {
-              "name": "docker-alpine1",
-              "path": "gitlab-org/build/cng/docker-alpine",
-              "created_at": "2022-06-07T12:11:13.633+00:00",
-              "updated_at": "2022-06-07T14:37:49.251+00:00"
+              name: "docker-alpine1",
+              path: "gitlab-org/build/cng/docker-alpine",
+              created_at: "2022-06-07T12:11:13.633+00:00",
+              updated_at: "2022-06-07T14:37:49.251+00:00"
             },
             {
-              "name": "git-base1",
-              "path": "gitlab-org/build/cng/git-base",
-              "created_at": "2022-06-07T12:11:13.633+00:00",
-              "updated_at": "2022-06-07T14:37:49.251+00:00"
+              name: "git-base1",
+              path: "gitlab-org/build/cng/git-base",
+              created_at: "2022-06-07T12:11:13.633+00:00",
+              updated_at: "2022-06-07T14:37:49.251+00:00"
             }
           ]
         end

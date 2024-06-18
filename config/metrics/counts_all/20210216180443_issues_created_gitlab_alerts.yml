@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.issues_created_gitlab_alerts
 description: Count of all issues created from GitLab alerts (bot and non-bot)
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

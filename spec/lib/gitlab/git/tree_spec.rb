@@ -57,7 +57,7 @@ RSpec.describe Gitlab::Git::Tree, feature_category: :source_code_management do
 
       it 'returns a list of tree objects' do
         expect(entries.map(&:path)).to include('files/html',
-                                               'files/markdown/ruby-style-guide.md')
+          'files/markdown/ruby-style-guide.md')
         expect(entries.count).to be >= 10
         expect(entries).to all(be_a(Gitlab::Git::Tree))
       end

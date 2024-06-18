@@ -1,5 +1,5 @@
 - merge_access_levels = protected_branch.merge_access_levels.for_role
-- push_access_levels = protected_branch.push_access_levels.for_role
+- push_access_levels = protected_branch.push_access_levels
 
 %td.merge_access_levels-container
   = hidden_field_tag "allowed_to_merge_#{protected_branch.id}", merge_access_levels.first&.access_level

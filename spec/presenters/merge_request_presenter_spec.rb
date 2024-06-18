@@ -689,4 +689,27 @@ RSpec.describe MergeRequestPresenter do
       end
     end
   end
+
+  describe '#jenkins_integration_active' do
+    subject do
+      described_class.new(resource, current_user: user)
+        .jenkins_integration_active
+    end
+
+    context 'when Jenkins integration is active' do
+      it 'returns true' do
+        allow(resource.source_project).to receive(:jenkins_integration_active?).and_return(true)
+
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when Jenkins integration is not active' do
+      it 'returns false' do
+        allow(resource.source_project).to receive(:jenkins_integration_active?).and_return(false)
+
+        is_expected.to eq(false)
+      end
+    end
+  end
 end

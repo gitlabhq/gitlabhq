@@ -41,6 +41,7 @@ describe('Work items router', () => {
       router,
       provide: {
         fullPath: 'full-path',
+        groupPath: '',
         isGroup: false,
         issuesListPath: 'full-path/-/issues',
         hasIssueWeightsFeature: false,
@@ -56,6 +57,7 @@ describe('Work items router', () => {
         WorkItemNotes: true,
         WorkItemAwardEmoji: true,
         WorkItemTimeTracking: true,
+        WorkItemAncestors: true,
       },
     });
   };
@@ -63,7 +65,7 @@ describe('Work items router', () => {
   beforeEach(() => {
     window.gon = {
       features: {
-        workItemsMvc2: false,
+        workItemsAlpha: false,
       },
     };
   });
@@ -78,14 +80,14 @@ describe('Work items router', () => {
     expect(wrapper.findComponent(WorkItemsRoot).exists()).toBe(true);
   });
 
-  it('does not render create work item page on `/new` route if `workItemsMvc2` feature flag is off', async () => {
+  it('does not render create work item page on `/new` route if `workItemsAlpha` feature flag is off', async () => {
     await createComponent('/new');
 
     expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(false);
   });
 
   it('renders create work item page on `/new` route', async () => {
-    window.gon.features.workItemsMvc2 = true;
+    window.gon.features.workItemsAlpha = true;
     await createComponent('/new');
 
     expect(wrapper.findComponent(CreateWorkItem).exists()).toBe(true);

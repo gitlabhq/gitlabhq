@@ -33,6 +33,22 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
           )
         end
 
+        context 'with user_detail created' do
+          it 'creates the user_detail record' do
+            expect { service.execute }.to change { UserDetail.count }.by(1)
+          end
+
+          context 'when create_user_details_all_user_creation feature flag is disabled' do
+            before do
+              stub_feature_flags(create_user_details_all_user_creation: false)
+            end
+
+            it 'does not create the user_detail record' do
+              expect { service.execute }.not_to change { UserDetail.count }
+            end
+          end
+        end
+
         context 'when the current_user is not persisted' do
           let(:admin_user) { build(:admin) }
 
@@ -170,6 +186,22 @@ RSpec.describe Users::CreateService, feature_category: :user_management do
           created_by_id: nil,
           admin: false
         )
+      end
+
+      context 'with user_detail created' do
+        it 'creates the user_detail record' do
+          expect { service.execute }.to change { UserDetail.count }.by(1)
+        end
+
+        context 'when create_user_details_all_user_creation feature flag is disabled' do
+          before do
+            stub_feature_flags(create_user_details_all_user_creation: false)
+          end
+
+          it 'does not create the user_detail record' do
+            expect { service.execute }.not_to change { UserDetail.count }
+          end
+        end
       end
     end
   end

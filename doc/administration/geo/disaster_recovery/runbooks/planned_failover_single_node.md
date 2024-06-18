@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 ---
 
 WARNING:
-This runbook is an [Experiment](../../../../policy/experiment-beta-support.md#experiment). For complete, production-ready documentation, see the
+This runbook is an [experiment](../../../../policy/experiment-beta-support.md#experiment). For complete, production-ready documentation, see the
 [disaster recovery documentation](../index.md).
 
 # Disaster Recovery (Geo) promotion runbooks

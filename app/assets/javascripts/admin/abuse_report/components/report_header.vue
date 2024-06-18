@@ -58,7 +58,7 @@ export default {
     <div class="gl-display-flex gl-align-items-center gl-gap-3">
       <gl-badge :variant="badgeVariant" :aria-label="badgeText">
         <gl-icon :name="badgeIcon" class="gl-badge-icon" />
-        <span class="gl-display-none gl-sm-display-block gl-ml-2">{{ badgeText }}</span>
+        <span class="gl-hidden sm:gl-block gl-ml-2">{{ badgeText }}</span>
       </gl-badge>
       <gl-avatar :size="48" :src="user.avatarUrl" />
       <h1 class="gl-font-size-h-display gl-my-0">

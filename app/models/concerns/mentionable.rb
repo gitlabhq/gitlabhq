@@ -25,7 +25,7 @@ module Mentionable
     end
 
     if self < Participable
-      participant -> (user, ext) { all_references(user, extractor: ext) }
+      participant ->(user, ext) { all_references(user, extractor: ext) }
     end
   end
 

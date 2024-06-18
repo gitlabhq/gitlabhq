@@ -56,7 +56,7 @@ module Gitlab
       # rubocop: disable CodeReuse/ActiveRecord
       def batch_clean(start_id: nil, stop_id: nil, dry_run: true, sleep_time: nil, uploader: nil, since: nil)
         relation = Upload.where('lower(path) like ? or lower(path) like ? or lower(path) like ?',
-                                '%.jpg', '%.jpeg', '%.tiff')
+          '%.jpg', '%.jpeg', '%.tiff')
         relation = relation.where(uploader: uploader) if uploader
         relation = relation.where('created_at > ?', since) if since
 

@@ -248,7 +248,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
     let_it_be(:group) { create(:group, path: 'foo') }
 
     context 'as admin' do
-      let(:user) { create(:admin, :without_default_org) }
+      let(:user) { create(:admin) }
 
       before do
         visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
@@ -416,7 +416,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
     it 'removes group', :sidekiq_might_not_need_inline do
       expect { remove_with_confirm('Delete group', group.path) }.to change { Group.count }.by(-1)
       expect(group.members.all.count).to be_zero
-      expect(page).to have_content "scheduled for deletion"
+      expect(page).to have_content "is being deleted"
     end
   end
 

@@ -164,7 +164,6 @@ const SUPPORTED_TRACING_FILTERS = {
   durationMs: ['>', '<'],
   operation: ['=', '!='],
   service: ['=', '!='],
-  period: ['='],
   traceId: ['=', '!='],
   attribute: ['='],
   status: ['=', '!='],
@@ -181,26 +180,7 @@ const TRACING_FILTER_TO_QUERY_PARAM = {
   traceId: 'trace_id',
   status: 'status',
   // `attribute` is handled separately, see `handleAttributeFilter` method
-  // `period` is handled separately, see `handleTracingPeriodFilter` method
 };
-
-function handleTracingPeriodFilter(rawValue, filterName, filterParams) {
-  if (rawValue.trim().indexOf(' ') < 0) {
-    filterParams.append(filterName, rawValue.trim());
-    return;
-  }
-
-  const dateParts = rawValue.split(' - ');
-  if (dateParts.length === 2) {
-    const [start, end] = dateParts;
-    const startDate = new Date(start);
-    const endDate = new Date(end);
-    if (isValidDate(startDate) && isValidDate(endDate)) {
-      filterParams.append('start_time', startDate.toISOString());
-      filterParams.append('end_time', endDate.toISOString());
-    }
-  }
-}
 
 /**
  * Builds URLSearchParams from a filter object of type { [filterName]: undefined | null | Array<{operator: String, value: any} }
@@ -217,9 +197,7 @@ function handleTracingPeriodFilter(rawValue, filterName, filterParams) {
  * @param {Object} filterObj : An Object representing filters
  * @returns URLSearchParams
  */
-function tracingFilterObjToQueryParams(filterObj) {
-  const filterParams = new URLSearchParams();
-
+function addTracingAttributesFiltersToQueryParams(filterObj, filterParams) {
   Object.keys(SUPPORTED_TRACING_FILTERS).forEach((filterName) => {
     const filterValues = Array.isArray(filterObj[filterName]) ? filterObj[filterName] : [];
     const validFilters = filterValues.filter((f) =>
@@ -229,8 +207,6 @@ function tracingFilterObjToQueryParams(filterObj) {
     validFilters.forEach(({ operator, value: rawValue }) => {
       if (filterName === 'attribute') {
         handleAttributeFilter(rawValue, operator, filterParams, 'attr_name', 'attr_value');
-      } else if (filterName === 'period') {
-        handleTracingPeriodFilter(rawValue, filterName, filterParams);
       } else {
         const paramName = getFilterParamName(filterName, operator, TRACING_FILTER_TO_QUERY_PARAM);
         let value = rawValue;
@@ -266,7 +242,17 @@ async function fetchTraces(
   tracingUrl,
   { filters = {}, pageToken, pageSize, sortBy, abortController } = {},
 ) {
-  const params = tracingFilterObjToQueryParams(filters);
+  const params = new URLSearchParams();
+
+  const { attributes, dateRange } = filters;
+
+  if (attributes) {
+    addTracingAttributesFiltersToQueryParams(attributes, params);
+  }
+  if (dateRange) {
+    addDateRangeFilterToQueryParams(dateRange, params);
+  }
+
   if (pageToken) {
     params.append('page_token', pageToken);
   }
@@ -294,7 +280,16 @@ async function fetchTraces(
 }
 
 async function fetchTracesAnalytics(tracingAnalyticsUrl, { filters = {}, abortController } = {}) {
-  const params = tracingFilterObjToQueryParams(filters);
+  const params = new URLSearchParams();
+
+  const { attributes, dateRange } = filters;
+
+  if (attributes) {
+    addTracingAttributesFiltersToQueryParams(attributes, params);
+  }
+  if (dateRange) {
+    addDateRangeFilterToQueryParams(dateRange, params);
+  }
 
   try {
     const { data } = await axios.get(tracingAnalyticsUrl, {
@@ -578,7 +573,10 @@ function addLogsAttributesFiltersToQueryParams(filterObj, filterParams) {
   return filterParams;
 }
 
-export async function fetchLogs(logsSearchUrl, { pageToken, pageSize, filters = {} } = {}) {
+export async function fetchLogs(
+  logsSearchUrl,
+  { pageToken, pageSize, filters = {}, abortController } = {},
+) {
   try {
     const params = new URLSearchParams();
 
@@ -600,6 +598,7 @@ export async function fetchLogs(logsSearchUrl, { pageToken, pageSize, filters = 
     const { data } = await axios.get(logsSearchUrl, {
       withCredentials: true,
       params,
+      signal: abortController?.signal,
     });
     if (!Array.isArray(data.results)) {
       throw new Error('logs are missing/invalid in the response'); // eslint-disable-line @gitlab/require-i18n-strings
@@ -613,7 +612,10 @@ export async function fetchLogs(logsSearchUrl, { pageToken, pageSize, filters = 
   }
 }
 
-export async function fetchLogsSearchMetadata(_logsSearchMetadataUrl, { filters = {} }) {
+export async function fetchLogsSearchMetadata(
+  logsSearchMetadataUrl,
+  { filters = {}, abortController } = {},
+) {
   try {
     const params = new URLSearchParams();
 
@@ -626,354 +628,12 @@ export async function fetchLogsSearchMetadata(_logsSearchMetadataUrl, { filters 
       addLogsAttributesFiltersToQueryParams(attributes, params);
     }
 
-    // TODO remove mocks (and add UTs) when API is ready https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2782
-    // const { data } = await axios.get(logsSearchMetadataUrl, {
-    //   withCredentials: true,
-    //   params,
-    // });
-    // return data;
-
-    return {
-      start_ts: 1713513680617331200,
-      end_ts: 1714723280617331200,
-      summary: {
-        service_names: ['adservice', 'cartservice', 'quoteservice', 'recommendationservice'],
-        trace_flags: [0, 1],
-        severity_names: ['info', 'warn'],
-        severity_numbers: [9, 13],
-      },
-      severity_numbers_counts: [
-        {
-          time: 1713519360000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713545280000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713571200000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713597120000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713623040000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713648960000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713674880000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713700800000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713726720000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713752640000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713778560000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713804480000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713830400000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713856320000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713882240000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713908160000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713934080000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713960000000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1713985920000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714011840000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714037760000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714063680000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714089600000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714115520000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714141440000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714167360000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714193280000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714219200000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714245120000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714271040000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714296960000000000,
-          counts: {
-            13: 0,
-            9: 0,
-          },
-        },
-        {
-          time: 1714322880000000000,
-          counts: {
-            13: 1,
-            9: 26202,
-          },
-        },
-        {
-          time: 1714348800000000000,
-          counts: {
-            13: 0,
-            9: 53103,
-          },
-        },
-        {
-          time: 1714374720000000000,
-          counts: {
-            13: 0,
-            9: 52854,
-          },
-        },
-        {
-          time: 1714400640000000000,
-          counts: {
-            13: 0,
-            9: 49598,
-          },
-        },
-        {
-          time: 1714426560000000000,
-          counts: {
-            13: 0,
-            9: 45266,
-          },
-        },
-        {
-          time: 1714452480000000000,
-          counts: {
-            13: 0,
-            9: 44951,
-          },
-        },
-        {
-          time: 1714478400000000000,
-          counts: {
-            13: 0,
-            9: 45096,
-          },
-        },
-        {
-          time: 1714504320000000000,
-          counts: {
-            13: 0,
-            9: 45301,
-          },
-        },
-        {
-          time: 1714530240000000000,
-          counts: {
-            13: 0,
-            9: 44894,
-          },
-        },
-        {
-          time: 1714556160000000000,
-          counts: {
-            13: 0,
-            9: 45444,
-          },
-        },
-        {
-          time: 1714582080000000000,
-          counts: {
-            13: 0,
-            9: 45067,
-          },
-        },
-        {
-          time: 1714608000000000000,
-          counts: {
-            13: 0,
-            9: 45119,
-          },
-        },
-        {
-          time: 1714633920000000000,
-          counts: {
-            13: 0,
-            9: 45817,
-          },
-        },
-        {
-          time: 1714659840000000000,
-          counts: {
-            13: 0,
-            9: 44574,
-          },
-        },
-        {
-          time: 1714685760000000000,
-          counts: {
-            13: 0,
-            9: 44652,
-          },
-        },
-        {
-          time: 1714711680000000000,
-          counts: {
-            13: 0,
-            9: 20470,
-          },
-        },
-      ],
-    };
+    const { data } = await axios.get(logsSearchMetadataUrl, {
+      withCredentials: true,
+      params,
+      signal: abortController?.signal,
+    });
+    return data;
   } catch (e) {
     return reportErrorAndThrow(e);
   }

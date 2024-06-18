@@ -284,7 +284,7 @@ RSpec.describe Ability do
         end
 
         subject(:readable_merge_requests) do
-          read_cross_project_filter = -> (merge_requests) do
+          read_cross_project_filter = ->(merge_requests) do
             merge_requests.select { |mr| mr.source_project == project }
           end
           described_class.merge_requests_readable_by_user(
@@ -390,7 +390,7 @@ RSpec.describe Ability do
       it 'excludes issues from other projects whithout checking separatly when passing a scope' do
         expect(described_class).not_to receive(:allowed?).with(user, :read_issue, other_project_issue)
 
-        filters = { read_cross_project: -> (issues) { issues.where(project: project) } }
+        filters = { read_cross_project: ->(issues) { issues.where(project: project) } }
         result = described_class.issues_readable_by_user(Issue.all, user, filters: filters)
 
         expect(result).to contain_exactly(issue)
@@ -443,7 +443,7 @@ RSpec.describe Ability do
         end
 
         subject(:readable_feature_flags) do
-          read_cross_project_filter = -> (feature_flags) do
+          read_cross_project_filter = ->(feature_flags) do
             feature_flags.select { |flag| flag.project == project }
           end
           described_class.feature_flags_readable_by_user(

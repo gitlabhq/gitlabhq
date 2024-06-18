@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.analytics.i_analytics_dev_ops_score_monthly
 description: Unique visitors to /admin/dev_ops_reports by month
-product_section: dev
-product_stage: manage
 product_group: optimize
 value_type: number
 status: active

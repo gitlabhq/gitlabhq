@@ -168,7 +168,10 @@ export default {
     const files = prepareDiffData({ diff: data });
     const [newFileData] = files.filter((f) => f.file_hash === file.file_hash);
     const selectedFile = state.diffFiles.find((f) => f.file_hash === file.file_hash);
-    Object.assign(selectedFile, { ...newFileData });
+    Object.assign(selectedFile, {
+      ...newFileData,
+      whitespaceOnlyChange: selectedFile.whitespaceOnlyChange,
+    });
   },
 
   [types.SET_LINE_DISCUSSIONS_FOR_FILE](state, { discussion, diffPositionByLineCode, hash }) {

@@ -180,7 +180,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
       it 'add related issue' do
         click_button 'Add a related issue'
-        fill_in 'Paste issue link', with: "#{issue_b.to_reference(project)} "
+        fill_in 'Enter issue URL', with: "#{issue_b.to_reference(project)} "
         page.within('.linked-issues-card-body') do
           click_button 'Add'
         end
@@ -199,7 +199,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
       it 'add cross-project related issue' do
         click_button 'Add a related issue'
-        fill_in 'Paste issue link', with: "#{issue_project_b_a.to_reference(project)} "
+        fill_in 'Enter issue URL', with: "#{issue_project_b_a.to_reference(project)} "
         page.within('.linked-issues-card-body') do
           click_button 'Add'
         end
@@ -215,8 +215,8 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
       it 'pressing enter should submit the form' do
         click_button 'Add a related issue'
-        fill_in 'Paste issue link', with: "#{issue_project_b_a.to_reference(project)} "
-        find_field('Paste issue link').native.send_key(:enter)
+        fill_in 'Enter issue URL', with: "#{issue_project_b_a.to_reference(project)} "
+        find_field('Enter issue URL').native.send_key(:enter)
 
         wait_for_requests
 
@@ -229,7 +229,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
       it 'disallows duplicate entries' do
         click_button 'Add a related issue'
-        fill_in 'Paste issue link', with: 'duplicate duplicate duplicate'
+        fill_in 'Enter issue URL', with: 'duplicate duplicate duplicate'
 
         items = all('.issue-token')
         expect(items.count).to eq(1)
@@ -242,7 +242,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
       it 'allows us to remove pending issues' do
         # Tests against https://gitlab.com/gitlab-org/gitlab/issues/11625
         click_button 'Add a related issue'
-        fill_in 'Paste issue link', with: 'issue1 issue2 issue3 '
+        fill_in 'Enter issue URL', with: 'issue1 issue2 issue3 '
 
         items = all('.issue-token')
         expect(items.count).to eq(3)
@@ -311,7 +311,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
       it 'add related issue' do
         click_button 'Add a related issue'
-        fill_in 'Paste issue link', with: "##{issue_d.iid} "
+        fill_in 'Enter issue URL', with: "##{issue_d.iid} "
         page.within('.linked-issues-card-body') do
           click_button 'Add'
         end
@@ -329,7 +329,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
       it 'add invalid related issue' do
         click_button 'Add a related issue'
-        fill_in 'Paste issue link', with: '#9999999 '
+        fill_in 'Enter issue URL', with: '#9999999 '
         page.within('.linked-issues-card-body') do
           click_button 'Add'
         end
@@ -346,7 +346,7 @@ RSpec.describe 'Related issues', :js, feature_category: :team_planning do
 
       it 'add unauthorized related issue' do
         click_button 'Add a related issue'
-        fill_in 'Paste issue link', with: "#{issue_project_unauthorized_a.to_reference(project)} "
+        fill_in 'Enter issue URL', with: "#{issue_project_unauthorized_a.to_reference(project)} "
         page.within('.linked-issues-card-body') do
           click_button 'Add'
         end

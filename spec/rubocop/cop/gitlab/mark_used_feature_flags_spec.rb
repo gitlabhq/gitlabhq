@@ -44,8 +44,8 @@ RSpec.describe RuboCop::Cop::Gitlab::MarkUsedFeatureFlags do
     Feature.enabled?
     Feature.disabled?
     push_frontend_feature_flag
-    YamlProcessor::FeatureFlags.enabled?
-    ::Gitlab::Ci::YamlProcessor::FeatureFlags.enabled?
+    Config::FeatureFlags.enabled?
+    ::Gitlab::Ci::Config::FeatureFlags.enabled?
   ].each do |feature_flag_method|
     context "#{feature_flag_method} method" do
       context 'a string feature flag' do

@@ -94,10 +94,10 @@ export default {
 </script>
 <template>
   <div class="dropdown">
-    <div class="gl-display-block js-pipeline-info" data-testid="pipeline-info">
+    <div class="gl-block js-pipeline-info" data-testid="pipeline-info">
       <gl-sprintf :message="pipelineInfo">
         <template #bold="{ content }">
-          <span class="gl-display-inline-flex gl-font-weight-bold">{{ content }}</span>
+          <span class="gl-display-inline-flex gl-font-bold">{{ content }}</span>
         </template>
         <template #id>
           <gl-link

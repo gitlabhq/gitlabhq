@@ -215,16 +215,16 @@ brings something immediately useful.
 
 1. **Implement ActivityPub for social following**.
    After this, the Fediverse can follow activities on GitLab instances.
-    1. ActivityPub to subscribe to project releases.
-    1. ActivityPub to subscribe to project creation in topics.
-    1. ActivityPub to subscribe to project activities.
-    1. ActivityPub to subscribe to group activities.
-    1. ActivityPub to subscribe to user activities.
+   1. ActivityPub to subscribe to project releases.
+   1. ActivityPub to subscribe to project creation in topics.
+   1. ActivityPub to subscribe to project activities.
+   1. ActivityPub to subscribe to group activities.
+   1. ActivityPub to subscribe to user activities.
 1. **Implement cross-instance forks** to enable forking a project from an other instance.
 1. **Implement ActivityPub for cross-instance discussions** to enable discussing
    issues and merge requests from another instance:
-    1. In issues.
-    1. In merge requests.
+   1. In issues.
+   1. In merge requests.
 1. **Implement ActivityPub to submit cross-instance merge requests** to enable
    submitting merge requests to other instances.
 1. **Implement cross-instance search** to enable discovering projects on other instances.

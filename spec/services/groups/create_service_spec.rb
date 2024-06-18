@@ -230,12 +230,6 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
           expect(created_group.organization).to eq(other_organization)
         end
       end
-
-      context 'and has no parent group' do
-        it 'creates group with the current organization' do
-          expect(created_group.organization).to eq(current_organization)
-        end
-      end
     end
 
     context 'when organization_id is set to nil' do
@@ -329,6 +323,30 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   context 'for creating a details record' do
     it 'create the details record connected to the group' do
       expect(created_group.namespace_details).to be_persisted
+    end
+  end
+
+  context 'when an instance-level instance specific integration' do
+    let_it_be(:instance_specific_integration) { create(:beyond_identity_integration) }
+
+    it 'creates integration inheriting from the instance level integration' do
+      expect(created_group.integrations.count).to eq(1)
+      expect(created_group.integrations.last.active).to eq(instance_specific_integration.active)
+      expect(created_group.integrations.last.inherit_from_id).to eq(instance_specific_integration.id)
+    end
+
+    context 'when there is a group-level exclusion' do
+      let(:extra_params) { { parent_id: group.id } }
+      let_it_be(:group) { create(:group) { |g| g.add_owner(user) } }
+      let_it_be(:group_integration) do
+        create(:beyond_identity_integration, group: group, instance: false, active: false)
+      end
+
+      it 'creates a service from the group-level integration' do
+        expect(created_group.integrations.count).to eq(1)
+        expect(created_group.integrations.last.active).to eq(group_integration.active)
+        expect(created_group.integrations.last.inherit_from_id).to eq(group_integration.id)
+      end
     end
   end
 

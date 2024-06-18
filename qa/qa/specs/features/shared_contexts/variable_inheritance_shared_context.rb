@@ -27,14 +27,7 @@ module QA
         description: 'Project for pipeline with variable defined via UI - Downstream',
         group: group)
     end
-
-    let!(:runner) do
-      Resource::GroupRunner.fabricate! do |runner|
-        runner.group = group
-        runner.name = random_string
-        runner.tags = [random_string]
-      end
-    end
+    let!(:runner) { create(:group_runner, group: group, name: random_string, tags: [random_string]) }
 
     before do
       Flow::Login.sign_in

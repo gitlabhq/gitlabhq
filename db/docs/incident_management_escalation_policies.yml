@@ -8,10 +8,6 @@ description: Persists information about escalation policies in a project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60685
 milestone: '13.12'
 gitlab_schema: gitlab_main_cell
-allow_cross_joins:
-- gitlab_main_clusterwide
-allow_cross_transactions:
-- gitlab_main_clusterwide
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:

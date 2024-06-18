@@ -118,7 +118,7 @@ export default {
     regexButtonHighlightClass() {
       return {
         'gl-bg-blue-50!': this.regexButtonState,
-        'gl-shadow-none!': !this.regexButtonState,
+        '!gl-shadow-none': !this.regexButtonState,
       };
     },
   },
@@ -193,7 +193,7 @@ export default {
           v-gl-tooltip.hover
           :title="$options.i18n.label"
           :aria-label="$options.i18n.label"
-          class="gl-sm-display-block gl-display-none gl-ml-2"
+          class="gl-hidden sm:gl-block gl-ml-2"
           :class="regexButtonHighlightClass"
           category="secondary"
           variant="default"

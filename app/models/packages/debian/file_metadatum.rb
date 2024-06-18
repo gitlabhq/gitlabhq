@@ -18,10 +18,10 @@ module Packages
 
       validates :file_type, presence: true
       validates :file_type, inclusion: { in: %w[unknown] },
-        if: -> { package_file&.package&.debian_incoming? || package_file&.package&.processing? }
+        if: -> { package_file&.package&.incoming? || package_file&.package&.processing? }
       validates :file_type,
         inclusion: { in: %w[source dsc deb udeb buildinfo changes ddeb] },
-        if: -> { package_file&.package&.debian_package? && !package_file&.package&.processing? }
+        if: -> { !package_file&.package&.incoming? && !package_file&.package&.processing? }
 
       validates :component,
         presence: true,

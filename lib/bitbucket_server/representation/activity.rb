@@ -61,6 +61,18 @@ module BitbucketServer
         raw.dig('user', 'emailAddress')
       end
 
+      def declined_event?
+        action == 'DECLINED'
+      end
+
+      def decliner_username
+        raw.dig('user', 'slug')
+      end
+
+      def decliner_email
+        raw.dig('user', 'emailAddress')
+      end
+
       def created_at
         self.class.convert_timestamp(created_date)
       end
@@ -74,6 +86,8 @@ module BitbucketServer
           merge_commit: merge_commit,
           approver_username: approver_username,
           approver_email: approver_email,
+          decliner_username: decliner_username,
+          decliner_email: decliner_email,
           created_at: created_at
         }
       end

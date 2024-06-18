@@ -18,13 +18,15 @@ and `GITLAB_ADMIN_PASSWORD`.
 
 Be sure to include the `feature_flag` tag so that the test can be skipped on the appropriate environments.
 
-**Optional metadata:**
+**Required metadata:**
 
 `name`
 
 - Format: `feature_flag: { name: 'feature_flag_name' }`
-- Used only for informational purposes at this time. It should be included to help quickly determine what
+- Used for informational purposes. It shall be included to determine which
   feature flag is under test.
+
+**Optional metadata:**
 
 `scope`
 

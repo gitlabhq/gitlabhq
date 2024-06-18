@@ -82,7 +82,8 @@ module Gitlab
         raise exception if should_raise_for_dev?
       end
 
-      # This should be used when you only want to track the exception.
+      # This should be used when you want to track the exception and not raise
+      # with the default trackers (Sentry and Logger).
       #
       # If the exception implements the method `sentry_extra_data` and that method
       # returns a Hash, then the return value of that method will be merged into
@@ -93,7 +94,7 @@ module Gitlab
       end
 
       # This should be used when you only want to log the exception,
-      # but not send it to Sentry.
+      # but not send it to Sentry or raise.
       #
       # If the exception implements the method `sentry_extra_data` and that method
       # returns a Hash, then the return value of that method will be merged into

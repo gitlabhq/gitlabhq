@@ -12,7 +12,7 @@ class PrometheusAlertEvent < ApplicationRecord
 
   delegate :title, :prometheus_metric_id, to: :prometheus_alert
 
-  scope :for_environment, -> (environment) do
+  scope :for_environment, ->(environment) do
     joins(:prometheus_alert).where(prometheus_alerts: { environment_id: environment })
   end
 

@@ -15,6 +15,7 @@ import {
   WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
+  WIDGET_TYPE_DEVELOPMENT,
   WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
 import WorkItemAssignees from './work_item_assignees.vue';
@@ -23,6 +24,7 @@ import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemTimeTracking from './work_item_time_tracking.vue';
+import WorkItemDevelopment from './work_item_development/work_item_development.vue';
 
 export default {
   components: {
@@ -33,6 +35,7 @@ export default {
     WorkItemDueDate,
     WorkItemParent,
     WorkItemTimeTracking,
+    WorkItemDevelopment,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
@@ -51,6 +54,11 @@ export default {
     workItem: {
       type: Object,
       required: true,
+    },
+    groupPath: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {
@@ -115,6 +123,9 @@ export default {
     },
     workItemAuthor() {
       return this.workItem?.author;
+    },
+    workItemDevelopment() {
+      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT) && this.glFeatures.workItemsAlpha;
     },
   },
   methods: {
@@ -207,6 +218,7 @@ export default {
         :due-date="workItemDueDate.dueDate"
         :start-date="workItemDueDate.startDate"
         :work-item-type="workItemType"
+        :full-path="fullPath"
         :work-item="workItem"
         @error="$emit('error', $event)"
       />
@@ -229,6 +241,7 @@ export default {
         :work-item-id="workItem.id"
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
+        :full-path="fullPath"
         @error="$emit('error', $event)"
       />
     </template>
@@ -236,6 +249,7 @@ export default {
       <work-item-color
         class="gl-mb-5"
         :work-item="workItem"
+        :full-path="fullPath"
         :can-update="canUpdate"
         @error="$emit('error', $event)"
       />
@@ -247,9 +261,18 @@ export default {
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
         :parent="workItemParent"
+        :group-path="groupPath"
         @error="$emit('error', $event)"
       />
     </template>
+    <work-item-development
+      v-if="workItemDevelopment"
+      class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
+      :can-update="canUpdate"
+      :work-item-iid="workItem.iid"
+      :work-item-full-path="fullPath"
+      @error="$emit('error', $event)"
+    />
     <work-item-time-tracking
       v-if="workItemTimeTracking"
       class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"

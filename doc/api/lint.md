@@ -39,7 +39,7 @@ Example responses:
   ```json
   {
     "valid": true,
-    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+    "merged_yaml": "---\ntest_job:\n  script: echo 1\n",
     "errors": [],
     "warnings": []
   }
@@ -50,7 +50,7 @@ Example responses:
   ```json
   {
     "valid": false,
-    "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+    "merged_yaml": "---\ntest_job:\n  script: echo 1\n",
     "errors": [
       "jobs config should contain at least one visible job"
     ],
@@ -94,7 +94,7 @@ Example responses:
 ```json
 {
   "valid": true,
-  "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+  "merged_yaml": "---\ntest_job:\n  script: echo 1\n",
   "errors": [],
   "warnings": []
 }
@@ -105,7 +105,7 @@ Example responses:
 ```json
 {
   "valid": false,
-  "merged_yaml": "---\n:test_job:\n  :script: echo 1\n",
+  "merged_yaml": "---\ntest_job:\n  script: echo 1\n",
   "errors": [
     "jobs config should contain at least one visible job"
   ],
@@ -150,7 +150,7 @@ GitLab API using `curl` and `jq` in a one-line command:
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl "https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true" \
+| curl "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
 --header 'Content-Type: application/json' \
 --data @-
 ```
@@ -167,24 +167,24 @@ jq --raw-output '.merged_yaml | fromjson' <your_input_here>
 Example input:
 
 ```json
-{"status":"valid","errors":[],"merged_yaml":"---\n:.api_test:\n  :rules:\n  - :if: $CI_PIPELINE_SOURCE==\"merge_request_event\"\n    :changes:\n    - src/api/*\n:deploy:\n  :rules:\n  - :when: manual\n    :allow_failure: true\n  :extends:\n  - \".api_test\"\n  :script:\n  - echo \"hello world\"\n"}
+{"status":"valid","errors":[],"merged_yaml":"---\n.api_test:\n  rules:\n  - if: $CI_PIPELINE_SOURCE==\"merge_request_event\"\n    changes:\n    - src/api/*\ndeploy:\n  rules:\n  - when: manual\n    allow_failure: true\n  extends:\n  - \".api_test\"\n  script:\n  - echo \"hello world\"\n"}
 ```
 
 Becomes:
 
 ```yaml
-:.api_test:
-  :rules:
-  - :if: $CI_PIPELINE_SOURCE=="merge_request_event"
-    :changes:
+.api_test:
+  rules:
+  - if: $CI_PIPELINE_SOURCE=="merge_request_event"
+    changes:
     - src/api/*
-:deploy:
-  :rules:
-  - :when: manual
-    :allow_failure: true
-  :extends:
+deploy:
+  rules:
+  - when: manual
+    allow_failure: true
+  extends:
   - ".api_test"
-  :script:
+  script:
   - echo "hello world"
 ```
 
@@ -197,7 +197,7 @@ With a one-line command, you can:
 
 ```shell
 jq --null-input --arg yaml "$(<example-gitlab-ci.yml)" '.content=$yaml' \
-| curl "https://gitlab.com/api/v4/ci/lint?include_merged_yaml=true" \
+| curl "https://gitlab.com/api/v4/projects/:id/ci/lint?include_merged_yaml=true" \
 --header 'Content-Type: application/json' --data @- \
 | jq --raw-output '.merged_yaml | fromjson'
 ```

@@ -10,31 +10,6 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
     assign(:project, project)
   end
 
-  it 'includes a link to clone the repository' do
-    render
-
-    expect(rendered).to have_link('Clone repository')
-  end
-
-  it 'includes a link to a list of templates' do
-    render
-
-    expect(rendered).to have_link('Templates')
-  end
-
-  context 'the sidebar failed to load' do
-    before do
-      assign(:sidebar_error, Object.new)
-    end
-
-    it 'reports this to the user' do
-      render
-
-      expect(rendered).to include('The sidebar failed to load')
-      expect(rendered).to have_css('.gl-alert.gl-alert-info')
-    end
-  end
-
   context 'The sidebar comes from a custom page' do
     before do
       assign(:sidebar_page, double('WikiPage', path: 'sidebar.md', slug: 'sidebar', content: 'Some sidebar content', wiki: wiki))
@@ -54,59 +29,34 @@ RSpec.describe 'shared/wikis/_sidebar.html.haml' do
     end
   end
 
-  context 'The sidebar comes a list of wiki pages' do
-    before do
-      assign(:sidebar_wiki_entries, create_list(:wiki_page, 3, wiki: wiki))
-      assign(:sidebar_limited, true)
-      stub_template "shared/wikis/_wiki_pages.html.erb" => "Entries: <%= @sidebar_wiki_entries.size %>"
-      stub_template "shared/wikis/_wiki_page.html.erb" => 'A WIKI PAGE'
-    end
-
-    it 'does not show an alert' do
-      render
-
-      expect(rendered).not_to include('The sidebar failed to load')
-      expect(rendered).not_to have_css('.gl-alert.gl-alert-info')
-    end
-
-    it 'renders the wiki content' do
-      render
-
-      expect(rendered).to include("A WIKI PAGE\n" * 3)
-      expect(rendered).to have_link('View All Pages')
-    end
-
-    context 'there is no more to see' do
-      it 'does not invite the user to view more' do
-        assign(:sidebar_limited, false)
+  describe 'link to edit the sidebar' do
+    context 'when the user has edit permission and there are wiki pages' do
+      before do
+        create(:wiki_page, wiki: wiki, title: 'home', content: 'Home page')
+        assign(:wiki_pages_count, 3)
+        allow(view).to receive(:can?).with(anything, :create_wiki, anything).and_return(can_edit)
 
         render
-
-        expect(rendered).not_to have_link('View All Pages')
       end
-    end
-  end
 
-  describe 'link to edit the sidebar' do
-    before do
-      allow(view).to receive(:can?).with(anything, :create_wiki, anything).and_return(can_edit)
-
-      render
-    end
-
-    context 'when the user has edit permission' do
       let(:can_edit) { true }
 
       it 'renders the link' do
-        expect(rendered).to have_link('Edit sidebar', href: wiki_page_path(wiki, Wiki::SIDEBAR, action: :edit))
+        expect(rendered).to have_link('Add custom sidebar', href: wiki_page_path(wiki, Wiki::SIDEBAR, action: :edit))
       end
     end
 
-    context 'when the user does not have edit permission' do
+    context 'when the user does not have edit permission and there are no wiki pages' do
+      before do
+        allow(view).to receive(:can?).with(anything, :create_wiki, anything).and_return(can_edit)
+
+        render
+      end
+
       let(:can_edit) { false }
 
       it 'does not render the link' do
-        expect(rendered).not_to have_link('Edit sidebar')
+        expect(rendered).not_to have_link('Add custom sidebar')
       end
     end
   end

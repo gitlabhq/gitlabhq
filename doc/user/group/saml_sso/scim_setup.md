@@ -226,7 +226,11 @@ During the synchronization process, all new users:
 The following diagram describes what happens when you add users to your SCIM app:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+accTitle: Adding users to your SCIM application
+accDescr: How GitLab determines whether or not to associate a SCIM identity with a user.
+
   A[Add User to SCIM app] -->|IdP sends user info to GitLab| B(GitLab: Does the email exist?)
   B -->|No| C[GitLab creates user with SCIM identity]
   B -->|Yes| D(GitLab: Is the user part of the group?)
@@ -285,7 +289,11 @@ NOTE:
 Deprovisioning does not delete the GitLab user account.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
+accTitle: Deprovisioning users
+accDescr: How removing users from your SCIM app removes them from GitLab groups.
+
   A[Remove User from SCIM app] -->|IdP sends request to GitLab| B(GitLab: Is the user part of the group?)
   B -->|No| C[Nothing to do]
   B -->|Yes| D[GitLab removes user from GitLab group]

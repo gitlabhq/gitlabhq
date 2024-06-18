@@ -2,11 +2,11 @@
 
 RSpec.shared_examples "protected branches > access control > CE" do
   let(:no_one) { ProtectedRef::AccessLevel.humanize(::Gitlab::Access::NO_ACCESS) }
-  let_it_be(:edit_form) { '.js-protected-branch-edit-form' }
+  let(:edit_form) { '.js-protected-branch-edit-form' }
 
   ProtectedRef::AccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
     it "allows creating protected branches that #{access_type_name} can push to",
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/437793' do
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/462438' do
       visit project_protected_branches_path(project)
 
       show_add_form
@@ -33,7 +33,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
     end
 
     it "allows updating protected branches so that #{access_type_name} can push to them",
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/425080' do
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/462438' do
       visit project_protected_branches_path(project)
 
       show_add_form
@@ -51,7 +51,7 @@ RSpec.shared_examples "protected branches > access control > CE" do
     end
 
     it "allows updating protected branches so that #{access_type_name} can merge to them",
-      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/425080' do
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/462438' do
       visit project_protected_branches_path(project)
 
       show_add_form

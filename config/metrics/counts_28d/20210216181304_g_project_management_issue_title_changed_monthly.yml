@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.issues_edit.g_project_management_issue_title_changed_monthly
 description: Count of MAU editing an issue title
-product_section: dev
-product_stage: plan
 product_group: project_management
 value_type: number
 status: active

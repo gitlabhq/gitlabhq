@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.issues_created_from_alerts
 description: Count of issues created automatically on alerts from GitLab-Managed Prometheus
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

@@ -16,7 +16,7 @@ module Gitlab
       MATCHING_BASIC_FIELDS = %i[
         author_id iid state_id title title_html description description_html cached_markdown_version lock_version
         last_edited_at last_edited_by_id created_at updated_at closed_at closed_by_id confidential
-        external_key
+        external_key imported_from
       ].freeze
 
       class Epics < ApplicationRecord
@@ -46,15 +46,18 @@ module Gitlab
 
       def perform
         each_sub_batch do |sub_batch|
+          # prevent an epic being updated while we sync its data to issues table. Wrap the locking into a transaction
+          # so that locks are kept for the duration of transaction.
+          sub_batch_with_lock = sub_batch.lock!('FOR UPDATE')
           # First update any epics with a not null issue_id and only afterwards follow-up with the epics
           # without an issue_id, otherwise we end up updating the same issues/epics twice, as first time we'd
           # fetch epics without an issue_id then set the issue_id and then we query the same batch for epics
           # with an issue_id we just did set.
-          backfill_epics_with_synced_work_item(sub_batch)
-          backfill_epics_without_synced_work_item(sub_batch)
+          backfill_epics_with_synced_work_item(sub_batch_with_lock)
+          backfill_epics_without_synced_work_item(sub_batch_with_lock)
           # force reload the batch as it now should have the issue_id set and we need it
           # to create work_item_colors records.
-          backfill_epics_color(sub_batch.all)
+          backfill_epics_color(sub_batch_with_lock.all)
         end
       end
 
@@ -62,11 +65,8 @@ module Gitlab
 
       def backfill_epics_without_synced_work_item(sub_batch)
         Issues.transaction do
-          # prevent an epic being updated while we sync its data to issues table. Wrap the locking into a transaction
-          # so that locks are kept for the duration of transaction.
-          # without_sync_work_item = sub_batch.where(issue_id: nil).lock!('FOR UPDATE').load
           cte = Gitlab::SQL::CTE.new(:batched_relation, sub_batch)
-          without_sync_work_item = cte.apply_to(Epics.all).where(issue_id: nil).lock!('FOR UPDATE').load
+          without_sync_work_item = cte.apply_to(Epics.all).where(issue_id: nil)
           work_items = build_work_items(epic_work_item_type_id, without_sync_work_item)
 
           unless work_items.blank?
@@ -81,11 +81,8 @@ module Gitlab
 
       def backfill_epics_with_synced_work_item(sub_batch)
         Issues.transaction do
-          # prevent an epic being updated while we sync its data to issues table. Wrap the locking into a transaction
-          # so that locks are kept for the duration of transaction.
-          # with_sync_work_item = sub_batch.where.not(issue_id: nil).lock!('FOR UPDATE').load
           cte = Gitlab::SQL::CTE.new(:batched_relation, sub_batch)
-          with_sync_work_item = cte.apply_to(Epics.all).where.not(issue_id: nil).lock!('FOR UPDATE').load
+          with_sync_work_item = cte.apply_to(Epics.all).where.not(issue_id: nil)
           work_items = build_work_items(epic_work_item_type_id, with_sync_work_item, epics_with_synced_work_item: true)
 
           Issues.upsert_all(work_items, unique_by: :id) unless work_items.blank?
@@ -94,9 +91,6 @@ module Gitlab
 
       def backfill_epics_color(sub_batch)
         Issues.transaction do
-          # prevent an epic being updated while we sync its data to issues table. Wrap the locking into a transaction
-          # so that locks are kept for the duration of transaction.
-          sub_batch.where(issue_id: nil).lock!('FOR UPDATE').load
           work_items_color = build_work_items_color(sub_batch)
 
           WorkItemColors.upsert_all(work_items_color, unique_by: :issue_id) unless work_items_color.blank?

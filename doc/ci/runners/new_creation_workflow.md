@@ -66,6 +66,11 @@ To avoid a broken workflow, you must:
 1. Replace the registration token in your runner registration workflow with the
    authentication token.
 
+WARNING:
+In GitLab 17.0 and later, runner registration tokens are disabled.
+To use stored runner registration tokens to register new runners,
+you must [enable the tokens](../../administration/settings/continuous_integration.md#enable-runner-registrations-tokens).
+
 ## Using registration tokens after GitLab 17.0
 
 To continue using registration tokens after GitLab 17.0:
@@ -74,8 +79,6 @@ To continue using registration tokens after GitLab 17.0:
   in the top-level group settings until GitLab 18.0.
 - On GitLab self-managed, you can manually [enable the legacy runner registration process](../../administration/settings/continuous_integration.md#enable-runner-registrations-tokens)
   in the Admin Area settings until GitLab 18.0.
-
-Plans to implement a UI setting to re-enable registration tokens are proposed in [issue 411923](https://gitlab.com/gitlab-org/gitlab/-/issues/411923)
 
 ## Impact on existing runners
 
@@ -118,7 +121,7 @@ gitlab-runner register \
     --run-untagged "false" \
     --locked "false" \
     --access-level "not_protected" \
-    --registration-token "GR1348941C6YcZVddc8kjtdU-yWYD"
+    --registration-token "REDACTED"
 ```
 
 In GitLab 15.10 and later, you create the runner and some of the attributes in the UI, like the
@@ -132,7 +135,7 @@ gitlab-runner register \
     --non-interactive \
     --executor "shell" \
     --url "https://gitlab.com/" \
-    --token "glrt-2CR8_eVxiioB1QmzPZwa"
+    --token "REDACTED"
 ```
 
 ## Impact on autoscaling
@@ -175,6 +178,8 @@ runUntagged: true
 protected: true
 ```
 
+The replacement field for the invalid `runnerRegistrationToken` field is the `runnerToken` field. In the context of the GitLab Runner on Kubernetes, Helm deploy passes the runner `authentication token` to the runner worker pod and the runner configuration is created. If you continue to use the `runnerRegistrationToken` token field on Kubernetes hosted runners attached to GitLab.com, then the runner worker pod tries, on creation, to use the Registration API method that is no longer supported as of GitLab 17.0.
+
 If you store the runner authentication token in `secrets`, you must also modify them.
 
 In the legacy runner registration workflow, fields were specified with:
@@ -216,6 +221,16 @@ in the runner details page.
 For more information, see [issue 423523](https://gitlab.com/gitlab-org/gitlab/-/issues/423523).
 
 ### Runner authentication token does not update when rotated
+
+#### Token rotation with the same runner registered in multiple runner managers
+
+When you use the new workflow to register your runners on multiple host machines and
+the runner authentication token rotates automatically, only the first runner manager
+to handle the token renewal request receives the new token.
+The remaining runner managers continue to use the invalid token and become disconnected.
+You must update these managers manually to use the new token.
+
+#### Token rotation in GitLab Operator
 
 When you use the new registration workflow to register your runners with the GitLab Operator,
 the runner authentication token referenced by the Custom Resource Definition does not update when the token is rotated.

@@ -11,6 +11,11 @@ describe QA::Support::Formatters::TestMetricsFormatter do
 
   let(:url) { 'http://influxdb.net' }
   let(:token) { 'token' }
+  let(:metrics_gcs_project_id) { 'metrics-gcs-project' }
+  let(:metrics_gcs_creds) { 'metrics-gcs-creds' }
+  let(:metrics_gcs_bucket_name) { 'metrics-gcs-bucket' }
+  let(:gcs_client_options) { { force: true, content_type: 'application/json' } }
+  let(:gcs_client) { double("Fog::Storage::GoogleJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- instance_double complains put_object is not implemented but it is
   let(:ci_timestamp) { '2021-02-23T20:58:41Z' }
   let(:ci_job_name) { 'test-job 1/5' }
   let(:ci_job_url) { 'url' }
@@ -21,6 +26,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:smoke) { 'false' }
   let(:blocking) { 'false' }
   let(:quarantined) { 'false' }
+  let(:failure_issue) { '' }
   let(:influx_client) { instance_double('InfluxDB2::Client', create_write_api: influx_write_api) }
   let(:influx_write_api) { instance_double('InfluxDB2::WriteApi', write: nil) }
   let(:file_path) { "./qa/specs/features/1_manage/subfolder/some_spec.rb" }
@@ -36,7 +42,9 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     {
       bucket: 'e2e-test-stats',
       org: 'gitlab-qa',
-      precision: InfluxDB2::WritePrecision::NANOSECOND
+      precision: InfluxDB2::WritePrecision::NANOSECOND,
+      read_timeout: 10,
+      open_timeout: 10
     }
   end
 
@@ -97,6 +105,10 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   before do
     allow(::Gitlab::QA::Runtime::Env).to receive(:retry_failed_specs?).and_return(retry_failed_specs)
     allow(InfluxDB2::Client).to receive(:new).with(url, token, **influx_client_args) { influx_client }
+    allow(Fog::Storage::Google).to receive(:new)
+                                     .with(google_project: metrics_gcs_project_id,
+                                       google_json_key_string: metrics_gcs_creds)
+                                     .and_return(gcs_client)
     allow(QA::Tools::TestResourceDataProcessor).to receive(:resources) { fabrication_resources }
     allow_any_instance_of(RSpec::Core::Example::ExecutionResult).to receive(:run_time).and_return(0) # rubocop:disable RSpec/AnyInstanceOf -- simplifies mocking runtime
   end
@@ -121,13 +133,42 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     end
   end
 
-  context 'with influxdb variables configured' do
+  context 'without GCS variables configured' do
+    it 'skips export without gcs creds' do
+      stub_env('QA_METRICS_GCS_CREDS', nil)
+
+      run_spec
+
+      expect(gcs_client).not_to have_received(:put_object)
+    end
+
+    it 'skips export without gcs project id' do
+      stub_env('QA_METRICS_GCS_PROJECT_ID', nil)
+
+      run_spec
+
+      expect(gcs_client).not_to have_received(:put_object)
+    end
+
+    it 'skips export without gcs bucket name' do
+      stub_env('QA_METRICS_GCS_BUCKET_NAME', nil)
+
+      run_spec
+
+      expect(gcs_client).not_to have_received(:put_object)
+    end
+  end
+
+  context 'with influxdb and GCS variables configured' do
     let(:spec_name) { 'exports data' }
     let(:run_type) { ci_job_name.gsub(%r{ \d{1,2}/\d{1,2}}, '') }
 
     before do
       stub_env('QA_INFLUXDB_URL', url)
       stub_env('QA_INFLUXDB_TOKEN', token)
+      stub_env('QA_METRICS_GCS_PROJECT_ID', metrics_gcs_project_id)
+      stub_env('QA_METRICS_GCS_CREDS', metrics_gcs_creds)
+      stub_env('QA_METRICS_GCS_BUCKET_NAME', metrics_gcs_bucket_name)
       stub_env('CI_PIPELINE_CREATED_AT', ci_timestamp)
       stub_env('CI_JOB_URL', ci_job_url)
       stub_env('CI_JOB_NAME', ci_job_name)
@@ -139,30 +180,36 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       stub_env('QA_RUN_TYPE', run_type)
       stub_env('QA_EXPORT_TEST_METRICS', "true")
       stub_env('QA_RSPEC_RETRIED', "false")
+      stub_env('QA_INFLUXDB_TIMEOUT', "10")
     end
 
     context 'with blocking spec' do
       let(:blocking) { 'true' }
 
-      it 'exports data to influxdb with correct blocking tag' do
+      it 'exports data with correct blocking tag', :aggregate_failures do
         run_spec do
           it('spec', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [data].to_json, **gcs_client_options)
       end
     end
 
     context 'with product group tag' do
-      it 'exports data to influxdb with correct blocking tag' do
+      let(:expected_data) { [data.tap { |d| d[:tags][:product_group] = :import }] }
+
+      it 'exports data with correct product group tag' do
         run_spec do
           it('spec', product_group: :import, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(
-          data: [data.tap { |d| d[:tags][:product_group] = :import }]
+          data: expected_data
         )
       end
     end
@@ -170,56 +217,102 @@ describe QA::Support::Formatters::TestMetricsFormatter do
     context 'with smoke spec' do
       let(:smoke) { 'true' }
 
-      it 'exports data to influxdb with correct smoke tag' do
+      it 'exports data with correct blocking tag', :aggregate_failures do
         run_spec do
           it('spec', :smoke, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [data].to_json, **gcs_client_options)
       end
     end
 
     context 'with quarantined spec' do
       let(:quarantined) { 'true' }
       let(:status) { :pending }
+      let(:expected_data) do
+        data.tap do |d|
+          d[:fields] = {
+            id: './spec/support/formatters/test_metrics_formatter_spec.rb[1:1]',
+            run_time: 0,
+            api_fabrication: api_fabrication * 1000,
+            ui_fabrication: ui_fabrication * 1000,
+            total_fabrication: (api_fabrication + ui_fabrication) * 1000,
+            job_url: ci_job_url,
+            pipeline_url: ci_pipeline_url,
+            pipeline_id: ci_pipeline_id,
+            job_id: ci_job_id,
+            failure_issue: 'https://example.com/issue/1234',
+            failure_exception: ''
+          }
+        end
+      end
 
-      it 'exports data to influxdb with correct quarantine tag' do
+      it 'exports data with correct quarantine tag', :aggregate_failures do
         run_spec do
           it(
             'spec',
-            :quarantine,
+            quarantine: {
+              type: :stale,
+              issue: 'https://example.com/issue/1234'
+            },
             skip: 'quarantined',
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
           ) {}
         end
 
         expect(influx_write_api).to have_received(:write).once
-        expect(influx_write_api).to have_received(:write).with(data: [data])
+        expect(influx_write_api).to have_received(:write).with(data: [expected_data])
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [expected_data].to_json, **gcs_client_options)
       end
     end
 
     context 'with context quarantined spec' do
       let(:quarantined) { 'false' }
+      let(:expected_data) do
+        data.tap do |d|
+          d[:fields] = {
+            id: './spec/support/formatters/test_metrics_formatter_spec.rb[1:1]',
+            run_time: 0,
+            api_fabrication: api_fabrication * 1000,
+            ui_fabrication: ui_fabrication * 1000,
+            total_fabrication: (api_fabrication + ui_fabrication) * 1000,
+            job_url: ci_job_url,
+            pipeline_url: ci_pipeline_url,
+            pipeline_id: ci_pipeline_id,
+            job_id: ci_job_id,
+            failure_issue: 'https://example.com/issue/1234',
+            failure_exception: ''
+          }
+        end
+      end
 
-      it 'exports data to influxdb with correct quarantine tag' do
+      it 'exports data with correct quarantine tag', :aggregate_failures do
         run_spec do
           it(
             'spec',
-            quarantine: { only: { job: 'praefect' } },
+            quarantine: { only: { job: 'praefect' }, issue: 'https://example.com/issue/1234' },
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
           ) {}
         end
 
         expect(influx_write_api).to have_received(:write).once
-        expect(influx_write_api).to have_received(:write).with(data: [data])
+        expect(influx_write_api).to have_received(:write).with(data: [expected_data])
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [expected_data].to_json, **gcs_client_options)
       end
     end
 
     context 'with skipped spec' do
       let(:status) { :pending }
 
-      it 'exports data with pending status' do
+      it 'exports data with pending status', :aggregate_failures do
         run_spec do
           it(
             'spec',
@@ -229,20 +322,27 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         end
 
         expect(influx_write_api).to have_received(:write).with(data: [data])
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [data].to_json, **gcs_client_options)
       end
     end
 
     context 'with failed spec' do
       let(:status) { :failed }
+      let(:expected_data) { data.tap { |d| d[:tags][:exception_class] = "RuntimeError" } }
 
-      it 'saves exception class' do
+      it 'saves exception class', :aggregate_failures do
         run_spec(passed: false) do
           it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') { raise }
         end
 
         expect(influx_write_api).to have_received(:write).with(
-          data: [data.tap { |d| d[:tags][:exception_class] = "RuntimeError" }]
+          data: [expected_data]
         )
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [expected_data].to_json, **gcs_client_options)
       end
     end
 
@@ -250,12 +350,14 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       let(:retry_failed_specs) { true }
 
       context 'with initial run' do
-        it 'skips failed spec' do
+        it 'skips failed spec', :aggregate_failures do
           run_spec(passed: false) do
             it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') { raise }
           end
 
           expect(influx_write_api).to have_received(:write).with(data: [])
+          expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+            anything, [].to_json, **gcs_client_options)
         end
       end
 
@@ -266,12 +368,14 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           stub_env('QA_RSPEC_RETRIED', 'true')
         end
 
-        it 'sets test as flaky' do
+        it 'sets test as flaky', :aggregate_failures do
           run_spec do
             it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
           end
 
           expect(influx_write_api).to have_received(:write).with(data: [data])
+          expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+            anything, [data].to_json, **gcs_client_options)
         end
       end
     end
@@ -284,34 +388,19 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         stub_env('QA_RUN_TYPE', nil)
       end
 
-      it 'exports data to influxdb with correct run type' do
+      it 'exports data with correct run type', :aggregate_failures do
         run_spec
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
-      end
-    end
 
-    context 'with staging sanity no admin' do
-      let(:run_type) { 'staging-sanity-no-admin' }
-
-      before do
-        stub_env('CI_PROJECT_NAME', 'staging')
-        stub_env('NO_ADMIN', 'true')
-        stub_env('SMOKE_ONLY', 'true')
-        stub_env('QA_RUN_TYPE', nil)
-      end
-
-      it 'exports data to influxdb with correct run type' do
-        run_spec
-
-        expect(influx_write_api).to have_received(:write).once
-        expect(influx_write_api).to have_received(:write).with(data: [data])
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [data].to_json, **gcs_client_options)
       end
     end
 
     context 'with additional custom metrics' do
-      it 'exports data to influxdb with additional metrics' do
+      it 'exports data additional metrics', :aggregate_failures do
         run_spec do
           it(
             'spec',
@@ -328,6 +417,9 @@ describe QA::Support::Formatters::TestMetricsFormatter do
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [custom_data])
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [custom_data].to_json, **gcs_client_options)
       end
     end
 
@@ -335,7 +427,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       let(:api_fabrication) { 4 }
       let(:ui_fabrication) { 10 }
 
-      it 'exports data to influxdb with fabrication times' do
+      it 'exports data with fabrication times', :aggregate_failures do
         run_spec do
           # Main logic tracks fabrication time in thread local variable and injects it as metadata from
           # global after hook defined in main spec_helper.
@@ -351,6 +443,9 @@ describe QA::Support::Formatters::TestMetricsFormatter do
 
         expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [data].to_json, **gcs_client_options)
       end
     end
 
@@ -358,12 +453,15 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       let(:file_path) { './qa/specs/features/shared_examples/merge_with_code_owner_shared_examples.rb' }
       let(:rerun_file_path) { './qa/specs/features/3_create/subfolder/another_spec.rb' }
 
-      it 'exports data to influxdb with correct filename' do
+      it 'exports data to influxdb with correct filename', :aggregate_failures do
         run_spec
 
         data[:tags][:file_path] = '/3_create/subfolder/another_spec.rb'
         data[:tags][:stage] = 'create'
         expect(influx_write_api).to have_received(:write).with(data: [data])
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [data].to_json, **gcs_client_options)
       end
     end
 
@@ -405,10 +503,13 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         freeze_time { example.run }
       end
 
-      it 'exports fabrication stats data to influxdb' do
+      it 'exports fabrication stats data to influxdb and GCS', :aggregate_failures do
         run_spec
 
         expect(influx_write_api).to have_received(:write).with(data: [fabrication_data])
+
+        expect(gcs_client).to have_received(:put_object).with(metrics_gcs_bucket_name,
+          anything, [fabrication_data].to_json, **gcs_client_options)
       end
     end
 

@@ -177,9 +177,9 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
           expect(Gitlab::HTTP_V2::UrlBlocker)
             .to receive(:validate!)
             .with(url, ports: [80, 443], schemes: %w[http https git],
-                       allow_localhost: true, allow_local_network: true,
-                       deny_all_requests_except_allowed: true,
-                       outbound_local_requests_allowlist: [])
+              allow_localhost: true, allow_local_network: true,
+              deny_all_requests_except_allowed: true,
+              outbound_local_requests_allowlist: [])
             .and_raise(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
 
           expect { subject.execute }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
@@ -200,9 +200,9 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
           expect(Gitlab::HTTP_V2::UrlBlocker)
             .to receive(:validate!)
             .with(url, ports: [80, 443], schemes: %w[http https git],
-                       allow_localhost: false, allow_local_network: false,
-                       deny_all_requests_except_allowed: true,
-                       outbound_local_requests_allowlist: [])
+              allow_localhost: false, allow_local_network: false,
+              deny_all_requests_except_allowed: true,
+              outbound_local_requests_allowlist: [])
             .and_raise(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)
 
           expect { subject.execute }.to raise_error(Gitlab::HTTP_V2::UrlBlocker::BlockedUrlError)

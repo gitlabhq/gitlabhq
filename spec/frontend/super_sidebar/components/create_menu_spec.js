@@ -25,6 +25,8 @@ describe('CreateMenu component', () => {
     wrapper = shallowMountExtended(CreateMenu, {
       provide: {
         isImpersonating: false,
+        fullPath: 'full-path',
+        isGroup: false,
         ...provide,
       },
       propsData: {

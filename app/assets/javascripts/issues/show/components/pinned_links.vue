@@ -58,7 +58,7 @@ export default {
           target="_blank"
           :icon="link.icon"
           size="small"
-          class="gl-font-weight-bold gl-mb-5"
+          class="gl-font-bold gl-mb-5"
           :data-testid="link.id"
           >{{ link.text }}</gl-button
         >

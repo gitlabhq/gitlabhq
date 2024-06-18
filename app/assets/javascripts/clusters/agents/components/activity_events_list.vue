@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { n__, s__, __ } from '~/locale';
-import { formatDate, getDayDifference, isToday } from '~/lib/utils/datetime_utility';
+import { getDayDifference, isToday, localeDateFormat } from '~/lib/utils/datetime_utility';
 import { EVENTS_STORED_DAYS } from '../constants';
 import getAgentActivityEventsQuery from '../graphql/queries/get_agent_activity_events.query.graphql';
 import ActivityHistoryItem from './activity_history_item.vue';
@@ -108,7 +108,7 @@ export default {
       } else if (this.isYesterday(date)) {
         dateName = this.$options.i18n.yesterday;
       } else {
-        dateName = formatDate(date, 'yyyy-mm-dd');
+        dateName = localeDateFormat.asDate.format(date);
       }
       return dateName;
     },

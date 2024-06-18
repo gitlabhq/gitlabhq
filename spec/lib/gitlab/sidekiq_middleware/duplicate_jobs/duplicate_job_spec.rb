@@ -385,7 +385,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
 
     describe '#duplicate?' do
       it "raises an error if the check wasn't performed" do
-        expect { duplicate_job.duplicate? }.to raise_error /Call `#check!` first/
+        expect { duplicate_job.duplicate? }.to raise_error(/Call `#check!` first/)
       end
 
       it 'returns false if the existing jid equals the job jid' do

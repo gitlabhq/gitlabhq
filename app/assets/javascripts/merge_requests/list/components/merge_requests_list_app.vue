@@ -23,6 +23,12 @@ import {
   TOKEN_TYPE_TARGET_BRANCH,
   TOKEN_TITLE_SOURCE_BRANCH,
   TOKEN_TYPE_SOURCE_BRANCH,
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TITLE_REVIEWER,
+  TOKEN_TYPE_REVIEWER,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TYPE_MILESTONE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -53,6 +59,8 @@ import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const BranchToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue');
+const MilestoneToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
 
 export default {
   i18n,
@@ -172,6 +180,34 @@ export default {
 
       return [
         {
+          type: TOKEN_TYPE_ASSIGNEE,
+          title: TOKEN_TITLE_ASSIGNEE,
+          icon: 'user',
+          token: UserToken,
+          dataType: 'user',
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+          isProject: true,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-assignee`,
+          preloadedUsers,
+          multiSelect: false,
+          unique: true,
+        },
+        {
+          type: TOKEN_TYPE_REVIEWER,
+          title: TOKEN_TITLE_REVIEWER,
+          icon: 'user',
+          token: UserToken,
+          dataType: 'user',
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+          isProject: true,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-reviewer`,
+          preloadedUsers,
+          multiSelect: false,
+          unique: true,
+        },
+        {
           type: TOKEN_TYPE_AUTHOR,
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
@@ -198,6 +234,19 @@ export default {
             { value: 'yes', title: this.$options.i18n.yes },
             { value: 'no', title: this.$options.i18n.no },
           ],
+          unique: true,
+        },
+        {
+          type: TOKEN_TYPE_MILESTONE,
+          title: TOKEN_TITLE_MILESTONE,
+          icon: 'milestone',
+          token: MilestoneToken,
+          operators: OPERATORS_IS,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-milestone`,
+          shouldSkipSort: true,
+          fullPath: this.fullPath,
+          isProject: true,
+          multiselect: false,
           unique: true,
         },
         {
@@ -427,7 +476,7 @@ export default {
     <template #pipeline-status="{ issuable = {} }">
       <li
         v-if="issuable.headPipeline && issuable.headPipeline.detailedStatus"
-        class="issuable-pipeline-status d-none d-sm-flex"
+        class="issuable-pipeline-status gl-hidden sm:gl-flex"
       >
         <ci-icon :status="issuable.headPipeline.detailedStatus" use-link show-tooltip />
       </li>

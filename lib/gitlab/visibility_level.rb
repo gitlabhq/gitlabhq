@@ -15,7 +15,7 @@ module Gitlab
       scope :private_only,              -> { where(visibility_level: PRIVATE) }
       scope :non_public_only,           -> { where.not(visibility_level: PUBLIC) }
 
-      scope :public_to_user, -> (user = nil) do
+      scope :public_to_user, ->(user = nil) do
         where(visibility_level: VisibilityLevel.levels_for_user(user))
       end
 

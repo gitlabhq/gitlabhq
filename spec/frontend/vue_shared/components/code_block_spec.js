@@ -33,7 +33,7 @@ describe('Code Block', () => {
         class="code code-block rounded"
       >
         <code
-          class="d-block"
+          class="gl-block"
         />
       </pre>
     `);
@@ -47,7 +47,7 @@ describe('Code Block', () => {
         class="code code-block rounded"
       >
         <code
-          class="d-block"
+          class="gl-block"
         >
           test-code
         </code>
@@ -64,7 +64,7 @@ describe('Code Block', () => {
         style="max-height: 200px; overflow-y: auto;"
       >
         <code
-          class="d-block"
+          class="gl-block"
         >
           test-code
         </code>

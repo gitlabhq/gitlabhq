@@ -2,11 +2,15 @@
 
 module Ci
   class PipelineMessage < Ci::ApplicationRecord
+    include Ci::Partitionable
+
     MAX_CONTENT_LENGTH = 10_000
 
     belongs_to :pipeline
 
     validates :content, presence: true
+
+    partitionable scope: :pipeline
 
     before_save :truncate_long_content
 

@@ -4,28 +4,20 @@ module Gitlab
   module Middleware
     class PathTraversalCheck
       PATH_TRAVERSAL_MESSAGE = 'Potential path traversal attempt detected'
-
-      EXCLUDED_EXACT_PATHS = %w[/search].freeze
-      EXCLUDED_PATH_PREFIXES = %w[/search/].freeze
-
-      EXCLUDED_API_PATHS = %w[/search].freeze
-      EXCLUDED_PROJECT_API_PATHS = %w[/search].freeze
-      EXCLUDED_GROUP_API_PATHS = %w[/search].freeze
-
-      API_PREFIX = %r{/api/[^/]+}
-      API_SUFFIX = %r{(?:\.[^/]+)?}
-
-      EXCLUDED_API_PATHS_REGEX = [
-        EXCLUDED_API_PATHS.map do |path|
-          %r{\A#{API_PREFIX}#{path}#{API_SUFFIX}\z}
-        end.freeze,
-        EXCLUDED_PROJECT_API_PATHS.map do |path|
-          %r{\A#{API_PREFIX}/projects/[^/]+(?:/-)?#{path}#{API_SUFFIX}\z}
-        end.freeze,
-        EXCLUDED_GROUP_API_PATHS.map do |path|
-          %r{\A#{API_PREFIX}/groups/[^/]+(?:/-)?#{path}#{API_SUFFIX}\z}
-        end.freeze
-      ].flatten.freeze
+      # Query param names known to have string parts detected as path traversal even though
+      # they are valid genuine requests
+      EXCLUDED_QUERY_PARAM_NAMES = %w[
+        search
+        search_title
+        term
+        name
+        filter
+        filter_projects
+        note
+        body
+        commit_message
+        content
+      ].freeze
 
       def initialize(app)
         @app = app
@@ -36,11 +28,8 @@ module Gitlab
 
         log_params = {}
 
-        execution_time = measure_execution_time do
-          request = ::Rack::Request.new(env.dup)
-          check(request, log_params) unless excluded?(request)
-        end
-        log_params[:duration_ms] = execution_time.round(5) if execution_time
+        request = ::Rack::Request.new(env.dup)
+        check(request, log_params)
 
         result = @app.call(env)
 
@@ -54,17 +43,9 @@ module Gitlab
 
       private
 
-      def measure_execution_time(&blk)
-        if Feature.enabled?(:log_execution_time_path_traversal_middleware, Feature.current_request)
-          Benchmark.ms(&blk)
-        else
-          yield
-
-          nil
-        end
-      end
-
       def check(request, log_params)
+        exclude_query_parameters(request)
+
         decoded_fullpath = CGI.unescape(request.fullpath)
 
         return unless Gitlab::PathTraversal.path_traversal?(decoded_fullpath, match_new_line: false)
@@ -74,14 +55,12 @@ module Gitlab
         log_params[:message] = PATH_TRAVERSAL_MESSAGE
       end
 
-      def excluded?(request)
-        path = request.path
+      def exclude_query_parameters(request)
+        query_params = request.GET
+        return if query_params.empty?
 
-        return true if path.in?(EXCLUDED_EXACT_PATHS)
-        return true if EXCLUDED_PATH_PREFIXES.any? { |p| path.start_with?(p) }
-        return true if EXCLUDED_API_PATHS_REGEX.any? { |r| path.match?(r) }
-
-        false
+        query_params.except!(*EXCLUDED_QUERY_PARAM_NAMES)
+        request.set_header(Rack::QUERY_STRING, Rack::Utils.build_nested_query(query_params))
       end
 
       def log(payload)

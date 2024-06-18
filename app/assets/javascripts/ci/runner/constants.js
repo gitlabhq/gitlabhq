@@ -51,7 +51,7 @@ export const I18N_DISCONNECTED_TOOLTIP = s__(
 
 // Default online/stale status timeouts, actual values
 export const ONLINE_CONTACT_TIMEOUT_SECS = 2 * 60 * 60; // 2 hours
-export const STALE_TIMEOUT_SECS = 7889238; // Ruby's `3.months`
+export const STALE_TIMEOUT_SECS = 604800; // 7.days
 
 // Registration dropdown
 export const I18N_REGISTER_INSTANCE_TYPE = s__('Runners|Register an instance runner');

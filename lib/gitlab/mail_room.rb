@@ -164,7 +164,7 @@ module Gitlab
         encrypted_settings_path =
           File.expand_path(config_yaml.dig(:encrypted_settings, :path) ||
                            File.join(shared_path, DEFAULT_PATHS[:encrypted_settings_path]),
-                           RAILS_ROOT_DIR)
+            RAILS_ROOT_DIR)
         File.join(encrypted_settings_path, default_encrypted_secret_filename(config_key))
       end
 

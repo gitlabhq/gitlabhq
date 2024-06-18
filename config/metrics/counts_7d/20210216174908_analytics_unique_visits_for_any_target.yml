@@ -2,8 +2,6 @@
 data_category: optional
 key_path: analytics_unique_visits.analytics_unique_visits_for_any_target
 description: Unique visitors to any analytics feature by week
-product_section: dev
-product_stage: manage
 product_group: optimize
 value_type: number
 status: active
@@ -50,8 +48,6 @@ events:
 - name: p_analytics_ci_cd_deployment_frequency
   unique: user.id
 - name: p_analytics_ci_cd_lead_time
-  unique: user.id
-- name: g_metrics_comparison_page
   unique: user.id
 distribution:
 - ce

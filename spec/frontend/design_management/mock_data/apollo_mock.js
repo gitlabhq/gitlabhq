@@ -282,6 +282,7 @@ export const mockNoteSubmitSuccessMutationResponse = {
           width: 695,
           __typename: 'DiffPosition',
         },
+        imported: false,
         userPermissions: {
           adminNote: true,
           repositionNote: true,

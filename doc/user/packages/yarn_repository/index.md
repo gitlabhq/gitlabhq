@@ -48,7 +48,7 @@ In this configuration:
 
 - Replace `<my-org>` with your organization scope, exclude the `@` symbol.
 - Replace `<your_domain>` with your domain name.
-- Replace `<your_project_id>` with your project's ID, which you can find on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+- Replace `<your_project_id>` with your project's ID, which you can find on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - Replace `<your_token>` with a deployment token, group access token, project access token, or personal access token.
 
 Scoped registry does not work in Yarn Classic in `package.json` file, based on
@@ -251,7 +251,7 @@ Use these steps for each project in the `.yarnrc.yml` file:
 
 - Replace `<my-org>` with the root level group of the project you're installing to the package from excluding the `@` symbol.
 - Replace `<your_domain_name>` with your domain name, for example, `gitlab.com`.
-- Replace `<your_project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+- Replace `<your_project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
 #### Set the registry (project level)
 
@@ -266,7 +266,7 @@ npmRegistries:
 
 - Replace `<your_domain_name>` with your domain name, for example, `gitlab.com`.
 - Replace `<your_token>` with a deployment token (recommended), group access token, project access token, or personal access token.
-- Replace `<your_project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+- Replace `<your_project_id>` with your project ID, found on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
 ### Install the package
 

@@ -160,9 +160,10 @@ A personal access token can perform actions based on the assigned scopes.
 | `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator.                                                                                                                                                                                                        |
 | `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.)                                                                                                                             |
 | `create_runner`    | Grants permission to create runners.                                                                                                                                                                                                                                                                               |
+| `manage_runner`    | Grants permission to manage runners.                                                                                                                                                                                                                                                                               |
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                                                |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                                                                                                                                                                  |
-| `read_service_ping`| Grant access to download Service Ping payload via API when authenticated as an admin use. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 16.8. |
+| `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 16.8. |
 
 WARNING:
 If you enabled [external authorization](../../administration/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
@@ -179,6 +180,10 @@ Personal access tokens expire on the date you define, at midnight, 00:00 AM UTC.
 - If you do not set an expiry date when creating a personal access token, the expiry date is set to the
   [maximum allowed lifetime for the token](../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens).
   If the maximum allowed lifetime is not set, the default expiry date is 365 days from the date of creation.
+
+### Personal access token expiry calendar
+
+You can subscribe to an iCalendar endpoint which contains events at the expiry date for each token. After signing in, this endpoint is available at `/-/user_settings/personal_access_tokens.ics`.
 
 ### Create a service account personal access token with no expiry date
 

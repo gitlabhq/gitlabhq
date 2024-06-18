@@ -38,6 +38,7 @@ query getPipelineJobs($fullPath: ID!, $iid: ID!, $after: String) {
               method
               path
               title
+              confirmationMessage
             }
           }
           id

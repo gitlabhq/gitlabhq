@@ -4,7 +4,9 @@ classes:
 - Geo::CacheInvalidationEvent
 feature_categories:
 - geo_replication
-description: Geo event to process feature flag toggles instantly on a secondary by invalidating the cache, belongs to geo_event_log.
+description: Geo event to process feature flag toggles instantly on a secondary by
+  invalidating the cache, belongs to geo_event_log.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7738
 milestone: '11.4'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true # Not org-specific

@@ -68,7 +68,7 @@ module QA
 
       # Expire in 2 days just in case the token is created just before midnight
       def expires_at
-        @expires_at || Time.now.utc.to_date + 2
+        @expires_at || (Time.now.utc.to_date + 2)
       end
 
       def fabricate!

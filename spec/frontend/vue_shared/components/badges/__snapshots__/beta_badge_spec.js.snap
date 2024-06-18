@@ -13,27 +13,27 @@ exports[`Beta badge component renders the badge 1`] = `
     class="gl-popover"
   >
     <p>
-      A Beta feature is not production-ready, but is unlikely to change drastically before it's released. We encourage users to try Beta features and provide feedback.
+      A beta feature is not yet production-ready, but is ready for testing and unlikely to change significantly before it's released.
     </p>
     <p
       class="gl-mb-0"
     >
-      A Beta feature:
+      Beta features:
     </p>
     <ul
       class="gl-pl-4"
     >
       <li>
-        May be unstable.
+        Have a low risk of data loss, but might still be unstable.
       </li>
       <li>
-        Should not cause data loss.
+        Are supported on a commercially-reasonable effort basis.
       </li>
       <li>
-        Is supported by a commercially reasonable effort.
+        Have a near complete user experience.
       </li>
       <li>
-        Is complete or near completion.
+        Are subject to the GitLab Testing Agreement.
       </li>
     </ul>
   </div>

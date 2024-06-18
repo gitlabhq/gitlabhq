@@ -1,0 +1,17 @@
+- return unless user_application_system_mode?
+
+= javascript_tag do
+  :plain
+    const root = document.documentElement;
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      root.classList.add('gl-dark');
+    }
+
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      if (e.matches) {
+        root.classList.add('gl-dark');
+      } else {
+        root.classList.remove('gl-dark');
+      }
+    });
+

@@ -34,7 +34,7 @@ RSpec.describe 'getting notes for a merge request', feature_category: :code_revi
         notes {
           edges {
             node {
-              #{all_graphql_fields_for('Note', excluded: ['pipeline'])}
+              #{all_graphql_fields_for('Note', excluded: %w[pipeline mergeTrains])}
             }
           }
         }

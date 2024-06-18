@@ -27,6 +27,7 @@ exports[`Keep latest artifact toggle when application keep latest artifact setti
         <gl-icon-stub
           name="mobile-issue-close"
           size="16"
+          variant="current"
         />
       </span>
     </button>

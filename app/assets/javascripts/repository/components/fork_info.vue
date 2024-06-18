@@ -287,9 +287,9 @@ export default {
 </script>
 
 <template>
-  <div class="info-well gl-sm-display-flex gl-flex-direction-column">
+  <div class="info-well sm:gl-flex gl-flex-direction-column">
     <div class="well-segment gl-p-5 gl-w-full gl-display-flex">
-      <gl-icon name="fork" :size="16" class="gl-display-block gl-m-4 gl-text-center" />
+      <gl-icon name="fork" :size="16" class="gl-block gl-m-4 gl-text-center" />
       <div
         class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-flex-grow-1"
       >
@@ -315,7 +315,7 @@ export default {
         >
           {{ $options.i18n.inaccessibleProject }}
         </div>
-        <div class="gl-display-none gl-sm-display-flex">
+        <div class="gl-hidden sm:gl-flex">
           <gl-button
             v-if="hasCreateMrButton"
             class="gl-ml-4"

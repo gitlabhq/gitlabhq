@@ -15,6 +15,8 @@ class MergeRequestContextCommit < ApplicationRecord
   attribute :trailers, :ind_jsonb
   validates :trailers, json_schema: { filename: 'git_trailers' }
 
+  validates :merge_request_id, presence: true
+
   # Sort by committed date in descending order to ensure latest commits comes on the top
   scope :order_by_committed_date_desc, -> { order('committed_date DESC') }
 

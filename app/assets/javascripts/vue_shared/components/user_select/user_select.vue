@@ -311,7 +311,7 @@ export default {
 <template>
   <gl-dropdown ref="dropdown" :text="text" @toggle="$emit('toggle')" @shown="focusSearch">
     <template #header>
-      <p class="gl-font-weight-bold gl-text-center gl-mt-2 gl-mb-4">{{ headerText }}</p>
+      <p class="gl-font-bold gl-text-center gl-mt-2 gl-mb-4">{{ headerText }}</p>
       <gl-dropdown-divider />
       <gl-search-box-by-type
         ref="search"
@@ -336,7 +336,7 @@ export default {
             data-testid="unassign"
             @click.native.capture.stop="unassign"
           >
-            <span :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'" class="gl-font-weight-bold">{{
+            <span :class="selectedIsEmpty ? 'gl-pl-0' : 'gl-pl-6'" class="gl-font-bold">{{
               $options.i18n.unassigned
             }}</span>
           </gl-dropdown-item>

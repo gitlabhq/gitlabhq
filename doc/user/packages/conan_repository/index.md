@@ -185,7 +185,7 @@ Prerequisites:
 - A local [Conan package](https://docs.conan.io/en/latest/creating_packages/getting_started.html)
   must exist.
   - For an instance remote, the package must meet the [naming convention](#package-recipe-naming-convention-for-instance-remotes).
-- You must have the project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-the-project-overview-page-by-using-the-project-id).
+- You must have the project ID, which is displayed on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 
 To publish the package, use the `conan upload` command:
 

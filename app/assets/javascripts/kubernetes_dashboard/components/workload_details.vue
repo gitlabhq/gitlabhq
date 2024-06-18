@@ -70,7 +70,7 @@ export default {
 <template>
   <ul class="gl-list-none">
     <workload-details-item :label="$options.i18n.name">
-      <span class="gl-word-break-word"> {{ item.name }}</span>
+      <span class="gl-break-anywhere"> {{ item.name }}</span>
     </workload-details-item>
     <workload-details-item :label="$options.i18n.kind">
       {{ item.kind }}
@@ -89,7 +89,7 @@ export default {
     </workload-details-item>
     <workload-details-item v-if="item.fullStatus" :label="$options.i18n.status" collapsible>
       <template v-if="item.status" #label>
-        <span class="gl-mr-2 gl-font-weight-bold">{{ $options.i18n.status }}</span>
+        <span class="gl-mr-2 gl-font-bold">{{ $options.i18n.status }}</span>
         <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]" size="sm">{{
           item.status
         }}</gl-badge>

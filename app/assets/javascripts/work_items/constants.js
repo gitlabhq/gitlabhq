@@ -29,6 +29,7 @@ export const WIDGET_TYPE_HEALTH_STATUS = 'HEALTH_STATUS';
 export const WIDGET_TYPE_LINKED_ITEMS = 'LINKED_ITEMS';
 export const WIDGET_TYPE_COLOR = 'COLOR';
 export const WIDGET_TYPE_DESIGNS = 'DESIGNS';
+export const WIDGET_TYPE_DEVELOPMENT = 'DEVELOPMENT';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
@@ -52,6 +53,8 @@ export const WORK_ITEM_TITLE_MAX_LENGTH = 255;
 
 export const WORK_ITEM_ROUTE_NAME = 'workItem';
 export const DESIGN_ROUTE_NAME = 'design';
+
+export const SEARCH_DEBOUNCE = 500;
 
 export const i18n = {
   fetchErrorTitle: s__('WorkItem|Work item not found'),
@@ -320,6 +323,7 @@ export const SUPPORTED_PARENT_TYPE_MAP = {
   [WORK_ITEM_TYPE_VALUE_KEY_RESULT]: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
   [WORK_ITEM_TYPE_VALUE_TASK]: [WORK_ITEM_TYPE_ENUM_ISSUE],
   [WORK_ITEM_TYPE_VALUE_EPIC]: [WORK_ITEM_TYPE_ENUM_EPIC],
+  [WORK_ITEM_TYPE_VALUE_ISSUE]: [WORK_ITEM_TYPE_ENUM_EPIC],
 };
 
 export const LINKED_ITEMS_ANCHOR = 'linkeditems';
@@ -347,4 +351,11 @@ export const EPIC_COLORS = [
 
 export const DEFAULT_EPIC_COLORS = '#1068bf';
 
+export const MAX_FREQUENT_PROJECTS = 3;
 export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';
+
+export const WORK_ITEM_REFERENCE_CHAR = '#';
+
+export const NEW_WORK_ITEM_IID = 'new-work-item-iid';
+
+export const NEW_WORK_ITEM_GID = 'gid://gitlab/WorkItem/new';

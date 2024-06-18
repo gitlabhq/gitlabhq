@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', only: { subdomain: "staging-ref" } do
+  RSpec.describe 'Manage', only: { subdomain: "staging-ref" } do
     describe 'Slack app integration', :slack, product_group: :import_and_integrate do
       context 'when using Slash commands' do
         # state to be seeded in the Slack UI
@@ -38,7 +38,7 @@ module QA
 
         it 'creates an issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377890' do
           with_slack_tab do
-            ::Slack::Page::Chat.perform do |chat_page|
+            Vendor::Slack::Page::Chat.perform do |chat_page|
               chat_page.create_issue(project, channel: 'test', title: title, description: description)
             end
 
@@ -60,17 +60,17 @@ module QA
 
           it 'displays an issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377891' do
             with_slack_tab do
-              ::Slack::Page::Chat.perform do |chat_page|
+              Vendor::Slack::Page::Chat.perform do |chat_page|
                 chat_page.show_issue(project, channel: 'test', id: issue.iid)
-
-                expect { chat_page.browser.text }.to eventually_include(issue.title).within(max_duration: 10)
               end
+
+              expect { page.text }.to eventually_include(issue.title).within(max_duration: 10)
             end
           end
 
           it 'closes an issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377892' do
             with_slack_tab do
-              ::Slack::Page::Chat.perform do |chat_page|
+              Vendor::Slack::Page::Chat.perform do |chat_page|
                 chat_page.close_issue(project, channel: 'test', id: issue.iid)
               end
 
@@ -80,7 +80,7 @@ module QA
 
           it 'comments on an issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377893' do
             with_slack_tab do
-              ::Slack::Page::Chat.perform do |chat_page|
+              Vendor::Slack::Page::Chat.perform do |chat_page|
                 chat_page.comment_on_issue(project, channel: 'test', id: issue.iid, comment: comment)
               end
 
@@ -98,7 +98,7 @@ module QA
 
             it 'moves an issue', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377894' do
               with_slack_tab do
-                ::Slack::Page::Chat.perform do |chat_page|
+                Vendor::Slack::Page::Chat.perform do |chat_page|
                   chat_page.move_issue(project, target, channel: 'test', id: issue.iid)
                 end
 
@@ -143,10 +143,12 @@ module QA
           page.open_new_window
 
           with_slack_tab do
-            ::Slack::Page::Login.perform do |slack_page|
-              slack_page.visit
-              slack_page.sign_in
-            end
+            Runtime::Browser.visit(
+              Vendor::Slack::Address.base_url,
+              Vendor::Slack::Page::Login
+            )
+
+            Vendor::Slack::Page::Login.perform(&:sign_in)
           end
         end
 

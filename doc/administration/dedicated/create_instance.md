@@ -42,7 +42,7 @@ complete your onboarding to create a new instance.
 NOTE:
 To enable BYOK, you must do it before onboarding.
 
-You can opt to encrypt your GitLab data at rest with AWS KMS keys, which must be made accessible to GitLab Dedicated infrastructure. GitLab Dedicated only supports keys with AWS-managed key material (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin) origin type).
+You can opt to encrypt your GitLab data at rest with AWS KMS keys, which must be made accessible to GitLab Dedicated infrastructure. Due to key rotation requirements, GitLab Dedicated only supports keys with AWS-managed key material (the [AWS_KMS](https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-origin) origin type).
 
 In GitLab Dedicated, you can use KMS keys in two ways:
 
@@ -58,11 +58,11 @@ In GitLab Dedicated, you can use KMS keys in two ways:
 After you have received the AWS account ID, create your KMS keys using the AWS Console:
 
 1. In `Configure key`, select:
-    1. Key type: **Symmetrical**
-    1. Key usage: **Encrypt and decrypt**
-    1. `Advanced options`:
-        1. Key material origin: **KMS**
-        1. Regionality: **Multi-Region key**
+   1. Key type: **Symmetrical**
+   1. Key usage: **Encrypt and decrypt**
+   1. `Advanced options`:
+      1. Key material origin: **KMS**
+      1. Regionality: **Multi-Region key**
 1. Enter your values for key alias, description, and tags.
 1. Select key administrators.
 1. Optional. Allow or prevent key administrators from deleting the key.
@@ -229,7 +229,7 @@ Consider the following notes:
 
 #### GitLab release rollout schedule
 
-GitLab Dedicated tenant instances are upgraded to the minor GitLab release using the following schedule.
+GitLab Dedicated tenant instances are [upgraded](../../subscriptions/gitlab_dedicated/index.md#upgrades) to the minor GitLab release within [the pre-selected window](#maintenance-window) using the scheduled described below.
 
 Where **T** is the date of a [minor GitLab release](../../policy/maintenance.md) `N`. GitLab Dedicated instances are upgraded to the `N-1` release as follows:
 

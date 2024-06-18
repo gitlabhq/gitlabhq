@@ -9,8 +9,6 @@ $right-sidebar-width: 290px;
 $right-sidebar-inner-width: 250px;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: 0.15s;
-$contextual-sidebar-width: 256px;
-$contextual-sidebar-collapsed-width: 56px;
 $toggle-sidebar-height: 48px;
 $super-sidebar-width: 16rem;
 $super-sidebar-z-index: 600;
@@ -85,44 +83,14 @@ $size-scale: (
 );
 
 // Color schema
-$darken-normal-factor: 7% !default;
-$darken-dark-factor: 10% !default;
-
 $purple: #6d49cb !default;
 $purple-light: #ede8fb !default;
-
-$gray-lightest: lighten($gray-10, 1) !default;
-$gray-light: $gray-10 !default;
-$gray-lighter: lighten($gray-50, 4) !default;
-$gray-normal: lighten($gray-50, 2) !default;
-$gray-dark: darken($gray-light, $darken-dark-factor) !default;
-$gray-darker: $gray-50 !default;
-$gray-darkest: $gray-200 !default;
-
-$t-white-a-02: rgba(255, 255, 255, 0.02) !default;
-$t-white-a-04: rgba(255, 255, 255, 0.04) !default;
-$t-white-a-06: rgba(255, 255, 255, 0.06) !default;
-$t-white-a-08: rgba(255, 255, 255, 0.08) !default;
-$t-white-a-16: rgba(255, 255, 255, 0.16) !default;
-$t-white-a-24: rgba(255, 255, 255, 0.24) !default;
-$t-white-a-36: rgba(255, 255, 255, 0.36) !default;
-
-$t-gray-a-02: rgba(31, 30, 36, 0.02) !default;
-$t-gray-a-04: rgba(31, 30, 36, 0.04) !default;
-$t-gray-a-06: rgba(31, 30, 36, 0.06) !default;
-$t-gray-a-08: rgba(31, 30, 36, 0.08) !default;
-$t-gray-a-16: rgba(31, 30, 36, 0.16) !default;
-$t-gray-a-24: rgba(31, 30, 36, 0.24) !default;
 
 /*
  * UI elements
  */
-$contextual-sidebar-bg-color: $gray-10;
-$contextual-sidebar-border-color: #e9e9e9;
 $border-color: $gray-100;
-$shadow-color: $t-gray-a-08;
 $well-expand-item: #e8f2f7 !default;
-$nav-active-bg: $t-gray-a-08;
 
 /*
  * Text
@@ -135,7 +103,6 @@ $gl-font-weight-bold: 600;
 $gl-text-color: $gray-900;
 $gl-text-color-secondary: $gray-500 !default;
 $gl-text-color-tertiary: $gray-400;
-$gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: $white;
 $gl-text-color-secondary-inverted: rgba($white, 0.85);
 $gl-text-color-disabled: $gray-400;
@@ -204,15 +171,14 @@ $limited-layout-width: 1006px;
 $fixed-layout-width: 1296px;
 $container-margin: $gl-padding;
 $container-margin-xl: $gl-padding-24;
-$border-radius-default: 4px;
-$border-radius-default-inner: $border-radius-default - 1px;
+$gl-border-radius-base: 4px;
+$gl-border-radius-base-inner: $gl-border-radius-base - 1px;
 $border-radius-small: 2px;
 $border-radius-large: 8px;
 $default-icon-size: 16px;
 $btn-side-margin: $grid-size;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
-$highlight-changes-color: rgb(235, 255, 232);
 $performance-bar-height: 2.5rem;
 $system-header-height: 16px;
 $system-footer-height: $system-header-height;
@@ -284,7 +250,7 @@ $dark-diff-match-color: rgba($white, 0.1);
 $diff-image-info-color: #808080;
 $diff-view-modes-color: #808080;
 $diff-view-modes-border: #c1c1c1;
-$diff-jagged-border-gradient-color: darken($gray-50, 8%);
+$diff-jagged-border-gradient-color: $gray-100;
 
 /*
  * Fonts
@@ -320,14 +286,11 @@ $dropdown-member-form-control-width: 163px;
 $filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
 
 /*
-* Contextual Sidebar
+* Sidebar
 */
-$link-hover-background: rgba($gray-900, 0.06);
 $sidebar-toggle-height: 60px;
 $sidebar-toggle-width: 40px;
 $sidebar-milestone-toggle-bottom-margin: 10px;
-$sidebar-top-item-lr-margin: 8px;
-$sidebar-top-item-tb-margin: 1px;
 
 /*
 * Buttons
@@ -393,10 +356,7 @@ $blame-blue: #254e77;
 * Builds
 */
 $builds-log-bg: #111;
-$job-log-line-padding: 63px;
 $job-line-number-width: 50px;
-$job-line-number-margin: 51px;
-$job-arrow-margin: 63px;
 
 /*
  * Calendar

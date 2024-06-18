@@ -36,11 +36,10 @@ class GroupsController < Groups::ApplicationController
   before_action :check_export_rate_limit!, only: [:export, :download_export]
 
   before_action only: :issues do
-    push_frontend_feature_flag(:or_issuable_queries, group)
     push_frontend_feature_flag(:frontend_caching, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, group.work_items_beta_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:work_items_mvc_2, group.work_items_mvc_2_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:group_multi_select_tokens, group)
   end
@@ -174,7 +173,9 @@ class GroupsController < Groups::ApplicationController
   def destroy
     Groups::DestroyService.new(@group, current_user).async_execute
 
-    redirect_to root_path, status: :found, alert: "Group '#{@group.name}' was scheduled for deletion."
+    flash[:toast] = format(_("Group '%{group_name}' is being deleted."), group_name: @group.full_name)
+
+    redirect_to root_path, status: :found
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -193,7 +194,11 @@ class GroupsController < Groups::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def export
-    export_service = Groups::ImportExport::ExportService.new(group: @group, user: current_user)
+    export_service = Groups::ImportExport::ExportService.new(
+      group: @group,
+      user: current_user,
+      exported_by_admin: current_user.can_admin_all_resources?
+    )
 
     if export_service.async_execute
       redirect_to edit_group_path(@group), notice: _('Group export started. A download link will be sent by email and made available on this page.')
@@ -274,55 +279,6 @@ class GroupsController < Groups::ApplicationController
     else
       'group'
     end
-  end
-
-  def group_params
-    normalize_default_branch_params!(:group)
-    params.require(:group).permit(group_params_attributes)
-  end
-
-  def group_params_attributes
-    [
-      :avatar,
-      :description,
-      :emails_disabled,
-      :emails_enabled,
-      :show_diff_preview_in_email,
-      :mentions_disabled,
-      :lfs_enabled,
-      :name,
-      :path,
-      :public,
-      :request_access_enabled,
-      :share_with_group_lock,
-      :visibility_level,
-      :parent_id,
-      :create_chat_team,
-      :chat_team_name,
-      :require_two_factor_authentication,
-      :two_factor_grace_period,
-      :enabled_git_access_protocol,
-      :project_creation_level,
-      :subgroup_creation_level,
-      :default_branch_protection,
-      { default_branch_protection_defaults: [
-        :allow_force_push,
-        :developer_can_initial_push,
-        :code_owner_approval_required,
-        {
-          allowed_to_merge: [:access_level],
-          allowed_to_push: [:access_level]
-        }
-      ] },
-      :default_branch_name,
-      :allow_mfa_for_subgroups,
-      :resource_access_token_creation_allowed,
-      :prevent_sharing_groups_outside_hierarchy,
-      :setup_for_company,
-      :jobs_to_be_done,
-      :crm_enabled,
-      :enable_namespace_descendants_cache
-    ] + [group_feature_attributes: group_feature_attributes]
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

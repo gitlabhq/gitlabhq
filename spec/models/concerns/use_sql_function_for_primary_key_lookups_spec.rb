@@ -25,8 +25,8 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
 
     it 'uses the fuction-based finder query' do
       query = <<~SQL
-      SELECT "projects".* FROM find_projects_by_id(#{project.id})#{' '}
-      "projects" WHERE ("projects"."id" IS NOT NULL) LIMIT 1
+        SELECT "projects".* FROM find_projects_by_id(#{project.id})#{' '}
+        AS projects WHERE ("projects"."id" IS NOT NULL) LIMIT 1
       SQL
       query_log = ActiveRecord::QueryRecorder.new { model.find(project.id) }.log
 
@@ -35,8 +35,8 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
 
     it 'uses query cache', :use_sql_query_cache do
       query = <<~SQL
-      SELECT "projects".* FROM find_projects_by_id(#{project.id})#{' '}
-      "projects" WHERE ("projects"."id" IS NOT NULL) LIMIT 1
+        SELECT "projects".* FROM find_projects_by_id(#{project.id})#{' '}
+        AS projects WHERE ("projects"."id" IS NOT NULL) LIMIT 1
       SQL
 
       recorder = ActiveRecord::QueryRecorder.new do
@@ -64,8 +64,8 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
         expect(column_list).not_to include(%("projects"."path"))
 
         query = <<~SQL
-        SELECT #{column_list} FROM find_projects_by_id(#{project.id})#{' '}
-        "projects" WHERE ("projects"."id" IS NOT NULL) LIMIT 1
+          SELECT #{column_list} FROM find_projects_by_id(#{project.id})#{' '}
+          AS projects WHERE ("projects"."id" IS NOT NULL) LIMIT 1
         SQL
         query_log = ActiveRecord::QueryRecorder.new { model.find(project.id) }.log
 
@@ -158,6 +158,66 @@ RSpec.describe UseSqlFunctionForPrimaryKeyLookups, feature_category: :groups_and
     context 'when the provided id is not a string that can cast to numeric' do
       it 'raises ActiveRecord::RecordNotFound' do
         expect { model.find('foo') }.to raise_error ActiveRecord::RecordNotFound, "Couldn't find  with 'id'=foo"
+      end
+    end
+
+    context 'when looking up a record across an association' do
+      it 'uses the function lookup' do
+        project.reload
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          project.namespace
+        end
+
+        queries = recorder.data.values.pluck(:occurrences).flatten
+        expect(queries.count).to eq(1)
+
+        query = queries.first
+
+        expect(query).to match(/find_namespaces_by_id/)
+      end
+    end
+
+    context 'when column types change after the record is loaded' do
+      before do
+        model.connection.execute(<<~SQL)
+          ALTER TABLE #{model.table_name} ADD COLUMN id_bigint BIGINT NOT NULL DEFAULT 0;
+        SQL
+        model.update_all('id_bigint = id')
+
+        # Prime the plan cache for the function based lookup
+        model.uncached do
+          5.times do
+            model.find(project.id)
+          end
+        end
+      end
+
+      it 'has integer type before the switch' do
+        type = model.connection.select_value(<<~SQL)
+          SELECT data_type FROM information_schema.columns
+          WHERE table_name = '#{model.table_name}'
+          AND column_name = 'id';
+        SQL
+
+        expect(type).to eq('integer')
+      end
+
+      context 'when the column type changes' do
+        before do
+          model.connection.execute(<<~SQL)
+            ALTER TABLE #{model.table_name} RENAME COLUMN id to id_tmp;
+            ALTER TABLE #{model.table_name} RENAME COLUMN id_bigint to id;
+            ALTER TABLE #{model.table_name} RENAME COLUMN id_tmp to id_bigint;
+            ALTER TABLE #{model.table_name} DROP CONSTRAINT #{model.table_name}_pkey cascade;
+            ALTER TABLE #{model.table_name} ADD PRIMARY KEY (id);
+            ALTER TABLE #{model.table_name} ALTER COLUMN id SET DEFAULT nextval('#{model.table_name}_id_seq'::regclass);
+          SQL
+        end
+
+        it 'looks up by id via the function without error' do
+          expect(model.find(project.id).id).to eq(project.id)
+        end
       end
     end
   end

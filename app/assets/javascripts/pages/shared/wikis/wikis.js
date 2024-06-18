@@ -16,14 +16,35 @@ export default class Wikis {
       sidebarToggles[i].addEventListener('click', (e) => this.handleToggleSidebar(e));
     }
 
-    const listToggles = document.querySelectorAll('.js-wiki-list-toggle');
+    // Store pages visbility in localStorage
+    const pagesToggle = document.querySelector('.js-wiki-expand-pages-list');
+    if (pagesToggle) {
+      if (localStorage.getItem('wiki-sidebar-expanded') === 'expanded') {
+        pagesToggle.classList.remove('collapsed');
+      }
+      pagesToggle.addEventListener('click', (e) => {
+        pagesToggle.classList.toggle('collapsed');
 
-    listToggles.forEach((listToggle) => {
-      listToggle.querySelector('.js-wiki-list-expand-button')?.addEventListener('click', () => {
-        listToggle.classList.remove('collapsed');
+        if (!pagesToggle.classList.contains('collapsed')) {
+          localStorage.setItem('wiki-sidebar-expanded', 'expanded');
+        } else {
+          localStorage.removeItem('wiki-sidebar-expanded');
+        }
+
+        e.stopImmediatePropagation();
       });
-      listToggle.querySelector('.js-wiki-list-collapse-button')?.addEventListener('click', () => {
-        listToggle.classList.add('collapsed');
+    }
+
+    const listToggles = document.querySelectorAll('.js-wiki-list-toggle');
+    listToggles.forEach((listToggle) => {
+      listToggle.querySelectorAll('a').forEach((link) => {
+        link.addEventListener('click', (e) => e.stopPropagation());
+      });
+
+      listToggle.addEventListener('click', (e) => {
+        listToggle.classList.toggle('collapsed');
+
+        e.stopImmediatePropagation();
       });
     });
 

@@ -187,6 +187,7 @@ Settings.gitlab['default_branch_protection_defaults'] ||= ::Gitlab::Access::Bran
 # `default_can_create_group` is deprecated since GitLab 15.5 in favour of the `can_create_group` column on `ApplicationSetting`.
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
 Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
+Settings.gitlab['custom_html_header_tags'] ||= Settings.gitlab['custom_html_header_tags'] || ''
 Settings.gitlab['host'] ||= ENV['GITLAB_HOST'] || 'localhost'
 Settings.gitlab['cdn_host'] ||= ENV['GITLAB_CDN_HOST'].presence
 Settings.gitlab['ssh_host'] ||= Settings.gitlab.host
@@ -484,6 +485,9 @@ Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildA
 Settings.cron_jobs['update_locked_unknown_artifacts_worker'] ||= {}
 Settings.cron_jobs['update_locked_unknown_artifacts_worker']['cron'] ||= '*/7 * * * *'
 Settings.cron_jobs['update_locked_unknown_artifacts_worker']['job_class'] = 'Ci::UpdateLockedUnknownArtifactsWorker'
+Settings.cron_jobs['ci_partitioning_worker'] ||= {}
+Settings.cron_jobs['ci_partitioning_worker']['cron'] ||= '0 2 * * *'
+Settings.cron_jobs['ci_partitioning_worker']['job_class'] = 'Ci::PartitioningWorker'
 Settings.cron_jobs['ci_pipelines_expire_artifacts_worker'] ||= {}
 Settings.cron_jobs['ci_pipelines_expire_artifacts_worker']['cron'] ||= '*/23 * * * *'
 Settings.cron_jobs['ci_pipelines_expire_artifacts_worker']['job_class'] = 'Ci::PipelineArtifacts::ExpireArtifactsWorker'
@@ -703,6 +707,9 @@ Settings.cron_jobs['namespaces_process_outdated_namespace_descendants_cron_worke
 Settings.cron_jobs['performance_bar_stats'] ||= {}
 Settings.cron_jobs['performance_bar_stats']['cron'] ||= '*/2 * * * *'
 Settings.cron_jobs['performance_bar_stats']['job_class'] = 'GitlabPerformanceBarStatsWorker'
+Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker'] ||= {}
+Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['cron'] ||= '*/4 * * * *'
+Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['job_class'] = 'Ci::Catalog::Resources::AggregateLast30DayUsageWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -780,6 +787,9 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_index_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_bulk_cron_worker']['job_class'] ||= 'ElasticIndexBulkCronWorker'
+  Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker'] ||= {}
+  Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
+  Settings.cron_jobs['elastic_index_embedding_bulk_cron_worker']['job_class'] ||= 'Search::ElasticIndexEmbeddingBulkCronWorker'
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker']['job_class'] ||= 'ElasticIndexInitialBulkCronWorker'
@@ -898,12 +908,15 @@ Gitlab.ee do
   Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker'] ||= {}
   Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['cron'] ||= "*/10 * * * *"
   Settings.cron_jobs['click_house_rebuild_materialized_view_cron_worker']['job_class'] = 'ClickHouse::RebuildMaterializedViewCronWorker'
-  Settings.cron_jobs['click_house_code_suggestion_events_cron_worker'] ||= {}
-  Settings.cron_jobs['click_house_code_suggestion_events_cron_worker']['cron'] ||= "*/5 * * * *"
-  Settings.cron_jobs['click_house_code_suggestion_events_cron_worker']['job_class'] = 'ClickHouse::CodeSuggestionEventsCronWorker'
+  Settings.cron_jobs['click_house_dump_all_write_buffers_cron_worker'] ||= {}
+  Settings.cron_jobs['click_house_dump_all_write_buffers_cron_worker']['cron'] ||= "*/5 * * * *"
+  Settings.cron_jobs['click_house_dump_all_write_buffers_cron_worker']['job_class'] = 'ClickHouse::DumpAllWriteBuffersCronWorker'
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker'] ||= {}
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['cron'] ||= "0 */4 * * *"
   Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_schedule_bulk_refresh_user_assignments_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::ScheduleBulkRefreshUserAssignmentsWorker'
+  Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker'] ||= {}
+  Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['cron'] ||= '0 1 * * *'
+  Settings.cron_jobs['gitlab_subscriptions_add_on_purchases_cleanup_worker']['job_class'] = 'GitlabSubscriptions::AddOnPurchases::CleanupWorker'
 
   Gitlab.com do
     Settings.cron_jobs['disable_legacy_open_source_license_for_inactive_projects'] ||= {}
@@ -935,7 +948,7 @@ Settings['sidekiq']['routing_rules'] = Settings.build_sidekiq_routing_rules(Sett
 # GitLab Shell
 #
 Settings['gitlab_shell'] ||= {}
-Settings.gitlab_shell['path']           = Settings.absolute(Settings.gitlab_shell['path'] || Settings.gitlab['user_home'] + '/gitlab-shell/')
+Settings.gitlab_shell['path']           = Settings.absolute(Settings.gitlab_shell['path'] || (Settings.gitlab['user_home'] + '/gitlab-shell/'))
 Settings.gitlab_shell['hooks_path']     = :deprecated_use_gitlab_shell_path_instead
 Settings.gitlab_shell['authorized_keys_file'] ||= File.join(Dir.home, '.ssh', 'authorized_keys')
 Settings.gitlab_shell['secret_file'] ||= Rails.root.join('.gitlab_shell_secret')
@@ -956,6 +969,22 @@ ObjectStoreSettings.new(Settings).parse!
 #
 Settings['workhorse'] ||= {}
 Settings.workhorse['secret_file'] ||= Rails.root.join('.gitlab_workhorse_secret')
+
+#
+# Topology Service
+#
+Settings['topology_service'] ||= {}
+Settings.topology_service['enabled'] ||= false
+Settings.topology_service['address'] ||= 'topology-service.gitlab.example.com:443'
+Settings.topology_service['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
+Settings.topology_service['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
+Settings.topology_service['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
+
+#
+# Cells
+#
+Settings['cell'] ||= {}
+Settings.cell['name'] ||= 'cell-1'
 
 #
 # GitLab KAS

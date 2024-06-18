@@ -58,7 +58,7 @@ module Gitlab
         end
 
         TestCase::STATUS_TYPES.each do |status_type|
-          define_method("#{status_type}") do
+          define_method(status_type.to_s) do
             return {} if suite_error || test_cases[status_type].nil?
 
             test_cases[status_type]

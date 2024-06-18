@@ -106,7 +106,7 @@ For example, we could have separate `issue_notes`, `merge_request_notes` and `ep
 and contribute to index bloat and non-ideal data alignments.
 
 - Addresses [polymorphic associations](../../development/database/polymorphic_associations.md)
-and constraints issues
+  and constraints issues
   - On top of having polymorphic associations which are discouraged,
 the presence of the `commit_id` column storing Git SHA hashes prevents utilizing database constraints fully.
 
@@ -115,7 +115,7 @@ the presence of the `commit_id` column storing Git SHA hashes prevents utilizing
 - **Significant** code changes would be required across the codebase
 
 - Even after splitting by domain,
-the resulting domain tables would exceed the 100GB target size limit and each table would need to be partitioned.
+  the resulting domain tables would exceed the 100GB target size limit and each table would need to be partitioned.
 
 ### 2. Partition by hash using `namespace_id`
 
@@ -127,24 +127,24 @@ However, some queries like this one used to preload notes work with `id`s,
 **Benefits:**
 
 - We can achieve the 100GB target size limit without additional work although
-some partitions may grow at a faster rate in the future.
+  some partitions may grow at a faster rate in the future.
 
 **Drawbacks:**
 
 - The primary key of a hash partitioned table must include the hash key columns,
-but all proposed hash keys here are nullable, and thus cannot be part of the primary key and lose
-referential integrity. However, this drawback only exists when partitioning by
-the polymorphic association columns. `namespace_id` would soon become the sharding key
-for the `notes` table for the Cells 1.0.
+  but all proposed hash keys here are nullable, and thus cannot be part of the primary key and lose
+  referential integrity. However, this drawback only exists when partitioning by
+  the polymorphic association columns. `namespace_id` would soon become the sharding key
+  for the `notes` table for the Cells 1.0.
 
 - `namespace_id` could be sharding keys for all the tables referencing the `notes` table
-allowing us to easily add foreign keys to the partitioned `notes` table as the work for
-Cells 1.0 progresses.
+  allowing us to easily add foreign keys to the partitioned `notes` table as the work for
+  Cells 1.0 progresses.
 
 - Some code change is still required to update all the notes queries to include `namespace_id`.
 
 - This method does not address any of the existing structural problems
-like polymorphic associations or too many merge request specific columns (and the consequences)
+  like polymorphic associations or too many merge request specific columns (and the consequences)
 
 ### 3. Vertical split of the table
 
@@ -162,29 +162,29 @@ using the `notes` table's `id` column.
 **Benefits:**
 
 - Vertical partitioning of `note` and `note_html` columns can improve the table layout
-and compact the tuple sizes of the remaining `notes` table to allow for better spatial locality.
+  and compact the tuple sizes of the remaining `notes` table to allow for better spatial locality.
 
 - It might be viewed as a more incremental approach as the `notes` table would remain in place.
 
 **Drawbacks:**
 
 - In order to avoid [the lock contention problem](#design-of-the-notes-table),
-a batching strategy must be implemented when preloading the table containing the vertically split columns.
-Suppose there are 16+ partitions. The first partition contains the data for the `notes` records with IDs `<100`.
-The second partition contains the data for the `notes` records with IDs `>=100` and so on.
-To make sure a preload query does not access too many partitions,
-we can break it into several queries:
-`SELECT * FROM p_notes_data WHERE note_id < 100 AND note_id IN (1, 100, 20000, 30000)`,
-`SELECT * FROM p_notes_data WHERE note_id >= 20000 AND note_id IN (1, 100, 20000, 30000)` and so on.
+  a batching strategy must be implemented when preloading the table containing the vertically split columns.
+  Suppose there are 16+ partitions. The first partition contains the data for the `notes` records with IDs `<100`.
+  The second partition contains the data for the `notes` records with IDs `>=100` and so on.
+  To make sure a preload query does not access too many partitions,
+  we can break it into several queries:
+  `SELECT * FROM p_notes_data WHERE note_id < 100 AND note_id IN (1, 100, 20000, 30000)`,
+  `SELECT * FROM p_notes_data WHERE note_id >= 20000 AND note_id IN (1, 100, 20000, 30000)` and so on.
 
 - `CacheMarkdownField`, the concern that `notes` uses, has implicit dependencies on other parts of the codebase.
-The attempts to override them or transparently delegate the related methods do not work cleanly or easily.
-Also [see the section on Markdown caching](#notes-on-db-based-markdown-caching)
+  The attempts to override them or transparently delegate the related methods do not work cleanly or easily.
+  Also [see the section on Markdown caching](#notes-on-db-based-markdown-caching)
 
 - Additional partitioning work for the `notes` table is still required to meet the 100GB target size limit.
 
 - This method does not address any of the existing structural problems
-like polymorphic associations or too many merge request specific columns (and the consequences)
+  like polymorphic associations or too many merge request specific columns (and the consequences)
 
 #### Notes on DB-based Markdown caching
 
@@ -214,22 +214,22 @@ The non-null check constraint is [planned to be validated in 17.0](https://gitla
 **Benefits:**
 
 - Almost all `notes` queries contain `noteable_type` and that makes the column an ideal choice to use
-when partitionining by list.
+  when partitioning by list.
 
 - Partitioning by list with `noteable_type` can allow us to furthur partition
-the resulting partitions by domain.
+  the resulting partitions by domain.
 
 **Drawbacks:**
 
 - Sub-partitioning still requires partitioning keys to be present in the root table's primary key.
 
 - This approach requires adding many foreign keys to the tables referencing the `notes` table.
-The partitioned table would use a composite primary key `(noteable_type, id)` so
-`noteable_type` would need to be first added to all the referencing tables and backfilled.
+  The partitioned table would use a composite primary key `(noteable_type, id)` so
+  `noteable_type` would need to be first added to all the referencing tables and backfilled.
 
 - More code change might be required to ensure Active Record models work with the partitioned table
-that uses the composite primary key.
+  that uses the composite primary key.
 
 - This method does not address any of the existing structural problems
-like polymorphic associations or too many merge request specific columns. However,
-the possibility of sub-partitioning by domain does dampen the drawback.
+  like polymorphic associations or too many merge request specific columns. However,
+  the possibility of sub-partitioning by domain does dampen the drawback.

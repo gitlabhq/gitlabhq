@@ -474,6 +474,10 @@ Creating a global, mutable wrapper provides a number of advantages, including th
 - Automatically destroy the component after the test is run with [`enableAutoDestroy`](https://v1.test-utils.vuejs.org/api/#enableautodestroy-hook)
   set in [`shared_test_setup.js`](https://gitlab.com/gitlab-org/gitlab/-/blob/d0bdc8370ef17891fd718a4578e41fef97cf065d/spec/frontend/__helpers__/shared_test_setup.js#L20).
 
+#### Async child components
+
+`shallowMount` will not create component stubs for [async child components](https://v2.vuejs.org/v2/guide/components-dynamic-async#Async-Components). In order to properly stub async child components, use the [`stubs`](https://v1.test-utils.vuejs.org/api/options.html#stubs) option. Make sure the async child component has a [`name`](https://v2.vuejs.org/v2/api/#name) option defined, otherwise your `wrapper`'s `findComponent` method may not work correctly.
+
 #### The `createComponent` factory
 
 To avoid duplicating our mounting logic, it's useful to define a `createComponent` factory function

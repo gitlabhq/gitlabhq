@@ -1,0 +1,9 @@
+
+---
+name: db_health_check_using_mimir_client
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153629
+rollout_issue_url:
+milestone: '17.1'
+type: ops
+group: group::database
+default_enabled: false

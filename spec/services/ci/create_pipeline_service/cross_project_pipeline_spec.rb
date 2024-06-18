@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_flag_corectness,
+RSpec.describe Ci::CreatePipelineService, '#execute', :ci_config_feature_flag_correctness,
   feature_category: :continuous_integration do
   let_it_be(:group) { create(:group) }
 
@@ -71,12 +71,6 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_fl
     end
 
     context 'when sidekiq processes the job', :sidekiq_inline do
-      before do
-        allow_next_instance_of(Ci::ResourceGroups::AssignResourceFromResourceGroupService) do |resource_service|
-          allow(resource_service).to receive(:respawn_assign_resource_worker)
-        end
-      end
-
       it 'transitions to pending status and triggers a downstream pipeline' do
         pipeline = create_pipeline!
 

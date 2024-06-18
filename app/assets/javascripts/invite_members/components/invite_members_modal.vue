@@ -438,7 +438,7 @@ export default {
               </ul>
             </gl-collapse>
             <gl-button
-              class="gl-text-decoration-none! gl-shadow-none! gl-mt-3"
+              class="gl-text-decoration-none! !gl-shadow-none gl-mt-3"
               data-testid="accordion-button"
               variant="link"
               @click="toggleErrorExpansion"
@@ -446,7 +446,7 @@ export default {
               {{ errorCollapseText }}
               <gl-icon
                 name="chevron-down"
-                class="gl-transition-medium"
+                class="gl-transition-all"
                 :class="{ 'gl-rotate-180': isErrorsSectionExpanded }"
               />
             </gl-button>

@@ -160,20 +160,22 @@ Devise.setup do |config|
   # :none  = No unlock strategy. You should handle unlocking by yourself.
   config.unlock_strategy = :both
 
-  # Number of authentication tries before locking an account if lock_strategy
-  # is failed attempts.
-  config.maximum_attempts = if Gitlab::CurrentSettings.max_login_attempts_column_exists?
-                              (Gitlab::CurrentSettings.max_login_attempts || 10)
-                            else
-                              10
-                            end
+  ActiveSupport.on_load(:gitlab_db_load_balancer) do
+    # Number of authentication tries before locking an account if lock_strategy
+    # is failed attempts.
+    config.maximum_attempts = if Gitlab::CurrentSettings.max_login_attempts_column_exists?
+                                (Gitlab::CurrentSettings.max_login_attempts || 10)
+                              else
+                                10
+                              end
 
-  # Time interval to unlock the account if :time is enabled as unlock_strategy.
-  config.unlock_in = if Gitlab::CurrentSettings.failed_login_attempts_unlock_period_in_minutes_column_exists?
-                       (Gitlab::CurrentSettings.failed_login_attempts_unlock_period_in_minutes || 10).minutes
-                     else
-                       10.minutes
-                     end
+    # Time interval to unlock the account if :time is enabled as unlock_strategy.
+    config.unlock_in = if Gitlab::CurrentSettings.failed_login_attempts_unlock_period_in_minutes_column_exists?
+                         (Gitlab::CurrentSettings.failed_login_attempts_unlock_period_in_minutes || 10).minutes
+                       else
+                         10.minutes
+                       end
+  end
 
   # ==> Configuration for :recoverable
   #

@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
     result = execute_query(query)
 
     expect(result['errors']).to include(
-      a_hash_including('message' => 'only one of [username, userId] arguments is allowed at the same time.')
+      a_hash_including('message' => 'Only one of [username, userId] arguments is allowed at the same time.')
     )
   end
 
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::Graphql::Validators::MutuallyExclusiveValidator, feature_
       result = execute_query(query)
 
       expect(result['errors']).to include(
-        a_hash_including('message' => 'only one of [username, userId] arguments is allowed at the same time.')
+        a_hash_including('message' => 'Only one of [username, userId] arguments is allowed at the same time.')
       )
     end
 

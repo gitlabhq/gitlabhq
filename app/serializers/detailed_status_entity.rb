@@ -23,7 +23,7 @@ class DetailedStatusEntity < Grape::Entity
     JSON
   } do |status|
     illustration = {
-        image: ActionController::Base.helpers.image_path(status.illustration[:image])
+      image: ActionController::Base.helpers.image_path(status.illustration[:image])
     }
     illustration = status.illustration.merge(illustration)
 
@@ -38,7 +38,7 @@ class DetailedStatusEntity < Grape::Entity
     Gitlab::Favicon.ci_status_overlay(status.favicon)
   end
 
-  expose :action, if: -> (status, _) { status.has_action? } do
+  expose :action, if: ->(status, _) { status.has_action? } do
     expose :action_icon, as: :icon, documentation: { type: 'string', example: 'cancel' }
     expose :action_title, as: :title, documentation: { type: 'string', example: 'Cancel' }
     expose :action_path, as: :path, documentation: { type: 'string', example: '/namespace1/project1/-/jobs/2/cancel' }

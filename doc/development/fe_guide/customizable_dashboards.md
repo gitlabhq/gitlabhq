@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Customizable dashboards
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [Experiment](../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98610) in GitLab 15.5 as an [experiment](../../policy/experiment-beta-support.md#experiment).
 
 Customizable dashboards provide a configuation-based [dashboard](https://design.gitlab.com/patterns/dashboards)
 structure, which is used to render and modify dashboard configurations created by GitLab or users.
@@ -137,6 +137,7 @@ export const dashboard = {
   slug: 'my_dashboard', // Used to set the URL path for the dashboard.
   title: 'My dashboard title', // The title to display.
   description: 'This is a description of the dashboard', // A description of the dashboard
+  userDefined: true, // The dashboard editor is only available when true.
   // Each dashboard consists of an array of panels to display.
   panels: [
     {
@@ -173,12 +174,14 @@ Here is an example component that renders a customizable dashboard:
 ```vue
 <script>
 import CustomizableDashboard from 'ee/vue_shared/components/customizable_dashboard/customizable_dashboard.vue';
+import PanelsBase from `ee/vue_shared/components/customizable_dashboard/panels_base.vue`;
 import { dashboard } from './constants';
 
 export default {
-  name: 'AnalyticsDashboard',
+  name: 'MyCustomDashboard',
   components: {
     CustomizableDashboard,
+    PanelsBase,
   },
   data() {
     return {
@@ -199,6 +202,14 @@ export default {
       showDateRangeFilter: true,
       // The maximum size of the date range allowed in days. 0 for unlimited.
       dateRangeLimit: 0,
+      // Array of GlDisclosureDropdown items to show on each panel when editing
+      panelActions: [
+        {
+          text: __('Delete'),
+          action: () => this.$emit('delete'),
+          icon: 'remove',
+        },
+      ],
     };
   },
 };
@@ -212,6 +223,20 @@ export default {
     :show-date-range-filter="showDateRangeFilter"
     :date-range-limit="dateRangeLimit"
   />
+    <template #panel="{ panel, filters, editing, deletePanel }">
+      <!-- Panels base provides a styled wrapper for your visualizations. -->
+      <panels-base
+        :title="panel.title"
+        :editing="editing"
+        :actions="panelActions"
+        @delete="deletePanel"
+      >
+        <template #body>
+          <!-- Render the panel's visualization here -->
+        </template>
+      </panels-base>
+    </template>
+  </customizable-dashboard>
 </template>
 ```
 
@@ -220,25 +245,26 @@ export default {
 > - Introduced in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `combined_analytics_dashboards_editor`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/411407) in GitLab 16.6. Feature flag `combined_analytics_dashboards_editor` removed.
 
-The dashboard designer provides a graphical interface for users to modify the
-panels and add new ones on user-defined dashboards. Is is not available on
-GitLab hardcoded dashboards.
+The CustomizableDashboard component provides a graphical interface for users to
+modify panels of existing dashboards and create new dashboards.
 
-NOTE:
-The dashboard designer is in the early experimental stage and subject to
-change.
+The dashboard editor is only available when `dashboard.userDefined` is `true`.
 
 ```vue
 <script>
+import CustomizableDashboard from 'ee/vue_shared/components/customizable_dashboard/customizable_dashboard.vue';
 import { s__ } from '~/locale';
+import { dashboard } from './constants';
 
 export const I18N_MY_NEW_CATEGORY = s__('Namespace|My data source');
 
 export default {
-  name: 'AnalyticsDashboard',
+  name: 'MyCustomDashboard',
   data() {
     return {
       ...,
+      // The initial saved dashboard. Used to track changes.
+      initialDashboard: dashboard,
       // Set to true to render the dashboard saving state.
       isSaving: false,
       // A list of availble visualizations categorized by feature.
@@ -263,15 +289,11 @@ export default {
      * @param  {String} newDashboardObject The newly modified dashboard object.
      */
     saveDashboard(dashboardId, newDashboardObject) {
-      // Save changes and modify `this.dashboard`.
-    },
-    /**
-     * Event handler for when a user adds a visualization in a new panel.
-     * @param  {String} visualizationId The ID (usually filename) of the visualization.
-     * @param  {String} visualizationSource The source to get the new visualization config.
-     */
-    addNewPanel(visualizationId, visualizationSource) {
-      // Load the visualization and push a new panel onto `this.dashboard.panels`.
+      this.isSaving = true;
+      // Save changes somewhere.
+      // Then update the saved dashboard version
+      this.initialDashboard = newDashboardObject;
+      this.isSaving = false;
     },
   },
 }
@@ -279,11 +301,37 @@ export default {
 
 <template>
   <customizable-dashboard
-    ...
+    :initial-dashboard="initialDashboard"
     :available-visualizations="availableVisualizations"
     :is-saving="isSaving"
-    @save="handleSave"
-    @add-panel="handleAddPanel"
+    @save="saveDashboard"
   />
+    <template #panel="{ panel, filters, editing, deletePanel }">
+      <my-dashboard-panel :panel="panel" />
+    </template>
+  </customizable-dashboard>
 </template>
+```
+
+## Introducing visualizations behind a feature flag
+
+While developing new visualizations we can use [feature flags](../feature_flags/index.md#create-a-new-feature-flag) to mitigate risks of disruptions or incorrect data for users.
+
+The [`from_data`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/product_analytics/panel.rb#L7) method builds the panel objects for a dashboard. Using the `filter_map` method, we can add a condition to skip rendering panels that include the visualization we are developing.
+
+For example, here we have added the `enable_usage_overview_visualization` feature flag and can check it's current state to determine whether panels using the `usage_overview` visualization should be rendered:
+
+```ruby
+panel_yaml.filter_map do |panel|
+  # Skip processing the usage_overview panel if the feature flag is disabled
+  next if panel['visualization'] == 'usage_overview' && Feature.disabled?(:enable_usage_overview_visualization)
+
+  new(
+    title: panel['title'],
+    project: project,
+    grid_attributes: panel['gridAttributes'],
+    query_overrides: panel['queryOverrides'],
+    visualization: panel['visualization']
+  )
+end
 ```

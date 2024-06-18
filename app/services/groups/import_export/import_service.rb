@@ -10,7 +10,7 @@ module Groups
         @current_user = user
         @user_role = user_role
         @shared = Gitlab::ImportExport::Shared.new(@group)
-        @logger = Gitlab::Import::Logger.build
+        @logger = ::Import::Framework::Logger.build
       end
 
       def async_execute

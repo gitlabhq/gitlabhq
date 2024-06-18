@@ -7,6 +7,10 @@ RSpec.describe System::BroadcastMessage, feature_category: :onboarding do
 
   it { is_expected.to be_valid }
 
+  describe 'associations' do
+    it { is_expected.to have_many(:broadcast_message_dismissals) }
+  end
+
   describe 'validations' do
     let(:triplet) { '#000' }
     let(:hex)     { '#AABBCC' }

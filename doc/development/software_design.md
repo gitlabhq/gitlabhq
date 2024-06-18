@@ -159,6 +159,45 @@ end
 If classes that are defined into a namespace have a lot in common with classes in other namespaces,
 chances are that these two namespaces are part of the same bounded context.
 
+### How to resolve GitLab/BoundedContexts RuboCop offenses
+
+The `Gitlab/BoundedContexts` RuboCop cop ensures that every Ruby class or module is nested inside a
+top-level Ruby namespace existing in [`config/bounded_contexts.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/bounded_contexts.yml).
+
+Offenses should be resolved by nesting the constant inside an existing bounded context namespace.
+
+- Search in `config/bounded_contexts.yml` for namespaces that more closely relate to the feature,
+  for example by matching the feature category.
+- If needed, use sub-namespaces to further nest the constant inside the namespace.
+  For example: `Repositories::Mirrors::SyncService`.
+- Create follow-up issues to move the existing related code into the same namespace.
+
+In exceptional cases, we may need to add a new bounded context to the list. This can be done if:
+
+- We are introducing a new product category that does not align with any existing bounded contexts.
+- We are extracting a bounded context out of an existing one because it's too large and we want to decouple the two.
+
+### GitLab/BoundedContexts and `config/bounded_contexts.yml` FAQ
+
+1. **Is there ever a situation where the cop should be disabled?**
+
+    - The cop **should not** be disabled but it **could** be disabled temporarily if the offending class or module is part
+      of a cluster of classes that should otherwise be moved all together.
+      In this case you could disable the cop and create a follow-up issue to move all the classes at once.
+1. **Is there a suggested timeline to get all of the existing code refactored into compliance?**
+
+    - We do not have a timeline defined but the quicker we consolidate code the more consistent it becomes.
+1. **Do the bounded contexts apply for existing Sidekiq workers?**
+
+    - Existing workers would be already in the RuboCop TODO file so they do not raise offenses. However, they should
+      also be moved into the bounded context whenever possible.
+      Follow the Sidekiq [renaming worker](../development/sidekiq/compatibility_across_updates.md#renaming-worker-classes) guide.
+1. **We are renaming a feature category and the `config/bounded_contexts.yml` references that. Is it safe to update?**
+
+    - Yes the file only expects that the feature categories mapped to bounded contexts are defined in `config/feature_categories.yml`
+      and nothing specifically depends on these values. This mapping is primarily for contributors to understand where features
+      may be living in the codebase.
+
 ## Distinguish domain code from generic code
 
 The [guidelines above](#use-namespaces-to-define-bounded-contexts) refer primarily to the domain code.
@@ -363,7 +402,7 @@ We have `Groups::UpdateService` which is entity-centric and reused for radically
 use cases:
 
 - Update group description, which requires group admin access.
-- Set namespace-level limit for [compute quota](../ci/pipelines/cicd_minutes.md), like `shared_runners_minutes_limit`
+- Set namespace-level limit for [compute quota](../ci/pipelines/compute_minutes.md), like `shared_runners_minutes_limit`
   which requires instance admin access.
 
 These 2 different use cases support different sets of parameters. It's not likely or expected that

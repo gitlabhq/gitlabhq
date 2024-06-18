@@ -17,10 +17,11 @@ import Vue from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { fetchPolicies } from '~/lib/graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import { redirectTo } from '~/lib/utils/url_utility'; // eslint-disable-line import/no-deprecated
+import { visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
 import {
   CC_VALIDATION_REQUIRED_ERROR,
+  IDENTITY_VERIFICATION_REQUIRED_ERROR,
   CONFIG_VARIABLES_TIMEOUT,
   FILE_TYPE,
   VARIABLE_TYPE,
@@ -71,6 +72,8 @@ export default {
     VariableValuesListbox,
     CcValidationRequiredAlert: () =>
       import('ee_component/billings/components/cc_validation_required_alert.vue'),
+    PipelineAccountVerificationAlert: () =>
+      import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
   },
   directives: { SafeHtml },
   props: {
@@ -223,6 +226,9 @@ export default {
     ccRequiredError() {
       return this.error === CC_VALIDATION_REQUIRED_ERROR && !this.ccAlertDismissed;
     },
+    identityVerificationRequiredError() {
+      return this.error === IDENTITY_VERIFICATION_REQUIRED_ERROR;
+    },
     variableTypeListboxItems() {
       return [
         {
@@ -347,7 +353,7 @@ export default {
       const { id, errors, totalWarnings, warnings } = data.createPipeline;
 
       if (id) {
-        redirectTo(`${this.pipelinesPath}/${id}`); // eslint-disable-line import/no-deprecated
+        visitUrl(`${this.pipelinesPath}/${id}`);
         return;
       }
 
@@ -390,6 +396,10 @@ export default {
 <template>
   <gl-form @submit.prevent="createPipeline">
     <cc-validation-required-alert v-if="ccRequiredError" class="gl-pb-5" @dismiss="dismissError" />
+    <pipeline-account-verification-alert
+      v-else-if="identityVerificationRequiredError"
+      class="gl-mb-4"
+    />
     <gl-alert
       v-else-if="error"
       :title="errorTitle"
@@ -502,12 +512,12 @@ export default {
               :aria-label="$options.i18n.removeVariableLabel"
               @click="removeVariable(index)"
             >
-              <gl-icon class="gl-mr-0! gl-display-none gl-md-display-block" name="clear" />
-              <span class="gl-md-display-none">{{ $options.i18n.removeVariableLabel }}</span>
+              <gl-icon class="gl-mr-0! gl-hidden md:gl-block" name="clear" />
+              <span class="md:gl-hidden">{{ $options.i18n.removeVariableLabel }}</span>
             </gl-button>
             <gl-button
               v-else
-              class="gl-md-ml-3 gl-mb-3 gl-display-none gl-md-display-block gl-invisible"
+              class="gl-md-ml-3 gl-mb-3 gl-hidden md:gl-block gl-invisible"
               icon="clear"
               :aria-label="$options.i18n.removeVariableLabel"
             />

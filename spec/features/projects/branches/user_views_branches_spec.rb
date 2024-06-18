@@ -16,7 +16,7 @@ RSpec.describe "User views branches", :js, feature_category: :source_code_manage
     end
 
     it 'renders the breadcrumbs' do
-      within('.breadcrumbs') do
+      within_testid('breadcrumb-links') do
         expect(page).to have_content("#{project.creator.name} #{project.name} Branches")
 
         expect(page).to have_link(project.creator.name, href: user_path(project.creator))

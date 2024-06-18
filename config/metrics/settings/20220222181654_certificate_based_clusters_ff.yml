@@ -2,8 +2,6 @@
 key_path: settings.certificate_based_clusters_ff
 name: "certificate_based_clusters_ff"
 description: "Certificate-based clusters feature flag"
-product_section: ops
-product_stage: configure
 product_group: environments
 value_type: boolean
 status: active

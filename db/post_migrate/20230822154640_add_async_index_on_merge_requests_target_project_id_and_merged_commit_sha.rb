@@ -7,9 +7,11 @@ class AddAsyncIndexOnMergeRequestsTargetProjectIdAndMergedCommitSha < Gitlab::Da
   disable_ddl_transaction!
 
   # TODO: Index to be created synchronously in https://gitlab.com/gitlab-org/gitlab/-/issues/418822
+  # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
   def up
     prepare_async_index :merge_requests, INDEX_COLUMNS, name: INDEX_NAME
   end
+  # rubocop:enable Migration/PreventIndexCreation
 
   def down
     unprepare_async_index :merge_requests, INDEX_COLUMNS, name: INDEX_NAME

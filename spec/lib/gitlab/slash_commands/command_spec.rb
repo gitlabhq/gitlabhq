@@ -50,8 +50,8 @@ RSpec.describe Gitlab::SlashCommands::Command, feature_category: :integrations d
 
       let!(:manual) do
         create(:ci_build, :manual, pipeline: pipeline,
-                                   name: 'first',
-                                   environment: 'production')
+          name: 'first',
+          environment: 'production')
       end
 
       context 'and user can not create deployment' do
@@ -66,7 +66,7 @@ RSpec.describe Gitlab::SlashCommands::Command, feature_category: :integrations d
           build.project.add_developer(user)
 
           create(:protected_branch, :developers_can_merge,
-                 name: build.ref, project: project)
+            name: build.ref, project: project)
         end
 
         it 'returns action' do
@@ -77,8 +77,8 @@ RSpec.describe Gitlab::SlashCommands::Command, feature_category: :integrations d
         context 'when duplicate action exists' do
           let!(:manual2) do
             create(:ci_build, :manual, pipeline: pipeline,
-                                       name: 'second',
-                                       environment: 'production')
+              name: 'second',
+              environment: 'production')
           end
 
           it 'returns error' do

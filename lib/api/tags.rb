@@ -37,30 +37,30 @@ module API
       end
       params do
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
-                        desc: 'Return tags sorted in updated by `asc` or `desc` order.'
+          desc: 'Return tags sorted in updated by `asc` or `desc` order.'
         optional :order_by, type: String, values: %w[name updated version], default: 'updated',
-                            desc: 'Return tags ordered by `name`, `updated`, `version` fields.'
+          desc: 'Return tags ordered by `name`, `updated`, `version` fields.'
         optional :search, type: String, desc: 'Return list of tags matching the search criteria'
         optional :page_token, type: String, desc: 'Name of tag to start the paginaition from'
         use :pagination
       end
       get ':id/repository/tags', feature_category: :source_code_management, urgency: :low do
         tags_finder = ::TagsFinder.new(user_project.repository,
-                                sort: "#{params[:order_by]}_#{params[:sort]}",
-                                search: params[:search],
-                                page_token: params[:page_token],
-                                per_page: params[:per_page])
+          sort: "#{params[:order_by]}_#{params[:sort]}",
+          search: params[:search],
+          page_token: params[:page_token],
+          per_page: params[:per_page])
 
         paginated_tags = Gitlab::Pagination::GitalyKeysetPager.new(self, user_project).paginate(tags_finder)
 
         present_cached paginated_tags,
-                       with: Entities::Tag,
-                       project: user_project,
-                       releases: find_releases(paginated_tags),
-                       current_user: current_user,
-                       cache_context: -> (_tag) do
-                         [user_project.cache_key, can?(current_user, :read_release, user_project)].join(':')
-                       end
+          with: Entities::Tag,
+          project: user_project,
+          releases: find_releases(paginated_tags),
+          current_user: current_user,
+          cache_context: ->(_tag) do
+            [user_project.cache_key, can?(current_user, :read_release, user_project)].join(':')
+          end
 
       rescue Gitlab::Git::InvalidPageToken => e
         unprocessable_entity!(e.message)
@@ -108,9 +108,9 @@ module API
 
         if result[:status] == :success
           present result[:tag],
-                  with: Entities::Tag,
-                  project: user_project,
-                  releases: find_releases(result[:tag])
+            with: Entities::Tag,
+            project: user_project,
+            releases: find_releases(result[:tag])
         else
           render_api_error!(result[:message], 400)
         end

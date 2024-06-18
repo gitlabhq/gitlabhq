@@ -25,18 +25,20 @@ module API
         optional :name, type: String, desc: 'Name of the hook'
         optional :description, type: String, desc: 'Description of the hook'
         optional :token, type: String,
-                         desc: "Secret token to validate received payloads; this isn't returned in the response"
+          desc: "Secret token to validate received payloads; this isn't returned in the response"
         optional :push_events, type: Boolean, desc: 'When true, the hook fires on push events'
         optional :tag_push_events, type: Boolean, desc: 'When true, the hook fires on new tags being pushed'
         optional :merge_requests_events, type: Boolean, desc: 'Trigger hook on merge requests events'
         optional :repository_update_events, type: Boolean, desc: 'Trigger hook on repository update events'
         optional :enable_ssl_verification, type: Boolean, desc: 'Do SSL verification when triggering the hook'
         use :url_variables
+        use :custom_headers
       end
     end
 
     resource :hooks do
       mount ::API::Hooks::UrlVariables
+      mount ::API::Hooks::CustomHeaders
 
       desc 'List system hooks' do
         detail 'Get a list of all system hooks'
@@ -82,9 +84,14 @@ module API
       end
       post do
         hook_params = create_hook_params
-        hook = SystemHook.new(hook_params)
 
-        save_hook(hook, Entities::Hook)
+        result = WebHooks::CreateService.new(current_user).execute(hook_params, hook_scope)
+
+        if result[:status] == :success
+          present result[:hook], with: Entities::Hook
+        else
+          error!(result.message, result.http_status || 422)
+        end
       end
 
       desc 'Edit system hook' do

@@ -1124,6 +1124,58 @@ Example response:
 }
 ```
 
+## List service account users
+
+DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
+> - Ability to list all service account users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416729) in GitLab 17.1.
+
+Prerequisites:
+
+- You must be an administrator of the self-managed instance.
+
+Lists all service account users.
+
+This function takes pagination parameters `page` and `per_page` to restrict the list of users.
+
+This API endpoint requires the user to be an instance admin.
+
+Example request:
+
+```plaintext
+GET /service_accounts
+```
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/service_accounts"
+```
+
+Supported attributes:
+
+| Attribute    | Type     | Required  | Description                                                 |
+|:-------------|:---------|:----------|:------------------------------------------------------------|
+| `order_by`   | string   | no        | Orders list of users by `username` or `id` Default is `id`. |
+| `sort`       | string   | no        | Specifies sorting by `asc` or `desc`. Default is `desc`.    |
+
+Example response:
+
+```json
+[
+  {
+    "id": 114,
+    "username": "service_account_33",
+    "name": "Service account user"
+  },
+  {
+    "id": 137,
+    "username": "service_account_34",
+    "name": "john doe"
+  }
+]
+```
+
 ## List user projects
 
 See the [list of user projects](projects.md#list-user-projects).
@@ -2530,7 +2582,7 @@ Example response:
 ```json
 {
     "id": 9171,
-    "token": "glrt-kyahzxLaj4Dc1jQf4xjX",
+    "token": "<access-token>",
     "token_expires_at": null
 }
 ```

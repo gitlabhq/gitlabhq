@@ -16,8 +16,8 @@ A hand-raise PQL is a user who requests to speak to sales from within the produc
 1. Set up CustomersDot to talk to a staging instance of Workato.
 
 1. Set up CustomersDot using the [standard install instructions](https://gitlab.com/gitlab-org/customers-gitlab-com/-/blob/staging/doc/setup/installation_steps.md).
-1. Set the `CUSTOMER_PORTAL_URL` environment variable to your local (or ngrok) URL of your CustomersDot instance.
-1. Place `export CUSTOMER_PORTAL_URL='https://XXX.ngrok.io/'` in your shell `rc` script (`~/.zshrc` or `~/.bash_profile` or `~/.bashrc`) and restart GDK.
+1. Set the `CUSTOMER_PORTAL_URL` environment variable to your local URL of your CustomersDot instance.
+1. Place `export CUSTOMER_PORTAL_URL=http://localhost:5000/` in your shell `rc` script (`~/.zshrc` or `~/.bash_profile` or `~/.bashrc`) and restart GDK.
 1. Enter the credentials on CustomersDot development to Workato in your `/config/secrets.yml` and restart. Credentials for the Workato Staging are in the 1Password Subscription portal vault. The URL for staging is `https://apim.workato.com/gitlab-dev/services/marketo/lead`.
 
 ```yaml
@@ -47,12 +47,30 @@ A hand-raise PQL is a user who requests to speak to sales from within the produc
 
 [HandRaiseLeadButton](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/assets/javascripts/hand_raise_leads/hand_raise_lead/components/hand_raise_lead_button.vue) is a reusable component that adds a button and a hand-raise modal to any screen.
 
-You can import a hand-raise lead button the following way.
+You can import a hand-raise lead button in the following ways:
 
-```javascript
+For Haml:
+
+```haml
+.js-hand-raise-lead-trigger{ data: discover_page_hand_raise_lead_data(group) }
+```
+
+For Vue:
+
+```vue
+<script>
 import HandRaiseLeadButton from 'ee/hand_raise_leads/hand_raise_lead/components/hand_raise_lead_button.vue';
 
 export default {
+  handRaiseLeadAttributes: {
+    variant: 'confirm',
+    category: 'tertiary',
+    class: 'gl-sm-w-auto gl-w-full gl-sm-ml-3 gl-sm-mt-0 gl-mt-3',
+    'data-testid': 'some-unique-hand-raise-lead-button',
+  },
+  ctaTracking: {
+    action: 'click_button',
+  },
   components: {
     HandRaiseLeadButton,
 ...
@@ -60,57 +78,53 @@ export default {
 
 <template>
 
-<hand-raise-lead-button />
-
+<hand-raise-lead-button
+  :button-attributes="$options.handRaiseLeadAttributes"
+  glm-content="some-unique-glm-content"
+  :cta-tracking="$options.ctaTracking"
+/>
+...
+</template>
 ```
 
-The hand-raise lead form accepts the following parameters via provide or inject.
+The hand-raise lead form submission can send unique data on modal submission and customize the button by
+providing the following props to the button:
 
 ```javascript
-    provide: {
-      small,
-      user: {
-        namespaceId,
-        userName,
-        firstName,
-        lastName,
-        companyName,
-        glmContent,
-      },
-      ctaTracking: {
-        action,
-        label,
-        property,
-        value,
-        experiment,
-      },
-    },
+props: {
+  ctaTracking: {
+    type: Object,
+    required: false,
+    default: () => ({}),
+  },
+  buttonText: {
+    type: String,
+    required: false,
+    default: PQL_BUTTON_TEXT,
+  },
+  buttonAttributes: {
+    type: Object,
+    required: true,
+  },
+  glmContent: {
+    type: String,
+    required: true,
+  },
+  productInteraction: {
+    type: String,
+    required: false,
+    default: PQL_PRODUCT_INTERACTION,
+  },
+},
 ```
 
-The `ctaTracking` parameters follow the `data-track` attributes for implementing Snowplow tracking. The provided tracking attributes are attached to the button inside the `HandRaiseLeadButton` component, which triggers the hand-raise lead modal when selected.
+The `ctaTracking` parameters follow the `data-track` attributes for implementing Snowplow tracking.
+The provided tracking attributes are attached to the button inside the `HandRaiseLeadButton` component,
+which triggers the hand-raise lead modal when selected.
 
 ### Monitor the lead location
 
 When embedding a new hand raise form, use a unique `glmContent` or `glm_content` field that is different to any existing values.
-
-We currently use the following `glm_content` values:
-
-| `glm_content` value                 | Notes |
-|-------------------------------------|-------|
-| `discover-group-security`           | This value is used in the group security feature discovery page. |
-| `discover-group-security-pqltest`   | This value is used in the group security feature discovery page [experiment with 3 CTAs](https://gitlab.com/gitlab-org/gitlab/-/issues/349799). |
-| `discover-project-security`         | This value is used in the project security feature discovery page. |
-| `discover-project-security-pqltest` | This value is used in the project security feature discovery page [experiment with 3 CTAs](https://gitlab.com/gitlab-org/gitlab/-/issues/349799). |
-| `group-billing`                     | This value is used in the group billing page. |
-| `trial-status-show-group`           | This value is used in the upper-left nav when a namespace has an active trial. |
-
-### Test the component
-
-In a jest test, you may test the presence of the component.
-
-```javascript
-expect(wrapper.findComponent(HandRaiseLeadButton).exists()).toBe(true);
-```
 
 ## PQL lead flow
 

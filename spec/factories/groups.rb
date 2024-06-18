@@ -15,6 +15,7 @@ FactoryBot.define do
       developers {}
       maintainers {}
       owners {}
+      creator {}
       # rubocop:enable Lint/EmptyBlock
     end
 
@@ -32,6 +33,7 @@ FactoryBot.define do
       group.add_members(Array.wrap(evaluator.developers), :developer)
       group.add_members(Array.wrap(evaluator.maintainers), :maintainer)
       group.add_members(Array.wrap(evaluator.owners), :owner)
+      group.add_creator(evaluator.creator) if evaluator.creator
     end
 
     trait :with_organization do

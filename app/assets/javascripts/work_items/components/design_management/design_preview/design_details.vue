@@ -11,6 +11,8 @@ import { extractDesign, getPageLayoutElement } from '../utils';
 import { DESIGN_DETAIL_LAYOUT_CLASSLIST } from '../constants';
 import { DESIGN_NOT_FOUND_ERROR, DESIGN_VERSION_NOT_EXIST_ERROR } from '../error_messages';
 import DesignPresentation from './design_presentation.vue';
+import DesignToolbar from './design_toolbar.vue';
+import DesignSidebar from './design_sidebar.vue';
 
 const DEFAULT_SCALE = 1;
 const DEFAULT_MAX_SCALE = 2;
@@ -19,6 +21,8 @@ export default {
   WORK_ITEM_ROUTE_NAME,
   components: {
     DesignPresentation,
+    DesignSidebar,
+    DesignToolbar,
     GlAlert,
   },
   inject: ['fullPath'],
@@ -48,6 +52,11 @@ export default {
       type: String,
       required: true,
     },
+    allDesigns: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -61,6 +70,7 @@ export default {
       discussions: [],
       workItemId: '',
       workItemTitle: '',
+      isSidebarOpen: true,
     };
   },
   apollo: {
@@ -143,6 +153,9 @@ export default {
     setMaxScale(event) {
       this.maxScale = 1 / event;
     },
+    toggleSidebar() {
+      this.isSidebarOpen = !this.isSidebarOpen;
+    },
   },
 };
 </script>
@@ -152,6 +165,15 @@ export default {
     class="design-detail js-design-detail fixed-top gl-w-full gl-flex gl-justify-content-center gl-flex-col gl-lg-flex-direction-row gl-bg-gray-10"
   >
     <div class="gl-flex gl-overflow-hidden gl-grow gl-flex-col gl-relative">
+      <design-toolbar
+        :work-item-title="workItemTitle"
+        :design="design"
+        :design-filename="$route.params.id"
+        :is-loading="isLoading"
+        :is-sidebar-open="isSidebarOpen"
+        :all-designs="allDesigns"
+        @toggle-sidebar="toggleSidebar"
+      />
       <div
         class="gl-flex gl-overflow-hidden gl-flex-col gl-lg-flex-direction-row gl-grow gl-relative"
       >
@@ -172,6 +194,7 @@ export default {
             @setMaxScale="setMaxScale"
           />
         </div>
+        <design-sidebar :design="design" :is-loading="isLoading" :is-open="isSidebarOpen" />
       </div>
     </div>
   </div>

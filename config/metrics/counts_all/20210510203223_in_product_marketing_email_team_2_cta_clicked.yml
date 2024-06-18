@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.in_product_marketing_email_team_2_cta_clicked
 description: Total clicks on the team track's third email
-product_section: 'TBD'
-product_stage: growth
 product_group: activation
 value_type: number
 status: removed

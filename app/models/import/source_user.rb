@@ -16,23 +16,37 @@ module Import
     state_machine :status, initial: :pending_assignment do
       state :pending_assignment, value: 0
       state :awaiting_approval, value: 1
-      state :rejected, value: 2
-      state :failed, value: 3
-      state :completed, value: 4
+      state :reassignment_in_progress, value: 2
+      state :rejected, value: 3
+      state :failed, value: 4
+      state :completed, value: 5
+      state :keep_as_placeholder, value: 6
 
       event :cancel_assignment do
         transition [:awaiting_approval, :rejected] => :pending_assignment
       end
 
+      event :keep_as_placeholder do
+        transition [:pending_assignment, :awaiting_approval, :rejected] => :keep_as_placeholder
+      end
+
       event :accept do
-        transition awaiting_approval: :completed
+        transition awaiting_approval: :reassignment_in_progress
       end
 
       event :reject do
         transition awaiting_approval: :rejected
       end
 
-      after_transition any => [:pending_assignment, :rejected] do |status|
+      event :complete do
+        transition reassignment_in_progress: :completed
+      end
+
+      event :fail_reassignment do
+        transition reassignment_in_progress: :failed
+      end
+
+      after_transition any => [:pending_assignment, :rejected, :keep_as_placeholder] do |status|
         status.update!(reassign_to_user: nil)
       end
     end

@@ -30,7 +30,7 @@ module API
         namespace 'mail_room' do
           params do
             requires :mailbox_type, type: String,
-                                    desc: 'The destination mailbox type configuration. Must either be incoming_email or service_desk_email'
+              desc: 'The destination mailbox type configuration. Must either be incoming_email or service_desk_email'
           end
           post "/*mailbox_type" do
             worker = Gitlab::MailRoom.worker_for(params[:mailbox_type])

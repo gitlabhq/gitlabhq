@@ -72,14 +72,14 @@ export default {
 <template>
   <div class="timeline-event gl-display-grid">
     <div
-      class="timeline-event-icon gl--flex-center gl-bg-white gl-text-gray-200 gl-border gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-p-3 gl-z-1"
+      class="timeline-event-icon gl-flex gl-justify-center gl-items-center gl-bg-white gl-text-gray-200 gl-border gl-rounded-full gl-mt-2 gl-w-8 gl-h-8 gl-p-3 gl-z-1"
     >
       <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>
     <div class="timeline-event-note timeline-event-border">
       <div class="gl-display-flex gl-flex-wrap gl-align-items-center gl-gap-3 gl-mb-2">
         <h3
-          class="timeline-event-note-date gl-font-weight-bold gl-font-sm gl-my-0"
+          class="timeline-event-note-date gl-font-bold gl-font-sm gl-my-0"
           data-testid="event-time"
         >
           <gl-sprintf :message="$options.i18n.timeUTC">

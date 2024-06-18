@@ -7,6 +7,9 @@ module QA
     module Formatters
       class TestMetricsFormatter < RSpec::Core::Formatters::BaseFormatter
         include Support::InfluxdbTools
+        include Support::GcsTools
+        include Support::Repeater
+        include Support::Retrier
 
         CUSTOM_METRICS_KEY = :custom_test_metrics
 
@@ -44,49 +47,109 @@ module QA
         def execution_data(examples = nil)
           @execution_metrics ||= examples.filter_map { |example| test_stats(example) }
         end
+
         alias_method :parse_execution_data, :execution_data
 
-        # Push test execution metrics to influxdb
+        # Upload test execution metrics
         #
         # @return [void]
         def push_test_metrics
-          return log(:debug, "Metrics export not enabled, skipping test metrics export") unless export_metrics?
+          return log(:info, "Metrics export not enabled, skipping test metrics export") unless export_metrics?
 
+          push_test_metrics_to_influxdb
+          push_test_metrics_to_gcs
+        end
+
+        # Push test execution metrics to InfluxDB
+        #
+        # @return [void]
+        def push_test_metrics_to_influxdb
           write_api.write(data: execution_data)
-          log(:debug, "Pushed #{execution_data.length} test execution entries to influxdb")
+          log(:info, "Pushed #{execution_data.length} test execution entries to influxdb")
         rescue StandardError => e
           log(:error, "Failed to push test execution metrics to influxdb, error: #{e}")
+        end
+
+        # Push test execution metrics to GCS
+        #
+        # @return [void]
+        def push_test_metrics_to_gcs
+          retry_on_exception(sleep_interval: 30, message: 'Failed to push test metrics to GCS') do
+            gcs_client.put_object(gcs_bucket, metrics_file_name(prefix: 'test'), execution_data.to_json,
+              force: true, content_type: 'application/json')
+
+            log(:info, "Pushed #{execution_data.length} test execution entries to GCS")
+          end
         end
 
         # Push resource fabrication metrics to influxdb
         #
         # @return [void]
         def push_fabrication_metrics
-          return log(:debug, "Metrics export not enabled, skipping fabrication metrics export") unless export_metrics?
+          return log(:info, "Metrics export not enabled, skipping fabrication metrics export") unless export_metrics?
 
           data = Tools::TestResourceDataProcessor.resources.flat_map do |resource, values|
             values.map { |v| fabrication_stats(resource: resource, **v) }
           end
+
           return if data.empty?
 
+          push_fabrication_metrics_influxdb(data)
+          push_fabrication_metrics_gcs(data)
+        end
+
+        # Push resource fabrication metrics to GCS
+        #
+        # @param [Hash] data fabrication data hash
+        # @return [void]
+        def push_fabrication_metrics_gcs(data)
+          retry_on_exception(sleep_interval: 30, message: 'Failed to push resource fabrication metrics to GCS') do
+            gcs_client.put_object(gcs_bucket,
+              metrics_file_name(prefix: 'fabrication'), data.to_json, force: true, content_type: 'application/json')
+
+            log(:info, "Pushed #{data.length} resource fabrication entries to GCS")
+          end
+        end
+
+        # Push resource fabrication metrics to InfluxDB
+        #
+        # @param [Hash] data fabrication data hash
+        # @return [void]
+        def push_fabrication_metrics_influxdb(data)
           write_api.write(data: data)
-          log(:debug, "Pushed #{data.length} resource fabrication entries to influxdb")
+          log(:info, "Pushed #{data.length} resource fabrication entries to influxdb")
         rescue StandardError => e
           log(:error, "Failed to push fabrication metrics to influxdb, error: #{e}")
+        end
+
+        # Get GCS Bucket Name or raise error if missing
+        #
+        # @return [String]
+        def gcs_bucket
+          @gcs_bucket ||= ENV['QA_METRICS_GCS_BUCKET_NAME'] ||
+            raise('Missing QA_METRICS_GCS_BUCKET_NAME env variable')
         end
 
         # Save metrics in json file
         #
         # @return [void]
         def save_test_metrics
-          return log(:debug, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
+          return log(:info, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
 
-          file = "tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}" \
-                 "#{retry_failed_specs? ? "-retry-#{rspec_retried?}" : ''}.json"
+          file = File.join('tmp', metrics_file_name(prefix: 'test'))
 
           File.write(file, execution_data.to_json) && log(:debug, "Saved test metrics to #{file}")
         rescue StandardError => e
           log(:error, "Failed to save test execution metrics, error: #{e}")
+        end
+
+        # Construct file name for metrics
+        #
+        # @param [Hash] prefix of filename
+        # @return [void]
+        def metrics_file_name(prefix:)
+          "#{prefix}-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}" \
+            "#{retry_failed_specs? ? "-retry-#{rspec_retried?}" : ''}.json"
         end
 
         # Transform example to influxdb compatible metrics data
@@ -154,6 +217,7 @@ module QA
             pipeline_id: env('CI_PIPELINE_ID'),
             job_id: env('CI_JOB_ID'),
             merge_request_iid: merge_request_iid,
+            failure_issue: example.metadata[:quarantine] ? example.metadata[:quarantine][:issue] : nil,
             failure_exception: example.execution_result.exception.to_s.delete("\n"),
             **custom_metrics_fields(example.metadata)
           }.compact

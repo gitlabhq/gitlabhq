@@ -9,9 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com
-**Status:** Experiment
+**Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143027) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `observability_logs`. Disabled by default. This feature is an [Experiment](../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143027) in GitLab 16.10 [with a flag](../administration/feature_flags.md) named `observability_logs`. Disabled by default. This feature is in [beta](../policy/experiment-beta-support.md#beta).
 
 FLAG:
 This feature is only available on GitLab.com. On self-managed GitLab and GitLab Dedicated, by default this feature is not available.
@@ -61,10 +61,13 @@ You can view the logs for a given project:
 A list of logs is displayed. Currently log date, level, service, and message are supported.
 Select a log line to view its details.
 
-![list of logs](img/logs_list_v16_10.png)
+You can either filter logs by attribute or query log strings with the search bar.
+The log volume chart at the top shows the number of logs ingested over the given time period.
 
-### Logging details
+![list of logs](img/logs_list_v17_1.png)
+
+### View logs details
 
 It is also possible to see log line details such as metadata and resource attributes.
 
-![logs details](img/logs_details_v16_10.png)
+![logs details](img/logs_details_v17_1.png)

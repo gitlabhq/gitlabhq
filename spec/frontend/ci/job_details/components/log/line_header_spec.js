@@ -26,12 +26,14 @@ describe('Job Log Header Line', () => {
   const createComponent = (props = defaultProps) => {
     wrapper = mount(LineHeader, {
       propsData: {
+        ...defaultProps,
         ...props,
       },
     });
   };
 
   const findIcon = () => wrapper.findComponent(GlIcon);
+  const findLine = () => wrapper.find('span');
 
   describe('line', () => {
     beforeEach(() => {
@@ -42,12 +44,29 @@ describe('Job Log Header Line', () => {
       expect(wrapper.findComponent(LineNumber).exists()).toBe(true);
     });
 
-    it('renders a span the provided text', () => {
-      expect(wrapper.find('span').text()).toBe(defaultProps.line.content[0].text);
+    it('renders a line with provided text', () => {
+      expect(findLine().text()).toBe(defaultProps.line.content[0].text);
+    });
+
+    it('renders a line with multiple parts of text', () => {
+      createComponent({
+        line: {
+          content: [
+            { text: 'A line that ', style: 'style-1' },
+            { text: 'continues.', style: 'style-2' },
+          ],
+          lineNumber: 77,
+        },
+      });
+
+      expect(findLine().text()).toBe('A line that continues.');
+      expect(findLine().element.innerHTML).toBe(
+        '<span class="style-1">A line that </span><span class="style-2">continues.</span>',
+      );
     });
 
     it('renders the provided style as a class attribute', () => {
-      expect(wrapper.find('span').classes()).toContain(defaultProps.line.content[0].style);
+      expect(findLine().find(`.${defaultProps.line.content[0].style}`).exists()).toBe(true);
     });
   });
 
@@ -91,6 +110,25 @@ describe('Job Log Header Line', () => {
 
       await nextTick();
       expect(wrapper.emitted().toggleLine.length).toBe(1);
+    });
+  });
+
+  describe('with time', () => {
+    it('renders the time', () => {
+      const lineNumber = 1;
+      const time = '00:00:01Z';
+      const text = 'text';
+
+      createComponent({
+        line: {
+          time,
+          content: [{ text }],
+          lineNumber,
+        },
+        path: '/',
+      });
+
+      expect(wrapper.text()).toBe(`${lineNumber} ${time} ${text}`);
     });
   });
 

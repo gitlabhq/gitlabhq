@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Profiler do
         custom_logger.debug('Project Load (10.4ms)')
 
         expect(custom_logger.load_times_by_model).to eq('User' => [1.2, 1.3],
-                                                        'Project' => [10.4])
+          'Project' => [10.4])
       end
 
       it 'logs the backtrace, ignoring lines as appropriate' do
@@ -122,13 +122,13 @@ RSpec.describe Gitlab::Profiler do
 
         expect(custom_logger).to receive(:add)
                                    .with(Logger::DEBUG,
-                                         anything,
-                                         a_string_matching(File.basename(__FILE__)))
+                                     anything,
+                                     a_string_matching(File.basename(__FILE__)))
                                    .twice
 
         expect(custom_logger).not_to receive(:add).with(Logger::DEBUG,
-                                                        anything,
-                                                        a_string_matching('lib/gitlab/profiler.rb'))
+          anything,
+          a_string_matching('lib/gitlab/profiler.rb'))
 
         # Force a part of the backtrace to be in the (ignored) profiler source
         # file.

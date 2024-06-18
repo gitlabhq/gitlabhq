@@ -39,7 +39,7 @@ type: reference, howto
   artifacts, extend the analyzer CI/CD job to specify no dependencies. For example, for the DAST proxy-based analyzer add the following to your `.gitlab-ci.yml` file:
 
   ```yaml
-  dast_api:
+  api_security:
     dependencies: []
   ```
 
@@ -74,7 +74,7 @@ stages:
   - dast
 
 include:
-  - template: DAST-API.gitlab-ci.yml
+  - template: API-Security.gitlab-ci.yml
 
 # Deploys the container to the GitLab container registry
 deploy:
@@ -90,13 +90,13 @@ deploy:
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
     - docker push $CI_REGISTRY_IMAGE:latest
 
-dast_api:
+api_security:
   services: # use services to link your app container to the dast job
     - name: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
       alias: yourapp
 
 variables:
-  DAST_API_TARGET_URL: https://yourapp
+  APISEC_TARGET_URL: https://yourapp
 ```
 
 Most applications depend on multiple services such as databases or caching services. By default, services defined in the services fields cannot communicate

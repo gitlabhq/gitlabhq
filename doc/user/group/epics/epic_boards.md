@@ -212,7 +212,7 @@ Prerequisites:
 
 To edit the scope of an epic board:
 
-1. In the upper-right corner, select **Edit board**.
+1. In the upper-right corner, select **Configure board** (**{settings}**).
 1. Optional:
    - Edit the board's title.
    - Show or hide the Open and Closed columns.

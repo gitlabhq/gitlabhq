@@ -11,17 +11,14 @@ module QA
 
     describe 'SaaS Container Registry API' do
       let(:api_client) { Runtime::API::Client.new(:gitlab) }
+      let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
 
       let(:project) do
         create(:project, name: 'project-with-registry-api', template_name: 'express', api_client: api_client)
       end
 
       let!(:runner) do
-        Resource::ProjectRunner.fabricate! do |runner|
-          runner.project = project
-          runner.name = "runner-for-#{project.name}"
-          runner.tags = ["runner-for-#{project.name}"]
-        end
+        create(:project_runner, project: project, name: executor, tags: [executor], executor: :docker)
       end
 
       let!(:project_access_token) { create(:project_access_token, project: project) }

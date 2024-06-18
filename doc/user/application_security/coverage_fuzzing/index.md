@@ -83,8 +83,8 @@ To enable coverage-guided fuzz testing, edit `.gitlab-ci.yml`:
    ```
 
 1. [Include](../../../ci/yaml/index.md#includetemplate) the
-  [`Coverage-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml)
-  provided as part of your GitLab installation.
+   [`Coverage-Fuzzing.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Coverage-Fuzzing.gitlab-ci.yml)
+   provided as part of your GitLab installation.
 
 1. Customize the `my_fuzz_target` job to meet your requirements.
 

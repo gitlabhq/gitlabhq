@@ -27,6 +27,17 @@ namespace :ci do
     end
 
     run_all_label_present = mr_labels.include?("pipeline:run-all-e2e")
+    run_no_tests_label_present = mr_labels.include?("pipeline:skip-e2e")
+
+    if run_all_label_present && run_no_tests_label_present
+      raise 'cannot have both pipeline:run-all-e2e and pipeline:skip-e2e labels. Please remove one of these labels'
+    end
+
+    if run_no_tests_label_present
+      logger.info(" merge request has pipeline:skip-e2e label, e2e test execution will be skipped.")
+      append_to_file(env_file, "QA_SKIP_ALL_TESTS=true")
+    end
+
     # on run-all label of framework changes do not infer specific tests
     tests = run_all_label_present || qa_changes.framework_changes? ? nil : qa_changes.qa_tests
 
@@ -71,5 +82,12 @@ namespace :ci do
     raise("Metrics file glob pattern is required") unless args[:glob]
 
     QA::Tools::Ci::TestMetrics.export(args[:glob])
+  end
+
+  desc "Export code paths mapping to GCP"
+  task :export_code_paths_mapping, [:glob] do |_, args|
+    raise("Code paths mapping JSON glob pattern is required") unless args[:glob]
+
+    QA::Tools::Ci::ExportCodePathsMapping.export(args[:glob])
   end
 end

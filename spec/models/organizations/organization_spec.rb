@@ -297,6 +297,18 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
     end
   end
 
+  describe '#add_owner' do
+    let_it_be(:user) { create(:user) }
+
+    before_all do
+      organization.add_owner(user)
+    end
+
+    it 'adds user as an owner', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/463107' do
+      expect(organization.owner?(user)).to eq(true)
+    end
+  end
+
   describe '#web_url' do
     it 'returns web url from `Gitlab::UrlBuilder`' do
       web_url = 'http://127.0.0.1:3000/-/organizations/default'

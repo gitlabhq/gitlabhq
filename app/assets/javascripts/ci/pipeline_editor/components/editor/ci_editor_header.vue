@@ -8,17 +8,14 @@ import {
   EDITOR_APP_DRAWER_JOB_ASSISTANT,
   EDITOR_APP_DRAWER_NONE,
   pipelineEditorTrackingOptions,
-  TEMPLATE_REPOSITORY_URL,
 } from '../../constants';
 
 export default {
   i18n: {
     browseCatalog: __('Browse CI/CD Catalog'),
-    browseTemplates: __('Browse templates'),
     help: __('Help'),
     jobAssistant: s__('JobAssistant|Job assistant'),
   },
-  TEMPLATE_REPOSITORY_URL,
   components: {
     GlButton,
   },
@@ -58,11 +55,6 @@ export default {
       const { label, actions } = pipelineEditorTrackingOptions;
       this.track(actions.openHelpDrawer, { label });
     },
-    trackTemplateBrowsing() {
-      const { label, actions } = pipelineEditorTrackingOptions;
-
-      this.track(actions.browseTemplates, { label });
-    },
   },
 };
 </script>
@@ -81,16 +73,6 @@ export default {
       @click="trackCatalogBrowsing"
     >
       {{ $options.i18n.browseCatalog }}
-    </gl-button>
-    <gl-button
-      :href="$options.TEMPLATE_REPOSITORY_URL"
-      size="small"
-      icon="external-link"
-      target="_blank"
-      data-testid="template-repo-link"
-      @click="trackTemplateBrowsing"
-    >
-      {{ $options.i18n.browseTemplates }}
     </gl-button>
     <gl-button
       icon="information-o"

@@ -20,8 +20,8 @@ module Gitlab
           if use_primary?(strategy)
             ::Gitlab::Database::LoadBalancing::Session.current.use_primary!
           elsif strategy == :retry
-            raise JobReplicaNotUpToDate, "Sidekiq job #{resolved_class} JID-#{job['jid']} couldn't use the replica."\
-              " Replica was not up to date."
+            raise JobReplicaNotUpToDate, "Sidekiq job #{resolved_class} JID-#{job['jid']} couldn't use the replica. "\
+              "Replica was not up to date."
           else
             # this means we selected an up-to-date replica, but there is nothing to do in this case.
           end

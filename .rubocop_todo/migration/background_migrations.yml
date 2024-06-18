@@ -3,7 +3,6 @@ Migration/BackgroundMigrations:
   Exclude:
     - 'ee/db/geo/post_migrate/20220202101354_migrate_job_artifact_registry.rb'
     - 'lib/gitlab/database/migrations/background_migration_helpers.rb'
-    - 'lib/gitlab/database/partitioning_migration_helpers/table_management_helpers.rb'
     - 'spec/lib/gitlab/database/migration_helpers/restrict_gitlab_schema_spec.rb'
     - 'spec/lib/gitlab/database/migrations/background_migration_helpers_spec.rb'
     - 'spec/lib/gitlab/database/migrations/test_background_runner_spec.rb'

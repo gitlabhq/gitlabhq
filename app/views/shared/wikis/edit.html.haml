@@ -1,29 +1,23 @@
-- breadcrumb_title(@page.template? ? s_("Wiki|New Template") : s_("Wiki|New Page")) unless @page.persisted?
+- @content_class = "limit-container-width" unless fluid_layout
+- breadcrumb_title(@page.template? ? s_("Wiki|New template") : s_("Wiki|New page")) unless @page.persisted?
 - wiki_page_title @page, @page.persisted? ? _('Edit') : _('New')
 - add_page_specific_style 'page_bundles/wiki'
 - @gfm_form = true
 - @noteable_type = 'Wiki'
+- templates = @templates.map { |t| wiki_page_basic_info(t) }
 
-- if @error
-  #js-wiki-error{ data: { error: @error, wiki_page_path: wiki_page_path(@wiki, @page) } }
+= form_errors(@page, truncate: :title)
 
-.js-wiki-edit-page.wiki-page-header.has-sidebar-toggle.flex-column.flex-lg-row
-  = wiki_sidebar_toggle_button
-
-  %h1.page-title.gl-font-size-h-display.gl-flex-grow-1
-    - if @page.persisted?
-      = link_to_wiki_page @page
-      %span.gl-text-secondary
-        &middot;
-        = @page.template? ? s_("Wiki|Edit Template") : s_("Wiki|Edit Page")
-    - else
-      = @page.template? ? s_("Wiki|New Template") : s_("Wiki|New Page")
-
-  .nav-controls.pb-md-3.pb-lg-0
-    - if @page.persisted?
-      - if can?(current_user, :create_wiki, @wiki.container)
-        #delete-wiki-modal-wrapper{ data: { delete_wiki_url: wiki_page_path(@wiki, @page), page_title: @page.human_title } }
-
-= render 'shared/wikis/form', uploads_path: wiki_attachment_upload_url
+#js-vue-wiki-edit-app{ data: {
+  testid: 'wiki-page-edit-app',
+  error: @error,
+  page_heading: @page.title,
+  page_info: wiki_page_info(@page, uploads_path: wiki_attachment_upload_url).to_json,
+  is_page_template: @page.template?.to_s,
+  page_persisted: (@page.persisted? && can?(current_user, :create_wiki, @wiki.container)).to_s,
+  wiki_url: wiki_page_path(@wiki, @page),
+  format_options: wiki_markup_hash_by_name_id.to_json,
+  templates: templates.to_json,
+} }
 
 = render 'shared/wikis/sidebar', editing: true

@@ -47,7 +47,7 @@ RSpec.describe Gitlab::ExternalAuthorization, :request_store do
       expect(::Gitlab::ExternalAuthorization::Logger)
         .to receive(:log_access)
               .with(an_instance_of(::Gitlab::ExternalAuthorization::Access),
-                    'the/project/path')
+                'the/project/path')
               .once
 
       2.times { described_class.access_for_user_to_label(user, label, 'the/project/path') }

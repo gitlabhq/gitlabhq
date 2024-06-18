@@ -70,6 +70,19 @@ RSpec.describe Clusters::AgentTokens::TrackUsageService, feature_category: :depl
       end
     end
 
+    context 'when usage tracking raises an error' do
+      before do
+        allow(agent_token).to receive(:update_columns).and_raise(ActiveRecord::NotNullViolation, 'error message')
+      end
+
+      it 'tracks the exception without raising' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(instance_of(ActiveRecord::NotNullViolation), agent_id: agent.id)
+
+        subject
+      end
+    end
+
     def expect_redis_update
       Gitlab::Redis::Cache.with do |redis|
         redis_key = "cache:#{agent_token.class}:#{agent_token.id}:attributes"

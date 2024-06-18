@@ -2,8 +2,6 @@
 data_category: optional
 key_path: counts.grafana_integrated_projects
 description: Total Grafana integrations attached to projects
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

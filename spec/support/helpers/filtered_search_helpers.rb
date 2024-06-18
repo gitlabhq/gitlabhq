@@ -192,11 +192,7 @@ module FilteredSearchHelpers
         # Move mouse away to prevent invoking tooltips on usernames, which blocks the search input
         find_button('Search').hover
 
-        if token == '='
-          click_on '= is'
-        else
-          click_on token
-        end
+        click_on token.to_s, match: :first
 
         wait_for_requests
       end
@@ -231,6 +227,14 @@ module FilteredSearchHelpers
     end
   end
 
+  def change_sort_by(value)
+    within_element '.sort-dropdown-container' do
+      find_by_testid('base-dropdown-toggle').click
+      find('li', text: value).click
+      wait_for_requests
+    end
+  end
+
   def expect_visible_suggestions_list
     expect(page).to have_css('.gl-filtered-search-suggestion-list')
   end
@@ -252,35 +256,35 @@ module FilteredSearchHelpers
   end
 
   def expect_assignee_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Assignee = #{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: /Assignee (=|is) #{Regexp.escape(value)}/
   end
 
   def expect_unioned_assignee_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Assignee is one of #{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: /Assignee is one of #{Regexp.escape(value)}/
   end
 
   def expect_author_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Author = #{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: /Author (=|is) #{Regexp.escape(value)}/
   end
 
   def expect_label_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Label = #{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: /Label (=|is) #{Regexp.escape(value)}/
   end
 
   def expect_negated_label_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Label != #{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: /Label (!=|is not one of) #{Regexp.escape(value)}/
   end
 
   def expect_milestone_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Milestone = %#{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: /Milestone (=|is) %#{Regexp.escape(value)}/
   end
 
   def expect_negated_milestone_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Milestone != %#{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: /Milestone (!=|is not) %#{Regexp.escape(value)}/
   end
 
   def expect_epic_token(value)
-    expect(page).to have_css '.gl-filtered-search-token', text: "Epic = #{value}"
+    expect(page).to have_css '.gl-filtered-search-token', text: /Epic (=|is) #{value}/
   end
 
   def expect_search_term(value)

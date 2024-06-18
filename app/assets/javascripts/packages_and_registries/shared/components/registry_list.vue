@@ -104,7 +104,7 @@ export default {
           @change="onChange"
         />
 
-        <p class="gl-font-weight-bold gl-mb-0">{{ title }}</p>
+        <p class="gl-font-bold gl-mb-0">{{ title }}</p>
       </div>
 
       <gl-button
@@ -117,14 +117,16 @@ export default {
       </gl-button>
     </div>
 
-    <div v-for="(item, index) in items" :key="index">
-      <slot
-        :select-item="selectItem"
-        :is-selected="isSelected"
-        :item="item"
-        :first="!hiddenDelete && index === 0"
-      ></slot>
-    </div>
+    <ul class="gl-pl-0">
+      <li v-for="(item, index) in items" :key="index" class="gl-list-style-none">
+        <slot
+          :select-item="selectItem"
+          :is-selected="isSelected"
+          :item="item"
+          :first="!hiddenDelete && index === 0"
+        ></slot>
+      </li>
+    </ul>
 
     <div class="gl-display-flex gl-justify-content-center">
       <gl-keyset-pagination

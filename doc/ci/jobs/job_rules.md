@@ -375,12 +375,10 @@ Use variable expressions with [`rules:if`](../yaml/index.md#rules) to control
 when jobs should be added to a pipeline.
 
 You can use the equality operators `==` and `!=` to compare a variable with a
-string. Both single quotes and double quotes are valid. The order doesn't matter,
-so the variable can be first, or the string can be first. For example:
+string. Both single quotes and double quotes are valid. The variable has to be on the left side of the comparison. For example:
 
 - `if: $VARIABLE == "some value"`
 - `if: $VARIABLE != "some value"`
-- `if: "some value" == $VARIABLE`
 
 You can compare the values of two variables. For example:
 

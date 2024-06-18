@@ -138,7 +138,7 @@ graph RL
 - **Methods of the class under test**:
   By mocking methods of the class under test, the mocks are tested and not the real methods.
 - **Utility functions (pure functions, or those that only modify parameters)**:
- If a function has no side effects because it has no state, it is safe to not mock it in tests.
+  If a function has no side effects because it has no state, it is safe to not mock it in tests.
 - **Full HTML pages**:
   Avoid loading the HTML of a full page in unit tests, as it slows down tests.
 

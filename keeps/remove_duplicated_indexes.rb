@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'rails/generators'
-require 'rails/generators/active_record'
-require 'rails/generators/active_record/migration/migration_generator'
-
 require_relative 'helpers/file_helper'
 require_relative '../spec/support/helpers/database/duplicate_indexes'
+require_relative '../lib/generators/post_deployment_migration/post_deployment_migration_generator'
 
 module Keeps
   # This is an implementation of a ::Gitlab::Housekeeper::Keep. This keep will look for duplicated indexes
@@ -24,10 +21,11 @@ module Keeps
   class RemoveDuplicatedIndexes < ::Gitlab::Housekeeper::Keep
     MIGRATION_TEMPLATE = 'generator_templates/active_record/migration/'
     FALLBACK_REVIEWER_FEATURE_CATEGORY = 'database'
+    DUPLICATED_INDEXES_FILE = 'spec/support/helpers/database/duplicate_indexes.yml'
 
     def initialize(...)
       ::Gitlab::Application.load_tasks
-      ::ActiveRecord::Generators::MigrationGenerator.source_root(MIGRATION_TEMPLATE)
+      ::PostDeploymentMigration::PostDeploymentMigrationGenerator.source_root(MIGRATION_TEMPLATE)
 
       @indexes_to_drop = {}
 
@@ -45,8 +43,11 @@ module Keeps
 
         indexes.each do |index_to_drop, _|
           migration_file, migration_number = generate_migration_file(table_name, index_to_drop)
+          update_duplicated_indexes_file(table_name)
+
           change.changed_files << migration_file
           change.changed_files << Pathname.new('db').join('schema_migrations', migration_number).to_s
+          change.changed_files << DUPLICATED_INDEXES_FILE
         end
 
         migrate
@@ -132,7 +133,7 @@ module Keeps
 
     def generate_migration_file(table_name, index_to_drop)
       migration_name = "drop_#{index_to_drop.name}".truncate(100, omission: '')
-      generator = ::ActiveRecord::Generators::MigrationGenerator.new([migration_name])
+      generator = ::PostDeploymentMigration::PostDeploymentMigrationGenerator.new([migration_name])
       migration_content = <<~RUBY.strip
         disable_ddl_transaction!
 
@@ -156,6 +157,14 @@ module Keeps
       ::Gitlab::Housekeeper::Shell.execute('rubocop', '-a', migration_file)
 
       [migration_file, generator.migration_number]
+    end
+
+    def update_duplicated_indexes_file(table_name)
+      file_path = Rails.root.join(DUPLICATED_INDEXES_FILE)
+      file = YAML.load_file(file_path)
+      file.delete(table_name)
+
+      File.write(DUPLICATED_INDEXES_FILE, file.to_yaml)
     end
 
     def pick_reviewers(table_name, identifiers)

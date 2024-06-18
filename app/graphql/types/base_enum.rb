@@ -39,8 +39,8 @@ module Types
       def from_rails_enum(enum, description:)
         enum.each_key do |name|
           value name.to_s.upcase,
-                value: name,
-                description: format(description, name: name)
+            value: name,
+            description: format(description, name: name)
         end
       end
 

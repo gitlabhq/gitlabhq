@@ -27,30 +27,6 @@ RSpec.describe NotifyHelper do
     end
   end
 
-  describe '#invited_to_description' do
-    where(:source, :description) do
-      build(:project, description: nil) | /Projects are/
-      build(:group, description: nil) | /Groups assemble/
-      build(:project, description: '_description_') | '_description_'
-      build(:group, description: '_description_') | '_description_'
-    end
-
-    with_them do
-      specify do
-        expect(helper.invited_to_description(source)).to match description
-      end
-    end
-
-    it 'truncates long descriptions', :aggregate_failures do
-      description = '_description_ ' * 30
-      project = build(:project, description: description)
-
-      result = helper.invited_to_description(project)
-      expect(result).not_to match description
-      expect(result.length).to be <= 200
-    end
-  end
-
   describe '#merge_request_hash_param' do
     let(:merge_request) { create(:merge_request) }
     let(:reviewer) { create(:user) }

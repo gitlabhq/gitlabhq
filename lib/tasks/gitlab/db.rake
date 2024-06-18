@@ -30,16 +30,16 @@ namespace :gitlab do
 
     def mark_migration_complete(version, only_on: nil)
       if version.to_i == 0
-        puts 'Must give a version argument that is a non-zero integer'.color(:red)
+        puts Rainbow('Must give a version argument that is a non-zero integer').red
         exit 1
       end
 
       Gitlab::Database::EachDatabase.each_connection(only: only_on) do |connection, name|
         connection.execute("INSERT INTO schema_migrations (version) VALUES (#{connection.quote(version)})")
 
-        puts "Successfully marked '#{version}' as complete on database #{name}".color(:green)
+        puts Rainbow("Successfully marked '#{version}' as complete on database #{name}").green
       rescue ActiveRecord::RecordNotUnique
-        puts "Migration version '#{version}' is already marked complete on database #{name}".color(:yellow)
+        puts Rainbow("Migration version '#{version}' is already marked complete on database #{name}").yellow
       end
     end
 
@@ -250,7 +250,7 @@ namespace :gitlab do
     desc "Reindex database without downtime to eliminate bloat"
     task reindex: :environment do
       unless Gitlab::Database::Reindexing.enabled?
-        puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
+        puts Rainbow("This feature (database_reindexing) is currently disabled.").yellow
         exit
       end
 
@@ -262,7 +262,7 @@ namespace :gitlab do
         desc "Reindex #{database_name} database without downtime to eliminate bloat"
         task database_name => :environment do
           unless Gitlab::Database::Reindexing.enabled?
-            puts "This feature (database_reindexing) is currently disabled.".color(:yellow)
+            puts Rainbow("This feature (database_reindexing) is currently disabled.").yellow
             exit
           end
 
@@ -274,7 +274,7 @@ namespace :gitlab do
     def disabled_db_flags_note
       return unless Feature.enabled?(:disallow_database_ddl_feature_flags, type: :ops)
 
-      puts <<~NOTE.color(:yellow)
+      puts Rainbow(<<~NOTE).yellow
           Note: disallow_database_ddl_feature_flags feature is currently enabled. Disable it to proceed.
 
           Disable with: Feature.disable(:disallow_database_ddl_feature_flags)
@@ -297,7 +297,7 @@ namespace :gitlab do
       disabled_db_flags_note
 
       if Feature.disabled?(:database_reindexing, type: :ops)
-        puts <<~NOTE.color(:yellow)
+        puts Rainbow(<<~NOTE).yellow
           Note: database_reindexing feature is currently disabled.
 
           Enable with: Feature.enable(:database_reindexing)
@@ -313,7 +313,7 @@ namespace :gitlab do
           disabled_db_flags_note { exit }
 
           if Feature.disabled?(:database_async_index_operations, type: :ops)
-            puts <<~NOTE.color(:yellow)
+            puts Rainbow(<<~NOTE).yellow
               Note: database async index operations feature is currently disabled.
 
               Enable with: Feature.enable(:database_async_index_operations)
@@ -345,7 +345,7 @@ namespace :gitlab do
           disabled_db_flags_note { exit }
 
           if Feature.disabled?(:database_async_foreign_key_validation, type: :ops)
-            puts <<~NOTE.color(:yellow)
+            puts Rainbow(<<~NOTE).yellow
               Note: database async foreign key validation feature is currently disabled.
 
               Enable with: Feature.enable(:database_async_foreign_key_validation)

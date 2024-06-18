@@ -1,11 +1,9 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: >-
-  To determine the technical writer assigned to the Stage/Group associated with
-  this page, see
-  https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
+
 # CI/CD YAML syntax reference
 
 DETAILS:
@@ -49,38 +47,39 @@ A GitLab CI/CD pipeline configuration includes:
 
 - [Jobs](../jobs/index.md) configured with [job keywords](#job-keywords):
 
-  | Keyword                                     | Description |
-  | :-------------------------------------------|:------------|
-  | [`after_script`](#after_script)             | Override a set of commands that are executed after job. |
-  | [`allow_failure`](#allow_failure)           | Allow job to fail. A failed job does not cause the pipeline to fail. |
-  | [`artifacts`](#artifacts)                   | List of files and directories to attach to a job on success. |
-  | [`before_script`](#before_script)           | Override a set of commands that are executed before job. |
-  | [`cache`](#cache)                           | List of files that should be cached between subsequent runs. |
-  | [`coverage`](#coverage)                     | Code coverage settings for a given job. |
-  | [`dast_configuration`](#dast_configuration) | Use configuration from DAST profiles on a job level. |
-  | [`dependencies`](#dependencies)             | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from. |
-  | [`environment`](#environment)               | Name of an environment to which the job deploys. |
-  | [`extends`](#extends)                       | Configuration entries that this job inherits from. |
-  | [`identity`](#identity)                     | Authenticate with third party services using identity federation. |
-  | [`image`](#image)                           | Use Docker images. |
-  | [`inherit`](#inherit)                       | Select which global defaults all jobs inherit. |
-  | [`interruptible`](#interruptible)           | Defines if a job can be canceled when made redundant by a newer run. |
-  | [`needs`](#needs)                           | Execute jobs earlier than the stage ordering. |
-  | [`pages`](#pages)                           | Upload the result of a job to use with GitLab Pages. |
-  | [`parallel`](#parallel)                     | How many instances of a job should be run in parallel. |
-  | [`release`](#release)                       | Instructs the runner to generate a [release](../../user/project/releases/index.md) object. |
-  | [`resource_group`](#resource_group)         | Limit job concurrency. |
-  | [`retry`](#retry)                           | When and how many times a job can be auto-retried in case of a failure. |
-  | [`rules`](#rules)                           | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. |
-  | [`script`](#script)                         | Shell script that is executed by a runner. |
-  | [`secrets`](#secrets)                       | The CI/CD secrets the job needs. |
-  | [`services`](#services)                     | Use Docker services images. |
-  | [`stage`](#stage)                           | Defines a job stage. |
-  | [`tags`](#tags)                             | List of tags that are used to select a runner. |
-  | [`timeout`](#timeout)                       | Define a custom job-level timeout that takes precedence over the project-wide setting. |
-  | [`trigger`](#trigger)                       | Defines a downstream pipeline trigger. |
-  | [`variables`](#variables)                   | Define job variables on a job level. |
-  | [`when`](#when)                             | When to run job. |
+  | Keyword                                       | Description                                                                                                 |
+  |:----------------------------------------------|:------------------------------------------------------------------------------------------------------------|
+  | [`after_script`](#after_script)               | Override a set of commands that are executed after job.                                                     |
+  | [`allow_failure`](#allow_failure)             | Allow job to fail. A failed job does not cause the pipeline to fail.                                        |
+  | [`artifacts`](#artifacts)                     | List of files and directories to attach to a job on success.                                                |
+  | [`before_script`](#before_script)             | Override a set of commands that are executed before job.                                                    |
+  | [`cache`](#cache)                             | List of files that should be cached between subsequent runs.                                                |
+  | [`coverage`](#coverage)                       | Code coverage settings for a given job.                                                                     |
+  | [`dast_configuration`](#dast_configuration)   | Use configuration from DAST profiles on a job level.                                                        |
+  | [`dependencies`](#dependencies)               | Restrict which artifacts are passed to a specific job by providing a list of jobs to fetch artifacts from.  |
+  | [`environment`](#environment)                 | Name of an environment to which the job deploys.                                                            |
+  | [`extends`](#extends)                         | Configuration entries that this job inherits from.                                                          |
+  | [`identity`](#identity)                       | Authenticate with third party services using identity federation.                                           |
+  | [`image`](#image)                             | Use Docker images.                                                                                          |
+  | [`inherit`](#inherit)                         | Select which global defaults all jobs inherit.                                                              |
+  | [`interruptible`](#interruptible)             | Defines if a job can be canceled when made redundant by a newer run.                                        |
+  | [`manual_confirmation`](#manual_confirmation) | Define a custom confirmation message for a manual job. |
+  | [`needs`](#needs)                             | Execute jobs earlier than the stage ordering.                                                               |
+  | [`pages`](#pages)                             | Upload the result of a job to use with GitLab Pages.                                                        |
+  | [`parallel`](#parallel)                       | How many instances of a job should be run in parallel.                                                      |
+  | [`release`](#release)                         | Instructs the runner to generate a [release](../../user/project/releases/index.md) object.                  |
+  | [`resource_group`](#resource_group)           | Limit job concurrency.                                                                                      |
+  | [`retry`](#retry)                             | When and how many times a job can be auto-retried in case of a failure.                                     |
+  | [`rules`](#rules)                             | List of conditions to evaluate and determine selected attributes of a job, and whether or not it's created. |
+  | [`script`](#script)                           | Shell script that is executed by a runner.                                                                  |
+  | [`secrets`](#secrets)                         | The CI/CD secrets the job needs.                                                                            |
+  | [`services`](#services)                       | Use Docker services images.                                                                                 |
+  | [`stage`](#stage)                             | Defines a job stage.                                                                                        |
+  | [`tags`](#tags)                               | List of tags that are used to select a runner.                                                              |
+  | [`timeout`](#timeout)                         | Define a custom job-level timeout that takes precedence over the project-wide setting.                      |
+  | [`trigger`](#trigger)                         | Defines a downstream pipeline trigger.                                                                      |
+  | [`variables`](#variables)                     | Define job variables on a job level.                                                                        |
+  | [`when`](#when)                               | When to run job.                                                                                            |
 
 ## Global keywords
 
@@ -218,7 +217,7 @@ pipeline configuration.
 
 ```yaml
 include:
-  - component: gitlab.example.com/my-org/security-components/secret-detection@1.0
+  - component: $CI_SERVER_FQDN/my-org/security-components/secret-detection@1.0
 ```
 
 **Related topics**:
@@ -390,7 +389,7 @@ include:
 
 #### `include:inputs`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
 
 Use `include:inputs` to set the values for input parameters when the included configuration
 uses [`spec:inputs`](#specinputs) and is added to the pipeline.
@@ -665,8 +664,6 @@ and the pipeline is for either:
 
 **Related topics**:
 
-- You can use the [`workflow:rules` templates](workflow.md#workflowrules-templates) to import
-  a preconfigured `workflow: rules` entry.
 - [Common `if` clauses for `workflow:rules`](workflow.md#common-if-clauses-for-workflowrules).
 - [Use `rules` to run merge request pipelines](../pipelines/merge_request_pipelines.md#add-jobs-to-merge-request-pipelines).
 
@@ -802,7 +799,7 @@ with `---`.
 
 ### `spec`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
 
 Add a `spec` section to the header of a YAML file to configure the behavior of a pipeline
 when a configuration is added to the pipeline with the `include` keyword.
@@ -852,7 +849,7 @@ scan-website:
 
 ##### `spec:inputs:default`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a Beta feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
 
 Inputs are mandatory when included, unless you set a default value with `spec:inputs:default`.
 
@@ -965,7 +962,7 @@ Use `spec:inputs:regex` to specify a regular expression that the input must matc
 **Keyword type**: Header keyword. `spec` must be declared at the top of the configuration file,
 in a header section.
 
-**Possible inputs**: Must be a regular expression that starts and ends with the `/` character.
+**Possible inputs**: Must be a regular expression.
 
 **Example of `spec:inputs:regex`**:
 
@@ -973,7 +970,7 @@ in a header section.
 spec:
   inputs:
     version:
-      regex: /^v\d\.\d+(\.\d+)$/
+      regex: ^v\d\.\d+(\.\d+)$
 ---
 
 # The pipeline configuration would follow...
@@ -986,6 +983,8 @@ An input of `v1.A.B` does not match the regular expression and fails validation.
 
 - `inputs:regex` can only be used with a [`type`](#specinputstype) of `string`,
   not `number` or `boolean`.
+- Do not enclose the regular expression with the `/` character. For example, use `regex.*`,
+  not `/regex.*/`.
 
 ##### `spec:inputs:type`
 
@@ -1015,7 +1014,7 @@ spec:
     available:
       type: boolean
     array_input:
-      type: array  
+      type: array
 ---
 
 # The pipeline configuration would follow...
@@ -1027,11 +1026,13 @@ The following topics explain how to use keywords to configure CI/CD pipelines.
 
 ### `after_script`
 
-Use `after_script` to define an array of commands that run after a job's `script` section, including failed jobs with failure type of `script_failure`.
-`after_script` commands do not run after [other failure types](#retrywhen).
+> - Running `after_script` commands for cancelled jobs [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0.
 
-NOTE:
-In GitLab 17.0, `after_script` commands will run when a [job is cancelled](script.md#run-after_script-on-cancel).
+Use `after_script` to define an array of commands to run last, after a job's `before_script` and
+`script` sections complete. `after_script` commands also run when:
+
+- The job is cancelled while the `before_script` or `script` sections are still running.
+- The job fails with failure type of `script_failure`, but not [other failure types](#retrywhen).
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
 [`default` section](#default).
@@ -1078,6 +1079,7 @@ If a job times out, the `after_script` commands do not execute.
 
 - [Use `after_script` with `default`](script.md#set-a-default-before_script-or-after_script-for-all-jobs)
   to define a default array of commands that should run after all jobs.
+- You can configure a job to [skip `after_script` commands if the job is cancelled](script.md#skip-after_script-commands-if-a-job-is-cancelled).
 - You can [ignore non-zero exit codes](script.md#ignore-non-zero-exit-codes).
 - [Use color codes with `after_script`](script.md#add-color-codes-to-script-output)
   to make job logs easier to review.
@@ -1635,9 +1637,9 @@ Use the `cache:paths` keyword to choose which files or directories to cache.
   You can use wildcards that use [glob](https://en.wikipedia.org/wiki/Glob_(programming))
   patterns:
   - In [GitLab Runner 13.0 and later](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/2620),
-  [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
+    [`doublestar.Glob`](https://pkg.go.dev/github.com/bmatcuk/doublestar@v1.2.2?tab=doc#Match).
   - In GitLab Runner 12.10 and earlier,
-  [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
+    [`filepath.Match`](https://pkg.go.dev/path/filepath#Match).
 
 **Example of `cache:paths`**:
 
@@ -2507,12 +2509,10 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [Beta](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/experiment-beta-support.md).
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
-FLAG:
-On GitLab.com, this feature is available for a subset of users. On GitLab Dedicated, this feature is not available.
-
-This feature is in [Beta](../../policy/experiment-beta-support.md).
+This feature is in [beta](../../policy/experiment-beta-support.md).
 
 Use `identity` to authenticate with third party services using identity federation.
 
@@ -3419,7 +3419,7 @@ DETAILS:
 **Offering:** Self-managed
 **Status:** Experiment
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [Experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/experiment-beta-support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -3430,11 +3430,7 @@ Use `pages.path_prefix` to configure a path prefix for [multiple deployments](..
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
-**Possible inputs**:
-
-- A string with valid [URL characters](https://www.ietf.org/rfc/rfc1738.txt).
-- [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
-- A combination of both.
+**Possible inputs**: A string, a [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file), or a combination of both. The given value is converted to lowercase, shortened to 63 bytes, and everything except alphanumeric characters is replaced with a hyphen. Leading and trailing hyphens are not permitted.
 
 **Example of `pages.path_prefix`**:
 
@@ -3552,15 +3548,6 @@ deploystacks: [vultr, processing]
   the jobs from each other, but [large values can cause names to exceed limits](https://gitlab.com/gitlab-org/gitlab/-/issues/362262):
   - Job names must be [255 characters or fewer](../jobs/index.md#job-name-limitations).
   - When using [`needs`](#needs), job names must be 128 characters or fewer.
-
-**Related topics**:
-
-- [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
-- [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
-- [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
-
-**Additional details**:
-
 - You cannot create multiple matrix configurations with the same variable values but different variable names.
   Job names are generated from the variable values, not the variable names, so matrix entries
   with identical values generate identical job names that overwrite each other.
@@ -3577,6 +3564,14 @@ deploystacks: [vultr, processing]
         - OS2: [ubuntu]
           PROVIDER: [aws, gcp]
   ```
+
+  - There's a [known issue](../debugging.md#config-should-be-an-array-of-hashes-error-message) when using [`!reference` tags](../yaml/yaml_optimization.md#reference-tags) with `parallel:matrix`.
+
+**Related topics**:
+
+- [Run a one-dimensional matrix of parallel jobs](../jobs/job_control.md#run-a-one-dimensional-matrix-of-parallel-jobs).
+- [Run a matrix of triggered parallel jobs](../jobs/job_control.md#run-a-matrix-of-parallel-trigger-jobs).
+- [Select different runner tags for each parallel matrix job](../jobs/job_control.md#select-different-runner-tags-for-each-parallel-matrix-job).
 
 ### `release`
 
@@ -4090,13 +4085,18 @@ job:
 Use `rules:changes` to specify when to add a job to a pipeline by checking for changes
 to specific files.
 
-WARNING:
-You should use `rules: changes` only with **branch pipelines** or **merge request pipelines**.
-You can use `rules: changes` with other pipeline types, but `rules: changes` always
-evaluates to true for new branch pipelines or when there is no Git `push` event. Pipelines like tag pipelines,
-scheduled pipelines, and manual pipelines, all do **not**
-have a Git `push` event associated with them. In these cases, use [`rules: changes: compare_to`](#ruleschangescompare_to)
-to specify the branch to compare against.
+For new branch pipelines or when there is no Git `push` event, `rules: changes` always evaluates to true
+and the job always runs. Pipelines like tag pipelines, scheduled pipelines,
+and manual pipelines, all do **not** have a Git `push` event associated with them.
+To cover these cases, use [`rules: changes: compare_to`](#ruleschangescompare_to) to specify
+the branch to compare against the pipeline ref.
+
+If you do not use `compare_to`, you should use `rules: changes` only with [branch pipelines](../pipelines/pipeline_types.md#branch-pipeline)
+or [merge request pipelines](../pipelines/merge_request_pipelines.md), though
+`rules: changes` still evaluates to true when creating a new branch. With:
+
+- Merge request pipelines, `rules:changes` compares the changes with the target MR branch.
+- Branch pipelines, `rules:changes` compares the changes with the previous commit on the branch.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.
 
@@ -4216,6 +4216,10 @@ docker build:
 In this example, the `docker build` job is only included when the `Dockerfile` has changed
 relative to `refs/heads/branch1` and the pipeline source is a merge request event.
 
+**Additional details**:
+
+- Using `compare_to` with [merged results pipelines](../pipelines/merged_results_pipelines.md#troubleshooting) can cause unexpected results, because the comparison base is an internal commit that GitLab creates.
+
 **Related topics**:
 
 - You can use `rules:changes:compare_to` to [skip a job if the branch is empty](../jobs/job_rules.md#skip-jobs-if-the-branch-is-empty).
@@ -4254,6 +4258,8 @@ job:
   globs always match. In other words, the `exists` rule always assumes a match in
   projects with more than 10,000 files, or if there are fewer than 10,000 files but
   the `exists` rules are checked more than 10,000 times.
+  - If there are multiple patterned globs, the limit is 10,000 divided by the number
+    of globs. For example, a rule with 4 patterned globs has file limit of 2500.
 - A maximum of 50 patterns or file paths can be defined per `rules:exists` section.
 - `exists` resolves to `true` if any of the listed files are found (an `OR` operation).
 
@@ -5105,10 +5111,11 @@ trigger-multi-project-pipeline:
   for more details.
 - You cannot [manually specify CI/CD variables](../jobs/index.md#specifying-variables-when-running-manual-jobs)
   before running a manual trigger job.
-- [Manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable)
-  and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
-  are not passed to downstream pipelines by default. Use [trigger:forward](#triggerforward)
-  to forward these variables to downstream pipelines.
+- [CI/CD variables](#variables) defined in a top-level `variables` section (globally) or in the trigger job are forwarded
+  to the downstream pipeline as [trigger variables](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
+- [Pipeline variables](../variables/index.md#cicd-variable-precedence) are not passed
+  to downstream pipelines by default. Use [trigger:forward](#triggerforward) to forward
+  these variables to downstream pipelines.
 - [Job-level persisted variables](../variables/where_variables_can_be_used.md#persisted-variables)
   are not available in trigger jobs.
 - Environment variables [defined in the runner's `config.toml`](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section) are not available to trigger jobs and are not passed to downstream pipelines.
@@ -5230,12 +5237,15 @@ Use `trigger:forward` to specify what to forward to the downstream pipeline. You
 what is forwarded to both [parent-child pipelines](../pipelines/downstream_pipelines.md#parent-child-pipelines)
 and [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines).
 
+Forwarded variables do not get forwarded again in nested downstream pipelines by default,
+unless the nested downstream trigger job also uses `trigger:forward`.
+
 **Possible inputs**:
 
 - `yaml_variables`: `true` (default), or `false`. When `true`, variables defined
   in the trigger job are passed to downstream pipelines.
-- `pipeline_variables`: `true` or `false` (default). When `true`, [manual pipeline variables](../variables/index.md#override-a-defined-cicd-variable) and [scheduled pipeline variables](../pipelines/schedules.md#add-a-pipeline-schedule)
-  are passed to downstream pipelines.
+- `pipeline_variables`: `true` or `false` (default). When `true`, [pipeline variables](../variables/index.md#cicd-variable-precedence)
+  are passed to the downstream pipeline.
 
 **Example of `trigger:forward`**:
 
@@ -5274,10 +5284,9 @@ child3:
 
 **Additional details**:
 
-- CI/CD variables forwarded to downstream pipelines with `trigger:forward` have the
-  [highest precedence](../variables/index.md#cicd-variable-precedence). If a variable
-  with the same name is defined in the downstream pipeline, that variable is overwritten
-  by the forwarded variable.
+- CI/CD variables forwarded to downstream pipelines with `trigger:forward` are [pipeline variables](../variables/index.md#cicd-variable-precedence),
+  which have high precedence. If a variable with the same name is defined in the downstream pipeline,
+  that variable is usually overwritten by the forwarded variable.
 
 ### `variables`
 
@@ -5534,6 +5543,29 @@ In this example, the script:
 
 - `when` can be used with [`rules`](#rules) for more dynamic job control.
 - `when` can be used with [`workflow`](#workflow) to control when a pipeline can start.
+
+### `manual_confirmation`
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18906) in GitLab 17.1.
+
+Use `manual_confirmation` with [`when: manual`](#when) to define a custom confirmation message for manual jobs. If there is no manual job defined with `when: manual`, this keyword has no effect.
+
+**Keyword type**: Job keyword. You can use it only as part of a job.
+
+**Possible inputs**:
+
+- A string with the confirmation message.
+
+**Example of `manual_confirmation`**:
+
+```yaml
+delete_job:
+  stage: post-deployment
+  script:
+    - make delete
+  when: manual
+  manual_confirmation: 'Are you sure you want to delete $CI_ENVIRONMENT_SLUG?'
+```
 
 ## Deprecated keywords
 

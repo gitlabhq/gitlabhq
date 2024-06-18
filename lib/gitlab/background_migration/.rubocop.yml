@@ -45,7 +45,7 @@ Style/FrozenStringLiteralComment:
   Details: >-
     This removes the need for calling "freeze", reducing noise in the code.
 
-Migration/BackgroundMigrationBaseClass:
+Migration/BatchedMigrationBaseClass:
   Enabled: true
   Exclude:
     - 'batching_strategies/**/*.rb'

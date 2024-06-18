@@ -8,7 +8,7 @@
   pre {
     line-height: 0;
     border: 0;
-    border-radius: 0 0 $border-radius-default;
+    border-radius: 0 0 $gl-border-radius-base;
     font-family: $monospace-font;
     font-size: $code-font-size;
     margin: 0;
@@ -45,7 +45,7 @@
     line-height: 19px;
     text-align: right;
     float: left;
-    border-bottom-left-radius: $border-radius-default;
+    border-bottom-left-radius: $gl-border-radius-base;
 
     a {
       font-family: $monospace-font;
@@ -73,7 +73,7 @@
     }
 
     &:last-of-type {
-     border-bottom-left-radius: $border-radius-default-inner;
+     border-bottom-left-radius: $gl-border-radius-base-inner;
     }
   }
 

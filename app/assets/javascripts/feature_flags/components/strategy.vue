@@ -2,7 +2,6 @@
 <script>
 import { GlAlert, GlButton, GlFormSelect, GlFormGroup, GlIcon, GlLink, GlToken } from '@gitlab/ui';
 import { isNumber } from 'lodash';
-import Vue from 'vue';
 import { s__, __ } from '~/locale';
 import {
   EMPTY_PARAMETERS,
@@ -114,7 +113,8 @@ export default {
     },
     removeScope(environment) {
       if (isNumber(environment.id)) {
-        Vue.set(environment, 'shouldBeDestroyed', true);
+        // eslint-disable-next-line no-param-reassign
+        environment.shouldBeDestroyed = true;
       } else {
         this.environments = this.environments.filter((e) => e !== environment);
       }
@@ -172,7 +172,7 @@ export default {
         </div>
       </div>
 
-      <label class="gl-display-block" :for="environmentsDropdownId">{{
+      <label class="gl-block" :for="environmentsDropdownId">{{
         $options.i18n.environmentsLabel
       }}</label>
       <div class="gl-display-flex gl-flex-direction-column">

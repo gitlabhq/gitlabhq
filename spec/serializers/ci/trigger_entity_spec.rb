@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::TriggerEntity do
+RSpec.describe Ci::TriggerEntity, feature_category: :continuous_integration do
   let(:project) { create(:project) }
   let(:trigger) { create(:ci_trigger, project: project, token: '237f3604900a4cd71ed06ef13e57b96d') }
   let(:user) { create(:user) }
@@ -14,7 +14,7 @@ RSpec.describe Ci::TriggerEntity do
 
     it 'contains required fields' do
       expect(as_json).to include(
-        :description, :owner, :last_used, :token, :has_token_exposed, :can_access_project
+        :id, :description, :owner, :last_used, :token, :has_token_exposed, :can_access_project
       )
     end
 
@@ -35,10 +35,6 @@ RSpec.describe Ci::TriggerEntity do
         expect(as_json[:project_trigger_path]).to eq(project_trigger_path)
       end
 
-      it 'does not contain edit_project_trigger_path' do
-        expect(as_json).not_to include(:edit_project_trigger_path)
-      end
-
       it 'returns has_token_exposed' do
         expect(as_json[:has_token_exposed]).to eq(false)
       end
@@ -56,10 +52,6 @@ RSpec.describe Ci::TriggerEntity do
 
       it 'contains project_trigger_path' do
         expect(as_json[:project_trigger_path]).to eq(project_trigger_path)
-      end
-
-      it 'contains edit_project_trigger_path' do
-        expect(as_json[:edit_project_trigger_path]).to eq("#{project_trigger_path}/edit")
       end
 
       it 'returns has_token_exposed' do

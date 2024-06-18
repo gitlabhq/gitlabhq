@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
 import { GlLoadingIcon, GlTab } from '@gitlab/ui';
@@ -130,6 +130,18 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
 
       findWorkloadTable().vm.$emit('remove-selection');
       expect(wrapper.emitted('remove-selection')).toHaveLength(1);
+    });
+
+    it('filters pods when receives a stat select event', async () => {
+      createWrapper();
+      await waitForPromises();
+
+      const status = 'Failed';
+      findWorkloadStats().vm.$emit('select', status);
+      await nextTick();
+
+      const filteredPods = mockPodsTableItems.filter((pod) => pod.status === status);
+      expect(findWorkloadTable().props('items')).toMatchObject(filteredPods);
     });
   });
 

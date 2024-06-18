@@ -21,9 +21,15 @@ end
 # :nocov:
 # rubocop:enable Gitlab/NoCodeCoverageComment
 
-# this only instruments `RedisClient` used in `Sidekiq.redis`
-RedisClient.register(Gitlab::Instrumentation::RedisClientMiddleware)
-RedisClient.prepend(Gitlab::Patch::RedisClient)
+# RedisClient instrumentation deadlocks with code reloading due to
+# Prometheus metrics needing to check ApplicationSetting. Disable the
+# instrumentation in that case. Code reloading should only be enabled in
+# development.
+if Rails.application.config.cache_classes
+  # this only instruments `RedisClient` used in `Sidekiq.redis`
+  RedisClient.register(Gitlab::Instrumentation::RedisClientMiddleware)
+  RedisClient.prepend(Gitlab::Patch::RedisClient)
+end
 
 if Gitlab::Redis::Workhorse.params[:cluster].present?
   raise "Do not configure workhorse with a Redis Cluster as pub/sub commands are not cluster-compatible."

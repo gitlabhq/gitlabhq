@@ -68,10 +68,10 @@ module Gitlab
           dynamic_helpers :jobs
 
           delegate :before_script_value,
-                   :image_value,
-                   :services_value,
-                   :after_script_value,
-                   :cache_value, to: :default_entry
+            :image_value,
+            :services_value,
+            :after_script_value,
+            :cache_value, to: :default_entry
 
           attr_reader :jobs_config
 
@@ -107,7 +107,7 @@ module Gitlab
               ::Gitlab::Config::Entry::Factory.new(Entry::Jobs)
                 .value(jobs_config)
                 .with(key: :jobs, parent: self,
-                      description: 'Jobs definition for this pipeline')
+                  description: 'Jobs definition for this pipeline')
             end
 
             @entries[:jobs] = logger.instrument(:config_root_compose_jobs_create, once: true) do

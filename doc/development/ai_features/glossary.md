@@ -26,7 +26,7 @@ to AI that you think could benefit from being in this list, add it!
   [MVC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134610).
   [Design doc for next iteration](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136127).
 - **Cloud Connector**: Cloud Connector is a way to access services common to
-multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the
+  multiple GitLab deployments, instances, and cells. We use it as an umbrella term to refer to the
   set of technical solutions and APIs used to make such services available to all GitLab customers.
   For more information, see the [Cloud Connector architecture](../cloud_connector/architecture.md).
 - **Closed Source Model**: A private model fine-tuned or built from scratch by an organisation. These may be hosted as cloud services, for example ChatGPT.
@@ -82,6 +82,7 @@ multiple GitLab deployments, instances, and cells. We use it as an umbrella term
   See also the [Model Validation direction page](https://about.gitlab.com/direction/ai-powered/ai_model_validation/ai_evaluation/metrics/#similarity-scores)
 - **Tool**: logic that performs a specific LLM-related task; each tool has a
   description and its own prompt. [How to add a new tool](duo_chat.md#adding-a-new-tool).
+ **Unit Primitive**: GitLab-specific term that refers to the fundamental logical feature that a permission or access scope can control. Examples: [`duo_chat`](../../user/gitlab_duo_chat.md)  and [`code_suggestions`](../../api/code_suggestions.md). These features are both currently part of the GitLab Duo Pro license but we are building the concept of a Unit Primitive around each Duo feature so that Duo features are easily composable into different groupings to accommodate potential future product packaging needs.
 - **Word-Level Metrics**: method for LLM evaluation that compares aspects of
   text at the granularity of individual words.
   [Issue from Model Validation team](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library/-/issues/98#metric-3-word-level-metrics).
@@ -97,3 +98,16 @@ multiple GitLab deployments, instances, and cells. We use it as an umbrella term
   the zero-shot agent to evaluate if the answer is sufficient or if an additional
   tool must be used to answer the question.
   [Code](https://gitlab.com/gitlab-org/gitlab/-/blob/6b747cbd7c6a71145a8bfb8201db3c857b5aed6a/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb). [Zero-shot agent in action](https://gitlab.com/gitlab-org/gitlab/-/issues/427979).
+
+## Duo Workflow Terminology
+
+- **Agent**: A general term for a software entity that performs tasks. Agents can range from simple, rule-based systems to complex AI-driven entities that learn and adapt over time. For our purposes, we typically use "Agent" to refer to an AI-driven entity.
+- **Autonomous Agents**: Agents that operate independently without direct input or supervision from humans. They make decisions and perform actions based on their programming and the data they perceive from their environment. These often receive instructions from a Supervisor Agent.
+- **Frameworks**: These are platforms or environments that support the development and operation of multi-agent systems. Frameworks provide the necessary infrastructure, tools, and libraries that developers can use to build, deploy, and manage agents. Langchain, for example, is a framework that facilitates building language-based agents integrated with different AI technologies.
+- **General Agent or Generic Agent**: An agent capable of performing a variety of tasks, not limited to a specific domain or set of actions. This type of agent usually has broader capabilities and can adapt to a wide range of scenarios.
+- **Hand-crafted Agents**: These are agents specifically designed by developers with tailored rules and behaviors to perform specific tasks. They are usually fine-tuned to operate within well-defined scenarios.
+- **Multi-agent Workflows**: A system or process where multiple agents interact or collaborate to complete tasks or solve problems. Each agent in the workflow might have a specific role or expertise, contributing to a collective outcome.
+- **Specialized Agents**: Agents designed to perform specific, often complex tasks where specialized knowledge or skills are required. These agents are usually highly effective within their domain of expertise but may not perform well outside of it.
+- **Subagent**: A term used to describe an agent that operates under the supervision of another agent. Subagents typically handle specific tasks or components of a larger process within a multi-agent system.
+- **Supervisor Agent**: An agent tasked with overseeing and coordinating the actions of other agents within a workflow. This type of agent ensures that tasks are assigned appropriately, and that the workflow progresses smoothly and efficiently.
+- **Tool**: In the context of multi-agent workflows, a tool is a utility or application that agents can use to perform tasks. Tools are used to communicate with the outside world, and are an interface to something other than an LLM, like reading GitLab issues, cloning a repository, or reading documentation.

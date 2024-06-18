@@ -60,7 +60,7 @@ export default {
       </div>
     </div>
     <div class="gl-mt-5">
-      <div class="gl-display-flex gl-align-items-center gl-flex-wrap gl-my-n3 gl-mx-n3">
+      <div class="gl-display-flex gl-align-items-center gl-flex-wrap -gl-my-3 -gl-mx-3">
         <div
           v-for="{ id, label, backgroundColor, formattedValue } in computedSections"
           :key="id"
@@ -73,7 +73,7 @@ export default {
             data-testid="legend-section-color"
           ></div>
           <p class="gl-m-0 gl-font-sm">
-            <span class="gl-mr-2 gl-font-weight-bold">
+            <span class="gl-mr-2 gl-font-bold">
               {{ label }}
             </span>
             <span class="gl-text-gray-500">

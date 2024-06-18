@@ -3,16 +3,21 @@
 module Groups
   module ImportExport
     class ExportService
-      def initialize(group:, user:, params: {})
+      def initialize(group:, user:, exported_by_admin:, params: {})
         @group = group
         @current_user = user
+        @exported_by_admin = exported_by_admin
         @params = params
         @shared = @params[:shared] || Gitlab::ImportExport::Shared.new(@group)
         @logger = Gitlab::Export::Logger.build
       end
 
       def async_execute
-        GroupExportWorker.perform_async(current_user.id, group.id, params)
+        GroupExportWorker.perform_async(
+          current_user.id,
+          group.id,
+          params.merge(exported_by_admin: @exported_by_admin)
+        )
       end
 
       def execute
@@ -27,7 +32,7 @@ module Groups
 
       private
 
-      attr_reader :group, :current_user, :params
+      attr_reader :group, :current_user, :exported_by_admin, :params
       attr_accessor :shared
 
       def validate_user_permissions
@@ -50,6 +55,7 @@ module Groups
         # it removes the tmp dir. This means that if we want to add new savers
         # in EE the data won't be available.
         if save_exporters && file_saver.save
+          audit_export
           notify_success
         else
           notify_error!
@@ -103,6 +109,20 @@ module Groups
           group_id: group.id,
           group_name: group.name
         )
+      end
+
+      def audit_export
+        return if exported_by_admin && Gitlab::CurrentSettings.silent_admin_exports_enabled?
+
+        audit_context = {
+          name: 'group_export_created',
+          author: current_user,
+          scope: group,
+          target: group,
+          message: 'Group file export was created'
+        }
+
+        Gitlab::Audit::Auditor.audit(audit_context)
       end
 
       def notify_success

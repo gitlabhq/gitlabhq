@@ -34,9 +34,11 @@ After you link a group, the following GitLab data is synced to Jira for all proj
   - The last 400 branches and the last commit to each of those branches (GitLab 15.11 and later)
 - New project data (after you linked the group):
   - Merge requests
+    - Merge request author
   - Branches
   - Commits
-  - Builds
+    - Commit author
+  - Pipelines
   - Deployments
   - Feature flags
 
@@ -112,12 +114,37 @@ If the app requires additional permissions, [you must manually approve the updat
 
 The GitLab for Jira Cloud app connects GitLab and Jira. Data must be shared between the two applications, and access must be granted in both directions.
 
-### Access to Jira through access token
+### GitLab access to Jira
 
-Jira shares an access token with GitLab to authenticate and authorize data pushes to Jira.
-As part of the app installation process, Jira sends a handshake request to GitLab containing the access token.
-The handshake is signed with an [asymmetric JWT](https://developer.atlassian.com/cloud/jira/platform/understanding-jwt-for-connect-apps/),
-and the access token is stored encrypted with `AES256-GCM` on GitLab.
+When you [configure the GitLab for Jira Cloud app](#configure-the-gitlab-for-jira-cloud-app), GitLab receives a **shared secret token** from Jira.
+The token grants GitLab `READ`, `WRITE`, and `DELETE` [app scopes](https://developer.atlassian.com/cloud/jira/software/scopes-for-connect-apps/#scopes-for-atlassian-connect-apps) for the Jira project.
+These scopes are required to update information in the Jira project's development panel.
+The token does not grant GitLab access to any other Atlassian product besides the Jira project the app was installed in.
+
+The token is encrypted with `AES256-GCM` and stored on GitLab.
+When the GitLab for Jira Cloud app is uninstalled from your Jira project, GitLab deletes the token.
+
+### Jira access to GitLab
+
+Jira does not gain any access to GitLab.
+
+### Data sent from GitLab to Jira
+
+For all the data sent to Jira, see [GitLab data synced to Jira](#gitlab-data-synced-to-jira).
+
+For more information about the specific data properties sent to Jira, see the [serializer classes](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/atlassian/jira_connect/serializers) involved in data synchronization.
+
+### Data sent from Jira to GitLab
+
+GitLab receives a [lifecycle event](https://developer.atlassian.com/cloud/jira/platform/connect-app-descriptor/#lifecycle) from Jira when the GitLab for Jira Cloud app is installed or uninstalled.
+The event includes a [token](#gitlab-access-to-jira) to verify subsequent lifecycle events and to authenticate when [sending data to Jira](#data-sent-from-gitlab-to-jira).
+Lifecycle event requests from Jira are [verified](https://developer.atlassian.com/cloud/jira/platform/security-for-connect-apps/#validating-installation-lifecycle-requests).
+
+For self-managed instances that use the GitLab for Jira Cloud app from the Atlassian Marketplace, GitLab.com handles lifecycle events and forwards them to the self-managed instance. For more information, see [GitLab.com handling of app lifecycle events](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-app-lifecycle-events).
+
+### Privacy and security details in the Atlassian Marketplace
+
+For more information, see the [privacy and security details of the Atlassian Marketplace listing](https://marketplace.atlassian.com/apps/1221011/gitlab-for-jira-cloud?tab=privacy-and-security&hosting=cloud).
 
 ## Troubleshooting
 

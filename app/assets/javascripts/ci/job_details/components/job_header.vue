@@ -89,7 +89,7 @@ export default {
 
 <template>
   <header
-    class="page-content-header gl-md-display-flex gl-flex-wrap gl-min-h-7 gl-pb-2! gl-w-full"
+    class="page-content-header md:gl-flex gl-flex-wrap gl-min-h-7 gl-pb-2! gl-w-full"
     data-testid="job-header-content"
   >
     <div
@@ -105,7 +105,7 @@ export default {
           <gl-button
             :aria-label="__('Toggle sidebar')"
             category="secondary"
-            class="gl-lg-display-none gl-ml-2"
+            class="lg:gl-hidden gl-ml-2"
             icon="chevron-double-lg-left"
             @click="onClickSidebarButton"
           />
@@ -135,9 +135,9 @@ export default {
             :size="24"
             :src="avatarUrl"
             :label="user.name"
-            class="gl-display-none gl-sm-display-inline-flex gl-mx-1"
+            class="gl-hidden sm:gl-inline-flex gl-mx-1"
           />
-          <strong class="author gl-display-inline gl-sm-display-none!">@{{ user.username }}</strong>
+          <strong class="author gl-inline sm:gl-hidden">@{{ user.username }}</strong>
           <gl-tooltip v-if="message" :target="() => $refs[$options.EMOJI_REF]">
             {{ message }}
           </gl-tooltip>

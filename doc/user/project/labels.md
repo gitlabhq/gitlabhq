@@ -472,7 +472,7 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [Beta](../../policy/experiment-beta-support.md).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [beta](../../policy/experiment-beta-support.md).
 
 FLAG:
 On self-managed GitLab and GitLab Dedicated, this feature is not available.

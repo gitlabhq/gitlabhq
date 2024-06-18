@@ -417,7 +417,7 @@ listed in the descriptions of the relevant settings.
 | `default_artifacts_expire_in`            | string           | no                                   | Set the default expiration time for each job's artifacts. |
 | `default_branch_name`                    | string           | no                                   | [Instance-level custom initial branch name](../user/project/repository/branches/default.md#instance-level-custom-initial-branch-name). |
 | `default_branch_protection`              | integer          | no                                   | [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead. |
-| `default_branch_protection_defaults`     | hash             | no                                   | For available options, see [Options for `default_branch_protection_defaults`](#options-for-default_branch_protection_defaults). |
+| `default_branch_protection_defaults`     | hash             | no                                   | [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. For available options, see [Options for `default_branch_protection_defaults`](groups.md#options-for-default_branch_protection_defaults). |
 | `default_ci_config_path`                 | string           | no                                   | Default CI/CD configuration file and path for new projects (`.gitlab-ci.yml` if not set). |
 | `default_group_visibility`               | string           | no                                   | What visibility level new groups receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot be set to any levels in `restricted_visibility_levels`.|
 | `default_preferred_language`             | string           | no                                   | Default preferred language for users who are not logged in. |
@@ -625,7 +625,7 @@ listed in the descriptions of the relevant settings.
 | `sidekiq_job_limiter_limit_bytes`                 | integer | no                                   | The threshold in bytes at which Sidekiq jobs are rejected. Default: 0 bytes (doesn't reject any job). |
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |
-| `silent_admin_exports_enabled`           | boolean          | no                                   | Enable silent exports for administrators. Default is `false`. |
+| `silent_admin_exports_enabled`           | boolean          | no                                   | Enable [Silent admin exports](../administration/settings/import_and_export_settings.md#enable-silent-admin-exports). Default is `false`. |
 | `silent_mode_enabled`                    | boolean          | no                                   | Enable [Silent mode](../administration/silent_mode/index.md). Default is `false`. |
 | `slack_app_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `slack_app_id`, `slack_app_secret`, `slack_app_signing_secret`, and `slack_app_verification_token`) Enable the GitLab for Slack app. |
 | `slack_app_id`                           | string           | required by: `slack_app_enabled`     | The client ID of the GitLab for Slack app. |
@@ -733,16 +733,6 @@ to be set, or _all_ of these values to be set:
 The package file size limits are not part of the Application settings API.
 Instead, these settings can be accessed using the [Plan limits API](plan_limits.md).
 
-### Options for `default_branch_protection_defaults`
+## Related topics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0.
-
-The `default_branch_protection_defaults` attribute describes the default branch
-protection defaults. All parameters are optional.
-
-| Key                          | Type    | Description |
-|:-----------------------------|:--------|:------------|
-| `allowed_to_push`            | array   | An array of access levels allowed to push. Supports Developer (30) or Maintainer (40). |
-| `allow_force_push`           | boolean | Allow force push for all users with push access. |
-| `allowed_to_merge`           | array   | An array of access levels allowed to merge. Supports Developer (30) or Maintainer (40). |
-| `developer_can_initial_push` | boolean | Allow developers to initial push. |
+- [Options for `default_branch_protection_defaults`](groups.md#options-for-default_branch_protection_defaults)

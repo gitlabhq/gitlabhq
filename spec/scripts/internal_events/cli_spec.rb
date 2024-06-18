@@ -139,16 +139,14 @@ RSpec.describe Cli, feature_category: :service_ping do
     end
 
     context 'when creating a metric from multiple events' do
+      # all of these product_groups belong to 'dev' product_section
       let(:events) do
         [{
-          action: '00_event1', internal_events: true,
-          product_section: 'dev', product_stage: 'plan', product_group: 'optimize'
+          action: '00_event1', internal_events: true, product_group: 'optimize'
         }, {
-          action: '00_event2', internal_events: true,
-          product_section: 'dev', product_stage: 'create', product_group: 'ide'
+          action: '00_event2', internal_events: true, product_group: 'ide'
         }, {
-          action: '00_event3', internal_events: true,
-          product_section: 'dev', product_stage: 'create', product_group: 'source_code'
+          action: '00_event3', internal_events: true, product_group: 'source_code'
         }]
       end
 
@@ -169,8 +167,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n", # Submit selections
           "\n", # Select: Weekly/Monthly count of unique users
           "aggregate metric description\n", # Submit description
-          "\n", # Accept description for weekly
-          "\n" # Copy & continue
+          "\n" # Accept description for weekly
         ])
 
         # Filter down to "dev" options
@@ -203,8 +200,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "\n", # Submit selections
           "\n", # Select: Weekly/Monthly count of unique users
           "aggregate metric description\n", # Submit description
-          "\n", # Accept description for weekly
-          "\n" # Copy & continue
+          "\n" # Accept description for weekly
         ])
 
         # Filter down to "dev:create" options
@@ -225,7 +221,7 @@ RSpec.describe Cli, feature_category: :service_ping do
     context 'when product group for event no longer exists' do
       let(:event) do
         {
-          action: '00_event1', product_section: 'other', product_stage: 'other', product_group: 'other'
+          action: '00_event1', product_group: 'other'
         }
       end
 
@@ -615,7 +611,7 @@ RSpec.describe Cli, feature_category: :service_ping do
         --------------------------------------------------
         # HAML -- ON-CLICK
 
-        .gl-display-inline-block{ data: { event_tracking: 'internal_events_cli_opened' } }
+        .inline-block{ data: { event_tracking: 'internal_events_cli_opened' } }
           = _('Important Text')
 
         --------------------------------------------------
@@ -761,6 +757,215 @@ RSpec.describe Cli, feature_category: :service_ping do
         end
       end
     end
+
+    context 'for an event with additional properties' do
+      let(:event_filepath) { 'config/events/internal_events_cli_used.yml' }
+      let(:event_content) { internal_event_fixture('events/event_with_additional_properties.yml') }
+
+      let(:expected_rails_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        # RAILS
+
+        include Gitlab::InternalEventsTracking
+
+        track_internal_event(
+          'internal_events_cli_used',
+          project: project,
+          namespace: project.namespace,
+          user: user,
+          additional_properties: {
+            label: 'string', # TODO
+            value: 72 # Time the CLI ran before closing (seconds)
+          }
+        )
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      let(:expected_rspec_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        # RSPEC
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'internal_events_cli_used' }
+          let(:project) { project }
+          let(:namespace) { project.namespace }
+          let(:user) { user }
+          let(:label) { 'string' }
+          let(:value) { 72 }
+        end
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      let(:expected_vue_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        // VUE
+
+        <script>
+        import { InternalEvents } from '~/tracking';
+        import { GlButton } from '@gitlab/ui';
+
+        const trackingMixin = InternalEvents.mixin();
+
+        export default {
+          mixins: [trackingMixin],
+          components: { GlButton },
+          methods: {
+            performAction() {
+              this.trackEvent(
+                'internal_events_cli_used',
+                {
+                  label: 'string', // TODO
+                  value: 72, // Time the CLI ran before closing (seconds)
+                },
+              );
+            },
+          },
+        };
+        </script>
+
+        <template>
+          <gl-button @click=performAction>Click Me</gl-button>
+        </template>
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      let(:expected_js_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        // FRONTEND -- RAW JAVASCRIPT
+
+        import { InternalEvents } from '~/tracking';
+
+        export const performAction = () => {
+          InternalEvents.trackEvent(
+            'internal_events_cli_used',
+            {
+              label: 'string', // TODO
+              value: 72, // Time the CLI ran before closing (seconds)
+            },
+          );
+
+          return true;
+        };
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      let(:expected_vue_template_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        // VUE TEMPLATE -- ON-CLICK
+
+        <script>
+        import { GlButton } from '@gitlab/ui';
+
+        export default {
+          components: { GlButton }
+        };
+        </script>
+
+        <template>
+          <gl-button
+            data-event-tracking="internal_events_cli_used"
+            data-event-label="string"
+            data-event-value=72
+          >
+            Click Me
+          </gl-button>
+        </template>
+
+        --------------------------------------------------
+        // VUE TEMPLATE -- ON-LOAD
+
+        <script>
+        import { GlButton } from '@gitlab/ui';
+
+        export default {
+          components: { GlButton }
+        };
+        </script>
+
+        <template>
+          <gl-button
+            data-event-tracking-load="internal_events_cli_used"
+            data-event-label="string"
+            data-event-value=72
+          >
+            Click Me
+          </gl-button>
+        </template>
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      let(:expected_haml_example) do
+        <<~TEXT.chomp
+        --------------------------------------------------
+        # HAML -- ON-CLICK
+
+        .inline-block{ data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72 } }
+          = _('Important Text')
+
+        --------------------------------------------------
+        # HAML -- COMPONENT ON-CLICK
+
+        = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72 } })
+
+        --------------------------------------------------
+        # HAML -- COMPONENT ON-LOAD
+
+        = render Pajamas::ButtonComponent.new(button_options: { data: { event_tracking_load: true, event_tracking: 'internal_events_cli_used', event_label: 'string', event_value: 72 } })
+
+        --------------------------------------------------
+        TEXT
+      end
+
+      before do
+        File.write(event_filepath, File.read(event_content))
+      end
+
+      it 'shows examples with additional properties included' do
+        queue_cli_inputs([
+          "3\n", # Enum-select: View Usage -- look at code examples for an existing event
+          'internal_events_cli_used', # Filters to this event
+          "\n", # Select: config/events/internal_events_cli_used.yml
+          "\n", # Select: ruby/rails
+          "\e[B", # Arrow down to: rspec
+          "\n", # Select: rspec
+          "\e[B", # Arrow down to: js vue
+          "\n", # Select: js vue
+          "\e[B", # Arrow down to: js plain
+          "\n", # Select: js plain
+          "\e[B", # Arrow down to: vue template
+          "\n", # Select: vue template
+          "\e[B", # Arrow down to: haml
+          "\n", # Select: haml
+          "9\n" # Exit
+        ])
+
+        with_cli_thread do
+          expect { plain_last_lines }.to eventually_include_cli_text(
+            expected_rails_example,
+            expected_rspec_example,
+            expected_vue_example,
+            expected_js_example,
+            expected_vue_template_example,
+            expected_haml_example
+          )
+        end
+      end
+    end
   end
 
   context 'when offline' do
@@ -776,9 +981,8 @@ RSpec.describe Cli, feature_category: :service_ping do
           "Internal Event CLI is opened\n", # Submit description
           "internal_events_cli_opened\n", # Submit action name
           "6\n", # Select: None
+          "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
-          "analytics\n", # Input section
-          "monitor\n", # Input stage
           "analytics_instrumentation\n", # Input group
           "2\n", # Select [premium, ultimate]
           "y\n", # Create file
@@ -805,8 +1009,6 @@ RSpec.describe Cli, feature_category: :service_ping do
           "where a defition file was created with the CLI\n", # Input description
           "\n", # Submit weekly description for monthly
           "2\n", # Select: Modify attributes
-          "\n", # Accept section
-          "\n", # Accept stage
           "\n", # Accept group
           "\n", # Skip URL
           "1\n", # Select: [free, premium, ultimate]
@@ -852,6 +1054,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "Internal Event CLI is opened\n", # Submit description
           "internal_events_cli_opened\n", # Submit action name
           "6\n", # Select: None
+          "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
           "instrumentation\n", # Filter & select group
           "2\n", # Select [premium, ultimate]

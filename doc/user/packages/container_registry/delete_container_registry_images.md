@@ -64,8 +64,8 @@ information, see the following endpoints:
 
 NOTE:
 GitLab CI/CD doesn't provide a built-in way to remove your container images. This example uses a
-third-party tool called [reg](https://github.com/genuinetools/reg) that talks to the GitLab Registry API.
-For assistance with this third-party tool, see [the issue queue for reg](https://github.com/genuinetools/reg/issues).
+third-party tool called [`regctl`](https://github.com/regclient/regclient) that talks to the GitLab Registry API.
+For assistance with this third-party tool, see [the issue queue for regclient](https://github.com/regclient/regclient/issues).
 
 The following example defines two stages: `build`, and `clean`. The `build_image` job builds a container
 image for the branch, and the `delete_image` job deletes it. The `reg` executable is downloaded and used to
@@ -96,27 +96,25 @@ build_image:
     - main
 
 delete_image:
-  before_script:
-    - curl --fail --show-error --location "https://github.com/genuinetools/reg/releases/download/v$REG_VERSION/reg-linux-amd64" --output ./reg
-    - echo "$REG_SHA256  ./reg" | sha256sum -c -
-    - chmod a+x ./reg
-  image: curlimages/curl:7.86.0
-  script:
-    - ./reg rm -d --auth-url $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $IMAGE_TAG
   stage: clean
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
-    REG_SHA256: ade837fc5224acd8c34732bf54a94f579b47851cc6a7fd5899a98386b782e228
-    REG_VERSION: 0.16.1
-  only:
-    - branches
-  except:
-    - main
+    REGCTL_VERSION: v0.6.1
+  rules:
+      - if: $CI_COMMIT_REF_NAME != $CI_DEFAULT_BRANCH
+  image: alpine:latest
+  script:
+    - apk update
+    - apk add curl
+    - curl --fail-with-body --location "https://github.com/regclient/regclient/releases/download/${REGCTL_VERSION}/regctl-linux-amd64" > /usr/bin/regctl
+    - chmod 755 /usr/bin/regctl
+    - regctl registry login ${CI_REGISTRY} -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD}
+    - regctl tag rm $IMAGE
 ```
 
 NOTE:
-You can download the latest `reg` release from [the releases page](https://github.com/genuinetools/reg/releases), then update
-the code example by changing the `REG_SHA256` and `REG_VERSION` variables defined in the `delete_image` job.
+You can download the latest `regctl` release from [the releases page](https://github.com/regclient/regclient/releasess), then update
+the code example by changing the `REGCTL_VERSION` variable defined in the `delete_image` job.
 
 ## Use a cleanup policy
 

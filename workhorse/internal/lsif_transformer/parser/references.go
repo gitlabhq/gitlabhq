@@ -4,21 +4,25 @@ import (
 	"strconv"
 )
 
+// ReferencesOffset represents an offset for a reference with an ID and length
 type ReferencesOffset struct {
-	Id  ID
+	ID  ID
 	Len int32
 }
 
+// References is a structure that holds reference items and their offsets
 type References struct {
 	Items           *cache
 	Offsets         *cache
-	CurrentOffsetId ID
+	CurrentOffsetID ID
 }
 
+// SerializedReference represents a serialized reference with a file path
 type SerializedReference struct {
 	Path string `json:"path"`
 }
 
+// NewReferences initializes and returns a new References instance
 func NewReferences() (*References, error) {
 	items, err := newCache("references", Item{})
 	if err != nil {
@@ -33,7 +37,7 @@ func NewReferences() (*References, error) {
 	return &References{
 		Items:           items,
 		Offsets:         offsets,
-		CurrentOffsetId: 0,
+		CurrentOffsetID: 0,
 	}, nil
 }
 
@@ -44,28 +48,29 @@ func NewReferences() (*References, error) {
 // `map[ID][]Item` (where `Id` is `refId`) but relies on caching the array and
 // its offset in files for storage to reduce RAM usage. The items can be
 // fetched by calling `getItems`.
-func (r *References) Store(refId ID, references []Item) error {
+func (r *References) Store(refID ID, references []Item) error {
 	size := len(references)
 
 	if size == 0 {
 		return nil
 	}
 
-	items := append(r.getItems(refId), references...)
-	err := r.Items.SetEntry(r.CurrentOffsetId, items)
+	items := append(r.getItems(refID), references...)
+	err := r.Items.SetEntry(r.CurrentOffsetID, items)
 	if err != nil {
 		return err
 	}
 
 	size = len(items)
-	r.Offsets.SetEntry(refId, ReferencesOffset{Id: r.CurrentOffsetId, Len: int32(size)})
-	r.CurrentOffsetId += ID(size)
+	_ = r.Offsets.SetEntry(refID, ReferencesOffset{ID: r.CurrentOffsetID, Len: int32(size)})
+	r.CurrentOffsetID += ID(size)
 
 	return nil
 }
 
-func (r *References) For(docs map[ID]string, refId ID) []SerializedReference {
-	references := r.getItems(refId)
+// For retrieves serialized references for a given document map and reference ID
+func (r *References) For(docs map[ID]string, refID ID) []SerializedReference {
+	references := r.getItems(refID)
 	if references == nil {
 		return nil
 	}
@@ -74,7 +79,7 @@ func (r *References) For(docs map[ID]string, refId ID) []SerializedReference {
 
 	for _, reference := range references {
 		serializedReference := SerializedReference{
-			Path: docs[reference.DocId] + "#L" + strconv.Itoa(int(reference.Line)),
+			Path: docs[reference.DocID] + "#L" + strconv.Itoa(int(reference.Line)),
 		}
 
 		serializedReferences = append(serializedReferences, serializedReference)
@@ -83,6 +88,7 @@ func (r *References) For(docs map[ID]string, refId ID) []SerializedReference {
 	return serializedReferences
 }
 
+// Close closes the reference
 func (r *References) Close() error {
 	for _, err := range []error{
 		r.Items.Close(),
@@ -95,14 +101,14 @@ func (r *References) Close() error {
 	return nil
 }
 
-func (r *References) getItems(refId ID) []Item {
+func (r *References) getItems(refID ID) []Item {
 	var offset ReferencesOffset
-	if err := r.Offsets.Entry(refId, &offset); err != nil || offset.Len == 0 {
+	if err := r.Offsets.Entry(refID, &offset); err != nil || offset.Len == 0 {
 		return nil
 	}
 
 	items := make([]Item, offset.Len)
-	if err := r.Items.Entry(offset.Id, &items); err != nil {
+	if err := r.Items.Entry(offset.ID, &items); err != nil {
 		return nil
 	}
 

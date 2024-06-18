@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Routing::PseudonymizationHelper do
+RSpec.describe ::Routing::PseudonymizationHelper, feature_category: :product_analytics_data_management do
   let_it_be(:group) { create(:group) }
   let_it_be(:subgroup) { create(:group, parent: group) }
   let_it_be(:project) { create(:project, group: group) }
@@ -305,6 +305,92 @@ RSpec.describe ::Routing::PseudonymizationHelper do
 
     it 'returns nil' do
       expect(subject).to be_nil
+    end
+  end
+
+  describe '#masked_referrer_url' do
+    let(:original_url) { "http://localhost/#{project.full_path}/-/issues/123" }
+    let(:masked_url) { 'http://localhost/namespace/project/-/issues/123' }
+
+    it 'masks sensitive parameters in the URL' do
+      expect(helper.masked_referrer_url(original_url)).to eq(masked_url)
+    end
+
+    context 'when an error occurs' do
+      before do
+        allow(Rails.application.routes).to receive(:recognize_path)
+          .with(original_url)
+          .and_raise(ActionController::RoutingError, 'Some routing error')
+        allow(helper).to receive(:request).and_return(
+          double(
+            :Request,
+            original_url: original_url,
+            original_fullpath: '/dashboard/issues?assignee_username=root'
+          )
+        )
+      end
+
+      it 'calls error tracking and returns nil' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception)
+          .with(
+            ActionController::RoutingError,
+            url: '/dashboard/issues?assignee_username=root'
+          ).and_call_original
+        expect(helper.masked_referrer_url(original_url)).to be_nil
+      end
+    end
+
+    context 'with controller for projects' do
+      let(:original_url) { "http://localhost/#{project.full_path}" }
+      let(:masked_url) { 'http://localhost/namespace/project' }
+
+      it 'masks sensitive parameters in the URL for projects controller' do
+        expect(helper.masked_referrer_url(original_url)).to eq(masked_url)
+      end
+    end
+
+    context 'with controller for projects/issues' do
+      let(:original_url) { "http://localhost/#{project.full_path}/-/issues" }
+      let(:masked_url) { 'http://localhost/namespace/project/-/issues' }
+
+      it 'masks sensitive parameters in the URL for projects/issues controller' do
+        expect(helper.masked_referrer_url(original_url)).to eq(masked_url)
+      end
+    end
+  end
+
+  describe 'masked_query_params' do
+    let(:helper) { Class.new { include Routing::PseudonymizationHelper }.new }
+
+    context 'when there are no query parameters' do
+      it 'returns nil' do
+        uri = URI.parse('https://gitlab.com')
+        expect(helper.masked_query_params(uri)).to be_nil
+      end
+    end
+
+    context 'when there are query parameters to mask' do
+      it 'masks the appropriate query parameters' do
+        uri = URI.parse('https://gitlab.com?user_id=123&token=abc')
+        result = helper.masked_query_params(uri)
+        expect(result).to eq({ 'user_id' => ['masked_user_id'], 'token' => ['masked_token'] })
+      end
+    end
+
+    context 'when there are query parameters that should not be masked' do
+      it 'does not mask the excluded query parameters' do
+        uri = URI.parse('https://gitlab.com?scope=all&user_id=123')
+        result = helper.masked_query_params(uri)
+        expect(result).to eq({ 'scope' => ['all'], 'user_id' => ['masked_user_id'] })
+      end
+    end
+
+    context 'when there are mixed query parameters' do
+      it 'masks only the non-excluded query parameters' do
+        uri = URI.parse('http://localhost?scope=all&state=opened&user_id=123')
+        result = helper.masked_query_params(uri)
+        expect(result).to eq({ 'scope' => ['all'], 'state' => ['opened'], 'user_id' => ['masked_user_id'] })
+      end
     end
   end
 end

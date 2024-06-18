@@ -15,7 +15,7 @@ class LabelEntity < Grape::Entity
   expose :created_at
   expose :updated_at
 
-  expose :priority, if: -> (*) { options.key?(:project) } do |label|
+  expose :priority, if: ->(*) { options.key?(:project) } do |label|
     label.priority(options[:project])
   end
 end

@@ -102,6 +102,25 @@ RSpec.shared_context 'project navbar structure' do
       }
     ].compact
   end
+
+  # Projects belonging to a group have
+  # different menu elements
+  let(:group_owned_structure) do
+    structure.last[:nav_sub_items] = [
+      _('General'),
+      _('Integrations'),
+      _('Webhooks'),
+      _('Access Tokens'),
+      _('Repository'),
+      _('Merge requests'),
+      _('CI/CD'),
+      _('Packages and registries'),
+      _('Monitor'),
+      _('Analytics'),
+      s_('UsageQuota|Usage Quotas')
+    ]
+    structure
+  end
 end
 
 RSpec.shared_context 'group navbar structure' do

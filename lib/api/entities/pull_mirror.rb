@@ -6,8 +6,8 @@ module API
       expose :id, documentation: { type: 'integer', example: 101486 }
       expose :status, as: :update_status, documentation: { type: 'string', example: 'finished' }
       expose :url,
-documentation: { type: 'string',
-                 example: 'https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git' } do |import_state|
+        documentation: { type: 'string',
+                         example: 'https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git' } do |import_state|
         import_state.project.safe_import_url
       end
       expose :last_error, documentation: { type: 'string', example: nil }

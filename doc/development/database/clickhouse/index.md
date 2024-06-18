@@ -61,7 +61,7 @@ Suggested reads:
 
 Sharding is a feature that allows splitting the data into multiple ClickHouse nodes to increase throughput and decrease latency. The sharding feature uses a distributed engine that is backed by local tables. The distributed engine is a "virtual" table that does not store any data. It is used as an interface to insert and query data.
 
-See [the ClickHouse documentation](https://clickhouse.com/docs/en/engines/table-engines/special/distributed) and this section on [replication and sharding](https://clickhouse.com/docs/en/manage/replication-and-sharding/). ClickHouse can use either Zookeeper or its own compatible API via a component called [ClickHouse Keeper](https://clickhouse.com/docs/en/operations/clickhouse-keeper) to maintain consensus.
+See [the ClickHouse documentation](https://clickhouse.com/docs/en/engines/table-engines/special/distributed) and this section on [replication and sharding](https://clickhouse.com/docs/en/architecture/replication#replication-and-sharding-configuration). ClickHouse can use either Zookeeper or its own compatible API via a component called [ClickHouse Keeper](https://clickhouse.com/docs/en/operations/clickhouse-keeper) to maintain consensus.
 
 After nodes are set up, they can become invisible from the Clients and both write and read queries can be issued to any node.
 

@@ -214,7 +214,7 @@ export default {
     <td data-testid="actions" class="gl-whitespace-nowrap">
       <gl-tooltip :target="() => $refs.cancelButton.$el">
         <div class="gl-text-left">
-          <p class="gl-mb-5 gl-font-weight-bold">{{ s__('ImportProjects|Cancel import') }}</p>
+          <p class="gl-mb-5 gl-font-bold">{{ s__('ImportProjects|Cancel import') }}</p>
           {{
             s__(
               'ImportProjects|Imported files will be kept. You can import this repository again later.',

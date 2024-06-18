@@ -36,6 +36,7 @@ For each of the guidelines listed in this document, AppSec aims to have a SAST r
 | [Local storage](#local-storage) | N/A  | N/A |
 | [Logging](#logging) | N/A  | N/A |
 | [Artifical Intelligence feature](#artificial-intelligence-ai-features) | N/A  | N/A |
+| [Request Parameter Typing](#request-parameter-typing) | `StrongParams` RuboCop | ✅ |
 
 ## Process for creating new guidelines and accompanying rules
 
@@ -58,7 +59,7 @@ MR. Also add the Guideline to the "SAST Coverage" table above.
 ### Creating new RuboCop rule
 
 1. Follow the [RuboCop development doc](rubocop_development_guide.md#creating-new-rubocop-cops).
-For an example, see [this merge request](https://gitlab.com/gitlab-org/gitlab-qa/-/merge_requests/1280) on adding a rule to the `gitlab-qa` project.
+   For an example, see [this merge request](https://gitlab.com/gitlab-org/gitlab-qa/-/merge_requests/1280) on adding a rule to the `gitlab-qa` project.
 1. The cop itself should reside in the `gitlab-security` [gem project](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/tree/master/lib/rubocop/cop/gitlab_security)
 
 ## Permissions
@@ -408,6 +409,14 @@ In most situations, a two-step solution can be used: input validation and
 output encoding in the appropriate context. You should also invalidate the
 existing Markdown cached HTML to mitigate the effects of already-stored
 vulnerable XSS content. For an example, see ([issue 357930](https://gitlab.com/gitlab-org/gitlab/-/issues/357930)).
+
+If the fix is in JavaScript assets hosted by GitLab, then you should take these
+actions when security fixes are published:
+
+1. Delete the old, vulnerable versions of old assets.
+1. Invalidate any caches (like CloudFlare) of the old assets.
+
+For more information, see ([issue 463408](https://gitlab.com/gitlab-org/gitlab/-/issues/463408)).
 
 #### Input validation
 
@@ -1352,7 +1361,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
   - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
 - Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
 - When credentials are required in a CI/CD job, use [masked variables](../ci/variables/index.md#mask-a-cicd-variable) to help prevent accidental exposure in the job logs. Be aware that when [debug logging](../ci/variables/index.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Also consider using [protected variables](../ci/variables/index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
-- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](hhttps://handbook.gitlab.com/handbook/security/product-security/application-security/inventory/#policies) and our [Data Classification Standards](https://handbook.gitlab.com/handbook/security/data-classification-standard/#standard).
+- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://handbook.gitlab.com/handbook/security/product-security/application-security/inventory/#policies) and our [Data Classification Standards](https://handbook.gitlab.com/handbook/security/data-classification-standard/#standard).
 - To store and/or share credentials between teams, refer to [1Password for Teams](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams) and follow [the 1Password Guidelines](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-guidelines).
 - If you need to share a secret with a team member, use 1Password. Do not share a secret over email, Slack, or other service on the Internet.
 
@@ -1619,6 +1628,60 @@ insecure_email("person@example.com, attacker@evil.com")
 
 - Use `Gitlab::Email::SingleRecipientValidator` when adding new emails intended for a single recipient
 - Strongly type your code by calling `.to_s` on values, or check its class with `value.kind_of?(String)`
+
+## Request Parameter Typing
+
+This Secure Code Guideline is enforced by the `StrongParams` RuboCop.
+
+In our Rails Controllers you must use `ActionController::StrongParameters`. This ensures that we explicitly define the keys and types of input we expect in a request. It is critical for avoiding Mass Assignment in our Models. It should also be used when parameters are passed to other areas of the GitLab codebase such as Services.
+
+Using `params[:key]` can lead to vulnerabilities when one part of the codebase expects a type like `String`, but gets passed (and handles unsafely and without error) an `Array`.
+
+NOTE:
+This only applies to Rails Controllers. Our API and GraphQL endpoints enforce strong typing, and Go is statically typed.
+
+### Example
+
+```ruby
+class MyMailer
+  def reset(user, email)
+    mail(to: email, subject: 'Password reset email', body: user.reset_token)
+  end
+end
+
+class MyController
+
+  # Bad - email could be an array of values
+  # ?user[email]=VALUE will find a single user and email a single user
+  # ?user[email][]=victim@example.com&user[email][]=attacker@example.com will email the victim's token to the victim and user
+  def dangerously_reset_password
+    user = User.find_by(email: params[:user][:email])
+    MyMailer.reset(user, params[:user][:email])
+  end
+
+  # Good - we use StrongParams which doesn't permit the Array type
+  # ?user[email]=VALUE will find a single user and email a single user
+  # ?user[email][]=victim@example.com&user[email][]=attacker@example.com will fail because there is no permitted :email key
+  def safely_reset_password
+    user = User.find_by(email: email_params[:email])
+    MyMailer.reset(user, email_params[:email])
+  end
+
+  # This returns a new ActionController::Parameters that includes only the permitted attributes
+  def email_params
+    params.require(:user).permit(:email)
+  end
+end
+```
+
+This class of issue applies to more than just email; other examples might include:
+
+- Allowing multiple One Time Password attempts in a single request: `?otp_attempt[]=000000&otp_attempt[]=000001&otp_attempt[]=000002...`
+- Passing unexpected parameters like `is_admin` that are later `.merged` in a Service class
+
+### Related topics
+
+- Rails documentation for [ActionController::StrongParameters](https://api.rubyonrails.org/classes/ActionController/StrongParameters.html) and [ActionController::Parameters](https://api.rubyonrails.org/classes/ActionController/Parameters.html)
 
 ## Who to contact if you have questions
 

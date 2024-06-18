@@ -62,7 +62,26 @@ module Gitlab
           extra
         end
 
+        # The partition manager is initialized with both connections and creates
+        # partitions in both databases, but here we change the default on the model's
+        # connection, meaning that it will not respect the manager's connection config
+        # so we need to check that it's changing the default only when called
+        # with the model's connection. Also since we prevent writes in the other
+        # database, we should not change the default there.
+        #
         def after_adding_partitions
+          if different_connection_names?
+            Gitlab::AppLogger.warn(
+              message: 'Skipping changing column default because connections mismatch',
+              event: :partition_manager_after_adding_partitions_connection_mismatch,
+              model_connection_name: Gitlab::Database.db_config_name(model.connection),
+              shared_connection_name: Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection),
+              table_name: model.table_name
+            )
+
+            return
+          end
+
           active_value = active_partition.value
           model.connection.change_column_default(model.table_name, partitioning_key, active_value)
         end
@@ -78,14 +97,13 @@ module Gitlab
         end
 
         def validate_and_fix
-          unless model.connection_db_config.name ==
-              Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection)
-
+          if different_connection_names?
             Gitlab::AppLogger.warn(
               message: 'Skipping fixing column default because connections mismatch',
               event: :partition_manager_validate_and_fix_connection_mismatch,
               model_connection_name: Gitlab::Database.db_config_name(model.connection),
-              shared_connection_name: Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection)
+              shared_connection_name: Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection),
+              table_name: model.table_name
             )
 
             return
@@ -126,6 +144,11 @@ module Gitlab
         end
 
         private
+
+        def different_connection_names?
+          model.connection_db_config.name !=
+            Gitlab::Database.db_config_name(Gitlab::Database::SharedModel.connection)
+        end
 
         def current_default_value
           column_name = model.connection.quote(partitioning_key)

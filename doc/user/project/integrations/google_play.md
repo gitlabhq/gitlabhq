@@ -20,7 +20,7 @@ The feature is still in development, but you can:
 - [Report a bug](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=report_bug).
 - [Share feedback](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/feedback/-/issues/new?issuable_template=general_feedback).
 
-With the Google Play integration, you can configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console) to build and release apps for Android devices.
+With the Google Play integration, you can configure your CI/CD pipelines to connect to the [Google Play Console](https://play.google.com/console/developers) to build and release apps for Android devices.
 
 The Google Play integration works out of the box with [fastlane](https://fastlane.tools/). You can also use this integration with other build tools.
 

@@ -2,6 +2,7 @@
 stage: Create
 group: Editor Extensions
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: "Connect and use GitLab Duo in JetBrains IDEs."
 ---
 
 # GitLab plugin for JetBrains IDEs
@@ -36,7 +37,7 @@ You can configure the editor extension to use 1Password secret references for au
 Prerequisites:
 
 - You have the [1Password](https://1password.com) desktop app installed.
-- You have the [1Password CLI](https://developer.1password.com/docs/cli/get-started) tool installed.
+- You have the [1Password CLI](https://developer.1password.com/docs/cli/get-started/) tool installed.
 
 To integrate GitLab for JetBrains with the 1Password CLI:
 

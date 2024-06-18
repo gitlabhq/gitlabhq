@@ -94,4 +94,26 @@ RSpec.describe InviteMembersHelper do
       end
     end
   end
+
+  describe '#invite_accepted_notice' do
+    context 'for group invites' do
+      let_it_be(:group) { create(:group, name: 'My group') }
+      let_it_be(:member) { build(:group_member, :guest, group: group) }
+
+      it 'returns the expected message' do
+        expect(helper.invite_accepted_notice(member))
+          .to eq('You have been granted access to the My group group with the following role: Guest.')
+      end
+    end
+
+    context 'for project invites' do
+      let_it_be(:project) { create(:project, name: 'My project') }
+      let_it_be(:member) { build(:project_member, :guest, project: project) }
+
+      it 'returns the expected message' do
+        expect(helper.invite_accepted_notice(member))
+          .to eq('You have been granted access to the My project project with the following role: Guest.')
+      end
+    end
+  end
 end

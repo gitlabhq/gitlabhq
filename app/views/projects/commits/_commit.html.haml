@@ -24,7 +24,7 @@
 - add_page_specific_style 'page_bundles/commit_description'
 
 %li{ class: ["commit flex-row", ("js-toggle-container" if collapsible)], id: "commit-#{commit.short_id}" }
-  .avatar-cell.d-none.d-sm-block
+  .avatar-cell.gl-hidden.sm:gl-block
     = author_avatar(commit, size: 40, has_tooltip: false)
 
   .commit-detail.flex-list.gl-display-flex.gl-justify-content-space-between.gl-align-items-center.gl-flex-grow-1.gl-min-w-0
@@ -54,7 +54,7 @@
       = render_if_exists 'projects/commits/project_namespace', show_project_name: show_project_name, project: project
 
       - if commit.description?
-        %pre{ class: ["commit-row-description gl-mb-3 gl-white-space-pre-wrap", (collapsible ? "js-toggle-content" : "d-block")] }
+        %pre{ class: ["commit-row-description gl-mb-3 gl-white-space-pre-wrap", (collapsible ? "js-toggle-content" : "!gl-block")] }
           = preserve(markdown_field(commit, :description))
 
     .commit-actions.flex-row
@@ -75,7 +75,7 @@
 
       .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
 
-      .commit-sha-group.btn-group.d-none.d-sm-flex
+      .commit-sha-group.btn-group.gl-hidden.sm:gl-flex
         .label.label-monospace.monospace
           = commit.short_id
         = clipboard_button(text: commit.id, category: :primary, size: :medium, title: _("Copy commit SHA"))

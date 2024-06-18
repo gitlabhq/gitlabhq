@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.incident_management.incident_management_timeline_event_created_weekly
 description: Count of unique users created timeline events
-product_section: ops
-product_stage: monitor
 product_group: respond
 value_type: number
 status: active

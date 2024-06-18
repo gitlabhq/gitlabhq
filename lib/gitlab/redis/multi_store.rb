@@ -310,13 +310,13 @@ module Gitlab
 
       def increment_pipelined_command_error_count(command_name)
         @pipelined_command_error ||= Gitlab::Metrics.counter(:gitlab_redis_multi_store_pipelined_diff_error_total,
-                                                             'Redis MultiStore pipelined command diff between stores')
+          'Redis MultiStore pipelined command diff between stores')
         @pipelined_command_error.increment(command: command_name, instance_name: instance_name)
       end
 
       def increment_method_missing_count(command_name)
         @method_missing_counter ||= Gitlab::Metrics.counter(:gitlab_redis_multi_store_method_missing_total,
-                                                            'Client side Redis MultiStore method missing')
+          'Client side Redis MultiStore method missing')
         @method_missing_counter.increment(command: command_name, instance_name: instance_name)
       end
 

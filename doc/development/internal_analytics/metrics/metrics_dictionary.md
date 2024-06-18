@@ -33,8 +33,6 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 |------------------------------|----------|------------------------|
 | `key_path`                   | yes      | JSON key path for the metric, location in Service Ping payload. |
 | `description`                | yes      |                        |
-| `product_section`            | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml). |
-| `product_stage`              | yes      | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the metric. |
 | `product_group`              | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the metric. |
 | `value_type`                 | yes      | `string`; one of [`string`, `number`, `boolean`, `object`](https://json-schema.org/understanding-json-schema/reference/type). |
 | `status`                     | yes      | `string`; [status](#metric-statuses) of the metric, may be set to `active`, `removed`, `broken`. |
@@ -43,7 +41,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `data_category`              | yes      | `string`; [categories](#data-category) of the metric, may be set to `operational`, `optional`, `subscription`, `standard`. The default value is `optional`. |
 | `instrumentation_class`      | no       | `string`; used for metrics with `data_source` other than `internal_events`. See [the class that implements the metric](metrics_instrumentation.md). |
 | `distribution`               | yes      | `array`; may be set to one of `ce, ee` or `ee`. The [distribution](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. |
-| `performance_indicator_type` | no       | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, `umau` or `customer_health_score`](https://handbook.gitlab.com/handbook/business-technology/data-team/data-catalog/). |
+| `performance_indicator_type` | no       | `array`; may be set to one of [`gmau`, `smau`, `paid_gmau`, `umau`, `customer_health_score` or `devops_report`](https://handbook.gitlab.com/handbook/business-technology/data-team/data-catalog/). |
 | `tier`                       | yes      | `array`; may contain one or a combination of `free`, `premium` or `ultimate`. The [tier](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. This should be verbose and contain all tiers where a metric is available. |
 | `milestone`                  | yes      | The milestone when the metric is introduced and when it's available to self-managed instances with the official GitLab release. |
 | `milestone_removed`          | no       | The milestone when the metric is removed. Required for removed metrics. |
@@ -108,9 +106,6 @@ We use the following categories to classify a metric:
 - `subscription`: Data related to licensing.
 - `standard`: Standard set of identifiers that are included when collecting data.
 
-An aggregate metric is a metric that is the sum of two or more child metrics. Service Ping uses the data category of
-the aggregate metric to determine whether or not the data is included in the reported Service Ping payload.
-
 ### Example YAML metric definition
 
 The linked [`uuid`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/license/uuid.yml)
@@ -120,8 +115,6 @@ instance unique identifier.
 ```yaml
 key_path: uuid
 description: GitLab instance unique identifier
-product_section: analytics
-product_stage: analytics
 product_group: analytics_instrumentation
 value_type: string
 status: active

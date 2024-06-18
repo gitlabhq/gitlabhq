@@ -12,7 +12,7 @@ module Packages
       end
 
       def execute
-        return ::Packages::Package.none unless query
+        return ::Packages::Conan::Package.none unless query
 
         packages
       end
@@ -23,7 +23,6 @@ module Packages
 
       def packages
         base
-          .conan
           .installable
           .preload_conan_metadatum
           .with_name_like(query)
@@ -31,15 +30,7 @@ module Packages
       end
 
       def base
-        project ? packages_of_project : packages_for_current_user
-      end
-
-      def packages_of_project
-        project.packages
-      end
-
-      def packages_for_current_user
-        Packages::Package.for_projects(projects_visible_to_current_user)
+        ::Packages::Conan::Package.for_projects(project || projects_visible_to_current_user)
       end
 
       def projects_visible_to_current_user

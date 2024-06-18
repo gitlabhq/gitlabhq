@@ -12,15 +12,15 @@ class FeatureFlagEntity < Grape::Entity
   expose :description
   expose :version
 
-  expose :edit_path, if: -> (feature_flag, _) { can_update?(feature_flag) } do |feature_flag|
+  expose :edit_path, if: ->(feature_flag, _) { can_update?(feature_flag) } do |feature_flag|
     edit_project_feature_flag_path(feature_flag.project, feature_flag)
   end
 
-  expose :update_path, if: -> (feature_flag, _) { can_update?(feature_flag) } do |feature_flag|
+  expose :update_path, if: ->(feature_flag, _) { can_update?(feature_flag) } do |feature_flag|
     project_feature_flag_path(feature_flag.project, feature_flag)
   end
 
-  expose :destroy_path, if: -> (feature_flag, _) { can_destroy?(feature_flag) } do |feature_flag|
+  expose :destroy_path, if: ->(feature_flag, _) { can_destroy?(feature_flag) } do |feature_flag|
     project_feature_flag_path(feature_flag.project, feature_flag)
   end
 

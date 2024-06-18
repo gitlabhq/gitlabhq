@@ -1,8 +1,6 @@
 ---
 key_path: redis_hll_counters.runner.g_runner_fleet_read_jobs_statistics_monthly
 description: Count of unique users (monthly) who read runner job statistics
-product_section: ops
-product_stage: verify
 product_group: runner
 value_type: number
 status: active

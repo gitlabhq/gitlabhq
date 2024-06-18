@@ -8,7 +8,7 @@ RSpec.describe Projects::Security::ConfigurationHelper do
   describe 'security_upgrade_path' do
     subject { security_upgrade_path }
 
-    it { is_expected.to eq("https://#{ApplicationHelper.promo_host}/pricing/") }
+    it { is_expected.to eq("#{ApplicationHelper.promo_url}/pricing/") }
   end
 
   describe 'vulnerability_training_docs_path' do

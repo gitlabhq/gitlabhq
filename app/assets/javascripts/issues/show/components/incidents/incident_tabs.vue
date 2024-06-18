@@ -130,10 +130,10 @@ export default {
         lineSeparator.classList.toggle('gl-border-b-0', !isSummaryTab);
 
         itemsToHide.forEach(function hide(item) {
-          item.classList.toggle('gl-display-none', !isSummaryTab);
+          item.classList.toggle('gl-hidden', !isSummaryTab);
         });
 
-        editButton?.classList.toggle('gl-md-display-block!', isSummaryTab);
+        editButton?.classList.toggle('md:!gl-block', isSummaryTab);
       }
     },
   },
@@ -144,8 +144,8 @@ export default {
   <div>
     <gl-tabs
       v-model="currentTabIndex"
-      content-class="gl-reset-line-height"
-      class="gl-mt-n3"
+      content-class="gl-leading-reset"
+      class="-gl-mt-3"
       data-testid="incident-tabs"
     >
       <gl-tab :title="$options.i18n.summaryTitle" data-testid="summary-tab">

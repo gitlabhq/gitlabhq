@@ -2,8 +2,6 @@
 data_category: optional
 key_path: redis_hll_counters.ci_templates.p_ci_templates_security_sast_iac_latest_weekly
 description: Count of pipelines using the latest SAST IaC template
-product_section: sec
-product_stage: secure
 product_group: "static_analysis"
 value_type: number
 status: active

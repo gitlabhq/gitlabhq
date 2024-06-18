@@ -6,62 +6,129 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitLab Duo Chat
 
-[Chat](../../user/gitlab_duo_chat.md) is a part of the [GitLab Duo](../../user/ai_features.md) offering.
+[Chat](../../user/gitlab_duo_chat.md) is a part of the [GitLab Duo](../../user/ai_features.md)
+offering.
 
-How Chat describes itself: "I am GitLab Duo Chat, an AI assistant focused on helping developers with DevSecOps,
-software development, source code, project management, CI/CD, and GitLab. Please feel free to engage me in these areas."
+How Chat describes itself: "I am GitLab Duo Chat, an AI assistant focused on
+helping developers with DevSecOps, software development, source code, project
+management, CI/CD, and GitLab. Please feel free to engage me in these areas."
 
-Chat can answer different questions and perform certain tasks. It's done with the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
+Chat can answer different questions and perform certain tasks. It's done with
+the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
 
-To answer a user's question asked in the Chat interface, GitLab sends a [GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb) to the Rails backend.
-Rails backend sends then instructions to the Large Language Model (LLM) via the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md).
+To answer a user's question asked in the Chat interface, GitLab sends a
+[GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb)
+to the Rails backend. Rails backend sends then instructions to the Large
+Language Model (LLM) through the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md).
 
 ## Set up GitLab Duo Chat
 
-There is a difference in the setup for Saas and self-managed instances.
-We recommend to start with a process described for SaaS-only AI features.
-
-1. [Setup SaaS-only AI features](index.md#saas-only-features).
-1. [Setup self-managed AI features](index.md#local-setup).
+To set up Duo Chat locally, go through the
+[general setup instructions for AI features](index.md).
 
 ## Working with GitLab Duo Chat
 
-Prompts are the most vital part of GitLab Duo Chat system. Prompts are the instructions sent to the LLM to perform certain tasks.
+Prompts are the most vital part of GitLab Duo Chat system. Prompts are the
+instructions sent to the LLM to perform certain tasks.
 
-The state of the prompts is the result of weeks of iteration. If you want to change any prompt in the current tool, you must put it behind a feature flag.
+The state of the prompts is the result of weeks of iteration. If you want to
+change any prompt in the current tool, you must put it behind a feature flag.
 
-If you have any new or updated prompts, ask members of AI Framework team to review, because they have significant experience with them.
+If you have any new or updated prompts, ask members of Duo Chat team or AI Framework team to
+review, because they have significant experience with them.
 
 ### Troubleshooting
 
-When working with Chat locally, you might run into an error. Most commons problems are documented in this section.
-If you find an undocumented issue, you should document it in this section after you find a solution.
+When working with Chat locally, you might run into an error. Most commons
+problems are documented in this section.
+If you find an undocumented issue, you should document it in this section after
+you find a solution.
 
 | Problem                                                               | Solution                                                                                                                                                                                                                                                                              |
 |-----------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| There is no Chat button in the GitLab UI.                             | Make sure your user is a part of a group with enabled Experimental and Beta features.                                                                                                                                                                                                 |
-| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI Gateway](index.md#local-setup) is set up correctly.                                                                                                                                                                                      |
+| There is no Chat button in the GitLab UI.                             | Make sure your user is a part of a group with enabled experimental and beta features.                                                                                                                                                                                                 |
+| Chat replies with "Forbidden by auth provider" error.                 | Backend can't access LLMs. Make sure your [AI Gateway](index.md#required-install-ai-gateway) is set up correctly.                                                                                                                                                                                      |
 | Requests take too long to appear in UI                               | Consider restarting Sidekiq by running `gdk restart rails-background-jobs`. If that doesn't work, try `gdk kill` and then `gdk start`. Alternatively, you can bypass Sidekiq entirely. To do that temporary alter `Llm::CompletionWorker.perform_async` statements with `Llm::CompletionWorker.perform_inline` |
 | There is no chat button in GitLab UI when GDK is running on non-SaaS mode | You do not have cloud connector access token record or seat assigned. To create cloud connector access record, in rails console put following code: `CloudConnector::Access.new(data: { available_services: [{ name: "duo_chat", serviceStartTime: ":date_in_the_future" }] }).save`. |
 
 ## Contributing to GitLab Duo Chat
 
-From the code perspective, Chat is implemented in the similar fashion as other AI features. Read more about GitLab [AI Abstraction layer](index.md#feature-development-abstraction-layer).
+From the code perspective, Chat is implemented in the similar fashion as other
+AI features. Read more about GitLab [AI Abstraction layer](index.md#feature-development-abstraction-layer).
 
-The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb) that includes a system prompt explaining how the large language model should interpret the question and provide an
-answer. The system prompt defines available tools that can be used to gather
-information to answer the user's question.
+The Chat feature uses a [zero-shot agent](https://gitlab.com/gitlab-org/gitlab/blob/master/ee/lib/gitlab/llm/chain/agents/zero_shot/executor.rb)
+that includes a system prompt explaining how the large language model should
+interpret the question and provide an answer. The system prompt defines
+available tools that can be used to gather information to answer the user's
+question.
 
-The zero-shot agent receives the user's question and decides which tools to use to gather information to answer it.
-It then makes a request to the large language model, which decides if it can answer directly or if it needs to use one
-of the defined tools.
+The zero-shot agent receives the user's question and decides which tools to use
+to gather information to answer it. It then makes a request to the large
+language model, which decides if it can answer directly or if it needs to use
+one of the defined tools.
 
-The tools each have their own prompt that provides instructions to the large language model on how to use that tool to
-gather information. The tools are designed to be self-sufficient and avoid multiple requests back and forth to
-the large language model.
+The tools each have their own prompt that provides instructions to the large
+language model on how to use that tool to gather information. The tools are
+designed to be self-sufficient and avoid multiple requests back and forth to the
+large language model.
 
-After the tools have gathered the required information, it is returned to the zero-shot agent, which asks the large language
-model if enough information has been gathered to provide the final answer to the user's question.
+After the tools have gathered the required information, it is returned to the
+zero-shot agent, which asks the large language model if enough information has
+been gathered to provide the final answer to the user's question.
+
+### Customizing interaction with GitLab Duo Chat
+
+You can customize user interaction with GitLab Duo Chat in several ways.
+
+#### Programmatically open GitLab Duo Chat
+
+To provide users with a more dynamic way to access GitLab Duo Chat, you can
+integrate functionality directly into their applications to open the GitLab Duo
+Chat interface. The following example shows how to open the GitLab Duo Chat
+drawer by using an event listener and the GitLab Duo Chat global state:
+
+```javascript
+import { helpCenterState } from '~/super_sidebar/constants';
+myFancyToggleToOpenChat.addEventListener('click', () => {
+  helpCenterState.showTanukiBotChatDrawer = true;
+});
+```
+
+#### Initiating GitLab Duo Chat with a pre-defined prompt
+
+In some scenarios, you may want to direct users towards a specific topic or
+query when they open GitLab Duo Chat. The following example method:
+
+1. Opens the GitLab Duo Chat drawer.
+1. Sends a pre-defined prompt to GitLab Duo Chat.
+
+```javascript
+import chatMutation from 'ee/ai/graphql/chat.mutation.graphql';
+import { helpCenterState } from '~/super_sidebar/constants';
+[...]
+
+methods: {
+  openChatWithPrompt() {
+    const myPrompt = "What is the meaning of life?"
+    helpCenterState.showTanukiBotChatDrawer = true;
+
+    this.$apollo
+      .mutate({
+        mutation: chatMutation,
+        variables: {
+          question: myPrompt,
+          resourceId: this.resourceId,
+        },
+      })
+      .catch((error) => {
+        // handle potential errors here
+      });
+  }
+}
+```
+
+This enhancement allows for a more tailored user experience by guiding the
+conversation in GitLab Duo Chat towards predefined areas of interest or concern.
 
 ### Adding a new tool
 
@@ -129,8 +196,8 @@ NOTE:
 Tracing is available in Development and Testing environment only.
 It's not available in Production environment.
 
-1. Access to [LangSmith](https://smith.langchain.com/) site and create an account.
-1. Create [an API key](https://docs.smith.langchain.com/#create-an-api-key).
+1. Access to [LangSmith](https://smith.langchain.com/) site and create an account (You can also be added to GitLab organization).
+1. Create [an API key](https://docs.smith.langchain.com/#create-an-api-key) (be careful where you create API key - they can be created in personal namespace or in GL namespace).
 1. Set the following environment variables in GDK. You can define it in `env.runit` or directly `export` in the terminal.
 
     ```shell
@@ -141,7 +208,13 @@ It's not available in Production environment.
     export GITLAB_RAILS_RACK_TIMEOUT=180 # Extending puma timeout for using LangSmith with Prompt Library as the evaluation tool.
     ```
 
+  Project name is the existing project in LangSmith or new one. It's enough to put new name in the environment variable -
+project will be created during request.
+
 1. Restart GDK.
+1. Ask any question to chat.
+1. Observe project in the LangSmith [page](https://smith.langchain.com/) > Projects > \[Project name\]. 'Runs' tab should contain
+   your last requests.
 
 ## Testing GitLab Duo Chat
 
@@ -173,17 +246,8 @@ To run the QA Evaluation test locally, the following environment variables
 must be exported:
 
 ```ruby
-export VERTEX_AI_EMBEDDINGS='true' # if using Vertex embeddings
-export ANTHROPIC_API_KEY='<key>' # can use dev value of Gitlab::CurrentSettings
-export VERTEX_AI_CREDENTIALS='<vertex-ai-credentials>' # can set as dev value of Gitlab::CurrentSettings.vertex_ai_credentials
-export VERTEX_AI_PROJECT='<vertex-project-name>' # can use dev value of Gitlab::CurrentSettings.vertex_ai_project
-
 REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
 ```
-
-When you update the test questions that require documentation embeddings,
-make sure you [generate a new fixture](index.md#using-in-specs) and
-commit it together with the change.
 
 ## Testing with CI
 
@@ -278,9 +342,9 @@ run the `rspec-ee unit gitlab-duo-chat-qa` on the `master` the branch:
    run and then manually kick off this job by selecting the "Play" icon.
 
 When the test runs on `master`, the reporter script posts the generated report as an issue,
-saves the evaluations artfacts as a snippet, and updates the tracking issue in
+saves the evaluations artifacts as a snippet, and updates the tracking issue in
 [`GitLab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
-in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](<https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation>).
+in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation).
 
 ## GraphQL Subscription
 
@@ -290,12 +354,111 @@ We therefore need to broadcast messages to multiple clients to keep them in sync
 1. All complete Chat messages (including messages from the user) are broadcasted with the `userId`, `aiAction: "chat"` as identifier.
 1. Chunks from streamed Chat messages and currently used tools are broadcasted with the `userId`, `resourceId`, and the `clientSubscriptionId` from the mutation as identifier.
 
+Examples of GraphQL Subscriptions in a Vue component:
+
+1. Complete Chat message
+
+   ```javascript
+   import aiResponseSubscription from 'ee/graphql_shared/subscriptions/ai_completion_response.subscription.graphql';
+   [...]
+
+   apollo: {
+    $subscribe: {
+      aiCompletionResponse: {
+        query: aiResponseSubscription,
+        variables() {
+          return {
+            userId, // for example "gid://gitlab/User/1"
+            aiAction: 'CHAT',
+          };
+        },
+        result({ data }) {
+          // handle data.aiCompletionResponse
+        },
+        error(err) {
+          // handle error
+        },
+      },
+    },
+   ```
+
+1. Streamed Chat message
+
+   ```javascript
+   import aiResponseSubscription from 'ee/graphql_shared/subscriptions/ai_completion_response.subscription.graphql';
+   [...]
+
+   apollo: {
+    $subscribe: {
+      aiCompletionResponseStream: {
+        query: aiResponseSubscription,
+        variables() {
+          return {
+            userId, // for example "gid://gitlab/User/1"
+            resourceId, // can be either a resourceId (on Issue, Epic, etc. items), or userId
+            clientSubscriptionId // randomly generated identifier for every message
+            htmlResponse: false, // important to bypass HTML processing on every chunk
+          };
+        },
+        result({ data }) {
+          // handle data.aiCompletionResponse
+        },
+        error(err) {
+          // handle error
+        },
+      },
+    },
+   ```
+
 Note that we still broadcast chat messages and currently used tools using the `userId` and `resourceId` as identifier.
 However, this is deprecated and should no longer be used. We want to remove `resourceId` on the subscription as part of [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).
 
+### Duo Chat GraphQL queries
+
+1. [Set up GitLab Duo Chat](#set-up-gitlab-duo-chat)
+1. Visit [GraphQL explorer](../../api/graphql/index.md#interactive-graphql-explorer).
+1. Execute the `aiAction` mutation. Here is an example:
+
+   ```graphql
+   mutation {
+     aiAction(
+       input: {
+         chat: {
+           resourceId: "gid://gitlab/User/1",
+           content: "Hello"
+         }
+       }
+     ){
+       requestId
+       errors
+     }
+   }
+   ```
+
+1. Execute the following query to fetch the response:
+
+   ```graphql
+   query {
+     aiMessages {
+       nodes {
+         requestId
+         content
+         role
+         timestamp
+         chunkId
+         errors
+       }
+     }
+   }
+   ```
+
+If you can't fetch the response, check `graphql_json.log`,
+`sidekiq_json.log`, `llm.log` or `modelgateway_debug.log` if it contains error
+information.
+
 ## Testing GitLab Duo Chat in production-like environments
 
-GitLab Duo Chat is enabled in the [Staging](https://staging.gitlab.com) and
+GitLab Duo Chat is enabled in the [Staging](https://staging.gitlab.com/users/sign_in) and
 [Staging Ref](https://staging-ref.gitlab.com/) GitLab environments.
 
 Because GitLab Duo Chat is currently only available to members of groups in the
@@ -328,9 +491,9 @@ return `true` in different contexts.
 
 | | GitLab.com | Dedicated or Self-managed | All instances |
 |----------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
-| for user outside of project or group (`user.can?(:access_duo_chat)`)  | User need to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `instance_level_ai_beta_features_enabled` setting switched on |  |
-| for user in group context (`user.can?(:access_duo_chat, group)`)     | - User needs to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on<br>- Root ancestor group of the group needs to be on Premium or Ultimate tier and have `experiment_and_beta_features` setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `instance_level_ai_beta_features_enabled` setting switched on | User must have at least _read_ permissions on the group |
-| for user in project context (`user.can?(:access_duo_chat, project)`) | - User needs to belong to at least one group on the Premium or Ultimate tier with `experiment_and_beta_features` group setting enabled<br>- Project root ancestor group needs to be on Premium or Ultimate tier and have `experiment_and_beta_features` group setting switched on | - Instance need to be on Ultimate tier<br>- Instance needs to have `instance_level_ai_beta_features_enabled` setting switched on | User must to have at least _read_ permission on the project |
+| for user outside of project or group (`user.can?(:access_duo_chat)`)  | User need to belong to at least one group on Premium or Ultimate tier with `duo_features_enabled` group setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on |  |
+| for user in group context (`user.can?(:access_duo_chat, group)`)     | - User needs to belong to at least one group on Premium or Ultimate tier with `experiment_and_beta_features` group setting switched on<br>- Root ancestor group of the group needs to be on Premium or Ultimate tier and the group must have `duo_features_enabled` setting switched on | - Instance needs to be on Premium or Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must have at least _read_ permissions on the group |
+| for user in project context (`user.can?(:access_duo_chat, project)`) | - User needs to belong to at least one group on the Premium or Ultimate tier with `experiment_and_beta_features` group setting enabled<br>- Project root ancestor group needs to be on Premium or Ultimate tier and project must have `duo_features_enabled` setting switched on | - Instance need to be on Ultimate tier<br>- Instance needs to have `duo_features_enabled` setting switched on | User must to have at least _read_ permission on the project |
 
 ## Running GitLab Duo Chat prompt experiments
 
@@ -446,3 +609,39 @@ flow of how we construct a Chat prompt:
    context to the request. It loops to up to 10 times until a final answer is reached.
 
 (`*`) indicates that this step is part of the actual construction of the prompt
+
+## Interpreting GitLab Duo Chat error codes
+
+GitLab Duo Chat has error codes with specified meanings to assist in debugging.
+Currently, they are only logged, but in the future, they will be displayed on the UI.
+
+When developing for GitLab Duo Chat, please include these error codes when returning an error, especially a user-facing error.
+
+### Error Code Format
+
+The error codes follow the format: `<Layer Identifier><Four-digit Series Number>`.
+
+For example:
+
+- `M1001`: A network communication error in the monolith layer.
+- `G2005`: A data formatting/processing error in the AI gateway layer.
+- `A3010`: An authentication or data access permissions error in a third-party API.
+
+### Error Code Layer Identifier
+
+| Code | Layer           |
+|------|-----------------|
+| M    | Monolith        |
+| G    | AI Gateway      |
+| A    | Third-party API |
+
+### Error Series
+
+| Series | Type                                                                         |
+|--------|------------------------------------------------------------------------------|
+| 1000   | Network communication errors                                                 |
+| 2000   | Data formatting/processing errors                                            |
+| 3000   | Authentication and/or data access permission errors                          |
+| 4000   | Code execution exceptions                                                    |
+| 5000   | Bad configuration or bad parameters errors                                   |
+| 6000   | Semantic or inference errors (the model does not understand or hallucinates) |

@@ -13,11 +13,12 @@ module QA
         Page::Project::WebIDE::VSCode.perform(&:wait_for_ide_to_load)
       end
 
-      it 'shows an alert when there are unsaved changes', :blocking,
+      it 'shows an alert when there are unsaved changes',
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/411298' do
         Page::Project::WebIDE::VSCode.perform do |ide|
           ide.create_new_file(file_name)
-          ide.has_file?(file_name)
+          Support::Waiter.wait_until { ide.has_pending_changes? }
+
           ide.close_ide_tab
           expect do
             ide.ide_tab_closed?

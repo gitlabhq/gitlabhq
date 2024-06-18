@@ -1,9 +1,13 @@
 import { findKey, intersection } from 'lodash';
 import { languageFilterData } from '~/search/sidebar/components/language_filter/data';
 import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
-import { formatSearchResultCount, addCountOverLimit } from '~/search/store/utils';
+import {
+  formatSearchResultCount,
+  addCountOverLimit,
+  injectRegexSearch,
+} from '~/search/store/utils';
 
-import { PROJECT_DATA } from '~/search/sidebar/constants';
+import { PROJECT_DATA, SCOPE_BLOB } from '~/search/sidebar/constants';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, ICON_MAP } from './constants';
 
 const queryLabelFilters = (state) => state?.query?.[labelFilterData.filterParam] || [];
@@ -81,7 +85,7 @@ export const navigationItems = (state) =>
   Object.values(state.navigation).map((item) => ({
     title: item.label,
     icon: ICON_MAP[item.scope] || '',
-    link: item.link,
+    link: item.scope === SCOPE_BLOB ? injectRegexSearch(item.link) : item.link,
     is_active: Boolean(item?.active),
     pill_count: `${formatSearchResultCount(item?.count)}${addCountOverLimit(item?.count)}` || '',
     items: [],

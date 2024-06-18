@@ -93,8 +93,8 @@ For OpenAPI Specifications that are generated automatically validation errors ar
 **For generated OpenAPI Specifications**
 
 1. Identify the validation errors.
-    1. Use the [Swagger Editor](https://editor.swagger.io/) to identify validation problems in your specification. The visual nature of the Swagger Editor makes it easier to understand what needs to change.
-    1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. JSON Schema validation messages can be complex, and editors can help you validate schema documents.
+   1. Use the [Swagger Editor](https://editor.swagger.io/) to identify validation problems in your specification. The visual nature of the Swagger Editor makes it easier to understand what needs to change.
+   1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. JSON Schema validation messages can be complex, and editors can help you validate schema documents.
 1. Review the documentation for the OpenAPI generation your framework/tech stack is using. Identify the changes needed to produce a correct OpenAPI document.
 1. After the validation issues are resolved, re-run your pipeline.
 
@@ -326,3 +326,78 @@ The following example uses the [statically defined credentials](../../../ci/dock
    app@sha256:2b69fc7c3627dbd0ebaa17674c264fcd2f2ba21ed9552a472acf8b065d39039c ...
    Waiting for services to be up and running (timeout 30 seconds)...
    ```
+
+## `sudo: The "no new privileges" flag is set, which prevents sudo from running as root.`
+
+Starting with v5 of the analyzer, a non-root user is used by default. This requires the use of `sudo` when performing privileged operations.
+
+This error occurs with a specific container daemon setup that prevents running containers from obtaining new permissions. In most settings, this is not the default configuration, it's something specifically configured, often as part of a security hardening guide.
+
+**Error message**
+
+This issue can be identified by the error message generated when a `before_script` or `FUZZAPI_PRE_SCRIPT` is executed:
+
+```shell
+$ sudo apk add nodejs
+
+sudo: The "no new privileges" flag is set, which prevents sudo from running as root.
+
+sudo: If sudo is running in a container, you may need to adjust the container configuration to disable the flag.
+```
+
+**Solution**
+
+This issue can be worked around in the following ways:
+
+1. Run the container as the `root` user. This can be done by modifying the CICD configuration:
+
+   ```yaml
+   api_security:
+     image:
+       name: $SECURE_ANALYZERS_PREFIX/$FUZZAPI_IMAGE:$FUZZAPI_VERSION$FUZZAPI_IMAGE_SUFFIX
+       docker:
+         user: root
+   ```
+
+1. Change the GitLab Runner configuration, disabling the no-new-privileges flag.
+
+## `Index was outside the bounds of the array.    at Peach.Web.Runner.Services.RunnerOptions.GetHeaders()`
+
+This error message indicates that the API Fuzzing analyzer is unable to parse the value of the `FUZZAPI_REQUEST_HEADERS` or `FUZZAPI_REQUEST_HEADERS_BASE64` configuration variable.
+
+**Error message**
+
+This issue can be identified by two error messages. The first error message is seen in the job console output and the second in the `gl-api-security-scanner.log` file.
+
+_Error message from job console:_
+
+```log
+05:48:38 [ERR] API Security: Testing failed: An unexpected exception occurred: Index was outside the bounds of the array.
+```
+
+_Error message from `gl_api_security-scanner.log`:_
+
+```log
+08:45:43.616 [ERR] <Peach.Web.Core.Services.WebRunnerMachine> Unexpected exception in WebRunnerMachine::Run()
+System.IndexOutOfRangeException: Index was outside the bounds of the array.
+   at Peach.Web.Runner.Services.RunnerOptions.GetHeaders() in /builds/gitlab-org/security-products/analyzers/api-fuzzing-src/web/PeachWeb/Runner/Services/[RunnerOptions.cs:line 362
+   at Peach.Web.Runner.Services.RunnerService.Start(Job job, IRunnerOptions options) in /builds/gitlab-org/security-products/analyzers/api-fuzzing-src/web/PeachWeb/Runner/Services/RunnerService.cs:line 67
+   at Peach.Web.Core.Services.WebRunnerMachine.Run(IRunnerOptions runnerOptions, CancellationToken token) in /builds/gitlab-org/security-products/analyzers/api-fuzzing-src/web/PeachWeb/Core/Services/WebRunnerMachine.cs:line 321
+08:45:43.634 [WRN] <Peach.Web.Core.Services.WebRunnerMachine> * Session failed: An unexpected exception occurred: Index was outside the bounds of the array.
+08:45:43.677 [INF] <Peach.Web.Core.Services.WebRunnerMachine> Finished testing. Performed a total of 0 requests.
+```
+
+**Solution**
+
+This issue occurs due to a malformed `FUZZAPI_REQUEST_HEADERS` or `FUZZAPI_REQUEST_HEADERS_BASE64` variable. The expected format is one or more headers of `Header: value` construction separated by a comma. The solution is to correct the syntax to match what is expected.
+
+_Valid examples:_
+
+- `Authorization: Bearer XYZ`
+- `X-Custom: Value,Authorization: Bearer XYZ`
+
+_Invalid examples:_
+
+- `Header:,value`
+- `HeaderA: value,HeaderB:,HeaderC: value`
+- `Header`

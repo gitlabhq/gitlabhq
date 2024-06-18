@@ -9,15 +9,15 @@
             = _('Account')
 
       .form-group.gl-form-group{ role: 'group' }
-        = f.label :name, _('Name'), class: 'gl-display-block col-form-label'
+        = f.label :name, _('Name'), class: 'gl-block col-form-label'
         = f.text_field :name, required: true, autocomplete: 'off', class: 'form-control gl-form-input gl-form-input-lg'
 
       .form-group.gl-form-group{ role: 'group' }
-        = f.label :username, _('Username'), class: 'gl-display-block col-form-label'
+        = f.label :username, _('Username'), class: 'gl-block col-form-label'
         = f.text_field :username, required: true, autocomplete: 'off', autocorrect: 'off', autocapitalize: 'off', spellcheck: false, class: 'form-control gl-form-input gl-form-input-lg'
 
       .form-group.gl-form-group{ role: 'group' }
-        = f.label :email, _('Email'), class: 'gl-display-block col-form-label'
+        = f.label :email, _('Email'), class: 'gl-block col-form-label'
         = f.text_field :email, required: true, autocomplete: 'off', class: 'form-control gl-form-input gl-form-input-lg'
 
     .settings-section
@@ -32,11 +32,11 @@
             = s_('AdminUsers|Reset link will be generated and sent to the user. User will be forced to set the password on first sign in.')
       - else
         .form-group.gl-form-group{ role: 'group' }
-          = f.label :password, _('Password'), class: 'gl-display-block col-form-label'
+          = f.label :password, _('Password'), class: 'gl-block col-form-label'
           = f.password_field :password, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input js-password-complexity-validation gl-form-input-lg'
           = render_if_exists 'shared/password_requirements_list'
         .form-group.gl-form-group{ role: 'group' }
-          = f.label :password_confirmation, _('Password confirmation'), class: 'gl-display-block col-form-label'
+          = f.label :password_confirmation, _('Password confirmation'), class: 'gl-block col-form-label'
           = f.password_field :password_confirmation, disabled: f.object.force_random_password, autocomplete: 'new-password', class: 'form-control gl-form-input gl-form-input-lg'
 
     = render partial: 'access', locals: { f: f }
@@ -52,23 +52,23 @@
             = _('Profile')
 
       .form-group.gl-form-group{ role: 'group' }
-        = f.label :avatar, s_('AdminUsers|Avatar'), class: 'gl-display-block col-form-label gl-form-input-lg'
+        = f.label :avatar, s_('AdminUsers|Avatar'), class: 'gl-block col-form-label gl-form-input-lg'
         = f.file_field :avatar
 
       .form-group.gl-form-group{ role: 'group' }
-        = f.label :skype, s_('AdminUsers|Skype'), class: 'gl-display-block col-form-label'
+        = f.label :skype, s_('AdminUsers|Skype'), class: 'gl-block col-form-label'
         = f.text_field :skype, class: 'form-control gl-form-input gl-form-input-lg'
 
       .form-group.gl-form-group{ role: 'group' }
-        = f.label :linkedin, s_('AdminUsers|Linkedin'), class: 'gl-display-block col-form-label'
+        = f.label :linkedin, s_('AdminUsers|Linkedin'), class: 'gl-block col-form-label'
         = f.text_field :linkedin, class: 'form-control gl-form-input gl-form-input-lg'
 
       .form-group.gl-form-group{ role: 'group' }
-        = f.label :twitter, _('X (formerly Twitter)'), class: 'gl-display-block col-form-label'
+        = f.label :twitter, _('X (formerly Twitter)'), class: 'gl-block col-form-label'
         = f.text_field :twitter, class: 'form-control gl-form-input gl-form-input-lg'
 
       .form-group.gl-form-group{ role: 'group' }
-        = f.label :website_url, s_('AdminUsers|Website URL'), class: 'gl-display-block col-form-label'
+        = f.label :website_url, s_('AdminUsers|Website URL'), class: 'gl-block col-form-label'
         = f.text_field :website_url, class: 'form-control gl-form-input gl-form-input-lg'
 
     = render_if_exists 'admin/users/custom_attributes', f: f

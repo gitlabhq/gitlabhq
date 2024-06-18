@@ -155,7 +155,7 @@ export default {
             :alt="item.text"
           />
           <span
-            class="gl-display-flex gl-flex-direction-column gl-overflow-hidden gl-overflow-break-word"
+            class="gl-display-flex gl-flex-direction-column gl-overflow-hidden gl-break-words gl-hyphens-auto"
           >
             {{ item.text }}
             <span v-if="item.secondaryText" class="gl-text-secondary">

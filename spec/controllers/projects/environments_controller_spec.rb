@@ -268,6 +268,26 @@ RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_d
     end
   end
 
+  describe 'GET k8s' do
+    context 'with valid id' do
+      it 'responds with a status code 200' do
+        get :k8s, params: environment_params
+
+        expect(response).to be_ok
+      end
+    end
+
+    context 'with invalid id' do
+      it 'responds with a status code 404' do
+        params = environment_params
+        params[:id] = non_existing_record_id
+        get :k8s, params: params
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'GET show' do
     context 'with valid id' do
       it 'responds with a status code 200' do

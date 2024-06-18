@@ -12,7 +12,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActionView do
     root = Rails.root.to_s
 
     double(:event, duration: 2.1,
-                   payload: { identifier: "#{root}/app/views/x.html.haml" })
+      payload: { identifier: "#{root}/app/views/x.html.haml" })
   end
 
   before do

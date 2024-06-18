@@ -195,7 +195,7 @@ export default {
       <gl-sprintf :message="$options.i18n.issueTrackerEnableMessage">
         <template #link="{ content }">
           <gl-link
-            class="gl-display-inline-block"
+            class="gl-inline-block"
             data-testid="issue-help-page"
             :href="issuesHelpPagePath"
             target="_blank"
@@ -209,7 +209,7 @@ export default {
       id="service-desk-checkbox"
       :value="isEnabled"
       :disabled="!isIssueTrackerEnabled"
-      class="d-inline-block align-middle mr-1"
+      class="!gl-inline-block align-middle mr-1"
       :label="$options.i18n.toggleLabel"
       label-position="hidden"
       @change="onCheckboxToggle"
@@ -241,7 +241,7 @@ export default {
             </template>
           </gl-form-input-group>
           <template v-if="email && hasServiceDeskEmail" #description>
-            <span class="gl-mt-2 gl-display-inline-block">
+            <span class="gl-mt-2 gl-inline-block">
               <gl-sprintf :message="__('Emails sent to %{email} are also supported.')">
                 <template #email>
                   <code>{{ incomingEmail }}</code>

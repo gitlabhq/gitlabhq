@@ -9,23 +9,20 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/views/shared/wikis/_sidebar.html.haml' do
-            element 'clone-repository-link'
+          base.view 'app/assets/javascripts/pages/shared/wikis/components/wiki_sidebar_entries.vue' do
             element 'view-all-pages-button'
           end
 
-          base.view 'app/views/shared/wikis/_sidebar_wiki_page.html.haml' do
+          base.view 'app/assets/javascripts/pages/shared/wikis/components/wiki_sidebar_entry.vue' do
             element 'wiki-page-link'
-          end
-
-          base.view 'app/views/shared/wikis/_wiki_directory.html.haml' do
             element 'wiki-directory-content'
             element 'wiki-dir-page-link'
           end
         end
 
         def click_clone_repository
-          click_element('clone-repository-link')
+          click_element('wiki-more-dropdown')
+          click_element('page-clone-button')
         end
 
         def click_view_all_pages

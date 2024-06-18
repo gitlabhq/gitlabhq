@@ -1,6 +1,6 @@
 ---
-stage: Plan
-group: Project Management
+stage: Manage
+group: Personal Productivity
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -21,6 +21,10 @@ You can receive updates about activity in issues, merge requests, epics, and des
 For the tool that GitLab administrators can use to send messages to users, read
 [Email from GitLab](../../administration/email_from_gitlab.md).
 
+In GitLab 17.1 and later, administrators can turn on a
+[rate limit for notifications](../../security/rate_limits.md#notification-emails)
+per 24 hours per project or group per user.
+
 ## Who receives notifications
 
 When notifications are enabled for an issue, merge request, or epic, GitLab notifies you of actions
@@ -35,7 +39,7 @@ You might receive notifications for one of the following reasons:
 - You're subscribed to group or project pipeline notifications via the pipeline emails [integration](../project/integrations/index.md).
 
 1. GitLab doesn't send a notification when
-   [a comment is edited to include a user mention](../discussions/index.md#editing-a-comment-to-add-a-mention).
+   [a comment is edited to include a user mention](../discussions/index.md#edit-a-comment-to-add-a-mention).
 
 NOTE:
 Administrators can block notifications, preventing them from being sent.

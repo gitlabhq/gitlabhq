@@ -175,7 +175,8 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
           freeze_time do
             audit!
 
-            expect(AuditEvent.last.details).to include(additional_details)
+            expected_details = { action: :custom, from: false, to: true, event_name: name }
+            expect(AuditEvent.last.details).to include(expected_details)
           end
         end
 
@@ -187,7 +188,12 @@ RSpec.describe Gitlab::Audit::Auditor, feature_category: :audit_events do
 
             expect(logger).to have_received(:info).with(
               hash_including(
-                'details' => hash_including('action' => 'custom', 'from' => 'false', 'to' => 'true'),
+                'details' => hash_including(
+                  'action' => 'custom',
+                  'from' => 'false',
+                  'to' => 'true',
+                  'event_name' => name
+                ),
                 'action' => 'custom',
                 'from' => 'false',
                 'to' => 'true'

@@ -15,6 +15,7 @@ RSpec.describe 'Mailer previews', feature_category: :shared do
   let_it_be(:member) { create(:project_member, :maintainer, project: project, created_by: user) }
   let_it_be(:review) { create(:review, project: project, merge_request: merge_request, author: user) }
   let_it_be(:key) { create(:key, user: user) }
+  let_it_be(:bulk_import) { create(:bulk_import, :finished, :with_configuration) }
 
   Gitlab.ee do
     let_it_be(:epic) { create(:epic, group: group) }

@@ -118,12 +118,9 @@ export default {
   <div class="gl-mt-7">
     <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
       <div>
-        <label
-          :id="$options.displayListboxLabelId"
-          class="gl-display-block gl-mb-2"
-          data-testid="label"
-          >{{ $options.i18n.displayListboxLabel }}</label
-        >
+        <label :id="$options.displayListboxLabelId" class="gl-block gl-mb-2" data-testid="label">{{
+          $options.i18n.displayListboxLabel
+        }}</label>
         <gl-collapsible-listbox
           block
           toggle-class="gl-w-30"

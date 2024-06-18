@@ -100,7 +100,7 @@ $language-filter-max-height: 20rem;
     line-height: 24px;
     height: 32px;
     border: 0;
-    border-radius: $border-radius-default;
+    border-radius: $gl-border-radius-base;
     transition: border-color ease-in-out $default-transition-duration,
       background-color ease-in-out $default-transition-duration;
 
@@ -237,7 +237,7 @@ $language-filter-max-height: 20rem;
     width: $search-avatar-size;
     height: $search-avatar-size;
     border-radius: 50%;
-    border: 1px solid var(--gray-50, $gray-normal);
+    border: 1px solid var(--gray-50, $gray-50);
   }
 }
 
@@ -258,7 +258,7 @@ $language-filter-max-height: 20rem;
     position: absolute;
     left: 10px;
     top: 9px;
-    color: var(--gray-700, $gray-darkest);
+    color: var(--gl-icon-color-subtle);
     pointer-events: none;
   }
 
@@ -379,14 +379,14 @@ $language-filter-max-height: 20rem;
     }
 
     &:last-of-type {
-      border-radius: 0 0 $border-radius-default-inner $border-radius-default-inner;
+      border-radius: 0 0 $gl-border-radius-base-inner $gl-border-radius-base-inner;
 
       pre {
-        border-bottom-right-radius: $border-radius-default-inner;
+        border-bottom-right-radius: $gl-border-radius-base-inner;
       }
 
       .diff-line-num:first-of-type {
-        border-bottom-left-radius: $border-radius-default-inner;
+        border-bottom-left-radius: $gl-border-radius-base-inner;
       }
     }
   }

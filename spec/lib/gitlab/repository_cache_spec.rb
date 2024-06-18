@@ -22,7 +22,7 @@ RSpec.describe Gitlab::RepositoryCache do
         let(:extra_namespace) { 'my:data' }
         let(:cache) do
           described_class.new(repository, extra_namespace: extra_namespace,
-                                          backend: backend)
+            backend: backend)
         end
 
         it 'includes the full namespace' do

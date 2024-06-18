@@ -411,6 +411,9 @@ You can configure GitLab to use multiple SAML IdPs if:
 - The `strategy_class` is explicitly set because it cannot be inferred from provider
   name.
 
+NOTE:
+When you configure multiple SAML IdPs, to ensure that SAML Group Links work, you must configure all SAML IdPs to contain group attributes in the SAML response. For more information, see [SAML Group Links](../user/group/saml_sso/group_sync.md).
+
 To set up multiple SAML IdPs:
 
 ::Tabs

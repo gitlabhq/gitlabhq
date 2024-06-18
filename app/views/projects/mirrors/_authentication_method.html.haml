@@ -5,7 +5,7 @@
   = f.label :auth_method, _('Authentication method'), class: 'label-bold'
   = f.select :auth_method,
       options_for_select(auth_options, mirror.auth_method),
-      {}, { class: "custom-select gl-form-select js-mirror-auth-type gl-max-w-34 gl-display-block", data: { testid: 'authentication-method-field' } }
+      {}, { class: "custom-select gl-form-select js-mirror-auth-type gl-max-w-34 gl-block", data: { testid: 'authentication-method-field' } }
   = f.hidden_field :auth_method, value: "password", class: "js-hidden-mirror-auth-type"
 
 .form-group

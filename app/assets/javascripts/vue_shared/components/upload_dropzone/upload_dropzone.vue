@@ -21,6 +21,16 @@ export default {
       required: false,
       default: false,
     },
+    uploadSingleMessage: {
+      type: String,
+      required: false,
+      default: __('Drop or %{linkStart}upload%{linkEnd} file to attach'),
+    },
+    uploadMultipleMessage: {
+      type: String,
+      required: false,
+      default: __('Drop or %{linkStart}upload%{linkEnd} files to attach'),
+    },
     dropToStartMessage: {
       type: String,
       required: false,
@@ -162,16 +172,10 @@ export default {
           <p class="gl-mb-0" data-testid="upload-text">
             <slot name="upload-text" :open-file-upload="openFileUpload">
               <gl-sprintf
-                :message="
-                  singleFileSelection
-                    ? __('Drop or %{linkStart}upload%{linkEnd} file to attach')
-                    : __('Drop or %{linkStart}upload%{linkEnd} files to attach')
-                "
+                :message="singleFileSelection ? uploadSingleMessage : uploadMultipleMessage"
               >
                 <template #link="{ content }">
-                  <gl-link @click.stop="openFileUpload">
-                    {{ content }}
-                  </gl-link>
+                  <gl-link @click.stop="openFileUpload">{{ content }}</gl-link>
                 </template>
               </gl-sprintf>
             </slot>

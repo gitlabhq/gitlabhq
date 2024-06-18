@@ -21,6 +21,7 @@ class RemoteMirror < ApplicationRecord
   belongs_to :project, inverse_of: :remote_mirrors
 
   validates :url, presence: true, public_url: { schemes: Project::VALID_MIRROR_PROTOCOLS, allow_blank: true, enforce_user: true }
+  validates :only_protected_branches, inclusion: { in: [true, false], message: :blank }
 
   before_validation :store_credentials
   after_update :reset_fields, if: :saved_change_to_mirror_url?

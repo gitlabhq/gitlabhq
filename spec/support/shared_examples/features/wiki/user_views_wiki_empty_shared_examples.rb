@@ -5,7 +5,6 @@
 
 RSpec.shared_examples 'User views empty wiki' do
   let(:element) { page.find('.gl-empty-state[data-testid="wiki-empty-state"]') }
-  let(:container_name) { wiki.container.class.name.humanize(capitalize: false) }
   let(:confluence_link) { 'Enable the Confluence Wiki integration' }
 
   shared_examples 'wiki is not found' do
@@ -20,7 +19,7 @@ RSpec.shared_examples 'User views empty wiki' do
     end
   end
 
-  shared_examples 'empty wiki message' do |writable: false, issuable: false, confluence: false, expect_button: true|
+  shared_examples 'empty wiki message' do |writable: false, confluence: false|
     # This mirrors the logic in:
     # - app/views/shared/empty_states/_wikis.html.haml
     # - WikiHelper#wiki_empty_state_messages
@@ -28,20 +27,9 @@ RSpec.shared_examples 'User views empty wiki' do
       visit wiki_path(wiki)
 
       if writable
-        expect(element).to have_content("The wiki lets you write documentation for your #{container_name}")
+        expect(element).to have_content("Get started with wikis")
       else
-        expect(element).to have_content("This #{container_name} has no wiki pages")
-        expect(element).to have_content("You must be a #{container_name} member")
-      end
-
-      if issuable && !writable
-        expect(element).to have_content("improve the wiki for this #{container_name}")
-        expect(element).to have_link("issue tracker", href: project_issues_path(project))
-        expect(element.has_link?("Suggest wiki improvement", href: new_project_issue_path(project))).to be(expect_button)
-      else
-        expect(element).not_to have_content("improve the wiki for this #{container_name}")
-        expect(element).not_to have_link("issue tracker")
-        expect(element).not_to have_link("Suggest wiki improvement")
+        expect(element).to have_content("This wiki doesn't have any content yet")
       end
 
       if confluence
@@ -53,7 +41,7 @@ RSpec.shared_examples 'User views empty wiki' do
       if writable
         element.click_link 'Create your first page'
 
-        expect(page).to have_button('Create page', disabled: true)
+        expect(page).to have_button('Create page')
       else
         expect(element).not_to have_link('Create your first page')
       end
