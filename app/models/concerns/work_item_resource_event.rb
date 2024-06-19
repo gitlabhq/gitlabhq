@@ -20,8 +20,10 @@ module WorkItemResourceEvent
   end
 
   def work_item_synthetic_system_note(events: nil)
-    # System notes for label resource events are handled in batches, so that we have single system note for multiple
-    # label changes.
+    return unless synthetic_note_class
+
+    # System notes for label resource events are handled in batches,
+    # so that we have single system note for multiple label changes.
     if is_a?(ResourceLabelEvent) && events.present?
       return synthetic_note_class.from_events(events, resource: work_item, resource_parent: work_item.project)
     end
@@ -29,7 +31,12 @@ module WorkItemResourceEvent
     synthetic_note_class.from_event(self, resource: work_item, resource_parent: work_item.project)
   end
 
+  # Class used to create the even synthetic note
+  # If the event does not require a synthetic note the method must return false
   def synthetic_note_class
-    raise NoMethodError, 'must implement `synthetic_note_class` method'
+    raise NoMethodError, <<~MESSAGE.squish
+      `#{self.class.name}#synthetic_note_class` method must be implemented
+      (return nil if event does not require a note)
+    MESSAGE
   end
 end

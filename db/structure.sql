@@ -781,22 +781,6 @@ RETURN NEW;
 END
 $$;
 
-CREATE FUNCTION trigger_10ee1357e825() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."auto_canceled_by_id_convert_to_bigint" := NEW."auto_canceled_by_id";
-  NEW."commit_id_convert_to_bigint" := NEW."commit_id";
-  NEW."erased_by_id_convert_to_bigint" := NEW."erased_by_id";
-  NEW."project_id_convert_to_bigint" := NEW."project_id";
-  NEW."runner_id_convert_to_bigint" := NEW."runner_id";
-  NEW."trigger_request_id_convert_to_bigint" := NEW."trigger_request_id";
-  NEW."upstream_pipeline_id_convert_to_bigint" := NEW."upstream_pipeline_id";
-  NEW."user_id_convert_to_bigint" := NEW."user_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_13d4aa8fe3dd() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1377,6 +1361,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_af3f17817e4d() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "protected_tags"
+  WHERE "protected_tags"."id" = NEW."protected_tag_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_b2612138515d() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1831,23 +1831,17 @@ CREATE TABLE p_ci_builds (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     started_at timestamp without time zone,
-    runner_id_convert_to_bigint integer,
     coverage double precision,
-    commit_id_convert_to_bigint integer,
     name character varying,
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
     stage character varying,
-    trigger_request_id_convert_to_bigint integer,
     stage_idx integer,
     tag boolean,
     ref character varying,
-    user_id_convert_to_bigint integer,
     type character varying,
     target_url character varying,
     description character varying,
-    project_id_convert_to_bigint integer,
-    erased_by_id_convert_to_bigint integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
     environment character varying,
@@ -1856,13 +1850,11 @@ CREATE TABLE p_ci_builds (
     queued_at timestamp without time zone,
     lock_version integer DEFAULT 0,
     coverage_regex character varying,
-    auto_canceled_by_id_convert_to_bigint integer,
     retried boolean,
     protected boolean,
     failure_reason integer,
     scheduled_at timestamp with time zone,
     token_encrypted character varying,
-    upstream_pipeline_id_convert_to_bigint integer,
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
@@ -7144,23 +7136,17 @@ CREATE TABLE ci_builds (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     started_at timestamp without time zone,
-    runner_id_convert_to_bigint integer,
     coverage double precision,
-    commit_id_convert_to_bigint integer,
     name character varying,
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
     stage character varying,
-    trigger_request_id_convert_to_bigint integer,
     stage_idx integer,
     tag boolean,
     ref character varying,
-    user_id_convert_to_bigint integer,
     type character varying,
     target_url character varying,
     description character varying,
-    project_id_convert_to_bigint integer,
-    erased_by_id_convert_to_bigint integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
     environment character varying,
@@ -7169,13 +7155,11 @@ CREATE TABLE ci_builds (
     queued_at timestamp without time zone,
     lock_version integer DEFAULT 0,
     coverage_regex character varying,
-    auto_canceled_by_id_convert_to_bigint integer,
     retried boolean,
     protected boolean,
     failure_reason integer,
     scheduled_at timestamp with time zone,
     token_encrypted character varying,
-    upstream_pipeline_id_convert_to_bigint integer,
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
@@ -16009,7 +15993,8 @@ CREATE TABLE protected_tag_create_access_levels (
     group_id integer,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    deploy_key_id integer
+    deploy_key_id integer,
+    project_id bigint
 );
 
 CREATE SEQUENCE protected_tag_create_access_levels_id_seq
@@ -26261,10 +26246,6 @@ CREATE INDEX index_ci_sources_projects_on_pipeline_id ON ci_sources_projects USI
 
 CREATE UNIQUE INDEX index_ci_sources_projects_on_source_project_id_and_pipeline_id ON ci_sources_projects USING btree (source_project_id, pipeline_id);
 
-CREATE INDEX p_ci_stages_pipeline_id_idx ON ONLY p_ci_stages USING btree (pipeline_id);
-
-CREATE INDEX index_ci_stages_on_pipeline_id ON ci_stages USING btree (pipeline_id);
-
 CREATE INDEX p_ci_stages_pipeline_id_id_idx ON ONLY p_ci_stages USING btree (pipeline_id, id) WHERE (status = ANY (ARRAY[0, 1, 2, 8, 9, 10]));
 
 CREATE INDEX index_ci_stages_on_pipeline_id_and_id ON ci_stages USING btree (pipeline_id, id) WHERE (status = ANY (ARRAY[0, 1, 2, 8, 9, 10]));
@@ -28299,6 +28280,8 @@ CREATE INDEX index_protected_tag_create_access_levels_on_deploy_key_id ON protec
 
 CREATE INDEX index_protected_tag_create_access_levels_on_group_id ON protected_tag_create_access_levels USING btree (group_id);
 
+CREATE INDEX index_protected_tag_create_access_levels_on_project_id ON protected_tag_create_access_levels USING btree (project_id);
+
 CREATE INDEX index_protected_tag_create_access_levels_on_user_id ON protected_tag_create_access_levels USING btree (user_id);
 
 CREATE UNIQUE INDEX index_protected_tags_on_project_id_and_name ON protected_tags USING btree (project_id, name);
@@ -29132,6 +29115,8 @@ CREATE INDEX index_vulnerability_occurrences_on_scanner_id ON vulnerability_occu
 CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid_1 ON vulnerability_occurrences USING btree (uuid);
 
 CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerability_occurrences USING btree (vulnerability_id);
+
+CREATE INDEX index_vulnerability_occurrences_prim_iden_id_and_vuln_id ON vulnerability_occurrences USING btree (primary_identifier_id, vulnerability_id);
 
 CREATE INDEX index_vulnerability_reads_common_attrs_and_detection_for_groups ON vulnerability_reads USING btree (resolved_on_default_branch, state, report_type, severity, traversal_ids, vulnerability_id) WHERE (archived = false);
 
@@ -31065,8 +31050,6 @@ ALTER INDEX p_ci_job_artifacts_project_id_id_idx1 ATTACH PARTITION index_ci_job_
 
 ALTER INDEX p_ci_job_artifacts_project_id_idx1 ATTACH PARTITION index_ci_job_artifacts_on_project_id_for_security_reports;
 
-ALTER INDEX p_ci_stages_pipeline_id_idx ATTACH PARTITION index_ci_stages_on_pipeline_id;
-
 ALTER INDEX p_ci_stages_pipeline_id_id_idx ATTACH PARTITION index_ci_stages_on_pipeline_id_and_id;
 
 ALTER INDEX p_ci_stages_pipeline_id_position_idx ATTACH PARTITION index_ci_stages_on_pipeline_id_and_position;
@@ -31143,8 +31126,6 @@ CREATE TRIGGER trigger_0da002390fdc BEFORE INSERT OR UPDATE ON operations_featur
 
 CREATE TRIGGER trigger_0e13f214e504 BEFORE INSERT OR UPDATE ON merge_request_assignment_events FOR EACH ROW EXECUTE FUNCTION trigger_0e13f214e504();
 
-CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_10ee1357e825();
-
 CREATE TRIGGER trigger_13d4aa8fe3dd BEFORE INSERT OR UPDATE ON draft_notes FOR EACH ROW EXECUTE FUNCTION trigger_13d4aa8fe3dd();
 
 CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_174b23fa3dfb();
@@ -31220,6 +31201,8 @@ CREATE TRIGGER trigger_a1bc7c70cbdf BEFORE INSERT OR UPDATE ON vulnerability_use
 CREATE TRIGGER trigger_a253cb3cacdf BEFORE INSERT OR UPDATE ON dora_daily_metrics FOR EACH ROW EXECUTE FUNCTION trigger_a253cb3cacdf();
 
 CREATE TRIGGER trigger_a4e4fb2451d9 BEFORE INSERT OR UPDATE ON epic_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_a4e4fb2451d9();
+
+CREATE TRIGGER trigger_af3f17817e4d BEFORE INSERT OR UPDATE ON protected_tag_create_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_af3f17817e4d();
 
 CREATE TRIGGER trigger_b2612138515d BEFORE INSERT OR UPDATE ON project_relation_exports FOR EACH ROW EXECUTE FUNCTION trigger_b2612138515d();
 
@@ -31908,6 +31891,9 @@ ALTER TABLE ONLY software_license_policies
 
 ALTER TABLE ONLY cluster_agent_tokens
     ADD CONSTRAINT fk_75008f3553 FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY protected_tag_create_access_levels
+    ADD CONSTRAINT fk_7537413f9d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_75c2098045 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE SET NULL;

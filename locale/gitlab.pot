@@ -17601,8 +17601,10 @@ msgid_plural "Dependencies|%d vulnerabilities detected"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Dependencies|%{locationCount} locations"
-msgstr ""
+msgid "Dependencies|%{locationCount} location"
+msgid_plural "Dependencies|%{locationCount} locations"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Dependencies|%{projectCount} project"
 msgid_plural "Dependencies|%{projectCount} projects"

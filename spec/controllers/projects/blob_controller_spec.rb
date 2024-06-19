@@ -6,6 +6,7 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
   include ProjectForksHelper
 
   let_it_be(:project) { create(:project, :public, :repository) }
+  let(:mutable_project) { create(:project, :public, :repository) }
 
   describe "GET show" do
     let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
@@ -284,6 +285,7 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
 
     before do
       project.add_maintainer(user)
+      mutable_project.add_maintainer(user)
 
       sign_in(user)
     end
@@ -292,6 +294,27 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       put :update, params: default_params
 
       expect(response).to redirect_to(blob_after_edit_path)
+    end
+
+    context 'when file is renamed' do
+      let(:default_params) do
+        {
+          namespace_id: mutable_project.namespace,
+          project_id: mutable_project,
+          id: 'master/CHANGELOG',
+          file_path: 'CHANGELOG2',
+          branch_name: 'master',
+          content: 'Added changes',
+          commit_message: 'Rename CHANGELOG'
+        }
+      end
+
+      it 'redirects to blob' do
+        put :update, params: default_params
+
+        expect(response).to redirect_to(project_blob_path(mutable_project, 'master/CHANGELOG2'))
+        expect(assigns[:commit_params]).to include(file_path: 'CHANGELOG2', previous_path: 'CHANGELOG')
+      end
     end
 
     context '?from_merge_request_iid' do

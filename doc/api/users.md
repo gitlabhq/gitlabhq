@@ -1062,7 +1062,7 @@ Example response:
 
 ## User counts
 
-Get the counts (same as in the upper-right menu) of the authenticated user.
+Get the counts (same as in the upper-left menu) of the authenticated user.
 
 | Attribute                         | Type   | Description                                                                  |
 | --------------------------------- | ------ | ---------------------------------------------------------------------------- |
@@ -1408,7 +1408,7 @@ This also adds an audit event.
 
 Deletes key owned by the authenticated user.
 
-This returns a `204 No Content` status code if the operation was successfully
+This returns a `204 No Content` status code if the operation was successful
 or `404` if the resource was not found.
 
 ```plaintext

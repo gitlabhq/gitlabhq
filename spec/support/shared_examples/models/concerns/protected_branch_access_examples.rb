@@ -13,6 +13,10 @@ RSpec.shared_examples 'protected branch access' do
 
       expect(protected_ref).to have_received(:project)
     end
+
+    it 'does not error when protected_branch is nil' do
+      expect(described_class.new.project).to be_nil
+    end
   end
 
   describe '#protected_branch_group' do

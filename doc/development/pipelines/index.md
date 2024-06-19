@@ -309,7 +309,7 @@ If you want to force `e2e:package-and-test` to run regardless of your changes, y
 `pipeline:run-all-e2e` label to the merge request.
 
 The [`e2e:test-on-gdk`](../testing_guide/end_to_end/index.md#using-the-test-on-gdk-job) child pipeline runs `:blocking`
-E2E specs automatically for all `code patterns changes`. See `.qa:rules:e2e-blocking` [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for specific set of rules.
+E2E specs automatically for all `code patterns changes`. See `.qa:rules:e2e-blocking-gdk` [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for specific set of rules.
 
 Consult the [End-to-end Testing](../testing_guide/end_to_end/index.md) dedicated page for more information.
 

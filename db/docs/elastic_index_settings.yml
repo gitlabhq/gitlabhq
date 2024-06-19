@@ -8,5 +8,4 @@ description: Describes the settings (such as number of shards and replicas) for 
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56344
 milestone: '13.11'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442659
 exempt_from_sharding: true  # data is specific to each cell's Elasticsearch cluster, no customer data

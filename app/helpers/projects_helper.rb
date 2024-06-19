@@ -5,6 +5,8 @@ module ProjectsHelper
   include CompareHelper
   include Gitlab::Allowable
 
+  BANNED = 'banned'
+
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
       @project.build_incident_management_setting
@@ -506,12 +508,18 @@ module ProjectsHelper
     notification_attributes = notification_data_attributes(project) || {}
     star_count_attributes = star_count_data_attributes(project)
     admin_path = admin_project_path(project) if current_user&.can_admin_all_resources?
+    cicd_catalog_path = explore_catalog_path(project.catalog_resource) if project.catalog_resource
 
     {
       admin_path: admin_path,
       can_read_project: can?(current_user, :read_project, project).to_s,
+      cicd_catalog_path: cicd_catalog_path,
+      is_project_archived: project.archived.to_s,
       is_project_empty: project.empty_repo?.to_s,
-      project_id: project.id
+      project_avatar: project.avatar_url,
+      project_name: project.name,
+      project_id: project.id,
+      project_visibility_level: visibility_level_name(project)
     }.merge(
       dropdown_attributes,
       fork_button_attributes,
@@ -642,6 +650,14 @@ module ProjectsHelper
   end
 
   private
+
+  def visibility_level_name(project)
+    if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
+      BANNED
+    else
+      Gitlab::VisibilityLevel.string_level(project.visibility_level)
+    end
+  end
 
   def can_admin_project_clusters?(project)
     project.clusters.any? && can?(current_user, :admin_cluster, project)

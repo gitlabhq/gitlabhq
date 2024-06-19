@@ -992,9 +992,8 @@
     # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
-    # Otherwise, only run tests after the MR is approved
-    - <<: *if-merge-request-not-approved
-      when: never
+    # Otherwise, only run in pipeline::tier-2 and above
+    - !reference [".prevent-tier-1", rules]
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
@@ -1604,16 +1603,12 @@
 .qa:rules:package-and-test-common:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: *if-ruby-branch
     - <<: *if-merge-request-labels-run-all-e2e
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-    # Otherwise, only run tests after the MR is approved
-    - <<: *if-merge-request-not-approved
-      when: never
+    # Otherwise, only run tests in pipeline::tier-3 and above
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
       changes: *dependency-patterns
       variables:
@@ -1630,30 +1625,30 @@
       changes: *code-patterns
     - <<: *if-merge-request-and-specific-devops-stage
       changes: *code-patterns
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *setup-test-env-patterns
+    - <<: *if-ruby-branch
 
-# Like .qa:rules:package-and-test-common but not allowed to fail.
-# It's named `e2e` instead of `package-and-test` because it's used for e2e tests on GDK (and could be used
-# for other e2e tests)
-.qa:rules:e2e-blocking:
+# .qa:rules:e2e-blocking-base-* are similar to .qa:rules:package-and-test-common, but not allowed to fail.
+# It's named `e2e` instead of `package-and-test` because it's used for e2e tests on GDK/CNG
+.qa:rules:e2e-blocking-base-before:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-force-ci
-      when: manual
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
     # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
-    # Otherwise, only run tests after the MR is approved
-    - <<: *if-merge-request-not-approved
-      when: never
+
+.qa:rules:e2e-blocking-base-after:
+  rules:
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
+    - <<: *if-force-ci
+      when: manual
     - <<: *if-merge-request
       changes: *code-patterns
       variables:
@@ -1728,7 +1723,9 @@
       when: never
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
-    - !reference [".qa:rules:e2e-blocking", rules]
+    - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    - !reference [".prevent-tier-1", rules]
+    - !reference [".qa:rules:e2e-blocking-base-after", rules]
     # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
     - <<: *if-merge-request
       changes: *gdk-component-patterns
@@ -1748,7 +1745,9 @@
       when: never
     - <<: *if-security-schedule
       when: never
-    - !reference [".qa:rules:e2e-blocking", rules]
+    - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    - !reference [".prevent-tier-2-and-below", rules]
+    - !reference [".qa:rules:e2e-blocking-base-after", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
     - <<: *if-merge-request
       changes: *cng-orchestrator-patterns
@@ -1803,8 +1802,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       when: never
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
       changes: *dependency-patterns
       when: never

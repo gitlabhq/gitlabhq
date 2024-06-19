@@ -37,7 +37,7 @@
 .gl-mt-5
   = form_errors(@key, type: 'key') unless @key.valid?
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0 gl-overflow-hidden'}) do |c|
+  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0'}) do |c|
     - c.with_header do
       .gl-new-card-title-wrapper
         .gl-new-card-title
