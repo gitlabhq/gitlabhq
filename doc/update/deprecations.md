@@ -666,6 +666,27 @@ The [`GITLAB_SHARED_RUNNERS_REGISTRATION_TOKEN`](https://docs.gitlab.com/ee/admi
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### `require_password_to_approve` field
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">16.9</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431346).
+</div>
+
+In GitLab 16.7, we added the ability to re-authenticate with SAML SSO for the
+[Require user re-authentication to approve](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/settings.html#require-user-re-authentication-to-approve)
+feature.
+
+For this reason, in GitLab 18.0, we are removing the `require_password_to_approve` field.
+
+In GitLab 17.1, we added the `require_reauthentication_to_approve` field to replace the `require_password_to_approve`
+field. You should switch to the new field as soon as possible.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
 <div class="deprecation-notes">
@@ -1908,22 +1929,6 @@ Due to historical reasons, small Linux SaaS Runners had a lot of tags attached b
 We are deprecating the tags: `docker`, `east-c`, `gce`, `git-annex`, `linux`, `mongo`, `mysql`, `postgres`, `ruby`, `shared`.
 
 For more information, see [Removing tags from our small SaaS runner on Linux](https://about.gitlab.com/blog/2023/08/15/removing-tags-from-small-saas-runner-on-linux/).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="17.0">
-
-### Rename the `require_password_to_approve` field
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">16.9</span>
-- Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/431346).
-</div>
-
-In GitLab 16.7, we added the ability to re-authenticate with SAML SSO for the [Require user re-authentication to approve](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/settings.html#require-user-re-authentication-to-approve) feature.
-
-For this reason, in GitLab 17.0, we are renaming the `require_password_to_approve` field to `require_reauthentication_to_approve` in the UI, API, and the database.
 
 </div>
 

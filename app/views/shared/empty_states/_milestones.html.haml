@@ -1,13 +1,11 @@
 - learn_more_path = local_assigns.fetch(:learn_more_path, help_page_path('user/project/milestones/index'))
 - learn_more_link = link_to _('Learn more.'), learn_more_path
 
-.row.empty-state
-  .col-12
-    .svg-content.svg-150
-      = image_tag 'illustrations/empty-state/empty-milestone-md.svg'
-  .col-12
-    .text-content.text-center
-      %h4= s_('Milestones|Use milestones to track issues and merge requests over a fixed period of time')
-      %p.state-description
-        = s_('Milestones|Organize issues and merge requests into a cohesive group, and set optional start and due dates. %{learn_more_link}').html_safe % { learn_more_link: learn_more_link }
-      = yield
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-milestone-md.svg',
+  title: s_('Milestones|Use milestones to track issues and merge requests over a fixed period of time')) do |c|
+
+  - c.with_description do
+    = s_('Milestones|Organize issues and merge requests into a cohesive group, and set optional start and due dates. %{learn_more_link}').html_safe % { learn_more_link: learn_more_link }
+    - if yield.present?
+      .gl-flex.gl-flex-wrap.gl-mt-5.gl-justify-center
+        = yield

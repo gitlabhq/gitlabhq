@@ -15,9 +15,8 @@
   - if @milestones.blank?
     = render 'shared/empty_states/milestones_tab' do
       - if can?(current_user, :admin_milestone, @project)
-        .text-center
-          = link_button_to new_project_milestone_path(@project), data: { testid: "new-project-milestone-link" }, title: _('New milestone'), variant: :confirm do
-            = _('New milestone')
+        = link_button_to new_project_milestone_path(@project), data: { testid: "new-project-milestone-link" }, title: _('New milestone'), variant: :confirm do
+          = _('New milestone')
 
   - else
     .milestones
@@ -31,6 +30,5 @@
 - else
   = render 'shared/empty_states/milestones' do
     - if can?(current_user, :admin_milestone, @project)
-      .text-center
-        = link_button_to new_project_milestone_path(@project), data: { testid: "new-project-milestone-link" }, title: _('New milestone'), variant: :confirm do
-          = _('New milestone')
+      = link_button_to new_project_milestone_path(@project), data: { testid: "new-project-milestone-link" }, title: _('New milestone'), variant: :confirm do
+        = _('New milestone')

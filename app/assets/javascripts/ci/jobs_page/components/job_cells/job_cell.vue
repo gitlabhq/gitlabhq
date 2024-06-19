@@ -111,7 +111,7 @@ export default {
         >
       </div>
       <span v-else>{{ __('none') }}</span>
-      <div class="gl-ml-2 gl-p-2 gl-rounded-base gl-bg-gray-50">
+      <div class="gl-flex gl-items-center gl-ml-2 gl-p-2 gl-rounded-base gl-bg-gray-50">
         <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
         <gl-link
           class="gl-font-sm gl-font-monospace gl-text-gray-700 gl-hover-text-gray-900"

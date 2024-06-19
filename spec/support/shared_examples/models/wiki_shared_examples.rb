@@ -323,6 +323,15 @@ RSpec.shared_examples 'wiki model' do
         expect(subject.find_page('index page', 'non-existent')).to be_nil
       end
 
+      it 'returns nil if the repository raise an error' do
+        expect(subject.repository)
+          .to receive(:search_files_by_regexp)
+          .and_raise(Gitlab::Git::CommandError)
+          .at_least(:once)
+
+        expect(subject.find_page('index page')).to be_nil
+      end
+
       it 'can find a page by slug' do
         page = subject.find_page('index-page')
 
@@ -649,6 +658,15 @@ RSpec.shared_examples 'wiki model' do
 
         expect(subject.create_page('test page', 'content')).to eq false
         expect(subject.error_message).to match(/Duplicate page:/)
+      end
+
+      it 'returns false if the repository raise an error' do
+        expect(subject.repository)
+          .to receive(:commit_files)
+          .and_raise(Gitlab::Git::CommandError)
+          .at_least(:once)
+
+        expect(subject.create_page('test page', 'content')).to eq(false)
       end
 
       it 'returns false if it has an invalid format', :aggregate_failures do

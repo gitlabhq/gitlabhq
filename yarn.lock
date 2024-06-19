@@ -1346,10 +1346,10 @@
     portal-vue "^2.1.6"
     vue-runtime-helpers "^1.1.2"
 
-"@gitlab/web-ide@^0.0.1-dev-20240531032328":
-  version "0.0.1-dev-20240531032328"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20240531032328.tgz#2c56ad6e9de4634971a5711e1f39785fe8babeb8"
-  integrity sha512-rmh3pqj3V5AtycoHzW9cI9e+ro6MA1X5HQgVxaHC2S9XubpB6ggT+dbHy6FNoEQwBTqowRnmWQTioZHglV/3RQ==
+"@gitlab/web-ide@^0.0.1-dev-20240613133550":
+  version "0.0.1-dev-20240613133550"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20240613133550.tgz#6cb218bb29bd77d009e38e746256f6efcf889aad"
+  integrity sha512-O9Hxv1EaP08g/HXZ7L/budlfRKnraYhyOKHPI43prf56fEkZjD5Ut/dlrTGcOU6E4TE4qymbCOehohu2H6vW4A==
 
 "@graphql-eslint/eslint-plugin@3.20.1":
   version "3.20.1"

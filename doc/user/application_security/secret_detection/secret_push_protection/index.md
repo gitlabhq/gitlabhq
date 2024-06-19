@@ -50,10 +50,9 @@ If secret push protection does not detect any secrets in your commits, no messag
 
 ## Enable secret push protection
 
-On GitLab Dedicated, you must allow the use of secret push protection in your instance and then enable it per project.
-On GitLab.com, you only need to enable it per project.
+On GitLab Dedicated and GitLab.com, secret push protection must be enabled at the instance level and then you must enable it per project.
 
-### Allow the use of secret push protection in your GitLab Dedicated instance
+### Allow the use of secret push protection in your GitLab instance
 
 NOTE:
 Setting this option gives permission for projects in your GitLab instance to turn on secret push protection.
@@ -62,9 +61,9 @@ see [enable secret push protection in a project](#enable-secret-push-protection-
 
 Prerequisites:
 
-- You must be an administrator for your GitLab Dedicated instance.
+- You must be an administrator for your GitLab instance.
 
-1. Sign in to your GitLab Dedicated instance as an administrator.
+1. Sign in to your GitLab instance as an administrator.
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Security and Compliance**.
 1. Expand **Secret Detection**.

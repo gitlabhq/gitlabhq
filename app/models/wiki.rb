@@ -420,7 +420,7 @@ class Wiki
     @repository = nil
   end
 
-  def capture_git_error(action, &block)
+  def capture_git_error(action, response_on_error: false, &block)
     wrapped_gitaly_errors(&block)
   rescue Gitlab::Git::Index::IndexError,
     Gitlab::Git::CommitError,
@@ -432,7 +432,7 @@ class Wiki
 
     Gitlab::ErrorTracking.log_exception(e, action: action, wiki_id: id)
 
-    false
+    response_on_error
   end
 
   private
@@ -520,7 +520,7 @@ class Wiki
     escaped_path = RE2::Regexp.escape(title)
     path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)^#{escaped_path}\\.(#{file_extension_regexp})$")
 
-    matched_files = capture_git_error(:find) do
+    matched_files = capture_git_error(:find, response_on_error: []) do
       repository.search_files_by_regexp(path_regexp, version, limit: 1)
     end
     matched_files.first

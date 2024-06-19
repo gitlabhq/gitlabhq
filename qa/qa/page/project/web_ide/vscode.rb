@@ -50,7 +50,7 @@ module QA
           end
 
           def click_menu_item(item)
-            click_element("li[title='#{item}']")
+            click_element("a[aria-label='#{item}']")
           end
 
           def click_upload_menu_item
@@ -106,11 +106,11 @@ module QA
           end
 
           def click_new_branch
-            click_element('.monaco-button[title="Create new branch"]')
+            click_element('.monaco-button', text: "Create new branch")
           end
 
           def click_continue_with_existing_branch
-            click_element('.monaco-button[title="Continue"]')
+            click_element('.monaco-button', text: "Continue")
           end
 
           def has_branch_input_field?
@@ -229,7 +229,7 @@ module QA
 
           def push_to_new_branch
             within_vscode_editor do
-              page.find('.monaco-button[title="Create new branch"]').click
+              click_new_branch
               has_branch_input_field?
               # Typing enter to 'New branch name' popup to take the default branch name
               send_keys(:enter)
@@ -241,7 +241,7 @@ module QA
             within_vscode_editor do
               within_element('.notification-toast-container') do
                 has_element?('div[title="GitLab Web IDE Extension (Extension)"]')
-                click_element('.monaco-text-button[title="Create MR"]')
+                click_element('.monaco-button', text: "Create MR")
               end
             end
           end
