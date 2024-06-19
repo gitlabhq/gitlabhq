@@ -166,10 +166,11 @@ RSpec.describe Gitlab::Ci::Config::External::File::Component, feature_category: 
         location: 'gitlab.com/acme/components/my-component@1.0.0',
         blob: a_string_ending_with("#{project.full_path}/-/blob/my_component_sha/templates/my_component.yml"),
         raw: nil,
-        extra: {
-          component_project: project,
-          component_sha: 'my_component_sha',
-          component_name: 'my_component'
+        extra: {},
+        component: {
+          project: project,
+          sha: 'my_component_sha',
+          name: 'my_component'
         }
       )
     end

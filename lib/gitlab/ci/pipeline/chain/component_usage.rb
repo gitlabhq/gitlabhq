@@ -35,8 +35,8 @@ module Gitlab
 
           def included_catalog_components
             command.yaml_processor_result.included_components.filter_map do |hash|
-              ::Ci::Catalog::ComponentsProject.new(hash[:component_project], hash[:component_sha])
-                .find_catalog_component(hash[:component_name])
+              ::Ci::Catalog::ComponentsProject.new(hash[:project], hash[:sha])
+                .find_catalog_component(hash[:name])
             end
           end
         end
