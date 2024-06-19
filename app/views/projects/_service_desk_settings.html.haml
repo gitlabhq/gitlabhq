@@ -8,6 +8,7 @@
     %p.gl-text-secondary= _('Enable and disable Service Desk. Some additional configuration might be required. %{link_start}Learn more%{link_end}.').html_safe % { link_start: link_start, link_end: '</a>'.html_safe }
   .settings-content
     - if ::Gitlab::ServiceDesk.supported?
+      -# Data attributes refactoring issue: https://gitlab.com/gitlab-org/gitlab/-/issues/467547
       .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),
         enabled: "#{@project.service_desk_enabled}",
         issue_tracker_enabled: "#{@project.project_feature.issues_enabled?}",
@@ -18,6 +19,7 @@
         selected_file_template_project_id: "#{@project.service_desk_setting&.file_template_project_id}",
         outgoing_name: "#{@project.service_desk_setting&.outgoing_name}",
         project_key: "#{@project.service_desk_setting&.project_key}",
+        tickets_confidential_by_default: "#{@project.service_desk_setting.nil? ? true : @project.service_desk_setting&.tickets_confidential_by_default}",
         reopen_issue_on_external_participant_note: "#{@project.service_desk_setting&.reopen_issue_on_external_participant_note}",
         add_external_participants_from_cc: "#{@project.service_desk_setting&.add_external_participants_from_cc}",
         templates: available_service_desk_templates_for(@project),

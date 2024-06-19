@@ -27,7 +27,7 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
       end.not_to change { User.count }
     end
 
-    context 'when a regular user exists with the bot usernane' do
+    context 'when a regular user exists with the bot username' do
       it 'creates a user with a non-conflicting username' do
         create(:user, username: username)
 
@@ -40,6 +40,16 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     context 'when a regular user exists with the bot user email' do
       it 'creates a user with a non-conflicting email' do
         create(:user, email: email)
+
+        expect do
+          described_class.public_send(bot_type)
+        end.to change { User.where(user_type: bot_type).count }.by(1)
+      end
+    end
+
+    context 'when a group namespace exists with path that is equal to the bot username' do
+      it 'creates a user with a non-conflicting username' do
+        create(:group, path: username)
 
         expect do
           described_class.public_send(bot_type)

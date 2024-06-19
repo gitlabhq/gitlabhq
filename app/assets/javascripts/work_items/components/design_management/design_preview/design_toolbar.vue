@@ -8,6 +8,7 @@ import DesignNavigation from './design_navigation.vue';
 
 export default {
   i18n: {
+    downloadButtonLabel: s__('DesignManagement|Download design'),
     hideCommentsButtonLabel: s__('DesignManagement|Hide comments'),
     showCommentsButtonLabel: s__('DesignManagement|Show comments'),
   },
@@ -84,6 +85,15 @@ export default {
       <close-button class="md:gl-hidden gl-ml-auto" />
     </div>
     <div class="gl-flex md:gl-flex-row gl-flex-shrink-0 gl-md-ml-auto gl-mr-5">
+      <gl-button
+        v-gl-tooltip.bottom
+        category="tertiary"
+        class="gl-ml-2"
+        :href="design.image"
+        icon="download"
+        :title="$options.i18n.downloadButtonLabel"
+        :aria-label="$options.i18n.downloadButtonLabel"
+      />
       <gl-button
         v-gl-tooltip.bottom
         category="tertiary"

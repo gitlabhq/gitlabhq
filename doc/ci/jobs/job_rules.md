@@ -139,7 +139,8 @@ You can use the `$` character for both variables and paths. For example, if the
 
 ## Common `if` clauses with predefined variables
 
-`rules:if` clauses are commonly used with [predefined CI/CD variables](../variables/predefined_variables.md).
+`rules:if` clauses are commonly used with [predefined CI/CD variables](../variables/predefined_variables.md),
+especially the [`CI_PIPELINE_SOURCE` predefined variable](#ci_pipeline_source-predefined-variable).
 
 The following example runs the job as a manual job in scheduled pipelines or in push
 pipelines (to branches or tags), with `when: on_success` (default). It does not
@@ -178,18 +179,13 @@ Other commonly used `if` clauses:
 - `if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_TITLE =~ /Merge branch.*/`:
   If the commit branch is the default branch and the commit message title matches a regular expression.
   For example, the default commit message for a merge commit starts with `Merge branch`.
-
 - `if: $CUSTOM_VARIABLE == "value1"`: If the custom variable `CUSTOM_VARIABLE` is
   exactly `value1`.
 
 ### Run jobs only in specific pipeline types
 
-You can use [predefined CI/CD variables](../variables/predefined_variables.md) to choose
-which pipeline types jobs run in, with:
-
-- [`rules`](../yaml/index.md#rules)
-- [`only:variables`](../yaml/index.md#onlyvariables--exceptvariables)
-- [`except:variables`](../yaml/index.md#onlyvariables--exceptvariables)
+You can use [predefined CI/CD variables](../variables/predefined_variables.md) with
+[`rules`](../yaml/index.md#rules) to choose which pipeline types jobs should run for.
 
 The following table lists some of the variables that you can use, and the pipeline
 types the variables can control for:
@@ -223,6 +219,31 @@ job1:
     - if: $CI_PIPELINE_SOURCE == "push"
       when: never
 ```
+
+### `CI_PIPELINE_SOURCE` predefined variable
+
+Use the `CI_PIPELINE_SOURCE` variable to control when to add jobs for these pipeline types:
+
+| Value                           | Description |
+|---------------------------------|-------------|
+| `api`                           | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline). |
+| `chat`                          | For pipelines created by using a [GitLab ChatOps](../chatops/index.md) command. |
+| `external`                      | When you use CI services other than GitLab. |
+| `external_pull_request_event`   | When an [external pull request on GitHub](../ci_cd_for_external_repos/index.md#pipelines-for-external-pull-requests) is created or updated. |
+| `merge_request_event`           | For pipelines created when a merge request is created or updated. Required to enable [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
+| `ondemand_dast_scan`            | For [DAST on-demand scan](../../user/application_security/dast/on-demand_scan.md) pipelines. |
+| `ondemand_dast_validation`      | For [DAST on-demand validation](../../user/application_security/dast/on-demand_scan.md#site-profile-validation) pipelines |
+| `parent_pipeline`               | For pipelines triggered by a [parent/child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines). Use this pipeline source in the child pipeline configuration so that it can be triggered by the parent pipeline. |
+| `pipeline`                      | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](../yaml/index.md#trigger) keyword. |
+| `push`                          | For pipelines triggered by a Git push event, including for branches and tags. |
+| `schedule`                      | For [scheduled pipelines](../pipelines/schedules.md). |
+| `security_orchestration_policy` | For [security orchestration policy](../../user/application_security/policies/index.md) pipelines. |
+| `trigger`                       | For pipelines created by using a [trigger token](../triggers/index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
+| `web`                           | For pipelines created by selecting **Run pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
+| `webide`                        | For pipelines created by using the [WebIDE](../../user/project/web_ide/index.md). |
+
+These values are the same as returned for the `source` parameter when using the
+[pipelines API endpoint](../../api/pipelines.md#list-project-pipelines).
 
 ## Complex rules
 

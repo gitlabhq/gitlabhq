@@ -196,11 +196,12 @@ end
 RSpec.shared_examples 'an unsubscribeable thread' do
   it_behaves_like 'an unsubscribeable thread with incoming address without %{key}'
 
-  it 'has a List-Unsubscribe header in the correct format, and a body link' do
+  it 'has a List-Unsubscribe header in the correct format, List-Unsubscribe-Post header, and a body link' do
     aggregate_failures do
       is_expected.to have_header('List-Unsubscribe', /unsubscribe/)
       is_expected.to have_header('List-Unsubscribe', /mailto/)
       is_expected.to have_header('List-Unsubscribe', /^<.+,.+>$/)
+      is_expected.to have_header('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click')
       is_expected.to have_body_text('unsubscribe')
     end
   end
@@ -209,20 +210,22 @@ end
 RSpec.shared_examples 'an unsubscribeable thread with incoming address without %{key}' do
   include_context 'reply-by-email is enabled with incoming address without %{key}'
 
-  it 'has a List-Unsubscribe header in the correct format, and a body link' do
+  it 'has a List-Unsubscribe header in the correct format, List-Unsubscribe-Post header, and a body link' do
     aggregate_failures do
       is_expected.to have_header('List-Unsubscribe', /unsubscribe/)
       is_expected.not_to have_header('List-Unsubscribe', /mailto/)
       is_expected.to have_header('List-Unsubscribe', /^<[^,]+>$/)
+      is_expected.to have_header('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click')
       is_expected.to have_body_text('unsubscribe')
     end
   end
 end
 
 RSpec.shared_examples 'a user cannot unsubscribe through footer link' do
-  it 'does not have a List-Unsubscribe header or a body link' do
+  it 'does not have a List-Unsubscribe header, List-Unsubscribe-Post header or a body link' do
     aggregate_failures do
       is_expected.not_to have_header('List-Unsubscribe', /unsubscribe/)
+      is_expected.not_to have_header('List-Unsubscribe-Post', 'List-Unsubscribe=One-Click')
       is_expected.not_to have_body_text('unsubscribe')
     end
   end

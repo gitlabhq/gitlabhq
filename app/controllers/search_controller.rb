@@ -106,9 +106,13 @@ class SearchController < ApplicationController
 
     count = 0
     @global_search_duration_s = Benchmark.realtime do
-      ApplicationRecord.with_fast_read_statement_timeout do
-        count = search_service.search_results.formatted_count(scope)
-      end
+      count = if @search_type == 'basic'
+                ApplicationRecord.with_fast_read_statement_timeout do
+                  search_service.search_results.formatted_count(scope)
+                end
+              else
+                search_service.search_results.formatted_count(scope)
+              end
 
       # Users switching tabs will keep fetching the same tab counts so it's a
       # good idea to cache in their browser just for a short time. They can still

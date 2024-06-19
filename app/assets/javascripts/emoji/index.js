@@ -77,32 +77,46 @@ async function loadEmojiWithNames() {
 }
 
 export async function loadCustomEmojiWithNames() {
-  const emojiData = { emojis: {}, names: [] };
+  return new Promise((resolve) => {
+    const emojiData = { emojis: {}, names: [] };
 
-  if (document.body?.dataset?.groupFullPath) {
-    const client = createApolloClient();
-    const { data } = await client.query({
-      query: customEmojiQuery,
-      variables: {
-        groupPath: document.body.dataset.groupFullPath,
-      },
-    });
+    if (document.body?.dataset?.groupFullPath) {
+      const client = createApolloClient();
+      const fetchEmojis = async (after = '') => {
+        const { data } = await client.query({
+          query: customEmojiQuery,
+          variables: {
+            groupPath: document.body.dataset.groupFullPath,
+            after,
+          },
+        });
+        const { pageInfo } = data?.group?.customEmoji || {};
 
-    data?.group?.customEmoji?.nodes?.forEach((e) => {
-      // Map the custom emoji into the format of the normal emojis
-      emojiData.emojis[e.name] = {
-        c: 'custom',
-        d: e.name,
-        e: undefined,
-        name: e.name,
-        src: e.url,
-        u: 'custom',
+        data?.group?.customEmoji?.nodes?.forEach((e) => {
+          // Map the custom emoji into the format of the normal emojis
+          emojiData.emojis[e.name] = {
+            c: 'custom',
+            d: e.name,
+            e: undefined,
+            name: e.name,
+            src: e.url,
+            u: 'custom',
+          };
+          emojiData.names.push(e.name);
+        });
+
+        if (pageInfo?.hasNextPage) {
+          return fetchEmojis(pageInfo.endCursor);
+        }
+
+        return resolve(emojiData);
       };
-      emojiData.names.push(e.name);
-    });
-  }
 
-  return emojiData;
+      fetchEmojis();
+    } else {
+      resolve(emojiData);
+    }
+  });
 }
 
 async function prepareEmojiMap() {

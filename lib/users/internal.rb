@@ -129,7 +129,7 @@ module Users
 
         uniquify = Gitlab::Utils::Uniquify.new
 
-        username = uniquify.string(username) { |s| User.find_by_username(s) }
+        username = uniquify.string(username) { |s| Namespace.by_path(s) }
 
         email = uniquify.string(->(n) { Kernel.sprintf(email_pattern, n) }) do |s|
           User.find_by_email(s)

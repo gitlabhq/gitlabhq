@@ -106,6 +106,7 @@ describe('WorkItemDetail component', () => {
     error = undefined,
     workItemsAlphaEnabled = false,
     workItemsBeta = false,
+    namespaceLevelWorkItems = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -130,6 +131,7 @@ describe('WorkItemDetail component', () => {
         glFeatures: {
           workItemsAlpha: workItemsAlphaEnabled,
           workItemsBeta,
+          namespaceLevelWorkItems,
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
@@ -315,7 +317,7 @@ describe('WorkItemDetail component', () => {
       expect(findAncestors().exists()).toBe(false);
     });
 
-    it('does not show ancestors widget if there is not a parent', async () => {
+    it('does not show ancestors widget if there is no parent', async () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
@@ -328,6 +330,17 @@ describe('WorkItemDetail component', () => {
 
       await waitForPromises();
       expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
+    });
+
+    describe('`namespace_level_work_items` is disabled', () => {
+      it('does not show ancestors widget and shows title in the header', async () => {
+        createComponent({ namespaceLevelWorkItems: false });
+
+        await waitForPromises();
+
+        expect(findAncestors().exists()).toBe(false);
+        expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
+      });
     });
 
     describe('with parent', () => {

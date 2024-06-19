@@ -237,6 +237,10 @@ class Notify < ApplicationMailer
     end
 
     headers['List-Unsubscribe'] = list_unsubscribe_methods.map { |e| "<#{e}>" }.join(',')
+    # Based on RFC 8058 one-click unsubscribe functionality should
+    # be signalled with using the List-Unsubscribe-Post header
+    # See https://datatracker.ietf.org/doc/html/rfc8058
+    headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click'
     @unsubscribe_url = unsubscribe_sent_notification_url(@sent_notification)
   end
 

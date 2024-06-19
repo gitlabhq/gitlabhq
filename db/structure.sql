@@ -1313,6 +1313,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_9e137c16de79() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "vulnerability_occurrences"
+  WHERE "vulnerability_occurrences"."id" = NEW."vulnerability_occurrence_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_a1bc7c70cbdf() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -7601,7 +7617,7 @@ CREATE TABLE ci_pipeline_messages (
     severity smallint DEFAULT 0 NOT NULL,
     content text NOT NULL,
     pipeline_id bigint NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL,
+    partition_id bigint NOT NULL,
     CONSTRAINT check_58ca2981b2 CHECK ((char_length(content) <= 10000))
 );
 
@@ -18661,7 +18677,8 @@ CREATE TABLE vulnerability_findings_remediations (
     vulnerability_occurrence_id bigint,
     vulnerability_remediation_id bigint,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE vulnerability_findings_remediations_id_seq
@@ -29060,6 +29077,8 @@ CREATE INDEX index_vulnerability_finding_signatures_on_finding_id ON vulnerabili
 
 CREATE INDEX index_vulnerability_finding_signatures_on_signature_sha ON vulnerability_finding_signatures USING btree (signature_sha);
 
+CREATE INDEX index_vulnerability_findings_remediations_on_project_id ON vulnerability_findings_remediations USING btree (project_id);
+
 CREATE INDEX index_vulnerability_findings_remediations_on_remediation_id ON vulnerability_findings_remediations USING btree (vulnerability_remediation_id);
 
 CREATE UNIQUE INDEX index_vulnerability_findings_remediations_on_unique_keys ON vulnerability_findings_remediations USING btree (vulnerability_occurrence_id, vulnerability_remediation_id);
@@ -31194,6 +31213,8 @@ CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management
 
 CREATE TRIGGER trigger_98ad3a4c1d35 BEFORE INSERT OR UPDATE ON merge_request_review_llm_summaries FOR EACH ROW EXECUTE FUNCTION trigger_98ad3a4c1d35();
 
+CREATE TRIGGER trigger_9e137c16de79 BEFORE INSERT OR UPDATE ON vulnerability_findings_remediations FOR EACH ROW EXECUTE FUNCTION trigger_9e137c16de79();
+
 CREATE TRIGGER trigger_a1bc7c70cbdf BEFORE INSERT OR UPDATE ON vulnerability_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_a1bc7c70cbdf();
 
 CREATE TRIGGER trigger_a253cb3cacdf BEFORE INSERT OR UPDATE ON dora_daily_metrics FOR EACH ROW EXECUTE FUNCTION trigger_a253cb3cacdf();
@@ -31983,6 +32004,9 @@ ALTER TABLE p_ci_builds
 
 ALTER TABLE ONLY approval_group_rules_users
     ADD CONSTRAINT fk_888a0df3b7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_findings_remediations
+    ADD CONSTRAINT fk_88a2923914 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_88c725229f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

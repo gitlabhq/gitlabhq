@@ -43,7 +43,6 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your To-Do List page. |
 | <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
-| <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
 | <kbd>g</kbd>, then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
 | <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/index.md). |
 
@@ -105,7 +104,6 @@ These shortcuts are available when viewing issues:
 | <kbd>l</kbd>                  | Change label. |
 | <kbd>c</kbd> + <kbd>r</kbd>   | Copy issue reference. |
 | <kbd>r</kbd>                  | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
-| <kbd>.</kbd>                  | Open the [Web IDE](project/web_ide/index.md). |
 | <kbd>→</kbd>                  | Go to the next design. |
 | <kbd>←</kbd>                  | Go to the previous design. |
 | <kbd>Escape</kbd>             | Close the design. |
