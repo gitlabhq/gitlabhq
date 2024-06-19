@@ -339,6 +339,9 @@ RSpec.configure do |config|
 
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
+
+      # We want this this FF disabled by default
+      stub_feature_flags(synced_epic_work_item_editable: false)
     else
       unstub_all_feature_flags
     end

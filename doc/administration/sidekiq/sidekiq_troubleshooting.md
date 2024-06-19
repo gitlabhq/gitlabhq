@@ -588,6 +588,16 @@ but if you want to clear the idempotency key immediately, follow the following s
 Sidekiq `BROP` calls can cause CPU usage to increase on Redis.
 Increase the [`SIDEKIQ_SEMI_RELIABLE_FETCH_TIMEOUT` environment variable](../environment_variables.md) to improve CPU usage on Redis.
 
+## Error: `OpenSSL::Cipher::CipherError`
+
+If you receive error messages like:
+
+```plaintext
+"OpenSSL::Cipher::CipherError","exception.message":"","exception.backtrace":["encryptor (3.0.0) lib/encryptor.rb:98:in `final'","encryptor (3.0.0) lib/encryptor.rb:98:in `crypt'","encryptor (3.0.0) lib/encryptor.rb:49:in `decrypt'"
+```
+
+This error means that the processes are unable to decrypt encrypted data that is stored in the GitLab database. This indicates that there is some problem with your `/etc/gitlab/gitlab-secrets.json` file, ensure that you copied the file from your main GitLab node to your Sidekiq nodes.
+
 ## Related topics
 
 - [Elasticsearch workers overload Sidekiq](../../integration/advanced_search/elasticsearch_troubleshooting.md#elasticsearch-workers-overload-sidekiq).

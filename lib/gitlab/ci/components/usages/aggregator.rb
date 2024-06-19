@@ -65,7 +65,10 @@ module Gitlab
           TARGET_BATCH_SIZE = 1000
           DISTINCT_USAGE_BATCH_SIZE = 100
           MAX_RUNTIME = 4.minutes # Should be >= job scheduling frequency so there is no gap between job runs
-          WORKER_DEDUP_TTL = MAX_RUNTIME + 1.minute # Includes extra time to execute `&usage_counts_block`
+
+          # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155001#note_1941066672
+          # Includes extra time (1.minute) to execute `&usage_counts_block`
+          WORKER_DEDUP_TTL = MAX_RUNTIME + 1.minute
           LEASE_TIMEOUT = 10.minutes
 
           def initialize(target_model:, group_by_column:, usage_start_date:, usage_end_date:, lease_key:)

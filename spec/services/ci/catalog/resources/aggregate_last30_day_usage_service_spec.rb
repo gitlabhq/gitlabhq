@@ -125,6 +125,19 @@ RSpec.describe Ci::Catalog::Resources::AggregateLast30DayUsageService, :clean_gi
           expect(response.message).to eq("Processing complete for #{Date.today}")
           expect(response.payload).to eq({})
         end
+
+        context 'when a new catalog resource is added today' do
+          it 'does not aggregate usage data' do
+            create(:ci_catalog_resource)
+            expect(Gitlab::Ci::Components::Usages::Aggregator).not_to receive(:new)
+
+            response = service.execute
+
+            expect(response).to be_success
+            expect(response.message).to eq("Processing complete for #{Date.today}")
+            expect(response.payload).to eq({})
+          end
+        end
       end
     end
 
