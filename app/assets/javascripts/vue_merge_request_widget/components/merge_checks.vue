@@ -70,7 +70,6 @@ export default {
   data() {
     return {
       collapsed: true,
-      collapsedCount: 0,
       state: {},
     };
   },
@@ -118,7 +117,6 @@ export default {
       return [...this.checks]
         .filter((s) => {
           if (this.isStatusInactive(s) || !this.hasMessage(s)) return false;
-          if (this.collapsedCount > 0 && this.collapsed) return false;
 
           return this.collapsed ? this.isStatusFailed(s) : true;
         })
@@ -131,15 +129,12 @@ export default {
       return this.checks.filter((c) => this.isStatusWarning(c));
     },
     showChecks() {
-      if (this.collapsed && this.collapsedCount > 0) return false;
-
       return this.failedChecks.length > 0 || !this.collapsed;
     },
   },
   methods: {
     toggleCollapsed() {
       this.collapsed = !this.collapsed;
-      this.collapsedCount += 1;
     },
     checkComponent(check) {
       return COMPONENTS[check.identifier.toLowerCase()] || COMPONENTS.default;

@@ -19482,7 +19482,8 @@ CREATE TABLE zoekt_indices (
     namespace_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    state smallint DEFAULT 0 NOT NULL
+    state smallint DEFAULT 0 NOT NULL,
+    zoekt_replica_id bigint
 );
 
 CREATE SEQUENCE zoekt_indices_id_seq
@@ -19517,6 +19518,24 @@ CREATE SEQUENCE zoekt_nodes_id_seq
     CACHE 1;
 
 ALTER SEQUENCE zoekt_nodes_id_seq OWNED BY zoekt_nodes.id;
+
+CREATE TABLE zoekt_replicas (
+    id bigint NOT NULL,
+    zoekt_enabled_namespace_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    state smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE zoekt_replicas_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE zoekt_replicas_id_seq OWNED BY zoekt_replicas.id;
 
 CREATE TABLE zoekt_repositories (
     id bigint NOT NULL,
@@ -21158,6 +21177,8 @@ ALTER TABLE ONLY zoekt_enabled_namespaces ALTER COLUMN id SET DEFAULT nextval('z
 ALTER TABLE ONLY zoekt_indices ALTER COLUMN id SET DEFAULT nextval('zoekt_indices_id_seq'::regclass);
 
 ALTER TABLE ONLY zoekt_nodes ALTER COLUMN id SET DEFAULT nextval('zoekt_nodes_id_seq'::regclass);
+
+ALTER TABLE ONLY zoekt_replicas ALTER COLUMN id SET DEFAULT nextval('zoekt_replicas_id_seq'::regclass);
 
 ALTER TABLE ONLY zoekt_repositories ALTER COLUMN id SET DEFAULT nextval('zoekt_repositories_id_seq'::regclass);
 
@@ -23897,6 +23918,9 @@ ALTER TABLE ONLY zoekt_indices
 
 ALTER TABLE ONLY zoekt_nodes
     ADD CONSTRAINT zoekt_nodes_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY zoekt_replicas
+    ADD CONSTRAINT zoekt_replicas_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY zoekt_repositories
     ADD CONSTRAINT zoekt_repositories_pkey PRIMARY KEY (id);
@@ -29228,6 +29252,8 @@ CREATE INDEX index_zentao_tracker_data_on_integration_id ON zentao_tracker_data 
 
 CREATE INDEX index_zoekt_indices_on_namespace_id ON zoekt_indices USING btree (namespace_id, zoekt_enabled_namespace_id);
 
+CREATE INDEX index_zoekt_indices_on_replica_id ON zoekt_indices USING btree (zoekt_replica_id);
+
 CREATE UNIQUE INDEX index_zoekt_indices_on_state_and_id ON zoekt_indices USING btree (state, id);
 
 CREATE UNIQUE INDEX index_zoekt_indices_on_zoekt_node_id_and_id ON zoekt_indices USING btree (zoekt_node_id, id);
@@ -29235,6 +29261,12 @@ CREATE UNIQUE INDEX index_zoekt_indices_on_zoekt_node_id_and_id ON zoekt_indices
 CREATE INDEX index_zoekt_nodes_on_last_seen_at ON zoekt_nodes USING btree (last_seen_at);
 
 CREATE UNIQUE INDEX index_zoekt_nodes_on_uuid ON zoekt_nodes USING btree (uuid);
+
+CREATE INDEX index_zoekt_replicas_on_enabled_namespace_id ON zoekt_replicas USING btree (zoekt_enabled_namespace_id);
+
+CREATE INDEX index_zoekt_replicas_on_namespace_id_enabled_namespace_id ON zoekt_replicas USING btree (namespace_id, zoekt_enabled_namespace_id);
+
+CREATE INDEX index_zoekt_replicas_on_state ON zoekt_replicas USING btree (state);
 
 CREATE INDEX index_zoekt_repositories_on_project_id ON zoekt_repositories USING btree (project_id);
 
@@ -31312,6 +31344,9 @@ ALTER TABLE ONLY issue_customer_relations_contacts
 ALTER TABLE ONLY remote_development_namespace_cluster_agent_mappings
     ADD CONSTRAINT fk_0c483ecb9d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY zoekt_replicas
+    ADD CONSTRAINT fk_0c62cc0251 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_0c83baaa5f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -31497,6 +31532,9 @@ ALTER TABLE ONLY vulnerability_merge_request_links
 
 ALTER TABLE ONLY members
     ADD CONSTRAINT fk_2f85abf8f1 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zoekt_replicas
+    ADD CONSTRAINT fk_3035f4b498 FOREIGN KEY (zoekt_enabled_namespace_id) REFERENCES zoekt_enabled_namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_3078345d6d FOREIGN KEY (stage_event_hash_id) REFERENCES analytics_cycle_analytics_stage_event_hashes(id) ON DELETE CASCADE;
@@ -32493,6 +32531,9 @@ ALTER TABLE ONLY merge_requests_compliance_violations
 
 ALTER TABLE ONLY work_item_widget_definitions
     ADD CONSTRAINT fk_ecf57512f7 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY zoekt_indices
+    ADD CONSTRAINT fk_ef0e75ac42 FOREIGN KEY (zoekt_replica_id) REFERENCES zoekt_replicas(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT fk_ef5ebf339f FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

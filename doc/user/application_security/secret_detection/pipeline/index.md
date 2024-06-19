@@ -12,7 +12,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** GA
 
-Pipeline secret detection scans committed files after they has been pushed to GitLab.
+Pipeline secret detection scans files after they are committed to a Git repository and pushed to GitLab.
 
 After you [enable Pipeline Secret Detection](#enabling-the-analyzer), scans run in a CI/CD job named `secret_detection`.
 You can run scans and view [Pipeline Secret Detection JSON report artifacts](../../../../ci/yaml/artifacts_reports.md#artifactsreportssecret_detection) in any GitLab tier.

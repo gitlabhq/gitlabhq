@@ -76,3 +76,4 @@ def perform(args)
 
   # ...
 end
+```

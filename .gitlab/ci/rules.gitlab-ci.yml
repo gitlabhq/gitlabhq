@@ -1743,6 +1743,10 @@
 
 .qa:rules:e2e:test-on-cng:
   rules:
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-security-schedule
+      when: never
     - !reference [".qa:rules:e2e-blocking", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
     - <<: *if-merge-request

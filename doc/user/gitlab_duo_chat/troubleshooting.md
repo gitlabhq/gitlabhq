@@ -43,11 +43,14 @@ If GitLab Duo is not turned on, information about items
 ## `Error M3003`
 
 You might get an error that states
-`I'm sorry, I can't generate a response. The items you're asking about either don't exist, or you don't have access to them. Error code: M3003`.
+`I'm sorry, I can't generate a response. You might want to try again. You could also be getting this error because the items you're asking about either don't exist, you don't have access to them, or your session has expired. Error code: M3003`.
 
-This error occurs when you ask GitLab Duo Chat about items (like issues, epics, and merge requests) you don't have access to, or about items that do not exist.
+This error occurs when:
 
-Try again, asking about items you have access to. For more information, refer to [GitLab Duo Chat availability documentation](../gitlab_duo/turn_on_off.md).
+- You ask GitLab Duo Chat about items (like issues, epics, and merge requests) you don't have access to, or about items that don't exist.
+- Your session has expired.
+
+Try again, asking about items you have access to. If you continue to experience issues, it might be due to an expired session. To continue using GitLab Duo Chat, log in again. For more information, see [Control GitLab Duo availability](../gitlab_duo/turn_on_off.md).
 
 ## `Error M3004`
 

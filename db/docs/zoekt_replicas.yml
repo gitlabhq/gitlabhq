@@ -1,0 +1,12 @@
+---
+table_name: zoekt_replicas
+classes:
+- Search::Zoekt::Replica
+feature_categories:
+- global_search
+description: Represents a zoekt replica for a root namespace
+introduced_by_url:
+milestone: '17.2'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  namespace_id: namespaces

@@ -24,6 +24,8 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   For more information, see [issue 452426](https://gitlab.com/gitlab-org/gitlab/-/issues/452426).
 - The default [changelog](../../user/project/changelogs.md) template generates links as full URLs instead of GitLab specific references.
   For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
+- Git 2.44.0 and later is required by Gitaly. For self-compiled installations,
+  you should use the [Git version provided by Gitaly](../../install/installation.md#git).
 
 ## 17.0.0
 

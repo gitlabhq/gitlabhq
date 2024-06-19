@@ -240,14 +240,14 @@ describe('Merge request merge checks component', () => {
       expect(findMergeChecks().length).toBe(2);
     });
 
-    it('hides all checks when user collapses section', async () => {
+    it('shows failed checks when user collapses section', async () => {
       await wrapper.findByTestId('widget-toggle').trigger('click');
 
       expect(findMergeChecks().length).toBe(2);
 
       await wrapper.findByTestId('widget-toggle').trigger('click');
 
-      expect(findMergeChecks().length).toBe(0);
+      expect(findMergeChecks().length).toBe(1);
     });
   });
 });
