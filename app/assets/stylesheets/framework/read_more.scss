@@ -33,6 +33,6 @@
     right: 0;
     top: calc(var(--read-more-height, #{$fallback}) - #{$scrim} - #{$height});
     height: $scrim;
-    background: linear-gradient(180deg, transparent, $white);
+    background: linear-gradient(180deg, transparent, var(--gl-background-color-default));
   }
 }

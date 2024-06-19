@@ -13,7 +13,7 @@
         .home-panel-description-markdown.read-more-container{ itemprop: 'description', data: { 'read-more-height': 320 } }
           .read-more-content.read-more-content--has-scrim
             = markdown_field(@project, :description)
-          .js-read-more-trigger.gl-display-none.gl-w-full.gl-h-8.gl-absolute.gl-bottom-0.gl-z-2.gl-bg-white
+          .js-read-more-trigger.gl-display-none.gl-w-full.gl-h-8.gl-absolute.gl-bottom-0.gl-z-2.gl-bg-default
             = render Pajamas::ButtonComponent.new(variant: :link, button_options: { 'aria-label': _("Expand project information") }) do
               = sprite_icon('chevron-down', size: 14)
               = _("Read more")
