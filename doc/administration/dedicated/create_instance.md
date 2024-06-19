@@ -171,7 +171,7 @@ information required to create your GitLab Dedicated instance.
    Dedicated instance:
    - Desired instance subdomain: The main domain for GitLab Dedicated instances is
      `gitlab-dedicated.com`. You choose the subdomain name where your instance is accessible from.
-     For example, `customer_name.gitlab-dedicated.com`.
+     For example, `customer_name.gitlab-dedicated.com`. You can add a custom hostname in a later step.
    - Desired primary region: Primary AWS region in which your data is stored. Note the
      [available AWS regions](../../subscriptions/gitlab_dedicated/index.md#available-aws-regions).
    - Desired secondary region: Secondary AWS region in which your data is stored. This region is
@@ -181,10 +181,11 @@ information required to create your GitLab Dedicated instance.
    - Desired maintenance window: A weekly four-hour time slot that GitLab uses to perform routine
      maintenance and upgrade operations on all tenant instances. For more information, see
      [maintenance windows](../../administration/dedicated/create_instance.md#maintenance-window).
-1. Security: You can provide your own [KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html)
+1. Optional. Security: You can provide your own [KMS keys](https://docs.aws.amazon.com/kms/latest/developerguide/overview.html)
    for encrypted AWS services. If you choose not to provide KMS keys, encryption keys are generated
    for your instance when it is created. For more information, see [encrypting your data at rest](#encrypted-data-at-rest-byok).
-1. Summary: You confirm that the information you've provided in the previous steps is accurate
+1. Optional. Bring Your Own Domain: You can add a custom hostname for your GitLab Dedicated instance, the bundled container registry, and KAS services.
+1. Summary: Confirm that the information you've provided in the previous steps is accurate
    before initiating the creation of your instance.
 
 NOTE:

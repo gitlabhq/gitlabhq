@@ -289,7 +289,7 @@ GEM
     asciidoctor (2.0.18)
     asciidoctor-include-ext (0.4.0)
       asciidoctor (>= 1.5.6, < 3.0.0)
-    asciidoctor-kroki (0.8.0)
+    asciidoctor-kroki (0.10.0)
       asciidoctor (~> 2.0)
     asciidoctor-plantuml (0.0.16)
       asciidoctor (>= 2.0.17, < 3.0.0)
@@ -1919,7 +1919,7 @@ DEPENDENCIES
   arr-pm (~> 0.0.12)
   asciidoctor (~> 2.0.18)
   asciidoctor-include-ext (~> 0.4.0)
-  asciidoctor-kroki (~> 0.8.0)
+  asciidoctor-kroki (~> 0.10.0)
   asciidoctor-plantuml (~> 0.0.16)
   atlassian-jwt (~> 0.2.1)
   attr_encrypted (~> 3.2.4)!

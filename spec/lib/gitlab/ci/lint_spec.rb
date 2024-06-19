@@ -226,7 +226,7 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
       end
     end
 
-    context 'when a pipeline ref variable is used in an `include`', :use_clean_rails_redis_caching do
+    context 'when a pipeline ref variable is used in an `include`' do
       let(:dry_run) { false }
 
       let(:content) do
@@ -290,14 +290,6 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
         )
       end
 
-      it 'caches values and calls Gitaly only once for branch names' do
-        expect(project.repository).to receive(:branch_names_contains).once.and_call_original
-
-        2.times do
-          lint.validate(content, dry_run: dry_run)
-        end
-      end
-
       context 'when the ref is a tag' do
         before do
           project.repository.add_tag(project.creator, 'test', project.commit.id)
@@ -325,99 +317,6 @@ RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_composition do
               context_sha: project.commit.sha
             }
           )
-        end
-
-        it 'caches tag names and calls Gitaly only once' do
-          expect(project.repository).to receive(:tag_names_contains).once.and_call_original
-
-          2.times { lint.validate(content, dry_run: dry_run) }
-        end
-      end
-    end
-
-    context 'when a pipeline ref variable is used in an include and project_sha_exists? returns false' do
-      let(:dry_run) { false }
-
-      let(:content) do
-        <<~YAML
-          include:
-            - project: "#{project&.full_path}"
-              ref: ${CI_COMMIT_REF_NAME}
-              file: '.gitlab-ci-include.yml'
-
-          show-parent-variable:
-            stage : .pre
-            script:
-              - echo I am running a variable ${CI_COMMIT_REF_NAME}
-        YAML
-      end
-
-      let(:included_content) do
-        <<~YAML
-          another_job:
-            script: echo
-        YAML
-      end
-
-      context 'when project is nil' do
-        let(:project) { nil }
-
-        it 'passes nil as the ref name to YamlProcessor' do
-          expect(Gitlab::Ci::YamlProcessor)
-            .to receive(:new)
-            .with(content, a_hash_including(ref: nil))
-            .and_call_original
-
-          subject
-        end
-      end
-
-      context 'when sha is nil' do
-        let(:project) { nil }
-        let(:sha) { nil }
-
-        it 'passes nil as the ref name to YamlProcessor' do
-          expect(Gitlab::Ci::YamlProcessor)
-            .to receive(:new)
-            .with(content, a_hash_including(ref: nil))
-            .and_call_original
-
-          subject
-        end
-      end
-
-      context 'when project does not have a repository' do
-        before do
-          allow(project).to receive(:repository_exists?).and_return(false)
-        end
-
-        it 'passes nil as the ref name to YamlProcessor' do
-          expect(Gitlab::Ci::YamlProcessor)
-            .to receive(:new)
-            .with(content, a_hash_including(ref: nil))
-            .and_call_original
-
-          subject
-        end
-      end
-
-      context 'when commit does not exist in the project' do
-        let(:sha) { 'invalid-sha' }
-
-        it 'passes nil as the ref name to YamlProcessor' do
-          expect(Gitlab::Ci::YamlProcessor)
-            .to receive(:new)
-            .with(content, a_hash_including(ref: nil))
-            .and_call_original
-
-          subject
-        end
-
-        it 'does not cache ref names and does not call Gitaly' do
-          expect(project.repository).not_to receive(:branch_names_contains)
-          expect(project.repository).not_to receive(:tag_names_contains)
-
-          subject
         end
       end
     end

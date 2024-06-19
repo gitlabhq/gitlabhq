@@ -132,12 +132,19 @@ GitLab Dedicated provides access to [audit and system logs](../../administration
 
 ### Bring your own domain
 
-You can configure a custom domain name for your GitLab Dedicated instance. So instead of `customer_name.gitlab-dedicated.com` you can use any domain name that you own, like `gitlab.my-company.com`. You can leverage this feature to:
+You can use your own hostname to access your GitLab Dedicated instance. Instead of `customer_name.gitlab-dedicated.com`, you can use a hostname for a domain that you own, like `gitlab.my-company.com`. Optionally, you can also provide a custom hostname for the bundled container registry and KAS services for your GitLab Dedicated instance. For example, `gitlab-registry.my-company.com` and `gitlab-kas.my-company.com`.
+
+Add a custom hostname to:
 
 - Increase control over branding
 - Avoid having to migrate away from an existing domain already configured for a self-managed instance
 
-Optionally, you can also provide custom domain names for the bundled container registry and KAS services, like `gitlab-registry.my-company.com` and `gitlab-kas.my-company.com`.
+When you add a custom hostname:
+
+- The hostname is included in the external URL used to access your instance.
+- Any connections to your instance using the previous domain names are no longer available.
+
+You can add a custom hostname when you [create your tenant](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance). To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
 ### Maintenance
 

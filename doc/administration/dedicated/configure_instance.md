@@ -82,6 +82,12 @@ To view the configuration change log:
 1. Select your tenant.
 1. At the top of the page, select **Configuration change log**.
 
+### Bring your own domain
+
+You can add a [custom hostname](../../subscriptions/gitlab_dedicated/index.md#bring-your-own-domain) for your GitLab Dedicated instance. Optionally, you can also provide a custom hostname for the bundled container registry and KAS services.
+
+To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+
 ### Inbound Private Link
 
 [AWS Private Link](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) allows users and applications in your VPC on AWS to securely connect to the GitLab Dedicated endpoint without network traffic going over the public internet.

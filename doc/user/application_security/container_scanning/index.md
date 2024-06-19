@@ -699,10 +699,6 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `container_scanning_for_registry_flag`. Disabled by default.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
 When an image is pushed with the `latest` tag, a container scanning job is automatically triggered against the default branch of the project.
 
 Unlike regular Container Scanning, the scan results do not include a security report. Instead, Container Scanning for Registry relies on [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/index.md) to inspect the components detected by the scan.

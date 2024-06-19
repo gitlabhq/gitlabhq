@@ -192,28 +192,6 @@ To protect multiple branches at the same time:
 
 The protected branch displays in the list of protected branches.
 
-## Create a new branch with protections
-
-Users with at least the Developer role can create new protected branches.
-
-Prerequisites:
-
-- **Allowed to push and merge** is set to **No one**.
-- **Allowed to merge** is set to **Developers**.
-
-You can create a protected branch by using the UI or API only.
-This prevents you from accidentally creating a branch
-from the command line or from a Git client application.
-
-To create a new branch through the user interface:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Code > Branches**.
-1. Select **New branch**.
-1. Fill in the branch name and select an existing branch, tag, or commit to
-   base the new branch on. Only existing protected branches and commits
-   that are already in protected branches are accepted.
-
 ## Require everyone to submit merge requests for a protected branch
 
 You can force everyone to submit a merge request, rather than allowing them to
@@ -371,6 +349,30 @@ or push to the source branch.
 
 See [Security on protected branches](../../ci/pipelines/index.md#pipeline-security-on-protected-branches)
 for details about the pipelines security model.
+
+## Create a new branch with protections
+
+Prerequisites:
+
+- You must have at least the Developer role.
+- To create a protected branch, branch protection must be configured to
+  [require everyone to submit merge requests for a protected branch](#require-everyone-to-submit-merge-requests-for-a-protected-branch).
+
+To create a new branch with protections:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Branches**.
+1. Select **New branch**.
+1. Fill in the branch name and select an existing branch, tag, or commit to
+   base the new branch on. If you [require everyone to submit merge requests for a protected branch](#require-everyone-to-submit-merge-requests-for-a-protected-branch), only existing protected branches and commits
+   that are already in protected branches are accepted.
+
+You can also use these methods to create a branch with protections:
+
+- [The Branches API](../../api/branches.md), if
+  [everyone is required to submit merge requests for a protected branch](#require-everyone-to-submit-merge-requests-for-a-protected-branch).
+- From the command line or from a Git client application, if branch protection is configured to
+  [allow everyone to push directly to a protected branch](#allow-everyone-to-push-directly-to-a-protected-branch).
 
 ## Delete a protected branch
 
