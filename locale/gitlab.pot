@@ -1713,6 +1713,9 @@ msgstr ""
 msgid "0 B"
 msgstr ""
 
+msgid "0 cores"
+msgstr ""
+
 msgid "1 Day"
 msgid_plural "%d Days"
 msgstr[0] ""
@@ -19097,7 +19100,7 @@ msgstr ""
 msgid "Discussion unlocked."
 msgstr ""
 
-msgid "Disk Usage"
+msgid "Disk usage"
 msgstr ""
 
 msgid "Dismiss"
@@ -32401,7 +32404,7 @@ msgstr ""
 msgid "Member|Revoke invite"
 msgstr ""
 
-msgid "Memory Usage"
+msgid "Memory usage"
 msgstr ""
 
 msgid "Mentions"
@@ -52133,9 +52136,6 @@ msgstr ""
 msgid "System Hooks Help"
 msgstr ""
 
-msgid "System Info"
-msgstr ""
-
 msgid "System default (%{default})"
 msgstr ""
 
@@ -52143,6 +52143,9 @@ msgid "System header and footer"
 msgstr ""
 
 msgid "System hooks are triggered on sets of events like creating a project or adding an SSH key. You can also enable extra triggers, such as push events."
+msgstr ""
+
+msgid "System information"
 msgstr ""
 
 msgid "System metrics (Custom)"
@@ -56131,10 +56134,10 @@ msgstr ""
 msgid "Unable to build Slack link."
 msgstr ""
 
-msgid "Unable to collect CPU info"
+msgid "Unable to collect CPU information"
 msgstr ""
 
-msgid "Unable to collect memory info"
+msgid "Unable to collect memory information"
 msgstr ""
 
 msgid "Unable to connect to server: %{error}"

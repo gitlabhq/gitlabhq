@@ -25600,6 +25600,8 @@ CREATE INDEX index_application_settings_web_ide_oauth_application_id ON applicat
 
 CREATE INDEX index_approval_group_rules_groups_on_group_id ON approval_group_rules_groups USING btree (group_id);
 
+CREATE INDEX index_approval_group_rules_on_approval_policy_rule_id ON approval_group_rules USING btree (approval_policy_rule_id);
+
 CREATE INDEX index_approval_group_rules_on_scan_result_policy_id ON approval_group_rules USING btree (scan_result_policy_id);
 
 CREATE INDEX index_approval_group_rules_users_on_user_id ON approval_group_rules_users USING btree (user_id);
@@ -25618,6 +25620,8 @@ CREATE UNIQUE INDEX index_approval_merge_request_rules_groups_1 ON approval_merg
 
 CREATE INDEX index_approval_merge_request_rules_groups_2 ON approval_merge_request_rules_groups USING btree (group_id);
 
+CREATE INDEX index_approval_merge_request_rules_on_approval_policy_rule_id ON approval_merge_request_rules USING btree (approval_policy_rule_id);
+
 CREATE INDEX index_approval_merge_request_rules_on_project_id ON approval_merge_request_rules USING btree (project_id);
 
 CREATE UNIQUE INDEX index_approval_merge_request_rules_users_1 ON approval_merge_request_rules_users USING btree (approval_merge_request_rule_id, user_id);
@@ -25631,6 +25635,8 @@ CREATE UNIQUE INDEX index_approval_policy_rules_on_unique_policy_rule_index ON a
 CREATE UNIQUE INDEX index_approval_project_rules_groups_1 ON approval_project_rules_groups USING btree (approval_project_rule_id, group_id);
 
 CREATE INDEX index_approval_project_rules_groups_2 ON approval_project_rules_groups USING btree (group_id);
+
+CREATE INDEX index_approval_project_rules_on_approval_policy_rule_id ON approval_project_rules USING btree (approval_policy_rule_id);
 
 CREATE INDEX index_approval_project_rules_on_id_with_regular_type ON approval_project_rules USING btree (id) WHERE (rule_type = 0);
 
@@ -28474,6 +28480,8 @@ CREATE UNIQUE INDEX index_scan_result_policies_on_position_in_configuration ON s
 
 CREATE INDEX index_scan_result_policies_on_project_id ON scan_result_policies USING btree (project_id);
 
+CREATE INDEX index_scan_result_policy_violations_on_approval_policy_rule_id ON scan_result_policy_violations USING btree (approval_policy_rule_id);
+
 CREATE INDEX index_scan_result_policy_violations_on_merge_request_id ON scan_result_policy_violations USING btree (merge_request_id);
 
 CREATE UNIQUE INDEX index_scan_result_policy_violations_on_policy_and_merge_request ON scan_result_policy_violations USING btree (scan_result_policy_id, merge_request_id);
@@ -28619,6 +28627,8 @@ CREATE INDEX index_snippets_on_title_trigram ON snippets USING gin (title gin_tr
 CREATE INDEX index_snippets_on_updated_at ON snippets USING btree (updated_at);
 
 CREATE INDEX index_snippets_on_visibility_level_and_secret ON snippets USING btree (visibility_level, secret);
+
+CREATE INDEX index_software_license_policies_on_approval_policy_rule_id ON software_license_policies USING btree (approval_policy_rule_id);
 
 CREATE INDEX index_software_license_policies_on_scan_result_policy_id ON software_license_policies USING btree (scan_result_policy_id);
 
@@ -31515,6 +31525,9 @@ ALTER TABLE ONLY resource_link_events
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT fk_2a0421d824 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY approval_group_rules
+    ADD CONSTRAINT fk_2a74c6e52d FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT fk_2c9f941965 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -31613,6 +31626,9 @@ ALTER TABLE ONLY bulk_import_export_uploads
 
 ALTER TABLE ONLY ci_pipelines
     ADD CONSTRAINT fk_3d34ab2e06 FOREIGN KEY (pipeline_schedule_id) REFERENCES ci_pipeline_schedules(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY scan_result_policy_violations
+    ADD CONSTRAINT fk_3d58aa6aee FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY wiki_page_slugs
     ADD CONSTRAINT fk_3d71295ac9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -31857,6 +31873,9 @@ ALTER TABLE ONLY subscription_user_add_on_assignments
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_725465b774 FOREIGN KEY (dismissed_by_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY approval_merge_request_rules
+    ADD CONSTRAINT fk_73fec3d7e5 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY index_statuses
     ADD CONSTRAINT fk_74b2492545 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -31883,6 +31902,9 @@ ALTER TABLE ONLY oauth_openid_requests
 
 ALTER TABLE ONLY scan_result_policy_violations
     ADD CONSTRAINT fk_77251168f1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY approval_project_rules
+    ADD CONSTRAINT fk_773289d10b FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_78034b05d8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -32447,6 +32469,9 @@ ALTER TABLE ONLY boards_epic_board_positions
 
 ALTER TABLE ONLY workspaces
     ADD CONSTRAINT fk_dc7c316be1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY software_license_policies
+    ADD CONSTRAINT fk_dca6a58d53 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_dccd3f98fc FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;

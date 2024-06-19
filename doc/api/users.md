@@ -681,7 +681,11 @@ DETAILS:
 **Offering:** Self-managed, GitLab Dedicated
 
 Deletes a user. Available only for administrators.
-This returns a `204 No Content` status code if the operation was successfully, `404` if the resource was not found or `409` if the user cannot be soft deleted.
+This returns a:
+
+- `204 No Content` status code if the operation was successful.
+- `404` if the resource was not found.
+- `409` if the user cannot be soft deleted.
 
 ```plaintext
 DELETE /users/:id

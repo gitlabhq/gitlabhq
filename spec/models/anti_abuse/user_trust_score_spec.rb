@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Abuse::UserTrustScore, feature_category: :instance_resiliency do
+RSpec.describe AntiAbuse::UserTrustScore, feature_category: :instance_resiliency do
   let_it_be(:user1) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let(:user_1_scores) { described_class.new(user1) }
@@ -114,7 +114,7 @@ RSpec.describe Abuse::UserTrustScore, feature_category: :instance_resiliency do
   describe '#remove_old_scores' do
     context 'if max events is exceeded' do
       before do
-        stub_const('Abuse::UserTrustScore::MAX_EVENTS', 2)
+        stub_const('AntiAbuse::UserTrustScore::MAX_EVENTS', 2)
       end
 
       it 'removes the oldest events' do
@@ -123,7 +123,7 @@ RSpec.describe Abuse::UserTrustScore, feature_category: :instance_resiliency do
         create(:abuse_trust_score, user: user1)
 
         expect(user1.abuse_trust_scores.count).to eq(2)
-        expect(Abuse::TrustScore.find_by_id(first.id)).to eq(nil)
+        expect(AntiAbuse::TrustScore.find_by_id(first.id)).to eq(nil)
       end
     end
   end

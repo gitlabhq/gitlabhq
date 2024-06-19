@@ -1,48 +1,50 @@
-- page_title _('System Info')
+- page_title _('System information')
+= render ::Layouts::PageHeadingComponent.new(_('System information'))
 
-.gl-mt-3
-.row
-  .col-sm
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-3' }) do |c|
-      - c.with_body do
-        %h4
-          = sprite_icon('pod', size: 18, css_class: 'gl-text-gray-700')
+.gl-grid.sm:gl-grid-cols-2.md:gl-grid-cols-3.gl-gap-5
+  = render Pajamas::CardComponent.new do |c|
+    - c.with_body do
+      - if @cpus
+        .gl-text-secondary.gl-flex.gl-align-items-center.gl-gap-2.gl-mb-3
+          = sprite_icon('pod')
           = _('CPU')
-        .data
-          - if @cpus
-            %h2= _('%{cores} cores') % { cores: @cpus.length }
-          - else
-            = sprite_icon('warning-solid', css_class: 'text-warning')
-            = _('Unable to collect CPU info')
+        %h2.gl-my-0= _('%{cores} cores') % { cores: @cpus.length }
+      - else
+        .gl-text-orange-600.gl-flex.gl-align-items-center.gl-gap-2.gl-mb-3
+          = sprite_icon('pod')
+          = _('Unable to collect CPU information')
+        %h2.gl-my-0.gl-text-secondary= _('0 cores')
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-3' }) do |c|
-      - c.with_body do
-        %h4
-          = sprite_icon('status-health', size: 18, css_class: 'gl-text-gray-700')
-          = _('Memory Usage')
-        .data
-          - if @memory
-            %h2 #{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}
-          - else
-            = sprite_icon('warning-solid', css_class: 'text-warning')
-            = _('Unable to collect memory info')
+  = render Pajamas::CardComponent.new do |c|
+    - c.with_body do
+      - if @memory
+        .gl-text-secondary.gl-flex.gl-align-items-center.gl-gap-2.gl-mb-3
+          = sprite_icon('status-health')
+          = _('Memory usage')
+        %h2.gl-mt-0 #{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}
+        - progress = @memory.active_bytes / (@memory.total_bytes / 100)
+        = render Pajamas::ProgressComponent.new(value: progress, variant: 'primary')
+      - else
+        .gl-text-orange-600.gl-flex.gl-align-items-center.gl-gap-2.gl-mb-3
+          = sprite_icon('status-health')
+          = _('Unable to collect memory information')
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-3' }) do |c|
+  = render Pajamas::CardComponent.new do |c|
+    - c.with_body do
+      .gl-text-secondary.gl-flex.gl-align-items-center.gl-gap-2.gl-mb-3
+        = sprite_icon('clock')
+        = _('System started')
+      %h2.gl-my-0= time_ago_with_tooltip(Rails.application.config.booted_at)
+
+  - @disks.each do |disk|
+    = render Pajamas::CardComponent.new do |c|
       - c.with_body do
-        %h4
-          = sprite_icon('clock', size: 18, css_class: 'gl-text-gray-700')
-          = _('System started')
-        .data
-          %h2= time_ago_with_tooltip(Rails.application.config.booted_at)
-  .col-sm
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-3' }) do |c|
-      - c.with_body do
-        %h4
-          = sprite_icon('disk', size: 18, css_class: 'gl-text-gray-700')
-          = _('Disk Usage')
-        .data
-          - @disks.each do |disk|
-            %h2 #{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}
-            %ul
-              %li= disk[:disk_name]
-              %li= disk[:mount_path]
+        .gl-text-secondary.gl-flex.gl-align-items-center.gl-gap-2.gl-mb-3
+          = sprite_icon('disk')
+          = _('Disk usage')
+        %h2.gl-mt-0 #{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}
+        - progress = disk[:bytes_used] / (disk[:bytes_total] / 100)
+        = render Pajamas::ProgressComponent.new(value: progress, variant: 'primary')
+        .gl-mt-4
+          %code= disk[:disk_name]
+          %code= disk[:mount_path]

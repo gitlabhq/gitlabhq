@@ -246,9 +246,9 @@ class User < MainClusterwide::ApplicationRecord
   has_many :assigned_abuse_reports, class_name: "AbuseReport", through: :admin_abuse_report_assignees, source: :abuse_report
   has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter # rubocop:disable Cop/ActiveRecordDependent
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
-  has_many :abuse_events,             foreign_key: :user_id, class_name: 'Abuse::Event', inverse_of: :user
+  has_many :abuse_events,             foreign_key: :user_id, class_name: 'AntiAbuse::Event', inverse_of: :user
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :abuse_trust_scores,       class_name: 'Abuse::TrustScore', foreign_key: :user_id
+  has_many :abuse_trust_scores,       class_name: 'AntiAbuse::TrustScore', foreign_key: :user_id
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -2499,7 +2499,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def block_or_ban
-    user_scores = Abuse::UserTrustScore.new(self)
+    user_scores = AntiAbuse::UserTrustScore.new(self)
     if user_scores.spammer? && account_age_in_days < 7
       ban_and_report
     else

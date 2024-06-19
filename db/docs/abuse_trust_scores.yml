@@ -1,7 +1,7 @@
 ---
 table_name: abuse_trust_scores
 classes:
-- Abuse::TrustScore
+- AntiAbuse::TrustScore
 feature_categories:
 - instance_resiliency
 description: Aggregates per-user scores related to potential product abuse.

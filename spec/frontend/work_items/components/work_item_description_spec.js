@@ -51,6 +51,7 @@ describe('WorkItemDescription', () => {
     isEditing = false,
     isGroup = false,
     workItemIid = '1',
+    workItemTypeId = workItemQueryResponse.data.workItem.workItemType.id,
     editMode = false,
     showButtonsBelowField,
   } = {}) => {
@@ -70,6 +71,7 @@ describe('WorkItemDescription', () => {
         fullPath: 'test-project-path',
         workItemId: id,
         workItemIid,
+        workItemTypeId,
         editMode,
         showButtonsBelowField,
       },
@@ -102,6 +104,7 @@ describe('WorkItemDescription', () => {
         autocompleteDataSources: autocompleteDataSources({ fullPath, iid }),
       });
     });
+
     it('shows edited by text', async () => {
       const lastEditedAt = '2022-09-21T06:18:42Z';
       const lastEditedBy = {

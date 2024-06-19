@@ -253,7 +253,7 @@ class User
 
   def spammer?
     # Warning sign: we use a constant that belongs to a specific bounded context!
-    spam_score > Abuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
+    spam_score > AntiAbuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
   end
 
   def telesign_score
@@ -279,7 +279,7 @@ user.arkose_global_score
 ```ruby
 ##
 # GOOD: Define a thin class that represents a user trust score
-class Abuse::UserTrustScore
+class AntiAbuse::UserTrustScore
   def initialize(user)
     @user = user
   end
@@ -289,7 +289,7 @@ class Abuse::UserTrustScore
   end
 
   def spammer?
-    spam > Abuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
+    spam > AntiAbuse::TrustScore::SPAMCHECK_HAM_THRESHOLD
   end
 
   def telesign
@@ -307,13 +307,13 @@ class Abuse::UserTrustScore
   private
 
   def scores
-    Abuse::TrustScore.for_user(@user)
+    AntiAbuse::TrustScore.for_user(@user)
   end
 end
 
 # Usage:
 user = User.find(1)
-user_score = Abuse::UserTrustScore.new(user)
+user_score = AntiAbuse::UserTrustScore.new(user)
 user_score.spam
 user_score.spammer?
 user_score.telesign

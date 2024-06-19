@@ -33,28 +33,12 @@ describe('Actions Package list store', () => {
     };
 
     const filter = [];
-    it('should fetch the project packages list when isGroupPage is false', async () => {
-      await testAction(
-        actions.requestPackagesList,
-        undefined,
-        { config: { isGroupPage: false, resourceId: 1 }, sorting, filter },
-        [],
-        [
-          { type: 'setLoading', payload: true },
-          { type: 'receivePackagesListSuccess', payload: { data: 'foo', headers } },
-          { type: 'setLoading', payload: false },
-        ],
-      );
-      expect(Api.projectPackages).toHaveBeenCalledWith(1, {
-        params: { page: 1, per_page: 20, sort: sorting.sort, order_by: sorting.orderBy },
-      });
-    });
 
-    it('should fetch the group packages list when  isGroupPage is true', async () => {
+    it('should fetch the group packages list when isGroupPage is true', async () => {
       await testAction(
         actions.requestPackagesList,
-        undefined,
-        { config: { isGroupPage: true, resourceId: 2 }, sorting, filter },
+        { isGroupPage: true, resourceId: 2 },
+        { sorting, filter },
         [],
         [
           { type: 'setLoading', payload: true },
@@ -63,59 +47,21 @@ describe('Actions Package list store', () => {
         ],
       );
       expect(Api.groupPackages).toHaveBeenCalledWith(2, {
-        params: { page: 1, per_page: 20, sort: sorting.sort, order_by: sorting.orderBy },
-      });
-    });
-
-    it('should fetch packages of a certain type when a filter with a type is present', async () => {
-      const packageType = 'maven';
-
-      await testAction(
-        actions.requestPackagesList,
-        undefined,
-        {
-          config: { isGroupPage: false, resourceId: 1 },
-          sorting,
-          filter: [{ type: 'type', value: { data: 'maven' } }],
-        },
-        [],
-        [
-          { type: 'setLoading', payload: true },
-          { type: 'receivePackagesListSuccess', payload: { data: 'foo', headers } },
-          { type: 'setLoading', payload: false },
-        ],
-      );
-      expect(Api.projectPackages).toHaveBeenCalledWith(1, {
         params: {
           page: 1,
           per_page: 20,
           sort: sorting.sort,
           order_by: sorting.orderBy,
-          package_type: packageType,
+          package_type: 'terraform_module',
         },
       });
     });
 
-    it('should create alert on API error', async () => {
-      Api.projectPackages = jest.fn().mockRejectedValue();
+    it('should fetch packages with type terraform_module', async () => {
       await testAction(
         actions.requestPackagesList,
-        undefined,
-        { config: { isGroupPage: false, resourceId: 2 }, sorting, filter },
-        [],
-        [
-          { type: 'setLoading', payload: true },
-          { type: 'setLoading', payload: false },
-        ],
-      );
-      expect(createAlert).toHaveBeenCalled();
-    });
-
-    it('should force the terraform_module type when forceTerraform is true', async () => {
-      await testAction(
-        actions.requestPackagesList,
-        undefined,
-        { config: { isGroupPage: false, resourceId: 1, forceTerraform: true }, sorting, filter },
+        { isGroupPage: false, resourceId: 1 },
+        { sorting, filter },
         [],
         [
           { type: 'setLoading', payload: true },
@@ -133,6 +79,21 @@ describe('Actions Package list store', () => {
         },
       });
     });
+
+    it('should create alert on API error', async () => {
+      Api.projectPackages = jest.fn().mockRejectedValue();
+      await testAction(
+        actions.requestPackagesList,
+        { isGroupPage: false, resourceId: 2 },
+        { sorting, filter },
+        [],
+        [
+          { type: 'setLoading', payload: true },
+          { type: 'setLoading', payload: false },
+        ],
+      );
+      expect(createAlert).toHaveBeenCalled();
+    });
   });
 
   describe('receivePackagesListSuccess', () => {
@@ -147,18 +108,6 @@ describe('Actions Package list store', () => {
           { type: types.SET_PACKAGE_LIST_SUCCESS, payload: data },
           { type: types.SET_PAGINATION, payload: headers },
         ],
-        [],
-      );
-    });
-  });
-
-  describe('setInitialState', () => {
-    it('should commit setInitialState', () => {
-      return testAction(
-        actions.setInitialState,
-        '1',
-        null,
-        [{ type: types.SET_INITIAL_STATE, payload: '1' }],
         [],
       );
     });
@@ -181,6 +130,8 @@ describe('Actions Package list store', () => {
       _links: {
         delete_api_path: 'foo',
       },
+      isGroupPage: false,
+      resourceId: 1,
     };
     it('should perform a delete operation on _links.delete_api_path', () => {
       mock.onDelete(payload._links.delete_api_path).replyOnce(HTTP_STATUS_OK);
@@ -193,7 +144,7 @@ describe('Actions Package list store', () => {
         [],
         [
           { type: 'setLoading', payload: true },
-          { type: 'requestPackagesList', payload: { page: 1 } },
+          { type: 'requestPackagesList', payload: { page: 1, isGroupPage: false, resourceId: 1 } },
         ],
       );
     });

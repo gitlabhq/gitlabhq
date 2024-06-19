@@ -1,4 +1,6 @@
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
+  NEW_WORK_ITEM_IID,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_DESIGNS,
   WIDGET_TYPE_HEALTH_STATUS,
@@ -54,24 +56,60 @@ export const formatAncestors = (workItem) =>
 export const findHierarchyWidgetDefinition = (widgetDefinitions) =>
   widgetDefinitions?.find((widgetDefinition) => widgetDefinition.type === WIDGET_TYPE_HIERARCHY);
 
-const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, isGroup }) => {
+const autocompleteSourcesPath = ({ autocompleteType, fullPath, iid, workItemTypeId, isGroup }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-  return `${domain}/${basePath}/-/autocomplete_sources/${autocompleteType}?type=WorkItem&type_id=${iid}`;
+
+  const typeId =
+    iid === NEW_WORK_ITEM_IID
+      ? `work_item_type_id=${getIdFromGraphQLId(workItemTypeId)}`
+      : `type_id=${iid}`;
+  return `${domain}/${basePath}/-/autocomplete_sources/${autocompleteType}?type=WorkItem&${typeId}`;
 };
 
-export const autocompleteDataSources = ({ fullPath, iid, isGroup = false }) => ({
-  labels: autocompleteSourcesPath({ autocompleteType: 'labels', fullPath, iid, isGroup }),
-  members: autocompleteSourcesPath({ autocompleteType: 'members', fullPath, iid, isGroup }),
-  commands: autocompleteSourcesPath({ autocompleteType: 'commands', fullPath, iid, isGroup }),
-  issues: autocompleteSourcesPath({ autocompleteType: 'issues', fullPath, iid, isGroup }),
+export const autocompleteDataSources = ({ fullPath, iid, workItemTypeId, isGroup = false }) => ({
+  labels: autocompleteSourcesPath({
+    autocompleteType: 'labels',
+    fullPath,
+    iid,
+    isGroup,
+    workItemTypeId,
+  }),
+  members: autocompleteSourcesPath({
+    autocompleteType: 'members',
+    fullPath,
+    iid,
+    isGroup,
+    workItemTypeId,
+  }),
+  commands: autocompleteSourcesPath({
+    autocompleteType: 'commands',
+    fullPath,
+    iid,
+    isGroup,
+    workItemTypeId,
+  }),
+  issues: autocompleteSourcesPath({
+    autocompleteType: 'issues',
+    fullPath,
+    iid,
+    isGroup,
+    workItemTypeId,
+  }),
   mergeRequests: autocompleteSourcesPath({
     autocompleteType: 'merge_requests',
     fullPath,
     iid,
     isGroup,
+    workItemTypeId,
   }),
-  epics: autocompleteSourcesPath({ autocompleteType: 'epics', fullPath, iid, isGroup }),
+  epics: autocompleteSourcesPath({
+    autocompleteType: 'epics',
+    fullPath,
+    iid,
+    workItemTypeId,
+    isGroup,
+  }),
 });
 
 export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {

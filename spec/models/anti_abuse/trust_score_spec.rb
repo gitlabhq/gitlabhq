@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Abuse::TrustScore, feature_category: :instance_resiliency do
+RSpec.describe AntiAbuse::TrustScore, feature_category: :instance_resiliency do
   let_it_be(:user) { create(:user) }
 
   let(:correlation_id) { nil }
@@ -30,7 +30,7 @@ RSpec.describe Abuse::TrustScore, feature_category: :instance_resiliency do
 
     context 'if correlation ID is nil' do
       it 'adds the correlation id' do
-        expect(subject.correlation_id_value).to eq('123abc')
+        expect(abuse_trust_score.correlation_id_value).to eq('123abc')
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.describe Abuse::TrustScore, feature_category: :instance_resiliency do
       let(:correlation_id) { 'already-set' }
 
       it 'does not change the correlation id' do
-        expect(subject.correlation_id_value).to eq('already-set')
+        expect(abuse_trust_score.correlation_id_value).to eq('already-set')
       end
     end
   end

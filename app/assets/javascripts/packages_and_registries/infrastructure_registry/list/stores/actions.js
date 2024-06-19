@@ -14,7 +14,6 @@ import {
 import { getNewPaginationPage } from '../utils';
 import * as types from './mutation_types';
 
-export const setInitialState = ({ commit }, data) => commit(types.SET_INITIAL_STATE, data);
 export const setLoading = ({ commit }, data) => commit(types.SET_MAIN_LOADING, data);
 export const setSorting = ({ commit }, data) => commit(types.SET_SORTING, data);
 export const setFilter = ({ commit }, data) => commit(types.SET_FILTER, data);
@@ -27,17 +26,20 @@ export const receivePackagesListSuccess = ({ commit }, { data, headers }) => {
 export const requestPackagesList = ({ dispatch, state }, params = {}) => {
   dispatch('setLoading', true);
 
-  const { page = DEFAULT_PAGE, per_page: perPage = DEFAULT_PAGE_SIZE } = params;
+  const {
+    isGroupPage = false,
+    page = DEFAULT_PAGE,
+    per_page: perPage = DEFAULT_PAGE_SIZE,
+    resourceId,
+  } = params;
   const { sort, orderBy } = state.sorting;
-  const type = state.config.forceTerraform
-    ? TERRAFORM_SEARCH_TYPE
-    : state.filter.find((f) => f.type === 'type');
+  const type = TERRAFORM_SEARCH_TYPE;
   const name = state.filter.find((f) => f.type === FILTERED_SEARCH_TERM);
   const packageFilters = { package_type: type?.value?.data, package_name: name?.value?.data };
 
-  const apiMethod = state.config.isGroupPage ? 'groupPackages' : 'projectPackages';
+  const apiMethod = isGroupPage ? 'groupPackages' : 'projectPackages';
 
-  return Api[apiMethod](state.config.resourceId, {
+  return Api[apiMethod](resourceId, {
     params: { page, per_page: perPage, sort, order_by: orderBy, ...packageFilters },
   })
     .then(({ data, headers }) => {
@@ -53,7 +55,7 @@ export const requestPackagesList = ({ dispatch, state }, params = {}) => {
     });
 };
 
-export const requestDeletePackage = ({ dispatch, state }, { _links }) => {
+export const requestDeletePackage = ({ dispatch, state }, { _links, isGroupPage, resourceId }) => {
   if (!_links || !_links.delete_api_path) {
     createAlert({
       message: DELETE_PACKAGE_ERROR_MESSAGE,
@@ -69,7 +71,7 @@ export const requestDeletePackage = ({ dispatch, state }, { _links }) => {
       const { page: currentPage, perPage, total } = state.pagination;
       const page = getNewPaginationPage(currentPage, perPage, total - 1);
 
-      dispatch('requestPackagesList', { page });
+      dispatch('requestPackagesList', { page, isGroupPage, resourceId });
       createAlert({
         message: DELETE_PACKAGE_SUCCESS_MESSAGE,
         variant: VARIANT_SUCCESS,

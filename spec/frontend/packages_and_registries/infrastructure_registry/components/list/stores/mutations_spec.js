@@ -10,29 +10,6 @@ describe('Mutations Registry Store', () => {
     mockState = createState();
   });
 
-  describe('SET_INITIAL_STATE', () => {
-    it('should set the initial state', () => {
-      const config = {
-        resourceId: '1',
-        pageType: 'groups',
-        userCanDelete: '',
-        emptyListIllustration: 'foo',
-      };
-
-      const expectedState = {
-        ...mockState,
-        config: {
-          ...config,
-          isGroupPage: true,
-          canDestroyPackage: true,
-        },
-      };
-      mutations[types.SET_INITIAL_STATE](mockState, config);
-
-      expect(mockState.projectId).toEqual(expectedState.projectId);
-    });
-  });
-
   describe('SET_PACKAGE_LIST_SUCCESS', () => {
     it('should set a packages list', () => {
       const payload = [npmPackage, mavenPackage];

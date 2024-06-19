@@ -17,7 +17,7 @@ module Abuse
         return
       end
 
-      Abuse::TrustScore.create!(user: user, source: source, score: score.to_f, correlation_id_value: correlation_id)
+      AntiAbuse::TrustScore.create!(user: user, source: source, score: score.to_f, correlation_id_value: correlation_id)
     end
   end
 end

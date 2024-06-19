@@ -62,6 +62,7 @@ export default {
           this.fullPath,
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,
+          this.workItemTypes[0]?.id,
         );
       },
       error() {
@@ -92,6 +93,7 @@ export default {
           this.fullPath,
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,
+          this.workItemTypes[0]?.id,
         );
       }
     },

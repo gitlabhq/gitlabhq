@@ -184,7 +184,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:abuse_reports).dependent(:nullify).inverse_of(:user) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:nullify).class_name('AbuseReport').inverse_of(:reporter) }
     it { is_expected.to have_many(:resolved_abuse_reports).class_name('AbuseReport').inverse_of(:resolved_by) }
-    it { is_expected.to have_many(:abuse_events).class_name('Abuse::Event').inverse_of(:user) }
+    it { is_expected.to have_many(:abuse_events).class_name('AntiAbuse::Event').inverse_of(:user) }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
     it { is_expected.to have_many(:releases).dependent(:nullify) }
     it { is_expected.to have_many(:reviews).inverse_of(:author) }
@@ -204,7 +204,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
-    it { is_expected.to have_many(:abuse_trust_scores).class_name('Abuse::TrustScore') }
+    it { is_expected.to have_many(:abuse_trust_scores).class_name('AntiAbuse::TrustScore') }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
     it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
@@ -6613,8 +6613,8 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when the user is a spammer' do
         before do
-          user_scores = Abuse::UserTrustScore.new(user)
-          allow(Abuse::UserTrustScore).to receive(:new).and_return(user_scores)
+          user_scores = AntiAbuse::UserTrustScore.new(user)
+          allow(AntiAbuse::UserTrustScore).to receive(:new).and_return(user_scores)
           allow(user_scores).to receive(:spammer?).and_return(true)
         end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Abuse
+module AntiAbuse
   module Reports
     class UserMention < UserMention
       self.table_name = 'abuse_report_user_mentions'

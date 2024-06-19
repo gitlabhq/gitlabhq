@@ -166,7 +166,8 @@ export default {
       return autocompleteDataSources({
         fullPath: this.fullPath,
         isGroup: this.isGroup,
-        iid: this.workItem?.iid,
+        iid: this.workItemIid,
+        workItemTypeId: this.workItem?.workItemType?.id,
       });
     },
     saveButtonText() {

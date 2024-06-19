@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Abuse
+module AntiAbuse
   class TrustScore < MainClusterwide::ApplicationRecord
     self.table_name = 'abuse_trust_scores'
 
@@ -21,11 +21,11 @@ module Abuse
     private
 
     def assign_correlation_id
-      self.correlation_id_value ||= (Labkit::Correlation::CorrelationId.current_id || '')
+      self.correlation_id_value ||= Labkit::Correlation::CorrelationId.current_id || ''
     end
 
     def remove_old_scores
-      Abuse::UserTrustScore.new(user).remove_old_scores(source)
+      AntiAbuse::UserTrustScore.new(user).remove_old_scores(source)
     end
   end
 end

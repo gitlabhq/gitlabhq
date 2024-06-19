@@ -194,7 +194,13 @@ export const removeHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }
   });
 };
 
-export const setNewWorkItemCache = async (isGroup, fullPath, widgetDefinitions, workItemType) => {
+export const setNewWorkItemCache = async (
+  isGroup,
+  fullPath,
+  widgetDefinitions,
+  workItemType,
+  workItemTypeId,
+) => {
   const workItemAttributesWrapperOrder = [
     WIDGET_TYPE_ASSIGNEES,
     WIDGET_TYPE_LABELS,
@@ -429,7 +435,7 @@ export const setNewWorkItemCache = async (isGroup, fullPath, widgetDefinitions, 
             __typename: 'UserCore',
           },
           workItemType: {
-            id: 'mock-work-item-type-id',
+            id: workItemTypeId || 'mock-work-item-type-id',
             name: workItemType,
             iconName: 'issue-type-epic',
             __typename: 'WorkItemType',

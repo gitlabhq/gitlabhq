@@ -435,7 +435,7 @@ The following topics document the **Monitoring** section of the Admin Area.
 
 > - Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
 
-The **System Info** page provides the following statistics:
+The **System information** page provides the following statistics:
 
 | Field          | Description                                       |
 |:---------------|:--------------------------------------------------|
@@ -444,7 +444,7 @@ The **System Info** page provides the following statistics:
 | Disk Usage     | Disk space in use, and total disk space available |
 | System started | When the system hosting GitLab was started. In GitLab 15.1 and earlier, this was an uptime statistic. |
 
-These statistics are updated only when you go to the **System Info** page, or you refresh the page in your browser.
+These statistics are updated only when you go to the **System information** page, or you refresh the page in your browser.
 
 ### Background Jobs
 

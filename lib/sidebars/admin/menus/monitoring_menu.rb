@@ -33,7 +33,7 @@ module Sidebars
 
         def system_info_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('System Info'),
+            title: _('System information'),
             link: admin_system_info_path,
             active_routes: { controller: 'system_info' },
             item_id: :system_info

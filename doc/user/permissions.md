@@ -361,6 +361,8 @@ The following table lists group permissions available for each role:
 | View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription) |       |          |           |            | ✓     | Does not apply to subgroups |
 | View 2FA status of members                                                              |       |          |           |            | ✓     |       |
 | View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓     | Does not apply to subgroups |
+| Map or unmap workspace cluster agents to and from a group                               |       |          |           |            | ✓     |       |
+| View workspace cluster agents mapped to a group                                         |       |          |           | ✓          | ✓     |       |
 
 ### Subgroup permissions
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Abuse
+module AntiAbuse
   class Event < MainClusterwide::ApplicationRecord
     self.table_name = 'abuse_events'
 

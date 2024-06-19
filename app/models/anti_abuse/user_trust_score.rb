@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Abuse
+module AntiAbuse
   class UserTrustScore
     MAX_EVENTS = 100
     SPAMCHECK_HAM_THRESHOLD = 0.5
@@ -37,7 +37,7 @@ module Abuse
       count = trust_scores_for_source(source).count
       return unless count > MAX_EVENTS
 
-      Abuse::TrustScore.delete(
+      AntiAbuse::TrustScore.delete(
         trust_scores_for_source(source)
         .order_created_at_asc
         .limit(count - MAX_EVENTS)
@@ -47,7 +47,7 @@ module Abuse
     private
 
     def user_scores
-      Abuse::TrustScore.where(user_id: @user.id)
+      AntiAbuse::TrustScore.where(user_id: @user.id)
     end
   end
 end
