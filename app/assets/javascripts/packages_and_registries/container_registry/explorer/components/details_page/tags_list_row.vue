@@ -8,7 +8,7 @@ import {
   GlBadge,
   GlLink,
 } from '@gitlab/ui';
-import { formatDate } from '~/lib/utils/datetime_utility';
+import { localeDateFormat } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { n__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
@@ -116,14 +116,11 @@ export default {
       // remove sha256: from the string, and show only the first 7 char
       return this.tag.digest?.substring(7, 14) ?? NOT_AVAILABLE_TEXT;
     },
-    publishDate() {
+    publishDateTime() {
       return this.tag.publishedAt || this.tag.createdAt;
     },
-    publishedDate() {
-      return formatDate(this.publishDate, 'isoDate');
-    },
-    publishedTime() {
-      return formatDate(this.publishDate, 'HH:MM:ss Z');
+    publishedDateTime() {
+      return localeDateFormat.asDateTimeFull.format(this.publishDateTime);
     },
     formattedRevision() {
       // to be removed when API response is adjusted
@@ -210,7 +207,7 @@ export default {
       <span data-testid="time">
         <gl-sprintf :message="$options.i18n.CREATED_AT_LABEL">
           <template #timeInfo>
-            <time-ago-tooltip :time="publishDate" />
+            <time-ago-tooltip :time="publishDateTime" />
           </template>
         </gl-sprintf>
       </span>
@@ -243,11 +240,8 @@ export default {
           <template #repositoryPath>
             <i>{{ tagLocation }}</i>
           </template>
-          <template #time>
-            {{ publishedTime }}
-          </template>
-          <template #date>
-            {{ publishedDate }}
+          <template #dateTime>
+            {{ publishedDateTime }}
           </template>
         </gl-sprintf>
       </details-row>

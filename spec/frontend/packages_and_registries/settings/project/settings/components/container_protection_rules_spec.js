@@ -116,6 +116,23 @@ describe('Container protection rules project settings', () => {
       );
     });
 
+    it('renders table with container protection rule with blank minimumAccessLevelForDelete', async () => {
+      const containerProtectionRuleQueryResolver = jest.fn().mockResolvedValue(
+        containerProtectionRuleQueryPayload({
+          nodes: [{ ...containerProtectionRulesData[0], minimumAccessLevelForDelete: null }],
+        }),
+      );
+      createComponent({ containerProtectionRuleQueryResolver });
+
+      await waitForPromises();
+
+      expect(findTableRowCell(0, 0).text()).toBe(
+        containerProtectionRulesData[0].repositoryPathPattern,
+      );
+      expect(findTableRowCellComboboxSelectedOption(0, 1).text).toBe('Maintainer');
+      expect(findTableRowCellComboboxSelectedOption(0, 2).text).toBe('Developer (default)');
+    });
+
     it('displays table in busy state and shows loading icon inside table', async () => {
       createComponent();
 
@@ -305,7 +322,12 @@ describe('Container protection rules project settings', () => {
             .findAllComponents('option')
             .wrappers.map((w) => w.text());
 
-          expect(accessLevelOptions).toEqual(['Maintainer', 'Owner', 'Admin']);
+          expect(accessLevelOptions).toEqual([
+            'Developer (default)',
+            'Maintainer',
+            'Owner',
+            'Admin',
+          ]);
         });
 
         describe('when value changes', () => {

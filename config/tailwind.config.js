@@ -24,7 +24,30 @@ try {
   delete require.cache[path.resolve(__filename)];
 }
 
-function gitLabUIUtilities({ addUtilities }) {
+function gitLabUIUtilities({ addComponents, addUtilities }) {
+  addComponents({
+    '.border': {
+      'border-style': 'solid',
+      'border-color': 'var(--gray-100, #dcdcde)',
+    },
+    '.border-t': {
+      'border-top-style': 'solid',
+      'border-top-color': 'var(--gray-100, #dcdcde)',
+    },
+    '.border-r': {
+      'border-right-style': 'solid',
+      'border-right-color': 'var(--gray-100, #dcdcde)',
+    },
+    '.border-b': {
+      'border-bottom-style': 'solid',
+      'border-bottom-color': 'var(--gray-100, #dcdcde)',
+    },
+    '.border-l': {
+      'border-left-style': 'solid',
+      'border-left-color': 'var(--gray-100, #dcdcde)',
+    },
+  });
+
   addUtilities({
     '.font-monospace': {
       'font-family':
@@ -37,6 +60,18 @@ function gitLabUIUtilities({ addUtilities }) {
     },
     '.wrap-anywhere': {
       'overflow-wrap': 'anywhere',
+    },
+    '.border-b-solid': {
+      'border-bottom-style': 'solid',
+    },
+    '.border-l-solid': {
+      'border-left-style': 'solid',
+    },
+    '.border-r-solid': {
+      'border-right-style': 'solid',
+    },
+    '.border-t-solid': {
+      'border-top-style': 'solid',
     },
   });
 }

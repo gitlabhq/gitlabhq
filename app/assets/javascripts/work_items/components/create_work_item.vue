@@ -14,7 +14,7 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { fetchPolicies } from '~/lib/graphql';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
-import { newWorkItemFullPath } from '~/work_items/utils';
+import { newWorkItemFullPath, isWorkItemItemValidEnum } from '~/work_items/utils';
 import {
   I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
   I18N_WORK_ITEM_ERROR_CREATING,
@@ -229,7 +229,7 @@ export default {
       this.isTitleValid = Boolean(title.trim());
     },
     updateCache() {
-      if (!this.selectedWorkItemTypeId) {
+      if (!this.selectedWorkItemTypeId || !isWorkItemItemValidEnum(this.workItemType)) {
         return;
       }
       setNewWorkItemCache(

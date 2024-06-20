@@ -134,6 +134,7 @@ export default {
     },
     minimumAccessLevelOptions() {
       return [
+        { value: undefined, text: __('Developer (default)') },
         { value: 'MAINTAINER', text: __('Maintainer') },
         { value: 'OWNER', text: __('Owner') },
         { value: 'ADMIN', text: __('Admin') },

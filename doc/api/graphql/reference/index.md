@@ -113,7 +113,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiSelfHostedModels`
 
-List of Self-Hosted LLM servers.
+List of self-hosted LLM servers.
 
 DETAILS:
 **Introduced** in GitLab 17.1.
@@ -1609,6 +1609,32 @@ Input type: `AiAgentUpdateInput`
 | <a id="mutationaiagentupdateagent"></a>`agent` | [`AiAgent`](#aiagent) | Agent after mutation. |
 | <a id="mutationaiagentupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiagentupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
+### `Mutation.aiSelfHostedModelCreate`
+
+DETAILS:
+**Introduced** in GitLab 17.1.
+**Status**: Experiment.
+
+Input type: `AiSelfHostedModelCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiselfhostedmodelcreateapitoken"></a>`apiToken` | [`String`](#string) | API token to access the self-hosted model, if any. |
+| <a id="mutationaiselfhostedmodelcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiselfhostedmodelcreateendpoint"></a>`endpoint` | [`String!`](#string) | Endpoint of the self-hosted model. |
+| <a id="mutationaiselfhostedmodelcreatemodel"></a>`model` | [`AiAcceptedSelfHostedModels!`](#aiacceptedselfhostedmodels) | AI model deployed. |
+| <a id="mutationaiselfhostedmodelcreatename"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiselfhostedmodelcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiselfhostedmodelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationaiselfhostedmodelcreateselfhostedmodel"></a>`selfHostedModel` | [`AiSelfHostedModel`](#aiselfhostedmodel) | Created self-hosted model. |
 
 ### `Mutation.alertSetAssignees`
 
@@ -3216,10 +3242,10 @@ Input type: `CreateContainerRegistryProtectionRuleInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationcreatecontainerregistryprotectionruleclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
-| <a id="mutationcreatecontainerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level to allow to delete container images in the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
-| <a id="mutationcreatecontainerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level to allow to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| <a id="mutationcreatecontainerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level to allow to delete container images from the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level for delete is ignored. Users with at least the Developer role are allowed to delete container images. Introduced in GitLab 16.6: **Status**: Experiment. |
+| <a id="mutationcreatecontainerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | Minimum GitLab access level to allow to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level for push is ignored. Users with at least the Developer role are allowed to push container images. Introduced in GitLab 16.6: **Status**: Experiment. |
 | <a id="mutationcreatecontainerregistryprotectionruleprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project where a protection rule is located. |
-| <a id="mutationcreatecontainerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
+| <a id="mutationcreatecontainerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` | [`String!`](#string) | Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. Introduced in GitLab 16.6: **Status**: Experiment. |
 
 #### Fields
 
@@ -16465,13 +16491,13 @@ Self-hosted LLM servers.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aiselfhostedmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
-| <a id="aiselfhostedmodelendpoint"></a>`endpoint` | [`String!`](#string) | Endpoint of the Self-Hosted model server. |
-| <a id="aiselfhostedmodelhasapitoken"></a>`hasApiToken` | [`Boolean!`](#boolean) | Indicates if an API key is set for the Self-Hosted model server. |
-| <a id="aiselfhostedmodelid"></a>`id` | [`AiSelfHostedModelID!`](#aiselfhostedmodelid) | ID of the Self-Hosted model server. |
-| <a id="aiselfhostedmodelmodel"></a>`model` | [`String!`](#string) | Model running the Self-Hosted model server. |
-| <a id="aiselfhostedmodelmodifiedat"></a>`modifiedAt` | [`Time!`](#time) | Date of last modification. |
-| <a id="aiselfhostedmodelname"></a>`name` | [`String!`](#string) | Given name of the Self-Hosted model server. |
+| <a id="aiselfhostedmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of creation. |
+| <a id="aiselfhostedmodelendpoint"></a>`endpoint` | [`String!`](#string) | Endpoint of the self-hosted model server. |
+| <a id="aiselfhostedmodelhasapitoken"></a>`hasApiToken` | [`Boolean!`](#boolean) | Indicates if an API key is set for the self-hosted model server. |
+| <a id="aiselfhostedmodelid"></a>`id` | [`AiSelfHostedModelID!`](#aiselfhostedmodelid) | ID of the self-hosted model server. |
+| <a id="aiselfhostedmodelmodel"></a>`model` | [`String!`](#string) | AI model deployed. |
+| <a id="aiselfhostedmodelname"></a>`name` | [`String!`](#string) | Deployment name of the self-hosted model. |
+| <a id="aiselfhostedmodelupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp of last update. |
 
 ### `AlertManagementAlert`
 
@@ -18812,8 +18838,8 @@ A container registry protection rule designed to prevent users with a certain ac
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="containerregistryprotectionruleid"></a>`id` **{warning-solid}** | [`ContainerRegistryProtectionRuleID!`](#containerregistryprotectionruleid) | **Introduced** in GitLab 16.6. **Status**: Experiment. ID of the container registry protection rule. |
-| <a id="containerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level to allow to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
-| <a id="containerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel!`](#containerregistryprotectionruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level to allow to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. |
+| <a id="containerregistryprotectionruleminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level to allow to delete container images from the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level for delete is ignored. Users with at least the Developer role are allowed to delete container images. |
+| <a id="containerregistryprotectionruleminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` **{warning-solid}** | [`ContainerRegistryProtectionRuleAccessLevel`](#containerregistryprotectionruleaccesslevel) | **Introduced** in GitLab 16.6. **Status**: Experiment. Minimum GitLab access level to allow to push container images to the container registry. For example, `MAINTAINER`, `OWNER`, or `ADMIN`. If the value is `nil`, the minimum access level for push is ignored. Users with at least the Developer role are allowed to push container images. |
 | <a id="containerregistryprotectionrulerepositorypathpattern"></a>`repositoryPathPattern` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.6. **Status**: Experiment. Container repository path pattern protected by the protection rule. For example, `my-project/my-container-*`. Wildcard character `*` allowed. |
 
 ### `ContainerRepository`
@@ -33143,6 +33169,16 @@ Agent token statuses.
 | ----- | ----------- |
 | <a id="agenttokenstatusactive"></a>`ACTIVE` | Active agent token. |
 | <a id="agenttokenstatusrevoked"></a>`REVOKED` | Revoked agent token. |
+
+### `AiAcceptedSelfHostedModels`
+
+LLMs supported by the self-hosted model features.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aiacceptedselfhostedmodelscodegemma"></a>`CODEGEMMA` | CodeGemma 2b or 7b model. |
+| <a id="aiacceptedselfhostedmodelsmistral"></a>`MISTRAL` | Mistral7B model from Mistral AI. |
+| <a id="aiacceptedselfhostedmodelsmixtral"></a>`MIXTRAL` | Mixtral8x22B model from Mistral AI. |
 
 ### `AiAction`
 

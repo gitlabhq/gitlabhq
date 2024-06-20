@@ -5,6 +5,7 @@ import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getBaseURL } from '~/lib/utils/url_utility';
+import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
 import { findHierarchyWidgetChildren, isNotesWidget, newWorkItemFullPath } from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
@@ -221,6 +222,7 @@ export const setNewWorkItemCache = async (
     return;
   }
 
+  const workItemTitleCase = convertEachWordToTitleCase(workItemType.split('_').join(' '));
   const availableWidgets = widgetDefinitions?.flatMap((i) => i.type);
   const currentUserId = convertToGraphQLId(TYPENAME_USER, gon?.current_user_id);
   const baseURL = getBaseURL();
@@ -436,7 +438,7 @@ export const setNewWorkItemCache = async (
           },
           workItemType: {
             id: workItemTypeId || 'mock-work-item-type-id',
-            name: workItemType,
+            name: workItemTitleCase,
             iconName: 'issue-type-epic',
             __typename: 'WorkItemType',
           },

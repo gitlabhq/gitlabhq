@@ -93,6 +93,13 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
       it_behaves_like 'an erroneous service response without side effects',
         message: "'1000' is not a valid minimum_access_level_for_push"
     end
+
+    context 'when minimum_access_level_for_delete and minimum_access_level_for_push are blank' do
+      let(:params) { super().merge(minimum_access_level_for_delete: nil, minimum_access_level_for_push: nil) }
+
+      it_behaves_like 'an erroneous service response without side effects',
+        message: 'A rule must have at least a minimum access role for push or delete.'
+    end
   end
 
   context 'with existing container registry protection rule in the database' do

@@ -104,7 +104,8 @@ When secret push protection blocks a push, you can either:
 ### Remove the secret
 
 Remove a blocked secret to allow the commit to be pushed to GitLab. The method of removing the
-secret depends on how recently it was committed.
+secret depends on how recently it was committed. The instructions below use the Git CLI client,
+but you can achieve the same result by using another Git client.
 
 If the blocked secret was added with the most recent commit on your branch:
 

@@ -41,7 +41,9 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
 
   let(:mutation_response) { graphql_mutation_response(:update_container_registry_protection_rule) }
 
-  subject { post_graphql_mutation(mutation, current_user: current_user) }
+  subject(:post_graphql_mutation_update_container_registry_protection_rule) do
+    post_graphql_mutation(mutation, current_user: current_user)
+  end
 
   shared_examples 'a successful response' do
     it { subject.tap { expect_graphql_errors_to_be_empty } }
@@ -97,19 +99,34 @@ RSpec.describe 'Updating the container registry protection rule', :aggregate_fai
   end
 
   context 'with invalid input param `minimumAccessLevelForPush`' do
-    let(:input) { super().merge(minimum_access_level_for_push: nil) }
+    let(:input) { super().merge(minimum_access_level_for_push: 'INVALID_ACCESS_LEVEL') }
 
-    it_behaves_like 'an erroneous response'
+    it { is_expected.tap { expect_graphql_errors_to_include(/invalid value for minimumAccessLevelForPush/) } }
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/minimumAccessLevelForPush can't be blank/) } }
+    it do
+      expect { post_graphql_mutation_update_container_registry_protection_rule }
+        .not_to(change { container_registry_protection_rule.reload.updated_at })
+    end
   end
 
   context 'with invalid input param `repositoryPathPattern`' do
     let(:input) { super().merge(repository_path_pattern: '') }
 
-    it_behaves_like 'an erroneous response'
+    it 'returns error with correct error message' do
+      post_graphql_mutation_update_container_registry_protection_rule
 
-    it { is_expected.tap { expect_graphql_errors_to_include(/repositoryPathPattern can't be blank/) } }
+      expect_graphql_errors_to_include(/repositoryPathPattern can't be blank/)
+    end
+  end
+
+  context 'with blank input fields `minimumAccessLevelForPush` and `minimumAccessLevelForDelete`' do
+    let(:input) { super().merge(minimum_access_level_for_push: nil, minimum_access_level_for_delete: nil) }
+
+    it 'returns error with correct error message' do
+      post_graphql_mutation_update_container_registry_protection_rule
+
+      expect(mutation_response['errors']).to eq ['A rule must have at least a minimum access role for push or delete.']
+    end
   end
 
   context 'when current_user does not have permission' do

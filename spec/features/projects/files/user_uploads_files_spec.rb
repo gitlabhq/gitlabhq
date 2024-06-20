@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User uploads files', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Files > User uploads files', feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, name: 'Shop', creator: user) }
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }

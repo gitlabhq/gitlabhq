@@ -8597,10 +8597,9 @@ CREATE TABLE container_registry_protection_rules (
     repository_path_pattern text,
     minimum_access_level_for_push smallint,
     minimum_access_level_for_delete smallint,
+    CONSTRAINT check_0dc4ab5f43 CHECK ((num_nonnulls(minimum_access_level_for_delete, minimum_access_level_for_push) > 0)),
     CONSTRAINT check_3658b31291 CHECK ((repository_path_pattern IS NOT NULL)),
-    CONSTRAINT check_d53a270af5 CHECK ((char_length(repository_path_pattern) <= 255)),
-    CONSTRAINT check_d82c1eb825 CHECK ((minimum_access_level_for_delete IS NOT NULL)),
-    CONSTRAINT check_f684912b48 CHECK ((minimum_access_level_for_push IS NOT NULL))
+    CONSTRAINT check_d53a270af5 CHECK ((char_length(repository_path_pattern) <= 255))
 );
 
 CREATE SEQUENCE container_registry_protection_rules_id_seq

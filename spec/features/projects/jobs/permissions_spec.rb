@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Jobs Permissions', feature_category: :groups_and_projects do
+RSpec.describe 'Project Jobs Permissions', feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:group) { create(:group, name: 'some group') }

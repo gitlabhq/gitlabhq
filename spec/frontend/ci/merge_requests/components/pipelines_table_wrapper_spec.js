@@ -177,6 +177,24 @@ describe('PipelinesTableWrapper component', () => {
         expect(findEmptyState().text()).toContain('To run a merge request pipeline');
       });
     });
+
+    describe('pipeline badge counts', () => {
+      it('should receive update-pipelines-count event', () => {
+        const element = document.createElement('div');
+        document.body.appendChild(element);
+
+        return new Promise((resolve) => {
+          element.addEventListener('update-pipelines-count', (event) => {
+            expect(event.detail.pipelineCount).toEqual(1);
+            resolve();
+          });
+
+          createComponent();
+
+          element.appendChild(wrapper.vm.$el);
+        });
+      });
+    });
   });
 
   describe('polling', () => {

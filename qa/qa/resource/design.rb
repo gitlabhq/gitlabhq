@@ -108,6 +108,24 @@ module QA
         api_resource.key?(:designs) ? api_resource[:designs].first : api_resource
       end
 
+      def process_api_response(parsed_response)
+        design_response = if parsed_response.key?(:designs)
+                            response = parsed_response
+                            response[:designs].each do |design|
+                              design[:id] = extract_graphql_id(design)
+                            end
+                            response
+                          elsif parsed_response.key?(:design_collection)
+                            response = parsed_response[:design_collection][:design]
+                            response[:id] = extract_graphql_id(response)
+                            response
+                          else
+                            parsed_response
+                          end
+
+        super(design_response)
+      end
+
       private
 
       def filepath

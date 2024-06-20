@@ -408,4 +408,21 @@ describe('text_utility', () => {
       },
     );
   });
+
+  describe('convertEachWordToTitleCase', () => {
+    it.each`
+      inputValue   | outputValue
+      ${'Foo Bar'} | ${'Foo Bar'}
+      ${'Foo bar'} | ${'Foo Bar'}
+      ${'foo bar'} | ${'Foo Bar'}
+      ${'FOO BAr'} | ${'Foo Bar'}
+      ${'FOO BAR'} | ${'Foo Bar'}
+      ${'fOO bar'} | ${'Foo Bar'}
+    `(
+      'returns string $outputValue when called with string $inputValue',
+      ({ inputValue, outputValue }) => {
+        expect(textUtils.convertEachWordToTitleCase(inputValue)).toBe(outputValue);
+      },
+    );
+  });
 });

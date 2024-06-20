@@ -90,12 +90,31 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
       end
     end
 
-    describe '#minimum_access_level_for_delete' do
-      it { is_expected.to validate_presence_of(:minimum_access_level_for_delete) }
-    end
+    describe '#at_least_one_minimum_access_level_must_be_present' do
+      where(:minimum_access_level_for_delete, :minimum_access_level_for_push, :valid) do
+        :maintainer | :maintainer | true
+        :maintainer | nil         | true
+        nil         | :maintainer | true
+        nil         | nil         | false
+      end
 
-    describe '#minimum_access_level_for_push' do
-      it { is_expected.to validate_presence_of(:minimum_access_level_for_push) }
+      with_them do
+        subject(:container_registry_protection_rule) {
+          build(:container_registry_protection_rule, minimum_access_level_for_delete: minimum_access_level_for_delete,
+            minimum_access_level_for_push: minimum_access_level_for_push)
+        }
+
+        if params[:valid]
+          it { is_expected.to be_valid }
+        else
+          it 'is invalid' do
+            expect(container_registry_protection_rule).not_to be_valid
+            expect(container_registry_protection_rule.errors[:base]).to include(
+              'A rule must have at least a minimum access role for push or delete.'
+            )
+          end
+        end
+      end
     end
   end
 

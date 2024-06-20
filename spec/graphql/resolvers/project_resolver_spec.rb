@@ -5,31 +5,10 @@ require 'spec_helper'
 RSpec.describe Resolvers::ProjectResolver do
   include GraphqlHelpers
 
-  let_it_be(:project1) { create(:project) }
-  let_it_be(:project2) { create(:project) }
-  let_it_be(:other_project) { create(:project) }
-
-  describe '#resolve' do
-    it 'batch-resolves projects by full path' do
-      paths = [project1.full_path, project2.full_path]
-
-      result = batch_sync(max_queries: 3) do
-        paths.map { |path| resolve_project(path) }
-      end
-
-      expect(result).to contain_exactly(project1, project2)
-    end
-
-    it 'resolves an unknown full_path to nil' do
-      result = batch_sync { resolve_project('unknown/project') }
-
-      expect(result).to be_nil
-    end
-
-    it 'treats project full path as case insensitive' do
-      result = batch_sync { resolve_project(project1.full_path.upcase) }
-      expect(result).to eq project1
-    end
+  it_behaves_like 'a resolver that batch resolves by full path' do
+    let_it_be(:entity1) { create(:project) }
+    let_it_be(:entity2) { create(:project) }
+    let_it_be(:resolve_method) { :resolve_project }
   end
 
   it 'does not increase complexity depending on number of load limits' do

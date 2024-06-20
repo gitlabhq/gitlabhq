@@ -5,11 +5,12 @@ module Organizations
     include ::Groups::Params
 
     feature_category :cell
-    urgency :low, [:create, :new]
+    urgency :low, [:create, :new, :destroy]
 
     before_action :authorize_create_group!, only: [:new]
     before_action :authorize_read_organization!, only: [:edit]
     before_action :authorize_view_edit_page!, only: [:edit]
+    before_action :authorize_remove_group!, only: :destroy
 
     def new; end
 
@@ -24,6 +25,13 @@ module Organizations
       else
         render json: { message: @group.errors }, status: :unprocessable_entity
       end
+    end
+
+    def destroy
+      Groups::DestroyService.new(group, current_user).async_execute
+      render json: { message: format(_("Group '%{group_name}' is being deleted."), group_name: group.full_name) }
+    rescue Groups::DestroyService::DestroyError => error
+      render json: { message: error.message }, status: :unprocessable_entity
     end
 
     private
@@ -41,6 +49,12 @@ module Organizations
       return render_404 if group.nil?
 
       access_denied! unless can?(current_user, :view_edit_page, group)
+    end
+
+    def authorize_remove_group!
+      return render_404 if group.nil?
+
+      access_denied! unless can?(current_user, :remove_group, group)
     end
   end
 end

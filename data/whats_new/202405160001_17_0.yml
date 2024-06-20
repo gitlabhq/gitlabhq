@@ -104,7 +104,6 @@
   published_at: 2024-05-16
   release: 17.0
 
-
 - name: New usage overview panel in the Value Streams Dashboard
   description: |
       We enhanced the Value Streams Dashboard with an Overview panel. This new visualization addresses the need for executive-level insights into software delivery performance, and gives a clear picture of GitLab usage in the context of software development life cycle (SDLC).

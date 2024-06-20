@@ -13,6 +13,13 @@ import {
   ISSUABLE_EPIC,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_TASK,
+  WORK_ITEM_TYPE_ENUM_TEST_CASE,
+  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
 } from './constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
@@ -145,7 +152,34 @@ export const workItemRoadmapPath = (fullPath, iid) => {
   return `${domain}/groups/${fullPath}/-/roadmap?epic_iid=${iid}`;
 };
 
+/**
+ * Builds unique path for new work item
+ *
+ * @param {string} fullPath the path to the namespace
+ */
+
 export const newWorkItemFullPath = (fullPath) => {
   // eslint-disable-next-line @gitlab/require-i18n-strings
   return `${fullPath}-id`;
+};
+
+/**
+ * Checks whether the work item type is a valid enum
+ *
+ * @param {string} workItemType
+ */
+
+export const isWorkItemItemValidEnum = (workItemType) => {
+  return (
+    [
+      WORK_ITEM_TYPE_ENUM_EPIC,
+      WORK_ITEM_TYPE_ENUM_INCIDENT,
+      WORK_ITEM_TYPE_ENUM_ISSUE,
+      WORK_ITEM_TYPE_ENUM_TASK,
+      WORK_ITEM_TYPE_ENUM_TEST_CASE,
+      WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+      WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+      WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
+    ].indexOf(workItemType) >= 0
+  );
 };

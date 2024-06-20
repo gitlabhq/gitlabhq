@@ -80,8 +80,13 @@ export default {
         return formatPipelinesGraphQLDataToREST(data?.project) || [];
       },
       result({ data }) {
+        const pipelineCount = data?.project?.mergeRequest?.pipelines?.count;
         this.isInitialLoading = false;
         this.pageInfo = data?.project?.mergeRequest?.pipelines?.pageInfo || {};
+
+        if (pipelineCount) {
+          this.updateBadgeCount(pipelineCount);
+        }
       },
       error() {
         this.hasError = true;
@@ -212,6 +217,16 @@ export default {
         this.onClickRunPipeline();
       } else {
         this.$refs.modal.show();
+      }
+    },
+    updateBadgeCount(pipelineCount) {
+      const updatePipelinesEvent = new CustomEvent('update-pipelines-count', {
+        detail: { pipelineCount },
+      });
+
+      // Event to update the count in tabs in app/assets/javascripts/commit/pipelines/utils.js
+      if (this.$el?.parentElement) {
+        this.$el.parentElement.dispatchEvent(updatePipelinesEvent);
       }
     },
   },

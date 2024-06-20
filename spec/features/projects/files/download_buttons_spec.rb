@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > Download buttons in files tree', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Files > Download buttons in files tree', feature_category: :source_code_management do
   let(:project) { create(:project, :repository) }
   let(:user) { project.creator }
 

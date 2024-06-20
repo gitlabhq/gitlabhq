@@ -25,10 +25,9 @@ module ContainerRegistry
           message:
             ->(_object, _data) { _('should be a valid container repository path with optional wildcard characters.') }
         }
-      validates :minimum_access_level_for_delete, presence: true
-      validates :minimum_access_level_for_push, presence: true
 
       validate :path_pattern_starts_with_project_full_path, if: :repository_path_pattern_changed?
+      validate :at_least_one_minimum_access_level_must_be_present
 
       scope :for_repository_path, ->(repository_path) do
         return none if repository_path.blank?
@@ -47,10 +46,18 @@ module ContainerRegistry
           .exists?
       end
 
+      private
+
       def path_pattern_starts_with_project_full_path
         return if repository_path_pattern.downcase.starts_with?(project.full_path.downcase)
 
         errors.add(:repository_path_pattern, :does_not_start_with_project_full_path)
+      end
+
+      def at_least_one_minimum_access_level_must_be_present
+        return unless minimum_access_level_for_delete.blank? && minimum_access_level_for_push.blank?
+
+        errors.add(:base, _('A rule must have at least a minimum access role for push or delete.'))
       end
     end
   end
