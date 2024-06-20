@@ -18,11 +18,10 @@ class WorkItemPolicy < IssuePolicy
   # is prevented
   rule { ~can?(:read_issue) }.prevent :read_work_item
 
-  rule { can?(:reporter_access) }.policy do
+  rule { (is_member & can?(:read_work_item)) | admin }.policy do
+    enable :admin_work_item_link
     enable :admin_parent_link
   end
-
-  rule { (is_member & can?(:read_work_item)) | admin }.enable :admin_work_item_link
 end
 
 WorkItemPolicy.prepend_mod

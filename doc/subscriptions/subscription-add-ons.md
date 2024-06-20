@@ -44,7 +44,7 @@ After you purchase GitLab Duo Pro, you can assign seats to billable users to gra
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
-1. Select the **GitLab Duo Pro** tab.
+1. Select the **GitLab Duo** tab.
 1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
 
 To use Code Suggestions in any project or group, a user must be assigned a seat in at least one top-level group.
@@ -70,8 +70,8 @@ Prerequisites:
 - You must be an administrator.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **GitLab Duo Pro**.
-   - If the **GitLab Duo Pro** menu item is not available, synchronize your subscription
+1. Select **GitLab Duo**.
+   - If the **GitLab Duo** menu item is not available, synchronize your subscription
      after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
@@ -91,7 +91,7 @@ You can assign or remove seats in bulk for multiple users.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
-1. Select the **GitLab Duo Pro** tab.
+1. Select the **GitLab Duo** tab.
 1. Select the users to assign or remove seats for:
    - To select multiple users, to the left of each user, select the checkbox.
    - To select all, select the checkbox at the top of the table.
@@ -115,7 +115,7 @@ Prerequisites:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
-1. Select the **GitLab Duo Pro** tab.
+1. Select the **GitLab Duo** tab.
 1. Select **Add seats**.
 1. In the Customers Portal, in the **Add additional seats** field, enter the number of seats. The amount
    cannot be higher than the number of seats in the subscription associated with your group namespace.

@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfolio_management do
   describe '#execute' do
-    let_it_be(:reporter) { create(:user) }
     let_it_be(:guest) { create(:user) }
     let_it_be(:project) { create(:project) }
     let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }
@@ -13,14 +12,13 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
     let_it_be_with_reload(:last_adjacent) { create(:work_item, :objective, project: project) }
 
     let(:parent_link_class) { WorkItems::ParentLink }
-    let(:user) { reporter }
+    let(:user) { guest }
     let(:params) { { target_issuable: work_item } }
     let(:relative_range) { [top_adjacent, last_adjacent].map(&:parent_link).map(&:relative_position) }
 
     subject { described_class.new(parent, user, params).execute }
 
     before do
-      project.add_reporter(reporter)
       project.add_guest(guest)
 
       create(:parent_link, work_item: top_adjacent, work_item_parent: parent)
@@ -71,7 +69,7 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
     end
 
     context 'when user has insufficient permissions' do
-      let(:user) { guest }
+      let(:user) { create(:user) }
 
       it_behaves_like 'returns not found error'
 

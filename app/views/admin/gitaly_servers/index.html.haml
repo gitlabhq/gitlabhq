@@ -1,32 +1,39 @@
-- breadcrumb_title _("Gitaly Servers")
-- page_title _("Gitaly Servers")
+- breadcrumb_title _("Gitaly servers")
+- page_title _("Gitaly servers")
 
-%h1.page-title.gl-font-size-h-display= _("Gitaly Servers")
-%hr
-.gitaly_servers
-  - if @gitaly_servers.any?
-    .table-holder
-      %table.table.responsive-table
-        %thead
+= render ::Layouts::PageHeadingComponent.new(_('Gitaly servers'))
+= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
+  - c.with_header do
+    .gl-new-card-title-wrapper
+      %h3.gl-new-card-title
+        = _('Gitaly servers')
+      .gl-new-card-count
+        = sprite_icon('earth', css_class: "gl-mr-2 gl-fill-icon-subtle gl-icon")
+        = @gitaly_servers.size
+  - c.with_body do
+    - if @gitaly_servers.any?
+      %table.table.b-table.gl-table.b-table-stacked-md
+        %thead.gl-hidden.md:gl-table-header-group
           %tr
-            %th= _("Storage")
-            %th= s_("Gitaly|Address")
-            %th= _("Server version")
-            %th= _("Git version")
-            %th= _("Up to date")
-        - @gitaly_servers.each do |server|
-          %tr
-            %td
-              = server.storage
-            %td
-              = server.address
-            %td
-              = server.server_version
-            %td
-              = server.git_binary_version
-            %td
-              = boolean_to_icon(server.up_to_date?)
-  - else
-    .empty-state
-      .text-center
-        %h4= _("No connection could be made to a Gitaly Server, please check your logs!")
+            %th{ data: { label: _('Storage') } }= _("Storage")
+            %th{ data: { label: s_('Gitaly|Address') } }= s_("Gitaly|Address")
+            %th{ data: { label: _('Server version') } }= _("Server version")
+            %th{ data: { label: _('Git version') } }= _("Git version")
+            %th{ data: { label: _('Up to date') } }= _("Up to date")
+        %tbody
+          - @gitaly_servers.each do |server|
+            %tr
+              %td{ data: { label: _('Storage') } }
+                = server.storage
+              %td{ data: { label: s_('Gitaly|Address') } }
+                = server.address
+              %td{ data: { label: _('Server version') } }
+                = server.server_version
+              %td{ data: { label: _('Git version') } }
+                = server.git_binary_version
+              %td{ data: { label: _('Up to date') } }
+                = boolean_to_icon(server.up_to_date?)
+    - else
+      .empty-state
+        .text-center
+          %h4= _("No connection could be made to a Gitaly Server, please check your logs!")

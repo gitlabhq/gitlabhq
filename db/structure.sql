@@ -11797,7 +11797,8 @@ CREATE TABLE ldap_group_links (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     provider character varying,
-    filter character varying
+    filter character varying,
+    member_role_id bigint
 );
 
 CREATE SEQUENCE ldap_group_links_id_seq
@@ -27250,6 +27251,8 @@ CREATE INDEX index_labels_on_title_varchar ON labels USING btree (title varchar_
 
 CREATE INDEX index_labels_on_type_and_project_id ON labels USING btree (type, project_id);
 
+CREATE INDEX index_ldap_group_links_on_member_role_id ON ldap_group_links USING btree (member_role_id);
+
 CREATE UNIQUE INDEX index_lfs_file_locks_on_project_id_and_path ON lfs_file_locks USING btree (project_id, path);
 
 CREATE INDEX index_lfs_file_locks_on_user_id ON lfs_file_locks USING btree (user_id);
@@ -31466,6 +31469,9 @@ ALTER TABLE ONLY audit_events_streaming_headers
 
 ALTER TABLE ONLY approval_group_rules
     ADD CONSTRAINT fk_1485c451e3 FOREIGN KEY (scan_result_policy_id) REFERENCES scan_result_policies(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ldap_group_links
+    ADD CONSTRAINT fk_14a86de4b3 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY catalog_resource_versions
     ADD CONSTRAINT fk_15376d917e FOREIGN KEY (release_id) REFERENCES releases(id) ON DELETE CASCADE;

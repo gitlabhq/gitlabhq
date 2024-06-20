@@ -23914,7 +23914,7 @@ msgstr ""
 msgid "GitLabPages|Your project is configured for GitLab Pages and the pipeline is running..."
 msgstr ""
 
-msgid "Gitaly Servers"
+msgid "Gitaly servers"
 msgstr ""
 
 msgid "Gitaly timeouts"

@@ -16454,7 +16454,6 @@ Extra metadata for AI message.
 | ---- | ---- | ----------- |
 | <a id="aimetricscodecontributorscount"></a>`codeContributorsCount` | [`Int!`](#int) | Number of code contributors. |
 | <a id="aimetricscodesuggestionscontributorscount"></a>`codeSuggestionsContributorsCount` | [`Int!`](#int) | Number of code contributors who used GitLab Duo Code Suggestions features. |
-| <a id="aimetricscodesuggestionsusagerate"></a>`codeSuggestionsUsageRate` | [`Float!`](#float) | Percentage of contributors who used GitLab Duo Code Suggestions features. |
 
 ### `AiSelfHostedModel`
 

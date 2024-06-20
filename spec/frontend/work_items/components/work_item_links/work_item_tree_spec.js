@@ -42,6 +42,7 @@ describe('WorkItemTree', () => {
     confidential = false,
     children = childrenWorkItems,
     canUpdate = true,
+    canUpdateChildren = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
       apolloProvider: createMockApollo([
@@ -56,6 +57,7 @@ describe('WorkItemTree', () => {
         confidential,
         children,
         canUpdate,
+        canUpdateChildren,
       },
       stubs: { WidgetWrapper },
     });
@@ -131,6 +133,7 @@ describe('WorkItemTree', () => {
     beforeEach(() => {
       createComponent({
         canUpdate: false,
+        canUpdateChildren: false,
       });
     });
 

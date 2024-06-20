@@ -156,7 +156,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
         let(:widget_params) { { hierarchy_widget: { parent: parent } } }
 
         context 'when user can admin parent link' do
-          let(:current_user) { reporter }
+          let(:current_user) { guest }
 
           context 'when parent is valid work item' do
             let(:opts) do
@@ -187,6 +187,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
 
         context 'when user cannot admin parent link' do
           let(:current_user) { guest }
+          let_it_be(:parent) { create(:work_item, :confidential, **container_args) }
 
           let(:opts) do
             {

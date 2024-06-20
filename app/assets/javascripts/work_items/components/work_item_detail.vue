@@ -185,6 +185,9 @@ export default {
     canUpdate() {
       return this.workItem.userPermissions?.updateWorkItem;
     },
+    canUpdateChildren() {
+      return this.workItem.userPermissions?.adminParentLink;
+    },
     canDelete() {
       return this.workItem.userPermissions?.deleteWorkItem;
     },
@@ -636,6 +639,7 @@ export default {
               :work-item-iid="workItemIid"
               :children="children"
               :can-update="canUpdate"
+              :can-update-children="canUpdateChildren"
               :confidential="workItem.confidential"
               @show-modal="openInModal"
               @addChild="$emit('addChild')"

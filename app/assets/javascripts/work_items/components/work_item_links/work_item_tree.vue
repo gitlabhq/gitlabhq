@@ -72,6 +72,11 @@ export default {
       required: false,
       default: false,
     },
+    canUpdateChildren: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -190,7 +195,11 @@ export default {
         label-id="relationship-toggle-labels"
         @change="showLabels = $event"
       />
-      <work-item-actions-split-button v-if="canUpdate" :actions="addItemsActions" class="gl-mr-3" />
+      <work-item-actions-split-button
+        v-if="canUpdateChildren"
+        :actions="addItemsActions"
+        class="gl-mr-3"
+      />
       <work-item-tree-actions
         v-if="canShowActionsMenu"
         :work-item-iid="workItemIid"
@@ -221,7 +230,7 @@ export default {
         />
         <work-item-children-wrapper
           :children="children"
-          :can-update="canUpdate"
+          :can-update="canUpdateChildren"
           :full-path="fullPath"
           :work-item-id="workItemId"
           :work-item-iid="workItemIid"

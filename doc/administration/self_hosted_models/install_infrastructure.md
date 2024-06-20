@@ -46,7 +46,7 @@ Install one of the following GitLab-approved LLM models:
 - [Mixtral-8x7B-instruct](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1).
 - [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1).
 - [CodeGemma 7B IT](https://huggingface.co/google/codegemma-7b-it).
-- [CodeGemma 2B](https://huggingface.co/google/codegemma-2b).
+- [CodeGemma 2B](https://huggingface.co/google/codegemma-2b) or [7B](https://huggingface.co/google/codegemma-7b).
 
 ### Recommended serving architectures
 
@@ -54,6 +54,7 @@ For Mistral, you should use one of the following architectures:
 
 - [vLLM](https://docs.vllm.ai/en/stable/)
 - [TensorRT-LLM](https://docs.mistral.ai/deployment/self-deployment/overview/)
+- [Ollama and litellm](litellm_proxy_setup.md)
 
 ## Step 2: Install the GitLab AI Gateway
 
