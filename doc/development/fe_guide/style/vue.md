@@ -703,30 +703,3 @@ import { assertProps } from 'helpers/assert_props'
 
 expect(() => assertProps(SomeComponent, { invalidPropValue: '1', someOtherProp: 2 })).toThrow()
 ```
-
-## The JavaScript/Vue Accord
-
-The goal of this accord is to make sure we are all on the same page.
-
-1. When writing Vue, you may not use jQuery in your application.
-   1. If you need to grab data from the DOM, you may query the DOM 1 time while bootstrapping your
-      application to grab data attributes using `dataset`. You can do this without jQuery.
-   1. You may use a jQuery dependency in Vue.js following [this example from the docs](https://vuejs.org/v2/examples/select2.html).
-   1. If an outside jQuery Event needs to be listen to inside the Vue application, you may use
-      jQuery event listeners.
-   1. We avoid adding new jQuery events when they are not required. Instead of adding new jQuery
-      events take a look at [different methods to do the same task](https://v2.vuejs.org/v2/api/#vm-emit).
-1. You may query the `window` object one time, while bootstrapping your application for application
-   specific data (for example, `scrollTo` is ok to access anytime). Do this access during the
-   bootstrapping of your application.
-1. You may have a temporary but immediate need to create technical debt by writing code that does
-   not follow our standards, to be refactored later. Maintainers need to be ok with the tech debt in
-   the first place. An issue should be created for that tech debt to evaluate it further and discuss.
-   In the coming months you should fix that tech debt, with its priority to be determined by maintainers.
-1. When creating tech debt you must write the tests for that code before hand and those tests may
-   not be rewritten. For example, jQuery tests rewritten to Vue tests.
-1. You may choose to use VueX as a centralized state management. If you choose not to use VueX, you
-   must use the *store pattern* which can be found in the
-   [Vue.js documentation](https://v2.vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch).
-1. Once you have chosen a centralized state-management solution you must use it for your entire
-   application. Don't mix and match your state-management solutions.

@@ -24163,6 +24163,9 @@ msgstr ""
 msgid "GlobalSearch|Filters"
 msgstr ""
 
+msgid "GlobalSearch|Forks"
+msgstr ""
+
 msgid "GlobalSearch|Go to %{kbdStart}↵%{kbdEnd}"
 msgstr ""
 
@@ -24193,7 +24196,13 @@ msgstr ""
 msgid "GlobalSearch|Include archived"
 msgstr ""
 
+msgid "GlobalSearch|Include forks"
+msgstr ""
+
 msgid "GlobalSearch|Include search results from archived projects"
+msgstr ""
+
+msgid "GlobalSearch|Include search results from forked projects"
 msgstr ""
 
 msgid "GlobalSearch|Incremental indexing queue length"

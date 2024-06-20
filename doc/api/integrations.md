@@ -49,6 +49,7 @@ Example response:
     "wiki_page_events": true,
     "job_events": true,
     "comment_on_event_enabled": true,
+    "inherited": false,
     "vulnerability_events": true
   },
   {
@@ -72,6 +73,7 @@ Example response:
     "wiki_page_events": true,
     "job_events": true,
     "comment_on_event_enabled": true,
+    "inherited": false,
     "vulnerability_events": true
   }
 ]
@@ -1329,6 +1331,7 @@ Parameters:
 | `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
 | `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
 | `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | false | Indicates whether to inherit defaults or not. |
 
 ### Disable Microsoft Teams notifications
 

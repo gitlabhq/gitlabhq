@@ -1,6 +1,7 @@
 package upload
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -28,7 +29,10 @@ func TestRequestBody(t *testing.T) {
 
 	body := strings.NewReader(fileContent)
 
-	resp := testUpload(&rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	resp := testUpload(ctx, &rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body)
 	defer resp.Body.Close()
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
@@ -41,7 +45,10 @@ func TestRequestBody(t *testing.T) {
 func TestRequestBodyCustomPreparer(t *testing.T) {
 	body := strings.NewReader(fileContent)
 
-	resp := testUpload(&rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	resp := testUpload(ctx, &rails{}, &alwaysLocalPreparer{}, echoProxy(t, fileLen), body)
 	defer resp.Body.Close()
 	require.Equal(t, http.StatusOK, resp.StatusCode)
 
@@ -74,13 +81,16 @@ func testNoProxyInvocation(t *testing.T, expectedStatus int, auth PreAuthorizer,
 		require.Fail(t, "request proxied upstream")
 	})
 
-	resp := testUpload(auth, preparer, proxy, nil)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	resp := testUpload(ctx, auth, preparer, proxy, nil)
 	defer resp.Body.Close()
 	require.Equal(t, expectedStatus, resp.StatusCode)
 }
 
-func testUpload(auth PreAuthorizer, preparer Preparer, proxy http.Handler, body io.Reader) *http.Response {
-	req := httptest.NewRequest("POST", "http://example.com/upload", body)
+func testUpload(ctx context.Context, auth PreAuthorizer, preparer Preparer, proxy http.Handler, body io.Reader) *http.Response {
+	req := httptest.NewRequest("POST", "http://example.com/upload", body).WithContext(ctx)
 	w := httptest.NewRecorder()
 
 	RequestBody(auth, proxy, preparer).ServeHTTP(w, req)

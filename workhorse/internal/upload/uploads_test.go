@@ -68,7 +68,10 @@ func TestUploadHandlerForwardingRawData(t *testing.T) {
 	})
 	defer ts.Close()
 
-	httpRequest, err := http.NewRequest("PATCH", ts.URL+urlPath, bytes.NewBufferString("REQUEST"))
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	httpRequest, err := http.NewRequestWithContext(ctx, "PATCH", ts.URL+urlPath, bytes.NewBufferString("REQUEST"))
 	require.NoError(t, err)
 
 	tempPath := t.TempDir()
@@ -121,6 +124,7 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 		w.WriteHeader(202)
 		fmt.Fprint(w, "RESPONSE")
 	})
+	defer ts.Close()
 
 	var buffer bytes.Buffer
 
@@ -131,11 +135,10 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 	fmt.Fprint(file, "test")
 	writer.Close()
 
-	httpRequest, err := http.NewRequest("PUT", ts.URL+urlPath, nil)
+	ctx, cancel := context.WithCancel(context.Background())
+	httpRequest, err := http.NewRequestWithContext(ctx, "PUT", ts.URL+urlPath, nil)
 	require.NoError(t, err)
 
-	ctx, cancel := context.WithCancel(context.Background())
-	httpRequest = httpRequest.WithContext(ctx)
 	httpRequest.Body = io.NopCloser(&buffer)
 	httpRequest.ContentLength = int64(buffer.Len())
 	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
@@ -186,6 +189,7 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 				w.WriteHeader(202)
 				fmt.Fprint(w, "RESPONSE")
 			})
+			defer ts.Close()
 
 			var buffer bytes.Buffer
 
@@ -197,11 +201,12 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 			writer.WriteField(test.field, "value")
 			writer.Close()
 
-			httpRequest, err := http.NewRequest("PUT", ts.URL+urlPath, &buffer)
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			httpRequest, err := http.NewRequestWithContext(ctx, "PUT", ts.URL+urlPath, &buffer)
 			require.NoError(t, err)
 
-			ctx, cancel := context.WithCancel(context.Background())
-			httpRequest = httpRequest.WithContext(ctx)
 			httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 			response := httptest.NewRecorder()
 
@@ -210,7 +215,6 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 			testInterceptMultipartFiles(t, response, httpRequest, handler, &testFormProcessor{})
 			require.Equal(t, test.response, response.Code)
 
-			cancel() // this will trigger an async cleanup
 			waitUntilDeleted(t, filePath)
 		})
 	}
@@ -223,7 +227,10 @@ func TestUploadProcessingField(t *testing.T) {
 	writer.WriteField("token2", "test")
 	writer.Close()
 
-	httpRequest, err := http.NewRequest("PUT", urlPath, &buffer)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	httpRequest, err := http.NewRequestWithContext(ctx, "PUT", urlPath, &buffer)
 	require.NoError(t, err)
 	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 
@@ -238,6 +245,10 @@ func TestUploadingMultipleFiles(t *testing.T) {
 	testhelper.ConfigureSecret()
 
 	httpRequest, response := setupMultipleFiles(t)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	httpRequest = httpRequest.WithContext(ctx)
+	defer cancel()
 
 	testInterceptMultipartFiles(t, response, httpRequest, nilHandler, &testFormProcessor{})
 
@@ -287,7 +298,10 @@ func TestUploadProcessingFile(t *testing.T) {
 			fmt.Fprint(file, "test")
 			writer.Close()
 
-			httpRequest, err := http.NewRequest("PUT", urlPath, &buffer)
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+
+			httpRequest, err := http.NewRequestWithContext(ctx, "PUT", urlPath, &buffer)
 			require.NoError(t, err)
 			httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 
@@ -327,7 +341,10 @@ func TestInvalidFileNames(t *testing.T) {
 		fmt.Fprint(file, "test")
 		writer.Close()
 
-		httpRequest, err := http.NewRequest("POST", "/example", buffer)
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
+
+		httpRequest, err := http.NewRequestWithContext(ctx, "POST", "/example", buffer)
 		require.NoError(t, err)
 		httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 
@@ -352,7 +369,10 @@ func TestIncompleteMultipartData(t *testing.T) {
 	truncatedBuffer := buffer.Bytes()[:buffer.Len()-1]
 	customReader := bytes.NewReader(truncatedBuffer)
 
-	httpRequest, err := http.NewRequest("POST", "/example", customReader)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	httpRequest, err := http.NewRequestWithContext(ctx, "POST", "/example", customReader)
 	require.NoError(t, err)
 	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 
@@ -362,7 +382,10 @@ func TestIncompleteMultipartData(t *testing.T) {
 }
 
 func TestBadMultipartHeader(t *testing.T) {
-	httpRequest, err := http.NewRequest("POST", "/example", bytes.NewReader(nil))
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	httpRequest, err := http.NewRequestWithContext(ctx, "POST", "/example", bytes.NewReader(nil))
 	require.NoError(t, err)
 
 	// Invalid header: missing boundary
@@ -403,7 +426,10 @@ func TestMalformedMimeHeader(t *testing.T) {
 	fmt.Fprint(file, "test")
 	writer.Close()
 
-	httpRequest, err := http.NewRequest("POST", "/example", buffer)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	httpRequest, err := http.NewRequestWithContext(ctx, "POST", "/example", buffer)
 	require.NoError(t, err)
 	httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 
@@ -565,11 +591,11 @@ func runUploadTest(t *testing.T, image []byte, filename string, httpCode int, ts
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), tsHandler)
 	defer ts.Close()
 
-	httpRequest, err := http.NewRequest("POST", ts.URL+urlPath, &buffer)
-	require.NoError(t, err)
-
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
+	httpRequest, err := http.NewRequestWithContext(ctx, "POST", ts.URL+urlPath, &buffer)
+	require.NoError(t, err)
 
 	httpRequest = httpRequest.WithContext(ctx)
 	httpRequest.ContentLength = int64(buffer.Len())

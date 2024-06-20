@@ -50,3 +50,6 @@ export const PROJECT_DATA = {
   name: 'name',
   fullName: 'name_with_namespace',
 };
+
+export const EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE =
+  'click_zoekt_include_forks_on_search_results_page';

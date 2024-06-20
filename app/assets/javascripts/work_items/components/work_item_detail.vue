@@ -19,7 +19,6 @@ import {
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_DESIGNS,
@@ -271,9 +270,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
     },
     showWorkItemTree() {
-      return [WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC].includes(
-        this.workItemType,
-      );
+      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
     },
     titleClassHeader() {
       return {

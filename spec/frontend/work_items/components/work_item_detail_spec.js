@@ -476,8 +476,13 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('hierarchy widget', () => {
-    it('does not render children tree by default', async () => {
-      createComponent();
+    it('does not render children tree by when widget is not present', async () => {
+      const workItemWithoutHierarchy = workItemByIidResponseFactory({
+        hierarchyWidgetPresent: false,
+      });
+      const handler = jest.fn().mockResolvedValue(workItemWithoutHierarchy);
+      createComponent({ handler });
+
       await waitForPromises();
 
       expect(findHierarchyTree().exists()).toBe(false);

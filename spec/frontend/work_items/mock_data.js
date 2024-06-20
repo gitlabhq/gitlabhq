@@ -910,6 +910,7 @@ export const workItemResponseFactory = ({
   discussionLocked = false,
   canInviteMembers = false,
   labelsWidgetPresent = true,
+  hierarchyWidgetPresent = true,
   linkedItemsWidgetPresent = true,
   colorWidgetPresent = true,
   labels = mockLabels,
@@ -1135,41 +1136,43 @@ export const workItemResponseFactory = ({
               },
             }
           : { type: 'MOCK TYPE' },
-        {
-          __typename: 'WorkItemWidgetHierarchy',
-          type: 'HIERARCHY',
-          hasChildren: true,
-          children: {
-            nodes: [
-              {
-                id: 'gid://gitlab/WorkItem/444',
-                iid: '5',
-                createdAt: '2022-08-03T12:41:54Z',
-                closedAt: null,
-                confidential: false,
-                title: '123',
-                state: 'OPEN',
-                webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
-                reference: 'test-project-path#5',
-                namespace: {
-                  fullPath: 'test-project-path',
-                },
-                workItemType: {
-                  id: '1',
-                  name: 'Task',
-                  iconName: 'issue-type-task',
-                },
-                widgets: [
+        hierarchyWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetHierarchy',
+              type: 'HIERARCHY',
+              hasChildren: true,
+              children: {
+                nodes: [
                   {
-                    type: 'HIERARCHY',
-                    hasChildren: false,
+                    id: 'gid://gitlab/WorkItem/444',
+                    iid: '5',
+                    createdAt: '2022-08-03T12:41:54Z',
+                    closedAt: null,
+                    confidential: false,
+                    title: '123',
+                    state: 'OPEN',
+                    webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
+                    reference: 'test-project-path#5',
+                    namespace: {
+                      fullPath: 'test-project-path',
+                    },
+                    workItemType: {
+                      id: '1',
+                      name: 'Task',
+                      iconName: 'issue-type-task',
+                    },
+                    widgets: [
+                      {
+                        type: 'HIERARCHY',
+                        hasChildren: false,
+                      },
+                    ],
                   },
                 ],
               },
-            ],
-          },
-          parent,
-        },
+              parent,
+            }
+          : { type: 'MOCK TYPE' },
         notesWidgetPresent
           ? {
               __typename: 'WorkItemWidgetNotes',

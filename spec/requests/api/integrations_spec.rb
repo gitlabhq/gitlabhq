@@ -7,10 +7,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
-
-  let_it_be(:project, reload: true) do
-    create(:project, creator_id: user.id, namespace: user.namespace)
-  end
+  let_it_be(:project, reload: true) { create(:project, creator_id: user.id, namespace: user.namespace) }
 
   let_it_be(:available_integration_names) do
     excluded_integrations = [Integrations::GitlabSlackApplication.to_param, Integrations::Zentao.to_param]
@@ -205,6 +202,7 @@ RSpec.describe API::Integrations, feature_category: :integrations do
     end
 
     describe 'Microsoft Teams integration' do
+      let_it_be(:group) { create(:group) }
       let(:integration_name) { 'microsoft-teams' }
       let(:params) do
         {
@@ -215,6 +213,8 @@ RSpec.describe API::Integrations, feature_category: :integrations do
       end
 
       before do
+        create(:microsoft_teams_integration, group: group, project: nil)
+        project.update!(namespace: group)
         project_integrations_map[integration_name.underscore].activate!
       end
 
@@ -232,6 +232,31 @@ RSpec.describe API::Integrations, feature_category: :integrations do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['properties']['notify_only_broken_pipelines']).to eq(true)
+      end
+
+      it 'accepts `use_inherited_settings` for inheritance' do
+        expect do
+          put api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user),
+            params: params.merge(use_inherited_settings: true)
+        end.to change { project_integrations_map[integration_name.underscore].reload.inherit_from_id }.from(nil)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['inherited']).to eq(true)
+      end
+
+      context 'when `integration_api_inheritance` feature is disabled' do
+        before do
+          stub_feature_flags(integration_api_inheritance: false)
+        end
+
+        it 'accepts `branches_to_be_notified` and `notify_only_broken_pipelines` for update' do
+          put api("/projects/#{project.id}/#{endpoint}/#{integration_name}", user),
+            params: params.merge(notify_only_broken_pipelines: true, branches_to_be_notified: 'all')
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['properties']['branches_to_be_notified']).to eq('all')
+          expect(json_response['properties']['notify_only_broken_pipelines']).to eq(true)
+        end
       end
     end
 

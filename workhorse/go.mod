@@ -10,6 +10,7 @@ require (
 	github.com/alecthomas/chroma/v2 v2.14.0
 	github.com/aws/aws-sdk-go v1.53.20
 	github.com/disintegration/imaging v1.6.2
+	github.com/dlclark/regexp2 v1.11.0
 	github.com/getsentry/raven-go v0.2.0
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/golang/gddo v0.0.0-20210115222349-20d68f94ee1f
@@ -26,6 +27,7 @@ require (
 	github.com/stretchr/testify v1.9.0
 	gitlab.com/gitlab-org/gitaly/v16 v16.11.4
 	gitlab.com/gitlab-org/labkit v1.21.0
+	go.uber.org/goleak v1.3.0
 	gocloud.dev v0.37.0
 	golang.org/x/image v0.17.0
 	golang.org/x/lint v0.0.0-20210508222113-6edffad5e616
@@ -63,7 +65,6 @@ require (
 	github.com/client9/reopen v1.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
-	github.com/dlclark/regexp2 v1.11.0 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect

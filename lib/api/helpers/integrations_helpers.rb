@@ -537,6 +537,12 @@ module API
               type: String,
               desc: 'Branches for which notifications are to be sent'
             },
+            {
+              required: false,
+              name: :use_inherited_settings,
+              type: ::Grape::API::Boolean,
+              desc: 'Indicates whether to inherit defaults or not.'
+            },
             chat_notification_flags
           ].flatten,
           'mattermost' => [

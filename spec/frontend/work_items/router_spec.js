@@ -18,7 +18,9 @@ describe('Work items router', () => {
 
   Vue.use(VueApollo);
 
-  const workItemQueryHandler = jest.fn().mockResolvedValue(workItemByIidResponseFactory());
+  const workItemQueryHandler = jest
+    .fn()
+    .mockResolvedValue(workItemByIidResponseFactory({ hierarchyWidgetPresent: false }));
   const currentUserQueryHandler = jest.fn().mockResolvedValue(currentUserResponse);
   const workItemUpdatedSubscriptionHandler = jest
     .fn()
