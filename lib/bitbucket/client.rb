@@ -4,6 +4,28 @@ module Bitbucket
   class Client
     attr_reader :connection
 
+    PULL_REQUEST_VALUES = %w[
+      values.comment_count
+      values.task_count
+      values.type
+      values.id
+      values.title
+      values.description
+      values.state
+      values.merge_commit
+      values.close_source_branch
+      values.closed_by
+      values.author
+      values.reason
+      values.created_on
+      values.updated_on
+      values.destination
+      values.source
+      values.links
+      values.summary
+      values.reviewers
+    ].freeze
+
     def initialize(options = {})
       @connection = Connection.new(options)
     end
@@ -24,7 +46,7 @@ module Bitbucket
     end
 
     def pull_requests(repo)
-      path = "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on"
+      path = "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on&fields=#{pull_request_values}"
       get_collection(path, :pull_request)
     end
 
@@ -67,6 +89,10 @@ module Bitbucket
     def get_collection(path, type, page_number: nil, limit: nil)
       paginator = Paginator.new(connection, path, type, page_number: page_number, limit: limit)
       Collection.new(paginator)
+    end
+
+    def pull_request_values
+      PULL_REQUEST_VALUES.join(',')
     end
   end
 end

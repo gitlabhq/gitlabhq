@@ -398,7 +398,10 @@ export default {
           : {}),
       };
 
-      this.$set(this.importTargets, group.id, newImportTarget);
+      this.importTargets = {
+        ...this.importTargets,
+        [group.id]: newImportTarget,
+      };
       this.validateImportTarget(newImportTarget);
     },
 
@@ -594,11 +597,14 @@ export default {
       }
 
       const cancellationToken = axios.CancelToken.source();
-      this.$set(this.importTargets, group.id, {
-        ...importTarget,
-        cancellationToken,
-        validationErrors: [],
-      });
+      this.importTargets = {
+        ...this.importTargets,
+        [group.id]: {
+          ...importTarget,
+          cancellationToken,
+          validationErrors: [],
+        },
+      };
 
       if (!importTarget.targetNamespace) {
         return;

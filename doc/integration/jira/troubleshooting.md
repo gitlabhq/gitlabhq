@@ -264,9 +264,17 @@ Your Jira project key must not have [restricted words and characters](https://co
 
 When you try to view the Jira issue list in GitLab, you might see one of the following errors.
 
-#### `An error occurred while requesting data from Jira: The value '<project>' does not exist for the field 'project'. Check your Jira integration configuration and try again.`
+#### Error: `The value '<project>' does not exist for the field 'project'.`
 
-This error occurs when you use the wrong authentication credentials for your Jira installation:
+If you use the wrong authentication credentials for your Jira installation, you might see this error:
+
+```plaintext
+An error occurred while requesting data from Jira:
+The value '<project>' does not exist for the field 'project'.
+Check your Jira integration configuration and try again.
+```
+
+Authentication credentials depend on your type of Jira installation:
 
 - **For Jira Cloud**, you must have a Jira Cloud API token
   and the email address you used to create the token.
@@ -277,10 +285,15 @@ For more information, see [Jira issue integration](configure.md).
 
 To resolve this issue, update the authentication credentials to match your Jira installation.
 
-#### `The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.`
+#### Error: `The credentials for accessing Jira are not allowed to access the data.`
 
-This error occurs when the Jira credentials cannot access the Jira project key you specified in the
-[Jira issue integration](configure.md#configure-the-integration).
+If your Jira credentials cannot access the Jira project key you specified in the
+[Jira issue integration](configure.md#configure-the-integration), you might see this error:
+
+```plaintext
+The credentials for accessing Jira are not allowed to access the data.
+Check your Jira integration credentials and try again.
+```
 
 To resolve this issue, ensure the Jira user you configured in the Jira issue integration has permission to view issues
 associated with the specified Jira project key.

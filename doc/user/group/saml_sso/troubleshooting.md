@@ -224,13 +224,18 @@ Alternatively, the SAML response may be missing the `InResponseTo` attribute in 
 The identity provider administrator should ensure that the login is
 initiated by the service provider and not only the identity provider.
 
-### Message: "There is already a GitLab account associated with this email address. Sign in with your existing credentials to connect your organization's account"
+### Message: `There is already a GitLab account associated with this email address.`
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
-A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
+A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account):
+
+```plaintext
+There is already a GitLab account associated with this email address.
+Sign in with your existing credentials to connect your organization's account
+```
 
 To resolve this problem, the user should check they are using the correct GitLab password to sign in. The user first needs
 to [reset their password](https://gitlab.com/users/password/new) if both:
@@ -414,7 +419,15 @@ If you see this message after trying to invite a user to a group:
 
 Additionally, see [troubleshooting users receiving a 404 after sign in](#users-receive-a-404).
 
-## Message: The SAML response did not contain an email address. Either the SAML identity provider is not configured to send the attribute, or the identity provider directory does not have an email address value for your user
+## Message: `The SAML response did not contain an email address.`
+
+If you see this error:
+
+```plaintext
+The SAML response did not contain an email address.
+Either the SAML identity provider is not configured to send the attribute, or the
+identity provider directory does not have an email address value for your user
+```
 
 This error appears when:
 

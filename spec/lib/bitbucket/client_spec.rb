@@ -10,6 +10,7 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
   let(:repo) { 'my-workspace/my-repo' }
   let(:options) { { token: 'someToken', base_uri: base_uri, api_version: api_version } }
   let(:headers) { { "Content-Type" => "application/json" } }
+  let(:pull_request_values) { Bitbucket::Client::PULL_REQUEST_VALUES.join(',') }
 
   subject(:client) { described_class.new(options) }
 
@@ -51,7 +52,7 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
   end
 
   describe '#pull_requests' do
-    let(:path) { "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on" }
+    let(:path) { "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on&fields=#{pull_request_values}" }
 
     it 'requests a collection' do
       expect(Bitbucket::Paginator).to receive(:new).with(anything, path, :pull_request, page_number: nil, limit: nil)

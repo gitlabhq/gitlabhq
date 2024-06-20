@@ -1073,6 +1073,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_5ca97b87ee30() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "target_project_id"
+  INTO NEW."project_id"
+  FROM "merge_requests"
+  WHERE "merge_requests"."id" = NEW."merge_request_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_5f6432d2dccc() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1082,6 +1098,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "operations_user_lists"
   WHERE "operations_user_lists"."id" = NEW."user_list_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_6cdea9559242() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."namespace_id" IS NULL THEN
+  SELECT "namespace_id"
+  INTO NEW."namespace_id"
+  FROM "issues"
+  WHERE "issues"."id" = NEW."source_id";
 END IF;
 
 RETURN NEW;
@@ -1258,6 +1290,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "deployments"
   WHERE "deployments"."id" = NEW."deployment_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_9699ea03bb37() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "epics"
+  WHERE "epics"."id" = NEW."source_id";
 END IF;
 
 RETURN NEW;
@@ -11378,7 +11426,8 @@ CREATE TABLE issue_links (
     target_id integer NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    link_type smallint DEFAULT 0 NOT NULL
+    link_type smallint DEFAULT 0 NOT NULL,
+    namespace_id bigint
 );
 
 CREATE SEQUENCE issue_links_id_seq
@@ -12106,7 +12155,8 @@ CREATE TABLE merge_request_context_commits (
     committer_email text,
     message text,
     merge_request_id bigint,
-    trailers jsonb DEFAULT '{}'::jsonb NOT NULL
+    trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE merge_request_context_commits_id_seq
@@ -16120,7 +16170,8 @@ CREATE TABLE related_epic_links (
     target_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    link_type smallint DEFAULT 0 NOT NULL
+    link_type smallint DEFAULT 0 NOT NULL,
+    group_id bigint
 );
 
 CREATE SEQUENCE related_epic_links_id_seq
@@ -27067,6 +27118,8 @@ CREATE INDEX index_issue_emails_on_email_message_id ON issue_emails USING btree 
 
 CREATE INDEX index_issue_emails_on_issue_id ON issue_emails USING btree (issue_id);
 
+CREATE INDEX index_issue_links_on_namespace_id ON issue_links USING btree (namespace_id);
+
 CREATE INDEX index_issue_links_on_source_id ON issue_links USING btree (source_id);
 
 CREATE UNIQUE INDEX index_issue_links_on_source_id_and_target_id ON issue_links USING btree (source_id, target_id);
@@ -27318,6 +27371,8 @@ CREATE INDEX index_merge_request_blocks_on_project_id ON merge_request_blocks US
 CREATE UNIQUE INDEX index_merge_request_cleanup_schedules_on_merge_request_id ON merge_request_cleanup_schedules USING btree (merge_request_id);
 
 CREATE INDEX index_merge_request_cleanup_schedules_on_status ON merge_request_cleanup_schedules USING btree (status);
+
+CREATE INDEX index_merge_request_context_commits_on_project_id ON merge_request_context_commits USING btree (project_id);
 
 CREATE UNIQUE INDEX index_merge_request_diff_commit_users_on_name_and_email ON merge_request_diff_commit_users USING btree (name, email);
 
@@ -28302,6 +28357,8 @@ CREATE UNIQUE INDEX index_redirect_routes_on_path ON redirect_routes USING btree
 CREATE UNIQUE INDEX index_redirect_routes_on_path_unique_text_pattern_ops ON redirect_routes USING btree (lower((path)::text) varchar_pattern_ops);
 
 CREATE INDEX index_redirect_routes_on_source_type_and_source_id ON redirect_routes USING btree (source_type, source_id);
+
+CREATE INDEX index_related_epic_links_on_group_id ON related_epic_links USING btree (group_id);
 
 CREATE INDEX index_related_epic_links_on_source_id ON related_epic_links USING btree (source_id);
 
@@ -31167,7 +31224,11 @@ CREATE TRIGGER trigger_56d49f4ed623 BEFORE INSERT OR UPDATE ON workspace_variabl
 
 CREATE TRIGGER trigger_57ad2742ac16 BEFORE INSERT OR UPDATE ON user_achievements FOR EACH ROW EXECUTE FUNCTION trigger_57ad2742ac16();
 
+CREATE TRIGGER trigger_5ca97b87ee30 BEFORE INSERT OR UPDATE ON merge_request_context_commits FOR EACH ROW EXECUTE FUNCTION trigger_5ca97b87ee30();
+
 CREATE TRIGGER trigger_5f6432d2dccc BEFORE INSERT OR UPDATE ON operations_strategies_user_lists FOR EACH ROW EXECUTE FUNCTION trigger_5f6432d2dccc();
+
+CREATE TRIGGER trigger_6cdea9559242 BEFORE INSERT OR UPDATE ON issue_links FOR EACH ROW EXECUTE FUNCTION trigger_6cdea9559242();
 
 CREATE TRIGGER trigger_77d9fbad5b12 BEFORE INSERT OR UPDATE ON packages_debian_project_distribution_keys FOR EACH ROW EXECUTE FUNCTION trigger_77d9fbad5b12();
 
@@ -31190,6 +31251,8 @@ CREATE TRIGGER trigger_90fa5c6951f1 BEFORE INSERT OR UPDATE ON dast_profiles_tag
 CREATE TRIGGER trigger_9259aae92378 BEFORE INSERT OR UPDATE ON packages_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_9259aae92378();
 
 CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approvals FOR EACH ROW EXECUTE FUNCTION trigger_94514aeadc50();
+
+CREATE TRIGGER trigger_9699ea03bb37 BEFORE INSERT OR UPDATE ON related_epic_links FOR EACH ROW EXECUTE FUNCTION trigger_9699ea03bb37();
 
 CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management_versions FOR EACH ROW EXECUTE FUNCTION trigger_96a76ee9f147();
 
@@ -31448,6 +31511,9 @@ ALTER TABLE ONLY analytics_devops_adoption_segments
 
 ALTER TABLE ONLY project_statistics
     ADD CONSTRAINT fk_198ad46fdc FOREIGN KEY (root_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY issue_links
+    ADD CONSTRAINT fk_1cce06b868 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_project_authorizations
     ADD CONSTRAINT fk_1d30bb4987 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -31964,6 +32030,9 @@ ALTER TABLE ONLY group_import_states
 
 ALTER TABLE ONLY sprints
     ADD CONSTRAINT fk_80aa8a1f95 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY related_epic_links
+    ADD CONSTRAINT fk_8257080565 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY import_export_uploads
     ADD CONSTRAINT fk_83319d9721 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -32573,6 +32642,9 @@ ALTER TABLE ONLY zoekt_indices
 
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT fk_ef5ebf339f FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY merge_request_context_commits
+    ADD CONSTRAINT fk_ef6766ed57 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_project_rules
     ADD CONSTRAINT fk_efa5a1e3fb FOREIGN KEY (security_orchestration_policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;

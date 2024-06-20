@@ -34,8 +34,13 @@ module Mutations
             integration_name: integration_name
           ).execute
 
+          exclusions = result.payload
+
+          # Integrations::Exclusions::DestroyService calls destroy_all in some circumstances which returns a frozen
+          # array.  We call dup here to allow entries to be redacted by field extensions.
+          exclusions = exclusions.dup if exclusions.frozen?
           {
-            exclusions: result.payload,
+            exclusions: exclusions,
             errors: result.errors
           }
         end

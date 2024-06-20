@@ -21,12 +21,6 @@ module Types
         null: true,
         description: 'Package metadata.'
       field :name, GraphQL::Types::String, null: false, description: 'Name of the package.'
-      field :package_protection_rule_exists, GraphQL::Types::Boolean,
-        null: false,
-        deprecated: { reason: 'Use `protectionRuleExists`', milestone: '17.0' },
-        description:
-          'Whether any matching package protection rule exists for this package. ' \
-          'Available only when feature flag `packages_protected_packages` is enabled.'
       field :package_type, Types::Packages::PackageTypeEnum, null: false, description: 'Package type.'
       field :project, Types::ProjectType, null: false, description: 'Project where the package is stored.'
       field :protection_rule_exists, GraphQL::Types::Boolean,
@@ -50,8 +44,6 @@ module Types
 
         object.matching_package_protection_rules.exists?
       end
-
-      alias_method :package_protection_rule_exists, :protection_rule_exists
 
       # NOTE: This method must be kept in sync with the union
       # type: `Types::Packages::MetadataType`.

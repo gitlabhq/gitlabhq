@@ -256,9 +256,6 @@
         "null"
       ]
     },
-    "packageProtectionRuleExists": {
-      "type": "boolean"
-    },
     "protectionRuleExists": {
       "type": "boolean"
     },

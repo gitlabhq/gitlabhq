@@ -129,7 +129,7 @@ class Integration < ApplicationRecord
   scope :with_default_settings, -> { where.not(inherit_from_id: nil) }
   scope :with_custom_settings, -> { where(inherit_from_id: nil) }
   scope :for_group, ->(group) {
-    types = available_integration_types(include_project_specific: false, include_instance_specific: false)
+    types = available_integration_types(include_project_specific: false)
     where(group_id: group, type: types)
   }
 
@@ -625,6 +625,10 @@ class Integration < ApplicationRecord
 
   def self.instance_specific?
     false
+  end
+
+  def self.pluck_group_id
+    pluck(:group_id)
   end
 
   def form_fields

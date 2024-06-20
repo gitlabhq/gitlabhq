@@ -151,6 +151,14 @@ RSpec.describe Integration, feature_category: :integrations do
       it 'returns the right group integration' do
         expect(described_class.for_group(group)).to contain_exactly(jira_group_integration)
       end
+
+      context 'when there is an instance specific integration' do
+        let!(:beyond_identity_integration) { create(:beyond_identity_integration, instance: false, group: group) }
+
+        it 'includes the instance specific integration' do
+          expect(described_class.for_group(group)).to include(jira_group_integration, beyond_identity_integration)
+        end
+      end
     end
 
     shared_examples 'hook scope' do |hook_type|

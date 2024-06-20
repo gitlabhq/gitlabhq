@@ -26628,7 +26628,6 @@ Represents a package with pipelines in the Package Registry.
 | <a id="packageid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagename"></a>`name` | [`String!`](#string) | Name of the package. |
-| <a id="packagepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 17.0. Use `protectionRuleExists`. |
 | <a id="packagepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packageproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
@@ -26653,7 +26652,6 @@ Represents a package in the Package Registry.
 | <a id="packagebaseid"></a>`id` | [`PackagesPackageID!`](#packagespackageid) | ID of the package. |
 | <a id="packagebasemetadata"></a>`metadata` | [`PackageMetadata`](#packagemetadata) | Package metadata. |
 | <a id="packagebasename"></a>`name` | [`String!`](#string) | Name of the package. |
-| <a id="packagebasepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 17.0. Use `protectionRuleExists`. |
 | <a id="packagebasepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagebaseproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |
 | <a id="packagebaseprotectionruleexists"></a>`protectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.0. **Status**: Experiment. Whether any matching package protection rule exists for this package. Available only when feature flag `packages_protected_packages` is enabled. |
@@ -26724,7 +26722,6 @@ Represents a package details in the Package Registry.
 | <a id="packagedetailstypenpmurl"></a>`npmUrl` | [`String`](#string) | Url of the NPM project endpoint. |
 | <a id="packagedetailstypenugeturl"></a>`nugetUrl` | [`String`](#string) | Url of the Nuget project endpoint. |
 | <a id="packagedetailstypepackagefiles"></a>`packageFiles` | [`PackageFileConnection`](#packagefileconnection) | Package files. (see [Connections](#connections)) |
-| <a id="packagedetailstypepackageprotectionruleexists"></a>`packageProtectionRuleExists` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 17.0. Use `protectionRuleExists`. |
 | <a id="packagedetailstypepackagetype"></a>`packageType` | [`PackageTypeEnum!`](#packagetypeenum) | Package type. |
 | <a id="packagedetailstypepipelines"></a>`pipelines` | [`PipelineConnection`](#pipelineconnection) | Pipelines that built the package. Max page size 20. (see [Connections](#connections)) |
 | <a id="packagedetailstypeproject"></a>`project` | [`Project!`](#project) | Project where the package is stored. |

@@ -92,7 +92,8 @@ RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :import
         'merge_commit' => { 'hash' => 'merge-commit-hash' },
         'reviewers' => [
           {
-            'username' => 'user-2'
+            'uuid' => '{75364e21-112d-4381-9ec7-dcd615f0a690}',
+            'nickname' => 'user-2'
           }
         ]
       }
@@ -112,7 +113,7 @@ RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :import
         title: 'title',
         updated_at: 'updated-at',
         source_and_target_project_different: false,
-        reviewers: ['user-2']
+        reviewers: ['{75364e21-112d-4381-9ec7-dcd615f0a690}']
       }
 
       expect(described_class.new(raw).to_hash).to eq(expected_hash)

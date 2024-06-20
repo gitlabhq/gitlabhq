@@ -459,7 +459,7 @@ AWS has [network limits](https://docs.aws.amazon.com/opensearch-service/latest/d
 
 Set a custom `gitlab_rails['env']` environment variable, called [`no_proxy`](https://docs.gitlab.com/omnibus/settings/environment-variables.html) with the IP address of your Elasticsearch host.
 
-## My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly
+## My single node Elasticsearch cluster status never goes from `yellow` to `green`
 
 **For a single node Elasticsearch cluster the functional cluster health status is yellow** (never green) because the primary shard is allocated but replicas cannot be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
 

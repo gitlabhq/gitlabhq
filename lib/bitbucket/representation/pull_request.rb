@@ -59,7 +59,7 @@ module Bitbucket
       end
 
       def reviewers
-        raw['reviewers']&.pluck('username')
+        raw['reviewers']&.pluck('uuid')
       end
 
       def merge_commit_sha
