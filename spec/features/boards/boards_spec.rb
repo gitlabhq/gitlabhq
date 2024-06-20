@@ -134,6 +134,9 @@ RSpec.describe 'Project issue boards', :js, feature_category: :portfolio_managem
       end
 
       it 'infinite scrolls list' do
+        # Use small height to avoid automatic loading via GlIntersectionObserver
+        page.driver.browser.manage.window.resize_to(400, 400)
+
         create_list(:labeled_issue, 30, project: project, labels: [planning])
 
         visit_project_board_path_without_query_limit(project, board)

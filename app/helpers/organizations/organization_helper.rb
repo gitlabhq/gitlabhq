@@ -93,6 +93,8 @@ module Organizations
         new_project_path: new_project_path,
         can_create_group: can?(current_user, :create_group, organization),
         can_create_project: current_user&.can_create_project?,
+        organization_groups_projects_sort: current_user&.organization_groups_projects_sort,
+        organization_groups_projects_display: current_user&.organization_groups_projects_display,
         has_groups: has_groups?(organization)
       }
     end

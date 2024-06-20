@@ -39,14 +39,14 @@ The cloud provider account is where a highly resilient GitLab installation resid
 
 GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/e69207d3-7428-4ed1-b8a7-902c608cf8a2/edit?invitationId=inv_5922f7f4-4a0b-4024-b152-a00a9d0daa22&page=0_0#) files for the diagram in Lucidchart.
 
-#### Gitaly Setup
+#### Gitaly setup
 
 GitLab Dedicated deploys Gitaly [in a sharded setup](../../administration/gitaly/index.md#before-deploying-gitaly-cluster), not a Gitaly Cluster. In this setup:
 
 - Customer repositories are spread across multiple virtual machines.
 - GitLab manages [storage weights](../../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored) on behalf of the customer.
 
-#### Geo Setup
+#### Geo setup
 
 GitLab Dedicated leverages GitLab Geo for [disaster recovery](../../subscriptions/gitlab_dedicated/index.md#disaster-recovery).
 

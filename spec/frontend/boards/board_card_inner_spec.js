@@ -81,6 +81,7 @@ describe('Board card component', () => {
         allowSubEpics: false,
         issuableType: TYPE_ISSUE,
         isGroupBoard,
+        disabled: false,
       },
     });
   };

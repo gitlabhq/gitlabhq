@@ -51,11 +51,11 @@ class Repository
   # For example, for entry `:commit_count` there's a method called `commit_count` which
   # stores its data in the `commit_count` cache key.
   CACHED_METHODS = %i[size recent_objects_size commit_count readme_path contribution_guide
-                      changelog license_blob license_gitaly gitignore
-                      branch_names tag_names branch_count
-                      tag_count avatar exists? root_ref merged_branch_names
-                      has_visible_content? issue_template_names_hash merge_request_template_names_hash
-                      xcode_project? has_ambiguous_refs?].freeze
+    changelog license_blob license_gitaly gitignore
+    branch_names tag_names branch_count
+    tag_count avatar exists? root_ref merged_branch_names
+    has_visible_content? issue_template_names_hash merge_request_template_names_hash
+    xcode_project? has_ambiguous_refs?].freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to

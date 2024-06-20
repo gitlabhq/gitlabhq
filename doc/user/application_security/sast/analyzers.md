@@ -266,34 +266,3 @@ csharp-sast:
     reports:
       sast: gl-sast-report.json
 ```
-
-## Data provided by analyzers
-
-Each analyzer provides data about the vulnerabilities it detects. The following table details the
-data available from each analyzer. The values provided by these tools are heterogeneous so they are sometimes
-normalized into common values, for example, `severity` and `confidence`.
-
-| Property / tool                | Apex | Bandit<sup>1</sup> | Brakeman | ESLint security<sup>1</sup> | SpotBugs | Flawfinder | Gosec<sup>1</sup> | Kubesec Scanner | MobSF | NodeJsScan | PHP CS Security Audit | Security code Scan (.NET)<sup>1</sup> | Semgrep | Sobelow |
-|--------------------------------|------|--------|----------|-----------------|----------|------------|-------|-----------------|-------|------------|-----------------------|---------------------------|---------|---------|
-| Affected item (for example, class or package) | ✓ | ✗ | ✓ | ✗               | ✓        | ✓          | ✗     | ✓               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| Confidence                     | ✗    | ✓                  | ✓        | ✗                           | ✓        | x          | ✓                 | ✓               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✓       |
-| Description                    | ✓    | ✗                  | ✗        | ✓                           | ✓        | ✗          | ✗                 | ✓               | ✓     | ✓          | ✗                     | ✗                         | ✓       | ✓       |
-| End column                     | ✓    | ✗                  | ✗        | ✓                           | ✓        | ✗          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| End line                       | ✓    | ✓                  | ✗        | ✓                           | ✓        | ✗          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| External ID (for example, CVE) | ✗    | ✗                  | ⚠        | ✗                           | ⚠        | ✓          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
-| File                           | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
-| Internal doc/explanation       | ✓    | ⚠                  | ✓        | ✗                           | ✓        | ✗          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✓       |
-| Internal ID                    | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✓       |
-| Severity                       | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✓               | ✓     | ✓          | ✓                     | ✗                         | ⚠       | ✗       |
-| Solution                       | ✓    | ✗                  | ✗        | ✗                           | ⚠        | ✓          | ✗                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ⚠       | ✗       |
-| Source code extract            | ✗    | ✓                  | ✓        | ✓                           | ✗        | ✓          | ✓                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-| Start column                   | ✓    | ✗                  | ✗        | ✓                           | ✓        | ✓          | ✓                 | ✗               | ✗     | ✗          | ✓                     | ✓                         | ✓       | ✗       |
-| Start line                     | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✗               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
-| Title                          | ✓    | ✓                  | ✓        | ✓                           | ✓        | ✓          | ✓                 | ✓               | ✓     | ✓          | ✓                     | ✓                         | ✓       | ✓       |
-| URLs                           | ✓    | ✗                  | ✓        | ✗                           | ⚠        | ✗          | ⚠                 | ✗               | ✗     | ✗          | ✗                     | ✗                         | ✗       | ✗       |
-
-- ✓ => Data is available.
-- ⚠ => Data is available, but it's partially reliable, or it has to be extracted from unstructured content.
-- ✗ => Data is not available or it would require specific, inefficient or unreliable, logic to obtain it.
-
-1. This analyzer has reached End of Support. For more information, see the [SAST analyzers](#sast-analyzers) section.

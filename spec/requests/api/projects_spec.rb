@@ -2666,9 +2666,26 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context 'the project is a public fork' do
-        it 'hides details of a public fork parent' do
+        it 'shows details of a public fork parent' do
           public_project = create(:project, :repository, :public)
           fork = fork_project(public_project)
+
+          get api("/projects/#{fork.id}")
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['forked_from_project']).to include('id' => public_project.id)
+        end
+
+        it 'hides details of a private fork parent' do
+          public_project = create(:project, :repository, :public)
+          parent_user = create(:user)
+          public_project.team.add_developer(parent_user)
+
+          fork = fork_project(public_project, user)
+
+          # Make the parent private
+          public_project.visibility = Gitlab::VisibilityLevel::PRIVATE
+          public_project.save!
 
           get api("/projects/#{fork.id}")
 

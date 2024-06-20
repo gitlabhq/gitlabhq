@@ -635,8 +635,7 @@ The severity ranges from `Info` to `Critical`, but it can also be `Unknown`.
 Valid values are: `Unknown`, `Info`, `Low`, `Medium`, `High`, or `Critical`
 
 `Unknown` values means that data is unavailable to determine it's actual value. Therefore, it may be `high`, `medium`, or `low`,
-and needs to be investigated. We have [provided a chart](../../user/application_security/sast/analyzers.md#data-provided-by-analyzers)
-of the available SAST Analyzers and what data is currently available.
+and needs to be investigated.
 
 #### Remediations
 

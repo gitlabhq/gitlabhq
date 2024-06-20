@@ -112,17 +112,9 @@
     margin-bottom: 0;
   }
 
-  .move-to-position {
-    visibility: hidden;
-  }
-
-  &:hover .move-to-position {
-    visibility: visible;
-  }
-
-  @include media-breakpoint-down(sm) {
-    .move-to-position {
-      visibility: visible;
+  @include media-breakpoint-up(md) {
+    &:not(:hover, :focus, :focus-within, :active) .move-to-position {
+      visibility: hidden;
     }
   }
 }
@@ -178,9 +170,7 @@
 }
 
 .board-card-info {
-  &.board-card-weight:hover {
-    color: initial;
-  }
+  @apply gl-whitespace-nowrap;
 
   .board-card-info-icon {
     vertical-align: text-top;

@@ -1989,6 +1989,7 @@ Style/InlineDisableAnnotation:
     - 'lib/api/entities/issuable_time_stats.rb'
     - 'lib/api/entities/ml/mlflow/search_runs.rb'
     - 'lib/api/entities/project.rb'
+    - 'lib/api/entities/project_details.rb'
     - 'lib/api/entities/project_integration.rb'
     - 'lib/api/entities/project_with_access.rb'
     - 'lib/api/entities/tag.rb'

@@ -62,19 +62,19 @@ You will only receive email notifications for changes made by a Switchboard tena
 
 You can use the configuration change log to track the changes made to your GitLab Dedicated instance, including:
 
-- **Configuration change:** Name of the configuration setting that changed.
-- **User:** Email address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `GitLab Operator`.
-- **IP:** IP address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `Unavailable`.
-- **Status:** Whether the configuration change is initiated, in progress, completed, or deferred.
-- **Start time:** Start date and time when the configuration change is initiated, in UTC.
-- **End time:** End date and time when the configuration change is deployed, in UTC.
+- Configuration change: Name of the configuration setting that changed.
+- User: Email address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `GitLab Operator`.
+- IP: IP address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `Unavailable`.
+- Status: Whether the configuration change is initiated, in progress, completed, or deferred.
+- Start time: Start date and time when the configuration change is initiated, in UTC.
+- End time: End date and time when the configuration change is deployed, in UTC.
 
 Each configuration change has a status:
 
-- **Initiated:** Configuration change is made in Switchboard, but not yet deployed to the instance.
-- **In progress:** Configuration change is currently being deployed to the instance.
-- **Complete:** Configuration change has been deployed to the instance.
-- **Delayed** Initial job to deploy a change has failed and the change has not yet been assigned to a new job.
+- Initiated: Configuration change is made in Switchboard, but not yet deployed to the instance.
+- In progress: Configuration change is currently being deployed to the instance.
+- Complete: Configuration change has been deployed to the instance.
+- Delayed: Initial job to deploy a change has failed and the change has not yet been assigned to a new job.
 
 To view the configuration change log:
 

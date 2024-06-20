@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
   include Devise::Test::ControllerHelpers
 
-  let_it_be(:user) { build_stubbed(:user) }
+  let_it_be(:user) { build_stubbed(:user, organization_groups_projects_sort: 'name_asc') }
   let_it_be(:organization_detail) { build_stubbed(:organization_detail, description_html: '<em>description</em>') }
   let_it_be(:organization) { organization_detail.organization }
   let_it_be(:organization_gid) { 'gid://gitlab/Organizations::Organization/1' }
@@ -164,7 +164,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
           'projects_empty_state_svg_path' => projects_empty_state_svg_path,
-          'association_counts' => stubbed_results
+          'association_counts' => stubbed_results,
+          'organization_groups_projects_sort' => 'name_asc',
+          'organization_groups_projects_display' => 'projects'
         }
       )
     end
@@ -206,7 +208,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'new_group_path' => new_group_path,
           'new_project_path' => new_project_path,
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
-          'projects_empty_state_svg_path' => projects_empty_state_svg_path
+          'projects_empty_state_svg_path' => projects_empty_state_svg_path,
+          'organization_groups_projects_sort' => 'name_asc',
+          'organization_groups_projects_display' => 'projects'
         }
       )
     end

@@ -169,7 +169,7 @@ To disable instance runners for a project:
 1. Expand **Runners**.
 1. In the **Instance runners** area, turn off the **Enable instance runners for this project** toggle.
 
-instance runners are automatically disabled for a project:
+Instance runners are automatically disabled for a project:
 
 - If the instance runners setting for the parent group is disabled, and
 - If overriding this setting is not permitted at the project level.

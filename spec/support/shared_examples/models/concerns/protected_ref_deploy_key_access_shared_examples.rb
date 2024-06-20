@@ -24,6 +24,17 @@ RSpec.shared_examples 'protected ref deploy_key access' do
         end
       end
 
+      context 'when deploy_key_id is invalid' do
+        subject(:access_level) do
+          build(described_instance, protected_ref_name => protected_ref, deploy_key_id: 0)
+        end
+
+        it 'is not valid', :aggregate_failures do
+          is_expected.to be_invalid
+          expect(access_level.errors.full_messages).to contain_exactly("Deploy key can't be blank")
+        end
+      end
+
       context 'when a deploy key already added for this access level' do
         let(:deploy_key) { create(:deploy_keys_project, :write_access, project: project).deploy_key }
 
@@ -119,13 +130,38 @@ RSpec.shared_examples 'protected ref deploy_key access' do
   end
 
   describe '#type' do
-    let(:access_level) { build(described_instance) }
-
-    context 'when deploy_key?' do
+    context 'when deploy_key is present and deploy_key_id is nil' do
       let(:access_level) { build(described_instance, deploy_key: build(:deploy_key)) }
 
       it 'returns :deploy_key' do
         expect(access_level.type).to eq(:deploy_key)
+      end
+    end
+
+    context 'when deploy_key_id is present and deploy_key is nil' do
+      let(:access_level) { build(described_instance, deploy_key_id: 0) }
+
+      it 'returns :deploy_key' do
+        expect(access_level.type).to eq(:deploy_key)
+      end
+    end
+  end
+
+  describe '#humanize' do
+    context 'when deploy_key is present' do
+      let(:deploy_key) { build(:deploy_key) }
+      let(:access_level) { build(described_instance, deploy_key: deploy_key) }
+
+      it 'returns deploy_key.title' do
+        expect(access_level.humanize).to eq(deploy_key.title)
+      end
+    end
+
+    context 'when deploy_key_id is present and deploy_key is nil' do
+      let(:access_level) { build(described_instance, deploy_key_id: 0) }
+
+      it 'returns "Deploy key"' do
+        expect(access_level.humanize).to eq('Deploy key')
       end
     end
   end

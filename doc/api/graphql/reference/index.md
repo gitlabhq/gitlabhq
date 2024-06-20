@@ -9479,6 +9479,8 @@ Input type: `UserPreferencesUpdateInput`
 | <a id="mutationuserpreferencesupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationuserpreferencesupdateextensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="mutationuserpreferencesupdateissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
+| <a id="mutationuserpreferencesupdateorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` **{warning-solid}** | [`OrganizationGroupProjectDisplay`](#organizationgroupprojectdisplay) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
+| <a id="mutationuserpreferencesupdateorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` **{warning-solid}** | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Deprecated:** **Status**: Experiment. Introduced in GitLab 17.2. |
 | <a id="mutationuserpreferencesupdateusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` | [`Boolean`](#boolean) | Whether Web IDE Extension Marketplace is enabled for the user. |
 | <a id="mutationuserpreferencesupdatevisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
@@ -31709,6 +31711,8 @@ fields relate to interactions between the two entities.
 | ---- | ---- | ----------- |
 | <a id="userpreferencesextensionsmarketplaceoptinstatus"></a>`extensionsMarketplaceOptInStatus` | [`ExtensionsMarketplaceOptInStatus!`](#extensionsmarketplaceoptinstatus) | Status of the Web IDE Extension Marketplace opt-in for the user. |
 | <a id="userpreferencesissuessort"></a>`issuesSort` | [`IssueSort`](#issuesort) | Sort order for issue lists. |
+| <a id="userpreferencesorganizationgroupsprojectsdisplay"></a>`organizationGroupsProjectsDisplay` **{warning-solid}** | [`OrganizationGroupProjectDisplay!`](#organizationgroupprojectdisplay) | **Introduced** in GitLab 17.2. **Status**: Experiment. Default list view for organization groups and projects. |
+| <a id="userpreferencesorganizationgroupsprojectssort"></a>`organizationGroupsProjectsSort` **{warning-solid}** | [`OrganizationGroupProjectSort`](#organizationgroupprojectsort) | **Introduced** in GitLab 17.2. **Status**: Experiment. Sort order for organization groups and projects. |
 | <a id="userpreferencesusewebideextensionmarketplace"></a>`useWebIdeExtensionMarketplace` **{warning-solid}** | [`Boolean!`](#boolean) | **Deprecated** in GitLab 16.11. Use `extensions_marketplace_opt_in_status` instead. |
 | <a id="userpreferencesvisibilitypipelineidtype"></a>`visibilityPipelineIdType` | [`VisibilityPipelineIdType`](#visibilitypipelineidtype) | Determines whether the pipeline list shows ID or IID. |
 
@@ -35024,6 +35028,32 @@ Rotation length unit of an on-call rotation.
 | <a id="oncallrotationunitenumdays"></a>`DAYS` | Days. |
 | <a id="oncallrotationunitenumhours"></a>`HOURS` | Hours. |
 | <a id="oncallrotationunitenumweeks"></a>`WEEKS` | Weeks. |
+
+### `OrganizationGroupProjectDisplay`
+
+Default list view for organization groups and projects.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="organizationgroupprojectdisplaygroups"></a>`GROUPS` **{warning-solid}** | **Introduced** in GitLab 17.2. **Status**: Experiment. Display organization groups list. |
+| <a id="organizationgroupprojectdisplayprojects"></a>`PROJECTS` **{warning-solid}** | **Introduced** in GitLab 17.2. **Status**: Experiment. Display organization projects list. |
+
+### `OrganizationGroupProjectSort`
+
+Values for sorting organization groups and projects.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="organizationgroupprojectsortcreated_asc"></a>`CREATED_ASC` | Created at ascending order. |
+| <a id="organizationgroupprojectsortcreated_desc"></a>`CREATED_DESC` | Created at descending order. |
+| <a id="organizationgroupprojectsortname_asc"></a>`NAME_ASC` **{warning-solid}** | **Introduced** in GitLab 17.2. **Status**: Experiment. Name ascending order. |
+| <a id="organizationgroupprojectsortname_desc"></a>`NAME_DESC` **{warning-solid}** | **Introduced** in GitLab 17.2. **Status**: Experiment. Name descending order. |
+| <a id="organizationgroupprojectsortupdated_asc"></a>`UPDATED_ASC` | Updated at ascending order. |
+| <a id="organizationgroupprojectsortupdated_desc"></a>`UPDATED_DESC` | Updated at descending order. |
+| <a id="organizationgroupprojectsortcreated_asc"></a>`created_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_ASC`. |
+| <a id="organizationgroupprojectsortcreated_desc"></a>`created_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `CREATED_DESC`. |
+| <a id="organizationgroupprojectsortupdated_asc"></a>`updated_asc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_ASC`. |
+| <a id="organizationgroupprojectsortupdated_desc"></a>`updated_desc` **{warning-solid}** | **Deprecated** in GitLab 13.5. This was renamed. Use: `UPDATED_DESC`. |
 
 ### `OrganizationSort`
 

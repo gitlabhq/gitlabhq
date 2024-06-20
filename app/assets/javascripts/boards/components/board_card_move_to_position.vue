@@ -105,11 +105,11 @@ export default {
       title: $options.i18n.moveCardText,
       boundary: 'viewport',
     }"
-    class="move-to-position gl-block gl-mb-2 gl-ml-auto -gl-mt-3 -gl-mr-3 js-no-trigger"
+    class="move-to-position gl-block gl-absolute gl-top-3 gl-right-3 js-no-trigger"
+    size="small"
     category="tertiary"
     :items="$options.BOARD_CARD_MOVE_TO_POSITIONS_OPTIONS"
     icon="ellipsis_v"
-    :tabindex="index"
     :aria-label="$options.i18n.moveCardText"
     :text-sr-only="true"
     no-caret

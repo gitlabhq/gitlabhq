@@ -2,20 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ArrayAlignment:
   Exclude:
-    - 'app/models/deploy_token.rb'
-    - 'app/models/dev_ops_report/metric.rb'
-    - 'app/models/integrations/microsoft_teams.rb'
-    - 'app/models/integrations/pumble.rb'
-    - 'app/models/integrations/unify_circuit.rb'
-    - 'app/models/issue.rb'
-    - 'app/models/repository.rb'
-    - 'app/models/snippet_repository.rb'
-    - 'app/services/ci/create_pipeline_service.rb'
-    - 'app/services/commits/create_service.rb'
-    - 'app/services/namespaces/package_settings/update_service.rb'
-    - 'app/services/packages/rpm/parse_package_service.rb'
-    - 'app/services/web_hook_service.rb'
-    - 'config/application.rb'
     - 'config/initializers/0_marginalia.rb'
     - 'config/initializers/direct_upload_support.rb'
     - 'ee/app/controllers/admin/push_rules_controller.rb'

@@ -184,8 +184,8 @@ module Gitlab
           lines = { added: [], removed: [] }
 
           diff_lines.each do |line|
-            lines[:added] << line if line.added?
-            lines[:removed] << line if line.removed?
+            lines[:added] << line if line.added? && !line.meta?
+            lines[:removed] << line if line.removed? && !line.meta?
 
             next unless line.type == 'match'
 

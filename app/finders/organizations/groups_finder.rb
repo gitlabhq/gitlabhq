@@ -24,5 +24,11 @@ module Organizations
 
       super
     end
+
+    def membership_groups
+      return unless current_user
+
+      current_user.groups.self_and_descendants
+    end
   end
 end

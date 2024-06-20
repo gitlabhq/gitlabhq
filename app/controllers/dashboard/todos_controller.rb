@@ -13,8 +13,8 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   urgency :low
 
   def index
-    @sort = params[:sort]
-    @todos = @todos.page(params[:page])
+    @sort = pagination_params[:sort]
+    @todos = @todos.page(pagination_params[:page])
     @todos = @todos.with_entity_associations
 
     return if redirect_out_of_range(@todos, todos_page_count(@todos))

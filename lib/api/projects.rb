@@ -466,7 +466,7 @@ module API
         end
 
         options = {
-          with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
+          with: current_user ? Entities::ProjectWithAccess : Entities::ProjectDetails,
           current_user: current_user,
           user_can_admin_project: can?(current_user, :admin_project, user_project),
           statistics: params[:statistics],

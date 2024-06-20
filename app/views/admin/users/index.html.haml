@@ -1,6 +1,6 @@
 - page_title _("Users")
 
-.top-area
+.top-area{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_users_pageload' } }
   = render 'tabs'
   .nav-controls
     = render_if_exists 'admin/users/admin_email_users'

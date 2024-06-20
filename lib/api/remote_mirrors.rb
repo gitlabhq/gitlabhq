@@ -162,25 +162,10 @@ module API
       delete ':id/remote_mirrors/:mirror_id' do
         mirror = find_remote_mirror
 
-        if Feature.enabled?(:use_remote_mirror_destroy_service, user_project)
-          destroy_conditionally!(mirror) do
-            result = ::RemoteMirrors::DestroyService.new(user_project, current_user).execute(mirror)
+        destroy_conditionally!(mirror) do
+          result = ::RemoteMirrors::DestroyService.new(user_project, current_user).execute(mirror)
 
-            render_api_error!(result.message, 400) if result.error?
-          end
-        else
-          destroy_conditionally!(mirror) do
-            mirror_params = declared_params(include_missing: false).merge(_destroy: 1)
-            mirror_params[:id] = mirror_params.delete(:mirror_id)
-            update_params = { remote_mirrors_attributes: mirror_params }
-
-            # Note: We are using the update service to be consistent with how the controller handles deletion
-            result = ::Projects::UpdateService.new(user_project, current_user, update_params).execute
-
-            if result[:status] != :success
-              render_api_error!(result[:message], 400)
-            end
-          end
+          render_api_error!(result.message, 400) if result.error?
         end
       end
     end

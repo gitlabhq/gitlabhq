@@ -46,10 +46,10 @@ class SnippetRepository < ApplicationRecord
   def capture_git_error(&block)
     yield block
   rescue Gitlab::Git::Index::IndexError,
-         Gitlab::Git::CommitError,
-         Gitlab::Git::PreReceiveError,
-         Gitlab::Git::CommandError,
-         ArgumentError => e
+    Gitlab::Git::CommitError,
+    Gitlab::Git::PreReceiveError,
+    Gitlab::Git::CommandError,
+    ArgumentError => e
 
     logger.error(message: "Snippet git error. Reason: #{e.message}", snippet: snippet.id)
 

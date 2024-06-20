@@ -98,6 +98,12 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:achievements_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:achievements_enabled=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:organization_groups_projects_sort).to(:user_preference) }
+    it { is_expected.to delegate_method(:organization_groups_projects_sort=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:organization_groups_projects_display).to(:user_preference) }
+    it { is_expected.to delegate_method(:organization_groups_projects_display=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:home_organization).to(:user_preference) }
     it { is_expected.to delegate_method(:home_organization_id).to(:user_preference) }
     it { is_expected.to delegate_method(:home_organization_id=).to(:user_preference).with_arguments(:args) }
@@ -4898,16 +4904,6 @@ RSpec.describe User, feature_category: :user_profile do
     subject { user.authorized_groups }
 
     it { is_expected.to contain_exactly private_group, child_group, project_group }
-
-    context 'when include_subgroups_in_authorized_groups is disabled' do
-      before do
-        stub_feature_flags(include_subgroups_in_authorized_groups: false)
-      end
-
-      it 'omits subgroups with inherited membership' do
-        is_expected.to contain_exactly private_group, project_group
-      end
-    end
 
     context 'with shared memberships' do
       let_it_be(:shared_group) { create(:group) }

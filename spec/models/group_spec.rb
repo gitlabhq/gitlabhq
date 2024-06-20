@@ -930,16 +930,6 @@ RSpec.describe Group, feature_category: :groups_and_projects do
         end
 
         it { is_expected.to contain_exactly(private_group, private_subgroup, internal_group, group) }
-
-        context 'when include_subgroups_in_authorized_groups is disabled' do
-          before do
-            stub_feature_flags(include_subgroups_in_authorized_groups: false)
-          end
-
-          it 'does not include subgroups with inherited membership' do
-            is_expected.to contain_exactly(private_group, internal_group, group)
-          end
-        end
       end
 
       context 'when user is a member of private subgroup' do

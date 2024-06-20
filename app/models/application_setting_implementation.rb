@@ -71,6 +71,7 @@ module ApplicationSettingImplementation
         diff_max_lines: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
         disable_admin_oauth_scopes: false,
         disable_feed_token: false,
+        disabled_direct_code_suggestions: false,
         disabled_oauth_sign_in_sources: [],
         dns_rebinding_protection_enabled: true,
         domain_allowlist: Settings.gitlab['domain_allowlist'],

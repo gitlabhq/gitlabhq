@@ -178,22 +178,23 @@ RSpec.describe Gitlab::Diff::File do
   describe '#diff_lines_by_hunk' do
     let(:diff_lines) do
       [
-        instance_double(Gitlab::Diff::Line, type: 'match', added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: 'new', added?: true, removed?: false, text: 'First Hunk Added 1'),
-        instance_double(Gitlab::Diff::Line, type: 'new', added?: true, removed?: false, text: 'First Hunk Added 2'),
-        instance_double(Gitlab::Diff::Line, type: 'old', added?: false, removed?: true, text: 'First Hunk Removed 1'),
-        instance_double(Gitlab::Diff::Line, type: 'old', added?: false, removed?: true, text: 'First Hunk Removed 2'),
-        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: 'match', added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false),
-        instance_double(Gitlab::Diff::Line, type: 'old', added?: false, removed?: true, text: 'Second Hunk Removed')
+        instance_double(Gitlab::Diff::Line, type: 'match', added?: false, removed?: false, meta?: true),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false, meta?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false, meta?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false, meta?: false),
+        instance_double(Gitlab::Diff::Line, type: 'new', added?: true, removed?: false, text: 'First Hunk Added 1', meta?: false),
+        instance_double(Gitlab::Diff::Line, type: 'new', added?: true, removed?: false, text: 'First Hunk Added 2', meta?: false),
+        instance_double(Gitlab::Diff::Line, type: 'old', added?: false, removed?: true, text: 'First Hunk Removed 1', meta?: false),
+        instance_double(Gitlab::Diff::Line, type: 'old', added?: false, removed?: true, text: 'First Hunk Removed 2', meta?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false, meta?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false, meta?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false, meta?: false),
+        instance_double(Gitlab::Diff::Line, type: 'match', added?: false, removed?: false, meta?: true),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false, meta?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false, meta?: false),
+        instance_double(Gitlab::Diff::Line, type: nil, added?: false, removed?: false, meta?: false),
+        instance_double(Gitlab::Diff::Line, type: 'old', added?: false, removed?: true, text: 'Second Hunk Removed', meta?: false),
+        instance_double(Gitlab::Diff::Line, type: 'new-nonewline', added?: true, removed?: false, meta?: true)
       ]
     end
 

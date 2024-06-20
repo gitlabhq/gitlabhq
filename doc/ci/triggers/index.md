@@ -109,7 +109,7 @@ In this example:
 - `1234` is the project ID for `project-B`. The project ID is displayed on the
   [project overview page](../../user/project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - The [`rules`](../yaml/index.md#rules) cause the job to run every time a tag is added to `project-A`.
-- `MY_TRIGGER_TOKEN` is a [masked CI/CD variables](../variables/index.md#mask-a-cicd-variable)
+- `MY_TRIGGER_TOKEN` is a [masked CI/CD variable](../variables/index.md#mask-a-cicd-variable)
   that contains the trigger token.
 
 ### Use a webhook

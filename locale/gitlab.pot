@@ -2133,6 +2133,12 @@ msgstr ""
 msgid "AIPoweredSM|By enabling this feature, you agree to the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
+msgid "AIPoweredSM|Disable %{link_start}direct connections%{link_end} for this instance."
+msgstr ""
+
+msgid "AIPoweredSM|Disable direct connections for Code Suggestions"
+msgstr ""
+
 msgid "AIPoweredSM|Enable %{link_start}AI-powered features%{link_end} for this instance."
 msgstr ""
 

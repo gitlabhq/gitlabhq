@@ -101,7 +101,7 @@ Prerequisites:
 To do this:
 
 1. Find your desired language in the list of
-   [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers)
+   [language identifiers](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#textDocumentItem)
    for VS Code. You need the **Identifier** for a later step.
 1. In VS Code, open the extension settings for **GitLab Workflow**:
    1. On the top bar, go to **Code > Settings > Extensions**.

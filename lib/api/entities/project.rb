@@ -2,7 +2,7 @@
 
 module API
   module Entities
-    class Project < BasicProjectDetails
+    class Project < ProjectDetails
       include ::API::Helpers::RelatedResourcesHelpers
 
       expose :container_registry_url, as: :container_registry_image_prefix, documentation: { type: 'string', example: 'registry.gitlab.example.com/gitlab/gitlab-client' }, if: ->(_, _) { Gitlab.config.registry.enabled }
@@ -94,9 +94,6 @@ module API
       expose :shared_runners_enabled, documentation: { type: 'boolean' }
       expose :lfs_enabled?, as: :lfs_enabled, documentation: { type: 'boolean' }
       expose :creator_id, documentation: { type: 'integer', example: 1 }
-      expose :forked_from_project, using: Entities::BasicProjectDetails, if: ->(project, options) do
-        project.forked? && Ability.allowed?(options[:current_user], :read_project, project.forked_from_project)
-      end
       expose :mr_default_target_self, if: ->(project) { project.forked? }, documentation: { type: 'boolean' }
 
       expose :import_url, documentation: { type: 'string', example: 'https://gitlab.com/gitlab/gitlab.git' }, if: ->(project, options) { Ability.allowed?(options[:current_user], :admin_project, project) } do |project|
@@ -184,8 +181,7 @@ module API
                                 .preload(:service_desk_setting)
                                 .preload(project_group_links: { group: :route },
                                   fork_network: :root_project,
-                                  fork_network_member: :forked_from_project,
-                                  forked_from_project: [:route, :topics, :group, :project_feature, { namespace: [:route, :owner] }])
+                                  fork_network_member: :forked_from_project)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -193,13 +189,8 @@ module API
         # Call the count methods on every project, so the BatchLoader would load them all at
         # once when the entities are rendered
         projects_relation.each(&:open_issues_count)
-        projects_relation.map(&:forked_from_project).compact.each(&:forks_count)
 
         super
-      end
-
-      def self.repositories_for_preload(projects_relation)
-        super + projects_relation.map(&:forked_from_project).compact.map(&:repository)
       end
     end
   end

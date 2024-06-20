@@ -97,6 +97,27 @@ This API connection securely transmits a context window from your IDE/editor to 
   - Algorithms or large code blocks might take more than 10 seconds to generate.
   - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block.
 
+### Disable direct connections to the AI Gateway
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.
+
+Prerequisites:
+
+- You must be an administrator for the GitLab self-managed instance.
+
+To minimize latency for code completion requests, these requests are sent from the IDE directly to the AI Gateway.
+For this direct connection to work, the IDE must be able to connect to `https://cloud.gitlab.com:443`. If this is not
+possible (for example, because of network restrictions), you can disable direct connections for all users. If you do this,
+code completion requests are sent indirectly through the GitLab self-managed instance, and might result in your requests
+having higher latency.
+
+To disable direct connections to the gateway:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **AI-powered features**.
+1. Select the **Disable direct connections for code suggestions** checkbox.
+
 ## Inference window context
 
 Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).

@@ -11,20 +11,6 @@ module QA
             element 'close-button'
           end
 
-          def has_file_explorer?
-            has_element?('div[aria-label="Files Explorer"]')
-          end
-
-          def right_click_file_explorer
-            page.find('.explorer-folders-view', visible: true).right_click
-          end
-
-          def has_file?(file_name)
-            within_vscode_editor do
-              has_element?("div[aria-label='#{file_name}']")
-            end
-          end
-
           def has_pending_changes?
             within_vscode_editor do
               all_elements('.action-item', minimum: 1).any? do |item|
@@ -106,11 +92,11 @@ module QA
           end
 
           def click_new_branch
-            click_element('.monaco-button', text: "Create new branch")
+            click_monaco_button('Create new branch')
           end
 
           def click_continue_with_existing_branch
-            click_element('.monaco-button', text: "Continue")
+            click_monaco_button('Continue')
           end
 
           def has_branch_input_field?
@@ -176,11 +162,15 @@ module QA
             end
 
             Support::WaitForRequests.wait_for_requests(finish_loading_wait: 30)
-            Support::Waiter.wait_until(max_duration: 60, reload_page: page, retry_on_exception: true) do
-              within_vscode_editor do
-                # Check for webide file_explorer element
-                has_file_explorer?
-              end
+            Support::Waiter.wait_until(reload_page: page, retry_on_exception: true,
+              message: 'Waiting for VSCode file explorer') do
+              has_file_explorer?
+            end
+          end
+
+          def wait_for_file_to_load(filename)
+            Support::Waiter.wait_until(message: "Waiting for #{filename} to load in VSCode file explorer") do
+              has_file?(filename)
             end
           end
 
@@ -241,7 +231,7 @@ module QA
             within_vscode_editor do
               within_element('.notification-toast-container') do
                 has_element?('div[title="GitLab Web IDE Extension (Extension)"]')
-                click_element('.monaco-button', text: "Create MR")
+                click_monaco_button('Create MR')
               end
             end
           end
@@ -320,6 +310,26 @@ module QA
           end
 
           private
+
+          def click_monaco_button(label)
+            click_element('.monaco-button', text: label)
+          end
+
+          def has_file_explorer?
+            within_vscode_editor do
+              has_element?('div[aria-label="Files Explorer"]')
+            end
+          end
+
+          def right_click_file_explorer
+            page.find('.explorer-folders-view', visible: true).right_click
+          end
+
+          def has_file?(file_name)
+            within_vscode_editor do
+              has_element?("div[aria-label='#{file_name}']")
+            end
+          end
 
           def create_item(click_item, item_name)
             within_vscode_editor do

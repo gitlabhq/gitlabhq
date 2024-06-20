@@ -26,6 +26,18 @@ describe('MemberActivity', () => {
     it('renders `User created`, `Access granted`, and `Last activity` fields', () => {
       expect(wrapper.element).toMatchSnapshot();
     });
+
+    describe('and "requestAcceptedAt" field in the member entity is not null', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: { member: { ...memberMock, requestAcceptedAt: '2020-07-27T16:22:46.923Z' } },
+        });
+      });
+
+      it('should use this field to display an access granted date', () => {
+        expect(wrapper.element).toMatchSnapshot();
+      });
+    });
   });
 
   describe('with a member that does not have all of the fields', () => {
