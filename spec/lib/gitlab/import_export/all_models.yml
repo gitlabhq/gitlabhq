@@ -165,6 +165,7 @@ snippets:
 - snippet_repository
 - statistics
 - repository_storage_moves
+- organization
 releases:
 - author
 - project

@@ -4,7 +4,7 @@ RSpec.shared_examples 'protected ref deploy_key access' do
   let_it_be(:described_instance) { described_class.model_name.singular }
   let_it_be(:protected_ref_name) { described_class.module_parent.model_name.singular }
   let_it_be(:project) { create(:project) }
-  let_it_be(:protected_ref) { create(protected_ref_name, project: project) } # rubocop:disable Rails/SaveBang
+  let_it_be(:protected_ref) { create(protected_ref_name, project: project) } # rubocop:disable Rails/SaveBang -- False positive because factory name is dynamic
 
   describe 'associations' do
     it { is_expected.to belong_to(:deploy_key) }

@@ -15,6 +15,7 @@ module Organizations
     has_many :namespaces
     has_many :groups
     has_many :projects
+    has_many :snippets
 
     has_one :settings, class_name: "OrganizationSetting"
     has_one :organization_detail, inverse_of: :organization, autosave: true

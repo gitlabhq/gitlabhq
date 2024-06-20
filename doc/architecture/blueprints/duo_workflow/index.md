@@ -24,25 +24,24 @@ the AI Gateway.
 In order to address this the Duo Workflow functionality will be comprised of 2
 separate components:
 
-1. The Duo Workflow Service which is a Python based service we run in our
-   infrastructure. This is built on top of
+1. The Duo Workflow Service, which is a Python service we run in our
+   infrastructure. The Workflow Service is built on top of
    [LangGraph](https://github.com/langchain-ai/langgraph).
-1. The Duo Worklow Executor which is a Go binary that communicates via long
-   running gRPC connection to Duo Workflow Service and executes the arbtitrary
-   commands. It will be possible for users to run this locally or in CI
-   pipelines
+1. The Duo Worklow Executor, which is a Go binary that communicates via long
+   running gRPC connection to the Duo Workflow Service and executes the arbtitrary
+   commands. It will be possible for users to run this locally or in CI pipelines.
 
 In our first release we will support 2 execution modes:
 
 1. Local Executor: which will run commands and edit files locally in a
    sandboxed Docker container on the developer machine. They will be able to
    see the files being edited live and it will be interactive
-1. CI Executor: For all non-local usecases of Duo Workflow (e.g. issue/epic based workflows)
-   these will be triggered by the GitLab UI and will create a CI Pipeline to
-   run the Duo Workflow Executor
+1. CI Executor: All non-local use-cases of Duo Workflow (for example:
+   issue/epic based workflows) will be triggered by the GitLab UI and will
+   create a CI Pipeline to run the Duo Workflow Executor
 
 Our architecture will also support mixed deployments for self-managed such that
-some features of Duo Workflow will be available using a cloud hosted AI
+some features of Duo Workflow will be available using a cloud-hosted AI
 Gateway.
 
 ### Detailed plan
@@ -55,12 +54,16 @@ run in multiple runtimes:
    points in the GitLab application but there should be a central workflow UI
    with reusable components (e.g. Vue components) that could be embedded into
    our editor extensions
-1. The Duo Workflow Service. This will be a Python based service we deploy with
-   a gRPC API. The only interface to this will be the gRPC interface which is
-   called from the Duo Workflow Executor. Internally this will use LangGraph to
-   execute the workflows. It will not have any persisted state but the state of
+1. The Duo Workflow Service. This is a Python-based service we deploy with
+   a gRPC API. The only interface to this is the gRPC interface, which is
+   called from the Duo Workflow Executor. Internally, this will use LangGraph to
+   execute the workflows. For reasons why LangGraph was chosen, see [this work item](https://gitlab.com/gitlab-org/gitlab/-/work_items/457958).
+   The Workflow Service will not have any persisted state but the state of
    running workflows will be kept in memory and periodically checkpointed in
-   GitLab.
+   GitLab. The Workflow Service is built into the existing
+   [AI Gateway codebase](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist)
+   but will have its own deployment. This deployment will take advantage of
+Runway's [multiple deployments from one service repository](https://gitlab.com/gitlab-com/gl-infra/platform/runway/docs/-/blob/master/src/content/docs/guides/onboarding.md) feature.
 1. The Duo Workflow Executor. This will be written in Go for easy installation
    in development containers. This component will run in CI jobs or on a user's
    local workstation. In the local workstation it will run sandboxed in a
@@ -72,15 +75,15 @@ run in multiple runtimes:
 The following are important constraints of the architecture:
 
 1. All state management for workflows will be inside GitLab.
-1. Duo Workflow Service is expected to periodically checkpoint it's state in GitLab
+1. Duo Workflow Service is expected to periodically checkpoint its state in GitLab
 1. Duo Workflow Service in-memory state can be dropped/lost at any time so
    checkpointing will be the only guaranteed point that can be returned to
-1. If a local Duo Workflow Executor drops connection then the Duo Workflow
+1. If a local Duo Workflow Executor drops the connection, the Duo Workflow
    Service will checkpoint and shutdown the state as soon as it runs into
    something where it is waiting on the executor
 1. In order to avoid multiple Duo Workflow Service instances running on the
-   same workflow the Duo Workflow Service will always acquire a lock with
-   GitLab before it starts running. When it suspends it will release the lock and
+   same workflow, the Duo Workflow Service will always acquire a lock with
+   GitLab before it starts running. When it suspends, it will release the lock and
    similarly there will be a timeout state if it has not checkpointed in the
    last 60 seconds. GitLab will not accept checkpoints from a timed out run of
    the Duo Workflow Service.
@@ -268,6 +271,103 @@ the workflow.
 
 Consideration should also be made to cleanup Git refs over time after some
 workflow expiration period.
+
+### Authentication
+
+Duo Workflow requires several authentication flows.
+
+In this section, each connection that requires authentication is listed and the
+authentication mechanism is discussed.
+
+#### Local Duo Workflow Executor -> Duo Workflow Service (AI Gateway)
+
+When a Duo Workflow starts, the Duo Workflow Executor must connect to the AI Gateway.
+
+To authenticate this connection:
+
+1. The IDE will use the OAuth token of Personal Access Token (PAT) that the user
+   generated while setting up the GitLab editor extension.
+1. The IDE uses that token to authenticate a request to a GitLab Rails API
+   endpoint to obtain a short-lived user- and system-scoped JWT.
+1. When the GitLab Rails instance receives this request, it loads its
+   instance-scoped JWT (synced daily from CustomersDot) and contacts the AI
+   gateway to swap this instance token for the above-mentioned user-scoped token
+   (also cryptographically signed)
+1. GitLab Rails returns this JWT to the IDE.
+1. The IDE passes on this JWT to the local Duo Workflow Executor component.
+1. The Duo Workflow Executor uses this JWT to authenticate the Duo Workflow
+   Service gRPC connection.
+
+This flow mimics the
+[token flow that allows IDEs to connect direct to the AI Gateway](https://gitlab.com/groups/gitlab-org/-/epics/13252).
+
+#### CI Duo Workflow Executor -> Duo Workflow Service (AI Gateway)
+
+When a Duo Workflow is executed by a CI Runner, the Duo Workflow Executor must
+connect to the AI Gateway.
+
+A CI Pipeline is created by GitLab, so there is no need to query a GitLab Rails
+API endpoint to obtain a short-lived user- and system-scoped JWT. Instead, in
+the process of creating the CI pipeline, GitLab Rails will:
+
+1. Generate the user-scoped JWT.
+1. Inject the JWT as an environment variable (for example: `DUO_WORKFLOW_TOKEN`)
+   in the CI pipeline.
+1. The Duo Workflow Executor running inside the CI job uses this environment
+   variable value to authenticate the Duo Workflow Service gRPC connection.
+
+#### Duo Workflow Service (AI Gateway) -> GitLab Rails API
+
+Reasons that the AI Gateway must be able to authenticate requests to the GitLab Rails API:
+
+1. The Duo Workflow Service will need to periodically make requests to GitLab Rails
+   to sync workflow state. This means that the AI Gateway must be able to
+   authenticate these requests.
+1. Duo Workflow may need to make other GitLab Rails API queries to gather
+   context. For example, a Duo Workflow for "solve issue with code" would
+   require an API request to retrieve the issue content.
+1. The end state of a Duo Workflow may take the form of a generated artifact
+   (for example, Git commit or pull request) on the GitLab platform. To
+   generate this artifact, the AI Gateway must be able to make API requests to
+   GitLab Rails.
+
+Requirements for the token used to authenticate requests from the AI Gateway to
+the GitLab Rails API:
+
+1. Any artifacts created by a Duo Workflow must be auditable in order
+   to maintain transparency about AI-generated activities on the GitLab platform.
+1. The token's access level must match the access level of the user who
+   initiated the Workflow to ensure that there is no privilege escalation.
+1. We must have the ability to block read/write for all resources that belong to
+   instances/projects/groups with `duo_features_enabled` set to false.
+1. Token must be valid for as long as it takes an agent to execute or be
+   refreshable by the AI Gateway. Workflow execution may take several hours.
+
+The JWT that the Workflow Executor uses to authenticate to the AI Gateway could
+potentially be adapted to also work for this use-case but has some problems:
+
+1. Need to update GitLab Rails to accept this type of token for API authentication.
+1. JWTs are not revocable; what if we need to cut off an agent's access?
+1. Need to build token rotation. How would the AI Gateway authenticate an API
+   request to generate a new token if the old JWT is already expired?
+
+For these reasons, OAuth is a better protocol for this use-case. OAuth tokens:
+
+1. Are only valid for 2 hours.
+1. Can be revoked.
+1. Have a built-in refresh flow.
+1. Are an established authentication pattern for federating access between
+   services.
+
+To use OAuth, we will:
+
+1. Create a new token scope called `ai_workflows` ([related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/467160))
+1. Create a new API endpoint in GitLab Rails that accepts the JWT.
+1. That endpoint will generate an OAuth token with the `ai_workflows` scope.
+1. The AI Gateway will exchange the user-scoped JWT for a user-scoped
+   `ai_workflows` OAuth token.
+1. Use the OAuth token for any GitLab Rails API Requests to read or write data
+   for a Workflow.
 
 ### Options we've considered and pros/cons
 

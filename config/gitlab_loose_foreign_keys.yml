@@ -389,6 +389,10 @@ security_scans:
   - table: p_ci_builds
     column: build_id
     on_delete: async_delete
+snippets:
+  - table: organizations
+    column: organization_id
+    on_delete: async_nullify
 terraform_state_versions:
   - table: ci_builds
     column: ci_build_id

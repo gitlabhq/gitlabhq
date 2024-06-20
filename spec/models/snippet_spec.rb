@@ -16,6 +16,7 @@ RSpec.describe Snippet, feature_category: :source_code_management do
   end
 
   describe 'associations' do
+    it { is_expected.to belong_to(:organization) }
     it { is_expected.to belong_to(:author).class_name('User') }
     it { is_expected.to belong_to(:project) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
@@ -513,6 +514,15 @@ RSpec.describe Snippet, feature_category: :source_code_management do
     subject(:without_created_by_banned_user) { described_class.without_created_by_banned_user }
 
     it { is_expected.to match_array(snippet) }
+  end
+
+  describe 'with loose foreign keys' do
+    context 'on organization_id' do
+      it_behaves_like 'cleanup by a loose foreign key' do
+        let_it_be(:parent) { create(:organization) }
+        let_it_be(:model) { create(:snippet, organization: parent) }
+      end
+    end
   end
 
   describe '#participants' do

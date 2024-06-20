@@ -142,7 +142,7 @@ RSpec.describe ::Gitlab::Security::ScanConfiguration do
                      "Secret push protection is triggered when commits are pushed to a repository. " \
                      "If any secrets are detected, the push is blocked.",
         help_path: Gitlab::Routing.url_helpers.help_page_path(
-          "user/application_security/secret_detection/pre_receive/index"),
+          "user/application_security/secret_detection/secret_push_protection/index"),
         type: "pre_receive_secret_detection" }
       :secret_detection | { name: "Pipeline Secret Detection",
         description: "Analyze your source code and Git history for secrets by using CI/CD pipelines.",

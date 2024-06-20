@@ -17296,7 +17296,8 @@ CREATE TABLE snippets (
     secret boolean DEFAULT false NOT NULL,
     repository_read_only boolean DEFAULT false NOT NULL,
     imported smallint DEFAULT 0 NOT NULL,
-    imported_from smallint DEFAULT 0 NOT NULL
+    imported_from smallint DEFAULT 0 NOT NULL,
+    organization_id bigint DEFAULT 1
 );
 
 CREATE SEQUENCE snippets_id_seq
@@ -28617,6 +28618,8 @@ CREATE INDEX index_snippets_on_file_name_trigram ON snippets USING gin (file_nam
 CREATE INDEX index_snippets_on_id_and_created_at ON snippets USING btree (id, created_at);
 
 CREATE INDEX index_snippets_on_id_and_type ON snippets USING btree (id, type);
+
+CREATE INDEX index_snippets_on_organization_id ON snippets USING btree (organization_id);
 
 CREATE INDEX index_snippets_on_project_id_and_title ON snippets USING btree (project_id, title);
 

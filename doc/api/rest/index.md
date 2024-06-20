@@ -37,6 +37,13 @@ All deprecations and changes between versions are in the documentation.
 
 Only API version v4 is available.
 
+### Breaking change exemptions
+
+Elements labeled as [experimental or beta](../../policy/experiment-beta-support.md) in the [REST API resources](../api_resources.md) are exempt from the deprecation process.
+These parts can be removed or changed at any time without notice.
+
+Fields behind a feature flag and disabled by default do not follow the deprecation and removal process. These fields can be removed at any time without notice.
+
 ## How to use the API
 
 API requests must include both `api` and the API version. The API

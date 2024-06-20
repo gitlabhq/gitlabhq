@@ -4,7 +4,7 @@ RSpec.shared_examples 'protected ref access' do |association|
   include ExternalAuthorizationServiceHelpers
 
   let_it_be(:project) { create(:project) }
-  let_it_be(:protected_ref) { create(association, project: project) } # rubocop:disable Rails/SaveBang
+  let_it_be(:protected_ref) { create(association, project: project) } # rubocop:disable Rails/SaveBang -- False positive because factory name is dynamic
 
   describe 'validations' do
     subject { build(described_class.model_name.singular) }
