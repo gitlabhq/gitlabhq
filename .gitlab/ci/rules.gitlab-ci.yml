@@ -666,7 +666,6 @@
 
 .audit-events-patterns: &audit-events-patterns
   - "{,ee/}config/audit_events/types/*.yml"
-  - "doc/administration/audit_event_types.md"
   - "doc/user/compliance/audit_event_types.md"
   - "tooling/audit_events/docs/templates/audit_event_types.md.erb"
   - "lib/tasks/gitlab/audit_event_types/audit_event_types.rake"
