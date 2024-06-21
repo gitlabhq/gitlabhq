@@ -4,7 +4,7 @@ class MergeRequestsClosingIssues < ApplicationRecord
   include BulkInsertSafe
   include IgnorableColumns
 
-  ignore_column :closes_work_item, remove_with: '17.1', remove_after: '2024-05-17'
+  ignore_column :closes_work_item, remove_with: '17.3', remove_after: '2024-07-19'
 
   belongs_to :merge_request
   belongs_to :issue

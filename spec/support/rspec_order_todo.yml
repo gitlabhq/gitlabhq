@@ -5090,7 +5090,6 @@
 - './spec/lib/event_filter_spec.rb'
 - './spec/lib/expand_variables_spec.rb'
 - './spec/lib/extracts_path_spec.rb'
-- './spec/lib/extracts_ref_spec.rb'
 - './spec/lib/feature/definition_spec.rb'
 - './spec/lib/feature/gitaly_spec.rb'
 - './spec/lib/feature_spec.rb'

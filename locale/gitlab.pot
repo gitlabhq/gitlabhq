@@ -49870,63 +49870,6 @@ msgstr ""
 msgid "Show whitespace changes"
 msgstr ""
 
-msgid "ShowcaseSecurity|Access a dedicated area for vulnerability management. This includes a security dashboard, vulnerability report, and settings."
-msgstr ""
-
-msgid "ShowcaseSecurity|Audit your Docker-based app. Scan for known vulnerabilities in the Docker images where your code is shipped."
-msgstr ""
-
-msgid "ShowcaseSecurity|Container scanning"
-msgstr ""
-
-msgid "ShowcaseSecurity|Dependency scanning"
-msgstr ""
-
-msgid "ShowcaseSecurity|Dynamic Application Security Testing (DAST)"
-msgstr ""
-
-msgid "ShowcaseSecurity|Dynamically examine your application for vulnerabilities in deployed environments."
-msgstr ""
-
-msgid "ShowcaseSecurity|Enable SAST"
-msgstr ""
-
-msgid "ShowcaseSecurity|Enable Secret Detection"
-msgstr ""
-
-msgid "ShowcaseSecurity|Enable Static Application Security Testing (SAST)"
-msgstr ""
-
-msgid "ShowcaseSecurity|Find out if your external libraries are safe. Run dependency scanning jobs that check for known vulnerabilities in your external libraries."
-msgstr ""
-
-msgid "ShowcaseSecurity|Identify vulnerabilities in your code now"
-msgstr ""
-
-msgid "ShowcaseSecurity|Scan your code to detect unintentionally committed secrets, like keys, passwords, and API tokens."
-msgstr ""
-
-msgid "ShowcaseSecurity|Scan your source code using GitLab CI/CD and uncover vulnerabilities before deploying."
-msgstr ""
-
-msgid "ShowcaseSecurity|Start a free 30-day Ultimate trial or upgrade your instance to access organization-wide security and compliance features. See the other features of the Ultimate plan."
-msgstr ""
-
-msgid "ShowcaseSecurity|Start a free trial"
-msgstr ""
-
-msgid "ShowcaseSecurity|Take your security to the next level"
-msgstr ""
-
-msgid "ShowcaseSecurity|Upgrade now"
-msgstr ""
-
-msgid "ShowcaseSecurity|Use GitLab CI/CD to analyze your source code for known vulnerabilities. Compare the found vulnerabilities between your source and target branches."
-msgstr ""
-
-msgid "ShowcaseSecurity|Vulnerability management"
-msgstr ""
-
 msgid "Showing %{conflict}"
 msgstr ""
 

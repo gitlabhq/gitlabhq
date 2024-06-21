@@ -1490,7 +1490,6 @@ RSpec/ContextWording:
     - 'spec/lib/error_tracking/sentry_client/projects_spec.rb'
     - 'spec/lib/expand_variables_spec.rb'
     - 'spec/lib/extracts_path_spec.rb'
-    - 'spec/lib/extracts_ref_spec.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/alert_management/fingerprint_spec.rb'
     - 'spec/lib/gitlab/analytics/cycle_analytics/average_spec.rb'

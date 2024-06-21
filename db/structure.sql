@@ -12461,7 +12461,6 @@ CREATE TABLE merge_requests_closing_issues (
     issue_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    closes_work_item boolean DEFAULT true NOT NULL,
     from_mr_description boolean DEFAULT true NOT NULL
 );
 

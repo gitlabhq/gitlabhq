@@ -2059,7 +2059,6 @@ Style/InlineDisableAnnotation:
     - 'lib/declarative_enum.rb'
     - 'lib/event_filter.rb'
     - 'lib/extracts_path.rb'
-    - 'lib/extracts_ref.rb'
     - 'lib/feature.rb'
     - 'lib/file_size_validator.rb'
     - 'lib/gem_extensions/active_record/association.rb'

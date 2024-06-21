@@ -40,7 +40,6 @@ Search/NamespacedClass:
     - 'ee/app/presenters/ee/search_service_presenter.rb'
     - 'ee/app/services/ee/search_service.rb'
     - 'ee/app/services/elastic/bookkeeping_shard_service.rb'
-    - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/services/elastic/data_migration_service.rb'
     - 'ee/app/services/elastic/index_projects_by_id_service.rb'
     - 'ee/app/services/elastic/index_projects_by_range_service.rb'

@@ -28,6 +28,14 @@ RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_in
           end
           subject
         end
+
+        it 'increments the metrics' do
+          expect(::Gitlab::Ci::Pipeline::Metrics.pipelines_created_counter)
+            .to receive(:increment)
+            .with({ partition_id: instance_of(Integer), source: :webide })
+
+          subject
+        end
       end
 
       before do
@@ -87,7 +95,7 @@ RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_in
 
           it_behaves_like 'be successful'
 
-          it 'saves the variables', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466397' do
+          it 'saves the variables' do
             expect(subject[:pipeline].builds[0].variables).to include(
               key: 'KEY1', value: 'VAL1', public: true, masked: false
             )

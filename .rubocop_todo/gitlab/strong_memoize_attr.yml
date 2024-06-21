@@ -328,7 +328,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/services/ee/users/authorized_build_service.rb'
     - 'ee/app/services/ee/users/build_service.rb'
     - 'ee/app/services/ee/users/update_service.rb'
-    - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/services/epic_issues/list_service.rb'
     - 'ee/app/services/epics/descendant_count_service.rb'
     - 'ee/app/services/epics/related_epic_links/destroy_service.rb'

@@ -77,7 +77,6 @@ RSpec/InstanceVariable:
     - 'spec/lib/api/helpers/authentication_spec.rb'
     - 'spec/lib/banzai/filter/asset_proxy_filter_spec.rb'
     - 'spec/lib/extracts_path_spec.rb'
-    - 'spec/lib/extracts_ref_spec.rb'
     - 'spec/lib/gitlab/auth/auth_finders_spec.rb'
     - 'spec/lib/gitlab/auth/ldap/person_spec.rb'
     - 'spec/lib/gitlab/chat_name_token_spec.rb'

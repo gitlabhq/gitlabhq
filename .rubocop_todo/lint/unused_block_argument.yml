@@ -90,7 +90,6 @@ Lint/UnusedBlockArgument:
     - 'ee/app/serializers/epic_entity.rb'
     - 'ee/app/serializers/integrations/zentao_serializers/issue_entity.rb'
     - 'ee/app/serializers/security/vulnerability_report_data_entity.rb'
-    - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/workers/sync_seat_link_request_worker.rb'
     - 'ee/lib/ee/api/entities/geo_node_status.rb'
     - 'ee/lib/ee/api/entities/gitlab_license.rb'

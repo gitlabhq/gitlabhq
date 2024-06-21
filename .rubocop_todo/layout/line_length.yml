@@ -935,7 +935,6 @@ Layout/LineLength:
     - 'ee/app/services/ee/resource_access_tokens/create_service.rb'
     - 'ee/app/services/ee/system_note_service.rb'
     - 'ee/app/services/ee/users/update_service.rb'
-    - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/services/elastic/indexing_control_service.rb'
     - 'ee/app/services/epics/issue_promote_service.rb'
     - 'ee/app/services/epics/update_service.rb'

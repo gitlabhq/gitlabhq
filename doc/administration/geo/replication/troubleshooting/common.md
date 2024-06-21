@@ -567,7 +567,7 @@ If you are using the Linux package installation, something might have failed dur
 This can be caused by orphaned records in the project registry. They are being cleaned
 periodically using a registry worker, so give it some time to fix it itself.
 
-### Secondary site shows "Unhealthy" in UI after changing the value of `external_url` for the primary site
+### Secondary site shows "Unhealthy" in UI
 
 If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for the primary site or changed the protocol from `http` to `https`, you may see that secondary sites are shown as `Unhealthy`. You may also find the following error in `geo.log`:
 

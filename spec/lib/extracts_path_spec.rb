@@ -36,6 +36,28 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
 
     it_behaves_like 'assigns ref vars'
 
+    context 'when ref and path have incorrect format' do
+      let(:ref) { { wrong: :format } }
+      let(:path) { { also: :wrong } }
+
+      it 'does not raise an exception' do
+        expect { assign_ref_vars }.not_to raise_error
+      end
+    end
+
+    context 'when a ref_type parameter is provided' do
+      let(:params) { ActionController::Parameters.new(path: path, ref: ref, ref_type: 'tags') }
+
+      it 'sets a fully_qualified_ref variable' do
+        fully_qualified_ref = "refs/tags/#{ref}"
+        expect(container.repository).to receive(:commit).with(fully_qualified_ref)
+        expect(self).to receive(:render_404)
+
+        assign_ref_vars
+        expect(@fully_qualified_ref).to eq(fully_qualified_ref)
+      end
+    end
+
     it 'log tree path has no escape sequences' do
       assign_ref_vars
 
@@ -134,7 +156,6 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
 
       it 'does not set commit' do
         expect(container.repository).not_to receive(:commit).with('')
-        expect(self).to receive(:render_404)
 
         assign_ref_vars
 
@@ -200,6 +221,48 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
           expect(flash).to be_empty
         end
       end
+    end
+  end
+
+  describe '#ref_type' do
+    subject { ref_type }
+
+    let(:params) { ActionController::Parameters.new(ref_type: ref) }
+
+    context 'when ref_type is nil' do
+      let(:ref) { nil }
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'when ref_type is heads' do
+      let(:ref) { 'heads' }
+
+      it { is_expected.to eq('heads') }
+    end
+
+    context 'when ref_type is tags' do
+      let(:ref) { 'tags' }
+
+      it { is_expected.to eq('tags') }
+    end
+
+    context 'when case does not match' do
+      let(:ref) { 'tAgS' }
+
+      it { is_expected.to(eq('tags')) }
+    end
+
+    context 'when ref_type is invalid' do
+      let(:ref) { 'invalid' }
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'when ref_type is a hash' do
+      let(:ref) { { 'just' => 'hash' } }
+
+      it { is_expected.to eq(nil) }
     end
   end
 

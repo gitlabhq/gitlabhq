@@ -51,7 +51,6 @@ Style/HashEachMethods:
     - 'ee/app/graphql/types/vulnerability_severities_count_type.rb'
     - 'ee/app/graphql/types/vulnerability_severity_enum.rb'
     - 'ee/app/models/geo/secondary_usage_data.rb'
-    - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/services/elastic/process_bookkeeping_service.rb'
     - 'ee/app/services/security/security_orchestration_policies/ci_action/template.rb'
     - 'ee/db/fixtures/development/32_compliance_report_violations.rb'

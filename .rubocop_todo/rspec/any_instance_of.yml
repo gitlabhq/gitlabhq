@@ -120,7 +120,6 @@ RSpec/AnyInstanceOf:
     - 'spec/lib/banzai/filter/references/issue_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/repository_link_filter_spec.rb'
     - 'spec/lib/banzai/pipeline/gfm_pipeline_spec.rb'
-    - 'spec/lib/extracts_ref_spec.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/app_logger_spec.rb'
     - 'spec/lib/gitlab/asciidoc_spec.rb'
