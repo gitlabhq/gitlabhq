@@ -262,6 +262,215 @@ RSpec.describe 'GraphQL', feature_category: :shared do
         expect(graphql_data['echo']).to eq("\"#{token.user.username}\" says: Hello world")
       end
 
+      shared_examples 'valid token' do
+        it 'accepts from header' do
+          post_graphql(query, headers: { 'Authorization' => "Bearer #{token}" })
+
+          expect(graphql_data['echo']).to eq("\"#{user.username}\" says: Hello world")
+        end
+
+        it 'accepts from access_token parameter' do
+          post "/api/graphql?access_token=#{token}", params: { query: query }
+
+          expect(graphql_data['echo']).to eq("\"#{user.username}\" says: Hello world")
+        end
+
+        it 'accepts from private_token parameter' do
+          post "/api/graphql?private_token=#{token}", params: { query: query }
+
+          expect(graphql_data['echo']).to eq("\"#{user.username}\" says: Hello world")
+        end
+      end
+
+      context 'with oAuth user access token' do
+        let(:oauth_application) do
+          create(
+            :oauth_application,
+            scopes: 'api read_user',
+            redirect_uri: 'http://example.com',
+            confidential: true
+          )
+        end
+
+        let(:oauth_access_token) do
+          create(
+            :oauth_access_token,
+            application: oauth_application,
+            resource_owner: user,
+            scopes: 'api'
+          )
+        end
+
+        let(:token) { oauth_access_token.plaintext_token }
+
+        # Doorkeeper does not support the private_token=? param
+        # https://github.com/doorkeeper-gem/doorkeeper/blob/960f1501131683b16c2704d1b6f9597b9583b49d/lib/doorkeeper/oauth/token.rb#L26
+        # so we cannot use shared examples here
+        it 'accepts from header' do
+          post_graphql(query, headers: { 'Authorization' => "Bearer #{token}" })
+
+          expect(graphql_data['echo']).to eq("\"#{user.username}\" says: Hello world")
+        end
+
+        it 'accepts from access_token parameter' do
+          post "/api/graphql?access_token=#{token}", params: { query: query }
+
+          expect(graphql_data['echo']).to eq("\"#{user.username}\" says: Hello world")
+        end
+      end
+
+      context 'with personal access token' do
+        let(:personal_access_token) { create(:personal_access_token, user: user) }
+        let(:token) { personal_access_token.token }
+
+        it_behaves_like 'valid token'
+      end
+
+      context 'with group or project access token' do
+        let_it_be(:user) { create(:user, :project_bot) }
+        let_it_be(:project_access_token) { create(:personal_access_token, user: user) }
+
+        let(:token) { project_access_token.token }
+
+        it_behaves_like 'valid token'
+      end
+
+      describe 'invalid authentication types' do
+        let(:query) { 'query { currentUser { id, username } }' }
+
+        describe 'with git-lfs token' do
+          let(:lfs_token) { Gitlab::LfsToken.new(user).token }
+          let(:header_token) { Base64.encode64("#{user.username}:#{lfs_token}") }
+          let(:headers) do
+            { 'Authorization' => "Basic #{header_token}" }
+          end
+
+          it 'does not authenticate users with an LFS token' do
+            post '/api/graphql.git', params: { query: query }, headers: headers
+
+            expect(graphql_data['currentUser']).to be_nil
+          end
+
+          context 'when graphql_minimal_auth_methods FF is disabled' do
+            before do
+              stub_feature_flags(graphql_minimal_auth_methods: false)
+            end
+
+            it 'authenticates users with an LFS token' do
+              post '/api/graphql.git', params: { query: query }, headers: headers
+
+              expect(graphql_data['currentUser']['username']).to eq(user.username)
+            end
+          end
+        end
+
+        describe 'with job token' do
+          let(:project) do
+            create(:project).tap do |proj|
+              proj.add_owner(user)
+            end
+          end
+
+          let(:job) { create(:ci_build, :running, project: project, user: user) }
+          let(:job_token) { job.token }
+
+          it 'raises "Invalid token" error' do
+            post '/api/graphql', params: { query: query, job_token: job_token }
+
+            expect_graphql_errors_to_include(/Invalid token/)
+          end
+
+          context 'when graphql_minimal_auth_methods FF is disabled' do
+            before do
+              stub_feature_flags(graphql_minimal_auth_methods: false)
+            end
+
+            it 'authenticates as the user' do
+              post '/api/graphql', params: { query: query, job_token: job_token }
+
+              expect(graphql_data['currentUser']['username']).to eq(user.username)
+            end
+          end
+        end
+
+        describe 'with static object token' do
+          let(:headers) do
+            { 'X-Gitlab-Static-Object-Token' => user.static_object_token }
+          end
+
+          it 'does not authenticate user from header' do
+            post '/api/graphql', params: { query: query }, headers: headers
+
+            expect(graphql_data['currentUser']).to be_nil
+          end
+
+          it 'does not authenticate user from parameter' do
+            post "/api/graphql?token=#{user.static_object_token}", params: { query: query }
+
+            expect_graphql_errors_to_include(/Invalid token/)
+          end
+
+          # context is included to demonstrate that the FF code is not changing this behavior
+          context 'when graphql_minimal_auth_methods FF is disabled' do
+            before do
+              stub_feature_flags(graphql_minimal_auth_methods: false)
+            end
+
+            # expect(graphql_data['currentUser']).to be_nil
+            it 'does not authenticate user from header' do
+              post '/api/graphql', params: { query: query }, headers: headers
+
+              expect(graphql_data['currentUser']).to be_nil
+            end
+
+            it 'does not authenticate user from parameter' do
+              post "/api/graphql?token=#{user.static_object_token}", params: { query: query }
+
+              expect_graphql_errors_to_include(/Invalid token/)
+            end
+          end
+        end
+
+        describe 'with dependency proxy token' do
+          include DependencyProxyHelpers
+          let(:token) { build_jwt(user).encoded }
+          let(:headers) do
+            { 'Authorization' => "Bearer #{token}" }
+          end
+
+          it 'does not authenticate user from dependency proxy token in headers' do
+            post '/api/graphql', params: { query: query }, headers: headers
+
+            expect_graphql_errors_to_include(/Invalid token/)
+          end
+
+          it 'does not authenticate user from dependency proxy token in parameter' do
+            post "/api/graphql?access_token=#{token}", params: { query: query }
+
+            expect_graphql_errors_to_include(/Invalid token/)
+          end
+
+          # context is included to demonstrate that the FF code is not changing this behavior
+          context 'when graphql_minimal_auth_methods FF is disabled' do
+            before do
+              stub_feature_flags(graphql_minimal_auth_methods: false)
+            end
+
+            it 'does not authenticate user from dependency proxy token in headers' do
+              post '/api/graphql', params: { query: query }, headers: headers
+
+              expect_graphql_errors_to_include(/Invalid token/)
+            end
+
+            it 'does not authenticate user from dependency proxy token in parameter' do
+              post "/api/graphql?access_token=#{token}", params: { query: query }
+
+              expect_graphql_errors_to_include(/Invalid token/)
+            end
+          end
+        end
+      end
+
       it 'prevents access by deactived users' do
         token.user.deactivate!
 
