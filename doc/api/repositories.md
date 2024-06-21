@@ -166,7 +166,7 @@ Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>&path=<path>"
+  --url "https://gitlab.com/api/v4/projects/<project_id>/repository/archive?sha=<commit_sha>&path=<path>"
 ```
 
 ## Compare branches, tags or commits
@@ -284,7 +284,7 @@ Example request, with the refs truncated for readability:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/projects/5/repository/merge_base?refs[]=304d257d&refs[]=0031876f"
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/merge_base?refs[]=304d257d&refs[]=0031876f"
 ```
 
 Example response:
@@ -403,7 +403,8 @@ included in this example is `v0.9.0..main`:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: token" \
-  --data "version=1.0.0" "https://gitlab.com/api/v4/projects/42/repository/changelog"
+  --data "version=1.0.0" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
 To generate the data on a different branch, specify the `branch` parameter. This
@@ -411,21 +412,24 @@ command generates data from the `foo` branch:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: token" \
-  --data "version=1.0.0&branch=foo" "https://gitlab.com/api/v4/projects/42/repository/changelog"
+  --data "version=1.0.0&branch=foo" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
 To use a different trailer, use the `trailer` parameter:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: token" \
-  --data "version=1.0.0&trailer=Type" "https://gitlab.com/api/v4/projects/42/repository/changelog"
+  --data "version=1.0.0&trailer=Type" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
 To store the results in a different file, use the `file` parameter:
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: token" \
-  --data "version=1.0.0&file=NEWS" "https://gitlab.com/api/v4/projects/42/repository/changelog"
+  --data "version=1.0.0&file=NEWS" \
+  --url "https://gitlab.com/api/v4/projects/42/repository/changelog"
 ```
 
 ## Generate changelog data
@@ -453,7 +457,7 @@ Supported attributes:
 
 ```shell
 curl --header "PRIVATE-TOKEN: token" \
-  "https://gitlab.com/api/v4/projects/42/repository/changelog?version=1.0.0"
+  --url "https://gitlab.com/api/v4/projects/42/repository/changelog?version=1.0.0"
 ```
 
 Example response, with line breaks added for readability:

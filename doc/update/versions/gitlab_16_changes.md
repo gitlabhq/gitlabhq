@@ -1207,6 +1207,27 @@ Specific information applies to Linux package installations:
 - [Migrate your Gitaly configuration to the new structure](#gitaly-configuration-structure-change)
   to ensure all your `gitaly['..']` settings continue to work in GitLab 16.0 and later.
 
+### Non-expiring access tokens
+
+Access tokens that have no expiration date are valid indefinitely, which is a
+security risk if the access token is divulged.
+
+When you upgrade to GitLab 16.0 and later, any [personal](../../user/profile/personal_access_tokens.md),
+[project](../../user/project/settings/project_access_tokens.md), or
+[group](../../user/group/settings/group_access_tokens.md) access
+token that does not have an expiration date automatically has an expiration
+date set at one year from the date of upgrade.
+
+Before this automatic expiry date is applied, you should do the following to minimize disruption:
+
+1. [Identify any access tokens without an expiration date](../../security/token_overview.md#identify-personal-project-and-group-access-tokens-expiring-on-a-certain-date-using-the-rails-console).
+1. [Give those tokens an expiration date](../../security/token_overview.md#extend-token-lifetime).
+
+For more information, see the:
+
+- [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
+- [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
+
 ### Geo installations
 
 DETAILS:

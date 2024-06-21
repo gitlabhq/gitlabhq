@@ -87,12 +87,12 @@ It is a single point of failure that resides in `us-central1-b`.
 Data is persisted locally on disk, and we have not yet investigated moving it to a highly available setup.
 In the case of a zonal outage of `us-central1-b` the server would need to be rebuilt from snapshot, losing up to 4 hours of data.
 
-### Create an HA Packaging server (`dev.gitlab.org`) configuration to avoid an outage for a single zone failure
+### Create an HA Packaging server configuration to avoid an outage for a single zone failure
 
 - Dependencies: None
 - Teams: Ops
 
-In the case of a zonal outage of `us-east1-c` the server would need to be rebuilt from snapshot, losing up to 4 hours of data.
+In the case of a zonal outage of `us-east1-c` the server (like `dev.gitlab.org`) would need to be rebuilt from snapshot, losing up to 4 hours of data.
 The additional challenge of this host is that it is a GitLab-CE instance so we would be limited in features.
 The best approach here would likely be to move packaging CI pipelines to `ops.gitlab.net`.
 

@@ -469,7 +469,9 @@ sequenceDiagram
 As above, they will end up on `/organizations/my-organization/-/dashboard` as
 the rails application will already redirect `/` to the dashboard page.
 
-### Goes to `/not-my-company/not-my-project` while logged in (but they don't have access since this project/group is private)
+### Goes to private `/not-my-company/not-my-project` while logged in
+
+(The user doesn't have access because the project or group is private)
 
 1. User is in Europe so DNS resolves to the router in Europe
 1. The router knows that `/not-my-company` lives in `Cell US1` so sends the request to this
@@ -555,7 +557,7 @@ sequenceDiagram
     cell_us0->>user: <h1>Dashboard...
 ```
 
-#### Goes to `/my-company/my-other-project` while logged in (but they don't have access since this project is private)
+#### Goes to private project `/my-company/my-other-project` while logged in
 
 They get a 404.
 

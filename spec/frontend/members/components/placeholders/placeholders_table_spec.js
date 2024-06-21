@@ -1,19 +1,29 @@
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { mount, shallowMount } from '@vue/test-utils';
 import { GlAvatarLabeled, GlBadge, GlTableLite } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
+import createMockApollo from 'helpers/mock_apollo_helper';
 
 import PlaceholdersTable from '~/members/components/placeholders/placeholders_table.vue';
+import PlaceholderActions from '~/members/components/placeholders/placeholder_actions.vue';
 import { mockPlaceholderUsers } from './mock_data';
+
+Vue.use(VueApollo);
 
 describe('PlaceholdersTable', () => {
   let wrapper;
+  let mockApollo;
 
   const defaultProps = {
     items: mockPlaceholderUsers,
   };
 
   const createComponent = ({ mountFn = shallowMount, props = {} } = {}) => {
+    mockApollo = createMockApollo();
+
     wrapper = mountFn(PlaceholdersTable, {
+      apolloProvider: mockApollo,
       propsData: {
         ...defaultProps,
         ...props,
@@ -68,6 +78,12 @@ describe('PlaceholdersTable', () => {
 
     expect(findBadge().text()).toBe('Not started');
     expect(findBadgeTooltip().value).toBe('Reassignment has not started.');
+  });
+
+  it('renders actions', () => {
+    createComponent();
+
+    expect(findTable().findComponent(PlaceholderActions).exists()).toBe(true);
   });
 
   describe('when is "Re-assigned" table variant', () => {

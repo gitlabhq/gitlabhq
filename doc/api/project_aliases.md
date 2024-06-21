@@ -21,7 +21,8 @@ GET /project_aliases
 ```
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/project_aliases"
 ```
 
 Example response:
@@ -54,7 +55,8 @@ GET /project_aliases/:name
 | `name`    | string | Yes      | The name of the alias. |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/project_aliases/gitlab"
 ```
 
 Example response:
@@ -83,14 +85,18 @@ POST /project_aliases
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=1" --form "name=gitlab"
+     "https://gitlab.example.com/api/v4/project_aliases" \
+     --form "project_id=1" \
+     --form "name=gitlab"
 ```
 
 or
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/project_aliases" --form "project_id=gitlab-org/gitlab" --form "name=gitlab"
+     --url "https://gitlab.example.com/api/v4/project_aliases" \
+     --form "project_id=gitlab-org/gitlab" \
+     --form "name=gitlab"
 ```
 
 Example response:
@@ -117,5 +123,6 @@ DELETE /project_aliases/:name
 | `name`    | string | Yes | The name of the alias. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/project_aliases/gitlab"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/project_aliases/gitlab"
 ```

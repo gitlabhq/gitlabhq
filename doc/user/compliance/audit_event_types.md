@@ -190,8 +190,8 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`container_repository_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | Triggered when a project's container registry is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
-| [`container_repository_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | Triggered when a project's container repository is marked for deletion| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.1](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
+| [`container_repository_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | Triggered when a project's container registry is deleted| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
+| [`container_repository_deletion_marked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152967) | Triggered when a project's container repository is marked for deletion| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 
 ### Continuous delivery
 

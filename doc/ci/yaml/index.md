@@ -4244,9 +4244,18 @@ job:
   rules:
     - exists:
         - Dockerfile
+
+job2:
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - exists:
+        - "**/Dockerfile"
 ```
 
-`job` runs if a `Dockerfile` exists anywhere in the repository.
+In this example:
+
+- `job1` runs if a `Dockerfile` exists in the root directory of the repository.
+- `job2` runs if a `Dockerfile` exists anywhere in the repository.
 
 **Additional details**:
 

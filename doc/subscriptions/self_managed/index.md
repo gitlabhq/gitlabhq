@@ -225,7 +225,7 @@ You can manually synchronize your subscription details at any time.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Subscription**.
-1. In the **Subscription details** section, select **Sync subscription details**.
+1. In the **Subscription details** section, select **Sync** (**{retry}**).
 
 A job is queued. When the job finishes, the subscription details are updated.
 

@@ -6,8 +6,9 @@ description: 'Organization: FAQ'
 
 # Organization: Frequently Asked Questions
 
-## Do we expect large SaaS customers to be licensed at the Organization level, for example to have the ability to include multiple top-level Groups under on license?
+## Do we expect large SaaS customers to be licensed at the Organization level?
 
+For example, should they have the ability to include multiple top-level Groups under one license?
 Yes, this has been discussed with Fulfillment and is part of the post MVC roadmap for Organizations.
 See also [Alignment between Organization and Fulfillment](index.md#alignment-between-organization-and-fulfillment).
 
@@ -17,8 +18,9 @@ There is no plan at this point to allow configuration of alternate GitLab domain
 We have previously heard that sub-domains bring administrative challenges.
 GitLab Dedicated will be a much better fit for that at this moment.
 
-## Do we expect Organizations to have visibility settings (public/private) of their own? Will visibility remain a property of top-level Groups?
+## Do we expect Organizations to have visibility settings (public/private) of their own?
 
+Will visibility remain a property of top-level Groups?
 Organizations are public for now but will have their own independent visibility settings.
 See also [When can Users see an Organization?](organization-users.md#when-can-users-see-an-organization).
 

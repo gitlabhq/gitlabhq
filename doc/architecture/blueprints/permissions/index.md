@@ -127,7 +127,9 @@ Cons:
   think about permissions system as a whole
 - Permissions system can spiral into an unmaintainable code if we iterate on it without a strategically important vision.
 
-### Leave the current permissions system as-is and build a parallel Declarative Policy-based system alongside it to be used for custom roles
+### Leave the current permissions system as-is and build a parallel system
+
+Instead, build a parallel Declarative Policy-based system alongside it to use for custom roles.
 
 Pros:
 
@@ -144,7 +146,9 @@ Cons:
   custom roles feature) is more difficult with this approach because it requires
   retiring the legacy permissions system.
 
-### Bundle existing permissions into custom permissions; use "custom permissions" for the custom roles API
+### Bundle existing permissions into custom permissions
+
+Use "custom permissions" for the custom roles API.
 
 Pros:
 

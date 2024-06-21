@@ -3,6 +3,7 @@ import { GlAvatarLabeled, GlBadge, GlTableLite, GlTooltipDirective } from '@gitl
 import { s__ } from '~/locale';
 
 import { placeholderUserBadges } from '~/import_entities/import_groups/constants';
+import PlaceholderActions from './placeholder_actions.vue';
 
 export default {
   name: 'PlaceholdersTable',
@@ -10,6 +11,7 @@ export default {
     GlAvatarLabeled,
     GlBadge,
     GlTableLite,
+    PlaceholderActions,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -84,6 +86,10 @@ export default {
         tabindex="0"
         >{{ statusBadge(item).text }}</gl-badge
       >
+    </template>
+
+    <template #cell(actions)>
+      <placeholder-actions />
     </template>
   </gl-table-lite>
 </template>
