@@ -1,18 +1,22 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples_for 'service scheduling async deletes' do
-  it 'destroys associated todos asynchronously' do
-    expect(worker_class)
-      .to receive(:perform_async)
-      .with(issuable.id, issuable.class.name)
+  it 'destroys associated todos asynchronously', :sidekiq_inline do
+    expect(worker_class).to receive(:perform_async).with(issuable.id, issuable.class.base_class.name)
+
+    if try(:sync_object).present?
+      expect(worker_class).to receive(:perform_async).with(sync_object.id, sync_object.class.base_class.name)
+    end
 
     subject.execute(issuable)
   end
 
-  it 'works inside a transaction' do
-    expect(worker_class)
-      .to receive(:perform_async)
-      .with(issuable.id, issuable.class.name)
+  it 'works inside a transaction', :sidekiq_inline do
+    expect(worker_class).to receive(:perform_async).with(issuable.id, issuable.class.base_class.name)
+
+    if try(:sync_object).present?
+      expect(worker_class).to receive(:perform_async).with(sync_object.id, sync_object.class.base_class.name)
+    end
 
     ApplicationRecord.transaction do
       subject.execute(issuable)
