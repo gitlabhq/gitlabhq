@@ -385,8 +385,7 @@ module API
         end
         route_setting :authentication, job_token_allowed: true
         get '/:id/artifacts', feature_category: :build_artifacts do
-          use_primary = Feature.enabled?(:ci_job_artifacts_use_primary_to_authenticate, current_job&.project)
-          authenticate_job_via_dependent_job!(use_primary_to_authenticate: use_primary)
+          authenticate_job_via_dependent_job!
 
           audit_download(current_job, current_job.artifacts_file&.filename) if current_job.artifacts_file
           present_artifacts_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])

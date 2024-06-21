@@ -1,7 +1,7 @@
 - page_title _("Topics")
 - add_page_specific_style 'page_bundles/search'
 
-.top-area
+.top-area{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_topics_pageload' } }
   .nav-controls.gl-w-full.gl-mt-3.gl-mb-3
     = form_tag admin_topics_path, method: :get do |f|
       - search = params.fetch(:search, nil)

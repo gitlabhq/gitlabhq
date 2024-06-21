@@ -631,14 +631,16 @@ RSpec.describe Cli, feature_category: :service_ping do
       let(:expected_gdk_example) do
         <<~TEXT.chomp
         --------------------------------------------------
-        # TERMINAL -- monitor events sent to snowplow & changes to service ping metrics as they occur
+        # TERMINAL -- monitor events & changes to service ping metrics as they occur
 
-        1. Configure gdk with snowplow micro https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
-        2. From `gitlab/` directory, run the monitor script:
+        1. From `gitlab/` directory, run the monitor script:
 
         bin/rails runner scripts/internal_events/monitor.rb internal_events_cli_opened
 
-        3. View all snowplow events in the browser at http://localhost:9091/micro/all (or whichever hostname & port you configured)
+        2. View metric updates within the terminal
+
+        3. [Optional] Configure gdk with snowplow micro to see individual events: https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
+
         --------------------------------------------------
         # RAILS CONSOLE -- generate service ping payload, including most recent usage data
 

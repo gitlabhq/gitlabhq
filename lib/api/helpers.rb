@@ -2,7 +2,6 @@
 
 module API
   module Helpers
-    include Gitlab::Allowable
     include Gitlab::Utils
     include Helpers::Caching
     include Helpers::Pagination
@@ -353,10 +352,6 @@ module API
       forbidden!(reason) unless can?(current_user, action, subject)
     end
 
-    def authorize_any!(abilities, subject = :global, reason = nil)
-      forbidden!(reason) unless can_any?(current_user, abilities, subject)
-    end
-
     def authorize_push_project
       authorize! :push_code, user_project
     end
@@ -439,6 +434,10 @@ module API
 
     def require_pages_config_enabled!
       not_found! unless Gitlab.config.pages.enabled
+    end
+
+    def can?(object, action, subject = :global)
+      Ability.allowed?(object, action, subject)
     end
 
     # Checks the occurrences of required attributes, each attribute must be present in the params hash

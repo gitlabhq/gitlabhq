@@ -1,6 +1,7 @@
 - page_title _("Background Jobs")
 
 %h1.page-title.gl-font-size-h-display= _('Background Jobs')
+#div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_background_jobs_pageload' } }
 %p.light
   - sidekiq_link_url = 'http://sidekiq.org/'
   - sidekiq_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: sidekiq_link_url }

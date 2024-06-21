@@ -14,7 +14,7 @@ module QA
       end
 
       it(
-        'is inheritable when forward:pipeline_variables is true',
+        'is inheritable when forward:pipeline_variables is true', :blocking,
         :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358197'
       ) do

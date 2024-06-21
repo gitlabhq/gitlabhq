@@ -18,8 +18,9 @@ to install the AI Gateway with GDK.
 
 ### Required: Setup Google Cloud Platform in AI Gateway
 
-**Why:** some GitLab Duo features use Vertex AI models. Duo Chat uses Vertex AI Search
-**Why:** You may not be able to boot AI Gateway if Google Cloud Platform credentials isn't correctly setup because AI Gateway checks the access at boot time.
+**Why:** You may not be able to boot AI Gateway if Google Cloud Platform
+credentials isn't correctly setup because AI Gateway checks the access at boot
+time.
 
 **How:**
 
@@ -28,12 +29,9 @@ to install the AI Gateway with GDK.
       `ai-enablement-dev-69497ba7`) Google Cloud project.
       Using the existing project is recommended because this project has Vertex
       APIs and Vertex AI Search already enabled.
-      Also, GitLab team members from the Engineering and Product divisions should
-      already have access to this project. Visit the
-      [Google Cloud console](https://console.cloud.google.com) to check if you
-      already have access. If you do not, use
-      [this template](https://gitlab.com/gitlab-com/it/infra/issue-tracker/-/issues/new?issuable_template=gcp_group_account_iam_update_request)
-      to request access.
+      Also, all GitLab team members should already have access to this project.
+      Visit the [Google Cloud console](https://console.cloud.google.com) to
+      confirm that you already have access.
    1. Option 2: Create a sandbox Google Cloud project by following the instructions
       in [the handbook](https://handbook.gitlab.com/handbook/infrastructure-standards/#individual-environment).
       If you are using an individual Google Cloud project, you may also need to
