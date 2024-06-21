@@ -7,6 +7,11 @@ import { __ } from '~/locale';
 export default {
   components: { GlButton, GlCollapse },
   props: {
+    title: {
+      type: String,
+      required: false,
+      default: null,
+    },
     id: {
       type: String,
       required: false,
@@ -50,23 +55,24 @@ export default {
 
 <template>
   <section class="vue-settings-block">
-    <div class="gl-display-flex gl-justify-content-space-between gl-align-items-flex-start">
-      <div class="gl-flex-grow-1">
-        <h4
+    <div class="gl-flex gl-justify-between gl-items-start">
+      <div class="gl-grow">
+        <h2
           role="button"
           tabindex="-1"
-          class="gl-cursor-pointer gl-mt-0 gl-mb-3"
+          class="gl-heading-2 gl-cursor-pointer !gl-mb-2"
           :aria-expanded="ariaExpanded"
           :aria-controls="collapseId"
           @click="toggleExpanded"
         >
-          <slot name="title"></slot>
-        </h4>
+          <slot v-if="$scopedSlots.title" name="title"></slot>
+          <template v-else>{{ title }}</template>
+        </h2>
         <p class="gl-text-secondary gl-m-0"><slot name="description"></slot></p>
       </div>
-      <div class="gl-flex-shrink-0 gl-px-3">
+      <div class="gl-flex-shrink-0 gl-px-2">
         <gl-button
-          class="gl-min-w-12"
+          class="gl-min-w-12 gl-shrink-0"
           :aria-expanded="ariaExpanded"
           :aria-controls="collapseId"
           @click="toggleExpanded"
@@ -76,7 +82,8 @@ export default {
           </span>
           <span class="gl-sr-only">
             {{ toggleButtonText }}
-            <slot name="title"></slot>
+            <slot v-if="$scopedSlots.title" name="title"></slot>
+            <template v-else>{{ title }}</template>
           </span>
         </gl-button>
       </div>

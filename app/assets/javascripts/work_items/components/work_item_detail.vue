@@ -267,7 +267,7 @@ export default {
       };
     },
     showIntersectionObserver() {
-      return !this.isModal && !this.editMode;
+      return !this.isModal && !this.editMode && !this.isDrawer;
     },
     workItemLinkedItems() {
       return this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
@@ -623,6 +623,7 @@ export default {
               :class="{ 'is-modal': isModal }"
             >
               <work-item-attributes-wrapper
+                :class="{ 'gl-top-3': isDrawer }"
                 :full-path="workItemFullPath"
                 :work-item="workItem"
                 :group-path="groupPath"

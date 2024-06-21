@@ -133,13 +133,13 @@ $work-item-overview-gap-width: 2rem;
 
 @include container-and-media("min-width: #{calc($breakpoint-md)}") {
   .work-item-attributes-wrapper {
-      top: calc(#{$calc-application-header-height} + #{$work-item-sticky-header-height});
-      height: calc(#{$calc-application-viewport-height} - #{$work-item-sticky-header-height});
-      margin-bottom: calc(#{$content-wrapper-padding} * -1);
-      padding-inline: 0.5rem;
-      position: sticky;
-      overflow-y: auto;
-      overflow-x: hidden;
+    top: calc(#{$calc-application-header-height} + #{$work-item-sticky-header-height});
+    height: calc(#{$calc-application-viewport-height} - #{$work-item-sticky-header-height});
+    margin-bottom: calc(#{$content-wrapper-padding} * -1);
+    padding-inline: 0.5rem;
+    position: sticky;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .work-item-date-picker {

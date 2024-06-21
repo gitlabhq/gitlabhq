@@ -6,7 +6,7 @@ property_description:
 value_description:
 extra_properties:
 identifiers:
-product_group: group::conversion
+product_group: acquisition
 milestone: "15.0"
 introduced_by_url:
 distributions:

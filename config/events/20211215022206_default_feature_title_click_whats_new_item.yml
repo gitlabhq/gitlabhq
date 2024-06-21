@@ -6,7 +6,7 @@ property_description: "`[feature_url]`"
 value_description: ""
 extra_properties:
 identifiers:
-product_group: group::adoption
+product_group: activation
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60804
 distributions:

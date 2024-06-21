@@ -773,6 +773,17 @@ describe('WorkItemDetail component', () => {
 
       expect(findWorkItemDescription().props('editMode')).toBe(true);
     });
+
+    it('sticky header is visible by default', () => {
+      expect(findStickyHeader().exists()).toBe(true);
+    });
+
+    it('sticky header is not visible if is drawer view', async () => {
+      createComponent({ isDrawer: true });
+      await waitForPromises();
+
+      expect(findStickyHeader().exists()).toBe(false);
+    });
   });
 
   describe('edit button for work item title and description', () => {

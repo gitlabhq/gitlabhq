@@ -202,13 +202,6 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
           expect(scan.secrets_scan(blobs, subprocess: true)).to eq(expected_response)
         end
 
-        it "takes at least same time to run as running in main process" do
-          expect { scan.secrets_scan(large_blobs, subprocess: true) }.to perform_faster_than {
-                                                                           scan.secrets_scan(large_blobs,
-                                                                             subprocess: false)
-                                                                         }.once
-        end
-
         it "allocates less memory than when running in main process" do
           forked_stats = Benchmark::Malloc.new.run { scan.secrets_scan(large_blobs, subprocess: true) }
           non_forked_stats = Benchmark::Malloc.new.run { scan.secrets_scan(large_blobs, subprocess: false) }

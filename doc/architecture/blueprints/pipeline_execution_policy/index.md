@@ -81,6 +81,22 @@ The Pipeline Execution Policy MVC will allow the transition from compliance pipe
 - Jobs coming from the policies should be marked as such in the database so that they can be distinguished, for example by using build metadata. This allows for different handling of jobs and the corresponding variables by the runner.
 - Users should be able to define the stage in which their job will run, and Pipeline Execution Policies will have a method to handle precedence. For example, a security/compliance team may want to enforce jobs that run commonly after a build stage. The stages and jobs must not interfere with those defined by development teams once enforced by a Pipeline Execution Policy.
 - Pipeline Execution Policies should allow for jobs to be enforced in projects that do not contain an existing CI configuration.
+- To reduce complexity, the `content` of a Pipeline Execution Policy can only be an inclusion of a single [CI file from a project](../../../ci/yaml/index.md#includeproject).
+
+MVC syntax example:
+
+```yaml
+type: pipeline_execution_policy
+name: PEP example
+description: 'PEP example'
+enabled: true
+pipeline_config_strategy: inject_ci
+content:
+  include:
+    - project: namespace-path/project-path
+      file: policy_ci.yml
+      ref: main
+```
 
 ### Stages management strategy
 

@@ -1,0 +1,60 @@
+# frozen_string_literal: true
+
+require "spec_helper"
+
+RSpec.describe Layouts::SettingsBlockComponent, type: :component, feature_category: :shared do
+  let(:heading) { 'Settings block heading' }
+  let(:description) { 'Settings block description' }
+  let(:body) { 'Settings block content' }
+  let(:id) { 'settings-block-id' }
+
+  describe 'slots' do
+    it 'renders heading' do
+      render_inline described_class.new(heading)
+
+      expect(page).to have_css('h2.gl-heading-2', text: heading)
+    end
+
+    it 'renders description' do
+      render_inline described_class.new(heading, description: description)
+
+      expect(page).to have_css('.gl-text-secondary', text: description)
+    end
+
+    it 'renders description slot' do
+      render_inline described_class.new(heading) do |c|
+        c.with_description { description }
+      end
+
+      expect(page).to have_css('.gl-text-secondary', text: description)
+    end
+
+    it 'renders body slot' do
+      render_inline described_class.new(heading) do |c|
+        c.with_body { body }
+      end
+
+      expect(page).to have_css('.settings-content', text: body)
+    end
+
+    it 'renders ids' do
+      render_inline described_class.new(heading, id: id)
+
+      expect(page).to have_css('#js-settings-block-id')
+      expect(page).to have_css('[data-testid="settings-block-id"]')
+    end
+
+    it 'renders collapsed if not expanded' do
+      render_inline described_class.new(heading, expanded: nil)
+
+      expect(page).to have_css('.js-settings-toggle', text: 'Expand')
+    end
+
+    it 'renders expanded if expanded' do
+      render_inline described_class.new(heading, expanded: true)
+
+      expect(page).to have_css('.settings.expanded')
+      expect(page).to have_css('.js-settings-toggle', text: 'Collapse')
+    end
+  end
+end

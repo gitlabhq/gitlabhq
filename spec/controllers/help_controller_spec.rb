@@ -407,7 +407,13 @@ RSpec.describe HelpController do
   describe 'GET #docs' do
     subject { get :redirect_to_docs }
 
+    before do
+      stub_application_setting(help_page_documentation_base_url: custom_docs_url)
+    end
+
     context 'with no custom docs URL configured' do
+      let(:custom_docs_url) { nil }
+
       it 'redirects to docs.gitlab.com' do
         subject
 
@@ -417,10 +423,6 @@ RSpec.describe HelpController do
 
     context 'with a custom docs URL configured' do
       let(:custom_docs_url) { 'https://foo.example.com' }
-
-      before do
-        stub_application_setting(help_page_documentation_base_url: custom_docs_url)
-      end
 
       it 'redirects to the configured docs URL' do
         subject

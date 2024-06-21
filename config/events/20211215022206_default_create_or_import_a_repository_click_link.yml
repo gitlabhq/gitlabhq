@@ -6,7 +6,7 @@ property_description: "`[Growth::Conversion::Experiment::LearnGitLab | Growth::A
 value_description: ""
 extra_properties:
 identifiers:
-product_group: group::conversion
+product_group: acquisition
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58689
 distributions:

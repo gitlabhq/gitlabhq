@@ -309,7 +309,7 @@ sequenceDiagram
     HTTP Router->> TS / Classify Service: Classify(SessionPrefix) "cell1"
     TS / Classify Service->>HTTP Router: gitlab-org/gitlab => Cell 1
     HTTP Router->> Cell 1: GET "/gitlab-org/gitlab/-/issues"<br>Cookie: _gitlab_session=cell1:df1f861a9e609
-    Cell 2->> HTTP Router: Issues Page Response
+    Cell 1->> HTTP Router: Issues Page Response
     HTTP Router->>User1: Issues Page Response
 ```
 

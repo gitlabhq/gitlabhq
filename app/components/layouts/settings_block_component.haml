@@ -1,0 +1,13 @@
+%section{ class: section_classes, id: js_id, data: (@id ? { testid: @id } : {}) }
+  .gl-flex.gl-justify-between.gl-items-start.gl-pt-5
+    .gl-grow
+      %h2{ class: title_classes }
+        = heading || @heading
+      %p.gl-text-secondary.gl-m-0
+        = description || @description
+    .gl-shrink-0.gl-px-2
+      = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-min-w-12 js-settings-toggle' }) do
+        = button_text
+  .settings-content
+    .gl-pt-5
+      = body

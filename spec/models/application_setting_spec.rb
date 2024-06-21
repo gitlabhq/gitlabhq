@@ -1688,4 +1688,39 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { is_expected.to validate_numericality_of(:asciidoc_max_includes).only_integer.is_greater_than_or_equal_to(0) }
     it { is_expected.to validate_numericality_of(:asciidoc_max_includes).only_integer.is_less_than_or_equal_to(64) }
   end
+
+  describe 'after_commit callback' do
+    before do
+      allow(setting).to receive(:reset_deletion_warning_redis_key)
+    end
+
+    context 'when inactive_projects_delete_after_months changes' do
+      it 'calls reset_deletion_warning_redis_key' do
+        setting.update!(inactive_projects_delete_after_months: 6)
+        expect(setting).to have_received(:reset_deletion_warning_redis_key)
+      end
+    end
+
+    context 'when delete_inactive_projects changes from true to false' do
+      it 'calls reset_deletion_warning_redis_key' do
+        setting.update!(delete_inactive_projects: true)
+        setting.update!(delete_inactive_projects: false)
+        expect(setting).to have_received(:reset_deletion_warning_redis_key)
+      end
+    end
+
+    context 'when delete_inactive_projects changes from false to true' do
+      it 'does not call reset_deletion_warning_redis_key' do
+        setting.update!(delete_inactive_projects: true)
+        expect(setting).not_to have_received(:reset_deletion_warning_redis_key)
+      end
+    end
+
+    context 'when there are no relevant changes' do
+      it 'does not call reset_deletion_warning_redis_key' do
+        setting.update!(default_artifacts_expire_in: 30)
+        expect(setting).not_to have_received(:reset_deletion_warning_redis_key)
+      end
+    end
+  end
 end

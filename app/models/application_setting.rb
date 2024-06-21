@@ -826,7 +826,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     reset_memoized_terms
   end
   after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
-  after_commit :reset_deletion_warning_redis_key, if: :saved_change_to_inactive_projects_delete_after_months?
+  after_commit :reset_deletion_warning_redis_key, if: :should_reset_inactive_project_deletion_warning?
 
   def validate_grafana_url
     validate_url(parsed_grafana_url, :grafana_url, GRAFANA_URL_ERROR_MESSAGE)
@@ -990,6 +990,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     default_project_visibility_changed? ||
       default_group_visibility_changed? ||
       restricted_visibility_levels_changed?
+  end
+
+  def should_reset_inactive_project_deletion_warning?
+    saved_change_to_inactive_projects_delete_after_months? || saved_change_to_delete_inactive_projects?(from: true, to: false)
   end
 end
 
