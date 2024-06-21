@@ -3144,9 +3144,6 @@ msgstr ""
 msgid "Add comment to review"
 msgstr ""
 
-msgid "Add comment..."
-msgstr ""
-
 msgid "Add commit messages as comments to Asana tasks. %{docs_link}"
 msgstr ""
 
@@ -18169,43 +18166,7 @@ msgstr ""
 msgid "DeploymentApprovals|Set how approval rules are applied to deployments in protected environments."
 msgstr ""
 
-msgid "DeploymentApproval| Current approvals: %{current}"
-msgstr ""
-
-msgid "DeploymentApproval|After deployment #%{deploymentIid} has the required approvals, you can run the manual job. Rejecting will fail the manual job."
-msgstr ""
-
 msgid "DeploymentApproval|Approval options"
-msgstr ""
-
-msgid "DeploymentApproval|Approve or reject deployment #%{deploymentIid}"
-msgstr ""
-
-msgid "DeploymentApproval|Approved %{time}"
-msgstr ""
-
-msgid "DeploymentApproval|Approved by you %{time}"
-msgstr ""
-
-msgid "DeploymentApproval|Deployment approved"
-msgstr ""
-
-msgid "DeploymentApproval|Deployment rejected"
-msgstr ""
-
-msgid "DeploymentApproval|Deployment tier: %{tier}"
-msgstr ""
-
-msgid "DeploymentApproval|Environment: %{environment}"
-msgstr ""
-
-msgid "DeploymentApproval|Manual job: %{jobName}"
-msgstr ""
-
-msgid "DeploymentApproval|Rejected %{time}"
-msgstr ""
-
-msgid "DeploymentApproval|Rejected by you %{time}"
 msgstr ""
 
 msgid "DeploymentTarget|Edge Computing (e.g. Cloudflare Workers)"
@@ -39992,6 +39953,9 @@ msgstr ""
 msgid "ProductAnalytics|Current month to date"
 msgstr ""
 
+msgid "ProductAnalytics|Custom event name"
+msgstr ""
+
 msgid "ProductAnalytics|Details on how to configure product analytics to collect data."
 msgstr ""
 
@@ -43517,9 +43481,6 @@ msgid "Registry setup"
 msgstr ""
 
 msgid "Reindexing Status: %{status} (Slice multiplier: %{multiplier}, Maximum running slices: %{max_slices})"
-msgstr ""
-
-msgid "Reject"
 msgstr ""
 
 msgid "Rejected (closed)"

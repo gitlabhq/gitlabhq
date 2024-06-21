@@ -226,6 +226,10 @@ syntax for the OS running GitLab. If GitLab is running on Linux but using a Wind
 runner for testing, the path separator for the trigger job is `/`. Other CI/CD
 configuration for jobs that use the Windows runner, like scripts, use <code>&#92;</code>.
 
+You cannot use CI/CD variables in an `include` section in a dynamic child pipeline's configuration.
+[Issue 378717](https://gitlab.com/gitlab-org/gitlab/-/issues/378717) proposes fixing
+this issue.
+
 ### Run child pipelines with merge request pipelines
 
 Pipelines, including child pipelines, run as branch pipelines by default when not using

@@ -115,12 +115,17 @@ export default {
     addBlob() {
       const blob = createBlob();
 
-      this.$set(this.blobs, blob.id, blob);
+      this.blobs = {
+        ...this.blobs,
+        [blob.id]: blob,
+      };
       this.blobIds.push(blob.id);
     },
     deleteBlob(id) {
       this.blobIds = this.blobIds.filter((x) => x !== id);
-      this.$delete(this.blobs, id);
+      const copy = { ...this.blobs };
+      delete copy[id];
+      this.blobs = copy;
     },
     updateBlob(id, args) {
       if ('content' in args) {

@@ -301,7 +301,10 @@ An invitation to use Switchboard is sent to the user.
 
 #### Manage notification preferences
 
-You can specify whether or not you want to receive email notifications from Switchboard.
+You can specify whether you want to receive email notifications from Switchboard. You will only receive notifications after you:
+
+- Receive an email invitation and first sign in to Switchboard.
+- Set up a password and two-factor authentication (2FA) for your user account.
 
 To manage your own email notification preferences:
 

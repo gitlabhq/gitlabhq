@@ -447,6 +447,38 @@ For example, to create a component with `stage` configuration that can be define
         stage: verify
   ```
 
+#### Define job names with inputs
+
+Similar to the values for the `stage` keyword, you should avoid hard-coding job names
+in CI/CD components. When your component's users can customize job names, they can prevent conflicts
+with the existing names in their pipelines. Users could also include a component
+multiple times with different input options by using different names.
+
+Use `inputs` to allow your component's users to define a specific job name, or a prefix for the
+job name. For example:
+
+```yaml
+spec:
+  inputs:
+    job-prefix:
+      description: "Define a prefix for the job name"
+    job-name:
+      description: "Alternatively, define the job's name"
+    job-stage:
+      default: test
+---
+
+"$[[ inputs.job-prefix ]]-scan-website":
+  stage: $[[ inputs.job-stage ]]
+  script:
+    - scan-website-1
+
+"$[[ inputs.job-name ]]":
+  stage: $[[ inputs.job-stage ]]
+  script:
+    - scan-website-2
+```
+
 ### Replace custom CI/CD variables with inputs
 
 When using CI/CD variables in a component, evaluate if the `inputs` keyword

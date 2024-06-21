@@ -1815,6 +1815,12 @@ while **click** is more specific to a mouse.
 
 However, you can make an exception for **right-click** and **click-through demo**.
 
+## self-hosted model
+
+Use **self-hosted model** (lowercase) to refer to a language model that's hosted by a customer, rather than GitLab.
+
+The language model might be an LLM (large language model), but it might not be.
+
 ## self-managed
 
 Use **self-managed** to refer to a customer's installation of GitLab. Do not use **self-hosted**.

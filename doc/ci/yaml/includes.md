@@ -390,6 +390,10 @@ so these variables cannot be used with `include`.
 For an example of how you can include predefined variables, and the variables' impact on CI/CD jobs,
 see this [CI/CD variable demo](https://youtu.be/4XR8gw3Pkos).
 
+You cannot use CI/CD variables in an `include` section in a dynamic child pipeline's configuration.
+[Issue 378717](https://gitlab.com/gitlab-org/gitlab/-/issues/378717) proposes fixing
+this issue.
+
 ## Use `rules` with `include`
 
 > - Support for `needs` job dependency [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345377) in GitLab 15.11.

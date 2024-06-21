@@ -20,7 +20,7 @@ Use the Dashboard for Kubernetes to understand the status of your clusters with 
 The dashboard works with every connected Kubernetes cluster, whether you deployed them
 with CI/CD or GitOps.
 
-![Kubernetes summary UI](img/kubernetes_summary_ui_v16_10.png)
+![Kubernetes summary UI](img/kubernetes_summary_ui_v17_2.png)
 
 ## Configure a dashboard
 
@@ -102,6 +102,27 @@ A dashboard displays one of the following status badges:
 | **Failed** | The deployment couldn't reconcile because of an unrecoverable error. |
 | **Unknown** | The sync status of the deployment couldn't be retrieved. |
 | **Unavailable** | The `Kustomization` or `HelmRelease` resource couldn't be retrieved. |
+
+## View pod logs
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13793) in GitLab 17.2.
+
+View pod logs when you want to quickly understand and troubleshoot issues across your environments from a configured dashboard. You can view logs for each container in a pod.
+
+To view your pod logs:
+
+::Tabs
+
+:::TabTitle From the pods list
+
+- Select **View logs**, then select the container you want to view logs for.
+
+:::TabTitle From the pods details view
+
+1. Select a pod from the pod list to view its details.
+1. Select the container you want to view logs for, then select **View logs**.
+
+::EndTabs
 
 ## Detailed dashboard
 

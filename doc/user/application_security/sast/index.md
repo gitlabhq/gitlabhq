@@ -19,7 +19,7 @@ With GitLab Ultimate, SAST results are also processed so you can:
 - Use them in approval workflows.
 - Review them in the security dashboard.
 
-For more details, see the [Summary of features per tier](#summary-of-features-per-tier).
+For more information, see [Features](#features).
 
 ![SAST results shown in the MR widget](img/sast_results_in_mr_v14_0.png)
 
@@ -28,24 +28,23 @@ for any reason, the security dashboard does not show SAST scanner output. For ex
 job finishes but the DAST job fails, the security dashboard does not show SAST results. On failure,
 the analyzer outputs an [exit code](../../../development/integrations/secure.md#exit-code).
 
-## Summary of features per tier
+## Features
 
-Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
-as shown in the following table:
+The following table lists the GitLab tiers in which each feature is available.
 
-| Capability                                                        | In Free & Premium   | In Ultimate        |
-|:---------------------------------------------------------------- -|:--------------------|:-------------------|
-| Automatically scan code with [appropriate analyzers](#supported-languages-and-frameworks) | **{check-circle}**  | **{check-circle}** |
-| [Configure SAST scanners](#configuration)                         | **{check-circle}**  | **{check-circle}** |
-| [Customize SAST settings](#available-cicd-variables)              | **{check-circle}**  | **{check-circle}** |
-| Download [SAST output](#output)                                   | **{check-circle}**  | **{check-circle}** |
-| See new findings in merge request widget                          | **{dotted-circle}** | **{check-circle}** |
-| See new findings in merge request changes                         | **{dotted-circle}** | **{check-circle}** |
-| [Manage vulnerabilities](../vulnerabilities/index.md)             | **{dotted-circle}** | **{check-circle}** |
-| [Access the Security Dashboard](../security_dashboard/index.md)   | **{dotted-circle}** | **{check-circle}** |
-| [Configure SAST by using the UI](#configure-sast-by-using-the-ui) | **{dotted-circle}** | **{check-circle}** |
-| [Customize SAST rulesets](customize_rulesets.md)                  | **{dotted-circle}** | **{check-circle}** |
-| [Track moved vulnerabilities](#advanced-vulnerability-tracking)   | **{dotted-circle}** | **{check-circle}** |
+| Feature                                                                                   | In Free & Premium      | In Ultimate            |
+|:------------------------------------------------------------------------------------------|:-----------------------|:-----------------------|
+| Automatically scan code with [appropriate analyzers](#supported-languages-and-frameworks) | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Configure SAST scanners](#configuration)                                                 | **{check-circle}** Yes | **{check-circle}** Yes |
+| [Customize SAST settings](#available-cicd-variables)                                      | **{check-circle}** Yes | **{check-circle}** Yes |
+| Download [SAST output](#output)                                                           | **{check-circle}** Yes | **{check-circle}** Yes |
+| See new findings in merge request widget                                                  | **{dotted-circle}** No | **{check-circle}** Yes |
+| See new findings in merge request changes                                                 | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Manage vulnerabilities](../vulnerabilities/index.md)                                     | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Access the Security Dashboard](../security_dashboard/index.md)                           | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Configure SAST by using the UI](#configure-sast-by-using-the-ui)                         | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Customize SAST rulesets](customize_rulesets.md)                                          | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Track moved vulnerabilities](#advanced-vulnerability-tracking)                           | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ## Requirements
 
@@ -62,7 +61,7 @@ GitLab SAST analyzers only run in a Docker on Linux amd64 environment, which is 
 ## Supported languages and frameworks
 
 GitLab SAST supports scanning a variety of programming languages and frameworks.
-Once you [enable SAST](#configuration), the right set of analyzers runs automatically even if your project uses more than one language.
+After you [enable SAST](#configuration), the right set of analyzers runs automatically even if your project uses more than one language.
 
 For more information about our plans for language support in SAST, see the [category direction page](https://about.gitlab.com/direction/secure/static-analysis/sast/#language-support).
 

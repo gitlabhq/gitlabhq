@@ -257,7 +257,7 @@ export default {
             no-caret
             icon="ellipsis_v"
             category="secondary"
-            placement="right"
+            placement="bottom-end"
             :toggle-text="__('More actions')"
           >
             <rollback
@@ -320,9 +320,8 @@ export default {
           >
             <template #approval>
               <environment-approval
-                :deployment-iid="upcomingDeploymentIid"
-                :environment="environment"
-                @change="$emit('change')"
+                :required-approval-count="environment.requiredApprovalCount"
+                :deployment-web-path="upcomingDeployment.webPath"
               />
             </template>
           </deployment>

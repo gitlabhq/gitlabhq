@@ -161,6 +161,22 @@ To prepare the new server:
    sudo scp /var/opt/gitlab/backups/your-backup.tar <your-linux-username>@new-server:/var/opt/gitlab/backups
    ```
 
+### For instances with a large volume of Git and object data
+
+If your GitLab instance has a large amount of data on local volumes, for example greater than 1 TB,
+backups may take a long time. In that case, you may find it easier to transfer the data to the appropriate volumes on the new instance.
+
+The main volumes that you might need to migrate manually are:
+
+- The `/var/opt/gitlab/git-data` directory which contains all the Git data.
+- The `/var/opt/gitlab/gitlab-rails/shared` directory which contains object data, like artifacts.
+- If you are using the bundled PostgreSQL included with the Linux package,
+  you also need to migrate the [PostgreSQL data directory](https://docs.gitlab.com/omnibus/settings/database.html#store-postgresql-data-in-a-different-directory)
+  under `/var/opt/gitlab/postgresql/data`.
+
+After all GitLab services have been stopped, you can use tools like `rsync` or mounting volume snapshots to move the data
+to the new environment.
+
 ## Restore data on the new server
 
 1. Restore appropriate file system permissions:

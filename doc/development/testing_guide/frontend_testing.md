@@ -1538,6 +1538,8 @@ Feature tests live in `spec/features` folder. You should look for existing files
 
 You can also prefix this command with `WEBDRIVER_HEADLESS=0` which will run the test by opening an actual browser on your computer that you can see, which is very useful for debugging.
 
+To use Firefox, instead of Chrome, prefix the command with `WEBDRIVER=firefox`.
+
 ### How to write a test
 
 #### Basic file structure
