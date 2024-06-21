@@ -90,6 +90,25 @@ RSpec.describe ErrorTracking::StacktraceBuilder do
       end
     end
 
+    context 'when stacktrace is in threads' do
+      let(:payload_file) { 'error_tracking/dotnet_event.json' }
+
+      it 'generates a correct stacktrace in expected format from threads' do
+        expected_entry = {
+          'lineNo' => 31,
+          'context' => [],
+          'filename' => 'Program.cs',
+          'function' => 'void Program.<Main>$(?)',
+          'colNo' => 0,
+          'abs_path' =>
+            "/Users/dev/work/dotnet-serilog-gitlab-sentry-bug-reproducible-example/Program.cs"
+        }
+
+        expect(stacktrace).to be_kind_of(Array)
+        expect(stacktrace.first).to eq(expected_entry)
+      end
+    end
+
     context 'with empty payload' do
       let(:payload) { {} }
 

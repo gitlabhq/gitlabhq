@@ -1163,7 +1163,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             runner.update!(tag_list: ['tag-1'])
           end
 
-          it 'successfully picks job' do
+          it 'successfully picks job', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/466439' do
             request_job
 
             build.reload

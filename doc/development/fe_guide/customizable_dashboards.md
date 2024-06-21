@@ -125,6 +125,65 @@ NOTE:
 Your data source must respect the filters so that all panels show data for
 the same date range.
 
+#### Feedback and error handling
+
+Visualizations can provide panel-specific feedback in the form of an alert. This allows you to highlight the panel and add a popover to
+display additional information when the user hovers over the panel. You can view online examples in the [GitLab storybook](https://gitlab-org.gitlab.io/gitlab/storybook/?path=/story/ee-vue-shared-components-panels-base--default).
+
+The supported alert variants based on our [Pajamas guidelines](https://design.gitlab.com/components/alert#variants) are:
+
+- `danger`: For unrecoverable errors encountered when loading the data or the panel.
+- `warning`: For errors or additional information that impact the data displayed in the panel.
+- `info`: For additional information or tips about the panel.
+
+Visualization panels provide props for rendering alerts:
+
+- `showAlertState`: A boolean used to show or hide an alert.
+- `alertVariant`: The type of alert, which defaults to the `danger` variant.
+- `alertPopoverTitle`: The title text for the alert.
+
+The `alert-popover` slot can be used to customize the body content of the alert:
+
+```vue
+<!-- Displays a danger popover state with a list of failures -->
+<panels-base
+ :title="Test panel with error"
+ :show-alert-state="true"
+ :alert-variant="VARIANT_DANGER"
+ :alert-popover-title="Very bad!"
+>
+  <template #alert-popover>
+    <p>{{ "The following failures occurred:" }}</p>
+    <ul>
+      <li>{{ "Failed to load api" }}</li>
+      <li>{{ "Failed to load ui" }}</li>
+    </ul>
+  </template>
+</panels-base>
+```
+
+::Tabs
+
+:::TabTitle `danger` alert
+
+Here's an example of a `danger` alert for a panel.
+
+![Panel danger alert](img/panel_error_v17_1.png)
+
+:::TabTitle `warning` alert
+
+Here's an example of a `warning` alert for a panel.
+
+![Panel warning alert](img/panel_warning_v17_1.png)
+
+:::TabTitle `info` alert
+
+Here's an example of an `info` alert for a panel.
+
+![Panel info alert](img/panel_info_v17_1.png)
+
+::EndTabs
+
 ### Dashboard configuration
 
 Here is an example dashboard configuration:

@@ -225,13 +225,12 @@ e2e:fulfillment-quarantine-report:
     RSPEC_JSON: "tmp/rspec-fulfillment-quarantined.json"
     NOTES_API: "https://gitlab.com/api/v4/projects/$CI_MERGE_REQUEST_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes?per_page=100"
     FULFILLMENT_SPECS_PATH: "qa/specs/features/ee/browser_ui/11_fulfillment"
-    BOT_USER_ID: 19650898
   script:
     - bundle exec rspec $FULFILLMENT_SPECS_PATH --tag quarantine --format json --out $RSPEC_JSON --dry-run
     - |
       if [[ -f $RSPEC_JSON && $(cat $RSPEC_JSON | jq ".examples[]") ]]
       then # quarantined tests found
-        existing_comment=$(curl $NOTES_API -H "PRIVATE-TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE" | jq ".[] | select((.author | .id | contains($BOT_USER_ID)) and (.body | contains(\"# Quarantined Fulfillment QA E2E Tests\")))")
+        existing_comment=$(curl $NOTES_API -H "PRIVATE-TOKEN: $PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE" | jq ".[] | select(.body | contains(\"# Quarantined Fulfillment QA E2E Tests\"))")
         if [[ ! -z $existing_comment ]]
         then
           echo 'MR comment already exists, doing nothing'

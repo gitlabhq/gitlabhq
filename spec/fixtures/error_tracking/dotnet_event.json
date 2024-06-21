@@ -1,0 +1,220 @@
+{
+    "modules": {
+      "System.Private.CoreLib": "8.0.0.0",
+      "dotnet-serilog-gitlab-sentry-bug-reproducible-example": "1.0.0.0",
+      "System.Runtime": "8.0.0.0",
+      "Serilog": "4.0.0.0",
+      "System.Console": "8.0.0.0",
+      "Sentry.Serilog": "4.7.0.0",
+      "Sentry": "4.7.0.0",
+      "System.Net.Primitives": "8.0.0.0",
+      "System.IO.Compression": "8.0.0.0",
+      "System.Text.Json": "8.0.0.0",
+      "System.Threading": "8.0.0.0",
+      "System.Runtime.InteropServices": "8.0.0.0",
+      "Microsoft.Win32.Primitives": "8.0.0.0",
+      "System.Collections": "8.0.0.0",
+      "System.Memory": "8.0.0.0",
+      "System.Text.RegularExpressions": "8.0.0.0",
+      "System.Reflection.Emit.Lightweight": "8.0.0.0",
+      "System.Reflection.Emit.ILGeneration": "8.0.0.0",
+      "System.Reflection.Primitives": "8.0.0.0",
+      "System.Linq": "8.0.0.0",
+      "System.Private.Uri": "8.0.0.0",
+      "System.Diagnostics.Process": "8.0.0.0",
+      "System.ComponentModel.Primitives": "8.0.0.0",
+      "System.Diagnostics.StackTrace": "8.0.0.0",
+      "System.Net.Http": "8.0.0.0",
+      "System.Collections.Concurrent": "8.0.0.0",
+      "System.Diagnostics.DiagnosticSource": "8.0.0.0",
+      "System.Diagnostics.Tracing": "8.0.0.0",
+      "System.Reflection.Metadata": "8.0.0.0",
+      "System.Threading.Thread": "8.0.0.0",
+      "System.Threading.ThreadPool": "8.0.0.0",
+      "System.Collections.Immutable": "8.0.0.0",
+      "System.Text.Encoding.Extensions": "8.0.0.0",
+      "System.IO.MemoryMappedFiles": "8.0.0.0",
+      "System.Linq.Expressions": "8.0.0.0"
+    },
+    "event_id": "8fb203c2829d4b3d861c9b350b7a501d",
+    "timestamp": "2024-06-17T12:05:56.185923+00:00",
+    "logentry": {
+      "message": "Test exception using logger directly",
+      "formatted": "Test exception using logger directly"
+    },
+    "platform": "csharp",
+    "release": "dotnet-serilog-gitlab-sentry-bug-reproducible-example@1.0.0",
+    "exception": {
+      "values": [
+        {
+          "type": "System.Exception",
+          "value": "Test exception using logger directly",
+          "module": "System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e",
+          "thread_id": 1
+        }
+      ]
+    },
+    "threads": {
+      "values": [
+        {
+          "id": 1,
+          "crashed": false,
+          "current": true,
+          "stacktrace": {
+            "frames": [
+              {
+                "filename": "Program.cs",
+                "function": "void Program.<Main>$(?)",
+                "lineno": 31,
+                "colno": 1,
+                "abs_path": "/Users/dev/work/dotnet-serilog-gitlab-sentry-bug-reproducible-example/Program.cs",
+                "in_app": true,
+                "package": "dotnet-serilog-gitlab-sentry-bug-reproducible-example, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null",
+                "instruction_addr": "0x75",
+                "addr_mode": "rel:1",
+                "function_id": "0x1"
+              },
+              {
+                "function": "void Logger.Error(Exception exception, string messageTemplate)",
+                "in_app": false,
+                "package": "Serilog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10",
+                "instruction_addr": "0x0",
+                "addr_mode": "rel:0",
+                "function_id": "0x20f"
+              },
+              {
+                "function": "void Logger.Write(LogEventLevel level, Exception exception, string messageTemplate, params object[] propertyValues)",
+                "in_app": false,
+                "package": "Serilog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10",
+                "instruction_addr": "0xa0",
+                "addr_mode": "rel:0",
+                "function_id": "0x1dd"
+              },
+              {
+                "function": "void Logger.Dispatch(LogEvent logEvent)",
+                "in_app": false,
+                "package": "Serilog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10",
+                "instruction_addr": "0x29",
+                "addr_mode": "rel:0",
+                "function_id": "0x1e1"
+              },
+              {
+                "function": "void SafeAggregateSink.Emit(LogEvent logEvent)",
+                "in_app": false,
+                "package": "Serilog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10",
+                "instruction_addr": "0xf",
+                "addr_mode": "rel:0",
+                "function_id": "0x247"
+              },
+              {
+                "function": "void RestrictedSink.Emit(LogEvent logEvent)",
+                "in_app": false,
+                "package": "Serilog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10",
+                "instruction_addr": "0x20",
+                "addr_mode": "rel:0",
+                "function_id": "0x243"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "level": "error",
+    "request": {},
+    "contexts": {
+      "Current Culture": {
+        "name": "en-US",
+        "display_name": "English (United States)",
+        "calendar": "GregorianCalendar"
+      },
+      "Dynamic Code": {
+        "Compiled": true,
+        "Supported": true
+      },
+      "Memory Info": {
+        "allocated_bytes": 500240,
+        "high_memory_load_threshold_bytes": 30923764531,
+        "total_available_memory_bytes": 34359738368,
+        "finalization_pending_count": 0,
+        "compacted": false,
+        "concurrent": false,
+        "pause_durations": [
+          0,
+          0
+        ]
+      },
+      "ThreadPool Info": {
+        "min_worker_threads": 10,
+        "min_completion_port_threads": 1,
+        "max_worker_threads": 32767,
+        "max_completion_port_threads": 1000,
+        "available_worker_threads": 32767,
+        "available_completion_port_threads": 1000
+      },
+      "app": {
+        "type": "app",
+        "app_start_time": "2024-06-17T12:05:56.080442+00:00"
+      },
+      "device": {
+        "type": "device",
+        "timezone": "Europe/Luxembourg",
+        "timezone_display_name": "(UTC+01:00) Central European Time (Luxembourg)",
+        "boot_time": "2024-06-08T09:05:19.5148364+00:00"
+      },
+      "os": {
+        "type": "os",
+        "raw_description": "Darwin 23.5.0 Darwin Kernel Version 23.5.0: Wed May  1 20:12:58 PDT 2024; root:xnu-10063.121.3~5/RELEASE_ARM64_T6000"
+      },
+      "runtime": {
+        "type": "runtime",
+        "name": ".NET",
+        "version": "8.0.6",
+        "raw_description": ".NET 8.0.6",
+        "identifier": "osx-arm64"
+      },
+      "trace": {
+        "type": "trace",
+        "span_id": "d24c8928c5fc4b7f",
+        "trace_id": "7a50f24274d849e396245d2267e37494"
+      }
+    },
+    "user": {
+      "ip_address": "{{auto}}"
+    },
+    "environment": "production",
+    "sdk": {
+      "packages": [
+        {
+          "name": "nuget:sentry.dotnet",
+          "version": "4.7.0"
+        },
+        {
+          "name": "nuget:Sentry.Serilog",
+          "version": "4.7.0"
+        }
+      ],
+      "name": "sentry.dotnet.serilog",
+      "version": "4.7.0"
+    },
+    "debug_meta": {
+      "images": [
+        {
+          "type": "pe_dotnet",
+          "debug_id": "201d67af-c77a-4cd5-a666-8a65b7b7382d-abbe06d9",
+          "debug_checksum": "SHA256:af671d207ac7d5ec26668a65b7b7382dd906be2bff268a9c6c327d80f95cba53",
+          "debug_file": "/_/src/Serilog/obj/Release/net8.0/Serilog.pdb",
+          "code_id": "A1DC32772c000",
+          "code_file": "/Users/dev/work/dotnet-serilog-gitlab-sentry-bug-reproducible-example/bin/Debug/net8.0/Serilog.dll"
+        },
+        {
+          "type": "pe_dotnet",
+          "debug_id": "735decbc-e000-4b63-b292-f44171630612-f38501f4",
+          "debug_checksum": "SHA256:bcec5d7300e0636bb292f44171630612f40185734250e4e8ff23cc57f0ab3bcc",
+          "debug_file": "/Users/dev/work/dotnet-serilog-gitlab-sentry-bug-reproducible-example/obj/Debug/net8.0/dotnet-serilog-gitlab-sentry-bug-reproducible-example.pdb",
+          "code_id": "A1EB25F78000",
+          "code_file": "/Users/dev/work/dotnet-serilog-gitlab-sentry-bug-reproducible-example/bin/Debug/net8.0/dotnet-serilog-gitlab-sentry-bug-reproducible-example.dll"
+        }
+      ]
+    }
+  }
+

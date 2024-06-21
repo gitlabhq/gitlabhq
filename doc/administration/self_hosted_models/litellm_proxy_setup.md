@@ -20,7 +20,7 @@ sequenceDiagram
         participant LiteLLM
         participant SelfHostedModel as Ollama
     end
-    
+
     Client ->> GitLab: Send request
     GitLab ->> AIGateway: Create prompt and send request
     AIGateway ->> LiteLLM: Perform API request to the AI model <br> using the OpenAI format
@@ -30,6 +30,11 @@ sequenceDiagram
     AIGateway -->> GitLab: Forward AI response
     GitLab -->> Client: Forward AI response
 ```
+
+## On Kubernetes
+
+On Kubernetes environments, Ollama can be installed with a [Helm chart](https://github.com/otwld/ollama-helm)
+or following the example in [the official documentation](https://github.com/ollama/ollama/tree/main/examples/kubernetes).
 
 ## Example setup with LiteLLM and Ollama
 

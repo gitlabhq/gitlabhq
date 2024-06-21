@@ -1,0 +1,16 @@
+---
+description: Tracks pageviews for the admin usage trends page
+internal_events: true
+action: view_admin_usage_trends_pageload
+identifiers:
+- user
+product_group: personal_productivity
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156817
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate
