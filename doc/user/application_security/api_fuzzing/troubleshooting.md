@@ -76,9 +76,16 @@ Once you have confirmed the issue was produced because the port was already take
 1. Ensure your `.gitlab-ci.yml` file defines the configuration variable `FUZZAPI_API_PORT`.
 1. Update the value of `FUZZAPI_API_PORT` to any available port number greater than 1024. We recommend checking that the new value is not in used by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
 
-## `Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema`
+## Error: `Errors were found during validation of the document using the published OpenAPI schema`
 
-At the start of an API Fuzzing job the OpenAPI Specification is validated against the [published schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas). This error is shown when the provided OpenAPI Specification has validation errors. Errors can be introduced when creating an OpenAPI Specification manually, and also when the schema is generated.
+At the start of an API Fuzzing job the OpenAPI Specification is validated against the [published schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas). This error is shown when the provided OpenAPI Specification has validation errors:
+
+```plaintext
+Error, the OpenAPI document is not valid.
+Errors were found during validation of the document using the published OpenAPI schema
+```
+
+Errors can be introduced when creating an OpenAPI Specification manually, and also when the schema is generated.
 
 For OpenAPI Specifications that are generated automatically validation errors are often the result of missing code annotations.
 
@@ -222,10 +229,18 @@ API Fuzzing uses the specified media types in the OpenAPI document to generate r
 1. Review the supported media types in the [OpenAPI Specification](configuration/enabling_the_analyzer.md#openapi-specification) section.
 1. Edit your OpenAPI document, allowing at least a given operation to accept any of the supported media types. Alternatively, a supported media type could be set in the OpenAPI document level and get applied to all operations. This step may require changes in your application to ensure the supported media type is accepted by the application.
 
-## ``Error, error occurred trying to download `<URL>`: There was an error when retrieving content from Uri:' <URL>'. Error:The SSL connection could not be established, see inner exception.``
+## Error: `The SSL connection could not be established, see inner exception.`
 
 API fuzzing is compatible with a broad range of TLS configurations, including outdated protocols and ciphers.
-Despite broad support, you might encounter connection errors. This error occurs because API fuzzing could not establish a secure connection with the server at the given URL.
+Despite broad support, you might encounter connection errors, like this:
+
+```plaintext
+Error, error occurred trying to download `<URL>`:
+There was an error when retrieving content from Uri:' <URL>'.
+Error:The SSL connection could not be established, see inner exception.
+```
+
+This error occurs because API fuzzing could not establish a secure connection with the server at the given URL.
 
 To resolve the issue:
 

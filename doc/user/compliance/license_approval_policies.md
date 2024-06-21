@@ -56,7 +56,7 @@ The following types of criteria can be used to determine which licenses are "app
 - When any license in a list of explicitly prohibited licenses is detected.
 - When any license is detected except for licenses that have been explicitly listed as acceptable.
 
-## Criteria comparing licenses detected in the merge request branch to licenses detected in the default branch
+## Criteria to compare licenses detected in the merge request branch to licenses in the default branch
 
 The following types of criteria can be used to determine whether or not approval is required based on the licenses that exist in the default branch:
 

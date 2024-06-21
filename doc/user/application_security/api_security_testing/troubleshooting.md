@@ -199,10 +199,18 @@ API security testing uses the specified media types in the OpenAPI document to g
 1. Review supported media types in the [OpenAPI Specification](configuration/enabling_the_analyzer.md#openapi-specification) section.
 1. Edit your OpenAPI document, allowing at least a given operation to accept any of the supported media types. Alternatively, a supported media type could be set in the OpenAPI document level and get applied to all operations. This step may require changes in your application to ensure the supported media type is accepted by the application.
 
-## ``Error, error occurred trying to download `<URL>`: There was an error when retrieving content from Uri:' <URL>'. Error:The SSL connection could not be established, see inner exception.``
+## Error: `The SSL connection could not be established, see inner exception.`
 
 API security testing is compatible with a broad range of TLS configurations, including outdated protocols and ciphers.
-Despite broad support, you might encounter connection errors. This error occurs because API security testing could not establish a secure connection with the server at the given URL.
+Despite broad support, you might encounter connection errors, like this:
+
+```plaintext
+Error, error occurred trying to download `<URL>`:
+There was an error when retrieving content from Uri:' <URL>'.
+Error:The SSL connection could not be established, see inner exception.
+```
+
+This error occurs because API security testing could not establish a secure connection with the server at the given URL.
 
 To resolve the issue:
 
