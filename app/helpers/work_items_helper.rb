@@ -17,6 +17,13 @@ module WorkItemsHelper
     }
   end
 
+  # overriden in EE
+  def add_work_item_show_breadcrumb(resource_parent, _iid)
+    path = resource_parent.is_a?(Group) ? issues_group_path(resource_parent) : project_issues_path(resource_parent)
+
+    add_to_breadcrumbs(_('Issues'), path)
+  end
+
   def work_items_list_data(group, current_user)
     {
       full_path: group.full_path,

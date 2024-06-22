@@ -40,6 +40,34 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
     end
   end
 
+  # rubocop:disable RSpec/FactoryBot/AvoidCreate -- Needed for querying the work item type
+  describe '#add_work_item_show_breadcrumb' do
+    subject(:add_work_item_show_breadcrumb) { helper.add_work_item_show_breadcrumb(resource_parent, work_item.iid) }
+
+    context 'on a group' do
+      let_it_be(:resource_parent) { create(:group) }
+      let_it_be(:work_item) { build(:work_item, namespace: resource_parent) }
+
+      it 'adds the correct breadcrumb' do
+        expect(helper).to receive(:add_to_breadcrumbs).with('Issues', issues_group_path(resource_parent))
+
+        add_work_item_show_breadcrumb
+      end
+    end
+
+    context 'on a project' do
+      let_it_be(:resource_parent) { build(:project) }
+      let_it_be(:work_item) { build(:work_item, namespace: resource_parent.namespace) }
+
+      it 'adds the correct breadcrumb' do
+        expect(helper).to receive(:add_to_breadcrumbs).with('Issues', project_issues_path(resource_parent))
+
+        add_work_item_show_breadcrumb
+      end
+    end
+  end
+  # rubocop:enable RSpec/FactoryBot/AvoidCreate
+
   describe '#work_items_list_data' do
     let_it_be(:group) { build(:group) }
 

@@ -416,6 +416,7 @@
   - "{,ee/,jh/}fixtures/**/*"
   - "{,ee/,jh/}rubocop/**/*"
   - "{,ee/,jh/}spec/**/*"
+  - "scripts/**/*"
   - "{,spec/}tooling/**/*"
 
 .qa-patterns: &qa-patterns
