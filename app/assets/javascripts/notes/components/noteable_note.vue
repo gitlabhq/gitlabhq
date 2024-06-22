@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import $ from 'jquery';
-import { escape, isEmpty } from 'lodash';
+import { escape } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -24,7 +24,6 @@ import {
   getEndLineNumber,
   getLineClasses,
   commentLineOptions,
-  formatLineRange,
 } from './multiline_comment_utils';
 import NoteActions from './note_actions.vue';
 import NoteBody from './note_body.vue';
@@ -256,7 +255,6 @@ export default {
       'scrollToNoteIfNeeded',
       'updateAssignees',
       'setSelectedCommentPositionHover',
-      'updateDiscussionPosition',
     ]),
     editHandler() {
       this.isEditing = true;
@@ -305,23 +303,10 @@ export default {
       this.$emit('updateSuccess');
     },
     async formUpdateHandler({ noteText, callback, resolveDiscussion }) {
-      const position = {
-        ...this.note.position,
-      };
-
-      if (this.discussionRoot && this.commentLineStart && this.line) {
-        position.line_range = formatLineRange(this.commentLineStart, this.line);
-        this.updateDiscussionPosition({
-          discussionId: this.note.discussion_id,
-          position,
-        });
-      }
-
       this.$emit('handleUpdateNote', {
         note: this.note,
         noteText,
         resolveDiscussion,
-        position,
         flashContainer: this.$el,
         callback: () => this.updateSuccess(),
         errorCallback: () => callback(),
@@ -346,9 +331,6 @@ export default {
         },
       };
 
-      // Stringifying an empty object yields `{}` which breaks graphql queries
-      // https://gitlab.com/gitlab-org/gitlab/-/issues/298827
-      if (!isEmpty(position)) data.note.note.position = JSON.stringify(position);
       this.isRequesting = true;
       this.oldContent = this.note.note_html;
       // eslint-disable-next-line vue/no-mutating-props

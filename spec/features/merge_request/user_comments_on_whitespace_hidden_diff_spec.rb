@@ -113,6 +113,50 @@ RSpec.describe 'User comments on a diff with whitespace changes', :js, feature_c
     end
   end
 
+  context 'when MR contains whitespace changes which affect collapsed lines' do
+    let(:merge_request) do
+      create(:merge_request_with_diffs, source_project: project, target_project: project,
+        target_branch: 'expanded-whitespace-target', source_branch: 'expanded-whitespace-source')
+    end
+
+    before do
+      visit(diffs_project_merge_request_path(project, merge_request, view: 'parallel'))
+    end
+
+    context 'when hiding whitespace changes' do
+      before do
+        hide_whitespace
+      end
+
+      context 'when commenting on collapsed line combinations that are not present in the real diff' do
+        before do
+          find_all('[data-testid="expand-icon"]').first.click
+
+          click_diff_line(
+            find_by_scrolling('div[data-path="files/js/breadcrumbs.js"] .left-side a[data-linenumber="15"]')
+              .find(:xpath, '../..'), 'left')
+          page.within('.js-discussion-note-form') do
+            fill_in(:note_note, with: 'Comment in expanded diff with whitespace')
+            click_button('Add comment now')
+          end
+
+          wait_for_requests
+        end
+
+        it 'allows editing the comment from the Overview tab' do
+          visit(merge_request_path(merge_request))
+          click_button('Edit comment')
+          fill_in(:note_note, with: 'edit whitespace comment')
+          click_button('Save comment')
+          wait_for_requests
+          page.within('.notes_holder') do
+            expect(page).to have_content('edit whitespace comment')
+          end
+        end
+      end
+    end
+  end
+
   def hide_whitespace
     find('.js-show-diff-settings').click
     find_by_testid('show-whitespace').click

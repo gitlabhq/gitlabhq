@@ -41,7 +41,7 @@ export const updateNoteErrorMessage = (e) => {
   const errors = e?.response?.data?.errors;
 
   if (errors) {
-    return sprintf(UPDATE_COMMENT_FORM.error, { reason: errors.toLowerCase() });
+    return sprintf(UPDATE_COMMENT_FORM.error, { reason: errors.toLowerCase() }, false);
   }
 
   return UPDATE_COMMENT_FORM.defaultError;

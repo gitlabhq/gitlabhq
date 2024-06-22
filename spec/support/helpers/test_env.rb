@@ -113,7 +113,9 @@ module TestEnv
     'ssh-signed-commit' => '7b5160f',
     'changes-with-whitespace' => 'f2d141fadb33ceaafc95667c1a0a308ad5edc5f9',
     'changes-with-only-whitespace' => '80cffbb2ad86202171dd3c05b38b5b4523b447d3',
-    'lock-detection' => '1ada92f78a19f27cb442a0a205f1c451a3a15432'
+    'lock-detection' => '1ada92f78a19f27cb442a0a205f1c451a3a15432',
+    'expanded-whitespace-target' => '279aa723d4688e711652d230c93f1fc33801dcb8',
+    'expanded-whitespace-source' => 'e6f8b802fe2288b1b5e367c5dde736594971ebd1'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
