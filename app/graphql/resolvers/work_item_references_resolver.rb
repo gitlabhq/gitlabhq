@@ -35,9 +35,6 @@ module Resolvers
       return WorkItem.none if refs.empty?
 
       @container = authorized_find!(context_namespace_path)
-      # Only ::Project is supported at the moment, future iterations will include ::Group.
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/432555
-      return WorkItem.none if container.is_a?(::Group)
 
       apply_lookahead(find_work_items(refs))
     end
@@ -48,24 +45,33 @@ module Resolvers
 
     # rubocop: disable CodeReuse/ActiveRecord -- #references is not an ActiveRecord method
     def find_work_items(references)
-      links, short_references = references.partition { |r| r.include?('/work_items/') }
-
-      item_ids = references_extractor(short_references).references(:issue, ids_only: true)
-      item_ids << references_extractor(links).references(:work_item, ids_only: true) if links.any?
+      # Also check for references with :issue pattern to find legacy issues
+      item_ids = references_extractor(references).references(:issue, ids_only: true)
+      item_ids << references_extractor(references).references(:work_item, ids_only: true)
 
       WorkItem.id_in(item_ids.flatten)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     def references_extractor(refs)
-      extractor = ::Gitlab::ReferenceExtractor.new(container, context[:current_user])
-      extractor.analyze(refs.join(' '), {})
+      extractor, analyze_context =
+        if container.is_a?(Group)
+          [::Gitlab::ReferenceExtractor.new(nil, context[:current_user]), { group: container }]
+        else
+          [::Gitlab::ReferenceExtractor.new(container, context[:current_user]), {}]
+        end
+
+      extractor.analyze(refs.join(' '), analyze_context)
 
       extractor
     end
 
     def find_object(full_path)
       Routable.find_by_full_path(full_path)
+    end
+
+    def unconditional_includes
+      [{ namespace: [:organization] }, *super]
     end
   end
 end
