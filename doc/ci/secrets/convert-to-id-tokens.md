@@ -10,6 +10,10 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+NOTE:
+Starting in Vault 1.17, [JWT auth login requires bound audiences on the role](https://developer.hashicorp.com/vault/docs/upgrading/upgrade-to-1.17.x#jwt-auth-login-requires-bound-audiences-on-the-role)
+when the JWT contains an `aud` claim. The `aud` claim can be a single string or a list of strings.
+
 This tutorial demonstrates how to convert your existing CI/CD secrets configuration to use [ID Tokens](../secrets/id_token_authentication.md).
 
 The `CI_JOB_JWT` variables are deprecated, but updating to ID tokens requires some
@@ -82,6 +86,8 @@ You can create multiple authentication paths in Vault, which enable you to trans
 ### Recreate roles to use the new authentication path
 
 Roles are bound to a specific authentication path so you need to add new roles for each job.
+The `bound_audiences` parameter for the role is mandatory if the JWT contains an
+audience and must match at least one of the JWT's associated `aud` claims.
 
 1. Recreate the role for staging named `myproject-staging`:
 
@@ -111,6 +117,7 @@ Roles are bound to a specific authentication path so you need to add new roles f
      "policies": ["myproject-production"],
      "token_explicit_max_ttl": 60,
      "user_claim": "user_email",
+     "bound_audiences": ["https://vault.example.com"],
      "bound_claims_type": "glob",
      "bound_claims": {
        "project_id": "22",
@@ -146,6 +153,7 @@ $ vault write auth/jwt/role/myproject-staging - <<EOF
   "policies": ["myproject-staging"],
   "token_explicit_max_ttl": 60,
   "user_claim": "user_email",
+  "bound_audiences": ["https://vault.example.com"],
   "bound_claims": {
     "iss": [
       "https://gitlab.example.com",

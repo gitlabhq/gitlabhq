@@ -781,6 +781,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_10ee1357e825() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."auto_canceled_by_id_convert_to_bigint" := NEW."auto_canceled_by_id";
+  NEW."commit_id_convert_to_bigint" := NEW."commit_id";
+  NEW."erased_by_id_convert_to_bigint" := NEW."erased_by_id";
+  NEW."project_id_convert_to_bigint" := NEW."project_id";
+  NEW."runner_id_convert_to_bigint" := NEW."runner_id";
+  NEW."trigger_request_id_convert_to_bigint" := NEW."trigger_request_id";
+  NEW."upstream_pipeline_id_convert_to_bigint" := NEW."upstream_pipeline_id";
+  NEW."user_id_convert_to_bigint" := NEW."user_id";
+  RETURN NEW;
+END;
+$$;
+
 CREATE FUNCTION trigger_13d4aa8fe3dd() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1911,17 +1927,23 @@ CREATE TABLE p_ci_builds (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     started_at timestamp without time zone,
+    runner_id_convert_to_bigint integer,
     coverage double precision,
+    commit_id_convert_to_bigint integer,
     name character varying,
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
     stage character varying,
+    trigger_request_id_convert_to_bigint integer,
     stage_idx integer,
     tag boolean,
     ref character varying,
+    user_id_convert_to_bigint integer,
     type character varying,
     target_url character varying,
     description character varying,
+    project_id_convert_to_bigint integer,
+    erased_by_id_convert_to_bigint integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
     environment character varying,
@@ -1930,11 +1952,13 @@ CREATE TABLE p_ci_builds (
     queued_at timestamp without time zone,
     lock_version integer DEFAULT 0,
     coverage_regex character varying,
+    auto_canceled_by_id_convert_to_bigint integer,
     retried boolean,
     protected boolean,
     failure_reason integer,
     scheduled_at timestamp with time zone,
     token_encrypted character varying,
+    upstream_pipeline_id_convert_to_bigint integer,
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
@@ -7218,17 +7242,23 @@ CREATE TABLE ci_builds (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     started_at timestamp without time zone,
+    runner_id_convert_to_bigint integer,
     coverage double precision,
+    commit_id_convert_to_bigint integer,
     name character varying,
     options text,
     allow_failure boolean DEFAULT false NOT NULL,
     stage character varying,
+    trigger_request_id_convert_to_bigint integer,
     stage_idx integer,
     tag boolean,
     ref character varying,
+    user_id_convert_to_bigint integer,
     type character varying,
     target_url character varying,
     description character varying,
+    project_id_convert_to_bigint integer,
+    erased_by_id_convert_to_bigint integer,
     erased_at timestamp without time zone,
     artifacts_expire_at timestamp without time zone,
     environment character varying,
@@ -7237,11 +7267,13 @@ CREATE TABLE ci_builds (
     queued_at timestamp without time zone,
     lock_version integer DEFAULT 0,
     coverage_regex character varying,
+    auto_canceled_by_id_convert_to_bigint integer,
     retried boolean,
     protected boolean,
     failure_reason integer,
     scheduled_at timestamp with time zone,
     token_encrypted character varying,
+    upstream_pipeline_id_convert_to_bigint integer,
     resource_group_id bigint,
     waiting_for_resource_at timestamp with time zone,
     processed boolean,
@@ -31218,6 +31250,8 @@ CREATE TRIGGER trigger_05ce163deddf BEFORE INSERT OR UPDATE ON status_check_resp
 CREATE TRIGGER trigger_0da002390fdc BEFORE INSERT OR UPDATE ON operations_feature_flags_issues FOR EACH ROW EXECUTE FUNCTION trigger_0da002390fdc();
 
 CREATE TRIGGER trigger_0e13f214e504 BEFORE INSERT OR UPDATE ON merge_request_assignment_events FOR EACH ROW EXECUTE FUNCTION trigger_0e13f214e504();
+
+CREATE TRIGGER trigger_10ee1357e825 BEFORE INSERT OR UPDATE ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION trigger_10ee1357e825();
 
 CREATE TRIGGER trigger_13d4aa8fe3dd BEFORE INSERT OR UPDATE ON draft_notes FOR EACH ROW EXECUTE FUNCTION trigger_13d4aa8fe3dd();
 

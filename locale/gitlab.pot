@@ -22495,6 +22495,9 @@ msgstr ""
 msgid "Filter users"
 msgstr ""
 
+msgid "Filter: %{filter_name})"
+msgstr ""
+
 msgid "Finalizing"
 msgstr ""
 
@@ -30352,7 +30355,31 @@ msgstr ""
 msgid "LDAP uid:"
 msgstr ""
 
+msgid "LDAP|(Inactive because syncing with an LDAP user filter is not included in the current license)"
+msgstr ""
+
+msgid "LDAP|Active synchronizations"
+msgstr ""
+
+msgid "LDAP|Active synchronizations (%{count})"
+msgstr ""
+
 msgid "LDAP|Add synchronization"
+msgstr ""
+
+msgid "LDAP|As %{human_access} on %{provider_label} server"
+msgstr ""
+
+msgid "LDAP|Config for LDAP server %{provider} is not present in GitLab"
+msgstr ""
+
+msgid "LDAP|Default, minimum permission level for LDAP group members of %{group_name}."
+msgstr ""
+
+msgid "LDAP|If you do not belong to this LDAP user filter you will lose ownership of %{group_name}."
+msgstr ""
+
+msgid "LDAP|If you select an LDAP group you do not belong to you will lose ownership of %{group_name}."
 msgstr ""
 
 msgid "LDAP|LDAP access"
@@ -30367,7 +30394,19 @@ msgstr ""
 msgid "LDAP|LDAP user filter"
 msgstr ""
 
+msgid "LDAP|No LDAP synchronizations"
+msgstr ""
+
 msgid "LDAP|Sync method"
+msgstr ""
+
+msgid "LDAP|Synchronize %{group_name}'s members with this LDAP group."
+msgstr ""
+
+msgid "LDAP|This query must use valid %{ldap_link_start}LDAP Search Filter Syntax%{ldap_link_end}. Synchronize %{group_name}'s members with this LDAP user filter."
+msgstr ""
+
+msgid "LDAP|You can manage permission levels for individual group members in the Members tab."
 msgstr ""
 
 msgid "LFS"
