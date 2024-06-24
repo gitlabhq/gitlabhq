@@ -44,7 +44,6 @@ module QA
           element 'github-login-button'
           element 'oidc-login-button'
           element 'gitlab-oauth-login-button'
-          element 'facebook-login-button'
         end
 
         view 'app/views/layouts/devise.html.haml' do
@@ -182,11 +181,6 @@ module QA
         def sign_in_with_github
           set_initial_password_if_present
           click_element 'github-login-button'
-        end
-
-        def sign_in_with_facebook
-          set_initial_password_if_present
-          click_element 'facebook-login-button'
         end
 
         def sign_in_with_saml

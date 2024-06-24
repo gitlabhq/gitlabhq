@@ -1,0 +1,19 @@
+.gl-broadcast-message.broadcast-banner-message.banner{ role: 'alert',
+  class: "js-broadcast-notification-#{@id} #{@theme}", data: { testid: 'banner-broadcast-message' } }
+  .gl-broadcast-message-content
+    .gl-broadcast-message-icon
+      = sprite_icon('bullhorn')
+    .gl-broadcast-message-text
+      %h2.gl-sr-only= _('Admin message')
+      = @message
+  - if @dismissable
+    = render Pajamas::ButtonComponent.new(category: :tertiary,
+      icon: 'close',
+      size: :small,
+      button_options: { class: 'gl-close-btn-color-inherit gl-broadcast-message-dismiss js-dismiss-current-broadcast-notification',
+        'aria-label': _('Close'),
+        data: { id: @id,
+                expire_date: @expire_date,
+                dismissal_path: @dismissal_path,
+                cookie_key: @cookie_key } },
+      icon_classes: 'gl-text-white')
