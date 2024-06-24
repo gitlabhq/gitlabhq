@@ -1597,6 +1597,16 @@ NOTE:
 [Because it's recommended to use Object storage](../object_storage.md) instead of NFS for data objects, the following
 examples include the Object storage configuration.
 
+NOTE:
+If you find that the environment's Sidekiq job processing is slow with long queues,
+more nodes can be added as required. You can also tune your Sidekiq nodes to
+run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
+
+NOTE:
+When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
+update the Sidekiq configuration in addition to the Rails configuration.
+Refer to the [external Sidekiq documentation](../sidekiq/index.md) for more information.
+
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2
 
@@ -1739,11 +1749,6 @@ To configure the Sidekiq nodes, on each one:
    run: node-exporter: (pid 30134) 77353s; run: log: (pid 29706) 77372s
    run: sidekiq: (pid 30142) 77351s; run: log: (pid 29638) 77386s
    ```
-
-NOTE:
-If you find that the environment's Sidekiq job processing is slow with long queues,
-more nodes can be added as required. You can also tune your Sidekiq nodes to
-run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#set-up-components">

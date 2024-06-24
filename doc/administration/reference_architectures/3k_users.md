@@ -1604,6 +1604,11 @@ NOTE:
 If you find that the environment's Sidekiq job processing is slow with long queues
 you can scale it accordingly. Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
 
+NOTE:
+When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
+update the Sidekiq configuration in addition to the Rails configuration.
+Refer to the [external Sidekiq documentation](../sidekiq/index.md) for more information.
+
 The following IPs will be used as an example:
 
 - `10.6.0.71`: Sidekiq 1

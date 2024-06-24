@@ -8651,7 +8651,7 @@ msgstr ""
 msgid "Billing|Something went wrong when un-assigning the add-on to this member. If the problem persists, please %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
-msgid "Billing|There are not enough seats to assign the GitLab Duo Pro add-on to all selected members. To purchase more seats for your subscription, please %{salesLinkStart}contact sales%{salesLinkEnd}."
+msgid "Billing|There are not enough seats to assign the GitLab Duo Pro add-on to all selected members."
 msgstr ""
 
 msgid "Billing|This action will assign a GitLab Duo Pro seat to 1 user"
@@ -8685,7 +8685,7 @@ msgstr ""
 msgid "Billing|You can upgrade to a paid tier to get access to more features."
 msgstr ""
 
-msgid "Billing|You have assigned all available GitLab Duo Pro add-on seats. Please %{salesLinkStart}contact sales%{salesLinkEnd} if you would like to purchase more seats."
+msgid "Billing|You have assigned all available GitLab Duo Pro add-on seats."
 msgstr ""
 
 msgid "Billing|Your group recently changed to use the Free plan. %{over_limit_message} You can free up space for new members by removing those who no longer need access or toggling them to over-limit. To get an unlimited number of members, you can %{link_start}upgrade%{link_end} to a paid tier."
@@ -25467,13 +25467,10 @@ msgstr ""
 msgid "GroupSettings|Disable personal access tokens"
 msgstr ""
 
-msgid "GroupSettings|Duo features"
-msgstr ""
-
 msgid "GroupSettings|Emails are not encrypted. Concerned administrators may want to disable diff previews."
 msgstr ""
 
-msgid "GroupSettings|Enable GitLab Duo features for this group %{link_start}Learn more%{link_end}."
+msgid "GroupSettings|Enable GitLab Duo features for this group. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "GroupSettings|Enable caching of hierarchical objects (subgroups and projects) to improve the performance of group-level features within a large group."
@@ -25497,13 +25494,16 @@ msgstr ""
 msgid "GroupSettings|Experiment"
 msgstr ""
 
-msgid "GroupSettings|Experiment and beta features"
-msgstr ""
-
 msgid "GroupSettings|Export group"
 msgstr ""
 
 msgid "GroupSettings|Git abuse rate limit"
+msgstr ""
+
+msgid "GroupSettings|GitLab Duo experiment and beta features"
+msgstr ""
+
+msgid "GroupSettings|GitLab Duo features"
 msgstr ""
 
 msgid "GroupSettings|Group CI/CD settings were successfully updated."
@@ -25620,10 +25620,10 @@ msgstr ""
 msgid "GroupSettings|Transfer group"
 msgstr ""
 
-msgid "GroupSettings|Use Duo features"
+msgid "GroupSettings|Use GitLab Duo features"
 msgstr ""
 
-msgid "GroupSettings|Use experiment and beta features"
+msgid "GroupSettings|Use experiment and beta Duo features"
 msgstr ""
 
 msgid "GroupSettings|Users can create %{link_start_project}project access tokens%{link_end} and %{link_start_group}group access tokens%{link_end} in this group"

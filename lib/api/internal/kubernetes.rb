@@ -164,6 +164,11 @@ module API
                 optional :user_id, type: Integer, desc: 'User ID'
                 optional :project_id, type: Integer, desc: 'Project ID'
               end
+              optional :register_agent_at_kas, type: Array, desc: 'An array of events that indicate an agent has been registered' do
+                optional :project_id, type: Integer, desc: 'Project ID'
+                optional :agent_version, type: String, desc: 'Agent version'
+                optional :architecture, type: String, desc: 'CPU architecture of the agent'
+              end
             end
           end
           post '/', feature_category: :deployment_management do

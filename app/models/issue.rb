@@ -288,6 +288,12 @@ class Issue < ApplicationRecord
   class << self
     extend ::Gitlab::Utils::Override
 
+    def in_namespaces_with_cte(namespaces)
+      cte = Gitlab::SQL::CTE.new(:namespace_ids, namespaces.select(:id))
+
+      where('namespace_id IN (SELECT id FROM namespace_ids)').with(cte.to_arel)
+    end
+
     override :order_upvotes_desc
     def order_upvotes_desc
       reorder(upvotes_count: :desc)

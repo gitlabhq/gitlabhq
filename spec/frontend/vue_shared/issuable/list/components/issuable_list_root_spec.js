@@ -321,7 +321,7 @@ describe('IssuableListRoot component', () => {
 
   describe('PageSizeSelector component', () => {
     beforeEach(() => {
-      createComponent({ showPageSizeChangeControls: true });
+      createComponent({ showPageSizeSelector: true });
     });
 
     it('renders', () => {

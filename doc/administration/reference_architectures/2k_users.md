@@ -493,10 +493,6 @@ To configure the Gitaly server, on the server node you want to use for Gitaly:
    # Gitaly
    gitaly['enable'] = true
 
-   # The secret token is used for authentication callbacks from Gitaly to the GitLab internal API.
-   # This must match the respective value in GitLab Rails application setup.
-   gitlab_shell['secret_token'] = 'shellsecret'
-
    # Set the network addresses that the exporters used for monitoring will listen on
    node_exporter['listen_address'] = '0.0.0.0:9100'
 
@@ -621,6 +617,11 @@ NOTE:
 If you find that the environment's Sidekiq job processing is slow with long queues
 you can scale it accordingly. Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
 
+NOTE:
+When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
+update the Sidekiq configuration in addition to the Rails configuration.
+Refer to the [external Sidekiq documentation](../sidekiq/index.md) for more information.
+
 To configure the Sidekiq server, on the server node you want to use for Sidekiq:
 
 1. SSH in to the Sidekiq server.
@@ -648,11 +649,10 @@ To configure the Sidekiq server, on the server node you want to use for Sidekiq:
    gitlab_rails['redis_password'] = 'Redis Password'
 
    # Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
-   # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
-   # The following two values must be the same as their respective values
+   # to Gitaly, and a second stored in /etc/gitlab/gitlab-secrets.json for authentication callbacks from GitLab-Shell to the GitLab internal API.
+   # The following must be the same as their respective values
    # of the Gitaly setup
    gitlab_rails['gitaly_token'] = 'gitalysecret'
-   gitlab_shell['secret_token'] = 'shellsecret'
 
    git_data_dirs({
      'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },
@@ -770,11 +770,10 @@ On each node perform the following:
    external_url 'https://gitlab.example.com'
 
    # Gitaly and GitLab use two shared secrets for authentication, one to authenticate gRPC requests
-   # to Gitaly, and a second for authentication callbacks from GitLab-Shell to the GitLab internal API.
-   # The following two values must be the same as their respective values
+   # to Gitaly, and a second stored in /etc/gitlab/gitlab-secrets.json for authentication callbacks from GitLab-Shell to the GitLab internal API.
+   # The following must be the same as their respective values
    # of the Gitaly setup
    gitlab_rails['gitaly_token'] = 'gitalysecret'
-   gitlab_shell['secret_token'] = 'shellsecret'
 
    git_data_dirs({
      'default' => { 'gitaly_address' => 'tcp://gitaly1.internal:8075' },

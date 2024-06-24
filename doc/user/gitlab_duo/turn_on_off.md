@@ -76,11 +76,11 @@ To turn off GitLab Duo for a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Clear the **Use Duo features** checkbox.
+1. Clear the **Use GitLab Duo features** checkbox.
 1. Optional. Select the **Enforce for all subgroups** checkbox to cascade the setting to
    all subgroups.
 
-   ![Cascading setting](img/disable_duo_features_v17_0.png)
+   ![Cascading setting](img/disable_duo_features_v17_1.png)
 <!-- vale gitlab.Substitutions = YES -->
 
 ### Turn off for a project
@@ -151,7 +151,7 @@ To turn on GitLab Duo experiment and beta features for a top-level group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Experiment and beta features**, select the **Use experiment and beta features** checkbox.
+1. Under **GitLab Duo experiment and beta features**, select the **Use experiment and beta Duo features** checkbox.
 1. Select **Save changes**.
 
 This setting [cascades to all projects](../../user/project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)

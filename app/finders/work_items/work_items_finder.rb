@@ -73,10 +73,10 @@ module WorkItems
       namespaces = if relations.one?
                      relations.first
                    else
-                     Namespace.from_union(relations)
+                     Namespace.from_union(relations, remove_duplicates: false)
                    end
 
-      items.in_namespaces(namespaces)
+      items.in_namespaces_with_cte(namespaces)
     end
 
     def group_namespaces

@@ -169,6 +169,7 @@ backups may take a long time. In that case, you may find it easier to transfer t
 The main volumes that you might need to migrate manually are:
 
 - The `/var/opt/gitlab/git-data` directory which contains all the Git data.
+  Be sure to read [the moving repositories documentation section](../../administration/operations/moving_repositories.md#migrating-to-another-gitlab-instance) to eliminate the chance of Git data corruption.
 - The `/var/opt/gitlab/gitlab-rails/shared` directory which contains object data, like artifacts.
 - If you are using the bundled PostgreSQL included with the Linux package,
   you also need to migrate the [PostgreSQL data directory](https://docs.gitlab.com/omnibus/settings/database.html#store-postgresql-data-in-a-different-directory)

@@ -5,6 +5,11 @@ module Bitbucket
     attr_reader :connection
 
     PULL_REQUEST_VALUES = %w[
+      pagelen
+      size
+      page
+      next
+      previous
       values.comment_count
       values.task_count
       values.type

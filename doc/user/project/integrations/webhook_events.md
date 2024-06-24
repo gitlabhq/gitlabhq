@@ -209,8 +209,19 @@ Payload example:
 
 ## Issue events
 
-Issue events are triggered when a new issue is created or
-an existing issue is updated, closed, or reopened.
+> - `type` attribute in `object_attributes` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467415) in GitLab 17.2.
+
+Issue events are triggered when an issue or work item is created, updated, closed, or reopened.
+The supported work item types are:
+
+- [Tasks](../../tasks.md)
+- [Incidents](../../../operations/incident_management/incidents.md)
+- [Test cases](../../../ci/test_cases/index.md)
+- [Requirements](../requirements/index.md)
+- [Objectives and key results (OKRs)](../../okrs.md)
+
+For issues and [Service Desk](../service_desk/index.md) issues, the `object_kind` is `issue`, and the `type` is `Issue`.
+For all other work items, the `object_kind` field is `work_item`, and the `type` is the work item type.
 
 The available values for `object_attributes.action` in the payload are:
 
@@ -292,6 +303,7 @@ Payload example:
     "human_time_change": null,
     "weight": null,
     "health_status": "at_risk",
+    "type": "Issue",
     "iid": 23,
     "url": "http://example.com/diaspora/issues/23",
     "state": "opened",

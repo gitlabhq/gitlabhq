@@ -129,6 +129,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
         expect(data[:event_type]).to eq('work_item')
         expect(data.dig(:object_attributes, :id)).to eq(work_item.id)
         expect(data.dig(:object_attributes, :iid)).to eq(work_item.iid)
+        expect(data.dig(:object_attributes, :type)).to eq(work_item.work_item_type.name)
       end
     end
 

@@ -37,9 +37,15 @@ module Gitlab
       attr_accessor :date_format, :categories, :template, :tag_regex, :always_credit_user_ids
 
       def self.from_git(project, user = nil, path = nil)
-        yaml = project.repository.changelog_config('HEAD', path.presence || DEFAULT_FILE_PATH)
+        config_path = path.presence || DEFAULT_FILE_PATH
+        yaml = project.repository.changelog_config('HEAD', config_path)
+
         if yaml.present?
-          from_hash(project, YAML.safe_load(yaml), user)
+          begin
+            from_hash(project, YAML.safe_load(yaml), user)
+          rescue Psych::Exception
+            raise Error, "#{config_path} does not contain valid YAML"
+          end
         else
           new(project)
         end

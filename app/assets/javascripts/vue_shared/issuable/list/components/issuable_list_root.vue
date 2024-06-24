@@ -191,7 +191,7 @@ export default {
       required: false,
       default: false,
     },
-    showPageSizeChangeControls: {
+    showPageSizeSelector: {
       type: Boolean,
       required: false,
       default: false,
@@ -438,7 +438,7 @@ export default {
       />
 
       <local-storage-sync
-        v-if="showPageSizeChangeControls"
+        v-if="showPageSizeSelector"
         :value="defaultPageSize"
         :storage-key="$options.PAGE_SIZE_STORAGE_KEY"
         @input="handlePageSizeChange"

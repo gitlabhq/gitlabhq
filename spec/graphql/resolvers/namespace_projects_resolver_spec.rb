@@ -92,7 +92,7 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         context 'when `search` parameter is not given' do
           let(:args) { default_args.merge(sort: :similarity, search: nil) }
 
-          it 'returns projects not ordered by similarity' do
+          it 'returns projects not ordered by similarity', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446251' do
             expect(project_names.first).not_to eq('Test')
           end
         end

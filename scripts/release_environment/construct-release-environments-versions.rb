@@ -18,7 +18,7 @@ class ReleaseEnvironmentsModel
   #  "gitlab": "15-10-stable-c7c5131c",
   #  "shell": "15-10-stable-c7c5131c"
   # }
-  def generate_json(environment)
+  def generate_json
     output_json = {}
     COMPONENTS.each do |component|
       output_json[component.to_s] = "#{environment}-#{ENV['CI_COMMIT_SHORT_SHA']}"
@@ -35,6 +35,16 @@ class ReleaseEnvironmentsModel
         return false
       end
     end
+    true
+  end
+
+  def environment
+    match = ENV['CI_COMMIT_REF_SLUG'].match(/^v?([\d]+)\.([\d]+)\.[\d]+[\d\w-]*-ee$/)
+    @environment ||= if match
+                       "#{match[1]}-#{match[2]}-stable"
+                     else
+                       ENV['CI_COMMIT_REF_SLUG'].sub("-ee", "")
+                     end
   end
 end
 
@@ -45,10 +55,9 @@ if $PROGRAM_NAME == __FILE__
   model = ReleaseEnvironmentsModel.new
   raise "Missing required environment variable." unless model.set_required_env_vars?
 
-  environment = ENV['CI_COMMIT_REF_SLUG'].sub("-ee", "")
   File.open(ENV['DEPLOY_ENV'], 'w') do |file|
-    file.puts "ENVIRONMENT=#{environment}"
-    file.puts "VERSIONS=#{model.generate_json(environment)}"
+    file.puts "ENVIRONMENT=#{model.environment}"
+    file.puts "VERSIONS=#{model.generate_json}"
   end
 
   puts File.read(ENV['DEPLOY_ENV'])

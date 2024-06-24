@@ -86,6 +86,13 @@ Prerequisites:
 
 To connect to a workspace with an SSH client:
 
+1. Get the name of the workspace:
+
+   1. On the left sidebar, select **Search or go to**.
+   1. Select **Your work**.
+   1. Select **Workspaces**.
+   1. Copy the name of the workspace you want to connect to.
+
 1. Run this command:
 
    ```shell

@@ -517,10 +517,10 @@ export default {
       return tokens;
     },
     showPaginationControls() {
-      return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
+      return !this.isLoading && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
     },
-    showPageSizeControls() {
-      return this.currentTabCount > DEFAULT_PAGE_SIZE;
+    showPageSizeSelector() {
+      return this.issues.length > 0;
     },
     sortOptions() {
       return getSortOptions({
@@ -777,10 +777,9 @@ export default {
     toggleBulkEditSidebar(showBulkEditSidebar) {
       this.showBulkEditSidebar = showBulkEditSidebar;
     },
-    handlePageSizeChange(newPageSize) {
-      const pageParam = getParameterByName(PARAM_LAST_PAGE_SIZE) ? 'lastPageSize' : 'firstPageSize';
-      this.pageParams[pageParam] = newPageSize;
-      this.pageSize = newPageSize;
+    handlePageSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      this.pageParams = getInitialPageParams(pageSize);
       scrollUp();
 
       this.$router.push({ query: this.urlParams });
@@ -937,7 +936,7 @@ export default {
       show-filtered-search-friendly-text
       sync-filter-and-sort
       use-keyset-pagination
-      :show-page-size-change-controls="showPageSizeControls"
+      :show-page-size-selector="showPageSizeSelector"
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
       :is-grid-view="isGridView"
