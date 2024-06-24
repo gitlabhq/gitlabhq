@@ -15,7 +15,6 @@ import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
 import { VERIFICATION_LEVEL_UNVERIFIED } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
@@ -40,7 +39,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     resource: {
       type: Object,
@@ -89,9 +87,6 @@ export default {
     },
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.createdAt);
-    },
-    isPopularityFeatureEnabled() {
-      return Boolean(this.glFeatures?.ciCatalogPopularity);
     },
     isVerified() {
       return this.resource?.verificationLevel !== VERIFICATION_LEVEL_UNVERIFIED;
@@ -142,7 +137,6 @@ export default {
       // Override the <a> tag if no modifier key is held down to use Vue router and not
       // open a new tab.
       e.preventDefault();
-
       // Push to the decoded URL to avoid all the / being encoded
       this.$router.push({ path: decodeURIComponent(this.resourceId) });
     },
@@ -187,7 +181,6 @@ export default {
           }}</gl-badge>
           <div class="gl-display-flex gl-align-items-center gl-ml-3">
             <div
-              v-if="isPopularityFeatureEnabled"
               v-gl-tooltip.top
               class="gl-display-flex gl-align-items-center gl-mr-3"
               :title="usageText"

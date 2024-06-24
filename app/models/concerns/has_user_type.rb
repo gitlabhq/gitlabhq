@@ -19,7 +19,8 @@ module HasUserType
     suggested_reviewers_bot: 12,
     service_account: 13,
     llm_bot: 14,
-    placeholder: 15
+    placeholder: 15,
+    duo_code_review_bot: 16
   }.with_indifferent_access.freeze
 
   BOT_USER_TYPES = %w[
@@ -35,6 +36,7 @@ module HasUserType
     suggested_reviewers_bot
     service_account
     llm_bot
+    duo_code_review_bot
   ].freeze
 
   # `service_account` allows instance/namespaces to configure a user for external integrations/automations

@@ -199,11 +199,11 @@ module QuickActions
     # rubocop: enable CodeReuse/ActiveRecord
 
     def usage_ping_tracking(quick_action_name, arg)
-      # Need to add this guard clause as `ai_review` quick action will fail
+      # Need to add this guard clause as `duo_code_review` quick action will fail
       # if we continue to track its usage. This is because we don't have a metric
       # for it and this is something that can change soon (e.g. quick action may
       # be replaced by a UI component).
-      return if quick_action_name == :ai_review
+      return if quick_action_name == :duo_code_review
 
       Gitlab::UsageDataCounters::QuickActionActivityUniqueCounter.track_unique_action(
         quick_action_name.to_s,

@@ -2069,11 +2069,14 @@ Payload example:
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439379) in GitLab 16.11.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454642) in GitLab 16.11. Feature flag `access_token_webhooks` removed.
 
-An access token event is triggered when a [project or group access token](../../../security/token_overview.md) will expire in seven days or less.
+Two access token expiration events are generated:
+
+- Seven days before a [project or group access token](../../../security/token_overview.md) expires. 
+- One day before the token expires.
 
 The available values for `event_name` in the payload are:
 
-- `expiring`
+- `expiring_access_token`
 
 Request header:
 

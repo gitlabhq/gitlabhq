@@ -81,6 +81,17 @@ module Users
         end
       end
 
+      def duo_code_review_bot
+        email_pattern = "duo-code-review-bot%s@#{Settings.gitlab.host}"
+
+        unique_internal(User.where(user_type: :duo_code_review_bot), 'GitLab-Duo-Code-Reviewer', email_pattern) do |u|
+          u.bio = 'The reviewer bot for GitLab Duo Code Review'
+          u.name = 'Duo Code Reviewer'
+          u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for duo_code_review_bot
+          u.confirmed_at = Time.zone.now
+        end
+      end
+
       def admin_bot
         email_pattern = "admin-bot%s@#{Settings.gitlab.host}"
 

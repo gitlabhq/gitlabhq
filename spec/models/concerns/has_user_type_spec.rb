@@ -14,7 +14,7 @@ RSpec.describe User, feature_category: :system_access do
     expect(described_class::USER_TYPES.keys)
       .to match_array(%w[human ghost alert_bot project_bot support_bot service_user security_bot
         visual_review_bot migration_bot automation_bot security_policy_bot admin_bot suggested_reviewers_bot
-        service_account llm_bot placeholder])
+        service_account llm_bot placeholder duo_code_review_bot])
     expect(described_class::USER_TYPES).to include(*described_class::BOT_USER_TYPES)
     expect(described_class::USER_TYPES).to include(*described_class::NON_INTERNAL_USER_TYPES)
     expect(described_class::USER_TYPES).to include(*described_class::INTERNAL_USER_TYPES)

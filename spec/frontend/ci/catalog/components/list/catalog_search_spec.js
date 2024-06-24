@@ -5,7 +5,7 @@ import {
   SORT_ASC,
   SORT_DESC,
   SORT_OPTION_CREATED,
-  SORT_OPTION_RELEASED,
+  SORT_OPTION_POPULARITY,
   SORT_OPTION_STAR_COUNT,
 } from '~/ci/catalog/constants';
 
@@ -16,10 +16,8 @@ describe('CatalogSearch', () => {
   const findSorting = () => wrapper.findComponent(GlSorting);
   const findAllSortingItems = () => findSorting().props('sortOptions');
 
-  const createComponent = ({ withCatalogPopularity = false } = {}) => {
-    wrapper = shallowMountExtended(CatalogSearch, {
-      provide: { glFeatures: { ciCatalogPopularity: withCatalogPopularity } },
-    });
+  const createComponent = () => {
+    wrapper = shallowMountExtended(CatalogSearch);
   };
 
   describe('default UI', () => {
@@ -33,24 +31,12 @@ describe('CatalogSearch', () => {
 
     it('adds sorting options', () => {
       const sortOptionsProp = findAllSortingItems();
-      expect(sortOptionsProp).toHaveLength(3);
-      expect(sortOptionsProp[0].text).toBe('Released at');
-    });
-
-    it('renders the `Released at` option as the default', () => {
-      expect(findSorting().props('text')).toBe('Released at');
-    });
-  });
-
-  describe('with `ci_catalog_popularity` ff turned on', () => {
-    beforeEach(() => {
-      createComponent({ withCatalogPopularity: true });
-    });
-
-    it('adds the popularity option', () => {
-      const sortOptionsProp = findAllSortingItems();
       expect(sortOptionsProp).toHaveLength(4);
-      expect(sortOptionsProp[3].text).toBe('Popularity');
+      expect(sortOptionsProp[0].text).toBe('Popularity');
+    });
+
+    it('renders the `Popularity` option as the default', () => {
+      expect(findSorting().props('text')).toBe('Popularity');
     });
   });
 
@@ -127,8 +113,8 @@ describe('CatalogSearch', () => {
         await findSorting().vm.$emit('sortDirectionChange');
 
         expect(wrapper.emitted('update-sorting')).toEqual([
-          [`${SORT_OPTION_RELEASED}_${SORT_ASC}`],
-          [`${SORT_OPTION_RELEASED}_${SORT_DESC}`],
+          [`${SORT_OPTION_POPULARITY}_${SORT_ASC}`],
+          [`${SORT_OPTION_POPULARITY}_${SORT_DESC}`],
         ]);
       });
     });

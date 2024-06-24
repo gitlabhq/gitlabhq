@@ -505,3 +505,49 @@ You must either:
 - Stop using offline garbage collection.
 - If you no longer use the metadata database, delete the indicated lock file at the `lock_path` shown in the error message.
   For example, remove the `/docker/registry/lockfiles/database-in-use` file.
+
+### Error: `cannot execute <STATEMENT> in a read-only transaction`
+
+The registry could fail to [apply schema migrations](#apply-schema-migrations)
+with the following error message:
+
+```shell
+err="ERROR: cannot execute CREATE TABLE in a read-only transaction (SQLSTATE 25006)"
+```
+
+Also, the registry could fail with the following error message if you try to run
+[online garbage collection](container_registry.md#performing-garbage-collection-without-downtime):
+
+```shell
+error="processing task: fetching next GC blob task: scanning GC blob task: ERROR: cannot execute SELECT FOR UPDATE in a read-only transaction (SQLSTATE 25006)"
+```
+
+You must verify that read-only transactions are disabled by checking the values of
+`default_transaction_read_only` and `transaction_read_only` in the PostgreSQL console.
+For example:
+
+```sql
+# SHOW default_transaction_read_only;
+ default_transaction_read_only
+ -------------------------------
+ on
+(1 row)
+
+# SHOW transaction_read_only;
+ transaction_read_only
+ -----------------------
+ on
+(1 row)
+```
+
+If either of these values is set to `on`, you must disable it:
+
+1. Edit your `postgresql.conf` and set the following value:
+
+   ```shell
+   default_transaction_read_only=off
+   ```
+
+1. Restart your Postgres server to apply these settings.
+1. Try to [apply schema migrations](#apply-schema-migrations) again, if applicable.
+1. Restart the registry `sudo gitlab-ctl restart registry`.
