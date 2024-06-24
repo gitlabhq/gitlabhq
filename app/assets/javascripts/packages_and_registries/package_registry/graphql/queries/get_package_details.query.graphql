@@ -1,5 +1,3 @@
-#import "~/packages_and_registries/package_registry/graphql/fragments/package_group_settings.fragment.graphql"
-
 query getPackageDetails($id: PackagesPackageID!) {
   package(id: $id) {
     id
@@ -26,9 +24,6 @@ query getPackageDetails($id: PackagesPackageID!) {
       path
       name
       fullPath
-      group {
-        ...GroupPackageSettings
-      }
     }
     tags(first: 10) {
       nodes {

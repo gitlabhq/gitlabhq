@@ -32,6 +32,12 @@ describe('PackagesApp', () => {
   const deletePackageFile = jest.fn();
   const defaultProjectName = 'bar';
 
+  const defaultProvide = {
+    svgPath: 'empty-illustration',
+    projectListUrl: 'project_url',
+    canDelete: true,
+  };
+
   function createComponent({
     packageEntity = mavenPackage,
     packageFiles = mavenFiles,
@@ -43,13 +49,6 @@ describe('PackagesApp', () => {
         isLoading,
         packageEntity,
         packageFiles,
-        canDelete: true,
-        emptySvgPath: 'empty-illustration',
-        npmPath: 'foo',
-        npmHelpPath: 'foo',
-        projectName,
-        projectListUrl: 'project_url',
-        groupListUrl: 'group_url',
       },
       actions: {
         deletePackage,
@@ -61,6 +60,10 @@ describe('PackagesApp', () => {
 
     wrapper = mount(PackagesApp, {
       store,
+      provide: {
+        ...defaultProvide,
+        projectName,
+      },
       stubs: {
         ...stubChildren(PackagesApp),
         TerraformTitle: false,
@@ -213,46 +216,19 @@ describe('PackagesApp', () => {
 
   describe('tracking and delete', () => {
     describe('delete package', () => {
-      const originalReferrer = document.referrer;
-      const setReferrer = (value = defaultProjectName) => {
-        Object.defineProperty(document, 'referrer', {
-          value,
-          configurable: true,
-        });
-      };
-
-      afterEach(() => {
-        Object.defineProperty(document, 'referrer', {
-          value: originalReferrer,
-          configurable: true,
-        });
-      });
-
       it('calls the proper vuex action', () => {
         createComponent({ packageEntity: npmPackage });
         findDeleteModal().vm.$emit('primary');
         expect(deletePackage).toHaveBeenCalled();
       });
 
-      it('when referrer contains project name calls window.replace with project url', async () => {
-        setReferrer();
+      it('calls window.replace with project url', async () => {
         deletePackage.mockResolvedValue();
         createComponent({ packageEntity: npmPackage });
         findDeleteModal().vm.$emit('primary');
         await deletePackage();
         expect(window.location.replace).toHaveBeenCalledWith(
           'project_url?showSuccessDeleteAlert=true',
-        );
-      });
-
-      it('when referrer does not contain project name calls window.replace with group url', async () => {
-        setReferrer('baz');
-        deletePackage.mockResolvedValue();
-        createComponent({ packageEntity: npmPackage });
-        findDeleteModal().vm.$emit('primary');
-        await deletePackage();
-        expect(window.location.replace).toHaveBeenCalledWith(
-          'group_url?showSuccessDeleteAlert=true',
         );
       });
     });

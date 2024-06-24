@@ -1,7 +1,7 @@
 import { GlEmptyState, GlModal, GlTabs, GlTab, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
-
 import VueApollo from 'vue-apollo';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -30,9 +30,11 @@ import {
 } from '~/packages_and_registries/package_registry/constants';
 
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
+import getGroupPackageSettings from '~/packages_and_registries/package_registry/graphql/queries/get_group_package_settings.query.graphql';
 import getPackageVersionsQuery from '~/packages_and_registries/package_registry/graphql//queries/get_package_versions.query.graphql';
 import {
   packageDetailsQuery,
+  groupPackageSettingsQuery,
   packageData,
   packageVersions,
   dependencyLinks,
@@ -67,9 +69,14 @@ describe('PackagesApp', () => {
 
   function createComponent({
     resolver = jest.fn().mockResolvedValue(packageDetailsQuery()),
+    groupSettingsResolver = jest.fn().mockResolvedValue(groupPackageSettingsQuery()),
     routeId = '1',
+    stubs = {},
   } = {}) {
-    const requestHandlers = [[getPackageDetails, resolver]];
+    const requestHandlers = [
+      [getPackageDetails, resolver],
+      [getGroupPackageSettings, groupSettingsResolver],
+    ];
     apolloProvider = createMockApollo(requestHandlers);
 
     wrapper = shallowMountExtended(PackagesApp, {
@@ -86,7 +93,7 @@ describe('PackagesApp', () => {
         GlSprintf,
         GlTabs,
         GlTab,
-        PackageVersionsList,
+        ...stubs,
       },
       mocks: {
         $route: {
@@ -132,6 +139,86 @@ describe('PackagesApp', () => {
     expect(findPackageTitle().exists()).toBe(true);
     expect(findPackageTitle().props()).toMatchObject({
       packageEntity: expect.objectContaining(packageWithoutTypename),
+    });
+  });
+
+  describe('group package settings graphql query', () => {
+    beforeEach(() => {
+      jest.spyOn(Sentry, 'captureException').mockImplementation();
+    });
+
+    it('is not called when userPermissions.destroyPackage is false', async () => {
+      const groupSettingsResolver = jest.fn().mockResolvedValue(groupPackageSettingsQuery());
+      createComponent({
+        resolver: jest.fn().mockResolvedValue(
+          packageDetailsQuery({
+            extendPackage: {
+              userPermissions: {
+                destroyPackage: false,
+              },
+            },
+          }),
+        ),
+        groupSettingsResolver,
+      });
+
+      await waitForPromises();
+
+      expect(groupSettingsResolver).not.toHaveBeenCalled();
+      expect(findPackageFiles().props('canDelete')).toBe(false);
+      expect(findVersionsList().props()).toMatchObject({
+        canDestroy: false,
+        isRequestForwardingEnabled: false,
+      });
+    });
+
+    it.each`
+      packageType              | requested
+      ${PACKAGE_TYPE_MAVEN}    | ${true}
+      ${PACKAGE_TYPE_CONAN}    | ${false}
+      ${PACKAGE_TYPE_NUGET}    | ${false}
+      ${PACKAGE_TYPE_COMPOSER} | ${false}
+      ${PACKAGE_TYPE_PYPI}     | ${true}
+      ${PACKAGE_TYPE_NPM}      | ${true}
+    `(`is $requested when package type is $packageType`, async ({ packageType, requested }) => {
+      const groupSettingsResolver = jest.fn().mockResolvedValue(groupPackageSettingsQuery());
+      createComponent({
+        resolver: jest.fn().mockResolvedValue(
+          packageDetailsQuery({
+            extendPackage: {
+              packageType,
+            },
+          }),
+        ),
+        groupSettingsResolver,
+        stubs: {
+          PackageFiles: stubComponent(PackageFiles),
+          PackageVersionsList: stubComponent(PackageVersionsList),
+        },
+      });
+
+      await waitForPromises();
+
+      if (requested) {
+        expect(groupSettingsResolver).toHaveBeenCalledWith({
+          fullPath: 'gitlab-test',
+        });
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+      } else {
+        expect(groupSettingsResolver).not.toHaveBeenCalled();
+      }
+      expect(findVersionsList().props('isRequestForwardingEnabled')).toBe(requested);
+    });
+
+    it('when request fails captures error in Sentry', async () => {
+      createComponent({
+        groupSettingsResolver: jest.fn().mockRejectedValue(),
+      });
+
+      await waitForPromises();
+
+      expect(Sentry.captureException).toHaveBeenCalled();
+      expect(findVersionsList().props('isRequestForwardingEnabled')).toBe(false);
     });
   });
 
@@ -234,15 +321,7 @@ describe('PackagesApp', () => {
     describe('when delete button is clicked', () => {
       describe('with request forwarding enabled', () => {
         beforeEach(async () => {
-          const resolver = jest.fn().mockResolvedValue(
-            packageDetailsQuery({
-              packageSettings: {
-                ...defaultPackageGroupSettings,
-                npmPackageRequestsForwarding: true,
-              },
-            }),
-          );
-          createComponent({ resolver });
+          createComponent();
 
           await waitForPromises();
 
@@ -262,15 +341,15 @@ describe('PackagesApp', () => {
       });
 
       it('shows the delete confirmation modal without request forwarding content', async () => {
-        const resolver = jest.fn().mockResolvedValue(
-          packageDetailsQuery({
+        const groupSettingsResolver = jest.fn().mockResolvedValue(
+          groupPackageSettingsQuery({
             packageSettings: {
               ...defaultPackageGroupSettings,
               npmPackageRequestsForwarding: false,
             },
           }),
         );
-        createComponent({ resolver });
+        createComponent({ groupSettingsResolver });
 
         await waitForPromises();
 
@@ -322,7 +401,7 @@ describe('PackagesApp', () => {
       expect(findPackageFiles().exists()).toBe(true);
 
       expect(findPackageFiles().props()).toMatchObject({
-        canDelete: packageData().userPermissions.destroyPackage,
+        canDelete: true,
         packageId: packageData().id,
         packageType: packageData().packageType,
         projectPath: 'gitlab-test',
@@ -345,16 +424,15 @@ describe('PackagesApp', () => {
 
     describe('emits delete-all-files event', () => {
       it('opens the delete package confirmation modal and shows confirmation text', async () => {
-        const resolver = jest.fn().mockResolvedValue(
-          packageDetailsQuery({
-            extendPackage: {},
+        const groupSettingsResolver = jest.fn().mockResolvedValue(
+          groupPackageSettingsQuery({
             packageSettings: {
               ...defaultPackageGroupSettings,
               npmPackageRequestsForwarding: false,
             },
           }),
         );
-        createComponent({ resolver });
+        createComponent({ groupSettingsResolver });
 
         await waitForPromises();
 

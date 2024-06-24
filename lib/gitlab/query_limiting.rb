@@ -11,18 +11,26 @@ module Gitlab
     end
 
     def self.enabled?
-      enabled_for_env? &&
-        !Gitlab::SafeRequestStore[:query_limiting_disabled]
+      enabled_for_env?
     end
 
-    # Allows the current request to execute any number of SQL queries.
+    def self.threshold
+      Gitlab::SafeRequestStore[:query_limiting_override_threshold]
+    end
+
+    # Allows the current request to execute a higher number of SQL queries.
     #
     # This method should _only_ be used when there's a corresponding issue to
     # reduce the number of queries.
     #
     # The issue URL is only meant to push developers into creating an issue
     # instead of blindly disabling for offending blocks of code.
-    def self.disable!(issue_url)
+    #
+    # The new_threshold is so that we don't allow unlimited number of SQL
+    # queries while the issue is being fixed.
+    def self.disable!(issue_url, new_threshold: 200)
+      raise ArgumentError, 'new_threshold cannot exceed 2_000' unless new_threshold < 2_000
+
       unless issue_url.start_with?('https://')
         raise(
           ArgumentError,
@@ -30,12 +38,12 @@ module Gitlab
         )
       end
 
-      Gitlab::SafeRequestStore[:query_limiting_disabled] = true
+      Gitlab::SafeRequestStore[:query_limiting_override_threshold] = new_threshold
     end
 
     # Enables query limiting for the request.
     def self.enable!
-      Gitlab::SafeRequestStore[:query_limiting_disabled] = nil
+      Gitlab::SafeRequestStore[:query_limiting_override_threshold] = nil
     end
   end
 end

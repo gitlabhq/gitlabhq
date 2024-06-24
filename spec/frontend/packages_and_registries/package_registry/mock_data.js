@@ -278,6 +278,22 @@ export const packageDetailsQuery = ({
   },
 });
 
+export const groupPackageSettingsQuery = ({
+  packageSettings = defaultPackageGroupSettings,
+} = {}) => ({
+  data: {
+    project: {
+      id: '1',
+      group: {
+        id: '1',
+        packageSettings,
+        __typename: 'Group',
+      },
+      __typename: 'Project',
+    },
+  },
+});
+
 export const packagePipelinesQuery = (pipelines = packagePipelines()) => ({
   data: {
     package: {

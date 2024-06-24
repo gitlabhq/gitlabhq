@@ -29,12 +29,12 @@ to store its objects so that they take up as little space as
 possible. Packfiles are also used to transfer objects when cloning,
 fetching, or pushing between a Git client and a Git server. Using packfiles is
 usually good because it reduces the amount of disk space and network
-bandwith required.
+bandwidth required.
 
 However, creating packfiles requires a lot of CPU and memory to compress object
 content. So when repositories are large, every Git operation
 that requires creating packfiles becomes expensive and slow as more
-and bigger objects need to be processed and transfered.
+and bigger objects need to be processed and transferred.
 
 ### Consequences for GitLab
 
@@ -347,7 +347,7 @@ when doing an object graph walk.
 
 Blobs are the [Git objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects)
 that are used to store and manage the content of the files that users
-have commited into Git repositories.
+have committed into Git repositories.
 
 #### Issues with large blobs
 
@@ -377,7 +377,7 @@ For more information, refer to the [Git LFS documentation](../../../../topics/gi
 
 ### Reference architectures
 
-Large repositories tend to be found in larger organisations with many users. The
+Large repositories tend to be found in larger organizations with many users. The
 GitLab Test Platform and Support teams provide several [reference architectures](../../../../administration/reference_architectures/index.md) that
 are the recommended way to deploy GitLab at scale.
 

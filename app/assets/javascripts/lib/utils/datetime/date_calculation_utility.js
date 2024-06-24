@@ -459,6 +459,10 @@ export const differenceInSeconds = (startDate, endDate) => {
   return (endDate.getTime() - startDate.getTime()) / 1000;
 };
 
+export const differenceInMinutes = (startDate, endDate) => {
+  return Math.ceil(differenceInSeconds(startDate, endDate) / 60);
+};
+
 /**
  * A utility function which computes the difference in months
  * between 2 dates.

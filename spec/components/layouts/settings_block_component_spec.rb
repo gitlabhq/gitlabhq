@@ -6,7 +6,8 @@ RSpec.describe Layouts::SettingsBlockComponent, type: :component, feature_catego
   let(:heading) { 'Settings block heading' }
   let(:description) { 'Settings block description' }
   let(:body) { 'Settings block content' }
-  let(:id) { 'settings-block-id' }
+  let(:id) { 'js-settings-block-id' }
+  let(:testid) { 'settings-block-testid' }
 
   describe 'slots' do
     it 'renders heading' do
@@ -37,11 +38,16 @@ RSpec.describe Layouts::SettingsBlockComponent, type: :component, feature_catego
       expect(page).to have_css('.settings-content', text: body)
     end
 
-    it 'renders ids' do
+    it 'renders id' do
       render_inline described_class.new(heading, id: id)
 
       expect(page).to have_css('#js-settings-block-id')
-      expect(page).to have_css('[data-testid="settings-block-id"]')
+    end
+
+    it 'renders testid' do
+      render_inline described_class.new(heading, testid: testid)
+
+      expect(page).to have_css('[data-testid="settings-block-testid"]')
     end
 
     it 'renders collapsed if not expanded' do

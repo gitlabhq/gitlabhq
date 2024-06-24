@@ -1,23 +1,30 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapState } from 'vuex';
 import { s__ } from '~/locale';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
 export default {
-  name: 'ConanInstallation',
   components: {
     CodeInstruction,
     GlLink,
     GlSprintf,
   },
+  inject: ['terraformHelpPath', 'gitlabHost', 'projectPath'],
+  props: {
+    packageName: {
+      type: String,
+      required: true,
+    },
+    packageVersion: {
+      type: String,
+      required: true,
+    },
+  },
   computed: {
-    ...mapState(['packageEntity', 'terraformHelpPath', 'gitlabHost', 'projectPath']),
     provisionInstructions() {
       return `module "my_module_name" {
-  source = "${this.gitlabHost}/${this.projectPath}/${this.packageEntity.name}"
-  version = "${this.packageEntity.version}"
+  source = "${this.gitlabHost}/${this.projectPath}/${this.packageName}"
+  version = "${this.packageVersion}"
 }`;
     },
     registrySetup() {

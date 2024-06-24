@@ -6,17 +6,20 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Query Count Limits
 
-Each controller, API endpoint and Sidekide worker is allowed to execute up to
-100 SQL queries and in test environments we raise an error when this threshold
-is exceeded.
+Each controller, API endpoint and Sidekiq worker is allowed to execute up to
+100 SQL queries.
+If more than 100 SQL queries are executed, this is a
+[performance problem](../performance.md) that should be fixed.
 
 ## Solving Failing Tests
+
+In test environments, we raise an error when this threshold is exceeded.
 
 When a test fails because it executes more than 100 SQL queries there are two
 solutions to this problem:
 
 - Reduce the number of SQL queries that are executed.
-- Disable query limiting for the controller or API endpoint.
+- Temporarily disable query limiting for the controller or API endpoint.
 
 You should only resort to disabling query limits when an existing controller or endpoint
 is to blame as in this case reducing the number of SQL queries can take a lot of
@@ -29,6 +32,9 @@ In the event that you _have_ to disable query limits for a controller, you must 
 create an issue. This issue should (preferably in the title) mention the
 controller or endpoint and include the appropriate labels (`database`,
 `performance`, and at least a team specific label such as `Discussion`).
+
+Since [GitLab 17.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157016),
+`QueryLimiting.disable` must set a new threshold (not unlimited).
 
 After the issue has been created, you can disable query limits on the code in question. For
 Rails controllers it's best to create a `before_action` hook that runs as early
@@ -48,7 +54,7 @@ class MyController < ApplicationController
   end
 
   def disable_query_limiting
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/...')
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/...', new_threshold: 200)
   end
 end
 ```
@@ -62,7 +68,7 @@ call directly into the endpoint like so:
 
 ```ruby
 get '/projects/:id/foo' do
-  Gitlab::QueryLimiting.disable!('...')
+  Gitlab::QueryLimiting.disable!('...', new_threshold: 200)
 
   # ...
 end
@@ -72,7 +78,7 @@ For Sidekiq workers, you will need to add the allowlist directly as well:
 
 ```ruby
 def perform(args)
-  Gitlab::QueryLimiting.disable!('...')
+  Gitlab::QueryLimiting.disable!('...', new_threshold: 200)
 
   # ...
 end

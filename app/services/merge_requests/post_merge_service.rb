@@ -98,7 +98,7 @@ module MergeRequests
         .by_target_branch(merge_request.source_branch)
         .with_auto_merge_enabled.each do |targetting_merge_request|
           if targetting_merge_request.auto_merge_strategy == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
-            abort_auto_merge_with_todo(targetting_merge_request, "target branch was merged in #{merge_request.iid}")
+            abort_auto_merge_with_todo(targetting_merge_request, "target branch was merged in !#{merge_request.iid}")
           end
         end
     end

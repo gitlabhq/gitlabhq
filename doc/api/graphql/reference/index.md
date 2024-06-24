@@ -25884,7 +25884,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mergetraincarsactivitystatus"></a>`activityStatus` | [`MergeTrainStatus!`](#mergetrainstatus) | Filter cars by their high-level status. Defaults to ACTIVE. |
+| <a id="mergetraincarsactivitystatus"></a>`activityStatus` | [`MergeTrainStatus!`](#mergetrainstatus) | Filter by the high-level status of the cars. Defaults to ACTIVE. |
 
 ### `MergeTrainCar`
 

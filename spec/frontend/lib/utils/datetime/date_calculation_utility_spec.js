@@ -6,6 +6,7 @@ import {
   nSecondsBefore,
   isToday,
   isInTimePeriod,
+  differenceInMinutes,
 } from '~/lib/utils/datetime/date_calculation_utility';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -110,5 +111,17 @@ describe('isInTimePeriod', () => {
     ${'2022-03-22T02:23:45.000Z'} | ${'2022-03-22T03:25:45.000Z'} | ${false}
   `('returns $expected for range: $start -> $end', ({ start, end, expected }) => {
     expect(isInTimePeriod(new Date(date), new Date(start), new Date(end))).toBe(expected);
+  });
+});
+
+describe('differenceInMinutes', () => {
+  it.each`
+    start           | end                           | expected
+    ${'2024-06-07'} | ${'2024-06-07'}               | ${0}
+    ${'2024-06-07'} | ${'2024-06-07T01:00:00.000Z'} | ${60}
+    ${'2024-06-07'} | ${'2024-06-07T00:10:00.000Z'} | ${10}
+    ${'2024-06-07'} | ${'2024-06-07T00:00:10.000Z'} | ${1}
+  `('returns difference in minuts for range: $start -> $end', ({ start, end, expected }) => {
+    expect(differenceInMinutes(new Date(start), new Date(end))).toBe(expected);
   });
 });

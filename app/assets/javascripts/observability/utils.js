@@ -1,5 +1,6 @@
-import { isValidDate } from '~/lib/utils/datetime_utility';
 import { padWithZeros } from '~/lib/utils/datetime/date_format_utility';
+import { isValidDate, differenceInMinutes } from '~/lib/utils/datetime_utility';
+
 import {
   CUSTOM_DATE_RANGE_OPTION,
   DATE_RANGE_QUERY_KEY,
@@ -162,4 +163,14 @@ export function formattedTimeFromDate(date) {
   if (!isValidDate(date)) return '';
 
   return padWithZeros(date.getHours(), date.getMinutes(), date.getSeconds()).join(':');
+}
+
+export function isTracingDateRangeOutOfBounds({ value, startDate, endDate }) {
+  const HOURS_QUERY_LIMIT = 12;
+  if (value === CUSTOM_DATE_RANGE_OPTION) {
+    if (!isValidDate(startDate) || !isValidDate(endDate)) return true;
+
+    return differenceInMinutes(startDate, endDate) > HOURS_QUERY_LIMIT * 60;
+  }
+  return false;
 }

@@ -425,3 +425,25 @@ recipients.each { |notify| puts notify.user.username }
 If you receive notifications (through email or Slack) regarding a failed pipeline that no longer
 exists, double-check to see if you have any duplicate GitLab instances that could have triggered the
 message.
+
+### Email notifications are enabled, but not received
+
+If you've enabled email notifications in GitLab, but users aren't receiving notifications as expected, ensure that
+your email provider isn't blocking emails from your GitLab instance. Many email providers (like Outlook) block emails
+coming from lesser-known self-managed mail server IP addresses. To verify, attempt to send an email
+directly from the SMTP server for your instance. For example, a test email from Sendmail might look something like:
+
+```plaintext
+# (echo subject: test; echo) | $(which sendmail) -v -Am -i <valid email address>
+```
+
+If your email provider is blocking the message, you might get output like the following (depending on your email provider and SMTP server):
+
+```plaintext
+Diagnostic-Code: smtp; 550 5.7.1 Unfortunately, messages from [xx.xx.xx.xx]
+weren't sent. For more information, please go to
+http://go.microsoft.com/fwlink/?LinkID=526655 (http://go.microsoft.com/fwlink/?LinkID=526655) AS(900)
+```
+
+Usually this issue can be resolved by adding the IP address of your SMTP server to your
+mail provider's allowlist. Check your mail provider's documentation for instructions.

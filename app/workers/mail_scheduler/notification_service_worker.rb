@@ -16,7 +16,7 @@ module MailScheduler
     loggable_arguments 0
 
     def perform(meth, *args)
-      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464670')
+      Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/464670', new_threshold: 300)
 
       check_arguments!(args)
 

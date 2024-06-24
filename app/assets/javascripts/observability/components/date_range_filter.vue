@@ -26,6 +26,11 @@ export default {
       required: false,
       default: () => TIME_RANGE_OPTIONS,
     },
+    defaultMinDate: {
+      type: Date,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -97,8 +102,6 @@ export default {
       :selected="dateRange.value"
       :date-range-options="dateRangeOptions"
       disable-selected-day-count
-      tooltip=""
-      include-end-date-in-days-selected
       @selected="onSelectPredefinedDateRange"
       @customDateRangeSelected="onSelectCustomDateRange"
     />
@@ -109,6 +112,7 @@ export default {
       :default-end-date="dateRange.endDate"
       :max-date-range="maxDateRange"
       :default-max-date="defaultMaxDate"
+      :default-min-date="defaultMinDate"
       @input="onCustomRangeSelected"
     />
   </div>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::QueryLimiting, :request_store do
+RSpec.describe Gitlab::QueryLimiting, :request_store, feature_category: :database do
   describe '.enabled_for_env?' do
     it 'returns true in a test environment' do
       expect(described_class.enabled_for_env?).to eq(true)
@@ -53,15 +53,32 @@ RSpec.describe Gitlab::QueryLimiting, :request_store do
         .to raise_error(ArgumentError)
     end
 
-    it 'stops the number of SQL queries from being incremented' do
+    it 'raises an ArgumentError when new_threshold is too large' do
+      expect { described_class.disable!('https://example.com', 10_000) }
+        .to raise_error(ArgumentError)
+    end
+
+    it 'sets a new threshold' do
       described_class.disable!('https://example.com')
 
-      expect { code.call }.not_to change { transaction.count }
+      expect(described_class.threshold).to eq(200)
+    end
+
+    it 'allows the number of SQL queries to be incremented' do
+      described_class.disable!('https://example.com')
+
+      expect { code.call }.to change { transaction.count }.by(2)
     end
   end
 
   describe '.enable!' do
     include_context 'disable and enable'
+
+    it 'resets the threshold' do
+      described_class.enable!
+
+      expect(described_class.threshold).to be_nil
+    end
 
     it 'allows the number of SQL queries to be incremented' do
       described_class.enable!
@@ -75,12 +92,6 @@ RSpec.describe Gitlab::QueryLimiting, :request_store do
       Gitlab::SafeRequestStore[:query_limiting_disabled] = nil
 
       expect(described_class).to be_enabled
-    end
-
-    it 'returns false when disabled' do
-      Gitlab::SafeRequestStore[:query_limiting_disabled] = true
-
-      expect(described_class).not_to be_enabled
     end
   end
 end

@@ -3,6 +3,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
 import { DEFAULT_SORTING_OPTION, SORTING_OPTIONS, CUSTOM_DATE_RANGE_OPTION } from './constants';
+import { isTracingDateRangeOutOfBounds } from './utils';
 
 function reportErrorAndThrow(e) {
   logError(e);
@@ -250,6 +251,9 @@ async function fetchTraces(
     addTracingAttributesFiltersToQueryParams(attributes, params);
   }
   if (dateRange) {
+    if (isTracingDateRangeOutOfBounds(dateRange)) {
+      throw new Error('Selected date range is out of allowed limits.'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
     addDateRangeFilterToQueryParams(dateRange, params);
   }
 

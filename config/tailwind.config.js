@@ -46,6 +46,14 @@ function gitLabUIUtilities({ addComponents, addUtilities }) {
       'border-left-style': 'solid',
       'border-left-color': 'var(--gray-100, #dcdcde)',
     },
+    '.str-truncated': {
+      display: 'inline-block',
+      overflow: 'hidden',
+      'text-overflow': 'ellipsis',
+      'vertical-align': 'top',
+      'white-space': 'nowrap',
+      'max-width': '82%',
+    },
   });
 
   addUtilities({
@@ -64,6 +72,9 @@ function gitLabUIUtilities({ addComponents, addUtilities }) {
     '.border-b-solid': {
       'border-bottom-style': 'solid',
     },
+    '.border-b-initial': {
+      'border-bottom-style': 'initial',
+    },
     '.border-l-solid': {
       'border-left-style': 'solid',
     },
@@ -73,10 +84,34 @@ function gitLabUIUtilities({ addComponents, addUtilities }) {
     '.border-t-solid': {
       'border-top-style': 'solid',
     },
+    '.clearfix': {
+      '&::after': {
+        display: 'block',
+        clear: 'both',
+        content: '""',
+      },
+    },
+    '.focus': {
+      'box-shadow': '0 0 0 1px var(--white, #fff), 0 0 0 3px var(--blue-400, #428fdc)',
+      outline: 'none',
+    },
   });
 }
 
 const widthPercentageScales = [8, 10, 20];
+const widthPercentageScale = widthPercentageScales.reduce((accumulator1, denominator) => {
+  return {
+    ...accumulator1,
+    ...range(1, denominator).reduce((accumulator2, numerator) => {
+      const width = (numerator / denominator) * 100;
+
+      return {
+        ...accumulator2,
+        [`${numerator}/${denominator}`]: `${round(width, 6)}%`,
+      };
+    }, {}),
+  };
+}, {});
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -157,6 +192,9 @@ module.exports = {
       medium: '200ms',
       fast: '100ms',
     },
+    transitionTimingFunction: {
+      ease: 'ease',
+    },
     // TODO: Backport to GitLab UI.
     borderRadius: {
       none: '0',
@@ -166,6 +204,9 @@ module.exports = {
       small: '.125rem',
       lg: '.5rem',
       pill: '.75rem',
+    },
+    animation: {
+      spin: 'spin 2s infinite linear',
     },
     // These extends probably should be moved to GitLab UI:
     extend: {
@@ -204,20 +245,9 @@ module.exports = {
         'x0-y0-b3-s1-blue-500': 'inset 0 0 3px 1px var(--blue-500, #1f75cb)',
       },
       // TODO: backport these width percentage classes to GitLab UI
-      width: widthPercentageScales.reduce((accumulator1, denominator) => {
-        return {
-          ...accumulator1,
-          ...range(1, denominator).reduce((accumulator2, numerator) => {
-            const width = (numerator / denominator) * 100;
-
-            return {
-              ...accumulator2,
-              [`${numerator}/${denominator}`]: `${round(width, 6)}%`,
-            };
-          }, {}),
-        };
-      }, {}),
+      width: widthPercentageScale,
       maxWidth: {
+        ...widthPercentageScale,
         screen: '100vw',
         limited: '1006px',
         '1/2': '50%',
@@ -241,6 +271,13 @@ module.exports = {
         'size-h2': '1.1875rem',
         'size-h1-xl': '2rem',
         'size-h2-xl': '1.4375rem',
+        'size-reset': 'inherit',
+      },
+      spacing: {
+        px: '1px',
+      },
+      flexGrow: {
+        2: '2',
       },
     },
   },

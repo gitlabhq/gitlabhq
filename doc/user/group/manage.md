@@ -315,7 +315,7 @@ The user cap cannot be enabled if a group, subgroup, or project is shared extern
 or project is shared externally, it is shared outside of the namespace hierarchy, regardless of its level
 in the hierarchy.
 
-To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only within the top-level namespace. This ensure that groups in the same top-leve namespace can be invited, and prevents the addition of new users (seats) when the group is shared.
+To ensure that the user cap applies when groups, subgroups, or projects are shared externally, restrict group sharing only within the top-level namespace. This ensure that groups in the same top-level namespace can be invited, and prevents the addition of new users (seats) when the group is shared.
 
 On GitLab.com, on the Ultimate tier, there is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/441504) where you cannot add new guest users to a group when the amount of billable users exceeds the user cap. For example, suppose you have a user cap of 5, with 3 developers and 2 guests. After you add 2 more developers, you cannot add any more users, even if they are guest users that don't consume a billable seat.
 

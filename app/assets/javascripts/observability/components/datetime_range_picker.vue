@@ -30,6 +30,11 @@ export default {
       required: false,
       default: null,
     },
+    defaultMinDate: {
+      type: Date,
+      required: false,
+      default: null,
+    },
     maxDateRange: {
       type: Number,
       required: false,
@@ -90,7 +95,9 @@ export default {
     :default-start-date="startDate"
     :default-end-date="endDate"
     :default-max-date="defaultMaxDate"
+    :default-min-date="defaultMinDate"
     :max-date-range="maxDateRange"
+    :same-day-selection="true"
     @input="onDateRangeChange"
   >
     <template #after-start>

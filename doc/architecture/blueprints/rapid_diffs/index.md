@@ -509,7 +509,7 @@ more generic elements together with ARIA support can be used.
 #### Visual indicators
 
 It is important that each visual indicator should have a screen reader text
-denoting the meaning of that indicator. When needed, use `gl-sr-only` or `gl-sr-only-focusable`
+denoting the meaning of that indicator. When needed, use `gl-sr-only` (in conjunction with `focus:gl-not-sr-only` if needed)
 class to make the element accessible by screen readers, but not by sighted users.
 
 Some of the visual indicators that require alternatives for assistive technology are:

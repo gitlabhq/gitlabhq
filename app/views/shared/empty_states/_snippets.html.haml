@@ -1,18 +1,22 @@
 - button_path = local_assigns.fetch(:button_path, false)
+- button_text = s_('SnippetsEmptyState|New snippet') if button_path
+- illustration = 'illustrations/empty-state/empty-snippets-md.svg'
 
-.row.empty-state
-  .col-12
-    .svg-content.svg-150{ data: { testid: 'svg-content' } }
-      = image_tag 'illustrations/empty-state/empty-snippets-md.svg'
-    .text-content.gl-text-center.gl-pt-0
-      - if current_user
-        %h4
-          = s_('SnippetsEmptyState|Code snippets')
-        %p.gl-mb-0
-          = s_('SnippetsEmptyState|Store, share, and embed small pieces of code and text.')
-        .gl-mt-3<
-          - if button_path
-            = link_button_to s_('SnippetsEmptyState|New snippet'), button_path, title: s_('SnippetsEmptyState|New snippet'), data: { testid: 'create-first-snippet-link' }, variant: :confirm
-          = link_button_to s_('SnippetsEmptyState|Documentation'), help_page_path('user/snippets'), title: s_('SnippetsEmptyState|Documentation')
-      - else
-        %h4.gl-text-center= s_('SnippetsEmptyState|There are no snippets to show.')
+- if current_user
+  = render Pajamas::EmptyStateComponent.new(svg_path: illustration,
+    title: s_('SnippetsEmptyState|Code snippets'),
+    primary_button_text: button_text,
+    primary_button_link: button_path,
+    primary_button_options: { data: { testid: 'create-first-snippet-link' } },
+    secondary_button_text: _('Explore snippets'),
+    secondary_button_link: explore_snippets_path,
+    empty_state_options: { data: { testid: 'snippets-empty-state' } }) do |c|
+
+    - c.with_description do
+      = s_('SnippetsEmptyState|Store, share, and embed small pieces of code and text.')
+      = link_to _('Learn more.'), help_page_path('user/snippets'), target: '_blank', rel: 'noopener noreferrer'
+
+- else
+  = render Pajamas::EmptyStateComponent.new(svg_path: illustration,
+    title:  s_('SnippetsEmptyState|There are no snippets to show.'),
+    empty_state_options: { data: { testid: 'snippets-empty-state' } })

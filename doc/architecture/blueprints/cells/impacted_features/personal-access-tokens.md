@@ -24,19 +24,30 @@ PATs today are scoped to the User, and can access all Groups that a User has acc
 
 ## 3. Proposal
 
+Various approaches have been discussed in the following issues / merge requests:
+
+- [#428717](https://gitlab.com/gitlab-org/gitlab/-/issues/428717)
+- [#428542](https://gitlab.com/gitlab-org/gitlab/-/issues/428542)
+- [!136939](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136939)
+
 ### 3.1. Organization-scoped PATs
 
 Pros:
 
 - Can be managed entirely from Rails application.
 - Increased security. PAT is limited only to Organization.
+- API requests for a particular Cell can be routed based on the PAT.
 
 Cons:
 
 - Different PAT needed for different Organizations.
+- Automations involving multiple projects across different Organizations will
+  require multiple PATs to work - one for each Organization.
 - Cannot tell at a glance if PAT will apply to a certain Project/Namespace.
 
-### 3.2. Cluster-wide PATs
+## 4. Alternative approaches considered
+
+### 4.1. Cluster-wide PATs
 
 Pros:
 
@@ -48,8 +59,25 @@ Cons:
 - Organization cannot limit scope of PAT to only their Organization.
 - Increases complexity. All cluster-wide data likely will be moved to a separate [data access layer](../../cells/index.md#1-data-access-layer).
 
-## 4. Evaluation
+### 4.2. Cluster-wide PATs with optional Organization scoping
 
-## 4.1. Pros
+This is a combination of option 3.1 and 4.1 where the PATs are created
+cluster-wide but can be optionally scoped to an Organization.
+For initial development, the implication would be to support clusterwide PATs
+(including addressing any scalability challenges) and eventually adding
+organization as a token scope (similar to API or read/write scopes).
 
-## 4.2. Cons
+Pros:
+
+- Flexible and secure giving users (or admins) control over the PAT scope
+
+Cons:
+
+- Risk around discovering scalability [challenges](../index.md#1-data-access-layer)
+  when accessing, sharing or updating clusterwide data.
+
+## 5. Evaluation
+
+## 5.1. Pros
+
+## 5.2. Cons

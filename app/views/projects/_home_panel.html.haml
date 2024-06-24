@@ -4,7 +4,7 @@
   .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-md-flex-direction-row.gl-gap-5
     .home-panel-title-row.gl-display-flex.gl-align-items-center
       = render Pajamas::AvatarComponent.new(@project, alt: @project.name, class: 'gl-align-self-start gl-flex-shrink-0 gl-mr-3', size: 48, avatar_options: { itemprop: 'image' })
-      %h1.home-panel-title.gl-heading-1.gl-mt-3.gl-display-flex.gl-align-items-center.gl-flex-wrap.gl-gap-3.gl-break-anywhere{ class: 'gl-mb-0!', data: { testid: 'project-name-content' }, itemprop: 'name' }
+      %h1.home-panel-title.gl-heading-1.gl-flex.gl-items-center.gl-flex-wrap.gl-gap-3.gl-break-anywhere.gl-mb-0{ data: { testid: 'project-name-content' }, itemprop: 'name' }
         = @project.name
         = visibility_level_content(@project, css_class: 'visibility-icon gl-display-inline-flex gl-text-secondary', icon_css_class: 'icon')
         - if @project.catalog_resource

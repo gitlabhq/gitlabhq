@@ -1,0 +1,10 @@
+#import "~/packages_and_registries/package_registry/graphql/fragments/package_group_settings.fragment.graphql"
+
+query getGroupPackageSettings($fullPath: ID!) {
+  project(fullPath: $fullPath) {
+    id
+    group {
+      ...GroupPackageSettings
+    }
+  }
+}

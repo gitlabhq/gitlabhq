@@ -35892,12 +35892,6 @@ msgstr ""
 msgid "ObservabilityMetrics|+%{count} more"
 msgstr ""
 
-msgid "ObservabilityMetrics|Attribute"
-msgstr ""
-
-msgid "ObservabilityMetrics|Attributes"
-msgstr ""
-
 msgid "ObservabilityMetrics|Cancel"
 msgstr ""
 
@@ -35907,13 +35901,19 @@ msgstr ""
 msgid "ObservabilityMetrics|Description"
 msgstr ""
 
+msgid "ObservabilityMetrics|Dimension"
+msgstr ""
+
+msgid "ObservabilityMetrics|Dimensions"
+msgstr ""
+
 msgid "ObservabilityMetrics|Error: Failed to load metrics details. Try reloading the page."
 msgstr ""
 
 msgid "ObservabilityMetrics|Failed to load metrics."
 msgstr ""
 
-msgid "ObservabilityMetrics|Filter attributes..."
+msgid "ObservabilityMetrics|Filter dimensions..."
 msgstr ""
 
 msgid "ObservabilityMetrics|Last ingested"
@@ -35943,13 +35943,13 @@ msgstr ""
 msgid "ObservabilityMetrics|Search metrics..."
 msgstr ""
 
-msgid "ObservabilityMetrics|Select attributes"
+msgid "ObservabilityMetrics|Select dimensions"
 msgstr ""
 
 msgid "ObservabilityMetrics|Select function"
 msgstr ""
 
-msgid "ObservabilityMetrics|Selected attributes"
+msgid "ObservabilityMetrics|Selected dimensions"
 msgstr ""
 
 msgid "ObservabilityMetrics|Track health data from your systems. Send metric data to this project using OpenTelemetry. %{docsLink}"
@@ -50367,16 +50367,13 @@ msgstr ""
 msgid "SnippetsEmptyState|Code snippets"
 msgstr ""
 
-msgid "SnippetsEmptyState|Documentation"
-msgstr ""
-
 msgid "SnippetsEmptyState|New snippet"
 msgstr ""
 
-msgid "SnippetsEmptyState|No snippets found"
+msgid "SnippetsEmptyState|Store, share, and embed small pieces of code and text."
 msgstr ""
 
-msgid "SnippetsEmptyState|Store, share, and embed small pieces of code and text."
+msgid "SnippetsEmptyState|There are no snippets found"
 msgstr ""
 
 msgid "SnippetsEmptyState|There are no snippets to show."
@@ -51099,6 +51096,9 @@ msgid "Start a new merge request with these changes"
 msgstr ""
 
 msgid "Start a review"
+msgstr ""
+
+msgid "Start a trial"
 msgstr ""
 
 msgid "Start another thread"
@@ -55610,6 +55610,12 @@ msgid "Tracing|Status"
 msgstr ""
 
 msgid "Tracing|Time range"
+msgstr ""
+
+msgid "Tracing|Time range is currently limited to a maximum of 12 hours."
+msgstr ""
+
+msgid "Tracing|Time range is currently limited to a maximum of 12 hours. Please select a smaller range."
 msgstr ""
 
 msgid "Tracing|Timestamp"

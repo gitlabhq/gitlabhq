@@ -1,0 +1,21 @@
+.crud-body:has(.gl-table) {
+  margin: 0;
+
+  .gl-table {
+    margin-top: -1px;
+    margin-bottom: 0;
+
+    tbody tr:last-of-type td {
+      border-bottom: 0;
+    }
+  }
+}
+
+.crud-body:has(.content-list) {
+  margin: 0;
+
+  .content-list > li {
+    padding-inline: $gl-spacing-scale-5;
+    border-bottom-color: var(--gl-border-color-default);
+  }
+}

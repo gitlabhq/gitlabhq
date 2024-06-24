@@ -1,19 +1,8 @@
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header'}, body_options: { class: 'gl-new-card-body gl-px-0'}) do |c|
-  - c.with_header do
-    .gl-new-card-title-wrapper
-      %h3.gl-new-card-title
-        = hook_class.underscore.humanize.titleize.pluralize
-        %span.gl-new-card-count
-          = sprite_icon('hook', css_class: 'gl-mr-2')
-          #{hooks.size}
-    = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content' }) do
-      = _('Add new webhook')
+= render ::Layouts::CrudComponent.new(hook_class.underscore.humanize.titleize.pluralize,
+  icon: 'hook',
+  count: hooks.size,
+  toggle_text: _('Add new webhook')) do |c|
   - c.with_body do
-    = gitlab_ui_form_for @hook, as: :hook, url: url, html: { class: 'js-webhook-form gl-new-card-add-form gl-m-3 gl-display-none js-toggle-content' } do |f|
-      = render partial: partial, locals: { form: f, hook: @hook }
-      = f.submit _('Add webhook'), pajamas_button: true
-      = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'js-webhook-edit-close gl-ml-2 js-toggle-button' }) do
-        = _('Cancel')
     - if hooks.any?
       %ul.content-list
         - hooks.each do |hook|
@@ -21,3 +10,9 @@
     - else
       %p.gl-new-card-empty.gl-text-center
         = _('No webhooks enabled. Select trigger events above.')
+  - c.with_form do
+    = gitlab_ui_form_for @hook, as: :hook, url: url, html: { class: 'js-webhook-form' } do |f|
+      = render partial: partial, locals: { form: f, hook: @hook }
+      = f.submit _('Add webhook'), pajamas_button: true
+      = render Pajamas::ButtonComponent.new(button_options: { type: 'reset', class: 'js-webhook-edit-close gl-ml-2 js-toggle-button' }) do
+        = _('Cancel')

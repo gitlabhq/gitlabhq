@@ -30,6 +30,7 @@ import {
   PACKAGE_TYPE_CONAN,
   PACKAGE_TYPE_MAVEN,
   PACKAGE_TYPE_PYPI,
+  PACKAGE_TYPE_NPM,
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
   CANCEL_DELETE_PACKAGE_TRACKING_ACTION,
@@ -43,7 +44,10 @@ import {
 } from '~/packages_and_registries/package_registry/constants';
 
 import getPackageDetails from '~/packages_and_registries/package_registry/graphql/queries/get_package_details.query.graphql';
+import getGroupPackageSettings from '~/packages_and_registries/package_registry/graphql/queries/get_group_package_settings.query.graphql';
 import getPackageVersionsQuery from '~/packages_and_registries/package_registry/graphql/queries/get_package_versions.query.graphql';
+
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
 
 export default {
@@ -88,6 +92,7 @@ export default {
       mutationLoading: false,
       versionsMutationLoading: false,
       packageEntity: {},
+      groupSettings: {},
     };
   },
   apollo: {
@@ -112,8 +117,28 @@ export default {
         );
       },
     },
+    groupSettings: {
+      query: getGroupPackageSettings,
+      variables() {
+        return {
+          fullPath: this.projectPath,
+        };
+      },
+      update(data) {
+        return data.project?.group?.packageSettings || {};
+      },
+      skip() {
+        return !(this.isRequestForwardingSupported && this.canDelete);
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
   },
   computed: {
+    canDelete() {
+      return this.packageEntity.userPermissions?.destroyPackage;
+    },
     deleteModalContent() {
       return this.isRequestForwardingEnabled
         ? DELETE_PACKAGE_REQUEST_FORWARDING_MODAL_CONTENT
@@ -139,6 +164,15 @@ export default {
     isLoading() {
       return this.$apollo.queries.packageEntity.loading;
     },
+    isRequestForwardingSupported() {
+      return [PACKAGE_TYPE_MAVEN, PACKAGE_TYPE_PYPI, PACKAGE_TYPE_NPM].includes(this.packageType);
+    },
+    isRequestForwardingEnabled() {
+      return (
+        this.isRequestForwardingSupported &&
+        this.groupSettings[`${this.packageType.toLowerCase()}PackageRequestsForwarding`]
+      );
+    },
     isValidPackage() {
       return this.isLoading || Boolean(this.packageEntity.name);
     },
@@ -158,12 +192,6 @@ export default {
     },
     showFiles() {
       return this.packageType !== PACKAGE_TYPE_COMPOSER;
-    },
-    groupSettings() {
-      return this.packageEntity.project?.group?.packageSettings ?? {};
-    },
-    isRequestForwardingEnabled() {
-      return this.groupSettings[`${this.packageType.toLowerCase()}PackageRequestsForwarding`];
     },
     showMetadata() {
       return [
@@ -251,7 +279,7 @@ export default {
     <package-title :package-entity="packageEntity">
       <template #delete-button>
         <gl-button
-          v-if="packageEntity.userPermissions.destroyPackage"
+          v-if="canDelete"
           v-gl-modal="'delete-modal'"
           variant="danger"
           category="primary"
@@ -277,7 +305,7 @@ export default {
 
           <package-files
             v-if="showFiles"
-            :can-delete="packageEntity.userPermissions.destroyPackage"
+            :can-delete="canDelete"
             :package-id="packageEntity.id"
             :package-type="packageType"
             :project-path="projectPath"

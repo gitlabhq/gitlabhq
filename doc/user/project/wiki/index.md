@@ -15,7 +15,7 @@ to keep it in the same project as your code, you can use the wiki GitLab provide
 in each GitLab project. Every wiki is a separate Git repository, so you can create
 wiki pages in the web interface, or [locally using Git](#create-or-edit-wiki-pages-locally).
 
-GitLab wikis support Markdown, Rdoc, AsciiDoc, and Org for content.
+GitLab wikis support Markdown, RDoc, AsciiDoc, and Org for content.
 Wiki pages written in Markdown support all [Markdown features](../../markdown.md),
 and also provide some [wiki-specific behavior](../../markdown.md#wiki-specific-markdown)
 for links.

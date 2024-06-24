@@ -19,6 +19,7 @@ describe('DatetimeRangePicker', () => {
   const defaultProps = {
     startOpened: true,
     defaultMaxDate: new Date('2024-01-02T04:05:06Z'),
+    defaultMinDate: new Date('2024-01-01T04:05:06Z'),
     maxDateRange: 7,
   };
 
@@ -38,6 +39,7 @@ describe('DatetimeRangePicker', () => {
 
     expect(findGlDaterangePicker().props('startOpened')).toBe(defaultProps.startOpened);
     expect(findGlDaterangePicker().props('defaultMaxDate')).toEqual(defaultProps.defaultMaxDate);
+    expect(findGlDaterangePicker().props('defaultMinDate')).toBe(defaultProps.defaultMinDate);
     expect(findGlDaterangePicker().props('maxDateRange')).toBe(defaultProps.maxDateRange);
   });
 

@@ -1,4 +1,4 @@
-%section{ class: section_classes, id: js_id, data: (@id ? { testid: @id } : {}) }
+%section{ class: section_classes, id: @id, data: (@testid ? { testid: @testid } : {}) }
   .gl-flex.gl-justify-between.gl-items-start.gl-pt-5
     .gl-grow
       %h2{ class: title_classes }

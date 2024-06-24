@@ -2,7 +2,8 @@
 - link_project = local_assigns.fetch(:link_project, false)
 
 - if @snippets.to_a.empty?
-  .nothing-here-block= s_("SnippetsEmptyState|No snippets found")
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-snippets-md.svg',
+    title: s_("SnippetsEmptyState|There are no snippets found"))
 - else
   %ul.gl-p-0.gl-list-none
     = render partial: 'shared/snippets/snippet', collection: @snippets, locals: { link_project: link_project }

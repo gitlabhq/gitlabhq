@@ -131,10 +131,15 @@ export default {
       };
     },
     onChildError({ id, message }) {
-      this.$set(this.alerts, id, message);
+      this.alerts = {
+        ...this.alerts,
+        [id]: message,
+      };
     },
     dismissAlert(id) {
-      this.$delete(this.alerts, id);
+      const copy = { ...this.alerts };
+      delete copy[id];
+      this.alerts = copy;
     },
   },
 };

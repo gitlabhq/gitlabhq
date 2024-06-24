@@ -4,6 +4,7 @@ import {
   queryToDateFilterObj,
   addTimeToDate,
   formattedTimeFromDate,
+  isTracingDateRangeOutOfBounds,
 } from '~/observability/utils';
 import {
   CUSTOM_DATE_RANGE_OPTION,
@@ -11,6 +12,7 @@ import {
   DATE_RANGE_START_QUERY_KEY,
   DATE_RANGE_END_QUERY_KEY,
   TIMESTAMP_QUERY_KEY,
+  TIME_RANGE_OPTIONS_VALUES,
 } from '~/observability/constants';
 
 describe('periodToDate', () => {
@@ -179,5 +181,43 @@ describe('addTimeToDate', () => {
     const origDate = new Date('2023-04-01T00:00:00.000Z');
     const timeString = '';
     expect(addTimeToDate(timeString, origDate)).toEqual(origDate);
+  });
+});
+
+describe('isTracingDateRangeOutOfBounds', () => {
+  it('returns false if date range is not custom', () => {
+    expect(isTracingDateRangeOutOfBounds({ value: TIME_RANGE_OPTIONS_VALUES.FIVE_MIN })).toBe(
+      false,
+    );
+  });
+
+  it('returns true if custom date range is <= 12h', () => {
+    expect(
+      isTracingDateRangeOutOfBounds({
+        value: CUSTOM_DATE_RANGE_OPTION,
+        startDate: new Date('2023-04-01T00:00:00'),
+        endDate: new Date('2023-04-01T12:00:00'),
+      }),
+    ).toBe(false);
+  });
+
+  it('returns true if custom date range is > 12h', () => {
+    expect(
+      isTracingDateRangeOutOfBounds({
+        value: CUSTOM_DATE_RANGE_OPTION,
+        startDate: new Date('2023-04-01T00:00:00'),
+        endDate: new Date('2023-04-01T12:00:01'),
+      }),
+    ).toBe(true);
+  });
+
+  it('returns true if custom date range is in invalid', () => {
+    expect(
+      isTracingDateRangeOutOfBounds({
+        value: CUSTOM_DATE_RANGE_OPTION,
+        startDate: 'foo',
+        endDate: 'baz',
+      }),
+    ).toBe(true);
   });
 });

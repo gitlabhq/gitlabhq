@@ -280,15 +280,29 @@ describe('buildClient', () => {
           await client.fetchTraces({
             filters: {
               dateRange: {
-                endDate: new Date('2020-07-06'),
-                startDate: new Date('2020-07-05'),
+                endDate: new Date('2023-04-01T12:00:00'),
+                startDate: new Date('2023-04-01T00:00:00'),
                 value: 'custom',
               },
             },
           });
           expect(getQueryParam()).toContain(
-            'start_time=2020-07-05T00:00:00.000Z&end_time=2020-07-06T00:00:00.000Z',
+            'start_time=2023-04-01T00:00:00.000Z&end_time=2023-04-01T12:00:00.000Z',
           );
+        });
+
+        it('fails if the date range is larger than 12h', async () => {
+          await expect(
+            client.fetchTraces({
+              filters: {
+                dateRange: {
+                  endDate: new Date('2023-04-01T12:00:01'),
+                  startDate: new Date('2023-04-01T00:00:00'),
+                  value: 'custom',
+                },
+              },
+            }),
+          ).rejects.toThrow();
         });
       });
 

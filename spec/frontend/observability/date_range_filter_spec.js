@@ -202,6 +202,18 @@ describe('DateRangeFilter', () => {
       '2024-04-24T00:00:00.000Z',
     );
   });
+
+  it('pass through the min-date prop', async () => {
+    const minDate = new Date('2024-04-24T00:00:00.000Z');
+    mount({ ...defaultProps, defaultMinDate: minDate });
+
+    await findDateRangesDropdown().vm.$emit('customDateRangeSelected');
+
+    expect(findDatetimeRangesPicker().props('defaultMinDate').toISOString()).toBe(
+      '2024-04-24T00:00:00.000Z',
+    );
+  });
+
   it('sets max-date-range to maxDateRange', () => {
     mount({
       selected: {

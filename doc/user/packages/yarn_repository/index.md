@@ -323,3 +323,24 @@ In this case, the following commands creates a file called `.yarnrc` in the curr
 yarn config set '//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "<your_token>"
 yarn config set '//gitlab.example.com/api/v4/packages/npm/:_authToken' "<your_token>"
 ```
+
+### `yarn install` fails to clone repository as a dependency
+
+If you use `yarn install` from a Dockerfile, when you build the Dockerfile you might get an error like this:
+
+```log
+...
+#6 8.621 fatal: unable to access 'https://gitlab.com/path/to/project/': Problem with the SSL CA cert (path? access rights?)
+#6 8.621 info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this command.
+#6 ...
+```
+
+To resolve this issue, [add an exclamation mark (`!`)](https://docs.docker.com/build/building/context/#negating-matches) to every Yarn-related path in your [.dockerignore](https://docs.docker.com/build/building/context/#dockerignore-files) file.
+
+```dockerfile
+**
+
+!./package.json
+!./yarn.lock
+...
+```

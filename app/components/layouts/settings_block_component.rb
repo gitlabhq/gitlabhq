@@ -5,11 +5,13 @@ module Layouts
     # @param [String] heading
     # @param [String] description
     # @param [String] id
+    # @param [String] testid
     # @param [Boolean] expanded
-    def initialize(heading, description: nil, id: nil, expanded: nil)
+    def initialize(heading, description: nil, id: nil, testid: nil, expanded: nil)
       @heading = heading
       @description = description
       @id = id
+      @testid = testid
       @expanded = expanded
     end
 
@@ -31,10 +33,6 @@ module Layouts
 
     def button_text
       @expanded ? _('Collapse') : _('Expand')
-    end
-
-    def js_id
-      @id ? "js-#{@id}" : nil
     end
   end
 end

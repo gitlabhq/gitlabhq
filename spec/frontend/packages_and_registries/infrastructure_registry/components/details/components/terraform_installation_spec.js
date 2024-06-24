@@ -1,29 +1,32 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
-import { terraformModule as packageEntity } from '../../mock_data';
-
-Vue.use(Vuex);
+import { terraformModule } from '../../mock_data';
 
 describe('TerraformInstallation', () => {
   let wrapper;
 
-  const store = new Vuex.Store({
-    state: {
-      packageEntity,
-      gitlabHost: 'bar.dev',
-      projectPath: 'foo',
-    },
-  });
+  const defaultProvide = {
+    gitlabHost: 'bar.dev',
+    projectPath: 'foo',
+    terraformHelpPath: '/help',
+  };
+
+  const defaultProps = {
+    packageName: terraformModule.name,
+    packageVersion: terraformModule.version,
+  };
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
 
   function createComponent() {
     wrapper = shallowMount(TerraformInstallation, {
-      store,
+      propsData: {
+        ...defaultProps,
+      },
+      provide: {
+        ...defaultProvide,
+      },
     });
   }
 

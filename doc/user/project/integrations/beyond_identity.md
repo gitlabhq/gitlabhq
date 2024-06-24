@@ -36,7 +36,7 @@ To enable the Beyond Identity integration for your instance:
 
 The Beyond Identity integration for your instance is now enabled.
 
-## GPG key verificatioon
+## GPG key verification
 
 When a user adds a GPG key to their profile, the key is verified:
 
