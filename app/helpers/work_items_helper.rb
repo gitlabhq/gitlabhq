@@ -5,10 +5,13 @@ module WorkItemsHelper
     group = resource_parent.is_a?(Group) ? resource_parent : resource_parent.group
 
     {
+      can_admin_label: can?(current_user, :admin_label, resource_parent).to_s,
       full_path: resource_parent.full_path,
       group_path: group&.full_path,
       issues_list_path:
         resource_parent.is_a?(Group) ? issues_group_path(resource_parent) : project_issues_path(resource_parent),
+      labels_manage_path:
+        resource_parent.is_a?(Group) ? group_labels_path(resource_parent) : project_labels_path(resource_parent),
       register_path: new_user_registration_path(redirect_to_referer: 'yes'),
       sign_in_path: new_session_path(:user, redirect_to_referer: 'yes'),
       new_comment_template_paths: new_comment_template_paths(group).to_json,

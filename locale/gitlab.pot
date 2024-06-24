@@ -20563,6 +20563,9 @@ msgstr ""
 msgid "Environments|Search by environment name"
 msgstr ""
 
+msgid "Environments|See all environments."
+msgstr ""
+
 msgid "Environments|Select Flux resource"
 msgstr ""
 
@@ -20582,6 +20585,9 @@ msgid "Environments|Select which environments to clean up.     Protected environ
 msgstr ""
 
 msgid "Environments|Show all"
+msgstr ""
+
+msgid "Environments|Showing %{listedEnvironmentsCount} of %{totalEnvironmentsCount} environments in this folder."
 msgstr ""
 
 msgid "Environments|Stop"
@@ -30441,6 +30447,9 @@ msgid_plural "Labels added: %{labels}"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Label name"
+msgstr ""
+
 msgid "Label priority"
 msgstr ""
 
@@ -33464,9 +33473,6 @@ msgid_plural "MlModelRegistry|%d versions"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "MlModelRegistry|A semver version like 1.0.0"
-msgstr ""
-
 msgid "MlModelRegistry|Add a model"
 msgstr ""
 
@@ -33557,7 +33563,10 @@ msgstr ""
 msgid "MlModelRegistry|Enter a model description"
 msgstr ""
 
-msgid "MlModelRegistry|Enter a semver version."
+msgid "MlModelRegistry|Enter a semantic version."
+msgstr ""
+
+msgid "MlModelRegistry|Enter a semantic version. Latest version is %{latestVersion}"
 msgstr ""
 
 msgid "MlModelRegistry|Enter some description"
@@ -33581,6 +33590,9 @@ msgstr ""
 msgid "MlModelRegistry|File \"%{name}\" is %{size}. It is larger than max allowed size of %{maxAllowedFileSize}"
 msgstr ""
 
+msgid "MlModelRegistry|For example 1.0.0"
+msgstr ""
+
 msgid "MlModelRegistry|For example 1.0.0. Must be a semantic version."
 msgstr ""
 
@@ -33597,9 +33609,6 @@ msgid "MlModelRegistry|Info"
 msgstr ""
 
 msgid "MlModelRegistry|Latest version"
-msgstr ""
-
-msgid "MlModelRegistry|Latest version is %{latestVersion}"
 msgstr ""
 
 msgid "MlModelRegistry|Leave empty to skip version creation."
@@ -33705,6 +33714,12 @@ msgid "MlModelRegistry|Version candidates"
 msgstr ""
 
 msgid "MlModelRegistry|Version description"
+msgstr ""
+
+msgid "MlModelRegistry|Version is not a valid semantic version."
+msgstr ""
+
+msgid "MlModelRegistry|Version is valid semantic version."
 msgstr ""
 
 msgid "MlModelRegistry|Versions"
@@ -33959,9 +33974,6 @@ msgid "Name is already taken."
 msgstr ""
 
 msgid "Name must start with a letter, digit, emoji, or underscore."
-msgstr ""
-
-msgid "Name new label"
 msgstr ""
 
 msgid "Name the deployment (must be unique)"
@@ -34788,6 +34800,9 @@ msgid "No forks are available to you."
 msgstr ""
 
 msgid "No group provided"
+msgstr ""
+
+msgid "No groups found"
 msgstr ""
 
 msgid "No issues found"

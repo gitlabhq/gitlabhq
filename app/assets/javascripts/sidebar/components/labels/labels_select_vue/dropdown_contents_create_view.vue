@@ -77,7 +77,7 @@ export default {
     <div class="dropdown-input">
       <gl-form-input
         v-model.trim="labelTitle"
-        :placeholder="__('Name new label')"
+        :placeholder="__('Label name')"
         :autofocus="true"
         data-testid="label-title"
       />

@@ -1,9 +1,11 @@
 <script>
-import { GlLabel } from '@gitlab/ui';
+import { GlButton, GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { difference } from 'lodash';
+import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
+import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -16,18 +18,14 @@ import { isLabelsWidget } from '../utils';
 
 export default {
   components: {
-    WorkItemSidebarDropdownWidget,
+    DropdownContentsCreateView,
+    GlButton,
+    GlDisclosureDropdown,
     GlLabel,
+    WorkItemSidebarDropdownWidget,
   },
   mixins: [Tracking.mixin()],
-  inject: {
-    issuesListPath: {
-      type: String,
-    },
-    isGroup: {
-      type: Boolean,
-    },
-  },
+  inject: ['canAdminLabel', 'isGroup', 'issuesListPath', 'labelsManagePath'],
   props: {
     fullPath: {
       type: String,
@@ -55,7 +53,9 @@ export default {
     return {
       searchTerm: '',
       searchStarted: false,
+      showLabelForm: false,
       updateInProgress: false,
+      createdLabelId: undefined,
       removeLabelIds: [],
       addLabelIds: [],
     };
@@ -109,6 +109,9 @@ export default {
     },
     allowsScopedLabels() {
       return this.labelsWidget?.allowsScopedLabels;
+    },
+    workspaceType() {
+      return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
   },
   apollo: {
@@ -171,10 +174,9 @@ export default {
       this.addLabelIds = difference(labels, this.itemValues);
     },
     async updateLabels(labels) {
-      this.searchTerm = '';
       this.updateInProgress = true;
 
-      if (labels && labels.length === 0) {
+      if (labels?.length === 0) {
         this.removeLabelIds = this.itemValues;
         this.addLabelIds = [];
       }
@@ -198,16 +200,16 @@ export default {
         });
 
         if (errors.length > 0) {
-          this.throwUpdateError();
-          return;
+          throw new Error();
         }
-        this.addLabelIds = [];
-        this.removeLabelIds = [];
 
         this.track('updated_labels');
       } catch {
-        this.throwUpdateError();
+        this.$emit('error', i18n.updateError);
       } finally {
+        this.searchTerm = '';
+        this.addLabelIds = [];
+        this.removeLabelIds = [];
         this.updateInProgress = false;
       }
     },
@@ -217,13 +219,13 @@ export default {
     isSelected(id) {
       return this.itemValues.includes(id) || this.addLabelIds.includes(id);
     },
-    throwUpdateError() {
-      this.$emit('error', i18n.updateError);
-      this.addLabelIds = [];
-      this.removeLabelIds = [];
-    },
     labelFilterUrl(label) {
       return `${this.issuesListPath}?label_name[]=${encodeURIComponent(label.title)}`;
+    },
+    handleLabelCreated(label) {
+      this.showLabelForm = false;
+      this.createdLabelId = label.id;
+      this.addLabelIds.push(label.id);
     },
   },
 };
@@ -233,6 +235,7 @@ export default {
   <work-item-sidebar-dropdown-widget
     :dropdown-label="__('Labels')"
     :can-update="canUpdate"
+    :created-label-id="createdLabelId"
     dropdown-name="label"
     :loading="isLoadingLabels"
     :list-items="labelsList"
@@ -241,7 +244,8 @@ export default {
     :toggle-dropdown-text="dropdownText"
     :header-text="__('Select labels')"
     :reset-button-label="__('Clear')"
-    :multi-select="true"
+    multi-select
+    show-footer
     clear-search-on-item-select
     data-testid="work-item-labels"
     @dropdownShown="onDropdownShown"
@@ -250,17 +254,15 @@ export default {
     @updateSelected="updateLabel"
   >
     <template #list-item="{ item }">
-      <span>
-        <span
-          :style="{ background: item.color }"
-          :class="{ 'gl-border gl-border-white': isSelected(item.value) }"
-          class="gl-display-inline-block gl-rounded-base gl-mr-1 gl-w-5 gl-h-3 gl-align-middle -gl-mt-1"
-        ></span>
-        {{ item.text }}
-      </span>
+      <span
+        :style="{ background: item.color }"
+        :class="{ 'gl-border gl-border-white': isSelected(item.value) }"
+        class="gl-inline-block gl-rounded gl-mr-1 gl-w-5 gl-h-3 gl-align-middle -gl-mt-1"
+      ></span>
+      {{ item.text }}
     </template>
     <template #readonly>
-      <div class="gl-display-flex gl-gap-2 gl-flex-wrap gl-mt-1">
+      <div class="gl-flex gl-gap-2 gl-flex-wrap gl-mt-1">
         <gl-label
           v-for="label in localLabels"
           :key="label.id"
@@ -273,6 +275,46 @@ export default {
           @close="removeLabel(label)"
         />
       </div>
+    </template>
+    <template #footer>
+      <gl-button
+        v-if="canAdminLabel"
+        class="!gl-justify-start"
+        block
+        category="tertiary"
+        data-testid="create-project-label"
+        @click="showLabelForm = true"
+      >
+        {{ __('Create project label') }}
+      </gl-button>
+      <gl-button
+        class="!gl-justify-start !gl-mt-2"
+        block
+        category="tertiary"
+        :href="labelsManagePath"
+        data-testid="manage-project-labels"
+      >
+        {{ __('Manage project labels') }}
+      </gl-button>
+    </template>
+    <template v-if="showLabelForm" #body>
+      <gl-disclosure-dropdown block start-opened :toggle-text="dropdownText">
+        <div
+          class="gl-text-sm gl-font-bold gl-leading-24 gl-border-b gl-pt-2 gl-pb-3 gl-pl-4 gl-mb-4"
+        >
+          {{ __('Create label') }}
+        </div>
+        <dropdown-contents-create-view
+          class="gl-mb-2"
+          :attr-workspace-path="fullPath"
+          :full-path="fullPath"
+          :label-create-type="workspaceType"
+          :search-key="searchTerm"
+          :workspace-type="workspaceType"
+          @hideCreateView="showLabelForm = false"
+          @labelCreated="handleLabelCreated"
+        />
+      </gl-disclosure-dropdown>
     </template>
   </work-item-sidebar-dropdown-widget>
 </template>

@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlAlert, GlModal } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -98,10 +98,14 @@ describe('ModelVersionCreate', () => {
         expect(findVersionInput().exists()).toBe(true);
       });
 
-      it('renders the version input label', () => {
+      it('renders the version input label for initial state', () => {
         expect(wrapper.findByTestId('versionDescriptionId').attributes().description).toBe(
-          'Enter a semver version.',
+          'Enter a semantic version.',
         );
+        expect(wrapper.findByTestId('versionDescriptionId').attributes('invalid-feedback')).toBe(
+          '',
+        );
+        expect(wrapper.findByTestId('versionDescriptionId').attributes('valid-feedback')).toBe('');
       });
 
       it('renders the description input', () => {
@@ -124,9 +128,9 @@ describe('ModelVersionCreate', () => {
         });
       });
 
-      it('renders the create button in the modal', () => {
+      it('disables the create button in the modal when semver is incorrect', () => {
         expect(findGlModal().props('actionPrimary')).toEqual({
-          attributes: { variant: 'confirm' },
+          attributes: { variant: 'confirm', disabled: true },
           text: 'Create & import',
         });
       });
@@ -147,6 +151,47 @@ describe('ModelVersionCreate', () => {
     });
   });
 
+  describe('It reacts to semantic version input', () => {
+    beforeEach(() => {
+      createWrapper();
+    });
+    it('renders the version input label for initial state', () => {
+      expect(wrapper.findByTestId('versionDescriptionId').attributes('invalid-feedback')).toBe('');
+      expect(findGlModal().props('actionPrimary')).toEqual({
+        attributes: { variant: 'confirm', disabled: true },
+        text: 'Create & import',
+      });
+    });
+    it.each(['1.0', '1', 'abc', '1.abc', '1.0.0.0'])(
+      'renders the version input label for invalid state',
+      async (version) => {
+        findVersionInput().vm.$emit('input', version);
+        await nextTick();
+        expect(wrapper.findByTestId('versionDescriptionId').attributes('invalid-feedback')).toBe(
+          'Version is not a valid semantic version.',
+        );
+        expect(findGlModal().props('actionPrimary')).toEqual({
+          attributes: { variant: 'confirm', disabled: true },
+          text: 'Create & import',
+        });
+      },
+    );
+    it.each(['1.0.0', '0.0.0-b', '24.99.99-b99'])(
+      'renders the version input label for valid state',
+      async (version) => {
+        findVersionInput().vm.$emit('input', version);
+        await nextTick();
+        expect(wrapper.findByTestId('versionDescriptionId').attributes('valid-feedback')).toBe(
+          'Version is valid semantic version.',
+        );
+        expect(findGlModal().props('actionPrimary')).toEqual({
+          attributes: { variant: 'confirm', disabled: false },
+          text: 'Create & import',
+        });
+      },
+    );
+  });
+
   describe('Latest version available', () => {
     beforeEach(() => {
       createWrapper(undefined, { latestVersion: '1.2.3' });
@@ -154,7 +199,7 @@ describe('ModelVersionCreate', () => {
 
     it('renders the version input label', () => {
       expect(wrapper.findByTestId('versionDescriptionId').attributes().description).toBe(
-        'Latest version is 1.2.3',
+        'Enter a semantic version. Latest version is 1.2.3',
       );
     });
   });

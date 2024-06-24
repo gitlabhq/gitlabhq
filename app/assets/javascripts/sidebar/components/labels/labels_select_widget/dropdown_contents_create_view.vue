@@ -141,7 +141,7 @@ export default {
     </gl-alert>
     <gl-form-group
       class="gl-my-3"
-      :label="__('Name new label')"
+      :label="__('Label name')"
       label-for="label-title-input"
       label-sr-only
     >
@@ -149,7 +149,7 @@ export default {
         id="label-title-input"
         v-model.trim="labelTitle"
         autofocus
-        :placeholder="__('Name new label')"
+        :placeholder="__('Label name')"
       />
     </gl-form-group>
     <sidebar-color-picker v-model.trim="selectedColor" :suggested-colors="suggestedColors" />

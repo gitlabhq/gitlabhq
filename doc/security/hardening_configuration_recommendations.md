@@ -51,7 +51,7 @@ the security of NGINX itself:
    nginx['ssl_session_timeout'] = "5m"
 
    # Should prevent logjam attack etc
-   nginx['ssl_dhparam'] = "/etc/gitlab/ssl/dhparams.pem" # changed from nil
+   nginx['ssl_dhparam'] = "/etc/gitlab/ssl/dhparam.pem" # changed from nil
 
    # Turn off session ticket reuse
    nginx['ssl_session_tickets'] = "off"

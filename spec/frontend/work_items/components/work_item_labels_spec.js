@@ -1,5 +1,5 @@
-import { GlLabel } from '@gitlab/ui';
-import Vue from 'vue';
+import { GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,6 +9,7 @@ import {
   TRACKING_CATEGORY_SHOW,
   I18N_WORK_ITEM_ERROR_FETCHING_LABELS,
 } from '~/work_items/constants';
+import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -32,6 +33,7 @@ Vue.use(VueApollo);
 const workItemId = 'gid://gitlab/WorkItem/1';
 
 describe('WorkItemLabels component', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
   const label1Id = mockLabels[0].id;
@@ -85,8 +87,10 @@ describe('WorkItemLabels component', () => {
         [updateWorkItemMutation, updateWorkItemMutationHandler],
       ]),
       provide: {
+        canAdminLabel: true,
         isGroup,
         issuesListPath: 'test-project-path/issues',
+        labelsManagePath: 'test-project-path/labels',
       },
       propsData: {
         workItemId,
@@ -101,8 +105,10 @@ describe('WorkItemLabels component', () => {
   const findWorkItemSidebarDropdownWidget = () =>
     wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAllLabels = () => wrapper.findAllComponents(GlLabel);
+  const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findRegularLabel = () => findAllLabels().at(0);
   const findLabelWithDescription = () => findAllLabels().at(2);
+  const findDropdownContentsCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
 
   const showDropdown = () => {
     findWorkItemSidebarDropdownWidget().vm.$emit('dropdownShown');
@@ -144,6 +150,7 @@ describe('WorkItemLabels component', () => {
       headerText: 'Select labels',
       resetButtonLabel: 'Clear',
       multiSelect: true,
+      showFooter: true,
       itemValue: [],
     });
     expect(findAllLabels()).toHaveLength(0);
@@ -413,5 +420,73 @@ describe('WorkItemLabels component', () => {
 
       expect(groupLabelsQueryHandler).toHaveBeenCalled();
     });
+  });
+
+  describe('creating project label', () => {
+    beforeEach(async () => {
+      createComponent();
+
+      wrapper.findByTestId('create-project-label').vm.$emit('click');
+      await nextTick();
+    });
+
+    describe('when "Create project label" button is clicked', () => {
+      it('renders "Create label" dropdown', () => {
+        expect(findDisclosureDropdown().props()).toMatchObject({
+          block: true,
+          startOpened: true,
+          toggleText: 'No labels',
+        });
+        expect(findDropdownContentsCreateView().props()).toEqual({
+          attrWorkspacePath: 'test-project-path',
+          fullPath: 'test-project-path',
+          labelCreateType: 'project',
+          searchKey: '',
+          workspaceType: 'project',
+        });
+      });
+    });
+
+    describe('when "hideCreateView" event is emitted', () => {
+      it('hides dropdown', async () => {
+        expect(findDisclosureDropdown().exists()).toBe(true);
+        expect(findDropdownContentsCreateView().exists()).toBe(true);
+
+        findDropdownContentsCreateView().vm.$emit('hideCreateView');
+        await nextTick();
+
+        expect(findDisclosureDropdown().exists()).toBe(false);
+        expect(findDropdownContentsCreateView().exists()).toBe(false);
+      });
+    });
+
+    describe('when "labelCreated" event is emitted', () => {
+      it('updates "createdLabelId" value and hides dropdown', async () => {
+        expect(findWorkItemSidebarDropdownWidget().props('createdLabelId')).toBe(undefined);
+        expect(findDisclosureDropdown().exists()).toBe(true);
+        expect(findDropdownContentsCreateView().exists()).toBe(true);
+
+        findDropdownContentsCreateView().vm.$emit('labelCreated', {
+          id: 'gid://gitlab/Label/55',
+          name: 'New label',
+        });
+        await nextTick();
+
+        expect(findWorkItemSidebarDropdownWidget().props('createdLabelId')).toBe(
+          'gid://gitlab/Label/55',
+        );
+        expect(findDisclosureDropdown().exists()).toBe(false);
+        expect(findDropdownContentsCreateView().exists()).toBe(false);
+      });
+    });
+  });
+
+  it('renders "Manage project labels" link in dropdown', () => {
+    createComponent();
+
+    expect(wrapper.findByTestId('manage-project-labels').text()).toBe('Manage project labels');
+    expect(wrapper.findByTestId('manage-project-labels').attributes('href')).toBe(
+      'test-project-path/labels',
+    );
   });
 });

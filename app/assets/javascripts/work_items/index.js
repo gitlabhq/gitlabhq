@@ -24,11 +24,13 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
   addShortcutsExtension(ShortcutsWorkItems);
 
   const {
+    canAdminLabel,
     fullPath,
     groupPath,
     hasIssueWeightsFeature,
     iid,
     issuesListPath,
+    labelsManagePath,
     registerPath,
     signInPath,
     hasIterationsFeature,
@@ -47,11 +49,13 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType } = {}) => {
     router: createRouter({ fullPath, workItemType, workspaceType, defaultBranch }),
     apolloProvider,
     provide: {
+      canAdminLabel,
       fullPath,
       isGroup,
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
       issuesListPath,
+      labelsManagePath,
       registerPath,
       signInPath,
       hasIterationsFeature: parseBoolean(hasIterationsFeature),

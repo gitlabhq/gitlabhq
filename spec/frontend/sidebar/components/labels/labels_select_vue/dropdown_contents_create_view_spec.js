@@ -144,7 +144,7 @@ describe('DropdownContentsCreateView', () => {
       const titleInputEl = wrapper.find('.dropdown-input').findComponent(GlFormInput);
 
       expect(titleInputEl.exists()).toBe(true);
-      expect(titleInputEl.attributes('placeholder')).toBe('Name new label');
+      expect(titleInputEl.attributes('placeholder')).toBe('Label name');
       expect(titleInputEl.attributes('autofocus')).toBe('true');
     });
 

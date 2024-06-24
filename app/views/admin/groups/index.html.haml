@@ -1,18 +1,25 @@
 - page_title _("Groups")
 - add_page_specific_style 'page_bundles/search'
 
-.top-area
-  .gl-mt-3.gl-mb-3
-    = form_tag admin_groups_path, method: :get, class: 'js-search-form' do |f|
-      = hidden_field_tag :sort, @sort
-      .search-holder
-        .search-field-holder
-          = search_field_tag :name, params[:name].presence, class: "form-control search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: 'Search by name', data: { testid: 'group-search-field' }
-          = sprite_icon('search', css_class: 'search-icon')
-        = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
-        = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_group_path) do
-          = _('New group')
-%ul.content-list
-  = render @groups
+= render ::Layouts::PageHeadingComponent.new(_('Groups')) do |c|
+  - c.with_actions do
+    = link_button_to new_admin_group_path, variant: :confirm do
+      = _('New group')
+
+.md:gl-flex.gl-min-w-0.gl-grow.row-content-block
+  = form_tag admin_groups_path, method: :get, class: 'js-search-form gl-w-full' do |f|
+    = hidden_field_tag :sort, @sort
+    .search-holder
+      .search-field-holder
+        = search_field_tag :name, params[:name].presence, class: "form-control search-text-input js-search-input", spellcheck: false, placeholder: 'Search by name', data: { testid: 'group-search-field' }
+        = sprite_icon('search', css_class: 'search-icon')
+      = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
+
+- if @groups.any?
+  %ul.content-list
+    = render @groups
+- else
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-groups-md.svg',
+      title: _('No groups found'))
 
 = paginate @groups, theme: "gitlab"

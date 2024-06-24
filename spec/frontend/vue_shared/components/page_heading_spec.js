@@ -14,14 +14,21 @@ describe('Pagination links component', () => {
     </template>
   `;
 
+  const headingTemplate = `
+    <template #heading>
+      Heading with custom elements <i>here</i>
+    </template>
+  `;
+
   describe('Ordered Layout', () => {
     let wrapper;
 
-    const createWrapper = () => {
+    const createWrapper = (scopedSlots = {}) => {
       wrapper = shallowMountExtended(PageHeading, {
         scopedSlots: {
           actions: actionsTemplate,
           description: descriptionTemplate,
+          ...scopedSlots,
         },
         propsData: {
           heading: 'Page heading',
@@ -51,6 +58,12 @@ describe('Pagination links component', () => {
       it('renders its description slot content', () => {
         expect(description().text()).toBe('Description go here');
         expect(description().classes()).toEqual(['gl-w-full', 'gl-mt-2', 'gl-text-secondary']);
+      });
+
+      it('renders the heading slot if provided', () => {
+        createWrapper({ heading: headingTemplate });
+
+        expect(heading().text()).toBe('Heading with custom elements here');
       });
     });
   });

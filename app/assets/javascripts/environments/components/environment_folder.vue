@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlCollapse, GlIcon, GlBadge, GlLink } from '@gitlab/ui';
+import { GlButton, GlCollapse, GlIcon, GlBadge, GlLink, GlSprintf } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import pollIntervalQuery from '../graphql/queries/poll_interval.query.graphql';
 import folderQuery from '../graphql/queries/folder.query.graphql';
@@ -14,6 +14,7 @@ export default {
     GlIcon,
     GlBadge,
     GlLink,
+    GlSprintf,
   },
   props: {
     nestedEnvironment: {
@@ -50,7 +51,10 @@ export default {
   i18n: {
     collapse: __('Collapse'),
     expand: __('Expand'),
-    link: s__('Environments|Show all'),
+    link: s__('Environments|See all environments.'),
+    message: s__(
+      'Environments|Showing %{listedEnvironmentsCount} of %{totalEnvironmentsCount} environments in this folder.',
+    ),
   },
   computed: {
     icons() {
@@ -61,7 +65,7 @@ export default {
     label() {
       return this.visible ? this.$options.i18n.collapse : this.$options.i18n.expand;
     },
-    count() {
+    totalEnvironmentsCount() {
       const count = ENVIRONMENT_COUNT_BY_SCOPE[this.scope];
       return this.folder?.[count] ?? 0;
     },
@@ -72,7 +76,13 @@ export default {
       return this.nestedEnvironment.latest.folderPath;
     },
     environments() {
-      return this.folder?.environments;
+      return this.folder?.environments ?? [];
+    },
+    listedEnvironmentsCount() {
+      return this.environments.length;
+    },
+    isMessageShowing() {
+      return this.listedEnvironmentsCount < this.totalEnvironmentsCount;
     },
   },
   methods: {
@@ -108,8 +118,7 @@ export default {
       <div class="gl-mr-2 gl-text-gray-500" :class="folderClass">
         {{ nestedEnvironment.name }}
       </div>
-      <gl-badge size="sm" class="gl-mr-auto">{{ count }}</gl-badge>
-      <gl-link v-if="visible" :href="folderPath">{{ $options.i18n.link }}</gl-link>
+      <gl-badge size="sm" class="gl-mr-auto">{{ totalEnvironmentsCount }}</gl-badge>
     </div>
     <gl-collapse :visible="visible">
       <environment-item
@@ -120,6 +129,17 @@ export default {
         class="gl-border-gray-100 gl-border-t-solid gl-border-1 gl-pt-3"
         in-folder
       />
+      <div
+        v-if="isMessageShowing"
+        class="gl-border-gray-100 gl-border-t-solid gl-border-1 gl-py-5 gl-bg-gray-10 gl-text-center"
+        data-testid="environment-folder-message-element"
+      >
+        <gl-sprintf :message="$options.i18n.message">
+          <template #listedEnvironmentsCount>{{ listedEnvironmentsCount }}</template>
+          <template #totalEnvironmentsCount>{{ totalEnvironmentsCount }}</template>
+        </gl-sprintf>
+        <gl-link :href="folderPath">{{ $options.i18n.link }}</gl-link>
+      </div>
     </gl-collapse>
   </div>
 </template>

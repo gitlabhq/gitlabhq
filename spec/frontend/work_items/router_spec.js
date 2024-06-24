@@ -42,6 +42,7 @@ describe('Work items router', () => {
       apolloProvider: createMockApollo(handlers),
       router,
       provide: {
+        canAdminLabel: true,
         fullPath: 'full-path',
         groupPath: '',
         isGroup: false,
@@ -50,6 +51,7 @@ describe('Work items router', () => {
         hasIterationsFeature: false,
         hasOkrsFeature: false,
         hasIssuableHealthStatusFeature: false,
+        labelsManagePath: 'test-project-path/labels',
         reportAbusePath: '/report/abuse/path',
       },
       stubs: {

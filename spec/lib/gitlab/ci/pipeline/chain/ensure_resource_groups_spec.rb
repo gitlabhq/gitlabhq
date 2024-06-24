@@ -80,24 +80,10 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups do
         context "when there are nested variables" do
           let(:resource_group_key) { '${NESTED_VAR}_GROUP' }
 
-          context "when the ci_expand_nested_resource_group_variables feature flag is not true" do
-            before do
-              stub_feature_flags(ci_expand_nested_resource_group_variables: false)
-            end
-
-            it 'does not expand nested variables before creating the group' do
-              expect { subject }.to change { Ci::ResourceGroup.count }.by(1)
-              expect(project.resource_groups.find_by_key('${VAR}ST_GROUP')).to be_present
-              expect(job.options[:resource_group_key]).to be_nil
-            end
-          end
-
-          context "when the ci_expand_nested_resource_group_variables feature flag is true" do
-            it 'expands all of the nested variables before creating the group' do
-              expect { subject }.to change { Ci::ResourceGroup.count }.by(1)
-              expect(project.resource_groups.find_by_key('TEST_GROUP')).to be_present
-              expect(job.options[:resource_group_key]).to be_nil
-            end
+          it 'expands all of the nested variables before creating the group' do
+            expect { subject }.to change { Ci::ResourceGroup.count }.by(1)
+            expect(project.resource_groups.find_by_key('TEST_GROUP')).to be_present
+            expect(job.options[:resource_group_key]).to be_nil
           end
         end
       end

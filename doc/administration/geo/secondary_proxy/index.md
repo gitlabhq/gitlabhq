@@ -104,8 +104,8 @@ Considering that web traffic is proxied to the primary, the behavior of the seco
 site is inaccessible:
 
 - UI and API traffic return the same errors as the primary (or fail if the primary is not accessible at all), since they are proxied.
-- For repositories that already exist on the specific secondary site being accessed, Git read operations still work as expected,
-  including authentication through HTTP(s) or SSH.
+- For repositories that are fully up-to-date on the specific secondary site being accessed, Git read operations still work as expected,
+  including authentication through HTTP(s) or SSH. However, Git reads performed by GitLab Runners will fail.
 - Git operations for repositories that are not replicated to the secondary site return the same errors
   as the primary site, since they are proxied.
 - All Git write operations return the same errors as the primary site, since they are proxied.

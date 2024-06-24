@@ -575,7 +575,7 @@ RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
 
         within_testid 'sidebar-labels' do
           click_button _('Create project label')
-          fill_in _('Name new label'), with: 'test label'
+          fill_in _('Label name'), with: 'test label'
           first('.suggest-colors-dropdown a').click
           click_button 'Create'
         end

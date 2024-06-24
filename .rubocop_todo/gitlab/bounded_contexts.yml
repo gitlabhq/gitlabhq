@@ -2836,7 +2836,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/board_user_preference.rb'
     - 'ee/app/models/burndown.rb'
     - 'ee/app/models/click_house_model.rb'
-    - 'ee/app/models/compliance_management/compliance_framework.rb'
     - 'ee/app/models/compliance_management/compliance_framework/project_settings.rb'
     - 'ee/app/models/compliance_management/compliance_framework/security_policy.rb'
     - 'ee/app/models/compliance_management/framework.rb'

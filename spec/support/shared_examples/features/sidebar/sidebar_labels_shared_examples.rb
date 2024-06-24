@@ -98,7 +98,7 @@ RSpec.shared_examples 'labels sidebar widget' do
 
       it 'creates new label' do
         page.within(labels_widget) do
-          fill_in 'Name new label', with: 'wontfix'
+          fill_in 'Label name', with: 'wontfix'
           click_link 'Magenta-pink'
           click_button 'Create'
 
@@ -108,7 +108,7 @@ RSpec.shared_examples 'labels sidebar widget' do
 
       it 'shows error message if label title is taken' do
         page.within(labels_widget) do
-          fill_in 'Name new label', with: development.title
+          fill_in 'Label name', with: development.title
           click_link 'Magenta-pink'
           click_button 'Create'
 
