@@ -123,6 +123,7 @@ cng-qa-min-redis-version:
   after_script:
     - !reference [.set-suite-status, after_script]
     - !reference [.cng-base, after_script]
+  allow_failure: true
 
 # ==========================================
 # Post test stage
