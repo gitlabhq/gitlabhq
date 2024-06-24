@@ -5,16 +5,16 @@ module QA
     module Main
       class TwoFactorAuth < Page::Base
         view 'app/views/devise/sessions/two_factor.html.haml' do
-          element :verify_code_button
-          element :two_fa_code_field
+          element 'verify-code-button'
+          element 'two-fa-code-field'
         end
 
         def click_verify_code_button
-          click_element :verify_code_button
+          click_element 'verify-code-button'
         end
 
         def set_2fa_code(code)
-          fill_element(:two_fa_code_field, code)
+          fill_element('two-fa-code-field', code)
         end
       end
     end

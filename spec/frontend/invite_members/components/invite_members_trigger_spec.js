@@ -4,7 +4,6 @@ import InviteMembersTrigger from '~/invite_members/components/invite_members_tri
 import eventHub from '~/invite_members/event_hub';
 import {
   TRIGGER_ELEMENT_BUTTON,
-  TRIGGER_DEFAULT_QA_SELECTOR,
   TRIGGER_ELEMENT_WITH_EMOJI,
   TRIGGER_ELEMENT_DROPDOWN_WITH_EMOJI,
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
@@ -65,18 +64,6 @@ describe.each(triggerItems)('with triggerElement as %s', (triggerItem) => {
       createComponent();
 
       expect(findButton().text()).toBe(displayText);
-    });
-
-    it('uses the default qa selector value', () => {
-      createComponent();
-
-      expect(findButton().attributes('data-qa-selector')).toBe(TRIGGER_DEFAULT_QA_SELECTOR);
-    });
-
-    it('sets the qa selector value', () => {
-      createComponent({ qaSelector: '_qaSelector_' });
-
-      expect(findButton().attributes('data-qa-selector')).toBe('_qaSelector_');
     });
   });
 

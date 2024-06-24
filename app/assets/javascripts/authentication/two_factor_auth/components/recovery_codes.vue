@@ -115,14 +115,10 @@ export default {
       </gl-sprintf>
     </p>
 
-    <gl-card
-      class="codes-to-print gl-my-5"
-      data-testid="recovery-codes"
-      data-qa-selector="codes_content"
-    >
+    <gl-card class="codes-to-print gl-my-5" data-testid="recovery-codes">
       <ul class="gl-m-0 gl-pl-5">
         <li v-for="(code, index) in codes" :key="index">
-          <span class="gl-font-monospace" data-qa-selector="code_content">{{ code }}</span>
+          <span class="gl-font-monospace" data-testid="code-content">{{ code }}</span>
         </li>
       </ul>
     </gl-card>
@@ -131,7 +127,7 @@ export default {
         <clipboard-button
           :title="$options.i18n.copyButton"
           :text="codesAsString"
-          data-qa-selector="copy_button"
+          data-testid="copy-button"
           @click="handleButtonClick($options.copyButtonAction)"
         >
           {{ $options.i18n.copyButton }}
@@ -163,7 +159,7 @@ export default {
           :disabled="proceedButtonDisabled"
           :title="$options.i18n.proceedButton"
           variant="confirm"
-          data-qa-selector="proceed_button"
+          data-testid="proceed-button"
           data-track-action="click_button"
           :data-track-label="`${$options.trackingLabelPrefix}proceed_button`"
           >{{ $options.i18n.proceedButton }}</gl-button

@@ -1,7 +1,7 @@
 <script>
 import {
+  GlCollapsibleListbox,
   GlFormGroup,
-  GlFormSelect,
   GlModal,
   GlDatepicker,
   GlLink,
@@ -36,8 +36,8 @@ const DEFAULT_SLOTS = [
 
 export default {
   components: {
+    GlCollapsibleListbox,
     GlFormGroup,
-    GlFormSelect,
     GlDatepicker,
     GlLink,
     GlModal,
@@ -173,7 +173,6 @@ export default {
           variant: 'confirm',
           disabled: this.submitDisabled,
           loading: this.isLoading,
-          'data-qa-selector': 'invite_button',
         },
       };
     },
@@ -192,14 +191,6 @@ export default {
       return {
         text: this.cancelButtonText,
       };
-    },
-  },
-  watch: {
-    selectedAccessLevel: {
-      immediate: true,
-      handler(val) {
-        this.$emit('access-level', val);
-      },
     },
   },
   methods: {
@@ -308,11 +299,12 @@ export default {
               </template>
             </gl-sprintf>
           </template>
-          <gl-form-select
+          <gl-collapsible-listbox
             :id="dropdownId"
             v-model="selectedAccessLevel"
-            data-qa-selector="access_level_dropdown"
-            :options="accessLevelsOptions"
+            data-testid="access-level-dropdown"
+            :items="accessLevelsOptions"
+            block
           />
         </gl-form-group>
 

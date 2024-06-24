@@ -286,14 +286,6 @@ module QA
         ENV['QA_GITHUB_PASSWORD']
       end
 
-      def facebook_username
-        ENV['QA_FACEBOOK_USERNAME']
-      end
-
-      def facebook_password
-        ENV['QA_FACEBOOK_PASSWORD']
-      end
-
       def forker?
         !!(forker_username && forker_password)
       end

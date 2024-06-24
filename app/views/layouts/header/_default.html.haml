@@ -110,7 +110,7 @@
           - if header_link?(:user_dropdown)
             %li.nav-item.header-user.js-nav-user-dropdown.dropdown{ data: { testid: 'user-dropdown' }, class: ('mr-0' if has_impersonation_link) }
               = link_to current_user, class: user_dropdown_class, data: { toggle: "dropdown", track_label: "profile_dropdown", track_action: "click_dropdown", track_property: "navigation_top" } do
-                = render Pajamas::AvatarComponent.new(current_user, size: 24, class: 'header-user-avatar', avatar_options: { data: { testid: 'user_avatar_content' } })
+                = render Pajamas::AvatarComponent.new(current_user, size: 24, class: 'header-user-avatar', avatar_options: { data: { testid: 'user-avatar-content' } })
                 = render_if_exists 'layouts/header/user_notification_dot', project: project, namespace: group
                 = sprite_icon('chevron-down', css_class: 'caret-down')
               .dropdown-menu.dropdown-menu-right

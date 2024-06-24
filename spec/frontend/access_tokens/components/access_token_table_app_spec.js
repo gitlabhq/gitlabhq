@@ -153,7 +153,7 @@ describe('~/access_tokens/components/access_token_table_app', () => {
     let button = cells.at(6).findComponent(GlButton);
     expect(button.attributes()).toMatchObject({
       'aria-label': __('Revoke'),
-      'data-qa-selector': __('revoke_button'),
+      'data-testid': 'revoke-button',
       href: '/-/profile/personal_access_tokens/1/revoke',
       'data-confirm': sprintf(
         __(
