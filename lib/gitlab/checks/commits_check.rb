@@ -8,6 +8,7 @@ module Gitlab
 
       def validate!
         return if deletion?
+        return unless should_run_validations?
 
         logger.log_timed(LOG_MESSAGE) do
           commits.each do |commit|
@@ -17,6 +18,13 @@ module Gitlab
       end
 
       private
+
+      def should_run_validations?
+        # Enumerating commits can be expensive if there are large number
+        # of commits, and we only care about performing this check if the
+        # changes were made via the UI.
+        updated_from_web?
+      end
 
       def check_signed_commit_authorship!(commit)
         return unless signed_by_gitlab?(commit)
