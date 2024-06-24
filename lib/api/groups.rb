@@ -291,14 +291,12 @@ module API
         group.preload_shared_group_links
 
         mark_throttle! :update_namespace_name, scope: group if params.key?(:name) && params[:name].present?
-        authorize_any! [:admin_group, :admin_runner], group
+        authorize! :admin_group, group
 
-        safe_params = can?(current_user, :admin_group, group) ? params : params.slice(:id, :shared_runners_setting)
-
-        group.remove_avatar! if safe_params.key?(:avatar) && safe_params[:avatar].nil?
+        group.remove_avatar! if params.key?(:avatar) && params[:avatar].nil?
 
         if update_group(group)
-          present_group_details(safe_params, group, with_projects: true)
+          present_group_details(params, group, with_projects: true)
         else
           render_validation_error!(group)
         end
