@@ -167,7 +167,7 @@ In order of highest priority first, the component version can be:
 
 - A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
 - A tag, for example: `1.0.0`. If a tag and commit SHA exist with the same name,
-  the commit SHA takes precedence over the tag. Components released to the CI/CD
+  the commit SHA takes precedence over the tag. Components released to the CI/CD Catalog
   should be tagged with a [semantic version](#semantic-versioning).
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.

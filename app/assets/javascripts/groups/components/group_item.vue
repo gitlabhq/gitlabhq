@@ -40,8 +40,6 @@ export default {
     ItemStats,
     ProjectAvatar,
     VisibilityIcon,
-    FrameworkBadge: () =>
-      import('ee_component/compliance_dashboard/components/shared/framework_badge.vue'),
   },
   inject: {
     currentGroupVisibility: {
@@ -244,11 +242,6 @@ export default {
             <user-access-role-badge v-if="group.permission" size="sm" class="gl-mr-2">
               {{ group.permission }}
             </user-access-role-badge>
-            <framework-badge
-              v-if="hasComplianceFramework"
-              :framework="complianceFramework"
-              :show-edit="false"
-            />
           </div>
           <div v-if="group.description" class="description gl-font-sm gl-mt-1">
             <span

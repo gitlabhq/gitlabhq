@@ -1154,6 +1154,20 @@ Instead of:
 - In GitLab 14.1 and above...
 - In GitLab 14.1 and newer...
 
+## level
+
+If you can, avoid using `level` in the context of an instance or group.
+
+Use:
+
+- This setting is turned on for the instance.
+- This setting is turned on for the group and its subgroups.
+
+Instead of:
+
+- This setting is turned on at the instance level.
+- This setting is turned on at the group level.
+
 ## list
 
 Do not use **list** when referring to a [**dropdown list**](#dropdown-list).

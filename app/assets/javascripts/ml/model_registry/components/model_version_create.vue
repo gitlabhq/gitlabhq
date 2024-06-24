@@ -9,7 +9,7 @@ import {
   GlModal,
   GlModalDirective,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { uploadModel } from '../services/upload_model';
@@ -31,7 +31,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  inject: ['projectPath', 'maxAllowedFileSize'],
+  inject: ['projectPath', 'maxAllowedFileSize', 'latestVersion'],
   props: {
     modelGid: {
       type: String,
@@ -46,6 +46,16 @@ export default {
       selectedFile: emptyArtifactFile,
       versionData: null,
     };
+  },
+  computed: {
+    versionDescription() {
+      if (this.latestVersion) {
+        return sprintf(s__('MlModelRegistry|Latest version is %{latestVersion}'), {
+          latestVersion: this.latestVersion,
+        });
+      }
+      return s__('MlModelRegistry|Enter a semver version.');
+    },
   },
   methods: {
     async createModelVersion() {
@@ -114,8 +124,7 @@ export default {
     actionSecondary: {
       text: __('Cancel'),
     },
-    versionDescription: s__('MlModelRegistry|Enter a semver version.'),
-    versionPlaceholder: s__('MlModelRegistry|For example 1.0.0'),
+    versionPlaceholder: s__('MlModelRegistry|A semver version like 1.0.0'),
     descriptionPlaceholder: s__('MlModelRegistry|Enter some description'),
     buttonTitle: s__('MlModelRegistry|Create model version'),
     title: s__('MlModelRegistry|Create model version & import artifacts'),
@@ -137,9 +146,10 @@ export default {
     >
       <gl-form>
         <gl-form-group
+          data-testid="versionDescriptionId"
           label="Version:"
           label-for="versionId"
-          :description="$options.modal.versionDescription"
+          :description="versionDescription"
         >
           <gl-form-input
             id="versionId"

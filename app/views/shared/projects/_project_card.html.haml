@@ -55,8 +55,6 @@
           = sprite_icon('scale', size: 14, css_class: 'gl-mr-2')
           = project_license_name(project)
 
-      - if !explore_projects_tab?
-        = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: project, additional_classes: 'gl-ml-3!'
   - c.with_body do
     .project-controls{ data: { testid: 'project_controls'} }
       .gl-display-flex.gl-align-items-center.gl-gap-2.gl-mb-2.gl-justify-content-space-between.gl-flex-wrap

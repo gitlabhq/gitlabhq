@@ -3,15 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ClickHouse, feature_category: :database do
+  subject { described_class }
+
   context 'when ClickHouse is not configured' do
-    it 'returns false' do
-      expect(described_class).not_to be_configured
-    end
+    it { is_expected.not_to be_configured }
   end
 
   context 'when ClickHouse is configured', :click_house do
-    it 'returns false' do
-      expect(described_class).to be_configured
-    end
+    it { is_expected.to be_configured }
   end
 end

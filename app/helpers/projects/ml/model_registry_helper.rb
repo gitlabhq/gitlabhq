@@ -27,7 +27,8 @@ module Projects
           mlflow_tracking_url: mlflow_tracking_url(project),
           model_id: model.id,
           model_name: model.name,
-          max_allowed_file_size: max_allowed_file_size(project)
+          max_allowed_file_size: max_allowed_file_size(project),
+          latest_version: model.latest_version&.version
         }
 
         to_json(data)

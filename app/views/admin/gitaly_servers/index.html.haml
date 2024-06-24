@@ -4,7 +4,7 @@
 = render ::Layouts::PageHeadingComponent.new(_('Gitaly servers'))
 = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
   - c.with_header do
-    .gl-new-card-title-wrapper
+    .gl-new-card-title-wrapper{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_gitaly_servers_pageload' } }
       %h3.gl-new-card-title
         = _('Gitaly servers')
       .gl-new-card-count

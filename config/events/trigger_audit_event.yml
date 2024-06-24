@@ -1,0 +1,13 @@
+---
+description: Audit event triggered
+internal_events: true
+action: trigger_audit_event
+label_description: Name of the triggered audit event
+identifiers:
+product_group: compliance
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151878
+distributions:
+- ee
+tiers:
+- ultimate

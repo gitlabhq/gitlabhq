@@ -70,6 +70,7 @@ export default {
       projectPath: this.projectPath,
       canWriteModelRegistry: this.canWriteModelRegistry,
       maxAllowedFileSize: this.maxAllowedFileSize,
+      latestVersion: this.latestVersion,
     };
   },
   props: {
@@ -100,6 +101,11 @@ export default {
     maxAllowedFileSize: {
       type: Number,
       required: true,
+    },
+    latestVersion: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   apollo: {

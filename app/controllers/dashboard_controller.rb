@@ -101,5 +101,3 @@ class DashboardController < Dashboard::ApplicationController
     end
   end
 end
-
-DashboardController.prepend_mod

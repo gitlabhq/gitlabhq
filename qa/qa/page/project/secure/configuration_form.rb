@@ -58,6 +58,14 @@ module QA
             has_element?('feature-status', feature: 'dependency_scanning_false_status')
           end
 
+          def has_true_secret_detection_status?
+            has_element?('feature-status', feature: 'pre_receive_secret_detection_true_status')
+          end
+
+          def has_false_secret_detection_status?
+            has_element?('feature-status', feature: 'pre_receive_secret_detection_false_status')
+          end
+
           def has_auto_devops_container?
             has_element?('autodevops-container')
           end
@@ -76,11 +84,27 @@ module QA
             go_to_tab('Compliance')
           end
 
+          def enable_secret_detection
+            card = find_security_testing_card('Secret push protection')
+            within(card) do
+              # The GitLabUI toggle uses a Close Icon button
+              click_element('close-icon')
+            end
+          end
+
           private
 
           def go_to_tab(name)
             within_element('security-configuration-container') do
               find('.nav-item', text: name).click
+            end
+          end
+
+          def find_security_testing_card(header_text)
+            cards = all_elements('security-testing-card', minimum: 1)
+            cards.each do |card|
+              title = card.find('h3').text
+              return card if title.eql? header_text
             end
           end
         end

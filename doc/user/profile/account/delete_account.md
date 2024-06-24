@@ -93,6 +93,80 @@ the Admin Area.
 WARNING:
 User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you delete a user and their contributions are moved to a "Ghost User", the approval contributions refer to a missing or invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user), [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user) them.
 
+## Delete the root account on a self-managed instance
+
+DETAILS:
+**Offering:** Self-managed
+
+WARNING:
+The root account is the most privileged account on the system. Deleting the root account might result in losing access to the instance [Admin Area](../../../administration/admin_area.md) if there is no other administrator available on the instance.
+
+You can delete the root account using either the UI or the [GitLab Rails console](../../../administration/operations/rails_console.md).
+
+Before you delete the root account:
+
+1. If you have created any [project](../../project/settings/project_access_tokens.md) or [personal access tokens](../../profile/personal_access_tokens.md) for the root account and use them in your workflow, transfer any necessary permissions or ownership from the root account to the new administrator.
+1. [Back up your self-managed instance](../../../administration/backup_restore/backup_gitlab.md).
+1. Consider [deactivating](../../../administration/moderate_users.md#deactivate-a-user) or [blocking](../../../administration/moderate_users.md#block-and-unblock-users) the root account instead.
+
+### Use the UI
+
+Prerequisites:
+
+- You must be an administrator for the self-managed instance.
+
+To delete the root account:
+
+1. In the Admin Area, [create a new user with administrator access](../../profile/account/create_accounts.md#create-users-in-admin-area). This ensures that you maintain administrator access to the instance whilst mitigating the risks associated with deleting the root account.
+1. [Delete the root account](#delete-users-and-user-contributions).
+
+### Use the GitLab Rails console
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+Prerequisites:
+
+- You must have access to the GitLab Rails console.
+
+To delete the root account, in the Rails console:
+
+1. Give another existing user administrator access:
+
+   ```ruby
+   user = User.find(username: 'Username') # or use User.find_by(email: 'email@example.com') to find by email
+   user.admin = true
+   user.save!
+   ```
+
+   This ensures that you maintain administrator access to the instance whilst mitigating the risks associated with deleting the root account.
+
+1. To delete the root account, do either of the following:
+
+   - Block the root account:
+  
+     ```ruby
+     # This needs to be a current admin user
+     current_user = User.find(username: 'Username') 
+
+     # This is the root user we want to block
+     user = User.find(username: 'Username') 
+
+     ::Users::BlockService.new(current_user).execute(user)
+     ```
+
+   - Deactivate the root user:
+
+     ```ruby
+     # This needs to be a current admin user
+     current_user = User.find(username: 'Username') 
+
+     # This is the root user we want to deactivate
+     user = User.find(username: 'Username') 
+
+     ::Users::DeactivateService.new(current_user, skip_authorization: true).execute(user)
+     ```
+
 ## Troubleshooting
 
 ### Deleting a user results in a PostgreSQL null value error

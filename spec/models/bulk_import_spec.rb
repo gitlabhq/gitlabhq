@@ -189,16 +189,6 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
         expect { import.send(:"#{event}!") }.not_to notify_owner_of_completion
       end
     end
-
-    context 'when notify_owners_of_finished_direct_transfer flag is disabled' do
-      before do
-        stub_feature_flags(notify_owners_of_finished_direct_transfer: false)
-      end
-
-      it { expect { import.finish! }.not_to notify_owner_of_completion }
-      it { expect { import.fail_op! }.not_to notify_owner_of_completion }
-      it { expect { import.cleanup_stale! }.not_to notify_owner_of_completion }
-    end
   end
 
   describe '#parent_group_entity' do

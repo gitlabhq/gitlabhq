@@ -13433,6 +13433,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Compliance framework created"
 msgstr ""
 
+msgid "ComplianceFrameworks|Compliance frameworks applied"
+msgstr ""
+
 msgid "ComplianceFrameworks|Compliance frameworks applied to %{projectName}"
 msgstr ""
 
@@ -13530,6 +13533,9 @@ msgid "ComplianceFrameworks|The compliance framework must be edited in top-level
 msgstr ""
 
 msgid "ComplianceFrameworks|There can be only one default framework."
+msgstr ""
+
+msgid "ComplianceFrameworks|This project is covered by the rules defined in the compliance framework. Only group owners and maintainers can view details of the compliance framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|To link this policy and framework,  edit  the policy's scope."
@@ -30316,6 +30322,9 @@ msgstr ""
 msgid "KubernetesDashboard|You can select an agent from a project's environment page."
 msgstr ""
 
+msgid "KubernetesLogs|Agent ID"
+msgstr ""
+
 msgid "KubernetesLogs|Container"
 msgstr ""
 
@@ -33455,6 +33464,9 @@ msgid_plural "MlModelRegistry|%d versions"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "MlModelRegistry|A semver version like 1.0.0"
+msgstr ""
+
 msgid "MlModelRegistry|Add a model"
 msgstr ""
 
@@ -33569,9 +33581,6 @@ msgstr ""
 msgid "MlModelRegistry|File \"%{name}\" is %{size}. It is larger than max allowed size of %{maxAllowedFileSize}"
 msgstr ""
 
-msgid "MlModelRegistry|For example 1.0.0"
-msgstr ""
-
 msgid "MlModelRegistry|For example 1.0.0. Must be a semantic version."
 msgstr ""
 
@@ -33588,6 +33597,9 @@ msgid "MlModelRegistry|Info"
 msgstr ""
 
 msgid "MlModelRegistry|Latest version"
+msgstr ""
+
+msgid "MlModelRegistry|Latest version is %{latestVersion}"
 msgstr ""
 
 msgid "MlModelRegistry|Leave empty to skip version creation."
@@ -58843,6 +58855,12 @@ msgstr ""
 msgid "Vulnerability|Warning: possible secrets detected"
 msgstr ""
 
+msgid "Vulnerability|You can also %{message}."
+msgstr ""
+
+msgid "Vulnerability|use AI by asking GitLab Duo Chat to explain this vulnerability and suggest a solution"
+msgstr ""
+
 msgid "WARNING:"
 msgstr ""
 
@@ -62252,9 +62270,6 @@ msgid "ciReport|Parsing schema failed. Check the validity of your .gitlab-ci.yml
 msgstr ""
 
 msgid "ciReport|RPS"
-msgstr ""
-
-msgid "ciReport|Resolve with AI"
 msgstr ""
 
 msgid "ciReport|Resolve with merge request"

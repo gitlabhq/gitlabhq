@@ -5,6 +5,7 @@ import {
   EVENT_PLAIN_TEXT,
   EVENT_ERROR,
 } from '@gitlab/cluster-client';
+import { throttle } from 'lodash';
 import k8sLogsQuery from '~/environments/graphql/queries/k8s_logs.query.graphql';
 
 export const buildWatchPath = ({ resource, api = 'api/v1', namespace = '' }) => {
@@ -61,12 +62,19 @@ export const k8sLogs = (_, { configuration, namespace, podName, containerName },
   watchApi
     .subscribeToStream(watchPath, watchQuery)
     .then((watcher) => {
+      let logsData = [];
+      const writeLogsThrottled = throttle(() => {
+        const currentLogsData = cacheWrapper.readLogsData();
+
+        if (currentLogsData.length !== logsData.length) {
+          cacheWrapper.writeLogsData(logsData);
+        }
+      }, 100);
+
       watcher.on(EVENT_PLAIN_TEXT, (data) => {
-        const logsData = cacheWrapper.readLogsData();
+        logsData = [...logsData, { id: logsData.length + 1, content: data }];
 
-        const updatedLogsData = [...logsData, { id: logsData.length + 1, content: data }];
-
-        cacheWrapper.writeLogsData(updatedLogsData);
+        writeLogsThrottled();
       });
 
       watcher.on(EVENT_TIMEOUT, (err) => {

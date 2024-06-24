@@ -1142,7 +1142,7 @@ RSpec/FeatureCategory:
     - 'ee/spec/views/admin/push_rules/_merge_request_approvals.html.haml_spec.rb'
     - 'ee/spec/views/admin/users/index.html.haml_spec.rb'
     - 'ee/spec/views/clusters/clusters/show.html.haml_spec.rb'
-    - 'ee/spec/views/compliance_management/compliance_framework/_compliance_framework_badge.html.haml_spec.rb'
+    - 'ee/spec/views/compliance_management/compliance_framework/_compliance_frameworks_info.html.haml_spec.rb'
     - 'ee/spec/views/devise/sessions/new.html.haml_spec.rb'
     - 'ee/spec/views/groups/hook_logs/show.html.haml_spec.rb'
     - 'ee/spec/views/groups/hooks/edit.html.haml_spec.rb'

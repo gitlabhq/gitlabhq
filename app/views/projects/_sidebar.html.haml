@@ -61,6 +61,9 @@
         - else
           = render 'stat_anchor_list', anchors: statistics_buttons, project_buttons: true
 
+  -# Compliance frameworks
+  = render_if_exists 'compliance_management/compliance_framework/compliance_frameworks_info', project: @project
+
   -# Project created
   .project-page-sidebar-block.gl-py-4
     %p.gl-font-bold.gl-text-gray-900.gl-m-0.gl-mb-1= s_('ProjectPage|Created on')

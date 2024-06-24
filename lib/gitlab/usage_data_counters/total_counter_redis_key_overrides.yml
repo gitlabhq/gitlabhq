@@ -36,3 +36,7 @@
 '{event_counters}_create_merge_request_note': USAGE_NOTE_CREATE_MERGEREQUEST
 '{event_counters}_create_commit_from_web_ide': WEB_IDE_COMMITS_COUNT
 '{event_counters}_create_merge_request_from_web_ide': WEB_IDE_MERGE_REQUESTS_COUNT
+'{event_counters}_trigger_audit_event-filter:[label:delete_epic]': USAGE_AUDIT_EVENTS_DELETE_EPIC
+'{event_counters}_trigger_audit_event-filter:[label:delete_issue]': USAGE_AUDIT_EVENTS_DELETE_ISSUE
+'{event_counters}_trigger_audit_event-filter:[label:delete_merge_request]': USAGE_AUDIT_EVENTS_DELETE_MERGE_REQUEST
+'{event_counters}_trigger_audit_event-filter:[label:delete_work_item]': USAGE_AUDIT_EVENTS_DELETE_WORK_ITEM

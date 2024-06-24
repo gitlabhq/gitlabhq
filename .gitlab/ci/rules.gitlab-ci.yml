@@ -2235,10 +2235,6 @@
       when: never
     - if: '$ANTHROPIC_API_KEY == null'
       when: never
-    - if: '$VERTEX_AI_PROJECT == null'
-      when: never
-    - if: '$VERTEX_AI_CREDENTIALS == null'
-      when: never
     - <<: *if-fork-merge-request
       when: never
 

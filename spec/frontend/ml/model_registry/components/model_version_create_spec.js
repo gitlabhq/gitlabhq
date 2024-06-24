@@ -43,6 +43,7 @@ describe('ModelVersionCreate', () => {
 
   const createWrapper = (
     createResolver = jest.fn().mockResolvedValue(createModelVersionResponses.success),
+    provide = {},
   ) => {
     const requestHandlers = [[createModelVersionMutation, createResolver]];
     apolloProvider = createMockApollo(requestHandlers);
@@ -51,6 +52,8 @@ describe('ModelVersionCreate', () => {
       provide: {
         projectPath: 'some/project',
         maxAllowedFileSize: 99999,
+        latestVersion: null,
+        ...provide,
       },
       directives: {
         GlModal: createMockDirective('gl-modal'),
@@ -96,7 +99,9 @@ describe('ModelVersionCreate', () => {
       });
 
       it('renders the version input label', () => {
-        expect(wrapper.find('[description="Enter a semver version."]').exists()).toBe(true);
+        expect(wrapper.findByTestId('versionDescriptionId').attributes().description).toBe(
+          'Enter a semver version.',
+        );
       });
 
       it('renders the description input', () => {
@@ -139,6 +144,18 @@ describe('ModelVersionCreate', () => {
       it('displays the title of the artifacts uploader', () => {
         expect(artifactZoneLabel().attributes('label')).toBe('Upload artifacts');
       });
+    });
+  });
+
+  describe('Latest version available', () => {
+    beforeEach(() => {
+      createWrapper(undefined, { latestVersion: '1.2.3' });
+    });
+
+    it('renders the version input label', () => {
+      expect(wrapper.findByTestId('versionDescriptionId').attributes().description).toBe(
+        'Latest version is 1.2.3',
+      );
     });
   });
 

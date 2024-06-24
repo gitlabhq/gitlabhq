@@ -54,10 +54,7 @@ class BulkImport < ApplicationRecord
     # rubocop:disable Style/SymbolProc
     after_transition any => [:finished, :failed, :timeout] do |bulk_import|
       bulk_import.update_has_failures
-
-      if Feature.enabled?(:notify_owners_of_finished_direct_transfer, bulk_import.user)
-        bulk_import.notify_owners_of_completion
-      end
+      bulk_import.notify_owners_of_completion
     end
     # rubocop:enable Style/SymbolProc
 

@@ -1,9 +1,0 @@
----
-name: notify_owners_of_finished_direct_transfer
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/458115
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155262
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/465487
-milestone: '17.1'
-group: group::import and integrate
-type: gitlab_com_derisk
-default_enabled: false
