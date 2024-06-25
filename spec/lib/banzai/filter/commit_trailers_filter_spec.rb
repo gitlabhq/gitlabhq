@@ -231,4 +231,6 @@ RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_c
       end
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

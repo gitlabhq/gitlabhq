@@ -3,6 +3,8 @@
 module Banzai
   module Filter
     class FrontMatterFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       def call
         lang_mapping = Gitlab::FrontMatter::DELIM_LANG
 

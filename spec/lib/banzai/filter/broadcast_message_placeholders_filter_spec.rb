@@ -86,4 +86,6 @@ RSpec.describe Banzai::Filter::BroadcastMessagePlaceholdersFilter, feature_categ
       it { expect(subject).to eq("Email: ") }
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

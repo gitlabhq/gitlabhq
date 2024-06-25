@@ -9,6 +9,7 @@ module Banzai
     # HTML that replaces all diagrams supported by Kroki with the corresponding img tags.
     # If the source content is large then the hidden attribute is added to the img tag.
     class KrokiFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
       include ActionView::Helpers::TagHelper
 
       MAX_CHARACTER_LIMIT = 2000

@@ -5,6 +5,8 @@ module Banzai
     # HTML filter that renders `color` followed by a color "chip".
     #
     class ColorFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       COLOR_CHIP_CLASS = 'gfm-color_chip'
 
       CSS   = 'code'

@@ -102,4 +102,6 @@ RSpec.describe Banzai::Filter::AssetProxyFilter, feature_category: :team_plannin
       end
     end
   end
+
+  it_behaves_like 'pipeline timing check', context: { disable_asset_proxy: true }
 end

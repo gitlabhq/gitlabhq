@@ -28,6 +28,7 @@ module Banzai
     # This class overrides TaskList::Filter in the `deckar01-task_list` gem
     # to add support for inapplicable task items
     class TaskListFilter < TaskList::Filter
+      prepend Concerns::PipelineTimingCheck
       extend ::Gitlab::Utils::Override
 
       XPATH = 'descendant-or-self::li[input[@data-inapplicable]] | descendant-or-self::li[p[input[@data-inapplicable]]]'

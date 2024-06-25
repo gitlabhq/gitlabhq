@@ -228,13 +228,28 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
     end
   end
 
-  describe 'cmark-gfm and autlolinks' do
-    it 'does not hang with significant number of unclosed image links' do
-      markdown = '![a ' * 300000
+  context 'when input is malicious' do
+    let_it_be(:duration) { (Banzai::Filter::Concerns::PipelineTimingCheck::MAX_PIPELINE_SECONDS + 3).seconds }
 
-      expect do
-        Timeout.timeout(2.seconds) { described_class.to_html(markdown, project: nil) }
-      end.not_to raise_error
+    where(:markdown) do
+      [
+        '![a ' * 3,
+        "$1$\n" * 190000,
+        "[^1]\n[^1]:\n" * 100000,
+        "[](a)" * 190000,
+        "|x|x|x|x|x|\n-|-|-|-|-|\n|a|\n|a|\n|a|\n" * 6900,
+        "`a^2+b^2=c^2` + " * 56000,
+        ':y: ' * 190000,
+        '<img>' * 100000
+      ]
+    end
+
+    with_them do
+      it 'is not long running' do
+        expect do
+          Timeout.timeout(duration) { described_class.to_html(markdown, project: nil) }
+        end.not_to raise_error
+      end
     end
   end
 end

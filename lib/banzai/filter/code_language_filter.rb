@@ -10,6 +10,7 @@ module Banzai
     # sits on the `pre` or `code`, or in a `class` or `lang` attribute
     class CodeLanguageFilter < HTML::Pipeline::Filter
       include OutputSafety
+      prepend Concerns::PipelineTimingCheck
 
       LANG_PARAMS_DELIMITER = ':'
       LANG_ATTR = 'data-canonical-lang'

@@ -214,4 +214,6 @@ RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :team_planni
       end.not_to raise_error
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

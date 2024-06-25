@@ -115,4 +115,6 @@ RSpec.describe Banzai::Filter::WikiLinkFilter, feature_category: :wiki do
       end
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

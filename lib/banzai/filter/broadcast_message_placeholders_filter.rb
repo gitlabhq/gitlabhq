@@ -5,6 +5,8 @@ module Banzai
     # Replaces placeholders for broadcast messages with data from the current
     # user or the instance.
     class BroadcastMessagePlaceholdersFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       def call
         return doc unless context[:broadcast_message_placeholders]
 

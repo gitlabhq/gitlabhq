@@ -15,6 +15,8 @@ module Banzai
     #   :requested_path
     #   :system_note
     class RepositoryLinkFilter < BaseRelativeLinkFilter
+      prepend Concerns::PipelineTimingCheck
+
       def call
         return doc if context[:system_note]
 

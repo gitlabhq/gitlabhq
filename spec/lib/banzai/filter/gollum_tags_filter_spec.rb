@@ -175,4 +175,6 @@ RSpec.describe Banzai::Filter::GollumTagsFilter, feature_category: :wiki do
       Timeout.timeout(3.seconds) { filter(text, wiki: wiki) }
     end.not_to raise_error
   end
+
+  it_behaves_like 'pipeline timing check'
 end
