@@ -615,6 +615,36 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         end
       end
 
+      context 'when performing a multiplex query as an IntrospectionQuery' do
+        let(:user) { create(:user) }
+        let_it_be(:query) do
+          <<~GQL
+            mutation IntrospectionQuery{createSnippet(input:{title:"test" description:"test" visibilityLevel:public blobActions:[{action:create previousPath:"test" filePath:"test" content:"test new file"}]}){errors clientMutationId snippet{webUrl}}}
+          GQL
+        end
+
+        before do
+          sign_in(user)
+        end
+
+        it 'does not perform a mutation' do
+          expect do
+            get :execute,
+              params: { query: query, operationName: 'IntrospectionQuery', _json: ["[query]=query {__typename}"] }
+          end.not_to change {
+            Snippet.count
+          }
+        end
+
+        it 'does not call GitlabSchema.execute' do
+          expect(GitlabSchema).not_to receive(:execute)
+          expect(GitlabSchema).to receive(:multiplex)
+
+          get :execute,
+            params: { query: query, operationName: 'IntrospectionQuery', _json: ["[query]=query {__typename}"] }
+        end
+      end
+
       it 'fails if the GraphiQL gem version is not 1.8.0' do
         # We cache the IntrospectionQuery based on the default IntrospectionQuery by GraphiQL. If this spec fails,
         # GraphiQL has been updated, so we should check whether the IntropsectionQuery we cache is still valid.

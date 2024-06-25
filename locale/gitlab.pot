@@ -44049,6 +44049,9 @@ msgstr ""
 msgid "Run manual or delayed jobs"
 msgstr ""
 
+msgid "Run pipeline"
+msgstr ""
+
 msgid "Run tests against your code live using the Web Terminal"
 msgstr ""
 
@@ -52083,9 +52086,6 @@ msgstr ""
 msgid "The latest artifacts created by jobs in the most recent successful pipeline will be stored."
 msgstr ""
 
-msgid "The latest pipeline for this merge request did not succeed. The latest changes are unverified."
-msgstr ""
-
 msgid "The latest pipeline for this merge request has failed."
 msgstr ""
 
@@ -52132,6 +52132,9 @@ msgid "The maximum file size is %{size}."
 msgstr ""
 
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
+msgstr ""
+
+msgid "The merge checks are incomplete because the latest pipeline failed, the pipeline status cannot be verified, or the merge request target branch was changed. You should run a new pipeline before merging."
 msgstr ""
 
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
@@ -59899,6 +59902,9 @@ msgid "You need to verify your primary email first before enabling Two-Factor Au
 msgstr ""
 
 msgid "You see projects here when you're added to a group or project."
+msgstr ""
+
+msgid "You should run a new pipeline, because the target branch has changed for this merge request."
 msgstr ""
 
 msgid "You successfully declined the invitation"

@@ -1,9 +1,0 @@
----
-name: rebase_when_retargetting_mrs
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/441232
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145400
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442602
-milestone: '16.10'
-group: group::code review
-type: gitlab_com_derisk
-default_enabled: false

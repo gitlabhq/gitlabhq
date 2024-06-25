@@ -242,6 +242,14 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :team_planning 
     end.not_to raise_error
   end
 
+  it 'does not timeout with excessively long scheme and no link' do
+    doc = "#{'h' * 1_000_000}://"
+
+    expect do
+      Timeout.timeout(30.seconds) { filter(doc) }
+    end.not_to raise_error
+  end
+
   # Rinku does not escape these characters in HTML attributes, but content_tag
   # does. We don't care about that difference for these specs, though.
   def unescape(html)

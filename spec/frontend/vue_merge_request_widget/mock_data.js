@@ -450,6 +450,10 @@ export const mockStore = {
   ciStatus: 'ci-status',
   hasCI: true,
   exposedArtifactsPath: 'exposed_artifacts.json',
+  targetProjectId: 1,
+  iid: 1,
+  retargeted: false,
+  detatchedPipeline: 'DETATCHED',
 };
 
 export const mockMergePipeline = {
