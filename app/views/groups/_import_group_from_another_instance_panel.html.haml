@@ -2,10 +2,11 @@
 
 = gitlab_ui_form_with url: configure_import_bulk_imports_path(namespace_id: params[:parent_id]), class: 'gl-show-field-errors' do |f|
   .gl-border-l-solid.gl-border-r-solid.gl-border-t-solid.gl-border-gray-100.gl-border-1.gl-p-5.gl-mt-4
-    .gl-display-flex.gl-align-items-center
-      %h4.gl-display-flex
+    .gl-flex.gl-items-center.gl-justify-between
+      %h4.gl-flex
         = s_('GroupsNew|Import groups by direct transfer')
-      = link_to _('History'), history_import_bulk_imports_path, class: 'gl-link gl-ml-auto'
+      = render Pajamas::ButtonComponent.new(href: history_import_bulk_imports_path, category: :secondary, variant: :confirm, size: :small) do
+        = s_('BulkImport|View import history')
 
     - if bulk_imports_disabled
       = render Pajamas::AlertComponent.new(dismissible: false, variant: :tip) do |c|
@@ -30,7 +31,7 @@
     %p.gl-mt-5.gl-mb-3
       - url_link = link_to('', help_page_path('user/group/import/direct_transfer_migrations', anchor: 'connect-the-source-gitlab-instance'), target: '_blank', rel: 'noopener noreferrer')
       = safe_format(s_('GroupsNew|Provide credentials for the %{url_link_start}source instance%{url_link_end} to import from. You can provide this instance as a source to move groups within this instance.'), tag_pair(url_link, :url_link_start, :url_link_end))
-    .form-group.gl-form-group.gl-display-flex.gl-flex-direction-column
+    .form-group.gl-form-group.gl-flex.gl-flex-col
       = f.label :bulk_import_gitlab_url, s_('GroupsNew|GitLab source instance base URL'), for: 'import_gitlab_url'
       = f.text_field :bulk_import_gitlab_url, disabled: bulk_imports_disabled, placeholder: 'https://gitlab.example.com', class: 'gl-form-input col-xs-12 col-sm-8',
         required: true,
@@ -39,7 +40,7 @@
         data: { testid: 'import-gitlab-url' }
       %small.form-text.gl-text-secondary
         = s_('Import|Must only contain the base URL of the source GitLab instance.')
-    .form-group.gl-form-group.gl-display-flex.gl-flex-direction-column
+    .form-group.gl-form-group.gl-flex.gl-flex-col
       = f.label :bulk_import_gitlab_access_token, s_('GroupsNew|Personal access token'), for: 'import_gitlab_token', class: 'col-form-label'
       .gl-font-normal
         - pat_link = link_to('', help_page_path('user/profile/personal_access_tokens'), target: '_blank')

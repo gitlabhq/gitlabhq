@@ -1009,28 +1009,10 @@ include:
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms
   image:
-    name: cyclonedx/cyclonedx-cli:0.24.2
+    name: cyclonedx/cyclonedx-cli:0.25.1
     entrypoint: [""]
   script:
-    - apt-get update && apt-get install -y jq
     - find . -name "gl-sbom-*.cdx.json" -exec cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
-    # remove duplicates from merged file. See https://github.com/CycloneDX/cyclonedx-cli/issues/188 for details.
-    - |
-      jq '. |
-      {
-        "bomFormat": .bomFormat,
-        "specVersion": .specVersion,
-        "serialNumber": .serialNumber,
-        "version": .version,
-        "metadata": {
-          "tools": [
-            (.metadata.tools | unique[])
-          ]
-        },
-        "components": [
-          (.components | unique[])
-        ]
-      }' "gl-sbom-all.cdx.json" > gl-sbom-all.cdx.json.tmp && mv gl-sbom-all.cdx.json.tmp gl-sbom-all.cdx.json
     # optional: validate the merged sbom
     - cyclonedx validate --input-version v1_4 --input-file gl-sbom-all.cdx.json
   artifacts:

@@ -7591,10 +7591,10 @@ especially when it comes to nested emphasis.  The original
 <code data-sourcepos="8237:2-8237:4">___</code> delimiters can be used for strong emphasis, and most
 implementations have also allowed the following patterns:</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
-<pre data-sourcepos="8240:1-8246:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown"><span class="gs">***strong emph**</span><span class="err">*</span></span>
-<span id="LC2" class="line" lang="markdown"><span class="gs">***strong**</span> in emph<span class="err">*</span></span>
-<span id="LC3" class="line" lang="markdown"><span class="gs">***emph* in strong**</span></span>
-<span id="LC4" class="line" lang="markdown"><span class="gs">**in strong *emph**</span><span class="err">*</span></span>
+<pre data-sourcepos="8240:1-8246:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown"><span class="ges">***strong emph***</span></span>
+<span id="LC2" class="line" lang="markdown"><span class="ge">***strong** in emph*</span></span>
+<span id="LC3" class="line" lang="markdown"><span class="ge">***emph*</span> in strong<span class="ge">**</span></span>
+<span id="LC4" class="line" lang="markdown"><span class="ge">**</span>in strong <span class="ge">*emph***</span></span>
 <span id="LC5" class="line" lang="markdown"><span class="ge">*in emph **strong***</span></span></code></pre>
 <copy-code></copy-code>
 </div>
@@ -7603,7 +7603,7 @@ is clear and they are useful (especially in contexts like bibliography
 entries):</p>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="8252:1-8255:3" data-canonical-lang="markdown" class="code highlight js-syntax-highlight language-markdown" v-pre="true"><code><span id="LC1" class="line" lang="markdown"><span class="ge">*emph *</span>with emph<span class="ge">* in it*</span></span>
-<span id="LC2" class="line" lang="markdown"><span class="gs">**strong **</span>with strong<span class="gs">** in it**</span></span></code></pre>
+<span id="LC2" class="line" lang="markdown"><span class="gs">**strong **</span>with strong<span class="ge">**</span> in it<span class="ge">**</span></span></code></pre>
 <copy-code></copy-code>
 </div>
 <p data-sourcepos="8257:1-8260:31" dir="auto">Many implementations have also restricted intraword emphasis to

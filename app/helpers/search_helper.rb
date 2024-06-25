@@ -481,6 +481,7 @@ module SearchHelper
     opts =
       {
         id: "filtered-search-#{type}",
+        'aria-label': _('Add search filter'),
         placeholder: placeholder,
         data: {
           'username-params' => UserSerializer.new.represent(@users)

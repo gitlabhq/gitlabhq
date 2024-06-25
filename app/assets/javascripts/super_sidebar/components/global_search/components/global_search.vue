@@ -235,7 +235,7 @@ export default {
           break;
 
         case ESC_KEY:
-          this.$refs.searchModal.close();
+          this.$refs.modal.close();
           break;
 
         default:

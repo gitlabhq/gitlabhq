@@ -78,7 +78,7 @@ the size value only changes when:
   are analyzed and their layers deleted if not referenced by any other tagged image.
   If any layers are deleted, the namespace usage is updated.
 - The namespace's registry usage shrinks enough that GitLab can measure it with maximum precision.
-  As usage for namespaces shrinks to be under the [limits](../../../user/usage_quotas.md#namespace-storage-limit),
+  As usage for namespaces shrinks,
   the measurement switches automatically from delayed to precise usage measurement.
   There is no place in the UI to determine which measurement method is being used,
   but [issue 386468](https://gitlab.com/gitlab-org/gitlab/-/issues/386468) proposes to improve this.

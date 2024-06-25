@@ -438,8 +438,9 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
 
           it 'returns error status' do
             expect(subject[:status]).to be(:error)
-            expect(subject[:message])
-              .to match("#{child_work_item.to_reference} cannot be added: is not allowed to add this type of parent")
+            expect(subject[:message]).to match(
+              "#{child_work_item.to_reference} cannot be added: it's not allowed to add this type of parent item"
+            )
           end
 
           it 'does not update work item attributes' do

@@ -45,6 +45,28 @@ Cons:
   require multiple PATs to work - one for each Organization.
 - Cannot tell at a glance if PAT will apply to a certain Project/Namespace.
 
+## 3.2. Routing
+
+The Topology Service will claim the tokens to facilitate routing requests to the owning Cell.
+However,# this functionality is only expected to be available in Cells 1.5.
+
+To avoid imposing additional requirements on the Topology Service team for
+Cells 1.0, a token prefix will be used for routing.
+The prefix will be associated with the owning Cell, allowing routing to function
+via the Topology Service without claiming individual tokens.
+However, this approach will increase the workload for teams working on `gitlab-rails` and SREs.
+
+The prefix needs to be added to the following tokens:
+
+- Personal access Token (including its derivatives: impersonation Token, project access token, group access token)
+- OAuth access and refresh token
+- RSS / calendar feed tokens
+- Incoming email tokens
+- Runner token
+- CI Job token
+- Pipeline trigger tokens
+- Deploy token
+
 ## 4. Alternative approaches considered
 
 ### 4.1. Cluster-wide PATs

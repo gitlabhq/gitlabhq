@@ -6,13 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Set up the Google Cloud integration
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com
-**Status:** Beta
-
-This feature is in [beta](../../policy/experiment-beta-support.md).
-
 This tutorial shows you how to integrate Google Cloud with GitLab,
 so that you can deploy directly to Google Cloud.
 

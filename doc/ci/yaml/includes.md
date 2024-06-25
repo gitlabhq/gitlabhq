@@ -14,14 +14,20 @@ You can use [`include`](index.md#include) to include external YAML files in your
 
 ## Include a single configuration file
 
-To include a single configuration file, use either of these syntax options:
+To include a single configuration file, use `include` by itself with a single file
+with either of these syntax options:
 
-- `include` by itself with a single file. If this is a local file, it is the same as [`include:local`](index.md#includelocal).
-  If this is a remote file, it is the same as [`include:remote`](index.md#includeremote).
-
-  ```yaml
-  include: '/templates/.after-script-template.yml'
+- ```yaml
+  include: 'my-config.yml'
   ```
+
+- ```yaml
+  include:
+    - 'my-config.yml'
+  ```
+
+If the file is a local file, the behavior is the same as [`include:local`](index.md#includelocal).
+If the file is a remote file, it is the same as [`include:remote`](index.md#includeremote).
 
 ## Include an array of configuration files
 
@@ -33,7 +39,7 @@ You can include an array of configuration files:
   ```yaml
   include:
     - 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-    - '/templates/.after-script-template.yml'
+    - 'templates/.after-script-template.yml'
   ```
 
 - You can define a single item array:
@@ -48,7 +54,7 @@ You can include an array of configuration files:
   ```yaml
   include:
     - remote: 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-    - local: '/templates/.after-script-template.yml'
+    - local: 'templates/.after-script-template.yml'
     - template: Auto-DevOps.gitlab-ci.yml
   ```
 
@@ -57,11 +63,11 @@ You can include an array of configuration files:
   ```yaml
   include:
     - 'https://gitlab.com/awesome-project/raw/main/.before-script-template.yml'
-    - '/templates/.after-script-template.yml'
+    - 'templates/.after-script-template.yml'
     - template: Auto-DevOps.gitlab-ci.yml
     - project: 'my-group/my-project'
       ref: main
-      file: '/templates/.gitlab-ci-template.yml'
+      file: 'templates/.gitlab-ci-template.yml'
   ```
 
 ## Use `default` configuration from an included configuration file
@@ -85,7 +91,7 @@ default:
 Content of `.gitlab-ci.yml`:
 
 ```yaml
-include: '/templates/.before-script-template.yml'
+include: 'templates/.before-script-template.yml'
 
 rspec1:
   script:

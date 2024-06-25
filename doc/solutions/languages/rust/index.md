@@ -4,7 +4,7 @@ group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
 ---
 
-# Rust Language and EcoSytem Solutions Index
+# Rust Language and Ecosystem Solutions Index
 
 Learn how to GitLab supports the Rust ecosystem.
 

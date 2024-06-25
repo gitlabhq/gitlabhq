@@ -35,7 +35,7 @@ When possible, use the full phrase: **the `.gitlab-ci.yml` file**
 Although users can specify another name for their CI/CD configuration file,
 in most cases, use **the `.gitlab-ci.yml` file** instead.
 
-## `&`
+## `&` (ampersand)
 
 Do not use Latin abbreviations. Use **and** instead, unless you are documenting a UI element that uses an `&`.
 

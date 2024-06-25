@@ -278,7 +278,9 @@ export default class Shortcuts {
     const searchInput = await waitForElement('#super-sidebar-search-modal #search');
     if (!searchInput) return;
 
-    searchInput.value = '~';
+    const currentPath = document.querySelector('.js-repo-breadcrumbs')?.dataset.currentPath;
+
+    searchInput.value = `~${currentPath ? `${currentPath}/` : ''}`;
     searchInput.dispatchEvent(new Event('input'));
   }
 

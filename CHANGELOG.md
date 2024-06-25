@@ -4873,6 +4873,16 @@ No changes.
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
 
+## 16.7.8 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@bd3b4aff0df30ae03bc8ce0372b72dd0f7171696) ([merge request](gitlab-org/gitlab!156397))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@c9c79c94d95d2314f607ccdad1a1c525154c58f9) ([merge request](gitlab-org/gitlab!155269))
+
 ## 16.7.7 (2024-03-06)
 
 ### Fixed (1 change)
@@ -5853,6 +5863,16 @@ No changes.
 ### fixed EE: true (1 change)
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
+
+## 16.6.8 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@5df73aee0ffd7904fce472b2dc65ffbf8b0c6794) ([merge request](gitlab-org/gitlab!156398))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@882e550f0353f8a4c46a9ef21829c91d474d50a6) ([merge request](gitlab-org/gitlab!155270))
 
 ## 16.6.7 (2024-02-07)
 

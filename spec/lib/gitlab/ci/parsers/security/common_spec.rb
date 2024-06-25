@@ -490,6 +490,12 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
             expect(finding.solution).to eq('Upgrade to latest version.\u0000')
           end
 
+          it 'does not introduce a Unicode null character while trying to escape an already escaped null character' do
+            finding = report.findings.first
+
+            expect(finding.description).to eq('This string does not contain a Unicode null character \\\\u0000')
+          end
+
           it 'adds warning to report' do
             expect(report.warnings).to include({ type: 'Parsing', message: 'Report artifact contained unicode null characters which are escaped during the ingestion.' })
           end

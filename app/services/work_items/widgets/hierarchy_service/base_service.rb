@@ -29,9 +29,16 @@ module WorkItems
         end
 
         def set_parent(parent)
-          ::WorkItems::ParentLinks::CreateService
+          service_response = ::WorkItems::ParentLinks::CreateService
             .new(parent, current_user, { target_issuable: work_item })
             .execute
+
+          # Reference the parent instead because the error is returned in the child context
+          if service_response[:status] == :error
+            service_response[:message].sub!(/#.* cannot be added/, "#{parent.to_reference} cannot be added")
+          end
+
+          service_response
         end
 
         # rubocop: disable CodeReuse/ActiveRecord

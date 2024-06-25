@@ -410,20 +410,18 @@ for more information.
 You can [purchase additional compute minutes](../../ci/pipelines/compute_minutes.md#purchase-additional-compute-minutes)
 for your personal or group namespace. Compute minutes are a **one-time purchase**, so they do not renew.
 
-## Add-on subscription for additional Storage and Transfer
+## Add-on subscription for additional Storage
 
 NOTE:
-Free namespaces are subject to a 5 GB storage and 10 GB transfer [soft limit](https://about.gitlab.com/pricing/). Once all storage is available to view in the usage quota workflow, GitLab will automatically enforce the namespace storage limit and the project limit is removed. This change is announced separately. The storage and transfer add-on can be purchased to increase the limits.
-
 Projects have a free storage quota of 10 GB. To exceed this quota you must first
-[purchase one or more storage subscription units](#purchase-more-storage-and-transfer). Each unit provides 10 GB of additional
+[purchase one or more storage subscription units](#purchase-more-storage). Each unit provides 10 GB of additional
 storage per namespace. A storage subscription is renewed annually. For more details, see
 [Usage Quotas](../../user/usage_quotas.md).
 
 When the amount of purchased storage reaches zero, all projects over the free storage quota are
 locked. Projects can only be unlocked by purchasing more storage subscription units.
 
-### Purchase more storage and transfer
+### Purchase more storage
 
 Prerequisites:
 

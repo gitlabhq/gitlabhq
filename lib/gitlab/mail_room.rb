@@ -6,6 +6,7 @@ require 'pathname'
 require 'active_support'
 require "active_support/core_ext/module/delegation"
 require_relative 'encrypted_configuration' unless defined?(Gitlab::EncryptedConfiguration)
+require_relative 'redis/config_generator' unless defined?(Gitlab::Redis::ConfigGenerator)
 require_relative 'redis/queues' unless defined?(Gitlab::Redis::Queues)
 
 # This service is run independently of the main Rails process,

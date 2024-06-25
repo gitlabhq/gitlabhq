@@ -47,7 +47,7 @@ module Gitlab
           # PostgreSQL can not save texts with unicode null character
           # that's why we are escaping that character.
           def sanitize_json_data
-            return unless json_data.gsub!('\u0000', '\\\\\u0000')
+            return unless json_data.gsub!(/(?<!\\)(?:\\\\)*\\u0000/, '\\\\\u0000')
 
             report.add_warning('Parsing', 'Report artifact contained unicode null characters which are escaped during the ingestion.')
           end

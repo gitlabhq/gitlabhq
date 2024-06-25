@@ -28,10 +28,10 @@ A flash message with Code Suggestions check status is displayed at the top of th
 
 ## Code Suggestions are not displayed
 
-If Code Suggestions are not displayed:
+If Code Suggestions are not displayed, follow these steps:
 
-- Ensure you have [installed a supported IDE extension](supported_extensions.md#supported-editor-extensions)
-- Ensure your administrator has [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
+1. Ensure you have [installed a supported IDE extension](supported_extensions.md#supported-editor-extensions)
+1. Ensure your administrator has [assigned you a seat](../../../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).
 
 If Code Suggestions are still not displayed, try the following troubleshooting steps.
 
@@ -41,7 +41,7 @@ If you are a self-managed user, ensure that Code Suggestions for the [GitLab Web
 
 1. On the left sidebar, select **Extensions > GitLab Workflow**.
 1. Select **Settings** (**{settings}**), and then select **Extension Settings**.
-1. In **GitLab > AI Assisted Code Suggestions**, select the **Enable code completion**
+1. In **GitLab > AI Assisted Code Suggestions**, select the **GitLab Duo Code Suggestions**
    checkbox.
 
 ### View Code Suggestions logs
@@ -60,6 +60,14 @@ If the settings are enabled, but Code Suggestions are still not displayed, try t
 ```
 
 To enable debug logging for the Language Server (LS), enable **GitLab › Ls: Debug**.
+
+### Code Suggestions not displayed in JetBrains IDEs
+
+1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-intellij-plugin#setup).
+1. From the **Tools > GitLab Duo** menu, select **Verify setup**. Make sure the Health Check passes.
+1. Verify that your JetBrains IDE natively supports the language of the file you are
+   working on. Go to **Settings** > **Languages & Frameworks** to see the full list of
+   languages and frameworks supported by your JetBrains IDE.
 
 ### Code Suggestions not displayed in Microsoft Visual Studio
 

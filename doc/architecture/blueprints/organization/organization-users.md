@@ -107,7 +107,7 @@ Users can see the things that they have access to in an Organization. For
 instance, an Organization member would be able to access only the private Groups
 and Projects that they are a member of, but could see all public Groups and
 Projects. Actionable items such as issues, merge requests and the to-do list are
-seen in the context of the Organization. This means that a User might see 
+seen in the context of the Organization. This means that a User might see
 10 merge requests they created in `Organization A`, and 7 in `Organization B`, when
 in total they have created 17 merge requests across both Organizations.
 
@@ -130,7 +130,7 @@ against the same core rule set:
 1. For the Ultimate tier, they are not a Guest
 
 For (1) this is determined differently per offering, in terms of both what
-classifies as active and also due to the underlying model that we refer to 
+classifies as active and also due to the underlying model that we refer to
 (User vs Member). To help demonstrate the various associations used in GitLab relating
 to Billable Members, here is a relationship diagram:
 
@@ -160,7 +160,12 @@ relating to Group/Project membership that can often lead to confusion. An
 example of that are Members of a Group that have been invited into another Group
 or Project and therewith become billable.
 
-There are two charts as the flow is different for each: [SaaS](https://mermaid.live/view#pako:eNqNVl1v2jAU_StXeS5M-3hCU6N2aB3SqKbSPkyAhkkuxFsSs9hpVUX899mxYxsnlOWFcH1877nnfkATJSzFaBLtcvaSZKQS8DhdlWCeijGxXBCygCeOFdzSPCfbHOGrRK9Ho2tlvUkEfcZmo97HXBCBG6AcSGuOj86ZA8No_BP5eHQNMz7HYovV8kuGyR-gOx1I3Qd9Ap-31btrtgORITxIPnBXsfoAGcWKVEn2uj4T4Z6pAPdMdKyX8t2mIG-5ex0LkCnBdO4OOrOhO-O3TDQzrkkSkN9izW-BCCUTCB-8hGU866Bl45FxKJ-GdGiDDYI7SOtOp7o0GW90rA20NYjXQxE6cWSaGr1Q2BnX9hCnIbZWc1reJAly3pisMsJ19vKEFiQHfQw5PmMenwqhPQ5Uxa-DjeAa5IJk_g3t-hvdZ8jFA8vxrpYvccfWHIA6aVmrLtMQj2rvuqPynSZYcnx8PWDzlAuZsay3MfouPJxl1c9hKFCIPedzSBuH5fV2X5FDBrT8Zadk2bbszJur_xsp9UznzZRWmIizV-Njx346X9TbPpwoVqO9xobebUZmF3gse0yk9wA-jDBkflTst2TS-EyMTcrTZmGz7hPrkG8HdChdv1n5TAWmGuxHLmXI9qgTza9aO93-TVfnobAh1M6V0VDtuk7E0w313tMUy3Swc_Tyll9VLUwMPcFxUJGBNdKYTTTwY-ByesC_qusx1Yk0bXtao9kk8Snzj8eLsX0lwqV2ujnUE5Bw7FT4g7QbQGM-4YWoXPRZ2C7BnT4TXZPSiAHFUIP3nVhGbiN3G9-OyKWsTvpSS60yMYZA5U_HtyQzdy7p7GCBon65OyXNWJwT9DSNMwF7YB3Xly1o--gqKrAqCE3l359GHa4iuQ8KXEUT-ZrijtS5WEWr8iihpBZs8Vom0WRHco5XUX1IZd9NKZETUxjr8R82ROYl) and [SM](https://mermaid.live/view#pako:eNqFk1FvwiAQx7_KhefVD-CDZo2JNdmcWe3DYpeI7alsLRgKLob0u48qtqxRx9Plz4-7-3NgSCZyJEOyLcRPtqdSwXKScnBLVyhXswrUHiGxMYSsKOimwPHnXwiCYNQAsaIKzXOm2BFh3ShrOGvjujvQghAMPrAaBCOITKRLyu9Rc9FAc6Gu9VPegVELLEKzkOILMwWhUH6yRdhCcWJilEeWXSz5VJzcqrWycWvc830rOmdwnmZ8KoU-vEnXU6-bf6noPmResdzYWxdboHDeAiHBbfqOuqifonX6Ym-CV7g8HfAhfZ0U2-2xUu-iwKm2wdg4BRoJWAUXufZH5JnqH-8ye42YpFCsbGbvRN-Tx7UmunfxqFCfvZfTNeS9AfJESpQlZbn9K6Y5lxL7KUpMydCGOZXfKUl5bTmqlYhPPCNDJTU-EX3IrZEJoztJy4tY_wJJwxFj).
+There are two charts as the flow is different for each:
+
+- [SaaS chart](#saas-chart)
+- [SM chart](#sm-chart)
+
+(These charts are placed at the bottom of the page, due to length.)
 
 ## How can Users switch between different Organizations?
 
@@ -202,3 +207,89 @@ Actions such as banning and deleting a User will be added to the Organization at
 
 Non-Users are external to the Organization and can only access the public
 resources of an Organization, such as public Projects.
+
+## SaaS chart
+
+```mermaid
+flowchart TD
+        root[SaaS User Billable Flow]-->UserActive{`User.state` is active?}
+        UserActive -.Yes.-> IsMember[Check if User is a Member <br/>of the Root Group hierarchy]
+        UserActive -.No.-> NotBillable[Not Billable]
+
+        IsMember --> DM
+        Member -.Yes.->IsBot{Is User a Bot? <br/>See note 2}
+        NotMember -.No.->NotBillable
+
+        IsBot -.Yes.->NotBillable
+        IsBot -.No.->Active[Active `Member` state?]
+
+        Active --> MemberStateIsActive
+        ActiveMember-.Yes.-> MinAccess{Member has <br/>Minimal Access level?}
+        NotActive-.No.-> NotBillable
+
+        MinAccess -.Yes.-> NotBillable
+
+        MinAccess -.No.-> HighestRoleGuest?{Member Highest Role<br/> is Guest?}
+        HighestRoleGuest? -.Yes.-> LicenseType{Ultimate License?}
+        LicenseType -.No.-> Billable
+        HighestRoleGuest? -.No.-> Billable
+
+        LicenseType -.Yes.-> NotBillable
+
+        subgraph in_hierarchy[User Is a Member of the Root Group hierarchy]
+            DM{Direct Member of the Root Group?} -.No.->DMSub{Direct Member of a sub-group?}
+            DM -.Yes.->Member[Is a Member]
+            DMSub -.Yes.->Member
+            DMSub -.No.->DMProject{Member of a Project in the hierarchy?}
+            DMProject -.Yes.->Member
+            DMProject -.No.-> InvitedMember{Member of an invited Group?}
+
+            InvitedMember -.Yes.-> Member
+            InvitedMember -.No.-> NotMember[Not a Member<br/>See note 1]
+        end
+
+        subgraph activesub[Is Member Active?]
+            MemberStateIsActive{`Member.state` is active?} -.Yes.-> RequestedInvite{User Requested Access?<br/>See note 3}
+            MemberStateIsActive -.No.-> NotActive
+
+            RequestedInvite -.Yes.-> AcceptedRequest{Request was accepted?}
+            AcceptedRequest -.No.-> NotActive[Not an active member]
+            AcceptedRequest -.Yes.-> ActiveMember[Active Member]
+
+            RequestedInvite -.No.-> Invited{User was Invited?<br/>See note 4}
+
+            Invited -.No.-> NotActive
+            Invited -.Yes.-> AcceptedInvite{User accepted invite?}
+            AcceptedInvite -.No.->NotActive
+            AcceptedInvite -.Yes.->ActiveMember
+        end
+```
+
+## SM chart
+
+```mermaid
+flowchart TD
+        user[Is the User Billable?]
+        user -->UserState{Active `User` State?}
+        UserState -.Yes.-> H{Human?}
+        UserState -.No.-> NotBillable
+
+        H -.No.-> PB{Project Bot?}
+        PB -.No.-> SU{Service User?}
+        SU -.No.-> NotBillable[Not Billable]
+
+
+        SU -.Yes.-> InGroupOrProject
+        PB -.Yes.-> InGroupOrProject
+        H -.Yes.-> InGroupOrProject{Member of a Group or Project?}
+
+        InGroupOrProject -.No.-> LicenseType
+        InGroupOrProject -.Yes.-> HighestRoleGuest?{Highest Role is Guest?}
+
+
+        HighestRoleGuest? -.Yes.-> LicenseType{Ultimate License?}
+        LicenseType -.No.-> Billable
+        HighestRoleGuest? -.No.-> Billable
+
+        LicenseType -.Yes.-> NotBillable
+```

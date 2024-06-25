@@ -3264,6 +3264,9 @@ msgstr ""
 msgid "Add request manually"
 msgstr ""
 
+msgid "Add search filter"
+msgstr ""
+
 msgid "Add suggestion to batch"
 msgstr ""
 
@@ -9780,9 +9783,6 @@ msgstr ""
 msgid "BulkImport|Group import disabled on source or destination instance. Ask an administrator to enable it on both instances and try again."
 msgstr ""
 
-msgid "BulkImport|History"
-msgstr ""
-
 msgid "BulkImport|Import completed"
 msgstr ""
 
@@ -9919,6 +9919,9 @@ msgid "BulkImport|Unsupported GitLab version. Minimum supported version is '%{ve
 msgstr ""
 
 msgid "BulkImport|Update of import statuses with realtime changes failed"
+msgstr ""
+
+msgid "BulkImport|View import history"
 msgstr ""
 
 msgid "BulkImport|View import results"
@@ -25069,9 +25072,6 @@ msgid "Group info:"
 msgstr ""
 
 msgid "Group information"
-msgstr ""
-
-msgid "Group inheritance"
 msgstr ""
 
 msgid "Group invite"
@@ -42890,7 +42890,7 @@ msgstr ""
 msgid "ProtectedEnvironments|Enable group inheritance"
 msgstr ""
 
-msgid "ProtectedEnvironments|Group inheritance"
+msgid "ProtectedEnvironments|If a group is invited to the current project, its parent and members inherit the permissions of the invited group."
 msgstr ""
 
 msgid "ProtectedEnvironments|Number of approvals must be between 1 and 5"
@@ -43987,6 +43987,9 @@ msgid "Remove reviewer"
 msgstr ""
 
 msgid "Remove runner"
+msgstr ""
+
+msgid "Remove search filter"
 msgstr ""
 
 msgid "Remove secondary email"
@@ -62864,9 +62867,6 @@ msgstr ""
 msgid "is not allowed for this project."
 msgstr ""
 
-msgid "is not allowed to add this type of parent"
-msgstr ""
-
 msgid "is not allowed to point to itself"
 msgstr ""
 
@@ -62942,6 +62942,9 @@ msgid "it is too large"
 msgstr ""
 
 msgid "it's already present in this item's hierarchy"
+msgstr ""
+
+msgid "it's not allowed to add this type of parent item"
 msgstr ""
 
 msgid "item"

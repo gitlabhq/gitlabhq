@@ -20,7 +20,7 @@ module RemoteDevelopment
           max_hours_before_termination_limit: [120, Integer],
           project_cloner_image: ['alpine/git:2.36.3', String],
           tools_injector_image: [
-            "registry.gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork/web-ide-injector:9", String
+            "registry.gitlab.com/gitlab-org/remote-development/gitlab-workspaces-tools:1.0.0", String
           ],
           vscode_extensions_gallery: [
             {

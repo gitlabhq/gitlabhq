@@ -1,6 +1,7 @@
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import { __ } from '~/locale';
 import FilteredSearchContainer from './container';
 import VisualTokenValue from './visual_token_value';
 
@@ -85,7 +86,7 @@ export default class FilteredSearchVisualTokens {
         ${hasOperator ? '<div class="operator"></div>' : ''}
         <div class="value-container">
           <div class="${capitalizeTokenValue ? 'text-capitalize' : ''} value"></div>
-          <div class="remove-token" role="button">
+          <div class="remove-token" role="button" aria-label="${__('Remove search filter')}">
             ${spriteIcon('close', 's16 close-icon')}
           </div>
         </div>

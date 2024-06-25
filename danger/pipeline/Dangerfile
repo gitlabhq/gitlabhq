@@ -19,4 +19,7 @@ MSG
 
 if helper.has_ci_changes?
   markdown(PIPELINE_CHANGES_MESSAGE)
+
+  dependency_validation_message = ci_jobs_dependency_validation.output_message
+  markdown(dependency_validation_message) unless dependency_validation_message.empty?
 end

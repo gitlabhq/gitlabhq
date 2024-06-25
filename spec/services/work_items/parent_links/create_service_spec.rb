@@ -217,8 +217,8 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
           expect { subject }.to change { parent_link_class.count }.by(2)
         end
 
-        it 'does not return error status' do
-          error = "#{issue.to_reference} cannot be added: is not allowed to add this type of parent. " \
+        it 'returns error status' do
+          error = "#{issue.to_reference} cannot be added: it's not allowed to add this type of parent item. " \
             "#{other_project_task.to_reference} cannot be added: parent must be in the same project or group as child."
 
           is_expected.not_to eq(service_error(error, http_status: 422))
@@ -240,7 +240,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
         let(:params) { { target_issuable: task1 } }
 
         it 'returns error status' do
-          error = "#{task1.to_reference} cannot be added: is not allowed to add this type of parent"
+          error = "#{task1.to_reference} cannot be added: it's not allowed to add this type of parent item"
 
           is_expected.to eq(service_error(error, http_status: 422))
         end
