@@ -2,6 +2,29 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.1.1 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Only enumerate commits in pre-receive check if push came from Web](gitlab-org/security/gitlab@09fac947735945114db37b482035ffe8f605a1ad)
+
+### Security (14 changes)
+
+- [Security fixes for banzai pipeline](gitlab-org/security/gitlab@bb484256fab53f248450f49350d44ec246f05e49) ([merge request](gitlab-org/security/gitlab!4184))
+- [Fix the catastrophic backtracking in openapi regex](gitlab-org/security/gitlab@d9f51d836d290fc90f6bbfd50937e28ac4382ad6) ([merge request](gitlab-org/security/gitlab!4135))
+- [Use permitted_params for standalone and multiplex queries](gitlab-org/security/gitlab@624758559c2ffa452c7d118b4bf438783bf22b96) ([merge request](gitlab-org/security/gitlab!4173))
+- [Fix for Private job artifacts can be accessed by any user](gitlab-org/security/gitlab@4c5ac0433595920d2e9e1a0887461fbf9ea58476) ([merge request](gitlab-org/security/gitlab!4194))
+- [Remove search results from public projects with unauthorized repos](gitlab-org/security/gitlab@74bebdd2a20be50c13d3696b0cc2ba815fd9e95b) ([merge request](gitlab-org/security/gitlab!4210))
+- [Do not run a new pipeline on re-target](gitlab-org/security/gitlab@0a90eb06107fce3a6c2e15dcead5ec9fc0302967) ([merge request](gitlab-org/security/gitlab!4187))
+- [Add limits on autolinker regex](gitlab-org/security/gitlab@4854ff9db1ee52c37cab05d5be1eb02b4e5e93b0) ([merge request](gitlab-org/security/gitlab!4126))
+- [Fix clickjacking on OAuth application page](gitlab-org/security/gitlab@3620cdabd780c08754f48df7a81b0ed41924f75e) ([merge request](gitlab-org/security/gitlab!4186))
+- [Hide branch merge request if merge requests are private](gitlab-org/security/gitlab@551999ae405109144906d3b0fbd254553ba10baa) ([merge request](gitlab-org/security/gitlab!4200))
+- [Remove collapseLongCommitList method](gitlab-org/security/gitlab@35a86b9d0cec107e06d56ced48ecbf5ac108250c) ([merge request](gitlab-org/security/gitlab!4203))
+- [Pass SSO session data to Sidekiq](gitlab-org/security/gitlab@143598720f040450de58440be4266337278fb87f) ([merge request](gitlab-org/security/gitlab!4197))
+- [Prevent non-members from using promote_to quick action for quick actions](gitlab-org/security/gitlab@ce44d723af3e7c117f56e1539da2c12ee1892b90) ([merge request](gitlab-org/security/gitlab!4190))
+- [Reject deletion of security policy project approval rules](gitlab-org/security/gitlab@926855938a4a92251b0631b67cad330888e17909) ([merge request](gitlab-org/security/gitlab!4172))
+- [Mitigate ReDoS attacks via `method_call_regex`](gitlab-org/security/gitlab@350aa934a38aa9aae0b4216dcaa51e6a17463e4e) ([merge request](gitlab-org/security/gitlab!4174))
+
 ## 17.1.0 (2024-06-19)
 
 ### Added (180 changes)
