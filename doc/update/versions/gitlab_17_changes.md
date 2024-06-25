@@ -18,16 +18,7 @@ Ensure you review these instructions for:
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 8.0](https://docs.gitlab.com/charts/releases/8_0.html).
 
-## 17.1.0
-
-- Bitbucket identities with untrusted `extern_uid` are deleted.
-  For more information, see [issue 452426](https://gitlab.com/gitlab-org/gitlab/-/issues/452426).
-- The default [changelog](../../user/project/changelogs.md) template generates links as full URLs instead of GitLab specific references.
-  For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
-- Git 2.44.0 and later is required by Gitaly. For self-compiled installations,
-  you should use the [Git version provided by Gitaly](../../install/installation.md#git).
-
-## 17.0.0
+## Issues to be aware of when upgrading from 16.11
 
 - You should [migrate to the new runner registration workflow](../../ci/runners/new_creation_workflow.md) before upgrading to GitLab 17.0.
 
@@ -93,3 +84,12 @@ For more information, see the:
 
 - [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
+
+## 17.1.0
+
+- Bitbucket identities with untrusted `extern_uid` are deleted.
+  For more information, see [issue 452426](https://gitlab.com/gitlab-org/gitlab/-/issues/452426).
+- The default [changelog](../../user/project/changelogs.md) template generates links as full URLs instead of GitLab specific references.
+  For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
+- Git 2.44.0 and later is required by Gitaly. For self-compiled installations,
+  you should use the [Git version provided by Gitaly](../../install/installation.md#git).

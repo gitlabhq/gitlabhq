@@ -1,4 +1,4 @@
-{{- /* Modify Vale's output https://docs.errata.ai/vale/cli#--output */ -}}
+{{- /* Modify Vale's output https://vale.sh/manual/output/ */ -}}
 
 {{- $fileIndexes := len .Files -}}
 {{- $fileIndexes = sub $fileIndexes 1 -}}
@@ -20,11 +20,15 @@
       {{- /* Variables setup */ -}}
       {{- $loc := printf "%d" .Line -}}
       {{- $message := printf "%s" .Message -}}
+      {{- $moreinfo := "" -}}
+      {{- if .Link -}}
+        {{- $moreinfo = printf " See %s" .Link -}}
+      {{- end -}}
       {{- if $idx2 -}},{{- end -}}
 
   {{/* Output */}}
   {
-    "description": "{{ $message }}",
+    "description": "{{ $message }}{{ $moreinfo }}",
     "fingerprint": "{{ $path }}-{{ $loc }}",
     "severity": "{{ $error }}",
     "location": {

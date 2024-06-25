@@ -95,6 +95,9 @@ function gitLabUIUtilities({ addComponents, addUtilities }) {
       'box-shadow': '0 0 0 1px var(--white, #fff), 0 0 0 3px var(--blue-400, #428fdc)',
       outline: 'none',
     },
+    '.text-align-inherit': {
+      'text-align': 'inherit',
+    },
   });
 }
 

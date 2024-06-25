@@ -1,5 +1,7 @@
-- page_title "##{request.params['iid']}"
-- add_work_item_show_breadcrumb(@group, request.params['iid'])
+- page_title "#{@work_item.title} (#{@work_item.to_reference})", _("Epics")
+- page_description @work_item.description_html
+- page_card_attributes @work_item.card_attributes
+- add_work_item_show_breadcrumb(@group, @work_item.iid)
 - add_page_specific_style 'page_bundles/work_items'
 - add_page_specific_style 'page_bundles/design_management'
 - @gfm_form = true
