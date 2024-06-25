@@ -245,4 +245,6 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter, feature_category: :t
       end
     end
   end
+
+  it_behaves_like 'pipeline timing check', context: { project: nil }
 end

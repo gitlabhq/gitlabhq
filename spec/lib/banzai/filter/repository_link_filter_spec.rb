@@ -390,4 +390,6 @@ RSpec.describe Banzai::Filter::RepositoryLinkFilter, feature_category: :team_pla
 
     include_examples 'valid repository'
   end
+
+  it_behaves_like 'pipeline timing check'
 end

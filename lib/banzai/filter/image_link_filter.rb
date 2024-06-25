@@ -5,6 +5,8 @@ module Banzai
   module Filter
     # HTML filter that wraps links around inline images.
     class ImageLinkFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       # Find every image that isn't already wrapped in an `a` tag, create
       # a new node (a link to the image source), copy the image as a child
       # of the anchor, and then replace the img with the link-wrapped version.
@@ -12,7 +14,7 @@ module Banzai
       # If `link_replaces_image` context parameter is provided, the image is going
       # to be replaced with a link to an image.
       def call
-        doc.xpath('descendant-or-self::img[not(ancestor::a)]').each do |img|
+        doc.xpath('descendant-or-self::img[not(ancestor::a) and not(@data-src = "")]').each do |img|
           link_replaces_image = !!context[:link_replaces_image]
           html_class = link_replaces_image ? 'with-attachment-icon' : 'no-attachment-icon'
 

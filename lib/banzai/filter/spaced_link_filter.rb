@@ -21,6 +21,7 @@ module Banzai
     # to prevent XSS attacks
     #
     class SpacedLinkFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
       include ActionView::Helpers::TagHelper
 
       # Pattern to match a standard markdown link

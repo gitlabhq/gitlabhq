@@ -13,6 +13,8 @@ module Banzai
     # - attributes can not span multiple lines
     # - unsupported attributes are thrown away
     class AttributesFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       CSS   = 'img'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 

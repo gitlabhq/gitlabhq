@@ -101,4 +101,6 @@ RSpec.describe Banzai::Filter::GollumTagsFilter, feature_category: :wiki do
       expect(doc.at_css('a')).to be_nil
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

@@ -143,4 +143,6 @@ RSpec.describe Banzai::Filter::VideoLinkFilter, feature_category: :team_planning
       expect(link['href']).to eq proxy_src
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

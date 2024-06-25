@@ -100,4 +100,6 @@ RSpec.describe Banzai::Filter::SpacedLinkFilter, feature_category: :team_plannin
       expect(filter(act).to_html).to eq exp
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

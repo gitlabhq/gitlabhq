@@ -79,4 +79,9 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter, feature_category: :team_planni
       expect(doc.css('gl-emoji').first.attributes['data-fallback-src'].value).to start_with('https://assets.example.com')
     end
   end
+
+  it_behaves_like 'pipeline timing check'
+  it_behaves_like 'a filter timeout' do
+    let(:text) { 'text' }
+  end
 end

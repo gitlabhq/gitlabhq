@@ -8,6 +8,8 @@ module Banzai
     # HTML that replaces all `lang plantuml` tags with PlantUML img tags.
     #
     class PlantumlFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       def call
         return doc unless settings.plantuml_enabled? && doc.at_xpath(lang_tag)
 

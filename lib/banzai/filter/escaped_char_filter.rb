@@ -16,6 +16,8 @@ module Banzai
     # TODO: Parsing of references should be fixed to remove need of this filter.
     #       https://gitlab.com/gitlab-org/gitlab/-/issues/457556
     class EscapedCharFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       # Table of characters that need this special handling. It consists of the
       # GitLab special reference characters.
       REFERENCE_CHARS = %w[$ % # & @ ! ~ ^].freeze
