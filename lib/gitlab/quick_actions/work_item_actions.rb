@@ -116,6 +116,7 @@ module Gitlab
 
       def validate_promote_to(type)
         return error_msg(:not_found, action: 'promote') unless type && supports_promote_to?(type.name)
+        return error_msg(:forbidden, action: 'promote') unless promotion_allowed?
         return if current_user.can?(:"create_#{type.base_type}", quick_action_target)
 
         error_msg(:forbidden, action: 'promote')
@@ -127,6 +128,10 @@ module Gitlab
 
       def supports_promotion?
         current_type.base_type.in?(promote_to_map.keys)
+      end
+
+      def promotion_allowed?
+        current_user.can?(:update_work_item, quick_action_target)
       end
 
       def supports_promote_to?(type_name)
