@@ -9,7 +9,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
 
   # This shared example requires a `builder` and `user` variable
   shared_examples 'issuable hook data' do |kind, hook_data_issuable_builder_class|
-    let(:data) { builder.build(user: user) }
+    let(:data) { builder.build(user: user, action: 'updated') }
 
     include_examples 'project hook data' do
       let(:project) { builder.issuable.project }
@@ -19,10 +19,12 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
 
     context "with a #{kind}" do
       it 'contains issuable data' do
+        expected_object_attributes = hook_data_issuable_builder_class.new(issuable).build.merge(action: 'updated')
+
         expect(data[:object_kind]).to eq(kind)
         expect(data[:user]).to eq(user.hook_attrs)
         expect(data[:project]).to eq(builder.issuable.project.hook_attrs)
-        expect(data[:object_attributes]).to eq(hook_data_issuable_builder_class.new(issuable).build)
+        expect(data[:object_attributes]).to eq(expected_object_attributes)
         expect(data[:changes]).to eq({})
         expect(data[:repository]).to eq(builder.issuable.project.hook_attrs.slice(:name, :url, :description, :homepage))
       end
@@ -30,6 +32,12 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
       it 'does not contain certain keys' do
         expect(data).not_to have_key(:assignees)
         expect(data).not_to have_key(:assignee)
+      end
+
+      it 'does not include action attribute when action is not given' do
+        data = described_class.new(issuable).build(user: user)
+
+        expect(data[:object_attributes]).not_to have_key(:action)
       end
 
       describe 'changes are given' do
@@ -59,7 +67,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
           }
         end
 
-        let(:data) { builder.build(user: user, changes: changes) }
+        let(:data) { builder.build(user: user, changes: changes, action: 'updated') }
 
         it 'populates the :changes hash' do
           expect(data[:changes]).to match(hash_including({
@@ -109,7 +117,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
 
     context 'issue is assigned' do
       let(:issue) { create(:issue, assignees: [user], project: reusable_project) }
-      let(:data) { described_class.new(issue).build(user: user) }
+      let(:data) { described_class.new(issue).build(user: user, action: 'updated') }
 
       it 'returns correct hook data' do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
@@ -123,7 +131,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
       let(:work_item) { create(:work_item, namespace: group, description: 'work item description') }
 
       it 'returns correct hook data', :aggregate_failures do
-        data = described_class.new(work_item).build(user: user)
+        data = described_class.new(work_item).build(user: user, action: 'updated')
 
         expect(data[:object_kind]).to eq('work_item')
         expect(data[:event_type]).to eq('work_item')
@@ -135,7 +143,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
 
     context 'merge_request is assigned' do
       let(:merge_request) { create(:merge_request, assignees: [user], source_project: reusable_project) }
-      let(:data) { described_class.new(merge_request).build(user: user) }
+      let(:data) { described_class.new(merge_request).build(user: user, action: 'updated') }
 
       it 'returns correct hook data' do
         expect(data[:object_attributes]['assignee_id']).to eq(user.id)
@@ -146,7 +154,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
 
     context 'merge_request is assigned reviewers' do
       let(:merge_request) { create(:merge_request, reviewers: [user], source_project: reusable_project) }
-      let(:data) { described_class.new(merge_request).build(user: user) }
+      let(:data) { described_class.new(merge_request).build(user: user, action: 'updated') }
 
       it 'returns correct hook data' do
         expect(data[:object_attributes]['reviewer_ids']).to match_array([user.id])
@@ -156,7 +164,7 @@ RSpec.describe Gitlab::DataBuilder::Issuable do
 
     context 'when merge_request does not have reviewers and assignees' do
       let(:merge_request) { create(:merge_request, source_project: reusable_project) }
-      let(:data) { described_class.new(merge_request).build(user: user) }
+      let(:data) { described_class.new(merge_request).build(user: user, action: 'updated') }
 
       it 'returns correct hook data' do
         expect(data).not_to have_key(:assignees)

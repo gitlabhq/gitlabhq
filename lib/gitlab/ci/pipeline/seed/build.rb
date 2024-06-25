@@ -94,16 +94,6 @@ module Gitlab
 
           delegate :logger, to: :@context
 
-          def initialize_processable
-            return unless reuse_build_in_seed_context?
-
-            if bridge?
-              ::Ci::Bridge.new(initial_attributes)
-            else
-              ::Ci::Build.new(initial_attributes)
-            end
-          end
-
           def all_of_only?
             @only.all? { |spec| spec.satisfied_by?(@pipeline, evaluate_context) }
           end

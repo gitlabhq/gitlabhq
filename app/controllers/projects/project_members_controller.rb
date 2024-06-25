@@ -16,7 +16,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   urgency :low
 
   def index
-    @sort = params[:sort].presence || sort_value_name
+    @sort = pagination_params[:sort].presence || sort_value_name
     @include_relations ||= requested_relations(:groups_with_inherited_permissions)
 
     if can?(current_user, :admin_project_member, @project)
@@ -24,7 +24,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @requesters = present_members(AccessRequestsFinder.new(@project).execute(current_user))
     end
 
-    @project_members = present_members(non_invited_members.page(params[:page]))
+    @project_members = present_members(non_invited_members.page(pagination_params[:page]))
   end
 
   # MembershipActions concern

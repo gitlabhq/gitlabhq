@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
   let(:emitter) { SnowplowTracker::Emitter.new(endpoint: 'localhost', options: { buffer_size: 1 }) }
   let(:tracker) do
     SnowplowTracker::Tracker.new(emitters: [emitter], subject: SnowplowTracker::Subject.new, namespace: 'namespace',
-                                 app_id: 'app_id')
+      app_id: 'app_id')
   end
 
   before do
@@ -25,17 +25,17 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
       expect(SnowplowTracker::AsyncEmitter)
         .to receive(:new)
         .with(endpoint: 'gitfoo.com',
-              options: { protocol: 'https',
-                         on_success: subject.method(:increment_successful_events_emissions),
-                         on_failure: subject.method(:failure_callback) })
+          options: { protocol: 'https',
+                     on_success: subject.method(:increment_successful_events_emissions),
+                     on_failure: subject.method(:failure_callback) })
         .and_return(emitter)
 
       expect(SnowplowTracker::Tracker)
         .to receive(:new)
               .with(emitters: [emitter],
-                    subject: an_instance_of(SnowplowTracker::Subject),
-                    namespace: described_class::SNOWPLOW_NAMESPACE,
-                    app_id: '_abc123_')
+                subject: an_instance_of(SnowplowTracker::Subject),
+                namespace: described_class::SNOWPLOW_NAMESPACE,
+                app_id: '_abc123_')
               .and_return(tracker)
     end
 
@@ -48,7 +48,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         expect(tracker)
           .to have_received(:track_struct_event)
           .with(category: 'category', action: 'action', label: 'label', property: 'property', value: 1.5, context: nil,
-                tstamp: (Time.now.to_f * 1000).to_i)
+            tstamp: (Time.now.to_f * 1000).to_i)
       end
 
       it 'increase total snowplow events counter' do
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         expect(counter).to receive(:increment)
         expect(Gitlab::Metrics).to receive(:counter)
                                      .with(:gitlab_snowplow_events_total,
-                                           'Number of Snowplow events')
+                                       'Number of Snowplow events')
                                      .and_return(counter)
 
         subject.event('category', 'action', label: 'label', property: 'property', value: 1.5)
@@ -83,7 +83,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         expect(counter).to receive(:increment).with({}, 2)
         expect(Gitlab::Metrics).to receive(:counter)
                                      .with(:gitlab_snowplow_successful_events_total,
-                                           'Number of successful Snowplow events emissions')
+                                       'Number of successful Snowplow events emissions')
                                      .and_return(counter)
 
         subject.method(:increment_successful_events_emissions).call(2)
@@ -99,14 +99,14 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
                       "se_ac" => "search_audit_event" }]
         allow(Gitlab::Metrics).to receive(:counter)
                                     .with(:gitlab_snowplow_successful_events_total,
-                                          'Number of successful Snowplow events emissions')
+                                      'Number of successful Snowplow events emissions')
                                     .and_call_original
 
         expect(Gitlab::AppLogger).to receive(:error).with(error_message)
         expect(counter).to receive(:increment).with({}, 1)
         expect(Gitlab::Metrics).to receive(:counter)
                                      .with(:gitlab_snowplow_failed_events_total,
-                                           'Number of failed Snowplow events emissions')
+                                       'Number of failed Snowplow events emissions')
                                      .and_return(counter)
 
         subject.method(:failure_callback).call(2, failures)

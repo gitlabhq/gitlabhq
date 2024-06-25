@@ -47,8 +47,6 @@
             %span.action-description<
             = first_line_in_markdown(todo, :body, 125, project: todo.project, group: todo.group)
 
-          = render_if_exists "dashboard/todos/review_summary", local_assigns: { todo: todo }
-
     .todo-timestamp.gl-whitespace-nowrap.gl-sm-ml-3.gl-mt-2.gl-mb-2.gl-sm-my-0.gl-px-2.gl-sm-px-0
       %span.todo-timestamp.gl-font-sm.gl-text-secondary
         = todo_due_date(todo)

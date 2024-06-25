@@ -819,9 +819,6 @@ Support for these groups depends on:
 
 - Your [subscription](https://about.gitlab.com/pricing/).
 - Whether you've installed [GitLab Enterprise Edition (EE)](https://about.gitlab.com/install/).
-- The [name of the SAML provider](#configure-saml-support-in-gitlab). Group
-  memberships are only supported by a single SAML provider named
-  `saml`.
 
 | Group                        | Tier               | GitLab Enterprise Edition (EE) Only? |
 |------------------------------|--------------------|--------------------------------------|
@@ -864,6 +861,8 @@ membership is required to sign in.
 
 If you do not set `required_groups` or leave the setting empty, anyone with proper
 authentication can use the service.
+
+If the attribute specified in `groups_attribute` is incorrect or missing then all users will be blocked.
 
 ::Tabs
 
@@ -1017,6 +1016,10 @@ response, configure GitLab to identify:
 SAML can automatically identify a user as an
 [external user](../administration/external_users.md), based on the `external_groups`
 setting.
+
+**NOTE**: 
+If the attribute specified in `groups_attribute` is incorrect or missing then the user will
+access as a standard user.
 
 Example configuration:
 
@@ -1172,6 +1175,8 @@ response, configure GitLab to identify:
 
 Use the `admin_groups` setting to configure GitLab to identify which groups grant
 the user administrator access.
+
+If the attribute specified in `groups_attribute` is incorrect or missing then users will lose their administrator access.
 
 Example configuration:
 
@@ -1330,6 +1335,8 @@ response, configure GitLab to identify:
 
 Use the `auditor_groups` setting to configure GitLab to identify which groups include
 users with [auditor access](../administration/auditor_users.md).
+
+If the attribute specified in `groups_attribute` is incorrect or missing then users will lose their auditor access.
 
 Example configuration:
 

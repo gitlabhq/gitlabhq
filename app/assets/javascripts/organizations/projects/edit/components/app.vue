@@ -68,7 +68,9 @@ export default {
       }
     },
     onInputField({ name }) {
-      this.$delete(this.serverValidations, name);
+      const copy = { ...this.serverValidations };
+      delete copy[name];
+      this.serverValidations = copy;
     },
   },
 };

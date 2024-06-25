@@ -91,13 +91,13 @@ RSpec.describe UploadedFile, feature_category: :package_registry do
             end
 
             it_behaves_like 'using the file path',
-                            filename: 'my_file_.txt',
-                            content_type: 'my/type',
-                            sha256: 'sha256',
-                            path_suffix: 'test',
-                            upload_duration: 5.05,
-                            sha1: 'sha1',
-                            md5: 'md5'
+              filename: 'my_file_.txt',
+              content_type: 'my/type',
+              sha256: 'sha256',
+              path_suffix: 'test',
+              upload_duration: 5.05,
+              sha1: 'sha1',
+              md5: 'md5'
           end
 
           context 'with a remote id' do
@@ -116,14 +116,14 @@ RSpec.describe UploadedFile, feature_category: :package_registry do
             end
 
             it_behaves_like 'using the remote id',
-                            filename: 'my_file_.txt',
-                            content_type: 'application/octet-stream',
-                            sha256: 'sha256',
-                            size: 123456,
-                            remote_id: '1234567890',
-                            upload_duration: 5.05,
-                            sha1: 'sha1',
-                            md5: 'md5'
+              filename: 'my_file_.txt',
+              content_type: 'application/octet-stream',
+              sha256: 'sha256',
+              size: 123456,
+              remote_id: '1234567890',
+              upload_duration: 5.05,
+              sha1: 'sha1',
+              md5: 'md5'
           end
 
           context 'with a path and a remote id' do
@@ -143,14 +143,14 @@ RSpec.describe UploadedFile, feature_category: :package_registry do
             end
 
             it_behaves_like 'using the remote id',
-                            filename: 'my_file_.txt',
-                            content_type: 'application/octet-stream',
-                            sha256: 'sha256',
-                            size: 123456,
-                            remote_id: '1234567890',
-                            upload_duration: 5.05,
-                            sha1: 'sha1',
-                            md5: 'md5'
+              filename: 'my_file_.txt',
+              content_type: 'application/octet-stream',
+              sha256: 'sha256',
+              size: 123456,
+              remote_id: '1234567890',
+              upload_duration: 5.05,
+              sha1: 'sha1',
+              md5: 'md5'
           end
         end
       end

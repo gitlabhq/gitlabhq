@@ -2,19 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Charts do
+RSpec.describe Gitlab::Ci::Charts, feature_category: :fleet_visibility do
+  let_it_be(:project) { create(:project) }
+
   context 'yearchart' do
-    let(:project) { create(:project) }
     let(:chart) { Gitlab::Ci::Charts::YearChart.new(project) }
 
-    subject { chart.to }
-
-    before do
+    before_all do
       create(:ci_empty_pipeline, project: project, duration: 120)
     end
 
     it 'goes until the end of the current month (including the whole last day of the month)' do
-      is_expected.to eq(Date.today.end_of_month.end_of_day)
+      expect(chart.to).to eq(Date.today.end_of_month.end_of_day)
     end
 
     it 'starts at the beginning of the current year' do
@@ -31,17 +30,14 @@ RSpec.describe Gitlab::Ci::Charts do
   end
 
   context 'monthchart' do
-    let(:project) { create(:project) }
     let(:chart) { Gitlab::Ci::Charts::MonthChart.new(project) }
 
-    subject { chart.to }
-
-    before do
+    before_all do
       create(:ci_empty_pipeline, project: project, duration: 120)
     end
 
     it 'includes the whole current day' do
-      is_expected.to eq(Date.today.end_of_day)
+      expect(chart.to).to eq(Date.today.end_of_day)
     end
 
     it 'starts one month ago' do
@@ -58,17 +54,14 @@ RSpec.describe Gitlab::Ci::Charts do
   end
 
   context 'weekchart' do
-    let(:project) { create(:project) }
     let(:chart) { Gitlab::Ci::Charts::WeekChart.new(project) }
 
-    subject { chart.to }
-
-    before do
+    before_all do
       create(:ci_empty_pipeline, project: project, duration: 120)
     end
 
     it 'includes the whole current day' do
-      is_expected.to eq(Date.today.end_of_day)
+      expect(chart.to).to eq(Date.today.end_of_day)
     end
 
     it 'starts one week ago' do
@@ -85,25 +78,25 @@ RSpec.describe Gitlab::Ci::Charts do
   end
 
   context 'weekchart_utc' do
-    today = Date.today
-    end_of_today = Time.use_zone(Time.find_zone('UTC')) { today.end_of_day }
-
-    let(:project) { create(:project) }
-    let(:chart) do
-      allow(Date).to receive(:today).and_return(today)
-      allow(today).to receive(:end_of_day).and_return(end_of_today)
-      Gitlab::Ci::Charts::WeekChart.new(project)
+    let_it_be(:today) { Date.today }
+    let_it_be(:end_of_today) do
+      Time.use_zone(Time.find_zone('UTC')) { today.end_of_day }
     end
 
-    subject { chart.total }
+    let(:chart) { Gitlab::Ci::Charts::WeekChart.new(project) }
 
-    before do
+    before_all do
       # The created_at time used by the following execution
       # can end up being after the creation of the 'today' time
       # objects created above, and cause the queried counts to
       # go to zero when the test executes close to midnight on the
       # CI system, so we explicitly set it to a day earlier
-      create(:ci_empty_pipeline, project: project, duration: 120, created_at: today - 1.day)
+      create(:ci_empty_pipeline, project: project, duration: 120, created_at: 1.day.before(today))
+    end
+
+    before do
+      allow(Date).to receive(:today).and_return(today)
+      allow(today).to receive(:end_of_day).and_return(end_of_today)
     end
 
     it 'uses a utc time zone for range times' do
@@ -117,24 +110,26 @@ RSpec.describe Gitlab::Ci::Charts do
   end
 
   context 'weekchart_non_utc' do
-    today = Date.today
-    end_of_today = Time.use_zone(Time.find_zone('Asia/Dubai')) { today.end_of_day }
-
-    let(:project) { create(:project) }
-    let(:chart) do
-      allow(Date).to receive(:today).and_return(today)
-      allow(today).to receive(:end_of_day).and_return(end_of_today)
-      Gitlab::Ci::Charts::WeekChart.new(project)
+    let_it_be(:today) { Date.today }
+    let_it_be(:end_of_today) do
+      Time.use_zone(Time.find_zone('Asia/Dubai')) { today.end_of_day }
     end
+
+    let(:chart) { Gitlab::Ci::Charts::WeekChart.new(project) }
 
     subject { chart.total }
 
-    before do
+    before_all do
       # The DB uses UTC always, so our use of a Time Zone in the application
       # can cause the creation date of the pipeline to go unmatched depending
       # on the offset. We can work around this by requesting the pipeline be
       # created a with the `created_at` field set to a day ago in the same week.
-      create(:ci_empty_pipeline, project: project, duration: 120, created_at: today - 1.day)
+      create(:ci_empty_pipeline, project: project, duration: 120, created_at: 1.day.before(today))
+    end
+
+    before do
+      allow(Date).to receive(:today).and_return(today)
+      allow(today).to receive(:end_of_day).and_return(end_of_today)
     end
 
     it 'uses a non-utc time zone for range times' do
@@ -148,12 +143,11 @@ RSpec.describe Gitlab::Ci::Charts do
   end
 
   context 'pipeline_times' do
-    let(:project) { create(:project) }
     let(:chart) { Gitlab::Ci::Charts::PipelineTime.new(project) }
 
     subject { chart.pipeline_times }
 
-    before do
+    before_all do
       create(:ci_empty_pipeline, project: project, duration: 120)
     end
 
@@ -161,10 +155,14 @@ RSpec.describe Gitlab::Ci::Charts do
       is_expected.to contain_exactly(2)
     end
 
-    it 'handles nil pipeline times' do
-      create(:ci_empty_pipeline, project: project, duration: nil)
+    context 'when a pipeline has nil duration' do
+      before_all do
+        create(:ci_empty_pipeline, project: project, duration: nil)
+      end
 
-      is_expected.to contain_exactly(2, 0)
+      it 'handles nil pipeline times' do
+        is_expected.to contain_exactly(2, 0)
+      end
     end
   end
 end

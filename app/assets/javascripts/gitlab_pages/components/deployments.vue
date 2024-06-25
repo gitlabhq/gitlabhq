@@ -21,7 +21,7 @@ export default {
   data() {
     return {
       showInactive: false,
-      requestBatchSize: 2,
+      requestBatchSize: 10,
       hasError: false,
       alerts: {},
       primaryDeployments: null,

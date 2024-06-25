@@ -32,6 +32,7 @@ To use GitLab Duo on a self-managed instance, you must ensure connectivity exist
   to `cloud.gitlab.com` and `customers.gitlab.com` on port `443` both with `https://`.
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
+- In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.
 
 ### Allow inbound connections from clients to the GitLab instance
 

@@ -1924,6 +1924,7 @@ The selected diagram is replaced with an updated version.
 ## GitLab-specific references
 
 > - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
+> - Ability to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
 
 GitLab Flavored Markdown renders GitLab-specific references. For example, you can reference
 an issue, a commit, a team member, or even an entire project team. GitLab Flavored Markdown turns
@@ -1951,10 +1952,10 @@ GitLab Flavored Markdown recognizes the following:
 | [Iteration cadence](group/iterations/index.md) by title (multiple words)<sup>1</sup> | `[cadence:"plan a"]`                                  |                                         |                                    |
 | [Vulnerability](application_security/vulnerabilities/index.md)                       | `[vulnerability:123]`                                 | `[vulnerability:namespace/project/123]` | `[vulnerability:project/123]`      |
 | Feature flag                                                                         | `[feature_flag:123]`                                  | `[feature_flag:namespace/project/123]`  | `[feature_flag:project/123]`       |
-| Label by ID                                                                          | `~123`                                                | `namespace/project~123`                 | `project~123`                      |
-| Label by name (one word)                                                             | `~bug`                                                | `namespace/project~bug`                 | `project~bug`                      |
-| Label by name (multiple words)                                                       | `~"feature request"`                                  | `namespace/project~"feature request"`   | `project~"feature request"`        |
-| Label by name (scoped)                                                               | `~"priority::high"`                                   | `namespace/project~"priority::high"`    | `project~"priority::high"`         |
+| Label by ID <sup>2</sup>                                                             | `~123`                                                | `namespace/project~123`                 | `project~123`                      |
+| Label by name (one word) <sup>2</sup>                                                | `~bug`                                                | `namespace/project~bug`                 | `project~bug`                      |
+| Label by name (multiple words) <sup>2</sup>                                          | `~"feature request"`                                  | `namespace/project~"feature request"`   | `project~"feature request"`        |
+| Label by name (scoped) <sup>2</sup>                                                  | `~"priority::high"`                                   | `namespace/project~"priority::high"`    | `project~"priority::high"`         |
 | Project milestone by ID <sup>2</sup>                                                 | `%123`                                                | `namespace/project%123`                 | `project%123`                      |
 | Milestone by name (one word) <sup>2</sup>                                            | `%v1.23`                                              | `namespace/project%v1.23`               | `project%v1.23`                    |
 | Milestone by name (multiple words) <sup>2</sup>                                      | `%"release candidate"`                                | `namespace/project%"release candidate"` | `project%"release candidate"`      |
@@ -1973,8 +1974,8 @@ GitLab Flavored Markdown recognizes the following:
    Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
    For example, the text reference `[cadence:"plan"]` renders as `[cadence:1]` if the referenced
    iterations cadence's ID is `1`.
-1. For milestones, prepend a `/` before `namespace/project` to specify the exact milestone,
-   removing any possible ambiguity.
+1. For labels or milestones, prepend a `/` before `namespace/project` to specify the exact label
+   or milestone, removing any possible ambiguity.
 
 For example, referencing an issue by using `#123` formats the output as a link
 to issue number 123 with text `#123`. Likewise, a link to issue number 123 is

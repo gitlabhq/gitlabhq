@@ -1383,7 +1383,6 @@ RSpec/ContextWording:
     - 'spec/helpers/todos_helper_spec.rb'
     - 'spec/helpers/tree_helper_spec.rb'
     - 'spec/helpers/users_helper_spec.rb'
-    - 'spec/helpers/visibility_level_helper_spec.rb'
     - 'spec/helpers/web_hooks/web_hooks_helper_spec.rb'
     - 'spec/helpers/whats_new_helper_spec.rb'
     - 'spec/initializers/1_acts_as_taggable_spec.rb'

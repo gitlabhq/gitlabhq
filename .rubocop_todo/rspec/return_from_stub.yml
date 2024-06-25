@@ -93,7 +93,6 @@ RSpec/ReturnFromStub:
     - 'spec/helpers/projects_helper_spec.rb'
     - 'spec/helpers/users/callouts_helper_spec.rb'
     - 'spec/helpers/users_helper_spec.rb'
-    - 'spec/helpers/visibility_level_helper_spec.rb'
     - 'spec/lib/banzai/filter/issuable_reference_expansion_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/external_issue_reference_filter_spec.rb'
     - 'spec/lib/banzai/reference_parser/issue_parser_spec.rb'

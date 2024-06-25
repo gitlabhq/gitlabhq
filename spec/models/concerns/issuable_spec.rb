@@ -475,10 +475,11 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'delegates to Gitlab::DataBuilder::Issuable#build and does not set labels, assignees, nor total_time_spent' do
         expect(builder).to receive(:build).with(
           user: user,
-          changes: hash_not_including(:total_time_spent, :labels, :assignees))
+          changes: hash_not_including(:total_time_spent, :labels, :assignees),
+          action: 'open')
 
         # In some cases, old_associations is empty, e.g. on a close event
-        issue.to_hook_data(user)
+        issue.to_hook_data(user, action: 'open')
       end
     end
 
@@ -494,11 +495,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
+          action: 'update',
           changes: hash_including(
             'labels' => [[labels[0].hook_attrs], [labels[1].hook_attrs]]
           ))
 
-        issue.to_hook_data(user, old_associations: { labels: [labels[0]] })
+        issue.to_hook_data(user, old_associations: { labels: [labels[0]] }, action: 'update')
       end
     end
 
@@ -513,11 +515,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
+          action: 'update',
           changes: hash_including(
             'total_time_spent' => [1, 2]
           ))
 
-        issue.to_hook_data(user, old_associations: { total_time_spent: 1 })
+        issue.to_hook_data(user, old_associations: { total_time_spent: 1 }, action: 'update')
       end
     end
 
@@ -533,11 +536,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
+          action: 'update',
           changes: hash_including(
             'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
           ))
 
-        issue.to_hook_data(user, old_associations: { assignees: [user] })
+        issue.to_hook_data(user, old_associations: { assignees: [user] }, action: 'update')
       end
     end
 
@@ -555,11 +559,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
+          action: 'update',
           changes: hash_including(
             'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
           ))
 
-        merge_request.to_hook_data(user, old_associations: { assignees: [user] })
+        merge_request.to_hook_data(user, old_associations: { assignees: [user] }, action: 'update')
       end
     end
 
@@ -577,10 +582,11 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
+          action: 'update',
           changes: hash_including(
             'reviewers' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
           ))
-        merge_request.to_hook_data(user, old_associations: { reviewers: [user] })
+        merge_request.to_hook_data(user, old_associations: { reviewers: [user] }, action: 'update')
       end
     end
 
@@ -596,11 +602,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
+          action: 'update',
           changes: hash_including(
             'severity' => %w[unknown low]
           ))
 
-        issue.to_hook_data(user, old_associations: { severity: 'unknown' })
+        issue.to_hook_data(user, old_associations: { severity: 'unknown' }, action: 'update')
       end
     end
 
@@ -617,11 +624,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'delegates to Gitlab::DataBuilder::Issuable#build' do
         expect(builder).to receive(:build).with(
           user: user,
+          action: 'update',
           changes: hash_including(
             'escalation_status' => %i[triggered acknowledged]
           ))
 
-        issue.to_hook_data(user, old_associations: { escalation_status: :triggered })
+        issue.to_hook_data(user, old_associations: { escalation_status: :triggered }, action: 'update')
       end
     end
 
@@ -639,11 +647,12 @@ RSpec.describe Issuable, feature_category: :team_planning do
       it 'includes the cumulative changes of both saves' do
         expect(builder).to receive(:build).with(
           user: user,
+          action: 'update',
           changes: hash_including(
             'title' => ["initial title", "final title"],
             'target_branch' => %w[initial-branch final-branch]
           ))
-        merge_request.to_hook_data(user)
+        merge_request.to_hook_data(user, action: 'update')
       end
     end
   end

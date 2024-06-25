@@ -33,6 +33,10 @@ module Gitlab
           def execution_policy_mode?
             false # to be overridden in EE
           end
+
+          def pipeline_policy_context
+            # to be overridden in EE
+          end
           # :nocov:
           # rubocop:enable Gitlab/NoCodeCoverageComment
 

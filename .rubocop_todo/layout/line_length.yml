@@ -3268,7 +3268,6 @@ Layout/LineLength:
     - 'spec/helpers/timeboxes_helper_spec.rb'
     - 'spec/helpers/users/callouts_helper_spec.rb'
     - 'spec/helpers/users_helper_spec.rb'
-    - 'spec/helpers/visibility_level_helper_spec.rb'
     - 'spec/helpers/webpack_helper_spec.rb'
     - 'spec/initializers/6_validations_spec.rb'
     - 'spec/initializers/direct_upload_support_spec.rb'

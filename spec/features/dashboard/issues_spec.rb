@@ -23,6 +23,20 @@ RSpec.describe 'Dashboard Issues', :js, feature_category: :team_planning do
 
   it_behaves_like 'a "Your work" page with sidebar and breadcrumbs', :issues_dashboard_path, :issues
 
+  context 'for accessibility testing' do
+    let_it_be(:detailed_assigned_issue) do
+      create :issue,
+        :closed,
+        :locked,
+        assignees: [current_user],
+        project: project
+    end
+
+    it 'passes axe automated accessibility testing' do
+      expect(page).to be_axe_clean.within('#content-body')
+    end
+  end
+
   describe 'issues' do
     it 'shows issues assigned to current user' do
       expect(page).to have_content(assigned_issue.title)

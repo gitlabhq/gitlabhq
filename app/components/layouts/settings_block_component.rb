@@ -7,12 +7,14 @@ module Layouts
     # @param [String] id
     # @param [String] testid
     # @param [Boolean] expanded
-    def initialize(heading, description: nil, id: nil, testid: nil, expanded: nil)
+    # @param [Hash] button_options
+    def initialize(heading, description: nil, id: nil, testid: nil, expanded: nil, button_options: {})
       @heading = heading
       @description = description
       @id = id
       @testid = testid
       @expanded = expanded
+      @button_options = button_options
     end
 
     renders_one :heading

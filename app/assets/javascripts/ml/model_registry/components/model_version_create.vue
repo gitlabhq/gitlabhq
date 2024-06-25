@@ -152,6 +152,7 @@ export default {
     id: MODEL_VERSION_CREATION_MODAL_ID,
     actionSecondary: {
       text: __('Cancel'),
+      attributes: { variant: 'default' },
     },
     versionDescription: s__('MlModelRegistry|Enter a semantic version.'),
     versionValid: s__('MlModelRegistry|Version is valid semantic version.'),

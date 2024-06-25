@@ -578,7 +578,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             short_revision: expected_revision[0..8],
             created_at: DateTime.rfc3339(tags_response[index][:created_at].rfc3339),
             updated_at: DateTime.rfc3339(tags_response[index][:updated_at].rfc3339),
-            published_at: DateTime.rfc3339(tags_response[index][:published_at].rfc3339)
+            published_at: DateTime.rfc3339(tags_response[index][:published_at].rfc3339),
+            media_type: tags_response[index][:media_type]
           )
 
           Array(tag.referrers).each_with_index do |ref, ref_index|

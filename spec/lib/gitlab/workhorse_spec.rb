@@ -301,7 +301,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
           response = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
 
           expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
-                                                                         'gitaly-feature-mep-mep' => 'true')
+            'gitaly-feature-mep-mep' => 'true')
         end
 
         it 'sets the flag to false for other projects' do
@@ -309,7 +309,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
           response = described_class.git_http_ok(other_project.repository, Gitlab::GlRepository::PROJECT, user, action)
 
           expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
-                                                                         'gitaly-feature-mep-mep' => 'false')
+            'gitaly-feature-mep-mep' => 'false')
         end
 
         it 'sets the flag to false when there is no project' do
@@ -317,7 +317,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
           response = described_class.git_http_ok(snippet.repository, Gitlab::GlRepository::SNIPPET, user, action)
 
           expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
-                                                                         'gitaly-feature-mep-mep' => 'false')
+            'gitaly-feature-mep-mep' => 'false')
         end
       end
     end

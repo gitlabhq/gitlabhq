@@ -5,7 +5,9 @@ module SortingPreference
   include CookiesHelper
 
   def set_sort_order(field = sorting_field, default_order = default_sort_order)
-    sort_order = set_sort_order_from_user_preference(field) || set_sort_order_from_cookie(field) || params[:sort]
+    sort_order = set_sort_order_from_user_preference(field) ||
+      set_sort_order_from_cookie(field) ||
+      pagination_params[:sort]
 
     # some types of sorting might not be available on the dashboard
     return default_order unless valid_sort_order?(sort_order)
@@ -40,7 +42,7 @@ module SortingPreference
 
     user_preference = current_user.user_preference
 
-    sort_param = params[:sort]
+    sort_param = pagination_params[:sort]
     sort_param ||= user_preference[field]
 
     return sort_param if Gitlab::Database.read_only?
@@ -53,7 +55,7 @@ module SortingPreference
   def set_sort_order_from_cookie(field = sorting_field)
     return unless legacy_sort_cookie_name
 
-    sort_param = params[:sort] if params[:sort].present?
+    sort_param = pagination_params[:sort] if pagination_params[:sort].present?
     # fallback to legacy cookie value for backward compatibility
     sort_param ||= cookies[legacy_sort_cookie_name]
     sort_param ||= cookies[remember_sorting_key(field)]

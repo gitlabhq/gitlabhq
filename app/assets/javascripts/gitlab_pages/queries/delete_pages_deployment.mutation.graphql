@@ -1,0 +1,11 @@
+mutation DeletePagesDeployment($deploymentId: PagesDeploymentID!) {
+  deletePagesDeployment(input: { id: $deploymentId }) {
+    errors
+    pagesDeployment {
+      id
+      active
+      deletedAt
+      updatedAt
+    }
+  }
+}

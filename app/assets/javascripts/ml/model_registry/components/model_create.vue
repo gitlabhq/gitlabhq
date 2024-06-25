@@ -144,6 +144,7 @@ export default {
     },
     actionSecondary: {
       text: __('Cancel'),
+      attributes: { variant: 'default' },
     },
     nameDescription: s__(
       'MlModelRegistry|Model name must not contain spaces or upper case letter.',

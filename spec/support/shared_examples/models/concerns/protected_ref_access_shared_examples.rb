@@ -51,7 +51,7 @@ RSpec.shared_examples 'protected ref access' do |association|
     it { is_expected.to eq(levels) }
   end
 
-  describe '#check_access' do
+  describe '#check_access(user, current_project)' do
     let_it_be(:group) { create(:group) }
     # Making a project public to avoid false positives tests
     let_it_be(:project) { create(:project, :public, group: group) }
@@ -59,74 +59,43 @@ RSpec.shared_examples 'protected ref access' do |association|
     let_it_be(:protected_ref) { create(association, project: project) }
 
     let(:access_level) { ::Gitlab::Access::DEVELOPER }
-
-    before_all do
-      project.add_developer(current_user)
-    end
-
-    subject do
+    let(:current_project) { project }
+    let(:described_instance) do
       described_class.new(
         association => protected_ref,
         access_level: access_level
       )
     end
 
-    context 'when current_user is nil' do
-      it { expect(subject.check_access(nil)).to eq(false) }
+    before_all do
+      project.add_developer(current_user)
     end
 
-    context 'when current_user access exists without membership' do
-      let(:other_user) { create(:user) }
-      let(:user_access) do
-        described_class.new(association => protected_ref, access_level: access_level, user_id: other_user.id)
-      end
+    subject do
+      described_instance.check_access(current_user, current_project)
+    end
 
-      let(:enable_ff) { false }
+    context 'when current_user is nil' do
+      let(:current_user) { nil }
 
-      before do
-        stub_feature_flags(check_membership_in_protected_ref_access: enable_ff)
-      end
-
-      it 'does not check membership if check_membership_in_protected_ref_access FF is disabled' do
-        expect(project).not_to receive(:member?).with(other_user)
-
-        user_access.check_access(other_user)
-      end
-
-      context 'when check_membership_in_protected_ref_access FF is enabled' do
-        let(:enable_ff) { true }
-
-        it 'does check membership' do
-          expect(project).to receive(:member?).with(other_user)
-
-          user_access.check_access(other_user)
-        end
-
-        it 'returns false' do
-          expect(user_access.check_access(other_user)).to be_falsey
-        end
-
-        context 'when user has inherited membership' do
-          let!(:inherited_membership) { create(:group_member, group: group, user: other_user) }
-
-          it do
-            expect(user_access.check_access(other_user)).to be_truthy
-          end
-        end
-      end
+      it { is_expected.to eq false }
     end
 
     context 'when access_level is NO_ACCESS' do
       let(:access_level) { ::Gitlab::Access::NO_ACCESS }
 
-      it { expect(subject.check_access(current_user)).to eq(false) }
+      it { is_expected.to eq false }
     end
 
     context 'when instance admin access is configured' do
       let(:access_level) { Gitlab::Access::ADMIN }
 
       context 'when current_user is a maintainer' do
-        it { expect(subject.check_access(current_user)).to eq(false) }
+        before_all do
+          project.add_maintainer(current_user)
+        end
+
+        it { is_expected.to eq false }
       end
 
       context 'when current_user is admin' do
@@ -134,36 +103,36 @@ RSpec.shared_examples 'protected ref access' do |association|
           allow(current_user).to receive(:admin?).and_return(true)
         end
 
-        it { expect(subject.check_access(current_user)).to eq(true) }
+        it { is_expected.to eq true }
       end
     end
 
     context 'when current_user can push_code to project' do
       context 'and member access is high enough' do
-        it { expect(subject.check_access(current_user)).to eq(true) }
+        it { is_expected.to eq true }
 
         context 'when external authorization denies access' do
           before do
             external_service_deny_access(current_user, project)
           end
 
-          it { expect(subject.check_access(current_user)).to be_falsey }
+          it { is_expected.to eq false }
         end
       end
 
       context 'and member access is too low' do
         let(:access_level) { ::Gitlab::Access::MAINTAINER }
 
-        it { expect(subject.check_access(current_user)).to eq(false) }
+        it { is_expected.to eq false }
       end
     end
 
     context 'when current_user cannot push_code to project' do
       before do
-        allow(current_user).to receive(:can?).with(:push_code, project).and_return(false)
+        allow(current_user).to receive(:can?).with(:push_code, project).and_return(false) # rubocop:disable CodeReuse/ActiveRecord -- false positive flag on `with`
       end
 
-      it { expect(subject.check_access(current_user)).to eq(false) }
+      it { is_expected.to eq false }
     end
   end
 end

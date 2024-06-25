@@ -1013,6 +1013,8 @@ export default {
             :toggle-text="$options.i18n.actionsLabel"
             text-sr-only
             data-testid="issues-list-more-actions-dropdown"
+            toggle-class="!gl-m-0 gl-h-full"
+            class="!gl-w-7"
           >
             <csv-import-export-buttons
               v-if="showCsvButtons"

@@ -54,8 +54,8 @@ RSpec.describe Tooling::Danger::SidekiqQueues do
       }
 
       new_queues = old_queues.merge(mailers: { name: :mailers, urgency: :high },
-                                    post_receive: { name: :post_receive, urgency: :low },
-                                    process_commit: { name: :process_commit, urgency: :low })
+        post_receive: { name: :post_receive, urgency: :low },
+        process_commit: { name: :process_commit, urgency: :low })
 
       allow(sidekiq_queues).to receive(:old_queues).and_return(old_queues)
       allow(sidekiq_queues).to receive(:new_queues).and_return(new_queues)

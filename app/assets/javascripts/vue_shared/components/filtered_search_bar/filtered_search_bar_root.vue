@@ -350,7 +350,7 @@ export default {
 </script>
 
 <template>
-  <div class="vue-filtered-search-bar-container md:gl-flex gl-min-w-0">
+  <div class="vue-filtered-search-bar-container max-sm:gl-flex-col gl-flex gl-min-w-0 sm:gl-gap-3">
     <gl-form-checkbox
       v-if="showCheckbox"
       class="gl-align-self-center"
@@ -401,7 +401,10 @@ export default {
       :sort-options="transformedSortOptions"
       :sort-by="sortById"
       :is-ascending="sortDirectionAscending"
-      class="sort-dropdown-container"
+      class="sort-dropdown-container sm:!gl-m-0 max-sm:gl-w-full"
+      dropdown-class="gl-grow"
+      dropdown-toggle-class="gl-grow"
+      sort-direction-toggle-class="!gl-shrink !gl-grow-0"
       @sortByChange="handleSortByChange"
       @sortDirectionChange="handleSortDirectionChange"
     />

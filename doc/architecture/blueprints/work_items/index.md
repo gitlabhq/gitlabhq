@@ -169,6 +169,8 @@ Since this is a large project with numerous moving parts, feature flags are bein
 | `work_items_beta` | `gitlab-org`, `gitlab-com` |
 | `work_items_mvc_2` | `gitlab-org/plan-stage` |
 
+For epic work item specific feature flags, please see the [Epic Work Item Migration Epic](https://gitlab.com/groups/gitlab-org/-/epics/11777#feature-flags).
+
 ## Motivation
 
 Work Items main goal is to enhance the planning toolset to become the most popular collaboration tool for knowledge workers in any industry.

@@ -94,7 +94,7 @@ module Gitlab
                   raise(::Backup::Error, "Source database file does not exist #{db_file_name}")
                 end
 
-                Gitlab::Backup::Cli::Output.warn(
+                Gitlab::Backup::Cli::Output.warning(
                   "Source backup for the database #{database_name} doesn't exist. Skipping the task"
                 )
 

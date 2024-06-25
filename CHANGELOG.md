@@ -2660,6 +2660,16 @@ entry.
 - [Finalize the backfill migration for onboarding status step url](gitlab-org/gitlab@f986c1b1cf00968ff106136893bfe68d47895c69) ([merge request](gitlab-org/gitlab!147278))
 - [Remove ClusterRepositoryCache migration helper class](gitlab-org/gitlab@f71a7a94ce8d70d9d378ebc225b802b58f0ae006) ([merge request](gitlab-org/gitlab!147244))
 
+## 16.10.8 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@adb50cc178e81e75b78f6b10cafc79cd6be9a43c) ([merge request](gitlab-org/gitlab!156394))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@7f51cdccdd702a4f92607d52b6d4e3884c8e5234) ([merge request](gitlab-org/gitlab!155266))
+
 ## 16.10.7 (2024-06-11)
 
 ### Security (4 changes)
@@ -3439,6 +3449,16 @@ No changes.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.9 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@8fb9c678564e11392eab4d2001e60f751d6a86bc) ([merge request](gitlab-org/gitlab!156395))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@a079122ed2976df0f023ef55cef4a1585e31b5ce) ([merge request](gitlab-org/gitlab!155267))
 
 ## 16.9.8 (2024-05-09)
 
@@ -4269,6 +4289,16 @@ No changes.
 ### EE (1 change)
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
+
+## 16.8.8 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@5b316194aee0927d3aeb6812f116d30bec8d6e37) ([merge request](gitlab-org/gitlab!156396))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@48caa37b7717dfabfdab4af472ba51de1303ae74) ([merge request](gitlab-org/gitlab!155268))
 
 ## 16.8.7 (2024-04-12)
 

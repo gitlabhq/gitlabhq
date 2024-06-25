@@ -313,7 +313,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/helpers/users/group_callouts_helper_spec.rb'
     - 'spec/helpers/users_helper_spec.rb'
     - 'spec/helpers/version_check_helper_spec.rb'
-    - 'spec/helpers/visibility_level_helper_spec.rb'
     - 'spec/helpers/web_hooks/web_hooks_helper_spec.rb'
     - 'spec/helpers/whats_new_helper_spec.rb'
     - 'spec/helpers/wiki_helper_spec.rb'

@@ -17,8 +17,8 @@ module MergeRequests
     end
 
     def hook_data(merge_request, action, old_rev: nil, old_associations: {})
-      hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations)
-      hook_data[:object_attributes][:action] = action
+      hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations, action: action)
+
       if old_rev && !Gitlab::Git.blank_ref?(old_rev)
         hook_data[:object_attributes][:oldrev] = old_rev
       end

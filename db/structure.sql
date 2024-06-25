@@ -1425,6 +1425,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_9f3745f8fe32() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "target_project_id"
+  INTO NEW."project_id"
+  FROM "merge_requests"
+  WHERE "merge_requests"."id" = NEW."merge_request_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_a1bc7c70cbdf() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1665,6 +1681,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_e1da4a738230() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "vulnerabilities"
+  WHERE "vulnerabilities"."id" = NEW."vulnerability_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_ebab34f83f1d() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1674,6 +1706,22 @@ IF NEW."project_id" IS NULL THEN
   INTO NEW."project_id"
   FROM "packages_packages"
   WHERE "packages_packages"."id" = NEW."package_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
+CREATE FUNCTION trigger_f6c61cdddf31() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "ml_models"
+  WHERE "ml_models"."id" = NEW."model_id";
 END IF;
 
 RETURN NEW;
@@ -12569,7 +12617,8 @@ CREATE TABLE merge_requests_closing_issues (
     issue_id integer NOT NULL,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    from_mr_description boolean DEFAULT true NOT NULL
+    from_mr_description boolean DEFAULT true NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE merge_requests_closing_issues_id_seq
@@ -12850,6 +12899,7 @@ CREATE TABLE ml_model_metadata (
     model_id bigint NOT NULL,
     name text NOT NULL,
     value text NOT NULL,
+    project_id bigint,
     CONSTRAINT check_26d3322153 CHECK ((char_length(value) <= 5000)),
     CONSTRAINT check_36240c80a7 CHECK ((char_length(name) <= 255))
 );
@@ -18719,6 +18769,7 @@ CREATE TABLE vulnerability_external_issue_links (
     external_type smallint DEFAULT 1 NOT NULL,
     external_project_key text NOT NULL,
     external_issue_key text NOT NULL,
+    project_id bigint,
     CONSTRAINT check_3200604f5e CHECK ((char_length(external_issue_key) <= 255)),
     CONSTRAINT check_68cffd19b0 CHECK ((char_length(external_project_key) <= 255))
 );
@@ -27550,6 +27601,8 @@ CREATE INDEX index_merge_requests_closing_issues_on_issue_id ON merge_requests_c
 
 CREATE INDEX index_merge_requests_closing_issues_on_merge_request_id ON merge_requests_closing_issues USING btree (merge_request_id);
 
+CREATE INDEX index_merge_requests_closing_issues_on_project_id ON merge_requests_closing_issues USING btree (project_id);
+
 CREATE INDEX index_merge_requests_compliance_violations_on_violating_user_id ON merge_requests_compliance_violations USING btree (violating_user_id);
 
 CREATE UNIQUE INDEX index_merge_requests_compliance_violations_unique_columns ON merge_requests_compliance_violations USING btree (merge_request_id, violating_user_id, reason);
@@ -27675,6 +27728,8 @@ CREATE UNIQUE INDEX index_ml_experiments_on_project_id_and_iid ON ml_experiments
 CREATE UNIQUE INDEX index_ml_experiments_on_project_id_and_name ON ml_experiments USING btree (project_id, name);
 
 CREATE INDEX index_ml_experiments_on_user_id ON ml_experiments USING btree (user_id);
+
+CREATE INDEX index_ml_model_metadata_on_project_id ON ml_model_metadata USING btree (project_id);
 
 CREATE INDEX index_ml_model_version_metadata_on_project_id ON ml_model_version_metadata USING btree (project_id);
 
@@ -29213,6 +29268,8 @@ CREATE INDEX index_vulnerability_exports_on_organization_id ON vulnerability_exp
 CREATE INDEX index_vulnerability_exports_on_project_id_not_null ON vulnerability_exports USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_vulnerability_external_issue_links_on_author_id ON vulnerability_external_issue_links USING btree (author_id);
+
+CREATE INDEX index_vulnerability_external_issue_links_on_project_id ON vulnerability_external_issue_links USING btree (project_id);
 
 CREATE INDEX index_vulnerability_external_issue_links_on_vulnerability_id ON vulnerability_external_issue_links USING btree (vulnerability_id);
 
@@ -31390,6 +31447,8 @@ CREATE TRIGGER trigger_98ad3a4c1d35 BEFORE INSERT OR UPDATE ON merge_request_rev
 
 CREATE TRIGGER trigger_9e137c16de79 BEFORE INSERT OR UPDATE ON vulnerability_findings_remediations FOR EACH ROW EXECUTE FUNCTION trigger_9e137c16de79();
 
+CREATE TRIGGER trigger_9f3745f8fe32 BEFORE INSERT OR UPDATE ON merge_requests_closing_issues FOR EACH ROW EXECUTE FUNCTION trigger_9f3745f8fe32();
+
 CREATE TRIGGER trigger_a1bc7c70cbdf BEFORE INSERT OR UPDATE ON vulnerability_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_a1bc7c70cbdf();
 
 CREATE TRIGGER trigger_a253cb3cacdf BEFORE INSERT OR UPDATE ON dora_daily_metrics FOR EACH ROW EXECUTE FUNCTION trigger_a253cb3cacdf();
@@ -31424,7 +31483,11 @@ CREATE TRIGGER trigger_dc13168b8025 BEFORE INSERT OR UPDATE ON vulnerability_fla
 
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
+CREATE TRIGGER trigger_e1da4a738230 BEFORE INSERT OR UPDATE ON vulnerability_external_issue_links FOR EACH ROW EXECUTE FUNCTION trigger_e1da4a738230();
+
 CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_publications FOR EACH ROW EXECUTE FUNCTION trigger_ebab34f83f1d();
+
+CREATE TRIGGER trigger_f6c61cdddf31 BEFORE INSERT OR UPDATE ON ml_model_metadata FOR EACH ROW EXECUTE FUNCTION trigger_f6c61cdddf31();
 
 CREATE TRIGGER trigger_fb587b1ae7ad BEFORE INSERT OR UPDATE ON merge_requests FOR EACH ROW EXECUTE FUNCTION trigger_fb587b1ae7ad();
 
@@ -32366,6 +32429,9 @@ ALTER TABLE ONLY lfs_objects_projects
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_a6963e8447 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY merge_requests_closing_issues
+    ADD CONSTRAINT fk_a8703820ae FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY ssh_signatures
     ADD CONSTRAINT fk_aa1efbe865 FOREIGN KEY (key_id) REFERENCES keys(id) ON DELETE SET NULL;
 
@@ -32383,6 +32449,9 @@ ALTER TABLE ONLY identities
 
 ALTER TABLE ONLY boards
     ADD CONSTRAINT fk_ab0a250ff6 FOREIGN KEY (iteration_cadence_id) REFERENCES iterations_cadences(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY vulnerability_external_issue_links
+    ADD CONSTRAINT fk_abd093bb21 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY audit_events_streaming_http_instance_namespace_filters
     ADD CONSTRAINT fk_abe44125bc FOREIGN KEY (audit_events_instance_external_audit_event_destination_id) REFERENCES audit_events_instance_external_audit_event_destinations(id) ON DELETE CASCADE;
@@ -32863,6 +32932,9 @@ ALTER TABLE ONLY boards_epic_list_user_preferences
 
 ALTER TABLE ONLY user_project_callouts
     ADD CONSTRAINT fk_f62dd11a33 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_model_metadata
+    ADD CONSTRAINT fk_f68c7e109c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY workspaces
     ADD CONSTRAINT fk_f78aeddc77 FOREIGN KEY (cluster_agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;

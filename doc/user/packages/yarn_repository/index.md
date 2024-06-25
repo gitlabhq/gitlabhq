@@ -46,7 +46,7 @@ npmScopes:
 
 In this configuration:
 
-- Replace `<my-org>` with your organization scope, exclude the `@` symbol.
+- Replace `<my-org>` with your organization scope, excluding the `@` symbol.
 - Replace `<your_domain>` with your domain name.
 - Replace `<your_project_id>` with your project's ID, which you can find on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - Replace `<your_token>` with a deployment token, group access token, project access token, or personal access token.
@@ -105,11 +105,13 @@ in your package project root directory where `package.json` is found:
 
 ```yaml
 npmScopes:
-  esp-code:
+  <my-org>:
     npmPublishRegistry: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
     npmAlwaysAuth: true
     npmAuthToken: "${NPM_AUTH_TOKEN}"
 ```
+
+In this configuration, replace `<my-org>` with your organization scope, excluding the `@` symbol.
 
 #### Private runners
 
@@ -118,14 +120,16 @@ root directory where `package.json` is found:
 
 ```yaml
 npmScopes:
-  esp-code:
+  <my-org>:
     npmPublishRegistry: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
     npmAlwaysAuth: true
     npmAuthToken: "${CI_JOB_TOKEN}"
 ```
 
+In this configuration, replace `<my-org>` with your organization scope, excluding the `@` symbol.
+
 To publish the package using CI/CD pipeline, In the GitLab project that houses
-your `yarnrc.yml`, edit or create a `.gitlab-ci.yml` file. For example to trigger
+your `.yarnrc.yml`, edit or create a `.gitlab-ci.yml` file. For example to trigger
 only on any tag push:
 
 ```yaml

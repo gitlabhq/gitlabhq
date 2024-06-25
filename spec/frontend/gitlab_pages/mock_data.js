@@ -5,7 +5,7 @@ export const primaryDeployment = {
   url: 'https://example.com',
   createdAt: '2023-04-01T12:00:00Z',
   ciBuildId: 123,
-  rootDirectory: 'public',
+  rootDirectory: 'foo/bar',
   fileCount: 100,
   size: 1024,
   updatedAt: '2023-04-02T12:05:00Z',
