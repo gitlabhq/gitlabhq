@@ -30,3 +30,4 @@ export const DEFAULT_FIELDS_ADMIN = [
 ];
 
 export const RAW_TEXT_WARNING_ADMIN = RAW_TEXT_WARNING;
+export const VIEW_ADMIN_JOBS_PAGELOAD = 'view_admin_jobs_pageload';

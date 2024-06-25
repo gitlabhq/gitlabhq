@@ -22,6 +22,8 @@ module Gitlab
         chain.add ::Labkit::Middleware::Sidekiq::Server
         chain.add ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware
 
+        chain.add ::Gitlab::QueryLimiting::SidekiqMiddleware if ::Gitlab::QueryLimiting.enabled_for_env?
+
         if metrics
           chain.add ::Gitlab::SidekiqMiddleware::ServerMetrics
 

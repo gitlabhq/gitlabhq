@@ -1,14 +1,14 @@
 import { GlButton, GlEmptyState } from '@gitlab/ui';
-import ObservabilityEmptyState from '~/observability/components/observability_empty_state.vue';
+import ObservabilityNotEnabledEmptyState from '~/observability/components/observability_not_enabled_empty_state.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-describe('ObservabilityEmptyState', () => {
+describe('ObservabilityNotEnabledEmptyState', () => {
   let wrapper;
 
   const findEnableButton = () => wrapper.findComponent(GlButton);
 
   beforeEach(() => {
-    wrapper = shallowMountExtended(ObservabilityEmptyState);
+    wrapper = shallowMountExtended(ObservabilityNotEnabledEmptyState);
   });
 
   it('passes the correct title', () => {

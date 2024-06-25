@@ -64,7 +64,7 @@ describe('BroadcastMessagesBase', () => {
     await waitForPromises();
 
     expect(axiosMock.history.delete).toHaveLength(0);
-    expect(wrapper.vm.visibleMessages.length).toBe(MOCK_MESSAGES.length);
+    expect(findTable().props('messages')).toHaveLength(MOCK_MESSAGES.length);
   });
 
   it('does not remove a deleted message if the request fails', async () => {
@@ -75,7 +75,11 @@ describe('BroadcastMessagesBase', () => {
     findTable().vm.$emit('delete-message', id);
     await waitForPromises();
 
-    expect(wrapper.vm.visibleMessages.find((m) => m.id === id)).not.toBeUndefined();
+    expect(
+      findTable()
+        .props('messages')
+        .find((m) => m.id.id === id.id),
+    ).not.toBeUndefined();
     expect(createAlert).toHaveBeenCalledWith(
       expect.objectContaining({
         message: BroadcastMessagesBase.i18n.deleteError,
@@ -91,8 +95,12 @@ describe('BroadcastMessagesBase', () => {
     findTable().vm.$emit('delete-message', id);
     await waitForPromises();
 
-    expect(wrapper.vm.visibleMessages.find((m) => m.id === id)).toBeUndefined();
-    expect(wrapper.vm.totalMessages).toBe(MOCK_MESSAGES.length - 1);
+    expect(
+      findTable()
+        .props('messages')
+        .find((m) => m.id.id === id.id),
+    ).toBeUndefined();
+    expect(findPagination().props('totalItems')).toBe(MOCK_MESSAGES.length - 1);
   });
 
   it('redirects to the first page when totalMessages changes from 21 to 20', async () => {

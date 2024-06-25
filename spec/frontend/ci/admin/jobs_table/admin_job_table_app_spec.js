@@ -16,12 +16,14 @@ import { createAlert } from '~/alert';
 import { TEST_HOST } from 'spec/test_constants';
 import JobsFilteredSearch from '~/ci/common/private/jobs_filtered_search/app.vue';
 import * as urlUtils from '~/lib/utils/url_utility';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import {
   JOBS_FETCH_ERROR_MSG,
   CANCELABLE_JOBS_ERROR_MSG,
   LOADING_ARIA_LABEL,
   RAW_TEXT_WARNING_ADMIN,
   JOBS_COUNT_ERROR_MESSAGE,
+  VIEW_ADMIN_JOBS_PAGELOAD,
 } from '~/ci/admin/jobs_table/constants';
 import { TOKEN_TYPE_JOBS_RUNNER_TYPE } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
@@ -95,6 +97,16 @@ describe('Job table app', () => {
       apolloProvider: createMockApolloProvider(handler, cancelableHandler, countHandler),
     });
   };
+
+  describe('on page load', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+    it('tracks view_admin_jobs_pageload event', () => {
+      createComponent();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+      expect(trackEventSpy).toHaveBeenCalledWith(VIEW_ADMIN_JOBS_PAGELOAD, {}, undefined);
+    });
+  });
 
   describe('loading state', () => {
     it('should display skeleton loader when loading', () => {

@@ -89,17 +89,22 @@ export default {
     closeAddForm() {
       this.showAddForm = false;
     },
+    setVisibleMessages({ index, message, value }) {
+      const copy = [...this.visibleMessages];
+      copy[index] = { ...message, disable_delete: value };
+      this.visibleMessages = copy;
+    },
     async deleteMessage(messageId) {
       const index = this.visibleMessages.findIndex((m) => m.id === messageId);
       if (!index === -1) return;
 
       const message = this.visibleMessages[index];
-      this.$set(this.visibleMessages, index, { ...message, disable_delete: true });
+      this.setVisibleMessages({ index, message, value: true });
 
       try {
         await axios.delete(message.delete_path);
       } catch (e) {
-        this.$set(this.visibleMessages, index, { ...message, disable_delete: false });
+        this.setVisibleMessages({ index, message, value: false });
         createAlert({ message: this.$options.i18n.deleteError, variant: VARIANT_DANGER });
         return;
       }
