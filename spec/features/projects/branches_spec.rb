@@ -270,6 +270,49 @@ RSpec.describe 'Branches', feature_category: :source_code_management do
     end
   end
 
+  describe 'merge request badge', :js do
+    let_it_be(:project) { create(:project, :public, :repository) }
+    let_it_be(:merge_request) do
+      create(
+        :merge_request,
+        source_project: project,
+        target_project: project,
+        target_branch: 'master',
+        source_branch: 'feature'
+      )
+    end
+
+    before_all do
+      project.project_feature.update_column(:merge_requests_access_level, ProjectFeature::PRIVATE)
+    end
+
+    context 'when user has access to merge requests' do
+      before do
+        project.add_maintainer(user)
+
+        sign_in(user)
+
+        visit project_branches_path(project)
+      end
+
+      it 'shows merge request badge' do
+        expect(page).to have_selector('.gl-badge', text: merge_request.to_reference)
+      end
+    end
+
+    context 'when user does not have access to merge requests' do
+      before do
+        sign_in(user)
+
+        visit project_branches_path(project)
+      end
+
+      it 'shows merge request badge' do
+        expect(page).not_to have_selector('.gl-badge', text: merge_request.to_reference)
+      end
+    end
+  end
+
   context 'when logged out' do
     before do
       visit project_branches_path(project)
