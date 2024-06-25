@@ -62,7 +62,7 @@ RSpec.describe Gitlab::DependencyLinker::PodspecLinker do
       expect(subject).to include(link('https://github.com/tonymillion/Reachability.git', 'https://github.com/tonymillion/Reachability.git'))
     end
 
-    it 'links dependencies' do
+    it 'links dependencies', :aggregate_failures do
       expect(subject).to include(link('AFNetworking', 'https://cocoapods.org/pods/AFNetworking'))
       expect(subject).to include(link('RestKit/CoreData', 'https://cocoapods.org/pods/RestKit'))
       expect(subject).to include(link('MBProgressHUD', 'https://cocoapods.org/pods/MBProgressHUD'))

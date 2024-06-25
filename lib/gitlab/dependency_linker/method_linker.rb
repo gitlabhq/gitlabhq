@@ -33,11 +33,11 @@ module Gitlab
         value = regexp_for_value(value)
 
         %r{
-          #{method_name}            # Method name
-          \s*                       # Whitespace
-          [(=]?                     # Opening brace or equals sign
-          \s*                       # Whitespace
-          ['"](?<name>#{value})['"] # Package name in quotes
+        (?:^\s{0,10}(?:[a-z_.]{1,100}\.)?)\K # Look behind newline + whitespace + yielded object e.g. `spec.`
+          #{method_name}                    # Method name
+          \s{0,50}                          # Whitespace
+          (?:[(=]\s{0,50})?                 # ( or = + whitespace
+          ['"](?<name>#{value})['"]         # Package name in quotes
         }x
       end
     end
