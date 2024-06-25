@@ -15,6 +15,8 @@ RSpec.describe Projects::UploadsController, feature_category: :team_planning do
     { namespace_id: other_model.namespace.to_param, project_id: other_model }
   end
 
+  let(:legacy_version) { UploadsActions::ID_BASED_UPLOAD_PATH_VERSION - 1 }
+
   it_behaves_like 'handle uploads'
 
   context 'when the URL the old style, without /-/system' do
@@ -55,77 +57,40 @@ RSpec.describe Projects::UploadsController, feature_category: :team_planning do
   end
 
   describe "GET #show" do
-    let(:filename) { "rails_sample.jpg" }
     let(:user)  { create(:user) }
-    let(:jpg)   { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
-    let(:txt)   { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
-    let(:secret) { FileUploader.generate_secret }
-    let(:uploader_class) { FileUploader }
-
-    let(:upload_service) do
-      UploadService.new(model, jpg, uploader_class).execute
-    end
+    let(:filename) { "rails_sample.jpg" }
+    let!(:upload) { create(:upload, :issuable_upload, :with_file, model: model, filename: filename) }
 
     let(:show_upload) do
-      get :show, params: params.merge(secret: secret, filename: filename)
+      get :show, params: params.merge(secret: upload.secret, filename: filename)
     end
 
-    before do
-      allow(FileUploader).to receive(:generate_secret).and_return(secret)
+    it 'responds with status 404' do
+      show_upload
 
-      allow_next_instance_of(FileUploader) do |instance|
-        allow(instance).to receive(:image?).and_return(true)
-      end
-
-      upload_service
+      expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    context 'when project is private do' do
-      before do
-        model.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+    context 'with legacy upload' do
+      let!(:upload) do
+        create(:upload, :issuable_upload, :with_file, model: model, filename: filename, version: legacy_version)
       end
 
-      context "when not signed in" do
-        context 'when the project has setting enforce_auth_checks_on_uploads true' do
-          before do
-            model.update!(enforce_auth_checks_on_uploads: true)
-          end
-
-          it "responds with status 302" do
-            show_upload
-
-            expect(response).to have_gitlab_http_status(:redirect)
-          end
-        end
-
-        context 'when the project has setting enforce_auth_checks_on_uploads false' do
-          before do
-            model.update!(enforce_auth_checks_on_uploads: false)
-          end
-
-          it "responds with status 200" do
-            show_upload
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
-      end
-
-      context "when signed in" do
+      context 'when project is private do' do
         before do
-          sign_in(user)
+          model.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
         end
 
-        context "when the user doesn't have access to the model" do
+        context "when not signed in" do
           context 'when the project has setting enforce_auth_checks_on_uploads true' do
             before do
               model.update!(enforce_auth_checks_on_uploads: true)
             end
 
-            it "responds with status 404" do
+            it "responds with status 302" do
               show_upload
 
-              expect(response).to have_gitlab_http_status(:not_found)
+              expect(response).to have_gitlab_http_status(:redirect)
             end
           end
 
@@ -141,46 +106,46 @@ RSpec.describe Projects::UploadsController, feature_category: :team_planning do
             end
           end
         end
-      end
-    end
 
-    context 'when project is public' do
-      before do
-        model.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
-      end
-
-      context "when not signed in" do
-        context 'when the project has setting enforce_auth_checks_on_uploads true' do
+        context "when signed in" do
           before do
-            model.update!(enforce_auth_checks_on_uploads: true)
+            sign_in(user)
           end
 
-          it "responds with status 200" do
-            show_upload
+          context "when the user doesn't have access to the model" do
+            context 'when the project has setting enforce_auth_checks_on_uploads true' do
+              before do
+                model.update!(enforce_auth_checks_on_uploads: true)
+              end
 
-            expect(response).to have_gitlab_http_status(:ok)
+              it "responds with status 404" do
+                show_upload
+
+                expect(response).to have_gitlab_http_status(:not_found)
+              end
+            end
+
+            context 'when the project has setting enforce_auth_checks_on_uploads false' do
+              before do
+                model.update!(enforce_auth_checks_on_uploads: false)
+              end
+
+              it "responds with status 200" do
+                show_upload
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
           end
         end
-
-        context 'when the project has setting enforce_auth_checks_on_uploads false' do
-          before do
-            model.update!(enforce_auth_checks_on_uploads: false)
-          end
-
-          it "responds with status 200" do
-            show_upload
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
-        end
       end
 
-      context "when signed in" do
+      context 'when project is public' do
         before do
-          sign_in(user)
+          model.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
         end
 
-        context "when the user doesn't have access to the model" do
+        context "when not signed in" do
           context 'when the project has setting enforce_auth_checks_on_uploads true' do
             before do
               model.update!(enforce_auth_checks_on_uploads: true)
@@ -202,6 +167,38 @@ RSpec.describe Projects::UploadsController, feature_category: :team_planning do
               show_upload
 
               expect(response).to have_gitlab_http_status(:ok)
+            end
+          end
+        end
+
+        context "when signed in" do
+          before do
+            sign_in(user)
+          end
+
+          context "when the user doesn't have access to the model" do
+            context 'when the project has setting enforce_auth_checks_on_uploads true' do
+              before do
+                model.update!(enforce_auth_checks_on_uploads: true)
+              end
+
+              it "responds with status 200" do
+                show_upload
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
+            end
+
+            context 'when the project has setting enforce_auth_checks_on_uploads false' do
+              before do
+                model.update!(enforce_auth_checks_on_uploads: false)
+              end
+
+              it "responds with status 200" do
+                show_upload
+
+                expect(response).to have_gitlab_http_status(:ok)
+              end
             end
           end
         end

@@ -82,7 +82,8 @@ module Bitbucket
           target_branch_name: target_branch_name,
           target_branch_sha: target_branch_sha,
           source_and_target_project_different: source_and_target_project_different,
-          reviewers: reviewers
+          reviewers: reviewers,
+          closed_by: closed_by
         }
       end
 
@@ -106,6 +107,10 @@ module Bitbucket
 
       def source_and_target_project_different
         source_repo_uuid != target_repo_uuid
+      end
+
+      def closed_by
+        raw['closed_by']&.dig('uuid')
       end
     end
   end

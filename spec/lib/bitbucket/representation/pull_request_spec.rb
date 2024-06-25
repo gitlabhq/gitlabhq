@@ -108,6 +108,7 @@ RSpec.describe Bitbucket::Representation::PullRequest, feature_category: :import
         source_branch_sha: 'source-commit-hash',
         merge_commit_sha: 'merge-commit-hash',
         state: 'merged',
+        closed_by: nil,
         target_branch_name: 'destination-branch-name',
         target_branch_sha: 'destination-commit-hash',
         title: 'title',

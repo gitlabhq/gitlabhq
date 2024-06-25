@@ -829,6 +829,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_18bc439a6741() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_packages"
+  WHERE "packages_packages"."id" = NEW."package_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_1ed40f4d5f4e() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13739,7 +13755,8 @@ CREATE TABLE packages_conan_metadata (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     package_username character varying(255) NOT NULL,
-    package_channel character varying(255) NOT NULL
+    package_channel character varying(255) NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE packages_conan_metadata_id_seq
@@ -18096,6 +18113,7 @@ CREATE TABLE uploads (
     store integer DEFAULT 1,
     mount_point character varying,
     secret character varying,
+    version integer DEFAULT 1 NOT NULL,
     CONSTRAINT check_5e9547379c CHECK ((store IS NOT NULL))
 );
 
@@ -27947,6 +27965,8 @@ CREATE UNIQUE INDEX index_packages_conan_file_metadata_on_package_file_id ON pac
 
 CREATE UNIQUE INDEX index_packages_conan_metadata_on_package_id_username_channel ON packages_conan_metadata USING btree (package_id, package_username, package_channel);
 
+CREATE INDEX index_packages_conan_metadata_on_project_id ON packages_conan_metadata USING btree (project_id);
+
 CREATE INDEX index_packages_debian_group_component_files_on_component_id ON packages_debian_group_component_files USING btree (component_id);
 
 CREATE INDEX index_packages_debian_group_distribution_keys_on_group_id ON packages_debian_group_distribution_keys USING btree (group_id);
@@ -31291,6 +31311,8 @@ CREATE TRIGGER trigger_13d4aa8fe3dd BEFORE INSERT OR UPDATE ON draft_notes FOR E
 
 CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_174b23fa3dfb();
 
+CREATE TRIGGER trigger_18bc439a6741 BEFORE INSERT OR UPDATE ON packages_conan_metadata FOR EACH ROW EXECUTE FUNCTION trigger_18bc439a6741();
+
 CREATE TRIGGER trigger_1ed40f4d5f4e BEFORE INSERT OR UPDATE ON packages_maven_metadata FOR EACH ROW EXECUTE FUNCTION trigger_1ed40f4d5f4e();
 
 CREATE TRIGGER trigger_207005e8e995 BEFORE INSERT OR UPDATE ON operations_strategies FOR EACH ROW EXECUTE FUNCTION trigger_207005e8e995();
@@ -32060,6 +32082,9 @@ ALTER TABLE ONLY subscription_user_add_on_assignments
 
 ALTER TABLE ONLY vulnerabilities
     ADD CONSTRAINT fk_725465b774 FOREIGN KEY (dismissed_by_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY packages_conan_metadata
+    ADD CONSTRAINT fk_7302a29cd9 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY approval_merge_request_rules
     ADD CONSTRAINT fk_73fec3d7e5 FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;

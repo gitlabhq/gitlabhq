@@ -48017,9 +48017,6 @@ msgstr ""
 msgid "SecurityOrchestration|Select frameworks"
 msgstr ""
 
-msgid "SecurityOrchestration|Select groups"
-msgstr ""
-
 msgid "SecurityOrchestration|Select policy"
 msgstr ""
 
@@ -56881,6 +56878,9 @@ msgid "UsageQuota|No compute usage data because %{linkStart}Instance runners%{li
 msgstr ""
 
 msgid "UsageQuota|No projects to display."
+msgstr ""
+
+msgid "UsageQuota|Observability"
 msgstr ""
 
 msgid "UsageQuota|Pending Members"

@@ -9,8 +9,10 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
   let_it_be(:bitbucket_user) { create(:user) }
   let_it_be(:user_2) { create(:user) }
   let_it_be(:user_3) { create(:user) }
+  let_it_be(:closed_by_user) { create(:user) }
   let_it_be(:identity) { create(:identity, user: bitbucket_user, extern_uid: '{123}', provider: :bitbucket) }
   let_it_be(:identity_2) { create(:identity, user: user_2, extern_uid: 'user_2', provider: :bitbucket) }
+  let_it_be(:closed_by_identity) { create(:identity, user: closed_by_user, extern_uid: '{345}', provider: :bitbucket) }
   let(:mentions_converter) { Gitlab::Import::MentionsConverter.new('bitbucket', project) }
   let(:source_branch_sha) { project.repository.commit.sha }
   let(:target_branch_sha) { project.repository.commit('refs/heads/master').sha }
@@ -29,7 +31,8 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
       target_branch_sha: target_branch_sha,
       title: 'title',
       updated_at: Date.today,
-      reviewers: %w[user_2 user_3]
+      reviewers: %w[user_2 user_3],
+      closed_by: '{345}'
     }
   end
 
@@ -65,6 +68,8 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
       expect(merge_request.reviewer_ids).to eq([user_2.id])
       expect(merge_request.merge_request_diffs.first.base_commit_sha).to eq(source_branch_sha)
       expect(merge_request.merge_request_diffs.first.head_commit_sha).to eq(target_branch_sha)
+      expect(merge_request.metrics.merged_by_id).to eq(closed_by_user.id)
+      expect(merge_request.metrics.latest_closed_by_id).to be_nil
     end
 
     it 'converts mentions in the description' do
@@ -78,6 +83,8 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
         described_class.new(project, hash.merge(state: 'closed')).execute
 
         expect(project.merge_requests.first.closed?).to be_truthy
+        expect(project.merge_requests.first.metrics.latest_closed_by_id).to eq(closed_by_user.id)
+        expect(project.merge_requests.first.metrics.merged_by_id).to be_nil
       end
     end
 
@@ -86,6 +93,8 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
         described_class.new(project, hash.merge(state: 'opened')).execute
 
         expect(project.merge_requests.first.opened?).to be_truthy
+        expect(project.merge_requests.first.metrics.latest_closed_by_id).to be_nil
+        expect(project.merge_requests.first.metrics.merged_by_id).to be_nil
       end
     end
 
@@ -128,6 +137,30 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
         merge_request = project.merge_requests.first
 
         expect(merge_request.reviewer_ids).to be_empty
+      end
+    end
+
+    context 'when closed by user cannot be found' do
+      before do
+        User.find(closed_by_user.id).destroy!
+      end
+
+      it 'sets the merged by user to the project creator' do
+        importer.execute
+
+        expect(project.merge_requests.first.metrics.merged_by_id).to eq(project.creator_id)
+        expect(project.merge_requests.first.metrics.latest_closed_by_id).to be_nil
+      end
+
+      context 'when merge state is closed' do
+        let(:hash) { super().merge(state: 'closed') }
+
+        it 'sets the closed by user to the project creator' do
+          importer.execute
+
+          expect(project.merge_requests.first.metrics.latest_closed_by_id).to eq(project.creator_id)
+          expect(project.merge_requests.first.metrics.merged_by_id).to be_nil
+        end
       end
     end
 
