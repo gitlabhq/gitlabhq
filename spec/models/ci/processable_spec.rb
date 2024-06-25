@@ -662,4 +662,27 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       end
     end
   end
+
+  describe 'find_dependencies_with_accessible_artifacts' do
+    let(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+    let(:build2) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+    let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: build2, accessibility: accessibility) }
+
+    let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: build2) }
+    let!(:job_variable_2) { create(:ci_job_variable, job: build2) }
+
+    subject { build.find_dependencies_with_accessible_artifacts([build2]) }
+
+    context 'inherits only jobs whose artifacts are public' do
+      let(:accessibility) { 'public' }
+
+      it { expect(subject).to eq([build2]) }
+    end
+
+    context 'does not inherits jobs whose artifacts are private' do
+      let(:accessibility) { 'private' }
+
+      it { expect(subject).to eq([]) }
+    end
+  end
 end

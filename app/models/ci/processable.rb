@@ -229,9 +229,20 @@ module Ci
     def dependency_variables
       return [] if all_dependencies.empty?
 
+      dependencies_with_accessible_artifacts = find_dependencies_with_accessible_artifacts(all_dependencies)
+
       Gitlab::Ci::Variables::Collection.new.concat(
-        Ci::JobVariable.where(job: all_dependencies).dotenv_source
+        Ci::JobVariable.where(job: dependencies_with_accessible_artifacts).dotenv_source
       )
+    end
+
+    def find_dependencies_with_accessible_artifacts(all_dependencies)
+      ids = all_dependencies.collect(&:id)
+
+      Ci::Build.joins(:job_artifacts).where(job_artifacts: { job_id: nil })
+        .or(Ci::Build.joins(:job_artifacts).where(job_artifacts: {
+          job_id: ids, file_type: 'dotenv', accessibility: 'public'
+        }))
     end
 
     def all_dependencies

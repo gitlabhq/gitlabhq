@@ -113,11 +113,20 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     context 'when bridge has dependency which has dotenv variable' do
       let(:test) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
       let(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1, options: { dependencies: [test.name] }) }
+      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: test, accessibility: accessibility) }
 
       let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: test) }
 
-      it 'includes inherited variable' do
-        expect(bridge.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
+      context 'includes inherited variable that is public' do
+        let(:accessibility) { 'public' }
+
+        it { expect(bridge.scoped_variables.to_hash).to include(job_variable.key => job_variable.value) }
+      end
+
+      context 'does not include inherited variable that is private' do
+        let(:accessibility) { 'private' }
+
+        it { expect(bridge.scoped_variables.to_hash).not_to include(job_variable.key => job_variable.value) }
       end
     end
   end
@@ -1028,12 +1037,21 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     context 'when downloading from previous stages' do
       let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
       let!(:bridge) { create(:ci_bridge, pipeline: pipeline, stage_idx: 1) }
+      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: accessibility) }
 
       let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
       let!(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
 
-      it 'inherits only dependent variables' do
-        expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
+      context 'inherits only dependent variables that are public' do
+        let(:accessibility) { 'public' }
+
+        it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
+      end
+
+      context 'does not inherit dependent variables that are private' do
+        let(:accessibility) { 'private' }
+
+        it { expect(subject.to_hash).not_to eq(job_variable_1.key => job_variable_1.value) }
       end
     end
 
@@ -1051,12 +1069,22 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
         )
       end
 
+      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: accessibility) }
+
       let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
       let!(:job_variable_2) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
       let!(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare3) }
 
-      it 'inherits only needs with artifacts variables' do
-        expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
+      context 'inherits only needs with artifacts variables that are public' do
+        let(:accessibility) { 'public' }
+
+        it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
+      end
+
+      context 'does not inherit needs with artifacts variables that are public' do
+        let(:accessibility) { 'private' }
+
+        it { expect(subject.to_hash).not_to eq(job_variable_1.key => job_variable_1.value) }
       end
     end
   end
