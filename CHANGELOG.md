@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.8.8 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@5b316194aee0927d3aeb6812f116d30bec8d6e37) ([merge request](gitlab-org/gitlab!156396))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@48caa37b7717dfabfdab4af472ba51de1303ae74) ([merge request](gitlab-org/gitlab!155268))
+
 ## 16.8.7 (2024-04-12)
 
 No changes.
