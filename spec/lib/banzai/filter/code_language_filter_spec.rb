@@ -99,4 +99,6 @@ RSpec.describe Banzai::Filter::CodeLanguageFilter, feature_category: :team_plann
       end
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

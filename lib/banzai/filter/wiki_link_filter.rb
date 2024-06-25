@@ -8,6 +8,7 @@ module Banzai
     # Context options:
     #   :wiki
     class WikiLinkFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
       include Gitlab::Utils::SanitizeNodeLink
 
       CSS_A     = 'a:not(.gfm)'

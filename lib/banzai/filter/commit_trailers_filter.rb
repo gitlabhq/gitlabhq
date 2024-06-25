@@ -16,6 +16,7 @@ module Banzai
     class CommitTrailersFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
       include AvatarsHelper
+      prepend Concerns::PipelineTimingCheck
 
       def call
         doc.xpath('descendant-or-self::text()').each do |node|

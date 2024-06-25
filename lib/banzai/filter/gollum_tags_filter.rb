@@ -33,6 +33,7 @@ module Banzai
     #   :wiki [Wiki] (required) - Current wiki instance.
     #
     class GollumTagsFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
       include ActionView::Helpers::TagHelper
 
       # Pattern to match tags content that should be parsed in HTML.

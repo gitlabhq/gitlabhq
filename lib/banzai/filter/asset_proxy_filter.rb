@@ -9,6 +9,8 @@ module Banzai
     #
     # Based on https://github.com/gjtorikian/html-pipeline/blob/v2.14.3/lib/html/pipeline/camo_filter.rb
     class AssetProxyFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       def initialize(text, context = nil, result = nil)
         super
       end

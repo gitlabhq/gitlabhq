@@ -65,4 +65,6 @@ RSpec.describe Banzai::Filter::KrokiFilter, feature_category: :team_planning do
 
     expect(doc.to_s).to eq %(<a><pre data-canonical-lang='f/" onerror=alert(1) onload=alert(1) '><code data-canonical-lang="wavedrom">xss</code></pre></a>)
   end
+
+  it_behaves_like 'pipeline timing check'
 end

@@ -11,6 +11,7 @@ module Banzai
     class MathFilter < HTML::Pipeline::Filter
       # Handle the $`...`$ and ```math syntax in this filter.
       # Also add necessary classes any existing math blocks.
+      prepend Concerns::PipelineTimingCheck
       include ::Gitlab::Utils::StrongMemoize
 
       CSS_MATH   = 'pre[data-canonical-lang="math"] > code'

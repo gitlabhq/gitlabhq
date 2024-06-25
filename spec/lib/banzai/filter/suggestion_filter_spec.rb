@@ -35,4 +35,6 @@ RSpec.describe Banzai::Filter::SuggestionFilter, feature_category: :team_plannin
       expect(pre[data_attr]).to eq('-3+2')
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

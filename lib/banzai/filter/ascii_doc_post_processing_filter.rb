@@ -3,6 +3,8 @@
 module Banzai
   module Filter
     class AsciiDocPostProcessingFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       CSS_MATH   = '[data-math-style]'
       XPATH_MATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_MATH).freeze
       CSS_MERM   = '[data-mermaid-style]'
