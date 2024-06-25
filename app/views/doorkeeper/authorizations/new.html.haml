@@ -39,7 +39,7 @@
       = hidden_field_tag :code_challenge_method, @pre_auth.code_challenge_method
       = render Pajamas::ButtonComponent.new(type: :submit,
         variant: :confirm,
-        button_options: { id: 'commit-changes', testid: 'authorization-button'}) do
+        button_options: {testid: 'authorization-button'}) do
         = html_escape(_('Authorize %{client_name}')) % { client_name: @pre_auth.client.name.html_safe }
     = form_tag oauth_authorization_path, method: :delete, class: 'inline' do
       = hidden_field_tag :client_id, @pre_auth.client.uid

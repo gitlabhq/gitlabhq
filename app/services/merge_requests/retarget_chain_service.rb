@@ -29,10 +29,6 @@ module MergeRequests
             target_branch_was_deleted: true
           }
         ).execute(other_merge_request)
-
-        if Feature.enabled?(:rebase_when_retargetting_mrs, other_merge_request.project, type: :gitlab_com_derisk)
-          other_merge_request.rebase_async(current_user.id)
-        end
       end
     end
   end

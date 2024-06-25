@@ -46,6 +46,10 @@ describe('MrWidgetPipelineContainer', () => {
         hasCi: mockStore.hasCI,
         sourceBranch: mockStore.sourceBranch,
         sourceBranchLink: mockStore.sourceBranchLink,
+        retargeted: false,
+        targetProjectId: 1,
+        iid: 1,
+        detatchedPipeline: 'DETATCHED',
       });
     });
 

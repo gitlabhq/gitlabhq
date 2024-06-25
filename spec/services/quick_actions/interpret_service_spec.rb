@@ -30,6 +30,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       multiple_merge_request_reviewers: false,
       multiple_merge_request_assignees: false
     )
+    project.add_developer(current_user)
   end
 
   describe '#execute' do
@@ -3538,6 +3539,16 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         it 'does not include the value' do
           _, explanations = service.explain(content, incident)
           expect(explanations).to be_empty
+        end
+      end
+
+      context 'when promotion is not allowed' do
+        let_it_be(:public_project) { create(:project, :public) }
+        let_it_be(:task) { build(:work_item, :task, project: public_project) }
+
+        it 'returns the forbidden error message' do
+          _, _, message = service.execute(content, task)
+          expect(message).to eq(_('Failed to promote this work item: You have insufficient permissions.'))
         end
       end
     end

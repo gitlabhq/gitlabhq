@@ -71,3 +71,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::SidekiqMiddleware.prepend_mod

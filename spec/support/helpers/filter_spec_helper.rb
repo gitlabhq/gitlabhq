@@ -60,7 +60,7 @@ module FilterSpecHelper
     context.reverse_merge!(project: project) if defined?(project)
     context.reverse_merge!(current_user: current_user) if defined?(current_user)
 
-    filters = [Banzai::Filter::AutolinkFilter, filter].compact
+    filters = [Banzai::Filter::MarkdownFilter, filter].compact
 
     redact = context.delete(:redact)
     filters.push(Banzai::Filter::ReferenceRedactorFilter) if redact

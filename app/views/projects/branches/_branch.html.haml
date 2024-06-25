@@ -35,7 +35,7 @@
 
   .right-block.gl-display-flex.gl-align-items-center.gl-justify-content-end
     .gl-mr-3
-      - if mr_status.present?
+      - if mr_status.present? && can?(current_user, :read_merge_request, related_merge_request)
         .issuable-reference.gl-display-flex.gl-justify-content-end.gl-overflow-hidden
           = gl_badge_tag issuable_reference(related_merge_request),
             { icon: mr_status[:icon], variant: mr_status[:variant], size: :md, href: merge_request_path(related_merge_request) },

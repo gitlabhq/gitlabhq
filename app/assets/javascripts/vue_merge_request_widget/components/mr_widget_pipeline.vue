@@ -7,6 +7,7 @@ import {
   GlSprintf,
   GlTooltip,
   GlTooltipDirective,
+  GlButton,
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
@@ -16,6 +17,7 @@ import PipelineArtifacts from '~/ci/pipelines_page/components/pipelines_artifact
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
+import runPipelineMixin from '../mixins/run_pipeline';
 import { MT_MERGE_STRATEGY } from '../constants';
 
 export default {
@@ -27,6 +29,7 @@ export default {
     GlIcon,
     GlSprintf,
     GlTooltip,
+    GlButton,
     LegacyPipelineMiniGraph,
     PipelineArtifacts,
     TimeAgoTooltip,
@@ -36,6 +39,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
   },
+  mixins: [runPipelineMixin],
   props: {
     pipeline: {
       type: Object,
@@ -85,6 +89,21 @@ export default {
       required: false,
       default: '',
     },
+    retargeted: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    detatchedPipeline: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      isCreatingPipeline: false,
+    };
   },
   computed: {
     downstreamPipelines() {
@@ -171,6 +190,27 @@ export default {
           </template>
         </gl-sprintf>
       </p>
+    </template>
+    <template v-else-if="retargeted">
+      <gl-icon name="status_canceled" class="gl-align-self-center gl-mr-3" />
+      <p class="gl-flex-grow-1 gl-flex gl-ml-3 gl-mb-0 text-muted" data-testid="retargeted-message">
+        {{
+          __(
+            'You should run a new pipeline, because the target branch has changed for this merge request.',
+          )
+        }}
+      </p>
+      <gl-button
+        v-if="detatchedPipeline"
+        category="tertiary"
+        variant="confirm"
+        size="small"
+        :loading="isCreatingPipeline"
+        data-testid="run-pipeline-button"
+        @click="runPipeline"
+      >
+        {{ __('Run pipeline') }}
+      </gl-button>
     </template>
     <template v-else-if="!hasPipeline">
       <gl-loading-icon size="sm" />

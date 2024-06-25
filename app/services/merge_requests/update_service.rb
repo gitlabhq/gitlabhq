@@ -169,7 +169,18 @@ module MergeRequests
       )
 
       delete_approvals_on_target_branch_change(merge_request)
-      refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: true)
+
+      # `target_branch_was_deleted` is set to true when MR gets re-targeted due to
+      # deleted target branch. In this case we don't want to create a new pipeline
+      # on behalf of MR author.
+      # We nullify head_pipeline_id to force that a new pipeline is explicitly
+      # created in order to pass mergeability checks.
+      if target_branch_was_deleted
+        merge_request.head_pipeline_id = nil
+        merge_request.retargeted = true
+      else
+        refresh_pipelines_on_merge_requests(merge_request, allow_duplicate: true)
+      end
 
       abort_auto_merge(merge_request, 'target branch was changed')
     end

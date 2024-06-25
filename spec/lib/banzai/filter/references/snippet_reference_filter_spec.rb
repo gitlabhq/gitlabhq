@@ -15,8 +15,8 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
 
   %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
-      exp = act = "<#{elem}>Snippet #{reference}</#{elem}>"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "<#{elem}>Snippet #{reference}</#{elem}>"
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -34,9 +34,9 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
     end
 
     it 'ignores invalid snippet IDs' do
-      exp = act = "Snippet #{invalidate_reference(reference)}"
+      act = "Snippet #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
 
     it 'includes a title attribute' do
@@ -107,16 +107,16 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
     end
 
     it 'ignores invalid snippet IDs on the referenced project' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
 
     it 'ignores when attempting to reference a group with full path' do
       create(:group, name: 'a_group')
-      exp = act = "/a_group$12345"
+      act = "/a_group$12345"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -147,9 +147,9 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
     end
 
     it 'ignores invalid snippet IDs on the referenced project' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -180,9 +180,9 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
     end
 
     it 'ignores invalid snippet IDs on the referenced project' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -221,9 +221,9 @@ RSpec.describe Banzai::Filter::References::SnippetReferenceFilter, feature_categ
     end
 
     it 'ignores internal references' do
-      exp = act = "See $#{snippet.id}"
+      act = "See $#{snippet.id}"
 
-      expect(reference_filter(act, project: nil, group: create(:group)).to_html).to eq exp
+      expect(reference_filter(act, project: nil, group: create(:group)).to_html).to include act
     end
   end
 

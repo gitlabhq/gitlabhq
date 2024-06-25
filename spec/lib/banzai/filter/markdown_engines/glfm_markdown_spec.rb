@@ -29,4 +29,13 @@ RSpec.describe Banzai::Filter::MarkdownEngines::GlfmMarkdown, feature_category: 
 
     expect(engine.render('# hi')).to eq expected
   end
+
+  it 'turns off autolinking' do
+    engine = described_class.new({ autolink: false, no_sourcepos: true })
+    expected = <<~TEXT
+      <p>http://example.com</p>
+    TEXT
+
+    expect(engine.render('http://example.com')).to eq expected
+  end
 end

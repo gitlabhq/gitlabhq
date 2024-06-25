@@ -533,6 +533,21 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
         end
       end
 
+      context 'when user is not allowed to promote work item' do
+        let_it_be_with_reload(:noteable) { create(:work_item, :task, project: project) }
+        let_it_be(:note_text) { '/promote_to issue' }
+        let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+
+        before do
+          project.team.find_member(maintainer.id).destroy!
+          project.update!(visibility: Gitlab::VisibilityLevel::PUBLIC)
+        end
+
+        it 'does not promote work item' do
+          expect { execute(note) }.not_to change { noteable.work_item_type.base_type }
+        end
+      end
+
       context 'on a task' do
         let_it_be_with_reload(:noteable) { create(:work_item, :task, project: project) }
         let_it_be(:note_text) { '/promote_to Issue' }

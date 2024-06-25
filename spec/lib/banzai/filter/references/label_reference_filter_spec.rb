@@ -21,8 +21,8 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
   %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
-      exp = act = "<#{elem}>Label #{reference}</#{elem}>"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "<#{elem}>Label #{reference}</#{elem}>"
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -89,10 +89,10 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
   end
 
   context 'project that does not exist referenced' do
-    let(:result) { reference_filter('aaa/bbb~ccc') }
+    let(:result) { reference_filter('See aaa/bbb~ccc') }
 
     it 'does not link reference' do
-      expect(result.to_html).to eq 'aaa/bbb~ccc'
+      expect(result.to_html).to include 'See aaa/bbb~ccc'
     end
   end
 
@@ -122,9 +122,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid label IDs' do
-      exp = act = "Label #{invalidate_reference(reference)}"
+      act = "Label #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -146,9 +146,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid label names' do
-      exp = act = "Label #{Label.reference_prefix}#{label.name.reverse}"
+      act = "Label #{Label.reference_prefix}#{label.name.reverse}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -170,9 +170,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid label names' do
-      exp = act = "Label #{Label.reference_prefix}#{label.id}#{label.name.reverse}"
+      act = "Label #{Label.reference_prefix}#{label.id}#{label.name.reverse}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -199,7 +199,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
       act = "Label #{Label.reference_prefix}#{label.name.reverse}"
       exp = "Label #{Label.reference_prefix}&amp;mf.g?"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include exp
     end
   end
 
@@ -221,9 +221,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid label names' do
-      exp = act = %(Label #{Label.reference_prefix}"#{label.name.reverse}")
+      act = %(Label #{Label.reference_prefix}"#{label.name.reverse}")
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -245,9 +245,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid label names' do
-      exp = act = "Label #{Label.reference_prefix}#{label.id}#{label.name.reverse}"
+      act = "Label #{Label.reference_prefix}#{label.id}#{label.name.reverse}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -272,7 +272,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
       act = %(Label #{Label.reference_prefix}"#{label.name.reverse}")
       exp = %(Label #{Label.reference_prefix}"?secnerefer &amp; mf.g\")
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include exp
     end
   end
 
@@ -290,7 +290,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     it 'ignores invalid label names and escapes entities' do
       act = %(Label #{Label.reference_prefix}"&lt;non valid&gt;")
 
-      expect(reference_filter(act).to_html).to eq act
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -338,8 +338,8 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
 
   describe 'edge cases' do
     it 'gracefully handles non-references matching the pattern' do
-      exp = act = '(format nil "~0f" 3.0) ; 3.0'
-      expect(reference_filter(act).to_html).to eq exp
+      act = '(format nil "~0f" 3.0) ; 3.0'
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -397,9 +397,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
       end
 
       it 'ignores invalid label names' do
-        exp = act = %(Label #{Label.reference_prefix}"#{group_label.name.reverse}")
+        act = %(Label #{Label.reference_prefix}"#{group_label.name.reverse}")
 
-        expect(reference_filter(act).to_html).to eq exp
+        expect(reference_filter(act).to_html).to include act
       end
     end
 
@@ -420,9 +420,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
       end
 
       it 'ignores invalid label names' do
-        exp = act = %(Label #{project.to_reference_base}#{Label.reference_prefix}"#{group_label.name.reverse}")
+        act = %(Label #{project.to_reference_base}#{Label.reference_prefix}"#{group_label.name.reverse}")
 
-        expect(reference_filter(act).to_html).to eq exp
+        expect(reference_filter(act).to_html).to include act
       end
     end
   end
@@ -451,9 +451,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid IDs on the referenced label' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -483,9 +483,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid IDs on the referenced label' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -516,9 +516,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid IDs on the referenced label' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -552,9 +552,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid IDs on the referenced label' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
 
     context 'when group name has HTML entities' do
@@ -601,9 +601,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid IDs on the referenced label' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -633,9 +633,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid IDs on the referenced label' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -665,9 +665,9 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
     end
 
     it 'ignores invalid IDs on the referenced label' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -785,7 +785,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
         reference = "/#{project.full_path}~#{parent_group_label.name}"
         result = reference_filter("See #{reference}", context)
 
-        expect(result.to_html).to eq "See #{reference}"
+        expect(result.to_html).to include "See #{reference}"
       end
     end
 
@@ -796,7 +796,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
         reference = "#{group.full_path}~#{group_label.name}"
         result = reference_filter("See #{reference}", context)
 
-        expect(result.to_html).to eq "See #{reference}"
+        expect(result.to_html).to include "See #{reference}"
       end
 
       it_behaves_like 'absolute group reference' do
@@ -807,7 +807,7 @@ RSpec.describe Banzai::Filter::References::LabelReferenceFilter, feature_categor
         reference = "/#{group.full_path}~#{parent_group_label.name}"
         result = reference_filter("See #{reference}", context)
 
-        expect(result.to_html).to eq "See #{reference}"
+        expect(result.to_html).to include "See #{reference}"
       end
     end
   end

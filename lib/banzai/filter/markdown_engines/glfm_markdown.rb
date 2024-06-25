@@ -20,7 +20,7 @@ module Banzai
           math_code: true,
           math_dollars: true,
           multiline_block_quotes: true,
-          relaxed_autolinks: false,
+          relaxed_autolinks: true,
           sourcepos: true,
           smart: false,
           strikethrough: true,
@@ -38,16 +38,22 @@ module Banzai
         private
 
         def render_options
-          return OPTIONS unless sourcepos_disabled? || headers_disabled?
+          return OPTIONS unless sourcepos_disabled? || headers_disabled? || autolink_disabled?
 
           OPTIONS.merge(
             sourcepos: !sourcepos_disabled?,
-            header_ids: headers_disabled? ? nil : OPTIONS[:header_ids]
+            header_ids: headers_disabled? ? nil : OPTIONS[:header_ids],
+            autolink: !autolink_disabled?,
+            relaxed_autolinks: !autolink_disabled?
           )
         end
 
         def headers_disabled?
           context[:no_header_anchors]
+        end
+
+        def autolink_disabled?
+          context[:autolink] == false
         end
       end
     end
