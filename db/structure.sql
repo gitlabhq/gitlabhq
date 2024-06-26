@@ -11470,6 +11470,7 @@ CREATE TABLE merge_requests (
     head_pipeline_id_convert_to_bigint bigint,
     imported smallint DEFAULT 0 NOT NULL,
     imported_from smallint DEFAULT 0 NOT NULL,
+    retargeted boolean DEFAULT false NOT NULL,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 

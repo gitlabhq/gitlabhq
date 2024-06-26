@@ -8,6 +8,7 @@ module Banzai
     #
     # This filter supports cross-project references.
     class IssuableReferenceExpansionFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
       include Gitlab::Utils::StrongMemoize
 
       NUMBER_OF_SUMMARY_ASSIGNEES = 2

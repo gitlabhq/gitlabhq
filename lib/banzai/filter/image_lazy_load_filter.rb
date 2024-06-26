@@ -7,6 +7,8 @@ module Banzai
     # so they can be lazy loaded. Also sets decoding to 'async' so that the
     # decoding of images doesn't block the loading of other content.
     class ImageLazyLoadFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       CSS   = 'img'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 

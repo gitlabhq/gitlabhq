@@ -244,4 +244,6 @@ RSpec.describe Banzai::Filter::UploadLinkFilter, feature_category: :team_plannin
       it { expect { filter(link("/uploads/#{href}")) }.not_to raise_error }
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

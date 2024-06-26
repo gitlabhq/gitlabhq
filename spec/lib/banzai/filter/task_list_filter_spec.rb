@@ -61,4 +61,6 @@ RSpec.describe Banzai::Filter::TaskListFilter, feature_category: :team_planning 
       expect(doc.css('li.inapplicable > s').count).to eq(1)
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

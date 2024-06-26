@@ -41,13 +41,9 @@ RSpec.describe MergeRequests::RetargetChainService, feature_category: :code_revi
               'target', 'delete',
               merge_request.source_branch, merge_request.target_branch)
 
-          expect(another_merge_request.rebase_jid).to be_blank
-
           expect { subject }.to change { another_merge_request.reload.target_branch }
             .from(merge_request.source_branch)
             .to(merge_request.target_branch)
-
-          expect(another_merge_request.rebase_jid).to be_present
         end
       end
 
@@ -136,36 +132,14 @@ RSpec.describe MergeRequests::RetargetChainService, feature_category: :code_revi
         merge_request.mark_as_merged
       end
 
-      it 'retargets and rebases only 4 of them' do
-        expect(many_merge_requests.any? { |mr| mr.reload.rebase_jid.present? }).to be_falsey
-
+      it 'retargets only 4 of them' do
         subject
-
-        first_four = many_merge_requests.first(4)
-        others = many_merge_requests - first_four
-
-        expect(others.any? { |mr| mr.reload.rebase_jid.present? }).to be_falsey
-        expect(first_four.all? { |mr| mr.reload.rebase_jid.present? }).to be_truthy
 
         expect(many_merge_requests.each(&:reload).pluck(:target_branch).tally)
           .to eq(
             merge_request.source_branch => 6,
             merge_request.target_branch => 4
           )
-      end
-
-      context 'when rebase_when_retargetting_mrs is disabled' do
-        before do
-          stub_feature_flags(rebase_when_retargetting_mrs: false)
-        end
-
-        it 'does not rebase any MRs' do
-          expect { subject }.not_to change {
-            many_merge_requests.any? { |mr| mr.reload.rebase_jid.present? }
-          }.from(false)
-
-          subject
-        end
       end
     end
   end

@@ -13,7 +13,7 @@ module Banzai
       RENDER_TIMEOUT = 10.seconds
 
       def call
-        Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT) { call_with_timeout }
+        Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT, background: RENDER_TIMEOUT) { call_with_timeout }
       rescue Timeout::Error => e
         class_name = self.class.name.demodulize
         Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, class_name: class_name)
