@@ -2,6 +2,35 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.11.5 (2024-06-25)
+
+### Fixed (2 changes)
+
+- [Only allow documented token types for GraphQL authentication](gitlab-org/security/gitlab@29cf595d53bc1d05edb662004c5ac76a8d497065)
+- [Update an expired test certificate](gitlab-org/security/gitlab@7d482c5924e4b61a1889029147367631c1b435ad)
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](gitlab-org/security/gitlab@e60607a2d4377cdb872b65d756d0e478e01e0f1c)
+- [Enable invert_emails_disabled_to_emails_enabled by default](gitlab-org/security/gitlab@a2adc31b3fe5b8160922c42df31ab3b12ecc5b7b)
+
+### Security (14 changes)
+
+- [Security fixes for banzai pipeline](gitlab-org/security/gitlab@7a7560ebf98b9e3fed749c0895c7fe952a35d0e6) ([merge request](gitlab-org/security/gitlab!4182))
+- [Fix the catastrophic backtracking in openapi regex](gitlab-org/security/gitlab@6561fa187bd297a664c7fee8d1bbb546fb6f197e) ([merge request](gitlab-org/security/gitlab!4144))
+- [Use permitted_params for standalone and multiplex queries](gitlab-org/security/gitlab@7be6c33aa9ed53d8713a098a48ad5b5265fd4801) ([merge request](gitlab-org/security/gitlab!4148))
+- [Fix for Private job artifacts can be accessed by any user](gitlab-org/security/gitlab@eff1ae75283fafff1204063fc9c5fa43d90439b0) ([merge request](gitlab-org/security/gitlab!4196))
+- [Remove search results from public projects with unauthorized repos](gitlab-org/security/gitlab@5e1513db50b3ada45a991d39fde0cd4cadd4bb88) ([merge request](gitlab-org/security/gitlab!4042))
+- [Do not run a new pipeline on re-target](gitlab-org/security/gitlab@f68c020c8d2a2dc53187a65857f3312a025af3f4) ([merge request](gitlab-org/security/gitlab!4189))
+- [Add limits on autolinker regex](gitlab-org/security/gitlab@d79a1a8333484bf9537af2907767fad0ec1ad240) ([merge request](gitlab-org/security/gitlab!4128))
+- [Fix clickjacking on OAuth application page](gitlab-org/security/gitlab@05b187a7860fc02b68eced70e882a807d7a0e784) ([merge request](gitlab-org/security/gitlab!4024))
+- [Hide branch merge request if merge requests are private](gitlab-org/security/gitlab@5973f83550e4b6341ca3f3fdbd29759a46b31bb6) ([merge request](gitlab-org/security/gitlab!4206))
+- [Remove collapseLongCommitList method](gitlab-org/security/gitlab@279c1eee6676df9e25b723fd971dcf5c7134effd) ([merge request](gitlab-org/security/gitlab!4207))
+- [Pass SSO session data to Sidekiq](gitlab-org/security/gitlab@e3147a7c301acf2d5e474745e594ff319f6e7f37) ([merge request](gitlab-org/security/gitlab!4161))
+- [Prevent non-members from using promote_to quick action for quick actions](gitlab-org/security/gitlab@6424c7ad252809a13bc14d61ba15a6a377cd5a30) ([merge request](gitlab-org/security/gitlab!4156))
+- [Reject deletion of security policy project approval rules](gitlab-org/security/gitlab@0e86b08d33fcfca547fb0e95ef462e4240bcf00e) ([merge request](gitlab-org/security/gitlab!4106))
+- [Mitigate ReDoS attacks via `method_call_regex`](gitlab-org/security/gitlab@6e3fb9ff027fa56e62db093c4291c5d562550c2d) ([merge request](gitlab-org/security/gitlab!4164))
+
 ## 16.11.4 (2024-06-11)
 
 ### Security (4 changes)

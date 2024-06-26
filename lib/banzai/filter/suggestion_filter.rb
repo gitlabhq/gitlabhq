@@ -4,6 +4,8 @@
 module Banzai
   module Filter
     class SuggestionFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       # Class used for tagging elements that should be rendered
       TAG_CLASS = 'js-render-suggestion'
 

@@ -7,8 +7,9 @@ module Banzai
       # similar functionality in reference filtering.
       class AbstractReferenceFilter < ReferenceFilter
         include CrossProjectReference
+        prepend Concerns::PipelineTimingCheck
 
-        RENDER_TIMEOUT = 4.seconds
+        RENDER_TIMEOUT = 2.seconds
 
         def initialize(doc, context = nil, result = nil)
           super
@@ -123,7 +124,7 @@ module Banzai
           # protect against certain reference_patterns that are difficult to optimize
           # against malicious input, such as Commit.reference_pattern
           Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT, background: RENDER_TIMEOUT) do
-            reference_cache.load_reference_cache(nodes) if respond_to?(:parent_records)
+            reference_cache.load_reference_cache(nodes) if respond_to?(:parent_records) && nodes.present?
 
             ref_pattern = object_reference_pattern
             link_pattern = object_class.link_reference_pattern

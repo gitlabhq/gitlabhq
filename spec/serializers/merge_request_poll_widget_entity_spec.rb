@@ -24,6 +24,7 @@ RSpec.describe MergeRequestPollWidgetEntity do
 
   it { is_expected.to include(ff_only_enabled: false) }
   it { is_expected.to include(ff_merge_possible: false) }
+  it { is_expected.to include(retargeted: false) }
 
   describe 'new_blob_path' do
     context 'when user can push to project' do

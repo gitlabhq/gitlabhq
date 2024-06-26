@@ -135,4 +135,9 @@ RSpec.describe Banzai::Filter::EmojiFilter, feature_category: :team_planning do
       end.not_to raise_error
     end
   end
+
+  it_behaves_like 'pipeline timing check'
+  it_behaves_like 'a filter timeout' do
+    let(:text) { 'text' }
+  end
 end

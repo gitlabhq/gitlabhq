@@ -11,4 +11,6 @@ RSpec.describe Banzai::Filter::MermaidFilter, feature_category: :team_planning d
 
     expect(result[:class]).to include('js-render-mermaid')
   end
+
+  it_behaves_like 'pipeline timing check'
 end

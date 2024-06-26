@@ -286,6 +286,8 @@ RSpec.describe Banzai::Filter::MathFilter, feature_category: :team_planning do
     end.not_to raise_error
   end
 
+  it_behaves_like 'pipeline timing check'
+
   def pipeline_filter(text, context = {})
     context = { project: nil, no_sourcepos: true }.merge(context)
 

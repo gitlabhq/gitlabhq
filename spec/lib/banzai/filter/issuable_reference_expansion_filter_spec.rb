@@ -432,4 +432,6 @@ RSpec.describe Banzai::Filter::IssuableReferenceExpansionFilter, feature_categor
       end
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

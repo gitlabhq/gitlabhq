@@ -4,11 +4,14 @@ module Banzai
   module Filter
     # HTML Filter to modify the attributes of external links
     class ExternalLinkFilter < HTML::Pipeline::Filter
+      include Concerns::TimeoutFilterHandler
+      prepend Concerns::PipelineTimingCheck
+
       SCHEMES      = ['http', 'https', nil].freeze
       RTLO         = "\u202E"
       ENCODED_RTLO = '%E2%80%AE'
 
-      def call
+      def call_with_timeout
         links.each do |node|
           # URI.parse does stricter checking on the url than Addressable,
           # such as on `mailto:` links. Since we've been using it, do an
@@ -34,6 +37,13 @@ module Banzai
       end
 
       private
+
+      # Since this filter does a level of sanitization, we can not return
+      # partial un-sanitized results.
+      # It's ok to allow any following filters to run since this is safe HTML.
+      def returned_timeout_value
+        HTML::Pipeline.parse(COMPLEX_MARKDOWN_MESSAGE)
+      end
 
       # if this is a link to a proxied image, then `src` is already the correct
       # proxied url, so work with the `data-canonical-src`

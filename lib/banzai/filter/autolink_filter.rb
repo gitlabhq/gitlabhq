@@ -33,10 +33,10 @@ module Banzai
       # link. It matches the behaviour of Rinku 2.0.1:
       # https://github.com/vmg/rinku/blob/v2.0.1/ext/rinku/autolink.c#L65
       #
-      # Rubular: http://rubular.com/r/nrL3r9yUiq
+      # Rubular: https://rubular.com/r/M2sruz0iNaUxDA
       # Note that it's not possible to use Gitlab::UntrustedRegexp for LINK_PATTERN,
       # as `(?<!` is unsupported in `re2`, see https://github.com/google/re2/wiki/Syntax
-      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}
+      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]{1,30}://[^\s>]{1,2000})(?<!\?|!|\.|,|:)}
 
       ENTITY_UNTRUSTED = '((?:&[\w#]+;)+)\z'
       ENTITY_UNTRUSTED_REGEX = Gitlab::UntrustedRegexp.new(ENTITY_UNTRUSTED, multiline: false)

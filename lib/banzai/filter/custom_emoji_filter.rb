@@ -3,11 +3,13 @@
 module Banzai
   module Filter
     class CustomEmojiFilter < HTML::Pipeline::Filter
+      include Concerns::TimeoutFilterHandler
+      prepend Concerns::PipelineTimingCheck
       include Gitlab::Utils::StrongMemoize
 
       IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
 
-      def call
+      def call_with_timeout
         return doc unless resource_parent
 
         doc.xpath('descendant-or-self::text()').each do |node|
@@ -57,7 +59,7 @@ module Banzai
       end
 
       def custom_emoji_candidates
-        doc.to_html.scan(/:(#{CustomEmoji::NAME_REGEXP}):/o).flatten
+        doc.to_html.scan(/:(#{CustomEmoji::NAME_REGEXP}):/o).flatten.uniq
       end
 
       def all_custom_emoji

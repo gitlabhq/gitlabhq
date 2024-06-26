@@ -89,4 +89,15 @@ RSpec.describe Banzai::Filter::FootnoteFilter, feature_category: :team_planning 
       end
     end
   end
+
+  context 'when too many footnotes' do
+    it 'ignores them all' do
+      markdown = "[^1]\n[^1]:\n" * (Banzai::Filter::FootnoteFilter::FOOTNOTE_LIMIT + 1)
+      result = Banzai::Pipeline::FullPipeline.call(markdown, project: nil)
+
+      expect(result[:output].at_css('section.footnotes').present?).to be_falsey
+    end
+  end
+
+  it_behaves_like 'pipeline timing check'
 end
