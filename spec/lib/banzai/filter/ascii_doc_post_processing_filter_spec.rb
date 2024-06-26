@@ -20,4 +20,6 @@ RSpec.describe Banzai::Filter::AsciiDocPostProcessingFilter, feature_category: :
     result = filter('<pre>some code</pre><div data-math>and</div>').to_html
     expect(result).to eq('<pre>some code</pre><div data-math>and</div>')
   end
+
+  it_behaves_like 'pipeline timing check'
 end

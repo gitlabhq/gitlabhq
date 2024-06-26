@@ -27,6 +27,8 @@ module Banzai
     #   * [[http://example.com/images/logo.png]]
     #
     class WikiLinkGollumFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       # Pattern to match allowed image extensions
       ALLOWED_IMAGE_EXTENSIONS = /(jpg|png|gif|svg|bmp)\z/i
 

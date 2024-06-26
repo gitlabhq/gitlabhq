@@ -7,6 +7,9 @@ module Banzai
     #
     # Based on HTML::Pipeline::EmojiFilter
     class EmojiFilter < HTML::Pipeline::Filter
+      include Concerns::TimeoutFilterHandler
+      prepend Concerns::PipelineTimingCheck
+
       IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
 
       # Limit of how many emojis we will process.
@@ -14,7 +17,7 @@ module Banzai
       # For more information check: https://gitlab.com/gitlab-org/gitlab/-/issues/434803
       EMOJI_LIMIT = 1000
 
-      def call
+      def call_with_timeout
         @emoji_count = 0
 
         doc.xpath('descendant-or-self::text()').each do |node|

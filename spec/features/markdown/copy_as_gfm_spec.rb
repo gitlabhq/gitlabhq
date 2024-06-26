@@ -147,7 +147,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
       )
 
       verify(
-        'AutolinkFilter',
+        'MarkdownFilter',
         'https://example.com'
       )
 

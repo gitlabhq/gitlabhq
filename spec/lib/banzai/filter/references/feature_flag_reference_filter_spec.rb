@@ -15,9 +15,9 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
 
   %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
-      exp = act = "<#{elem}>Feature Flag #{reference}</#{elem}>"
+      act = "<#{elem}>Feature Flag #{reference}</#{elem}>"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -35,9 +35,9 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
     end
 
     it 'ignores invalid feature flag IIDs' do
-      exp = act = "Check [feature_flag:#{non_existing_record_id}]"
+      act = "Check [feature_flag:#{non_existing_record_id}]"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
 
     it 'includes a title attribute' do
@@ -109,9 +109,9 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
     end
 
     it 'ignores invalid feature flag IIDs on the referenced project' do
-      exp = act = "Check [feature_flag:#{non_existing_record_id}]"
+      act = "Check [feature_flag:#{non_existing_record_id}]"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -141,9 +141,9 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
     end
 
     it 'ignores invalid feature flag IIDs on the referenced project' do
-      exp = act = "Check [feature_flag:#{non_existing_record_id}]"
+      act = "Check [feature_flag:#{non_existing_record_id}]"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -173,9 +173,9 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
     end
 
     it 'ignores invalid feature flag IDs on the referenced project' do
-      exp = act = "Check [feature_flag:#{non_existing_record_id}]"
+      act = "Check [feature_flag:#{non_existing_record_id}]"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -215,9 +215,9 @@ RSpec.describe Banzai::Filter::References::FeatureFlagReferenceFilter, feature_c
     end
 
     it 'ignores internal references' do
-      exp = act = "See [feature_flag:#{feature_flag.iid}]"
+      act = "See [feature_flag:#{feature_flag.iid}]"
 
-      expect(reference_filter(act, project: nil, group: group).to_html).to eq exp
+      expect(reference_filter(act, project: nil, group: group).to_html).to include act
     end
   end
 end

@@ -150,4 +150,6 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter, feature_category: :team_pl
   it_behaves_like "html filter timeout" do
     let(:text) { '<pre data-canonical-lang="ruby"><code>def fun end</code></pre>' }
   end
+
+  it_behaves_like 'pipeline timing check'
 end

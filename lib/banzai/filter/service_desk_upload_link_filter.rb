@@ -6,6 +6,8 @@ module Banzai
     # Context options:
     #   :replace_upload_links
     class ServiceDeskUploadLinkFilter < BaseRelativeLinkFilter
+      prepend Concerns::PipelineTimingCheck
+
       def call
         return doc unless context[:uploads_as_attachments].present?
 

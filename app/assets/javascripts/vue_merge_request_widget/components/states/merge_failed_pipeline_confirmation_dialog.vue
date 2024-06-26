@@ -1,6 +1,7 @@
 <script>
 import { GlModal, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
+import runPipelineMixin from '../../mixins/run_pipeline';
 
 export default {
   name: 'MergeFailedPipelineConfirmationDialog',
@@ -8,7 +9,7 @@ export default {
     primary: __('Merge unverified changes'),
     cancel: __('Cancel'),
     info: __(
-      'The latest pipeline for this merge request did not succeed. The latest changes are unverified.',
+      'The merge checks are incomplete because the latest pipeline failed, the pipeline status cannot be verified, or the merge request target branch was changed. You should run a new pipeline before merging.',
     ),
     confirmation: __('Are you sure you want to attempt to merge?'),
     title: __('Merge unverified changes?'),
@@ -17,6 +18,7 @@ export default {
     GlModal,
     GlButton,
   },
+  mixins: [runPipelineMixin],
   props: {
     visible: {
       type: Boolean,
@@ -58,8 +60,21 @@ export default {
       <gl-button ref="cancelButton" data-testid="merge-cancel-btn" @click="cancel">{{
         $options.i18n.cancel
       }}</gl-button>
-      <gl-button variant="danger" data-testid="merge-unverified-changes" @click="mergeChanges">
+      <gl-button
+        variant="confirm"
+        category="secondary"
+        data-testid="merge-unverified-changes"
+        @click="mergeChanges"
+      >
         {{ $options.i18n.primary }}
+      </gl-button>
+      <gl-button
+        variant="confirm"
+        data-testid="run-pipeline-button"
+        :loading="isCreatingPipeline"
+        @click="runPipeline"
+      >
+        {{ __('Run pipeline') }}
       </gl-button>
     </template>
   </gl-modal>

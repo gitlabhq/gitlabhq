@@ -150,6 +150,7 @@ export default class MergeRequestStore {
     this.cancelAutoMergePath = data.cancel_auto_merge_path;
     this.canCancelAutomaticMerge = Boolean(data.cancel_auto_merge_path);
     this.ciIntegrationJenkins = data.jenkins_integration_active;
+    this.retargeted = data.retargeted;
 
     this.newBlobPath = data.new_blob_path;
     this.sourceBranchPath = data.source_branch_path;
@@ -180,6 +181,7 @@ export default class MergeRequestStore {
   setGraphqlData(project) {
     const { mergeRequest } = project;
     const pipeline = mergeRequest.headPipeline;
+    const pipelines = mergeRequest.pipelines?.nodes;
 
     this.updateStatusState(mergeRequest.state);
 
@@ -197,6 +199,7 @@ export default class MergeRequestStore {
       this.ciStatus = `${this.ciStatus}-with-warnings`;
     }
 
+    this.detatchedPipeline = pipelines.length ? pipelines[0].mergeRequestEventType : null;
     this.commitsCount = mergeRequest.commitCount;
     this.branchMissing =
       mergeRequest.detailedMergeStatus !== 'NOT_OPEN' &&

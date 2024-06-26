@@ -132,6 +132,8 @@ RSpec.describe Banzai::Filter::TableOfContentsTagFilter, feature_category: :team
     end
   end
 
+  it_behaves_like 'pipeline timing check'
+
   def pipeline_filter(text, context = {})
     context = { project: nil, no_sourcepos: true }.merge(context)
 

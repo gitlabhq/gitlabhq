@@ -17,6 +17,8 @@ module Banzai
     # can be used for a single render). So you get `id=fn-1-4335` and `id=fn-foot-4335`.
     #
     class FootnoteFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       FOOTNOTE_ID_PREFIX              = 'fn-'
       FOOTNOTE_LINK_ID_PREFIX         = 'fnref-'
       FOOTNOTE_LI_REFERENCE_PATTERN   = /\A#{FOOTNOTE_ID_PREFIX}.+\z/
@@ -27,8 +29,13 @@ module Banzai
       CSS_FOOTNOTE   = 'sup > a[data-footnote-ref]'
       XPATH_FOOTNOTE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_FOOTNOTE).freeze
 
+      # Limit of how many footnotes we will process.
+      # Protects against pathological number of footnotes.
+      FOOTNOTE_LIMIT = 1000
+
       def call
         # Sanitization stripped off the section class - add it back in
+        return doc if doc.xpath(XPATH_FOOTNOTE).count > 1000
         return doc unless section_node = doc.at_xpath(XPATH_SECTION)
 
         section_node.append_class('footnotes')

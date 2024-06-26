@@ -13,6 +13,8 @@ module Banzai
     #
     # Based on Banzai::Filter::GollumTagsFilter
     class TableOfContentsTagFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
+
       OR_SELF = 'descendant-or-self::text()'
       TOC_QUERY = %(#{OR_SELF}[ancestor::p and starts-with(translate(., '[TOC]', '[toc]'), '[toc]')]).freeze
       GOLLUM_TOC_QUERY =

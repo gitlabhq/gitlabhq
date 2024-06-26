@@ -77,12 +77,16 @@ RSpec.describe Banzai::Filter::References::DesignReferenceFilter, feature_catego
     end
   end
 
-  %w[pre code a style].each do |elem|
-    context "wrapped in a <#{elem}/>" do
+  %w[pre style].each do |elem|
+    context "wrapped in a block <#{elem}/>" do
       let(:input_text) { "<#{elem}>Design #{url_for_design(design)}</#{elem}>" }
 
       it_behaves_like 'a no-op filter'
     end
+  end
+
+  it_behaves_like 'a no-op filter' do
+    let(:input_text) { "`Design #{url_for_design(design)}`" }
   end
 
   describe '.identifier' do

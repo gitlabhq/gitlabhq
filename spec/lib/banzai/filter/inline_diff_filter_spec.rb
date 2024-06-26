@@ -75,4 +75,6 @@ RSpec.describe Banzai::Filter::InlineDiffFilter, feature_category: :source_code_
       Timeout.timeout(3.seconds) { filter(doc) }
     end.not_to raise_error
   end
+
+  it_behaves_like 'pipeline timing check'
 end

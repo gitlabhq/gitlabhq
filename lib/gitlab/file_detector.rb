@@ -6,6 +6,8 @@ module Gitlab
   # Module that can be used to detect if a path points to a special file such as
   # a README or a CONTRIBUTING file.
   module FileDetector
+    PATTERNS_BASENAME = { openapi: [%r{\.(yaml|yml|json)\z}i, %r{openapi|swagger}i] }.freeze
+
     PATTERNS = {
       # Project files
       readme: /\A(#{Regexp.union(*Gitlab::MarkupHelper::PLAIN_FILENAMES).source})(\.(txt|#{Regexp.union(*Gitlab::MarkupHelper::EXTENSIONS).source}))?\z/i,
@@ -40,10 +42,7 @@ module Gitlab
       podspec_json: %r{\A[^/]*\.podspec\.json\z},
       podspec: %r{\A[^/]*\.podspec\z},
       requirements_txt: %r{\A[^/]*requirements\.txt\z},
-      yarn_lock: 'yarn.lock',
-
-      # OpenAPI Specification files
-      openapi: %r{[^/]*(openapi|swagger)[^/]*\.(yaml|yml|json)\z}i
+      yarn_lock: 'yarn.lock'
     }.freeze
 
     # Returns an Array of file types based on the given paths.
@@ -84,7 +83,10 @@ module Gitlab
 
         return type if did_match
       end
-
+      basename = File.basename(path)
+      PATTERNS_BASENAME.each do |type, regex|
+        return type if regex.all? { |r| basename =~ r }
+      end
       nil
     end
   end

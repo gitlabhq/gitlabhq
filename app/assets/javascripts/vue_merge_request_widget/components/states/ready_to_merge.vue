@@ -212,7 +212,7 @@ export default {
       return ['FAILED', 'CANCELED'].indexOf(this.pipeline?.status) !== -1;
     },
     showMergeFailedPipelineConfirmationDialog() {
-      return this.status === PIPELINE_FAILED_STATE && this.isPipelineFailed;
+      return this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed;
     },
     isMergeAllowed() {
       return this.state.mergeable || false;
@@ -390,7 +390,11 @@ export default {
       return this.$apollo.queries.state.refetch();
     },
     handleMergeButtonClick(useAutoMerge, mergeImmediately = false, confirmationClicked = false) {
-      if (this.showMergeFailedPipelineConfirmationDialog && !confirmationClicked) {
+      if (
+        this.preferredAutoMergeStrategy !== MT_MERGE_STRATEGY &&
+        this.showMergeFailedPipelineConfirmationDialog &&
+        !confirmationClicked
+      ) {
         this.isPipelineFailedModalVisibleNormalMerge = true;
         return;
       }
@@ -832,6 +836,8 @@ export default {
       />
       <merge-failed-pipeline-confirmation-dialog
         :visible="isPipelineFailedModalVisibleNormalMerge"
+        :target-project-id="mr.targetProjectId"
+        :iid="mr.iid"
         @mergeWithFailedPipeline="onMergeWithFailedPipelineConfirmation"
         @cancel="isPipelineFailedModalVisibleNormalMerge = false"
       />

@@ -13,6 +13,7 @@ module Banzai
     class MathFilter < HTML::Pipeline::Filter
       # HTML filter that adds any necessary classes to math html for rendering
       # on the frontend
+      prepend Concerns::PipelineTimingCheck
       include ::Gitlab::Utils::StrongMemoize
 
       CSS_MATH_STYLE = 'pre[data-math-style], code[data-math-style], span[data-math-style]'

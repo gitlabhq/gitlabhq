@@ -2,6 +2,14 @@
 
 require 'uri'
 
+# TODO: This is now a legacy filter, and is only used with the Ruby parser.
+# The current markdown parser now properly handles autolinking.
+# The Ruby parser is now only for benchmarking purposes.
+# issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
+#
+# rubocop:disable Rails/OutputSafety -- this is legacy/unused, no need fixing.
+# rubocop:disable Gitlab/NoCodeCoverageComment -- no coverage needed for a legacy filter
+# :nocov: undercoverage
 module Banzai
   module Filter
     # HTML Filter for auto-linking URLs in HTML.
@@ -16,7 +24,7 @@ module Banzai
     #   :autolink  - Boolean, skips all processing done by this filter when false
     #   :link_attr - Hash of attributes for the generated links
     #
-    class AutolinkFilter < HTML::Pipeline::Filter
+    class AutolinkLegacyFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
       include Gitlab::Utils::SanitizeNodeLink
 
@@ -33,10 +41,10 @@ module Banzai
       # link. It matches the behaviour of Rinku 2.0.1:
       # https://github.com/vmg/rinku/blob/v2.0.1/ext/rinku/autolink.c#L65
       #
-      # Rubular: http://rubular.com/r/nrL3r9yUiq
+      # Rubular: https://rubular.com/r/M2sruz0iNaUxDA
       # Note that it's not possible to use Gitlab::UntrustedRegexp for LINK_PATTERN,
       # as `(?<!` is unsupported in `re2`, see https://github.com/google/re2/wiki/Syntax
-      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://[^\s>]+)(?<!\?|!|\.|,|:)}
+      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]{1,30}://[^\s>]{1,2000})(?<!\?|!|\.|,|:)}
 
       ENTITY_UNTRUSTED = '((?:&[\w#]+;)+)\z'
       ENTITY_UNTRUSTED_REGEX = Gitlab::UntrustedRegexp.new(ENTITY_UNTRUSTED, multiline: false)
@@ -48,7 +56,7 @@ module Banzai
       TEXT_QUERY = %(descendant-or-self::text()[
         not(#{IGNORE_PARENTS.map { |p| "ancestor::#{p}" }.join(' or ')})
         and contains(., '://')
-      ])
+      ]).freeze
 
       PUNCTUATION_PAIRS = {
         "'" => "'",
@@ -59,6 +67,7 @@ module Banzai
       }.freeze
 
       def call
+        return doc if MarkdownFilter.glfm_markdown?(context) && context[:pipeline] != :single_line
         return doc if context[:autolink] == false
 
         doc.xpath(TEXT_QUERY).each do |node|
@@ -129,9 +138,10 @@ module Banzai
       end
 
       def autolink_filter(text)
-        Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe).mark(LINK_PATTERN) do |link, left:, right:, mode:|
-          autolink_match(link).html_safe
-        end
+        Gitlab::StringRegexMarker.new(CGI.unescapeHTML(text), text.html_safe)
+          .mark(LINK_PATTERN) do |link, _left, _right, _mode|
+            autolink_match(link).html_safe
+          end
       end
 
       def link_options
@@ -140,3 +150,6 @@ module Banzai
     end
   end
 end
+# :nocov:
+# rubocop:enable Gitlab/NoCodeCoverageComment
+# rubocop:enable Rails/OutputSafety

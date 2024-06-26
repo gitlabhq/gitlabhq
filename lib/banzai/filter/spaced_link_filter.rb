@@ -6,7 +6,7 @@ module Banzai
   module Filter
     # HTML Filter for markdown links with spaces in the URLs
     #
-    # Based on Banzai::Filter::AutolinkFilter
+    # Based on Banzai::Filter::AutolinkLegacyFilter
     #
     # CommonMark does not allow spaces in the url portion of a link/url.
     # For example, `[example](page slug)` is not valid.
@@ -21,6 +21,7 @@ module Banzai
     # to prevent XSS attacks
     #
     class SpacedLinkFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
       include ActionView::Helpers::TagHelper
 
       # Pattern to match a standard markdown link

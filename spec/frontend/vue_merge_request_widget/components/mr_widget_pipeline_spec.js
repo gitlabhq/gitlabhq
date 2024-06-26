@@ -1,15 +1,22 @@
+import { nextTick } from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
+import Api from '~/api';
+import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import mockData from '../mock_data';
+
+jest.mock('~/alert');
+jest.mock('~/api');
 
 describe('MRWidgetPipeline', () => {
   let wrapper;
@@ -20,6 +27,8 @@ describe('MRWidgetPipeline', () => {
     hasCi: true,
     mrTroubleshootingDocsPath: 'help',
     ciTroubleshootingDocsPath: 'ci-help',
+    targetProjectId: 1,
+    iid: 1,
   };
 
   const ciErrorMessage =
@@ -41,6 +50,8 @@ describe('MRWidgetPipeline', () => {
   const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findRetargetedMessage = () => wrapper.findByTestId('retargeted-message');
+  const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
 
   const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(HTTP_STATUS_OK, []);
 
@@ -310,6 +321,110 @@ describe('MRWidgetPipeline', () => {
         const actual = trimText(findPipelineDetailsContainer().text());
 
         expect(actual).toBe(expected);
+      });
+    });
+  });
+
+  describe('when merge request is retargeted', () => {
+    describe('when last pipeline is detatched', () => {
+      beforeEach(() => {
+        createWrapper({
+          detatchedPipeline: 'DETACHED',
+          retargeted: true,
+        });
+      });
+
+      it('renders branch changed message', () => {
+        expect(findRetargetedMessage().text()).toBe(
+          'You should run a new pipeline, because the target branch has changed for this merge request.',
+        );
+      });
+
+      it('render run pipeline button', () => {
+        expect(findRunPipelineButton().exists()).toBe(true);
+      });
+
+      it('calls postMergeRequestPipeline API method', async () => {
+        findRunPipelineButton().vm.$emit('click');
+
+        await nextTick();
+
+        expect(findRunPipelineButton().props('loading')).toBe(true);
+        expect(Api.postMergeRequestPipeline).toHaveBeenCalledWith(1, { mergeRequestId: 1 });
+      });
+
+      describe('when API call fails', () => {
+        describe('when user has permission to create a pipeline', () => {
+          beforeEach(() => {
+            Api.postMergeRequestPipeline.mockRejectedValue({
+              response: { status: 500 },
+            });
+          });
+
+          it('returns loading state on button to default state', async () => {
+            findRunPipelineButton().vm.$emit('click');
+
+            await waitForPromises();
+
+            expect(findRunPipelineButton().props('loading')).toBe(false);
+          });
+
+          it('creates a new alert', async () => {
+            findRunPipelineButton().vm.$emit('click');
+
+            await waitForPromises();
+
+            expect(createAlert).toHaveBeenCalledWith({
+              message:
+                'An error occurred while trying to run a new pipeline for this merge request.',
+              primaryButton: {
+                link: '/help/ci/pipelines/merge_request_pipelines.md',
+                text: 'Learn more',
+              },
+            });
+          });
+        });
+
+        describe('when user does not have permission to create a pipeline', () => {
+          beforeEach(() => {
+            Api.postMergeRequestPipeline.mockRejectedValue({
+              response: { status: 401 },
+            });
+          });
+
+          it('creates a new alert', async () => {
+            findRunPipelineButton().vm.$emit('click');
+
+            await waitForPromises();
+
+            expect(createAlert).toHaveBeenCalledWith({
+              message: 'You do not have permission to run a pipeline on this branch.',
+              primaryButton: {
+                link: '/help/ci/pipelines/merge_request_pipelines.md',
+                text: 'Learn more',
+              },
+            });
+          });
+        });
+      });
+    });
+
+    describe('when last pipeline is a branch pipeline', () => {
+      beforeEach(() => {
+        createWrapper({
+          detatchedPipeline: null,
+          retargeted: true,
+        });
+      });
+
+      it('renders branch changed message', () => {
+        expect(findRetargetedMessage().text()).toBe(
+          'You should run a new pipeline, because the target branch has changed for this merge request.',
+        );
+      });
+
+      it('does not render the run pipeline button', () => {
+        expect(findRunPipelineButton().exists()).toBe(false);
       });
     });
   });

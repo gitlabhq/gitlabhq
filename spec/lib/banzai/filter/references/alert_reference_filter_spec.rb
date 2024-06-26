@@ -15,9 +15,9 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
 
   %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
-      exp = act = "<#{elem}>Alert #{reference}</#{elem}>"
+      act = "<#{elem}>Alert #{reference}</#{elem}>"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -35,9 +35,9 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
     end
 
     it 'ignores invalid alert IDs' do
-      exp = act = "Alert #{invalidate_reference(reference)}"
+      act = "Alert #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
 
     it 'includes a title attribute' do
@@ -109,9 +109,9 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
     end
 
     it 'ignores invalid alert IDs on the referenced project' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -141,9 +141,9 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
     end
 
     it 'ignores invalid alert IDs on the referenced project' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -173,9 +173,9 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
     end
 
     it 'ignores invalid alert IDs on the referenced project' do
-      exp = act = "See #{invalidate_reference(reference)}"
+      act = "See #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -215,9 +215,9 @@ RSpec.describe Banzai::Filter::References::AlertReferenceFilter, feature_categor
     end
 
     it 'ignores internal references' do
-      exp = act = "See ^alert##{alert.iid}"
+      act = "See ^alert##{alert.iid}"
 
-      expect(reference_filter(act, project: nil, group: group).to_html).to eq exp
+      expect(reference_filter(act, project: nil, group: group).to_html).to include act
     end
   end
 

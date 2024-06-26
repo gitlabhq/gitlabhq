@@ -2642,6 +2642,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .from(nil).to(pipeline)
       end
 
+      context 'when MR was retargeted' do
+        before do
+          merge_request.update!(retargeted: true)
+        end
+
+        it 'sets retargeted to false' do
+          expect { subject }
+            .to change { merge_request.reload.retargeted }
+            .from(true).to(false)
+        end
+      end
+
       context 'when merge request has already had head pipeline' do
         before do
           merge_request.update!(head_pipeline: pipeline)

@@ -14,6 +14,7 @@ module Banzai
       class ReferenceFilter < HTML::Pipeline::Filter
         include RequestStoreReferenceCache
         include OutputSafety
+        prepend Concerns::PipelineTimingCheck
 
         REFERENCE_TYPE_DATA_ATTRIBUTE = 'data-reference-type='
 

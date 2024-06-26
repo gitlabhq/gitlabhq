@@ -83,4 +83,6 @@ RSpec.describe Banzai::Filter::ServiceDeskUploadLinkFilter, feature_category: :s
       expect(doc.at_css('a')['href']).to eq upload_path
     end
   end
+
+  it_behaves_like 'pipeline timing check'
 end

@@ -90,6 +90,10 @@ export default {
       :mr-troubleshooting-docs-path="mr.mrTroubleshootingDocsPath"
       :ci-troubleshooting-docs-path="mr.ciTroubleshootingDocsPath"
       :merge-strategy="preferredAutoMergeStrategy"
+      :retargeted="mr.retargeted"
+      :target-project-id="mr.targetProjectId"
+      :iid="mr.iid"
+      :detatched-pipeline="mr.detatchedPipeline"
     />
     <template #footer>
       <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">
